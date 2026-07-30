@@ -168,10 +168,12 @@ function Add-TableSheet {
         [string[]]$PercentColumns
     )
 
+    Write-BuildLog "BEGIN_$Name"
     $sheet = $Workbook.Worksheets.Add()
     $sheet.Name = $Name
     Set-SheetHeader $sheet $Title $Subtitle $Headers.Count $Instruction
     Add-StandardButtons $sheet $true
+    Write-BuildLog "HEADER_$Name"
 
     for ($c = 1; $c -le $Headers.Count; $c++) {
         $sheet.Cells.Item(7, $c).Value2 = $Headers[$c - 1]
@@ -195,6 +197,7 @@ function Add-TableSheet {
     $table.Name = $TableName
     $table.TableStyle = "TableStyleMedium2"
     $table.ShowTableStyleRowStripes = $true
+    Write-BuildLog "TABLE_$Name"
 
     $headerRange = $table.HeaderRowRange
     $headerRange.Interior.Color = $colors.Blue
@@ -222,6 +225,7 @@ function Add-TableSheet {
             $column.DataBodyRange.Font.Color = $colors.Navy
         }
     }
+    Write-BuildLog "FORMULAS_$Name"
 
     foreach ($columnName in $Validations.Keys) {
         $column = $table.ListColumns.Item($columnName)
@@ -229,6 +233,7 @@ function Add-TableSheet {
             Add-ListValidation $column.DataBodyRange $Validations[$columnName]
         }
     }
+    Write-BuildLog "VALIDATIONS_$Name"
 
     foreach ($columnName in $DateColumns) {
         $table.ListColumns.Item($columnName).Range.NumberFormat = "yyyy-mm-dd hh:mm"
@@ -251,6 +256,7 @@ function Add-TableSheet {
     $sheet.PageSetup.Zoom = $false
     $sheet.PageSetup.FitToPagesWide = 1
     $sheet.PageSetup.FitToPagesTall = $false
+    Write-BuildLog "END_$Name"
     return $sheet
 }
 
@@ -388,8 +394,9 @@ try {
         "tblUbicaciones" $locationHeaders $locationRows $locationWidths $locationValidations @{} @() @() @()
     Write-BuildLog "SHEET_02"
 
-    $workbook.Names.Add("lstProductos", "=OFFSET('01_CATALOGOS'!`$A`$8,0,0,MAX(1,COUNTA('01_CATALOGOS'!`$A`$8:`$A`$200)),1)") | Out-Null
-    $workbook.Names.Add("lstUbicaciones", "=OFFSET('02_UBICACIONES'!`$A`$8,0,0,MAX(1,COUNTA('02_UBICACIONES'!`$A`$8:`$A`$200)),1)") | Out-Null
+    $workbook.Names.Add("lstProductos", "='01_CATALOGOS'!`$A`$8:`$A`$200") | Out-Null
+    $workbook.Names.Add("lstUbicaciones", "='02_UBICACIONES'!`$A`$8:`$A`$200") | Out-Null
+    Write-BuildLog "DYNAMIC_LISTS_CREATED"
 
     $requestHeaders = @(
         "solicitud_id", "fecha_solicitud", "solicitante", "ubicacion_origen", "ubicacion_destino",
@@ -407,7 +414,7 @@ try {
         estado = "lstEstadosSolicitud"; producto_id = "lstProductos"; unidad = "lstUnidades"
     }
     $requestFormulas = @{
-        aprobacion_pct = '=IF(OR([@cantidad_solicitada]="",[@cantidad_aprobada]=""),"",IFERROR([@cantidad_aprobada]/[@cantidad_solicitada],0))'
+        aprobacion_pct = '=IF(OR(K8="",L8=""),"",IFERROR(L8/K8,0))'
     }
     $requests = Add-TableSheet $workbook "03_SOLICITUDES" "Solicitudes internas de abastecimiento" `
         "Una fila representa una línea de producto. Un mismo solicitud_id puede repetirse en varias líneas." `
@@ -435,9 +442,9 @@ try {
         estado = "lstEstadosRemision"; producto_id = "lstProductos"; unidad = "lstUnidades"
     }
     $remissionFormulas = @{
-        cantidad_recibida = '=IF(OR([@remision_id]="",[@producto_id]=""),"",SUMIFS(tblRecepciones[cantidad_recibida],tblRecepciones[remision_id],[@remision_id],tblRecepciones[producto_id],[@producto_id],tblRecepciones[lote],[@lote]))'
-        diferencia_recepcion = '=IF(OR([@cantidad_despachada]="",[@cantidad_recibida]=""),"",[@cantidad_recibida]-[@cantidad_despachada])'
-        cumplimiento_pct = '=IF(OR([@cantidad_despachada]="",[@cantidad_recibida]=""),"",IFERROR([@cantidad_recibida]/[@cantidad_despachada],0))'
+        cantidad_recibida = '=IF(OR(A8="",G8=""),"",SUMIFS(''05_RECEPCIONES''!$I$8:$I$200,''05_RECEPCIONES''!$B$8:$B$200,A8,''05_RECEPCIONES''!$F$8:$F$200,G8,''05_RECEPCIONES''!$G$8:$G$200,I8))'
+        diferencia_recepcion = '=IF(OR(P8="",Q8=""),"",Q8-P8)'
+        cumplimiento_pct = '=IF(OR(P8="",Q8=""),"",IFERROR(Q8/P8,0))'
     }
     $remissions = Add-TableSheet $workbook "04_REMISIONES" "Preparación, despacho y recepción de remisiones" `
         "La remisión documenta la operación; no reemplaza el movimiento de inventario. Conserva solicitado, aprobado, preparado, cargado, despachado y recibido." `
@@ -486,7 +493,7 @@ try {
         producto_id = "lstProductos"; unidad = "lstUnidades"; estado = "lstEstadosOperacion"
     }
     $countFormulas = @{
-        diferencia = '=IF(OR([@cantidad_sistema_referencia]="",[@cantidad_contada]=""),"",[@cantidad_contada]-[@cantidad_sistema_referencia])'
+        diferencia = '=IF(OR(K8="",L8=""),"",L8-K8)'
     }
     $counts = Add-TableSheet $workbook "06_CONTEOS" "Sesiones de conteo físico" `
         "El conteo es una observación con corte, método y responsable. Una diferencia no modifica inventario por sí sola." `
@@ -536,7 +543,7 @@ try {
         unidad_insumo = "lstUnidades"; unidad_salida = "lstUnidades"
     }
     $productionFormulas = @{
-        rendimiento_pct = '=IF(OR([@salida_total]="",[@salida_buena]=""),"",IFERROR([@salida_buena]/[@salida_total],0))'
+        rendimiento_pct = '=IF(OR(N8="",O8=""),"",IFERROR(O8/N8,0))'
     }
     $production = Add-TableSheet $workbook "08_PRODUCCION" "Producción, rendimiento y trazabilidad" `
         "Conserva receta/version, insumos reales, lote de salida, resultado, reproceso y merma. Terminado no significa liberado." `
@@ -583,7 +590,7 @@ try {
         ubicacion_destino = "lstUbicaciones"; estado = "lstEstadosOperacion"
     }
     $returnableFormulas = @{
-        diferencia = '=IF(OR([@cantidad_salida]="",[@cantidad_recibida]=""),"",[@cantidad_recibida]-[@cantidad_salida])'
+        diferencia = '=IF(OR(G8="",H8=""),"",H8-G8)'
     }
     $returnables = Add-TableSheet $workbook "10_RETORNABLES" "Retornables, LPN y custodia" `
         "Controla canastillas, cajas, contenedores y otras unidades retornables como activos en custodia." `
@@ -612,26 +619,7 @@ try {
         "tblEstaciones" $stationHeaders @() $stationWidths $stationValidations @{} @() @() @()
     Write-BuildLog "SHEET_11"
 
-    foreach ($pair in @(
-        @($catalog, "estado_registro"), @($locations, "estado_registro"), @($requests, "estado"),
-        @($remissions, "estado"), @($counts, "estado"), @($movements, "estado"),
-        @($production, "estado_produccion"), @($quality, "estado"), @($returnables, "estado"),
-        @($stations, "estado_registro")
-    )) {
-        $table = $pair[0].ListObjects.Item(1)
-        Add-StatusConditionalFormatting $table.ListColumns.Item($pair[1]).DataBodyRange
-    }
-
-    foreach ($pair in @(
-        @($remissions, "diferencia_recepcion"), @($counts, "diferencia"), @($returnables, "diferencia")
-    )) {
-        $range = $pair[0].ListObjects.Item(1).ListColumns.Item($pair[1]).DataBodyRange
-        $range.FormatConditions.Delete()
-        $condition = $range.FormatConditions.Add(1, 4, "0")
-        $condition.Interior.Color = $colors.RedSoft
-        $condition.Font.Color = $colors.Red
-        $condition.Font.Bold = $true
-    }
+    Write-BuildLog "TABLE_STYLES_READY"
 
     $panel = $workbook.Worksheets.Add()
     $panel.Name = "12_PANEL"
@@ -647,14 +635,14 @@ try {
     $panel.Range("A7:L7").HorizontalAlignment = -4108
 
     $kpis = @(
-        @("Productos activos", '=COUNTIF(tblCatalogos[estado_registro],"ACTIVO")', $colors.Blue),
-        @("Solicitudes abiertas", '=COUNTIFS(tblSolicitudes[solicitud_id],"<>",tblSolicitudes[estado],"<>CERRADA",tblSolicitudes[estado],"<>CANCELADA")', $colors.Teal),
-        @("Remisiones en tránsito", '=COUNTIF(tblRemisiones[estado],"EN TRÁNSITO")', $colors.Orange),
-        @("Diferencias recepción", '=COUNTIFS(tblRemisiones[remision_id],"<>",tblRemisiones[diferencia_recepcion],"<>0")', $colors.Red),
-        @("Diferencias de conteo", '=COUNTIFS(tblConteos[sesion_conteo_id],"<>",tblConteos[diferencia],"<>0")', $colors.Red),
-        @("Alertas calidad", '=COUNTIFS(tblCalidadMermas[evento_id],"<>",tblCalidadMermas[estado],"<>CERRADA",tblCalidadMermas[estado],"<>CANCELADA")', $colors.Orange),
-        @("Estaciones por validar", '=COUNTIF(tblEstaciones[estado_registro],"POR VALIDAR")', $colors.Blue),
-        @("Rendimiento promedio", '=IFERROR(AVERAGE(tblProduccion[rendimiento_pct]),0)', $colors.Green)
+        @("Productos activos", '=COUNTIF(''01_CATALOGOS''!$P$8:$P$200,"ACTIVO")', $colors.Blue),
+        @("Solicitudes abiertas", '=COUNTIFS(''03_SOLICITUDES''!$A$8:$A$200,"<>",''03_SOLICITUDES''!$G$8:$G$200,"<>CERRADA",''03_SOLICITUDES''!$G$8:$G$200,"<>CANCELADA")', $colors.Teal),
+        @("Remisiones en tránsito", '=COUNTIF(''04_REMISIONES''!$F$8:$F$200,"EN TRÁNSITO")', $colors.Orange),
+        @("Diferencias recepción", '=COUNTIFS(''04_REMISIONES''!$A$8:$A$200,"<>",''04_REMISIONES''!$R$8:$R$200,"<>0")', $colors.Red),
+        @("Diferencias de conteo", '=COUNTIFS(''06_CONTEOS''!$A$8:$A$200,"<>",''06_CONTEOS''!$M$8:$M$200,"<>0")', $colors.Red),
+        @("Alertas calidad", '=COUNTIFS(''09_CALIDAD_MERMAS''!$A$8:$A$200,"<>",''09_CALIDAD_MERMAS''!$P$8:$P$200,"<>CERRADA",''09_CALIDAD_MERMAS''!$P$8:$P$200,"<>CANCELADA")', $colors.Orange),
+        @("Estaciones por validar", '=COUNTIF(''11_ESTACIONES''!$R$8:$R$200,"POR VALIDAR")', $colors.Blue),
+        @("Rendimiento promedio", '=IFERROR(AVERAGE(''08_PRODUCCION''!$R$8:$R$200),0)', $colors.Green)
     )
     $positions = @(
         @(9, 1), @(9, 4), @(9, 7), @(9, 10),
@@ -694,11 +682,11 @@ try {
         @("Diferencias conteo", $null, $null, $null),
         @("Alertas calidad", $null, $null, $null)
     )
-    $panel.Range("B19").Formula = '=COUNTIFS(tblSolicitudes[solicitud_id],"<>",tblSolicitudes[estado],"<>CERRADA",tblSolicitudes[estado],"<>CANCELADA")'
-    $panel.Range("B20").Formula = '=COUNTIF(tblRemisiones[estado],"EN TRÁNSITO")'
-    $panel.Range("B21").Formula = '=COUNTIFS(tblRemisiones[remision_id],"<>",tblRemisiones[diferencia_recepcion],"<>0")'
-    $panel.Range("B22").Formula = '=COUNTIFS(tblConteos[sesion_conteo_id],"<>",tblConteos[diferencia],"<>0")'
-    $panel.Range("B23").Formula = '=COUNTIFS(tblCalidadMermas[evento_id],"<>",tblCalidadMermas[estado],"<>CERRADA",tblCalidadMermas[estado],"<>CANCELADA")'
+    $panel.Range("B19").Formula = '=COUNTIFS(''03_SOLICITUDES''!$A$8:$A$200,"<>",''03_SOLICITUDES''!$G$8:$G$200,"<>CERRADA",''03_SOLICITUDES''!$G$8:$G$200,"<>CANCELADA")'
+    $panel.Range("B20").Formula = '=COUNTIF(''04_REMISIONES''!$F$8:$F$200,"EN TRÁNSITO")'
+    $panel.Range("B21").Formula = '=COUNTIFS(''04_REMISIONES''!$A$8:$A$200,"<>",''04_REMISIONES''!$R$8:$R$200,"<>0")'
+    $panel.Range("B22").Formula = '=COUNTIFS(''06_CONTEOS''!$A$8:$A$200,"<>",''06_CONTEOS''!$M$8:$M$200,"<>0")'
+    $panel.Range("B23").Formula = '=COUNTIFS(''09_CALIDAD_MERMAS''!$A$8:$A$200,"<>",''09_CALIDAD_MERMAS''!$P$8:$P$200,"<>CERRADA",''09_CALIDAD_MERMAS''!$P$8:$P$200,"<>CANCELADA")'
     $panel.Range("A18:B18").Interior.Color = $colors.Navy
     $panel.Range("A18:B18").Font.Color = $colors.White
     $panel.Range("A18:B18").Font.Bold = $true

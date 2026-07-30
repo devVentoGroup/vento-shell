@@ -1,0 +1,153 @@
+{
+  "output": "C:\\Users\\User\\devVentoGroup\\vento-shell\\outputs\\019f9f2a-9508-77e3-a9ec-4ee497bf6531\\.\\VENTO_OPERACION_PILOTO.xlsm",
+  "sheets": [
+    {
+      "name": "00_INICIO",
+      "rows": 17,
+      "columns": 12,
+      "shapes": 12
+    },
+    {
+      "name": "01_CATALOGOS",
+      "rows": 17,
+      "columns": 19,
+      "shapes": 4
+    },
+    {
+      "name": "02_UBICACIONES",
+      "rows": 14,
+      "columns": 11,
+      "shapes": 4
+    },
+    {
+      "name": "03_SOLICITUDES",
+      "rows": 8,
+      "columns": 16,
+      "shapes": 4
+    },
+    {
+      "name": "04_REMISIONES",
+      "rows": 8,
+      "columns": 23,
+      "shapes": 4
+    },
+    {
+      "name": "05_RECEPCIONES",
+      "rows": 8,
+      "columns": 17,
+      "shapes": 4
+    },
+    {
+      "name": "06_CONTEOS",
+      "rows": 8,
+      "columns": 18,
+      "shapes": 4
+    },
+    {
+      "name": "07_MOVIMIENTOS",
+      "rows": 8,
+      "columns": 17,
+      "shapes": 4
+    },
+    {
+      "name": "08_PRODUCCION",
+      "rows": 8,
+      "columns": 21,
+      "shapes": 4
+    },
+    {
+      "name": "09_CALIDAD_MERMAS",
+      "rows": 8,
+      "columns": 17,
+      "shapes": 4
+    },
+    {
+      "name": "10_RETORNABLES",
+      "rows": 8,
+      "columns": 14,
+      "shapes": 4
+    },
+    {
+      "name": "11_ESTACIONES",
+      "rows": 8,
+      "columns": 19,
+      "shapes": 4
+    },
+    {
+      "name": "12_PANEL",
+      "rows": 23,
+      "columns": 12,
+      "shapes": 3
+    }
+  ],
+  "tables": [
+    {
+      "sheet": "01_CATALOGOS",
+      "name": "tblCatalogos",
+      "rows": 10,
+      "columns": 19
+    },
+    {
+      "sheet": "02_UBICACIONES",
+      "name": "tblUbicaciones",
+      "rows": 7,
+      "columns": 11
+    },
+    {
+      "sheet": "03_SOLICITUDES",
+      "name": "tblSolicitudes",
+      "rows": 1,
+      "columns": 16
+    },
+    {
+      "sheet": "04_REMISIONES",
+      "name": "tblRemisiones",
+      "rows": 1,
+      "columns": 23
+    },
+    {
+      "sheet": "05_RECEPCIONES",
+      "name": "tblRecepciones",
+      "rows": 1,
+      "columns": 17
+    },
+    {
+      "sheet": "06_CONTEOS",
+      "name": "tblConteos",
+      "rows": 1,
+      "columns": 18
+    },
+    {
+      "sheet": "07_MOVIMIENTOS",
+      "name": "tblMovimientos",
+      "rows": 1,
+      "columns": 17
+    },
+    {
+      "sheet": "08_PRODUCCION",
+      "name": "tblProduccion",
+      "rows": 1,
+      "columns": 21
+    },
+    {
+      "sheet": "09_CALIDAD_MERMAS",
+      "name": "tblCalidadMermas",
+      "rows": 1,
+      "columns": 17
+    },
+    {
+      "sheet": "10_RETORNABLES",
+      "name": "tblRetornables",
+      "rows": 1,
+      "columns": 14
+    },
+    {
+      "sheet": "11_ESTACIONES",
+      "name": "tblEstaciones",
+      "rows": 1,
+      "columns": 19
+    }
+  ],
+  "macros": 51,
+  "formula_errors": []
+}
