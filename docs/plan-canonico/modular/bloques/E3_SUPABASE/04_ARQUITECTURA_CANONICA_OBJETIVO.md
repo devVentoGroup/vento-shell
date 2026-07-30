@@ -10318,7 +10318,810 @@ SUPA-ARC-019 — Definir arquitectura de Realtime y eventos
 `SUPA-ARC-019` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-019 — Definir arquitectura de Realtime y eventos
+### ✅ SUPA-ARC-019 — Definir arquitectura de Realtime y eventos
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-018` — Definir arquitectura de Storage — APROBADA
+**Tarea siguiente:** `SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `bdf141cca3503e5157c6e64a8cca9718ca62ebe0`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `bcd343ebccc6f1d279ccc8be9370a7368b9d6989`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md` blob `8502533e144e5c1878192f470e766da99c522ecd`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `bcd5cdeb1f593658737d34887ed3afd44e992652`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `01_PRINCIPIOS_OBLIGATORIOS.md` blob `36bb9a4c19f6d8e7edbaa03687219fb642c9c526`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`; `validate-treq-registry.mjs` blob `0af0cac4cad0fed7994c211a845198e51ce56ba6`
+**Tipo de tarea:** definición normativa de arquitectura de Supabase Realtime y eventos para hechos empresariales durables, publicaciones, Postgres Changes, Broadcast, Presence, canales, consumidores, snapshots, orden, deduplicación, recuperación, replay, seguridad, capacidad, observabilidad, compatibilidad y transición; sin crear, alterar, publicar, retirar o ejecutar publicaciones, tablas, vistas, funciones, triggers, policies, grants, RLS, replica identity, canales, eventos, mensajes, slots, migraciones, código, workers, backfills, cutover ni despliegues
+
+#### 1. Objetivo
+
+Definir una arquitectura única y verificable para transportar cambios y señales de baja latencia sin convertir Realtime en fuente de verdad, confundir cambios de filas con eventos empresariales, depender de suscripciones inexistentes, replicar información sensible sin finalidad ni declarar entrega, orden o recuperación que la plataforma no demuestre.
+
+```text
+OWNER CONFIRMA UN HECHO EMPRESARIAL
+        ↓
+EVENTO DURABLE + OUTBOX + AUDITORÍA
+        ↓
+TRANSPORTE O SEÑAL REALTIME AUTORIZADA
+        ↓
+CONSUMIDOR DEDUPLICA Y APLICA SU CONTRATO
+        ↓
+SNAPSHOT, CURSOR Y RECUPERACIÓN CIERRAN BRECHAS
+        ↓
+PROYECCIÓN O EXPERIENCIA ACTUALIZADA SIN CAMBIAR LA FUENTE
+```
+
+La tarea define planos, modos, contratos, estados, disposiciones y gates. No modifica las publicaciones actuales, no activa Broadcast o Presence y no declara funcional ninguna suscripción únicamente porque exista código cliente.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-REALTIME-EVENT-ARCHITECTURE-001@1.0.0
+```
+
+| Propiedad                                   |      Valor |
+| ------------------------------------------- | ---------: |
+| `current_total_publication_count`           |      **2** |
+| `current_vento_business_publication_count`  |      **1** |
+| `current_published_business_relation_count` |      **6** |
+| `current_published_relation_with_rls_count` | **6 de 6** |
+| `current_published_relation_with_pk_count`  | **6 de 6** |
+| `current_replica_identity_full_count`       |      **0** |
+| `current_publication_row_filter_count`      |      **0** |
+| `current_consumer_target_count`             |     **13** |
+| `current_published_consumer_target_count`   |      **5** |
+| `current_unpublished_table_target_count`    |      **6** |
+| `current_view_target_count`                 |      **2** |
+| `current_unused_published_relation_count`   |      **1** |
+| `current_channel_pattern_count`             |     **17** |
+| `current_business_broadcast_producer_count` |      **0** |
+| `current_presence_usage_count`              |      **0** |
+| `enterprise_event_definition_count`         |    **395** |
+| `covered_process_count`                     |     **69** |
+| `event_consumer_relation_count`             |  **2.020** |
+| `deferred_aura_relation_count`              |    **197** |
+| `realtime_plane_count`                      |      **4** |
+| `delivery_mode_count`                       |      **6** |
+| `consumer_lifecycle_state_count`            |     **10** |
+| `current_surface_case_count`                |     **14** |
+| `current_surface_disposition_count`         |      **8** |
+| `exactly_once_claim_target`                 |      **0** |
+| `global_order_claim_target`                 |      **0** |
+| `new_test_requirements`                     |     **60** |
+| `physical_changes_authorized`               |      **0** |
+
+El artefacto integra cinco registros normativos:
+
+```text
+REALTIME-TRANSPORT-MODE-REGISTRY-001
+REALTIME-PUBLICATION-CONSUMER-REGISTRY-001
+REALTIME-CHANNEL-CONTRACT-001
+REALTIME-CONSUMER-LIFECYCLE-001
+REALTIME-CURRENT-SURFACE-DISPOSITION-REGISTRY-001
+```
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                      | Decisión consumida                                                                                                                                         |
+| ----------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                           | continuidad, preservación histórica, fase documental y separación entre definición e implementación                                                        |
+| `delivery-contract.json`                                    | una sola tarea y registro 04A completo con identidad única de entrega                                                                                      |
+| `active-sequence.json`                                      | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-019` como tarea actual                                                                                |
+| `SUPA-AUD-013`                                              | publicaciones, seis relaciones, trece objetivos consumidores, diecisiete canales, replica identity, Broadcast, Presence, recuperación y brechas observadas |
+| `ENTERPRISE-EVENT-CATALOG-001@1.0.0`                        | 395 definiciones normales, 69 procesos, ocho familias condicionales e identidad estable de evento                                                          |
+| registro de consumidoras de `INT-APP-003`                   | 2.020 relaciones evento–consumidora y 197 relaciones AURA diferidas                                                                                        |
+| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0`           | `realtime` administrado y evento empresarial separado del transporte                                                                                       |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`         | evento, outbox, inbox, entrega, auditoría, efecto consumidor y conciliación separados                                                                      |
+| `SUPABASE-FUNCTION-RPC-TRIGGER-STANDARD-001@1.0.0`          | funciones y triggers con efectos y contratos inequívocos                                                                                                   |
+| `SUPABASE-EXPOSURE-GRANTS-RLS-POLICY-001@1.0.0`             | exposición, grants, RLS y autorización empresarial como controles independientes                                                                           |
+| `SUPABASE-DOMAIN-READ-MUTATION-CONTRACT-REGISTRY-001@1.0.0` | lecturas, comandos, snapshots, idempotencia, consistencia y resultados por dominio                                                                         |
+| `SUPABASE-CROSS-DOMAIN-WRITE-POLICY-001@1.0.0`              | outbox, inbox, entrega al menos una vez, orden por agregado, compensación y conciliación                                                                   |
+| `SUPABASE-STORAGE-ARCHITECTURE-001@1.0.0`                   | eventos de archivo únicamente después de estados empresariales confirmados                                                                                 |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`          | 5.553 requisitos hasta `SUPA-ARC-018`; rango `TREQ-SUPABASE-001` a `1258`                                                                                  |
+
+#### 4. Distinciones normativas
+
+```text
+CAMBIO DE FILA ≠ EVENTO EMPRESARIAL
+EVENTO EMPRESARIAL ≠ MENSAJE REALTIME
+MENSAJE REALTIME ≠ ENTREGA DURABLE
+SUSCRIPCIÓN ACTIVA ≠ AUTORIZACIÓN EMPRESARIAL
+PUBLICACIÓN ≠ CONSUMIDOR FUNCIONAL
+CONSUMIDOR EN CÓDIGO ≠ RELACIÓN PUBLICADA
+RLS DE TABLA ≠ AUTORIZACIÓN DE CANAL
+BROADCAST ≠ FUENTE DE VERDAD
+PRESENCE ≠ ASISTENCIA, CHECK-IN O CUSTODIA
+ACK DE CANAL ≠ RESULTADO DE COMANDO
+PAYLOAD.OLD ≠ HISTORIA CANÓNICA
+REPLICA IDENTITY FULL ≠ SOLUCIÓN PREDETERMINADA
+POLLING ≠ FALLO ARQUITECTÓNICO CUANDO ES RECUPERACIÓN ACOTADA
+DUPLICADO ≠ SEGUNDO EFECTO
+RECONEXIÓN ≠ GARANTÍA DE HABER RECIBIDO TODO
+```
+
+Realtime acelera la propagación de información. La fuente, el significado, la autorización, la durabilidad y la recuperación permanecen gobernados por los contratos empresariales.
+
+#### 5. Planos canónicos
+
+| Plano                                 | Autoridad                                                | Responsabilidad                                                   | No demuestra                                                           |
+| ------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| estado y evento durable               | owner schema y `audit` según contratos aprobados         | confirmar hecho, versión, evento, outbox, causalidad y evidencia  | que un consumidor ya recibió o aplicó el hecho                         |
+| transporte Realtime                   | servicio administrado `realtime` y publicación soportada | entregar señales de baja latencia a audiencias autorizadas        | durabilidad, orden global o resultado empresarial                      |
+| proyección y recuperación consumidora | owner de la proyección o consumidor autorizado           | snapshot, inbox, cursor, deduplicación, frescura y reconstrucción | autoridad para corregir la fuente                                      |
+| presencia efímera                     | canal privado y actor o dispositivo vigente              | estado temporal de conexión, escritura o disponibilidad visual    | asistencia, sesión laboral, custodia, pago, pedido o cierre de proceso |
+
+Reglas:
+
+1. `realtime` permanecerá administrado por Supabase y no alojará fuentes empresariales de Vento.
+2. Un evento durable conservará la identidad y el envelope aprobados por BLOQUE X y `SUPA-ARC-007`.
+3. Una señal Realtime podrá referenciar el evento o invalidar una lectura, pero no sustituirlo.
+4. La proyección consumidora será reconstruible y no podrá escribir de regreso en la fuente.
+5. Presence expirará y se reconciliará como estado efímero, nunca como hecho histórico.
+
+#### 6. Adopción del catálogo empresarial
+
+`SUPA-ARC-019` no crea un segundo catálogo de eventos. Adopta por referencia:
+
+```text
+395 definiciones normales
++ 8 familias condicionales
++ 69 procesos
++ 2.020 relaciones evento–consumidora
++ 197 relaciones AURA diferidas
+```
+
+Cada evento materializado conservará:
+
+```text
+event_id
++ event_definition_id
++ event_type
++ event_version
++ process_id
++ process_instance_id
++ producer_application
++ owner_schema_id
++ aggregate_type
++ aggregate_id
++ aggregate_version
++ occurred_at
++ recorded_at
++ principal_id
++ effective_actor_id
++ site_id
++ area_id
++ correlation_id
++ causation_id
++ sensitivity_class
++ payload_schema_version
+```
+
+Los nombres de canal, relación, aplicación o tecnología no alterarán `event_definition_id` ni `event_type`.
+
+#### 7. Modos de entrega permitidos
+
+| Modo                         | Uso                                                          | Durabilidad                                               | Recuperación obligatoria                               |
+| ---------------------------- | ------------------------------------------------------------ | --------------------------------------------------------- | ------------------------------------------------------ |
+| `DURABLE_EVENT_NOTIFICATION` | avisar que existe un evento empresarial confirmado           | evento y outbox durables; señal repetible                 | inbox, cursor o consulta del evento durable            |
+| `POSTGRES_CHANGE_PROJECTION` | actualizar una proyección o colección de bajo riesgo         | la relación fuente o proyección es durable; el mensaje no | snapshot por versión y refetch                         |
+| `REFETCH_INVALIDATION`       | indicar que un recurso autorizado debe volver a consultarse  | solo la fuente consultada                                 | lectura canónica con versión o `as_of`                 |
+| `PRIVATE_BROADCAST`          | señal efímera de interfaz, coordinación o atención inmediata | no durable                                                | timeout, estado visible y refetch cuando exista fuente |
+| `PRIVATE_PRESENCE`           | conexión, disponibilidad temporal o actividad visual         | no durable                                                | heartbeat, expiración y nueva observación              |
+| `POLLING_RECOVERY`           | fallback y conciliación acotados                             | depende de la lectura canónica                            | cursor, backoff, presupuesto y detención explícita     |
+
+Ningún modo se seleccionará por conveniencia del SDK. La sensibilidad, la necesidad de replay, la cardinalidad, la frecuencia, el costo de recuperación y el owner determinan el modo.
+
+#### 8. Registro de publicación y consumidor
+
+Cada superficie deberá registrar:
+
+```text
+realtime_contract_id
++ lifecycle_status
++ owner_schema_id
++ source_kind
++ source_relation_or_event_contract
++ delivery_mode
++ allowed_operations
++ column_allowlist_or_projection
++ row_scope_or_partition
++ rls_requirement
++ channel_authorization_requirement
++ replica_identity_requirement
++ channel_pattern_id
++ consumer_application_ids
++ consumer_surface_ids
++ initial_snapshot_contract
++ cursor_or_version_contract
++ ordering_contract
++ deduplication_contract
++ reconnect_contract
++ fallback_contract
++ payload_sensitivity
++ capacity_profile
++ observability_contract
++ transition_disposition
++ rollback_contract
++ test_requirement_ids
+```
+
+No se aceptarán consumidor “frontend”, fila “toda la tabla”, payload “completo”, filtro “en cliente”, recuperación “recargar”, owner inferido ni relación publicada sin finalidad y lifecycle.
+
+#### 9. Registro de consumidor
+
+Cada consumidor individual deberá declarar:
+
+```text
+consumer_contract_id
++ application_id
++ surface_or_worker_id
++ audience
++ actor_requirement
++ owner_resource_scope
++ channel_pattern_id
++ subscription_filter
++ snapshot_query_contract
++ buffered_signal_policy
++ event_or_change_handler
++ deduplication_key
++ expected_aggregate_version
++ stale_signal_policy
++ reconnect_and_backoff
++ polling_fallback
++ cleanup_and_actor_change
++ degraded_state_ux
++ metrics_and_alerts
++ data_minimization
++ test_requirement_ids
+```
+
+Una misma relación podrá servir a varios consumidores solo cuando cada audiencia, filtro, payload y recuperación estén explícitos.
+
+#### 10. Línea base actual protegida
+
+```text
+PUBLICACIONES TOTALES                               2
+PUBLICACIÓN EMPRESARIAL VENTO                      1
+RELACIONES EMPRESARIALES PUBLICADAS                6
+RELACIONES CON RLS                                 6 DE 6
+RELACIONES CON PK                                  6 DE 6
+REPLICA IDENTITY FULL                              0
+ROW FILTERS DE PUBLICACIÓN                         0
+OBJETIVOS TÉCNICOS DE CONSUMIDOR                  13
+OBJETIVOS PUBLICADOS                               5
+TABLAS OBJETIVO NO PUBLICADAS                      6
+VISTAS OBJETIVO NO PUBLICABLES                     2
+RELACIÓN PUBLICADA SIN CONSUMIDOR OBSERVADO        1
+PATRONES DE CANAL                                 17
+PRODUCTORES BROADCAST EMPRESARIALES                0
+USO PRESENCE OBSERVADO                             0
+```
+
+La línea base describe el estado observado. No aprueba las seis relaciones, las operaciones publicadas, las columnas, los filtros ni los consumidores actuales.
+
+#### 11. Disposiciones de superficies actuales
+
+| Superficie actual                | Estado observado                            | Disposición primaria                  | Regla objetivo                                                                                           |
+| -------------------------------- | ------------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `public.order_conversations`     | publicada y consumida                       | `RETAIN_CONTRACTED_POSTGRES_CHANGES`  | conservar solo mientras exista owner, columnas, filtro, snapshot y transición aprobados                  |
+| `public.order_messages`          | publicada y consumida                       | `RETAIN_CONTRACTED_POSTGRES_CHANGES`  | chat autorizado, payload mínimo, deduplicación, recuperación y cierre de canal                           |
+| `public.order_delivery_sessions` | publicada y consumida                       | `REPLACE_WITH_MINIMIZED_PROJECTION`   | excluir hashes, notas y metadata no requerida por cada consumidor                                        |
+| `public.order_status_events`     | publicada y consumida                       | `REPLACE_WITH_DURABLE_EVENT`          | adoptar evento empresarial durable y proyección consultable, no tabla de cambios como contrato semántico |
+| `public.orders`                  | publicada y consumida con columnas amplias  | `REPLACE_WITH_REFETCH_INVALIDATION`   | señal mínima y lectura autorizada de una proyección contractual                                          |
+| `public.users`                   | publicada sin consumidor observado          | `REMOVE_UNUSED_PUBLICATION_CANDIDATE` | retirar solo después de demostrar cero consumidores, compatibilidad y rollback                           |
+| `public.employee_sites`          | consumidor existente, relación no publicada | `DEFER_UNTIL_OWNER_CONTRACT`          | resolver fuente y proyección entre `workforce`, `org_governance` e `identity_access` antes de exponer    |
+| `public.support_tickets`         | consumidor existente, relación no publicada | `REPLACE_WITH_MINIMIZED_PROJECTION`   | proyección del caso con ámbito, actor, estado y finalidad explícitos                                     |
+| `public.support_messages`        | consumidor existente, relación no publicada | `REPLACE_WITH_MINIMIZED_PROJECTION`   | mensajes autorizados y señal mínima; contenido se obtiene mediante contrato                              |
+| `public.support_ticket_reads`    | consumidor existente, relación no publicada | `REPLACE_WITH_PRIVATE_BROADCAST`      | receipt durable en owner y señal efímera deduplicable para interfaz                                      |
+| `public.order_billing_requests`  | consumidor existente, relación no publicada | `REPLACE_WITH_DURABLE_EVENT`          | hecho de solicitud o cambio de facturación emitido por su owner                                          |
+| `pass.loyalty_redemptions`       | consumidor existente, relación no publicada | `REPLACE_WITH_DURABLE_EVENT`          | eventos de solicitud, confirmación, rechazo o reverso del owner de fidelización                          |
+| `public.pos_table_service_calls` | vista consumida como si fuera publicable    | `REPLACE_WITH_PRIVATE_BROADCAST`      | llamada efímera privada más estado durable consultable cuando aplique                                    |
+| `public.pos_sessions`            | vista consumida como si fuera publicable    | `FIX_CONSUMER_TARGET`                 | suscribirse a proyección, evento o fuente base permitida; nunca a la vista actual por inferencia         |
+
+Las disposiciones son arquitectónicas. No agregan, quitan o cambian publicaciones ni consumidores durante esta tarea.
+
+#### 12. Gramática canónica de canales
+
+La identidad lógica será:
+
+```text
+vento:v1:<owner_schema>:<contract_key>:<opaque_partition>
+```
+
+Reglas:
+
+1. `owner_schema` será uno de los 26 owner schemas aprobados o una capa transversal autorizada.
+2. `contract_key` identificará el contrato, no la pantalla, componente o nombre local de hook.
+3. `opaque_partition` será estable, no reversible y libre de PII, secretos o texto visible.
+4. El ambiente se separará por proyecto y manifiesto; no se mezclará mediante topics compartidos.
+5. Correo, teléfono, documento, token, dirección, nombre humano y payload no aparecerán en el topic.
+6. Los diecisiete patrones actuales deberán mapearse individualmente o retirarse mediante compatibilidad medida.
+7. Un alias de canal tendrá versión, equivalencia, fecha de retiro, consumidores y telemetría.
+
+#### 13. Envelope de señal técnica
+
+Una señal técnica mínima podrá conservar:
+
+```text
+signal_id
++ signal_kind
++ realtime_contract_id
++ contract_version
++ owner_schema_id
++ aggregate_type
++ aggregate_id
++ aggregate_version
++ event_id_or_change_reference
++ correlation_id
++ causation_id
++ emitted_at
++ expires_at
++ sensitivity_class
++ recovery_reference
+```
+
+El payload no duplicará el evento durable ni expondrá filas completas. `event_id_or_change_reference` será opcional solo en señales puramente efímeras.
+
+#### 14. Bootstrap sin brechas
+
+Secuencia predeterminada del consumidor:
+
+```text
+1. RESOLVER SESIÓN, ACTOR, RECURSO Y CONTRATO
+2. CREAR CANAL PRIVADO
+3. ESPERAR SUSCRIPCIÓN LISTA
+4. INICIAR BUFFER DE SEÑALES
+5. CARGAR SNAPSHOT AUTORIZADO CON VERSIÓN O AS_OF
+6. DESCARTAR DUPLICADOS Y SEÑALES ANTERIORES AL SNAPSHOT
+7. APLICAR BUFFER EN ORDEN CONTRACTUAL
+8. ENTRAR EN LIVE
+```
+
+Si el canal no alcanza estado listo, el consumidor no afirmará tiempo real. Usará fallback explícito o presentará degradación.
+
+#### 15. Ciclo de vida del consumidor
+
+```text
+IDLE
+CONNECTING
+SUBSCRIBING
+SNAPSHOT_LOADING
+CATCHING_UP
+LIVE
+DEGRADED
+RECONNECTING
+RECOVERY_REQUIRED
+CLOSED
+```
+
+Reglas:
+
+- `LIVE` exige canal listo, snapshot válido y buffer conciliado;
+- `DEGRADED` conserva lectura y explica frescura sin ocultar pérdida de señal;
+- `RECONNECTING` no procesa señales como continuidad garantizada;
+- `RECOVERY_REQUIRED` obliga snapshot o replay durable antes de volver a `LIVE`;
+- `CLOSED` elimina canal, timers, buffers y referencias del actor anterior;
+- ningún estado técnico cambia por sí mismo el estado empresarial observado.
+
+#### 16. Semántica de entrega
+
+1. La arquitectura utiliza entrega **al menos una vez** para eventos y señales repetibles.
+2. Duplicados válidos no crearán efectos adicionales.
+3. No existe orden global entre dominios, procesos, canales o particiones.
+4. El orden relevante se resolverá por agregado, versión, secuencia de dominio o dependencia declarada.
+5. Un salto de versión, señal vencida o predecessor ausente activará recuperación.
+6. La desconexión puede perder señales efímeras; el consumidor deberá recuperar desde la fuente durable.
+7. Un ACK de suscripción, publicación o Broadcast no confirma aplicación del consumidor.
+8. Un evento aplicado no se reemite como hecho nuevo durante replay.
+
+#### 17. Orden, versión y deduplicación
+
+Cada consumidor definirá:
+
+```text
+deduplication_key
++ aggregate_partition_key
++ expected_version
++ stale_version_policy
++ gap_policy
++ duplicate_policy
++ conflict_policy
++ replay_policy
+```
+
+`event_id` deduplica emisiones durables; `signal_id` deduplica señales técnicas; `aggregate_version` controla orden local. Ninguno sustituye la idempotencia del comando que originó el hecho.
+
+#### 18. Recuperación y reconciliación
+
+Se activará recuperación cuando exista:
+
+- reconexión después de intervalo desconocido;
+- salto de versión;
+- señal fuera de orden incompatible;
+- snapshot vencido;
+- timeout de suscripción;
+- channel error o cierre inesperado;
+- cambio de actor, sede, área, turno o permiso;
+- diferencia entre proyección, evento, owner o receipt;
+- consumidor obligatorio atrasado;
+- replay o backfill en curso.
+
+La recuperación consultará snapshot, cursor, inbox o evento durable. No dependerá del historial efímero del canal como única evidencia.
+
+#### 19. Política para Postgres Changes
+
+Postgres Changes podrá utilizarse únicamente cuando:
+
+1. la relación o proyección tenga owner y contrato explícitos;
+2. RLS y grants cumplan `SUPA-ARC-015`;
+3. operaciones, columnas y filas estén minimizadas;
+4. exista PK, versión o estrategia de orden suficiente;
+5. el consumidor tenga snapshot, deduplicación, reconexión y fallback;
+6. la carga y cardinalidad sean compatibles con `SUPA-ARC-021`;
+7. el cambio de fila represente una invalidez o actualización de proyección, no un evento empresarial ambiguo;
+8. ninguna vista se trate como relación publicable por existir en Data API.
+
+Cuando la plataforma o la publicación no pueda garantizar minimización suficiente, se utilizará una proyección dedicada, evento durable o invalidación con refetch.
+
+#### 20. Replica identity y valores anteriores
+
+1. `REPLICA IDENTITY DEFAULT` no garantiza columnas no clave dentro de `payload.old`.
+2. Ningún consumidor decidirá transición, pago, autorización o compensación a partir de un valor anterior no contratado.
+3. Se preferirá evento explícito, versión de agregado o refetch autorizado.
+4. `REPLICA IDENTITY FULL` será una excepción por relación, con necesidad, columnas sensibles, volumen, costo, consumidores, retención y rollback evaluados.
+5. La excepción no autoriza publicar una tabla amplia ni entregar PII al consumidor.
+6. `SUPA-ARC-021` completará capacidad y costo antes de materializar cualquier cambio.
+
+#### 21. Broadcast
+
+`PRIVATE_BROADCAST` se limitará a:
+
+- señal de invalidación;
+- llamada operativa efímera;
+- actividad de chat sin contenido sensible;
+- progreso técnico no autoritativo;
+- aviso de que existe un resultado durable consultable;
+- coordinación de interfaz con expiración.
+
+Todo canal será privado, tendrá autorización de topic, payload mínimo, expiración, rate limit, manejo de error y fallback. Broadcast no transportará secretos, documentos, cuerpos completos de soporte, datos financieros ni decisiones de autorización.
+
+#### 22. Presence
+
+Presence podrá representar únicamente:
+
+```text
+ONLINE
+AWAY
+TYPING
+VIEWING
+AVAILABLE_FOR_EPHEMERAL_INTERACTION
+```
+
+No podrá representar:
+
+- asistencia o marcación;
+- turno publicado o check-in activo;
+- trabajador asignado;
+- custodia de activo, inventario o entrega;
+- estado de pedido, pago, producción o conciliación;
+- aprobación, publicación o cierre de proceso;
+- identidad empresarial vigente.
+
+El estado expirará por heartbeat y desconexión. Cualquier efecto durable deberá pasar por el owner correspondiente.
+
+#### 23. Autorización y seguridad
+
+1. Los canales empresariales serán privados por defecto.
+2. Suscribirse exigirá sesión técnica válida y, cuando aplique, actor humano efectivo, dispositivo, sede, área, permiso, recurso y territorio.
+3. La autorización de canal no sustituirá RLS ni la autorización del snapshot o comando.
+4. `anon` solo recibirá contratos deliberadamente públicos y minimizados.
+5. `authenticated` no será por sí solo autorización empresarial.
+6. `service_role` no aparecerá en clientes ni topics y no concederá acceso universal a consumidores.
+7. `raw_user_meta_data`, nombres de rol enviados por cliente y filtros locales no determinarán acceso.
+8. Denegaciones no revelarán existencia, topic, PII o estado interno innecesario.
+9. La revocación de sesión, vínculo, actor o dispositivo cerrará canales y bloqueará nuevas lecturas.
+
+#### 24. Minimización y sensibilidad
+
+Cada campo transmitido declarará:
+
+```text
+business_meaning
++ source_owner
++ sensitivity_class
++ purpose
++ audience
++ masking_or_omission_rule
++ ephemerality_or_retention
++ recovery_source
+```
+
+Reglas:
+
+- una relación publicada no implica publicar todas sus columnas;
+- `public.orders` y `public.users` no podrán conservar replicación amplia como arquitectura objetivo;
+- mensajes y soporte transmitirán referencias cuando el contenido pueda recuperarse con autorización;
+- datos laborales, identidad, dirección, pago, hashes, notas y metadata se excluirán salvo necesidad contractual;
+- logs y métricas no almacenarán payloads sensibles;
+- los consumidores no combinarán señales para reconstruir perfiles fuera de finalidad.
+
+#### 25. Eventos durables, outbox e inbox
+
+```text
+COMMIT DEL OWNER
+= ESTADO EMPRESARIAL
++ EVENTO DURABLE
++ OUTBOX
++ ANCLA DE AUDITORÍA
+```
+
+Cuando el contrato exija atomicidad, los cuatro elementos se confirmarán dentro de la frontera del owner. Después:
+
+1. un publicador transportará el outbox sin cambiar el hecho;
+2. la entrega podrá repetirse;
+3. el consumidor registrará inbox antes o junto con su efecto local;
+4. el evento y la señal Realtime conservarán identidades distintas;
+5. un mensaje perdido se recuperará desde outbox, evento o snapshot;
+6. `realtime.messages` no será el event store canónico de Vento;
+7. las internals administradas no se consultarán como ledger empresarial.
+
+#### 26. Resultados de comando e invalidación
+
+- un `COMMAND_RPC` devolverá o permitirá consultar su outcome durable;
+- Realtime podrá avisar que el resultado está disponible, pero no sustituirá el receipt;
+- `ACCEPTED_PENDING` permanecerá pendiente aunque exista señal;
+- `RESULT_UNKNOWN` exige consulta o conciliación antes de repetir;
+- una invalidación provoca lectura autorizada, no actualización optimista irreversible;
+- la interfaz podrá mostrar estado local, pero deberá distinguirlo del resultado confirmado.
+
+#### 27. Eventos entre dominios
+
+1. Solo el owner del hecho emitirá el evento empresarial.
+2. Un consumidor no reescribirá al emisor al recibirlo.
+3. Cada reacción que produzca efecto será un comando o transición de su propio owner.
+4. `correlation_id`, `causation_id`, `process_id` y versiones vincularán la cadena sin crear transacción distribuida.
+5. Parcialidad, resultado desconocido, compensación y conciliación seguirán `SUPA-ARC-017`.
+6. AURA conservará sus 197 relaciones diferidas sin canales, publicaciones ni consumidores productivos.
+
+#### 28. Eventos de Storage
+
+Los eventos de archivo se emitirán únicamente después de estados empresariales confirmados de `business_records`, por ejemplo:
+
+```text
+UPLOAD_RESERVED
+OBJECT_VERIFIED
+RECORD_AVAILABLE
+VERSION_PUBLISHED
+VERSION_SUPERSEDED
+DISPOSITION_CONFIRMED
+```
+
+La existencia de `storage.objects`, una subida terminada o una URL generada no emitirá por sí sola un hecho empresarial. El evento referenciará `business_record_id`, `record_version_id` y owner; no transportará URL firmada, secreto ni contenido.
+
+#### 29. Dispositivos compartidos, movilidad y offline
+
+1. Cada canal se aislará por sesión técnica, actor efectivo, dispositivo y contexto vigente.
+2. Cambiar trabajador cerrará canales, buffers y timers del actor anterior antes de abrir los del siguiente.
+3. Pendientes offline conservarán actor original, owner, contrato, evento o comando y versión.
+4. La reconexión revalidará sesión, actor, permisos, recurso y dependencias.
+5. Ninguna señal recibida bajo un actor podrá aplicarse después del cambio sin nueva autorización.
+6. El cliente móvil conservará estado degradado visible y no fingirá continuidad Realtime.
+
+#### 30. Replay y backfill
+
+1. Replay se originará en eventos, outbox, snapshots o fuentes durables, no en memoria de canales.
+2. Conservará versiones, audiencias, owners, sensibilidad y causalidad históricas.
+3. No reemitirá el hecho original como uno nuevo.
+4. Las reacciones con efectos deberán declarar si son replay-safe y usar inbox o idempotencia.
+5. Backfill podrá reconstruir proyecciones e inbox; no mutará fuentes ajenas.
+6. Un consumidor incompatible quedará en cuarentena o conciliación, no recibirá payload reinterpretado.
+7. AURA no se activará mediante replay o backfill antes de su gate.
+
+#### 31. Capacidad, fan-out y backpressure
+
+Cada contrato declarará un perfil con:
+
+```text
+expected_active_channels
++ max_consumers_per_partition
++ expected_events_per_second
++ burst_events_per_second
++ max_payload_bytes
++ initial_snapshot_size
++ polling_fallback_budget
++ reconnect_budget
++ consumer_processing_budget
++ retention_or_replay_source
+```
+
+Reglas:
+
+- no se creará un canal por fila de forma ilimitada;
+- filtros demasiado amplios no se compensarán descartando datos en cliente;
+- snapshots completos repetidos tendrán presupuesto y paginación;
+- reintentos y reconexiones usarán backoff con jitter;
+- el restablecimiento no liberará simultáneamente todos los consumidores;
+- los umbrales y pruebas de carga se completarán en `SUPA-ARC-021` y E5.
+
+#### 32. Observabilidad
+
+Se medirán, como mínimo:
+
+```text
+subscription_attempts
+subscription_ready_latency
+active_channels
+channel_errors
+unexpected_closures
+reconnect_attempts
+recovery_required_count
+snapshot_latency
+snapshot_age
+buffered_signal_count
+duplicate_signal_count
+out_of_order_signal_count
+version_gap_count
+event_to_consumer_lag
+polling_fallback_count
+authorization_denials
+payload_bytes
+consumer_apply_failures
+```
+
+Las métricas usarán identificadores y clases, no PII ni payloads completos. Un canal conectado sin consumidor aplicado no se registrará como éxito funcional.
+
+#### 33. Ambientes, manifiesto y drift
+
+Cada ambiente declarará:
+
+```text
+project_ref
++ publication_manifest
++ relation_and_operation_set
++ column_or_projection_contracts
++ channel_patterns
++ consumer_registry
++ RLS_and_topic_authorization_refs
++ replica_identity_decisions
++ capacity_profiles
++ compatibility_aliases
++ expected_hashes
+```
+
+Desarrollo, pruebas, staging y producción no compartirán project ref, credenciales, channels, cursors ni consumers activos. CI comparará manifiesto, migraciones, remoto y código consumidor.
+
+#### 34. Clases de drift
+
+```text
+CONSUMER_WITHOUT_PUBLICATION
+PUBLICATION_WITHOUT_CONSUMER
+VIEW_SUBSCRIPTION
+UNREGISTERED_CHANNEL
+UNFILTERED_OR_OVERBROAD_PUBLICATION
+REPLICA_IDENTITY_ASSUMPTION
+MISSING_RECOVERY_CONTRACT
+UNAUTHORIZED_OR_PUBLIC_CHANNEL
+EVENT_SIGNAL_CONFLATION
+PAYLOAD_SENSITIVITY_DRIFT
+ENVIRONMENT_DRIFT
+```
+
+Cada hallazgo tendrá owner, riesgo, disposición, compatibilidad, evidencia y tarea de salida. Una diferencia no se corregirá automáticamente agregando la tabla a la publicación.
+
+#### 35. Riesgos y controles
+
+| Riesgo                            | Control obligatorio                                       | Continuidad responsable            |
+| --------------------------------- | --------------------------------------------------------- | ---------------------------------- |
+| evento perdido                    | outbox, snapshot, cursor, recovery y alerta               | `SUPA-TRANS-009`; E5               |
+| efecto duplicado                  | inbox, event_id, aggregate_version e idempotencia         | `SUPA-TRANS-009`                   |
+| publicación sensible              | proyección mínima, RLS, canal privado y pruebas negativas | `SUPA-TRANS-003`; `AUTH-QA-030`    |
+| consumidor inexistente            | registro publicación–consumidor y gate de drift           | `SUPA-ARC-024`; `SHELL-CI-017`     |
+| vista suscrita                    | proyección, base permitida, evento o Broadcast            | paquetes PULSO E5                  |
+| dependencia de `payload.old`      | evento explícito, refetch o excepción de replica identity | `SUPA-ARC-021`; PULSO E5           |
+| tormenta de reconexión            | backoff, jitter, límites y drenaje gradual                | `SUPA-ARC-021`                     |
+| Broadcast usado como verdad       | referencia durable, expiración y fallback                 | `SUPA-ARC-019`; E5                 |
+| Presence usado como hecho laboral | prohibición y owner durable                               | ANIMA, SHELL y `identity_access`   |
+| canal heredado entre actores      | cierre, limpieza y nueva autorización                     | paquetes de dispositivo compartido |
+| replay con efectos                | replay-safe, inbox, idempotencia y cuarentena             | `SUPA-TRANS-009`                   |
+| drift de ambiente                 | manifiesto, hashes y comparación remota                   | `SUPA-ARC-024`; `SUPA-ARC-025`     |
+
+#### 36. Decisiones reservadas
+
+| Decisión                                                                      | Tarea propietaria                  |
+| ----------------------------------------------------------------------------- | ---------------------------------- |
+| Edge Functions, webhooks, cron, workers, publicadores y secretos              | `SUPA-ARC-020`                     |
+| índices, límites, capacidad, WAL, fan-out y pruebas de carga                  | `SUPA-ARC-021`                     |
+| retención de eventos, outbox, inbox, archivo, respaldo, RPO y RTO             | `SUPA-ARC-022`                     |
+| tipos generados de eventos, señales, canales y consumers                      | `SUPA-ARC-023`                     |
+| overlays, project refs, publicaciones y paridad por ambiente                  | `SUPA-ARC-024`                     |
+| ADR, linter y gate consolidado                                                | `SUPA-ARC-025`                     |
+| publicaciones, proyecciones, policies, replica identity y migraciones físicas | `SUPA-TRANS-*` y paquetes E5       |
+| nombres finales de handlers, hooks y canales por producto                     | roadmaps funcionales y paquetes E5 |
+
+#### 37. Límites de autorización
+
+Esta tarea no autoriza:
+
+- agregar o retirar relaciones de `supabase_realtime`;
+- modificar `supabase_realtime_messages_publication` ni internals administrados;
+- cambiar operaciones, columnas, row filters, RLS, policies, grants, owners o replica identity;
+- crear tablas de eventos, outbox, inbox, proyecciones, funciones, triggers, RPC o migraciones;
+- abrir canales, emitir Broadcast, Presence, Postgres Changes o mensajes de prueba;
+- modificar hooks, polling, listeners, vistas o consumidores en aplicaciones;
+- ejecutar replay, backfill, sincronización, reconciliación o carga real;
+- declarar funcionales las trece suscripciones actuales por inferencia;
+- iniciar `SUPA-ARC-020` antes de aprobación expresa.
+
+#### 38. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-1259 a TREQ-SUPABASE-1318
+```
+
+Los sesenta requisitos protegen planos, catálogo, relaciones consumidoras, envelope, publicación, consumidores, disposiciones, canales, bootstrap, lifecycle, entrega, orden, deduplicación, recuperación, Postgres Changes, replica identity, Broadcast, Presence, autorización, minimización, outbox, inbox, comandos, Storage, dominios, shared devices, offline, replay, capacidad, observabilidad, ambientes y drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 39. Criterios de aceptación
+
+- [ ] Existe una arquitectura versionada única para Realtime y eventos.
+- [ ] Los cuatro planos y seis modos de entrega están definidos sin transferir autoridad.
+- [ ] Se adoptan 395 definiciones, 69 procesos y 2.020 relaciones sin crear un catálogo competidor.
+- [ ] Las catorce superficies actuales reciben una disposición primaria.
+- [ ] Las seis relaciones publicadas, seis tablas no publicadas, dos vistas y una relación sin consumidor quedan cubiertas.
+- [ ] Los diecisiete patrones de canal se someten a gramática y mapping.
+- [ ] El bootstrap evita brechas entre snapshot y suscripción.
+- [ ] El lifecycle contiene diez estados y `LIVE` exige snapshot conciliado.
+- [ ] La entrega es al menos una vez, sin claims de exactly-once ni orden global.
+- [ ] Duplicados, señales fuera de orden, gaps y reconexiones tienen tratamiento explícito.
+- [ ] Postgres Changes se limita a relaciones o proyecciones minimizadas y autorizadas.
+- [ ] Ningún consumidor depende de `payload.old` no contratado.
+- [ ] Broadcast y Presence permanecen efímeros y privados.
+- [ ] Presence no sustituye asistencia, check-in, custodia ni estado empresarial.
+- [ ] RLS, autorización de canal, autorización empresarial y snapshot se validan por separado.
+- [ ] Evento, outbox, señal, inbox y efecto consumidor conservan identidades distintas.
+- [ ] Replay y backfill no recrean hechos ni escriben fuentes ajenas.
+- [ ] Capacidad, observabilidad, ambientes y drift tienen contratos verificables.
+- [ ] Se generan `TREQ-SUPABASE-1259` a `TREQ-SUPABASE-1318`.
+- [ ] No se ejecutan cambios físicos ni se inicia la tarea siguiente.
+
+#### 40. Controles estructurales requeridos
+
+| Control                                    | Resultado esperado |
+| ------------------------------------------ | -----------------: |
+| planos canónicos                           |              **4** |
+| modos de entrega                           |              **6** |
+| definiciones empresariales adoptadas       |            **395** |
+| procesos cubiertos                         |             **69** |
+| relaciones evento–consumidora              |          **2.020** |
+| relaciones AURA diferidas                  |            **197** |
+| superficies actuales clasificadas          |       **14 de 14** |
+| disposiciones primarias                    |              **8** |
+| relaciones publicadas cubiertas            |         **6 de 6** |
+| objetivos consumidores cubiertos           |       **13 de 13** |
+| patrones de canal sujetos a mapping        |       **17 de 17** |
+| estados de lifecycle consumidor            |             **10** |
+| claims exactly-once permitidos             |              **0** |
+| claims de orden global permitidos          |              **0** |
+| canales públicos empresariales por defecto |              **0** |
+| eventos de AURA activados                  |              **0** |
+| requisitos nuevos                          |             **60** |
+| cambios físicos                            |              **0** |
+
+#### 41. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-018 — Definir arquitectura de Storage
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-019 — Definir arquitectura de Realtime y eventos
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron
+```
+
+`SUPA-ARC-020` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron
 ### [ ] SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento
 ### [ ] SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
