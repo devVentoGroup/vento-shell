@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **422** |
+| Tareas aprobadas | **423** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1153** |
+| Tareas no iniciadas | **1152** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **26.79% (422/1575)** |
+| Porcentaje de completamiento | **26.86% (423/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-ARC-017 — Definir política de escrituras entre dominios** |
-| Tarea actual | **SUPA-ARC-018 — Definir arquitectura de Storage** |
+| Última tarea aprobada | **SUPA-ARC-018 — Definir arquitectura de Storage** |
+| Tarea actual | **SUPA-ARC-019 — Definir arquitectura de Realtime y eventos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-ARC-019 — Definir arquitectura de Realtime y eventos** |
+| Siguiente tarea | **SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 17 de 25 aprobadas; SUPA-ARC-018 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 18 de 25 aprobadas; SUPA-ARC-019 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-ARC-017` — Definir política de escrituras entre dominios |
-| Tarea actual | `SUPA-ARC-018` — Definir arquitectura de Storage — **NO INICIADA** |
-| Siguiente tarea | `SUPA-ARC-019` — Definir arquitectura de Realtime y eventos |
+| Última aprobada | `SUPA-ARC-018` — Definir arquitectura de Storage |
+| Tarea actual | `SUPA-ARC-019` — Definir arquitectura de Realtime y eventos — **NO INICIADA** |
+| Siguiente tarea | `SUPA-ARC-020` — Definir arquitectura de Edge Functions, webhooks y cron |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **17 DE 25 APROBADAS — ACTUAL SUPA-ARC-018** |
+| BLOQUE E3 | **18 DE 25 APROBADAS — ACTUAL SUPA-ARC-019** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-ARC-017 — Definir política de escrituras entre dominios
-        ↓
-TAREA ACTUAL
 SUPA-ARC-018 — Definir arquitectura de Storage
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-ARC-019 — Definir arquitectura de Realtime y eventos
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 17 de 25 tareas aprobadas
+BLOQUE E3 — 18 de 25 tareas aprobadas
 ```

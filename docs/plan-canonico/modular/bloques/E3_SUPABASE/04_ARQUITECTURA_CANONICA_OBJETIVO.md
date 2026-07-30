@@ -9597,7 +9597,727 @@ SUPA-ARC-018 — Definir arquitectura de Storage
 `SUPA-ARC-018` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-018 — Definir arquitectura de Storage
+### ✅ SUPA-ARC-018 — Definir arquitectura de Storage
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-017` — Definir política de escrituras entre dominios — APROBADA
+**Tarea siguiente:** `SUPA-ARC-019 — Definir arquitectura de Realtime y eventos`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `2b962195d2c25a51e7bc80fe5e7a3984738317c2`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `0a71c4ae4ce97c86d0d1a6f434afee8160bb05cc`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `293d33adc27e3bce88e240436b46f6cd1a5185b8`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `01_PRINCIPIOS_OBLIGATORIOS.md` blob `36bb9a4c19f6d8e7edbaa03687219fb642c9c526`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`; `validate-treq-registry.mjs` blob `0af0cac4cad0fed7994c211a845198e51ce56ba6`
+**Tipo de tarea:** definición normativa de arquitectura de Supabase Storage para buckets, objetos, referencias empresariales, rutas, acceso privado y público, carga, verificación, publicación, versiones, sustitución, disposición, reconciliación, seguridad, límites, compatibilidad y transición; sin crear, alterar, publicar, privatizar, copiar, mover, sustituir o eliminar buckets, objetos, políticas, datos, funciones, triggers, migraciones, credenciales, código, workers, webhooks, cron, backfills, cutover ni despliegues
+
+#### 1. Objetivo
+
+Definir una arquitectura única y verificable para administrar archivos, imágenes, documentos y medios de Vento OS sin convertir `storage.objects` en fuente empresarial, persistir URLs como identidad, publicar contenido sensible, confiar en rutas como autorización ni dejar inconsistencias entre bytes, metadata, vínculos, versiones y disposición.
+
+```text
+INTENCIÓN EMPRESARIAL DE CREAR O USAR UN ARCHIVO
+        ↓
+RESERVA DE IDENTIDAD Y CONTRATO EN VENTO
+        ↓
+OBJETO FÍSICO ADMINISTRADO POR SUPABASE STORAGE
+        ↓
+VERIFICACIÓN DE TAMAÑO, TIPO, INTEGRIDAD Y FINALIDAD
+        ↓
+METADATA EMPRESARIAL + VÍNCULO DE DOMINIO
+        ↓
+ACCESO PRIVADO AUTORIZADO O PUBLICACIÓN DELIBERADA
+        ↓
+VERSIONADO, SUSTITUCIÓN, RETENCIÓN Y DISPOSICIÓN AUDITABLES
+```
+
+La tarea define fronteras, clases, contratos, estados y gates. No modifica los catorce buckets actuales, no declara conforme ninguna política vigente y no ejecuta la privatización, consolidación, copia, limpieza o retiro de objetos.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-STORAGE-ARCHITECTURE-001@1.0.0
+```
+
+| Propiedad                                   |           Valor |
+| ------------------------------------------- | --------------: |
+| `current_standard_bucket_count`             |          **14** |
+| `current_public_bucket_count`               |           **8** |
+| `current_private_bucket_count`              |           **6** |
+| `current_exact_object_count`                |       **1.101** |
+| `current_total_size_bytes`                  | **750.891.333** |
+| `current_verified_business_reference_count` |       **1.054** |
+| `current_storage_object_policy_count`       |          **39** |
+| `storage_class_count`                       |           **8** |
+| `access_mode_count`                         |           **4** |
+| `object_role_count`                         |           **7** |
+| `object_lifecycle_state_count`              |          **10** |
+| `current_bucket_disposition_count`          |           **8** |
+| `drift_class_count`                         |           **9** |
+| `public_raw_source_bucket_target`           |           **0** |
+| `direct_client_delete_target`               |           **0** |
+| `authoritative_in_place_overwrite_target`   |           **0** |
+| `persisted_public_url_as_identity_target`   |           **0** |
+| `new_test_requirements`                     |          **58** |
+| `physical_changes_authorized`               |           **0** |
+
+El artefacto integra cuatro registros normativos:
+
+```text
+STORAGE-BUCKET-CLASS-REGISTRY-001
+STORAGE-OBJECT-REFERENCE-CONTRACT-001
+STORAGE-OBJECT-LIFECYCLE-REGISTRY-001
+STORAGE-CURRENT-BUCKET-DISPOSITION-REGISTRY-001
+```
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                       | Decisión consumida                                                                                          |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                            | continuidad, preservación histórica, fase documental y separación entre definición e implementación         |
+| `delivery-contract.json`                                     | una sola tarea y registro 04A completo con identidad única de entrega                                       |
+| `active-sequence.json`                                       | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-018` como tarea actual                                 |
+| `SUPA-AUD-012`                                               | catorce buckets, 1.101 objetos, 750.891.333 bytes, 39 políticas, 1.054 referencias y brechas observadas     |
+| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0`            | `storage` administrado por Supabase y metadata empresarial fuera de internals                               |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0` | `business_records` como owner de información documental y evidencia; dominios conservan el hecho respaldado |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0`                  | acceso mediante contratos de `api`, sin tablas autoritativas expuestas                                      |
+| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0`                  | helpers privados sin tablas autoritativas, secretos ni escritura lateral                                    |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`          | auditoría, eventos, outbox, receipts y conciliación separados del objeto empresarial                        |
+| `SUPABASE-EXPOSURE-GRANTS-RLS-POLICY-001@1.0.0`              | denegación por defecto, grants mínimos, audiencias técnicas y autorización empresarial separada             |
+| `SUPABASE-DOMAIN-READ-MUTATION-CONTRACT-REGISTRY-001@1.0.0`  | contratos de lectura y comando por owner schema                                                             |
+| `SUPABASE-CROSS-DOMAIN-WRITE-POLICY-001@1.0.0`               | sagas, efectos propietarios, idempotencia, parcialidad, compensación y conciliación                         |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`           | 5.495 requisitos hasta `SUPA-ARC-017`; rango `TREQ-SUPABASE-001` a `1200`                                   |
+
+#### 4. Distinciones normativas
+
+```text
+BUCKET ≠ DOMINIO EMPRESARIAL
+OBJETO FÍSICO ≠ REGISTRO EMPRESARIAL
+OBJECT PATH ≠ AUTORIZACIÓN
+STORAGE OWNER ≠ PROPIETARIO DEL NEGOCIO
+URL ≠ IDENTIDAD CANÓNICA
+URL FIRMADA ≠ PERMISO PERMANENTE
+BUCKET PÚBLICO ≠ MUTACIÓN PÚBLICA
+SUBIDA COMPLETADA ≠ ARCHIVO VERIFICADO
+ARCHIVO VERIFICADO ≠ VÍNCULO EMPRESARIAL ACTIVO
+REEMPLAZO ≠ SOBRESCRITURA DEL ORIGINAL
+BORRADO DE FILA ≠ DISPOSICIÓN DEL OBJETO
+OBJETO SIN REFERENCIA LOCALIZADA ≠ OBJETO DESECHABLE
+DERIVADO PÚBLICO ≠ FUENTE PRIVADA
+SERVICE_ROLE ≠ AUTORIZACIÓN EMPRESARIAL
+```
+
+La separación aplica aunque objeto, metadata y entidad residan en el mismo proyecto Supabase o sean gestionados por la misma aplicación.
+
+#### 5. Frontera canónica de autoridad
+
+| Plano               | Autoridad                          | Responsabilidad                                                                                        | No demuestra                                           |
+| ------------------- | ---------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------ |
+| plataforma Storage  | Supabase sobre `storage`           | buckets, objetos físicos, API, metadatos técnicos e internals administrados                            | finalidad, propietario empresarial o permiso funcional |
+| registro documental | `VSCHEMA-024` — `business_records` | identidad del registro, versión, clasificación, vínculo, custodia, retención, legal hold y disposición | que el hecho de dominio respaldado haya ocurrido       |
+| dominio empresarial | owner schema del hecho             | significado, estado, proceso, recurso y autorización de la entidad vinculada                           | existencia física o publicación del archivo            |
+| capa contractual    | `api` y servicios aprobados        | reserva, carga, lectura, publicación, sustitución y disposición autorizadas                            | autoridad propia ni persistencia documental            |
+
+Reglas:
+
+1. `storage.objects` y `storage.buckets` permanecerán administrados y no se tratarán como tablas de dominio.
+2. `business_records` gobernará la identidad documental común, pero no adquirirá autoridad sobre el pedido, trabajador, producto, receta, lote, activo o proceso respaldado.
+3. El owner del dominio decidirá si el archivo es obligatorio, válido, vigente, sustituible o publicable para su proceso.
+4. Ninguna URL, campo `owner`, metadata técnica, nombre de archivo o prefijo transferirá ownership empresarial.
+5. Las operaciones se realizarán mediante Storage API y contratos soportados; queda prohibido usar DML directo sobre internals administrados como ruta normal.
+
+#### 6. Unidad contractual de bucket
+
+Cada bucket físico o futuro deberá tener una fila canónica con:
+
+```text
+bucket_contract_id
++ bucket_id
++ storage_class
++ lifecycle_status
++ public_flag
++ business_metadata_owner_schema_id
++ participating_owner_schema_ids
++ allowed_object_roles
++ allowed_access_modes
++ allowed_mime_types
++ file_size_limit_bytes
++ path_grammar_version
++ upload_contract
++ read_contract
++ mutation_contract
++ derivative_policy
++ replacement_and_version_policy
++ retention_class_allowlist
++ legal_hold_policy
++ disposition_policy
++ current_consumers
++ compatibility_gate
++ observability_contract
++ rollback_contract
++ test_requirement_ids
+```
+
+No se aceptarán finalidad genérica, propietario “interno”, MIME sin allowlist, límite indefinido para contenido activo, ruta narrativa, consumidor supuesto, bucket público sin contrato de publicación ni bucket privado sin mecanismo de acceso y disposición.
+
+#### 7. Clases canónicas de Storage
+
+| Clase                              | Finalidad                                                           | Regla dominante                                                             |
+| ---------------------------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `PUBLIC_BRAND_MEDIA`               | logos y medios institucionales aprobados                            | solo activos deliberadamente publicados y sin datos personales innecesarios |
+| `PUBLIC_CATALOG_MEDIA`             | imágenes comerciales de producto, menú o catálogo                   | derivado publicado, versionado y trazable a fuente o registro aprobado      |
+| `PUBLIC_REFERENCE_DOCUMENT`        | documento deliberadamente público                                   | clasificación pública explícita, MIME acotado y versión publicada           |
+| `PRIVATE_BUSINESS_RECORD`          | documentos operativos o administrativos no públicos                 | acceso por finalidad, recurso y actor autorizado                            |
+| `PRIVATE_PERSONAL_RECORD`          | información de trabajador, candidato o cliente                      | minimización, necesidad demostrable y enlace efímero                        |
+| `PRIVATE_HIGHLY_RESTRICTED_RECORD` | salud, seguridad, identidad o evidencia altamente sensible          | acceso excepcional, auditoría reforzada y cero publicación                  |
+| `PRIVATE_TECHNICAL_MEDIA`          | recetas, especificaciones, procedimientos y conocimiento productivo | protección de propiedad técnica y acceso por proceso                        |
+| `PRIVATE_TRANSIENT_INGEST`         | carga temporal, procesamiento, importación o generación pendiente   | no es fuente, no es publicable y expira mediante ciclo controlado           |
+
+La clase es estable y no depende del nombre actual del bucket. El número físico final de buckets se resolverá por aislamiento, política, límites, consumidores y transición, no por crear un bucket por aplicación.
+
+#### 8. Modos de acceso
+
+| Modo                  | Uso                                               | Restricción                                                                      |
+| --------------------- | ------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `PRIVATE_SERVER_ONLY` | procesos confiables sin acceso directo de cliente | credencial técnica mínima, owner y finalidad explícitos                          |
+| `PRIVATE_AUTHORIZED`  | acceso de actor autenticado mediante contrato     | autorización fresca por recurso, territorio, sensibilidad y finalidad            |
+| `SIGNED_EPHEMERAL`    | entrega o carga temporal mediante token acotado   | objeto exacto, operación exacta, expiración y no reutilización fuera del alcance |
+| `PUBLIC_PUBLISHED`    | distribución abierta de contenido aprobado        | solo versión publicada; ninguna mutación se vuelve pública                       |
+
+`SIGNED_EPHEMERAL` es un mecanismo temporal, no un cambio de visibilidad. `PUBLIC_PUBLISHED` exige una decisión empresarial de publicación y no se inferirá desde un flag actual.
+
+#### 9. Roles de objeto
+
+```text
+SOURCE_ORIGINAL
+PUBLISHED_DERIVATIVE
+PREVIEW_DERIVATIVE
+EVIDENCE_ATTACHMENT
+IMPORT_PAYLOAD
+EXPORT_RESULT
+TRANSIENT_UPLOAD
+```
+
+1. `SOURCE_ORIGINAL` preserva el archivo recibido o creado como fuente y permanece privado salvo decisión contraria explícita.
+2. `PUBLISHED_DERIVATIVE` es una representación pública o distribuible, vinculada a su fuente, transformación y versión.
+3. `PREVIEW_DERIVATIVE` reduce exposición, tamaño o detalle para consulta controlada.
+4. `EVIDENCE_ATTACHMENT` respalda un hecho sin sustituirlo y conserva cadena de custodia.
+5. `IMPORT_PAYLOAD` y `EXPORT_RESULT` tienen finalidad, vigencia y disposición separadas de los registros incorporados o consultados.
+6. `TRANSIENT_UPLOAD` no podrá convertirse en registro disponible sin verificación y finalización.
+
+#### 10. Identidad y referencia canónica
+
+La identidad empresarial mínima será:
+
+```text
+business_record_id
++ record_version_id
++ storage_provider
++ bucket_id
++ object_path
++ object_role
+```
+
+La referencia completa conservará, cuando aplique:
+
+```text
+storage_object_id_or_version_ref
++ content_sha256
++ etag
++ size_bytes
++ declared_mime_type
++ detected_mime_type
++ original_filename_display
++ owner_schema_id
++ business_entity_type
++ business_entity_id
++ source_record_id
++ sensitivity_class
++ access_mode
++ lifecycle_state
++ retention_class_id
++ legal_hold_state
++ created_by_principal_id
++ created_by_actor_id
++ created_at
++ verified_at
++ available_at
++ published_at
++ superseded_at
++ disposition_requested_at
++ disposed_at
++ disposition_receipt_ref
+```
+
+La URL pública, firmada o CDN será una representación derivada. No será clave primaria, referencia estable, evidencia de existencia ni autorización persistente.
+
+#### 11. Gramática canónica de rutas
+
+La gramática lógica objetivo será:
+
+```text
+v1/<owner_schema>/<entity_type>/<entity_id>/<record_type>/<record_id>/v<record_version>/<object_role>/<opaque_object_id>.<safe_extension>
+```
+
+Reglas:
+
+1. `bucket_id` usará minúsculas ASCII y guiones; los segmentos semánticos usarán tokens canónicos y no texto libre.
+2. `entity_id`, `record_id` y `opaque_object_id` serán identificadores opacos y no PII.
+3. El nombre original se conservará como metadata de presentación, no como identidad ni segmento obligatorio.
+4. La ruta será inmutable después de reservarse; una nueva versión recibe otra ruta.
+5. Un `auth.uid()` podrá participar en autorización, pero no será el único owner semántico ni la única estructura de ruta.
+6. Quedan prohibidos `..`, backslashes, slash inicial, doble slash, segmentos vacíos y extensiones no allowlisted.
+7. Los prefijos `draft`, `optimized`, nombres de aplicación o carpetas raíz existentes deberán mapearse a roles y estados explícitos antes de cualquier transición.
+8. Listar o borrar por prefijo requerirá contrato, owner, clase y alcance comprobables; una coincidencia textual no bastará.
+
+#### 12. Lifecycle del objeto
+
+| Estado                | Condición                                                                        |
+| --------------------- | -------------------------------------------------------------------------------- |
+| `RESERVED`            | identidad, owner, clase, ruta y contrato creados; todavía sin objeto confirmado  |
+| `UPLOADED_UNVERIFIED` | Storage confirma existencia, pero faltan verificaciones obligatorias             |
+| `QUARANTINED`         | contenido aislado por tipo, integridad, seguridad, contrato o revisión pendiente |
+| `VERIFIED`            | tamaño, tipo, integridad y reglas técnicas aprobados                             |
+| `AVAILABLE`           | metadata finalizada y vínculo empresarial activo para acceso privado             |
+| `PUBLISHED`           | versión deliberadamente pública y distribuible                                   |
+| `SUPERSEDED`          | reemplazada por otra versión sin perder historia ni retención                    |
+| `DISPOSITION_PENDING` | disposición autorizada o solicitada, todavía no confirmada en todos los planos   |
+| `DISPOSED`            | objeto retirado y receipt registrado; metadata histórica mínima preservada       |
+| `FAILED`              | operación terminal sin objeto utilizable; conserva causa y tratamiento           |
+
+Transiciones no allowlisted fallarán cerradas. Un objeto `QUARANTINED`, `DISPOSITION_PENDING`, `DISPOSED` o `FAILED` no podrá entregarse como disponible mediante una URL antigua.
+
+#### 13. Reserva y carga
+
+Secuencia obligatoria:
+
+```text
+1. RESOLVE_OWNER_AND_PURPOSE
+2. AUTHORIZE_UPLOAD_INTENT
+3. RESERVE_BUSINESS_RECORD_AND_PATH
+4. ISSUE_SCOPED_UPLOAD_CAPABILITY
+5. UPLOAD_OBJECT
+6. VERIFY_OBJECT
+7. FINALIZE_METADATA_AND_LINK
+8. RETURN_CANONICAL_RESULT
+```
+
+1. La reserva ocurrirá server-side y resolverá bucket, clase, ruta, tamaño, MIME, owner, entidad y vigencia.
+2. El cliente no suministrará libremente bucket, prefijo, owner schema, sensibilidad ni ruta final.
+3. La capacidad de carga será para un objeto, operación y ventana determinados.
+4. Ninguna carga de cliente irá directamente a un plano público.
+5. La expiración o abandono de una reserva conservará estado y permitirá limpieza controlada sin inferir que el objeto no existe.
+6. Reintentar una misma carga usará identidad e idempotencia compatibles; cambiar contenido o finalidad crea otra versión o intención.
+
+#### 14. Verificación y cuarentena
+
+Antes de `AVAILABLE` o `PUBLISHED` se comprobará:
+
+```text
+objeto existente
++ bucket y ruta esperados
++ tamaño dentro del contrato
++ MIME declarado permitido
++ MIME detectado compatible
++ extensión compatible
++ checksum o ETag coherente
++ estado de seguridad requerido
++ metadata empresarial completa
++ vínculo y owner válidos
+```
+
+1. La cabecera enviada por el cliente no bastará para declarar tipo o seguridad.
+2. Un mismatch, contenido no verificable o fallo de procesamiento lleva a `QUARANTINED` o `FAILED`, no a disponibilidad silenciosa.
+3. La ausencia de un escáner físico implementado no autoriza publicación; el gate se mantendrá pendiente y visible.
+4. Verificación, transformación o análisis asíncronos conservarán `RESULT_UNKNOWN` cuando no pueda demostrarse el resultado.
+
+#### 15. Finalización y vínculo empresarial
+
+1. Finalizar exige que el objeto y la reserva coincidan por bucket, ruta, identidad y fingerprint.
+2. `business_records` registrará la versión documental; el owner de dominio activará el vínculo y la validez para su proceso.
+3. Un archivo podrá vincularse a varias entidades mediante relaciones explícitas sin duplicar autoridad ni borrar procedencia.
+4. El objeto no se considerará evidencia, foto vigente, documento aceptado o medio publicado por el solo hecho de existir.
+5. La respuesta devolverá `business_record_id`, versión, lifecycle y acceso permitido, no una fila bruta de `storage.objects`.
+6. Un fallo entre carga y finalización abrirá reconciliación; no se resolverá borrando ciegamente uno de los planos.
+
+#### 16. Lectura privada y enlaces firmados
+
+1. La lectura privada resolverá el registro empresarial y revalidará sesión, actor, permiso, recurso, finalidad, territorio, sensibilidad y estado.
+2. El servidor derivará bucket y ruta desde la referencia canónica; el cliente no elegirá un objeto arbitrario.
+3. El enlace firmado tendrá objeto exacto, operación, expiración y, cuando la plataforma lo permita, parámetros de transformación acotados.
+4. El TTL será propiedad del contrato y de la sensibilidad; el valor actual de cinco minutos observado en ANIMA no se convierte en regla universal.
+5. Un enlace expirado, revocado o emitido antes de una disposición no permitirá regeneración sin autorización fresca.
+6. La URL firmada no se almacenará como identidad ni se reutilizará entre usuarios, ambientes o finalidades.
+
+#### 17. Publicación pública
+
+La publicación seguirá:
+
+```text
+SOURCE_ORIGINAL PRIVADO
+        ↓
+APROBACIÓN DE DOMINIO Y PRIVACIDAD
+        ↓
+DERIVADO PUBLICABLE VERIFICADO
+        ↓
+PUBLISHED_DERIVATIVE EN PLANO PÚBLICO
+        ↓
+REFERENCIA VERSIONADA Y REVERSIBLE
+```
+
+1. El objetivo de fuentes sensibles o sin clasificar en buckets públicos es cero.
+2. Un bucket público contendrá solo activos deliberadamente publicables o documentos de referencia explícitamente públicos.
+3. La lectura pública no concede `INSERT`, `UPDATE`, `DELETE`, copia, movimiento ni publicación.
+4. Fotografía laboral, CV, documento médico, expediente, receta interna, evidencia operativa y original de procesamiento serán privados por defecto.
+5. Despublicar cambia la referencia vigente y el acceso; no reescribe historia ni garantiza invalidación instantánea de caches externos sin un contrato de distribución.
+6. La exposición pública requerirá inventario de consumidores, privacidad, CDN/cache, rollback y observación postcambio.
+
+#### 18. Sustitución y versiones
+
+1. Un registro autoritativo no se sobrescribirá in place.
+2. La sustitución crea nueva `record_version_id`, ruta y objeto; verifica contenido antes de cambiar el puntero vigente.
+3. La activación de la nueva versión y el estado `SUPERSEDED` de la anterior se resolverán de forma atómica dentro del owner documental cuando sea posible.
+4. La versión anterior conservará retención, legal hold, evidencias y rollback aplicables.
+5. `upsert` solo podrá existir para clases transitorias expresamente aprobadas; no será la semántica predeterminada de documentos, evidencia o medios publicados.
+6. Una operación de upsert deberá satisfacer las capacidades técnicas de lectura, inserción y actualización, además de autorización empresarial.
+7. El consumidor recibirá una referencia de versión, no asumirá que la misma URL representa siempre el mismo contenido.
+
+#### 19. Derivados, copia y movimiento
+
+1. Todo derivado conservará `source_record_id`, transformación, herramienta o versión de proceso, checksum y finalidad.
+2. Miniaturas, previews, optimizaciones y formatos alternativos no sustituyen la fuente ni su clasificación.
+3. Copiar entre buckets crea otro objeto y referencia; no transfiere automáticamente sensibilidad, owner, retención ni publicación.
+4. Mover equivale a copiar, verificar, cambiar referencia, observar compatibilidad y disponer el origen; no se tratará como renombre atómico supuesto.
+5. La deduplicación no cruzará propietarios o clases sensibles por defecto ni revelará existencia de contenido mediante hashes o timing.
+6. Un derivado fallido no invalida la fuente; un derivado publicado no permite obtener el original privado.
+
+#### 20. Disposición y eliminación
+
+Secuencia obligatoria:
+
+```text
+REQUEST_DISPOSITION
+        ↓
+VERIFY_OWNER_RETENTION_AND_LEGAL_HOLD
+        ↓
+MARK_DISPOSITION_PENDING
+        ↓
+REVOKE_OR_BLOCK_NEW_ACCESS
+        ↓
+DELETE_OBJECT_THROUGH_STORAGE_API
+        ↓
+RECORD_RECEIPT_AND_RECONCILE
+        ↓
+MARK_DISPOSED_AND_PRESERVE_MINIMAL_HISTORY
+```
+
+1. No se borrará primero la fila empresarial y se tratará el fallo de Storage como no crítico.
+2. Un fallo de borrado conserva `DISPOSITION_PENDING`, retry acotado, owner y conciliación.
+3. Un objeto retirado no se restaurará por reutilizar una URL o referencia antigua.
+4. Legal hold, obligación de conservación, investigación, dependencia o resultado desconocido bloquearán la disposición física.
+5. La metadata histórica mínima conservará identidad, versión, owner, razón, actor, timestamps y receipt sin retener el contenido cuando no corresponda.
+6. Borrado masivo, por prefijo o por cuenta requerirá enumeración verificable, dry run, autorización, límites y reporte de residuales.
+
+#### 21. Reconciliación e integridad
+
+Se controlarán nueve clases de drift:
+
+```text
+ORPHAN_OBJECT_CANDIDATE
+BROKEN_BUSINESS_REFERENCE
+DUPLICATE_ACTIVE_VERSION
+PUBLICITY_DRIFT
+POLICY_DRIFT
+PATH_GRAMMAR_DRIFT
+MIME_OR_SIZE_DRIFT
+UNFINALIZED_UPLOAD
+RETENTION_OR_DISPOSITION_DRIFT
+```
+
+1. Las 1.054 referencias verificadas deberán seguir resolviendo objetos existentes durante toda transición.
+2. La ausencia de una referencia localizada no autoriza borrar el objeto; primero se revisarán consumidores, registros legacy, publicaciones y evidencia.
+3. Un objeto sin bucket, una referencia a bucket inexistente, ruta activa duplicada o versión vigente múltiple bloqueará el cierre.
+4. La reconciliación comparará registro empresarial, Storage, consumidores, estado, checksum, tamaño y lifecycle.
+5. La corrección se ejecutará mediante contratos propietarios y no mediante edición manual de internals de Storage.
+6. El resultado mantendrá conteos de confirmados, faltantes, residuales, cuarentena, pendientes y desconocidos.
+
+#### 22. Autorización, policies y grants
+
+1. `storage` permanecerá fuera de la arquitectura de owner schemas; Vento gobernará buckets, policies y uso mediante superficies soportadas.
+2. Una policy de `storage.objects` declarará bucket, operación, audiencia técnica y condición empresarial mínima; coincidir solo por bucket no bastará para contenido restringido.
+3. `authenticated` no recibirá mutación general sobre recetas, documentos, fotos, candidatos o medios por pertenecer al rol técnico.
+4. `anon` solo leerá contenido `PUBLIC_PUBLISHED` y no tendrá mutación empresarial.
+5. `service_role` y roles privilegiados se limitarán a backends confiables y no sustituirán actor, permiso, owner, finalidad ni auditoría.
+6. Las policies de `INSERT`, `SELECT`, `UPDATE` y `DELETE` se evaluarán por separado y deberán ser coherentes con carga, lectura, sustitución y disposición.
+7. Ningún helper `SECURITY DEFINER` se creará para resolver una denegación sin la excepción individual de `SUPA-ARC-014`.
+8. El acceso efectivo combinará contrato, bucket, policy, estado empresarial, visibilidad y autorización de dominio.
+
+#### 23. Límites, MIME y abuso
+
+1. Todo bucket activo declarará `file_size_limit_bytes` y `allowed_mime_types`; no existirán límites narrativos solo en UI.
+2. Los límites se aplicarán antes de emitir la capacidad de carga y se comprobarán después de subir.
+3. Extensión, MIME declarado y MIME detectado deberán ser coherentes con la clase y el rol.
+4. Archivos comprimidos, SVG, PDF, video, imagen y documentos tendrán tratamiento explícito según riesgo y finalidad.
+5. La carga tendrá cuotas, frecuencia, concurrencia y presupuesto de almacenamiento definidos posteriormente por paquete y `SUPA-ARC-021`.
+6. Los quince objetos actuales de `product-images` que superan 5 MiB se clasificarán como legacy; no se borrarán ni declararán conformes por inferencia.
+7. Un cambio de límite no invalidará silenciosamente objetos existentes ni permitirá nuevas excepciones sin registro.
+8. Listados, búsqueda y exports de objetos serán paginados, acotados y no revelarán nombres sensibles fuera de autorización.
+
+#### 24. Clasificación de los catorce buckets actuales
+
+| Bucket actual            | Estado actual | Objetos | Clase objetivo primaria                 | Acceso objetivo                                             | Disposición primaria                     | Gate obligatorio                                                  |
+| ------------------------ | ------------- | ------: | --------------------------------------- | ----------------------------------------------------------- | ---------------------------------------- | ----------------------------------------------------------------- |
+| `commercial-menu-images` | público       |      51 | `PUBLIC_CATALOG_MEDIA`                  | `PUBLIC_PUBLISHED`                                          | `KEEP_PUBLIC_CONTRACTED`                 | finalidad, versiones, mutación y consumidoras                     |
+| `documents`              | público       |     164 | `PRIVATE_PERSONAL_RECORD`               | `SIGNED_EPHEMERAL`                                          | `PRIVATIZE_REQUIRED`                     | paridad ANIMA/VISO, enlaces, rollback y cero exposición residual  |
+| `employee-photos`        | público       |      26 | `PRIVATE_PERSONAL_RECORD`               | `PRIVATE_AUTHORIZED` más derivado público opcional          | `SPLIT_PRIVATE_SOURCE_PUBLIC_DERIVATIVE` | finalidad, consentimiento o base, variantes y consumidoras        |
+| `nexo-ai-documents`      | privado       |       1 | `PRIVATE_TRANSIENT_INGEST`              | `PRIVATE_SERVER_ONLY`                                       | `KEEP_PRIVATE_CONTRACTED`                | productor, consumidor, vigencia y disposición                     |
+| `nexo-catalog-images`    | público       |     790 | `PUBLIC_CATALOG_MEDIA`                  | `PUBLIC_PUBLISHED`                                          | `CONSOLIDATION_OR_REPATH_CANDIDATE`      | mapear `draft`, `optimized`, raíz y referencias                   |
+| `pass-satellite-logos`   | público       |      11 | `PUBLIC_BRAND_MEDIA`                    | `PUBLIC_PUBLISHED`                                          | `KEEP_PUBLIC_CONTRACTED`                 | owner, versión, SVG y reutilización website                       |
+| `product-images`         | público       |      45 | `PUBLIC_CATALOG_MEDIA`                  | `PUBLIC_PUBLISHED`                                          | `HARDEN_PUBLIC_CONTRACT`                 | quince objetos sobre límite, capacidades simétricas y sustitución |
+| `public-documents`       | público       |       9 | `PUBLIC_REFERENCE_DOCUMENT`             | `PUBLIC_PUBLISHED`                                          | `HARDEN_PUBLIC_CONTRACT`                 | límite, MIME, clasificación y versión pública                     |
+| `recipe-media`           | privado       |       0 | `PRIVATE_TECHNICAL_MEDIA`               | `PRIVATE_AUTHORIZED`                                        | `EMPTY_BUCKET_CONTRACT_REVIEW`           | contrato FOGO, adopción, retención y consumidoras                 |
+| `recipe-step-photos`     | público       |       4 | `PRIVATE_TECHNICAL_MEDIA`               | `PRIVATE_AUTHORIZED`                                        | `PRIVATIZE_REQUIRED`                     | permiso, receta, sede, área y compatibilidad                      |
+| `talento-cv`             | privado       |       0 | `PRIVATE_PERSONAL_RECORD`               | `SIGNED_EPHEMERAL`                                          | `HARDEN_PRIVATE_POLICY`                  | disposición, retención y derechos del candidato                   |
+| `talento-documents`      | privado       |       0 | `PRIVATE_PERSONAL_RECORD`               | `SIGNED_EPHEMERAL`                                          | `HARDEN_PRIVATE_POLICY`                  | disposición, finalidad y expediente                               |
+| `talento-medical`        | privado       |       0 | `PRIVATE_HIGHLY_RESTRICTED_RECORD`      | `SIGNED_EPHEMERAL`                                          | `HARDEN_PRIVATE_POLICY`                  | acceso reforzado, legal hold, retención y auditoría               |
+| `website-media`          | privado       |       0 | `PUBLIC_BRAND_MEDIA` con fuente privada | privado durante preparación y `PUBLIC_PUBLISHED` al aprobar | `EMPTY_BUCKET_CONTRACT_REVIEW`           | flujo de publicación, derivados, CDN y consumidoras               |
+
+#### 25. Disposiciones permitidas
+
+```text
+KEEP_PUBLIC_CONTRACTED
+KEEP_PRIVATE_CONTRACTED
+PRIVATIZE_REQUIRED
+SPLIT_PRIVATE_SOURCE_PUBLIC_DERIVATIVE
+HARDEN_PRIVATE_POLICY
+HARDEN_PUBLIC_CONTRACT
+EMPTY_BUCKET_CONTRACT_REVIEW
+CONSOLIDATION_OR_REPATH_CANDIDATE
+```
+
+La disposición no ejecuta cambios. Cada bucket deberá conservar consumidores, paths, referencias, políticas, tamaños, objetos, compatibilidad y rollback antes de materializar su destino.
+
+#### 26. Reconciliación de referencias actuales
+
+| Fuente actual                   | Buckets observados                                                | Referencias verificadas | Regla objetivo                                                      |
+| ------------------------------- | ----------------------------------------------------------------- | ----------------------: | ------------------------------------------------------------------- |
+| `public.documents.storage_path` | `documents`                                                       |                     157 | migrar a referencia canónica y acceso privado sin perder expediente |
+| `public.employees.photo_url`    | `employee-photos`                                                 |                      18 | separar fuente privada, variante y URL derivada                     |
+| catálogo comercial              | `commercial-menu-images`, `nexo-catalog-images`, `product-images` |                      72 | unificar identidad de media sin confundir bucket con producto       |
+| inventario y presentaciones     | `nexo-catalog-images`                                             |                     792 | mantener referencias durante repath o consolidación                 |
+| logos de satélite               | `pass-satellite-logos`                                            |                       9 | conservar versión y consumidoras de marca                           |
+| pasos de receta                 | `recipe-step-photos`                                              |                       4 | privatizar con permiso y vínculo de receta                          |
+| website reutilizado             | `pass-satellite-logos`                                            |                       2 | declarar reutilización, owner y publicación                         |
+
+Las 1.054 referencias prueban correspondencia en el corte auditado. No demuestran que todos los 1.101 objetos tengan una referencia empresarial única ni autorizan tratar la diferencia como objetos huérfanos.
+
+#### 27. Sagas de archivo y metadata
+
+Las operaciones que atraviesen Storage y owner schemas usarán la política de `SUPA-ARC-017`:
+
+| Operación   | Efecto propietario                                        | Posible parcialidad                                                            | Tratamiento                                           |
+| ----------- | --------------------------------------------------------- | ------------------------------------------------------------------------------ | ----------------------------------------------------- |
+| carga       | reserva y registro documental más objeto físico           | objeto sin finalización o reserva sin objeto                                   | reconciliar y completar o disponer                    |
+| publicación | versión privada más derivado público y referencia vigente | derivado creado sin activación o activación sin distribución confirmada        | bloquear acceso o revertir referencia según outcome   |
+| sustitución | nueva versión verificada y puntero vigente                | nuevo objeto disponible sin cambio de versión                                  | reintentar cambio propietario o disponer nuevo objeto |
+| disposición | estado pendiente más borrado físico y receipt             | objeto borrado con metadata pendiente o metadata pendiente con objeto presente | conciliar sin recrear ni ocultar el resultado         |
+| migración   | copia verificada, cambio compatible y retiro del origen   | consumidores o referencias divididos                                           | dual-read, observación y rollback                     |
+
+No existe una transacción atómica entre la API de Storage y todos los registros empresariales. El contrato deberá representar parcialidad y resultado desconocido en vez de fingir atomicidad.
+
+#### 28. Eventos y observabilidad
+
+1. Se emitirán hechos empresariales solo después de confirmar el estado correspondiente: archivo finalizado, versión publicada, sustitución activada, disposición solicitada o disposición confirmada.
+2. Un evento de carga técnica no demostrará que el archivo sea válido, visible o vinculado.
+3. `event_id`, `business_record_id`, `storage_object_ref`, `operation_id` y `idempotency_key` conservarán identidades distintas.
+4. La telemetría registrará bucket contract, operación, tamaño, MIME, duración, outcome, actor o servicio y correlación sin payload, token, URL firmada ni nombre sensible innecesario.
+5. El transporte, canales, replay y capacidad de Realtime permanecen reservados a `SUPA-ARC-019`.
+6. Un fallo de publicación de evento no revierte el objeto ya confirmado; se resuelve mediante outbox, retry y conciliación.
+
+#### 29. Procesamiento asíncrono
+
+Verificación avanzada, generación de derivados, optimización, OCR autorizado, análisis de contenido, limpieza temporal, notificaciones y webhooks podrán requerir Edge Functions, workers o cron.
+
+Reglas:
+
+1. ningún proceso asíncrono adquiere autoridad sobre el dominio ni escribe internals de Storage directamente;
+2. cada job conserva objeto, versión, operación, idempotencia, retry, deadline y outcome;
+3. aceptar un job no equivale a archivo verificado o derivado publicado;
+4. el procesamiento sensible minimiza contenido y credenciales;
+5. la arquitectura física de Edge Functions, webhooks, cron, colas y secretos corresponde a `SUPA-ARC-020`;
+6. hasta completar esa tarea, los gates asíncronos permanecen definidos pero no implementados.
+
+#### 30. Retención, legal hold y recuperación
+
+1. Todo registro no transitorio tendrá `retention_class_id` y evento de inicio de retención.
+2. La clase dependerá de finalidad, proceso, tipo documental, obligación, sensibilidad y estado; no del nombre del bucket.
+3. `legal_hold` prevalecerá sobre expiración o solicitud de borrado y conservará owner, autoridad, alcance y revisión.
+4. Retirar un vínculo empresarial no elimina automáticamente el objeto ni viceversa.
+5. Backups o versiones internas de la plataforma no sustituyen la política empresarial de recuperación.
+6. Duraciones exactas, archivo, purga, respaldo, restauración, RPO y RTO se reservan a `SUPA-ARC-022`.
+7. Esta tarea obliga a que cada bucket soporte esas decisiones sin fijar periodos por inferencia.
+
+#### 31. Rendimiento y crecimiento
+
+1. El acceso empresarial resolverá primero referencias y contratos; no dependerá de listados globales de `storage.objects` desde clientes.
+2. Listas por carpeta, prefijo, bucket o metadata estarán paginadas, acotadas y autorizadas.
+3. Transformaciones y derivados evitarán servir originales de 35 MB cuando una variante sea suficiente.
+4. Caches y CDN no cambiarán sensibilidad, versión ni owner.
+5. Conteos, bytes, crecimiento, fallos, cuarentena y objetos pendientes se observarán por clase y bucket.
+6. Índices, presupuestos, capacidad, umbrales y pruebas de carga se reservan a `SUPA-ARC-021`.
+
+#### 32. Tipos, ambientes y reproducibilidad
+
+1. Bucket contracts, clases, estados, roles, modos de acceso y outcomes serán fuentes para tipos generados en `SUPA-ARC-023`.
+2. No se generarán tipos consumibles desde internals completos de `storage`.
+3. Cada ambiente tendrá manifiesto de buckets, flags, límites, MIME, policies y contratos; desarrollo, pruebas, staging y producción no compartirán objetos ni URLs.
+4. Las referencias no contendrán host o project ref como identidad empresarial.
+5. Fixtures y datos de prueba no usarán documentos personales reales.
+6. Overlays, credenciales, paridad y drift de ambientes se definirán en `SUPA-ARC-024`.
+7. La arquitectura deberá reconstruirse desde `vento-shell` sin importar manualmente configuración desconocida.
+
+#### 33. Estrategia de transición
+
+La transición posterior seguirá como mínimo:
+
+```text
+1. FREEZE_AND_INVENTORY
+2. REGISTER_BUCKET_CONTRACTS
+3. CLASSIFY_OBJECTS_AND_REFERENCES
+4. MAP_CONSUMERS_AND_ACCESS_PATHS
+5. CREATE_TARGET_PRIVATE_OR_PUBLIC_PLANES
+6. COPY_OR_REPATH_WITHOUT_DESTRUCTION
+7. VERIFY_HASH_SIZE_MIME_AND_COUNTS
+8. ENABLE_COMPATIBILITY_AND_DUAL_READ_WHEN_REQUIRED
+9. SWITCH_CANONICAL_REFERENCES
+10. OBSERVE_AND_RECONCILE
+11. DISPOSE_LEGACY_ONLY_AFTER_GATES
+```
+
+1. La transición no cambiará a la vez privacidad, ruta, formato, versión y consumidor sin checkpoints y rollback.
+2. `documents` se privatizará con compatibilidad y prueba de que ningún consumidor depende de URL pública.
+3. Las URLs completas se migrarán hacia referencias canónicas sin romper interfaces activas.
+4. Los objetos sobredimensionados se conservarán hasta definir optimización o excepción y demostrar paridad visual o documental.
+5. Buckets vacíos se mantendrán, adoptarán o retirarán según contrato y consumidores; vacío no significa inútil.
+6. Ningún objeto se borrará únicamente porque no aparezca en una consulta parcial de referencias.
+7. La ejecución física corresponderá a `SUPA-TRANS-*`, paquetes E5 y gates posteriores.
+
+#### 34. Riesgos y controles
+
+| Riesgo                             | Control obligatorio                                                          | Continuidad responsable               |
+| ---------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------- |
+| expediente público                 | privatización controlada, referencias canónicas y pruebas de acceso negativo | `SUPA-TRANS-*`; paquetes ANIMA/VISO   |
+| foto personal pública              | fuente privada, finalidad, variante y publicación explícita                  | paquetes ANIMA/VISO; privacidad       |
+| mutación amplia de receta          | policy por permiso, receta, sede y área                                      | `SUPA-TRANS-003`; FOGO                |
+| URL persistida como identidad      | bucket, path y record id canónicos con compatibilidad                        | `SUPA-TRANS-007`; `SUPA-TRANS-012`    |
+| archivo huérfano por fallo parcial | lifecycle, tombstone, retry y conciliación                                   | `SUPA-TRANS-009`                      |
+| borrado indebido                   | retención, legal hold, owner y dry run                                       | `SUPA-ARC-022`; `SUPA-TRANS-009`      |
+| objeto no verificado publicado     | cuarentena y gate de verificación                                            | `SUPA-ARC-020`; paquetes consumidores |
+| drift de límite o MIME             | manifiesto y validador recurrente                                            | `SUPA-ARC-024`; `SHELL-CI-017`        |
+| contenido legacy sobredimensionado | clasificación, derivado y transición no destructiva                          | `SUPA-ARC-021`; `SUPA-TRANS-*`        |
+| acceso privilegiado transversal    | contratos nominales, auditoría y cero credencial cliente                     | `SUPA-ARC-020`; `SUPA-TRANS-015`      |
+| path inseguro o ambiguo            | gramática versionada e identidad opaca                                       | `SUPA-TRANS-007`; `SUPA-TRANS-012`    |
+| ambiente divergente                | manifiesto, hashes y paridad                                                 | `SUPA-ARC-024`; `SUPA-ARC-025`        |
+
+#### 35. Decisiones reservadas
+
+| Decisión                                                                 | Tarea propietaria               |
+| ------------------------------------------------------------------------ | ------------------------------- |
+| canales, publicaciones y transporte de eventos Storage                   | `SUPA-ARC-019`                  |
+| Edge Functions, webhooks, cron, workers, procesamiento y secretos        | `SUPA-ARC-020`                  |
+| índices, capacidad, transformaciones, rendimiento y crecimiento          | `SUPA-ARC-021`                  |
+| periodos de retención, archivo, purga, respaldo, restauración, RPO y RTO | `SUPA-ARC-022`                  |
+| tipos generados para bucket, objeto, lifecycle y contratos               | `SUPA-ARC-023`                  |
+| overlays, credenciales, manifiestos y paridad por ambiente               | `SUPA-ARC-024`                  |
+| ADR, linter y gate consolidado                                           | `SUPA-ARC-025`                  |
+| buckets físicos finales, policies, migraciones, copias, repath y cutover | `SUPA-TRANS-*` y paquetes E5    |
+| comportamiento final por pantalla y flujo de usuario                     | roadmaps funcionales y BLOQUE I |
+
+#### 36. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear, renombrar, publicar, privatizar, consolidar o retirar buckets;
+- subir, copiar, mover, transformar, reemplazar, obtener o eliminar objetos reales;
+- cambiar `public`, límites, MIME, policies, grants, owners, RLS o configuración de Storage;
+- crear tablas, columnas, funciones, RPC, triggers, jobs, Edge Functions, webhooks, cron o migraciones;
+- modificar referencias actuales, URLs, rutas, metadata o datos empresariales;
+- ejecutar reconciliación, limpieza, cuarentena, retención, legal hold, backup o restore;
+- declarar conformes los catorce buckets o las treinta y nueve policies por inferencia;
+- acceder al contenido de archivos durante la revisión documental;
+- iniciar `SUPA-ARC-019` antes de aprobación expresa.
+
+#### 37. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-1201 a TREQ-SUPABASE-1258
+```
+
+Los cincuenta y ocho requisitos protegen frontera administrada, contratos de bucket, clases, acceso, roles, lifecycle, identidad, rutas, metadata, carga, verificación, cuarentena, finalización, lectura privada, publicación, versiones, derivados, disposición, integridad, policies, límites, buckets actuales, referencias, sagas, eventos, procesamiento, retención, rendimiento, ambientes y drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 38. Criterios de aceptación
+
+- [ ] Existe una arquitectura versionada única para Supabase Storage.
+- [ ] Los catorce buckets actuales están cubiertos individualmente.
+- [ ] Se preservan 1.101 objetos, 750.891.333 bytes y 1.054 referencias como línea base no destructiva.
+- [ ] Se definen ocho clases de Storage, cuatro modos de acceso y siete roles de objeto.
+- [ ] El lifecycle contiene diez estados y ninguna transición no autorizada entrega contenido.
+- [ ] `storage` permanece administrado y `business_records` conserva la identidad documental empresarial.
+- [ ] El owner de dominio conserva el hecho respaldado y su autorización.
+- [ ] URL, path, owner técnico y bucket no se convierten en autoridad empresarial.
+- [ ] La gramática de ruta es versionada, opaca, inmutable y libre de PII.
+- [ ] Carga, verificación, finalización, publicación, sustitución y disposición representan parcialidad y conciliación.
+- [ ] El objetivo de fuente sensible sin clasificar en bucket público es cero.
+- [ ] `documents` y `recipe-step-photos` quedan clasificados para privatización controlada.
+- [ ] `employee-photos` separa fuente privada y derivado público opcional.
+- [ ] Los buckets TALENTO conservan disposición gobernada y no retención indefinida accidental.
+- [ ] No existe sobrescritura in place de objetos autoritativos ni borrado directo desde cliente.
+- [ ] Límites y MIME son obligatorios para todo bucket activo.
+- [ ] Los quince objetos sobredimensionados se clasifican sin eliminación automática.
+- [ ] Se definen nueve clases de drift y ocho disposiciones de bucket.
+- [ ] Las decisiones posteriores quedan asignadas sin anticipar implementación.
+- [ ] Se generan `TREQ-SUPABASE-1201` a `TREQ-SUPABASE-1258`.
+- [ ] No se ejecutan cambios físicos ni se inicia la tarea siguiente.
+
+#### 39. Controles estructurales requeridos
+
+| Control                                           | Resultado esperado |
+| ------------------------------------------------- | -----------------: |
+| buckets actuales cubiertos                        |       **14 de 14** |
+| objetos de línea base                             |          **1.101** |
+| bytes de línea base                               |    **750.891.333** |
+| referencias verificadas                           |          **1.054** |
+| policies de línea base                            |             **39** |
+| clases de Storage                                 |              **8** |
+| modos de acceso                                   |              **4** |
+| roles de objeto                                   |              **7** |
+| estados de lifecycle                              |             **10** |
+| disposiciones actuales                            |              **8** |
+| clases de drift                                   |              **9** |
+| fuentes sensibles públicas objetivo               |              **0** |
+| borrados directos de cliente objetivo             |              **0** |
+| sobrescrituras autoritativas in place objetivo    |              **0** |
+| URLs públicas persistidas como identidad objetivo |              **0** |
+| requisitos nuevos                                 |             **58** |
+| cambios físicos                                   |              **0** |
+
+#### 40. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-017 — Definir política de escrituras entre dominios
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-018 — Definir arquitectura de Storage
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-019 — Definir arquitectura de Realtime y eventos
+```
+
+`SUPA-ARC-019` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-019 — Definir arquitectura de Realtime y eventos
 ### [ ] SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron
 ### [ ] SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento
