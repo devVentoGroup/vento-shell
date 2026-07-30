@@ -17,7 +17,7 @@ on:
       - ".github/workflows/validate-canonical-plan.yml"
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   validate:
@@ -27,27 +27,11 @@ jobs:
     steps:
       - name: Descargar repositorio
         uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
 
       - name: Configurar Node.js
         uses: actions/setup-node@v4
         with:
           node-version: 20
-
-      - name: Normalizar TREQ históricos de Supabase
-        run: node scripts/docs/fix-supa-treq-history.mjs
-
-      - name: Publicar normalización histórica
-        if: github.event_name == 'push'
-        run: |
-          if ! git diff --quiet; then
-            git config user.name "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md
-            git commit -m "docs: normalizar TREQ históricos de Supabase"
-            git push
-          fi
 
       - name: Compilar plan canónico
         run: npm run docs:plan:build
