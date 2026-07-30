@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **433** |
+| Aprobadas | **434** |
 | En propuesta | **0** |
-| No iniciadas | **1142** |
+| No iniciadas | **1141** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **27.49% (433/1575)** |
+| Porcentaje de completamiento | **27.56% (434/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-AUD-004` — Detectar duplicados semánticos mediante valores normalizados de comparación | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-AUD-005` — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos | ⬜ NO INICIADA |
-| Siguiente | `DATA-NORM-AUD-006` — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-AUD-005` — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-AUD-006` — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto | ⬜ NO INICIADA |
+| Siguiente | `DATA-NORM-AUD-007` — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -400,7 +400,7 @@
 | ✅ APROBADA | `DATA-NORM-AUD-002` | Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ✅ APROBADA | `DATA-NORM-AUD-003` | Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ✅ APROBADA | `DATA-NORM-AUD-004` | Detectar duplicados semánticos mediante valores normalizados de comparación | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-AUD-005` | Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
+| ✅ APROBADA | `DATA-NORM-AUD-005` | Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-006` | Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-007` | Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ✅ APROBADA | `SUPA-ARC-001` | Definir principios de separación entre esquemas administrados y empresariales | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |

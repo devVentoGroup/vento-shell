@@ -1132,7 +1132,364 @@ DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones po
 ```
 
 
-### [ ] DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos
+### ✅ DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación` — APROBADA
+**Tarea siguiente:** `DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto`
+**Tipo de tarea:** auditoría documental de clasificación de tratamiento textual; sin DDL, DML, migraciones, backfills, correcciones, fusiones, desactivaciones, cambios de relaciones, cambios de esquema, modificación de constraints, modificación de índices, modificación de triggers, cambios en aplicaciones ni despliegues
+
+#### 1. Objetivo
+
+Clasificar la evidencia aprobada en `DATA-NORM-AUD-002`, `DATA-NORM-AUD-003` y `DATA-NORM-AUD-004` según el tipo de tratamiento que podría corresponderle en una arquitectura futura: normalización determinista de forma, corrección mediante diccionario aprobado, revisión humana por ambigüedad, preservación obligatoria o resolución estructural no textual.
+
+La clasificación separa el defecto formal del significado empresarial, la corrección visible de la identidad del registro y la transformación textual de cualquier consolidación de datos. No aprueba todavía funciones de normalización, entradas de diccionario, formas oficiales, automatizaciones, backfills, cambios de unicidad ni acciones sobre registros persistidos.
+
+#### 2. Artefacto producido
+
+```text
+DATA-TEXTUAL-TRANSFORMATION-CLASSIFICATION-005@1.0.0
+```
+
+| Propiedad                                 | Valor de clasificación                                                                |
+| ----------------------------------------- | ------------------------------------------------------------------------------------- |
+| Base documental                           | `DATA-NORM-AUD-002`, `DATA-NORM-AUD-003` y `DATA-NORM-AUD-004`                        |
+| Proyecto al que pertenece la evidencia    | `vento-os-dev` — `clzdpinthhtknkmefsxx`                                               |
+| Fuente utilizada en esta tarea            | evidencia canónica aprobada del repositorio                                           |
+| Consultas adicionales sobre datos         | ninguna                                                                               |
+| Registros modificados                     | 0                                                                                     |
+| Objetos de base de datos modificados      | 0                                                                                     |
+| Frontera excluida de reglas transversales | `vital`                                                                               |
+| Resultado                                 | taxonomía, matriz de casos, criterios de decisión y asignación de tareas propietarias |
+
+#### 3. Alcance y restricciones
+
+La tarea clasifica:
+
+- defectos de espacios y puntuación detectados en valores visibles;
+- variantes de capitalización, tildes, signos y separación léxica;
+- marcas, siglas, unidades, razones sociales y otras clases protegidas;
+- etiquetas de presentaciones y políticas con estructura funcional asociada;
+- candidatos de duplicidad, pares de ciclo de vida, homónimos y falsos positivos de alcance;
+- casos que requieren separar valor mostrado, valor de búsqueda, valor externo original e identificador técnico.
+
+Se mantienen estas restricciones:
+
+1. una transformación formal no demuestra que dos registros representen la misma entidad;
+2. una corrección ortográfica no autoriza fusionar, desactivar ni sustituir registros;
+3. una forma frecuente no se declara automáticamente canónica;
+4. las marcas, siglas, razones sociales, nombres de personas y valores externos requieren evidencia autorizada;
+5. las cantidades, unidades, multiplicadores, modelos y códigos no se procesan como prosa ordinaria;
+6. los identificadores técnicos no reciben corrección ortográfica ni capitalización comercial;
+7. el valor externo original se conserva aunque exista una representación derivada para búsqueda o visualización;
+8. una vista o copia derivada no se convierte en fuente propietaria por contener una forma aparentemente mejor;
+9. `vital` permanece fuera de las decisiones transversales de Vento OS;
+10. ningún resultado autoriza cambios físicos.
+
+#### 4. Taxonomía de clasificación
+
+Los tres niveles de decisión previstos por el gobierno canónico se complementan con dos salidas de protección necesarias para no forzar todos los hallazgos dentro de una transformación textual.
+
+| Código                                | Clase canónica de auditoría              | Criterio mínimo                                                                                                                          | Resultado permitido en esta etapa                                                               |
+| ------------------------------------- | ---------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `DETERMINISTIC_FORM_NORMALIZATION`    | normalización determinista               | la operación modifica únicamente forma, produce siempre el mismo resultado, es idempotente y no altera tokens, significado ni estructura | registrar regla candidata y restricciones; no ejecutarla                                        |
+| `APPROVED_DICTIONARY_CORRECTION`      | corrección mediante diccionario aprobado | existe una forma canónica autorizada para una clase y alcance definidos, con variantes conocidas y gobierno de versión                   | registrar candidato de diccionario; la aprobación corresponde a `DATA-NORM-ARC-006`             |
+| `AMBIGUOUS_HUMAN_REVIEW`              | corrección ambigua                       | la evidencia no permite distinguir error, marca, denominación histórica, nombre propio, fuente externa o entidad diferente               | conservar valor y enviar el caso a la cola definida en `DATA-NORM-ARC-007`                      |
+| `PROTECTED_PRESERVE_OR_DERIVE`        | valor protegido sin corrección directa   | el valor es oficial, externo, personal, técnico o contractual y una transformación destructiva degradaría identidad o trazabilidad       | preservar original; permitir solo una representación separada cuando exista contrato            |
+| `STRUCTURAL_OR_RELATIONAL_RESOLUTION` | resolución no textual                    | el problema depende de registros, relaciones, estados, cantidades, unidades, scopes, versiones o consumidores                            | remitir a arquitectura de duplicidad, transición o dominio; no tratarlo como corrección textual |
+
+`PROTECTED_PRESERVE_OR_DERIVE` y `STRUCTURAL_OR_RELATIONAL_RESOLUTION` no son niveles adicionales de automatización. Son salidas de seguridad que impiden clasificar erróneamente como corrección lo que debe preservarse o resolverse fuera del texto.
+
+#### 5. Condiciones para una normalización determinista
+
+Una regla solo podrá permanecer clasificada como `DETERMINISTIC_FORM_NORMALIZATION` cuando cumpla simultáneamente:
+
+1. el dominio, entidad y campo estén identificados;
+2. la clase del campo permita transformación de forma;
+3. la representación objetivo sea explícita: mostrada, de búsqueda o derivada;
+4. la operación no modifique palabras, cantidades, unidades, signos significativos, códigos ni identidad;
+5. las exclusiones de marcas, siglas, nombres legales, personas, direcciones, valores externos e identificadores estén definidas;
+6. la fuente propietaria y sus consumidores sean conocidos;
+7. el resultado sea idempotente;
+8. la operación pueda auditarse y revertirse cuando altere un valor persistido;
+9. la corrección de una copia derivada no deje divergente la fuente propietaria;
+10. la operación no produzca una fusión implícita ni una nueva regla de unicidad.
+
+La determinación de que una operación es formalmente segura no decide todavía en qué capa se ejecutará. Esa decisión permanece en `DATA-NORM-ARC-011`.
+
+#### 6. Candidatos de normalización determinista
+
+La evidencia aprobada permite clasificar las siguientes operaciones como candidatas deterministas, siempre sujetas a la clase de campo y a las exclusiones anteriores:
+
+| Código           | Operación candidata                                 | Evidencia canónica                                                  | Clasificación y límite                                                                                                    |
+| ---------------- | --------------------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `DN-AUD-005-D01` | recortar espacios de borde                          | 4 valores detectados                                                | determinista en valores mostrados gobernados; no aplicar genéricamente a identificadores, direcciones ni valores externos |
+| `DN-AUD-005-D02` | compactar espacios ASCII repetidos                  | 32 valores detectados                                               | determinista cuando el separador no representa salto de línea, formato preservado o convención significativa              |
+| `DN-AUD-005-D03` | retirar espacio anterior a puntuación de prosa      | 1 valor detectado                                                   | determinista en prosa gobernada; no en números, modelos, razones sociales, rutas o códigos                                |
+| `DN-AUD-005-D04` | insertar separación posterior a puntuación de prosa | 9 valores detectados                                                | determinista solo después de excluir decimales, URL, abreviaturas, referencias y formatos técnicos                        |
+| `DN-AUD-005-D05` | normalizar composición Unicode a NFC                | 0 valores fuera de NFC en el corte prioritario                      | regla preventiva candidata; la ausencia actual no autoriza declarar saneado el universo completo                          |
+| `DN-AUD-005-D06` | aplicar capitalización empresarial por clase        | `Bebidas calientes` / `Bebidas Calientes` y otras variantes de caja | determinista únicamente después de aprobar reglas, conectores y excepciones en `DATA-NORM-ARC-003` a `005`                |
+| `DN-AUD-005-D07` | normalizar espacios de una etiqueta estructurada    | `Bolsa 1 kg`, `Botella 750 ml`, `Paquete 10 un`                     | solo sobre una estructura ya interpretada; no inferir cantidad o unidad desde eliminación indiscriminada de signos        |
+
+Casos representativos:
+
+| Valor observado               | Evaluación                                                                                                              |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `Babka de Queso  Dulce`       | candidato directo a compactación de espacios en nombre mostrado, sujeto a confirmar fuente propietaria                  |
+| `Masa Madre  de Cacao y Nuez` | candidato directo a compactación de espacios en catálogo, sujeto a propagación desde la fuente correcta                 |
+| `champiñones,tomates cherry`  | candidato a separación de puntuación en descripción de prosa; debe corregirse en la fuente propietaria, no en una copia |
+| `Torta de  chocolate`         | la compactación de espacios es determinista; capitalización y posible duplicidad son decisiones separadas               |
+
+La cantidad de hallazgos formales no equivale a la cantidad de correcciones automáticas autorizables. Parte de esos valores pertenece a clases protegidas o todavía no clasificadas.
+
+#### 7. Candidatos de corrección mediante diccionario aprobado
+
+Una corrección se clasifica como `APPROVED_DICTIONARY_CORRECTION` cuando cambia contenido léxico u ortográfico y, por tanto, necesita una forma canónica expresamente gobernada.
+
+| Código           | Candidato observado                         | Forma candidata o clase de regla             | Restricción obligatoria                                                                                                |
+| ---------------- | ------------------------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `DN-AUD-005-C01` | `Botellla`                                  | posible entrada visible `Botella`            | confirmar que el campo es etiqueta humana y no código, valor externo o denominación histórica                          |
+| `DN-AUD-005-C02` | `Maiz Dulce`                                | posible corrección `Maíz Dulce`              | la grafía puede corregirse mediante diccionario; el par de registros permanece como problema de ciclo de vida separado |
+| `DN-AUD-005-C03` | `Chai latte frio`                           | tilde en `frío` y capitalización empresarial | requiere regla de nombre comercial y no autoriza consolidar los dos productos                                          |
+| `DN-AUD-005-C04` | `LATTE FRIO`                                | tilde en `Frío` y capitalización empresarial | requiere revisar categoría y consumidores antes de decidir forma visible y registro propietario                        |
+| `DN-AUD-005-C05` | `Oster` / `oster`                           | forma oficial de marca                       | solo una fuente autorizada de marca puede aprobar la entrada y su sensibilidad a mayúsculas                            |
+| `DN-AUD-005-C06` | términos con tildes empresariales aprobadas | diccionario por dominio y clase de campo     | no extender una entrada a marcas, códigos, nombres propios o idiomas distintos sin alcance explícito                   |
+
+Toda entrada futura de diccionario deberá declarar como mínimo:
+
+- identificador estable;
+- clase de campo y alcance;
+- variantes reconocidas;
+- forma canónica;
+- sensibilidad a mayúsculas, tildes, signos y separación;
+- excepciones y contextos prohibidos;
+- fuente de autoridad;
+- propietario empresarial;
+- versión de vigencia;
+- razón del cambio;
+- compatibilidad con búsqueda;
+- estrategia de auditoría y reversión.
+
+Esta tarea registra candidatos. No aprueba ninguna entrada concreta del diccionario.
+
+#### 8. Casos ambiguos que requieren revisión humana
+
+Se clasifican como `AMBIGUOUS_HUMAN_REVIEW` los casos en los que una regla formal o un diccionario no puede decidir responsablemente con la evidencia disponible.
+
+| Código           | Caso observado                                    | Motivo de ambigüedad                                                                                         |
+| ---------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| `DN-AUD-005-A01` | `Wellmix` / `Welmix`                              | puede ser error ortográfico, marca distinta o variante oficial                                               |
+| `DN-AUD-005-A02` | `Choco Bites` / `Chocobites`                      | puede ser separación accidental, denominación comercial o productos distintos                                |
+| `DN-AUD-005-A03` | `Volnic` / `VOLNIC PALLOMARO`                     | puede mezclar marca, fabricante, proveedor o denominación compuesta                                          |
+| `DN-AUD-005-A04` | `Daza` / `acero daza`                             | puede mezclar marca con material o descriptor                                                                |
+| `DN-AUD-005-A05` | `Bolsa de 1.100 ml` / `Bolsa de 1100 ml`          | el punto puede ser separador de miles, convención visible o contenido no estructurado                        |
+| `DN-AUD-005-A06` | `Pote x 2`                                        | combina empaque y multiplicador; requiere interpretar estructura antes de corregir                           |
+| `DN-AUD-005-A07` | `Six Pack` / `six_pack`                           | una forma puede ser etiqueta visible y la otra código técnico; no son intercambiables por texto              |
+| `DN-AUD-005-A08` | `Costo`, `1`, `presentacion`, `piezas`, `bolsas`  | la semántica del campo y la clase de unidad no están suficientemente documentadas                            |
+| `DN-AUD-005-A09` | `Carlos  Ibarra`                                  | el espacio repetido parece accidental, pero el nombre de persona requiere fuente de identidad y trazabilidad |
+| `DN-AUD-005-A10` | `CÚCUTA , NORTE DE SANTANDER`                     | la puntuación parece formalmente defectuosa, pero la dirección puede ser valor externo u oficial             |
+| `DN-AUD-005-A11` | razones sociales con `SAS`, `S.A.S.`, `&` o `CIA` | signos, conectores y capitalización pueden formar parte del nombre oficial                                   |
+| `DN-AUD-005-A12` | modelos alojados en campos de marca               | el problema puede ser de clasificación de campo, no de escritura                                             |
+
+La cola futura deberá conservar el valor original, la representación sugerida, el motivo, la evidencia, el actor revisor, la decisión, la fecha, la versión de regla y la posibilidad de revertir.
+
+#### 9. Clases protegidas
+
+Las siguientes clases se asignan por defecto a `PROTECTED_PRESERVE_OR_DERIVE` hasta que exista una política más específica:
+
+| Clase protegida                      | Tratamiento mínimo                                                                                          |
+| ------------------------------------ | ----------------------------------------------------------------------------------------------------------- |
+| marca o denominación comercial       | conservar forma oficial; utilizar catálogo de excepciones y fuente autorizada                               |
+| sigla, abreviatura o aplicación      | conservar forma contractual exacta                                                                          |
+| razón social o nombre oficial        | preservar escritura y procedencia; no retirar signos, conectores ni sufijos por estilo                      |
+| nombre de persona o actor            | conservar identidad declarada; no aplicar capitalización o corrección empresarial universal                 |
+| valor externo original               | no sobrescribir; crear representación derivada cuando búsqueda o visualización lo requieran                 |
+| identificador técnico                | validar formato y unicidad según contrato; no corregir ortografía ni presentación comercial                 |
+| dirección o ubicación textual        | preservar números, orden, abreviaturas y signos hasta disponer de contrato específico                       |
+| texto libre                          | no aplicar corrección destructiva silenciosa; considerar autoría, historial y contexto                      |
+| JSON, arreglo o estructura compuesta | clasificar cada clave o elemento; no tratar el contenedor completo como una cadena                          |
+| valor derivado en vista              | corregir la fuente propietaria o el mecanismo de derivación; no tratar la vista como registro independiente |
+
+Los nombres de aplicaciones `NEXO`, `VISO`, `ORIGO`, `NUMERA`, `FOGO` y `PULSO`; los códigos `VGR`, `SAU`, `VCF` y `COP`; y símbolos o códigos como `g`, `kg`, `ml`, `l`, `un`, `dz`, `count`, `mass` y `volume` permanecen protegidos por su contrato técnico o empresarial.
+
+#### 10. Hallazgos que no se resuelven con transformación textual
+
+La evidencia de `DATA-NORM-AUD-004` se clasifica como `STRUCTURAL_OR_RELATIONAL_RESOLUTION` cuando el texto solo permitió descubrir un problema más amplio.
+
+| Caso observado                                                 | Clasificación estructural                                                                             |
+| -------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| dos productos activos de `Chai latte frio` / `Chai Latte Frío` | posible duplicidad de entidad; la forma visible y la consolidación son decisiones independientes      |
+| dos productos activos de `LATTE FRIO` / `Latte Frío`           | posible duplicidad y posible clasificación de categoría; no se resuelve cambiando mayúsculas y tildes |
+| `Maiz Dulce` / `Maíz Dulce`                                    | par activo/inactivo con unidades históricas diferentes; requiere conservar y revisar ciclo de vida    |
+| ocho pares de catálogo activo/inactivo                         | versiones o migraciones de catálogo; no son defectos de texto por defecto                             |
+| `VÍVERES & BODEGA PRINCIPAL`                                   | candidato estructural de categoría de remisión duplicada y activa dentro del mismo scope              |
+| perfiles UOM de `Queso Gouda`                                  | candidato fuerte de duplicidad estructural con la misma huella funcional                              |
+| perfiles UOM de `Queso Mozzarella Tajado`                      | candidato estructural con diferencias de fuente y estado predeterminado                               |
+| 72 posiciones `Nivel 1` a `Nivel 6`                            | falsos positivos; la identidad incluye padre, camino y código                                         |
+| infusiones, `Merengues` y `Zumo de Limón`                      | homónimos legítimos entre insumo, preparación y venta                                                 |
+| nombres coincidentes entre usuario, trabajador e invitación    | representaciones relacionadas que deben resolverse por identificadores y vínculos, nunca por nombre   |
+| etiquetas UOM iguales para compra y remisión                   | contextos funcionales diferentes; la etiqueta no es la identidad de la presentación                   |
+
+Ninguno de estos casos puede cerrarse mediante una sustitución de texto. La arquitectura de identidad, comparación, unicidad, auditoría y transición deberá decidir su tratamiento.
+
+#### 11. Matriz de clasificación de la evidencia representativa
+
+| Evidencia        | Caso resumido                               | Clasificación principal                         | Clasificación complementaria                                                      |
+| ---------------- | ------------------------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------------- |
+| `DN-AUD-002-E01` | `Bolsa`, `BOLSA`, `BOLSA `                  | `DETERMINISTIC_FORM_NORMALIZATION`              | capitalización condicionada; revisar contexto y registros                         |
+| `DN-AUD-002-E02` | `Unidad`, `UNIDAD`, `UNIDAD  `              | `DETERMINISTIC_FORM_NORMALIZATION`              | código y etiqueta visible deben permanecer separados                              |
+| `DN-AUD-002-E03` | `Bolsa 1 kg`, `BOLSA 1 kg`                  | `DETERMINISTIC_FORM_NORMALIZATION` condicionada | preservar cantidad, unidad y contexto funcional                                   |
+| `DN-AUD-002-E04` | `Babka de Queso  Dulce`                     | `DETERMINISTIC_FORM_NORMALIZATION`              | confirmar fuente propietaria                                                      |
+| `DN-AUD-002-E05` | `Carlos  Ibarra`                            | `AMBIGUOUS_HUMAN_REVIEW`                        | clase protegida de nombre personal                                                |
+| `DN-AUD-002-E06` | `Masa Madre  de Cacao y Nuez`               | `DETERMINISTIC_FORM_NORMALIZATION`              | corregir en la fuente propietaria                                                 |
+| `DN-AUD-002-E07` | `champiñones,tomates cherry`                | `DETERMINISTIC_FORM_NORMALIZATION` condicionada | resolver fuente entre producto y catálogo                                         |
+| `DN-AUD-002-E08` | `CÚCUTA , NORTE DE SANTANDER`               | `PROTECTED_PRESERVE_OR_DERIVE`                  | revisión humana si se pretende modificar el valor original                        |
+| `DN-AUD-002-E09` | `Chai latte frio`, `Chai Latte Frío`        | `APPROVED_DICTIONARY_CORRECTION` candidata      | `STRUCTURAL_OR_RELATIONAL_RESOLUTION` para los dos registros                      |
+| `DN-AUD-002-E10` | `Maiz Dulce`, `Maíz Dulce`                  | `APPROVED_DICTIONARY_CORRECTION` candidata      | `STRUCTURAL_OR_RELATIONAL_RESOLUTION` por ciclo de vida y unidades históricas     |
+| `DN-AUD-002-E11` | `LATTE FRIO`, `Latte Frío`                  | `APPROVED_DICTIONARY_CORRECTION` candidata      | capitalización condicionada y posible duplicidad estructural                      |
+| `DN-AUD-002-E12` | `Bolsa de 1.100 ml`, `Bolsa de 1100 ml`     | `AMBIGUOUS_HUMAN_REVIEW`                        | interpretar cantidad y convención antes de transformar                            |
+| `DN-AUD-002-E13` | `Choco Bites`, `Chocobites`                 | `AMBIGUOUS_HUMAN_REVIEW`                        | posible marca, nombre histórico o entidades diferentes                            |
+| `DN-AUD-002-E14` | `Bebidas calientes`, `Bebidas Calientes`    | `DETERMINISTIC_FORM_NORMALIZATION` condicionada | requiere política de capitalización y fuente propietaria                          |
+| `DN-AUD-002-E15` | `Torta de  chocolate`, `Torta de Chocolate` | clasificación compuesta                         | espacio determinista; capitalización condicionada; posible duplicidad estructural |
+
+La clasificación compuesta es obligatoria cuando un mismo grupo contiene un defecto de forma, una posible corrección léxica y una cuestión independiente de identidad o estructura.
+
+#### 12. Orden de decisión futuro
+
+Toda política o proceso que consuma esta clasificación deberá respetar el siguiente orden:
+
+```text
+1. identificar dominio, entidad, campo y fuente propietaria
+        ↓
+2. identificar la representación: mostrada, búsqueda, externa o técnica
+        ↓
+3. aplicar exclusiones y clases protegidas
+        ↓
+4. evaluar normalización determinista de forma
+        ↓
+5. consultar diccionario y excepciones aprobados
+        ↓
+6. enviar ambigüedad a revisión humana
+        ↓
+7. separar cualquier problema estructural o relacional
+        ↓
+8. auditar resultado, versión, actor y reversibilidad
+```
+
+Una regla no podrá omitir etapas por considerar que el valor resultante parece visualmente correcto.
+
+#### 13. Asignación de decisiones posteriores
+
+| Decisión pendiente                                         | Tarea propietaria                                                   |
+| ---------------------------------------------------------- | ------------------------------------------------------------------- |
+| política por dominio, entidad y campo                      | `DATA-NORM-ARC-001`                                                 |
+| clases de campo y tratamiento permitido                    | `DATA-NORM-ARC-002`                                                 |
+| capitalización empresarial                                 | `DATA-NORM-ARC-003`                                                 |
+| conectores lingüísticos                                    | `DATA-NORM-ARC-004`                                                 |
+| marcas, siglas, unidades y nombres legales                 | `DATA-NORM-ARC-005`                                                 |
+| diccionario ortográfico y gobierno                         | `DATA-NORM-ARC-006`                                                 |
+| cola y decisión de casos ambiguos                          | `DATA-NORM-ARC-007`                                                 |
+| representación de búsqueda y comparación                   | `DATA-NORM-ARC-008`                                                 |
+| versionado, auditoría e idempotencia                       | `DATA-NORM-ARC-009`                                                 |
+| unicidad y duplicados normalizados                         | `DATA-NORM-ARC-010`                                                 |
+| capa de ejecución                                          | `DATA-NORM-ARC-011`                                                 |
+| datos externos originales                                  | `DATA-NORM-ARC-012`                                                 |
+| inventario de productores actuales de transformación       | `DATA-NORM-AUD-006`                                                 |
+| impacto en búsquedas, integraciones, relaciones y unicidad | `DATA-NORM-AUD-007`                                                 |
+| backfills y correcciones físicas                           | `SUPA-TRANS-005` y tareas de transición de normalización aplicables |
+| compatibilidad de consumidores y transición coordinada     | `SUPA-TRANS-006`, `SUPA-TRANS-007` y `SUPA-TRANS-014`               |
+| pruebas, rollback y verificación de paridad                | `SUPA-TRANS-009`, `SUPA-TRANS-011` y `SUPA-TRANS-013`               |
+
+#### 14. Hallazgos
+
+| ID               | Hallazgo                                                                                 | Evidencia canónica                                                        | Consecuencia propietaria                                                         |
+| ---------------- | ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `DN-AUD-005-H01` | los defectos formales no son automáticamente elegibles para corrección masiva            | 4 bordes, 32 separadores repetidos y 10 defectos de puntuación            | clasificar campo, representación y fuente antes de automatizar                   |
+| `DN-AUD-005-H02` | la normalización determinista debe limitarse a operaciones de forma                      | recorte, compactación, puntuación de prosa y NFC                          | no incluir ortografía, identidad ni estructura dentro de la misma función        |
+| `DN-AUD-005-H03` | las correcciones de tildes y errores léxicos requieren diccionario gobernado             | `Maiz`, `frio`, `Botellla`                                                | definir entradas, alcance, versión, autoridad y auditoría en `DATA-NORM-ARC-006` |
+| `DN-AUD-005-H04` | una forma oficial no puede inferirse por frecuencia                                      | `Oster` / `oster`; `Wellmix` / `Welmix`                                   | exigir fuente autorizada o revisión humana                                       |
+| `DN-AUD-005-H05` | capitalización y conectores pueden ser deterministas solo después de aprobar excepciones | categorías, nombres comerciales, marcas y siglas                          | coordinar `DATA-NORM-ARC-003` a `005`                                            |
+| `DN-AUD-005-H06` | cantidades y unidades exigen interpretación estructural                                  | `1.100 ml`, `Pote x 2`, `Six Pack`, perfiles de compra y remisión         | no eliminar signos ni unificar etiquetas como cadenas planas                     |
+| `DN-AUD-005-H07` | la corrección visible y la consolidación de registros son decisiones independientes      | `Chai`, `Latte`, `Maíz Dulce`, categorías y perfiles UOM                  | separar normalización, unicidad, transición y reasignación de relaciones         |
+| `DN-AUD-005-H08` | los valores protegidos necesitan representación derivada, no sobrescritura genérica      | razones sociales, personas, externos, técnicos, direcciones y texto libre | gobernar preservación y derivación por clase                                     |
+| `DN-AUD-005-H09` | los problemas de scope o estructura no se corrigen modificando texto                     | 72 niveles legítimos, homónimos entre capas y etiquetas UOM contextuales  | corregir claves de comparación y modelo de datos                                 |
+| `DN-AUD-005-H10` | la ejecución futura deberá ser idempotente, versionada, auditable y reversible           | niveles de decisión del gobierno canónico                                 | definir contrato en `DATA-NORM-ARC-009` antes de backfills                       |
+
+#### 15. Riesgos y brechas vinculadas
+
+| ID               | Riesgo o brecha                                                                                        | Estado después de esta tarea               | Tarea propietaria de resolución                               |
+| ---------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------ | ------------------------------------------------------------- |
+| `DN-AUD-005-R01` | aplicar recorte o compactación a identificadores, direcciones o valores externos sin política de campo | identificado; no mitigado                  | `DATA-NORM-ARC-001`; `DATA-NORM-ARC-002`; `DATA-NORM-ARC-012` |
+| `DN-AUD-005-R02` | convertir candidatos ortográficos en entradas de diccionario sin fuente autorizada                     | identificado; no mitigado                  | `DATA-NORM-ARC-005`; `DATA-NORM-ARC-006`; `DATA-NORM-ARC-007` |
+| `DN-AUD-005-R03` | alterar marcas, siglas, personas o nombres legales mediante capitalización genérica                    | identificado; prohibido por esta auditoría | `DATA-NORM-ARC-003`; `DATA-NORM-ARC-005`                      |
+| `DN-AUD-005-R04` | eliminar signos de cantidades, modelos, unidades o referencias y cambiar su significado                | identificado; prohibido por esta auditoría | `DATA-NORM-ARC-002`; `DATA-NORM-ARC-005`; `DATA-NORM-ARC-007` |
+| `DN-AUD-005-R05` | usar una corrección textual como autorización implícita para fusionar registros                        | identificado; prohibido por esta auditoría | `DATA-NORM-ARC-010`; tareas de transición aplicables          |
+| `DN-AUD-005-R06` | corregir una copia derivada mientras la fuente propietaria permanece divergente                        | identificado; no mitigado                  | `DATA-NORM-AUD-006`; `DATA-NORM-ARC-011`                      |
+| `DN-AUD-005-R07` | ejecutar reglas sin versión, evidencia, actor, resultado anterior ni posibilidad de reversión          | identificado; no mitigado                  | `DATA-NORM-ARC-009`; `SUPA-TRANS-011`                         |
+| `DN-AUD-005-R08` | definir automatización sin inventariar triggers, funciones, clientes y procesos externos existentes    | identificado; no mitigado                  | `DATA-NORM-AUD-006`; `DATA-NORM-ARC-011`                      |
+| `DN-AUD-005-R09` | cambiar búsqueda, comparación o unicidad sin medir consumidores y colisiones                           | identificado; no mitigado                  | `DATA-NORM-AUD-007`; `DATA-NORM-ARC-008`; `DATA-NORM-ARC-010` |
+| `DN-AUD-005-R10` | extender reglas de Vento OS a VITAL por coexistencia física                                            | restringido documentalmente; pendiente     | `SUPA-ARC-025`; contratos de integración aplicables           |
+
+Ningún riesgo se considera aceptado, mitigado o cerrado por esta tarea.
+
+#### 16. Decisiones reservadas
+
+Esta tarea no decide:
+
+- la función exacta de normalización por campo;
+- la capitalización final de nombres, categorías, recetas o presentaciones;
+- el catálogo definitivo de conectores;
+- la grafía oficial de marcas, siglas, razones sociales o nombres propios;
+- qué candidatos serán aceptados como entradas del diccionario;
+- qué correcciones se ejecutarán automáticamente;
+- qué casos se aprobarán, rechazarán o conservarán en revisión humana;
+- dónde se almacenará el valor original y la representación derivada;
+- qué capa de aplicación, servicio, RPC o trigger ejecutará cada regla;
+- qué índices, constraints o claves de unicidad cambiarán;
+- qué registros se fusionarán, desactivarán, conservarán o relacionarán;
+- cómo se reasignarán relaciones, inventario, movimientos, recetas, proveedores, integraciones e historial;
+- qué backfills o migraciones se ejecutarán;
+- ninguna modificación física en Supabase.
+
+Las decisiones permanecen asignadas a `DATA-NORM-AUD-006`, `DATA-NORM-AUD-007`, `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012`, `SUPA-TRANS-005` a `SUPA-TRANS-014` según corresponda y las tareas de transición específicas de normalización.
+
+#### 17. Criterios de integridad de la auditoría
+
+La clasificación se considera íntegra para esta etapa cuando:
+
+1. conserva los tres niveles de decisión del gobierno canónico;
+2. agrega salidas explícitas para valores protegidos y problemas no textuales;
+3. separa forma, ortografía, identidad, estructura y relaciones;
+4. define condiciones estrictas para considerar determinista una operación;
+5. trata el diccionario como catálogo aprobado, versionado y acotado;
+6. envía a revisión humana todo caso sin evidencia suficiente;
+7. preserva valor mostrado, valor de búsqueda, valor externo original e identificador técnico;
+8. no interpreta cantidades, unidades o signos mediante eliminación genérica;
+9. no convierte una corrección visible en una fusión de registros;
+10. vincula cada brecha con una tarea propietaria concreta;
+11. no autoriza correcciones, backfills, fusiones ni cambios físicos;
+12. conserva la frontera separada de VITAL.
+
+#### 18. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: esta tarea clasifica evidencia y delimita las condiciones bajo las cuales una transformación futura podría ser determinista, depender de diccionario, requerir revisión humana, preservar el original o resolverse estructuralmente. Todavía no aprueba reglas ejecutables, entradas de diccionario, contratos de búsqueda, automatizaciones, acciones sobre datos, criterios de aceptación ni transiciones verificables. Los comportamientos exigibles deberán originarse en las tareas arquitectónicas y de transición que definan políticas por dominio, entidad, campo, representación y clase de tratamiento.
+
+#### 19. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto
+```
+
+
 ### [ ] DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto
 ### [ ] DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad
 
