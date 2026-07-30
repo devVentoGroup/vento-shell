@@ -1,6 +1,6 @@
 {
   "workbook": "C:\\Users\\User\\devVentoGroup\\vento-shell\\outputs\\019f9f2a-9508-77e3-a9ec-4ee497bf6531\\VENTO_OPERACION_PILOTO.xlsm",
-  "verified_at": "2026-07-29T21:18:13.1848231-05:00",
+  "verified_at": "2026-07-29T21:48:14.6264952-05:00",
   "sheets": 14,
   "tables": 11.0,
   "catalog_rows": 950,
@@ -11,7 +11,7 @@
   "dashboard_active_products": 950.0,
   "lstProductos": "=tblCatalogos[producto_id]",
   "lstUbicaciones": "=tblUbicaciones[ubicacion_id]",
-  "lstSedes": "='99_LISTAS'!$A$2:$A$8",
+  "lstSedes": "='99_LISTAS'!$A$2:$A$5",
   "external_links": 0,
   "external_formulas": [],
   "formula_errors": [],

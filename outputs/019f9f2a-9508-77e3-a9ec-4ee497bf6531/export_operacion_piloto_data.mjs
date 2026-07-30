@@ -207,6 +207,10 @@ const ubicaciones = locations.map((location) => {
   };
 });
 
+const operationalSites = [
+  ...new Set(ubicaciones.map((location) => location.sede).filter(Boolean)),
+].sort((a, b) => a.localeCompare(b, "es"));
+
 if (catalogos.length === 0) throw new Error("Supabase no devolvió productos activos");
 if (ubicaciones.length === 0)
   throw new Error("Supabase no devolvió ubicaciones activas");
@@ -225,12 +229,13 @@ const payload = {
       "Productos activos, una presentación operativa priorizada por producto, sedes/áreas/ubicaciones activas",
     products: catalogos.length,
     active_uom_profiles_reviewed: profiles.length,
-    sites: sites.length,
+    active_sites_reviewed: sites.length,
+    sites_with_inventory_locations: operationalSites.length,
     locations: ubicaciones.length,
   },
   catalogos,
   ubicaciones,
-  sedes: sites.map((site) => site.name),
+  sedes: operationalSites,
 };
 
 const temporaryPath = `${outputPath}.tmp`;

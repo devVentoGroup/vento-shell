@@ -3,12 +3,13 @@
     "schema_version": 1,
     "source_project": "vento-os-dev",
     "source_project_id": "clzdpinthhtknkmefsxx",
-    "exported_at": "2026-07-30T02:11:54.015Z",
+    "exported_at": "2026-07-30T02:47:40.280Z",
     "read_only": true,
     "selection": "Productos activos, una presentación operativa priorizada por producto, sedes/áreas/ubicaciones activas",
     "products": 950,
     "active_uom_profiles_reviewed": 1074,
-    "sites": 7,
+    "active_sites_reviewed": 7,
+    "sites_with_inventory_locations": 4,
     "locations": 12
   },
   "catalogos": [
@@ -20122,12 +20123,9 @@
     }
   ],
   "sedes": [
-    "App Review (Demo)",
     "Centro de Producción",
     "Molka",
-    "Punto recogida camioneta principal",
     "Saudo",
-    "Vento Café",
-    "Vento Group"
+    "Vento Café"
   ]
 }
