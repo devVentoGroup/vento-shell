@@ -4287,7 +4287,617 @@ SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación
 `SUPA-ARC-010` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación
+### ✅ SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-009 — Definir vínculo de auth.users con trabajador, cliente y dispositivo` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `09f54a95b52cc140ace1f0951f56a0058e17f2e2`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `d259e8158c50e1ae8ecda2fb242e5bd4c29a1ffc`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `5aca70b4f00e0eedd78d36c8f4f09a058a9f7053`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`
+**Tipo de tarea:** definición normativa del ciclo de sesiones Auth y empresariales, renovación, aseguramiento, cierre, revocación, bloqueo, desactivación, offboarding y sesiones de actor compartido; sin crear, modificar, bloquear o eliminar cuentas, sesiones, refresh tokens, factores, vínculos, trabajadores, clientes, dispositivos, tablas, schemas, constraints, funciones, triggers, policies, grants, configuración de Auth, migraciones, código, datos ni despliegues
+
+#### 1. Objetivo
+
+Definir un ciclo único, verificable y fail closed para las sesiones que intervienen en Vento OS, separando obligatoriamente:
+
+- la sesión técnica administrada por Supabase Auth;
+- el control empresarial de vigencia del principal y sus identidades;
+- la sesión temporal de actor humano sobre un dispositivo compartido;
+- el contexto efímero de una ejecución de servicio;
+- la revocación técnica de credenciales;
+- la desactivación empresarial de trabajador, cliente o dispositivo;
+- el cierre coordinado de accesos derivados durante offboarding.
+
+```text
+CREDENCIAL VÁLIDA
+        ↓
+SESIÓN AUTH ADMINISTRADA
+        ↓
+CONTROL EMPRESARIAL DE SESIÓN
+        ↓
+PRINCIPAL + VÍNCULO + IDENTIDAD VIGENTES
+        ↓
+ACTOR EFECTIVO Y ASEGURAMIENTO SUFICIENTE
+        ↓
+CONTEXTO + AUTORIZACIÓN
+        ↓
+OPERACIÓN O DENEGACIÓN ESTABLE
+```
+
+Una fila de sesión, un refresh token no revocado, un JWT aún presentable o una cuenta no eliminada no demostrarán por sí solos que una operación empresarial continúa autorizada.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-AUTH-SESSION-REVOCATION-DEACTIVATION-MODEL-001@1.0.0
+```
+
+| Propiedad                              |             Valor |
+| -------------------------------------- | ----------------: |
+| `managed_auth_session_source`          |   `Supabase Auth` |
+| `enterprise_session_control_owner`     | `identity_access` |
+| `audit_owner`                          |           `audit` |
+| `principal_session_classes`            |             **3** |
+| `enterprise_session_states`            |             **8** |
+| `actor_session_states`                 |             **6** |
+| `revocation_scopes`                    |             **5** |
+| `revocation_reason_classes`            |            **12** |
+| `duration_policy_profiles`             |             **5** |
+| `offboarding_execution_states`         |             **5** |
+| `raw_tokens_persisted_by_vento_target` |             **0** |
+| `physical_changes_authorized`          |             **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                   | Decisión consumida                                                                                                                         |
+| -------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `01_PROTOCOLO.md`                                        | continuidad, integridad, una sola tarea y separación estricta entre definición e implementación                                            |
+| `delivery-contract.json`                                 | artefacto único de tarea y registro 04A completo con nombre único                                                                          |
+| `active-sequence.json`                                   | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-010` como tarea actual                                                                |
+| `SUPABASE-AUTH-ENTERPRISE-IDENTITY-MODEL-001@1.0.0`      | cuenta, principal, identidad, actor efectivo, aseguramiento y denegación cerrada                                                           |
+| `SUPABASE-AUTH-ENTERPRISE-IDENTITY-LINK-MODEL-001@1.0.0` | cardinalidades, lifecycle de vínculos, coexistencia trabajador-cliente y exclusión de cuentas técnicas                                     |
+| `AUTH-MOD-001` y `ADR-AUTH-001`                          | autenticación, identidad, actor, contexto, autorización y presentación como capas separadas                                                |
+| `SUPA-AUD-010`                                           | 174 sesiones AAL1, 172 refresh tokens no revocados, 45 sesiones de trabajadores inactivos y seis tokens no revocados de cuentas bloqueadas |
+| `SUPA-AUD-011`                                           | dos dispositivos activos, cero sesiones de actor y cero firmas de actor en el corte auditado                                               |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`      | evidencia append-only, causalidad, resultados y conciliación sin secretos                                                                  |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`       | 5.131 requisitos hasta `SUPA-ARC-009`; rango `TREQ-SUPABASE-001` a `836`                                                                   |
+
+#### 4. Decisión canónica
+
+Vento OS distinguirá cuatro planos que no podrán colapsarse:
+
+```text
+AUTH SESSION
+  cuenta, proveedor, access token, refresh chain y AAL administrados por Supabase
+
+ENTERPRISE SESSION CONTROL
+  referencia opaca, principal, estado, vigencia, versión de revocación y aseguramiento
+
+SHARED DEVICE ACTOR SESSION
+  trabajador temporal que actúa sobre una sesión técnica de dispositivo
+
+SERVICE EXECUTION CONTEXT
+  ejecución server-side nominal, acotada, correlacionada y sin identidad humana implícita
+```
+
+`identity_access` gobernará el control empresarial y las sesiones de actor; Supabase Auth continuará gobernando credenciales, sesiones y rotación técnica. Vento no creará una copia competidora de `auth.sessions`, `auth.refresh_tokens`, contraseñas, OTP, factores o tokens.
+
+#### 5. Fronteras de responsabilidad
+
+| Elemento                                                | Owner                           | Regla                                                               |
+| ------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------- |
+| access token, refresh token, proveedor y sesión técnica | Supabase Auth                   | usar superficies soportadas; no duplicar secretos                   |
+| estado empresarial de la sesión                         | `identity_access`               | resolver vigencia, principal, identidad, aseguramiento y revocación |
+| estado laboral                                          | `workforce`                     | determina si la identidad `EMPLOYEE` continúa activa                |
+| estado de cliente                                       | `customer_engagement`           | determina si la identidad `CUSTOMER` continúa activa                |
+| estado del dispositivo                                  | `technology_operations`         | determina si la terminal continúa habilitada                        |
+| sesión de actor compartido                              | `identity_access`               | vincula temporalmente dispositivo, trabajador y contexto            |
+| autorización                                            | contratos AUTH y `SUPA-ARC-015` | decide capacidad sobre recurso y territorio                         |
+| evidencia de apertura, cierre y revocación              | `audit`                         | registra referencias, razones, resultados y fallos sin secretos     |
+
+La revocación técnica no sustituirá la desactivación empresarial y la desactivación empresarial no se considerará completa mientras los accesos derivados permanezcan sin cierre o conciliación.
+
+#### 6. Clases de sesión por principal
+
+| Clase                     | Principal       | Uso permitido                                                                                                      |
+| ------------------------- | --------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `HUMAN_PERSONAL`          | `HUMAN_USER`    | acceso personal a contratos laborales o de cliente según la identidad exigida por la aplicación                    |
+| `SHARED_DEVICE_TECHNICAL` | `SHARED_DEVICE` | configuración, heartbeat, diagnóstico y apertura o cierre de sesión de actor; sin mutación empresarial por sí sola |
+| `SERVICE_EXECUTION`       | `SERVICE`       | operación server-side nominal incluida en allowlist y con contexto de ejecución limitado                           |
+
+Una sesión `HUMAN_PERSONAL` no fusionará identidades. La misma cuenta podrá resolver `EMPLOYEE` o `CUSTOMER` únicamente cuando el contrato consumidor lo exija y el vínculo correspondiente esté vigente.
+
+#### 7. Estados del control empresarial de sesión
+
+Vocabulario cerrado:
+
+| Estado              | Significado                                                                                          |     Puede ejecutar operación ordinaria |
+| ------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------: |
+| `PENDING_ASSURANCE` | la autenticación existe, pero falta confirmación, reautenticación o nivel de aseguramiento requerido |                                     No |
+| `ACTIVE`            | sesión, principal, vínculo e identidad cumplen las condiciones actuales                              |   Sí, sujeto a contexto y autorización |
+| `REAUTH_REQUIRED`   | debe demostrar nuevamente presencia o elevar aseguramiento antes de continuar                        | No para mutaciones o accesos sensibles |
+| `SUSPENDED`         | acceso contenido temporalmente por revisión, riesgo o dependencia no resuelta                        |                                     No |
+| `REVOKING`          | el cierre fue ordenado y existen acciones técnicas o consumidoras pendientes                         |                                     No |
+| `REVOKED`           | la sesión fue invalidada por decisión administrativa, seguridad o lifecycle                          |                                     No |
+| `EXPIRED`           | terminó por política temporal, inactividad o vencimiento de la sesión administrada                   |                                     No |
+| `TERMINATED`        | terminó de forma normal y auditable por cierre explícito                                             |                                     No |
+
+Solo `ACTIVE` podrá entrar a la evaluación normal de contexto y autorización. Ningún estado terminal retornará a `ACTIVE`; una nueva autenticación producirá una identidad de sesión distinta.
+
+#### 8. Invariantes del ciclo de sesión
+
+1. Toda sesión tendrá un único `principal_kind`.
+2. Una sesión técnica de dispositivo nunca adquirirá identidad laboral propia.
+3. Una sesión de actor no podrá existir sin una sesión técnica de dispositivo vigente.
+4. La actividad de una identidad se verificará en su owner schema y no únicamente en claims.
+5. Un vínculo revocado, suspendido, en conflicto o supersedido no participará en resolución.
+6. El bloqueo, revocación, expiración o desactivación tendrá precedencia sobre roles, permisos, sedes, turnos y excepciones positivas.
+7. El refresh de credenciales no podrá reactivar una sesión `SUSPENDED`, `REVOKING`, `REVOKED`, `EXPIRED` o `TERMINATED`.
+8. Una operación sensible resolverá estado fresco antes de producir efecto.
+9. Un cierre parcial nunca se presentará como logout, revocación u offboarding completo.
+10. Todo cambio será monotónico, idempotente y auditable.
+
+#### 9. Contrato lógico de control de sesión
+
+Todo control empresarial de sesión deberá poder representar:
+
+```text
+enterprise_session_control_id
++ auth_subject_id
++ auth_session_reference
++ principal_id
++ principal_kind
++ session_class
++ session_state
++ session_generation
++ principal_revocation_version
++ assurance_level_observed
++ assurance_level_required
++ opened_at
++ last_verified_at
++ absolute_expires_at
++ idle_expires_at
++ reauth_required_at
++ suspended_at
++ revocation_requested_at
++ revoked_at
++ terminated_at
++ revocation_scope
++ revocation_reason
++ device_id
++ actor_session_id
++ source_versions
++ audit_reference
+```
+
+`auth_session_reference` será una referencia opaca o identificador administrado permitido. No contendrá access token, refresh token, OTP, contraseña, secreto, private key ni credencial reutilizable.
+
+#### 10. Aseguramiento, reautenticación y MFA
+
+1. El nivel observado provendrá de la sesión administrada y no de un parámetro del cliente.
+2. Cada contrato sensible declarará `assurance_level_required`.
+3. Una sesión con nivel insuficiente pasará a `PENDING_ASSURANCE` o `REAUTH_REQUIRED` y no ejecutará el efecto solicitado.
+4. La elevación de aseguramiento no ampliará identidades, roles, permisos ni territorio.
+5. Reautenticar no reactivará una identidad, vínculo, dispositivo o sesión suspendida.
+6. Recuperación de cuenta, cambio de proveedor y renovación de token no equivaldrán a MFA ni a aprobación empresarial.
+7. El corte actual de 174 sesiones AAL1 y cero AAL2 se conservará como línea base, no como certificación de suficiencia.
+8. La selección exacta de acciones con step-up se vinculará con permisos sensibles y contratos de dominio en `SUPA-ARC-015` y `SUPA-ARC-016`.
+
+#### 11. Perfiles de duración y renovación
+
+Se definen cinco perfiles lógicos:
+
+| Perfil                    | Uso                                | Parámetros obligatorios                                                             |
+| ------------------------- | ---------------------------------- | ----------------------------------------------------------------------------------- |
+| `EMPLOYEE_PERSONAL`       | sesión personal laboral            | edad absoluta, inactividad, renovación, reautenticación y cierre por baja           |
+| `CUSTOMER_PERSONAL`       | sesión personal de cliente         | edad absoluta, renovación, recuperación y revocación por riesgo o estado de cliente |
+| `SHARED_DEVICE_TECHNICAL` | terminal compartida                | edad absoluta, rotación, vínculo con dispositivo y cierre remoto                    |
+| `SENSITIVE_STEP_UP`       | ventana de aseguramiento reforzado | duración corta, finalidad concreta y no reutilización fuera del contrato            |
+| `SERVICE_EXECUTION`       | ejecución técnica                  | expiración breve o de una sola ejecución, operación permitida y correlación         |
+
+Cada perfil tendrá valores explícitos por ambiente para `absolute_max_age`, `idle_timeout`, `refresh_policy`, `reauth_window`, `concurrent_session_policy` y `offline_tolerance`. Esta tarea no inventa duraciones numéricas; su parametrización y paridad corresponden a `SUPA-ARC-024`.
+
+#### 12. Frescura y versión de revocación
+
+Las operaciones sensibles deberán comprobar, en una frontera confiable:
+
+```text
+SESIÓN AUTH VÁLIDA
+AND enterprise session = ACTIVE
+AND session_generation vigente
+AND principal_revocation_version vigente
+AND vínculo ACTIVE
+AND identidad de dominio ACTIVE
+AND aseguramiento suficiente
+AND actor vigente cuando aplique
+```
+
+Una sesión o token con versión anterior a la última revocación efectiva producirá denegación aunque todavía pueda presentarse técnicamente. Los mecanismos físicos de versión, cache, consulta y propagación se resolverán en `SUPA-ARC-012`, `SUPA-ARC-013` y `SUPA-ARC-015`.
+
+#### 13. Alcances de revocación
+
+Vocabulario cerrado:
+
+| Alcance                    | Efecto esperado                                                                              |
+| -------------------------- | -------------------------------------------------------------------------------------------- |
+| `CURRENT_SESSION`          | cierra una sesión concreta y su cadena de renovación                                         |
+| `SUBJECT_ALL_SESSIONS`     | cierra todas las sesiones del `auth_subject_id`                                              |
+| `PRINCIPAL_CLASS_SESSIONS` | cierra las sesiones de una clase de principal o uso controlado                               |
+| `ACTOR_SESSION`            | termina una sesión humana sobre dispositivo compartido sin confundirla con la cuenta técnica |
+| `SERVICE_EXECUTION`        | invalida una ejecución o credencial técnica nominal y sus reintentos pendientes              |
+
+Todo alcance deberá declarar iniciador, autoridad, razón, momento efectivo, resultado por dependencia y evidencia.
+
+#### 14. Razones de revocación y cierre
+
+Vocabulario cerrado:
+
+```text
+USER_SIGN_OUT
+ADMINISTRATIVE_BLOCK
+EMPLOYEE_DEACTIVATED
+CUSTOMER_DEACTIVATED
+DEVICE_DEACTIVATED
+IDENTITY_LINK_REVOKED
+ACTOR_SESSION_ENDED
+CREDENTIAL_ROTATED
+ASSURANCE_POLICY_CHANGED
+SUSPECTED_COMPROMISE
+ACCOUNT_REPLACED_OR_SPLIT
+ENVIRONMENT_OR_POLICY_CHANGE
+```
+
+La razón no se inferirá desde un mensaje de interfaz. Deberá provenir de una acción autorizada, evento de lifecycle o control técnico verificable.
+
+#### 15. Logout y cierre voluntario
+
+1. El logout de sesión actual usará `CURRENT_SESSION`.
+2. El logout global usará `SUBJECT_ALL_SESSIONS`.
+3. El cliente deberá limpiar credenciales y estado local después de obtener resultado del servidor, pero esa limpieza no será la evidencia única del cierre.
+4. Repetir la misma solicitud será idempotente y devolverá el resultado previo o un no-op aprobado.
+5. Un fallo parcial dejará estado `REVOKING` y abrirá reconciliación.
+6. Cerrar una sesión personal no desactivará la identidad empresarial.
+7. Cerrar una sesión de actor no cerrará por sí solo la sesión técnica del dispositivo, salvo política o riesgo que lo ordene.
+
+#### 16. Bloqueo administrativo y compromiso sospechado
+
+`ADMINISTRATIVE_BLOCK` y `SUSPECTED_COMPROMISE` exigirán:
+
+- contención inmediata del control empresarial;
+- incremento de la versión de revocación aplicable;
+- revocación de las sesiones y cadenas de renovación afectadas;
+- cierre de sesiones de actor y contextos de servicio relacionados cuando corresponda;
+- invalidación de recuperación o factores comprometidos mediante superficies soportadas;
+- auditoría de actor, razón, alcance, resultados y residuales;
+- prohibición de mostrar éxito mientras exista acceso material no conciliado.
+
+Una marca de cuenta bloqueada sin cierre observable de sesiones y refresh chains no se considerará revocación completa.
+
+#### 17. Desactivación empresarial por identidad
+
+| Evento                            | Efecto obligatorio                                                                                                                       |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| trabajador inactivo               | denegar identidad `EMPLOYEE`, cerrar accesos laborales, sesiones de actor, simulaciones y contexto operativo; conservar historia laboral |
+| cliente inactivo                  | denegar identidad `CUSTOMER` y accesos comerciales; conservar historia, consentimiento, saldos y transacciones según su owner            |
+| dispositivo inactivo              | revocar sesión técnica, cerrar toda sesión de actor y bloquear capacidades técnicas y empresariales                                      |
+| vínculo revocado o supersedido    | excluir la identidad del principal y forzar nueva resolución antes de continuar                                                          |
+| cuenta Auth bloqueada o eliminada | denegar todas las identidades autenticables asociadas sin eliminar perfiles empresariales                                                |
+
+La desactivación de una identidad no eliminará el objeto empresarial ni sus referencias históricas.
+
+#### 18. Offboarding laboral
+
+El offboarding utilizará cinco estados:
+
+```text
+REQUESTED
+CONTAINMENT_ACTIVE
+REVOCATION_IN_PROGRESS
+RECONCILIATION_REQUIRED
+COMPLETED
+```
+
+Para llegar a `COMPLETED` deberá existir evidencia de:
+
+1. trabajador inactivo en `workforce`;
+2. vínculo `EMPLOYEE` suspendido, revocado o supersedido según la causa;
+3. control empresarial denegado desde el inicio de la contención;
+4. sesiones personales laborales y refresh chains afectadas cerradas;
+5. sesiones de actor compartido finalizadas;
+6. simulaciones, turnos o check-ins que otorguen contexto efectivo cerrados o invalidados;
+7. push tokens y registros personales de dispositivo retirados o reasignados según contrato;
+8. caches, sesiones de aplicación y consumidores derivados notificados o invalidados;
+9. permisos, sedes y áreas residuales imposibilitados de autorizar;
+10. fallos parciales conciliados y residuales con owner, tarea y evidencia.
+
+La baja laboral no desactivará automáticamente la identidad `CUSTOMER`. Cuando ambas identidades compartan cuenta, la sesión existente podrá cerrarse para garantizar la contención laboral; el cliente deberá iniciar una nueva sesión y resolver exclusivamente su identidad comercial vigente.
+
+#### 19. Sesión de actor en dispositivo compartido
+
+La sesión Auth técnica y la sesión del actor serán independientes:
+
+```text
+SHARED_DEVICE_TECHNICAL SESSION
+        +
+ACTIVE DEVICE
+        +
+ACTOR SESSION ACTIVE
+        +
+EMPLOYEE ACTIVE
+        +
+SHIFT / SITE / AREA / ROLE VALID
+        =
+EFFECTIVE ACTOR EMPLOYEE
+```
+
+Estados cerrados de sesión de actor:
+
+| Estado          | Significado                                             |
+| --------------- | ------------------------------------------------------- |
+| `PENDING_ACTOR` | terminal activa sin trabajador efectivo                 |
+| `ACTIVE`        | trabajador, contexto y vigencia comprobados             |
+| `LOCKED`        | actor temporalmente contenido por control o riesgo      |
+| `EXPIRED`       | venció por tiempo, turno, contexto o sesión técnica     |
+| `ENDED`         | cierre normal por el trabajador o el flujo operativo    |
+| `REVOKED`       | cierre administrativo, de seguridad o por desactivación |
+
+Solo `ACTIVE` permitirá mutaciones empresariales. La sesión de actor no podrá sobrevivir a la sesión técnica, dispositivo inactivo, trabajador inactivo, turno inválido, contexto incompatible o revocación administrativa.
+
+#### 20. Contrato lógico de sesión de actor
+
+```text
+actor_session_id
++ device_id
++ technical_auth_subject_id
++ technical_session_reference
++ employee_id
++ actor_session_state
++ shift_id
++ site_id
++ area_id
++ operational_role_id
++ assurance_reference
++ started_at
++ expires_at
++ last_verified_at
++ locked_at
++ ended_at
++ revoked_at
++ end_reason
++ source_versions
++ audit_reference
+```
+
+Cada mutación sensible desde terminal compartida volverá a comprobar actor, trabajador, dispositivo, turno y contexto. Un PIN, firma o selección visual no sustituirá esa resolución.
+
+#### 21. Ejecuciones de servicio
+
+1. `SERVICE_EXECUTION` no será una sesión de usuario ni tendrá perfil laboral o de cliente.
+2. Cada ejecución declarará `service_principal_id`, operación, ambiente, owner técnico, finalidad, inicio, expiración y correlación.
+3. `service_role` continuará siendo una capacidad técnica y no el actor empresarial.
+4. Una acción iniciada por humano conservará el principal y actor humanos aunque un backend privilegiado produzca el efecto.
+5. Una ejecución autónoma utilizará allowlist, expiración, idempotencia, auditoría y alcance mínimo.
+6. Una credencial técnica rotada o revocada no podrá mantener ejecuciones nuevas bajo una versión anterior.
+7. Edge Functions, webhooks, cron y workers completarán su materialización en `SUPA-ARC-020`.
+
+#### 22. Concurrencia, renovación e idempotencia
+
+- una refresh chain revocada no podrá abrir una sesión sucesora activa;
+- una renovación concurrente con revocación deberá converger en denegación cuando la revocación gane precedencia;
+- una respuesta tardía no reducirá `session_generation` ni `principal_revocation_version`;
+- reintentar logout, bloqueo, desactivación u offboarding no duplicará efectos ni auditorías principales;
+- cada dependencia conservará resultado `SUCCEEDED`, `ALREADY_CLOSED`, `FAILED_SAFE`, `UNKNOWN_OUTCOME` o `RECONCILIATION_REQUIRED`;
+- `UNKNOWN_OUTCOME` impedirá asumir continuidad y exigirá consulta o conciliación;
+- ningún consumidor podrá reactivar acceso a partir de cache, sesión local o evento tardío.
+
+#### 23. Recuperación, cambio de proveedor y sustitución de cuenta
+
+1. Recuperar contraseña o canal no reactivará vínculos, identidades ni permisos.
+2. Vincular otro proveedor no cambiará IDs empresariales ni el actor efectivo.
+3. Desvincular el último proveedor autenticable exigirá una ruta segura de recuperación o dejará la cuenta no autenticable sin eliminar perfiles.
+4. Cambiar, fusionar o separar cuentas cerrará o supersederá sesiones anteriores antes del cutover.
+5. Una cuenta sucesora tendrá nueva sesión, nueva generación y resolución completa.
+6. Toda operación conservará auditoría, consentimiento, historia, rollback y prueba de no apropiación.
+7. La paridad de proveedores y ambientes se resolverá en `SUPA-ARC-024`.
+
+#### 24. Auditoría y minimización
+
+Se auditarán, según sensibilidad:
+
+- apertura, renovación, reautenticación, suspensión, revocación, expiración y cierre;
+- sesión actual y alcance global de revocación;
+- cambios de aseguramiento y factores;
+- bloqueo administrativo y compromiso sospechado;
+- desactivación de trabajador, cliente o dispositivo;
+- apertura, bloqueo y cierre de actor compartido;
+- offboarding y cada dependencia cerrada, fallida o pendiente;
+- recuperación, cambio de proveedor, merge, split y cambio de cuenta;
+- acceso administrativo a sesiones y decisiones de revocación.
+
+La evidencia conservará referencias, hashes, versiones, actor, autoridad, razón y resultado. Quedan prohibidos access tokens, refresh tokens, OTP, contraseñas, PIN, factores completos, secretos y payloads de recuperación.
+
+#### 25. Comportamiento de denegación
+
+Códigos mínimos:
+
+```text
+session_not_active
+session_expired
+session_suspended
+session_revoking
+session_revoked
+session_terminated
+session_generation_stale
+principal_revocation_version_stale
+reauthentication_required
+assurance_level_insufficient
+refresh_chain_revoked
+account_blocked
+identity_deactivated
+identity_link_not_active
+device_session_invalid
+actor_session_not_active
+service_execution_invalid
+offboarding_in_progress
+revocation_reconciliation_required
+```
+
+Los consumidores podrán traducirlos, pero no reinterpretar una denegación como sesión anónima, error genérico o éxito parcial.
+
+#### 26. Línea base actual y clasificación obligatoria
+
+| Evidencia AS-IS                                              | Clasificación objetivo                                                  |
+| ------------------------------------------------------------ | ----------------------------------------------------------------------- |
+| 174 sesiones, todas AAL1                                     | línea base sin certificación de aseguramiento suficiente                |
+| cero sesiones AAL2 y cero factores MFA                       | capacidad no implementada; requiere contrato y prueba antes de exigirla |
+| 174 sesiones con `not_after` nulo                            | duración máxima no certificada en el dato observado                     |
+| 172 refresh tokens no revocados                              | universo que deberá reconciliar lifecycle y política de duración        |
+| 14 trabajadores inactivos con 45 sesiones                    | brecha crítica de offboarding y contención                              |
+| tres cuentas bloqueadas con seis refresh tokens no revocados | bloqueo no equivalente a revocación completa                            |
+| dos dispositivos activos con cuenta Auth                     | universo de sesión técnica que deberá usar cuenta dedicada              |
+| cero sesiones y cero firmas de actor                         | control configurado pero sin readiness operativo demostrado             |
+
+La tarea no altera esos datos ni declara que cada fila observada continúe utilizable. Los conteos son baseline para transición, pruebas y reconciliación.
+
+#### 27. Orden obligatorio de materialización futura
+
+```text
+1. INVENTARIAR SESIONES, REFRESH CHAINS, FACTORES, ACTORES Y CONSUMIDORES
+2. CLASIFICAR SESIÓN, PRINCIPAL, IDENTIDAD, ASEGURAMIENTO Y DURACIÓN
+3. MATERIALIZAR CONTROL EMPRESARIAL Y VERSIONES DE REVOCACIÓN
+4. IMPLEMENTAR CIERRE DE SESIÓN Y REVOCACIÓN IDEMPOTENTE
+5. IMPLEMENTAR SESIONES DE ACTOR COMPARTIDO
+6. ORQUESTAR DESACTIVACIÓN Y OFFBOARDING CON CONTENCIÓN INMEDIATA
+7. ADAPTAR GUARDS, RPC, RLS, CLIENTES, PUSH Y CACHES
+8. ACTIVAR STEP-UP Y MFA POR CONTRATO SENSIBLE
+9. PROBAR CONCURRENCIA, FALLOS PARCIALES, RECUPERACIÓN Y ROLLBACK
+10. RECONCILIAR HISTÓRICO, RETIRAR FUENTES LEGACY Y DETECTAR DRIFT
+```
+
+El orden no autoriza implementación física.
+
+#### 28. Riesgos restringidos y carryover
+
+| Riesgo                                     | Efecto de esta tarea                                           | Resolución restante                      |
+| ------------------------------------------ | -------------------------------------------------------------- | ---------------------------------------- |
+| trabajador inactivo con sesiones           | exige contención inmediata y cierre verificable                | `SUPA-TRANS-004`; paquete de offboarding |
+| cuenta bloqueada con refresh activo        | separa bloqueo de revocación completa                          | `SUPA-ARC-013`; `015`; transición        |
+| duración máxima no certificada             | define perfiles y parámetros obligatorios                      | `SUPA-ARC-024`                           |
+| ausencia de MFA y AAL2                     | define aseguramiento por contrato, sin declararlo implementado | `SUPA-ARC-015`; `016`; `024`             |
+| token o claim obsoleto                     | exige estado fresco y versión de revocación                    | `SUPA-ARC-012`; `013`; `015`             |
+| dispositivo sin sesión de actor demostrada | define ciclo, estados y vigencia                               | transición de dispositivos compartidos   |
+| offboarding parcial                        | exige estado `RECONCILIATION_REQUIRED` y residuales con owner  | `SUPA-ARC-007`; `022`; transición        |
+| caches y consumidores divergentes          | exige propagación e invalidación controladas                   | `SUPA-ARC-019`; `020`; `025`             |
+| drift de política y ambientes              | exige registro, paridad y validador recurrente                 | `SUPA-ARC-024`; `025`; `SUPA-TRANS-015`  |
+
+Ningún riesgo queda cerrado físicamente por esta definición.
+
+#### 29. Decisiones reservadas
+
+| Decisión                                                      | Tarea propietaria                       |
+| ------------------------------------------------------------- | --------------------------------------- |
+| nombres físicos, claves, constraints, estados y timestamps    | `SUPA-ARC-011`; `SUPA-ARC-012`          |
+| funciones, RPC, triggers y orquestación transaccional         | `SUPA-ARC-013`                          |
+| excepciones privilegiadas y `SECURITY DEFINER`                | `SUPA-ARC-014`                          |
+| RLS, grants, claims, roles de ejecución y políticas de acceso | `SUPA-ARC-015`                          |
+| requerimiento de aseguramiento por contrato de dominio        | `SUPA-ARC-016`                          |
+| Storage y evidencia física                                    | `SUPA-ARC-018`                          |
+| Realtime y propagación de eventos                             | `SUPA-ARC-019`                          |
+| Edge Functions, webhooks, cron, workers y revocación externa  | `SUPA-ARC-020`                          |
+| retención, respaldo, restauración y legal hold                | `SUPA-ARC-022`                          |
+| tipos compartidos de sesión y denegación                      | `SUPA-ARC-023`                          |
+| duraciones, proveedores, MFA y paridad por ambiente           | `SUPA-ARC-024`                          |
+| inventario, migración, reconciliación, cutover y rollback     | `SUPA-TRANS-001` a `SUPA-TRANS-015`     |
+| implementación física                                         | paquetes E5 y BLOQUE R correspondientes |
+
+#### 30. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear, actualizar, bloquear o eliminar cuentas Auth;
+- cerrar, revocar o renovar sesiones o refresh tokens;
+- configurar duración, proveedor, MFA, captcha, recuperación o protección de contraseña;
+- activar, desactivar o modificar trabajadores, clientes, dispositivos, vínculos, turnos, check-ins, simulaciones o push tokens;
+- crear tablas espejo de Auth, copiar tokens o persistir secretos;
+- crear o modificar schemas, tablas, constraints, funciones, triggers, policies, grants, RLS o ACL;
+- modificar aplicaciones, guards, Server Actions, RPC, Edge Functions, cron, webhooks o workers;
+- ejecutar DDL, DML, migraciones, backfills, pruebas mutantes, cutover o despliegues;
+- iniciar `SUPA-ARC-011` antes de aprobación expresa.
+
+#### 31. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-837 a TREQ-SUPABASE-878
+```
+
+Los cuarenta y dos requisitos protegen separación de planos, clases y estados de sesión, no persistencia de secretos, aseguramiento, frescura, duración, renovación, revocación, bloqueo, desactivación, offboarding, sesiones de actor, servicios, concurrencia, recuperación, auditoría, transición y detección de drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 32. Criterios de aceptación
+
+- [ ] Supabase Auth conserva autoridad exclusiva sobre credenciales, sesiones y refresh chains administradas.
+- [ ] `identity_access` gobierna control empresarial y sesiones de actor sin copiar tokens.
+- [ ] Existen exactamente tres clases de sesión por principal.
+- [ ] Existen exactamente ocho estados empresariales de sesión y solo `ACTIVE` admite operación normal.
+- [ ] Existen exactamente seis estados de sesión de actor.
+- [ ] Estados terminales no retornan a `ACTIVE`.
+- [ ] Revocación y desactivación prevalecen sobre permisos y contexto positivos.
+- [ ] Una operación sensible comprueba versión y estado fresco.
+- [ ] Aseguramiento insuficiente exige reautenticación o step-up sin ampliar autoridad.
+- [ ] Los cinco perfiles de duración declaran todos sus parámetros sin inventar valores numéricos.
+- [ ] Logout, revocación y offboarding son idempotentes y conciliables.
+- [ ] Una cuenta bloqueada no se considera cerrada mientras persistan accesos no conciliados.
+- [ ] La baja laboral cierra acceso laboral sin eliminar ni desactivar automáticamente la identidad cliente.
+- [ ] Un dispositivo inactivo cierra sesión técnica y sesiones de actor.
+- [ ] Una sesión de actor no sobrevive a su dispositivo, trabajador, turno, contexto o sesión técnica.
+- [ ] Una ejecución de servicio nunca se presenta como usuario o autorización empresarial.
+- [ ] Recuperación o cambio de proveedor no reactiva vínculos ni permisos.
+- [ ] Auditoría y controles no almacenan tokens, OTP, contraseñas, PIN ni secretos.
+- [ ] La línea base de sesiones y brechas queda protegida por pruebas de transición.
+- [ ] Se generan `TREQ-SUPABASE-837` a `TREQ-SUPABASE-878`.
+- [ ] No se ejecutan cambios físicos, código ni implementación.
+- [ ] `SUPA-ARC-011` permanece reservada.
+
+#### 33. Controles estructurales requeridos
+
+| Control                                 | Resultado esperado |
+| --------------------------------------- | -----------------: |
+| owner de sesión técnica                 |    `Supabase Auth` |
+| owner de control empresarial            |  `identity_access` |
+| owner de evidencia                      |            `audit` |
+| clases de sesión por principal          |              **3** |
+| estados empresariales de sesión         |              **8** |
+| estados de sesión de actor              |              **6** |
+| alcances de revocación                  |              **5** |
+| razones de revocación                   |             **12** |
+| perfiles de duración                    |              **5** |
+| estados de offboarding                  |              **5** |
+| estados ordinarios autorizables         |   **1** (`ACTIVE`) |
+| tokens o secretos persistidos por Vento |              **0** |
+| requisitos nuevos                       |             **42** |
+| cambios físicos                         |              **0** |
+
+#### 34. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-009 — Definir vínculo de auth.users con trabajador, cliente y dispositivo
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas
+```
+
+`SUPA-ARC-011` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas
 ### [ ] SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps
 ### [ ] SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
