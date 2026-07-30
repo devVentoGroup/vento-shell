@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **407** |
+| Aprobadas | **408** |
 | En propuesta | **0** |
-| No iniciadas | **1168** |
+| No iniciadas | **1167** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **25.84% (407/1575)** |
+| Porcentaje de completamiento | **25.90% (408/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-ARC-002` — Definir dominios empresariales estables | ✅ APROBADA |
-| Tarea actual | `SUPA-ARC-003` — Definir esquema propietario de cada fuente de verdad | ⬜ NO INICIADA |
-| Siguiente | `SUPA-ARC-004` — Definir función futura de `public` | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-ARC-003` — Definir esquema propietario de cada fuente de verdad | ✅ APROBADA |
+| Tarea actual | `SUPA-ARC-004` — Definir función futura de `public` | ⬜ NO INICIADA |
+| Siguiente | `SUPA-ARC-005` — Definir capa expuesta de vistas y RPC | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -405,7 +405,7 @@
 | ⬜ NO INICIADA | `DATA-NORM-AUD-007` | Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ✅ APROBADA | `SUPA-ARC-001` | Definir principios de separación entre esquemas administrados y empresariales | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-002` | Definir dominios empresariales estables | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
-| ⬜ NO INICIADA | `SUPA-ARC-003` | Definir esquema propietario de cada fuente de verdad | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
+| ✅ APROBADA | `SUPA-ARC-003` | Definir esquema propietario de cada fuente de verdad | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-004` | Definir función futura de `public` | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-005` | Definir capa expuesta de vistas y RPC | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-006` | Definir capa privada de helpers y lógica interna | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
