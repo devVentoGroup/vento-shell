@@ -11864,7 +11864,699 @@ SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento
 `SUPA-ARC-021` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento
+### ✅ SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `32985d490a0a0eae049749840c97b5e73df61c65`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `a3a5bbbb2eae7f4d146d73ddd50182bc28770186`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `83b582fe84c2e8bb30c8f1c9104f863dfca8bc2b`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`
+**Tipo de tarea:** definición normativa de estrategia objetivo para workload, SLO, consultas, planes, índices, conexiones, concurrencia, paginación, rate limits, backpressure, crecimiento, particionamiento, capacidad, observabilidad y gates de regresión; sin crear, reconstruir, renombrar o eliminar índices, ejecutar benchmarks sobre producción, cambiar parámetros, activar extensiones, particionar, archivar, purgar, aplicar migraciones, modificar código, datos o configuración ni ejecutar cutover
+
+#### 1. Objetivo
+
+Definir una estrategia única, medible y reversible para que cada consulta, índice, operación síncrona, trabajo asíncrono y proyección de crecimiento de Vento OS tenga contrato de carga, presupuesto, evidencia, owner, lifecycle y gate, evitando tanto la optimización por intuición como la reacción tardía ante saturación.
+
+```text
+CONTRATO Y CLASE DE WORKLOAD
+        ↓
+SLO, PRESUPUESTO Y DATOS REPRESENTATIVOS
+        ↓
+TELEMETRÍA NORMALIZADA + PLAN COMPARABLE
+        ↓
+HIPÓTESIS DE CONSULTA, ÍNDICE O CAPACIDAD
+        ↓
+EXPERIMENTO EN ENTORNO CONTROLADO
+        ↓
+DECISIÓN REVERSIBLE + OBSERVACIÓN
+        ↓
+BASELINE, TENDENCIA, ALERTA Y DRIFT
+```
+
+El tamaño actual no demuestra crisis de capacidad y el bajo uso observado no demuestra que un objeto sea innecesario. Esta tarea fija cómo medir, experimentar, decidir y anticipar crecimiento sin ejecutar cambios físicos.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-PERFORMANCE-INDEX-GROWTH-STRATEGY-001@1.0.0
+```
+
+| Propiedad                                   |             Valor |
+| ------------------------------------------- | ----------------: |
+| `current_database_size_approx_mb`           |           **131** |
+| `current_query_fingerprint_count`           |         **4.942** |
+| `current_accumulated_call_count`            |    **21.319.857** |
+| `current_accumulated_time_ms`               | **76.413.141,61** |
+| `current_temp_blocks_written`               |     **2.352.651** |
+| `current_wal_bytes_observed`                | **2.051.758.067** |
+| `current_exact_duplicate_index_groups`      |             **8** |
+| `current_duplicate_index_bytes`             |       **892.928** |
+| `current_business_fk_count`                 |           **795** |
+| `current_fk_leading_index_covered_count`    |           **351** |
+| `current_fk_without_leading_index_count`    |           **444** |
+| `current_partitioned_business_table_count`  |             **0** |
+| `current_cron_history_row_count`            |        **47.056** |
+| `current_cron_history_older_than_90d_count` |        **13.800** |
+| `current_storage_content_approx_mb`         |           **751** |
+| `performance_plane_count`                   |             **7** |
+| `workload_class_count`                      |            **10** |
+| `slo_profile_count`                         |             **6** |
+| `query_budget_profile_count`                |             **6** |
+| `rate_limit_profile_count`                  |             **5** |
+| `index_strategy_class_count`                |             **9** |
+| `index_lifecycle_state_count`               |             **9** |
+| `partition_assessment_trigger_count`        |             **8** |
+| `drift_class_count`                         |            **15** |
+| `new_test_requirements`                     |            **64** |
+| `physical_changes_authorized`               |             **0** |
+
+El artefacto integra seis registros normativos:
+
+```text
+PERFORMANCE-WORKLOAD-MANIFEST-001
+QUERY-PLAN-BASELINE-REGISTRY-001
+INDEX-DECISION-LEDGER-001
+CAPACITY-GROWTH-SNAPSHOT-001
+PERFORMANCE-SLO-AND-BUDGET-REGISTRY-001
+CURRENT-PERFORMANCE-DISPOSITION-REGISTRY-001
+```
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                      | Decisión consumida                                                                                        |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                           | continuidad, fase documental, integridad histórica y separación entre definición y ejecución              |
+| `delivery-contract.json`                                    | un único artefacto de tarea y registro 04A completo con identidad de entrega única                        |
+| `active-sequence.json`                                      | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`                                                                 |
+| `SUPA-AUD-020`                                              | línea base de 131 MB, consultas, planes, índices duplicados, FKs, crecimiento, cron, Storage y 23 brechas |
+| `SUPABASE-KEY-CONSTRAINT-STATE-TIME-STANDARD-001@1.0.0`     | nombres `ix_` y `ux_`, protección de índices de constraints y reserva de decisiones por plan              |
+| `SUPABASE-DOMAIN-READ-MUTATION-CONTRACT-REGISTRY-001@1.0.0` | owner, intención de lectura, comando, consistencia, concurrencia y resultado por dominio                  |
+| `SUPABASE-CROSS-DOMAIN-WRITE-POLICY-001@1.0.0`              | parcialidad, outbox, inbox, claims, compensación y conciliación                                           |
+| `SUPABASE-STORAGE-ARCHITECTURE-001@1.0.0`                   | acceso por referencia, límites de objeto, media derivada y crecimiento de Storage                         |
+| `SUPABASE-REALTIME-EVENT-ARCHITECTURE-001@1.0.0`            | fan-out, payload, snapshots, recuperación y presupuesto de consumidores                                   |
+| `SUPABASE-EDGE-WEBHOOK-CRON-ARCHITECTURE-001@1.0.0`         | límites, rate, timeout, circuit breaker, batches y carga de trabajos reservados para esta tarea           |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`          | 5.677 requisitos hasta `SUPA-ARC-020`; rango `TREQ-SUPABASE-001` a `1382`                                 |
+
+#### 4. Distinciones normativas
+
+```text
+ÍNDICE EXISTENTE ≠ ÍNDICE NECESARIO
+CERO SCANS ≠ ÍNDICE RETIRABLE
+FK SIN ÍNDICE LÍDER ≠ ÍNDICE OBLIGATORIO INMEDIATO
+ÍNDICE DUPLICADO ≠ BORRADO AUTOMÁTICO
+PLAN MÁS BARATO ≠ MEJOR RESULTADO EMPRESARIAL
+LATENCIA MEDIA ≠ SLO CUMPLIDO
+HTTP RÁPIDO ≠ COMANDO EMPRESARIAL RÁPIDO
+PAGINACIÓN ≠ OFFSET ILIMITADO
+TAMAÑO ACTUAL BAJO ≠ CRECIMIENTO GOBERNADO
+PARTICIONAMIENTO ≠ SOLUCIÓN PREDETERMINADA
+BACKUP ≠ RETENCIÓN
+AUTOVACUUM ACTIVO ≠ MANTENIMIENTO SUFICIENTE
+PG_STAT_STATEMENTS ≠ TRAZA COMPLETA DE UNA EJECUCIÓN
+BENCHMARK AISLADO ≠ CAPACIDAD CERTIFICADA
+RATE LIMIT ≠ AUTORIZACIÓN
+```
+
+#### 5. Planos canónicos de rendimiento
+
+| Plano                         | Responsabilidad                                                     | Autoridad                                     | No podrá                                               |
+| ----------------------------- | ------------------------------------------------------------------- | --------------------------------------------- | ------------------------------------------------------ |
+| `CONTRACT_AND_WORKLOAD`       | clasificar proceso, actor, contrato, criticidad y volumen           | owner funcional y contrato por dominio        | usar una cifra global para todas las cargas            |
+| `QUERY_AND_INDEX`             | medir consultas, planes, selectividad, índices y coste de escritura | owner del objeto e índice registrado          | crear o retirar índices por intuición o nombre         |
+| `TRANSACTION_AND_CONCURRENCY` | gobernar locks, duración, conexiones, versiones y contención        | owner del comando y política de concurrencia  | mantener llamadas externas dentro de transacciones     |
+| `ASYNC_AND_PROVIDER`          | regular jobs, batches, retries, proveedores y backpressure          | contrato durable y adapter registrado         | tratar aceptación técnica como resultado empresarial   |
+| `REALTIME_AND_STORAGE`        | acotar fan-out, payload, snapshots, media y crecimiento de objetos  | contratos de Realtime y Storage aprobados     | usar canales o listados globales como fuente de verdad |
+| `CAPACITY_AND_GROWTH`         | proyectar conexiones, filas, bytes, WAL, temp, Storage y ventanas   | manifiesto de capacidad y evidencia histórica | esperar a la saturación para iniciar una acción        |
+| `GOVERNANCE_AND_EVIDENCE`     | versionar fixtures, benchmarks, decisiones, drift y rollback        | `vento-shell`, CI y gates aprobados           | declarar mejora sin evidencia comparable               |
+
+#### 6. Clases de workload
+
+| Clase                   | Uso                                                           | Contrato mínimo                                                  |
+| ----------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `POINT_READ`            | lectura por clave o conjunto mínimo                           | latencia baja, resultado pequeño y plan estable                  |
+| `LIST_READ`             | colección paginada y filtrada                                 | paginación acotada, orden determinista y cero scans innecesarios |
+| `SEARCH_OR_REPORT`      | búsqueda, agregado o reporte síncrono                         | presupuesto explícito y conversión a job cuando exceda el límite |
+| `INTERACTIVE_COMMAND`   | mutación esperada por una persona o estación                  | transacción corta, concurrencia y receipt consultable            |
+| `BULK_OR_EXPORT`        | export, import, backfill o procesamiento masivo               | job durable, chunking, checkpoints y backpressure                |
+| `BACKGROUND_JOB`        | trabajo asíncrono no interactivo                              | claim, lease, deadline, retry y outcome                          |
+| `SCHEDULED_MAINTENANCE` | mantenimiento, reconciliación o cleanup programado            | ventana, límite, cancelación, observabilidad y residual          |
+| `REALTIME_SIGNAL`       | notificación efímera o invalidación                           | payload mínimo, fan-out acotado y recuperación durable           |
+| `PROVIDER_CALL`         | invocación HTTP o servicio externo                            | timeout, rate, circuit breaker, idempotencia y status query      |
+| `STORAGE_PROCESSING`    | verificación, derivado, optimización o disposición de archivo | referencia estable, job durable, límites de bytes y lifecycle    |
+
+Cada operación tendrá una clase primaria. Una operación que mezcle reporte interactivo, export masivo, provider call y mantenimiento deberá dividir el contrato o declarar etapas con presupuestos independientes.
+
+#### 7. Manifiesto obligatorio de workload
+
+Cada contrato sujeto a rendimiento declarará:
+
+```text
+workload_id
++ workload_class
++ owner_schema_id
++ process_id
++ contract_id_and_version
++ principal_and_audience_class
++ criticality
++ read_write_mode
++ expected_rows_scanned_and_returned
++ expected_payload_bytes
++ concurrency_profile
++ arrival_rate_and_burst
++ latency_slo_profile
++ statement_and_transaction_budget
++ connection_budget
++ lock_wait_budget
++ pagination_or_batch_contract
++ retry_and_backpressure_contract
++ data_profile_and_fixture_version
++ query_or_command_fingerprint
++ observability_dimensions
++ growth_forecast
++ degradation_and_fallback
++ test_requirement_ids
+```
+
+No se aceptarán valores narrativos como rápido, pequeño, pocos usuarios, interno o esporádico sin unidad, ventana, owner y evidencia.
+
+#### 8. Perfiles iniciales de SLO
+
+| Perfil                    | Carga                                 | Objetivo inicial                                                    | Límite de interpretación                               |
+| ------------------------- | ------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------ |
+| `SLO-POINT-READ`          | `POINT_READ`                          | p95 <= 100 ms; p99 <= 250 ms                                        | resultado normalmente <= 50 filas                      |
+| `SLO-LIST-READ`           | `LIST_READ`                           | p95 <= 300 ms; p99 <= 750 ms                                        | página normal <= 100 filas                             |
+| `SLO-INTERACTIVE-COMMAND` | `INTERACTIVE_COMMAND`                 | p95 <= 500 ms; p99 <= 1.500 ms en la frontera DB                    | respuesta total del API <= 3 s salvo contrato distinto |
+| `SLO-SYNC-REPORT`         | `SEARCH_OR_REPORT`                    | p95 <= 2 s; p99 <= 5 s                                              | si excede el presupuesto pasa a BULK_OR_EXPORT         |
+| `SLO-REALTIME-NOTICE`     | `REALTIME_SIGNAL`                     | p95 <= 2 s; p99 <= 5 s desde evento publicable hasta aviso aplicado | no sustituye snapshot ni receipt                       |
+| `SLO-ASYNC-DEADLINE`      | `BACKGROUND_JOB y STORAGE_PROCESSING` | inicio p95 <= 60 s y cumplimiento de deadline por contrato          | sin deadline común inventado para todos los jobs       |
+
+Estos valores son guardrails iniciales de arquitectura, no certificación de capacidad. Un contrato podrá endurecerlos o solicitar una excepción versionada con evidencia de carga, experiencia, coste y fallback; no podrá relajarlos silenciosamente desde una aplicación.
+
+#### 9. Presupuestos de consulta, resultado y transferencia
+
+| Perfil                | Statement o paso                       | Resultado                       | Transferencia                   |
+| --------------------- | -------------------------------------- | ------------------------------- | ------------------------------- |
+| `POINT_READ`          | 500 ms                                 | 50 filas                        | 256 KiB                         |
+| `PAGINATED_LIST`      | 1 s                                    | 100 por defecto; 500 máximo     | 1 MiB                           |
+| `INTERACTIVE_COMMAND` | 2 s por statement; 3 s por transacción | resultado mínimo                | 256 KiB                         |
+| `REPORT_OR_EXPORT`    | 5 s síncrono                           | 5.000 filas síncronas           | 10 MiB síncronos                |
+| `BACKGROUND_BATCH`    | 15 s por paso DB                       | 500 elementos por claim inicial | payload por referencia          |
+| `MAINTENANCE`         | 60 s por operación acotada             | chunk explícito                 | sin respuesta masiva al cliente |
+
+Reglas:
+
+1. Una colección tendrá orden total determinista y cursor estable.
+2. El tamaño de página predeterminado será 100 y el máximo general 500, salvo contrato más estricto.
+3. `OFFSET` superior a 10.000 posiciones queda prohibido para tráfico operativo; se usará keyset, cursor o snapshot.
+4. Un reporte síncrono que proyecte más de 5.000 filas, 10 MiB o cinco segundos se convertirá en `BULK_OR_EXPORT`.
+5. Contar, ordenar o filtrar sobre una colección no acotada requerirá plan, selectividad y presupuesto propios.
+6. El límite de respuesta no autoriza leer o materializar internamente un universo sin límite.
+7. Los campos seleccionados se minimizarán; `select *` no será contrato estable de una superficie crítica.
+
+#### 10. Timeouts, transacciones y locks
+
+1. El presupuesto predeterminado de statement será 500 ms para punto, un segundo para lista, dos segundos para comando, cinco segundos para reporte, quince segundos para paso de batch y sesenta segundos para mantenimiento acotado.
+2. La transacción interactiva tendrá presupuesto de tres segundos y no permanecerá abierta durante red, proveedor, Storage, correo, push o espera humana.
+3. El lock wait predeterminado será 250 ms para interacción, dos segundos para background y cinco segundos para mantenimiento; superar el límite generará retry seguro o conciliación, no espera indefinida.
+4. Un timeout tendrá outcome diferenciado de rechazo y éxito; una respuesta tardía no podrá reaplicar un efecto confirmado.
+5. Los límites deberán propagarse entre API, RPC, driver, pool, función y proveedor para evitar una capa esperando después de que otra haya abandonado.
+6. Una operación larga se dividirá en chunks con checkpoint y cancelación; no se resolverá elevando indefinidamente el timeout.
+
+#### 11. Presupuesto de conexiones
+
+La línea base observada conserva `max_connections=60`. El presupuesto objetivo para backends de base será:
+
+```text
+RESERVA DE PLATAFORMA, ADMINISTRACIÓN Y RECUPERACIÓN >= 18
+CARGA EMPRESARIAL PLANIFICADA TOTAL <= 42
+  INTERACTIVA <= 30
+  BACKGROUND Y WORKERS <= 8
+  MANTENIMIENTO Y CAMBIO CONTROLADO <= 4
+```
+
+1. Las cifras gobiernan backends de base, no sockets lógicos del cliente o del pooler.
+2. Ningún consumidor individual planificará más de ocho conexiones concurrentes sin prueba de carga y reserva aprobada.
+3. Los pools usarán límites finitos, timeouts de adquisición y cierre correcto; no crecerán por proceso, request o tenant sin presupuesto.
+4. Al alcanzar 70 por ciento de la capacidad empresarial planificada se alertará; a 85 por ciento se bloqueará nueva concurrencia no crítica y se abrirá acción de capacidad.
+5. Un deploy, backfill o mantenimiento deberá conservar al menos 30 por ciento de headroom y 50 por ciento antes de una operación masiva o cutover.
+
+#### 12. Telemetría y ventanas comparables
+
+1. `pg_stat_statements` se interpretará por fingerprint, rol, aplicación, ambiente, `stats_since`, llamadas, tiempo, filas, bloques temporales y WAL.
+2. Plataforma, administración, auditoría, cron y cargas empresariales se clasificarán por separado.
+3. Un ranking no mezclará ventanas de observación heterogéneas sin normalizar por tiempo, llamadas y clase.
+4. Se conservarán hashes y métricas; no se copiarán parámetros, SQL sensible ni PII.
+5. Reiniciar estadísticas, cambiar extensión o alterar su ventana será un evento de baseline y no podrá ocultar una regresión.
+6. La evidencia de producción orientará prioridades; la decisión de DDL se probará fuera de producción con datos representativos.
+
+#### 13. Registro de consultas críticas
+
+Cada consulta crítica conservará:
+
+```text
+query_contract_id
++ fingerprint
++ owner_schema_id
++ workload_class
++ normalized_shape
++ parameter_selectivity_classes
++ fixture_version
++ expected_plan_signature
++ expected_index_dependencies
++ calls_and_rate_window
++ latency_p50_p95_p99
++ rows_and_buffers
++ temp_and_wal
++ lock_and_wait_profile
++ result_cardinality
++ slo_profile
++ fallback
++ regression_thresholds
+```
+
+Se mantendrán tres perfiles de datos como mínimo: pequeño funcional, producción representativa anonimizada y crecimiento proyectado. Cada comparación tendrá cinco warmups y al menos treinta ejecuciones medidas por perfil cuando sea seguro; se reportará distribución, no solo promedio.
+
+#### 14. Gate de regresión de planes
+
+Un cambio se bloqueará o requerirá revisión cuando ocurra cualquiera de estas condiciones respecto del baseline comparable:
+
+- p95 aumenta más de 20 por ciento y más de 50 ms absolutos;
+- p99 aumenta más de 30 por ciento o más de 200 ms absolutos;
+- filas leídas, buffers, temp o WAL superan dos veces el baseline sin justificación;
+- el error entre filas estimadas y reales supera diez veces en un nodo decisivo;
+- aparece un sort o hash spill nuevo en una carga interactiva;
+- aparece un scan secuencial no aprobado sobre una relación con más de 100.000 filas representativas;
+- el lock wait o la duración transaccional supera el perfil;
+- el plan depende de un índice, filtro, cast o orden distinto del contrato;
+- mejora lectura a costa de una regresión no aceptada en escritura, bloat o mantenimiento.
+
+La firma del plan será evidencia sensible a versión de PostgreSQL, estadísticas, fixtures y configuración. No se exigirá igualdad textual absoluta cuando la semántica y los límites permanezcan dentro del contrato.
+
+#### 15. Taxonomía de índices
+
+| Clase                  | Uso permitido                                                                |
+| ---------------------- | ---------------------------------------------------------------------------- |
+| `CONSTRAINT_BACKING`   | índice creado y gobernado por PK, UNIQUE, EXCLUDE o constraint soportada     |
+| `FK_LEADING`           | prefijo que cubre columnas hijas de una FK priorizada                        |
+| `ACCESS_PATTERN_BTREE` | igualdad, rango y orden estable de una consulta registrada                   |
+| `PARTIAL`              | subconjunto estable y selectivo definido por predicado contractual           |
+| `COVERING_INCLUDE`     | evita acceso adicional cuando el coste de mantenimiento está justificado     |
+| `EXPRESSION`           | expresión inmutable y semántica estable usada por filtro u orden             |
+| `SEARCH_GIN_OR_GIST`   | búsqueda estructurada, arrays, JSONB, texto o rangos con operador compatible |
+| `TIME_SERIES_BRIN`     | volumen grande y correlación física demostrada por tiempo u orden            |
+| `PARTITION_LOCAL`      | índice alineado con estrategia de partición aprobada                         |
+
+Todo índice tendrá una clase primaria, owner, access pattern, consultas beneficiadas, coste esperado, dependencias y lifecycle. La existencia de una FK, filtro o `ORDER BY` no basta para seleccionar una clase.
+
+#### 16. Lifecycle de índices
+
+| Estado               | Significado                                                      |
+| -------------------- | ---------------------------------------------------------------- |
+| `CANDIDATE`          | hipótesis registrada sin aprobación de DDL                       |
+| `EVIDENCED`          | carga, plan, selectividad, consumidores y coste conocidos        |
+| `EXPERIMENTING`      | alternativa evaluada en staging o mediante método no destructivo |
+| `APPROVED`           | gate documental y técnico superado para una migración concreta   |
+| `BUILDING`           | creación o reconstrucción en curso con observabilidad            |
+| `ACTIVE_OBSERVATION` | disponible, todavía bajo ventana reforzada de comparación        |
+| `ACTIVE`             | cumple contrato y se incorpora a baseline                        |
+| `RETIRE_CANDIDATE`   | sin justificación actual después de evidencia suficiente         |
+| `RETIRED`            | retirado con rollback cerrado y evidencia posterior              |
+
+El ledger de decisión conservará:
+
+```text
+index_decision_id
++ relation_id
++ proposed_definition
++ strategy_class
++ owner_schema_id
++ supporting_query_contract_ids
++ constraint_or_fk_dependencies
++ selectivity_and_cardinality
++ baseline_plan_and_metrics
++ write_and_storage_cost
++ experiment_results
++ rollout_method
++ observation_window
++ rollback_definition
++ lifecycle_state
++ retirement_evidence
++ test_requirement_ids
+```
+
+#### 17. Nombres y constraints
+
+1. Un índice no contractual seguirá `ix_<table>_<access_pattern>` y un índice único parcial o por expresión seguirá `ux_<table>_<semantic_key>`.
+2. El índice que materializa una PK, UNIQUE o EXCLUDE conservará el nombre y lifecycle de la constraint; no se duplicará con `ix_` por conveniencia.
+3. Un índice que respalda integridad no se retirará por cero scans ni por una definición aparentemente repetida antes de identificar la constraint propietaria.
+4. Nombres distintos no prueban definiciones distintas; definiciones iguales no prueban que cualquiera pueda eliminarse.
+5. INCLUDE, predicado, orden, collation, opclass, expresión, null ordering y método forman parte de la identidad semántica.
+
+#### 18. Disposición de los ocho grupos duplicados
+
+| Relación                         | Grupo observado                                        | Disposición                                       | Gate                                                                       |
+| -------------------------------- | ------------------------------------------------------ | ------------------------------------------------- | -------------------------------------------------------------------------- |
+| `public.attendance_logs`         | dos índices equivalentes por empleado y ocurrencia     | `CONSOLIDATE_AFTER_PLAN_AND_WRITE_BENCHMARK`      | conservar una definición funcional y comprobar orden adicional sin pérdida |
+| `public.inventory_stock_by_site` | tres variantes UNIQUE equivalentes por sede y producto | `CONSOLIDATE_PRESERVING_ONE_UNIQUENESS_GUARANTEE` | identificar la garantía superviviente y probar concurrencia e inserts      |
+| `pass.pass_satellites`           | constraint e índice equivalentes sobre code            | `CLASSIFY_CONSTRAINT_OWNERSHIP_THEN_CONSOLIDATE`  | no retirar el backing de la constraint                                     |
+| `public.app_update_policies`     | dos UNIQUE equivalentes por app_key y platform         | `CONSOLIDATE_WITH_ACTIVE_CONSUMER_REGRESSION`     | preservar unicidad y consultas activas                                     |
+| `public.site_operational_roles`  | dos índices equivalentes por site_id                   | `RESOLVE_WITH_SOURCE_COMPETITION`                 | alinear con la fuente autoritativa antes de consolidar                     |
+| `vital.telemetry_events`         | dos índices equivalentes por usuario y tiempo          | `OBSERVE_OUTSIDE_VENTO_OS_BOUNDARY`               | decisión coordinada con producto VITAL y telemetría suficiente             |
+| `vital.telemetry_events`         | dos índices equivalentes por evento y tiempo           | `OBSERVE_OUTSIDE_VENTO_OS_BOUNDARY`               | cero scans no autoriza retiro                                              |
+| `public.internal_pos_documents`  | dos UNIQUE equivalentes por número                     | `CONSOLIDATE_PRESERVING_DOCUMENT_UNIQUENESS`      | verificar consumidor y compatibilidad de constraint                        |
+
+La consolidación futura elegirá explícitamente el superviviente, preservará constraints, medirá insert y update, comparará planes y mantendrá rollback. Los 892.928 bytes observados no justifican por sí solos el retiro.
+
+#### 19. Cobertura de FKs
+
+El baseline contiene 795 FKs empresariales: 351 con índice válido cuyo prefijo comienza por las columnas hijas y 444 sin esa cobertura.
+
+Cada FK sin cobertura recibirá puntuación de 0 a 3 en:
+
+```text
+PARENT_DELETE_OR_UPDATE_RISK
+CHILD_CARDINALITY
+JOIN_OR_FILTER_FREQUENCY
+RLS_OR_POLICY_DEPENDENCY
+OPERATIONAL_CRITICALITY
+LATENCY_EVIDENCE
+LOCK_OR_CASCADE_RISK
+```
+
+Se restará de 0 a 3 por `WRITE_STORAGE_MAINTENANCE_COST`. Prioridad:
+
+```text
+P0 >= 16
+P1 = 12 A 15
+P2 = 8 A 11
+P3 <= 7
+```
+
+1. Las 444 FKs se clasificarán antes de cualquier creación masiva.
+2. Un índice compuesto existente podrá cubrir varias necesidades si orden, selectividad y access pattern coinciden.
+3. Una FK pequeña, inmutable o sin deletes del padre podrá permanecer sin índice con decisión explícita.
+4. Una FK crítica para RLS, join frecuente, borrado o transición tendrá prioridad aunque la tabla actual sea pequeña.
+5. La puntuación no aprueba DDL; ordena experimentos y revisión.
+
+#### 20. Experimentos prioritarios
+
+| Caso                               | Evidencia observada                                  | Plan actual                                                     | Experimento obligatorio                                                                                |
+| ---------------------------------- | ---------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `ATTENDANCE_HISTORY`               | 65.678 llamadas; media 9,522 ms; máximo 1.012,385 ms | usa índice actual y requiere Incremental Sort                   | consolidar duplicado y comparar orden extendido con coste de escritura                                 |
+| `PRODUCT_CATALOG_BY_CATEGORY_TYPE` | 1.539 llamadas; media 154,107 ms; máximo 922,514 ms  | Seq Scan y Sort en el plan representativo                       | experimentar en staging con acceso equivalente a category_id, product_type y name frente a reescritura |
+| `PUBLISHED_SHIFTS_BY_RANGE`        | 18.201 llamadas; media 11,468 ms; máximo 142,854 ms  | usa rango por fecha y filtra publicación, estado y tipo después | comparar alternativa parcial o compuesta solo con selectividad y fixtures reales                       |
+
+1. Los experimentos usarán staging o mecanismo hipotético aprobado; no crearán índices exploratorios directamente en producción.
+2. Se compararán consulta original, reescritura, índice candidato y combinación mínima.
+3. Se medirán lectura, escritura, WAL, tamaño, locks, mantenimiento y efectos sobre otras consultas.
+4. El índice ganador no se aprobará si solo mejora una variante mientras degrada una ruta más crítica o la integridad.
+
+#### 21. Cero scans y retiro
+
+Un índice solo podrá pasar a `RETIRE_CANDIDATE` cuando:
+
+- exista al menos 30 días de telemetría normalizada y un ciclo empresarial completo;
+- no respalde constraint, FK crítica, RLS, orden contractual, rollback o proceso estacional conocido;
+- se hayan revisado producción, jobs, reportes, migraciones, incidentes y consumers indirectos;
+- su retiro se haya probado con fixtures y carga representativa;
+- exista definición exacta para rollback;
+- la ventana de observación posterior cubra al menos siete días y un pico operativo.
+
+Cero scans, tamaño pequeño, nombre legacy o ausencia en una búsqueda de código no satisfacen el gate.
+
+#### 22. Despliegue seguro de índices
+
+1. La construcción utilizará la modalidad de menor bloqueo soportada y aprobada para el caso; no se mantendrán transacciones ajenas abiertas durante la operación.
+2. Solo se cambiará un índice de alta escritura por relación en una ventana, salvo prueba explícita de independencia.
+3. Se medirán progreso, lock waits, WAL, réplica, duración, espacio libre y cancelación.
+4. Un fallo o cancelación deberá detectar artefactos inválidos y limpiar mediante una migración controlada.
+5. `ACTIVE_OBSERVATION` durará al menos siete días y un pico operativo antes de `ACTIVE`.
+6. El rollback no dependerá de memoria del operador y conservará la definición previa completa.
+
+#### 23. Amplificación de escritura, bloat y mantenimiento
+
+1. Cada decisión comparará inserts, updates, deletes, HOT updates, WAL, bytes por índice, tiempo de vacuum y locks.
+2. Se alertará una revisión cuando dead tuples superen 10 por ciento; será prioritaria al superar 20 por ciento o 100.000 filas, siempre interpretando tamaño y churn.
+3. El baseline no muestra crisis severa de dead tuples; queda prohibido ejecutar vacuum manual indiscriminado.
+4. Ajustes de autovacuum serán por relación y evidencia, con baseline, cambio reversible y observación.
+5. `track_io_timing` desactivado limita atribución; una activación futura requerirá evaluación controlada de overhead y ambiente, no se ordena en esta tarea.
+6. Reindex, clustering o fillfactor serán decisiones separadas y no sustituyen corregir consulta, índice o lifecycle.
+
+#### 24. Snapshots de crecimiento y capacidad
+
+Se generará un snapshot diario lógico con:
+
+```text
+database_bytes
++ table_rows_estimated_and_exact_samples
++ heap_index_and_toast_bytes
++ index_count_and_bytes
++ writes_and_wal_bytes
++ temp_blocks_and_spills
++ dead_tuple_and_vacuum_metrics
++ active_and_waiting_connections
++ lock_waits
++ storage_objects_and_bytes
++ realtime_channels_and_payload
++ ready_claimed_retry_and_dead_letter_jobs
++ cron_history_rows
++ observation_window
+```
+
+1. Se calcularán tendencias de 7, 30 y 90 días y forecast de agotamiento.
+2. Se abrirá revisión al alcanzar 50 por ciento de una cuota planificada, alerta al 70 por ciento y escalamiento al 85 por ciento.
+3. Crecimiento mensual superior a 30 por ciento o forecast de agotamiento inferior a 90 días exige plan de capacidad.
+4. La ausencia de cuota explícita se tratará como brecha de manifiesto, no como capacidad infinita.
+5. El crecimiento de Storage se medirá por clase y referencias; edad o tamaño no autorizan purga, decisión reservada a `SUPA-ARC-022`.
+
+#### 25. Gate de particionamiento
+
+Una señal abre evaluación, no autorización automática:
+
+| Señal                | Umbral de evaluación                                                                       |
+| -------------------- | ------------------------------------------------------------------------------------------ |
+| `ROW_COUNT`          | tabla alcanza o proyecta 5.000.000 de filas                                                |
+| `RELATION_SIZE`      | heap más índices alcanza o proyecta 5 GiB                                                  |
+| `APPEND_RATE`        | crecimiento sostenido alcanza 1.000.000 de filas por mes                                   |
+| `RETENTION_CHURN`    | una ventana de archivo o purga afecta más del 10 por ciento de filas                       |
+| `MAINTENANCE_WINDOW` | mantenimiento o reconstrucción excede 30 minutos                                           |
+| `SLO_PERSISTENCE`    | SLO incumplido en tres ventanas consecutivas pese a consulta e índice correctos            |
+| `PRUNING_VALUE`      | la clave candidata permitiría podar al menos 70 por ciento de particiones en carga crítica |
+| `FORECAST_HEADROOM`  | la capacidad proyectada se agota en menos de 90 días                                       |
+
+La evaluación deberá demostrar simultáneamente:
+
+1. clave de partición alineada con acceso, lifecycle y owner;
+2. pruning efectivo con fixtures representativos;
+3. estrategia para PK, UNIQUE, FK y constraints;
+4. compatibilidad con RLS, policies, RPC, triggers, Realtime y tipos;
+5. routing de escritura y consulta determinista;
+6. mantenimiento, attach, detach, backfill y validación por chunks;
+7. compatibilidad temporal, dual-read o cutover cuando aplique;
+8. rollback y recuperación con espacio y ventana suficientes.
+
+La existencia actual de cero tablas empresariales particionadas no es un defecto con aproximadamente 131 MB; el defecto sería particionar sin gate o crecer sin umbral.
+
+#### 26. Realtime, jobs y backpressure
+
+1. La señal Realtime tendrá máximo arquitectónico inicial de 16 KiB y un evento durable transportable de 64 KiB; contenido mayor viajará por referencia autorizada.
+2. Canales, snapshots, polling y reconexiones tendrán presupuesto; no se creará un canal por fila sin cota.
+3. Un worker comenzará con concurrencia uno por partición y no superará cuatro antes de prueba de carga.
+4. El claim inicial será de hasta 500 elementos y cada transacción DB de batch permanecerá por debajo de cinco segundos.
+5. La cola aplicará high-water mark, pause, backoff con jitter y degradación antes de agotar conexiones.
+6. El productor no seguirá aceptando trabajo ilimitado cuando el consumidor esté degradado; responderá con outcome estable o persistirá dentro del límite durable.
+
+#### 27. Proveedores, circuit breaker y rate limits
+
+1. El request interactivo tendrá tamaño máximo inicial de 256 KiB; el webhook externo, 1 MiB, salvo contrato más estricto.
+2. El timeout inicial de conexión a proveedor será dos segundos y el intento total diez segundos; una excepción requiere status query y presupuesto explícito.
+3. La concurrencia inicial por destino será cinco; el circuit breaker abrirá por ventana y clase de fallo, no por un único error aislado.
+4. La degradación deberá distinguir proveedor no disponible, rate limit, timeout, rechazo contractual y resultado desconocido.
+5. Los guardrails iniciales son:
+
+| Perfil                      | Guardrail inicial                                                 | Condición                                                      |
+| --------------------------- | ----------------------------------------------------------------- | -------------------------------------------------------------- |
+| `AUTHENTICATED_INTERACTIVE` | 120 solicitudes por minuto por principal; burst 30                | permiso, recurso y contexto siguen siendo obligatorios         |
+| `PUBLIC_CAPABILITY`         | 12 por minuto por token y 30 por minuto por IP; burst 3           | respuesta uniforme y anti-enumeración                          |
+| `EXTERNAL_WEBHOOK`          | 300 por minuto por proveedor; burst 100                           | firma, inbox, deduplicación y backpressure                     |
+| `OUTBOUND_PROVIDER`         | 5 concurrentes y 60 por minuto por destino como guardrail inicial | respeta límites contractuales del proveedor                    |
+| `EXPORT_OR_HEAVY_REPORT`    | 2 concurrentes por actor y 10 inicios por hora                    | el resto queda en cola durable o se rechaza con código estable |
+
+6. La autorización se evalúa antes del consumo de cuota y continúa siendo independiente del rate limit.
+7. Cada excepción tendrá owner, ambiente, duración, prueba de carga, alerta y fecha de revisión.
+
+#### 28. Observabilidad y error budgets
+
+Métricas mínimas:
+
+```text
+query_calls_and_rate
+query_latency_p50_p95_p99
+rows_scanned_and_returned
+shared_and_temp_blocks
+wal_bytes
+plan_regression_count
+index_scans_and_bytes
+index_build_duration
+index_write_amplification
+fk_coverage_by_priority
+connection_active_waiting_and_saturation
+lock_wait_count_and_duration
+transaction_duration
+statement_timeout_count
+pool_acquire_timeout_count
+realtime_fanout_and_payload_bytes
+job_queue_depth_and_oldest_age
+worker_concurrency_and_lease_expiry
+provider_latency_timeout_and_circuit_state
+storage_objects_bytes_and_growth
+capacity_forecast_days
+slo_breach_and_error_budget_burn
+```
+
+Cada SLO tendrá ventana, denominador, exclusiones, presupuesto de error y alerta de burn rápido y lento. Una métrica sin owner, unidad, ambiente, cardinalidad y acción no cierra el control.
+
+#### 29. Clases de drift
+
+```text
+UNREGISTERED_INDEX
+INDEX_DEFINITION_DRIFT
+DUPLICATE_INDEX
+CONSTRAINT_INDEX_CONFLATION
+FK_COVERAGE_DRIFT
+QUERY_PLAN_REGRESSION
+SLO_BREACH
+STATISTICS_WINDOW_DRIFT
+MISSING_GROWTH_SNAPSHOT
+CAPACITY_FORECAST_BREACH
+PARTITION_WITHOUT_GATE
+UNBOUNDED_COLLECTION
+CONNECTION_BUDGET_BREACH
+ASYNC_BACKPRESSURE_BREACH
+ENVIRONMENT_PERFORMANCE_DRIFT
+```
+
+Cada hallazgo tendrá owner, severidad, evidencia, disposición, compatibilidad, rollback y tarea de cierre. Una diferencia no se corregirá automáticamente agregando un índice, elevando timeout o ampliando conexiones.
+
+#### 30. Riesgos y controles
+
+| Riesgo                                    | Control obligatorio                                           | Continuidad responsable        |
+| ----------------------------------------- | ------------------------------------------------------------- | ------------------------------ |
+| índice duplicado retirado incorrectamente | constraint ownership, plan, benchmark y rollback              | `SUPA-TRANS-*`; paquetes E5    |
+| 444 índices creados masivamente           | scoring, prioridad y experimento por FK                       | `SUPA-TRANS-*`; `SHELL-CI-017` |
+| regresión de consulta                     | fixtures, baseline, umbrales y gate CI                        | `SUPA-ARC-025`; `SHELL-CI-017` |
+| saturación de conexiones                  | reserva, pools finitos, backpressure y alertas                | `SUPA-ARC-024`; paquetes E5    |
+| reportes sin límite                       | cursor, máximo síncrono y job durable                         | paquetes funcionales E5        |
+| lock o transacción prolongada             | presupuesto, timeout, chunking y cero red abierta             | paquetes de dominio E5         |
+| crecimiento sin forecast                  | snapshot diario, tendencias y umbrales                        | `SUPA-ARC-024`; observabilidad |
+| partición prematura                       | ocho señales y gate integral                                  | `SUPA-TRANS-*`                 |
+| proveedor degradado                       | rate, timeout, circuit breaker y resultado desconocido        | paquetes de integración E5     |
+| bloat y mantenimiento reactivo            | umbral por relación y ajuste medido                           | `SUPA-TRANS-*`                 |
+| Storage pesado                            | media derivada, referencias y capacidad separada de retención | `SUPA-ARC-018`; `SUPA-ARC-022` |
+| métricas sensibles                        | fingerprint, redacción y cardinalidad controlada              | `SUPA-ARC-007`; `SUPA-ARC-025` |
+
+#### 31. Decisiones reservadas
+
+| Decisión                                                       | Tarea propietaria                                             |
+| -------------------------------------------------------------- | ------------------------------------------------------------- |
+| retención, archivo, purga, backups, PITR, RPO y RTO            | `SUPA-ARC-022`                                                |
+| tipos generados para manifiestos, queries, eventos y consumers | `SUPA-ARC-023`                                                |
+| cuotas y overlays concretos por ambiente                       | `SUPA-ARC-024`                                                |
+| ADR, linter y gate integral de arquitectura                    | `SUPA-ARC-025`                                                |
+| DDL de índices, particiones, parámetros y migraciones          | `SUPA-TRANS-*` y paquetes E5                                  |
+| capacidad certificada y valores finales por proceso            | pruebas de carga y readiness de cada paquete E5               |
+| selección de plan, compute, pooler o proveedor                 | gobierno de plataforma y paquete de infraestructura aplicable |
+
+#### 32. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear, reconstruir, renombrar, deshabilitar o eliminar índices;
+- modificar PK, UNIQUE, EXCLUDE, FK, constraints, estadísticas o tablas;
+- ejecutar planes mutantes o benchmarks de carga sobre producción;
+- activar `track_io_timing`, `hypopg`, `index_advisor` u otras extensiones;
+- cambiar `max_connections`, pooler, memory, autovacuum, timeouts o parámetros;
+- ejecutar vacuum, analyze, reindex, cluster, particionamiento, archivo o purga;
+- modificar jobs, Storage, Realtime, Edge Functions, proveedores o rate limits;
+- aplicar migraciones, backfills, código, datos, cutover o despliegues;
+- iniciar `SUPA-ARC-022` antes de aprobación expresa.
+
+#### 33. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-1383 a TREQ-SUPABASE-1446
+```
+
+Los sesenta y cuatro requisitos protegen planos, workloads, SLO, presupuestos, conexiones, telemetría, benchmarks, planes, índices, constraints, duplicidades, FKs, consultas prioritarias, retiro, rollout, amplificación, mantenimiento, crecimiento, particionamiento, Realtime, jobs, proveedores, rate limits, observabilidad, error budgets, ambientes, drift y gate integral.
+
+#### 34. Criterios de aceptación
+
+- [ ] Existe una estrategia versionada única para índices, rendimiento y crecimiento.
+- [ ] Los siete planos, diez workloads, seis SLO y seis presupuestos están definidos.
+- [ ] Las cifras de 131 MB, 4.942 fingerprints, ocho grupos duplicados, 795 FKs y 444 sin cobertura quedan preservadas.
+- [ ] Los límites iniciales se declaran guardrails y no certificación de capacidad.
+- [ ] Consultas, resultados, paginación, exports, statements, transacciones y locks tienen presupuestos.
+- [ ] Las 60 conexiones observadas reciben reserva y distribución empresarial máxima.
+- [ ] Telemetría, fixtures y benchmarks conservan ventana y comparabilidad.
+- [ ] El gate bloquea regresiones de latencia, buffers, temp, WAL, cardinalidad y locks.
+- [ ] Existen nueve clases y nueve estados de lifecycle para índices.
+- [ ] Los ocho grupos duplicados reciben disposición individual sin retiro automático.
+- [ ] Las 444 FKs se puntúan antes de cualquier creación masiva.
+- [ ] Los tres casos de consulta reciben experimento reproducible.
+- [ ] Cero scans no autoriza retiro y toda salida conserva rollback.
+- [ ] Amplificación, dead tuples, autovacuum e I/O tienen política medida.
+- [ ] Crecimiento, headroom y forecast tienen snapshots y umbrales.
+- [ ] Particionamiento requiere ocho señales y ocho condiciones de gate.
+- [ ] Realtime, jobs, providers y Storage respetan backpressure y límites.
+- [ ] Los cinco perfiles de rate limit son independientes de autorización.
+- [ ] Las quince clases de drift y el gate integral son verificables.
+- [ ] Se generan `TREQ-SUPABASE-1383` a `TREQ-SUPABASE-1446`.
+- [ ] No se ejecutan cambios físicos ni se inicia la tarea siguiente.
+
+#### 35. Controles estructurales requeridos
+
+| Control                                  | Resultado esperado |
+| ---------------------------------------- | -----------------: |
+| planos canónicos                         |              **7** |
+| clases de workload                       |             **10** |
+| perfiles de SLO                          |              **6** |
+| perfiles de presupuesto                  |              **6** |
+| perfiles de rate limit                   |              **5** |
+| clases de índice                         |              **9** |
+| estados de lifecycle de índice           |              **9** |
+| grupos duplicados clasificados           |         **8 de 8** |
+| FKs cubiertas                            |     **351 de 795** |
+| FKs pendientes de puntuación             |     **444 de 795** |
+| consultas prioritarias                   |         **3 de 3** |
+| señales de evaluación de partición       |              **8** |
+| clases de drift                          |             **15** |
+| claims de mejora sin baseline permitidos |              **0** |
+| creaciones masivas de índices permitidas |              **0** |
+| requisitos nuevos                        |             **64** |
+| cambios físicos                          |              **0** |
+
+#### 36. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
+```
+
+`SUPA-ARC-022` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
 ### [ ] SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
 ### [ ] SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción

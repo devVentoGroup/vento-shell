@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **425** |
+| Tareas aprobadas | **426** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1150** |
+| Tareas no iniciadas | **1149** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **26.98% (425/1575)** |
+| Porcentaje de completamiento | **27.05% (426/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron** |
-| Tarea actual | **SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento** |
+| Última tarea aprobada | **SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento** |
+| Tarea actual | **SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación** |
+| Siguiente tarea | **SUPA-ARC-023 — Definir generación canónica de tipos para consumidores** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 20 de 25 aprobadas; SUPA-ARC-021 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 21 de 25 aprobadas; SUPA-ARC-022 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-ARC-020` — Definir arquitectura de Edge Functions, webhooks y cron |
-| Tarea actual | `SUPA-ARC-021` — Definir estrategia de índices, rendimiento y crecimiento — **NO INICIADA** |
-| Siguiente tarea | `SUPA-ARC-022` — Definir retención, archivado, respaldo y recuperación |
+| Última aprobada | `SUPA-ARC-021` — Definir estrategia de índices, rendimiento y crecimiento |
+| Tarea actual | `SUPA-ARC-022` — Definir retención, archivado, respaldo y recuperación — **NO INICIADA** |
+| Siguiente tarea | `SUPA-ARC-023` — Definir generación canónica de tipos para consumidores |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **20 DE 25 APROBADAS — ACTUAL SUPA-ARC-021** |
+| BLOQUE E3 | **21 DE 25 APROBADAS — ACTUAL SUPA-ARC-022** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron
-        ↓
-TAREA ACTUAL
 SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 20 de 25 tareas aprobadas
+BLOQUE E3 — 21 de 25 tareas aprobadas
 ```
