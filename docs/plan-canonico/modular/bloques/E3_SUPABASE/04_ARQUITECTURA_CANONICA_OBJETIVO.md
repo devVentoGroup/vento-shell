@@ -461,7 +461,402 @@ SUPA-ARC-002 — Definir dominios empresariales estables
 `SUPA-ARC-002` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-002 — Definir dominios empresariales estables
+### ✅ SUPA-ARC-002 — Definir dominios empresariales estables
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-001 — Definir principios de separación entre esquemas administrados y empresariales` — APROBADA
+**Siguiente tarea:** `SUPA-ARC-003 — Definir esquema propietario de cada fuente de verdad`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Repositorio canónico:** `devVentoGroup/vento-shell` — rama `main`; commit remoto observado `1d9cf3b5e07466f752319bfd6b75751227051b60`
+**Tipo de tarea:** definición normativa de dominios empresariales; sin asignar schemas físicos, mover objetos, definir la función futura de `public`, ejecutar DDL o DML, crear migraciones, cambiar exposición, grants, RLS, Auth, Storage, Realtime, Edge Functions, cron, secretos, código, datos o despliegues
+
+#### 1. Objetivo
+
+Definir un registro estable de responsabilidades empresariales que permita asignar después cada fuente de verdad a una frontera física sin confundir dominio con aplicación, schema actual, tabla, proceso, familia de capacidades, equipo o servicio administrado.
+
+```text
+18 FAMILIAS DE CAPACIDAD + 69 PROCESOS + 379 RELACIONES VENTO
+        ↓
+CRITERIOS DE COHESIÓN, AUTORIDAD, CICLO DE VIDA Y SEGURIDAD
+        ↓
+26 DOMINIOS EMPRESARIALES ESTABLES DE VENTO OS
+        +
+1 FRONTERA DE PRODUCTO EXTERNA: VITAL
+        ↓
+BASE PARA ASIGNAR FUENTES DE VERDAD EN SUPA-ARC-003
+```
+
+Esta tarea determina responsabilidades estables y asigna cada proceso a un dominio primario. No determina todavía cuántos schemas físicos existirán, sus nombres PostgreSQL, la ubicación de cada objeto ni la estrategia de transición.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-STABLE-BUSINESS-DOMAIN-REGISTRY-001@1.0.0
+```
+
+| Propiedad | Valor |
+| --- | ---: |
+| `stable_domain_count` | **26** |
+| `domain_id_range` | `VDOM-001` a `VDOM-026` |
+| `capability_families_covered` | **18 de 18** |
+| `processes_mapped` | **69 de 69** |
+| `processes_with_multiple_primary_domains` | **0** |
+| `processes_without_primary_domain` | **0** |
+| `current_owner_applications_preserved` | **9** |
+| `external_product_boundaries` | **1** — VITAL |
+| `target_schema_assignments` | **0** — reservadas para `SUPA-ARC-003` |
+| `physical_changes_authorized` | **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente | Decisión consumida |
+| --- | --- |
+| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0` | principios `SEP-001` a `SEP-024`, separación de plataforma, schema, aplicación, dominio y exposición |
+| `SUPABASE-OBJECT-CAPABILITY-OWNERSHIP-CONSUMER-MAP-022@1.0.0` | 379 relaciones Vento, capacidades, propietarios actuales, consumidoras y frontera VITAL |
+| `SUPABASE-PROCESS-DATA-RPC-EVENT-APPLICATION-MAP-023@1.0.0` | 69 procesos, propietarias, coberturas, datos, comandos y fronteras interaplicación |
+| `SUPABASE-CONSOLIDATED-RISK-REGISTER-001@1.0.0` | riesgos de fuentes competidoras, cobertura, `public`, identidad, inventario, pagos y aislamiento de producto |
+| `CAP-MAP-001` a `CAP-MAP-015` | árbol único de 18 familias de capacidades y reglas de propiedad y consumo |
+| `PROC-CAT-003`, `PROC-CAT-005` y `PROC-CAT-006` | identidad, propietaria y consumidoras aprobadas de cada proceso |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` | 4.849 requisitos hasta `SUPA-ARC-001` |
+
+#### 4. Definición canónica de dominio empresarial estable
+
+Un dominio empresarial estable es una responsabilidad cohesiva y duradera que:
+
+1. produce o gobierna un resultado empresarial diferenciable;
+2. posee el ciclo de vida, invariantes, decisiones de corrección y cierre de sus hechos autoritativos;
+3. permanece válida aunque cambien aplicaciones, pantallas, equipos, schemas, proveedores o canales;
+4. puede declarar consumidores sin transferirles autoridad de escritura;
+5. tiene una frontera de seguridad, privacidad, retención o conciliación explicable;
+6. puede integrarse con otros dominios mediante referencias, comandos, proyecciones y eventos explícitos;
+7. no depende de la ubicación física actual para existir conceptualmente.
+
+Los identificadores `VDOM-*` son identidades arquitectónicas estables. No son nombres de schema PostgreSQL, packages, rutas, aplicaciones, topics ni namespaces TypeScript.
+
+#### 5. Criterios obligatorios de separación y agrupación
+
+| Criterio | Regla |
+| --- | --- |
+| resultado autoritativo | hechos con decisiones de aceptación, corrección o cierre distintas pertenecen a dominios distintos |
+| ciclo de vida | entidades con inicio, estados, vigencia y retiro independientes no se fusionan por compartir actor o pantalla |
+| invariantes | una frontera debe proteger reglas coherentes sin depender de DML cruzado |
+| sensibilidad | privacidad, segregación, retención o trazabilidad materialmente diferentes pueden exigir separación |
+| propietario del proceso | la aplicación propietaria aprobada orienta la responsabilidad, pero no se convierte en nombre ni schema del dominio |
+| consumidores | tener muchas consumidoras no convierte un dato en transversal ni compartido sin autoridad |
+| canal o sede | un cambio de sede, marca, canal o dispositivo no crea otro dominio |
+| tecnología | usar Supabase, Storage, Realtime, Edge, cron o una tabla común no crea dominio |
+| cambio futuro | la taxonomía debe sobrevivir a reorganización de aplicaciones y transición física |
+
+#### 6. Interpretaciones prohibidas
+
+- una aplicación no es un dominio;
+- un schema actual no es un dominio por coincidencia de nombre;
+- `public`, `app_private`, `auth`, `storage`, `realtime`, `api`, `audit`, `events`, `outbox` o `integration` no se convierten por sí mismos en dominios empresariales;
+- una familia `CAP-*` no se convierte automáticamente en un único schema ni en un único dominio;
+- una tabla compartida, FK, vista, RPC, trigger o consumidor no vuelve compartida la autoridad;
+- un proceso no puede adquirir dos dominios primarios para evitar decidir la fuente autoritativa;
+- los nombres actuales `club`, `pass`, `payments`, `pos`, `talento`, `viso` y `vital` no quedan certificados como dominios objetivo por existir físicamente;
+- una ausencia de fuente actual no elimina el dominio necesario ni autoriza representar el proceso con un objeto auxiliar.
+
+#### 7. Registro canónico de dominios empresariales estables
+
+| ID | Dominio estable | Familia arquitectónica | Resultado autoritativo | Incluye | Excluye | Capacidades principales | Procesos primarios | Propietarias funcionales actuales | Asignación física |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| `VDOM-001` | Gobierno organizacional | `GOBIERNO_Y_PERSONAS` | Estructura organizativa, decisiones, políticas, delegaciones, compromisos, riesgos empresariales y relaciones institucionales vigentes. | empresas, marcas, sedes, áreas, decisiones, políticas, compromisos, riesgo empresarial, asesores y autoridades | autorización técnica, analítica derivada y custodia documental | CAP-01 | `VPROC-0001`; `VPROC-0002`; `VPROC-0003`; `VPROC-0004`; `VPROC-0063`; `VPROC-0064` | `viso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-002` | Reclutamiento y selección | `GOBIERNO_Y_PERSONAS` | Necesidad de personal, candidato, postulación, evaluación, oferta y decisión de selección con ciclo independiente del trabajador activo. | vacantes, candidatos, postulaciones, entrevistas, evaluaciones y ofertas | vínculo laboral activo, turnos y asistencia | CAP-02 | `VPROC-0005` | `viso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-003` | Vinculación y ciclo laboral | `GOBIERNO_Y_PERSONAS` | Vínculo laboral, expediente de trabajador, incorporación, habilitación, desarrollo y retiro con vigencia y trazabilidad. | trabajador, relación laboral, onboarding, offboarding, asignaciones base y desarrollo | selección de candidato, programación diaria, asistencia y nómina | CAP-02 | `VPROC-0006`; `VPROC-0011`; `VPROC-0065` | `viso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-004` | Programación y novedades laborales | `GOBIERNO_Y_PERSONAS` | Programación publicada y casos laborales de ausencia, permiso, novedad o reemplazo con resolución controlada. | turnos, disponibilidad, preferencias, reemplazos, ausencias y novedades laborales | marcaciones de asistencia y cálculo de nómina | CAP-02 | `VPROC-0007`; `VPROC-0009` | `viso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-005` | Asistencia y tiempo trabajado | `GOBIERNO_Y_PERSONAS` | Hechos de asistencia, descansos, tiempo trabajado y correcciones auditables e idempotentes. | check-in, check-out, descansos, eventos de turno, conflictos y correcciones | planificación de turnos, vínculo laboral y liquidación de nómina | CAP-02 | `VPROC-0008` | `anima` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-006` | Nómina y beneficios laborales | `GOBIERNO_Y_PERSONAS` | Paquete autorizado y conciliable de pagos, deducciones y beneficios laborales por período. | preparación de nómina, novedades valorizadas, beneficios y paquete de pago laboral | hechos crudos de asistencia, tesorería general y contabilidad completa | CAP-02; CAP-12 | `VPROC-0010` | `numera` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-007` | Salud, seguridad, inocuidad y cumplimiento operativo | `GOBIERNO_Y_PERSONAS` | Riesgos, controles preventivos, inspecciones, incidentes, higiene, inocuidad, acciones correctivas y EPP gobernados. | SST, emergencias, higiene, inocuidad, inspecciones, acciones correctivas y elementos de protección | incidentes tecnológicos y continuidad general del negocio | CAP-03 | `VPROC-0012`; `VPROC-0013`; `VPROC-0014`; `VPROC-0066` | `viso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-008` | Producto maestro y especificaciones | `PRODUCTO_Y_OPERACION` | Identidad, clasificación, presentación, unidad, equivalencia, especificación, alérgeno y criterio de calidad del producto. | productos, categorías, presentaciones, UOM, equivalencias, especificaciones, alérgenos e imágenes maestras | recetas, oferta por canal, stock y precio económico | CAP-04 | `VPROC-0015`; `VPROC-0018` | `nexo` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-009` | Recetas y conocimiento productivo | `PRODUCTO_Y_OPERACION` | Receta versionada, método, pasos, insumos, rendimientos, salidas y usos productivos aprobados. | recetas, versiones, pasos, consumos teóricos, rendimientos y aplicabilidad por sede | producto maestro, lote ejecutado y oferta comercial | CAP-04 | `VPROC-0016` | `fogo` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-010` | Oferta comercial y disponibilidad | `PRODUCTO_Y_OPERACION` | Oferta vendible, surtido, configuración comercial, precio y disponibilidad publicada por sede, canal y vigencia. | ítems vendibles, colecciones, opciones comerciales, precios de venta, disponibilidad y publicación | identidad maestra del producto, pedido y costo interno | CAP-04; CAP-09 | `VPROC-0017` | `pulso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-011` | Abastecimiento y proveedores | `PRODUCTO_Y_OPERACION` | Necesidad de compra, proveedor, condición acordada, orden y recepción comercial conciliables. | proveedores, cotizaciones, condiciones, órdenes de compra, recepción y diferencias comerciales | efecto físico de stock y obligación contable definitiva | CAP-05 | `VPROC-0019`; `VPROC-0020`; `VPROC-0021`; `VPROC-0022` | `origo` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-012` | Inventario y almacenamiento | `PRODUCTO_Y_OPERACION` | Existencia autoritativa por producto, unidad, lote o contenedor, ubicación, posición y movimiento, con conteo y conciliación. | LOC, posiciones, stock, movimientos, transferencias, conteos, condición, cuarentena y abastecimiento interno | activos durables, recetas, pedidos y transporte de última milla | CAP-06 | `VPROC-0023`; `VPROC-0024`; `VPROC-0025`; `VPROC-0026`; `VPROC-0027`; `VPROC-0028` | `nexo` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-013` | Activos, mantenimiento y reutilizables | `PRODUCTO_Y_OPERACION` | Identidad, condición, ubicación, custodia, mantenimiento y ciclo de vida de activos, vehículos, reutilizables y kits. | activos, equipos, vehículos, mantenimiento, garantías, contenedores reutilizables y kits | existencias consumibles y órdenes de trabajo de instalaciones | CAP-07 | `VPROC-0029`; `VPROC-0030`; `VPROC-0031`; `VPROC-0032`; `VPROC-0067` | `nexo` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-014` | Producción y calidad de lote | `PRODUCTO_Y_OPERACION` | Plan, lote, consumos, salidas, empaque, liberación, reproceso, rendimiento y cierre productivo conciliables. | planificación, solicitudes, lotes, consumos, salidas, empaque, calidad, liberación, reproceso y merma | receta maestra, stock autoritativo y pedido comercial | CAP-08 | `VPROC-0033`; `VPROC-0034`; `VPROC-0035`; `VPROC-0036`; `VPROC-0037` | `fogo` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-015` | Pedidos y operación de venta | `COMERCIAL_Y_ENTREGA` | Pedido y servicio de venta desde captura hasta preparación, entrega comercial, modificación, cancelación o devolución. | mesa, mostrador, para llevar, canales externos, B2B, catering, pedido, ítems, estados y cambios | confirmación de pago, cliente maestro, logística de ruta y registro contable | CAP-09 | `VPROC-0038`; `VPROC-0039`; `VPROC-0040`; `VPROC-0041`; `VPROC-0042` | `pulso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-016` | Pagos, caja y soporte fiscal | `COMERCIAL_Y_ENTREGA` | Intento y confirmación de pago, caja, efectivo, soporte fiscal y conciliación diaria de venta y recaudo. | transacciones, webhooks de pago, medios de pago, turnos de caja, movimientos, cierres y documentos fiscales | pedido, cartera contable, presupuesto y fidelización | CAP-09; CAP-12 | `VPROC-0043`; `VPROC-0044` | `pulso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-017` | Clientes, fidelización y experiencia | `COMERCIAL_Y_ENTREGA` | Identidad y consentimiento del cliente, beneficios, ledgers de fidelización, reclamos, compensaciones, reservas y satisfacción. | clientes, preferencias, consentimiento, lealtad, beneficios, reclamos, compensaciones, reservas y satisfacción | pedido, campaña de marketing y transacción de pago | CAP-10 | `VPROC-0045`; `VPROC-0046`; `VPROC-0047`; `VPROC-0068` | `pass`; `pulso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-018` | Logística, transporte y entrega | `COMERCIAL_Y_ENTREGA` | Ruta, vehículo, carga, custodia, recorrido, entrega, prueba, novedad, retorno e integración con tercero conciliables. | planeación de ruta, despacho, transporte, entrega, prueba, novedad, retorno y terceros logísticos | movimiento interno de stock como fuente y pedido comercial | CAP-11 | `VPROC-0048`; `VPROC-0049`; `VPROC-0050` | `nexo`; `pulso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-019` | Finanzas y control económico | `FINANZAS_Y_HABILITADORES` | Hecho económico, obligación, cartera, costo, presupuesto, período, cierre y rentabilidad con reglas versionadas. | contabilidad, cuentas por pagar y cobrar, costos, presupuestos, períodos, cierres y rentabilidad | ejecución de pago de cliente, caja operativa y nómina detallada | CAP-12 | `VPROC-0051`; `VPROC-0052`; `VPROC-0053`; `VPROC-0054`; `VPROC-0069` | `numera` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-020` | Instalaciones y condiciones físicas | `FINANZAS_Y_HABILITADORES` | Espacio, condición, servicio, limpieza, mantenimiento, plaga, reparación e incidencia de instalación con orden y cierre. | instalaciones, limpieza, saneamiento, plagas, servicios, reparaciones, inspecciones y novedades físicas | mantenimiento de activos móviles y soporte tecnológico | CAP-13 | `VPROC-0055` | `nexo` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-021` | Comunicación, marketing y oportunidades | `FINANZAS_Y_HABILITADORES` | Contenido, campaña, promoción, publicación, oportunidad y caso comercial digital con aprobación, vigencia y medición. | contenido, medios, campañas, promociones, reputación, prospectos y oportunidades | oferta vendible autoritativa, pedido y resolución de reclamo | CAP-14 | `VPROC-0056`; `VPROC-0057` | `aura` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-022` | Tecnología y soporte | `FINANZAS_Y_HABILITADORES` | Servicio tecnológico, aplicación, dispositivo, red, cambio, versión, solicitud e incidente técnico gobernados. | aplicaciones, dispositivos, redes, periféricos, soporte, fallas, cambios, versiones y proveedores tecnológicos | decisión empresarial de acceso y continuidad integral del negocio | CAP-15 | `VPROC-0058` | `viso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-023` | Identidad empresarial y autorización | `FINANZAS_Y_HABILITADORES` | Vínculo principal-actor, rol, permiso, alcance, contexto, dispositivo, sesión empresarial, simulación y revocación autoritativos. | actores, roles, permisos, scopes, contexto, asignaciones de acceso, dispositivos compartidos, sesiones y revocación | perfil laboral o de cliente, autenticación interna de Supabase y soporte técnico | CAP-01; CAP-15 | `VPROC-0059` | `viso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-024` | Información documental y evidencia | `FINANZAS_Y_HABILITADORES` | Documento o evidencia clasificado, versionado, custodiado, relacionado, retenido y dispuesto de forma autorizada. | tipos documentales, metadatos, versiones, expedientes, firmas, custodia, retención, legal hold y disposición | hecho empresarial respaldado y objeto físico administrado por Storage | CAP-16 | `VPROC-0060` | `viso` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-025` | Medición, analítica y mejora | `FINANZAS_Y_HABILITADORES` | Métrica, definición, corte, análisis, decisión de mejora, seguimiento y verificación sin sustituir las fuentes operativas. | indicadores, snapshots, reportes, análisis, oportunidades y acciones de mejora | hechos transaccionales fuente y observabilidad puramente técnica | CAP-17 | `VPROC-0061` | `numera` | `DEFERRED_TO_SUPA-ARC-003` |
+| `VDOM-026` | Continuidad operativa e incidentes de servicio | `FINANZAS_Y_HABILITADORES` | Dependencia crítica, incidente de continuidad, operación degradada, recuperación, reincorporación, conciliación y aprendizaje. | continuidad, contingencia, operación mínima, recuperación, reconciliación y revisión postincidente | accidente laboral, incidente tecnológico como ticket y respaldo técnico aislado | CAP-18 | `VPROC-0062` | `viso` | `DEFERRED_TO_SUPA-ARC-003` |
+
+Los nombres funcionales anteriores son canónicos para la responsabilidad empresarial. La convención de nombres físicos y el número de schemas se resolverán en `SUPA-ARC-003` y `SUPA-ARC-011`.
+
+#### 8. Cobertura del mapa de capacidades
+
+| Capacidad | Nombre canónico | Dominios que materializan resultados diferenciados | Regla de frontera |
+| --- | --- | --- | --- |
+| `CAP-01` | Dirigir y gobernar la organización | `VDOM-001`; `VDOM-023` | Gobierno y autorización permanecen relacionados, pero la decisión empresarial no se confunde con la evaluación técnica de acceso. |
+| `CAP-02` | Gestionar personas y trabajo | `VDOM-002`; `VDOM-003`; `VDOM-004`; `VDOM-005`; `VDOM-006` | Candidato, trabajador, programación, asistencia y nómina conservan ciclos e invariantes separados. |
+| `CAP-03` | Proteger salud, seguridad y cumplimiento | `VDOM-007` | La evidencia puede residir en la capa documental, pero el caso y la decisión preventiva pertenecen al dominio de seguridad. |
+| `CAP-04` | Gestionar productos, preparaciones y conocimiento | `VDOM-008`; `VDOM-009`; `VDOM-010` | Producto, receta y oferta comercial no comparten automáticamente identidad, versión ni autoridad. |
+| `CAP-05` | Abastecer la operación | `VDOM-011` | La recepción comercial no modifica por sí sola la autoridad de stock ni el hecho contable. |
+| `CAP-06` | Controlar inventario y almacenamiento | `VDOM-012` | Inventario gobierna consumibles y existencias; no activos durables ni pedido comercial. |
+| `CAP-07` | Gestionar activos, equipos y elementos reutilizables | `VDOM-013` | Activo, vehículo, reutilizable y kit comparten custodia y condición, no stock consumible. |
+| `CAP-08` | Planear y ejecutar producción | `VDOM-009`; `VDOM-014` | La receta es conocimiento aprobado; producción gobierna la ejecución y calidad del lote. |
+| `CAP-09` | Vender, cobrar y atender pedidos | `VDOM-010`; `VDOM-015`; `VDOM-016` | Oferta, pedido y pago son resultados distintos y conciliables. |
+| `CAP-10` | Atender clientes y fortalecer relaciones | `VDOM-017` | Cliente, fidelización y experiencia se separan de pedido, pago y campaña. |
+| `CAP-11` | Transportar, despachar y entregar | `VDOM-018` | La entrega gobierna custodia y prueba de transporte; el stock y el pedido conservan sus fuentes. |
+| `CAP-12` | Gestionar dinero, costos y obligaciones | `VDOM-006`; `VDOM-016`; `VDOM-019` | Nómina, pago de venta y contabilidad comparten efectos económicos, pero no la misma fuente. |
+| `CAP-13` | Mantener instalaciones y condiciones de operación | `VDOM-020` | Instalaciones gobierna espacios y condiciones físicas, no activos móviles ni tickets tecnológicos. |
+| `CAP-14` | Comunicar, promocionar y desarrollar ventas | `VDOM-021` | Marketing gobierna contenido y oportunidad; no la oferta vendible ni el pedido. |
+| `CAP-15` | Gestionar tecnología y soporte | `VDOM-022`; `VDOM-023` | Tecnología presta el servicio; identidad y autorización deciden acceso empresarial. |
+| `CAP-16` | Proteger información, documentos y evidencia | `VDOM-024` | Documentos gobierna ciclo y custodia de evidencia, no el hecho respaldado. |
+| `CAP-17` | Medir, analizar y mejorar | `VDOM-025` | Analítica conserva definiciones y resultados derivados sin asumir autoridad sobre datos fuente. |
+| `CAP-18` | Mantener continuidad y responder a incidentes | `VDOM-026` | Continuidad coordina degradación y recuperación sin apropiarse de incidentes laborales o tecnológicos especializados. |
+
+#### 9. Matriz completa proceso → dominio primario
+
+| Proceso canónico | Propietaria funcional actual | Dominio primario | Nombre del dominio | Cobertura física heredada |
+| --- | --- | --- | --- | --- |
+| `VPROC-0001` — Gobernar decisiones empresariales con registro, alcance, responsable, compromisos y seguimiento | `viso` | `VDOM-001` | Gobierno organizacional | `NO_CANONICAL_SOURCE` |
+| `VPROC-0002` — Mantener una estructura organizativa y jurídica coherente entre empresas, marcas, establecimientos, sedes y áreas | `viso` | `VDOM-001` | Gobierno organizacional | `PARTIAL_CURRENT` |
+| `VPROC-0003` — Gobernar responsabilidades, políticas, delegaciones y límites de decisión mediante versiones vigentes | `viso` | `VDOM-001` | Gobierno organizacional | `PARTIAL_CURRENT` |
+| `VPROC-0004` — Coordinar compromisos y transferencias de trabajo entre negocios, sedes y áreas | `viso` | `VDOM-001` | Gobierno organizacional | `NO_CANONICAL_SOURCE` |
+| `VPROC-0005` — Planear dotación y ejecutar selección sin mezclar necesidad laboral, candidato y trabajador activo | `viso` | `VDOM-002` | Reclutamiento y selección | `FUTURE_OR_PARTIAL` |
+| `VPROC-0006` — Orquestar vinculación, expediente, incorporación, preparación y habilitación inicial de la persona | `viso` | `VDOM-003` | Vinculación y ciclo laboral | `PARTIAL_CURRENT` |
+| `VPROC-0007` — Administrar asignaciones laborales y programación publicada con historial y revisión controlada | `viso` | `VDOM-004` | Programación y novedades laborales | `PARTIAL_CURRENT` |
+| `VPROC-0008` — Capturar asistencia como hechos inmutables y corregirla mediante decisiones auditables | `anima` | `VDOM-005` | Asistencia y tiempo trabajado | `IMPLEMENTED_CURRENT` |
+| `VPROC-0009` — Gestionar novedades, ausencias, permisos y reemplazos como casos laborales completos | `viso` | `VDOM-004` | Programación y novedades laborales | `PARTIAL_CURRENT` |
+| `VPROC-0010` — Preparar y reconciliar el paquete autorizado para pagos y beneficios laborales | `numera` | `VDOM-006` | Nómina y beneficios laborales | `NO_CANONICAL_SOURCE` |
+| `VPROC-0011` — Orquestar retiro laboral, devolución, revocación de accesos y cierre documental | `viso` | `VDOM-003` | Vinculación y ciclo laboral | `FRAGMENTED_CURRENT` |
+| `VPROC-0012` — Gestionar riesgos, inspecciones, controles preventivos y acciones correctivas | `viso` | `VDOM-007` | Salud, seguridad, inocuidad y cumplimiento operativo | `NO_CANONICAL_SOURCE` |
+| `VPROC-0013` — Gestionar incidentes, accidentes y emergencias con respuesta inmediata y expediente posterior | `viso` | `VDOM-007` | Salud, seguridad, inocuidad y cumplimiento operativo | `NO_CANONICAL_SOURCE` |
+| `VPROC-0014` — Ejecutar controles de higiene, inocuidad y cumplimiento mediante procedimientos versionados | `viso` | `VDOM-007` | Salud, seguridad, inocuidad y cumplimiento operativo | `NO_CANONICAL_SOURCE` |
+| `VPROC-0015` — Gobernar el ciclo de vida de productos, presentaciones, unidades y equivalencias | `nexo` | `VDOM-008` | Producto maestro y especificaciones | `PARTIAL_CURRENT` |
+| `VPROC-0016` — Gestionar desarrollo, prueba, aprobación, publicación y versión de recetas | `fogo` | `VDOM-009` | Recetas y conocimiento productivo | `PARTIAL_CURRENT` |
+| `VPROC-0017` — Publicar oferta y disponibilidad desde una definición gobernada hacia todos los canales | `pulso` | `VDOM-010` | Oferta comercial y disponibilidad | `FRAGMENTED_CURRENT` |
+| `VPROC-0018` — Mantener especificaciones, alérgenos, restricciones y criterios de calidad del producto | `nexo` | `VDOM-008` | Producto maestro y especificaciones | `PARTIAL_CURRENT` |
+| `VPROC-0019` — Capturar y priorizar necesidades de compra mediante una entrada única y trazable | `origo` | `VDOM-011` | Abastecimiento y proveedores | `PARTIAL_CURRENT` |
+| `VPROC-0020` — Comparar proveedores y condiciones con evidencia suficiente para decidir | `origo` | `VDOM-011` | Abastecimiento y proveedores | `PARTIAL_CURRENT` |
+| `VPROC-0021` — Aprobar y emitir compras separando flujo ordinario, urgencia y excepción | `origo` | `VDOM-011` | Abastecimiento y proveedores | `PARTIAL_CURRENT` |
+| `VPROC-0022` — Recibir compras, verificar conformidad y resolver diferencias sin separar recepción física, documental y económica | `origo` | `VDOM-011` | Abastecimiento y proveedores | `FRAGMENTED_CURRENT` |
+| `VPROC-0023` — Gobernar sedes, LOC, zonas, posiciones y condiciones de almacenamiento | `nexo` | `VDOM-012` | Inventario y almacenamiento | `IMPLEMENTED_CURRENT` |
+| `VPROC-0024` — Registrar ingreso, ubicación y reubicación mediante movimientos correlacionados | `nexo` | `VDOM-012` | Inventario y almacenamiento | `IMPLEMENTED_CURRENT` |
+| `VPROC-0025` — Retirar, consumir o trasladar existencias conservando unidad, conversión, origen y destino | `nexo` | `VDOM-012` | Inventario y almacenamiento | `IMPLEMENTED_CURRENT` |
+| `VPROC-0026` — Contar como observación, investigar diferencias y ajustar mediante decisión separada | `nexo` | `VDOM-012` | Inventario y almacenamiento | `IMPLEMENTED_CURRENT` |
+| `VPROC-0027` — Gestionar condición, vencimiento, cuarentena, merma, pérdida, frío y disposición | `nexo` | `VDOM-012` | Inventario y almacenamiento | `PARTIAL_CURRENT` |
+| `VPROC-0028` — Ejecutar abastecimiento interno de solicitud a recepción con cantidades conciliables por etapa | `nexo` | `VDOM-012` | Inventario y almacenamiento | `PARTIAL_CURRENT` |
+| `VPROC-0029` — Gestionar identidad, ubicación, custodia, préstamo y transferencia de activos | `nexo` | `VDOM-013` | Activos, mantenimiento y reutilizables | `PARTIAL_CURRENT` |
+| `VPROC-0030` — Gestionar mantenimiento, reparación, garantía, repuesto y disposición de activos | `nexo` | `VDOM-013` | Activos, mantenimiento y reutilizables | `PARTIAL_CURRENT` |
+| `VPROC-0031` — Gestionar disponibilidad de vehículos, combustible, kilometraje e incidencias | `nexo` | `VDOM-013` | Activos, mantenimiento y reutilizables | `NO_CANONICAL_SOURCE` |
+| `VPROC-0032` — Controlar entrega, tenencia, retorno, pérdida y completitud de reutilizables y contenedores | `nexo` | `VDOM-013` | Activos, mantenimiento y reutilizables | `PARTIAL_CURRENT` |
+| `VPROC-0033` — Planear producción desde demanda, inventario, capacidad, prioridad y fecha requerida | `fogo` | `VDOM-014` | Producción y calidad de lote | `PARTIAL_CURRENT` |
+| `VPROC-0034` — Preparar materiales y ejecutar producción contra una versión aprobada | `fogo` | `VDOM-014` | Producción y calidad de lote | `IMPLEMENTED_CURRENT` |
+| `VPROC-0035` — Inspeccionar y decidir liberación, retención, rechazo o corrección de producto | `fogo` | `VDOM-014` | Producción y calidad de lote | `NO_CANONICAL_SOURCE` |
+| `VPROC-0036` — Empacar, etiquetar y almacenar producto terminado con trazabilidad preservada | `fogo` | `VDOM-014` | Producción y calidad de lote | `PARTIAL_CURRENT` |
+| `VPROC-0037` — Gestionar reproceso, aprovechamiento, rendimiento, merma y cierre productivo | `fogo` | `VDOM-014` | Producción y calidad de lote | `PARTIAL_CURRENT` |
+| `VPROC-0038` — Gestionar servicio en mesa de apertura a cierre con pedido, preparación, entrega, pago y conciliación | `pulso` | `VDOM-015` | Pedidos y operación de venta | `FRAGMENTED_CURRENT` |
+| `VPROC-0039` — Gestionar venta de mostrador o para llevar con entrega y cobro correlacionados | `pulso` | `VDOM-015` | Pedidos y operación de venta | `FRAGMENTED_CURRENT` |
+| `VPROC-0040` — Normalizar pedidos de canales externos y transferirlos al proceso interno con reconciliación | `pulso` | `VDOM-015` | Pedidos y operación de venta | `EXTERNAL_FRAGMENTED` |
+| `VPROC-0041` — Gestionar cotización, aprobación, capacidad, producción, facturación y entrega de catering o venta B2B | `pulso` | `VDOM-015` | Pedidos y operación de venta | `NO_CANONICAL_SOURCE` |
+| `VPROC-0042` — Gestionar modificación, sustitución, cancelación, anulación y devolución sin confundir sus efectos | `pulso` | `VDOM-015` | Pedidos y operación de venta | `FRAGMENTED_CURRENT` |
+| `VPROC-0043` — Cobrar, confirmar pago y emitir soporte fiscal mediante contrato conciliable | `pulso` | `VDOM-016` | Pagos, caja y soporte fiscal | `FRAGMENTED_CURRENT` |
+| `VPROC-0044` — Cerrar caja y conciliar ventas, pagos, efectivo, diferencias y responsables | `pulso` | `VDOM-016` | Pagos, caja y soporte fiscal | `PARTIAL_CURRENT` |
+| `VPROC-0045` — Identificar cliente y administrar fidelización mediante ledgers y consentimientos separados | `pass` | `VDOM-017` | Clientes, fidelización y experiencia | `FRAGMENTED_CURRENT` |
+| `VPROC-0046` — Gestionar reclamo, devolución, compensación y aprendizaje de causa | `pulso` | `VDOM-017` | Clientes, fidelización y experiencia | `FRAGMENTED_CURRENT` |
+| `VPROC-0047` — Gestionar reservas, eventos y comunicaciones al cliente con capacidad y consentimiento | `pulso` | `VDOM-017` | Clientes, fidelización y experiencia | `NO_CANONICAL_SOURCE` |
+| `VPROC-0048` — Planear ruta, vehículo, carga, secuencia y restricciones antes del despacho | `nexo` | `VDOM-018` | Logística, transporte y entrega | `PARTIAL_CURRENT` |
+| `VPROC-0049` — Ejecutar ruta y confirmar entrega, rechazo, novedad o retorno con prueba suficiente | `nexo` | `VDOM-018` | Logística, transporte y entrega | `PARTIAL_CURRENT` |
+| `VPROC-0050` — Integrar entrega de tercero con seguimiento, prueba y conciliación interna | `pulso` | `VDOM-018` | Logística, transporte y entrega | `EXTERNAL_FRAGMENTED` |
+| `VPROC-0051` — Registrar hechos económicos desde eventos operativos y soportes correlacionados | `numera` | `VDOM-019` | Finanzas y control económico | `PARTIAL_CURRENT` |
+| `VPROC-0052` — Gestionar obligación, aprobación y pago a proveedor con conciliación bancaria | `numera` | `VDOM-019` | Finanzas y control económico | `NO_CANONICAL_SOURCE` |
+| `VPROC-0053` — Gestionar cartera, cobro, recaudo, aplicación y diferencia | `numera` | `VDOM-019` | Finanzas y control económico | `NO_CANONICAL_SOURCE` |
+| `VPROC-0054` — Gestionar costos, distribución, presupuesto, cierre y rentabilidad con reglas versionadas | `numera` | `VDOM-019` | Finanzas y control económico | `PARTIAL_CURRENT` |
+| `VPROC-0055` — Gestionar limpieza, inspección, mantenimiento, plagas, servicios y cierre de novedades de instalaciones | `nexo` | `VDOM-020` | Instalaciones y condiciones físicas | `NO_CANONICAL_SOURCE` |
+| `VPROC-0056` — Gestionar contenido y promociones desde solicitud y aprobación hasta publicación y retiro | `aura` | `VDOM-021` | Comunicación, marketing y oportunidades | `FUTURE_OR_PARTIAL` |
+| `VPROC-0057` — Convertir consultas y oportunidades de canales digitales en casos comerciales trazables | `aura` | `VDOM-021` | Comunicación, marketing y oportunidades | `FUTURE_OR_PARTIAL` |
+| `VPROC-0058` — Gestionar solicitudes e incidentes tecnológicos con diagnóstico, prioridad, resolución y conocimiento | `viso` | `VDOM-022` | Tecnología y soporte | `PARTIAL_CURRENT` |
+| `VPROC-0059` — Gestionar el ciclo de acceso tecnológico desde solicitud hasta revocación y verificación | `viso` | `VDOM-023` | Identidad empresarial y autorización | `PARTIAL_CURRENT` |
+| `VPROC-0060` — Gestionar documentos y evidencia desde creación hasta disposición con metadatos y custodia | `viso` | `VDOM-024` | Información documental y evidencia | `FRAGMENTED_CURRENT` |
+| `VPROC-0061` — Gestionar medición, análisis, decisión de mejora y verificación de resultado | `numera` | `VDOM-025` | Medición, analítica y mejora | `PARTIAL_CURRENT` |
+| `VPROC-0062` — Gestionar continuidad desde detección hasta operación mínima, recuperación, reconciliación y aprendizaje | `viso` | `VDOM-026` | Continuidad operativa e incidentes de servicio | `NO_CANONICAL_SOURCE` |
+| `VPROC-0063` — Gestionar riesgos empresariales como registro versionado de riesgo, tratamiento y seguimiento | `viso` | `VDOM-001` | Gobierno organizacional | `NO_CANONICAL_SOURCE` |
+| `VPROC-0064` — Gestionar relaciones con asesores y autoridades conservando obligaciones, vencimientos y evidencia interna | `viso` | `VDOM-001` | Gobierno organizacional | `NO_CANONICAL_SOURCE` |
+| `VPROC-0065` — Acompañar desempeño y desarrollo con objetivos, retroalimentación, privacidad y decisiones separadas | `viso` | `VDOM-003` | Vinculación y ciclo laboral | `NO_CANONICAL_SOURCE` |
+| `VPROC-0066` — Entregar y controlar elementos de protección desde requisito hasta devolución y evidencia | `viso` | `VDOM-007` | Salud, seguridad, inocuidad y cumplimiento operativo | `NO_CANONICAL_SOURCE` |
+| `VPROC-0067` — Gestionar kits y conjuntos sin confundir kit, activo, LPN o contenedor | `nexo` | `VDOM-013` | Activos, mantenimiento y reutilizables | `NO_CANONICAL_SOURCE` |
+| `VPROC-0068` — Medir satisfacción separando medición, incentivo, reclamo y compensación | `pulso` | `VDOM-017` | Clientes, fidelización y experiencia | `NO_CANONICAL_SOURCE` |
+| `VPROC-0069` — Gestionar presupuestos con versión, supuestos, aprobación, vigencia, consumo, proyección y desviación | `numera` | `VDOM-019` | Finanzas y control económico | `PARTIAL_CURRENT` |
+
+Cada proceso aparece exactamente una vez como responsabilidad primaria. Los dominios secundarios que participan como consumidor, proveedor de referencia o receptor de evento no duplican la asignación primaria.
+
+#### 10. Fronteras empresariales obligatorias
+
+| Frontera | Decisión estable |
+| --- | --- |
+| candidato ↔ trabajador | `VDOM-002` gobierna candidato y selección; `VDOM-003` inicia al materializarse el vínculo laboral autorizado |
+| trabajador ↔ programación ↔ asistencia ↔ nómina | `VDOM-003`, `VDOM-004`, `VDOM-005` y `VDOM-006` intercambian referencias y hechos sin compartir fuente autoritativa |
+| producto ↔ receta ↔ oferta | `VDOM-008` gobierna producto; `VDOM-009` conocimiento productivo; `VDOM-010` oferta y disponibilidad comercial |
+| abastecimiento ↔ inventario | `VDOM-011` acepta la recepción comercial; `VDOM-012` registra el efecto físico conciliado |
+| inventario ↔ activos | `VDOM-012` gobierna existencias consumibles; `VDOM-013` identidad, custodia y condición de activos o reutilizables |
+| inventario ↔ producción | `VDOM-012` gobierna stock; `VDOM-014` lote, consumo productivo, salida y calidad |
+| pedido ↔ pago ↔ cliente | `VDOM-015` gobierna pedido; `VDOM-016` pago y caja; `VDOM-017` cliente, lealtad y experiencia |
+| pedido ↔ logística | `VDOM-015` conserva compromiso comercial; `VDOM-018` custodia, ruta y prueba de entrega |
+| pago ↔ finanzas | `VDOM-016` confirma el recaudo operativo; `VDOM-019` reconoce obligación, hecho económico y conciliación contable |
+| oferta ↔ marketing | `VDOM-010` publica qué puede venderse; `VDOM-021` gobierna contenido, campaña y oportunidad |
+| tecnología ↔ autorización | `VDOM-022` opera tecnología y soporte; `VDOM-023` decide identidad, contexto, permiso y revocación empresarial |
+| hecho ↔ documento | cada dominio conserva el hecho; `VDOM-024` gobierna el ciclo documental y la evidencia asociada |
+| fuente ↔ analítica | cada dominio conserva el dato fuente; `VDOM-025` gobierna definición, corte, análisis y acción de mejora |
+| incidente especializado ↔ continuidad | el dominio especializado gobierna el incidente; `VDOM-026` coordina degradación, recuperación y reincorporación |
+
+#### 11. Reglas de autoridad y fuente de verdad
+
+1. Todo hecho empresarial deberá resolver a un único dominio autoritativo antes de asignarse a un schema objetivo.
+2. El dominio gobierna identidad, invariantes, estados, correcciones, cierre y evidencia mínima del hecho; la aplicación propietaria gobierna la experiencia y el proceso conforme a los contratos aprobados.
+3. Una aplicación consumidora utilizará referencias, vistas, consultas, comandos o eventos aprobados y no adquirirá autoridad por leer o presentar el dato.
+4. Una proyección, caché, vista, alias, tabla de compatibilidad, índice de búsqueda o snapshot analítico no constituye otra fuente de verdad.
+5. Cuando el estado actual sea `FRAGMENTED_CURRENT`, `EXTERNAL_FRAGMENTED`, `PARTIAL_CURRENT`, `FUTURE_OR_PARTIAL` o `NO_CANONICAL_SOURCE`, esta tarea define la responsabilidad necesaria pero no declara resuelta la implementación.
+6. La asignación objeto → dominio → schema, incluidos objetos compartidos, funciones, triggers, Storage y recursos administrados, corresponde a `SUPA-ARC-003`.
+7. Las lecturas y mutaciones entre dominios se definirán en `SUPA-ARC-016` y `SUPA-ARC-017`; esta tarea no autoriza DML cruzado.
+
+#### 12. Relación entre dominios y aplicaciones
+
+- `shell`, `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura` y `pass` permanecen como aplicaciones propietarias o consumidoras de procesos, no como dominios automáticos;
+- una aplicación puede operar procesos de un dominio y consumir varios dominios sin recibir un schema propio;
+- un dominio puede ser operado por más de una aplicación cuando los procesos aprobados tienen propietarios distintos, sin perder una sola autoridad por hecho;
+- los propietarios actuales de la matriz se preservan exactamente y solo podrán cambiar mediante la tarea funcional propietaria, no por una decisión de schema;
+- `vento-shell` es fuente versionada de contratos, migraciones y pruebas, no propietario empresarial universal.
+
+#### 13. Frontera de producto VITAL
+
+VITAL no forma parte de los 26 dominios empresariales de Vento OS. Sus 54 relaciones auditadas conservan la clasificación `OUTSIDE_VENTO_OS` y una frontera de producto independiente.
+
+Reglas:
+
+1. compartir proyecto Supabase no integra VITAL con Vento OS;
+2. ninguna tabla, tipo, sesión, secreto, migración o cliente VITAL se convierte en recurso transversal por coexistencia;
+3. cualquier intercambio requiere contrato, finalidad, seguridad, propietario y compatibilidad explícitos;
+4. `SUPA-ARC-003`, `SUPA-ARC-023` y `SUPA-ARC-024` decidirán separación física, tipos y ambientes;
+5. esta tarea no confirma que el schema actual `vital` sea la frontera física definitiva.
+
+#### 14. Capas técnicas y transversales que no son dominios empresariales
+
+| Capa o superficie | Tratamiento | Tarea propietaria |
+| --- | --- | --- |
+| schemas administrados de PostgreSQL y Supabase | infraestructura de plataforma, nunca dominio Vento | `SUPA-ARC-001`; tareas específicas del servicio |
+| `public` | contenedor actual multi-capacidad, no dominio | `SUPA-ARC-004` |
+| API, vistas y RPC expuestas | capa de contrato, no autoridad empresarial | `SUPA-ARC-005` |
+| helpers, secretos y lógica privada | capa privada técnica | `SUPA-ARC-006` |
+| auditoría, outbox y eventos | capa transversal que conserva productor y dominio de origen | `SUPA-ARC-007`; `SUPA-ARC-019` |
+| Storage, Realtime, Edge, webhooks y cron | servicios de transporte o ejecución | `SUPA-ARC-018` a `SUPA-ARC-020` |
+| integración externa | adaptador entre propietarios, no dominio interno | `SUPA-ARC-020`; BLOQUE X |
+
+#### 15. Riesgos restringidos y carryover
+
+| Riesgo | Efecto de esta tarea | Resolución restante |
+| --- | --- | --- |
+| `RSK-SUPA-006` | separa pedido, pago y reconocimiento financiero | `SUPA-ARC-003`; `SUPA-ARC-016`; `SUPA-ARC-017`; `SUPA-ARC-020` |
+| `RSK-SUPA-011` | separa vínculo laboral, asistencia e identidad-autorización | `SUPA-ARC-003`; `SUPA-ARC-008` a `SUPA-ARC-010`; `SUPA-ARC-016` |
+| `RSK-SUPA-012` | establece `VDOM-012` como responsabilidad de inventario | `SUPA-ARC-003`; `SUPA-ARC-012`; `SUPA-ARC-016`; `SUPA-ARC-017` |
+| `RSK-SUPA-013` | asigna los 20 procesos sin fuente a un dominio necesario sin inventar fuente actual | `SUPA-ARC-003`; `SUPA-ARC-016`; paquetes E5 propietarios |
+| `RSK-SUPA-016` | elimina ambigüedad conceptual de dominio y autoridad para los 69 procesos | `SUPA-ARC-003`; `SUPA-ARC-016`; `SUPA-ARC-017`; transición |
+| `RSK-SUPA-017` | confirma que `public` no es dominio | `SUPA-ARC-003` a `SUPA-ARC-005` |
+| `RSK-SUPA-018` | excluye VITAL de la taxonomía de Vento OS y exige frontera contractual | `SUPA-ARC-003`; `SUPA-ARC-023`; `SUPA-ARC-024` |
+| `RSK-SUPA-033` | asigna identidades de dominio para catalogar objetos sin inferir desde schema | `SUPA-ARC-003`; `SUPA-ARC-011`; `SUPA-ARC-016`; `SHELL-CI-017` |
+
+Ningún riesgo queda aceptado, mitigado o cerrado por esta definición. La taxonomía reduce ambigüedad y prepara decisiones físicas verificables.
+
+#### 16. Decisiones reservadas
+
+| Decisión | Tarea propietaria |
+| --- | --- |
+| schema propietario de cada fuente, proyección y objeto | `SUPA-ARC-003` |
+| función futura de `public` | `SUPA-ARC-004` |
+| superficies expuestas y privadas | `SUPA-ARC-005`; `SUPA-ARC-006` |
+| auditoría y eventos | `SUPA-ARC-007`; `SUPA-ARC-019` |
+| detalle de Auth, identidad, principal y sesión | `SUPA-ARC-008` a `SUPA-ARC-010` |
+| nombres físicos, claves, funciones y triggers | `SUPA-ARC-011` a `SUPA-ARC-014` |
+| exposición, contratos y escrituras entre dominios | `SUPA-ARC-015` a `SUPA-ARC-017` |
+| Storage, automatización, rendimiento, retención, tipos y ambientes | `SUPA-ARC-018` a `SUPA-ARC-024` |
+| consolidación mediante ADR | `SUPA-ARC-025` |
+| movimientos, compatibilidad, backfills y retiros | `SUPA-TRANS-001` a `SUPA-TRANS-015` |
+
+#### 17. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear o renombrar schemas;
+- mover, dividir, fusionar o retirar tablas, vistas, funciones, tipos, políticas o triggers;
+- cambiar `public`, Data API, grants, RLS o privilegios;
+- crear dominios físicos con los nombres funcionales aquí definidos;
+- modificar Auth, Storage, Realtime, Edge Functions, webhooks, cron, secretos o configuración;
+- ejecutar migraciones, DDL, DML, backfills, merges, eliminaciones o despliegues;
+- cambiar propietarias o consumidoras aprobadas de los procesos;
+- declarar resuelta una fuente fragmentada o ausente.
+
+#### 18. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA.
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-555 a TREQ-SUPABASE-586
+```
+
+Los treinta y dos requisitos protegen identidad y cardinalidad de dominios, cobertura exacta de capacidades y procesos, fronteras críticas, separación de aplicaciones, schemas y servicios, exclusión de VITAL, autoridad única, carryovers y límites de implementación. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 19. Criterios de aceptación
+
+- [ ] Existen exactamente 26 dominios únicos `VDOM-001` a `VDOM-026`.
+- [ ] Cada dominio declara resultado autoritativo, inclusiones, exclusiones, capacidades, procesos y asignación física diferida.
+- [ ] Las 18 familias `CAP-01` a `CAP-18` están cubiertas sin convertirlas automáticamente en schemas.
+- [ ] Los 69 procesos `VPROC-0001` a `VPROC-0069` aparecen exactamente una vez como proceso primario.
+- [ ] Las propietarias funcionales actuales coinciden con `PROC-CAT-005` y `SUPA-AUD-023`.
+- [ ] Ninguna aplicación, schema actual o servicio administrado se declara dominio por inferencia.
+- [ ] Reclutamiento, vínculo laboral, programación, asistencia y nómina conservan fronteras explícitas.
+- [ ] Producto, receta, oferta, pedido, pago, cliente, logística y finanzas conservan fuentes diferenciadas.
+- [ ] Tecnología y autorización permanecen separadas.
+- [ ] Documento, analítica y continuidad no sustituyen la fuente del hecho respaldado.
+- [ ] VITAL permanece fuera de Vento OS con frontera de producto explícita.
+- [ ] `public` no se considera dominio y su decisión permanece reservada.
+- [ ] Se generaron `TREQ-SUPABASE-555` a `TREQ-SUPABASE-586`.
+- [ ] No se autorizaron cambios físicos, código ni implementación.
+- [ ] `SUPA-ARC-003` permanece reservada.
+
+#### 20. Controles estructurales requeridos
+
+| Control | Resultado esperado |
+| --- | ---: |
+| dominios únicos | **26** |
+| IDs consecutivos | `VDOM-001` a `VDOM-026` |
+| capacidades cubiertas | **18 de 18** |
+| procesos cubiertos | **69 de 69** |
+| procesos duplicados | **0** |
+| procesos sin dominio | **0** |
+| dominios físicos asignados | **0** |
+| fronteras de producto externas | **1** |
+| requisitos nuevos | **32** |
+| cambios físicos | **0** |
+
+#### 21. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-001 — Definir principios de separación entre esquemas administrados y empresariales
+        ↓
+TAREA ACTUAL PREPARADA PARA CONFIRMACIÓN
+SUPA-ARC-002 — Definir dominios empresariales estables
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-003 — Definir esquema propietario de cada fuente de verdad
+```
+
+`SUPA-ARC-003` permanece reservada y no se inicia sin aprobación expresa de esta tarea y una nueva solicitud de continuidad.
+
+
 ### [ ] SUPA-ARC-003 — Definir esquema propietario de cada fuente de verdad
 ### [ ] SUPA-ARC-004 — Definir función futura de `public`
 ### [ ] SUPA-ARC-005 — Definir capa expuesta de vistas y RPC
