@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **434** |
+| Aprobadas | **435** |
 | En propuesta | **0** |
-| No iniciadas | **1141** |
+| No iniciadas | **1140** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **27.56% (434/1575)** |
+| Porcentaje de completamiento | **27.62% (435/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-AUD-005` — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-AUD-006` — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto | ⬜ NO INICIADA |
-| Siguiente | `DATA-NORM-AUD-007` — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-AUD-006` — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-AUD-007` — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | ⬜ NO INICIADA |
+| Siguiente | `DATA-NORM-ARC-001` — Definir política de normalización por dominio, entidad y campo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -401,7 +401,7 @@
 | ✅ APROBADA | `DATA-NORM-AUD-003` | Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ✅ APROBADA | `DATA-NORM-AUD-004` | Detectar duplicados semánticos mediante valores normalizados de comparación | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ✅ APROBADA | `DATA-NORM-AUD-005` | Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-AUD-006` | Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
+| ✅ APROBADA | `DATA-NORM-AUD-006` | Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-007` | Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ✅ APROBADA | `SUPA-ARC-001` | Definir principios de separación entre esquemas administrados y empresariales | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-002` | Definir dominios empresariales estables | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |

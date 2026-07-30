@@ -1490,7 +1490,368 @@ DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y proceso
 ```
 
 
-### [ ] DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto
+### ✅ DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos` — APROBADA
+**Tarea siguiente:** `DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad`
+**Tipo de tarea:** auditoría documental de productores, modificadores, propagadores y consumidores textuales vigentes; sin DDL, DML, migraciones, backfills, correcciones de datos, cambios de funciones, cambios de triggers, cambios de código, cambios de integraciones, despliegues ni modificaciones físicas
+
+#### 1. Objetivo
+
+Inventariar las superficies que actualmente crean, recortan, capitalizan, transliteran, comparan, derivan, copian, completan, componen, proyectan o transmiten valores textuales dentro de Vento OS, distinguiendo las transformaciones que modifican datos persistidos de las operaciones destinadas únicamente a validación, búsqueda, identificación técnica, presentación o comunicación externa.
+
+El inventario deberá impedir que la arquitectura futura agregue una función transversal de normalización sin conocer las reglas ya distribuidas entre PostgreSQL, triggers, RPC, funciones auxiliares, Edge Functions, código cliente, tareas programadas e integraciones. También deberá identificar las cadenas de propagación en las que un valor se copia desde una fuente propietaria hacia snapshots, catálogos, metadatos, notificaciones o sistemas externos.
+
+#### 2. Artefacto producido
+
+```text
+DATA-TEXTUAL-MODIFIER-PRODUCER-INVENTORY-006@1.0.0
+```
+
+| Propiedad                                                             |                                                         Valor observado |
+| --------------------------------------------------------------------- | ----------------------------------------------------------------------: |
+| Proyecto Supabase observado                                           |                                 `vento-os-dev` — `clzdpinthhtknkmefsxx` |
+| Ventana principal de observación de metadatos                         | `2026-07-30T22:09:18.763646+00:00` a `2026-07-30T22:10:56.287165+00:00` |
+| Triggers no internos en las fronteras observadas                      |                                                                 **196** |
+| Funciones distintas vinculadas a esos triggers                        |                                                                  **70** |
+| Triggers pertenecientes a Vento OS                                    |                                                                 **172** |
+| Funciones de trigger pertenecientes a Vento OS                        |                                                                  **69** |
+| Triggers pertenecientes a la frontera separada VITAL                  |                                                                  **24** |
+| Funciones de trigger con primitivas textuales comprobadas en Vento OS |                                                                  **13** |
+| Rutinas examinadas en las fronteras observadas                        |                                                                 **347** |
+| Rutinas con señales sintácticas de tratamiento textual                |                                                                 **142** |
+| Rutinas de Vento OS con señales textuales                             |                                                                 **125** |
+| Rutinas privadas técnicas con señales textuales                       |                                                                   **1** |
+| Rutinas de VITAL con señales textuales, mantenidas separadas          |                                                                  **16** |
+| Edge Functions activas observadas                                     |                                                                  **24** |
+| Tareas `pg_cron` activas observadas                                   |                                                                   **7** |
+| Operaciones de escritura ejecutadas durante la auditoría              |                                                                   **0** |
+| Objetos modificados durante la auditoría                              |                                                                   **0** |
+
+Las 142 rutinas con señales sintácticas no equivalen a 142 normalizadores. El universo incluye validaciones, comparaciones, composición de códigos, generación de mensajes, snapshots, transmisión externa y operaciones que solo usan texto como parámetro. La clasificación funcional de cada productor prevalece sobre la coincidencia de una primitiva como `trim`, `lower`, `replace` o concatenación.
+
+#### 3. Alcance y fronteras
+
+La auditoría cubre:
+
+- objetos PostgreSQL en `app_private`, `club`, `pass`, `payments`, `pos`, `public`, `talento` y `viso`;
+- la coexistencia física de objetos `vital`, conservándolos como producto separado;
+- migraciones y código versionados en la rama canónica de `vento-shell`;
+- Edge Functions activas del proyecto observado;
+- código cliente presente en `vento-shell`;
+- tareas programadas mediante `pg_cron`;
+- llamadas salientes mediante `net.http_post` o `fetch`;
+- integraciones observables con Supabase Auth, Wompi, Google Maps, Google Wallet y Expo Push.
+
+Se mantienen estas restricciones:
+
+1. una primitiva textual no demuestra que exista una política de normalización;
+2. una comparación en minúsculas no implica que el valor persistido deba almacenarse en minúsculas;
+3. una representación derivada no sustituye el valor mostrado ni el valor externo original;
+4. un trigger de validación puede inspeccionar texto sin modificarlo;
+5. una proyección de reporte, notificación o billetera no se convierte en fuente de verdad;
+6. la generación de SKU, códigos, slugs, referencias, estados y hashes pertenece a identificadores técnicos, no a corrección ortográfica;
+7. los datos de VITAL no reciben reglas de Vento OS por compartir proyecto físico;
+8. ningún hallazgo autoriza cambios en datos, funciones, triggers, clientes, jobs o integraciones.
+
+#### 4. Taxonomía de productores y efectos
+
+| Código                           | Clase                             | Definición                                                                                | Consecuencia de auditoría                                                        |
+| -------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `PERSISTED_DIRECT_TRANSFORM`     | transformación persistida directa | altera el valor que será almacenado en la fila objeto de la operación                     | requiere política por campo, trazabilidad e idempotencia                         |
+| `PERSISTED_DERIVED_COPY`         | copia o snapshot persistido       | copia texto desde una entidad propietaria hacia otra columna o entidad                    | exige declarar fuente, vigencia y mecanismo de resincronización                  |
+| `TECHNICAL_IDENTIFIER_GENERATOR` | generación técnica                | crea SKU, código, slug, referencia, estado o identificador compuesto                      | se gobierna por contrato técnico y estabilidad, no por estilo comercial          |
+| `VALIDATION_OR_LOOKUP_ONLY`      | validación o comparación          | recorta, cambia caja o deriva una clave solo para consultar o validar                     | no autoriza reescribir el valor original                                         |
+| `OUTPUT_PROJECTION`              | proyección de salida              | transforma texto para reporte, archivo, billetera, interfaz o notificación                | debe conservar relación con la fuente y no retroalimentarla silenciosamente      |
+| `EXTERNAL_INPUT_MAPPING`         | mapeo de entrada externa          | limpia, clasifica o traduce valores recibidos de Auth, webhook o proveedor                | debe conservar payload, procedencia y versión cuando la trazabilidad lo requiera |
+| `OUTBOUND_TRANSMISSION`          | transmisión externa               | compone o recorta texto antes de enviarlo por HTTP, correo, push o enlace                 | requiere contrato del receptor y control de pérdida de información               |
+| `SCHEDULED_ORCHESTRATION`        | proceso programado                | ejecuta una rutina o llamada externa mediante `pg_cron`                                   | debe identificar productor real, horario, idempotencia y reintentos              |
+| `NO_TEXT_MUTATION_CONFIRMED`     | señal sin mutación textual        | contiene primitivas textuales, pero el efecto comprobado no modifica texto persistido     | excluir de cualquier conteo de normalizadores directos                           |
+| `UNRESOLVED_PRODUCER`            | productor no cerrado              | existe la superficie, pero no se ha demostrado aún todo su efecto o paridad de despliegue | mantener como brecha con tarea propietaria                                       |
+
+#### 5. Inventario de triggers
+
+El proyecto observado contiene 196 triggers no internos y 70 funciones de trigger distintas dentro de las fronteras auditadas.
+
+| Frontera        | Triggers | Funciones distintas | Tratamiento                                                |
+| --------------- | -------: | ------------------: | ---------------------------------------------------------- |
+| Vento OS actual |      172 |                  69 | clasificar por efecto real antes de cualquier rediseño     |
+| VITAL           |       24 |                   1 | conservar separado; no transferir decisiones transversales |
+| **Total**       |  **196** |              **70** | —                                                          |
+
+La inspección del cuerpo de las 69 funciones de trigger de Vento OS encontró 13 con primitivas textuales relevantes. Las demás funciones se concentran en marcas de tiempo, validación relacional, sincronización cuantitativa, estados y otras operaciones sin evidencia suficiente de modificación textual.
+
+#### 6. Funciones de trigger con tratamiento textual comprobado
+
+| Función                                                   | Trigger y entidad                                                                                 | Efecto textual comprobado                                                                                                                       | Clasificación                                                                              |
+| --------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `pass.validate_catalog_item_product_site`                 | `pass_catalog_items_validate_product_site` sobre `pass.catalog_items`                             | completa `name` y `description` desde el producto; genera `code` en minúsculas con separadores; copia el nombre de categoría a `category_label` | `PERSISTED_DIRECT_TRANSFORM` + `PERSISTED_DERIVED_COPY` + `TECHNICAL_IDENTIFIER_GENERATOR` |
+| `public.apply_default_remission_uom_on_insert`            | `trg_apply_default_remission_uom_on_insert` sobre `public.restock_request_items`                  | compara unidades sin distinguir caja y copia códigos de unidad y perfil predeterminado                                                          | `PERSISTED_DERIVED_COPY`                                                                   |
+| `public.notify_support_message_inserted`                  | `trg_support_messages_notify_inserted` sobre `public.support_messages`                            | recorta URL y secreto de configuración y transmite el cuerpo del mensaje a una Edge Function                                                    | `OUTBOUND_TRANSMISSION`                                                                    |
+| `public.pulso_validate_sales_consumption_rule`            | `pulso_sales_consumption_rules_validate` sobre `public.pulso_sales_consumption_rules`             | completa `category_label` desde el ítem de catálogo cuando el valor local está vacío                                                            | `PERSISTED_DERIVED_COPY`                                                                   |
+| `public.set_attendance_log_shift_context`                 | `attendance_logs_resolve_shift_id_bi` sobre `public.attendance_logs`                              | usa `lower(btrim(action))` para resolver turno; no reescribe el campo `action`                                                                  | `VALIDATION_OR_LOOKUP_ONLY`                                                                |
+| `public.set_internal_price_item_uom_snapshot`             | `trg_internal_price_list_items_uom_snapshot` sobre `public.internal_price_list_items`             | copia `label`, `input_unit_code` y `unit_code` desde el perfil UOM; conserva snapshots no vacíos en actualizaciones ordinarias                  | `PERSISTED_DERIVED_COPY`                                                                   |
+| `public.set_product_sku`                                  | `trg_set_product_sku` sobre `public.products`                                                     | genera SKU cuando falta o está vacío después de recorte                                                                                         | `TECHNICAL_IDENTIFIER_GENERATOR`                                                           |
+| `public.set_production_batch_code`                        | `trg_set_production_batch_code` sobre `public.production_batches`                                 | compone `BATCH-` con ocho caracteres de UUID en mayúsculas                                                                                      | `TECHNICAL_IDENTIFIER_GENERATOR`                                                           |
+| `public.sync_order_billing_request_status`                | `trg_orders_sync_billing_request_status` sobre `public.orders`                                    | escribe estados y compone `error_message` técnico como `payment_<status>`                                                                       | `PERSISTED_DIRECT_TRANSFORM` técnico                                                       |
+| `public.sync_product_fulfillment_route_production_fields` | `trg_product_fulfillment_routes_sync_production_fields` sobre `public.product_fulfillment_routes` | completa `production_execution_mode` con `simple` o limpia el valor según `supply_mode`                                                         | `PERSISTED_DIRECT_TRANSFORM` técnico                                                       |
+| `public.sync_restock_request_item_measurement_counts`     | `trg_sync_restock_request_item_measurement_counts` sobre `public.restock_request_items`           | copia o completa `aux_count_unit_code`, con fallback `empaques`                                                                                 | `PERSISTED_DERIVED_COPY`                                                                   |
+| `public.validate_context_simulation_session_v1`           | `trg_validate_context_simulation_session_v1` sobre `public.context_simulation_sessions`           | recorta el rol para comparación; no reescribe el rol operativo                                                                                  | `VALIDATION_OR_LOOKUP_ONLY`                                                                |
+| `public.validate_product_request_policy`                  | `trg_validate_product_request_policy` sobre `public.product_request_policies`                     | recorta `label` y almacena `request_unit_code` y `base_unit_code` en minúsculas                                                                 | `PERSISTED_DIRECT_TRANSFORM`                                                               |
+
+La existencia de estas trece funciones no demuestra uniformidad. Algunas corrigen o generan valores, otras copian snapshots y otras solo comparan. La futura capa defensiva de base de datos deberá conservar esas diferencias.
+
+#### 7. Rutinas no vinculadas a triggers
+
+La búsqueda de primitivas textuales en 347 rutinas produjo 142 candidatos sintácticos:
+
+| Frontera                         | Total con señal | Vinculadas a trigger | No trigger con DML señalado | No trigger sin DML señalado |
+| -------------------------------- | --------------: | -------------------: | --------------------------: | --------------------------: |
+| Vento OS actual                  |             125 |                   13 |                          76 |                          36 |
+| infraestructura privada de Vento |               1 |                    0 |                           0 |                           1 |
+| VITAL separado                   |              16 |                    0 |                          12 |                           4 |
+| **Total**                        |         **142** |               **13** |                      **88** |                      **41** |
+
+`DML señalado` indica que el cuerpo contiene operaciones de escritura junto con primitivas textuales; no afirma que cada operación textual modifique una columna persistida. La revisión individual deberá distinguir valores de entrada, mensajes de error, consultas, composición de JSON y escrituras efectivas.
+
+Familias de Vento OS confirmadas:
+
+| Familia                             | Productores representativos                                                                                                                                         | Efecto                                                                                |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| normalizadores y slugs              | `public._vento_norm`, `public._vento_slugify`, `public._navigation_slugify`, `pass.normalize_commercial_category_code`, `pass.normalize_commercial_collection_code` | crean claves de comparación o códigos mediante algoritmos diferentes                  |
+| categorías y catálogo PASS          | `pass.ensure_commercial_category`, `pass.seed_catalog_items_from_sell_products`                                                                                     | comparan nombres, crean códigos y propagan nombres, descripciones e imágenes          |
+| identidad técnica de inventario     | `public.generate_inventory_sku`, `public.generate_product_sku`, `public.resolve_product_sku_brand_code`, `public.resolve_product_sku_type_code`                     | transliteran, cambian caja, eliminan signos y componen identificadores                |
+| maestros y lotes administrativos    | `public.apply_master_*_batch`                                                                                                                                       | leen JSON, recortan campos y escriben configuraciones maestras                        |
+| checkout, pedidos y entrega         | familias `create_*order*_draft`, `update_order_*`, `update_delivery_portal_state`                                                                                   | recortan entradas, clasifican operaciones y componen estados, referencias y metadatos |
+| inventario, remisiones y producción | familias `apply_restock_*`, `create_remission_*`, `fogo_create_*`, `assign_inventory_*`                                                                             | recortan notas y unidades, generan códigos y propagan snapshots operativos            |
+| PULSO e integraciones comerciales   | `public.pulso_post_daily_sales_import`, funciones de mapeo externo y reglas de consumo                                                                              | transforman valores de importación, categorías, estados y referencias                 |
+| identidad laboral                   | `talento.bootstrap_my_candidate`, `talento.handoff_to_anima`                                                                                                        | recortan nombres y teléfonos, almacenan correo en minúsculas y aplican fallbacks      |
+| privacidad                          | `public.anonymize_user_personal_data`                                                                                                                               | sustituye identidad visible por valores técnicos de anonimización                     |
+| autorización y contexto             | funciones `get_*context`, `has_*permission`, simulación y roles                                                                                                     | recortan y comparan códigos; generalmente no corrigen texto mostrado                  |
+
+#### 8. Divergencia entre algoritmos existentes
+
+Se comprobaron al menos tres algoritmos de slug o normalización con resultados potencialmente diferentes:
+
+| Productor                                    | Operación observada                                                                        | Riesgo                                                                                 |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------- |
+| `public._vento_norm`                         | recorta y compacta espacios                                                                | no define caja, tildes, signos ni clase de campo                                       |
+| `public._vento_slugify`                      | minúsculas; caracteres fuera de `a-z0-9` a guion                                           | los caracteres acentuados pueden convertirse en separadores en lugar de transliterarse |
+| `public._navigation_slugify`                 | translitera un conjunto de caracteres, pasa a minúsculas y usa guion bajo                  | su alfabeto y separador difieren de `_vento_slugify`                                   |
+| `pass.validate_catalog_item_product_site`    | genera código con minúsculas y grupos no alfanuméricos convertidos a guion                 | replica parcialmente la lógica sin consumir un único helper                            |
+| `pass.seed_catalog_items_from_sell_products` | genera slug y agrega fragmento de UUID al código                                           | crea identidad estable con una regla distinta a categorías y navegación                |
+| `public.generate_inventory_sku`              | mayúsculas, transliteración amplia, eliminación de signos y truncamiento a seis caracteres | está diseñado para identificador técnico, no para búsqueda ni visualización            |
+
+Ninguno de estos algoritmos podrá declararse normalizador general. La arquitectura deberá nombrar explícitamente la representación producida, el alfabeto permitido, el separador, el tratamiento Unicode y la estabilidad requerida.
+
+#### 9. Cadenas de propagación persistida
+
+| Fuente observada                             | Productor                                      | Destino                                                            | Riesgo de divergencia                                                              |
+| -------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `public.products.name`, `description`, `sku` | trigger y seed de catálogo PASS                | `pass.catalog_items.name`, `description`, `code`                   | la copia puede quedar divergente cuando solo una superficie se corrige             |
+| `pass.commercial_categories.name`            | `pass.validate_catalog_item_product_site`      | `pass.catalog_items.category_label`                                | etiqueta duplicada sin mecanismo general de resincronización demostrado            |
+| `pass.catalog_items.category_label`          | `public.pulso_validate_sales_consumption_rule` | `public.pulso_sales_consumption_rules.category_label`              | tercera representación persistida del mismo texto visible                          |
+| `public.product_uom_profiles`                | `public.set_internal_price_item_uom_snapshot`  | snapshot de precio interno                                         | el snapshot histórico puede divergir legítimamente de la fuente vigente            |
+| perfil de inventario y UOM                   | triggers de remisión                           | códigos y unidades de `restock_request_items`                      | la caja y el fallback técnico pueden depender del momento de creación              |
+| Supabase Auth, invitación y formulario       | Edge Functions de invitación                   | Auth metadata, `staff_invitations`, `employees` y `employee_sites` | recortes y fallbacks se ejecutan en más de una superficie                          |
+| proveedor Wompi                              | `payments-webhook` y RPC de estado             | transacción, referencia, estado y payload                          | el mapeo técnico debe preservar el valor externo original junto al estado canónico |
+| mensaje de soporte                           | trigger + Edge Function                        | preview Expo Push                                                  | se recorta a 120 caracteres; es proyección, no fuente textual                      |
+
+Toda cadena futura deberá declarar fuente propietaria, representación derivada, evento de actualización, política histórica, consumidor, posibilidad de resincronización y conducta ante correcciones retroactivas.
+
+#### 10. Código cliente de `vento-shell`
+
+El código cliente visible en la rama canónica contiene transformaciones locales que deben mantenerse separadas de cualquier política de datos:
+
+| Superficie                     | Operación                                                    | Persistencia observada              | Clasificación                                                 |
+| ------------------------------ | ------------------------------------------------------------ | ----------------------------------- | ------------------------------------------------------------- |
+| página de login                | recorta `returnTo` y compara hostname en minúsculas          | ninguna                             | `VALIDATION_OR_LOOKUP_ONLY`                                   |
+| formulario de login            | envía correo y contraseña de acceso sin normalización previa | Supabase Auth gestiona la operación | entrada protegida; no aplicar transformaciones no autorizadas |
+| recuperación de contraseña     | recorta y pasa el correo a minúsculas                        | solicitud a Supabase Auth           | `EXTERNAL_INPUT_MAPPING` técnico                              |
+| selección de mensajes de error | pasa el mensaje a minúsculas para detectar rate limit        | ninguna                             | `VALIDATION_OR_LOOKUP_ONLY`                                   |
+
+El inventario del cliente de `vento-shell` no demuestra cobertura de todos los clientes de Vento OS. La paridad con otros repositorios, aplicaciones móviles, herramientas operativas y clientes heredados queda vinculada a `DATA-NORM-AUD-007` y `SUPA-TRANS-003`.
+
+#### 11. Edge Functions activas
+
+Se observaron 24 Edge Functions activas:
+
+```text
+wallet-pass
+attendance-report
+staff-invitations-create
+staff-invitations-accept
+document-alerts
+request-account-deletion
+account-deletion
+process-account-deletions
+register-push-token
+announcement-notify
+employee-delete
+payments-create-intent
+payments-webhook
+staff-invitations-resend
+staff-invitations-cancel
+shift-publish-notify
+shift-runtime-processor
+pass-delivery-quote
+pass-address-search
+support-message-notify
+payments-return
+pass-register-push-token
+order-message-notify
+delivery-portal
+```
+
+Clasificación comprobada en fuentes versionadas:
+
+| Función o familia          | Operación textual                                                                                                | Efecto                                                        |
+| -------------------------- | ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `staff-invitations-create` | correo `trim + lower`; rol, sede y nombre recortados; fallback desde perfil, metadata o parte local del correo   | persiste en invitación, Auth y trabajador                     |
+| `staff-invitations-accept` | recorta rol, sede, nombre y alias; compara correo en minúsculas                                                  | persiste en Auth metadata, trabajador e invitación            |
+| `register-push-token`      | recorta token, plataforma, estado de permiso y nombre del dispositivo                                            | persiste en `employee_push_tokens`                            |
+| `payments-webhook`         | recorta referencias y eventos; traduce estados externos a estados técnicos; compara checksum sin distinguir caja | persiste mediante RPC y conserva payload externo              |
+| `payments-create-intent`   | recorta referencias y configuración; convierte moneda a mayúsculas; compone URL y firma                          | proyección e integración de pago                              |
+| `wallet-pass`              | recorta y capitaliza la etiqueta de nivel; formatea puntos                                                       | proyección hacia Google Wallet; no modifica la fuente         |
+| `attendance-report`        | normaliza estados para comparación; limpia y limita nombres de hojas de cálculo                                  | proyección de reporte; no modifica la fuente                  |
+| `support-message-notify`   | recorta el cuerpo y limita el preview a 120 caracteres                                                           | transmisión Expo Push; no modifica el mensaje original        |
+| `pass-address-search`      | recorta consulta y `place_id`; devuelve etiquetas y direcciones del proveedor                                    | búsqueda externa; no se comprobó escritura en esta función    |
+| `pass-delivery-quote`      | recorta identificadores y pasa códigos de sede a minúsculas para lookup                                          | comparación e integración; no normaliza la dirección mostrada |
+
+La metadata de despliegue no identifica un commit canónico único para todas las funciones. La equivalencia exacta entre cada versión activa y su fuente versionada no queda demostrada por el inventario de despliegues y deberá resolverse mediante `SUPA-TRANS-003`, `SUPA-TRANS-013` y `SUPA-TRANS-014`.
+
+#### 12. Procesos externos y tareas programadas
+
+Se observaron siete jobs activos en `pg_cron`:
+
+| Job                                                  | Programación  | Productor invocado                             | Clase                                               |
+| ---------------------------------------------------- | ------------- | ---------------------------------------------- | --------------------------------------------------- |
+| `document-alerts-daily`                              | `0 14 * * *`  | llamada HTTP a Edge Function                   | `SCHEDULED_ORCHESTRATION` + `OUTBOUND_TRANSMISSION` |
+| `auto-close-attendance`                              | `59 4 * * *`  | `public.close_open_attendance_day_end(...)`    | proceso de estado y cierre                          |
+| `anima_shift_runtime_processor_every_5m`             | `*/5 * * * *` | `public.run_shift_runtime_processor()`         | orquestación HTTP de runtime                        |
+| `pass_delivery_quotes_cleanup_hourly`                | `17 * * * *`  | `pass.cleanup_delivery_quotes()`               | mantenimiento de vigencia                           |
+| `anima_attendance_day_end_close_0005`                | `5 0 * * *`   | `public.close_open_attendance_day_end(...)`    | proceso de estado y cierre                          |
+| `attendance_stale_open_shift_autoclose_daily_bogota` | `10 5 * * *`  | `public.close_stale_open_attendance_shifts()`  | genera razones o estados de cierre                  |
+| `pass_payment_checkout_expiry_reconciliation`        | `*/5 * * * *` | `public.reconcile_expired_payment_checkouts()` | reconcilia estados técnicos de pago                 |
+
+También se comprobaron tres rutinas de Vento OS que ejecutan `net.http_post`:
+
+- `public.notify_shift_published`;
+- `public.notify_support_message_inserted`;
+- `public.run_shift_runtime_processor`.
+
+`public.create_order_delivery_courier_link` compone una URL externa con token, pero no ejecuta por sí misma una llamada HTTP.
+
+Integraciones textuales observadas:
+
+| Integración   | Entrada o salida textual                     | Regla actual observada                                                     |
+| ------------- | -------------------------------------------- | -------------------------------------------------------------------------- |
+| Supabase Auth | correo, metadata, nombre, rol y sede         | recorte, minúsculas para correo y propagación a tablas laborales           |
+| Wompi         | evento, referencia, estado, moneda y payload | mapeo de estado, recorte, mayúsculas de moneda y preservación del payload  |
+| Google Maps   | consulta, `place_id`, dirección y etiquetas  | recorte de consulta; respuesta del proveedor conservada en la proyección   |
+| Google Wallet | nombre, nivel, puntos y texto alternativo    | normalización local de nivel y formato de puntos                           |
+| Expo Push     | título, cuerpo, token y metadata             | preview recortado o mensajes compuestos; invalidación de tokens rechazados |
+
+#### 13. Distinción por representación
+
+| Representación           | Productores actuales                                                                    | Regla de auditoría                                                               |
+| ------------------------ | --------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| `VALOR_MOSTRADO`         | nombres de producto, categoría, catálogo, perfil UOM, persona, nivel, preview y reporte | no permitir que un slug, código o clave de búsqueda sobrescriba el valor visible |
+| `VALOR_DE_BUSQUEDA`      | `lower + trim`, normalización de estado, slugs y claves comparativas                    | calcular o almacenar separadamente según contrato futuro                         |
+| `VALOR_EXTERNO_ORIGINAL` | payload Wompi, metadata Auth, respuestas de Google Maps, mensajes y datos importados    | preservar fuente, versión y payload cuando exista obligación de trazabilidad     |
+| `IDENTIFICADOR_TECNICO`  | SKU, batch code, códigos de categoría, app, unidad, moneda, estado, token y referencia  | mantener estabilidad y formato contractual; excluir de corrección comercial      |
+| `PROYECCION_DE_SALIDA`   | Google Wallet, Excel, push, URL y respuestas API                                        | no tratar como fuente persistida ni retroalimentar sin proceso explícito         |
+| `SNAPSHOT_PERSISTIDO`    | etiquetas y códigos de UOM, categorías y catálogos derivados                            | declarar si es histórico, sincronizable o inmutable por evento                   |
+
+#### 14. Hallazgos
+
+| ID               | Hallazgo                                                                              | Evidencia                                                                             | Consecuencia propietaria                                   |
+| ---------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `DN-AUD-006-H01` | el tratamiento textual está distribuido en múltiples capas                            | 13 funciones de trigger, 76 rutinas mutantes candidatas, clientes y 24 Edge Functions | definir una arquitectura de ejecución sin duplicar reglas  |
+| `DN-AUD-006-H02` | existen algoritmos incompatibles de slug y normalización                              | `_vento_slugify`, `_navigation_slugify`, generación de catálogo y SKU                 | aprobar representación y algoritmo por propósito           |
+| `DN-AUD-006-H03` | varios triggers copian texto entre fuentes y snapshots                                | producto a catálogo, categoría a etiqueta, UOM a precio, catálogo a PULSO             | declarar fuente propietaria y resincronización             |
+| `DN-AUD-006-H04` | algunas primitivas solo validan o comparan                                            | asistencia, simulación y permisos usan recorte o minúsculas sin reescritura           | no contarlas como correctores persistidos                  |
+| `DN-AUD-006-H05` | la identidad laboral se transforma en Edge Functions y RPC                            | correo, nombre, alias, rol y sede se recortan o derivan en varios puntos              | unificar contrato de entrada y preservar procedencia       |
+| `DN-AUD-006-H06` | los estados externos se traducen antes de persistirse                                 | Wompi se mapea a estados técnicos y conserva payload                                  | separar valor externo, estado canónico y razón del mapeo   |
+| `DN-AUD-006-H07` | reportes y notificaciones aplican transformaciones legítimas de salida                | estado de turno, hoja Excel, nivel de billetera y preview push                        | gobernar proyecciones sin alterar fuente                   |
+| `DN-AUD-006-H08` | procesos programados pueden originar cambios textuales o estados compuestos           | siete jobs activos y tres rutinas HTTP                                                | incluir jobs, reintentos e idempotencia en la arquitectura |
+| `DN-AUD-006-H09` | la cobertura de clientes no está demostrada fuera de `vento-shell`                    | el repositorio contiene solo una parte de las aplicaciones consumidoras               | completar impacto y paridad en `DATA-NORM-AUD-007`         |
+| `DN-AUD-006-H10` | la paridad entre Edge Functions activas y fuentes versionadas no queda atada a commit | metadata de despliegue heterogénea                                                    | establecer trazabilidad de artefacto y despliegue          |
+| `DN-AUD-006-H11` | VITAL comparte infraestructura pero conserva productores propios                      | 24 triggers y 16 rutinas con señales textuales en su frontera                         | impedir adopción transversal accidental                    |
+| `DN-AUD-006-H12` | una coincidencia sintáctica produce falsos positivos                                  | concatenaciones, mensajes y comparaciones aparecen junto a mutaciones reales          | exigir clasificación semántica por productor y efecto      |
+
+#### 15. Riesgos y brechas vinculadas
+
+| ID               | Riesgo o brecha                                                                  | Estado después de esta tarea               | Tarea propietaria de resolución                               |
+| ---------------- | -------------------------------------------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------- |
+| `DN-AUD-006-R01` | implementar un normalizador nuevo que compita con triggers o RPC vigentes        | identificado; no mitigado                  | `DATA-NORM-ARC-011`; `SUPA-TRANS-003`                         |
+| `DN-AUD-006-R02` | producir códigos distintos para el mismo texto según helper o capa               | identificado; no mitigado                  | `DATA-NORM-ARC-008`; `DATA-NORM-ARC-009`; `DATA-NORM-ARC-011` |
+| `DN-AUD-006-R03` | corregir una copia derivada mientras la fuente permanece divergente              | identificado; no mitigado                  | `DATA-NORM-ARC-001`; `DATA-NORM-ARC-009`; `SUPA-TRANS-007`    |
+| `DN-AUD-006-R04` | tratar una comparación en minúsculas como política de almacenamiento             | identificado; prohibido por esta auditoría | `DATA-NORM-ARC-002`; `DATA-NORM-ARC-008`                      |
+| `DN-AUD-006-R05` | perder el valor externo original al mapear Auth, Wompi, Maps o importaciones     | identificado; no mitigado                  | `DATA-NORM-ARC-012`; `SUPA-TRANS-006`                         |
+| `DN-AUD-006-R06` | aplicar corrección comercial a SKU, unidades, monedas, estados o tokens          | identificado; prohibido por esta auditoría | `DATA-NORM-ARC-002`; `DATA-NORM-ARC-005`                      |
+| `DN-AUD-006-R07` | ejecutar procesos programados sin versión, idempotencia ni trazabilidad de regla | identificado; no mitigado                  | `DATA-NORM-ARC-009`; `SUPA-TRANS-009`; `SUPA-TRANS-011`       |
+| `DN-AUD-006-R08` | desplegar una Edge Function distinta a la fuente canónica auditada               | identificado; paridad no demostrada        | `SUPA-TRANS-003`; `SUPA-TRANS-013`; `SUPA-TRANS-014`          |
+| `DN-AUD-006-R09` | omitir transformaciones residentes en otros clientes o repositorios              | identificado; no mitigado                  | `DATA-NORM-AUD-007`; `SUPA-TRANS-003`; `SUPA-TRANS-007`       |
+| `DN-AUD-006-R10` | extender reglas de Vento OS a VITAL por coexistencia física                      | restringido documentalmente; pendiente     | `SUPA-ARC-025`; contratos de integración aplicables           |
+
+Ningún riesgo se considera aceptado, mitigado o cerrado por esta tarea.
+
+#### 16. Decisiones reservadas
+
+Esta tarea no decide:
+
+- cuál productor será la fuente ejecutora definitiva;
+- qué triggers, funciones, helpers o Edge Functions se conservarán, moverán, fusionarán o retirarán;
+- qué algoritmo de slug, comparación, capitalización o transliteración será canónico;
+- qué copias persistidas serán snapshots históricos o proyecciones sincronizables;
+- qué valores externos deberán conservarse íntegramente o por cuánto tiempo;
+- qué clientes podrán normalizar antes de enviar datos;
+- qué transformaciones deberán ejecutarse en aplicación, servicio, RPC o trigger defensivo;
+- qué jobs se consolidarán o cambiarán de programación;
+- qué Edge Functions coinciden exactamente con su fuente versionada;
+- qué reglas producirán eventos, auditoría, rollback o reintentos;
+- qué backfills, correcciones o migraciones se ejecutarán;
+- ninguna modificación física en Supabase, código o integraciones.
+
+Las decisiones permanecen asignadas a `DATA-NORM-AUD-007`, `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012`, `SUPA-TRANS-003`, `SUPA-TRANS-005` a `SUPA-TRANS-014` y las tareas de transición de normalización aplicables.
+
+#### 17. Criterios de integridad de la auditoría
+
+La auditoría se considera íntegra para esta etapa cuando:
+
+1. distingue mutación persistida, copia derivada, identificador técnico, validación, proyección y transmisión;
+2. contabiliza triggers y rutinas sin declarar normalizador a todo objeto con primitivas textuales;
+3. identifica los trece productores de trigger con señales comprobadas;
+4. documenta helpers incompatibles y cadenas de propagación;
+5. separa fuente propietaria, snapshot, valor externo y proyección;
+6. incluye código cliente, Edge Functions, cron e integraciones observables;
+7. conserva VITAL como frontera separada;
+8. registra límites de cobertura y paridad sin inferir resultados ausentes;
+9. vincula cada brecha con una tarea propietaria concreta;
+10. no autoriza cambios físicos ni adopta una capa de ejecución futura.
+
+#### 18. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: esta tarea inventaría productores y efectos del estado actual, pero no aprueba todavía políticas ejecutables, algoritmos canónicos, contratos de fuente, orden de precedencia, reglas de propagación, controles de paridad, criterios de aceptación ni transiciones. Los comportamientos verificables deberán originarse cuando `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012` y las tareas de transición definan la responsabilidad de cada capa, la preservación de valores, la idempotencia, la auditoría, la compatibilidad y el rollback.
+
+#### 19. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad
+```
+
+
 ### [ ] DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad
 
 Regla de auditoría
