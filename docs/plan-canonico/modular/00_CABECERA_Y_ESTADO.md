@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **409** |
+| Tareas aprobadas | **410** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1166** |
+| Tareas no iniciadas | **1165** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **25.97% (409/1575)** |
+| Porcentaje de completamiento | **26.03% (410/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-ARC-004 — Definir función futura de `public`** |
-| Tarea actual | **SUPA-ARC-005 — Definir capa expuesta de vistas y RPC** |
+| Última tarea aprobada | **SUPA-ARC-005 — Definir capa expuesta de vistas y RPC** |
+| Tarea actual | **SUPA-ARC-006 — Definir capa privada de helpers y lógica interna** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-ARC-006 — Definir capa privada de helpers y lógica interna** |
+| Siguiente tarea | **SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 4 de 25 aprobadas; SUPA-ARC-005 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 5 de 25 aprobadas; SUPA-ARC-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-ARC-004` — Definir función futura de `public` |
-| Tarea actual | `SUPA-ARC-005` — Definir capa expuesta de vistas y RPC — **NO INICIADA** |
-| Siguiente tarea | `SUPA-ARC-006` — Definir capa privada de helpers y lógica interna |
+| Última aprobada | `SUPA-ARC-005` — Definir capa expuesta de vistas y RPC |
+| Tarea actual | `SUPA-ARC-006` — Definir capa privada de helpers y lógica interna — **NO INICIADA** |
+| Siguiente tarea | `SUPA-ARC-007` — Definir esquema transversal de auditoría y eventos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **4 DE 25 APROBADAS — ACTUAL SUPA-ARC-005** |
+| BLOQUE E3 | **5 DE 25 APROBADAS — ACTUAL SUPA-ARC-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-ARC-004 — Definir función futura de `public`
-        ↓
-TAREA ACTUAL
 SUPA-ARC-005 — Definir capa expuesta de vistas y RPC
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-ARC-006 — Definir capa privada de helpers y lógica interna
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 4 de 25 tareas aprobadas
+BLOQUE E3 — 5 de 25 tareas aprobadas
 ```
