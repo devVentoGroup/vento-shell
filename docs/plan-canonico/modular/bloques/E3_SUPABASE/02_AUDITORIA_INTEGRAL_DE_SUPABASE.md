@@ -7238,7 +7238,230 @@ La implementación de índices, retención, observabilidad y gates corresponde a
 `SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos`
 
 
-### [ ] SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos
+### ✅ SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos
+
+**Estado:** PROPUESTA PARA APROBACIÓN
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos`
+**Tarea anterior:** `SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención` — APROBADA
+**Siguiente tarea:** `SUPA-AUD-022 — Consolidar hallazgos y definir arquitectura objetivo de Supabase`
+**Proyecto observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Repositorio canónico declarado:** `devVentoGroup/vento-shell` — rama `main` — commit observado `7093db8acfdd28d1d0db3df395779380d67b69c5`
+**Tipo de tarea:** auditoría documental y técnica read-only de generación, distribución y consumo de tipos derivados de Supabase; sin generación persistida, commits, cambios de código, migraciones ni modificaciones remotas
+
+#### 1. Objetivo
+
+Determinar si el esquema real de Supabase produce un contrato TypeScript único, reproducible y consumido por todas las aplicaciones; identificar clientes sin genérico, tipos manuales, casts de escape, divergencias de SDK, RPCs y schemas omitidos; y definir las puertas necesarias para impedir drift entre migraciones, tipos y despliegues.
+
+Esta tarea es exclusivamente diagnóstica. **No genera ni distribuye un archivo de tipos, no cambia clientes, no instala dependencias, no crea workflows, no modifica migraciones y no realiza escrituras remotas.**
+
+#### 2. Regla canónica derivada
+
+El tipo de base de datos no será una copia auxiliar ni una fotografía informal. Será un artefacto generado, versionado y verificable que:
+
+1. declara exactamente de qué proyecto, migración, commit, versión de CLI y schemas procede;
+2. se distribuye desde una única fuente;
+3. tipa clientes browser, server, mobile, service-role y Edge Functions;
+4. falla CI cuando el esquema y el artefacto divergen;
+5. no permite que `any`, tipos manuales o copias locales oculten incompatibilidades.
+
+La compilación de una aplicación aislada no demuestra compatibilidad transversal. Una migración solo podrá promoverse cuando todos los consumidores aplicables compilen y sus contratos runtime estén validados.
+
+#### 3. Fuentes congeladas
+
+| Fuente                                             | Estado congelado                                                                             | Uso en esta tarea                                           |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `SUPA-AUD-020.md`                                  | SHA-256 `06f5102430fd2124b99c631074c28bf4fd6634ca2b1c16b064d7671bf8bc9359`                   | Plantilla y continuidad canónica                            |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` | SHA-256 `3ecd6e443e0e3f6943c492de70d504e59b850d7555046c27594ad623869c95a5`; 4.687 requisitos | Base exacta para regeneración                               |
+| Supabase remoto `clzdpinthhtknkmefsxx`             | PostgreSQL 17.6; ocho schemas empresariales                                                  | Superficie de tipos, solo lectura                           |
+| GitHub `devVentoGroup`                             | doce repositorios activos inventariados y `vento-platform` archivado                         | Clientes, paquetes, scripts, Edge Functions y consumo       |
+| `vento-shell`                                      | commit observado `7093db8acfdd28d1d0db3df395779380d67b69c5`                                  | Repositorio de migraciones y candidato a productor canónico |
+| Documentación oficial Supabase                     | generación con `supabase gen types`, genérico `Database` y verificación CI                   | Criterios actuales de generación y consumo                  |
+
+#### 4. Alcance observado
+
+##### 4.1 Superficie de base de datos
+
+| Schema     |  Tablas | Vistas |  Columnas | Funciones |  Enums |
+| ---------- | ------: | -----: | --------: | --------: | -----: |
+| `public`   |     185 |     61 |     3.248 |       246 |      7 |
+| `pass`     |      26 |      1 |       344 |        30 |      1 |
+| `payments` |       2 |      0 |        27 |         1 |      1 |
+| `pos`      |      13 |      0 |       133 |         1 |      1 |
+| `viso`     |      12 |      0 |       143 |         1 |      1 |
+| `vital`    |      54 |      0 |       478 |        47 |      7 |
+| `talento`  |      13 |      0 |       144 |        16 |      7 |
+| `club`     |      11 |      0 |        99 |         7 |      1 |
+| **Total**  | **316** | **62** | **4.616** |   **349** | **26** |
+
+La generación debe decidir explícitamente cuáles schemas entran al contrato. Incluir solo `public` dejaría fuera modelos y funciones de PASS, pagos, POS, VISO, VITAL, TALENTO y CLUB.
+
+##### 4.2 Repositorios consumidores potenciales
+
+Se inventariaron: `vento-shell`, `vento-pass`, `vento-anima`, `vento-nexo`, `vento-pulso`, `vento-origo`, `vento-fogo`, `vento-viso`, `vento-vital`, `vento-talento`, `Vento-Group` y `vento-numera`. `vento-platform` permanece archivado y deberá tratarse como consumidor histórico, no como fuente vigente.
+
+#### 5. Resultado ejecutivo
+
+| Dimensión                                          |               Resultado |
+| -------------------------------------------------- | ----------------------: |
+| Artefactos `database.types` encontrados            |                       0 |
+| Comandos canónicos de generación encontrados       |                       0 |
+| Workflows de verificación de drift encontrados     |                       0 |
+| Clientes inspeccionados con genérico `Database`    |                       0 |
+| Schemas empresariales                              |                       8 |
+| Objetos tabulares o vistas                         |                     378 |
+| Funciones empresariales                            |                     349 |
+| Enums empresariales                                |                      26 |
+| Repositorios activos potencialmente consumidores   |                      12 |
+| Versiones observadas de `supabase-js`              | 2.88.x, 2.90.x y 2.91.x |
+| Repositorios observados con Supabase CLI declarado |       1 (`vento-shell`) |
+| Brechas formalizadas                               |                      23 |
+
+El sistema usa TypeScript, pero **no tiene tipado end-to-end de base de datos**. Los SDK conservan sus tipos propios, mientras tablas, columnas, relaciones, nullability, enums, views y RPCs llegan a las aplicaciones sin un contrato generado común.
+
+#### 6. Generación
+
+No se encontró `database.types.ts`, `schema.gen.ts`, script `update-types`, `supabase gen types` ni workflow equivalente en los repositorios inspeccionados. `vento-shell` declara `supabase` como dependencia, pero sus scripts no generan ni verifican tipos.
+
+La fuente canónica propuesta es `vento-shell`, porque ya concentra migraciones y gobierno documental. Sin embargo, la generación no deberá depender ciegamente del remoto mutable: CI deberá poder reconstruir una base desde migraciones aprobadas, generar tipos y comparar el resultado.
+
+#### 7. Consumo de clientes
+
+Los clientes representativos de `vento-shell`, `vento-pass`, `vento-anima`, `vento-nexo`, `vento-pulso` y `vento-origo` llaman `createClient`, `createBrowserClient` o `createServerClient` sin genérico `Database`. En consecuencia:
+
+- `.from()` no queda restringido por el esquema empresarial generado;
+- inserts y updates no distinguen de forma canónica campos requeridos, opcionales o generados;
+- relaciones y nullability dependen de tipos manuales o inferencia incompleta;
+- RPCs no reciben `Args` y `Returns` derivados de la firma real.
+
+PULSO mantiene además dos clientes browser en rutas distintas y con configuración diferente. Esta duplicidad deberá resolverse antes de introducir el contrato compartido.
+
+#### 8. Tipos manuales y escapes
+
+Sin un artefacto generado no es posible separar automáticamente DTOs legítimos de duplicaciones del esquema. La auditoría encontró patrones `any` y casts en código de autenticación y consumo de datos. No se exige eliminarlos todos de inmediato; se exige un ledger con motivo, owner y fecha de retiro, además de un presupuesto decreciente en CI.
+
+`overrideTypes` podrá utilizarse únicamente cuando el generador no represente correctamente una vista o JSONB y deberá acompañarse de prueba contractual. Nunca será una forma de silenciar drift.
+
+#### 9. RPCs, vistas, enums y JSONB
+
+La base observada contiene 349 funciones, 62 vistas y 26 enums. Estos objetos deben formar parte del contrato:
+
+- RPCs mediante `Functions[...].Args` y `Returns`;
+- vistas y relaciones con nullability validada;
+- enums como uniones generadas, no strings libres;
+- JSONB crítico mediante tipos de dominio y validación runtime;
+- columnas generadas y defaults diferenciados entre `Row`, `Insert` y `Update`.
+
+Los overloads y aliases legacy identificados en tareas previas refuerzan la necesidad de generación reproducible y pruebas de compatibilidad.
+
+#### 10. Distribución y versionado
+
+No se recomienda copiar un archivo completo a doce repositorios. La arquitectura objetivo deberá publicar un paquete compartido versionado con:
+
+- artefacto generado;
+- helpers `Tables`, `TablesInsert`, `TablesUpdate`, `Enums` y `Json`;
+- manifiesto de procedencia;
+- hash por schema;
+- compatibilidad mínima de SDK y TypeScript;
+- changelog de cambios destructivos.
+
+Cada repositorio deberá fijar una versión exacta y participar en una matriz de compilación antes de promover migraciones incompatibles.
+
+#### 11. Realtime, Storage y Edge Functions
+
+Los tipos generados no sustituyen validación runtime. Realtime deberá derivar payloads de `Row`; Edge Functions deberán validar entradas y respuestas incluso usando tipos compartidos; Storage requerirá catálogo tipado de buckets y metadata. Los clientes privilegiados seguirán separados por credencial y entorno, aunque compartan el contrato de esquema.
+
+#### 12. Límites de la evidencia
+
+- La búsqueda de GitHub puede omitir archivos no indexados o cambios con menos de dos horas.
+- `vento-numera` no aparece indexado para búsqueda de código y requiere validación local posterior.
+- No se generó un archivo real para evitar introducir una fuente paralela o escribir secretos.
+- No se ejecutó `tsc` transversal porque los repositorios no están montados localmente.
+- No se certificó todavía qué schemas deben exponerse por Data API; exposición y tipado son decisiones distintas.
+- Los conteos de objetos reflejan la captura del 29 de julio de 2026.
+
+#### 13. Registro de brechas
+
+| ID                   | Brecha                                                                                                 | Estado    | Prioridad |
+| -------------------- | ------------------------------------------------------------------------------------------------------ | --------- | --------- |
+| `B-SUPA-AUD-021-001` | No existe un archivo canónico generado de tipos de base de datos consumido por las aplicaciones.       | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-021-002` | Ningún cliente Supabase inspeccionado recibe el genérico Database.                                     | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-021-003` | No existe un comando canónico y reproducible de generación de tipos.                                   | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-021-004` | No existe gate CI que compare esquema y artefacto generado.                                            | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-021-005` | No está definida la fuente de generación: remoto aprobado, local migrado o rama de preview.            | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-006` | No existe manifiesto que vincule tipos con project ref, migración y commit.                            | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-007` | Los ocho esquemas empresariales no tienen política explícita de inclusión o exclusión.                 | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-021-008` | Los esquemas no expuestos podrían omitirse silenciosamente aunque los consuman RPCs o código servidor. | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-009` | No existe paquete compartido versionado para distribuir tipos entre repositorios.                      | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-021-010` | Copiar tipos manualmente entre repositorios no está prohibido ni detectado.                            | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-011` | PULSO mantiene dos fábricas de cliente de navegador sin contrato único.                                | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-012` | Clientes browser, server, mobile y Edge Functions no comparten una firma tipada uniforme.              | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-021-013` | No existe inventario de clientes Supabase y su modalidad de credencial.                                | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-014` | Los tipos manuales de filas y payloads no están reconciliados con tipos generados.                     | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-015` | El uso de any y casts de escape puede ocultar drift de columnas, nullability y RPCs.                   | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-021-016` | No existe presupuesto ni registro de excepciones para overrideTypes, any o casts.                      | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-017` | No existe contrato tipado para RPC Args y Returns.                                                     | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-021-018` | No existe contrato tipado para views, relaciones y joins embebidos.                                    | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-019` | No existe política para JSONB, enums y dominios que evite degradación a Json o string libre.           | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-020` | No existe estrategia para tipos de Storage, Realtime y Edge Function payloads.                         | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-021` | Las versiones de supabase-js divergen entre repositorios y no hay matriz de compatibilidad.            | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-022` | Solo vento-shell declara Supabase CLI y tampoco lo usa para generar tipos.                             | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-021-023` | No existe validador integral de generación, distribución, consumo y drift de tipos.                    | `ABIERTA` | Crítica   |
+
+
+Toda brecha queda vinculada a los TREQ de esta tarea y a `SUPA-AUD-022`, `SUPA-TRANS-010`, `SHELL-PKG-001` o `SHELL-CI-017`; no quedan pendientes narrativos sin puerta documental.
+
+#### 14. Decisiones y rutas de resolución
+
+1. **Productor único:** `vento-shell` generará el artefacto desde migraciones y procedencia congelada.
+2. **Distribución versionada:** un paquete compartido sustituirá copias manuales.
+3. **Schemas explícitos:** los ocho schemas se incluirán o excluirán mediante matriz aprobada.
+4. **Clientes genéricos:** toda fábrica Supabase recibirá `Database` o un recorte generado justificable.
+5. **Drift bloqueante:** CI regenerará y comparará tipos en cada cambio de esquema.
+6. **Escapes gobernados:** `any`, casts y overrides tendrán ledger y presupuesto decreciente.
+7. **Promoción transversal:** todos los consumidores aplicables compilarán contra la versión candidata.
+8. **Runtime además de TypeScript:** JSONB, Edge, Realtime y entradas externas conservarán validación runtime.
+
+#### 15. Requisitos incorporados
+
+Se crean 30 requisitos en el registro 04A regenerado:
+
+`TREQ-SUPABASE-393` a `TREQ-SUPABASE-422`
+
+El detalle normativo reside únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 16. Manifiestos de integridad
+
+| Manifiesto                                   | SHA-256 o valor                                                           |
+| -------------------------------------------- | ------------------------------------------------------------------------- |
+| Base SUPA-AUD-020                            | `06f5102430fd2124b99c631074c28bf4fd6634ca2b1c16b064d7671bf8bc9359`        |
+| Base 04A                                     | `3ecd6e443e0e3f6943c492de70d504e59b850d7555046c27594ad623869c95a5`        |
+| Superficie empresarial                       | 8 schemas; 316 tablas; 62 vistas; 4.616 columnas; 349 funciones; 26 enums |
+| Repositorios activos inventariados           | 12                                                                        |
+| Artefactos generados encontrados             | 0                                                                         |
+| Clientes inspeccionados tipados con Database | 0                                                                         |
+| Nuevos TREQ                                  | `TREQ-SUPABASE-393` a `TREQ-SUPABASE-422`                                 |
+| Reconstrucción exacta del 04A previo         | `3ecd6e443e0e3f6943c492de70d504e59b850d7555046c27594ad623869c95a5`        |
+
+#### 17. Criterio de cierre
+
+`SUPA-AUD-021` queda documentalmente completa cuando:
+
+- los 23 hallazgos tienen dueño y requisito;
+- las 30 filas nuevas están en el 04A completo;
+- el registro conserva 14 columnas, IDs únicos y referencias resolubles;
+- el 04A previo puede reconstruirse byte por byte;
+- el formato replica la estructura canónica de SUPA-AUD-020;
+- no se ejecutó ninguna mutación remota.
+
+La implementación de generación, paquete, clientes y gates corresponde a tareas posteriores.
+
+#### 18. Siguiente tarea canónica
+
+`SUPA-AUD-022 — Consolidar hallazgos y definir arquitectura objetivo de Supabase`
+
+
 ### [ ] SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales
 ### [ ] SUPA-AUD-023 — Crear mapa proceso → datos → RPC → eventos → aplicaciones
 ### [ ] SUPA-AUD-024 — Clasificar riesgos críticos, altos, medios y deuda técnica
