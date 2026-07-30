@@ -252,8 +252,9 @@ de la continuidad documental. Aunque se elija `NEXO-REMISSIONS-001`,
 
 Esta tabla se genera automáticamente desde `priority-delivery-lanes.json`.
 Las etapas son secuenciales y no se avanza mientras la anterior carezca
-de resultado y evidencia. Dentro de cada grupo se respeta el orden
-enumerado por sus tareas o rangos.
+de resultado y evidencia. Las tareas de diseño terminan antes de E5;
+ninguna tarea de implementación, migración o cambio físico comienza antes
+de `E5-GATE-008::NEXO-REMISSIONS-001`.
 
 | Etapa | Grupo | Tareas exactas | Resultado para avanzar |
 | ----: | ----- | -------------- | ---------------------- |
@@ -271,25 +272,41 @@ enumerado por sus tareas o rangos.
 | 12 | `NEXO_INVENTORY_CLASSIFICATION` | `NEXO-DOM-001` | clasificación canónica de consumibles, stock por cantidad, reutilizables, activos, repuestos, kits y contenedores antes de diseñar o implementar inventario y remisiones |
 | 13 | `NEXO_FUNCTIONAL_UX` | `NEXO-UX-001` a `NEXO-UX-025` | inventario, navegación por actor, flujo completo de remisiones, movimientos, excepciones, prototipos y métricas de piloto |
 | 14 | `NEXO_UI_VALIDATION` | `AUTH-UI-052` a `AUTH-UI-060` | diseño, prototipos, validación con usuarios y aprobación de pantallas NEXO antes de implementar |
-| 15 | `CONDITIONAL_ARTIFACTS` | Evaluar la matriz condicional completa mostrada debajo | cada grupo queda ejecutado o justificado como no aplicable |
-| 16 | `PACKAGE_DEFINITION` | `DELIV-PKG-001` a `DELIV-PKG-025` | paquete ejecutable, verificable y reversible |
-| 17 | `E5_READINESS_PLAN` | `READY-GATE-001` a `READY-GATE-015` | readiness técnico, operativo, de datos, permisos, hardware, soporte, monitoreo, respaldo y piloto |
-| 18 | `E5_CUTOVER_PLAN` | `CUTOVER-OPS-001` a `CUTOVER-OPS-010` | cutover, convivencia, doble efecto, conciliación, reversión, métricas y salida de piloto |
-| 19 | `E5_HYPERCARE_PLAN` | `HYPERCARE-OPS-001` a `HYPERCARE-OPS-010` | monitoreo, incidentes, conciliación, deuda, soporte, contingencias y autoridad de cierre |
-| 20 | `E5_ENTRY_GATES` | `E5-GATE-001` a `E5-GATE-007` | cobertura, brechas, NFR, rollout, rollback, piloto, capacitación y trazabilidad TREQ verificadas |
-| 21 | `PACKAGE_GATE` | `E5-GATE-008::NEXO-REMISSIONS-001` | autorización explícita del paquete, sin cerrar E5 |
-| 22 | `IMPLEMENTATION` | `SHELL-CI-020::NEXO-REMISSIONS-001` | Implementar y desplegar el paquete aprobado. |
-| 23 | `U_AUTHORIZATION_CERTIFICATION` | `AUTH-QA-001` a `AUTH-QA-030` | autorización, territorio, contexto, dispositivo, simulación, servidor, RPC, rollback, auditoría y regresión certificadas |
-| 24 | `U_NEXO_EXPERIENCE_CERTIFICATION` | `UX-QA-001` a `UX-QA-020`; `UX-QA-024` | experiencia transversal y NEXO probadas con actores, dispositivos, conectividad, seguridad e idempotencia |
-| 25 | `READINESS` | `SHELL-CI-021::NEXO-REMISSIONS-001` | Validar readiness técnico y operativo. |
-| 26 | `PILOT` | `SHELL-CI-022::NEXO-REMISSIONS-001` | Ejecutar piloto controlado y conservar evidencia. |
-| 27 | `HYPERCARE` | `SHELL-CI-023::NEXO-REMISSIONS-001` | Estabilizar, conciliar y resolver defectos del alcance. |
-| 28 | `CERTIFICATION` | `SHELL-CI-024::NEXO-REMISSIONS-001` | Certificar únicamente el paquete de remisiones NEXO. |
+| 15 | `CONDITIONAL_DESIGN_ARTIFACTS` | Evaluar la matriz condicional de diseño mostrada debajo | cada grupo queda completado o justificado como no aplicable antes de DELIV-PKG |
+| 16 | `CONDITIONAL_IMPLEMENTATION_SCOPE` | Evaluar la matriz condicional de implementación mostrada debajo | cada grupo de implementación queda incluido o excluido expresamente en DELIV-PKG antes de E5-GATE-008 |
+| 17 | `PACKAGE_DEFINITION` | `DELIV-PKG-001` a `DELIV-PKG-025` | paquete ejecutable, verificable y reversible |
+| 18 | `E5_READINESS_PLAN` | `READY-GATE-001` a `READY-GATE-015` | readiness técnico, operativo, de datos, permisos, hardware, soporte, monitoreo, respaldo y piloto |
+| 19 | `E5_CUTOVER_PLAN` | `CUTOVER-OPS-001` a `CUTOVER-OPS-010` | cutover, convivencia, doble efecto, conciliación, reversión, métricas y salida de piloto |
+| 20 | `E5_HYPERCARE_PLAN` | `HYPERCARE-OPS-001` a `HYPERCARE-OPS-010` | monitoreo, incidentes, conciliación, deuda, soporte, contingencias y autoridad de cierre |
+| 21 | `CI_FOUNDATION` | `SHELL-CI-001` a `SHELL-CI-019` | capacidad de probar, versionar, actualizar, revertir y publicar evidencia certificada antes de E5-GATE-008 y reutilizable por SHELL-CI-020 |
+| 22 | `E5_ENTRY_GATES` | `E5-GATE-001` a `E5-GATE-007` | cobertura, brechas, NFR, rollout, rollback, piloto, capacitación y trazabilidad TREQ verificadas |
+| 23 | `PACKAGE_GATE` | `E5-GATE-008::NEXO-REMISSIONS-001` | autorización explícita del paquete, todavía sin despliegue ni cambio físico |
+| 24 | `IMPLEMENTATION_START` | `SHELL-CI-020::NEXO-REMISSIONS-001` | Iniciar la implementación y el despliegue únicamente del paquete aprobado. |
+| 25 | `H_SHARED_CONTRACTS` | `SHELL-CON-001` a `SHELL-CON-024` | paquetes de contratos compartidos e integraciones implementados y versionados |
+| 26 | `H_AUTH_CONTEXT_BASE` | `SHELL-AUTH-001`; `SHELL-CTX-001` | núcleo único de autorización y contexto disponible antes del backend autoritativo |
+| 27 | `R0_DATABASE_SAFETY` | `AUTH-DB-015`; `AUTH-DB-027`; `AUTH-DB-028`; `AUTH-DB-029`; `AUTH-DB-001`; `AUTH-DB-002`; `AUTH-DB-003`; `AUTH-DB-004`; `AUTH-DB-005` | migraciones gobernadas, harness, drift, respaldo, rollback y contención inicial de exposición ejecutados bajo el paquete aprobado |
+| 28 | `R1_AUTH_PHYSICAL_CORE` | `AUTH-DB-016`; `AUTH-DB-018`; `AUTH-DB-017`; `AUTH-DB-019`; `AUTH-DB-033`; `AUTH-DB-035`; `AUTH-DB-034`; `AUTH-DB-032`; `AUTH-DB-012`; `AUTH-DB-013`; `AUTH-DB-014` | esquemas, Data API, identidad, contexto, frescura, autorización y auditoría canónicos implementados |
+| 29 | `H_AUTH_CONTEXT_CONVERGENCE` | `SHELL-CTX-002`; `SHELL-CTX-003`; `SHELL-CTX-004`; `SHELL-CTX-005`; `SHELL-CTX-006`; `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-004` | contexto completo, adapters, scope por solicitud y gates contra legacy implementados |
+| 30 | `H_SHARED_REMAINING` | `SHELL-NORM-001` a `SHELL-NORM-009`; `SHELL-DB-001` a `SHELL-DB-005`; `SHELL-UI-001` a `SHELL-UI-020`; `SHELL-NATIVE-001` a `SHELL-NATIVE-003` | normalización compartida, acceso a datos, componentes web y compatibilidad nativa disponibles antes de consumidores finales |
+| 31 | `CONDITIONAL_IMPLEMENTATION_EXECUTION` | Ejecutar la matriz condicional de implementación aprobada en DELIV-PKG | todos los grupos aplicables ejecutados bajo el mismo package_id; cada no aplicable conserva su justificación aprobada |
+| 32 | `R2_NEXO_DATABASE_PACKAGE` | `AUTH-DB-020`; `AUTH-DB-006`; `AUTH-DB-007`; `AUTH-DB-008`; `AUTH-DB-009`; `AUTH-DB-010`; `AUTH-DB-021`; `AUTH-DB-011`; `AUTH-DB-022`; `AUTH-DB-023`; `AUTH-DB-024`; `AUTH-DB-025`; `AUTH-DB-026` | migración NEXO con RPC, RLS, grants, constraints, Storage, Realtime, automatizaciones, índices y tipos ejecutada bajo el package_id |
+| 33 | `SERVER_ACTIONS_COMPLETE` | `AUTH-SRV-001` a `AUTH-SRV-018` | Server Actions, API routes y RPC inventariados, protegidos y migrados al contrato compartido |
+| 34 | `SHARED_DEVICE_IMPLEMENTATION` | `AUTH-DEV-007` a `AUTH-DEV-014` | identificación del trabajador, límites efectivos, auditoría, revocación, sesión y pruebas de tablets NEXO implementados |
+| 35 | `SIMULATION_IMPLEMENTATION` | `AUTH-SIM-007` a `AUTH-SIM-014` | visibilidad, auditoría, restricciones, solo lectura y validación integral de simulación implementadas |
+| 36 | `NEXO_AUTHORIZATION` | `NEXO-AUTH-001` a `NEXO-AUTH-006`; `NEXO-AUTH-008` a `NEXO-AUTH-020` | autorización NEXO obligatoria del alcance base; la protección de producción vinculada permanece condicional y se ejecuta únicamente cuando el paquete incluye INT-PROD-005 |
+| 37 | `AUTH_UI_ENFORCEMENT` | `AUTH-UI-040` a `AUTH-UI-051` | protección de navegación, URL, acciones y estados transversales implementada |
+| 38 | `H_FINAL_AUTH_ADOPTION` | `SHELL-AUTH-005` | consumidores migrados y certificados al SDK compartido después de backend, adapters, UI y protecciones |
+| 39 | `U_AUTHORIZATION_CERTIFICATION` | `AUTH-QA-001` a `AUTH-QA-030` | autorización, territorio, contexto, dispositivo, simulación, servidor, RPC, rollback, auditoría y regresión certificadas |
+| 40 | `U_NEXO_EXPERIENCE_CERTIFICATION` | `UX-QA-001` a `UX-QA-020`; `UX-QA-024` | experiencia transversal y NEXO probadas con actores, dispositivos, conectividad, seguridad e idempotencia |
+| 41 | `READINESS` | `SHELL-CI-021::NEXO-REMISSIONS-001` | Validar readiness técnico y operativo. |
+| 42 | `PILOT` | `SHELL-CI-022::NEXO-REMISSIONS-001` | Ejecutar piloto controlado y conservar evidencia. |
+| 43 | `HYPERCARE` | `SHELL-CI-023::NEXO-REMISSIONS-001` | Estabilizar, conciliar y resolver defectos del alcance. |
+| 44 | `CERTIFICATION` | `SHELL-CI-024::NEXO-REMISSIONS-001` | Certificar únicamente el paquete de remisiones NEXO. |
 
-##### Matriz condicional obligatoria
+##### Matriz condicional de diseño
 
-En la etapa `CONDITIONAL_ARTIFACTS` se evalúan todos los grupos siguientes.
-“No aplica” exige justificación escrita; no puede asumirse por silencio.
+Se evalúa antes de `DELIV-PKG-001`. “No aplica” exige justificación escrita;
+los grupos aplicables deben quedar diseñados antes de definir el paquete.
 
 | Orden | Grupo | Se activa cuando | Tareas exactas |
 | ----: | ----- | ---------------- | -------------- |
@@ -302,6 +319,18 @@ En la etapa `CONDITIONAL_ARTIFACTS` se evalúan todos los grupos siguientes.
 | 7 | `INFORMATION_GOVERNANCE_CONDITIONAL` | el paquete conserva documentos, evidencia, datos personales, firmas, exportaciones o retención | `INFO-DOM-001` a `INFO-DOM-013`; `INFO-AUTH-001` a `INFO-AUTH-004`; `INFO-UX-001` a `INFO-UX-006`; `INFO-INT-001` a `INFO-INT-003` |
 | 8 | `MASTER_DATA_ANALYTICS_CONDITIONAL` | el paquete crea o cambia datos maestros, métricas oficiales, conciliaciones o analítica de inventario | `DATA-DOM-001` a `DATA-DOM-017`; `DATA-AUTH-001` a `DATA-AUTH-004`; `DATA-UX-001` a `DATA-UX-008`; `DATA-INT-001` a `DATA-INT-004` |
 | 9 | `CONTINUITY_CONDITIONAL` | el alcance exige operación degradada, offline, respaldo, restauración, contingencia o reincorporación | `CONT-DOM-001` a `CONT-DOM-015`; `CONT-AUTH-001` a `CONT-AUTH-004`; `CONT-UX-001` a `CONT-UX-007`; `CONT-INT-001` a `CONT-INT-004` |
+
+##### Matriz condicional de implementación
+
+Se decide antes de `E5-GATE-008` y se ejecuta únicamente después de la
+puerta, dentro de `SHELL-CI-020::NEXO-REMISSIONS-001` y con el mismo
+`package_id`. La exclusión también debe quedar aprobada y trazable.
+
+| Orden | Grupo | Se activa cuando | Tareas exactas |
+| ----: | ----- | ---------------- | -------------- |
+| 1 | `PRODUCTION_LINK_IMPLEMENTATION` | la remisión incluye faltantes o productos producidos y activa el tratamiento definido en INT-PROD-005 | `NEXO-AUTH-007` |
+| 2 | `PHYSICAL_NORMALIZATION_CONDITIONAL` | la transición aprobada modifica o normaliza datos existentes de catálogo, búsqueda o inventario | `DATA-NORM-DB-001` a `DATA-NORM-DB-010` |
+| 3 | `EXTERNAL_INTEGRATION_CONDITIONAL` | la remisión consume o publica datos mediante un sistema externo y exige infraestructura física de integración | `INT-DB-001` a `INT-DB-008` |
 
 ##### Trabajo posterior preservado
 

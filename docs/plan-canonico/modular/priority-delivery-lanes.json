@@ -689,166 +689,262 @@
           "order": 1,
           "stage_id": "EVENT_CONTRACTS",
           "task_source": "required_task_artifacts.EVENT_CONTRACTS",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 2,
           "stage_id": "SUPABASE_AUDIT",
           "task_source": "required_task_artifacts.SUPABASE_AUDIT",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 3,
           "stage_id": "SUPABASE_ARCHITECTURE",
           "task_source": "required_task_artifacts.SUPABASE_ARCHITECTURE",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 4,
           "stage_id": "SUPABASE_TRANSITION",
           "task_source": "required_task_artifacts.SUPABASE_TRANSITION",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 5,
           "stage_id": "H_SHARED_AUDIT",
           "task_source": "required_task_artifacts.H_SHARED_AUDIT",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 6,
           "stage_id": "H_SHARED_DISTRIBUTION",
           "task_source": "required_task_artifacts.H_SHARED_DISTRIBUTION",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 7,
           "stage_id": "TRANSVERSE_SERVICE_CATALOG",
           "task_source": "required_task_artifacts.TRANSVERSE_SERVICE_CATALOG",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 8,
           "stage_id": "AUTH_UI_CONTRACT",
           "task_source": "required_task_artifacts.AUTH_UI_CONTRACT",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 9,
           "stage_id": "SHARED_DEVICE_CONTRACT",
           "task_source": "required_task_artifacts.SHARED_DEVICE_CONTRACT",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 10,
           "stage_id": "SIMULATION_CONTRACT",
           "task_source": "required_task_artifacts.SIMULATION_CONTRACT",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 11,
           "stage_id": "AUTHORIZATION_ERRORS",
           "task_source": "required_task_artifacts.AUTHORIZATION_ERRORS",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 12,
           "stage_id": "NEXO_INVENTORY_CLASSIFICATION",
           "task_source": "required_task_artifacts.NEXO_INVENTORY_CLASSIFICATION",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 13,
           "stage_id": "NEXO_FUNCTIONAL_UX",
           "task_source": "required_task_artifacts.NEXO_FUNCTIONAL_UX",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 14,
           "stage_id": "NEXO_UI_VALIDATION",
           "task_source": "required_task_artifacts.NEXO_UI_VALIDATION",
-          "rule": "Completar el grupo en el orden declarado y conservar evidencia antes de avanzar."
+          "rule": "Completar el grupo de diseño en el orden declarado y conservar evidencia antes de avanzar."
         },
         {
           "order": 15,
-          "stage_id": "CONDITIONAL_ARTIFACTS",
+          "stage_id": "CONDITIONAL_DESIGN_ARTIFACTS",
           "task_source": "conditional_artifacts",
-          "rule": "Evaluar todos los grupos; ejecutar los aplicables y justificar por escrito cada no aplicable."
+          "rule": "Evaluar todos los grupos de diseño; completar los aplicables y justificar por escrito cada no aplicable."
         },
         {
           "order": 16,
+          "stage_id": "CONDITIONAL_IMPLEMENTATION_SCOPE",
+          "task_source": "conditional_implementation_scope",
+          "rule": "Evaluar cada grupo condicional de implementación e incluirlo o excluirlo expresamente en DELIV-PKG antes de aprobar el paquete."
+        },
+        {
+          "order": 17,
           "stage_id": "PACKAGE_DEFINITION",
           "task_source": "package_definition_tasks",
           "rule": "Completar DELIV-PKG-001 a DELIV-PKG-025 para el package_id del carril."
         },
         {
-          "order": 17,
+          "order": 18,
           "stage_id": "E5_READINESS_PLAN",
           "task_source": "post_package_artifacts.E5_READINESS_PLAN",
-          "rule": "Completar el plan o gate en el orden declarado antes de solicitar la puerta E5 final."
-        },
-        {
-          "order": 18,
-          "stage_id": "E5_CUTOVER_PLAN",
-          "task_source": "post_package_artifacts.E5_CUTOVER_PLAN",
-          "rule": "Completar el plan o gate en el orden declarado antes de solicitar la puerta E5 final."
+          "rule": "Completar el plan en el orden declarado antes de certificar la infraestructura y solicitar las puertas E5."
         },
         {
           "order": 19,
-          "stage_id": "E5_HYPERCARE_PLAN",
-          "task_source": "post_package_artifacts.E5_HYPERCARE_PLAN",
-          "rule": "Completar el plan o gate en el orden declarado antes de solicitar la puerta E5 final."
+          "stage_id": "E5_CUTOVER_PLAN",
+          "task_source": "post_package_artifacts.E5_CUTOVER_PLAN",
+          "rule": "Completar el plan en el orden declarado antes de certificar la infraestructura y solicitar las puertas E5."
         },
         {
           "order": 20,
-          "stage_id": "E5_ENTRY_GATES",
-          "task_source": "post_package_artifacts.E5_ENTRY_GATES",
-          "rule": "Completar el plan o gate en el orden declarado antes de solicitar la puerta E5 final."
+          "stage_id": "E5_HYPERCARE_PLAN",
+          "task_source": "post_package_artifacts.E5_HYPERCARE_PLAN",
+          "rule": "Completar el plan en el orden declarado antes de certificar la infraestructura y solicitar las puertas E5."
         },
         {
           "order": 21,
+          "stage_id": "CI_FOUNDATION",
+          "task_source": "execution_prerequisite_artifacts.CI_FOUNDATION",
+          "rule": "Completar y certificar el habilitador antes de ejecutar E5-GATE-001 a E5-GATE-008."
+        },
+        {
+          "order": 22,
+          "stage_id": "E5_ENTRY_GATES",
+          "task_source": "post_package_artifacts.E5_ENTRY_GATES",
+          "rule": "Confirmar con infraestructura disponible que el paquete, las pruebas, el rollout, el rollback, el piloto y la evidencia son ejecutables."
+        },
+        {
+          "order": 23,
           "stage_id": "PACKAGE_GATE",
           "task_source": "package_gate",
           "rule": "Aprobar E5-GATE-008::NEXO-REMISSIONS-001 sin cerrar E5 completo."
         },
         {
-          "order": 22,
-          "stage_id": "IMPLEMENTATION",
+          "order": 24,
+          "stage_id": "IMPLEMENTATION_START",
           "task_source": "execution_cycle.SHELL-CI-020",
-          "rule": "Implementar y desplegar el paquete aprobado."
+          "rule": "Iniciar la implementación y el despliegue únicamente del paquete aprobado."
         },
         {
-          "order": 23,
+          "order": 25,
+          "stage_id": "H_SHARED_CONTRACTS",
+          "task_source": "implementation_artifacts.H_SHARED_CONTRACTS",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 26,
+          "stage_id": "H_AUTH_CONTEXT_BASE",
+          "task_source": "implementation_artifacts.H_AUTH_CONTEXT_BASE",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 27,
+          "stage_id": "R0_DATABASE_SAFETY",
+          "task_source": "implementation_artifacts.R0_DATABASE_SAFETY",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 28,
+          "stage_id": "R1_AUTH_PHYSICAL_CORE",
+          "task_source": "implementation_artifacts.R1_AUTH_PHYSICAL_CORE",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 29,
+          "stage_id": "H_AUTH_CONTEXT_CONVERGENCE",
+          "task_source": "implementation_artifacts.H_AUTH_CONTEXT_CONVERGENCE",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 30,
+          "stage_id": "H_SHARED_REMAINING",
+          "task_source": "implementation_artifacts.H_SHARED_REMAINING",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 31,
+          "stage_id": "CONDITIONAL_IMPLEMENTATION_EXECUTION",
+          "task_source": "conditional_implementation_artifacts",
+          "rule": "Ejecutar bajo el mismo package_id todos los grupos condicionales de implementación incluidos en DELIV-PKG y justificar cada no aplicable aprobado."
+        },
+        {
+          "order": 32,
+          "stage_id": "R2_NEXO_DATABASE_PACKAGE",
+          "task_source": "implementation_artifacts.R2_NEXO_DATABASE_PACKAGE",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 33,
+          "stage_id": "SERVER_ACTIONS_COMPLETE",
+          "task_source": "implementation_artifacts.SERVER_ACTIONS_COMPLETE",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 34,
+          "stage_id": "SHARED_DEVICE_IMPLEMENTATION",
+          "task_source": "implementation_artifacts.SHARED_DEVICE_IMPLEMENTATION",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 35,
+          "stage_id": "SIMULATION_IMPLEMENTATION",
+          "task_source": "implementation_artifacts.SIMULATION_IMPLEMENTATION",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 36,
+          "stage_id": "NEXO_AUTHORIZATION",
+          "task_source": "implementation_artifacts.NEXO_AUTHORIZATION",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 37,
+          "stage_id": "AUTH_UI_ENFORCEMENT",
+          "task_source": "implementation_artifacts.AUTH_UI_ENFORCEMENT",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 38,
+          "stage_id": "H_FINAL_AUTH_ADOPTION",
+          "task_source": "implementation_artifacts.H_FINAL_AUTH_ADOPTION",
+          "rule": "Ejecutar el grupo dentro de SHELL-CI-020, conservar evidencia y no avanzar con fallos abiertos bloqueantes."
+        },
+        {
+          "order": 39,
           "stage_id": "U_AUTHORIZATION_CERTIFICATION",
           "task_source": "post_implementation_artifacts.U_AUTHORIZATION_CERTIFICATION",
           "rule": "Ejecutar y cerrar la certificación del alcance implementado antes de readiness."
         },
         {
-          "order": 24,
+          "order": 40,
           "stage_id": "U_NEXO_EXPERIENCE_CERTIFICATION",
           "task_source": "post_implementation_artifacts.U_NEXO_EXPERIENCE_CERTIFICATION",
           "rule": "Ejecutar y cerrar la certificación del alcance implementado antes de readiness."
         },
         {
-          "order": 25,
+          "order": 41,
           "stage_id": "READINESS",
           "task_source": "execution_cycle.SHELL-CI-021",
           "rule": "Validar readiness técnico y operativo."
         },
         {
-          "order": 26,
+          "order": 42,
           "stage_id": "PILOT",
           "task_source": "execution_cycle.SHELL-CI-022",
           "rule": "Ejecutar piloto controlado y conservar evidencia."
         },
         {
-          "order": 27,
+          "order": 43,
           "stage_id": "HYPERCARE",
           "task_source": "execution_cycle.SHELL-CI-023",
           "rule": "Estabilizar, conciliar y resolver defectos del alcance."
         },
         {
-          "order": 28,
+          "order": 44,
           "stage_id": "CERTIFICATION",
           "task_source": "execution_cycle.SHELL-CI-024",
           "rule": "Certificar únicamente el paquete de remisiones NEXO."
