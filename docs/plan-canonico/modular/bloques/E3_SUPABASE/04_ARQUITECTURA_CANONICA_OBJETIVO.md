@@ -12557,6 +12557,947 @@ SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
 `SUPA-ARC-022` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
+### ✅ SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-023 — Definir generación canónica de tipos para consumidores`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `6dc13b50ad89ee127c70cbec2e0afbf87163ff5a`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `9ae087e27dbde88d290ceba2720ee2636c047fe1`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `57c738f087112a4af47442b6a9b1ec2c465704d7`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `NFR-REQ-006` archivo propietario blob `33e7d742a8400f9a579e80b4a8125cb7f96153f6`; `NFR-REQ-010` archivo propietario blob `286f8a3edb145b2445df1e08fef7fea4de20a739`; `INFO-DOM-001` a `INFO-DOM-013` archivo propietario blob `7e5d4983127d15ab10f2680f98877f7e772eeb95`; `CONT-DOM-001` a `CONT-DOM-015` archivo propietario blob `8530ae7f3f09a50be220c3179055bceee30a8c55`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`
+**Tipo de tarea:** definición normativa de arquitectura objetivo para retención, historial operativo, archivo restringido, legal hold, anonimización, disposición, anti-resurrección, cobertura de respaldos, point-in-time recovery, selección de puntos, restauración aislada, conciliación, RTO, RPO, ejercicios, observabilidad y crecimiento; sin fijar plazos legales, crear particiones o archivos, purgar filas u objetos, activar backups o PITR, ejecutar restauraciones, modificar Storage, Auth, cron, datos, configuración, migraciones, código, infraestructura, cutover ni despliegues
+
+#### 1. Objetivo
+
+Definir una arquitectura única, verificable y reversible para gobernar todo el ciclo de vida de la información de Vento OS, desde su uso operativo hasta su conservación histórica, archivo, disposición y recuperación, evitando que el crecimiento de cinco, diez o más años convierta la base transaccional en un repositorio indefinido, que una limpieza por antigüedad destruya evidencia necesaria o que una restauración reactive información ya eliminada, anonimizada o revocada.
+
+```text
+INFORMACIÓN CLASIFICADA + OWNER + FINALIDAD
+        ↓
+POLÍTICA VERSIONADA + TRIGGER DE CÓMPUTO
+        ↓
+OPERACIÓN ACTIVA → HISTÓRICO EN LÍNEA → ARCHIVO RESTRINGIDO
+        ↓
+HOLD / ELEGIBILIDAD / DISPOSICIÓN VERIFICADA
+        ↓
+LEDGER ANTI-RESURRECCIÓN + EVIDENCIA MÍNIMA
+
+FUENTE DE VERDAD + IMPACTO EMPRESARIAL
+        ↓
+COBERTURA DE RESPALDO + PUNTO RECUPERABLE
+        ↓
+RESTAURACIÓN AISLADA + VALIDACIÓN TÉCNICA
+        ↓
+VALIDACIÓN EMPRESARIAL + CONCILIACIÓN
+        ↓
+RETORNO CONTROLADO SIN EFECTOS DUPLICADOS
+```
+
+Esta tarea define contratos, planos, clases, estados, manifiestos, disposiciones y gates. No fija duraciones jurídicas por inferencia, no selecciona un plan comercial de Supabase y no declara recuperable ninguna copia que no haya superado una restauración verificable.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-RETENTION-ARCHIVE-BACKUP-RECOVERY-ARCHITECTURE-001@1.0.0
+```
+
+| Propiedad                                    |      Valor |
+| -------------------------------------------- | ---------: |
+| `current_database_size_approx_mb`            |    **131** |
+| `current_partitioned_business_table_count`   |      **0** |
+| `current_cron_history_row_count`             | **47.056** |
+| `current_cron_history_older_than_90d_count`  | **13.800** |
+| `current_expired_delivery_quote_count`       |      **7** |
+| `current_storage_object_count`               |  **1.101** |
+| `current_storage_content_approx_mb`          |    **751** |
+| `current_pg_net_retained_response_count`     |     **72** |
+| `current_backup_restore_certification_count` |      **0** |
+| `approved_legal_duration_count`              |      **0** |
+| `retention_recovery_plane_count`             |      **8** |
+| `placement_tier_count`                       |      **4** |
+| `retention_class_count`                      |      **9** |
+| `retention_lifecycle_state_count`            |     **14** |
+| `recovery_priority_profile_count`            |      **5** |
+| `backup_lifecycle_state_count`               |      **9** |
+| `restore_lifecycle_state_count`              |     **12** |
+| `current_surface_case_count`                 |     **10** |
+| `drift_class_count`                          |     **18** |
+| `new_test_requirements`                      |     **72** |
+| `physical_changes_authorized`                |      **0** |
+
+El artefacto integra siete registros normativos:
+
+```text
+RETENTION-POLICY-BINDING-REGISTRY-001
+DATA-LIFECYCLE-PLACEMENT-REGISTRY-001
+ARCHIVE-PACKAGE-MANIFEST-001
+DISPOSITION-AND-ANTI-RESURRECTION-LEDGER-001
+BACKUP-COVERAGE-AND-RECOVERY-POINT-REGISTRY-001
+RESTORE-AND-BUSINESS-RECOVERY-CONTRACT-001
+CURRENT-RETENTION-RECOVERY-DISPOSITION-REGISTRY-001
+```
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                           | Decisión consumida                                                                                                            |
+| ---------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                                | continuidad, fase documental, una sola tarea, integridad histórica y separación entre definición e implementación             |
+| `delivery-contract.json`                                         | artefacto único de tarea y registro 04A completo con identidad única de entrega                                               |
+| `active-sequence.json`                                           | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-022` como tarea actual                                                   |
+| `SUPA-AUD-020`                                                   | línea base de 131 MB, cron, Storage, crecimiento, cero particiones, falta de retención y restauración no certificada          |
+| `NFR-TRACEABILITY-RETENTION-CONTRACT-001`                        | trazabilidad, nueve clases de retención, catorce estados, hold, archivo, disposición y anti-resurrección                      |
+| `NFR-BACKUP-RECOVERY-CONTRACT-001`                               | objetos recuperables, cinco prioridades, backup, consistencia, clean room, RTO, RPO, WRT, ejercicios y validación empresarial |
+| `SUPABASE-KEY-CONSTRAINT-STATE-TIME-STANDARD-001@1.0.0`          | timestamps, vigencias, estados, correcciones, soft deletion y reserva de retención para esta tarea                            |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`              | eventos, auditoría, outbox, inbox, causalidad, evidencia y correcciones no destructivas                                       |
+| `SUPABASE-STORAGE-ARCHITECTURE-001@1.0.0`                        | business records, versiones, legal hold, disposición por API, receipt y reconciliación de objetos                             |
+| `SUPABASE-REALTIME-EVENT-ARCHITECTURE-001@1.0.0`                 | Realtime como transporte efímero, replay desde fuentes durables y recuperación por snapshot o cursor                          |
+| `SUPABASE-EDGE-WEBHOOK-CRON-ARCHITECTURE-001@1.0.0`              | jobs, intentos, receipts, dead-letter, payloads y resultados sujetos a lifecycle explícito                                    |
+| `SUPABASE-PERFORMANCE-INDEX-GROWTH-STRATEGY-001@1.0.0`           | crecimiento, forecast, particionamiento condicionado, backpressure y separación entre capacidad y retención                   |
+| `INFO-DOM-006`                                                   | propietaria de tablas y plazos definitivos de retención, archivo, hold, anonimización y disposición                           |
+| `CONT-DOM-002` a `CONT-DOM-004`; `CONT-DOM-011` a `CONT-DOM-015` | impacto, objetivos numéricos, políticas de respaldo, runbooks, proveedores, ejercicios y mantenimiento                        |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`               | 5.741 requisitos hasta `SUPA-ARC-021`; rango `TREQ-SUPABASE-001` a `1446`                                                     |
+
+#### 4. Distinciones normativas
+
+```text
+DATO ANTIGUO ≠ DATO ELIMINABLE
+PARTICIÓN ≠ ARCHIVO
+ARCHIVO ≠ BACKUP
+BACKUP ≠ HISTÓRICO CONSULTABLE
+RÉPLICA ≠ BACKUP
+PITR CONFIGURADO ≠ RESTAURACIÓN CERTIFICADA
+JOB COMPLETADO ≠ COPIA RESTAURABLE
+RETENCIÓN ≠ CONSERVACIÓN INDEFINIDA
+SOFT DELETE ≠ DISPOSICIÓN FINAL
+ANONIMIZACIÓN ≠ OCULTAMIENTO VISUAL
+HOLD ≠ ACCESO AMPLIADO
+DELETE DEL ORIGEN ≠ ELIMINACIÓN DE COPIAS
+RESTORE TÉCNICO ≠ RECUPERACIÓN EMPRESARIAL
+RTO ≠ TIEMPO HASTA NORMALIDAD TOTAL
+RPO ≠ FRECUENCIA NOMINAL DE BACKUP
+REALTIME ≠ HISTORIAL DURABLE
+EXPORTACIÓN ≠ ARCHIVO VERIFICADO
+```
+
+Una misma categoría podrá requerir operación en línea, archivo histórico y backup, pero cada mecanismo tendrá finalidad, acceso, retención, evidencia y lifecycle independientes.
+
+#### 5. Planos canónicos
+
+| Plano                                | Responsabilidad                                                                           | Autoridad                                            | No podrá                                           |
+| ------------------------------------ | ----------------------------------------------------------------------------------------- | ---------------------------------------------------- | -------------------------------------------------- |
+| `POLICY_AND_CLASSIFICATION`          | asignar categoría, owner, finalidad, sensibilidad, trigger, mínimo, máximo, hold y método | gobierno de información y owner empresarial          | inventar plazos legales o dejar política implícita |
+| `ACTIVE_OPERATIONAL_DATA`            | sostener el estado vigente y consultas ordinarias                                         | owner schema autoritativo                            | conservar historia ilimitada por comodidad         |
+| `ONLINE_HISTORICAL_DATA`             | mantener historia todavía consultable con acceso y rendimiento controlados                | owner schema y contrato de historial                 | actuar como segunda fuente vigente                 |
+| `RESTRICTED_ARCHIVE`                 | preservar información retirada del camino operativo con integridad y búsqueda autorizada  | `business_records`, owner y custodia aprobada        | convertirse en carpeta, tabla abandonada o backup  |
+| `DISPOSITION_AND_ANTI_RESURRECTION`  | calcular elegibilidad, aplicar hold, disponer copias y conservar evidencia mínima         | owner, autoridad de información y ejecutor segregado | declarar éxito parcial como disposición completa   |
+| `BACKUP_AND_RECOVERY_POINT`          | proteger objetos recuperables y catalogar puntos consistentes                             | política de respaldo y custodia técnica              | usarse como consulta histórica ordinaria           |
+| `RESTORE_AND_BUSINESS_RECOVERY`      | restaurar en aislamiento, validar, conciliar y retornar servicio                          | mando de continuidad y owners de proceso             | promover datos solo porque el motor inició         |
+| `GOVERNANCE_OBSERVABILITY_AND_DRIFT` | medir cobertura, crecimiento, edad, integridad, ejercicios, fallos y excepciones          | `vento-shell`, observabilidad y gobierno             | cerrar brechas sin evidencia reproducible          |
+
+#### 6. Clases canónicas de retención
+
+Se adoptan exactamente las nueve clases ya aprobadas:
+
+```text
+RET_TRANSIENT
+RET_ACTIVE_CASE
+RET_BUSINESS_CYCLE
+RET_RELATIONSHIP
+RET_OBLIGATION
+RET_ARCHIVAL
+RET_HOLD
+RET_PERMANENT_EXCEPTION
+RET_UNRESOLVED
+```
+
+Reglas:
+
+1. `RET_UNRESOLVED` bloquea disposición automática y certificación del paquete aplicable.
+2. `RET_PERMANENT_EXCEPTION` exige justificación, owner, autoridad, revisión y salida explícita; no será fallback.
+3. `RET_HOLD` suspende disposición dentro de un alcance concreto y no reemplaza la política base.
+4. Una categoría podrá transitar entre clases únicamente mediante una política versionada y una regla de transición.
+5. La clase no determina por sí sola una duración ni ubicación física.
+
+#### 7. Modos de colocación de datos
+
+| Modo                    | Finalidad                                                                 | Acceso                                                   | Condición de salida                    |
+| ----------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- | -------------------------------------- |
+| `ACTIVE_OPERATIONAL`    | estado vigente, procesos abiertos y lectura ordinaria                     | contratos normales del owner                             | cierre, inactividad o trigger aprobado |
+| `ONLINE_HISTORICAL`     | historial de consulta frecuente o necesario para operación y conciliación | lectura histórica acotada, paginada y autorizada         | archive gate o disposición             |
+| `ARCHIVED_RESTRICTED`   | conservación de largo plazo fuera de la carga ordinaria                   | búsqueda y recuperación server-side por finalidad y caso | revisión, hold o disposición           |
+| `DISPOSITION_COMPLETED` | evidencia mínima de eliminación, anonimización o transferencia            | acceso excepcional al receipt y tombstone                | no retorna a un modo con contenido     |
+
+El modo de colocación no cambia la propiedad empresarial, la sensibilidad ni el trigger de retención. El movimiento entre modos deberá conservar identidad, versión, hashes, referencias, política y rollback.
+
+#### 8. Estados del lifecycle de retención
+
+Estados primarios:
+
+```text
+ACTIVE
+INACTIVE
+ARCHIVE_PENDING
+ARCHIVED
+ELIGIBLE_FOR_DISPOSITION
+DISPOSITION_PENDING
+DISPOSED
+ANONYMIZED
+TRANSFERRED
+```
+
+Estados transversales:
+
+```text
+HOLD_ACTIVE
+PRESERVATION_REQUIRED
+DISPOSITION_BLOCKED
+DISPOSITION_FAILED
+POLICY_UNRESOLVED
+```
+
+Cada transición conservará política, versión, trigger, actor o job, motivo, alcance, timestamps, conteos y resultado. Ningún estado terminal podrá regresar a contenido activo; una recuperación legítima utilizará una copia todavía retenida y un procedimiento autorizado, no revertirá la disposición.
+
+#### 9. Contrato de política de retención
+
+Cada categoría deberá resolver:
+
+```text
+retention_policy_id
++ retention_policy_version
++ information_category
++ record_or_event_scope
++ owner_schema_id
++ process_scope
++ sensitivity_class
++ information_owner
++ technical_custodian
++ approved_purposes
++ obligation_refs
++ retention_trigger
++ trigger_precedence
++ active_rule
++ inactive_rule
++ online_history_rule
++ archive_rule
++ minimum_period
++ maximum_period
++ review_frequency
++ disposition_method
++ anonymization_rule
++ hold_eligibility
++ backup_treatment
++ copy_and_derivative_treatment
++ third_party_treatment
++ jurisdiction_or_territory
++ exception_route
++ effective_at
++ superseded_at
++ approval_refs
++ test_requirement_ids
+```
+
+Una política ausente, contradictoria o sin fundamento se tratará como `POLICY_UNRESOLVED`: bloquea eliminación automática, pero también impide aceptar conservación indefinida como estado final.
+
+#### 10. Límite sobre plazos jurídicos
+
+`SUPA-ARC-022` aprueba cero duraciones legales definitivas.
+
+1. Los periodos mínimos y máximos serán materializados por `INFO-DOM-006` con fundamento, categoría, territorio, trigger y autoridad.
+2. RTO, RPO, MTPD y WRT numéricos serán aprobados mediante `CONT-DOM-002` a `CONT-DOM-004`.
+3. Un plazo técnico provisional solo podrá proteger operación o seguridad mientras exista owner, base, vencimiento y tarea de resolución.
+4. No se aceptarán expresiones como “cinco años” sin identificar el evento desde el cual se computa y las excepciones aplicables.
+5. Cambiar una política no reinterpretará silenciosamente datos históricos ni reiniciará el cómputo por una lectura ordinaria.
+
+#### 11. Triggers de cómputo
+
+Cada política elegirá un trigger tipado y, si existen varios, su precedencia:
+
+```text
+CREATED_OR_RECEIVED
+EFFECTIVE_FROM
+PUBLISHED_OR_SUPERSEDED
+PROCESS_OR_CASE_CLOSED
+FINAL_RECONCILIATION
+PAYMENT_OR_SETTLEMENT_COMPLETED
+DELIVERY_OR_RECEIPT_CONFIRMED
+EXPIRED_OR_CONSUMED
+RELATIONSHIP_TERMINATED
+INCIDENT_OR_INVESTIGATION_CLOSED
+CONSENT_WITHDRAWN
+HOLD_RELEASED
+LAST_OBLIGATION_CLOSED
+ASSET_OR_LOT_DISPOSED
+```
+
+El timestamp técnico de inserción, la última consulta, el último backup o el cambio de ubicación no alterarán el trigger salvo contrato explícito.
+
+#### 12. Frontera entre estado vigente e historial
+
+1. La fila vigente conserva el resultado autoritativo actual; no se presenta como historia completa.
+2. Eventos y auditoría conservan hechos, correcciones, reversos y causalidad sin reescribir el pasado.
+3. El histórico en línea será de solo lectura para consumidoras ordinarias; toda corrección se ejecutará mediante un nuevo comando propietario.
+4. Una proyección histórica podrá reconstruirse desde fuentes durables y no adquirirá authority para mutar el origen.
+5. El traslado de historia no romperá FK, referencias, secuencias, eventos, reportes, RLS, tipos ni compatibilidad.
+6. La consulta de historia aplicará rango temporal, cursor, límites, minimización y auditoría cuando corresponda.
+
+#### 13. Gate de archivo
+
+Una categoría solo podrá pasar a archivo cuando exista:
+
+```text
+política y versión resolubles
++ trigger y fecha de elegibilidad
++ owner y custodio
++ cierre o inactividad comprobables
++ cero mutaciones ordinarias pendientes
++ referencias y consumidores inventariados
++ acceso histórico definido
++ formato y versión interpretables
++ integridad y conteos verificables
++ tratamiento de copias y derivados
++ hold evaluado
++ rollback o recuperación del movimiento
+```
+
+Un umbral de filas, tamaño o antigüedad puede activar evaluación, pero no autoriza el archivo por sí solo.
+
+#### 14. Manifiesto de paquete de archivo
+
+Cada unidad archivada conservará:
+
+```text
+archive_package_id
++ policy_id_and_version
++ owner_schema_id
++ source_object_set
++ process_and_category_scope
++ minimum_and_maximum_business_time
++ extraction_cutoff
++ row_or_object_count
++ source_schema_version
++ source_contract_versions
++ data_format_and_version
++ content_and_manifest_hashes
++ encryption_and_key_reference
++ archive_location_and_fault_domain
++ sensitivity_and_access_policy
++ hold_state
++ retention_expiration
++ lookup_index_reference
++ source_to_archive_mapping
++ integrity_verification_result
++ created_by_and_created_at
++ last_readability_test
++ restoration_or_rehydration_method
++ disposition_method
++ status
+```
+
+El manifiesto no contendrá secretos ni sustituirá el contenido. La ausencia de hash, conteos, política, formato o método de lectura bloqueará `ARCHIVED`.
+
+#### 15. Integridad, legibilidad y evolución del archivo
+
+1. El archivo deberá conservar identidad estable, orden y significado después de cambios de esquema o aplicación.
+2. Toda migración de formato o ubicación producirá paquete sucesor, hashes, comparación, auditoría y rollback.
+3. Se probarán lectura, filtrado, recuperación de muestra, conteos y vínculo con el recurso original.
+4. El cifrado exigirá material de llave recuperable y rotación compatible con datos históricos.
+5. Un formato obsoleto deberá migrarse antes de perder capacidad de interpretación.
+6. La deduplicación no mezclará owners, políticas o sensibilidades incompatibles.
+
+#### 16. Acceso al histórico y archivo
+
+1. `ONLINE_HISTORICAL` podrá exponerse mediante contratos de lectura específicos; no mediante tablas completas o acceso directo al storage del archivo.
+2. `ARCHIVED_RESTRICTED` requerirá finalidad, actor, caso, rango, campos mínimos y registro de consulta.
+3. Las búsquedas utilizarán metadatos e índices minimizados; no replicarán todo el contenido a la base operativa.
+4. Una rehidratación temporal tendrá identidad, expiración, entorno, acceso, trazabilidad y eliminación posterior.
+5. Consultar un archivo no reiniciará su retención ni lo convertirá en activo.
+6. Reportes recurrentes deberán usar agregados o proyecciones cuando no necesiten el detalle individual.
+
+#### 17. Relación entre particionamiento y archivo
+
+1. Particionar organiza físicamente datos todavía pertenecientes a una tabla y no reduce por sí mismo la retención.
+2. Una partición antigua continúa sujeta a RLS, backups, constraints, estadísticas, acceso y mantenimiento.
+3. Desadjuntar, exportar o eliminar una partición requerirá el mismo gate de archivo o disposición aplicable a sus filas.
+4. El estado actual de cero tablas empresariales particionadas no constituye brecha automática con una base aproximada de 131 MB.
+5. `SUPA-ARC-021` activa la evaluación por ocho señales; `SUPA-ARC-022` decide lifecycle, archivo y disposición; `SUPA-TRANS-*` materializa cualquier cambio.
+
+#### 18. Legal hold y preservación
+
+Cada hold conservará:
+
+```text
+hold_id
++ hold_type
++ scope_manifest
++ reason_code
++ authority_ref
++ requested_by
++ approved_by
++ effective_at
++ review_at
++ release_condition
++ released_at
++ custodian
++ notification_status
++ preservation_actions
++ covered_copies_and_derivatives
++ exceptions
+```
+
+Reglas:
+
+1. `HOLD_ACTIVE` bloquea eliminación, anonimización destructiva, expiración de backup incompatible y migración que pierda evidencia.
+2. El hold no amplía permisos ni finalidades.
+3. Su alcance será explícito por recurso, expediente, persona, periodo, categoría o paquete.
+4. La liberación será independiente, autorizada, auditable y seguida de recálculo de elegibilidad.
+5. Ningún hold permanecerá indefinido sin owner y revisión.
+
+#### 19. Disposición y eliminación verificable
+
+Secuencia obligatoria:
+
+```text
+CALCULATE_ELIGIBILITY
+→ VERIFY_POLICY_HOLD_AND_EXCEPTIONS
+→ BUILD_SCOPE_MANIFEST
+→ AUTHORIZE_BY_RISK
+→ BLOCK_NEW_ACCESS
+→ EXECUTE_IDEMPOTENT_DISPOSITION
+→ VERIFY_PRIMARY_COPY_DERIVATIVES_AND_THIRD_PARTIES
+→ RECORD_RECEIPTS_AND_RESIDUALS
+→ WRITE_MINIMAL_TOMBSTONE
+→ MARK_FINAL_OUTCOME
+```
+
+1. Una operación parcial permanecerá `DISPOSITION_FAILED` o `DISPOSITION_PENDING`.
+2. El reintento utilizará el mismo manifiesto e identidad y no eliminará recursos adicionales.
+3. El receipt conservará política, trigger, alcance, método, conteos, ejecutor, aprobador, tiempos y residuales sin retener contenido eliminado.
+4. La eliminación lógica solo será una etapa cuando el contenido continúe presente.
+5. Borrados masivos exigirán dry run, límites, partición del trabajo, pausa, rollback cuando sea posible y reporte final.
+
+#### 20. Anonimización, seudonimización y agregación
+
+1. Anonimizar será una disposición cuando reduzca razonablemente la posibilidad de reidentificación y ya no exista necesidad del dato original.
+2. Enmascaramiento, tokenización o seudonimización reversibles no se declararán anonimización.
+3. La evaluación considerará combinaciones de sede, rol, timestamps, trayectoria, caso y grupos pequeños.
+4. La transformación conservará policy, versión, método, campos, riesgo residual, aprobador y evidencia.
+5. Agregados podrán conservarse después de eliminar detalle únicamente cuando no permitan reconstrucción ni afecten obligaciones o investigación.
+
+#### 21. Copias, cachés, derivados y terceros
+
+La disposición deberá cubrir o clasificar:
+
+```text
+source of truth
++ online history
++ archive packages
++ search indexes
++ server and client caches
++ offline stores
++ thumbnails and previews
++ exports and temporary files
++ events, queues and dead-letter
++ analytics datasets
++ nonproduction copies
++ third parties
++ backups
+```
+
+Una copia que no pueda eliminarse inmediatamente quedará inaccesible, con expiración y estado visible. Cuando un tercero conserve información legítimamente, el resultado distinguirá `DISPOSED_INTERNAL`, `THIRD_PARTY_PENDING` y `DISPOSED_VERIFIED`.
+
+#### 22. Ledger anti-resurrección
+
+El ledger mínimo conservará:
+
+```text
+disposition_ledger_id
++ subject_or_resource_scope
++ policy_id_and_version
++ disposition_manifest_id
++ final_outcome
++ disposed_or_anonymized_at
++ tombstone_reference
++ revocation_and_consent_changes
++ hold_history
++ affected_archive_packages
++ backup_cutoff_and_expiration
++ third_party_status
++ restoration_reapply_rule
++ last_reconciliation_at
+```
+
+Después de restaurar un punto anterior, el ledger, las revocaciones y las políticas posteriores al punto recuperado deberán reaplicarse antes de abrir acceso. Un tombstone preserva identidad mínima y resultado; no conserva el contenido retirado.
+
+#### 23. Datos no productivos y copias de soporte
+
+1. Toda copia derivada de producción tendrá finalidad, owner, transformación, clasificación, alcance mínimo, ambiente, expiración y evidencia de disposición.
+2. Staging, pruebas, clean room y soporte no heredarán automáticamente la retención completa del origen.
+3. Se bloquearán efectos externos, cuentas ordinarias y accesos no necesarios.
+4. Un incidente cerrado activará disposición salvo hold o obligación aprobada.
+5. Dumps personales, hojas de cálculo, archivos temporales y exports fuera del inventario quedarán prohibidos.
+
+#### 24. Inventario de objetos recuperables
+
+Cada objeto o grupo declarará:
+
+```text
+recovery_object_id
++ object_class
++ owner
++ source_of_truth_status
++ reconstructible_status
++ sensitivity
++ current_location
++ size_and_growth
++ consistency_group
++ dependencies
++ retention_policy_reference
++ backup_policy_reference
++ recovery_priority
++ recovery_point_method
++ restore_method
++ validation_contract
++ last_verified_restore
++ exception_status
+```
+
+El inventario incluirá datos transaccionales, maestros, ledgers, Auth, Storage, eventos, outbox, inbox, jobs, configuración, migraciones, funciones, RLS, grants, código, artefactos, secretos mediante recuperación especializada y estado offline pendiente.
+
+#### 25. Perfiles de prioridad de recuperación
+
+Se adoptan exactamente:
+
+```text
+RC0_SAFETY_INTEGRITY
+RC1_CRITICAL_OPERATION
+RC2_IMPORTANT_OPERATION
+RC3_SUPPORTING
+RC4_RECONSTRUCTIBLE
+```
+
+El perfil determina profundidad, precedencia y frecuencia de ejercicio, pero no fija un RTO o RPO numérico. Un objeto solo será `RC4_RECONSTRUCTIBLE` si existen fuente íntegra, algoritmo versionado, dependencias recuperables, tiempo compatible y prueba reproducible.
+
+#### 26. Política de respaldo por objeto o grupo
+
+Cada política declarará:
+
+```text
+backup_policy_id
++ recovery_object_or_group
++ owner
++ recovery_priority
++ rpo_reference
++ capture_method
++ schedule_or_trigger
++ consistency_method
++ full_and_incremental_chain
++ point_in_time_capability
++ copy_locations_and_fault_domains
++ immutability_or_deletion_protection
++ encryption_and_key_reference
++ access_policy
++ retention_and_expiration
++ legal_hold_behavior
++ integrity_checks
++ monitoring_and_alerts
++ restore_method
++ last_verified_restore
++ provider_dependency
++ portability_method
++ cost_and_capacity
++ exception
++ status
+```
+
+Una fuente crítica sin política y un RPO crítico sin fundamento serán bloqueantes. La frecuencia nominal se derivará del RPO y la evidencia real del mecanismo.
+
+#### 27. Lifecycle de backups
+
+```text
+SCHEDULED
+RUNNING
+COMPLETED_UNVERIFIED
+VERIFIED
+FAILED
+DEGRADED
+QUARANTINED
+EXPIRED
+DELETED
+```
+
+1. `COMPLETED_UNVERIFIED` demuestra que el proceso produjo una copia, no que sea restaurable.
+2. `VERIFIED` exige integridad, catálogo y al menos la prueba definida para la clase.
+3. Una copia sospechosa o incompatible quedará `QUARANTINED`.
+4. Expirar o eliminar una copia tendrá política, autoridad, hold, evidencia y tratamiento de cadenas dependientes.
+5. Un backup no se usará como almacén de consulta ni se conservará indefinidamente por precaución no documentada.
+
+#### 28. Manifiesto y catálogo de punto recuperable
+
+Cada ejecución conservará:
+
+```text
+backup_id
++ backup_policy_id
++ source_and_scope
++ start_and_end
++ recovery_point
++ capture_method
++ chain_and_parent
++ object_count_and_size
++ schema_and_contract_versions
++ migration_head
++ encryption_and_key_reference
++ integrity_result
++ storage_location_and_fault_domain
++ immutability_until
++ expiration
++ hold_status
++ status
++ error_code
++ last_restore_test
+```
+
+El punto recuperable real será el último punto cuya cadena, llaves, versiones y dependencias puedan restaurarse, no la hora nominal del último job.
+
+#### 29. Métodos de protección y PITR
+
+Podrán combinarse backup completo, incremental, logs de transacción, PITR, snapshots consistentes, versionado de objetos, copias inmutables, exportaciones portables verificadas, repositorios de código y configuración declarativa.
+
+1. PITR no quedará certificado hasta ejecutar una recuperación a punto y validar consistencia empresarial.
+2. Una réplica puede propagar corrupción, eliminación o cifrado y no sustituye una copia aislada.
+3. Una exportación lógica deberá probar integridad, completitud, formato, orden de restauración y compatibilidad.
+4. La política deberá distinguir lo administrado por Supabase, lo gobernado por Vento y lo reconstruible desde `vento-shell`.
+5. No se modifica directamente la estructura interna de servicios administrados para implementar recuperación.
+
+#### 30. Dominios de falla, cifrado y llaves
+
+1. Al menos una copia crítica deberá sobrevivir al compromiso o eliminación del proyecto primario y sus credenciales ordinarias.
+2. Ubicación, cuenta, región, proveedor, credenciales y política de borrado se evaluarán como dominios de falla.
+3. Copias cifradas tendrán key reference, custodia separada, recuperación, rotación, prueba de descifrado y respuesta ante pérdida o compromiso.
+4. Secretos no se almacenarán en texto dentro de respaldos generales; tendrán rotación o mecanismo especializado.
+5. Acceso, selección de punto, restauración, promoción y eliminación de copias serán capacidades segregadas y auditables.
+
+#### 31. Grupos de consistencia
+
+Se evaluarán como grupos, entre otros:
+
+```text
+process state + events + audit
+movement + balance
+order + payment + refund
+remission + quantities + receipt
+recipe + version + production
+principal + enterprise identity + roles + permissions
+business record + Storage object + version
+outbox + inbox + deduplication + consumer result
+job + claim + attempt + outcome
+schema + functions + RLS + grants + generated contracts
+```
+
+Una restauración parcial no podrá crear una combinación histórica imposible. Si un componente no puede recuperarse al mismo punto, el runbook deberá reconstruirlo o conciliarlo antes de promover el grupo.
+
+#### 32. Lifecycle de restauración
+
+```text
+REQUESTED
+AUTHORIZED
+PREPARED
+RESTORING
+TECHNICALLY_RESTORED
+VALIDATING_TECHNICAL
+VALIDATING_BUSINESS
+RECONCILING
+READY_FOR_PROMOTION
+PROMOTED
+FAILED
+ABORTED
+```
+
+`PROMOTED` exige servicio mínimo empresarial verificado, efectos externos controlados, ledger anti-resurrección aplicado y pendientes conocidos. `FAILED` o `ABORTED` conservan evidencia, alcance afectado y disposición segura del ambiente temporal.
+
+#### 33. Solicitud, autorización y selección del punto
+
+Toda restauración declarará incidente o ejercicio, objeto, punto solicitado, daño, riesgo de sobrescritura, hechos posteriores, ambiente destino, autoridad, segregación, snapshot previo, plan de prueba, supresión de efectos, rollback y comunicación.
+
+El punto elegido considerará integridad, proximidad, contaminación, compatibilidad de esquema, consistencia, llaves, replay, duplicación, obligaciones y evidencia. No se restaurará directamente sobre producción como primera prueba.
+
+#### 34. Clean room y supresión de efectos
+
+El ambiente aislado deberá:
+
+- usar credenciales y redes separadas;
+- bloquear pagos, mensajes, webhooks, correo, push, impresiones, inventario real y jobs destructivos;
+- identificar claramente los datos restaurados;
+- aplicar acceso mínimo y expiración;
+- permitir escaneo, comparación y auditoría;
+- impedir promoción accidental;
+- destruirse o archivarse según política al cerrar el ejercicio.
+
+Cada efecto externo se habilitará solo después de autorización y checkpoint explícitos.
+
+#### 35. Orden de recuperación
+
+Cada runbook definirá un grafo con checkpoints. La secuencia de referencia será:
+
+```text
+1. mando, autorización y comunicación
+2. llaves, identidad técnica y acceso de recuperación
+3. infraestructura, red, DNS y reloj
+4. esquema, migraciones, base y configuración
+5. Auth, vínculos y autorización empresarial
+6. Storage, documentos y evidencia
+7. eventos, colas, jobs, inbox y deduplicación
+8. aplicaciones propietarias y consumidoras
+9. integraciones y proveedores
+10. validación técnica
+11. ledger anti-resurrección y conciliación empresarial
+12. promoción, retorno y normalización
+```
+
+La secuencia real dependerá del grupo de consistencia y no se aplicará como lista ciega.
+
+#### 36. Validación técnica y empresarial
+
+La etapa técnica comprobará integridad, formatos, conteos, checksums, constraints, secuencias, RLS, grants, funciones, Auth, Storage, referencias, colas, health, rendimiento mínimo y ausencia de conexiones no autorizadas.
+
+La etapa empresarial comprobará estados, obligaciones, saldos, cantidades, documentos, pagos, producción, inventario, actores vigentes, hechos offline, eventos posteriores, duplicados, faltantes, consumidores, MBCO y backlog. El servicio no se declarará recuperado sin ambas etapas.
+
+#### 37. Reconciliación posterior al punto
+
+1. Cada clase de hecho posterior al recovery point tendrá estrategia: replay, reemisión idempotente, consulta a proveedor, captura manual, compensación, cancelación o revisión.
+2. Outbox, webhooks, pagos, notificaciones, impresiones y movimientos no se reejecutarán ciegamente.
+3. Dispositivos offline se compararán con la fuente recuperada antes de sincronizar.
+4. `RESULT_UNKNOWN` permanecerá bloqueante hasta consulta o conciliación.
+5. El ledger anti-resurrección se aplicará antes de permitir lectura ordinaria.
+6. La evidencia deberá indicar la pérdida temporal real y los residuales.
+
+#### 38. RTO, RPO, MTPD, MBCO y WRT
+
+```text
+MTPD = máximo periodo tolerable de interrupción
+MBCO = nivel mínimo empresarial que debe recuperarse
+RTO = tiempo objetivo hasta verificar el MBCO
+RPO = máxima pérdida temporal tolerable del grupo consistente
+WRT = tiempo de validación, conciliación y recuperación del trabajo
+```
+
+Cuando apliquen:
+
+```text
+RTO + WRT <= MTPD
+```
+
+Todos los valores numéricos permanecen `UNRESOLVED_BLOCKING` hasta el análisis y aprobación de `CONT-DOM-002` a `CONT-DOM-004`. No se copiarán del plan de Supabase ni de una frecuencia de backup.
+
+#### 39. Ejercicios de recuperación
+
+La matriz combinará según riesgo:
+
+- revisión de política y walkthrough;
+- recuperación granular de fila, agregado u objeto;
+- restauración completa aislada;
+- PITR a punto conocido;
+- grupo de consistencia;
+- Storage y referencias;
+- mala migración y actualización masiva incorrecta;
+- eliminación accidental;
+- corrupción tardía y ransomware;
+- pérdida de llave, proyecto, región o proveedor;
+- reaplicación de disposiciones y revocaciones;
+- reincorporación offline y conciliación;
+- failover y retorno controlados.
+
+La frecuencia final pertenece a `CONT-DOM-014`. Un cambio material, incidente o evidencia vencida podrá exigir un ejercicio extraordinario.
+
+#### 40. Disposición de superficies actuales
+
+| Caso actual                                            |                             Evidencia congelada | Disposición documental                    | Gate                                                               |
+| ------------------------------------------------------ | ----------------------------------------------: | ----------------------------------------- | ------------------------------------------------------------------ |
+| base empresarial completa                              |                      aproximadamente **131 MB** | `MONITOR_AND_CLASSIFY_BY_OBJECT`          | snapshots, forecast y política por familia antes de archivo        |
+| tablas empresariales particionadas                     |                                           **0** | `NO_PARTITION_REQUIRED_BY_SIZE_ALONE`     | ocho señales de `SUPA-ARC-021` y lifecycle de esta tarea           |
+| `cron.job_run_details`                                 | **47.056** filas; **13.800** mayores de 90 días | `DEFINE_TECHNICAL_RETENTION_AND_PURGE`    | propósito, ventana, export opcional, observabilidad y prueba       |
+| `pass.delivery_quotes` vencidas                        |                                           **7** | `RECONCILE_BEFORE_DISPOSITION`            | confirmar predicado, consumidor, resultado del job y residuales    |
+| eventos, auditoría, movimientos, webhooks y borradores |                 política integral no localizada | `CLASSIFY_BY_CATEGORY_AND_PROCESS`        | `INFO-DOM-006`, replay, investigación, privacidad y owner          |
+| Storage                                                |   **1.101** objetos; aproximadamente **751 MB** | `BIND_TO_BUSINESS_RECORD_LIFECYCLE`       | referencias, versiones, hold, derivados, receipt y reconciliación  |
+| `net._http_response`                                   |                     **72** respuestas retenidas | `TRANSIENT_TECHNICAL_POLICY`              | propósito, redacción, consumidor, expiración y no exposición       |
+| `pg_stat_statements`                                   |                **4.942** fingerprints auditados | `REDACTED_METRIC_RETENTION`               | conservar métricas necesarias, no SQL o parámetros sensibles       |
+| Auth, sesiones e identidades                           |   plataforma y vínculos empresariales separados | `PLATFORM_AND_ENTERPRISE_LIFECYCLE_SPLIT` | revocación, obligaciones, no resurrección y superficies soportadas |
+| backups y PITR                                         |             restauración exitosa no certificada | `VERIFY_COVERAGE_AND_RESTORE`             | inventario, punto, clean room, negocio, ledger y ejercicio         |
+
+Ninguna disposición autoriza una purga, partición, exportación, backup, restore o cambio de configuración.
+
+#### 41. Observabilidad y capacidad
+
+Métricas mínimas:
+
+```text
+active_operational_rows_and_bytes
+online_historical_rows_and_bytes
+archive_package_count_and_bytes
+archive_readability_age
+records_eligible_for_disposition
+records_under_hold
+records_blocked_or_failed
+copy_and_third_party_residuals
+backup_coverage_by_priority
+last_verified_recovery_point_age
+backup_chain_integrity
+unverified_backup_count
+restore_test_age
+actual_rpo_window
+technical_restore_duration
+business_recovery_duration
+work_recovery_duration
+anti_resurrection_reapply_failures
+capacity_forecast_days
+policy_and_hold_drift
+```
+
+Cada métrica tendrá owner, ambiente, unidad, ventana, umbral, alerta y acción. Crecer no activará borrado automático; activará revisión de capacidad y política.
+
+#### 42. Clases de drift
+
+```text
+UNBOUND_RETENTION_POLICY
+UNRESOLVED_LEGAL_PERIOD
+RETENTION_TRIGGER_DRIFT
+INDEFINITE_RETENTION
+EARLY_DISPOSITION
+HOLD_SCOPE_DRIFT
+ARCHIVE_MANIFEST_MISSING
+ARCHIVE_INTEGRITY_FAILURE
+ARCHIVE_ACCESS_DRIFT
+COPY_OR_DERIVATIVE_RESIDUAL
+THIRD_PARTY_DISPOSITION_PENDING
+DISPOSITION_RECEIPT_MISSING
+ANTI_RESURRECTION_LEDGER_GAP
+BACKUP_COVERAGE_GAP
+BACKUP_UNVERIFIED
+RPO_POINT_AGE_BREACH
+RESTORE_TEST_EXPIRED
+RESTORE_REINTRODUCED_DISPOSED_DATA
+```
+
+Cada hallazgo tendrá owner, severidad, evidencia, datos o copias afectados, contención, fecha, tarea y gate de cierre. Ningún drift se corregirá extendiendo retención o eliminando contenido sin política.
+
+#### 43. Riesgos y controles
+
+| Riesgo                               | Control obligatorio                                                    | Continuidad responsable                 |
+| ------------------------------------ | ---------------------------------------------------------------------- | --------------------------------------- |
+| base operativa saturada por historia | modos de colocación, forecast, archivo y particionamiento condicionado | `SUPA-ARC-021`; `SUPA-TRANS-*`          |
+| eliminación por antigüedad           | policy, trigger, hold, manifiesto y receipt                            | `INFO-DOM-006`; `SUPA-TRANS-*`          |
+| archivo ilegible                     | formato versionado, hash y prueba periódica                            | `INFO-DOM-003` a `007`; `EVID-ARC-*`    |
+| conservación indefinida              | máximo, revisión, `RET_UNRESOLVED` bloqueante                          | `INFO-DOM-006`; gobierno de información |
+| copia o tercero residual             | inventario, estado pendiente y conciliación                            | `INFO-DOM-010`; paquetes E5             |
+| backup tratado como archivo          | catálogos y accesos separados                                          | `CONT-DOM-011`; `SUPA-ARC-022`          |
+| recuperación inconsistente           | grupos, orden, validación y conciliación                               | `CONT-DOM-012`; `SUPA-TRANS-*`          |
+| resurrección de datos                | ledger, tombstones y reaplicación previa al acceso                     | `INFO-DOM-006`; `CONT-DOM-012`          |
+| RTO o RPO inventado                  | BIA, MTPD, MBCO, evidencia y aprobación                                | `CONT-DOM-002` a `004`                  |
+| copia no restaurable                 | estado `COMPLETED_UNVERIFIED`, clean room y ejercicio                  | `CONT-DOM-011`; `CONT-DOM-014`          |
+| llave perdida                        | custodia separada y prueba de recuperación                             | `CONT-DOM-011`; `SUPA-ARC-024`          |
+| restore con efectos reales           | aislamiento y suppressions fail-closed                                 | `CONT-DOM-012`; paquetes E5             |
+
+#### 44. Decisiones reservadas
+
+| Decisión                                                          | Tarea propietaria                                              |
+| ----------------------------------------------------------------- | -------------------------------------------------------------- |
+| categorías, fundamentos, plazos, triggers y métodos definitivos   | `INFO-DOM-001` a `INFO-DOM-006`; `INFO-DOM-012`                |
+| hold, requerimientos, terceros e investigaciones                  | `INFO-DOM-006`; `INFO-DOM-009`; `INFO-DOM-010`; `INFO-DOM-013` |
+| autenticidad, formatos, evidencia y cadena de custodia            | `INFO-DOM-003` a `INFO-DOM-007`; `EVID-ARC-*`                  |
+| BIA, MTPD, MBCO, RTO, RPO y WRT numéricos                         | `CONT-DOM-002` a `CONT-DOM-004`                                |
+| política de backups, proveedores y runbooks                       | `CONT-DOM-011` a `CONT-DOM-013`                                |
+| ejercicios, lecciones y mantenimiento                             | `CONT-DOM-014`; `CONT-DOM-015`                                 |
+| DDL de particiones, tablas históricas, archivo y purga            | `SUPA-TRANS-*`; BLOQUE R; paquetes E5                          |
+| configuración de backups, PITR, proyectos y secretos por ambiente | `SUPA-ARC-024`; `SUPA-TRANS-*`                                 |
+| tipos generados de políticas, manifests y outcomes                | `SUPA-ARC-023`                                                 |
+| ADR, linter y gate integral                                       | `SUPA-ARC-025`; `SHELL-CI-017`                                 |
+
+#### 45. Límites de autorización
+
+Esta tarea no autoriza:
+
+- fijar plazos fiscales, laborales, contables, sanitarios, contractuales o de privacidad;
+- crear, desadjuntar, mover, exportar, truncar, archivar o eliminar particiones, tablas, filas, eventos, logs o jobs;
+- borrar o anonimizar usuarios, trabajadores, clientes, proveedores, pedidos, documentos o evidencias;
+- crear buckets, mover objetos, ejecutar lifecycle, eliminar versiones o modificar policies de Storage;
+- activar, cambiar o certificar backups, PITR, réplicas, proyectos de recuperación o planes comerciales;
+- ejecutar restore, failover, failback, replay, reconciliación, rehidratación o ejercicios sobre datos reales;
+- cambiar Auth, sesiones, RLS, grants, funciones, cron, Realtime, Edge Functions, secretos o llaves;
+- aplicar DDL, DML, migraciones, backfills, código, configuración, cutover o despliegues;
+- iniciar `SUPA-ARC-023` antes de aprobación expresa.
+
+#### 46. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-1447 a TREQ-SUPABASE-1518
+```
+
+Los setenta y dos requisitos protegen planos, clases, modos de colocación, políticas, triggers, históricos, archivo, manifests, hold, disposición, anonimización, copias, terceros, anti-resurrección, objetos recuperables, prioridades, backups, PITR, consistencia, restores, clean room, RTO, RPO, ejercicios, superficies actuales, observabilidad, drift y gate integral.
+
+#### 47. Criterios de aceptación
+
+- [ ] Existe una arquitectura versionada única para retención, archivo, backup y recuperación.
+- [ ] Los ocho planos y cuatro modos de colocación están definidos sin transferir ownership.
+- [ ] Se preservan exactamente nueve clases y catorce estados de retención.
+- [ ] Cero plazos legales o RTO/RPO numéricos se inventan en esta tarea.
+- [ ] Toda categoría exige política, trigger, mínimo, máximo, hold, copias y disposición.
+- [ ] Histórico vigente, histórico en línea, archivo y backup permanecen separados.
+- [ ] El paquete de archivo conserva manifest, integridad, legibilidad, acceso y disposición futura.
+- [ ] Particionamiento no se presenta como archivo ni como obligación por el tamaño actual.
+- [ ] Hold bloquea disposición sin ampliar acceso.
+- [ ] Disposición es idempotente, verificable y cubre copias, derivados y terceros.
+- [ ] El ledger evita resurrección después de restaurar un punto antiguo.
+- [ ] Datos no productivos tienen finalidad, expiración y evidencia de disposición.
+- [ ] Los cinco perfiles de recuperación y nueve estados de backup se preservan.
+- [ ] `COMPLETED_UNVERIFIED` no se presenta como copia restaurable.
+- [ ] PITR exige restore y validación; no se certifica por configuración.
+- [ ] Los grupos de consistencia impiden combinaciones históricas imposibles.
+- [ ] Los doce estados de restore separan solicitud, restauración, validación, conciliación y promoción.
+- [ ] Clean room bloquea efectos externos y promoción accidental.
+- [ ] RTO, RPO, MTPD, MBCO y WRT quedan vinculados a tareas propietarias.
+- [ ] Los diez casos actuales reciben disposición sin ejecutar cambios físicos.
+- [ ] Las dieciocho clases de drift son verificables.
+- [ ] Se generan `TREQ-SUPABASE-1447` a `TREQ-SUPABASE-1518`.
+- [ ] No se inicia la tarea siguiente.
+
+#### 48. Controles estructurales requeridos
+
+| Control                              | Resultado esperado |
+| ------------------------------------ | -----------------: |
+| planos canónicos                     |              **8** |
+| modos de colocación                  |              **4** |
+| clases de retención                  |              **9** |
+| estados de retención                 |             **14** |
+| perfiles de recuperación             |              **5** |
+| estados de backup                    |              **9** |
+| estados de restore                   |             **12** |
+| casos actuales clasificados          |       **10 de 10** |
+| plazos legales aprobados             |              **0** |
+| restores certificados por inferencia |              **0** |
+| clases de drift                      |             **18** |
+| requisitos nuevos                    |             **72** |
+| cambios físicos                      |              **0** |
+
+#### 49. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
+```
+
+`SUPA-ARC-023` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
 ### [ ] SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción
