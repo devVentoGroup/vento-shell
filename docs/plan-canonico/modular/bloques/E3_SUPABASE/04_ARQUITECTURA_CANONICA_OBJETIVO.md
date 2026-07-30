@@ -7586,67 +7586,67 @@ La tarea define el modelo objetivo. No concede acceso, no modifica `api.schemas`
 SUPABASE-EXPOSURE-GRANTS-RLS-POLICY-001@1.0.0
 ```
 
-| Propiedad | Valor |
-| --- | ---: |
-| `canonical_business_data_api_schema` | `api` |
-| `target_business_data_api_schema_count` | **1** |
-| `owner_schemas_directly_exposed` | **0** |
-| `transitional_public_schema_count` | **1** |
-| `platform_optional_graphql_surface_count` | **1** |
-| `default_exposure_decision` | `DENY` |
-| `default_grant_decision` | `NONE` |
-| `public_role_business_grants_target` | **0** |
-| `client_direct_owner_table_dml_target` | **0** |
-| `client_sequence_grants_target` | **0** |
-| `client_create_privileges_target` | **0** |
-| `client_reachable_tables_without_rls_target` | **0** |
-| `rls_policy_target_role_public` | **0** |
-| `approved_protection_classes` | **4** |
-| `mandatory_disposition_classes` | **8** |
-| `current_vento_tables` | **317** |
-| `current_vento_tables_with_rls` | **305** |
-| `current_vento_tables_without_rls` | **12** |
-| `current_vento_policies` | **790** |
-| `current_total_policies` | **831** |
-| `current_force_rls_tables` | **0** |
-| `current_vento_rls_tables_without_policy` | **5** |
-| `current_vento_policies_targeting_public` | **211** |
-| `current_anon_dml_tables` | **4** |
-| `current_privileged_views_for_authenticated` | **4** |
+| Propiedad                                     |   Valor |
+| --------------------------------------------- | ------: |
+| `canonical_business_data_api_schema`          |   `api` |
+| `target_business_data_api_schema_count`       |   **1** |
+| `owner_schemas_directly_exposed`              |   **0** |
+| `transitional_public_schema_count`            |   **1** |
+| `platform_optional_graphql_surface_count`     |   **1** |
+| `default_exposure_decision`                   |  `DENY` |
+| `default_grant_decision`                      |  `NONE` |
+| `public_role_business_grants_target`          |   **0** |
+| `client_direct_owner_table_dml_target`        |   **0** |
+| `client_sequence_grants_target`               |   **0** |
+| `client_create_privileges_target`             |   **0** |
+| `client_reachable_tables_without_rls_target`  |   **0** |
+| `rls_policy_target_role_public`               |   **0** |
+| `approved_protection_classes`                 |   **4** |
+| `mandatory_disposition_classes`               |   **8** |
+| `current_vento_tables`                        | **317** |
+| `current_vento_tables_with_rls`               | **305** |
+| `current_vento_tables_without_rls`            |  **12** |
+| `current_vento_policies`                      | **790** |
+| `current_total_policies`                      | **831** |
+| `current_force_rls_tables`                    |   **0** |
+| `current_vento_rls_tables_without_policy`     |   **5** |
+| `current_vento_policies_targeting_public`     | **211** |
+| `current_anon_dml_tables`                     |   **4** |
+| `current_privileged_views_for_authenticated`  |   **4** |
 | `current_functions_executable_through_public` | **134** |
-| `new_test_requirements` | **44** |
-| `physical_changes_authorized` | **0** |
+| `new_test_requirements`                       |  **44** |
+| `physical_changes_authorized`                 |   **0** |
 
 #### 3. Fuentes canónicas consumidas
 
-| Fuente | Decisión consumida |
-| --- | --- |
-| `01_PROTOCOLO.md` | continuidad, preservación histórica, fase documental y validación real separada |
-| `delivery-contract.json` | una sola tarea y registro 04A completo con nombre de entrega único |
-| `active-sequence.json` | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-015` como tarea actual |
-| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0` | exposición independiente de propiedad, denegación por defecto y plataforma separada de dominio |
-| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0` | 26 owner schemas y autoridad única por hecho empresarial |
-| `SUPABASE-PUBLIC-SCHEMA-FUTURE-FUNCTION-001@1.0.0` | `public` como compatibilidad transitoria sin autoridad objetivo |
-| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0` | `api` como única capa empresarial expuesta; `READ_VIEW`, `QUERY_RPC` y `COMMAND_RPC` |
-| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0` | `app_private` fuera de exposición cliente |
-| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0` | `audit` fuera de acceso directo cliente y evidencia mediante contratos mínimos |
-| `SUPABASE-AUTH-MODEL-001@1.0.0` y `SUPA-ARC-009` a `010` | principal, identidad, actor efectivo, sesión, revocación y desactivación |
-| `SUPABASE-FUNCTION-RPC-TRIGGER-STANDARD-001@1.0.0` | firmas, vistas, RPC, triggers, efectos y seguridad invoker como regla |
-| `SUPABASE-SECURITY-DEFINER-POLICY-001@1.0.0` | excepción privilegiada, owner mínimo, `EXECUTE` explícito y relación con RLS |
-| `SUPA-AUD-003` y `SUPA-AUD-009` | cuatro capas de alcance, schemas configurados, grants, RLS, policies y superficie efectiva actual |
-| `SUPA-AUD-016` a `SUPA-AUD-024` | drift, consumidores, legacy, riesgos y transición por objeto |
-| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` | 5.341 requisitos hasta `SUPA-ARC-014`; rango `TREQ-SUPABASE-001` a `1046` |
+| Fuente                                                       | Decisión consumida                                                                                |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                            | continuidad, preservación histórica, fase documental y validación real separada                   |
+| `delivery-contract.json`                                     | una sola tarea y registro 04A completo con nombre de entrega único                                |
+| `active-sequence.json`                                       | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-015` como tarea actual                       |
+| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0`            | exposición independiente de propiedad, denegación por defecto y plataforma separada de dominio    |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0` | 26 owner schemas y autoridad única por hecho empresarial                                          |
+| `SUPABASE-PUBLIC-SCHEMA-FUTURE-FUNCTION-001@1.0.0`           | `public` como compatibilidad transitoria sin autoridad objetivo                                   |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0`                  | `api` como única capa empresarial expuesta; `READ_VIEW`, `QUERY_RPC` y `COMMAND_RPC`              |
+| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0`                  | `app_private` fuera de exposición cliente                                                         |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`          | `audit` fuera de acceso directo cliente y evidencia mediante contratos mínimos                    |
+| `SUPABASE-AUTH-MODEL-001@1.0.0` y `SUPA-ARC-009` a `010`     | principal, identidad, actor efectivo, sesión, revocación y desactivación                          |
+| `SUPABASE-FUNCTION-RPC-TRIGGER-STANDARD-001@1.0.0`           | firmas, vistas, RPC, triggers, efectos y seguridad invoker como regla                             |
+| `SUPABASE-SECURITY-DEFINER-POLICY-001@1.0.0`                 | excepción privilegiada, owner mínimo, `EXECUTE` explícito y relación con RLS                      |
+| `SUPA-AUD-003` y `SUPA-AUD-009`                              | cuatro capas de alcance, schemas configurados, grants, RLS, policies y superficie efectiva actual |
+| `SUPA-AUD-016` a `SUPA-AUD-024`                              | drift, consumidores, legacy, riesgos y transición por objeto                                      |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`           | 5.341 requisitos hasta `SUPA-ARC-014`; rango `TREQ-SUPABASE-001` a `1046`                         |
 
 #### 4. Separación obligatoria de controles
 
 Un acceso solo existe cuando coinciden controles independientes:
 
-| Control | Pregunta obligatoria | Resultado insuficiente por sí solo |
-| --- | --- | --- |
-| `CONFIGURED_SCHEMA` | ¿El schema está incluido en la superficie Data API aplicable? | un grant no expone por sí mismo un schema no configurado |
-| `SCHEMA_USAGE` | ¿El rol puede resolver objetos dentro del schema? | `USAGE` no concede lectura, escritura ni ejecución |
-| `OBJECT_PRIVILEGE` | ¿El rol tiene `SELECT`, DML, `USAGE` de secuencia o `EXECUTE`? | el privilegio no elimina RLS ni autorización empresarial |
-| `ROW_AUTHORIZATION` | ¿La fila, el recurso y el cambio están permitidos para el actor? | RLS no crea privilegios de objeto ni configura Data API |
+| Control                  | Pregunta obligatoria                                                                   | Resultado insuficiente por sí solo                                  |
+| ------------------------ | -------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `CONFIGURED_SCHEMA`      | ¿El schema está incluido en la superficie Data API aplicable?                          | un grant no expone por sí mismo un schema no configurado            |
+| `SCHEMA_USAGE`           | ¿El rol puede resolver objetos dentro del schema?                                      | `USAGE` no concede lectura, escritura ni ejecución                  |
+| `OBJECT_PRIVILEGE`       | ¿El rol tiene `SELECT`, DML, `USAGE` de secuencia o `EXECUTE`?                         | el privilegio no elimina RLS ni autorización empresarial            |
+| `ROW_AUTHORIZATION`      | ¿La fila, el recurso y el cambio están permitidos para el actor?                       | RLS no crea privilegios de objeto ni configura Data API             |
 | `BUSINESS_AUTHORIZATION` | ¿El principal, actor, contexto, permiso, scope y precondiciones permiten la capacidad? | pertenecer a `authenticated` o usar una credencial técnica no basta |
 
 Ninguna capa inferirá otra. Todo diagnóstico y prueba deberá indicar en cuál control se permite o deniega el acceso.
@@ -7743,14 +7743,14 @@ La entrada deberá reconciliar configuración, ACL, policies, consumidores y est
 
 #### 10. Clases de audiencia y roles
 
-| Audiencia técnica | Uso permitido | Prohibición principal |
-| --- | --- | --- |
-| `PUBLIC` | ninguno sobre objetos empresariales Vento | no heredará acceso por defaults o grants implícitos |
-| `anon` | contratos `ANON_PUBLIC` explícitos y mínimos en `api` | no representa identidad empresarial ni recibe DML directo sobre owner tables |
-| `authenticated` | contratos `AUTHENTICATED_ACTOR` en `api` | autenticación no sustituye permiso, scope, territorio ni recurso |
-| `service_role` | backend controlado y no distribuido a clientes | bypass técnico no equivale a autorización empresarial |
-| roles técnicos `NOLOGIN` | ownership o ejecución interna mínima | no se usan como sesiones humanas ni roles de aplicación |
-| roles de migración y mantenimiento | despliegue, conciliación o recuperación controlada | no son runtime ordinario ni consumidores empresariales |
+| Audiencia técnica                  | Uso permitido                                         | Prohibición principal                                                        |
+| ---------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `PUBLIC`                           | ninguno sobre objetos empresariales Vento             | no heredará acceso por defaults o grants implícitos                          |
+| `anon`                             | contratos `ANON_PUBLIC` explícitos y mínimos en `api` | no representa identidad empresarial ni recibe DML directo sobre owner tables |
+| `authenticated`                    | contratos `AUTHENTICATED_ACTOR` en `api`              | autenticación no sustituye permiso, scope, territorio ni recurso             |
+| `service_role`                     | backend controlado y no distribuido a clientes        | bypass técnico no equivale a autorización empresarial                        |
+| roles técnicos `NOLOGIN`           | ownership o ejecución interna mínima                  | no se usan como sesiones humanas ni roles de aplicación                      |
+| roles de migración y mantenimiento | despliegue, conciliación o recuperación controlada    | no son runtime ordinario ni consumidores empresariales                       |
 
 Cada rol tendrá finalidad, owner, ambiente, privilegios, rotación y pruebas. Las membresías y herencias se incluirán en el cálculo de acceso efectivo.
 
@@ -7794,15 +7794,15 @@ Cada rol tendrá finalidad, owner, ambiente, privilegios, rotación y pruebas. L
 
 #### 15. Grants de schema y objeto
 
-| Objeto | Privilegio cliente objetivo |
-| --- | --- |
-| schema `api` | `USAGE` explícito; `CREATE` prohibido |
-| `READ_VIEW` en `api` | `SELECT` solo a audiencias aprobadas |
-| `QUERY_RPC` en `api` | `EXECUTE` solo a audiencias aprobadas |
-| `COMMAND_RPC` en `api` | `EXECUTE` solo a audiencias aprobadas |
-| tablas de owner schemas | cero DML directo para `anon` y `authenticated` |
-| secuencias Vento | cero `USAGE`, `SELECT` o `UPDATE` para roles cliente |
-| `app_private` y `audit` | cero acceso directo de roles cliente |
+| Objeto                    | Privilegio cliente objetivo                                     |
+| ------------------------- | --------------------------------------------------------------- |
+| schema `api`              | `USAGE` explícito; `CREATE` prohibido                           |
+| `READ_VIEW` en `api`      | `SELECT` solo a audiencias aprobadas                            |
+| `QUERY_RPC` en `api`      | `EXECUTE` solo a audiencias aprobadas                           |
+| `COMMAND_RPC` en `api`    | `EXECUTE` solo a audiencias aprobadas                           |
+| tablas de owner schemas   | cero DML directo para `anon` y `authenticated`                  |
+| secuencias Vento          | cero `USAGE`, `SELECT` o `UPDATE` para roles cliente            |
+| `app_private` y `audit`   | cero acceso directo de roles cliente                            |
 | objetos de compatibilidad | solo privilegios congelados y registrados durante su transición |
 
 `GRANT ALL`, grants a todos los objetos futuros y permisos por schema completo quedan prohibidos para roles runtime empresariales.
@@ -7854,12 +7854,12 @@ Si cualquiera de estas condiciones falla, la vista no se expondrá mediante ese 
 
 Se definen cuatro clases de protección:
 
-| Clase | Uso |
-| --- | --- |
-| `RLS_REQUIRED_CLIENT_REACHABLE` | tabla alcanzable por rol cliente directa o indirectamente mediante invoker |
-| `RLS_REQUIRED_OWNER_BUSINESS` | tabla autoritativa o transaccional de los 26 owner schemas |
-| `PRIVATE_TECHNICAL_EQUIVALENT_CONTROL` | objeto técnico no cliente con aislamiento equivalente documentado |
-| `PLATFORM_MANAGED` | objeto cuya seguridad pertenece a una superficie administrada |
+| Clase                                  | Uso                                                                        |
+| -------------------------------------- | -------------------------------------------------------------------------- |
+| `RLS_REQUIRED_CLIENT_REACHABLE`        | tabla alcanzable por rol cliente directa o indirectamente mediante invoker |
+| `RLS_REQUIRED_OWNER_BUSINESS`          | tabla autoritativa o transaccional de los 26 owner schemas                 |
+| `PRIVATE_TECHNICAL_EQUIVALENT_CONTROL` | objeto técnico no cliente con aislamiento equivalente documentado          |
+| `PLATFORM_MANAGED`                     | objeto cuya seguridad pertenece a una superficie administrada              |
 
 Reglas:
 
@@ -7893,12 +7893,12 @@ Reglas:
 
 #### 23. Semántica por operación
 
-| Operación | Regla obligatoria |
-| --- | --- |
-| `SELECT` | `USING` limita las filas visibles y evita enumeración lateral |
-| `INSERT` | `WITH CHECK` valida ownership, territorio, estado inicial y campos protegidos |
-| `UPDATE` | requiere `USING` sobre la fila existente y `WITH CHECK` sobre la fila resultante |
-| `DELETE` | `USING` limita la fila; para clientes se preferirá comando empresarial de cancelación, baja o corrección |
+| Operación | Regla obligatoria                                                                                        |
+| --------- | -------------------------------------------------------------------------------------------------------- |
+| `SELECT`  | `USING` limita las filas visibles y evita enumeración lateral                                            |
+| `INSERT`  | `WITH CHECK` valida ownership, territorio, estado inicial y campos protegidos                            |
+| `UPDATE`  | requiere `USING` sobre la fila existente y `WITH CHECK` sobre la fila resultante                         |
+| `DELETE`  | `USING` limita la fila; para clientes se preferirá comando empresarial de cancelación, baja o corrección |
 
 Una policy no convertirá una escritura inválida en cero filas silenciosas sin contrato de resultado. Las aplicaciones deberán diferenciar denegación, conflicto, ausencia y precondición.
 
@@ -7957,23 +7957,23 @@ La excepción no se aplica a una tabla empresarial por conveniencia ni por carec
 
 #### 29. Línea base AS-IS obligatoria
 
-| Métrica observada | Cantidad |
-| --- | ---: |
-| schemas no efímeros | **23** |
-| schemas declarados actualmente en configuración Data API | **2** — `public`, `graphql_public` |
-| tablas globales `r/p` | **432** |
-| tablas Vento | **317** |
-| tablas Vento con RLS | **305** |
-| tablas Vento sin RLS | **12** |
-| tablas globales con `FORCE RLS` | **0** |
-| policies globales | **831** |
-| policies Vento | **790** |
-| policies globales permisivas | **831** |
-| tablas Vento con RLS y cero policies | **5** |
-| policies Vento dirigidas a `PUBLIC` | **211** |
-| tablas `pass` con DML anónimo | **4** |
-| vistas administrativas privilegiadas accesibles a `authenticated` | **4** |
-| funciones Vento ejecutables mediante `PUBLIC` | **134** |
+| Métrica observada                                                 |                           Cantidad |
+| ----------------------------------------------------------------- | ---------------------------------: |
+| schemas no efímeros                                               |                             **23** |
+| schemas declarados actualmente en configuración Data API          | **2** — `public`, `graphql_public` |
+| tablas globales `r/p`                                             |                            **432** |
+| tablas Vento                                                      |                            **317** |
+| tablas Vento con RLS                                              |                            **305** |
+| tablas Vento sin RLS                                              |                             **12** |
+| tablas globales con `FORCE RLS`                                   |                              **0** |
+| policies globales                                                 |                            **831** |
+| policies Vento                                                    |                            **790** |
+| policies globales permisivas                                      |                            **831** |
+| tablas Vento con RLS y cero policies                              |                              **5** |
+| policies Vento dirigidas a `PUBLIC`                               |                            **211** |
+| tablas `pass` con DML anónimo                                     |                              **4** |
+| vistas administrativas privilegiadas accesibles a `authenticated` |                              **4** |
+| funciones Vento ejecutables mediante `PUBLIC`                     |                            **134** |
 
 Estos conteos describen el corte auditado. Incluyen objetos VITAL gobernados por Vento pero clasificados fuera de Vento OS; esa frontera deberá conservarse y no podrá incorporarlos a `api`. Los conteos no certifican conformidad, vulnerabilidad, uso actual ni destino de un objeto individual.
 
@@ -7981,16 +7981,16 @@ Estos conteos describen el corte auditado. Incluyen objetos VITAL gobernados por
 
 Cada superficie, grant, policy y excepción actual recibirá una sola disposición:
 
-| Clase | Resultado |
-| --- | --- |
-| `KEEP_AND_HARDEN` | conserva finalidad con contrato, grants mínimos y pruebas completas |
-| `MOVE_TO_API` | se materializa como contrato canónico expuesto |
-| `NARROW_PRIVILEGES` | conserva objeto, pero reduce audiencia, operación, columnas o alcance |
-| `REPLACE_WITH_COMMAND_OR_QUERY` | elimina acceso directo mediante RPC aprobada |
-| `PRIVATE_ONLY` | queda fuera de Data API y de roles cliente |
-| `TRANSITIONAL_COMPATIBILITY` | permanece temporalmente con telemetría y salida definida |
-| `RETIRE` | se elimina después de paridad, cero consumo y rollback probado |
-| `BLOCKED_PENDING_EVIDENCE` | no puede mantenerse ni ampliarse hasta resolver evidencia faltante |
+| Clase                           | Resultado                                                             |
+| ------------------------------- | --------------------------------------------------------------------- |
+| `KEEP_AND_HARDEN`               | conserva finalidad con contrato, grants mínimos y pruebas completas   |
+| `MOVE_TO_API`                   | se materializa como contrato canónico expuesto                        |
+| `NARROW_PRIVILEGES`             | conserva objeto, pero reduce audiencia, operación, columnas o alcance |
+| `REPLACE_WITH_COMMAND_OR_QUERY` | elimina acceso directo mediante RPC aprobada                          |
+| `PRIVATE_ONLY`                  | queda fuera de Data API y de roles cliente                            |
+| `TRANSITIONAL_COMPATIBILITY`    | permanece temporalmente con telemetría y salida definida              |
+| `RETIRE`                        | se elimina después de paridad, cero consumo y rollback probado        |
+| `BLOCKED_PENDING_EVIDENCE`      | no puede mantenerse ni ampliarse hasta resolver evidencia faltante    |
 
 No se inferirá la disposición desde schema, nombre, grant, policy o consumidor aislado.
 
@@ -8083,30 +8083,30 @@ Toda alta, baja o diferencia tendrá owner, severidad, tarea, rollback y decisi�
 
 #### 36. Riesgos restringidos y carryover
 
-| Riesgo | Control de esta tarea | Continuidad responsable |
-| --- | --- | --- |
-| schema expuesto por configuración accidental | allowlist y drift de `api.schemas` | `SUPA-ARC-024`, `SUPA-TRANS-013` |
-| grant amplio o heredado | privilegio mínimo y acceso efectivo | `SUPA-TRANS-003`, `SUPA-TRANS-015` |
-| BOLA o IDOR | actor, scope, territorio, recurso y pruebas cruzadas | `SUPA-ARC-016`, `AUTH-QA-030` |
-| RLS permisivo compuesto por OR | modelo permisivo más restrictivo y prueba de conjunto | `SUPA-TRANS-009` |
-| bypass mediante función privilegiada | `SUPA-ARC-014` más grants explícitos | `SUPA-TRANS-003` |
-| mutación directa de tabla | `COMMAND_RPC` como frontera | `SUPA-ARC-016`, `SUPA-ARC-017` |
-| `public` perpetuo | congelación, sucesor, telemetría y salida | `SUPA-TRANS-006`, `SUPA-TRANS-007` |
-| divergencia entre ambientes | manifiesto, hash y paridad | `SUPA-ARC-024`, `SUPA-TRANS-013` |
+| Riesgo                                       | Control de esta tarea                                 | Continuidad responsable            |
+| -------------------------------------------- | ----------------------------------------------------- | ---------------------------------- |
+| schema expuesto por configuración accidental | allowlist y drift de `api.schemas`                    | `SUPA-ARC-024`, `SUPA-TRANS-013`   |
+| grant amplio o heredado                      | privilegio mínimo y acceso efectivo                   | `SUPA-TRANS-003`, `SUPA-TRANS-015` |
+| BOLA o IDOR                                  | actor, scope, territorio, recurso y pruebas cruzadas  | `SUPA-ARC-016`, `AUTH-QA-030`      |
+| RLS permisivo compuesto por OR               | modelo permisivo más restrictivo y prueba de conjunto | `SUPA-TRANS-009`                   |
+| bypass mediante función privilegiada         | `SUPA-ARC-014` más grants explícitos                  | `SUPA-TRANS-003`                   |
+| mutación directa de tabla                    | `COMMAND_RPC` como frontera                           | `SUPA-ARC-016`, `SUPA-ARC-017`     |
+| `public` perpetuo                            | congelación, sucesor, telemetría y salida             | `SUPA-TRANS-006`, `SUPA-TRANS-007` |
+| divergencia entre ambientes                  | manifiesto, hash y paridad                            | `SUPA-ARC-024`, `SUPA-TRANS-013`   |
 
 #### 37. Decisiones reservadas
 
-| Decisión | Tarea propietaria |
-| --- | --- |
-| contratos exactos de lectura y mutación por dominio | `SUPA-ARC-016` |
-| escrituras entre owner schemas | `SUPA-ARC-017` |
-| policies y rutas de Storage | `SUPA-ARC-018` |
-| autorización de canales y publicaciones Realtime | `SUPA-ARC-019` |
-| credenciales y ejecución de Edge Functions, webhooks y cron | `SUPA-ARC-020` |
-| índices para predicates y helpers RLS | `SUPA-ARC-021` |
-| entornos y overlays de configuración | `SUPA-ARC-024` |
-| ADR y linter consolidado | `SUPA-ARC-025` |
-| implementación, cutover y retiro por objeto | `SUPA-TRANS-*` y paquetes E5 |
+| Decisión                                                    | Tarea propietaria            |
+| ----------------------------------------------------------- | ---------------------------- |
+| contratos exactos de lectura y mutación por dominio         | `SUPA-ARC-016`               |
+| escrituras entre owner schemas                              | `SUPA-ARC-017`               |
+| policies y rutas de Storage                                 | `SUPA-ARC-018`               |
+| autorización de canales y publicaciones Realtime            | `SUPA-ARC-019`               |
+| credenciales y ejecución de Edge Functions, webhooks y cron | `SUPA-ARC-020`               |
+| índices para predicates y helpers RLS                       | `SUPA-ARC-021`               |
+| entornos y overlays de configuración                        | `SUPA-ARC-024`               |
+| ADR y linter consolidado                                    | `SUPA-ARC-025`               |
+| implementación, cutover y retiro por objeto                 | `SUPA-TRANS-*` y paquetes E5 |
 
 #### 38. Límites de autorización
 
@@ -8154,23 +8154,23 @@ Los cuarenta y cuatro requisitos protegen topología de exposición, allowlists,
 
 #### 41. Controles estructurales requeridos
 
-| Control | Resultado esperado |
-| --- | ---: |
-| schemas empresariales Data API objetivo | **1** |
-| owner schemas expuestos directamente | **0** |
-| schemas transversales privados expuestos | **0** |
-| grants empresariales a `PUBLIC` | **0** |
-| DML cliente directo sobre owner tables | **0** |
-| grants cliente sobre secuencias | **0** |
-| `CREATE` para roles runtime | **0** |
-| tablas cliente alcanzables sin RLS | **0** |
-| policies Vento a `PUBLIC` objetivo | **0** |
-| clases de protección | **4** |
-| clases de disposición | **8** |
-| tablas Vento cubiertas por clasificación | **317 de 317** |
-| policies Vento cubiertas por clasificación | **790 de 790** |
-| requisitos nuevos | **44** |
-| cambios físicos | **0** |
+| Control                                    | Resultado esperado |
+| ------------------------------------------ | -----------------: |
+| schemas empresariales Data API objetivo    |              **1** |
+| owner schemas expuestos directamente       |              **0** |
+| schemas transversales privados expuestos   |              **0** |
+| grants empresariales a `PUBLIC`            |              **0** |
+| DML cliente directo sobre owner tables     |              **0** |
+| grants cliente sobre secuencias            |              **0** |
+| `CREATE` para roles runtime                |              **0** |
+| tablas cliente alcanzables sin RLS         |              **0** |
+| policies Vento a `PUBLIC` objetivo         |              **0** |
+| clases de protección                       |              **4** |
+| clases de disposición                      |              **8** |
+| tablas Vento cubiertas por clasificación   |     **317 de 317** |
+| policies Vento cubiertas por clasificación |     **790 de 790** |
+| requisitos nuevos                          |             **44** |
+| cambios físicos                            |              **0** |
 
 #### 42. Continuidad inmediata
 
@@ -8188,7 +8188,643 @@ SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
 `SUPA-ARC-016` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
+### ✅ SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-015` — Definir política canónica de exposición, grants y RLS — APROBADA
+**Tarea siguiente:** `SUPA-ARC-017 — Definir política de escrituras entre dominios`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `ed94ab76be408e1eb1d7cc68eefce0cb701474d1`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `72936dfb66b7e55c8b61bb41b9ea58157b47c4e6`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `daf6565a959905303760d2ae345ac40d94e8d433`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `01_PRINCIPIOS_OBLIGATORIOS.md` blob `36bb9a4c19f6d8e7edbaa03687219fb642c9c526`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`; `validate-treq-registry.mjs` blob `0af0cac4cad0fed7994c211a845198e51ce56ba6`
+**Tipo de tarea:** definición normativa del registro de contratos de lectura y mutación para los 26 dominios empresariales, incluyendo identidad, versión, intención, request, response, autorización, sensibilidad, consistencia, paginación, idempotencia, concurrencia, auditoría, eventos, compatibilidad, consumidores y gates; sin crear, alterar, exponer, ejecutar o retirar schemas, tablas, vistas, funciones, RPC, policies, grants, RLS, datos, migraciones, código, backfills, cutover ni despliegues
+
+#### 1. Objetivo
+
+Definir una frontera contractual completa para que cada dominio empresarial publique lecturas mínimas y reciba mutaciones autorizadas sin exponer sus tablas autoritativas, trasladar ownership a `api`, confiar en estructuras físicas actuales ni permitir que una aplicación escriba directamente en fuentes de otro dominio.
+
+```text
+26 DOMINIOS + 26 OWNER SCHEMAS + 69 PROCESOS
+        ↓
+PERFILES CONTRACTUALES POR DOMINIO
+        ↓
+READ_VIEW O QUERY_RPC PARA LECTURA
+        +
+COMMAND_RPC PARA MUTACIÓN
+        ↓
+AUTORIZACIÓN + MINIMIZACIÓN + CONSISTENCIA
+        +
+IDEMPOTENCIA + CONCURRENCIA + AUDITORÍA
+        ↓
+CONTRATOS VERSIONADOS EN api SIN CAMBIOS FÍSICOS
+```
+
+La tarea define perfiles, semánticas y gates. No crea nombres físicos de endpoints individuales, no declara conformes las superficies actuales y no autoriza coordinación de escrituras entre owner schemas; esa última decisión corresponde a `SUPA-ARC-017`.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-DOMAIN-READ-MUTATION-CONTRACT-REGISTRY-001@1.0.0
+```
+
+| Propiedad                                         |        Valor |
+| ------------------------------------------------- | -----------: |
+| `domain_contract_profile_count`                   |       **26** |
+| `owner_schema_coverage`                           | **26 de 26** |
+| `process_coverage`                                | **69 de 69** |
+| `exposed_contract_kind_count`                     |        **3** |
+| `read_intent_count`                               |        **8** |
+| `mutation_semantics_count`                        |       **10** |
+| `contract_lifecycle_state_count`                  |        **4** |
+| `current_vento_os_views_to_classify`              |       **62** |
+| `current_direct_invocable_signatures_to_classify` |      **232** |
+| `processes_without_canonical_source`              |       **20** |
+| `direct_client_owner_table_dml_target`            |        **0** |
+| `cross_domain_commands_without_contract_target`   |        **0** |
+| `new_test_requirements`                           |       **54** |
+| `physical_changes_authorized`                     |        **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                                       | Decisión consumida                                                                             |
+| ---------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                                            | continuidad, preservación histórica, fase documental y separación entre artefacto y operación  |
+| `delivery-contract.json`                                                     | una sola tarea y registro 04A completo con identidad única de entrega                          |
+| `active-sequence.json`                                                       | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-016` como tarea actual                    |
+| `SUPABASE-STABLE-BUSINESS-DOMAIN-REGISTRY-001@1.0.0`                         | 26 dominios y partición exacta de 69 procesos                                                  |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0`                 | 26 owner schemas, autoridad única por hecho y estados AS-IS por dominio                        |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0`                                  | `api`, `READ_VIEW`, `QUERY_RPC`, `COMMAND_RPC`, identidad física y lifecycle contractual       |
+| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0`                                  | helpers privados sin autoridad ni exposición propia                                            |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`                          | auditoría, eventos, outbox, causalidad y conciliación separadas del owner                      |
+| `SUPABASE-AUTH-ENTERPRISE-IDENTITY-MODEL-001@1.0.0` y `SUPA-ARC-009` a `010` | principal, identidad, actor, sesión, vínculo, revocación y desactivación                       |
+| `SUPABASE-FUNCTION-RPC-TRIGGER-STANDARD-001@1.0.0`                           | firmas inequívocas, semántica de consulta y comando, errores y triggers                        |
+| `SUPABASE-SECURITY-DEFINER-POLICY-001@1.0.0`                                 | invoker por defecto y elevación excepcional con owner mínimo                                   |
+| `SUPABASE-EXPOSURE-GRANTS-RLS-POLICY-001@1.0.0`                              | `api` como única superficie empresarial, grants mínimos, RLS y cero DML directo                |
+| `SUPABASE-OBJECT-CAPABILITY-OWNERSHIP-CONSUMER-MAP-022@1.0.0`                | 379 relaciones Vento, 347 funciones, 196 triggers y consumidores actuales                      |
+| `SUPABASE-PROCESS-DATA-RPC-EVENT-APPLICATION-MAP-023@1.0.0`                  | 69 procesos, 45 con automatismo localizado, 24 sin comando localizado y 20 sin fuente canónica |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`                           | 5.385 requisitos hasta `SUPA-ARC-015`; rango `TREQ-SUPABASE-001` a `1090`                      |
+
+#### 4. Distinciones obligatorias
+
+```text
+PERFIL CONTRACTUAL DE DOMINIO ≠ ENDPOINT FÍSICO
+CONTRATO EXPUESTO ≠ TABLA AUTORITATIVA
+LECTURA ≠ AUTORIDAD DE CORRECCIÓN
+COMMAND_RPC ≠ PROCESO COMPLETO
+REQUEST ≠ ACTOR CONFIABLE
+RESPONSE ≠ RESULTADO SQL BRUTO
+PROYECCIÓN ≠ FUENTE DE VERDAD
+RESUMEN O MÉTRICA ≠ ESTADO OPERACIONAL
+REINTENTO ≠ NUEVA INTENCIÓN EMPRESARIAL
+COORDINACIÓN INTERDOMINIO ≠ ESCRITURA LATERAL
+```
+
+El contrato expresa una capacidad estable y verificable. La implementación física podrá cambiar sin alterar la versión mientras request, response, autorización, efectos y errores permanezcan compatibles.
+
+#### 5. Unidad de ownership contractual
+
+1. Todo contrato tendrá exactamente un `primary_owner_schema_id` de `VSCHEMA-001` a `VSCHEMA-026`.
+2. Una lectura podrá consultar varios owner schemas únicamente si declara todas las fuentes y conserva uno como owner primario de la proyección.
+3. Un comando tendrá exactamente un efecto empresarial primario y un owner schema responsable de aceptarlo, corregirlo y cerrarlo.
+4. `api` no será owner, fuente de verdad, ledger, coordinador empresarial ni destino de persistencia.
+5. Una aplicación propietaria o consumidora no recibirá ownership físico por publicar o usar un contrato.
+6. Una dependencia, FK, vista, trigger, evento, grant o helper no transfiere autoridad.
+7. Un contrato sin owner, proceso o consumidor demostrado permanecerá `DRAFT` o `BLOCKED_PENDING_EVIDENCE`.
+
+#### 6. Clases contractuales expuestas
+
+| Clase         | Uso permitido                                                                            | Efecto  | Regla dominante                                                         |
+| ------------- | ---------------------------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------- |
+| `READ_VIEW`   | colección, detalle o estado estable expresable como proyección                           | ninguno | columnas explícitas, `security_invoker`, RLS y orden determinista       |
+| `QUERY_RPC`   | consulta parametrizada, cálculo, búsqueda o historia que no conviene expresar como vista | ninguno | sin DML, sin efectos externos, límites y retorno tipado                 |
+| `COMMAND_RPC` | intención empresarial que modifica un solo efecto primario                               | uno     | autorización, idempotencia, concurrencia, auditoría y resultado estable |
+
+No existirán tablas empresariales directamente consumibles dentro de `api`, DML cliente sobre owner tables ni procedimientos `CALL` como superficie paralela.
+
+#### 7. Identidad y lifecycle
+
+La identidad física continúa siendo:
+
+```text
+api.<contract_name>_v<major>
+```
+
+Cada contrato mantendrá además una identidad lógica estable y un `contract_revision` para cambios compatibles internos.
+
+| Estado       | Regla                                                                      |
+| ------------ | -------------------------------------------------------------------------- |
+| `DRAFT`      | contrato completo en documentación, sin grants ni consumidor habilitado    |
+| `ACTIVE`     | seguridad, tipos, pruebas, consumidores, telemetría y rollback aprobados   |
+| `DEPRECATED` | sucesor activo, aviso, medición y gate de salida definidos                 |
+| `RETIRED`    | cero consumidores y superficie retirada con observación postcambio cerrada |
+
+Un cambio incompatible de campos obligatorios, tipos, semántica, autorización, efecto, error o orden crea nueva versión mayor. Un cambio aditivo solo será compatible cuando consumidores y tipos generados lo toleren expresamente.
+
+#### 8. Intenciones canónicas de lectura
+
+| Intención              | Uso                                                            | Contrato preferido        |
+| ---------------------- | -------------------------------------------------------------- | ------------------------- |
+| `REFERENCE_COLLECTION` | catálogos, jerarquías y referencias vigentes                   | `READ_VIEW`               |
+| `RESOURCE_DETAIL`      | representación mínima de un recurso identificado               | `READ_VIEW` o `QUERY_RPC` |
+| `OPERATIONAL_QUEUE`    | trabajo pendiente o asignado con filtros autorizados           | `READ_VIEW` o `QUERY_RPC` |
+| `CURRENT_STATE`        | estado vigente con versión y momento de observación            | `READ_VIEW`               |
+| `HISTORY_TIMELINE`     | hitos, cambios, correcciones y causalidad ordenados            | `QUERY_RPC`               |
+| `LEDGER_STATEMENT`     | movimientos append-only, balance y referencia del origen       | `QUERY_RPC`               |
+| `PLAN_SNAPSHOT`        | programación, presupuesto, forecast o configuración versionada | `READ_VIEW` o `QUERY_RPC` |
+| `SUMMARY_METRIC`       | agregado, indicador o resumen no autoritativo                  | `READ_VIEW` o `QUERY_RPC` |
+
+Una intención no autoriza todos los campos del agregado. Cada contrato declarará finalidad, audiencia, columnas, filtros, sensibilidad, consistencia y límites.
+
+#### 9. Semánticas canónicas de mutación
+
+| Semántica    | Resultado permitido                                         | Restricción                                                |
+| ------------ | ----------------------------------------------------------- | ---------------------------------------------------------- |
+| `CREATE`     | crea un recurso o agregado nuevo                            | identidad, defaults y owner se resuelven server-side       |
+| `AMEND`      | cambia atributos editables dentro del estado permitido      | no reescribe historia ni campos derivados                  |
+| `ASSIGN`     | crea, termina o sustituye una relación con vigencia         | actor, cardinalidad y solapamiento se validan atómicamente |
+| `TRANSITION` | mueve una máquina de estados por una transición allowlisted | exige estado previo, permiso, razón y concurrencia         |
+| `APPEND`     | agrega un hecho, movimiento, evidencia o evento             | no actualiza destructivamente hechos confirmados           |
+| `CORRECT`    | registra una corrección vinculada al original               | conserva valor previo, razón, actor y alcance              |
+| `CANCEL`     | termina una intención aún cancelable                        | no equivale a borrar ni revertir efectos ya confirmados    |
+| `REVERSE`    | compensa un efecto confirmado mediante hecho opuesto        | exige referencia original e idempotencia                   |
+| `PUBLISH`    | activa una versión o snapshot aprobado                      | conserva versión anterior y vigencia explícita             |
+| `RETIRE`     | cierra vigencia o disponibilidad                            | no elimina historia, evidencia ni referencias obligatorias |
+
+Toda mutación expuesta se implementará como `COMMAND_RPC`. Una semántica no implica que todos los dominios la permitan; la matriz de la sección 24 es la allowlist de cada perfil.
+
+#### 10. Contrato de request
+
+Cada request declarará:
+
+```text
+request_schema
++ required_fields
++ optional_fields
++ nullability
++ identifiers_and_scopes
++ expected_version_or_state
++ idempotency_key_requirement
++ client_request_id
++ locale_and_timezone_when_relevant
++ maximum_payload_size
++ rejected_unknown_fields_policy
++ normalization_rules
++ validation_error_codes
+```
+
+Reglas:
+
+1. Los campos desconocidos se rechazarán o ignorarán únicamente según una política versionada; no se aceptarán silenciosamente por defecto.
+2. El cliente no elegirá libremente owner, actor efectivo, permiso, rol, sede, área, estado privilegiado, saldo, total derivado, timestamps de sistema ni auditoría.
+3. Los IDs enviados son selectores sujetos a existencia, ownership, territorio y lifecycle; no constituyen autorización.
+4. Fechas locales declararán zona o contexto; los instantes persistidos usarán el estándar temporal aprobado.
+5. Un payload parcial no implicará `NULL`, borrado o default salvo semántica explícita.
+6. Archivos, secretos, tokens y datos binarios usarán contratos especializados; no se incrustarán por conveniencia en JSON empresarial.
+
+#### 11. Contrato de response
+
+Toda respuesta estable declarará:
+
+```text
+contract_id_and_version
++ outcome_code
++ resource_references
++ resulting_version_or_state
++ server_observed_at
++ correlation_id
++ idempotency_replay_indicator
++ warnings_or_pending_effects
++ data_or_result_payload
++ pagination_when_applicable
+```
+
+Reglas:
+
+1. No se devolverán filas SQL brutas, `RETURNING *`, stack traces, nombres internos, secretos ni campos fuera de finalidad.
+2. Éxito significa que el efecto primario fue confirmado; aceptación de transporte, job o webhook no equivale a éxito empresarial.
+3. `UNKNOWN_OUTCOME` o efecto pendiente deberá ser explícito y conciliable; no se convertirá en éxito ni se reintentará ciegamente.
+4. La denegación conservará cero efectos y no revelará existencia, PII o estado interno innecesario.
+5. Una respuesta idempotente podrá indicar replay, pero conservará el mismo resultado empresarial observable.
+
+#### 12. Autenticación, identidad y autorización
+
+1. `ANON_PUBLIC`, `AUTHENTICATED_ACTOR` y `TRUSTED_SYSTEM` permanecen audiencias técnicas, no permisos empresariales.
+2. Cada contrato declarará `authorization_requirement`, principal classes, actor requerido, permiso, recurso, scope, territorio, sesión y precondiciones.
+3. `raw_user_meta_data`, nombres de rol enviados por el cliente, headers no verificados y parámetros de owner no conceden autorización.
+4. Las operaciones sensibles resolverán estado fresco de sesión, vínculo, actor, revocación y autorización.
+5. Un dispositivo compartido deberá aportar sesión de actor vigente cuando el contrato represente una acción humana.
+6. `service_role` no sustituye autorización empresarial, actor, causalidad ni minimización.
+7. Las lecturas personales, laborales, financieras, de salud, identidad y seguridad aplicarán propósito y necesidad demostrables.
+
+#### 13. Minimización y sensibilidad
+
+Cada campo de request y response tendrá:
+
+```text
+business_meaning
++ source_owner
++ sensitivity_class
++ purpose
++ audience
++ masking_or_omission_rule
++ retention_or_ephemerality
++ compatibility_status
+```
+
+Reglas:
+
+- un contrato devolverá el mínimo requerido por el caso de uso;
+- la existencia de una columna en la fuente no la incorpora al contrato;
+- PII, datos laborales, financieros, de salud, credenciales, secretos y evidencia sensible usarán proyecciones separadas;
+- los listados masivos, exports y búsquedas por identificadores sensibles requerirán capacidad y límites específicos;
+- los consumidores no podrán reconstruir un perfil más amplio combinando contratos sin autorización equivalente.
+
+#### 14. Filtros, búsqueda, paginación y orden
+
+1. Los filtros serán allowlisted por nombre, tipo, operación y cardinalidad.
+2. Quedan prohibidos SQL, expresiones, columnas, joins u ordenamientos arbitrarios enviados por el cliente.
+3. Toda colección tendrá límite máximo, orden total determinista y tie-breaker estable.
+4. La paginación por cursor será preferida cuando offset pueda perder o duplicar filas bajo concurrencia.
+5. Una búsqueda textual declarará campos, normalización, sensibilidad, costo y límites de abuso.
+6. Un export será un contrato distinto cuando exceda límites interactivos o requiera generación asíncrona.
+7. La ausencia de resultados se diferenciará de denegación, recurso inexistente y filtro inválido sin filtrar información sensible.
+
+#### 15. Consistencia y semántica temporal
+
+Cada lectura declarará una sola expectativa primaria:
+
+| Modo                     | Semántica                                                                   |
+| ------------------------ | --------------------------------------------------------------------------- |
+| `CURRENT_TRANSACTIONAL`  | estado confirmado al momento de la consulta dentro de la fuente primaria    |
+| `READ_YOUR_WRITE`        | el consumidor observa el efecto confirmado de su comando antes de continuar |
+| `BOUNDED_STALENESS`      | proyección o caché con retraso máximo documentado                           |
+| `SNAPSHOT_AS_OF`         | corte inmutable identificado por versión o instante                         |
+| `HISTORICAL_APPEND_ONLY` | secuencia durable sin reescritura del pasado                                |
+
+La respuesta expondrá `server_observed_at`, `as_of` o versión cuando el consumidor necesite distinguir frescura. Un resumen, forecast o snapshot nunca se presentará como estado operacional actual.
+
+#### 16. Idempotencia y reintentos
+
+1. Todo comando reintentable declarará alcance, formato y ventana de `idempotency_key`.
+2. La clave se vinculará a actor o sistema, contrato, versión, intención y payload normalizado.
+3. Repetir la misma intención devolverá el resultado previo sin duplicar efectos.
+4. Reutilizar una clave con payload distinto fallará con conflicto.
+5. Timeout o desconexión no autorizan repetir a ciegas; el contrato permitirá consultar o conciliar el resultado.
+6. Webhooks, jobs, consumidores y dispositivos offline aplicarán la misma semántica cuando transporten el comando.
+7. La idempotencia técnica no sustituye la unicidad o regla empresarial del dominio.
+
+#### 17. Concurrencia y precondiciones
+
+Un comando declarará al menos una estrategia:
+
+```text
+expected_version
+expected_state
+business_unique_key
+advisory_or_row_lock_when_justified
+serializable_retry_contract
+compare_and_set
+```
+
+Reglas:
+
+- una transición valida estado anterior y nuevo en la misma operación;
+- una edición no sobrescribe cambios confirmados sin detectar conflicto;
+- saldos, cupos, stock, numeración, disponibilidad y asignaciones se protegen mediante invariantes de base;
+- los conflictos devuelven código estable y estado mínimo para reintentar conscientemente;
+- deadlock, serialization failure y lock timeout tendrán política de retry acotada;
+- ningún contrato garantiza ausencia de conflicto mediante UI o lectura previa.
+
+#### 18. Atomicidad, efectos parciales y conciliación
+
+1. El efecto primario, su auditoría y el evento durable serán atómicos cuando el contrato lo exija.
+2. Un comando no declarará éxito antes de confirmar el efecto primario.
+3. Los efectos externos se registrarán como pendientes, confirmados, fallidos o desconocidos según los contratos de integración vigentes.
+4. La compensación no será un `DELETE` oculto; conservará relación con el efecto original.
+5. Una falla parcial tendrá estado durable, owner, procedimiento de reconciliación y resultado consultable.
+6. La coordinación de más de un owner schema se bloquea hasta `SUPA-ARC-017`.
+
+#### 19. Errores y outcomes
+
+Cada contrato tendrá un catálogo cerrado de códigos de máquina que distinga como mínimo:
+
+- validación de request;
+- autenticación ausente o inválida;
+- autorización denegada;
+- recurso inexistente o no visible;
+- conflicto de versión o estado;
+- duplicado o idempotencia incompatible;
+- invariantes empresariales;
+- límite, rate o capacidad;
+- dependencia pendiente o fallida;
+- resultado desconocido;
+- error interno no revelado.
+
+Los códigos se mapearán a los outcomes y políticas de error canónicos existentes. Los mensajes humanos no serán usados por clientes para decidir lógica.
+
+#### 20. Auditoría, eventos y observabilidad
+
+Todo comando registrará, según sensibilidad y proceso:
+
+```text
+contract_id_and_version
++ principal_id
++ effective_actor_id
++ owner_schema_id
++ process_id
++ action_or_transition
++ resource_reference
++ correlation_and_causation
++ idempotency_key_hash
++ previous_and_resulting_version
++ outcome
++ occurred_at_and_recorded_at
++ duration_and_failure_class
+```
+
+Los payloads auditables se minimizarán y redactarán. El evento empresarial, outbox, entrega y efecto consumidor permanecen artefactos distintos. Una lectura sensible o export también podrá generar evidencia de acceso cuando la política lo requiera.
+
+#### 21. Lecturas entre dominios
+
+1. Una lectura combinada declarará todos los owner schemas fuente y uno primario.
+2. El join no crea fuente compartida ni permite corregir los dominios secundarios.
+3. Las referencias se resolverán por IDs canónicos y contratos estables, no por copias de nombres o estados.
+4. La proyección deberá tolerar ausencia autorizada, lifecycle y consistencia diferente de las fuentes.
+5. Un agregado transversal declarará fórmula, corte, owner analítico y trazabilidad hasta fuentes.
+6. Los contratos de `business_insights` no mutarán fuentes operacionales.
+
+#### 22. Mutaciones entre dominios
+
+1. Un `COMMAND_RPC` de esta tarea tendrá un único owner y un único efecto primario.
+2. Una operación que necesite efectos en dos o más owner schemas se clasificará `CROSS_DOMAIN_COORDINATION_REQUIRED`.
+3. La operación permanecerá bloqueada hasta definir orden, transacción, evento, outbox, idempotencia, compensación, UNKNOWN_OUTCOME y reconciliación en `SUPA-ARC-017`.
+4. Ningún helper, trigger, función privilegiada, Edge Function o `service_role` podrá ocultar la escritura lateral.
+5. Una referencia creada en el dominio secundario deberá provenir de su propio comando o de un contrato de coordinación aprobado.
+
+#### 23. Contratos sobre superficies administradas
+
+- Auth administra autenticación; `identity_access` publica contratos empresariales de vínculo, actor, autorización y revocación.
+- Storage administra bytes; `business_records` publica metadata, versiones, vínculos, retención y evidencia.
+- Realtime transporta señales; no sustituye la lectura canónica ni confirma el resultado de un comando.
+- cron, Edge Functions, webhooks y `net` ejecutan o transportan trabajo; el efecto confirmado permanece en el owner schema.
+- Vault y secretos no se exponen como datos empresariales.
+- VITAL permanece fuera de los 26 perfiles y no se incorpora a `api` de Vento OS.
+
+#### 24. Registro de perfiles contractuales por dominio
+
+| VSCHEMA       | Owner schema y dominio                                                                       | Procesos                                                                 | Estado AS-IS                     | Intenciones de lectura requeridas                                                                          | Semánticas de mutación permitidas                                  | Invariante contractual del dominio                                                                                           |
+| ------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `VSCHEMA-001` | `org_governance` — `VDOM-001 — Gobierno organizacional`                                      | `VPROC-0001; VPROC-0002; VPROC-0003; VPROC-0004; VPROC-0063; VPROC-0064` | `PARTIAL_CURRENT`                | `REFERENCE_COLLECTION, RESOURCE_DETAIL, HISTORY_TIMELINE`                                                  | `CREATE, AMEND, ASSIGN, PUBLISH, RETIRE`                           | jerarquía organizativa, decisiones, compromisos y políticas versionadas; ninguna aplicación conserva copias autoritativas    |
+| `VSCHEMA-002` | `recruiting` — `VDOM-002 — Reclutamiento y selección`                                        | `VPROC-0005`                                                             | `FUTURE_OR_PARTIAL`              | `OPERATIONAL_QUEUE, RESOURCE_DETAIL, HISTORY_TIMELINE`                                                     | `CREATE, AMEND, ASSIGN, TRANSITION, CORRECT, CANCEL`               | candidato, postulación, entrevista, evaluación y oferta conservan identidades y ciclos diferenciados                         |
+| `VSCHEMA-003` | `workforce` — `VDOM-003 — Vinculación y ciclo laboral`                                       | `VPROC-0006; VPROC-0011; VPROC-0065`                                     | `PARTIAL_OR_FRAGMENTED_CURRENT`  | `REFERENCE_COLLECTION, RESOURCE_DETAIL, CURRENT_STATE, HISTORY_TIMELINE`                                   | `CREATE, AMEND, ASSIGN, TRANSITION, CORRECT, RETIRE`               | expediente, vínculo, asignación y offboarding son hechos laborales; la baja no borra historia ni identidad comercial         |
+| `VSCHEMA-004` | `work_scheduling` — `VDOM-004 — Programación y novedades laborales`                          | `VPROC-0007; VPROC-0009`                                                 | `PARTIAL_CURRENT`                | `OPERATIONAL_QUEUE, PLAN_SNAPSHOT, RESOURCE_DETAIL, HISTORY_TIMELINE`                                      | `CREATE, AMEND, ASSIGN, PUBLISH, CANCEL, CORRECT`                  | borrador, versión publicada, disponibilidad y novedad se distinguen; publicar no sobrescribe historia                        |
+| `VSCHEMA-005` | `attendance` — `VDOM-005 — Asistencia y tiempo trabajado`                                    | `VPROC-0008`                                                             | `CURRENT_AUTHORITY_PRESENT`      | `CURRENT_STATE, OPERATIONAL_QUEUE, HISTORY_TIMELINE, SUMMARY_METRIC`                                       | `APPEND, TRANSITION, CORRECT, CANCEL`                              | marcaciones y pausas son hechos temporales; las correcciones enlazan el registro original y no lo sustituyen silenciosamente |
+| `VSCHEMA-006` | `payroll` — `VDOM-006 — Nómina y beneficios laborales`                                       | `VPROC-0010`                                                             | `NO_CANONICAL_SOURCE`            | `PLAN_SNAPSHOT, RESOURCE_DETAIL, LEDGER_STATEMENT, HISTORY_TIMELINE`                                       | `CREATE, AMEND, PUBLISH, CORRECT, REVERSE, RETIRE`                 | periodos cerrados y resultados publicados son inmutables; ajustes y reversos conservan causalidad                            |
+| `VSCHEMA-007` | `operational_compliance` — `VDOM-007 — Salud, seguridad, inocuidad y cumplimiento operativo` | `VPROC-0012; VPROC-0013; VPROC-0014; VPROC-0066`                         | `NO_CANONICAL_SOURCE`            | `OPERATIONAL_QUEUE, RESOURCE_DETAIL, HISTORY_TIMELINE, SUMMARY_METRIC`                                     | `CREATE, ASSIGN, TRANSITION, APPEND, CORRECT, RETIRE`              | incidente, inspección, hallazgo, acción correctiva y evidencia permanecen separados y trazables                              |
+| `VSCHEMA-008` | `product_catalog` — `VDOM-008 — Producto maestro y especificaciones`                         | `VPROC-0015; VPROC-0018`                                                 | `PARTIAL_CURRENT`                | `REFERENCE_COLLECTION, RESOURCE_DETAIL, CURRENT_STATE, HISTORY_TIMELINE`                                   | `CREATE, AMEND, PUBLISH, CORRECT, RETIRE`                          | identidad de producto, unidad, presentación, especificación y vigencia se gobiernan mediante versiones compatibles           |
+| `VSCHEMA-009` | `recipes` — `VDOM-009 — Recetas y conocimiento productivo`                                   | `VPROC-0016`                                                             | `PARTIAL_CURRENT`                | `REFERENCE_COLLECTION, RESOURCE_DETAIL, HISTORY_TIMELINE`                                                  | `CREATE, AMEND, PUBLISH, CORRECT, RETIRE`                          | una versión publicada conserva ingredientes, pasos, rendimientos y aplicabilidad; el cambio crea revisión nueva              |
+| `VSCHEMA-010` | `commercial_offer` — `VDOM-010 — Oferta comercial y disponibilidad`                          | `VPROC-0017`                                                             | `FRAGMENTED_CURRENT`             | `REFERENCE_COLLECTION, RESOURCE_DETAIL, CURRENT_STATE, PLAN_SNAPSHOT`                                      | `CREATE, AMEND, ASSIGN, PUBLISH, CANCEL, RETIRE`                   | surtido, precio, disponibilidad, sede, canal y vigencia forman un contrato comercial explícito                               |
+| `VSCHEMA-011` | `procurement` — `VDOM-011 — Abastecimiento y proveedores`                                    | `VPROC-0019; VPROC-0020; VPROC-0021; VPROC-0022`                         | `PARTIAL_CURRENT`                | `OPERATIONAL_QUEUE, RESOURCE_DETAIL, CURRENT_STATE, HISTORY_TIMELINE`                                      | `CREATE, AMEND, ASSIGN, TRANSITION, APPEND, CORRECT, CANCEL`       | proveedor, solicitud, orden, recepción y diferencia son agregados distintos y no se colapsan en una sola actualización       |
+| `VSCHEMA-012` | `inventory` — `VDOM-012 — Inventario y almacenamiento`                                       | `VPROC-0023; VPROC-0024; VPROC-0025; VPROC-0026; VPROC-0027; VPROC-0028` | `CURRENT_AUTHORITY_WITH_GAPS`    | `CURRENT_STATE, OPERATIONAL_QUEUE, RESOURCE_DETAIL, LEDGER_STATEMENT, HISTORY_TIMELINE`                    | `APPEND, TRANSITION, ASSIGN, CORRECT, CANCEL, REVERSE`             | stock es resultado de movimientos, unidades, ubicaciones, lotes y conteos; ningún comando cliente fija saldo arbitrario      |
+| `VSCHEMA-013` | `assets` — `VDOM-013 — Activos, mantenimiento y reutilizables`                               | `VPROC-0029; VPROC-0030; VPROC-0031; VPROC-0032; VPROC-0067`             | `PARTIAL_CURRENT`                | `REFERENCE_COLLECTION, RESOURCE_DETAIL, CURRENT_STATE, HISTORY_TIMELINE`                                   | `CREATE, AMEND, ASSIGN, TRANSITION, APPEND, CORRECT, RETIRE`       | identidad durable, custodia, condición, mantenimiento, retorno y retiro conservan historia                                   |
+| `VSCHEMA-014` | `production` — `VDOM-014 — Producción y calidad de lote`                                     | `VPROC-0033; VPROC-0034; VPROC-0035; VPROC-0036; VPROC-0037`             | `PARTIAL_CURRENT`                | `OPERATIONAL_QUEUE, RESOURCE_DETAIL, CURRENT_STATE, HISTORY_TIMELINE, SUMMARY_METRIC`                      | `CREATE, ASSIGN, TRANSITION, APPEND, CORRECT, CANCEL, REVERSE`     | lote, consumo, salida, calidad, empaque, liberación y reproceso son hechos atómicos y conciliables                           |
+| `VSCHEMA-015` | `sales_orders` — `VDOM-015 — Pedidos y operación de venta`                                   | `VPROC-0038; VPROC-0039; VPROC-0040; VPROC-0041; VPROC-0042`             | `FRAGMENTED_CURRENT`             | `OPERATIONAL_QUEUE, RESOURCE_DETAIL, CURRENT_STATE, HISTORY_TIMELINE`                                      | `CREATE, AMEND, ASSIGN, TRANSITION, CORRECT, CANCEL`               | pedido, ítem, servicio, estado, cancelación y devolución se gobiernan sin apropiarse del pago                                |
+| `VSCHEMA-016` | `payments` — `VDOM-016 — Pagos, caja y soporte fiscal`                                       | `VPROC-0043; VPROC-0044`                                                 | `FRAGMENTED_CURRENT`             | `OPERATIONAL_QUEUE, RESOURCE_DETAIL, LEDGER_STATEMENT, HISTORY_TIMELINE, SUMMARY_METRIC`                   | `APPEND, TRANSITION, CORRECT, CANCEL, REVERSE`                     | todo efecto monetario es idempotente, conciliable y no destructivo; reversos y reembolsos referencian el original            |
+| `VSCHEMA-017` | `customer_engagement` — `VDOM-017 — Clientes, fidelización y experiencia`                    | `VPROC-0045; VPROC-0046; VPROC-0047; VPROC-0068`                         | `FRAGMENTED_CURRENT`             | `REFERENCE_COLLECTION, RESOURCE_DETAIL, CURRENT_STATE, LEDGER_STATEMENT, HISTORY_TIMELINE`                 | `CREATE, AMEND, ASSIGN, APPEND, CORRECT, CANCEL, REVERSE, RETIRE`  | perfil, consentimiento, saldo, beneficio, reclamo y reserva se minimizan por finalidad y conservan ledgers separados         |
+| `VSCHEMA-018` | `logistics` — `VDOM-018 — Logística, transporte y entrega`                                   | `VPROC-0048; VPROC-0049; VPROC-0050`                                     | `PARTIAL_OR_EXTERNAL_FRAGMENTED` | `OPERATIONAL_QUEUE, RESOURCE_DETAIL, CURRENT_STATE, HISTORY_TIMELINE`                                      | `CREATE, ASSIGN, TRANSITION, APPEND, CORRECT, CANCEL`              | ruta, carga, custodia, entrega, novedad, retorno y prueba de entrega conservan actor, ubicación y causalidad                 |
+| `VSCHEMA-019` | `finance` — `VDOM-019 — Finanzas y control económico`                                        | `VPROC-0051; VPROC-0052; VPROC-0053; VPROC-0054; VPROC-0069`             | `PARTIAL_CURRENT`                | `REFERENCE_COLLECTION, PLAN_SNAPSHOT, RESOURCE_DETAIL, LEDGER_STATEMENT, HISTORY_TIMELINE, SUMMARY_METRIC` | `CREATE, AMEND, ASSIGN, APPEND, PUBLISH, CORRECT, REVERSE, RETIRE` | hechos económicos, obligaciones, cartera, costos, presupuesto y periodos distinguen borrador, contabilización y cierre       |
+| `VSCHEMA-020` | `facilities` — `VDOM-020 — Instalaciones y condiciones físicas`                              | `VPROC-0055`                                                             | `NO_CANONICAL_SOURCE`            | `OPERATIONAL_QUEUE, RESOURCE_DETAIL, CURRENT_STATE, HISTORY_TIMELINE`                                      | `CREATE, ASSIGN, TRANSITION, APPEND, CORRECT, CANCEL`              | condición, incidencia, orden de trabajo, ejecución y verificación no se sustituyen por tickets genéricos                     |
+| `VSCHEMA-021` | `marketing` — `VDOM-021 — Comunicación, marketing y oportunidades`                           | `VPROC-0056; VPROC-0057`                                                 | `FUTURE_OR_PARTIAL`              | `REFERENCE_COLLECTION, PLAN_SNAPSHOT, RESOURCE_DETAIL, CURRENT_STATE, SUMMARY_METRIC`                      | `CREATE, AMEND, ASSIGN, PUBLISH, CANCEL, RETIRE`                   | contenido, campaña, promoción, canal, audiencia y vigencia son versiones aprobadas y medibles                                |
+| `VSCHEMA-022` | `technology_operations` — `VDOM-022 — Tecnología y soporte`                                  | `VPROC-0058`                                                             | `PARTIAL_CURRENT`                | `REFERENCE_COLLECTION, OPERATIONAL_QUEUE, RESOURCE_DETAIL, CURRENT_STATE, HISTORY_TIMELINE`                | `CREATE, AMEND, ASSIGN, TRANSITION, PUBLISH, CORRECT, RETIRE`      | aplicaciones, configuración, dispositivos, cambios e incidentes conservan versión, ambiente, custodia y estado               |
+| `VSCHEMA-023` | `identity_access` — `VDOM-023 — Identidad empresarial y autorización`                        | `VPROC-0059`                                                             | `PARTIAL_OR_FRAGMENTED_CURRENT`  | `REFERENCE_COLLECTION, RESOURCE_DETAIL, CURRENT_STATE, HISTORY_TIMELINE`                                   | `CREATE, AMEND, ASSIGN, TRANSITION, CORRECT, CANCEL, RETIRE`       | cuenta, principal, identidad, actor, rol, permiso, contexto, sesión y revocación permanecen separados y verificables         |
+| `VSCHEMA-024` | `business_records` — `VDOM-024 — Información documental y evidencia`                         | `VPROC-0060`                                                             | `FRAGMENTED_CURRENT`             | `REFERENCE_COLLECTION, RESOURCE_DETAIL, HISTORY_TIMELINE`                                                  | `CREATE, ASSIGN, APPEND, PUBLISH, CORRECT, RETIRE`                 | metadata, versión, vínculo, custodia, retención, legal hold y disposición se separan de los bytes administrados por Storage  |
+| `VSCHEMA-025` | `business_insights` — `VDOM-025 — Medición, analítica y mejora`                              | `VPROC-0061`                                                             | `PARTIAL_CURRENT`                | `PLAN_SNAPSHOT, SUMMARY_METRIC, RESOURCE_DETAIL, HISTORY_TIMELINE`                                         | `CREATE, AMEND, PUBLISH, CORRECT, RETIRE`                          | métrica, corte, forecast, análisis y caso de mejora no corrigen ni reemplazan fuentes operacionales                          |
+| `VSCHEMA-026` | `operational_continuity` — `VDOM-026 — Continuidad operativa e incidentes de servicio`       | `VPROC-0062`                                                             | `NO_CANONICAL_SOURCE`            | `OPERATIONAL_QUEUE, RESOURCE_DETAIL, CURRENT_STATE, HISTORY_TIMELINE, PLAN_SNAPSHOT`                       | `CREATE, ASSIGN, TRANSITION, APPEND, CORRECT, CANCEL`              | dependencia, degradación, activación, operación mínima, recuperación y conciliación requieren evidencia y resultado real     |
+
+La matriz define el vocabulario permitido de cada dominio, no el número final de endpoints. Cada contrato físico deberá seleccionar una intención de lectura o una semántica de mutación incluida en su fila y vincular uno o más procesos del perfil.
+
+#### 25. Procesos sin fuente canónica
+
+Los veinte procesos clasificados `NO_CANONICAL_SOURCE` no podrán recibir un contrato `ACTIVE` que simule persistencia mediante documentos, vistas, tickets, hojas de cálculo, metadata, RPC parciales o señales técnicas.
+
+Para esos procesos se permite:
+
+- definir el contrato en estado `DRAFT`;
+- construir fixtures y pruebas contractuales;
+- identificar owner, consumidores, request, response y eventos;
+- bloquear activación hasta que exista fuente autoritativa, migración, seguridad y transición aprobadas.
+
+No se inventará una fuente ni se reutilizará un objeto de otro dominio para cerrar la brecha.
+
+#### 26. Clasificación de la superficie actual
+
+| Universo                                                     | Cantidad | Disposición obligatoria                                           |
+| ------------------------------------------------------------ | -------: | ----------------------------------------------------------------- |
+| vistas Vento OS                                              |   **62** | `READ_VIEW`, privada, compatibilidad o retiro                     |
+| vistas Vento OS con `security_invoker=true`                  |   **58** | candidatas sujetas a columnas, RLS, owner, consumidores y versión |
+| vistas privilegiadas                                         |    **4** | bloqueadas hasta resolver seguridad y destino                     |
+| firmas directamente invocables Vento OS no VITAL ni privadas |  **232** | `QUERY_RPC`, `COMMAND_RPC`, privada, compatibilidad o retiro      |
+| función directa de `app_private`                             |    **1** | privada; no contrato expuesto                                     |
+| firmas directas VITAL                                        |   **41** | fuera de Vento OS                                                 |
+| funciones de trigger Vento                                   |   **73** | automatismos internos; nunca endpoints                            |
+| procedimientos PostgreSQL                                    |    **0** | ninguna superficie `CALL`                                         |
+
+La clasificación será por firma u objeto individual y no por nombre, schema o uso aparente. Un consumidor actual no convierte automáticamente una superficie en contrato objetivo.
+
+#### 27. Registro mínimo de cada contrato físico
+
+```text
+contract_id
++ contract_kind
++ qualified_name
++ major_version
++ contract_revision
++ lifecycle_status
++ domain_contract_profile
++ primary_owner_schema_id
++ source_owner_schema_ids
++ process_ids
++ business_owner
++ technical_owner
++ audience_class
++ principal_and_actor_requirements
++ permission_resource_scope_and_territory
++ read_intent_or_mutation_semantics
++ request_schema
++ response_schema
++ sensitivity_and_minimization
++ filters_pagination_order_and_limits
++ consistency_and_temporal_semantics
++ idempotency_and_concurrency
++ error_and_outcome_catalog
++ audit_event_and_observability
++ consumers_and_generated_types
++ definition_hash
++ migration_and_environment_parity
++ supersedes_and_deprecation_gate
++ rollback_and_reconciliation
++ test_requirement_ids
+```
+
+No se aceptarán campos implícitos, `TBD`, owner genérico, consumidor supuesto, audiencia “interna”, retorno no tipado ni contrato sin pruebas negativas.
+
+#### 28. Adopción por consumidores
+
+1. Cada consumidor se registrará por repositorio, aplicación, versión y uso concreto.
+2. La adopción se medirá por contrato y versión, no por schema o proyecto.
+3. Los tipos se generarán únicamente desde contratos `api` aprobados y superficies administradas soportadas.
+4. Un consumidor no podrá construir consultas ad hoc a owner schemas para evitar una brecha del contrato.
+5. Un nuevo consumidor deberá demostrar finalidad, audiencia, campos, volumen y autorización.
+6. Una compatibilidad legacy no aceptará consumidores nuevos.
+7. El retiro exigirá cero consumo observado, paridad, aviso, rollback y ventana aprobada.
+
+#### 29. Gates de activación
+
+Un contrato solo podrá pasar a `ACTIVE` cuando existan:
+
+- perfil de dominio y procesos exactos;
+- owner primario y fuentes secundarias declaradas;
+- request y response versionados;
+- audiencia, autorización, sensibilidad y minimización;
+- grants, RLS y modo de seguridad aprobados;
+- filtros, paginación, orden, consistencia y límites;
+- idempotencia, concurrencia y atomicidad para comandos;
+- catálogo de errores, auditoría, eventos y observabilidad;
+- consumidores, tipos y compatibilidad;
+- pruebas positivas, negativas, de concurrencia, retry y regresión;
+- migración, hash, paridad ambiental y rollback;
+- contrato de coordinación aprobado cuando exista más de un efecto de escritura.
+
+La ausencia de cualquier elemento conserva el contrato `DRAFT` o bloqueado.
+
+#### 30. Matriz mínima de pruebas
+
+Cada contrato deberá cubrir según corresponda:
+
+1. request válido y campos desconocidos;
+2. tipos, nulabilidad, límites y normalización;
+3. respuesta mínima y ausencia de campos sensibles;
+4. paginación sin duplicados ni pérdidas;
+5. filtros y ordenamientos no permitidos;
+6. actor, permiso, scope, sede, área, recurso y sesión;
+7. acceso lateral entre sujetos o territorios;
+8. estado previo, transición y conflicto de versión;
+9. idempotencia con replay y payload distinto;
+10. concurrencia, deadlock, timeout y serialization failure;
+11. efecto parcial, dependencia fallida y UNKNOWN_OUTCOME;
+12. auditoría, evento, causalidad y redacción;
+13. compatibilidad de versión y tipos generados;
+14. paridad entre local, staging y producción;
+15. acceso directo al owner schema denegado;
+16. consumidor legacy y rollback.
+
+#### 31. Riesgos restringidos y carryover
+
+| Riesgo                      | Control de esta tarea                                  | Continuidad responsable            |
+| --------------------------- | ------------------------------------------------------ | ---------------------------------- |
+| BOLA o IDOR                 | owner, actor, recurso, scope y pruebas cruzadas        | `AUTH-QA-030`; paquetes E5         |
+| contrato igual a tabla      | request y response mínimos independientes de la fuente | `SUPA-TRANS-003`; `SUPA-TRANS-010` |
+| mutación directa            | `COMMAND_RPC` único y cero DML cliente                 | `SUPA-TRANS-003`                   |
+| doble efecto por retry      | idempotencia y resultado estable                       | `SUPA-TRANS-009`                   |
+| overwrite concurrente       | expected version, estado e invariantes                 | `SUPA-TRANS-009`                   |
+| escritura lateral           | clasificación bloqueada y owner primario único         | `SUPA-ARC-017`                     |
+| fuente inexistente simulada | DRAFT hasta fuente autoritativa                        | paquetes E5 por dominio            |
+| superficie legacy perpetua  | sucesor, consumidores, telemetría y gate               | `SUPA-TRANS-006`; `SUPA-TRANS-007` |
+| tipos divergentes           | generación desde contratos aprobados                   | `SUPA-ARC-023`; `SUPA-TRANS-014`   |
+| drift entre ambientes       | manifiesto, hash y paridad                             | `SUPA-ARC-024`; `SUPA-TRANS-015`   |
+
+#### 32. Decisiones reservadas
+
+| Decisión                                                        | Tarea propietaria                             |
+| --------------------------------------------------------------- | --------------------------------------------- |
+| transacciones, sagas, outbox y compensación entre owner schemas | `SUPA-ARC-017`                                |
+| contracts y policies de objetos Storage                         | `SUPA-ARC-018`                                |
+| canales, publicaciones y semántica Realtime                     | `SUPA-ARC-019`                                |
+| ejecución de Edge Functions, webhooks y cron                    | `SUPA-ARC-020`                                |
+| índices y límites de rendimiento                                | `SUPA-ARC-021`                                |
+| retención, archivado y recuperación                             | `SUPA-ARC-022`                                |
+| generación física de tipos                                      | `SUPA-ARC-023`                                |
+| overlays y paridad de ambientes                                 | `SUPA-ARC-024`                                |
+| ADR y linter consolidado                                        | `SUPA-ARC-025`                                |
+| nombres y firmas de endpoints individuales, migración y cutover | `SUPA-TRANS-*` y paquetes E5 correspondientes |
+
+#### 33. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear o modificar `api`, owner schemas, tablas, vistas, funciones, RPC, roles, grants, policies o RLS;
+- publicar contratos, asignar grants o cambiar `api.schemas`;
+- transformar las 62 vistas o 232 firmas actuales;
+- habilitar procesos sin fuente canónica;
+- ejecutar DDL, DML, migraciones, backfills, seeds, pruebas de mutación, despliegues o cutover;
+- escribir en dos owner schemas desde un mismo comando sin `SUPA-ARC-017`;
+- declarar `ACTIVE` un contrato actual por inferencia;
+- iniciar `SUPA-ARC-017` antes de aprobación expresa.
+
+#### 34. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-1091 a TREQ-SUPABASE-1144
+```
+
+Los cincuenta y cuatro requisitos protegen cobertura de dominios y procesos, ownership, clases contractuales, requests, responses, autorización, minimización, lectura, mutación, consistencia, idempotencia, concurrencia, atomicidad, auditoría, coordinación, legacy, tipos, consumidores y drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 35. Criterios de aceptación
+
+- [ ] Existe un único registro versionado de contratos de lectura y mutación por dominio.
+- [ ] Los 26 owner schemas y 69 procesos tienen perfil contractual sin omisiones ni duplicados.
+- [ ] Solo `READ_VIEW`, `QUERY_RPC` y `COMMAND_RPC` son clases expuestas.
+- [ ] Se definen exactamente ocho intenciones de lectura y diez semánticas de mutación.
+- [ ] Toda lectura declara owner, fuentes, finalidad, sensibilidad, filtros, orden, límites y consistencia.
+- [ ] Toda mutación usa `COMMAND_RPC`, un efecto primario y un owner schema.
+- [ ] Request, response, errores, outcomes, auditoría y observabilidad son explícitos y versionados.
+- [ ] Idempotencia, concurrencia y efectos parciales quedan definidos para comandos reintentables.
+- [ ] Las escrituras entre dominios permanecen bloqueadas hasta `SUPA-ARC-017`.
+- [ ] Los veinte procesos sin fuente canónica no pueden declararse `ACTIVE` mediante sustitutos.
+- [ ] Las 62 vistas y 232 firmas directas reciben un destino contractual posterior sin aceptación automática.
+- [ ] VITAL y helpers privados permanecen fuera de la capa expuesta.
+- [ ] Se generan `TREQ-SUPABASE-1091` a `TREQ-SUPABASE-1144`.
+- [ ] No se ejecutan cambios físicos ni se inicia la tarea siguiente.
+
+#### 36. Controles estructurales requeridos
+
+| Control                                                 | Resultado esperado |
+| ------------------------------------------------------- | -----------------: |
+| perfiles de dominio                                     |             **26** |
+| owner schemas cubiertos                                 |       **26 de 26** |
+| procesos cubiertos                                      |       **69 de 69** |
+| clases contractuales expuestas                          |              **3** |
+| intenciones de lectura                                  |              **8** |
+| semánticas de mutación                                  |             **10** |
+| contratos con owner primario                            |           **100%** |
+| comandos con más de un efecto primario sin coordinación |              **0** |
+| DML cliente directo sobre owner tables                  |              **0** |
+| procesos sin fuente activados por sustituto             |              **0** |
+| vistas actuales pendientes de disposición               |       **62 de 62** |
+| firmas directas pendientes de disposición               |     **232 de 232** |
+| requisitos nuevos                                       |             **54** |
+| cambios físicos                                         |              **0** |
+
+#### 37. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-017 — Definir política de escrituras entre dominios
+```
+
+`SUPA-ARC-017` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-017 — Definir política de escrituras entre dominios
 ### [ ] SUPA-ARC-018 — Definir arquitectura de Storage
 ### [ ] SUPA-ARC-019 — Definir arquitectura de Realtime y eventos

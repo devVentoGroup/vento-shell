@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **420** |
+| Tareas aprobadas | **421** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1155** |
+| Tareas no iniciadas | **1154** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **26.67% (420/1575)** |
+| Porcentaje de completamiento | **26.73% (421/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS** |
-| Tarea actual | **SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio** |
+| Última tarea aprobada | **SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio** |
+| Tarea actual | **SUPA-ARC-017 — Definir política de escrituras entre dominios** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-ARC-017 — Definir política de escrituras entre dominios** |
+| Siguiente tarea | **SUPA-ARC-018 — Definir arquitectura de Storage** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 15 de 25 aprobadas; SUPA-ARC-016 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 16 de 25 aprobadas; SUPA-ARC-017 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-ARC-015` — Definir política canónica de exposición, grants y RLS |
-| Tarea actual | `SUPA-ARC-016` — Definir contratos de lectura y mutación por dominio — **NO INICIADA** |
-| Siguiente tarea | `SUPA-ARC-017` — Definir política de escrituras entre dominios |
+| Última aprobada | `SUPA-ARC-016` — Definir contratos de lectura y mutación por dominio |
+| Tarea actual | `SUPA-ARC-017` — Definir política de escrituras entre dominios — **NO INICIADA** |
+| Siguiente tarea | `SUPA-ARC-018` — Definir arquitectura de Storage |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **15 DE 25 APROBADAS — ACTUAL SUPA-ARC-016** |
+| BLOQUE E3 | **16 DE 25 APROBADAS — ACTUAL SUPA-ARC-017** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
-        ↓
-TAREA ACTUAL
 SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-ARC-017 — Definir política de escrituras entre dominios
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-018 — Definir arquitectura de Storage
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 15 de 25 tareas aprobadas
+BLOQUE E3 — 16 de 25 tareas aprobadas
 ```
