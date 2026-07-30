@@ -2542,7 +2542,638 @@ SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos
 `SUPA-ARC-007` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos
+### ✅ SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-006 — Definir capa privada de helpers y lógica interna` — APROBADA
+**Siguiente tarea:** `SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `573ab643a85c0cc38d61b846e314634cf5d27554`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `bd90cc8e9065702cf87886f54bf1ad90222083f7`; `01_EVENTOS_ENTRE_APLICACIONES.md` blob `8502533e144e5c1878192f470e766da99c522ecd`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `c2816d093e7a66ac11e7d1bceceaa00eac7df1e5`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`
+**Tipo de tarea:** definición normativa del schema transversal de auditoría, registro durable de eventos y outbox de Vento OS; sin crear, renombrar, mover o retirar schemas u objetos, sin DDL, DML, migraciones, particiones, índices, backfills, cambios de Data API, `api.schemas`, `extra_search_path`, grants, RLS, Auth, Storage, Realtime, Edge Functions, cron, colas, secretos, código, datos ni despliegues
+
+#### 1. Objetivo
+
+Definir la frontera transversal que conservará evidencia auditable, eventos empresariales durables, outbox, intentos de emisión, entregas, deduplicación, efectos consumidores, conciliaciones y correcciones, sin convertir esa capa en fuente de verdad de los 26 dominios ni anticipar el transporte que corresponde a `SUPA-ARC-019` y `SUPA-ARC-020`.
+
+```text
+HECHO EMPRESARIAL CONFIRMADO EN OWNER SCHEMA
+        +
+AUTORIZACIÓN, COMANDO Y RESULTADO
+        ↓ MISMA TRANSACCIÓN CUANDO APLIQUE
+SCHEMA TRANSVERSAL audit
+        ├── EVIDENCIA AUDITABLE
+        ├── EVENTO EMPRESARIAL DURABLE
+        ├── OUTBOX Y EMISIONES
+        ├── ENTREGAS E INBOX
+        ├── EFECTOS CONSUMIDORES
+        └── CONCILIACIÓN Y CORRECCIÓN
+        ↓
+TRANSPORTE, REALTIME, EDGE, WEBHOOKS Y CRON EN TAREAS POSTERIORES
+```
+
+La capa permitirá reconstruir causalidad y resultados sin duplicar el estado empresarial, sin usar logs como evidencia suficiente y sin confundir publicación, entrega, consumo o efecto.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0
+```
+
+| Propiedad                              |                                 Valor |
+| -------------------------------------- | ------------------------------------: |
+| `canonical_transversal_schema_name`    |                               `audit` |
+| `schema_class`                         | `VENTO_TRANSVERSAL_AUDIT_EVENT_LAYER` |
+| `business_domain_authority`            |                                `NONE` |
+| `owner_schema_identity`                |                                `NONE` |
+| `data_api_exposure_target`             |                                `NONE` |
+| `direct_client_access_target`          |                                 **0** |
+| `authoritative_business_tables_target` |                                 **0** |
+| `primary_object_kinds`                 |                                **10** |
+| `covered_processes`                    |                                **69** |
+| `normal_event_definitions`             |                               **395** |
+| `audit_planes`                         |                                **14** |
+| `audit_action_types`                   |                                **22** |
+| `audit_outcomes`                       |                                **17** |
+| `audit_commit_classes`                 |                                 **3** |
+| `transport_guarantee`                  |                       `AT_LEAST_ONCE` |
+| `physical_changes_authorized`          |                                 **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                       | Decisión consumida                                                                                                                |
+| ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                            | continuidad, propiedad, trazabilidad, pendientes con destino exacto, pruebas y separación entre definición e implementación       |
+| `delivery-contract.json`                                     | una sola tarea, sin contenido operativo de chat y registro 04A completo con nombre único                                          |
+| `active-sequence.json`                                       | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-007` como tarea actual                                                       |
+| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0`            | evento separado de transporte; dependencia no transfiere autoridad; cambios reproducibles desde `vento-shell`                     |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0` | 26 owner schemas y autoridad única por hecho empresarial                                                                          |
+| `SUPABASE-PUBLIC-SCHEMA-FUTURE-FUNCTION-001@1.0.0`           | `public` como compatibilidad transitoria sin autoridad ni destino de auditoría permanente                                         |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0`                  | `api` como capa expuesta; acceso a auditoría solo mediante contratos mínimos autorizados                                          |
+| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0`                  | `app_private` excluye auditoría, outbox y eventos como persistencia transversal                                                   |
+| `ENTERPRISE-EVENT-CATALOG-001@1.0.0`                         | 395 definiciones normales de 69 procesos y sobre `EVENT-ENVELOPE-001`                                                             |
+| `ENTERPRISE-INTEGRATION-AUDIT-POLICY-001@1.0.0`              | 14 planos, 22 tipos de acción, 17 outcomes y tres clases de compromiso de auditoría                                               |
+| `INT-APP-004` a `INT-APP-010`                                | idempotencia, reintentos, compensaciones, auditoría, pending, errores parciales y prohibición de escrituras cruzadas sin contrato |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`           | 5.013 requisitos hasta `SUPA-ARC-006`; rango `TREQ-SUPABASE-001` a `718`                                                          |
+
+#### 4. Decisión canónica
+
+Vento OS tendrá exactamente un schema transversal de base de datos llamado `audit` para persistir evidencia auditable y registros operativos durables de eventos.
+
+```text
+audit
+├── AUDIT_ENTRY
+├── AUDIT_LINK
+├── BUSINESS_EVENT_RECORD
+├── OUTBOX_ITEM
+├── EMISSION_ATTEMPT
+├── DELIVERY_ATTEMPT
+├── CONSUMER_INBOX_RECEIPT
+├── CONSUMER_EFFECT_RECORD
+├── RECONCILIATION_CASE
+└── AUDIT_CORRECTION
+```
+
+La decisión implica:
+
+1. `audit` no representa dominio, aplicación, producto, proceso ni owner schema;
+2. el owner schema productor conserva identidad, invariantes, estado y autoridad del hecho;
+3. `audit` conserva evidencia, causalidad, publicación y procesamiento, pero no reemplaza la fuente empresarial;
+4. el evento empresarial durable se registra con identidad y versión propias, vinculado al hecho confirmado;
+5. el outbox se crea en la misma transacción del hecho y del evento cuando la clase de compromiso lo exige;
+6. publicación, entrega, claim, efecto, retry y conciliación son resultados diferentes y no se colapsan en un único estado;
+7. `audit` permanecerá fuera de Data API y de acceso directo de roles cliente;
+8. Realtime, topics, canales, Edge Functions, webhooks, cron y colas se diseñarán en `SUPA-ARC-019` y `SUPA-ARC-020` sin crear otro registro autoritativo de eventos.
+
+#### 5. Fronteras de responsabilidad
+
+| Responsabilidad                                                | Ubicación objetivo                                     | Regla                                       |
+| -------------------------------------------------------------- | ------------------------------------------------------ | ------------------------------------------- |
+| hecho empresarial, estado e invariantes                        | owner schema `VSCHEMA-*`                               | única fuente de verdad                      |
+| contrato cliente o sistema consumidor                          | `api`                                                  | proyección o comando autorizado             |
+| helper técnico no expuesto                                     | `app_private`                                          | sin persistencia transversal                |
+| auditoría, evento durable, outbox y evidencia de procesamiento | `audit`                                                | conserva productor, causalidad y resultados |
+| wrapper legacy                                                 | `public` temporal                                      | compatibilidad con salida obligatoria       |
+| transporte Realtime y publicación                              | `SUPA-ARC-019`                                         | no sustituye el evento durable              |
+| Edge, webhook, cron, HTTP y workers                            | `SUPA-ARC-020`                                         | ejecución y adaptación, no autoridad        |
+| retención, archivado, respaldo y recuperación                  | `SUPA-ARC-022`                                         | aplica clases sin romper integridad         |
+| analítica                                                      | owner schema `business_insights` o proyección aprobada | consume hechos; no reescribe auditoría      |
+
+#### 6. Clases primarias permitidas
+
+| Clase                    | Propósito                                                                    | Mutabilidad                                    |
+| ------------------------ | ---------------------------------------------------------------------------- | ---------------------------------------------- |
+| `AUDIT_ENTRY`            | registrar una acción, decisión, intento o resultado auditable                | append-only                                    |
+| `AUDIT_LINK`             | relacionar entradas, recursos, evidencias y artefactos sin duplicar payloads | append-only                                    |
+| `BUSINESS_EVENT_RECORD`  | registrar un hecho empresarial durable del catálogo canónico                 | inmutable                                      |
+| `OUTBOX_ITEM`            | conservar la obligación durable de publicación                               | estado operativo monotónico y cuerpo inmutable |
+| `EMISSION_ATTEMPT`       | registrar cada intento de publicación y su resultado técnico                 | append-only                                    |
+| `DELIVERY_ATTEMPT`       | registrar cada intento de entrega por consumidora                            | append-only                                    |
+| `CONSUMER_INBOX_RECEIPT` | deduplicar por consumidora y evento y conservar resultado previo             | identidad única y cierre controlado            |
+| `CONSUMER_EFFECT_RECORD` | registrar el efecto propio confirmado, no-op o fallo de la consumidora       | append-only                                    |
+| `RECONCILIATION_CASE`    | conservar incertidumbre, fuentes comparadas, decisión y residual             | lifecycle controlado                           |
+| `AUDIT_CORRECTION`       | corregir o ampliar una entrada sin modificar la original                     | append-only                                    |
+
+No se crearán clases genéricas de log, payload, mensaje o historia que eviten declarar semántica, owner, sensibilidad, lifecycle y responsabilidad.
+
+#### 7. Autoridad y propiedad por registro
+
+Cada registro deberá declarar:
+
+```text
+producer_owner_schema_id
++ producer_domain_id
++ process_id
++ owner_application
++ aggregate_type
++ aggregate_id
++ aggregate_version
++ source_fact_reference
++ source_command_id
+```
+
+Reglas:
+
+1. el productor válido es el owner del hecho, no la aplicación que transporta o presenta;
+2. una consumidora no puede emitir el evento original como si fuera productora;
+3. una entrada transversal no adquiere owner empresarial propio;
+4. un evento derivado de varios dominios deberá identificar un único productor primario y referencias a participantes;
+5. una coordinación interdominio requiere los contratos de `SUPA-ARC-016` y `SUPA-ARC-017`;
+6. una FK, trigger, función o publicación no transfiere autoridad.
+
+#### 8. Separación semántica obligatoria
+
+| Elemento           | Qué afirma                                        | Qué no afirma                      |
+| ------------------ | ------------------------------------------------- | ---------------------------------- |
+| comando            | solicitud aceptada o rechazada                    | hecho ya confirmado                |
+| auditoría          | quién o qué intentó, decidió o ejecutó una acción | fuente completa del proceso        |
+| evento empresarial | hecho durable ya confirmado                       | orden, permiso o entrega           |
+| outbox             | obligación durable de publicar un evento          | publicación exitosa                |
+| emisión            | intento o aceptación del transporte               | consumo o efecto                   |
+| entrega            | llegada a una consumidora concreta                | aplicación del efecto              |
+| inbox              | claim, deduplicación y resultado previo           | efecto nuevo por sí solo           |
+| efecto consumidor  | resultado propio de la consumidora                | resultado de otras consumidoras    |
+| log técnico        | diagnóstico de infraestructura                    | evidencia empresarial suficiente   |
+| métrica            | agregación para medición                          | historia completa de una instancia |
+
+Un `200`, ACK, log, span, publicación Realtime o cambio de UI no podrá cerrar un hecho empresarial ni un efecto consumidor.
+
+#### 9. Registro canónico de objetos de `audit`
+
+Cada objeto físico futuro deberá registrarse con:
+
+```text
+transversal_object_id
++ object_kind
++ qualified_name
++ lifecycle_status
++ technical_owner
++ producer_owner_schema_ids
++ process_ids
++ audit_planes
++ action_types_or_event_definitions
++ caller_classes
++ read_write_mode
++ security_mode
++ owner_role
++ fixed_search_path
++ grants_contract
++ rls_contract
++ sensitivity_classes
++ retention_classes
++ legal_hold_behavior
++ immutability_contract
++ idempotency_contract
++ ordering_contract
++ partitioning_contract
++ indexing_contract
++ integrity_contract
++ observability_contract
++ current_consumers
++ deprecation_gate
++ rollback_contract
++ test_requirement_ids
+```
+
+No se aceptarán owner genérico, consumidor supuesto, retención narrativa, payload sin clasificación, tabla sin lifecycle ni objeto sin contrato de integridad.
+
+#### 10. Sobre mínimo de `AUDIT_ENTRY`
+
+La entrada auditable deberá poder representar los campos obligatorios por tipo definidos por `INT-APP-007`, incluyendo:
+
+```text
+audit_entry_id
++ audit_schema_version
++ audit_plane
++ audit_action_type
++ audit_outcome
++ occurred_at
++ recorded_at
++ completed_at
++ principal_id
++ effective_actor_id
++ technical_principal_id
++ actor_type
++ session_id
++ device_id
++ site_id
++ area_id
++ shift_id
++ permission_key
++ authorization_decision
++ authorization_reason_codes
++ process_id
++ process_instance_id
++ resource_type
++ resource_id
++ resource_version
++ command_id
++ event_id
++ delivery_id
++ attempt_id
++ effect_id
++ correlation_id
++ causation_id
++ result_code
++ error_class
++ result_reference
++ evidence_references
++ sensitivity_class
++ access_scope
++ retention_class
++ integrity_reference
+```
+
+Los campos no aplicables se omiten por contrato. Los campos obligatorios de una acción no podrán degradarse a opcionales por conveniencia de una aplicación.
+
+#### 11. Sobre mínimo de `BUSINESS_EVENT_RECORD`
+
+Todo evento durable deberá preservar el contrato `EVENT-ENVELOPE-001` y, como mínimo:
+
+```text
+event_id
++ event_definition_id
++ event_type
++ event_version
++ process_id
++ process_instance_id
++ producer_application
++ producer_owner_schema_id
++ aggregate_type
++ aggregate_id
++ aggregate_version
++ occurred_at
++ recorded_at
++ correlation_id
++ causation_id
++ source_command_id
++ idempotency_key_reference
++ result_reference
++ output_references
++ evidence_references
++ audit_reference
++ sensitivity_class
++ access_scope
++ retention_class
++ schema_version
+```
+
+El payload será mínimo, versionado y suficiente para consumidoras autorizadas. Datos adicionales se recuperarán desde contratos propietarios, no mediante copias indiscriminadas.
+
+#### 12. Atomicidad y clases de compromiso
+
+Se preservan las tres clases aprobadas:
+
+| Clase                          | Regla arquitectónica                                                                                                                  |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `AUDIT_ATOMIC_REQUIRED`        | hecho, evento y ancla auditable quedan en la misma transacción o en un mecanismo equivalente que impide presentar éxito sin evidencia |
+| `AUDIT_DURABLE_BEFORE_ACK`     | la frontera no confirma al emisor hasta persistir registro durable o contención verificable                                           |
+| `AUDIT_DURABLE_BUFFER_ALLOWED` | solo para enriquecimiento no decisorio con ancla previa, identidad fija, buffer durable y recuperación                                |
+
+Para eventos empresariales publicados desde PostgreSQL, la regla predeterminada será:
+
+```text
+OWNER FACT + BUSINESS_EVENT_RECORD + OUTBOX_ITEM
+= UNA TRANSACCIÓN ATÓMICA
+```
+
+No se permitirá publicar primero y registrar después, ni confirmar éxito mientras el evento o la evidencia requerida permanezcan únicamente en memoria.
+
+#### 13. Outbox, emisiones y estado operativo
+
+1. `OUTBOX_ITEM` tendrá identidad estable, `event_id` único, destino lógico, prioridad, disponibilidad, política de retry y lifecycle.
+2. El contenido semántico del evento y su hash permanecerán inmutables.
+3. Claim, lease, intento, timeout y liberación se registrarán sin reescribir la historia.
+4. Cada `EMISSION_ATTEMPT` tendrá `attempt_id` y número propios, conservando el mismo `event_id`.
+5. La aceptación del transporte no marcará consumo ni efecto.
+6. Un resultado desconocido activa conciliación antes de una repetición que pueda duplicar efectos.
+7. El vocabulario de pending, retry y dead-letter deberá conservar las decisiones de `INT-APP-005`, `INT-APP-008` e `INT-APP-009`.
+8. El transporte concreto, colas y publicaciones permanecen reservados a `SUPA-ARC-019` y `SUPA-ARC-020`.
+
+#### 14. Entrega, inbox y efecto consumidor
+
+| Etapa     | Identidad mínima                                  | Regla                                                 |
+| --------- | ------------------------------------------------- | ----------------------------------------------------- |
+| entrega   | `consumer_application + delivery_id + attempt_id` | independiente para cada consumidora                   |
+| inbox     | `consumer_application + event_id`                 | única, idempotente y con resultado previo recuperable |
+| efecto    | `consumer_application + effect_id`                | confirma solo el efecto de esa propietaria            |
+| duplicado | misma identidad y huella                          | devuelve resultado anterior o no-op aprobado          |
+| conflicto | misma identidad y huella incompatible             | no aplica efecto y abre conciliación                  |
+
+El fallo de una consumidora no revierte el hecho del productor ni altera el resultado de otras consumidoras.
+
+#### 15. Identidad, causalidad y orden
+
+1. `audit_entry_id`, `event_id`, `outbox_item_id`, `delivery_id`, `attempt_id` y `effect_id` serán identidades diferentes.
+2. `correlation_id` agrupa un caso; `causation_id` identifica la causa inmediata.
+3. No existirá orden global entre todos los dominios.
+4. El orden aplicable se resolverá por agregado, `aggregate_version`, causalidad y dependencias.
+5. `occurred_at` no reemplaza la versión ni la causalidad.
+6. Un evento tardío no podrá sobrescribir un estado o versión posterior.
+7. Una restauración deberá preservar identidades, relaciones, secuencia por agregado y resultados previos.
+
+#### 16. Inmutabilidad, corrección e integridad
+
+1. `AUDIT_ENTRY`, `BUSINESS_EVENT_RECORD`, intentos y efectos confirmados serán append-only.
+2. Las interfaces y servicios ordinarios no podrán actualizar ni eliminar evidencia histórica.
+3. Toda corrección utilizará `AUDIT_CORRECTION` enlazada a la entrada original, con razón, autoridad y antes o después mínimo.
+4. Un rollback de código no borrará hechos ni efectos ya ocurridos.
+5. Inserciones, modificaciones o eliminaciones no autorizadas deberán ser detectables.
+6. La técnica exacta de firma, hash encadenado, sello o control equivalente se completará en `SUPA-ARC-012`, `SUPA-ARC-021` y `SUPA-ARC-022`.
+7. Una brecha histórica se registra como conciliación; nunca se fabrican entradas retrospectivas para simular cobertura.
+
+#### 17. Autorización y acceso
+
+1. `audit` permanecerá fuera de `api.schemas` y de `extra_search_path` global.
+2. `PUBLIC`, `anon` y `authenticated` tendrán acceso directo objetivo igual a cero.
+3. `service_role` no recibirá acceso global por defecto; los servicios utilizarán funciones o roles nominales mínimos.
+4. Crear una entrada no concede derecho a consultarla.
+5. Las consultas autorizadas se ofrecerán mediante `api` con finalidad, proceso, sensibilidad, territorio, filtros y límites explícitos.
+6. Accesos sensibles, búsquedas, vistas previas, exportaciones, impresiones y correcciones de auditoría deberán auditarse.
+7. RLS, grants, ACL por defecto, owners y funciones privilegiadas se resolverán en `SUPA-ARC-014` y `SUPA-ARC-015`.
+
+#### 18. Minimización, sensibilidad y redacción
+
+- secretos, tokens, credenciales, firmas completas, contraseñas y claves quedan prohibidos;
+- payloads externos completos se conservarán en almacenamiento protegido cuando exista finalidad, y `audit` guardará hash o referencia;
+- datos personales, laborales, financieros, médicos y técnicos se reducirán a identificadores o referencias mínimas;
+- `before` y `after` usarán campos cambiados, hashes o referencias, no copias completas por defecto;
+- errores no expondrán SQL, stack traces, nombres internos ni datos sensibles;
+- cada evento y entrada declarará sensibilidad, acceso y retención;
+- una proyección de consulta aplicará minimización adicional según audiencia.
+
+#### 19. Denegaciones y decisiones de autorización
+
+Toda operación sensible deberá conservar:
+
+```text
+principal_id
++ effective_actor_id
++ technical_principal_id
++ permission_key
++ resource_reference
++ territory_reference
++ context_reference
++ authorization_decision
++ authorization_reason_codes
++ authorization_policy_version
+```
+
+Una denegación se audita aunque no exista mutación. La entrada no repetirá reglas de autorización ni convertirá roles PostgreSQL en roles empresariales.
+
+#### 20. Reintentos, resultado desconocido y conciliación
+
+1. Cada retry crea otro intento, no otro evento ni otra operación empresarial.
+2. El presupuesto, backoff, error, momento y resultado de cada intento quedan vinculados.
+3. `UNKNOWN_OUTCOME` bloquea reejecución sensible hasta consultar o conciliar.
+4. `RETRY_EXHAUSTED` no fabrica compensación ni cierre.
+5. `RECONCILIATION_CASE` conserva fuentes comparadas, diferencias, autoridad, decisión, residual, acciones y evidencia.
+6. Toda obligación residual tendrá owner y tarea de resolución.
+7. Una conciliación no reinterpreta ni elimina el hecho original.
+
+#### 21. Compensaciones y escrituras interdominio
+
+La auditoría de una compensación deberá enlazar plan, versión, acción CCR, efecto original, reversibilidad, pasos, intentos, verificaciones, residuales y resultado.
+
+Ningún registro en `audit` podrá ejecutar por sí mismo una escritura inversa en otro dominio. Las coordinaciones y compensaciones materiales requieren `SUPA-ARC-016`, `SUPA-ARC-017` y los contratos de `INT-APP-006` e `INT-APP-010`.
+
+#### 22. Offline, replay y backfill
+
+- offline conserva actor, dispositivo, sesión, momento del hecho, recepción y calidad del reloj;
+- sincronización tardía revalida autorización, versión, expiración y conflictos;
+- replay conserva `event_id`, audiencia histórica y resultados previos;
+- backfill declara fuente, lote, ventana, versión, autorización y resultado por elemento;
+- replay o backfill no activan efectos sensibles sin permiso explícito;
+- un lote no puede declararse correcto solo por su resumen si existen elementos fallidos o inciertos.
+
+#### 23. Tiempo, retención y legal hold
+
+1. `occurred_at`, `recorded_at` y `completed_at` conservarán semánticas distintas.
+2. La base persistirá UTC y zona IANA cuando el contexto local sea material.
+3. La captura tardía no cambia el momento del hecho.
+4. Cada clase declarará `retention_class` y comportamiento de legal hold.
+5. Las relaciones entre evento, auditoría, evidencia y resultado deberán sobrevivir archivado y restauración.
+6. Periodos exactos, particionamiento, compresión, archivo y disposición se decidirán en `SUPA-ARC-021` y `SUPA-ARC-022`.
+7. El vencimiento técnico de un intento no habilita otro efecto irreversible.
+
+#### 24. Rendimiento, particionamiento e índices
+
+La futura materialización deberá separar patrones de escritura y consulta:
+
+| Patrón                     | Claves mínimas de diseño                              |
+| -------------------------- | ----------------------------------------------------- |
+| reconstrucción por proceso | `process_id`, `process_instance_id`, tiempo           |
+| trazabilidad por agregado  | `aggregate_type`, `aggregate_id`, `aggregate_version` |
+| causalidad                 | `correlation_id`, `causation_id`, `event_id`          |
+| outbox pendiente           | lifecycle, disponibilidad, prioridad y claim          |
+| entrega por consumidora    | consumidora, evento, intento y resultado              |
+| investigación de seguridad | actor, recurso, decisión, tiempo y sensibilidad       |
+| retención                  | clase, fecha, partición y legal hold                  |
+
+La selección física de índices, particiones y mantenimiento pertenece a `SUPA-ARC-021` y `SUPA-ARC-022`; esta tarea fija los patrones que no podrán perderse.
+
+#### 25. Relación con `api`, `app_private` y `public`
+
+| Capa          | Relación con `audit`                                                          |
+| ------------- | ----------------------------------------------------------------------------- |
+| owner schemas | escriben evidencia y eventos mediante contratos atómicos; conservan autoridad |
+| `api`         | expone únicamente consultas o comandos autorizados y minimizados              |
+| `app_private` | puede usar primitivas internas; no persiste auditoría ni outbox propios       |
+| `public`      | no aloja la capa objetivo; wrappers legacy tienen salida obligatoria          |
+| VITAL         | permanece fuera de Vento OS y no comparte `audit` por coexistencia            |
+
+No se permitirá que una aplicación consulte tablas de `audit` directamente para reconstruir una fuente que pertenece a un owner schema.
+
+#### 26. Relación con Realtime, Edge, webhooks y cron
+
+`audit` define la persistencia durable. No define por sí solo:
+
+- publicaciones Realtime, canales o filtros;
+- broker, queue, topic, worker o suscripción;
+- invocación de Edge Functions;
+- webhooks entrantes o salientes;
+- jobs cron, `pg_net` o HTTP;
+- alertas, dashboards o proveedor de observabilidad.
+
+`SUPA-ARC-019` definirá Realtime y eventos en transporte. `SUPA-ARC-020` definirá Edge Functions, webhooks y cron. Ambos deberán consumir el evento durable y conservar `event_id`, causalidad, idempotencia y evidencia sin crear otra fuente de verdad.
+
+#### 27. Línea base actual y clasificación obligatoria
+
+El estado actual mantiene auditoría y eventos distribuidos entre owner schemas, `public`, schemas especializados, triggers, tablas de historia, eventos de estado y webhooks. Entre las superficies ya documentadas aparecen `public.order_status_events`, `public.shift_runtime_events`, `public.shared_operational_device_events`, `payments.webhook_events`, `club.audit_events`, `talento.application_events` y proyecciones de auditoría.
+
+Reglas:
+
+1. la existencia actual no implica aceptación en `audit`;
+2. cada objeto se clasificará como hecho propietario, auditoría, evento, outbox, intento, entrega, inbox, efecto, conciliación, compatibilidad o retiro;
+3. una tabla de historia que sea fuente empresarial permanecerá en su owner schema;
+4. una proyección de auditoría no se convertirá en tabla autoritativa;
+5. triggers y funciones actuales deberán mapear producer, atomicidad, seguridad, payload, consumidores y fallo;
+6. el inventario objeto por objeto corresponde a `SUPA-TRANS-001` a `SUPA-TRANS-003`;
+7. cualquier superficie adicional detectada constituye drift y deberá clasificarse antes del cierre.
+
+#### 28. Orden obligatorio de materialización futura
+
+```text
+1. INVENTARIAR AUDITORÍA, EVENTOS, HISTORIAS, TRIGGERS Y CONSUMIDORES
+2. CLASIFICAR FUENTE PROPIETARIA Y CLASE TRANSVERSAL
+3. DEFINIR CONTRATOS, IDENTIDADES, SEGURIDAD Y RETENCIÓN
+4. CREAR audit Y CONTROLES DE ACCESO
+5. MATERIALIZAR EVENTO, AUDITORÍA Y OUTBOX ATÓMICOS
+6. IMPLEMENTAR INTENTOS, ENTREGA, INBOX, EFECTOS Y CONCILIACIÓN
+7. ADAPTAR TRANSPORTE Y CONSUMIDORES POR OLEADAS
+8. VERIFICAR PARIDAD, REPLAY, RESTAURACIÓN Y ROLLBACK
+9. DEPRECAR SUPERFICIES FRAGMENTADAS Y WRAPPERS LEGACY
+10. CERTIFICAR INTEGRIDAD, RENDIMIENTO Y AUSENCIA DE DRIFT
+```
+
+El orden no autoriza ejecución física. Cada cambio deberá pasar por `SUPA-TRANS-001` a `SUPA-TRANS-015` y los paquetes de implementación correspondientes.
+
+#### 29. Riesgos restringidos y carryover
+
+| Riesgo o hallazgo                   | Efecto de esta tarea                                | Resolución restante              |
+| ----------------------------------- | --------------------------------------------------- | -------------------------------- |
+| auditoría fragmentada               | define una frontera única sin mover todavía objetos | `SUPA-TRANS-001` a `003`         |
+| publicación sin commit atómico      | exige hecho, evento y outbox en una transacción     | `SUPA-ARC-013`; `016`; `019`     |
+| ACK tratado como resultado          | separa emisión, entrega, inbox y efecto             | `SUPA-ARC-019`; `020`            |
+| `PUBLIC EXECUTE` o acceso cliente   | fija cero acceso directo a `audit`                  | `SUPA-ARC-014`; `015`            |
+| payloads sensibles                  | exige minimización, referencias y redacción         | `SUPA-ARC-015`; `022`; `024`     |
+| retry y resultado desconocido       | exige intentos, presupuesto y conciliación          | `SUPA-ARC-019`; `020`; `022`     |
+| orden global supuesto               | fija orden por agregado y causalidad                | `SUPA-ARC-012`; `019`; `021`     |
+| modificación o borrado de evidencia | exige append-only, corrección enlazada e integridad | `SUPA-ARC-012`; `022`            |
+| crecimiento sin control             | define patrones para partición, índice y retención  | `SUPA-ARC-021`; `022`            |
+| drift de objetos y contratos        | exige registro y validación recurrente              | `SUPA-ARC-025`; `SUPA-TRANS-015` |
+
+Ningún riesgo queda aceptado, mitigado o cerrado por esta definición.
+
+#### 30. Decisiones reservadas
+
+| Decisión                                                         | Tarea propietaria                       |
+| ---------------------------------------------------------------- | --------------------------------------- |
+| modelo de Auth, actor, vínculo y sesión                          | `SUPA-ARC-008` a `SUPA-ARC-010`         |
+| convenciones físicas de nombres, claves y timestamps             | `SUPA-ARC-011`; `SUPA-ARC-012`          |
+| funciones, RPC y triggers de escritura                           | `SUPA-ARC-013`                          |
+| excepciones `SECURITY DEFINER`                                   | `SUPA-ARC-014`                          |
+| grants, RLS, roles y ACL por defecto                             | `SUPA-ARC-015`                          |
+| contratos por dominio y atomicidad de comandos                   | `SUPA-ARC-016`                          |
+| escrituras y coordinaciones interdominio                         | `SUPA-ARC-017`                          |
+| Storage y evidencia física                                       | `SUPA-ARC-018`                          |
+| transporte Realtime, publicaciones y consumidores                | `SUPA-ARC-019`                          |
+| Edge Functions, webhooks, cron, HTTP y colas                     | `SUPA-ARC-020`                          |
+| índices, particiones y capacidad                                 | `SUPA-ARC-021`                          |
+| retención, legal hold, archivo, respaldo y recuperación          | `SUPA-ARC-022`                          |
+| tipos para productores y consumidores                            | `SUPA-ARC-023`                          |
+| paridad de ambientes                                             | `SUPA-ARC-024`; `SUPA-TRANS-013`        |
+| consolidación por ADR                                            | `SUPA-ARC-025`                          |
+| inventario, migración, compatibilidad, replay, retiro y rollback | `SUPA-TRANS-001` a `SUPA-TRANS-015`     |
+| implementación física                                            | paquetes E5 y BLOQUE R correspondientes |
+
+#### 31. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear, renombrar, alterar o retirar el schema `audit`;
+- crear tablas, funciones, triggers, vistas, índices, particiones, publicaciones, colas o jobs;
+- mover objetos actuales ni copiar datos históricos;
+- modificar `public`, `api`, `app_private` u owner schemas;
+- cambiar `api.schemas`, `extra_search_path`, grants, RLS, ACL, owners o roles;
+- habilitar Realtime, Edge Functions, webhooks, cron, `pg_net` o proveedores externos;
+- ejecutar migraciones, DDL, DML, backfills, replay, conciliaciones o pruebas mutantes;
+- declarar cubierto un evento, audit plane o consumidor sin implementación y evidencia;
+- iniciar `SUPA-ARC-008` antes de aprobación expresa.
+
+#### 32. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-719 a TREQ-SUPABASE-756
+```
+
+Los treinta y ocho requisitos protegen identidad y aislamiento del schema, autoridad del productor, atomicidad, inmutabilidad, catálogo de eventos y auditoría, outbox, emisión, entrega, inbox, efectos, idempotencia, causalidad, seguridad, minimización, conciliación, compensación, replay, retención, integridad, rendimiento, clasificación del estado actual y detección recurrente de drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 33. Criterios de aceptación
+
+- [ ] Existe exactamente un schema transversal objetivo llamado `audit`.
+- [ ] `audit` no representa dominio, aplicación, owner schema ni fuente de verdad.
+- [ ] Los 26 owner schemas conservan autoridad sobre sus hechos.
+- [ ] Se permiten exactamente diez clases primarias diferenciadas.
+- [ ] El objetivo contiene cero tablas empresariales autoritativas y cero acceso directo de roles cliente.
+- [ ] Los 69 procesos y 395 definiciones de eventos pueden resolver producer, agregado, versión y evidencia.
+- [ ] Se preservan los 14 planos, 22 tipos de acción, 17 outcomes y tres clases de compromiso.
+- [ ] Hecho, evento, outbox y ancla auditable son atómicos cuando el contrato lo exige.
+- [ ] Publicación, entrega, inbox y efecto permanecen estados distintos.
+- [ ] Auditoría y eventos son append-only; las correcciones crean entradas enlazadas.
+- [ ] Principal, actor efectivo y principal técnico permanecen separados.
+- [ ] El orden es por agregado y causalidad, nunca global por timestamp.
+- [ ] Payloads, secretos y datos sensibles se minimizan mediante referencias y hashes.
+- [ ] Replay, backfill, retry y resultado desconocido conservan identidad y controles explícitos.
+- [ ] `audit` queda fuera de Data API; toda consulta usa contratos autorizados de `api`.
+- [ ] Realtime, Edge, webhooks y cron permanecen reservados a sus tareas exactas.
+- [ ] Las superficies actuales quedan dentro del universo de clasificación sin aceptación automática.
+- [ ] Se generan `TREQ-SUPABASE-719` a `TREQ-SUPABASE-756`.
+- [ ] No se ejecutan cambios físicos, código ni implementación.
+- [ ] `SUPA-ARC-008` permanece reservada.
+
+#### 34. Controles estructurales requeridos
+
+| Control                                      | Resultado esperado |
+| -------------------------------------------- | -----------------: |
+| schemas transversales de auditoría y eventos |              **1** |
+| nombre del schema                            |            `audit` |
+| dominios asignados                           |              **0** |
+| owner schemas asignados                      |              **0** |
+| acceso directo de roles cliente              |              **0** |
+| tablas autoritativas objetivo                |              **0** |
+| clases primarias                             |             **10** |
+| procesos cubiertos                           |       **69 de 69** |
+| definiciones normales de evento cubiertas    |     **395 de 395** |
+| planos de auditoría preservados              |       **14 de 14** |
+| tipos de acción preservados                  |       **22 de 22** |
+| outcomes preservados                         |       **17 de 17** |
+| clases de compromiso preservadas             |         **3 de 3** |
+| objetos actuales aceptados automáticamente   |              **0** |
+| requisitos nuevos                            |             **38** |
+| cambios físicos                              |              **0** |
+
+#### 35. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-006 — Definir capa privada de helpers y lógica interna
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial
+```
+
+`SUPA-ARC-008` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial
 ### [ ] SUPA-ARC-009 — Definir vínculo de `auth.users` con trabajador, cliente y dispositivo
 ### [ ] SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación
