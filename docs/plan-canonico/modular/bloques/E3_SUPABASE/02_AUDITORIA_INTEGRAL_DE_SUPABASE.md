@@ -6940,7 +6940,302 @@ No se ejecutaron DDL, DML, merges, deletes, updates, cambios de RLS, validación
 La tarea queda cerrada cuando cada duplicidad o competencia se clasifica sin falsos positivos, los huérfanos se separan de relaciones lógicas, toda brecha tiene requisito y el 04A preserva exactamente las 4627 filas previas.
 
 
-### [ ] SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención
+# SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención
+
+## Estado
+
+`COMPLETADA — PROPUESTA PARA APROBACIÓN`
+
+## Fecha de corte
+
+`2026-07-29`
+
+## 1. Objetivo
+
+Construir una línea base reproducible del rendimiento y crecimiento de Supabase VENTO, identificar índices redundantes o potencialmente faltantes, separar consultas empresariales de carga de plataforma, revisar planes representativos y establecer brechas de retención para tablas, cron y Storage.
+
+Esta tarea es exclusivamente diagnóstica. **No crea ni elimina índices, no ejecuta `VACUUM`, `ANALYZE`, `REINDEX`, `DELETE`, `TRUNCATE`, particionamiento, cambios de parámetros, migraciones ni modificaciones remotas.**
+
+## 2. Regla canónica
+
+Ningún índice será creado o eliminado por nombre, cero scans o intuición. Toda decisión deberá demostrar:
+
+1. carga y ventana estadísticas conocidas;
+2. plan y selectividad bajo datos representativos;
+3. impacto en lectura y escritura;
+4. dependencia con constraints, FKs, RLS, RPCs y consumidores;
+5. migración reversible y evidencia antes y después.
+
+La antigüedad de un registro u objeto de Storage tampoco autoriza borrarlo. La retención depende de clase empresarial, obligación legal, replay, auditoría, privacidad y referencias activas.
+
+## 3. Fuentes congeladas
+
+| Fuente                                             | Estado congelado                                                                             | Uso en esta tarea                                            |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `SUPA-AUD-019.md`                                  | SHA-256 `be2d467fb3fc0d6b100d62c7862664f9dce5f8272a9e8a0592f32578c8e6324c`                   | Continuidad canónica y frontera de auditoría                 |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` | SHA-256 `168122c61858d4de4884d347cef246b9fb1155c5a86198c11906a49e60c08d2d`; 4.657 requisitos | Base exacta para regeneración                                |
+| Supabase remoto `clzdpinthhtknkmefsxx`             | 549 migraciones; máximo `20260716170000`                                                     | Catálogo, estadísticas, planes, cron y Storage, solo lectura |
+| `pg_stat_statements`                               | 4.942 fingerprints; versión 1.11                                                             | Carga agregada redacted                                      |
+| GitHub `devVentoGroup/vento-shell`                 | commit observado `19165672a024a7d1367beaf50aa2058978b134d4`                                  | Búsqueda de migraciones, índices y retención sin escritura   |
+| Documentación oficial Supabase                     | consulta, rendimiento, tamaño, Storage, backups y PITR                                       | Criterios actuales de interpretación                         |
+
+## 4. Método y taxonomía
+
+Se separaron cinco categorías:
+
+- **redundancia confirmada:** definición de índice exactamente equivalente;
+- **candidato de optimización:** plan o métrica que justifica experimento, no DDL inmediato;
+- **cobertura FK pendiente:** relación sin índice líder, priorizable por riesgo;
+- **crecimiento observable:** volumen o churn sin serie histórica suficiente;
+- **retención indefinida:** objeto sin contrato aprobado de archivo o purga.
+
+`pg_stat_statements` se trató como evidencia acumulada, no como trazado exacto: cada huella conserva su propio `stats_since`, puede incluir plataforma o auditoría y no prueba causalidad entre un índice y una latencia.
+
+## 5. Resumen ejecutivo
+
+| Dimensión                            |              Resultado |
+| ------------------------------------ | ---------------------: |
+| Tamaño aproximado de la base         |                 131 MB |
+| Fingerprints de consultas            |                  4.942 |
+| Llamadas acumuladas                  |             21.319.857 |
+| Tiempo acumulado                     |       76.413.141,61 ms |
+| Temp blocks escritos                 |              2.352.651 |
+| WAL observado                        |    2.051.758.067 bytes |
+| Grupos exactos de índices duplicados |                      8 |
+| Huella combinada de esos grupos      |          892.928 bytes |
+| FKs empresariales                    |                    795 |
+| FKs cubiertas por índice líder       |                    351 |
+| FKs sin cobertura líder              |                    444 |
+| Tablas empresariales particionadas   |                      0 |
+| Jobs cron activos                    |                      7 |
+| Filas en `cron.job_run_details`      |                 47.056 |
+| Filas cron mayores de 90 días        |                 13.800 |
+| Storage con contenido                | aproximadamente 751 MB |
+| Brechas formalizadas                 |                     23 |
+
+No existe una emergencia de capacidad por tamaño actual. El riesgo principal es **crecer sin contratos de medición y retención**, mientras ya se acumulan redundancias de índices, historial cron y objetos de Storage.
+
+## 6. Índices
+
+### 6.1 Duplicidad exacta confirmada
+
+| Relación                         | Índices equivalentes                                                            | Cantidad | Bytes combinados | Scans combinados | Dictamen                                                          |
+| -------------------------------- | ------------------------------------------------------------------------------- | -------: | ---------------: | ---------------: | ----------------------------------------------------------------- |
+| `public.attendance_logs`         | `attendance_logs_employee_occurred_at_idx`; `idx_attendance_logs_employee_date` |        2 |          589.824 |          258.121 | Consolidar tras identificar superviviente y probar inserts y plan |
+| `public.inventory_stock_by_site` | tres variantes `site_product`                                                   |        3 |          122.880 |            8.560 | Preservar una única garantía UNIQUE                               |
+| `pass.pass_satellites`           | constraint e índice `code`                                                      |        2 |           32.768 |               13 | Verificar ownership de constraint                                 |
+| `public.app_update_policies`     | dos UNIQUE por `app_key, platform`                                              |        2 |           32.768 |           49.953 | Consolidación prioritaria por uso activo                          |
+| `public.site_operational_roles`  | dos índices por `site_id`                                                       |        2 |           32.768 |               92 | Resolver junto con fuente competidora de SUPA-AUD-019             |
+| `vital.telemetry_events`         | dos por usuario y tiempo                                                        |        2 |           32.768 |                3 | Observar módulo y escoger superviviente                           |
+| `vital.telemetry_events`         | dos por evento y tiempo                                                         |        2 |           32.768 |                0 | Cero scans no basta para borrar                                   |
+| `public.internal_pos_documents`  | dos UNIQUE por número                                                           |        2 |           16.384 |                0 | Preservar unicidad y verificar consumidor                         |
+
+No se detectaron índices inválidos en los esquemas empresariales consultados.
+
+### 6.2 FKs sin cobertura líder
+
+El inventario contiene 795 FKs; 351 están cubiertas por un índice válido cuyo prefijo coincide con las columnas hijas y 444 no. El hash del manifiesto es:
+
+`046936384cc167c0a3794cafe9318f71a44dc99c6a83e2f70e4e2fc693c787b7`
+
+Crear 444 índices sería incorrecto. La prioridad debe considerar tamaño hijo, deletes y updates del padre, acción referencial, joins reales, selectividad, criticidad y coste de escritura. Los candidatos de revisión temprana incluyen `attendance_logs.shift_id`, `products.category_id`, varias referencias de `inventory_movements`, `role_permissions.permission_id` y campos operativos de `product_site_settings`.
+
+## 7. Consultas y planes
+
+### 7.1 Cobertura de telemetría
+
+| Métrica                    |                                                          Resultado |
+| -------------------------- | -----------------------------------------------------------------: |
+| Fingerprints               |                                                              4.942 |
+| `stats_since` más antiguo  |                                            2025-12-01 12:32:26 UTC |
+| `stats_since` más reciente |                                            2026-07-29 23:36:48 UTC |
+| Hash del manifiesto        | `398a75fb3bbe4a56925ccd619509732ac057812b350bd38de0299e9b5286bc6e` |
+
+Las consultas completas no se copian al documento. Se conservan hashes, rol y métricas para evitar exponer parámetros o contenido sensible.
+
+### 7.2 Casos empresariales representativos
+
+#### Historial de asistencia
+
+- hash: `7184d6451d9dcc685a33bfb53cd38c8429c82633c8ca004a69becb6383a2544b`;
+- 65.678 llamadas;
+- media 9,522 ms; máximo 1.012,385 ms;
+- usa `attendance_logs_employee_occurred_at_idx`;
+- requiere `Incremental Sort` adicional por `created_at DESC`.
+
+El índice actual sí aporta valor. La acción correcta es consolidar el par exacto y probar si ampliar el orden mejora la carga real sin aumentar excesivamente escritura y tamaño.
+
+#### Catálogo de productos
+
+- hash: `9e541564fa00425017334a30eddb60eaa7a48e1319823c72c40d520bd41ce239`;
+- 1.539 llamadas;
+- media 154,107 ms; máximo 922,514 ms;
+- filtra categoría y tipo; ordena por nombre;
+- el plan representativo hace `Seq Scan` de `products` y `Sort`.
+
+Es el candidato más claro para experimentar en staging con un índice equivalente a `(category_id, product_type, name)`, comparándolo con reescritura de consulta y coste de escritura. No se aprueba DDL en esta tarea.
+
+#### Turnos publicados por rango
+
+- hash: `d0f8a8f73cf109995c2d96d0881f9b2a06ec6839f4ab1e1fc4183d534165b3dd`;
+- 18.201 llamadas;
+- media 11,468 ms; máximo 142,854 ms;
+- usa `idx_employee_shifts_date_range`;
+- aplica filtros de publicación, estado y tipo después del acceso y orden incremental por fecha y hora final.
+
+No representa una emergencia. Debe compararse una alternativa parcial o compuesta únicamente con selectividad y fixtures reales.
+
+### 7.3 Escritura
+
+Tres variantes de insert sobre `attendance_logs` muestran medias de aproximadamente 34 a 71 ms y WAL acumulado relevante. La duplicidad de índices es una causa plausible de amplificación, pero **no se declara causalidad** hasta ejecutar benchmark antes y después.
+
+### 7.4 Ruido de plataforma
+
+Los mayores acumulados y consumidores de bloques temporales incluyen consultas de `supabase_admin`, `authenticator`, `supabase_auth_admin` y `postgres`. No deben mezclarse con consultas de aplicaciones al fijar prioridades. Una huella de catálogo de plataforma acumuló 1.989.303 temp blocks escritos, pero eso no autoriza modificar objetos empresariales.
+
+## 8. Mantenimiento y crecimiento
+
+| Configuración          | Valor observado |
+| ---------------------- | --------------- |
+| `autovacuum`           | `on`            |
+| vacuum scale factor    | `0.2`           |
+| analyze scale factor   | `0.1`           |
+| `track_io_timing`      | `off`           |
+| `shared_buffers`       | `224MB`         |
+| `work_mem`             | `2184kB`        |
+| `effective_cache_size` | `384MB`         |
+| `max_connections`      | `60`            |
+
+No se observó crisis severa de dead tuples. Sí existe churn elevado en `products`, `product_suppliers`, `role_permissions`, `recipes`, `employee_shifts` y `product_site_settings`. Cualquier ajuste de autovacuum deberá ser específico, medido y probado; no se recomienda `VACUUM` manual indiscriminado.
+
+No hay tablas empresariales particionadas. Con aproximadamente 131 MB, esto no es por sí mismo una brecha de rendimiento. La brecha es no tener umbrales de filas, tamaño, latencia, ventana de mantenimiento y retención que indiquen cuándo particionar o archivar.
+
+## 9. Cron y retención de tablas
+
+### 9.1 Jobs observados
+
+Hay siete jobs activos. Solo dos tienen finalidad explícita de cleanup o expiración:
+
+- `pass_delivery_quotes_cleanup_hourly`;
+- `pass_payment_checkout_expiry_reconciliation`.
+
+`auto-close-attendance` registra 179 éxitos y dos ejecuciones no exitosas; las demás ejecuciones resumidas están mayoritariamente exitosas.
+
+### 9.2 Historial de cron
+
+`cron.job_run_details` contiene 47.056 filas desde enero de 2026; 13.800 superan 90 días. No se encontró una purga canónica. Debe definirse una ventana que conserve evidencia suficiente, exporte lo requerido y elimine de forma idempotente.
+
+### 9.3 Cotizaciones vencidas
+
+Aunque el job de cleanup reporta 1.512 ejecuciones exitosas, existen siete filas de `pass.delivery_quotes` con `expires_at < now()`. Esto puede reflejar una regla de conservación deliberada, un predicado distinto o cleanup incompleto. Se exige reconciliar semántica y resultado; no se borraron filas.
+
+### 9.4 Eventos y auditoría
+
+`attendance_logs`, `inventory_movements`, `shift_runtime_events`, `order_status_events`, `product_cost_events`, `shared_operational_device_events`, `payments.webhook_events` e `inventory_form_drafts` necesitan una matriz de retención que diferencie evidencia legal, replay, operación, privacidad, archivo y purga.
+
+## 10. Storage
+
+Los buckets con contenido reúnen aproximadamente 751 MB. Los principales son:
+
+| Bucket                | Objetos |       Bytes | Mayores de 90 días | Observación                                                |
+| --------------------- | ------: | ----------: | -----------------: | ---------------------------------------------------------- |
+| `product-images`      |      45 | 378.566.937 |                 30 | Pocos objetos y mucho peso; revisar compresión y versiones |
+| `nexo-catalog-images` |     790 | 172.881.585 |                 86 | Mayor cantidad; requiere reconciliación de referencias     |
+| `documents`           |     164 | 152.907.573 |                  1 | Retención documental y privacidad                          |
+| `employee-photos`     |      26 |  39.118.553 |                  0 | Dato personal; no borrar por antigüedad                    |
+| `public-documents`    |       9 |   3.250.029 |                  9 | Revisar vigencia y exposición pública                      |
+
+La edad no prueba orfandad. Se requiere contrato por bucket y reconciliación objeto a referencia antes de cualquier lifecycle automático.
+
+## 11. Límites de la evidencia
+
+- `pg_stat_statements` es acumulativo y sus ventanas difieren por huella.
+- `track_io_timing` desactivado impide atribución exacta de tiempo de lectura física.
+- `EXPLAIN` se ejecutó sin `ANALYZE` para no disparar carga ni efectos.
+- No se instaló `hypopg` ni `index_advisor`; las alternativas deben probarse en staging.
+- No se certificaron backups ni PITR porque la configuración y una restauración exitosa no fueron verificables en esta tarea.
+- No se inspeccionó el contenido sensible de archivos de Storage.
+- Las búsquedas de GitHub no sustituyen inventario completo de consumidores.
+
+## 12. Registro de brechas
+
+| ID                   | Brecha                                                                                                                          | Estado    | Prioridad |
+| -------------------- | ------------------------------------------------------------------------------------------------------------------------------- | --------- | --------- |
+| `B-SUPA-AUD-020-001` | No existe una línea base temporal canónica con SLO y tendencia para tamaño, carga, planes y mantenimiento.                      | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-002` | Existen ocho grupos de índices con definición exacta duplicada y 892.928 bytes combinados.                                      | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-003` | attendance_logs mantiene dos índices idénticos en una ruta de lectura y escritura activa.                                       | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-020-004` | inventory_stock_by_site mantiene tres índices UNIQUE idénticos para la misma clave.                                             | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-020-005` | No existe ciclo de vida aprobado para declarar un índice realmente no utilizado.                                                | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-006` | 444 de 795 FKs empresariales no tienen un índice válido con sus columnas como prefijo líder.                                    | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-007` | No existe scoring canónico para priorizar FKs sin cobertura según riesgo y carga.                                               | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-008` | La consulta principal de catálogo por categoría y tipo usa Seq Scan y sort.                                                     | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-020-009` | El historial de asistencia necesita Incremental Sort adicional al índice actual.                                                | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-010` | La consulta de turnos usa rango por fecha y aplica filtros restantes después del acceso.                                        | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-011` | pg_stat_statements mezcla carga empresarial, plataforma, administración, auditoría y cron.                                      | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-012` | Las huellas tienen stats_since heterogéneo y no existe normalización de ventanas.                                               | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-013` | No existe gate automatizado de regresión de planes con fixtures representativos.                                                | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-020-014` | No están instalados hypopg ni index_advisor para experimentar sin DDL real.                                                     | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-015` | track_io_timing está desactivado y limita la atribución exacta de latencia de I/O.                                              | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-016` | No existe serie histórica de crecimiento de base, índices, Storage, WAL y filas.                                                | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-017` | No hay umbrales aprobados para activar particionamiento o archivo; actualmente hay cero tablas empresariales particionadas.     | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-018` | cron.job_run_details tiene 47.056 filas y 13.800 mayores de 90 días sin purga canónica identificada.                            | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-020-019` | Siete delivery_quotes están pasadas de expires_at pese a un job de cleanup exitoso; requiere reconciliación.                    | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-020-020` | Las tablas de eventos, movimientos, auditoría, webhooks y borradores carecen de matriz integral de retención.                   | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-020-021` | Los buckets con contenido carecen de contrato integral de retención por clase documental.                                       | `ABIERTA` | Crítica   |
+| `B-SUPA-AUD-020-022` | product-images ocupa 378.566.937 bytes en solo 45 objetos y no tiene política probada de compresión, deduplicación y versiones. | `ABIERTA` | Alta      |
+| `B-SUPA-AUD-020-023` | No existe un validador integral que una rendimiento, crecimiento y retención con evidencia reproducible.                        | `ABIERTA` | Crítica   |
+
+Toda brecha queda vinculada a los TREQ de esta tarea y a `SUPA-AUD-021`, `SUPA-AUD-022`, `SUPA-TRANS-009` o `SHELL-CI-017`; no quedan pendientes narrativos sin puerta documental.
+
+## 13. Decisiones y rutas de resolución
+
+1. **Consolidar, no borrar a ciegas:** los ocho grupos exactos requieren migración y rollback.
+2. **Priorizar FKs:** las 444 sin cobertura se clasifican, no se indexan masivamente.
+3. **Experimentar en staging:** catálogo de productos es el primer candidato de índice compuesto.
+4. **Versionar planes:** asistencia, turnos y catálogo tendrán contratos de regresión.
+5. **Separar cargas:** plataforma y auditoría no competirán con tráfico empresarial en el ranking.
+6. **Medir crecimiento:** tamaño actual no justifica particionamiento, pero sí snapshots periódicos.
+7. **Formalizar retención:** cron, eventos, webhooks y Storage requieren matriz y owners.
+8. **Distinguir backup de retención:** recuperación técnica no sustituye archivo ni borrado verificable.
+
+## 14. Requisitos de prueba creados
+
+Se crean 30 requisitos en el registro 04A regenerado:
+
+`TREQ-SUPABASE-363`, `TREQ-SUPABASE-364`, `TREQ-SUPABASE-365`, `TREQ-SUPABASE-366`, `TREQ-SUPABASE-367`, `TREQ-SUPABASE-368`, `TREQ-SUPABASE-369`, `TREQ-SUPABASE-370`, `TREQ-SUPABASE-371`, `TREQ-SUPABASE-372`, `TREQ-SUPABASE-373`, `TREQ-SUPABASE-374`, `TREQ-SUPABASE-375`, `TREQ-SUPABASE-376`, `TREQ-SUPABASE-377`, `TREQ-SUPABASE-378`, `TREQ-SUPABASE-379`, `TREQ-SUPABASE-380`, `TREQ-SUPABASE-381`, `TREQ-SUPABASE-382`, `TREQ-SUPABASE-383`, `TREQ-SUPABASE-384`, `TREQ-SUPABASE-385`, `TREQ-SUPABASE-386`, `TREQ-SUPABASE-387`, `TREQ-SUPABASE-388`, `TREQ-SUPABASE-389`, `TREQ-SUPABASE-390`, `TREQ-SUPABASE-391`, `TREQ-SUPABASE-392`
+
+El detalle normativo reside únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+## 15. Manifiestos de integridad
+
+| Manifiesto                           | SHA-256 o valor                                                    |
+| ------------------------------------ | ------------------------------------------------------------------ |
+| Base SUPA-AUD-019                    | `be2d467fb3fc0d6b100d62c7862664f9dce5f8272a9e8a0592f32578c8e6324c` |
+| Base 04A                             | `168122c61858d4de4884d347cef246b9fb1155c5a86198c11906a49e60c08d2d` |
+| Historial de migraciones             | `c728bc62b92f0d53fa229f6c184f3b85b71a1047492ebcd7282e433bfebb2f31` |
+| Cobertura FK                         | `046936384cc167c0a3794cafe9318f71a44dc99c6a83e2f70e4e2fc693c787b7` |
+| pg_stat_statements                   | `398a75fb3bbe4a56925ccd619509732ac057812b350bd38de0299e9b5286bc6e` |
+| Índices duplicados                   | 8 grupos; 892.928 bytes                                            |
+| Nuevos TREQ                          | `TREQ-SUPABASE-363` a `TREQ-SUPABASE-392`                          |
+| Reconstrucción exacta del 04A previo | `168122c61858d4de4884d347cef246b9fb1155c5a86198c11906a49e60c08d2d` |
+
+## 16. Criterios de cierre
+
+`SUPA-AUD-020` queda documentalmente completa cuando:
+
+- los 23 hallazgos tienen dueño y requisito;
+- las 30 filas nuevas están en el 04A completo;
+- el registro conserva 14 columnas, IDs únicos y referencias resolubles;
+- el 04A previo puede reconstruirse byte por byte;
+- no se ejecutó ninguna mutación remota.
+
+La implementación de índices, retención, observabilidad y gates corresponde a tareas posteriores.
+
+## 17. Siguiente tarea canónica
+
+`SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos`
+
+
 ### [ ] SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos
 ### [ ] SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales
 ### [ ] SUPA-AUD-023 — Crear mapa proceso → datos → RPC → eventos → aplicaciones
