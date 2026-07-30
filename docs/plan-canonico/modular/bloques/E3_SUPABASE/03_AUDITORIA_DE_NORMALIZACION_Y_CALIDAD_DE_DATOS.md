@@ -775,7 +775,363 @@ DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normaliza
 ```
 
 
-### [ ] DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación
+### ✅ DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación
+
+**Estado:** APROBADA  
+**Tarea anterior:** `DATA-NORM-AUD-003 — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica` — APROBADA  
+**Tarea siguiente:** `DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos`  
+**Tipo de tarea:** auditoría documental de duplicidad semántica, colisiones de comparación y alcance empresarial; sin DDL, DML, migraciones, backfills, correcciones, fusiones, desactivaciones, cambios de relaciones, cambios de esquema, modificación de constraints, modificación de índices, modificación de triggers, cambios en aplicaciones ni despliegues
+
+#### 1. Objetivo
+
+Detectar grupos de registros cuyos valores textuales coinciden después de aplicar representaciones normalizadas de comparación, distinguir candidatos reales de duplicidad semántica de homónimos legítimos, versiones históricas, etiquetas contextuales y falsos positivos de alcance, y documentar la evidencia mínima que deberá revisarse antes de cualquier decisión futura de corrección, unicidad, consolidación o fusión.
+
+La coincidencia entre valores normalizados se utiliza exclusivamente como mecanismo de descubrimiento. No constituye una clave de identidad, no demuestra equivalencia empresarial y no autoriza por sí sola modificar, desactivar, relacionar, sustituir ni fusionar registros.
+
+#### 2. Artefacto producido
+
+```text
+DATA-NORMALIZED-COMPARISON-DUPLICATE-AUDIT-004@1.0.0
+```
+
+| Propiedad                            |                                                         Valor observado |
+| ------------------------------------ | ----------------------------------------------------------------------: |
+| Proyecto observado                   |                                 `vento-os-dev` — `clzdpinthhtknkmefsxx` |
+| Ventana principal de observación     | `2026-07-30T21:53:45.550399+00:00` a `2026-07-30T21:56:14.736975+00:00` |
+| Operaciones ejecutadas sobre datos   |                                               consultas de solo lectura |
+| Registros modificados                |                                                                       0 |
+| Objetos de base de datos modificados |                                                                       0 |
+
+#### 3. Alcance y fronteras
+
+La auditoría aplica a valores persistidos de Vento OS en los schemas actuales `public`, `pass`, `pos`, `talento`, `club`, `payments` y `viso`, con cortes prioritarios sobre:
+
+- productos y categorías;
+- catálogo comercial y recompensas;
+- proveedores, sedes y áreas;
+- categorías de remisión;
+- posiciones de inventario;
+- presentaciones físicas y políticas de solicitud;
+- usuarios, trabajadores e invitaciones laborales;
+- nombres, etiquetas y títulos empresariales que actúan como candidatos de identidad o comparación.
+
+Se mantienen las siguientes fronteras:
+
+1. `app_private` conserva su tratamiento de infraestructura técnica privada;
+2. `vital` permanece fuera de las decisiones transversales de Vento OS por ser una frontera de producto separada;
+3. identificadores técnicos, códigos, SKU, slugs, correos, documentos, teléfonos, URLs, tokens y referencias externas no se someten a corrección ortográfica genérica;
+4. JSON, arreglos y texto libre no se agrupan como una cadena única sin contrato por clave, elemento y procedencia;
+5. una vista o representación derivada no crea una fuente de verdad independiente;
+6. la repetición de un nombre en entidades, contextos, sedes, capas o estados diferentes no equivale automáticamente a duplicidad.
+
+#### 4. Representaciones utilizadas para descubrimiento
+
+| Representación   | Construcción de auditoría                                                                     | Uso permitido                                             | Uso prohibido                                |
+| ---------------- | --------------------------------------------------------------------------------------------- | --------------------------------------------------------- | -------------------------------------------- |
+| `SOURCE_VALUE`   | valor persistido original                                                                     | conservar evidencia y procedencia                         | sobrescribirlo durante la auditoría          |
+| `FORM_KEY`       | NFC, recorte de borde, compactación de espacios y minúsculas                                  | detectar variantes de forma visible                       | tratarla como identidad empresarial          |
+| `SEARCH_KEY`     | `FORM_KEY`, eliminación tolerante de tildes y retiro de signos o separadores no alfanuméricos | ampliar candidatos de comparación                         | imponer unicidad o fusionar registros        |
+| `SCOPE_KEY`      | territorio, entidad propietaria, padre jerárquico, categoría, contexto o capa aplicable       | impedir comparar valores fuera de su alcance real         | asumir un scope global por comodidad técnica |
+| `STRUCTURAL_KEY` | campos funcionales que definen cantidad, unidad, uso, versión, fuente o relación              | distinguir etiqueta coincidente de estructura equivalente | reducir una entidad compleja a su etiqueta   |
+
+Las claves anteriores son artefactos analíticos transitorios. La representación canónica de búsqueda y comparación deberá definirse en `DATA-NORM-ARC-008`, y la estrategia de unicidad y duplicidad normalizada en `DATA-NORM-ARC-010`.
+
+#### 5. Taxonomía de resultados
+
+| Código                                | Definición                                                                                          | Tratamiento después de esta tarea                                        |
+| ------------------------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `EXACT_VALUE_COLLISION`               | dos o más registros comparten exactamente el valor persistido dentro del corte evaluado             | revisar alcance, estado, versión, relaciones y estructura                |
+| `FORM_VARIANT_COLLISION`              | los valores difieren solo por caja, bordes o compactación de espacios                               | candidato a normalización de presentación; no implica fusión             |
+| `SEARCH_KEY_COLLISION`                | los valores convergen al ignorar tildes, signos o separación                                        | candidato semántico que exige revisión humana o contractual              |
+| `PROBABLE_SAME_ENTITY`                | la coincidencia se acompaña de mismo dominio, tipo, scope y atributos funcionales compatibles       | priorizar revisión de consolidación, sin ejecutarla                      |
+| `STRUCTURAL_DUPLICATE_CANDIDATE`      | dos registros comparten entidad, contexto y huella funcional equivalente                            | revisar procedencia, prioridad, relaciones y auditoría antes de resolver |
+| `LIFECYCLE_OR_VERSION_PAIR`           | la repetición corresponde a estados activo/inactivo, versión anterior, supersesión o historial      | preservar historial; no tratar como duplicado operativo por defecto      |
+| `CROSS_LAYER_HOMONYM`                 | el mismo nombre identifica objetos distintos en capas como insumo, preparación y venta              | conservar separación funcional                                           |
+| `LABEL_COLLISION_DIFFERENT_STRUCTURE` | una misma etiqueta corresponde a cantidades, unidades, contextos o políticas diferentes             | prohibir deduplicación por etiqueta                                      |
+| `SCOPE_FALSE_POSITIVE`                | el algoritmo agrupó registros legítimos porque omitió padre, territorio, código o camino jerárquico | corregir la definición de alcance, no los datos                          |
+| `AMBIGUOUS_COLLISION`                 | la evidencia disponible no permite decidir identidad ni diferencia                                  | enviar a revisión humana y conservar ambos registros                     |
+
+#### 6. Corte prioritario de entidades maestras
+
+El corte controlado sobre once fuentes y 1.753 registros produjo:
+
+| Resultado                                            | Cantidad |
+| ---------------------------------------------------- | -------: |
+| Fuentes examinadas                                   |       11 |
+| Registros examinados                                 |    1.753 |
+| Grupos inicialmente detectados por clave comparativa |       17 |
+| Registros incluidos en esos grupos                   |       94 |
+| Registros activos incluidos                          |       85 |
+
+Distribución inicial:
+
+| Familia                                       | Grupos | Registros | Activos | Clasificación posterior                                                     |
+| --------------------------------------------- | -----: | --------: | ------: | --------------------------------------------------------------------------- |
+| ítems de catálogo                             |      8 |        16 |       8 | siete pares exactos y un par de forma; principalmente ciclo activo/inactivo |
+| posiciones de inventario                      |      6 |        72 |      72 | falsos positivos por jerarquía y código                                     |
+| productos dentro del mismo scope de categoría |      2 |         4 |       3 | candidatos semánticos prioritarios                                          |
+| categorías de remisión                        |      1 |         2 |       2 | candidato exacto activo dentro de la misma sede                             |
+
+No se detectaron grupos comparables dentro del mismo scope en los cortes prioritarios de proveedores, sedes, áreas, categorías de producto, categorías comerciales, recompensas ni tipos documentales. Esta ausencia aplica únicamente al universo y a las claves observadas; no demuestra inexistencia global de duplicidad.
+
+#### 7. Duplicidad y homonimia en productos
+
+El corte global sobre 963 productos encontró nueve grupos de colisión por `SEARCH_KEY`. Ocho grupos contienen al menos dos registros activos y siete atraviesan categorías diferentes.
+
+| Grupo observado                       | Estado de registros       | Evidencia funcional                                                                        | Clasificación de auditoría                                   |
+| ------------------------------------- | ------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------ |
+| `Chai latte frio` / `Chai Latte Frío` | dos activos               | mismo tipo `venta`, misma categoría, misma unidad y dos SKU distintos                      | `PROBABLE_SAME_ENTITY`                                       |
+| `LATTE FRIO` / `Latte Frío`           | dos activos               | mismo tipo `venta` y unidad; categorías comerciales distintas y ambos enlazados a catálogo | `PROBABLE_SAME_ENTITY`, con posible clasificación incorrecta |
+| `Maiz Dulce` / `Maíz Dulce`           | uno activo y uno inactivo | mismo tipo y categoría; unidades históricas diferentes `kg` y `g`                          | `LIFECYCLE_OR_VERSION_PAIR` con posible consolidación futura |
+| `Choco Bites` / `Chocobites`          | dos activos               | mismo tipo y unidad; categorías diferentes y denominación potencialmente comercial         | `AMBIGUOUS_COLLISION`                                        |
+| `Infusión Frutos Amarillos`           | dos activos               | un insumo abastecible y un producto de venta enlazado a catálogo                           | `CROSS_LAYER_HOMONYM`                                        |
+| `Infusión Frutos Rojos`               | dos activos               | un insumo con proveedor, UOM y remisión; un producto de venta                              | `CROSS_LAYER_HOMONYM`                                        |
+| `Infusión Frutos Verdes`              | dos activos               | un insumo abastecible y un producto de venta                                               | `CROSS_LAYER_HOMONYM`                                        |
+| `Merengues`                           | dos activos               | una preparación medida en gramos y un producto de venta por unidad                         | `CROSS_LAYER_HOMONYM`                                        |
+| `Zumo de Limón`                       | dos activos               | un insumo consumido por recetas y una preparación remitible                                | `CROSS_LAYER_HOMONYM`                                        |
+
+Resultado consolidado del corte:
+
+| Clasificación                                   | Grupos |
+| ----------------------------------------------- | -----: |
+| candidatos probables de misma entidad           |      2 |
+| par de ciclo o legado con posible consolidación |      1 |
+| colisión ambigua                                |      1 |
+| homónimos legítimos entre capas funcionales     |      5 |
+
+La igualdad del nombre, incluso exacta, no permite fusionar un insumo con una preparación o un producto de venta. `product_type`, categoría, unidad, fuente, consumidores y rol operativo forman parte de la identidad funcional.
+
+#### 8. Catálogo comercial y estados de ciclo de vida
+
+En `pass.catalog_items.name` se detectaron ocho grupos con dos registros cada uno:
+
+- siete grupos comparten exactamente el nombre;
+- un grupo difiere por capitalización;
+- cada grupo contiene un registro activo y uno inactivo;
+- los pares observados conservan la misma sede y el mismo `product_id`.
+
+Ejemplos representativos:
+
+```text
+Agua Hatsu
+Gaseosa Colombiana
+Gaseosa Manzana
+Soda Bretaña
+Te Hatsu Amarillo
+Te Hatsu Blanco
+Te Hatsu Rojo
+Te hatsu Negro / Te Hatsu Negro
+```
+
+Estos pares se clasifican como `LIFECYCLE_OR_VERSION_PAIR`. El registro inactivo puede representar una versión anterior o una migración de catálogo. Su existencia no demuestra por sí sola un defecto, pero exige que cualquier estrategia de unicidad distinga estado vigente, historial, código comercial, sede y producto enlazado.
+
+#### 9. Categorías de remisión
+
+Se detectaron dos registros activos con el nombre exacto:
+
+```text
+VÍVERES & BODEGA PRINCIPAL
+```
+
+Ambos pertenecen a la misma sede y no quedaron diferenciados por la representación textual evaluada. Este grupo se registra como `STRUCTURAL_DUPLICATE_CANDIDATE` prioritario.
+
+Antes de cualquier resolución deberán revisarse:
+
+- relaciones producto-sede-área-categoría;
+- solicitudes y remisiones históricas;
+- reglas de enrutamiento y visibilidad;
+- estado de cada registro;
+- identificadores consumidos por aplicaciones;
+- auditoría de creación y modificación.
+
+#### 10. Falsos positivos por jerarquía de inventario
+
+Las etiquetas `Nivel 1` a `Nivel 6` produjeron seis grupos y 72 registros activos cuando el alcance se limitó a sede y ubicación.
+
+La revisión jerárquica comprobó que cada grupo:
+
+- contiene doce códigos distintos;
+- pertenece a doce posiciones padre distintas;
+- representa el mismo número de nivel bajo estanterías diferentes.
+
+Por tanto, los 72 registros no son duplicados por compartir el nombre. Son `SCOPE_FALSE_POSITIVE` y demuestran que la identidad de una posición requiere, como mínimo:
+
+```text
+site_id
++ location_id
++ parent_position_id o camino jerárquico
++ code
+```
+
+Una restricción de unicidad basada únicamente en `location_id + normalized_name` sería incorrecta y bloquearía estructuras legítimas.
+
+#### 11. Presentaciones físicas y políticas de solicitud
+
+El corte sobre 2.312 registros de `product_uom_profiles` y `product_request_policies` produjo:
+
+| Familia y resultado                                                 | Grupos | Registros | Activos |
+| ------------------------------------------------------------------- | -----: | --------: | ------: |
+| políticas con etiqueta coincidente y estructura o versión diferente |      2 |         4 |       2 |
+| perfiles UOM con etiqueta coincidente y estructura diferente        |     82 |       178 |     176 |
+| perfiles UOM con huella estructural coincidente                     |      2 |         4 |       4 |
+| **Total**                                                           | **86** |   **186** | **182** |
+
+Ochenta y dos grupos contienen más de un registro activo. La mayoría no representa duplicidad semántica: una misma presentación puede existir legítimamente para `purchase`, `remission` o `general`, y la etiqueta visible no codifica por sí sola ese propósito.
+
+Ejemplos de colisión legítima o estructuralmente distinta:
+
+| Producto o caso                    | Etiqueta comparada          | Diferencia relevante                                                                 |
+| ---------------------------------- | --------------------------- | ------------------------------------------------------------------------------------ |
+| presentaciones de bebidas          | `Bandeja 24 un`             | contexto `purchase` frente a `remission`                                             |
+| `Alcaparras Baby`                  | `Pote 250 g` / `POTE 250 g` | compra, remisión, procedencia y valor predeterminado diferentes                      |
+| `Kit Caja REF:7071`                | `Paquete`                   | 100 unidades para compra frente a 30 para remisión                                   |
+| `Tapa Bowl 1300` y `Tapa Bowl 750` | `Paquete` / `PAQUETE`       | 50 unidades para compra frente a 25 para remisión                                    |
+| `Amarenas`                         | `Pote 3 kg`                 | código de entrada `kg` en compra y `g` en remisión, aunque ambos equivalen a 3.000 g |
+| política de `Azúcar Blanca`        | `kg`                        | versión inactiva con código `presentacion` y versión activa con código `kg`          |
+
+Candidatos estructurales prioritarios:
+
+| Producto                  | Registros | Huella coincidente                                | Evaluación                                                           |
+| ------------------------- | --------: | ------------------------------------------------- | -------------------------------------------------------------------- |
+| `Queso Gouda`             | 2 activos | `Empaque`, `un`, 10 unidades, contexto `general`  | `STRUCTURAL_DUPLICATE_CANDIDATE` fuerte                              |
+| `Queso Mozzarella Tajado` | 2 activos | `Bloque`, `un`, 83 unidades, contexto `remission` | candidato estructural; la fuente y el estado predeterminado difieren |
+
+La etiqueta normalizada nunca deberá usarse como identidad única de una presentación. La comparación deberá incorporar producto, cantidad, unidad de entrada, cantidad en unidad de stock, contexto de uso, fuente, vigencia y, cuando corresponda, proveedor o política física enlazada.
+
+#### 12. Identidad de personas y ciclo laboral
+
+El corte sobre `public.users`, `public.employees` y `public.staff_invitations` examinó 106 registros y encontró:
+
+| Resultado                                                  | Cantidad |
+| ---------------------------------------------------------- | -------: |
+| grupos por nombre normalizado                              |       24 |
+| grupos que atraviesan más de una fuente                    |       23 |
+| grupos con más de un registro activo según estado local    |       13 |
+| grupos con al menos un identificador secundario disponible |       24 |
+| grupos sin ningún identificador secundario disponible      |        0 |
+
+La mayoría corresponde a representaciones relacionadas de una misma persona en usuario, trabajador e invitación, o a varias invitaciones con estados `accepted`, `cancelled` o `linked_existing_user`.
+
+Estas coincidencias no se clasifican como duplicados de identidad. La decisión debe apoyarse en vínculos persistidos, `employee_id`, `auth_user_id`, documento normalizado, correo, teléfono, estado y procedencia. El nombre normalizado solo puede actuar como señal de revisión y nunca como clave de fusión de personas.
+
+#### 13. Huella obligatoria antes de una posible fusión
+
+Todo candidato de entidad deberá revisarse contra las siguientes dimensiones:
+
+| Dimensión              | Evidencia mínima                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| identidad y alcance    | tipo de entidad, territorio, categoría, padre, código y fuente propietaria           |
+| estado y ciclo de vida | activo, inactivo, versión, supersesión, cancelación, aceptación y fechas             |
+| relaciones             | claves foráneas entrantes y salientes, tablas puente y vínculos entre aplicaciones   |
+| inventario             | existencias, movimientos, conteos, transferencias, LPN, ubicaciones y presentaciones |
+| remisiones             | categorías, solicitudes, picking, fulfillment, envíos, excepciones y recepción       |
+| recetas y producción   | ingredientes, productos terminados, recetas, lotes, consumos y salidas               |
+| abastecimiento         | proveedores, costos, órdenes, recepciones, unidades y condiciones de compra          |
+| catálogo y ventas      | ítems de catálogo, POS, pedidos, reglas de consumo y mapeos externos                 |
+| integraciones          | referencias externas, importaciones, webhooks, códigos y consumidores contractuales  |
+| historial y auditoría  | eventos, cambios de costo, versiones, actor, fecha, razón y evidencia                |
+
+La tabla `public.products` tiene relaciones declaradas desde múltiples familias de inventario, compras, producción, recetas, catálogo, ventas, PULSO, remisiones y activos. Esta densidad relacional impide una fusión basada únicamente en texto.
+
+#### 14. Reglas de determinación
+
+1. una coincidencia exacta es una señal más fuerte que una coincidencia de búsqueda, pero todavía requiere scope y estructura;
+2. dos registros activos dentro del mismo tipo, categoría y territorio tienen prioridad de revisión, no autorización de fusión;
+3. un registro activo y uno inactivo pueden representar historia válida, migración o reemplazo;
+4. el mismo nombre en tipos de producto distintos puede ser un homónimo funcional legítimo;
+5. las etiquetas de presentación se comparan junto con cantidades, unidades y contexto de uso;
+6. los nombres jerárquicos se comparan dentro de su padre o camino completo;
+7. nombres de personas, proveedores y razones sociales requieren identificadores o fuentes oficiales adicionales;
+8. una representación de búsqueda tolerante no sustituye al valor mostrado;
+9. una clave comparativa no podrá convertirse en constraint de unicidad antes de `DATA-NORM-ARC-010`;
+10. toda decisión de consolidación deberá preservar historial, trazabilidad, reversibilidad y evidencia.
+
+#### 15. Hallazgos
+
+| ID               | Hallazgo                                                                    | Evidencia                                                                               | Consecuencia propietaria                                                                |
+| ---------------- | --------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `DN-AUD-004-H01` | existen candidatos probables de producto duplicado dentro del mismo dominio | `Chai latte frio` / `Chai Latte Frío`; `LATTE FRIO` / `Latte Frío`                      | revisar semántica, categoría, consumidores y registro sobreviviente antes de transición |
+| `DN-AUD-004-H02` | la coincidencia global de productos produce homónimos legítimos             | infusión como insumo y venta; `Merengues`; `Zumo de Limón`                              | definir identidad por tipo y capa, no por nombre                                        |
+| `DN-AUD-004-H03` | existen pares históricos o inactivos que conservan trazabilidad             | `Maiz Dulce` / `Maíz Dulce`; ocho pares de catálogo activo/inactivo                     | diferenciar vigencia, versión y supersesión de duplicidad operativa                     |
+| `DN-AUD-004-H04` | una categoría de remisión aparece duplicada y activa en el mismo scope      | dos registros `VÍVERES & BODEGA PRINCIPAL`                                              | revisar relaciones y consolidación en la transición propietaria                         |
+| `DN-AUD-004-H05` | el alcance incompleto genera falsos positivos masivos                       | 72 niveles legítimos bajo doce padres y códigos distintos                               | incorporar jerarquía y código en comparación y unicidad                                 |
+| `DN-AUD-004-H06` | las etiquetas UOM colisionan aunque la función sea diferente                | 82 grupos con estructura distinta y 178 registros                                       | separar etiqueta visible de identidad estructural                                       |
+| `DN-AUD-004-H07` | existen al menos dos candidatos estructurales de UOM                        | `Queso Gouda` y `Queso Mozzarella Tajado`                                               | revisar procedencia, defaults, consumidores e historial                                 |
+| `DN-AUD-004-H08` | un mismo nombre laboral aparece en representaciones relacionadas            | 24 grupos, 23 entre fuentes y todos con identificadores secundarios                     | resolver por vínculos e identidad, nunca por nombre                                     |
+| `DN-AUD-004-H09` | los productos tienen una huella relacional extensa                          | relaciones con inventario, remisiones, recetas, producción, compras, catálogo y ventas  | prohibir fusiones sin plan de reasignación y reconciliación                             |
+| `DN-AUD-004-H10` | una clave demasiado agresiva pierde diferencias empresariales               | eliminación de tildes, signos y separación agrupa marcas, capas y estructuras distintas | gobernar varias representaciones y umbrales de revisión                                 |
+
+#### 16. Riesgos y brechas vinculadas
+
+| ID               | Riesgo o brecha                                                                   | Estado después de esta tarea                                    | Tarea propietaria de resolución                                               |
+| ---------------- | --------------------------------------------------------------------------------- | --------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `DN-AUD-004-R01` | fusionar productos por coincidencia textual y mezclar insumo, preparación y venta | identificado; prohibido por esta auditoría                      | `DATA-NORM-AUD-005`; `DATA-NORM-ARC-002`; `DATA-NORM-ARC-010`                 |
+| `DN-AUD-004-R02` | imponer unicidad sin incluir scope, jerarquía o contexto funcional                | identificado; no mitigado                                       | `DATA-NORM-AUD-007`; `DATA-NORM-ARC-001`; `DATA-NORM-ARC-010`                 |
+| `DN-AUD-004-R03` | eliminar registros inactivos que representan versiones o historial                | identificado; no mitigado                                       | `DATA-NORM-AUD-006`; `DATA-NORM-ARC-009`; tareas de transición                |
+| `DN-AUD-004-R04` | deduplicar presentaciones por etiqueta y alterar cantidades o conversiones        | identificado; prohibido por esta auditoría                      | `DATA-NORM-AUD-005`; `DATA-NORM-AUD-007`; `DATA-NORM-ARC-002`                 |
+| `DN-AUD-004-R05` | fusionar personas por nombre y asociar acciones al actor incorrecto               | identificado; prohibido por esta auditoría                      | `DATA-NORM-AUD-006`; `DATA-NORM-AUD-007`; arquitectura de identidad aplicable |
+| `DN-AUD-004-R06` | seleccionar un registro sobreviviente sin migrar todas sus relaciones             | identificado; no mitigado                                       | `DATA-NORM-AUD-007`; `DATA-NORM-ARC-010`; plan de transición propietario      |
+| `DN-AUD-004-R07` | sustituir el valor mostrado por la clave tolerante de búsqueda                    | identificado; prohibido por esta auditoría                      | `DATA-NORM-ARC-008`; `DATA-NORM-ARC-009`                                      |
+| `DN-AUD-004-R08` | considerar completo el universo por haber auditado cortes prioritarios            | identificado; no mitigado                                       | `DATA-NORM-AUD-006`; `DATA-NORM-AUD-007`                                      |
+| `DN-AUD-004-R09` | extender reglas de Vento OS a VITAL por coexistencia física                       | restringido documentalmente; pendiente de controles posteriores | `SUPA-ARC-025`; contratos de integración aplicables                           |
+
+Ningún riesgo se considera aceptado, mitigado o cerrado por esta tarea.
+
+#### 17. Decisiones reservadas
+
+Esta tarea no decide:
+
+- qué registro es el sobreviviente de cada grupo;
+- qué candidatos deberán fusionarse, desactivarse, relacionarse o conservarse;
+- si `Choco Bites` y `Chocobites` representan el mismo producto;
+- si las variantes de `Chai`, `Latte` o `Maíz Dulce` admiten corrección automática;
+- qué categorías, tipos o unidades deberán cambiarse;
+- qué perfiles de compra, remisión o uso general son redundantes;
+- qué campos forman la clave canónica de identidad por entidad;
+- qué representación se utilizará para búsqueda o unicidad;
+- qué reglas son deterministas, dependen de diccionario o requieren revisión humana;
+- qué funciones, triggers, aplicaciones o integraciones producen actualmente cada repetición;
+- cómo se reasignarán relaciones, inventario, movimientos, recetas, proveedores e historial;
+- ninguna modificación física en Supabase.
+
+Las decisiones quedan asignadas a `DATA-NORM-AUD-005` a `DATA-NORM-AUD-007`, `DATA-NORM-ARC-001`, `DATA-NORM-ARC-002`, `DATA-NORM-ARC-007` a `DATA-NORM-ARC-010`, `DATA-NORM-ARC-012` y las tareas de transición correspondientes.
+
+#### 18. Criterios de integridad de la auditoría
+
+La auditoría se considera íntegra para esta etapa cuando:
+
+1. conserva por separado el valor original y las representaciones comparativas;
+2. diferencia coincidencia exacta, variante de forma y colisión de búsqueda;
+3. aplica scope por dominio, territorio, jerarquía, tipo y contexto;
+4. separa duplicados probables, homónimos, versiones, colisiones estructurales y falsos positivos;
+5. revisa actividad, versión y procedencia antes de interpretar una repetición;
+6. incorpora cantidad, unidad y contexto para presentaciones y políticas;
+7. prohíbe resolver identidad de personas por nombre;
+8. registra la huella relacional necesaria antes de cualquier fusión;
+9. vincula cada brecha con una tarea propietaria concreta;
+10. no autoriza correcciones, fusiones, desactivaciones ni cambios físicos;
+11. conserva la frontera separada de VITAL.
+
+#### 19. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: esta tarea detecta, clasifica y prioriza evidencia del estado actual, pero no aprueba todavía una clave canónica de identidad, una representación de búsqueda, una regla de unicidad, un umbral de duplicidad, una acción de consolidación, un procedimiento de fusión ni una transición ejecutable. Los comportamientos verificables deberán originarse cuando las tareas arquitectónicas y de transición definan los contratos de comparación, revisión, conservación, unicidad, reasignación, auditoría y rollback.
+
+#### 20. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-AUD-003 — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos
+```
+
+
 ### [ ] DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos
 ### [ ] DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto
 ### [ ] DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad

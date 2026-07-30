@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **432** |
+| Tareas aprobadas | **433** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1143** |
+| Tareas no iniciadas | **1142** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **27.43% (432/1575)** |
+| Porcentaje de completamiento | **27.49% (433/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-AUD-003 — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica** |
-| Tarea actual | **DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación** |
+| Última tarea aprobada | **DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación** |
+| Tarea actual | **DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos** |
+| Siguiente tarea | **DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 3 de 45 aprobadas; DATA-NORM-AUD-004 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 4 de 45 aprobadas; DATA-NORM-AUD-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-AUD-003` — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica |
-| Tarea actual | `DATA-NORM-AUD-004` — Detectar duplicados semánticos mediante valores normalizados de comparación — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-AUD-005` — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos |
+| Última aprobada | `DATA-NORM-AUD-004` — Detectar duplicados semánticos mediante valores normalizados de comparación |
+| Tarea actual | `DATA-NORM-AUD-005` — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos — **NO INICIADA** |
+| Siguiente tarea | `DATA-NORM-AUD-006` — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **3 DE 45 APROBADAS — ACTUAL DATA-NORM-AUD-004** |
+| BLOQUE E3 | **4 DE 45 APROBADAS — ACTUAL DATA-NORM-AUD-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-AUD-003 — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica
-        ↓
-TAREA ACTUAL
 DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 3 de 45 tareas aprobadas
+BLOQUE E3 — 4 de 45 tareas aprobadas
 ```
