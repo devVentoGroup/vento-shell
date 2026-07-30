@@ -429,7 +429,352 @@ DATA-NORM-AUD-003 — Identificar marcas, siglas, unidades, razones sociales y e
 ```
 
 
-### [ ] DATA-NORM-AUD-003 — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica
+### ✅ DATA-NORM-AUD-003 — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica
+
+**Estado:** APROBADA  
+**Tarea anterior:** `DATA-NORM-AUD-002 — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores` — APROBADA  
+**Tarea siguiente:** `DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación`  
+**Tipo de tarea:** auditoría documental de excepciones textuales y valores protegidos; sin DDL, DML, migraciones, backfills, correcciones, fusiones, cambios de esquema, cambios de datos, modificación de constraints, modificación de índices, modificación de triggers, cambios en aplicaciones ni despliegues
+
+#### 1. Objetivo
+
+Identificar las clases de valores textuales de Vento OS cuya escritura, capitalización, puntuación, separación, abreviación o composición no puede modificarse mediante una transformación genérica sin riesgo de degradar identidad empresarial, significado técnico, trazabilidad, validez legal o interpretación operativa.
+
+La tarea clasifica evidencia observable de marcas, siglas, unidades, razones sociales y otras excepciones protegidas. No establece todavía la grafía oficial definitiva de cada valor, no crea un diccionario canónico y no autoriza correcciones ni fusiones. Sus resultados alimentan `DATA-NORM-AUD-004` a `DATA-NORM-AUD-007` y las políticas de `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012`.
+
+#### 2. Artefacto producido
+
+```text
+DATA-TEXTUAL-PROTECTED-EXCEPTIONS-INVENTORY-003@1.0.0
+```
+
+| Propiedad                                                         |                                                               Valor observado |
+| ----------------------------------------------------------------- | ----------------------------------------------------------------------------: |
+| Proyecto observado                                                |                                       `vento-os-dev` — `clzdpinthhtknkmefsxx` |
+| Ventana de observación                                            |       `2026-07-30T21:39:44.522798+00:00` a `2026-07-30T21:41:52.895307+00:00` |
+| Schemas empresariales y técnicos incluidos                        | `app_private`, `club`, `pass`, `payments`, `pos`, `public`, `talento`, `viso` |
+| Frontera excluida de decisiones transversales                     |                                                                       `vital` |
+| Columnas escalares textuales persistidas examinadas por metadatos |                                                                           934 |
+| Filas modificadas                                                 |                                                                             0 |
+| Objetos de base de datos modificados                              |                                                                             0 |
+
+#### 3. Alcance y restricciones
+
+La auditoría utiliza metadatos de columnas y cortes de solo lectura sobre valores persistidos. Mantiene estas restricciones:
+
+1. la presencia de una palabra en mayúsculas, con signos o con capitalización interna no demuestra por sí sola que sea marca o sigla;
+2. una coincidencia después de `lower`, `unaccent`, recorte o eliminación de signos no demuestra identidad semántica;
+3. la grafía almacenada no se declara automáticamente oficial, correcta ni incorrecta;
+4. los campos de marca pueden contener modelo, fabricante, combinación comercial o contaminación histórica;
+5. los campos de unidad pueden mezclar símbolo de medida, código técnico, familia, presentación y etiqueta visible;
+6. las razones sociales se preservan como valores oficiales o externos hasta obtener evidencia autorizada;
+7. los nombres de personas, direcciones, identificadores, valores externos y texto libre requieren políticas propias;
+8. `vital` permanece fuera de cualquier regla transversal de Vento OS;
+9. ningún hallazgo autoriza transformar, corregir, backfillear, fusionar o eliminar valores.
+
+#### 4. Taxonomía de valores protegidos
+
+| Código                     | Clase                                                                 | Ejemplos observados                                                    | Motivo de protección                                                                     |
+| -------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `OFFICIAL_BRAND_FORM`      | marca o denominación comercial                                        | `Hatsu`, `Vento`, `Molka`, `Nutella`, `Oster`                          | puede depender de capitalización, separación, signos o grafía registrada                 |
+| `BRAND_OR_ENTERPRISE_CODE` | código de marca o unidad empresarial                                  | `VGR`, `SAU`, `VCF`                                                    | es identificador técnico y no forma visible equivalente a la marca                       |
+| `APPLICATION_IDENTIFIER`   | nombre o código estable de aplicación                                 | `NEXO`, `VISO`, `ORIGO`, `NUMERA`, `FOGO`, `PULSO`                     | forma parte de contratos, navegación, permisos e integraciones                           |
+| `ACRONYM_OR_ABBREVIATION`  | sigla, abreviatura o token especializado                              | `BBQ`, `HIT`, `AA`, `CMS`, `PAM`, `REF`, `T26`, `WIP`                  | su significado depende del contexto y no admite expansión o cambio de caja universal     |
+| `MEASUREMENT_SYMBOL`       | símbolo de medida                                                     | `g`, `kg`, `ml`, `l`                                                   | la caja, separación y relación con la cantidad tienen semántica propia                   |
+| `COUNT_OR_PACKAGING_CODE`  | código de conteo o presentación                                       | `un`, `dz`, `bolsa`, `paquete`, `pote`, `bandeja`, `caja`              | no es intercambiable con una etiqueta visible ni con una unidad física                   |
+| `UNIT_DISPLAY_LABEL`       | etiqueta humana de unidad o presentación                              | `Bolsa`, `BOLSA`, `Unidad`, `Six Pack`, `Pote x 2`                     | requiere distinguir estilo visible de código persistido                                  |
+| `UNIT_FAMILY`              | familia técnica de medida                                             | `count`, `mass`, `volume`                                              | es vocabulario técnico controlado, no texto comercial                                    |
+| `LEGAL_OR_OFFICIAL_NAME`   | razón social o nombre legal                                           | formas con `SAS`, `S.A.S.`, `SA`, `S.A.`, `LTDA`, `CIA`, `&` o guiones | puntuación, conectores y sufijos pueden integrar la denominación oficial                 |
+| `PERSON_OR_ACTOR_NAME`     | nombre de persona, contacto o alias                                   | campos `full_name`, `first_name`, `last_name`, `contact_name`, `alias` | la grafía pertenece a la identidad declarada y puede contener convenciones no inferibles |
+| `EXTERNAL_ORIGINAL`        | valor recibido de proveedor, importación o integración                | alias de proveedor, referencias, nombres externos y valores `raw`      | debe conservar procedencia y forma original cuando exista trazabilidad                   |
+| `TECHNICAL_IDENTIFIER`     | código, SKU, slug, URL, correo, teléfono, token, hash, modelo o serie | campos `code`, `sku`, `slug`, `url`, `email`, `serial_number`, `model` | no admite corrección ortográfica ni capitalización comercial                             |
+| `ADDRESS_OR_LOCATION_TEXT` | dirección o descriptor de ubicación                                   | direcciones, zonas, pasillos, niveles y ubicaciones físicas            | signos, números, abreviaturas y orden pueden ser significativos                          |
+| `FREE_TEXT`                | descripción, nota, mensaje, motivo o instrucción                      | `description`, `notes`, `message`, `reason`, `instructions`            | requiere reglas lingüísticas propias y preservación de contexto o autoría                |
+
+#### 5. Cobertura provisional por metadatos
+
+La siguiente clasificación se basa en nombres de columnas y sirve únicamente para delimitar revisión. No constituye la clase canónica final de cada campo.
+
+| Familia provisional                              | Columnas | Relaciones |
+| ------------------------------------------------ | -------: | ---------: |
+| texto escalar todavía no clasificable por nombre |      381 |        178 |
+| identificador técnico                            |      182 |        106 |
+| texto libre                                      |      134 |        117 |
+| otro nombre o etiqueta visible                   |       90 |         80 |
+| unidad, medida o moneda                          |       78 |         40 |
+| valor externo original                           |       26 |         16 |
+| dirección o texto de ubicación                   |       24 |         17 |
+| nombre de persona o actor                        |       13 |         10 |
+| marca explícita                                  |        3 |          3 |
+| nombre legal u oficial explícito                 |        3 |          3 |
+| **Total**                                        |  **934** |          — |
+
+Los 381 campos sin clasificación provisional impiden cerrar la política mediante nomenclatura. Su tratamiento deberá resolverse por dominio, entidad, campo, fuente y consumidor en `DATA-NORM-ARC-001` y `DATA-NORM-ARC-002`.
+
+#### 6. Inventario de marcas y códigos de marca
+
+Los campos explícitos de marca observados fueron:
+
+```text
+public.asset_items.brand
+public.product_asset_profiles.brand
+public.product_sku_sequences.brand_code
+```
+
+| Métrica                                                         | Resultado |
+| --------------------------------------------------------------- | --------: |
+| Observaciones no vacías en campos explícitos                    |        76 |
+| Valores escritos distintos                                      |        36 |
+| Claves comparativas distintas por minúsculas, tildes y espacios |        35 |
+| Grupos con variantes de escritura confirmadas                   |         1 |
+
+Evidencia representativa:
+
+| ID               | Valor o grupo                 | Evaluación                                                                                                 |
+| ---------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `DN-AUD-003-B01` | `Oster` / `oster`             | variante de caja confirmada; la forma oficial no puede inferirse del dato más frecuente                    |
+| `DN-AUD-003-B02` | `Wellmix` / `Welmix`          | posible diferencia ortográfica, marca distinta o error; requiere fuente oficial o revisión humana          |
+| `DN-AUD-003-B03` | `Volnic` / `VOLNIC PALLOMARO` | posible marca individual frente a composición de fabricante o proveedor; no admite compactación automática |
+| `DN-AUD-003-B04` | `Daza` / `acero daza`         | posible marca, fabricante o descripción material; no son equivalentes por coincidencia parcial             |
+| `DN-AUD-003-B05` | `MODELO DUC 72 R`             | contenido de modelo localizado en un campo de marca; evidencia de contaminación semántica                  |
+| `DN-AUD-003-B06` | `TORNADO MODELO (TH33M.110.)` | mezcla de marca, modelo y puntuación técnica dentro de un solo valor                                       |
+| `DN-AUD-003-B07` | `VGR`, `SAU`, `VCF`           | códigos de marca o unidad empresarial; deben permanecer separados de la grafía comercial                   |
+
+La ausencia de un campo de marca general en `public.products` y `pass.catalog_items` obliga a tratar como candidatos, no como confirmaciones, los términos comerciales embebidos en nombres. Entre los candidatos repetidos aparecen:
+
+| Candidato         | Apariciones en el corte | Nombres distintos | Evaluación                                                                 |
+| ----------------- | ----------------------: | ----------------: | -------------------------------------------------------------------------- |
+| `Hatsu`           |                      34 |                 9 | candidato comercial fuerte; confirmar grafía y propietario                 |
+| `Vento`           |                      22 |                18 | denominación empresarial o de línea; distinguir marca, sede y descriptor   |
+| `Molka`           |                      17 |                17 | candidato de marca o línea de empaque                                      |
+| `Saudo` / `SAUDO` |                       9 |                 9 | marca empresarial con variantes de caja en nombres                         |
+| `Nutella`         |                       6 |                 4 | candidato de marca incorporado en denominaciones de producto               |
+| `Klim`            |                       5 |                 3 | candidato de marca incorporado en denominaciones de producto               |
+| `Kraft`           |                       3 |                 3 | candidato de marca; puede coexistir con uso descriptivo en otros contextos |
+| `Kinder Bueno`    |                 3 o más |           2 o más | denominación compuesta que no admite transformación palabra por palabra    |
+
+La extracción por tokens también devuelve vocabulario ordinario como `Frutos`, `Madre`, `Pizza` o `Coco`. Por tanto, frecuencia y capitalización no son suficientes para declarar una marca.
+
+#### 7. Inventario de siglas, abreviaturas y nombres técnicos protegidos
+
+Se observaron 17 valores explícitos distintos en cuatro clases controlables:
+
+| Clase                                 | Valores observados                                 | Regla de auditoría                                                            |
+| ------------------------------------- | -------------------------------------------------- | ----------------------------------------------------------------------------- |
+| identificadores de aplicación         | `NEXO`, `VISO`, `ORIGO`, `NUMERA`, `FOGO`, `PULSO` | conservar forma contractual exacta                                            |
+| códigos de marca o unidad empresarial | `VGR`, `SAU`, `VCF`                                | no convertir en nombre visible ni expandir sin catálogo                       |
+| código monetario                      | `COP`                                              | conservar como identificador monetario controlado                             |
+| siglas legales o empresariales        | `SAS`, `SA`, `CIA`, `LTDA`, `AVSA`, `FC`, `SVV`    | preservar dentro del nombre oficial y distinguir sigla legal de nombre propio |
+
+El corte de nombres y etiquetas produjo 25 tokens en mayúsculas candidatos a sigla. Solo pueden considerarse excepciones confirmadas después de revisar contexto:
+
+| Token | Contexto observado               | Clasificación provisional                      |
+| ----- | -------------------------------- | ---------------------------------------------- |
+| `BBQ` | nombres de salsa y productos     | abreviatura culinaria o denominación comercial |
+| `HIT` | bebidas                          | posible marca                                  |
+| `AA`  | clasificación de huevos          | grado, categoría o estándar                    |
+| `CMS` | etiqueta de navegación           | sigla técnica                                  |
+| `PAM` | aerosol antiadherente            | posible marca                                  |
+| `REF` | nombre con referencia numérica   | abreviatura documental o comercial             |
+| `T26` | radio                            | modelo técnico                                 |
+| `WIP` | categoría con “Work In Progress” | sigla técnica de proceso                       |
+
+Palabras completas en mayúsculas como `BOLSA`, `POTE`, `CAJA` o `PIZZA` no se convierten en siglas por su forma. Son evidencia de estilo inconsistente o de etiquetas heredadas y deberán clasificarse por contexto.
+
+#### 8. Inventario de unidades, símbolos, códigos y etiquetas
+
+El corte consolidado de doce campos prioritarios de unidades produjo:
+
+| Métrica                                 | Resultado |
+| --------------------------------------- | --------: |
+| Observaciones no vacías                 |     8.277 |
+| Valores escritos distintos              |        54 |
+| Claves comparativas distintas           |        36 |
+| Grupos con variantes de caja o espacios |        12 |
+
+Clases observadas:
+
+| Clase                            | Valores representativos                                                                                | Riesgo de transformación genérica                                        |
+| -------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ |
+| símbolos de medida               | `g`, `kg`, `ml`, `l`                                                                                   | cambiar caja, separar o expandir puede alterar convención y contratos    |
+| código de conteo                 | `un`, `dz`                                                                                             | no debe convertirse automáticamente en palabra visible                   |
+| familia técnica                  | `count`, `mass`, `volume`                                                                              | vocabulario interno controlado                                           |
+| presentación o empaque           | `bolsa`, `paquete`, `pote`, `bandeja`, `caja`, `botella`, `bulto`, `tarro`, `lata`, `empaque`, `rollo` | existe como código y como etiqueta con formas de caja diferentes         |
+| etiqueta visible                 | `Unidad`, `BOLSA`, `Six Pack`, `Pote x 2`                                                              | requiere política de presentación separada del código                    |
+| composición de cantidad y unidad | `Bolsa 1 kg`, `Botella 750 ml`, `Paquete 10 un`                                                        | la cantidad, el separador y el símbolo deben procesarse estructuralmente |
+
+Grupos de variantes confirmados incluyen:
+
+```text
+bolsa / Bolsa / BOLSA
+paquete / Paquete / PAQUETE
+pote / Pote / POTE
+bandeja / Bandeja / BANDEJA
+caja / Caja / CAJA
+botella / Botella
+Unidad / UNIDAD
+bulto / Bulto / BULTO
+```
+
+Valores que requieren clasificación especial antes de cualquier corrección:
+
+| Valor                   | Brecha observada                                                                       |
+| ----------------------- | -------------------------------------------------------------------------------------- |
+| `Botellla`              | posible error ortográfico en etiqueta legacy                                           |
+| `Costo`                 | valor que no representa una unidad física evidente                                     |
+| `1`                     | código numérico sin semántica visible documentada                                      |
+| `Pote x 2`              | composición de empaque y multiplicador dentro de un texto                              |
+| `Six Pack` / `six_pack` | etiqueta visible y código técnico potencialmente relacionados, pero no intercambiables |
+| `presentacion`          | categoría genérica usada como código                                                   |
+| `piezas` / `bolsas`     | pluralización dentro de campos que también contienen códigos singulares                |
+
+Estas observaciones deberán alimentar la clasificación de transformaciones en `DATA-NORM-AUD-005`, la definición de clases en `DATA-NORM-ARC-002` y el catálogo de excepciones en `DATA-NORM-ARC-005`.
+
+#### 9. Inventario de razones sociales y nombres oficiales
+
+Se consolidaron valores de `public.suppliers.name`, `public.client_billing_profiles.legal_name`, `public.order_billing_requests.legal_name` y `public.inventory_entries.supplier_name`.
+
+| Métrica                                                        |               Resultado |
+| -------------------------------------------------------------- | ----------------------: |
+| Observaciones no vacías                                        |                      95 |
+| Valores escritos distintos                                     |                      92 |
+| Valores con sufijo legal detectable                            |                      22 |
+| Valores completamente en mayúsculas                            |                      94 |
+| Valores con puntuación significativa                           |                       8 |
+| Valores con conector `&`                                       |                       2 |
+| Grupos con variantes después de eliminar caja, tildes y signos | 0 en el corte observado |
+
+Evidencia representativa:
+
+```text
+COMERCIALIZADORA EL NOVILLON S.A.S.
+DISTRILACTEOS LTDA
+JAIME VELANDIA & CIA SAS
+PRODUCTORA Y COMERCIALIZADORA HACIENDA EL MOLINO P&P SAS
+SUCESORES DE JÓSE JESÚS RESTREPO & CIA S.A.
+```
+
+La forma almacenada puede provenir de documentos tributarios, proveedor, importación o captura manual. Esta tarea no determina si una tilde, punto, conector, sufijo o uso de mayúsculas es correcto. Toda razón social deberá conservar su valor original y su procedencia hasta disponer de una fuente oficial aprobada.
+
+#### 10. Otras excepciones que prohíben tratamiento genérico
+
+| Familia                                    | Columnas candidatas | Restricción mínima                                                                                           |
+| ------------------------------------------ | ------------------: | ------------------------------------------------------------------------------------------------------------ |
+| nombre de persona o actor                  |                  13 | no imponer `Title Case`, eliminar tildes ni alterar apellidos, partículas o alias sin decisión explícita     |
+| valor externo original                     |                  26 | conservar forma y procedencia; cualquier representación derivada debe almacenarse o calcularse separadamente |
+| identificador técnico                      |                 182 | no aplicar corrección ortográfica, conectores comerciales ni eliminación genérica de signos                  |
+| dirección o ubicación                      |                  24 | preservar números, abreviaturas, signos y orden; validar por contrato específico                             |
+| texto libre                                |                 134 | no aplicar cambios destructivos silenciosos; considerar autoría, historial y contexto                        |
+| otro nombre o etiqueta visible             |                  90 | clasificar por dominio antes de definir capitalización o diccionario                                         |
+| texto escalar sin clasificación por nombre |                 381 | revisión obligatoria; no heredar política por schema o tipo físico                                           |
+
+También quedan protegidos hasta clasificación expresa:
+
+- nombres de recetas, productos y categorías con términos extranjeros, denominaciones culinarias o nombres históricos;
+- modelos, números de referencia, series, códigos de barras y combinaciones alfanuméricas;
+- correos, teléfonos, URL, rutas, slugs, tokens, hashes y claves;
+- nombres de sedes, áreas, aplicaciones, estaciones y dispositivos;
+- alias de proveedor y nombres externos importados;
+- valores dentro de JSON o arreglos, que requieren política por clave o elemento;
+- valores derivados en vistas, que no constituyen una fuente de verdad independiente.
+
+#### 11. Matriz de protección y tarea propietaria
+
+| Clase                      | Transformación genérica prohibida                                      | Evidencia necesaria antes de decidir                                                            | Tarea propietaria                                             |
+| -------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| marca                      | `Title Case`, minúsculas, eliminación de signos o unión de palabras    | fuente oficial, propietario, campo de origen y consumidores                                     | `DATA-NORM-ARC-005`; `DATA-NORM-ARC-006`                      |
+| sigla o abreviatura        | expansión, cambio de caja o corrección ortográfica                     | catálogo contractual y significado por contexto                                                 | `DATA-NORM-ARC-005`                                           |
+| unidad o presentación      | cambio de caja, pluralización, expansión o compactación indiscriminada | clase de unidad, código, etiqueta, cantidad y perfil de conversión                              | `DATA-NORM-AUD-005`; `DATA-NORM-ARC-002`; `DATA-NORM-ARC-005` |
+| razón social               | capitalización comercial, retiro de puntos, conectores o sufijos       | documento o fuente oficial y procedencia                                                        | `DATA-NORM-ARC-005`; `DATA-NORM-ARC-012`                      |
+| nombre de persona          | capitalización universal o corrección por diccionario empresarial      | preferencia declarada, fuente de identidad y reglas legales aplicables                          | `DATA-NORM-ARC-002`; `DATA-NORM-ARC-007`                      |
+| identificador técnico      | corrección ortográfica o normalización de presentación                 | contrato de formato, unicidad y consumidores                                                    | `DATA-NORM-AUD-006`; `DATA-NORM-AUD-007`; `DATA-NORM-ARC-002` |
+| valor externo original     | sobrescritura por una forma corregida                                  | integración, fuente, versión y política de conservación                                         | `DATA-NORM-ARC-012`                                           |
+| texto libre                | corrección destructiva silenciosa                                      | reglas propias, autoría, historial y revisión humana                                            | `DATA-NORM-ARC-006`; `DATA-NORM-ARC-007`; `DATA-NORM-ARC-009` |
+| representación de búsqueda | sustitución del valor mostrado                                         | contrato de búsqueda, comparación y trazabilidad                                                | `DATA-NORM-ARC-008`; `DATA-NORM-ARC-009`                      |
+| posible duplicado          | fusión por clave normalizada                                           | relaciones, movimientos, recetas, inventario, proveedores, integraciones, historial y auditoría | `DATA-NORM-AUD-004`; `DATA-NORM-ARC-010`                      |
+
+#### 12. Hallazgos
+
+| ID               | Hallazgo                                                                      | Evidencia                                                                             | Consecuencia propietaria                                                                      |
+| ---------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `DN-AUD-003-H01` | las marcas explícitas no tienen una grafía uniforme ni una semántica limpia   | 36 valores escritos, 35 claves comparativas y valores que mezclan marca con modelo    | crear clasificación y catálogo oficial antes de corregir                                      |
+| `DN-AUD-003-H02` | los productos contienen marcas embebidas sin un campo general dedicado        | candidatos repetidos como `Hatsu`, `Vento`, `Molka`, `Nutella`, `Klim` y `Kraft`      | no extraer ni reescribir marcas mediante heurística de tokens                                 |
+| `DN-AUD-003-H03` | siglas visualmente similares pertenecen a contratos diferentes                | aplicaciones, marcas, moneda, formas legales, modelos y abreviaturas                  | gobernar cada clase por catálogo y contexto                                                   |
+| `DN-AUD-003-H04` | las unidades mezclan símbolos, códigos, familias, presentaciones y etiquetas  | 54 formas escritas y 12 grupos con variantes                                          | separar código canónico, etiqueta visible, cantidad y conversión                              |
+| `DN-AUD-003-H05` | existen valores unitarios que parecen errores o clasificaciones incorrectas   | `Botellla`, `Costo`, `1`, `Pote x 2`, `Six Pack` y `six_pack`                         | enviar a transformación determinista, diccionario o revisión humana según `DATA-NORM-AUD-005` |
+| `DN-AUD-003-H06` | las razones sociales dependen ampliamente de mayúsculas, signos y sufijos     | 94 de 95 observaciones en mayúsculas; 22 con sufijo legal                             | prohibir capitalización comercial universal                                                   |
+| `DN-AUD-003-H07` | la mayoría del texto escalar no puede clasificarse por nomenclatura           | 381 de 934 columnas permanecen sin clase provisional                                  | exigir decisión por dominio, entidad y campo                                                  |
+| `DN-AUD-003-H08` | la escritura almacenada no demuestra por sí sola oficialidad                  | variantes de marca, nombres externos y datos legacy                                   | requerir procedencia y evidencia autorizada                                                   |
+| `DN-AUD-003-H09` | las excepciones atraviesan datos visibles, contratos técnicos e integraciones | 182 identificadores, 26 valores externos, 24 campos de ubicación y 134 de texto libre | impedir una función de normalización universal                                                |
+
+#### 13. Riesgos y brechas vinculadas
+
+| ID               | Riesgo o brecha                                                                        | Estado después de esta tarea                                    | Tarea propietaria de resolución                               |
+| ---------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------- |
+| `DN-AUD-003-R01` | alterar una marca por capitalización, ortografía o separación inferida                 | identificado; no mitigado                                       | `DATA-NORM-ARC-005`; `DATA-NORM-ARC-006`; `DATA-NORM-ARC-007` |
+| `DN-AUD-003-R02` | tratar código de marca, aplicación, moneda o forma legal como texto comercial          | identificado; no mitigado                                       | `DATA-NORM-ARC-002`; `DATA-NORM-ARC-005`                      |
+| `DN-AUD-003-R03` | confundir símbolo, código, familia y etiqueta de unidad                                | identificado; no mitigado                                       | `DATA-NORM-AUD-005`; `DATA-NORM-ARC-001`; `DATA-NORM-ARC-002` |
+| `DN-AUD-003-R04` | sobrescribir una razón social o valor externo sin conservar procedencia                | identificado; prohibido por esta auditoría                      | `DATA-NORM-ARC-009`; `DATA-NORM-ARC-012`                      |
+| `DN-AUD-003-R05` | aplicar `Title Case` a nombres de persona, direcciones, modelos o siglas               | identificado; no mitigado                                       | `DATA-NORM-ARC-002`; `DATA-NORM-ARC-003`; `DATA-NORM-ARC-005` |
+| `DN-AUD-003-R06` | crear un diccionario desde frecuencia o tokens y convertir falsos positivos en reglas  | identificado; no mitigado                                       | `DATA-NORM-ARC-006`; `DATA-NORM-ARC-007`                      |
+| `DN-AUD-003-R07` | fusionar variantes de marca, unidad o nombre legal por clave comparativa               | identificado; prohibido por esta auditoría                      | `DATA-NORM-AUD-004`; `DATA-NORM-ARC-010`                      |
+| `DN-AUD-003-R08` | modificar códigos sin inventariar funciones, aplicaciones e integraciones consumidoras | identificado; no mitigado                                       | `DATA-NORM-AUD-006`; `DATA-NORM-AUD-007`; `DATA-NORM-ARC-011` |
+| `DN-AUD-003-R09` | extender reglas de Vento OS a VITAL por coexistencia física                            | restringido documentalmente; pendiente de controles posteriores | `SUPA-ARC-025`; contratos de integración aplicables           |
+
+Ningún riesgo se considera aceptado, mitigado o cerrado por esta tarea.
+
+#### 14. Decisiones reservadas
+
+Esta tarea no decide:
+
+- la grafía oficial definitiva de cada marca, sigla o razón social;
+- si dos formas de marca representan la misma entidad comercial;
+- si un término embebido en un nombre es marca, descriptor, ingrediente o vocabulario ordinario;
+- qué unidad, código o etiqueta sustituirá valores legacy;
+- qué abreviaturas pueden expandirse o traducirse;
+- qué correcciones son deterministas, dependen de diccionario o requieren revisión humana;
+- qué registros constituyen duplicados semánticos;
+- qué fuente es propietaria cuando el valor aparece en más de una tabla o aplicación;
+- qué capa ejecutará cada regla futura;
+- qué datos deberán corregirse, backfillearse, fusionarse o preservarse;
+- ninguna modificación física en Supabase.
+
+Las decisiones quedan asignadas a `DATA-NORM-AUD-004` a `DATA-NORM-AUD-007`, `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012` y las tareas de transición correspondientes.
+
+#### 15. Criterios de integridad de la auditoría
+
+La auditoría se considera íntegra para esta etapa cuando:
+
+1. distingue marca visible, código de marca y término comercial candidato;
+2. separa siglas de palabras completas escritas en mayúsculas;
+3. separa símbolo de medida, código de unidad, familia, presentación y etiqueta visible;
+4. conserva razones sociales y valores externos sin declarar una grafía alternativa;
+5. identifica nombres propios, direcciones, identificadores y texto libre como clases con políticas específicas;
+6. registra falsos positivos y límites de los métodos heurísticos;
+7. vincula cada brecha con una tarea propietaria concreta;
+8. no autoriza correcciones, fusiones ni cambios físicos;
+9. conserva la frontera separada de VITAL.
+
+#### 16. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: esta tarea inventaría excepciones y riesgos del estado actual, pero todavía no aprueba la grafía oficial, el tratamiento permitido, el diccionario, las transformaciones, la revisión humana, la representación de búsqueda, la unicidad ni la transición. Los comportamientos verificables deberán originarse en las tareas arquitectónicas y de transición que definan contratos por dominio, entidad, campo y clase de excepción.
+
+#### 17. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-AUD-002 — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-AUD-003 — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación
+```
+
+
 ### [ ] DATA-NORM-AUD-004 — Detectar duplicados semánticos mediante valores normalizados de comparación
 ### [ ] DATA-NORM-AUD-005 — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos
 ### [ ] DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto

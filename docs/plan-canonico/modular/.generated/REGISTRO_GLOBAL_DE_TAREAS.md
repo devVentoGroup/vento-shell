@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **431** |
+| Aprobadas | **432** |
 | En propuesta | **0** |
-| No iniciadas | **1144** |
+| No iniciadas | **1143** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **27.37% (431/1575)** |
+| Porcentaje de completamiento | **27.43% (432/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-AUD-002` — Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-AUD-003` — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica | ⬜ NO INICIADA |
-| Siguiente | `DATA-NORM-AUD-004` — Detectar duplicados semánticos mediante valores normalizados de comparación | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-AUD-003` — Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-AUD-004` — Detectar duplicados semánticos mediante valores normalizados de comparación | ⬜ NO INICIADA |
+| Siguiente | `DATA-NORM-AUD-005` — Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -398,7 +398,7 @@
 | ✅ APROBADA | `SUPA-AUD-024` | Clasificar riesgos críticos, altos, medios y deuda técnica | `bloques/E3_SUPABASE/02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` |
 | ✅ APROBADA | `DATA-NORM-AUD-001` | Inventariar campos textuales y reglas actuales de normalización | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ✅ APROBADA | `DATA-NORM-AUD-002` | Detectar inconsistencias de espacios, mayúsculas, Unicode, tildes, signos y conectores | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-AUD-003` | Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
+| ✅ APROBADA | `DATA-NORM-AUD-003` | Identificar marcas, siglas, unidades, razones sociales y excepciones que no admiten transformación genérica | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-004` | Detectar duplicados semánticos mediante valores normalizados de comparación | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-005` | Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-AUD-006` | Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
