@@ -252,8 +252,8 @@ de la continuidad documental. Aunque se elija `NEXO-REMISSIONS-001`,
 
 Esta tabla se genera automáticamente desde `priority-delivery-lanes.json`.
 Las etapas son secuenciales y no se avanza mientras la anterior carezca
-de resultado y evidencia. Las tareas de diseño terminan antes de E5;
-ninguna tarea de implementación, migración o cambio físico comienza antes
+de resultado y evidencia. Las tareas de diseño terminan antes de E5.
+Ninguna tarea de implementación, migración o cambio físico comienza antes
 de `E5-GATE-008::NEXO-REMISSIONS-001`.
 
 | Etapa | Grupo | Tareas exactas | Resultado para avanzar |
