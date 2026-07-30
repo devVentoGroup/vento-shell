@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **416** |
+| Tareas aprobadas | **417** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1159** |
+| Tareas no iniciadas | **1158** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **26.41% (416/1575)** |
+| Porcentaje de completamiento | **26.48% (417/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas** |
-| Tarea actual | **SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps** |
+| Última tarea aprobada | **SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps** |
+| Tarea actual | **SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers** |
+| Siguiente tarea | **SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 11 de 25 aprobadas; SUPA-ARC-012 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 12 de 25 aprobadas; SUPA-ARC-013 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-ARC-011` — Definir convenciones de nombres para esquemas, tablas y columnas |
-| Tarea actual | `SUPA-ARC-012` — Definir convenciones de claves, constraints, estados y timestamps — **NO INICIADA** |
-| Siguiente tarea | `SUPA-ARC-013` — Definir convenciones para funciones, RPC y triggers |
+| Última aprobada | `SUPA-ARC-012` — Definir convenciones de claves, constraints, estados y timestamps |
+| Tarea actual | `SUPA-ARC-013` — Definir convenciones para funciones, RPC y triggers — **NO INICIADA** |
+| Siguiente tarea | `SUPA-ARC-014` — Definir política canónica de `SECURITY DEFINER` |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **11 DE 25 APROBADAS — ACTUAL SUPA-ARC-012** |
+| BLOQUE E3 | **12 DE 25 APROBADAS — ACTUAL SUPA-ARC-013** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas
-        ↓
-TAREA ACTUAL
 SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 11 de 25 tareas aprobadas
+BLOQUE E3 — 12 de 25 tareas aprobadas
 ```

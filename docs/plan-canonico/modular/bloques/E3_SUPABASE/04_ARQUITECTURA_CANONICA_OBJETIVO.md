@@ -5569,7 +5569,596 @@ SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestam
 `SUPA-ARC-012` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps
+### ✅ SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `1c0b701cda53b2adbde699f2e2c60a06e444c997`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `486dd00a94973f7e07aeea0b4013f66768407d71`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `c5546038d7f9bc08b1e90ec716b1b0350ad6b979`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `01_PRINCIPIOS_OBLIGATORIOS.md` blob `36bb9a4c19f6d8e7edbaa03687219fb642c9c526`; `package.json` blob `2b98a51f48b721ffa3b53e2c9fc5188f8478e83d`
+**Tipo de tarea:** definición normativa de identidad física, integridad relacional, vocabularios de estado y semántica temporal para objetos gobernados por Vento; sin crear o alterar schemas, tablas, columnas, claves, constraints, índices, secuencias, enums, datos, funciones, RPC, triggers, policies, grants, RLS, configuración, migraciones, código, backfills, cutover ni despliegues
+
+#### 1. Objetivo
+
+Definir un estándar único, verificable y fail closed para las claves, constraints, estados y timestamps de Vento OS, de modo que cada objeto persistente pueda demostrar identidad, integridad referencial, unicidad, lifecycle y orden temporal sin depender de convenciones implícitas, valores nulos ambiguos, números generados por clientes, nombres automáticos de PostgreSQL o timestamps usados con significados competidores.
+
+```text
+IDENTIDAD ESTABLE
+        +
+INTEGRIDAD EXPLÍCITA
+        +
+VOCABULARIO DE ESTADO CERRADO
+        +
+SEMÁNTICA TEMPORAL INEQUÍVOCA
+        ↓
+CONTRATOS REPRODUCIBLES, AUDITABLES Y MIGRABLES
+```
+
+La tarea define la política objetivo. No modifica el estado remoto ni decide todavía firmas de funciones, RPC, triggers, `SECURITY DEFINER`, grants, RLS, contratos por dominio o transición objeto por objeto.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-KEY-CONSTRAINT-STATE-TIME-STANDARD-001@1.0.0
+```
+
+| Propiedad                         |               Valor |
+| --------------------------------- | ------------------: |
+| `default_entity_primary_key_type` |              `uuid` |
+| `default_uuid_generator`          | `gen_random_uuid()` |
+| `primary_key_strategies`          |               **3** |
+| `constraint_name_classes`         |               **5** |
+| `index_name_classes`              |               **2** |
+| `sequence_name_patterns`          |               **1** |
+| `state_storage_strategies`        |               **3** |
+| `canonical_instant_type`          |       `timestamptz` |
+| `canonical_instant_reference`     |               `UTC` |
+| `open_interval_convention`        |     `[from, until)` |
+| `new_test_requirements`           |              **42** |
+| `physical_changes_authorized`     |               **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                          | Decisión consumida                                                                                 |
+| --------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                               | continuidad, preservación histórica, una sola tarea y separación entre definición e implementación |
+| `delivery-contract.json`                                        | artefacto único de tarea y registro 04A completo con identidad de entrega única                    |
+| `active-sequence.json`                                          | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-012` como tarea actual                        |
+| `SUPABASE-SCHEMA-TABLE-COLUMN-NAMING-STANDARD-001@1.0.0`        | nombres `id`, referencias `_id`, códigos, claves, números, estados, razones y sufijos temporales   |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0`    | owner schema único de cada fuente empresarial                                                      |
+| `SUPABASE-AUTH-ENTERPRISE-IDENTITY-MODEL-001@1.0.0`             | separación entre cuenta, principal, identidad y actor efectivo                                     |
+| `SUPABASE-AUTH-SESSION-REVOCATION-DEACTIVATION-MODEL-001@1.0.0` | estados, versiones, expiración y precedencia de revocación                                         |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`             | eventos, evidencia append-only, causalidad, ocurrencia y registro                                  |
+| `SUPA-AUD-004` y `SUPA-AUD-005`                                 | inventario de relaciones, PK, FK, UNIQUE, CHECK, NOT NULL, enums y secuencias actuales             |
+| `SUPA-AUD-016` a `SUPA-AUD-019`                                 | drift, compatibilidad, duplicidad, huérfanos y fuentes competidoras                                |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`              | 5.213 requisitos hasta `SUPA-ARC-011`; rango `TREQ-SUPABASE-001` a `918`                           |
+
+#### 4. Alcance y frontera de la decisión
+
+Esta tarea gobierna:
+
+1. tipos y generación de claves primarias nuevas;
+2. claves compuestas para relaciones puras;
+3. claves empresariales, códigos, números e identificadores externos;
+4. referencias y acciones de integridad referencial;
+5. nombres y semántica de PK, FK, UNIQUE, CHECK y EXCLUDE;
+6. nombres básicos de índices y secuencias vinculados con estas reglas;
+7. nullability, defaults y constraints diferidos o no validados;
+8. representación, vocabulario, transición y terminalidad de estados;
+9. tipos temporales, timestamps mínimos, vigencias, intervalos y zona horaria;
+10. compatibilidad y gate recurrente de integridad.
+
+Esta tarea no gobierna:
+
+- firmas o cuerpos de funciones, RPC, procedimientos y triggers;
+- la política de `SECURITY DEFINER`;
+- grants, RLS, policies y roles de ejecución;
+- contratos concretos de lectura o mutación de cada dominio;
+- índices por plan de consulta, particionamiento físico o retención;
+- mapeo individual y migración de objetos actuales.
+
+Esas decisiones permanecen en `SUPA-ARC-013` a `SUPA-ARC-025`, `SUPA-TRANS-*` y los paquetes de implementación correspondientes.
+
+#### 5. Principios obligatorios
+
+1. Toda identidad física tendrá una sola autoridad y no cambiará por edición de datos humanos.
+2. La clave primaria no se usará como número documental, código visible, orden cronológico ni significado empresarial.
+3. Toda relación obligatoria se protegerá mediante FK y `NOT NULL`, salvo imposibilidad documentada y temporal.
+4. Toda unicidad tendrá ámbito, tratamiento de `NULL` y condición de lifecycle explícitos.
+5. Las acciones de borrado o actualización no se heredarán por comodidad; deberán expresar ownership y lifecycle.
+6. Los estados serán vocabularios de máquina cerrados y no texto libre.
+7. Toda transición será atómica, autorizada, auditable y compatible con concurrencia.
+8. Un timestamp tendrá un único significado contractual; `updated_at` no sustituirá tiempos de negocio.
+9. Los instantes se persistirán con zona y se compararán en UTC.
+10. Toda deuda histórica conservará clasificación, owner, transición y prueba; no se normalizará silenciosamente.
+
+#### 6. Taxonomía de claves
+
+| Clase                  | Finalidad                                                                      | Forma objetivo                                                   |
+| ---------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| `ENTITY_SURROGATE_KEY` | identidad estable de entidad, agregado, evento o registro con lifecycle propio | `id uuid` generado server-side                                   |
+| `PURE_RELATION_KEY`    | relación sin identidad, payload, historia ni referencias externas propias      | PK compuesta por las FK constituyentes                           |
+| `MANAGED_PLATFORM_KEY` | referencia estable a una entidad administrada mediante superficie soportada    | tipo y lifecycle definidos por la plataforma; Vento no lo recrea |
+| `BUSINESS_CODE`        | identificador legible dentro de un ámbito                                      | `<concept>_code` con UNIQUE scoped                               |
+| `MACHINE_KEY`          | token estable de contrato o catálogo                                           | `<concept>_key` con UNIQUE scoped                                |
+| `DOCUMENT_NUMBER`      | número visible y secuencial del proceso                                        | `<concept>_number` separado del PK                               |
+| `EXTERNAL_IDENTIFIER`  | identidad en proveedor externo                                                 | `<provider>_<entity>_id` con procedencia y UNIQUE scoped         |
+
+#### 7. Clave primaria canónica
+
+1. Toda tabla persistente gobernada por Vento tendrá exactamente una PK declarada, salvo una vista, una partición física sin identidad independiente o una excepción documentada.
+2. La forma predeterminada para entidades, agregados, eventos, intentos, receipts, snapshots y registros con lifecycle propio será:
+
+```text
+id uuid not null default gen_random_uuid()
+```
+
+3. El valor se generará dentro de una frontera server-side confiable; un cliente no impondrá libremente la identidad definitiva.
+4. La PK será inmutable después de persistirse.
+5. Ningún contrato inferirá tiempo, secuencia, sede, dominio, actor o tipo de entidad desde el UUID.
+6. El orden se resolverá mediante timestamps, números o secuencias explícitos, nunca mediante comparación accidental de UUID.
+7. Un ID temporal creado offline deberá distinguirse de la identidad confirmada o validarse mediante contrato idempotente antes de convertirse en autoridad.
+8. Las tablas administradas por PostgreSQL o Supabase conservarán su contrato de identidad soportado y quedan fuera de esta regla de creación.
+
+#### 8. Relaciones puras y claves compuestas
+
+Una tabla de relación podrá usar PK compuesta únicamente cuando cumpla simultáneamente:
+
+- representa una relación pura entre entidades identificables;
+- no posee lifecycle independiente;
+- no necesita referencias externas hacia una instancia concreta de la relación;
+- no conserva estado, historial, payload, orden o atributos propios distintos de la relación;
+- la combinación de FK es la identidad empresarial completa;
+- el owner de la relación está definido.
+
+Cuando exista estado, vigencia, prioridad, atributos, evidencia, referencias externas o historial, la relación tendrá `id uuid` propio y una constraint UNIQUE separada sobre la tupla empresarial que no deba duplicarse.
+
+#### 9. Códigos, claves, números e identificadores externos
+
+1. `id`, `_code`, `_key`, `_number`, `_name`, `_label` y `_slug` permanecerán semánticamente separados.
+2. Los códigos y claves de máquina tendrán ámbito explícito mediante columnas de scope o una relación propietaria.
+3. Un número documental no será PK ni FK técnica.
+4. La generación de números visibles será atómica, server-side e idempotente; queda prohibido `max(...) + 1`.
+5. Los huecos de numeración no se tratarán como corrupción salvo que una obligación fiscal, contractual u operativa defina continuidad estricta.
+6. Una secuencia gobernada por Vento se nombrará `seq_<concept>_<purpose>` y permanecerá en el owner schema correspondiente.
+7. Los clientes no recibirán privilegio directo sobre secuencias de numeración empresarial.
+8. Un identificador externo deberá registrar proveedor, tipo de entidad, valor normalizado, ambiente cuando aplique, fecha de vinculación y conflicto.
+9. La unicidad externa se expresará al menos como proveedor + entidad + identificador; `external_id` aislado no será suficiente.
+
+#### 10. Claves foráneas
+
+1. Toda FK utilizará el mismo tipo físico y semántica de la clave referenciada.
+2. La referencia apuntará a PK o UNIQUE vigente, nunca a una vista, alias de compatibilidad o valor no protegido.
+3. Una relación obligatoria tendrá FK y `NOT NULL` desde su estado válido inicial.
+4. Una FK interdominio apuntará a la fuente autoritativa del owner schema, no a `api`, `public`, una proyección o una copia consumidora.
+5. Una referencia a schema administrado se limitará a identificadores estables y superficies soportadas; no acoplará el modelo a internals no contractuales.
+6. La existencia de una FK no transfiere ownership ni autoriza lectura, escritura o borrado cruzado.
+7. Toda FK declarará dirección de ownership, cardinalidad, obligatoriedad, acción de borrado, acción de actualización y estrategia de transición.
+8. Las FK cruzadas se registrarán para detectar ciclos, orden de migración y efectos de baja.
+9. Las referencias polimórficas no podrán representarse mediante un UUID genérico sin tipo, owner y validación de existencia.
+
+#### 11. Acciones de borrado y actualización
+
+| Acción                             | Política objetivo                                                                                    |
+| ---------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `ON UPDATE`                        | `NO ACTION` o `RESTRICT`; las PK son inmutables                                                      |
+| `ON DELETE RESTRICT` o `NO ACTION` | predeterminado para entidades empresariales y referencias interdominio                               |
+| `ON DELETE CASCADE`                | solo hijos estrictamente poseídos por un agregado, sin lifecycle independiente y con impacto probado |
+| `ON DELETE SET NULL`               | solo relación opcional cuya ausencia posterior conserva significado válido y auditable               |
+| `ON DELETE SET DEFAULT`            | prohibida salvo contrato excepcional con valor centinela explícitamente válido                       |
+
+`CASCADE` no se usará para resolver limpieza operativa, offboarding, privacidad, retención o reconciliación. Todo borrado masivo derivado deberá tener prueba de alcance, límites, auditoría y rollback o recuperación equivalente.
+
+#### 12. Referencias polimórficas
+
+Una referencia polimórfica solo será válida si declara:
+
+```text
+reference_kind
++ reference_id
++ owner_schema_or_registry
++ allowed_kind_set
++ existence_validation
++ lifecycle_behavior
++ authorization_boundary
+```
+
+Reglas:
+
+1. `entity_id`, `object_id`, `record_id`, `ref_id` o `target_id` aislados quedan prohibidos;
+2. el discriminador usará vocabulario cerrado;
+3. cada clase permitida tendrá owner y validación reproducible;
+4. la eliminación o sustitución de la entidad referenciada tendrá efecto definido;
+5. una referencia polimórfica no sustituirá una FK normal cuando el universo sea estable y pequeño;
+6. los eventos y auditoría podrán conservar referencias históricas no FK cuando la inmutabilidad y retención impidan acoplar lifecycle, pero deberán declarar procedencia y resolución.
+
+#### 13. Convenciones de nombres para constraints, índices y secuencias
+
+| Clase                                | Patrón                        |
+| ------------------------------------ | ----------------------------- |
+| PRIMARY KEY                          | `pk_<table>`                  |
+| FOREIGN KEY                          | `fk_<table>_<semantic_role>`  |
+| UNIQUE constraint                    | `uq_<table>_<semantic_key>`   |
+| CHECK constraint                     | `ck_<table>_<rule>`           |
+| EXCLUDE constraint                   | `ex_<table>_<rule>`           |
+| índice no contractual                | `ix_<table>_<access_pattern>` |
+| índice único parcial o por expresión | `ux_<table>_<semantic_key>`   |
+| secuencia Vento                      | `seq_<concept>_<purpose>`     |
+
+Reglas:
+
+1. todos los nombres cumplirán ASCII `lower_snake_case` y máximo de 63 bytes;
+2. PostgreSQL no podrá truncarlos para resolver longitud;
+3. el nombre será único dentro del schema y determinista desde la semántica;
+4. no se aceptarán nombres automáticos opacos ni sufijos numéricos para resolver colisiones;
+5. una FK usará el rol semántico local, no una concatenación ilimitada de todas las columnas;
+6. una UNIQUE o CHECK nombrará la regla, no repetirá mecánicamente cada token si ello destruye legibilidad;
+7. un índice que materializa una constraint conservará el nombre de la constraint; `ix_` y `ux_` se reservan para índices no representables como constraint ordinaria;
+8. todo renombre conservará dependencia, compatibilidad y transición conforme a `SUPA-ARC-011`.
+
+#### 14. Semántica de constraints
+
+1. Toda regla expresable de forma segura en la base se protegerá en la base además de cualquier validación de aplicación.
+2. PRIMARY KEY, FOREIGN KEY, UNIQUE, CHECK y EXCLUDE tendrán owner y propósito documentados.
+3. Una CHECK será determinista, row-local y libre de llamadas volátiles, acceso externo o dependencia mutable no versionada.
+4. La integridad entre filas se resolverá mediante UNIQUE, EXCLUDE, FK, transacción o lógica confiable; no mediante CHECK que consulte otras filas.
+5. La semántica de `NULL` en unicidad será explícita: valores nulos distintos, `NULLS NOT DISTINCT` o índice parcial según el contrato.
+6. Una UNIQUE condicional por lifecycle definirá exactamente qué estados participan.
+7. `NOT VALID` será una fase transitoria registrada; las nuevas escrituras deberán cumplir desde el cutover y la validación histórica tendrá owner, fecha y gate.
+8. Ninguna tarea se cerrará con constraints no validadas sin riesgo aceptado y tarea de resolución.
+9. `DEFERRABLE` y `INITIALLY DEFERRED` serán excepciones para invariantes transaccionales concretos; no se usarán para ocultar orden incorrecto de escrituras.
+10. Toda excepción tendrá caso reproducible, alcance, concurrencia, observabilidad y prueba de rollback.
+
+#### 15. Nullability y defaults
+
+1. `NOT NULL` representa obligatoriedad estructural y no se omitirá por conveniencia de interfaz.
+2. Un campo opcional tendrá una semántica explícita para ausencia; `NULL` no significará simultáneamente desconocido, no aplica, pendiente, desactivado o falso.
+3. Un estado multivalor no se modelará mediante `NULL` o varios booleanos competidores.
+4. Los defaults solo representarán una decisión segura e inequívoca para toda creación válida.
+5. Un default no inferirá actor, sede, área, moneda, zona horaria, estado privilegiado o ownership desde contexto mutable sin contrato.
+6. Los defaults de identidad y tiempo serán server-side.
+7. Agregar un default durante transición no rellenará silenciosamente historia con un valor ficticio.
+8. La remoción de `NULL` exigirá clasificación, backfill, reconciliación y validación previa.
+
+#### 16. Distinción entre `status` y `state`
+
+| Concepto      | Uso canónico                                                                    |
+| ------------- | ------------------------------------------------------------------------------- |
+| `status`      | clasificación vigente y reportable del lifecycle o disposición de una entidad   |
+| `state`       | posición de una máquina de estados con transiciones y precondiciones explícitas |
+| `type`        | clase estructural que no representa avance de lifecycle                         |
+| `category`    | agrupación empresarial o analítica                                              |
+| `reason_code` | causa de máquina separada del mensaje humano                                    |
+
+Una relación no mantendrá `status` y `state` para el mismo concepto. Cuando ambos existan, deberá demostrarse que representan dimensiones diferentes, tienen vocabularios, owners y reglas independientes.
+
+#### 17. Forma de los vocabularios de estado
+
+1. Los valores de máquina usarán ASCII `UPPER_SNAKE_CASE`.
+2. No contendrán etiquetas humanas, espacios, tildes, colores, iconos ni mensajes.
+3. Cada vocabulario tendrá identificador, versión, owner, descripción, estado inicial, estados terminales y compatibilidad.
+4. Los valores no se reutilizarán con significado distinto.
+5. Un valor retirado conservará historia y mapeo; no se reasignará.
+6. `ACTIVE`, `INACTIVE`, `PENDING`, `COMPLETED`, `CANCELLED` u otros tokens genéricos solo se usarán cuando el concepto calificado sea inequívoco.
+7. `reason_code` será cerrado y separado de notas humanas.
+8. Los consumidores traducirán labels, pero no reinterpretarán la decisión de máquina.
+
+#### 18. Estrategias de persistencia de estados
+
+Cada campo de estado elegirá exactamente una estrategia:
+
+| Estrategia       | Uso permitido                                                                                                                |
+| ---------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `TEXT_CHECK`     | vocabulario pequeño, owner-local, sin metadata compartida y con cambio controlable por migración                             |
+| `DOMAIN_CATALOG` | vocabulario empresarial compartido que necesita label, orden, activación, reglas, traducción, vigencia o referencias         |
+| `POSTGRES_ENUM`  | conjunto técnico muy estable, owner-local, de baja volatilidad y sin necesidad de retirar o reordenar valores frecuentemente |
+
+Reglas:
+
+1. no se combinarán las tres estrategias para el mismo concepto activo;
+2. un enum no se elegirá solo por comodidad de tipado;
+3. un catálogo de estado no permitirá crear valores desde clientes ordinarios;
+4. un CHECK enumerará el vocabulario completo o dependerá de una función inmutable versionada;
+5. la decisión tendrá criterio de evolución, rollback, generación de tipos y paridad entre ambientes;
+6. cualquier migración entre estrategias conservará valores, historia y consumidores.
+
+#### 19. Máquinas de estado y transiciones
+
+Toda máquina deberá declarar:
+
+```text
+state_machine_id
++ version
++ owner
++ state_column
++ initial_state
++ allowed_transitions
++ terminal_states
++ reversible_transitions
++ required_reason_codes
++ required_actor_and_permission
++ transition_timestamp_policy
++ concurrency_policy
++ audit_policy
+```
+
+Reglas:
+
+1. el estado inicial se asignará server-side y no podrá elevar privilegios;
+2. cada transición validará estado anterior y nuevo dentro de la misma operación atómica;
+3. una actualización directa que omita la allowlist deberá fallar cerrada;
+4. los estados terminales no retornarán a estados ordinarios salvo transición de reapertura explícita, autorizada y auditada;
+5. cancelación, reversión, corrección, rechazo, suspensión y revocación requerirán razón de máquina cuando el contrato lo indique;
+6. un reintento idempotente no duplicará transición ni evidencia;
+7. la concurrencia no podrá saltar estados, reducir versión ni sobrescribir una transición confirmada;
+8. el historial completo residirá en eventos o auditoría cuando sea requerido; la fila actual no se presentará como historia suficiente.
+
+#### 20. Timestamps de transición y milestones
+
+1. Una entidad stateful tendrá un timestamp inequívoco del último cambio de estado, como `state_changed_at` o `<concept>_status_changed_at`.
+2. Los milestones empresariales relevantes conservarán timestamps específicos, por ejemplo `requested_at`, `approved_at`, `started_at`, `completed_at`, `cancelled_at`, `revoked_at` o `received_at`.
+3. `updated_at` no sustituirá timestamps de milestone ni permitirá reconstruir una historia inexistente.
+4. El timestamp de transición se confirmará en la misma transacción que el nuevo estado.
+5. Una transición que exige actor conservará referencia al actor mediante el contrato de auditoría.
+6. Cuando el tiempo de ocurrencia provenga de una fuente externa, se conservarán además tiempo de registro, fuente, zona y confianza.
+
+#### 21. Tipos temporales canónicos
+
+| Concepto                      | Tipo físico objetivo                                                               |
+| ----------------------------- | ---------------------------------------------------------------------------------- |
+| instante absoluto             | `timestamptz`                                                                      |
+| fecha civil                   | `date`                                                                             |
+| hora local sin fecha          | `time without time zone`                                                           |
+| zona horaria                  | identificador IANA en columna `_timezone`                                          |
+| duración contractual discreta | entero con unidad explícita en el nombre                                           |
+| duración PostgreSQL interna   | `interval` solo cuando su semántica calendarizada sea necesaria y esté documentada |
+
+Reglas:
+
+1. todo instante transversal se persistirá como `timestamptz` y se interpretará en UTC;
+2. `timestamp without time zone` no será válido para instantes de negocio, auditoría, expiración o integración;
+3. la presentación local se derivará usando la zona aplicable y no alterará el valor persistido;
+4. una fecha civil no se convertirá automáticamente a medianoche UTC;
+5. una hora de operación local requerirá zona y reglas para cambios de offset;
+6. abreviaturas como `COT`, `EST` o `CST` no serán autoridad de zona horaria.
+
+#### 22. Timestamps mínimos por clase de registro
+
+| Clase                  | Timestamps mínimos                                                 |
+| ---------------------- | ------------------------------------------------------------------ |
+| entidad mutable        | `created_at`, `updated_at`                                         |
+| registro append-only   | `recorded_at` y `occurred_at` cuando el hecho tenga tiempo propio  |
+| evento empresarial     | `occurred_at`, `recorded_at` y correlación temporal cuando aplique |
+| vigencia               | `<concept>_from`, `<concept>_until`                                |
+| expiración             | `expires_at`                                                       |
+| soft deletion aprobada | `deleted_at`, actor y razón separados                              |
+| proceso con milestones | timestamps específicos de cada hito irreversible o auditable       |
+
+`created_at` y `recorded_at` usarán default server-side `now()` cuando representen el momento de persistencia. `updated_at` solo existirá en registros mutables y se actualizará mediante una frontera confiable definida posteriormente en `SUPA-ARC-013`.
+
+#### 23. Semántica temporal obligatoria
+
+1. `created_at` identifica creación persistida, no ocurrencia histórica ni importación original.
+2. `updated_at` identifica la última mutación persistida relevante, no acceso, lectura, sincronización o cambio de hijo.
+3. `occurred_at` identifica cuándo ocurrió el hecho empresarial.
+4. `recorded_at` identifica cuándo Vento registró el hecho.
+5. `effective_at`, `effective_from` y `effective_until` gobiernan vigencia empresarial.
+6. `scheduled_at` no implica inicio; `started_at` no implica finalización.
+7. `completed_at`, `cancelled_at`, `revoked_at`, `expired_at` y `deleted_at` solo se poblarán cuando el estado correspondiente sea válido.
+8. Un timestamp aportado por cliente o proveedor se marcará como observado o declarado y se validará contra límites, procedencia y zona.
+9. Los campos de auditoría no serán libremente asignables por clientes ordinarios.
+
+#### 24. Intervalos y vigencias
+
+La convención general será intervalo semiabierto:
+
+```text
+[from, until)
+```
+
+Reglas:
+
+1. `from` es inclusivo y `until` exclusivo;
+2. `until` nulo representa vigencia abierta únicamente cuando el contrato lo permita;
+3. cuando ambos existan, `from < until`;
+4. los rangos que no deben solaparse usarán EXCLUDE, UNIQUE temporal o control transaccional probado;
+5. la sustitución de una vigencia cerrará la anterior y abrirá la nueva de forma atómica;
+6. no se mezclarán fin inclusivo y exclusivo dentro del mismo concepto;
+7. la consulta de vigencia utilizará una regla única para aplicación, RPC, RLS y reportes;
+8. la zona empresarial aplicable se conservará cuando la vigencia se derive de fechas civiles.
+
+#### 25. Integridad temporal y concurrencia
+
+1. `updated_at >= created_at` para entidades mutables.
+2. `recorded_at >= created_at` cuando ambos representen persistencia dentro del mismo registro.
+3. Un milestone posterior no podrá anteceder un milestone causal anterior, salvo corrección histórica explícita y auditada.
+4. El reloj del cliente no decidirá orden autoritativo de mutaciones.
+5. La escritura deberá conservar una versión o precondición cuando exista riesgo de lost update.
+6. Una respuesta tardía no podrá reducir estado, versión o timestamp confirmado.
+7. Las importaciones históricas separarán tiempo original, tiempo de importación y tiempo de registro.
+8. El skew permitido, la fuente horaria y los límites por integración deberán ser configurables y probados.
+9. La precisión temporal será consistente por contrato; los consumidores no dependerán de redondeos implícitos.
+
+#### 26. Soft deletion, retención y corrección
+
+1. Soft delete no será la política predeterminada de todas las tablas.
+2. Cuando exista, deberá declarar estado, `deleted_at`, actor, razón, visibilidad, restauración, retención y disposición final.
+3. `deleted_at` nulo significará exclusivamente no eliminado bajo ese contrato.
+4. Una UNIQUE deberá declarar si los registros eliminados continúan reservando la clave.
+5. Un registro append-only no se corregirá editándolo o soft-deleting el hecho; se emitirá corrección, reversión o supersesión enlazada.
+6. Borrado de privacidad, retención legal y limpieza técnica no se modelarán como el mismo lifecycle.
+7. La política completa de retención, backups y legal hold permanece en `SUPA-ARC-022`.
+
+#### 27. Línea base actual y clasificación obligatoria
+
+El inventario aprobado conserva:
+
+```text
+CONSTRAINTS_TOTAL = 2057
+PRIMARY_KEYS = 422
+FOREIGN_KEYS = 818
+UNIQUE_CONSTRAINTS = 155
+CHECK_CONSTRAINTS = 662
+NOT_NULL_COLUMNS = 3187
+NOT_VALID_CONSTRAINTS = 14
+TABLE_LIKE_OBJECTS_WITHOUT_OWN_PK = 10
+CROSS_SCHEMA_FOREIGN_KEYS = 200
+ENUM_TYPES = 34
+ENUM_VALUES = 150
+SEQUENCES_TOTAL = 7
+```
+
+Clasificación objetivo:
+
+| Evidencia AS-IS                    | Tratamiento obligatorio                                                                |
+| ---------------------------------- | -------------------------------------------------------------------------------------- |
+| 14 constraints no validadas        | inventariar owner, razón, nuevas escrituras, histórico pendiente y fecha de validación |
+| 10 objetos tabulares sin PK propia | distinguir vista, partición, relación pura, objeto administrado o brecha real          |
+| 200 FK cruzadas                    | mapear owner, dirección, lifecycle, ciclos y orden de transición                       |
+| 34 enums                           | clasificar cada uno como conservar, migrar a catálogo, migrar a CHECK o retirar        |
+| 7 secuencias                       | separar secuencias administradas de numeración Vento y certificar consumidores         |
+| nombres y acciones heterogéneas    | comparar contra este estándar sin ejecutar normalización automática                    |
+
+La tarea no altera estos objetos ni presupone que toda diferencia sea un defecto. Cada caso deberá obtener decisión individual en la transición.
+
+#### 28. Orden obligatorio de materialización futura
+
+```text
+1. INVENTARIAR PK, FK, UNIQUE, CHECK, EXCLUDE, NULLABILITY, DEFAULTS, ENUMS Y SECUENCIAS
+2. CLASIFICAR IDENTIDAD, BUSINESS KEYS, RELACIONES, ESTADOS Y TIEMPOS POR OWNER
+3. DETECTAR HUÉRFANOS, DUPLICADOS, SOLAPES, VALORES INVÁLIDOS Y CONSTRAINTS NO VALIDADAS
+4. DEFINIR CONTRATOS DE COMPATIBILIDAD Y BACKFILL
+5. CREAR CONSTRAINTS NUEVAS EN MODO SEGURO Y VALIDAR NUEVAS ESCRITURAS
+6. RECONCILIAR HISTÓRICO Y VALIDAR CONSTRAINTS
+7. ADAPTAR RPC, TRIGGERS, RLS, TIPOS Y CONSUMIDORES
+8. REALIZAR CUTOVER POR DOMINIO CON TELEMETRÍA Y ROLLBACK
+9. RETIRAR ALIASES, ESTADOS, ENUMS Y CLAVES LEGACY SOLO DESPUÉS DE PARIDAD
+10. ACTIVAR VALIDACIÓN RECURRENTE CONTRA REMOTO Y MIGRACIONES
+```
+
+El orden no autoriza implementación física.
+
+#### 29. Riesgos restringidos y carryover
+
+| Riesgo                            | Efecto de esta tarea                                   | Resolución restante                              |
+| --------------------------------- | ------------------------------------------------------ | ------------------------------------------------ |
+| PK con significado empresarial    | separa identidad técnica de código y número            | `SUPA-TRANS-001`; paquetes de dominio            |
+| huérfanos o duplicados            | exige constraint, reconciliación y validación          | `SUPA-AUD-019`; `SUPA-TRANS-005`                 |
+| cascada destructiva               | establece `RESTRICT` como predeterminado               | `SUPA-ARC-013`; transición por objeto            |
+| FK cruzada cíclica                | exige ownership, dirección y orden de materialización  | `SUPA-ARC-017`; `SUPA-TRANS-004`                 |
+| estado libre o duplicado          | define vocabulario, estrategia y allowlist             | `SUPA-ARC-013`; `SUPA-ARC-016`                   |
+| enum difícil de evolucionar       | limita su uso a vocabularios técnicos estables         | `SUPA-ARC-023`; transición por dominio           |
+| timestamps ambiguos               | separa persistencia, ocurrencia, vigencia y milestones | `SUPA-ARC-007`; `SUPA-ARC-016`                   |
+| tiempo del cliente como autoridad | exige servidor y procedencia                           | `SUPA-ARC-013`; `SUPA-ARC-020`                   |
+| drift entre ambientes             | exige registro y gate recurrente                       | `SUPA-ARC-024`; `SUPA-ARC-025`; `SUPA-TRANS-015` |
+
+Ningún riesgo queda cerrado físicamente por esta definición.
+
+#### 30. Decisiones reservadas
+
+| Decisión                                                               | Tarea propietaria                       |
+| ---------------------------------------------------------------------- | --------------------------------------- |
+| funciones de generación, transición, actualización temporal y triggers | `SUPA-ARC-013`                          |
+| excepciones privilegiadas                                              | `SUPA-ARC-014`                          |
+| grants, RLS y acceso a secuencias                                      | `SUPA-ARC-015`                          |
+| contratos de estado y mutación de cada dominio                         | `SUPA-ARC-016`                          |
+| transacciones y escrituras interdominio                                | `SUPA-ARC-017`                          |
+| eventos, auditoría, Storage y propagación                              | `SUPA-ARC-007`; `018`; `019`; `020`     |
+| tipos compartidos y generación TypeScript                              | `SUPA-ARC-023`                          |
+| paridad por ambiente y valores configurables                           | `SUPA-ARC-024`                          |
+| linter integral y ADR final                                            | `SUPA-ARC-025`                          |
+| inventario, backfill, cutover, rollback y retiro                       | `SUPA-TRANS-001` a `SUPA-TRANS-015`     |
+| implementación física                                                  | paquetes E5 y BLOQUE R correspondientes |
+
+#### 31. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear, alterar, validar, renombrar o eliminar PK, FK, UNIQUE, CHECK, EXCLUDE, índices, secuencias o enums;
+- cambiar tipos, defaults, nullability, acciones de cascada, vocabularios o timestamps;
+- generar UUID, números, estados o fechas sobre datos reales;
+- crear funciones, RPC, triggers, policies, grants, RLS o publicaciones;
+- corregir huérfanos, duplicados, solapes o valores históricos;
+- ejecutar DDL, DML, migraciones, backfills, pruebas mutantes, cutover o despliegues;
+- iniciar `SUPA-ARC-013` antes de aprobación expresa.
+
+#### 32. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-919 a TREQ-SUPABASE-960
+```
+
+Los cuarenta y dos requisitos protegen identidad UUID server-side, claves compuestas, business keys, numeración, FK y acciones de borrado, referencias polimórficas, nombres y semántica de constraints, nullability, representación y transición de estados, timestamps UTC, vigencias, milestones, concurrencia y reconciliación del baseline.
+
+#### 33. Criterios de aceptación
+
+- [ ] Existe exactamente un estándar versionado de claves, constraints, estados y timestamps.
+- [ ] `uuid` con generación server-side es la PK predeterminada para registros con identidad propia.
+- [ ] Las relaciones puras tienen una regla cerrada para PK compuesta.
+- [ ] Business codes, machine keys, document numbers e IDs externos permanecen separados del PK.
+- [ ] `max(...) + 1` queda prohibido como asignador de número.
+- [ ] Toda FK declara tipo, obligatoriedad, owner, acción de borrado y acción de actualización.
+- [ ] `RESTRICT` o `NO ACTION` es la política predeterminada y cada cascada exige ownership estricto.
+- [ ] Las referencias polimórficas no usan un ID genérico sin discriminador y validación.
+- [ ] Existen patrones únicos para cinco clases de constraints, dos clases de índices y secuencias Vento.
+- [ ] Ningún nombre depende de truncamiento PostgreSQL.
+- [ ] Constraints no validadas y diferibles tienen lifecycle explícito.
+- [ ] `NULL` no funciona como estado implícito o tercer booleano.
+- [ ] Cada estado elige exactamente `TEXT_CHECK`, `DOMAIN_CATALOG` o `POSTGRES_ENUM`.
+- [ ] Los valores de estado usan `UPPER_SNAKE_CASE` y no contienen labels humanos.
+- [ ] Estado inicial, transiciones, terminalidad, razones y concurrencia quedan definidos.
+- [ ] `timestamptz` en UTC es el tipo de instante canónico.
+- [ ] Persistencia, ocurrencia, vigencia, expiración y milestones tienen semánticas separadas.
+- [ ] Los intervalos usan `[from, until)` y protegen orden y solapamiento.
+- [ ] El tiempo del cliente no es autoridad de auditoría ni orden de mutación.
+- [ ] La línea base de 2.057 constraints, 34 enums y siete secuencias queda protegida para transición.
+- [ ] Se generan `TREQ-SUPABASE-919` a `TREQ-SUPABASE-960`.
+- [ ] No se ejecutan cambios físicos, código ni implementación.
+- [ ] `SUPA-ARC-013` permanece reservada.
+
+#### 34. Controles estructurales requeridos
+
+| Control                        |     Resultado esperado |
+| ------------------------------ | ---------------------: |
+| tipo de PK predeterminado      |                 `uuid` |
+| generador predeterminado       |    `gen_random_uuid()` |
+| estrategias de PK              |                  **3** |
+| prefijos de constraints        |                  **5** |
+| prefijos adicionales de índice |                  **2** |
+| patrón de secuencia Vento      |                  **1** |
+| estrategia de estado por campo | exactamente **1 de 3** |
+| formato de valor de estado     |     `UPPER_SNAKE_CASE` |
+| tipo de instante               |          `timestamptz` |
+| referencia temporal            |                  `UTC` |
+| convención de intervalo        |        `[from, until)` |
+| constraints AS-IS protegidas   |              **2.057** |
+| enums AS-IS protegidos         |                 **34** |
+| secuencias AS-IS protegidas    |                  **7** |
+| requisitos nuevos              |                 **42** |
+| cambios físicos                |                  **0** |
+
+#### 35. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
+```
+
+`SUPA-ARC-013` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
 ### [ ] SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
 ### [ ] SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
