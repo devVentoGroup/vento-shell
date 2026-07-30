@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **438** |
+| Aprobadas | **439** |
 | En propuesta | **0** |
-| No iniciadas | **1137** |
+| No iniciadas | **1136** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **27.81% (438/1575)** |
+| Porcentaje de completamiento | **27.87% (439/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-ARC-002` — Definir clases de campo y tratamiento permitido | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-ARC-003` — Definir reglas de capitalización para nombres empresariales | ⬜ NO INICIADA |
-| Siguiente | `DATA-NORM-ARC-004` — Definir conectores que permanecen en minúscula | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-ARC-003` — Definir reglas de capitalización para nombres empresariales | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-ARC-004` — Definir conectores que permanecen en minúscula | ⬜ NO INICIADA |
+| Siguiente | `DATA-NORM-ARC-005` — Definir excepciones de marcas, siglas, unidades y nombres legales | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -429,7 +429,7 @@
 | ✅ APROBADA | `SUPA-ARC-024` | Definir entornos local, pruebas, staging y producción | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-001` | Definir política de normalización por dominio, entidad y campo | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-002` | Definir clases de campo y tratamiento permitido | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
-| ⬜ NO INICIADA | `DATA-NORM-ARC-003` | Definir reglas de capitalización para nombres empresariales | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
+| ✅ APROBADA | `DATA-NORM-ARC-003` | Definir reglas de capitalización para nombres empresariales | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-004` | Definir conectores que permanecen en minúscula | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-005` | Definir excepciones de marcas, siglas, unidades y nombres legales | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-006` | Definir diccionario ortográfico canónico y su gobierno | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |

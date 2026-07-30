@@ -1029,7 +1029,572 @@ DATA-NORM-ARC-003 — Definir reglas de capitalización para nombres empresarial
 ```
 
 
-### [ ] DATA-NORM-ARC-003 — Definir reglas de capitalización para nombres empresariales
+### ✅ DATA-NORM-ARC-003 — Definir reglas de capitalización para nombres empresariales
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-ARC-002 — Definir clases de campo y tratamiento permitido` — APROBADA
+**Tarea siguiente:** `DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula`
+**Tipo de tarea:** definición normativa del algoritmo de capitalización empresarial para campos `COMMERCIAL_NAME`; sin DDL, DML, migraciones, backfills, correcciones de datos, fusiones, cambios de índices, constraints, funciones, triggers, clientes, integraciones, configuración ni despliegues
+
+#### 1. Objetivo
+
+Definir el contrato canónico de capitalización que podrá aplicarse a nombres empresariales de Vento OS clasificados expresamente como `COMMERCIAL_NAME`, sin convertirlo en `Title Case` universal, sin alterar ortografía, identidad, cantidades, unidades, códigos, formas oficiales ni valores externos, y sin anticipar los catálogos reservados a tareas posteriores.
+
+La política deberá producir el mismo resultado en todas las capas para una misma entrada, contexto y versión, conservar exactamente los tokens protegidos, tratar la ambigüedad de forma cerrada y mantener separadas la capitalización visible, la corrección por diccionario, la búsqueda y cualquier acción sobre registros.
+
+#### 2. Artefacto producido
+
+```text
+DATA-COMMERCIAL-NAME-CAPITALIZATION-POLICY-003@1.0.0
+```
+
+| Propiedad                                   | Valor |
+| ------------------------------------------- | ----: |
+| Perfil normativo de capitalización aprobado |     1 |
+| Clases de token gobernadas                  |     9 |
+| Resultados de token permitidos              |     6 |
+| Tipos de frontera de segmento               |     3 |
+| Requisitos de prueba nuevos                 |    17 |
+| Cambios físicos autorizados                 |     0 |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                | Decisión consumida                                                                                                               |
+| ------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                     | continuidad, una sola tarea, fase exclusivamente documental y preservación de decisiones aprobadas                               |
+| `delivery-contract.json`              | identidad del artefacto y actualización integral del registro 04A al crear requisitos                                            |
+| `active-sequence.json`                | `DATA-NORM-ARC-003` como tarea actual y `DATA-NORM-ARC-004` como siguiente tarea reservada                                       |
+| `DATA-NORM-ARC-001`                   | ausencia de `Title Case` universal, resolución por campo, separación de representaciones, idempotencia y comportamiento cerrado  |
+| `DATA-NORM-ARC-002`                   | clase `COMMERCIAL_NAME`, roles de representación y fuente, modos cerrados de tratamiento y operación `COMMERCIAL_CAPITALIZATION` |
+| `DATA-NORM-AUD-002`                   | variantes observadas de caja, espacios, signos, conectores y tildes                                                              |
+| `DATA-NORM-AUD-003`                   | marcas, siglas, unidades, nombres legales, personas, técnicos y formas protegidas                                                |
+| `DATA-NORM-AUD-005`                   | separación entre forma determinista, diccionario, revisión humana y resolución estructural                                       |
+| `DATA-NORM-AUD-006`                   | algoritmos distribuidos, copias persistidas y riesgo de resultados diferentes entre capas                                        |
+| `DATA-NORM-AUD-007`                   | impacto sobre búsqueda, índices, consumidores, copias, unicidad e identidad                                                      |
+| Regla canónica del bloque propietario | ejemplos esperados de nombres comerciales y reserva del catálogo definitivo de conectores para `DATA-NORM-ARC-004`               |
+
+#### 4. Alcance y fronteras
+
+Esta tarea define:
+
+1. las precondiciones para solicitar `COMMERCIAL_CAPITALIZATION`;
+2. el perfil normativo de capitalización empresarial en español de Colombia;
+3. el modelo de tokenización y recomposición que preserva separadores;
+4. la precedencia entre excepciones, conectores, tokens ordinarios y ambigüedad;
+5. la regla de caja para palabras ordinarias elegibles;
+6. la conducta posicional de conectores, sin aprobar todavía su listado;
+7. el tratamiento de puntuación, fronteras de segmento y tokens compuestos;
+8. las clases excluidas de esta política;
+9. la separación entre capitalización, espacios, Unicode, diccionario, búsqueda e identidad;
+10. la conducta sobre fuentes, copias, snapshots y proyecciones;
+11. los invariantes de determinismo e idempotencia;
+12. el corpus mínimo de conformidad que deberán implementar las tareas posteriores.
+
+Esta tarea no define:
+
+- el listado definitivo de conectores;
+- el catálogo definitivo de marcas, siglas, unidades y nombres legales;
+- ninguna entrada del diccionario ortográfico;
+- el workflow de revisión humana;
+- el algoritmo de búsqueda, transliteración o slug;
+- la estructura física de auditoría y versionado;
+- la capa ejecutora definitiva;
+- scopes o constraints de unicidad;
+- la forma de tratar valores externos por integración;
+- correcciones, fusiones, backfills, migraciones ni cambios de datos.
+
+Estas decisiones permanecen en `DATA-NORM-ARC-004` a `DATA-NORM-ARC-012` y en las tareas de transición aplicables.
+
+#### 5. Perfil normativo y puerta de activación
+
+El perfil aprobado se identifica lógicamente como:
+
+```text
+VENTO_COMMERCIAL_CAPITALIZATION_ES_CO@1.0.0
+```
+
+La operación solo podrá resolver `DETERMINISTIC_MUTATION_ALLOWED` cuando todas las condiciones siguientes sean verdaderas:
+
+1. la clase semántica es `COMMERCIAL_NAME`;
+2. la representación es `PRIMARY_VALUE` o un `DISPLAY_OVERRIDE` expresamente autorizado;
+3. el rol de fuente es `AUTHORITATIVE_SOURCE` o `APPROVED_OVERRIDE`;
+4. la política del campo permite `COMMERCIAL_CAPITALIZATION`;
+5. el idioma y perfil de caja están declarados explícitamente;
+6. existe una versión activa del catálogo de conectores de `DATA-NORM-ARC-004`;
+7. existe una versión activa del catálogo de excepciones de `DATA-NORM-ARC-005`;
+8. no existe conflicto entre política, excepción, fuente o representación;
+9. la entrada no contiene tokens que obliguen revisión humana;
+10. la operación puede registrar la versión que produjo el resultado.
+
+Mientras los catálogos requeridos no estén aprobados y activos, el perfil queda definido documentalmente pero su mutación automática permanece bloqueada. Un consumidor no podrá sustituirlos por listas locales.
+
+#### 6. Entrada y resultado lógico
+
+La evaluación deberá consumir, como mínimo:
+
+```text
+valor de entrada
+clase semántica
+representación
+rol de fuente
+idioma o perfil lingüístico
+versión de capitalización
+versión de conectores
+versión de excepciones
+política del campo
+```
+
+El resultado lógico deberá distinguir:
+
+```text
+valor resultante o valor preservado
+decisión global
+clasificación y resultado de cada token
+reglas y versiones aplicadas
+casos bloqueados o enviados a revisión
+```
+
+Esta tarea no prescribe una tabla, función, RPC, payload ni formato físico. Esos contratos corresponden a `DATA-NORM-ARC-009` y `DATA-NORM-ARC-011`.
+
+#### 7. Secuencia normativa de evaluación
+
+```text
+1. resolver la coordenada de política del campo
+        ↓
+2. conservar el valor de entrada como evidencia lógica
+        ↓
+3. comprobar clase, representación, fuente y versiones requeridas
+        ↓
+4. segmentar el texto sin perder separadores ni posiciones
+        ↓
+5. aplicar excepciones oficiales por coincidencia de frase y token
+        ↓
+6. clasificar conectores mediante el catálogo vigente
+        ↓
+7. clasificar tokens ordinarios, técnicos, numéricos o ambiguos
+        ↓
+8. aplicar caja únicamente a tokens elegibles
+        ↓
+9. recomponer preservando separadores y estructura
+        ↓
+10. comprobar idempotencia y producir la traza de decisión
+```
+
+La operación de capitalización no ejecuta por sí misma recorte, compactación de espacios, corrección ortográfica, adición de tildes, transliteración, traducción, singularización, pluralización, cambio de signos ni unión o separación de palabras.
+
+#### 8. Modelo de segmentación
+
+La segmentación deberá operar sobre caracteres Unicode y límites de grafema, no sobre bytes ni posiciones de código aisladas.
+
+Clases de token gobernadas:
+
+| Clase de token                | Definición                                                                        | Tratamiento inicial                                        |
+| ----------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `ORDINARY_LEXICAL_TOKEN`      | palabra compuesta únicamente por letras y marcas combinantes, sin forma protegida | candidata a la regla ordinaria de caja                     |
+| `CONNECTOR_TOKEN`             | palabra reconocida por el catálogo versionado de conectores                       | regla posicional de `DATA-NORM-ARC-004`                    |
+| `OFFICIAL_EXCEPTION_TOKEN`    | token o frase cubierta por una excepción oficial                                  | preservar o emitir exactamente la forma aprobada           |
+| `CONTROLLED_ACRONYM_TOKEN`    | sigla o abreviatura confirmada por catálogo                                       | preservar forma contractual                                |
+| `MEASUREMENT_OR_UNIT_TOKEN`   | símbolo, código o denominación de unidad confirmada                               | preservar forma aprobada; no tratar como palabra ordinaria |
+| `NUMERIC_TOKEN`               | número entero, decimal, fracción, rango o cantidad                                | preservar exactamente                                      |
+| `ALPHANUMERIC_OR_MODEL_TOKEN` | combinación de letras, números o signos con posible función técnica o comercial   | preservar y revisar salvo contrato explícito               |
+| `PUNCTUATION_OR_SEPARATOR`    | espacio, signo o separador entre tokens                                           | preservar; solo una operación distinta podrá normalizarlo  |
+| `AMBIGUOUS_TOKEN`             | token cuya clase o forma oficial no puede resolverse                              | conservar y producir `HUMAN_REVIEW_REQUIRED`               |
+
+Resultados de token permitidos:
+
+| Resultado                      | Significado                                                              |
+| ------------------------------ | ------------------------------------------------------------------------ |
+| `CAPITALIZED_ORDINARY`         | se aplicó la regla ordinaria de caja                                     |
+| `LOWERCASED_CONNECTOR`         | se emitió un conector interno según el catálogo vigente                  |
+| `PRESERVED_OFFICIAL_EXCEPTION` | se conservó o emitió exactamente una forma oficial aprobada              |
+| `PRESERVED_NON_CASED`          | se conservó un número, signo, separador, unidad o token no sujeto a caja |
+| `PRESERVED_AMBIGUOUS`          | se conservó el token y el resultado global exige revisión humana         |
+| `BLOCKED_CONFLICT`             | no se produjo mutación por conflicto de política, catálogo o versión     |
+
+La recomposición deberá mantener el orden y el texto de todos los separadores recibidos. Si una etapa anterior autorizada normalizó espacios o Unicode, la capitalización consumirá ese resultado como una entrada distinta y trazable.
+
+#### 9. Precedencia de clasificación de tokens
+
+La clasificación seguirá esta precedencia estricta:
+
+```text
+1. excepción oficial de frase, usando la coincidencia válida más larga
+2. excepción oficial de token
+3. sigla, unidad, código o forma técnica protegida
+4. conector aprobado
+5. palabra ordinaria elegible
+6. token ambiguo
+```
+
+Reglas:
+
+1. una excepción de frase prevalece sobre reglas palabra por palabra;
+2. una excepción nunca se infiere por frecuencia, caja observada o apariencia;
+3. una coincidencia parcial no autoriza modificar el resto del token;
+4. una excepción solo aplica dentro de su dominio, entidad, campo, idioma y vigencia;
+5. dos excepciones activas incompatibles bloquean la operación;
+6. una ausencia del catálogo no se interpreta como prueba de que el token sea ordinario cuando contiene señales técnicas, mixtas o protegidas.
+
+#### 10. Regla de caja para palabras ordinarias
+
+Un `ORDINARY_LEXICAL_TOKEN` elegible se transforma así:
+
+```text
+primer grafema con caja
+→ mayúscula según el perfil lingüístico explícito
+
+restantes grafemas con caja
+→ minúscula según el mismo perfil
+
+marcas, tildes y grafemas sin caja
+→ se conservan
+```
+
+Ejemplos exclusivos de caja:
+
+```text
+americano → Americano
+CAFÉ → Café
+árbol → Árbol
+ÑAME → Ñame
+FRIO → Frio
+maiz → Maiz
+```
+
+`Frio` y `Maiz` demuestran que la capitalización no agrega tildes ni corrige ortografía. Esas decisiones pertenecen al diccionario de `DATA-NORM-ARC-006`.
+
+La regla ordinaria solo admite tokens cuya forma pueda resolverse de manera determinista después de consultar conectores y excepciones. Un token con capitalización interna desconocida no se fuerza a caja ordinaria.
+
+#### 11. Formas de caja elegibles y ambiguas
+
+| Forma observada                                  | Ejemplo                          | Conducta                                                                                              |
+| ------------------------------------------------ | -------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| completamente en minúsculas                      | `americano`                      | aplicar regla ordinaria si no existe protección                                                       |
+| completamente en mayúsculas                      | `LATTE`                          | aplicar regla ordinaria después de descartar sigla, marca, unidad o código mediante catálogos activos |
+| primera letra en mayúscula y resto en minúsculas | `Americano`                      | conservar; ya satisface la regla ordinaria                                                            |
+| capitalización interna                           | `iPhone`, `eCommerce`            | preservar por excepción o enviar a revisión; nunca aplanar por defecto                                |
+| letras y números                                 | `3M`, `T26`, `REF7071`           | preservar y clasificar mediante catálogo o contrato técnico                                           |
+| puntos, guiones o apóstrofos internos            | `S.A.S.`, `Coca-Cola`, `O'Neill` | no descomponer por defecto; excepción o revisión                                                      |
+| una sola letra                                   | `A`, `x`                         | conector, sigla o ambigüedad; no aplicar regla ordinaria sin clasificación                            |
+| forma no resoluble                               | cualquier token conflictivo      | conservar y producir `HUMAN_REVIEW_REQUIRED`                                                          |
+
+La presencia de mayúsculas completas no convierte una palabra en sigla. La ausencia de una excepción tampoco permite ejecutar el perfil mientras los catálogos obligatorios no estén disponibles.
+
+#### 12. Conducta posicional de conectores
+
+`DATA-NORM-ARC-003` define la conducta posicional, pero no el listado de conectores.
+
+1. El catálogo definitivo y versionado será aprobado por `DATA-NORM-ARC-004`.
+2. Un conector ubicado como primera palabra lexical del nombre se capitaliza mediante la regla ordinaria.
+3. Un conector ubicado como primera palabra lexical de un segmento declarado se capitaliza mediante la regla ordinaria.
+4. Un conector en posición interna se emite en minúscula cuando el catálogo vigente así lo ordene.
+5. Un conector incluido dentro de una excepción oficial de frase conserva la forma aprobada por la excepción.
+6. Un token no podrá tratarse como conector por coincidencia aproximada, idioma inferido o lista local.
+7. La política deberá registrar la versión de conectores usada para producir el resultado.
+
+Hasta que `DATA-NORM-ARC-004` sea aprobada, la lista preliminar del bloque propietario continúa siendo referencia documental y no una regla irreversible de ejecución.
+
+#### 13. Fronteras de segmento y puntuación
+
+Se definen tres tipos de frontera:
+
+| Frontera                 | Efecto sobre el siguiente token lexical                                   |
+| ------------------------ | ------------------------------------------------------------------------- |
+| `NAME_START`             | inicia el nombre; una palabra ordinaria o conector elegible se capitaliza |
+| `DECLARED_SEGMENT_START` | reinicia la regla posicional por una frontera aprobada y versionada       |
+| `NO_SEGMENT_RESET`       | preserva la posición interna; no cambia el tratamiento del conector       |
+
+Reglas predeterminadas:
+
+1. el inicio del valor es `NAME_START`;
+2. dos puntos y raya larga o corta rodeada por espacios pueden actuar como `DECLARED_SEGMENT_START` cuando la política del campo lo habilite;
+3. coma, punto, ampersand, signo más, barra, paréntesis, guion interno y apóstrofo no reinician segmentos por defecto;
+4. los signos se conservan exactamente;
+5. la capitalización no inserta ni retira espacios alrededor de signos;
+6. una frontera no declarada se trata como `NO_SEGMENT_RESET`;
+7. una abreviatura con puntos no se interpreta como varias palabras.
+
+#### 14. Palabras compuestas, guiones y apóstrofos
+
+1. Un token con guion o apóstrofo interno no se divide automáticamente.
+2. Una marca o frase oficial compuesta se resuelve mediante excepción de frase o token.
+3. Una gramática de compuesto solo podrá activarse si declara idioma, delimitador, alcance, excepciones e idempotencia.
+4. Sin esa gramática, el token se preserva y se envía a revisión cuando no exista forma oficial.
+5. La capitalización no une palabras separadas ni divide una palabra existente.
+6. `Choco Bites` y `Chocobites` permanecen como cadenas distintas; esta tarea no decide si representan la misma entidad.
+
+#### 15. Excepciones oficiales y formas protegidas
+
+Las excepciones aprobadas por `DATA-NORM-ARC-005` se aplicarán antes de la regla ordinaria y deberán poder cubrir:
+
+- una frase completa;
+- una secuencia de palabras dentro del nombre;
+- un token individual;
+- una sigla;
+- una marca con capitalización interna;
+- una unidad o símbolo;
+- un término histórico, extranjero o contractual protegido.
+
+Ejemplos normativos:
+
+```text
+3M → 3M
+iPhone → iPhone
+Coca-Cola → Coca-Cola
+BBQ → BBQ, solo si la excepción o catálogo lo confirma
+Kinder Bueno → preservar únicamente si una excepción de frase aprobada lo cubre
+```
+
+Las excepciones deberán declarar alcance, forma emitida, sensibilidad, precedencia y vigencia. Esta tarea no aprueba entradas concretas nuevas.
+
+#### 16. Ambigüedad y comportamiento cerrado
+
+Se produce `HUMAN_REVIEW_REQUIRED` y se conserva el valor cuando ocurra cualquiera de estas condiciones:
+
+1. token con capitalización interna no reconocido;
+2. secuencia alfanumérica sin contrato;
+3. sigla, abreviatura, modelo o referencia no clasificados;
+4. guion, apóstrofo o punto interno sin excepción o gramática;
+5. conflicto entre catálogos o versiones;
+6. idioma o perfil lingüístico ausente o incompatible;
+7. frase que coincide parcialmente con una forma protegida;
+8. término marcado como histórico, externo o dudoso;
+9. token que podría ser marca, nombre propio o palabra ordinaria;
+10. cualquier resultado que dependa de una heurística no versionada.
+
+`expresso`, `Wellmix` frente a `Welmix`, y formas equivalentes permanecen sin corrección silenciosa mientras su significado no esté resuelto. La cola y decisión humana pertenecen a `DATA-NORM-ARC-007`.
+
+#### 17. Clases excluidas
+
+`COMMERCIAL_CAPITALIZATION` queda prohibida por defecto para:
+
+- `STRUCTURED_PRESENTATION_NAME`;
+- `HUMAN_LABEL`;
+- `OFFICIAL_LEGAL_NAME`;
+- `OFFICIAL_BRAND_FORM`;
+- `PERSON_OR_ACTOR_NAME`;
+- `ADDRESS_OR_LOCATION_TEXT`;
+- `FREE_TEXT`;
+- `CONTROLLED_VOCABULARY_CODE`;
+- `MEASUREMENT_OR_UNIT_CODE`;
+- `TECHNICAL_IDENTIFIER`;
+- `CONTACT_IDENTIFIER`;
+- `SECRET_OR_SIGNATURE_MATERIAL`;
+- `UNCLASSIFIED_PRESERVE`.
+
+`HUMAN_LABEL` podrá recibir una política visual propia en otra decisión explícita, pero no heredará este perfil por ser visible. Una forma oficial podrá ser emitida desde su catálogo, pero ese acto corresponde a `OFFICIAL_EXCEPTION_APPLICATION`, no a capitalización genérica.
+
+#### 18. Aplicación por familia empresarial
+
+| Familia                       | Elegibilidad                                           | Restricción principal                                           |
+| ----------------------------- | ------------------------------------------------------ | --------------------------------------------------------------- |
+| nombre de producto            | elegible como `COMMERCIAL_NAME`                        | proteger marcas, unidades, modelos y términos históricos        |
+| nombre de categoría           | elegible como `COMMERCIAL_NAME`                        | aplicar conectores versionados y conservar excepciones          |
+| nombre de receta              | elegible como `COMMERCIAL_NAME`                        | proteger vocabulario culinario, extranjero, oficial o histórico |
+| nombre de colección comercial | elegible solo si el campo fue clasificado expresamente | no inferir tratamiento desde la aplicación o tabla              |
+| otro nombre empresarial       | bloqueado hasta clasificación y política de campo      | no heredar por semejanza o nombre de columna                    |
+| etiqueta de presentación      | no elegible bajo este perfil                           | usar `STRUCTURED_PRESENTATION_NAME` y preservar estructura      |
+
+Una entidad llamada igual en capas distintas conserva su clase, fuente e identidad propias. Capitalizar dos valores de la misma forma no los convierte en el mismo registro.
+
+#### 19. Presentaciones, cantidades, unidades y tokens técnicos
+
+1. Un nombre o etiqueta de presentación no se convierte en `COMMERCIAL_NAME` por contener palabras.
+2. Cantidades, unidades, multiplicadores, códigos y símbolos se preservan exactamente durante esta operación.
+3. `500 g`, `Pote x 2`, `Bolsa de 1.100 ml`, `Six Pack`, `kg`, `ml`, `un` y `dz` requieren políticas estructurales o catálogos propios.
+4. Cuando un nombre comercial incluya un fragmento cuantitativo o técnico, ese fragmento se clasifica y preserva antes de capitalizar palabras ordinarias.
+5. La operación no cambia factores de conversión, unidades de entrada, unidades de stock ni contextos de compra, remisión o uso general.
+6. La coincidencia visual entre etiquetas no autoriza consolidar perfiles o políticas.
+
+#### 20. Separación entre capitalización y otras operaciones
+
+| Operación                             | Pertenece a esta tarea | Conducta                                                |
+| ------------------------------------- | ---------------------- | ------------------------------------------------------- |
+| cambio de caja de palabras ordinarias | sí                     | aplicar únicamente bajo este contrato                   |
+| tratamiento posicional de conectores  | sí, como conducta      | consume el catálogo de `DATA-NORM-ARC-004`              |
+| preservación de excepciones           | sí, como precedencia   | consume el catálogo de `DATA-NORM-ARC-005`              |
+| recorte o compactación de espacios    | no                     | operación determinista separada                         |
+| composición Unicode NFC               | no                     | operación separada y previa cuando el campo la autorice |
+| adición o retiro de tildes            | no                     | decisión de diccionario o revisión                      |
+| corrección ortográfica                | no                     | `DATA-NORM-ARC-006`                                     |
+| traducción o transliteración          | no                     | contrato específico                                     |
+| cambio de puntuación                  | no                     | regla separada de prosa o estructura                    |
+| unión o división de palabras          | no                     | revisión, diccionario o resolución estructural          |
+| búsqueda o slug                       | no                     | `DATA-NORM-ARC-008`                                     |
+| fusión, unicidad o identidad          | no                     | `DATA-NORM-ARC-010`                                     |
+
+La salida de una operación separada podrá ser la entrada de otra únicamente mediante una secuencia aprobada, versionada y auditable.
+
+#### 21. Fuentes, representaciones y propagación
+
+1. Solo un `PRIMARY_VALUE` de `AUTHORITATIVE_SOURCE` o un `DISPLAY_OVERRIDE` con `APPROVED_OVERRIDE` puede recibir mutación directa bajo este perfil.
+2. `EXTERNAL_ORIGINAL`, `HISTORICAL_SNAPSHOT` y `AUDIT_EVIDENCE` se preservan exactamente.
+3. `OUTPUT_PROJECTION` puede derivar una forma capitalizada para un canal sin retroalimentar la fuente.
+4. `SEARCH_DERIVATION` no consume la forma capitalizada como identidad salvo contrato posterior explícito.
+5. Una `SYNCHRONIZED_COPY` no se corrige de manera independiente; recibe el cambio desde la fuente mediante el contrato de propagación.
+6. Un `IMMUTABLE_SNAPSHOT` no se resincroniza por una corrección posterior.
+7. Un `APPROVED_OVERRIDE` conserva alcance y precedencia propios y no redefine el valor principal.
+8. La propagación, resincronización, eventos y precedencia técnica pertenecen a `DATA-NORM-ARC-009` y `DATA-NORM-ARC-011`.
+
+#### 22. Perfil lingüístico y determinismo
+
+1. El perfil lingüístico deberá declararse como dato de política; no se utilizará el locale del sistema operativo, proceso, navegador o base de datos de forma implícita.
+2. Para este perfil, el identificador lógico es `es-CO`.
+3. La versión deberá fijar la semántica de segmentación y mapeo de caja Unicode utilizada.
+4. Las letras acentuadas, `ñ` y sus marcas se transforman mediante mapeo Unicode de caja sin perder diacríticos.
+5. No se transliteran caracteres ni se convierten alfabetos.
+6. Un valor perteneciente a otro perfil lingüístico se preserva o se envía a revisión hasta disponer de una política explícita.
+7. Cambiar la versión lingüística o Unicode constituye un cambio de política y requiere análisis de impacto.
+
+#### 23. Idempotencia y estabilidad
+
+Para una misma entrada lógica y las mismas versiones:
+
+```text
+capitalize(capitalize(value, context), context)
+=
+capitalize(value, context)
+```
+
+La igualdad deberá cubrir:
+
+- el valor resultante;
+- la decisión global;
+- la clasificación de tokens;
+- las excepciones aplicadas;
+- la posición de conectores;
+- los casos enviados a revisión;
+- la traza de versiones.
+
+Un reintento no podrá alterar nuevamente la caja, crear efectos de propagación duplicados ni producir una decisión distinta. Una versión nueva puede producir un resultado nuevo, pero no reinterpreta silenciosamente la historia creada por la versión anterior.
+
+#### 24. Relación con búsqueda, identidad y unicidad
+
+1. La forma capitalizada es un `VALOR_MOSTRADO`, no una clave de identidad.
+2. La representación de búsqueda será definida separadamente por `DATA-NORM-ARC-008`.
+3. La capitalización no crea ni modifica SKU, slug, código, barcode, URL, email, referencia o clave externa.
+4. Dos valores que producen la misma forma capitalizada solo generan una señal de comparación.
+5. La política no activa constraints de unicidad.
+6. La política no selecciona registro sobreviviente, no desactiva filas y no reasigna relaciones.
+7. Toda posible fusión deberá revisar relaciones, movimientos, recetas, inventario, proveedores, integraciones, historial, auditoría, evidencia y rollback según `DATA-NORM-ARC-010` y las transiciones aplicables.
+
+#### 25. Corpus mínimo de conformidad
+
+El corpus deberá comprobar resultados por etapa y no confundir capitalización con diccionario.
+
+| Entrada y contexto                 | Resultado de capitalización                | Resultado o conducta posterior                  |
+| ---------------------------------- | ------------------------------------------ | ----------------------------------------------- |
+| `americano` como `COMMERCIAL_NAME` | `Americano`                                | sin cambio ortográfico adicional                |
+| `pan masa madre clasico`           | `Pan Masa Madre Clasico`                   | `Clásico` solo mediante diccionario aprobado    |
+| `harina de maiz`                   | `Harina de Maiz`                           | `Maíz` solo mediante diccionario aprobado       |
+| `jugo de naranja y mango`          | `Jugo de Naranja y Mango`                  | conectores según catálogo vigente               |
+| `LATTE FRIO`                       | `Latte Frio`                               | `Frío` solo mediante diccionario aprobado       |
+| `Bebidas calientes`                | `Bebidas Calientes`                        | mantener si ya satisface la regla               |
+| `3M` dentro de nombre              | `3M`                                       | excepción oficial                               |
+| `iPhone` dentro de nombre          | `iPhone`                                   | excepción oficial                               |
+| `Coca-Cola` dentro de nombre       | `Coca-Cola`                                | excepción oficial de token o frase              |
+| `BBQ` dentro de nombre             | preservar o revisar                        | no producir `Bbq` sin catálogo                  |
+| `expresso` con ambigüedad activa   | conservar `expresso`                       | revisión humana; no corregir ortografía         |
+| `500 g` como presentación          | conservar                                  | clase excluida y estructura preservada          |
+| `COMERCIALIZADORA ABC S.A.S.`      | conservar                                  | `OFFICIAL_LEGAL_NAME` excluido                  |
+| `Carlos Ibarra`                    | conservar                                  | `PERSON_OR_ACTOR_NAME` excluido                 |
+| `NEXO`                             | conservar                                  | vocabulario o identificador controlado excluido |
+| `Choco Bites` y `Chocobites`       | capitalizar cada forma solo si es elegible | no unir, dividir ni fusionar registros          |
+
+El corpus deberá incluir además valores vacíos, espacios, Unicode compuesto, signos, paréntesis, guiones, apóstrofos, números, unidades, siglas, marcas, términos extranjeros y conflictos entre catálogos.
+
+#### 26. Errores y estados bloqueantes
+
+La operación deberá bloquear mutación y conservar el valor cuando:
+
+- falta la clasificación del campo;
+- falta una versión de capitalización, conectores o excepciones;
+- el rol de fuente no autoriza mutación;
+- la representación es externa, histórica o probatoria;
+- existe un token ambiguo;
+- existe conflicto de excepciones;
+- el perfil lingüístico no está soportado;
+- una frontera de segmento no está declarada;
+- la salida no supera la comprobación de idempotencia;
+- la operación produciría una transformación reservada a otra tarea.
+
+El estado bloqueado deberá ser distinguible de una entrada sin cambios porque ya estaba correctamente capitalizada.
+
+#### 27. Decisiones reservadas
+
+| Decisión                                                       | Tarea propietaria                                      |
+| -------------------------------------------------------------- | ------------------------------------------------------ |
+| lista definitiva y alcance de conectores                       | `DATA-NORM-ARC-004`                                    |
+| formas oficiales de marcas, siglas, unidades y nombres legales | `DATA-NORM-ARC-005`                                    |
+| correcciones ortográficas y tildes                             | `DATA-NORM-ARC-006`                                    |
+| workflow, evidencia y decisión de ambigüedad                   | `DATA-NORM-ARC-007`                                    |
+| algoritmo de búsqueda, transliteración y comparación           | `DATA-NORM-ARC-008`                                    |
+| estructura de auditoría, versionado y trazas                   | `DATA-NORM-ARC-009`                                    |
+| identidad, unicidad y duplicados normalizados                  | `DATA-NORM-ARC-010`                                    |
+| aplicación, servicio de dominio, RPC y trigger defensivo       | `DATA-NORM-ARC-011`                                    |
+| valores recibidos desde integraciones externas                 | `DATA-NORM-ARC-012`                                    |
+| materialización, backfills, compatibilidad, pruebas y rollback | tareas `SUPA-TRANS-*` y `DATA-NORM-TRANS-*` aplicables |
+
+#### 28. Criterios de integridad
+
+La política se considera íntegra para esta etapa cuando:
+
+1. prohíbe `Title Case` universal;
+2. aplica únicamente a campos `COMMERCIAL_NAME` con representación, fuente y versión autorizadas;
+3. permanece bloqueada hasta disponer de catálogos de conectores y excepciones;
+4. preserva separadores durante tokenización y recomposición;
+5. aplica una precedencia determinista de excepciones, conectores, palabras y ambigüedad;
+6. define una regla de caja para palabras ordinarias sin corregir ortografía;
+7. trata capitalización interna, siglas, modelos y compuestos mediante catálogo o revisión;
+8. define conducta posicional de conectores sin anticipar su listado;
+9. preserva puntuación, cantidades, unidades y tokens técnicos;
+10. excluye todas las clases incompatibles;
+11. separa capitalización, espacios, Unicode, diccionario, búsqueda e identidad;
+12. restringe mutación a fuentes y representaciones autorizadas;
+13. preserva valores externos, snapshots y evidencia;
+14. fija perfil lingüístico y semántica versionada, sin locale implícito;
+15. exige determinismo e idempotencia;
+16. incluye corpus positivo, negativo y ambiguo;
+17. no autoriza unicidad, fusión, cambios físicos ni decisiones reservadas.
+
+#### 29. Requisitos de prueba derivados
+
+Se crean los requisitos:
+
+- `TREQ-DATA-037`;
+- `TREQ-DATA-038`;
+- `TREQ-DATA-039`;
+- `TREQ-DATA-040`;
+- `TREQ-DATA-041`;
+- `TREQ-DATA-042`;
+- `TREQ-DATA-043`;
+- `TREQ-DATA-044`;
+- `TREQ-DATA-045`;
+- `TREQ-DATA-046`;
+- `TREQ-DATA-047`;
+- `TREQ-DATA-048`;
+- `TREQ-DATA-049`;
+- `TREQ-DATA-050`;
+- `TREQ-DATA-051`;
+- `TREQ-DATA-052`;
+- `TREQ-DATA-053`.
+
+El detalle canónico de cada requisito reside en el registro 04A actualizado hasta esta tarea.
+
+#### 30. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-ARC-002 — Definir clases de campo y tratamiento permitido
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-ARC-003 — Definir reglas de capitalización para nombres empresariales
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula
+```
+
+
 ### [ ] DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula
 ### [ ] DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales
 ### [ ] DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno
