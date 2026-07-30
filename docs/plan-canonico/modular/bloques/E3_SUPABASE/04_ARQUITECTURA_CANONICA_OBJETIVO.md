@@ -7549,7 +7549,645 @@ SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
 `SUPA-ARC-015` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
+### ✅ SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-014` — Definir política canónica de `SECURITY DEFINER` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `b99e00548111cbc60fac948c5ca9138f5d81734b`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `0f1b367e219b855777cc05ea0f49453a28f2a2db`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `30edaa634c53b85f00b779a58e44eb869aff275b`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `01_PRINCIPIOS_OBLIGATORIOS.md` blob `36bb9a4c19f6d8e7edbaa03687219fb642c9c526`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`; `validate-treq-registry.mjs` blob `0af0cac4cad0fed7994c211a845198e51ce56ba6`
+**Tipo de tarea:** definición normativa de exposición mediante Data API, privilegios de schema y objeto, default privileges, audiencias técnicas, RLS, policies, vistas, RPC, roles privilegiados, compatibilidad y drift para objetos gobernados por Vento; sin crear, alterar, conceder, revocar, exponer, ocultar, mover o retirar schemas, tablas, vistas, funciones, roles, grants, policies, RLS, configuración, datos, migraciones, código, backfills, cutover ni despliegues
+
+#### 1. Objetivo
+
+Definir una política única, restrictiva y verificable para decidir qué superficies de Vento pueden ser alcanzadas mediante Data API, qué privilegios técnicos recibe cada audiencia y cómo se aplica autorización por filas sin confundir exposición, `GRANT`, RLS, identidad empresarial o autorización de proceso.
+
+```text
+DENEGACIÓN POR DEFECTO
+        ↓
+SCHEMA EXPUESTO APROBADO
+        ↓
+USAGE DE SCHEMA EXPLÍCITO
+        ↓
+PRIVILEGIO DE OBJETO MÍNIMO
+        ↓
+RLS O CONTROL EQUIVALENTE APROBADO
+        ↓
+AUTORIZACIÓN EMPRESARIAL + PRUEBAS NEGATIVAS + DRIFT
+```
+
+La tarea define el modelo objetivo. No concede acceso, no modifica `api.schemas`, no crea policies, no activa `FORCE ROW LEVEL SECURITY` y no clasifica como conforme una superficie actual únicamente por estar operativa.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-EXPOSURE-GRANTS-RLS-POLICY-001@1.0.0
+```
+
+| Propiedad | Valor |
+| --- | ---: |
+| `canonical_business_data_api_schema` | `api` |
+| `target_business_data_api_schema_count` | **1** |
+| `owner_schemas_directly_exposed` | **0** |
+| `transitional_public_schema_count` | **1** |
+| `platform_optional_graphql_surface_count` | **1** |
+| `default_exposure_decision` | `DENY` |
+| `default_grant_decision` | `NONE` |
+| `public_role_business_grants_target` | **0** |
+| `client_direct_owner_table_dml_target` | **0** |
+| `client_sequence_grants_target` | **0** |
+| `client_create_privileges_target` | **0** |
+| `client_reachable_tables_without_rls_target` | **0** |
+| `rls_policy_target_role_public` | **0** |
+| `approved_protection_classes` | **4** |
+| `mandatory_disposition_classes` | **8** |
+| `current_vento_tables` | **317** |
+| `current_vento_tables_with_rls` | **305** |
+| `current_vento_tables_without_rls` | **12** |
+| `current_vento_policies` | **790** |
+| `current_total_policies` | **831** |
+| `current_force_rls_tables` | **0** |
+| `current_vento_rls_tables_without_policy` | **5** |
+| `current_vento_policies_targeting_public` | **211** |
+| `current_anon_dml_tables` | **4** |
+| `current_privileged_views_for_authenticated` | **4** |
+| `current_functions_executable_through_public` | **134** |
+| `new_test_requirements` | **44** |
+| `physical_changes_authorized` | **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente | Decisión consumida |
+| --- | --- |
+| `01_PROTOCOLO.md` | continuidad, preservación histórica, fase documental y validación real separada |
+| `delivery-contract.json` | una sola tarea y registro 04A completo con nombre de entrega único |
+| `active-sequence.json` | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-015` como tarea actual |
+| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0` | exposición independiente de propiedad, denegación por defecto y plataforma separada de dominio |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0` | 26 owner schemas y autoridad única por hecho empresarial |
+| `SUPABASE-PUBLIC-SCHEMA-FUTURE-FUNCTION-001@1.0.0` | `public` como compatibilidad transitoria sin autoridad objetivo |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0` | `api` como única capa empresarial expuesta; `READ_VIEW`, `QUERY_RPC` y `COMMAND_RPC` |
+| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0` | `app_private` fuera de exposición cliente |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0` | `audit` fuera de acceso directo cliente y evidencia mediante contratos mínimos |
+| `SUPABASE-AUTH-MODEL-001@1.0.0` y `SUPA-ARC-009` a `010` | principal, identidad, actor efectivo, sesión, revocación y desactivación |
+| `SUPABASE-FUNCTION-RPC-TRIGGER-STANDARD-001@1.0.0` | firmas, vistas, RPC, triggers, efectos y seguridad invoker como regla |
+| `SUPABASE-SECURITY-DEFINER-POLICY-001@1.0.0` | excepción privilegiada, owner mínimo, `EXECUTE` explícito y relación con RLS |
+| `SUPA-AUD-003` y `SUPA-AUD-009` | cuatro capas de alcance, schemas configurados, grants, RLS, policies y superficie efectiva actual |
+| `SUPA-AUD-016` a `SUPA-AUD-024` | drift, consumidores, legacy, riesgos y transición por objeto |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` | 5.341 requisitos hasta `SUPA-ARC-014`; rango `TREQ-SUPABASE-001` a `1046` |
+
+#### 4. Separación obligatoria de controles
+
+Un acceso solo existe cuando coinciden controles independientes:
+
+| Control | Pregunta obligatoria | Resultado insuficiente por sí solo |
+| --- | --- | --- |
+| `CONFIGURED_SCHEMA` | ¿El schema está incluido en la superficie Data API aplicable? | un grant no expone por sí mismo un schema no configurado |
+| `SCHEMA_USAGE` | ¿El rol puede resolver objetos dentro del schema? | `USAGE` no concede lectura, escritura ni ejecución |
+| `OBJECT_PRIVILEGE` | ¿El rol tiene `SELECT`, DML, `USAGE` de secuencia o `EXECUTE`? | el privilegio no elimina RLS ni autorización empresarial |
+| `ROW_AUTHORIZATION` | ¿La fila, el recurso y el cambio están permitidos para el actor? | RLS no crea privilegios de objeto ni configura Data API |
+| `BUSINESS_AUTHORIZATION` | ¿El principal, actor, contexto, permiso, scope y precondiciones permiten la capacidad? | pertenecer a `authenticated` o usar una credencial técnica no basta |
+
+Ninguna capa inferirá otra. Todo diagnóstico y prueba deberá indicar en cuál control se permite o deniega el acceso.
+
+#### 5. Topología objetivo de exposición
+
+```text
+DATA API EMPRESARIAL VENTO
+└── api
+    ├── READ_VIEW
+    ├── QUERY_RPC
+    └── COMMAND_RPC
+
+FUERA DE EXPOSICIÓN EMPRESARIAL DIRECTA
+├── 26 owner schemas
+├── app_private
+├── audit
+├── schemas administrados
+└── graphql_public sin contratos Vento aprobados
+
+COMPATIBILIDAD TRANSITORIA
+└── public
+```
+
+Reglas:
+
+1. `api` será el único schema empresarial objetivo configurado como Data API de Vento.
+2. Los 26 owner schemas permanecerán fuera de `api.schemas` y de cualquier exposición directa equivalente.
+3. `app_private` y `audit` permanecerán no expuestos.
+4. `public` podrá conservar únicamente compatibilidad activa, inventariada y con salida definida.
+5. `graphql_public` seguirá siendo una superficie administrada opcional y no alojará contratos Vento sin una decisión específica posterior.
+6. Auth, Storage, Realtime, cron, `net`, Vault, extensiones y demás schemas administrados se consumirán mediante sus superficies soportadas, no como Data API empresarial general.
+
+#### 6. Denegación por defecto
+
+1. Todo schema, tabla, vista, función, secuencia o policy nuevo nace no expuesto y sin grants de runtime.
+2. El acceso se habilitará mediante allowlist por objeto y audiencia después de aprobar contrato, sensibilidad, consumidor, owner y pruebas.
+3. La ausencia de evidencia produce `BLOCKED_PENDING_EVIDENCE`.
+4. Un objeto heredado no queda aprobado por existir en `public`, tener ACL, aparecer en PostgREST o ser consumido actualmente.
+5. Ningún cambio de configuración podrá convertir grants históricos en una superficie nueva de manera accidental.
+6. La denegación deberá ser observable y distinguible de errores de configuración o contratos ausentes.
+
+#### 7. Manifiesto canónico de exposición
+
+Cada contrato expuesto tendrá un registro con:
+
+```text
+qualified_object_identity
++ contract_kind
++ contract_version
++ configured_schema
++ owner_schema_and_capability
++ business_owner
++ technical_owner
++ audience
++ principal_classes
++ consumers
++ allowed_operations
++ object_privileges
++ dependency_privileges
++ rls_protection_class
++ policy_set
++ sensitivity_and_minimization
++ authorization_contract
++ rate_and_result_limits
++ definition_hash
++ migration_reference
++ environment_parity
++ compatibility_state
++ review_expires_at
++ rollback_and_exit_gate
+```
+
+La entrada deberá reconciliar configuración, ACL, policies, consumidores y estado remoto. Ningún dato crítico quedará implícito en el nombre del objeto.
+
+#### 8. Política de schemas
+
+1. `api` podrá conceder `USAGE` a audiencias aprobadas, pero nunca `CREATE` a roles runtime.
+2. Un owner schema no se añadirá a Data API para evitar construir un contrato en `api`.
+3. `USAGE` sobre owner schemas solo podrá existir cuando una dependencia `security_invoker` aprobada lo requiera y seguirá siendo mínimo, explícito y no equivalente a exposición Data API.
+4. `app_private` y `audit` tendrán cero `USAGE` para `PUBLIC`, `anon` y `authenticated` salvo una excepción técnica no cliente aprobada.
+5. Roles de aplicación no recibirán `CREATE` sobre schemas Vento.
+6. Los schemas administrados conservarán sus contratos de plataforma; Vento no ampliará sus ACL como solución empresarial genérica.
+7. Toda alta o baja en `api.schemas` tendrá migración o configuración versionada, diff remoto, prueba de regresión y rollback.
+
+#### 9. Política de `public`
+
+1. `public` queda congelado para contratos empresariales nuevos.
+2. Toda superficie activa dentro de `public` se clasificará por consumidor, operación, sensibilidad, grants, RLS y sucesor.
+3. No se ampliarán columnas, operaciones, audiencias o consumidores de una compatibilidad salvo contención aprobada.
+4. Las superficies aprobadas migrarán hacia `api` o hacia un owner schema privado según su naturaleza.
+5. La salida exigirá paridad, telemetría, cero consumo durante la ventana aprobada y rollback.
+6. La existencia de `public` en la configuración actual no altera su estado objetivo transitorio.
+
+#### 10. Clases de audiencia y roles
+
+| Audiencia técnica | Uso permitido | Prohibición principal |
+| --- | --- | --- |
+| `PUBLIC` | ninguno sobre objetos empresariales Vento | no heredará acceso por defaults o grants implícitos |
+| `anon` | contratos `ANON_PUBLIC` explícitos y mínimos en `api` | no representa identidad empresarial ni recibe DML directo sobre owner tables |
+| `authenticated` | contratos `AUTHENTICATED_ACTOR` en `api` | autenticación no sustituye permiso, scope, territorio ni recurso |
+| `service_role` | backend controlado y no distribuido a clientes | bypass técnico no equivale a autorización empresarial |
+| roles técnicos `NOLOGIN` | ownership o ejecución interna mínima | no se usan como sesiones humanas ni roles de aplicación |
+| roles de migración y mantenimiento | despliegue, conciliación o recuperación controlada | no son runtime ordinario ni consumidores empresariales |
+
+Cada rol tendrá finalidad, owner, ambiente, privilegios, rotación y pruebas. Las membresías y herencias se incluirán en el cálculo de acceso efectivo.
+
+#### 11. Política para `PUBLIC`
+
+1. El objetivo contiene cero privilegios empresariales Vento para el rol PostgreSQL `PUBLIC`.
+2. Se revocarán conceptualmente `USAGE`, `CREATE`, `SELECT`, DML, secuencias y `EXECUTE` heredados cuando se materialice la transición.
+3. Los objetos nuevos no dependerán de defaults de PostgreSQL que conceden `EXECUTE` a `PUBLIC`.
+4. Una policy RLS dirigida a `PUBLIC` no será válida para objetos Vento objetivo.
+5. Las excepciones requeridas por plataforma se mantendrán separadas y no se presentarán como permisos empresariales.
+6. La validación calculará acceso efectivo, no solo ACL explícita.
+
+#### 12. Política para `anon`
+
+1. `anon` solo accederá a contratos etiquetados `ANON_PUBLIC`.
+2. Cada contrato anónimo declarará finalidad pública, columnas, filtros, límites, abuso esperado y datos excluidos.
+3. `anon` tendrá cero DML directo sobre tablas de owner schemas.
+4. Una mutación anónima se realizará mediante `COMMAND_RPC` con validación, rate limit, idempotencia y resultado mínimo.
+5. No se confiará en `auth.uid()` como identidad cuando la sesión sea anónima o inexistente.
+6. Una superficie anónima no devolverá existencia de recursos, PII, secretos ni estados internos fuera de su finalidad.
+7. Las cuatro tablas `pass` con DML anónimo actual serán revisadas en el carril crítico y no se considerarán patrón objetivo.
+
+#### 13. Política para `authenticated`
+
+1. `authenticated` tendrá como única superficie Data API empresarial el schema `api` y recibirá privilegios explícitos por contrato; cualquier grant técnico de dependencia quedará limitado por la sección 16 y no expondrá el owner schema.
+2. La cláusula `TO authenticated` expresa audiencia técnica, no autorización empresarial completa.
+3. Toda lectura o comando resolverá principal, sesión, identidad, actor efectivo, permiso, scope, territorio, recurso y precondiciones vigentes.
+4. `authenticated` tendrá cero DML directo sobre tablas autoritativas de owner schemas.
+5. Las lecturas mediante `READ_VIEW` tendrán RLS y grants de dependencia mínimos o usarán un contrato alternativo cuando esa combinación no sea segura.
+6. Las pruebas cruzadas entre usuarios, clientes, trabajadores, sedes, áreas y recursos deberán fallar cerradas.
+
+#### 14. Política para `service_role` y sistemas confiables
+
+1. `service_role` será una credencial técnica privilegiada, nunca una credencial de cliente ni una identidad humana.
+2. No se distribuirá a navegador, aplicación móvil, dispositivo compartido o repositorio público.
+3. El bypass de RLS no elimina la autorización empresarial de una acción iniciada por humano.
+4. Los servicios usarán contratos mínimos, auditarán actor y causalidad y no consultarán tablas arbitrarias por conveniencia.
+5. Los grants de `service_role` se inventariarán por necesidad; amplitud histórica no se tratará como contrato objetivo.
+6. Cuando la plataforma permita roles dedicados más estrechos, se preferirán sobre un uso genérico de `service_role`.
+7. Rotación, revocación, ambiente y consumidores se gobernarán en `SUPA-ARC-020` y `SUPA-ARC-024`.
+
+#### 15. Grants de schema y objeto
+
+| Objeto | Privilegio cliente objetivo |
+| --- | --- |
+| schema `api` | `USAGE` explícito; `CREATE` prohibido |
+| `READ_VIEW` en `api` | `SELECT` solo a audiencias aprobadas |
+| `QUERY_RPC` en `api` | `EXECUTE` solo a audiencias aprobadas |
+| `COMMAND_RPC` en `api` | `EXECUTE` solo a audiencias aprobadas |
+| tablas de owner schemas | cero DML directo para `anon` y `authenticated` |
+| secuencias Vento | cero `USAGE`, `SELECT` o `UPDATE` para roles cliente |
+| `app_private` y `audit` | cero acceso directo de roles cliente |
+| objetos de compatibilidad | solo privilegios congelados y registrados durante su transición |
+
+`GRANT ALL`, grants a todos los objetos futuros y permisos por schema completo quedan prohibidos para roles runtime empresariales.
+
+#### 16. Grants de dependencia para vistas `security_invoker`
+
+Una `READ_VIEW` podrá depender de privilegios mínimos sobre fuentes solo cuando cumpla simultáneamente:
+
+1. el owner schema permanece fuera de Data API;
+2. RLS está habilitado y probado sobre cada tabla alcanzable;
+3. `USAGE` del schema y `SELECT` se limitan a columnas necesarias, preferentemente mediante grants de columna;
+4. no se concede DML, acceso a secuencias ni columnas fuera de la proyección;
+5. la vista usa columnas explícitas, `security_invoker=true` y filtros contractuales;
+6. sensibilidad, inferencia y enumeración lateral fueron probadas;
+7. la alternativa mediante `QUERY_RPC` o puente privilegiado fue evaluada.
+
+Si cualquiera de estas condiciones falla, la vista no se expondrá mediante ese modelo.
+
+#### 17. Default privileges
+
+1. Cada rol creador gobernado por Vento tendrá defaults explícitos y versionados.
+2. Los defaults no concederán privilegios a `PUBLIC`, `anon`, `authenticated` ni roles de servicio genéricos.
+3. Todo acceso se concederá después de crear el objeto y superar su gate.
+4. El control incluirá tablas, vistas, secuencias, funciones, tipos y schemas según aplique.
+5. Un nuevo owner o rol creador no operará hasta tener defaults aprobados.
+6. La comparación recurrente detectará defaults remotos más amplios que los declarados.
+
+#### 18. Política de vistas
+
+1. `security_invoker=true` será la regla para `READ_VIEW`.
+2. Una vista no usará `SELECT *` ni expondrá columnas futuras por expansión automática.
+3. RLS se aplicará en las relaciones base según la identidad del caller.
+4. `security_barrier=true` se evaluará cuando filtros sensibles, funciones con efectos observables o riesgos de inferencia lo requieran.
+5. Una vista privilegiada no se aprobará por ocultar tablas base; deberá superar las políticas de `SUPA-ARC-014` y esta tarea.
+6. Las cuatro vistas administrativas privilegiadas accesibles a `authenticated` permanecerán bloqueadas hasta clasificar columnas, consumidores, owner, RLS y destino.
+7. Las vistas no concederán mutación empresarial.
+
+#### 19. Política de funciones y RPC
+
+1. Toda función nueva tendrá `EXECUTE` revocado a `PUBLIC` antes de grants específicos.
+2. Una RPC expuesta existirá únicamente en `api` y tendrá audiencia, versión y contrato inequívocos.
+3. Las funciones de owner schemas, `app_private`, `audit` y triggers no se expondrán como RPC por ubicación accidental.
+4. Los `COMMAND_RPC` serán la única mutación cliente directa de la capa empresarial.
+5. Las funciones `SECURITY DEFINER` cumplirán íntegramente `SUPA-ARC-014`; ninguna residirá en `api`.
+6. Los 134 accesos efectivos mediante `PUBLIC` actuales deberán recibir decisión individual y no persistirán como default objetivo.
+7. Cambiar firma, seguridad, owner, ACL o dependencia exige nuevo hash y revisión de consumidores.
+
+#### 20. Alcance obligatorio de RLS
+
+Se definen cuatro clases de protección:
+
+| Clase | Uso |
+| --- | --- |
+| `RLS_REQUIRED_CLIENT_REACHABLE` | tabla alcanzable por rol cliente directa o indirectamente mediante invoker |
+| `RLS_REQUIRED_OWNER_BUSINESS` | tabla autoritativa o transaccional de los 26 owner schemas |
+| `PRIVATE_TECHNICAL_EQUIVALENT_CONTROL` | objeto técnico no cliente con aislamiento equivalente documentado |
+| `PLATFORM_MANAGED` | objeto cuya seguridad pertenece a una superficie administrada |
+
+Reglas:
+
+1. Toda tabla empresarial de un owner schema tendrá RLS habilitado.
+2. Toda tabla alcanzable por `anon` o `authenticated` tendrá RLS habilitado sin excepción.
+3. Las tablas de compatibilidad en `public` conservarán RLS mientras exista cualquier acceso cliente.
+4. Una excepción privada técnica exigirá cero Data API, cero grants cliente, roles dedicados, ACL cerrada, pruebas de drift y revisión periódica.
+5. Una tabla administrada no recibirá policies Vento fuera de un punto de extensión soportado.
+6. RLS no sustituye minimización de columnas, contratos, grants ni autorización de comandos.
+
+#### 21. Modelo de policies RLS
+
+1. Las policies permisivas conceden alternativas autorizadas y se combinan mediante OR.
+2. Las policies restrictivas aplican guardas obligatorias y se combinan mediante AND con el conjunto permisivo.
+3. Toda tabla activa tendrá al menos una ruta permisiva explícita para cada operación autorizada.
+4. Una tabla con RLS y cero policies se clasificará `LOCKED_UNTIL_READY`, no `ACTIVE` para consumidores esperados.
+5. Las guardas obligatorias podrán cubrir sesión vigente, actor efectivo, territorio, sensibilidad o estado de lifecycle.
+6. No se creará una policy permisiva amplia para compensar una restrictiva incompleta.
+7. La composición se probará como conjunto; revisar policies aisladas no basta.
+8. El nombre seguirá `rls_<table>_<operation>_<audience>_<purpose>` y respetará el estándar de 63 bytes.
+
+#### 22. Roles y comandos de policy
+
+1. Toda policy Vento usará `TO` con roles explícitos; el objetivo contiene cero policies a `PUBLIC`.
+2. Las policies permisivas serán específicas por `SELECT`, `INSERT`, `UPDATE` o `DELETE`.
+3. `FOR ALL` queda reservado a una guarda restrictiva realmente idéntica para todas las operaciones y con prueba explícita.
+4. `auth.role()` queda prohibido.
+5. `TO authenticated` sin predicate de recurso, actor o territorio no será suficiente para datos no públicos.
+6. `USING (true)` y `WITH CHECK (true)` quedan prohibidos salvo contrato público explícito, dataset clasificado y ausencia demostrada de datos protegidos.
+7. El rol objetivo, comando, modo permisivo o restrictivo y predicate serán parte del hash contractual.
+
+#### 23. Semántica por operación
+
+| Operación | Regla obligatoria |
+| --- | --- |
+| `SELECT` | `USING` limita las filas visibles y evita enumeración lateral |
+| `INSERT` | `WITH CHECK` valida ownership, territorio, estado inicial y campos protegidos |
+| `UPDATE` | requiere `USING` sobre la fila existente y `WITH CHECK` sobre la fila resultante |
+| `DELETE` | `USING` limita la fila; para clientes se preferirá comando empresarial de cancelación, baja o corrección |
+
+Una policy no convertirá una escritura inválida en cero filas silenciosas sin contrato de resultado. Las aplicaciones deberán diferenciar denegación, conflicto, ausencia y precondición.
+
+#### 24. Identidad y autorización dentro de RLS
+
+1. La sesión técnica se resolverá mediante fuentes soportadas de Auth.
+2. La identidad empresarial, actor, vínculo y contexto se resolverán desde fuentes Vento vigentes.
+3. `raw_user_meta_data`, parámetros cliente, headers no verificados y nombres de rol no conceden autorización.
+4. Una sesión revocada, trabajador inactivo, dispositivo suspendido o actor expirado producirá denegación inmediata.
+5. Las policies verificarán el recurso y territorio real; no confiarán únicamente en un `user_id` cuando el proceso exige sede, área, rol operativo o alcance adicional.
+6. `service_role` y owners privilegiados no dependerán de RLS como única barrera.
+7. Una policy conservará semántica equivalente a los permisos y contextos canónicos de autorización.
+
+#### 25. Helpers de policy
+
+1. Un helper RLS será `SECURITY INVOKER` salvo una excepción `RLS_SUPPORT_PRIMITIVE` aprobada.
+2. Tendrá firma estable, retorno estrecho, dependencias calificadas y costo acotado.
+3. No aceptará schema, tabla, rol, permiso, actor o predicate como texto libre.
+4. No leerá la misma tabla protegida mediante una ruta recursiva no controlada.
+5. Los grafos de policies y helpers deberán estar libres de ciclos o tener terminación demostrada.
+6. Un helper privilegiado repetirá autorización interna y tendrá `EXECUTE` mínimo.
+7. El plan de rendimiento e índices correspondiente se resolverá en `SUPA-ARC-021` sin degradar seguridad.
+
+#### 26. `FORCE ROW LEVEL SECURITY`
+
+1. Cada tabla Vento tendrá una decisión explícita: `FORCE_REQUIRED`, `FORCE_NOT_REQUIRED_WITH_JUSTIFICATION` o `NOT_APPLICABLE`.
+2. `FORCE RLS` será obligatorio cuando el owner o un rol de ejecución ordinario deba quedar sometido a las mismas policies que el caller.
+3. No se usará `FORCE RLS` para compensar owners demasiado amplios, grants incorrectos o funciones privilegiadas inseguras.
+4. Los roles de migración, recuperación y mantenimiento se separarán del runtime y tendrán procedimientos controlados.
+5. Las funciones privilegiadas que deban atravesar RLS declararán expresamente su identidad efectiva y la regla empresarial equivalente.
+6. El estado actual de cero tablas con `FORCE RLS` requiere clasificación, no activación masiva automática.
+
+#### 27. Controles equivalentes para objetos privados
+
+Una excepción `PRIVATE_TECHNICAL_EQUIVALENT_CONTROL` requiere simultáneamente:
+
+- schema no expuesto;
+- cero `USAGE` y privilegios para `PUBLIC`, `anon` y `authenticated`;
+- roles técnicos dedicados y no login cuando corresponda;
+- privilegios por objeto, no por schema completo;
+- ausencia de credenciales o secretos en retornos y logs;
+- prueba negativa de acceso directo y mediante dependencias;
+- detección de drift de ACL y configuración;
+- fecha de revisión y owner responsable.
+
+La excepción no se aplica a una tabla empresarial por conveniencia ni por carecer de policies actualmente.
+
+#### 28. Objetos y servicios administrados
+
+1. `auth`, `storage`, `realtime`, `cron`, `net`, Vault, extensiones y schemas internos conservarán sus modelos soportados.
+2. Las policies sobre `storage.objects` se gobernarán en `SUPA-ARC-018` y no autorizarán acceso a metadata empresarial fuera de finalidad.
+3. Realtime no transforma una policy de lectura en autorización de suscripción; su contrato se define en `SUPA-ARC-019`.
+4. Edge Functions y cron con credenciales privilegiadas se rigen por `SUPA-ARC-020`.
+5. Vento no concederá acceso general a internals administrados ni copiará sus ACL como estándar empresarial.
+6. Las diferencias de plataforma se reconciliarán por ambiente en `SUPA-ARC-024`.
+
+#### 29. Línea base AS-IS obligatoria
+
+| Métrica observada | Cantidad |
+| --- | ---: |
+| schemas no efímeros | **23** |
+| schemas declarados actualmente en configuración Data API | **2** — `public`, `graphql_public` |
+| tablas globales `r/p` | **432** |
+| tablas Vento | **317** |
+| tablas Vento con RLS | **305** |
+| tablas Vento sin RLS | **12** |
+| tablas globales con `FORCE RLS` | **0** |
+| policies globales | **831** |
+| policies Vento | **790** |
+| policies globales permisivas | **831** |
+| tablas Vento con RLS y cero policies | **5** |
+| policies Vento dirigidas a `PUBLIC` | **211** |
+| tablas `pass` con DML anónimo | **4** |
+| vistas administrativas privilegiadas accesibles a `authenticated` | **4** |
+| funciones Vento ejecutables mediante `PUBLIC` | **134** |
+
+Estos conteos describen el corte auditado. Incluyen objetos VITAL gobernados por Vento pero clasificados fuera de Vento OS; esa frontera deberá conservarse y no podrá incorporarlos a `api`. Los conteos no certifican conformidad, vulnerabilidad, uso actual ni destino de un objeto individual.
+
+#### 30. Disposiciones obligatorias del universo actual
+
+Cada superficie, grant, policy y excepción actual recibirá una sola disposición:
+
+| Clase | Resultado |
+| --- | --- |
+| `KEEP_AND_HARDEN` | conserva finalidad con contrato, grants mínimos y pruebas completas |
+| `MOVE_TO_API` | se materializa como contrato canónico expuesto |
+| `NARROW_PRIVILEGES` | conserva objeto, pero reduce audiencia, operación, columnas o alcance |
+| `REPLACE_WITH_COMMAND_OR_QUERY` | elimina acceso directo mediante RPC aprobada |
+| `PRIVATE_ONLY` | queda fuera de Data API y de roles cliente |
+| `TRANSITIONAL_COMPATIBILITY` | permanece temporalmente con telemetría y salida definida |
+| `RETIRE` | se elimina después de paridad, cero consumo y rollback probado |
+| `BLOCKED_PENDING_EVIDENCE` | no puede mantenerse ni ampliarse hasta resolver evidencia faltante |
+
+No se inferirá la disposición desde schema, nombre, grant, policy o consumidor aislado.
+
+#### 31. Orden de revisión del estado actual
+
+```text
+1. CUATRO TABLAS PASS CON DML ANÓNIMO
+2. CUATRO VISTAS PRIVILEGIADAS ACCESIBLES A authenticated
+3. 134 FUNCIONES EJECUTABLES MEDIANTE PUBLIC
+4. 211 POLICIES VENTO DIRIGIDAS A PUBLIC
+5. CINCO TABLAS VENTO CON RLS Y CERO POLICIES
+6. DOCE TABLAS VENTO SIN RLS
+7. DEFAULT PRIVILEGES Y MEMBRESÍAS AMPLIAS
+8. RESTO DE 790 POLICIES Y 317 TABLAS VENTO
+```
+
+La pertenencia a varios grupos no duplica el objeto. El orden prioriza exposición y radio de impacto, no declara vulnerabilidad automática.
+
+#### 32. Gate de publicación
+
+Un contrato solo podrá pasar a `ACTIVE` cuando exista evidencia de:
+
+- owner, capacidad, proceso y consumidores;
+- schema configurado y paridad remota;
+- audiencia y principal classes;
+- privilegios de schema, objeto y dependencias;
+- RLS, policies, composición y decisión de `FORCE RLS`;
+- autorización empresarial, sensibilidad y minimización;
+- límites, paginación, errores, auditoría y observabilidad;
+- pruebas positivas y negativas por rol, actor, territorio y recurso;
+- pruebas de acceso directo no permitido;
+- migración, hash, default privileges, rollback y ambiente;
+- compatibilidad, telemetría y gate de salida cuando corresponda.
+
+La ausencia de un elemento conserva estado bloqueado.
+
+#### 33. Pruebas negativas obligatorias
+
+La certificación incluirá al menos:
+
+1. `anon` frente a contrato no público;
+2. `authenticated` sin identidad o actor vigente;
+3. usuario A intentando leer o mutar recurso de usuario B;
+4. trabajador de una sede frente a recurso de otra sede;
+5. rol técnico sin permiso empresarial para una acción humana;
+6. acceso directo a owner schema no configurado;
+7. intento de DML directo sobre tabla autoritativa;
+8. columna sensible fuera de una proyección;
+9. combinación OR de policies que amplía acceso;
+10. `UPDATE` que conserva `USING` pero viola `WITH CHECK`;
+11. sesión revocada, vínculo inactivo o dispositivo suspendido;
+12. default privilege o membership que reintroduce acceso;
+13. uso de `service_role` desde un cliente;
+14. objeto nuevo sin manifiesto o hash;
+15. ambiente con `api.schemas`, grants o policies divergentes.
+
+Cada denegación conservará cero efectos y evidencia suficiente sin filtrar datos sensibles.
+
+#### 34. Drift y validación recurrente
+
+El control recurrente comparará:
+
+```text
+api.schemas
++ extra_search_path
++ schema owners and ACL
++ object ACL and column grants
++ default privileges
++ role memberships and attributes
++ RLS enabled and FORCE RLS
++ policy identity, command, role, mode and predicates
++ view security options
++ routine security mode and EXECUTE
++ contract manifests and hashes
++ consumers and compatibility state
++ environment parity
+```
+
+Toda alta, baja o diferencia tendrá owner, severidad, tarea, rollback y decisión. El drift privilegiado o cliente será bloqueante.
+
+#### 35. Compatibilidad y retiro
+
+1. La compatibilidad conservará firma y comportamiento mientras existan consumidores aprobados.
+2. No recibirá capacidades ni audiencias nuevas.
+3. Tendrá sucesor en `api`, telemetría, aviso, fecha objetivo y rollback.
+4. La revocación de grants ocurrirá después de paridad y cero consumo observado.
+5. Retirar un schema de Data API exigirá comprobar todos los objetos y clientes que dependan de él.
+6. Las policies legacy se compararán por equivalencia semántica, no solo por texto.
+7. El cambio de `PUBLIC` a roles explícitos deberá conservar acceso legítimo y eliminar ampliaciones accidentales.
+
+#### 36. Riesgos restringidos y carryover
+
+| Riesgo | Control de esta tarea | Continuidad responsable |
+| --- | --- | --- |
+| schema expuesto por configuración accidental | allowlist y drift de `api.schemas` | `SUPA-ARC-024`, `SUPA-TRANS-013` |
+| grant amplio o heredado | privilegio mínimo y acceso efectivo | `SUPA-TRANS-003`, `SUPA-TRANS-015` |
+| BOLA o IDOR | actor, scope, territorio, recurso y pruebas cruzadas | `SUPA-ARC-016`, `AUTH-QA-030` |
+| RLS permisivo compuesto por OR | modelo permisivo más restrictivo y prueba de conjunto | `SUPA-TRANS-009` |
+| bypass mediante función privilegiada | `SUPA-ARC-014` más grants explícitos | `SUPA-TRANS-003` |
+| mutación directa de tabla | `COMMAND_RPC` como frontera | `SUPA-ARC-016`, `SUPA-ARC-017` |
+| `public` perpetuo | congelación, sucesor, telemetría y salida | `SUPA-TRANS-006`, `SUPA-TRANS-007` |
+| divergencia entre ambientes | manifiesto, hash y paridad | `SUPA-ARC-024`, `SUPA-TRANS-013` |
+
+#### 37. Decisiones reservadas
+
+| Decisión | Tarea propietaria |
+| --- | --- |
+| contratos exactos de lectura y mutación por dominio | `SUPA-ARC-016` |
+| escrituras entre owner schemas | `SUPA-ARC-017` |
+| policies y rutas de Storage | `SUPA-ARC-018` |
+| autorización de canales y publicaciones Realtime | `SUPA-ARC-019` |
+| credenciales y ejecución de Edge Functions, webhooks y cron | `SUPA-ARC-020` |
+| índices para predicates y helpers RLS | `SUPA-ARC-021` |
+| entornos y overlays de configuración | `SUPA-ARC-024` |
+| ADR y linter consolidado | `SUPA-ARC-025` |
+| implementación, cutover y retiro por objeto | `SUPA-TRANS-*` y paquetes E5 |
+
+#### 38. Límites de autorización
+
+Esta tarea no autoriza:
+
+- modificar `api.schemas`, `extra_search_path` o configuración remota;
+- crear o retirar schemas, tablas, vistas, funciones, roles, policies o grants;
+- habilitar o deshabilitar RLS o `FORCE ROW LEVEL SECURITY`;
+- cambiar owners, memberships, default privileges o ACL;
+- exponer `api`, retirar `public` o activar GraphQL;
+- ejecutar DDL, DML, migraciones, backfills, seeds, tests mutantes, cutover o despliegues;
+- declarar conforme una tabla, policy, vista, función, grant o consumidor actual;
+- iniciar `SUPA-ARC-016` antes de aprobación expresa.
+
+#### 39. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-1047 a TREQ-SUPABASE-1090
+```
+
+Los cuarenta y cuatro requisitos protegen topología de exposición, allowlists, roles, grants, defaults, vistas, RPC, RLS, policies, identidad, `FORCE RLS`, excepciones privadas, compatibilidad, pruebas negativas y drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 40. Criterios de aceptación
+
+- [ ] Existe una única política versionada de exposición, grants y RLS.
+- [ ] `api` es el único schema empresarial Data API objetivo.
+- [ ] Los 26 owner schemas, `app_private` y `audit` permanecen fuera de exposición directa.
+- [ ] `public` queda congelado como compatibilidad transitoria.
+- [ ] Exposición, `USAGE`, privilegio de objeto, RLS y autorización empresarial permanecen separados.
+- [ ] `PUBLIC` tiene cero privilegios empresariales objetivo.
+- [ ] `anon` y `authenticated` tienen cero DML directo sobre tablas autoritativas.
+- [ ] Los grants de dependencia de vistas invoker son mínimos, por columnas y protegidos por RLS.
+- [ ] Default privileges no conceden acceso runtime implícito.
+- [ ] Toda tabla empresarial owner tiene RLS y toda excepción privada tiene control equivalente.
+- [ ] Las policies usan roles y operaciones explícitos; `auth.role()` y policies Vento a `PUBLIC` son cero en el objetivo.
+- [ ] `UPDATE` requiere `USING` y `WITH CHECK`.
+- [ ] Cada tabla tiene decisión de `FORCE RLS`.
+- [ ] Las cuatro tablas anónimas, cuatro vistas privilegiadas, 134 funciones mediante `PUBLIC`, 211 policies a `PUBLIC`, cinco tablas sin policies y doce sin RLS reciben disposición.
+- [ ] Se generan `TREQ-SUPABASE-1047` a `TREQ-SUPABASE-1090`.
+- [ ] No se ejecutan cambios físicos ni se inicia la tarea siguiente.
+
+#### 41. Controles estructurales requeridos
+
+| Control | Resultado esperado |
+| --- | ---: |
+| schemas empresariales Data API objetivo | **1** |
+| owner schemas expuestos directamente | **0** |
+| schemas transversales privados expuestos | **0** |
+| grants empresariales a `PUBLIC` | **0** |
+| DML cliente directo sobre owner tables | **0** |
+| grants cliente sobre secuencias | **0** |
+| `CREATE` para roles runtime | **0** |
+| tablas cliente alcanzables sin RLS | **0** |
+| policies Vento a `PUBLIC` objetivo | **0** |
+| clases de protección | **4** |
+| clases de disposición | **8** |
+| tablas Vento cubiertas por clasificación | **317 de 317** |
+| policies Vento cubiertas por clasificación | **790 de 790** |
+| requisitos nuevos | **44** |
+| cambios físicos | **0** |
+
+#### 42. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
+```
+
+`SUPA-ARC-016` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
 ### [ ] SUPA-ARC-017 — Definir política de escrituras entre dominios
 ### [ ] SUPA-ARC-018 — Definir arquitectura de Storage

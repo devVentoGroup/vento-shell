@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **419** |
+| Aprobadas | **420** |
 | En propuesta | **0** |
-| No iniciadas | **1156** |
+| No iniciadas | **1155** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **26.60% (419/1575)** |
+| Porcentaje de completamiento | **26.67% (420/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-ARC-014` — Definir política canónica de `SECURITY DEFINER` | ✅ APROBADA |
-| Tarea actual | `SUPA-ARC-015` — Definir política canónica de exposición, grants y RLS | ⬜ NO INICIADA |
-| Siguiente | `SUPA-ARC-016` — Definir contratos de lectura y mutación por dominio | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-ARC-015` — Definir política canónica de exposición, grants y RLS | ✅ APROBADA |
+| Tarea actual | `SUPA-ARC-016` — Definir contratos de lectura y mutación por dominio | ⬜ NO INICIADA |
+| Siguiente | `SUPA-ARC-017` — Definir política de escrituras entre dominios | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -417,7 +417,7 @@
 | ✅ APROBADA | `SUPA-ARC-012` | Definir convenciones de claves, constraints, estados y timestamps | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-013` | Definir convenciones para funciones, RPC y triggers | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-014` | Definir política canónica de `SECURITY DEFINER` | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
-| ⬜ NO INICIADA | `SUPA-ARC-015` | Definir política canónica de exposición, grants y RLS | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
+| ✅ APROBADA | `SUPA-ARC-015` | Definir política canónica de exposición, grants y RLS | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-016` | Definir contratos de lectura y mutación por dominio | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-017` | Definir política de escrituras entre dominios | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-018` | Definir arquitectura de Storage | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
