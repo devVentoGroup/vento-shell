@@ -3676,7 +3676,617 @@ SUPA-ARC-009 — Definir vínculo de auth.users con trabajador, cliente y dispos
 `SUPA-ARC-009` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-009 — Definir vínculo de `auth.users` con trabajador, cliente y dispositivo
+### ✅ SUPA-ARC-009 — Definir vínculo de `auth.users` con trabajador, cliente y dispositivo
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `c3d0103dfe1131f25dfa54ea5d8b39a3029bcae5`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `e9ae77fa51f91531cb1bfa4a9d7a2595a6a3d9a1`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `01_IDENTIDAD_Y_ROLES.md` blob `ed957e29cff70ff9042bbc2b739464587f928cdb`; `06_ADR_AUTH_001.md` blob `e41074801c22a761123ba103353f2981672078a2`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `1159128475e76e7c24e8c1c02b749ce808a4fbd1`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`
+**Tipo de tarea:** definición normativa de cardinalidades, compatibilidad, lifecycle, integridad y resolución de vínculos entre cuentas administradas de Supabase Auth e identidades empresariales de trabajador, cliente y dispositivo; sin crear, modificar, fusionar, separar, bloquear o eliminar cuentas, perfiles, dispositivos, vínculos, sesiones, tablas, schemas, constraints, funciones, triggers, policies, grants, claims, migraciones, código, datos ni despliegues
+
+#### 1. Objetivo
+
+Definir el contrato lógico que vinculará una cuenta administrada en `auth.users` con identidades empresariales de trabajador, cliente y dispositivo, preservando simultáneamente:
+
+- la independencia del ciclo de vida de la cuenta Auth;
+- la autoridad de cada identidad en su dominio propietario;
+- la compatibilidad legítima entre trabajador y cliente;
+- la exclusión absoluta entre una cuenta humana y una cuenta técnica de dispositivo;
+- la atribución correcta del actor efectivo;
+- la clasificación controlada de perfiles legacy, huérfanos, duplicados y colisiones.
+
+```text
+AUTH SUBJECT ADMINISTRADO
+        ↓
+PRINCIPAL CLASIFICADO
+        ↓
+REGISTRO DE VÍNCULO EN identity_access
+        ↓
+IDENTIDAD EMPRESARIAL EN SU OWNER SCHEMA
+        ↓
+ACTOR EFECTIVO O DENEGACIÓN CERRADA
+```
+
+El vínculo no convertirá `auth.users` en fuente de verdad empresarial ni hará depender la existencia de un trabajador, cliente o dispositivo de que la cuenta Auth continúe activa.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-AUTH-ENTERPRISE-IDENTITY-LINK-MODEL-001@1.0.0
+```
+
+| Propiedad                                      |             Valor |
+| ---------------------------------------------- | ----------------: |
+| `managed_auth_subject_source`                  |      `auth.users` |
+| `enterprise_link_owner_schema`                 | `identity_access` |
+| `enterprise_link_owner_schema_id`              |     `VSCHEMA-023` |
+| `human_compatible_identity_kinds`              |             **2** |
+| `dedicated_device_principal_required`          |             **1** |
+| `active_link_max_per_subject_and_kind`         |             **1** |
+| `active_auth_link_max_per_enterprise_identity` |             **1** |
+| `link_lifecycle_states`                        |             **6** |
+| `link_origin_classes`                          |             **6** |
+| `conflict_case_classes`                        |             **8** |
+| `automatic_linking_from_contact_match`         |             **0** |
+| `physical_changes_authorized`                  |             **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                       | Decisión consumida                                                                                                 |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `01_PROTOCOLO.md`                                            | continuidad, integridad, trazabilidad, entrega de una sola tarea y separación entre definición e implementación    |
+| `delivery-contract.json`                                     | formato único de tarea y registro 04A completo con nombre único                                                    |
+| `active-sequence.json`                                       | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-009` como tarea actual                                        |
+| `SUPABASE-AUTH-ENTERPRISE-IDENTITY-MODEL-001@1.0.0`          | tres clases de principal, cuatro identidades empresariales, actor efectivo y denegación cerrada                    |
+| `AUTH-MOD-001`                                               | usuario Auth, empleado, cliente, dispositivo técnico y actor compartido como conceptos separados                   |
+| `ADR-AUTH-001`                                               | identidad, contexto, autorización y presentación como capas independientes                                         |
+| `SUPA-AUD-010`                                               | 73 cuentas Auth, 56 trabajadores, 80 perfiles cliente, siete perfiles sin Auth y brechas de integridad referencial |
+| `SUPA-AUD-011`                                               | intersecciones reales entre trabajador, cliente y dispositivo; colisiones y ausencia de sesiones de actor          |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0` | `workforce`, `customer_engagement`, `technology_operations` e `identity_access` como fronteras diferenciadas       |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`          | historial, corrección y evidencia mediante referencias append-only                                                 |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`           | 5.091 requisitos hasta `SUPA-ARC-008`; rango `TREQ-SUPABASE-001` a `796`                                           |
+
+#### 4. Decisión canónica
+
+Los vínculos entre Auth e identidades empresariales serán registros explícitos gobernados por `identity_access`. La cuenta Auth, el vínculo y la identidad empresarial serán objetos distintos:
+
+```text
+AUTH ACCOUNT
+  auth.users.id
+  credenciales y sesión administradas
+
+ENTERPRISE IDENTITY LINK
+  principal y vínculo gobernados por identity_access
+
+DOMAIN IDENTITY
+  EMPLOYEE en workforce
+  CUSTOMER en customer_engagement
+  DEVICE master en technology_operations
+  identidad técnica y actor compartido en identity_access
+```
+
+La igualdad física actual entre algunos UUID no constituirá identidad conceptual ni constraint objetivo. El modelo deberá poder cambiar una cuenta Auth, fusionar o separar cuentas y retirar una credencial sin renumerar ni eliminar la identidad empresarial.
+
+#### 5. Matriz de propiedad
+
+| Elemento                               | Owner lógico            | Autoridad                                                        |
+| -------------------------------------- | ----------------------- | ---------------------------------------------------------------- |
+| cuenta, proveedor, credencial y sesión | Supabase Auth           | autenticación técnica                                            |
+| principal y vínculo empresarial        | `identity_access`       | clasificación, compatibilidad, lifecycle y resolución            |
+| identidad laboral                      | `workforce`             | existencia, estado y ciclo laboral del trabajador                |
+| identidad comercial                    | `customer_engagement`   | existencia, consentimiento y ciclo del cliente                   |
+| dispositivo operativo maestro          | `technology_operations` | identidad física, configuración, activación y soporte del equipo |
+| sesión de actor compartido             | `identity_access`       | trabajador efectivo temporal sobre un dispositivo                |
+| auditoría del vínculo                  | `audit`                 | evidencia, causalidad, corrección y resultado                    |
+
+Una FK, un UUID coincidente, un trigger, una invitación o una fila de bootstrap no transferirá autoridad entre estas fronteras.
+
+#### 6. Cardinalidades objetivo
+
+##### 6.1. Desde la cuenta Auth
+
+| Principal       | Vínculo `EMPLOYEE` activo | Vínculo `CUSTOMER` activo |                                       Vínculo `DEVICE` activo |
+| --------------- | ------------------------: | ------------------------: | ------------------------------------------------------------: |
+| `HUMAN_USER`    |                  **0..1** |                  **0..1** |                                                         **0** |
+| `SHARED_DEVICE` |                     **0** |                     **0** | **1** cuando el dispositivo esté habilitado para autenticarse |
+| `SERVICE`       |                     **0** |                     **0** |                                                         **0** |
+
+Un `HUMAN_USER` podrá tener simultáneamente un vínculo `EMPLOYEE` y uno `CUSTOMER`. Esa es la única combinación multiidentidad humana aprobada en esta tarea.
+
+##### 6.2. Desde la identidad empresarial
+
+| Identidad  |                                                        Cuentas Auth activas permitidas |
+| ---------- | -------------------------------------------------------------------------------------: |
+| `EMPLOYEE` |                                                                               **0..1** |
+| `CUSTOMER` |                                                                               **0..1** |
+| `DEVICE`   | **0..1**; exactamente **1** cuando el dispositivo activo requiera autenticación propia |
+
+Una identidad podrá existir sin cuenta Auth. Ninguna identidad podrá tener dos cuentas activas simultáneas sin un caso formal de transición que cierre o superseda el vínculo anterior.
+
+#### 7. Compatibilidad y exclusión
+
+```text
+EMPLOYEE + CUSTOMER
+= COMPATIBLE PARA UNA MISMA PERSONA
+
+EMPLOYEE + DEVICE
+= PROHIBIDO EN UNA MISMA CUENTA AUTH
+
+CUSTOMER + DEVICE
+= PROHIBIDO EN UNA MISMA CUENTA AUTH
+
+HUMAN_USER + SHARED_DEVICE
+= PROHIBIDO COMO CLASIFICACIÓN SIMULTÁNEA
+```
+
+Reglas:
+
+1. la coexistencia `EMPLOYEE + CUSTOMER` conserva dos identidades, dos owners, dos estados y dos finalidades;
+2. una aplicación laboral nunca hará fallback a `CUSTOMER`;
+3. una aplicación de cliente nunca derivará permisos laborales desde `EMPLOYEE`;
+4. una cuenta de dispositivo deberá ser dedicada y no podrá representar una persona;
+5. `SERVICE` utilizará su contrato de actor de sistema y no reclamará identidades de trabajador, cliente o dispositivo.
+
+#### 8. Identificadores estables e independencia de Auth
+
+1. `auth_subject_id` será una referencia administrada y reemplazable, no el identificador empresarial universal.
+2. `employee_id`, `customer_id` y `device_id` conservarán identidad estable en sus owner schemas.
+3. La coincidencia actual `employees.id = auth.users.id` se clasifica como compatibilidad física transitoria, no como regla de arquitectura objetivo.
+4. La eliminación o sustitución de una cuenta Auth no borrará ni renumerará la identidad empresarial.
+5. El vínculo tendrá identidad propia para conservar historial, origen, cambios y auditoría.
+6. Los nombres físicos, tipos de clave y constraints se completarán en `SUPA-ARC-011` y `SUPA-ARC-012`.
+
+#### 9. Contrato lógico del vínculo
+
+Todo vínculo deberá representar, como mínimo:
+
+```text
+enterprise_identity_link_id
++ auth_subject_id
++ principal_kind
++ enterprise_identity_kind
++ enterprise_identity_id
++ link_state
++ link_origin
++ assurance_level
++ authority_reference
++ reason_code
++ created_at
++ verified_at
++ activated_at
++ suspended_at
++ revoked_at
++ superseded_at
++ supersedes_link_id
++ resolution_case_id
++ source_version
++ audit_reference
+```
+
+Los campos no aplicables serán nulos por contrato. Ningún consumidor podrá reconstruir un vínculo omitiendo su estado, origen o autoridad.
+
+#### 10. Lifecycle del vínculo
+
+Se adopta un vocabulario lógico cerrado de seis estados:
+
+| Estado                 | Significado                                        |      Autoriza resolución empresarial |
+| ---------------------- | -------------------------------------------------- | -----------------------------------: |
+| `PENDING_VERIFICATION` | vínculo propuesto aún no comprobado                |                                   no |
+| `ACTIVE`               | vínculo verificado y vigente                       | sí, sujeto al estado de la identidad |
+| `SUSPENDED`            | vínculo temporalmente inutilizable                 |                                   no |
+| `REVOKED`              | vínculo cerrado por decisión o cambio de autoridad |                                   no |
+| `SUPERSEDED`           | sustituido por otro vínculo identificado           |                                   no |
+| `CONFLICT`             | existe ambigüedad o incompatibilidad sin resolver  |                                   no |
+
+Solo `ACTIVE` participa en la resolución normal. El estado de sesión, refresh, bloqueo, MFA y offboarding se define en `SUPA-ARC-010` y no se duplicará dentro del vínculo.
+
+#### 11. Orígenes permitidos
+
+Cada vínculo declarará exactamente una clase de origen:
+
+| Origen                      | Uso                                                              |
+| --------------------------- | ---------------------------------------------------------------- |
+| `STAFF_INVITATION`          | alta laboral mediante invitación válida y consumible             |
+| `CUSTOMER_SELF_ENROLLMENT`  | creación o reclamación de perfil de cliente por flujo verificado |
+| `ADMIN_DEVICE_PROVISIONING` | aprovisionamiento nominal de una cuenta técnica dedicada         |
+| `VERIFIED_IDENTITY_CLAIM`   | reclamación de una identidad existente con prueba suficiente     |
+| `LEGACY_MIGRATION`          | vínculo trasladado desde una relación histórica clasificada      |
+| `MANUAL_RECONCILIATION`     | decisión autorizada sobre conflicto documentado                  |
+
+`LEGACY_MIGRATION` no equivale a verificación automática. Todo vínculo migrado deberá declarar evidencia, clasificación y gate de revisión.
+
+#### 12. Vínculo laboral
+
+```text
+CUENTA HUMAN_USER
++ IDENTIDAD EMPLOYEE EXISTENTE
++ ORIGEN AUTORIZADO
++ VERIFICACIÓN COMPLETA
++ AUSENCIA DE OTRO VÍNCULO EMPLOYEE ACTIVO
+= VÍNCULO EMPLOYEE ACTIVE
+```
+
+Reglas:
+
+1. una invitación crea o reserva una intención de vínculo, no autoridad laboral inmediata;
+2. la aceptación deberá demostrar invitación vigente, destinatario, rol del proceso, sede prevista y consumo único;
+3. un trabajador existente no podrá ser reclamado por otra cuenta mediante coincidencia de correo, teléfono o nombre;
+4. la identidad laboral podrá existir antes de Auth y permanecer no autenticable;
+5. la actividad laboral seguirá determinada por `workforce`, no por el estado del vínculo únicamente;
+6. un cambio de cuenta supersederá el vínculo anterior sin alterar el `employee_id`.
+
+#### 13. Vínculo de cliente
+
+```text
+CUENTA HUMAN_USER
++ CUSTOMER NUEVO O EXISTENTE
++ CONSENTIMIENTO Y VERIFICACIÓN DEL FLUJO
++ AUSENCIA DE OTRO VÍNCULO CUSTOMER ACTIVO
+= VÍNCULO CUSTOMER ACTIVE
+```
+
+Reglas:
+
+1. un perfil cliente podrá existir sin cuenta para soportar historia, importación o captura empresarial legítima;
+2. el onboarding podrá crear un perfil nuevo o abrir reclamación de uno existente;
+3. correo, teléfono y documento serán señales de reconciliación, no autorización para enlazar;
+4. una coincidencia ambigua abrirá `CONFLICT` y no fusionará saldos, puntos, beneficios, pedidos ni consentimientos;
+5. una cuenta laboral podrá añadir vínculo de cliente sin modificar el vínculo `EMPLOYEE`;
+6. la baja laboral no eliminará automáticamente el perfil de cliente.
+
+#### 14. Coexistencia trabajador-cliente
+
+La coexistencia aprobada se representará mediante dos vínculos activos independientes:
+
+```text
+AUTH SUBJECT HUMAN_USER
+├── EMPLOYEE LINK → workforce
+└── CUSTOMER LINK → customer_engagement
+```
+
+Cada aplicación o contrato deberá declarar la identidad requerida. Una misma solicitud no mezclará datos, permisos o estados de ambos dominios salvo un proceso explícito que consuma referencias autorizadas.
+
+Las 56 cuentas observadas con identidad laboral y perfil cliente no se declararán automáticamente correctas ni defectuosas. Cada perfil deberá clasificarse como comercial deliberado, bootstrap legacy, dependencia técnica o duplicación antes de conservarlo o retirarlo.
+
+#### 15. Vínculo de dispositivo
+
+```text
+CUENTA AUTH DEDICADA
++ PRINCIPAL SHARED_DEVICE EXPLÍCITO
++ DEVICE ACTIVO
++ APROVISIONAMIENTO ADMINISTRATIVO
++ AUSENCIA DE IDENTIDADES HUMANAS
+= VÍNCULO DEVICE ACTIVE
+```
+
+Reglas:
+
+1. un dispositivo no se modelará como empleado ni cliente;
+2. la cuenta Auth del dispositivo no se compartirá con una persona;
+3. el vínculo identifica la terminal, no al trabajador que la utiliza;
+4. una mutación empresarial seguirá requiriendo sesión de actor y trabajador activo;
+5. el cierre de la sesión de actor no revoca el vínculo del dispositivo;
+6. el retiro del dispositivo y la revocación de su cuenta se coordinarán en `SUPA-ARC-010`;
+7. el PIN del trabajador o del dispositivo no forma parte del vínculo ni se almacenará en texto.
+
+#### 16. Perfiles sin cuenta Auth
+
+Un perfil empresarial sin Auth será un estado permitido y explícito:
+
+```text
+ENTERPRISE IDENTITY EXISTE
++ ACTIVE AUTH LINK = 0
+= IDENTIDAD NO AUTENTICABLE
+```
+
+No se deberá:
+
+- eliminarlo por ausencia de cuenta;
+- crear una cuenta automáticamente;
+- enlazarlo al primer contacto coincidente;
+- tratarlo como error de integridad por defecto;
+- concederle acceso autenticado.
+
+Los siete perfiles cliente sin Auth del corte vigente permanecerán sin cambio hasta clasificarse como históricos, importados, invitados, deliberadamente no autenticables o huérfanos.
+
+#### 17. Clases de conflicto
+
+Toda ambigüedad se registrará mediante una de ocho clases:
+
+```text
+AUTH_ACCOUNT_DUPLICATE
+ENTERPRISE_IDENTITY_DUPLICATE
+IDENTITY_LINK_DUPLICATE
+CROSS_CLASS_COLLISION
+CONTACT_MATCH_ONLY
+ORPHAN_PROFILE
+LEGACY_SHARED_UUID
+DEVICE_HUMAN_COLLISION
+```
+
+El caso deberá conservar candidatos, evidencias, fuentes, riesgo, decisión requerida, autoridad y estado. La existencia de un caso bloquea la activación automática de los vínculos afectados.
+
+#### 18. Resultados de resolución
+
+Un caso podrá terminar únicamente mediante un resultado explícito:
+
+| Resultado                        | Efecto documental futuro                                         |
+| -------------------------------- | ---------------------------------------------------------------- |
+| `LINK_EXISTING_IDENTITY`         | activa un vínculo comprobado con identidad ya existente          |
+| `CREATE_NEW_ENTERPRISE_IDENTITY` | crea una identidad nueva mediante el dominio propietario         |
+| `KEEP_UNLINKED`                  | conserva el perfil o la cuenta sin vínculo activo                |
+| `SPLIT_PRINCIPAL`                | separa una cuenta humana de una cuenta técnica o de otra persona |
+| `SUPERSEDE_LINK`                 | cierra el vínculo anterior y activa uno sucesor                  |
+| `REJECT_AND_ESCALATE`            | impide el vínculo y deriva a revisión autorizada                 |
+
+Esta tarea define resultados lógicos. No ejecuta ninguna de estas acciones.
+
+#### 19. Datos de contacto y matching
+
+1. email, teléfono y documento normalizados serán evidencia de búsqueda y reconciliación;
+2. ninguno será una clave universal de autorización;
+3. una coincidencia exacta no activará un vínculo sin demostrar control, autoridad y ausencia de conflicto;
+4. múltiples coincidencias bloquearán el flujo automático;
+5. valores faltantes no se inventarán ni se completarán desde metadata no autoritativa;
+6. el documento laboral se definirá y protegerá en su dominio, sin copiarlo a Auth;
+7. los grupos duplicados observados por correo o teléfono deberán abrir caso de reconciliación antes de merge.
+
+#### 20. Integridad referencial y eliminación
+
+El modelo objetivo prohibirá que la eliminación técnica de `auth.users` elimine en cascada una identidad empresarial o su historia.
+
+```text
+AUTH ACCOUNT DELETED OR REPLACED
+        ↓
+LINK REVOKED OR SUPERSEDED
+        ↓
+EMPLOYEE / CUSTOMER / DEVICE PRESERVED
+        ↓
+AUDIT AND REFERENCES PRESERVED
+```
+
+La FK actual `employees.id → auth.users.id` con eliminación en cascada se clasifica como dependencia transitoria que deberá migrarse con paridad, protección histórica y rollback. La ausencia actual de FK en `public.users`, invitaciones, candidatos y wallet no autoriza enlaces débiles; el diseño físico se resolverá en `SUPA-ARC-012`.
+
+#### 21. Resolución server-side
+
+Toda frontera confiable resolverá en orden:
+
+```text
+1. VALIDAR CUENTA Y SESIÓN AUTH
+2. RESOLVER PRINCIPAL_KIND EXPLÍCITO
+3. OBTENER VÍNCULOS ACTIVE
+4. VALIDAR CARDINALIDAD Y COMPATIBILIDAD
+5. SELECCIONAR LA IDENTIDAD EXIGIDA POR EL CONTRATO
+6. VERIFICAR ESTADO VIGENTE EN EL OWNER SCHEMA
+7. RESOLVER ACTOR EFECTIVO
+8. CONTINUAR A CONTEXTO Y AUTORIZACIÓN
+```
+
+El cliente no podrá suministrar libremente `employee_id`, `customer_id`, `device_id`, `principal_kind` ni `effective_actor_id` para reemplazar la resolución.
+
+#### 22. Comportamiento de denegación
+
+Se incorporan códigos lógicos mínimos:
+
+```text
+identity_link_missing
+identity_link_pending
+identity_link_inactive
+identity_link_ambiguous
+identity_link_conflict
+principal_class_conflict
+enterprise_identity_already_claimed
+device_principal_not_dedicated
+contact_match_requires_reconciliation
+```
+
+Los códigos complementan los definidos en `SUPA-ARC-008`. No sustituyen los estados de sesión y revocación de `SUPA-ARC-010`.
+
+#### 23. Auditoría del vínculo
+
+Se auditarán, según sensibilidad:
+
+- propuesta, verificación y activación;
+- suspensión, revocación y supersesión;
+- intento de reclamar una identidad ya vinculada;
+- conflicto, candidatos evaluados y resultado;
+- creación, separación o consolidación autorizada de cuentas;
+- cambio de principal humano a técnico o viceversa;
+- acceso administrativo a información de reconciliación.
+
+La auditoría conservará referencias, razón, autoridad y resultado. No almacenará contraseñas, tokens, OTP, PIN ni datos de contacto completos innecesarios.
+
+#### 24. Clasificación de la línea base vigente
+
+| Hallazgo AS-IS                                | Clasificación objetivo                                                      | Acción futura obligatoria                                    |
+| --------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| 55 cuentas trabajador + cliente               | combinación compatible pendiente de confirmar semántica comercial           | clasificar cada perfil cliente                               |
+| 1 cuenta trabajador + cliente + dispositivo   | `DEVICE_HUMAN_COLLISION`                                                    | separar principal técnico y humano                           |
+| 1 cuenta cliente + dispositivo técnico        | `CROSS_CLASS_COLLISION`                                                     | retirar vínculo cliente de la cuenta técnica o reprovisionar |
+| 16 cuentas solo cliente u otro                | `HUMAN_USER` pendiente de finalidad exacta                                  | conservar y clasificar por contrato consumidor               |
+| 7 perfiles cliente sin Auth                   | `ORPHAN_PROFILE` o identidad deliberadamente no autenticable por clasificar | no crear ni enlazar automáticamente                          |
+| 2 dispositivos con Auth                       | universo de transición                                                      | asegurar cuenta dedicada y clase explícita                   |
+| 1 grupo duplicado por correo y 1 por teléfono | `CONTACT_MATCH_ONLY` hasta resolver                                         | abrir reconciliación sin merge automático                    |
+| 1 PIN en texto plano                          | credencial legacy fuera del vínculo                                         | retirar mediante transición de secretos                      |
+
+La clasificación no modifica ninguna fila ni declara que un perfil o cuenta deba eliminarse.
+
+#### 25. Puertas específicas para las colisiones actuales
+
+##### 25.1. Cuenta trabajador-dispositivo
+
+Antes de cualquier cutover deberá:
+
+1. crear o identificar una cuenta técnica dedicada mediante paquete autorizado;
+2. vincularla exclusivamente al dispositivo;
+3. conservar la identidad laboral en la cuenta humana;
+4. revocar o superseder la asociación técnica anterior;
+5. probar atribución, sesión de actor, offboarding y rollback;
+6. preservar auditoría histórica sin reescribir actor pasado.
+
+##### 25.2. Perfiles cliente de cuentas técnicas
+
+Los perfiles cliente ligados a cuentas de dispositivo no se mantendrán como vínculos `CUSTOMER` activos en el objetivo. Se deberá determinar si contienen historia empresarial real, bootstrap técnico o datos residuales antes de desvincular, migrar o retirar.
+
+#### 26. Invitaciones y reclamación de identidades
+
+1. `staff_invitations` seguirá siendo el proceso autorizado de propuesta laboral, no el vínculo definitivo.
+2. Una invitación terminal no podrá reutilizarse para activar otro vínculo.
+3. El token de invitación no formará parte del registro de vínculo.
+4. `auth_user_id`, `employee_id` y la identidad invitada deberán reconciliarse antes de activar.
+5. Una reclamación de cliente existente exigirá control del canal y evidencia adicional proporcional al riesgo.
+6. Un workflow administrativo no podrá enlazar por simple coincidencia visual.
+7. La implementación física de funciones y triggers queda reservada a `SUPA-ARC-013`.
+
+#### 27. Merge, split y cambio de cuenta
+
+Toda operación de merge, split o reemplazo deberá:
+
+- conservar IDs empresariales estables;
+- mantener historial completo de vínculos;
+- cerrar o superseder enlaces, nunca sobrescribirlos silenciosamente;
+- preservar consentimiento, puntos, pedidos, roles, sedes, auditoría y recursos en su owner correspondiente;
+- resolver sesiones y revocación mediante `SUPA-ARC-010`;
+- evitar dos cuentas activas para la misma identidad durante el corte;
+- contar con idempotencia, conciliación, verificación y rollback.
+
+#### 28. Orden obligatorio de materialización futura
+
+```text
+1. INVENTARIAR CUENTAS, PERFILES, DISPOSITIVOS Y VÍNCULOS AS-IS
+2. CLASIFICAR PRINCIPAL Y COMBINACIONES COMPATIBLES
+3. ABRIR CASOS PARA HUÉRFANOS, DUPLICADOS Y COLISIONES
+4. DEFINIR CONSTRAINTS, ESTADOS Y CICLO DE SESIÓN
+5. MATERIALIZAR REGISTRO DE VÍNCULOS EN identity_access
+6. MIGRAR VÍNCULOS LABORALES Y DE CLIENTE SIN CAMBIAR IDS EMPRESARIALES
+7. SEPARAR CUENTAS TÉCNICAS Y HUMANAS
+8. ADAPTAR GUARDS, RPC, RLS Y CONSUMIDORES
+9. PROBAR PARIDAD, OFFBOARDING, MERGE, SPLIT Y ROLLBACK
+10. RETIRAR RELACIONES LEGACY Y DETECTAR DRIFT
+```
+
+El orden no autoriza implementación física.
+
+#### 29. Riesgos restringidos y carryover
+
+| Riesgo                                         | Efecto de esta tarea                                     | Resolución restante                        |
+| ---------------------------------------------- | -------------------------------------------------------- | ------------------------------------------ |
+| UUID Auth usado como identidad empresarial     | lo desacopla contractualmente                            | `SUPA-ARC-011`; `012`; transición          |
+| cuenta humana usada por dispositivo            | la prohíbe y exige split                                 | `SUPA-ARC-010`; transición de dispositivos |
+| perfiles de dispositivo tratados como clientes | los clasifica como colisión                              | transición de identidad                    |
+| perfiles cliente sin cuenta                    | permite existencia no autenticable y exige clasificación | `SUPA-TRANS-001` a `004`; paquete PASS     |
+| duplicados por contacto                        | impide merge o link automático                           | `SUPA-ARC-012`; transición                 |
+| cascade desde Auth a empleado                  | prohíbe pérdida de identidad e historia                  | `SUPA-ARC-012`; transición                 |
+| invitaciones como autoridad final              | las limita a propuesta verificada                        | `SUPA-ARC-010`; `013`; transición          |
+| vínculo activo con identidad inactiva          | conserva validación fresca en owner schema               | `SUPA-ARC-010`; `015`                      |
+| drift de links y consumidores                  | exige registro y validador recurrente                    | `SUPA-ARC-025`; `SUPA-TRANS-015`           |
+
+Ningún riesgo queda cerrado físicamente por esta definición.
+
+#### 30. Decisiones reservadas
+
+| Decisión                                                | Tarea propietaria                   |
+| ------------------------------------------------------- | ----------------------------------- |
+| sesión, refresh, revocación, bloqueo, MFA y offboarding | `SUPA-ARC-010`                      |
+| nombres físicos, tipos de clave y constraints           | `SUPA-ARC-011`; `SUPA-ARC-012`      |
+| funciones, RPC y triggers de linking                    | `SUPA-ARC-013`                      |
+| funciones privilegiadas                                 | `SUPA-ARC-014`                      |
+| grants, RLS, claims y roles de ejecución                | `SUPA-ARC-015`                      |
+| contratos por dominio y aplicación                      | `SUPA-ARC-016`                      |
+| evidencia física                                        | `SUPA-ARC-018`                      |
+| Edge Functions y servicios de aprovisionamiento         | `SUPA-ARC-020`                      |
+| retención y recuperación                                | `SUPA-ARC-022`                      |
+| tipos compartidos                                       | `SUPA-ARC-023`                      |
+| paridad de Auth entre ambientes                         | `SUPA-ARC-024`                      |
+| inventario, migración, reconciliación, cutover y retiro | `SUPA-TRANS-001` a `SUPA-TRANS-015` |
+
+#### 31. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear o modificar el registro físico de vínculos;
+- agregar, eliminar o cambiar FK, índices, unique constraints o cascadas;
+- crear, fusionar, separar, bloquear, eliminar o reprovisionar cuentas Auth;
+- enlazar o desvincular trabajadores, clientes o dispositivos;
+- resolver los siete perfiles sin cuenta, los duplicados de contacto o las dos colisiones de dispositivo;
+- migrar `employees.id`, `public.users.id` o `shared_operational_devices.auth_user_id`;
+- borrar perfiles cliente de cuentas técnicas;
+- cambiar invitaciones, PIN, metadata, claims, sesiones o proveedores;
+- modificar guards, RPC, RLS, policies, grants, aplicaciones o Edge Functions;
+- ejecutar DDL, DML, migraciones, backfills, pruebas mutantes o despliegues;
+- iniciar `SUPA-ARC-010` antes de aprobación expresa.
+
+#### 32. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-797 a TREQ-SUPABASE-836
+```
+
+Los cuarenta requisitos protegen propiedad del vínculo, cardinalidad por clase, compatibilidad trabajador-cliente, exclusión de dispositivos, independencia de IDs, lifecycle, origen, linking laboral y comercial, perfiles no autenticables, reconciliación, integridad referencial, resolución server-side, denegaciones, auditoría, colisiones AS-IS, transición y drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 33. Criterios de aceptación
+
+- [ ] Los vínculos se gobiernan en `identity_access` sin trasladar perfiles de dominio.
+- [ ] Una cuenta `HUMAN_USER` admite como máximo un vínculo `EMPLOYEE` y uno `CUSTOMER` activos.
+- [ ] La combinación `EMPLOYEE + CUSTOMER` es compatible y permanece separada por dominio.
+- [ ] Una cuenta `SHARED_DEVICE` utiliza exclusivamente un vínculo `DEVICE` activo.
+- [ ] Ninguna cuenta de dispositivo conserva identidad laboral o comercial objetivo.
+- [ ] Cada identidad empresarial tiene como máximo una cuenta Auth activa.
+- [ ] Los IDs empresariales permanecen independientes del `auth_subject_id`.
+- [ ] Solo `ACTIVE` participa en la resolución normal.
+- [ ] El origen, autoridad, lifecycle y razón de cada vínculo son obligatorios.
+- [ ] Contactos coincidentes no activan enlaces ni merges automáticos.
+- [ ] Perfiles sin Auth permanecen posibles y no autenticables.
+- [ ] La eliminación de Auth no elimina identidades ni historia empresarial.
+- [ ] El cliente no elige libremente identidad, principal ni actor efectivo.
+- [ ] Las colisiones trabajador-dispositivo y cliente-dispositivo quedan prohibidas en el objetivo.
+- [ ] Las 56 coexistencias trabajador-cliente quedan sujetas a clasificación, no eliminación automática.
+- [ ] Los siete perfiles cliente sin Auth quedan sujetos a clasificación controlada.
+- [ ] Merge, split y cambio de cuenta conservan historial, autoridad y rollback.
+- [ ] Se generan `TREQ-SUPABASE-797` a `TREQ-SUPABASE-836`.
+- [ ] No se ejecutan cambios físicos, código ni implementación.
+- [ ] `SUPA-ARC-010` permanece reservada.
+
+#### 34. Controles estructurales requeridos
+
+| Control                                              |        Resultado esperado |
+| ---------------------------------------------------- | ------------------------: |
+| owner schemas del vínculo empresarial                | **1** (`identity_access`) |
+| identidades humanas compatibles por cuenta           |                     **2** |
+| vínculos activos máximos por clase y cuenta          |                     **1** |
+| cuentas activas máximas por identidad                |                     **1** |
+| estados lógicos del vínculo                          |                     **6** |
+| clases de origen                                     |                     **6** |
+| clases de conflicto                                  |                     **8** |
+| linking automático por contacto                      |                     **0** |
+| cuentas dispositivo con identidades humanas objetivo |                     **0** |
+| cascadas Auth que eliminen identidad objetivo        |                     **0** |
+| requisitos nuevos                                    |                    **40** |
+| cambios físicos                                      |                     **0** |
+
+#### 35. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-009 — Definir vínculo de auth.users con trabajador, cliente y dispositivo
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación
+```
+
+`SUPA-ARC-010` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación
 ### [ ] SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas
 ### [ ] SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps

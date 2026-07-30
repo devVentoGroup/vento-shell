@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **413** |
+| Tareas aprobadas | **414** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1162** |
+| Tareas no iniciadas | **1161** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **26.22% (413/1575)** |
+| Porcentaje de completamiento | **26.29% (414/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial** |
-| Tarea actual | **SUPA-ARC-009 — Definir vínculo de `auth.users` con trabajador, cliente y dispositivo** |
+| Última tarea aprobada | **SUPA-ARC-009 — Definir vínculo de `auth.users` con trabajador, cliente y dispositivo** |
+| Tarea actual | **SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación** |
+| Siguiente tarea | **SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 8 de 25 aprobadas; SUPA-ARC-009 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 9 de 25 aprobadas; SUPA-ARC-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-ARC-008` — Definir modelo canónico de Auth e identidad empresarial |
-| Tarea actual | `SUPA-ARC-009` — Definir vínculo de `auth.users` con trabajador, cliente y dispositivo — **NO INICIADA** |
-| Siguiente tarea | `SUPA-ARC-010` — Definir ciclo de sesión, revocación y desactivación |
+| Última aprobada | `SUPA-ARC-009` — Definir vínculo de `auth.users` con trabajador, cliente y dispositivo |
+| Tarea actual | `SUPA-ARC-010` — Definir ciclo de sesión, revocación y desactivación — **NO INICIADA** |
+| Siguiente tarea | `SUPA-ARC-011` — Definir convenciones de nombres para esquemas, tablas y columnas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **8 DE 25 APROBADAS — ACTUAL SUPA-ARC-009** |
+| BLOQUE E3 | **9 DE 25 APROBADAS — ACTUAL SUPA-ARC-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial
-        ↓
-TAREA ACTUAL
 SUPA-ARC-009 — Definir vínculo de `auth.users` con trabajador, cliente y dispositivo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-ARC-010 — Definir ciclo de sesión, revocación y desactivación
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-011 — Definir convenciones de nombres para esquemas, tablas y columnas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 8 de 25 tareas aprobadas
+BLOQUE E3 — 9 de 25 tareas aprobadas
 ```
