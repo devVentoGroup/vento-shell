@@ -6940,23 +6940,25 @@ No se ejecutaron DDL, DML, merges, deletes, updates, cambios de RLS, validación
 La tarea queda cerrada cuando cada duplicidad o competencia se clasifica sin falsos positivos, los huérfanos se separan de relaciones lógicas, toda brecha tiene requisito y el 04A preserva exactamente las 4627 filas previas.
 
 
-# SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención
+### ✅ SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención
 
-## Estado
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención`
+**Tarea anterior:** `SUPA-AUD-019 — Detectar duplicidades, datos huérfanos y fuentes de verdad competidoras` — APROBADA
+**Siguiente tarea:** `SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos`
+**Proyecto observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Repositorio canónico declarado:** `devVentoGroup/vento-shell` — rama `main` — commit observado `19165672a024a7d1367beaf50aa2058978b134d4`
+**Tipo de tarea:** auditoría documental y técnica read-only de índices, consultas, planes, crecimiento y retención; sin DDL, DML, `VACUUM`, `ANALYZE`, `REINDEX`, purgas, particionamiento, migraciones ni cambios remotos
 
-`COMPLETADA — PROPUESTA PARA APROBACIÓN`
-
-## Fecha de corte
-
-`2026-07-29`
-
-## 1. Objetivo
+#### 1. Objetivo
 
 Construir una línea base reproducible del rendimiento y crecimiento de Supabase VENTO, identificar índices redundantes o potencialmente faltantes, separar consultas empresariales de carga de plataforma, revisar planes representativos y establecer brechas de retención para tablas, cron y Storage.
 
 Esta tarea es exclusivamente diagnóstica. **No crea ni elimina índices, no ejecuta `VACUUM`, `ANALYZE`, `REINDEX`, `DELETE`, `TRUNCATE`, particionamiento, cambios de parámetros, migraciones ni modificaciones remotas.**
 
-## 2. Regla canónica
+#### 2. Regla canónica derivada
 
 Ningún índice será creado o eliminado por nombre, cero scans o intuición. Toda decisión deberá demostrar:
 
@@ -6968,7 +6970,7 @@ Ningún índice será creado o eliminado por nombre, cero scans o intuición. To
 
 La antigüedad de un registro u objeto de Storage tampoco autoriza borrarlo. La retención depende de clase empresarial, obligación legal, replay, auditoría, privacidad y referencias activas.
 
-## 3. Fuentes congeladas
+#### 3. Fuentes congeladas
 
 | Fuente                                             | Estado congelado                                                                             | Uso en esta tarea                                            |
 | -------------------------------------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
@@ -6979,7 +6981,7 @@ La antigüedad de un registro u objeto de Storage tampoco autoriza borrarlo. La 
 | GitHub `devVentoGroup/vento-shell`                 | commit observado `19165672a024a7d1367beaf50aa2058978b134d4`                                  | Búsqueda de migraciones, índices y retención sin escritura   |
 | Documentación oficial Supabase                     | consulta, rendimiento, tamaño, Storage, backups y PITR                                       | Criterios actuales de interpretación                         |
 
-## 4. Método y taxonomía
+#### 4. Taxonomía aplicada
 
 Se separaron cinco categorías:
 
@@ -6991,7 +6993,7 @@ Se separaron cinco categorías:
 
 `pg_stat_statements` se trató como evidencia acumulada, no como trazado exacto: cada huella conserva su propio `stats_since`, puede incluir plataforma o auditoría y no prueba causalidad entre un índice y una latencia.
 
-## 5. Resumen ejecutivo
+#### 5. Resultado ejecutivo
 
 | Dimensión                            |              Resultado |
 | ------------------------------------ | ---------------------: |
@@ -7015,9 +7017,9 @@ Se separaron cinco categorías:
 
 No existe una emergencia de capacidad por tamaño actual. El riesgo principal es **crecer sin contratos de medición y retención**, mientras ya se acumulan redundancias de índices, historial cron y objetos de Storage.
 
-## 6. Índices
+#### 6. Índices
 
-### 6.1 Duplicidad exacta confirmada
+##### 6.1 Duplicidad exacta confirmada
 
 | Relación                         | Índices equivalentes                                                            | Cantidad | Bytes combinados | Scans combinados | Dictamen                                                          |
 | -------------------------------- | ------------------------------------------------------------------------------- | -------: | ---------------: | ---------------: | ----------------------------------------------------------------- |
@@ -7032,7 +7034,7 @@ No existe una emergencia de capacidad por tamaño actual. El riesgo principal es
 
 No se detectaron índices inválidos en los esquemas empresariales consultados.
 
-### 6.2 FKs sin cobertura líder
+##### 6.2 FKs sin cobertura líder
 
 El inventario contiene 795 FKs; 351 están cubiertas por un índice válido cuyo prefijo coincide con las columnas hijas y 444 no. El hash del manifiesto es:
 
@@ -7040,9 +7042,9 @@ El inventario contiene 795 FKs; 351 están cubiertas por un índice válido cuyo
 
 Crear 444 índices sería incorrecto. La prioridad debe considerar tamaño hijo, deletes y updates del padre, acción referencial, joins reales, selectividad, criticidad y coste de escritura. Los candidatos de revisión temprana incluyen `attendance_logs.shift_id`, `products.category_id`, varias referencias de `inventory_movements`, `role_permissions.permission_id` y campos operativos de `product_site_settings`.
 
-## 7. Consultas y planes
+#### 7. Consultas y planes
 
-### 7.1 Cobertura de telemetría
+##### 7.1 Cobertura de telemetría
 
 | Métrica                    |                                                          Resultado |
 | -------------------------- | -----------------------------------------------------------------: |
@@ -7053,9 +7055,9 @@ Crear 444 índices sería incorrecto. La prioridad debe considerar tamaño hijo,
 
 Las consultas completas no se copian al documento. Se conservan hashes, rol y métricas para evitar exponer parámetros o contenido sensible.
 
-### 7.2 Casos empresariales representativos
+##### 7.2 Casos empresariales representativos
 
-#### Historial de asistencia
+###### Historial de asistencia
 
 - hash: `7184d6451d9dcc685a33bfb53cd38c8429c82633c8ca004a69becb6383a2544b`;
 - 65.678 llamadas;
@@ -7065,7 +7067,7 @@ Las consultas completas no se copian al documento. Se conservan hashes, rol y m�
 
 El índice actual sí aporta valor. La acción correcta es consolidar el par exacto y probar si ampliar el orden mejora la carga real sin aumentar excesivamente escritura y tamaño.
 
-#### Catálogo de productos
+###### Catálogo de productos
 
 - hash: `9e541564fa00425017334a30eddb60eaa7a48e1319823c72c40d520bd41ce239`;
 - 1.539 llamadas;
@@ -7075,7 +7077,7 @@ El índice actual sí aporta valor. La acción correcta es consolidar el par exa
 
 Es el candidato más claro para experimentar en staging con un índice equivalente a `(category_id, product_type, name)`, comparándolo con reescritura de consulta y coste de escritura. No se aprueba DDL en esta tarea.
 
-#### Turnos publicados por rango
+###### Turnos publicados por rango
 
 - hash: `d0f8a8f73cf109995c2d96d0881f9b2a06ec6839f4ab1e1fc4183d534165b3dd`;
 - 18.201 llamadas;
@@ -7085,15 +7087,15 @@ Es el candidato más claro para experimentar en staging con un índice equivalen
 
 No representa una emergencia. Debe compararse una alternativa parcial o compuesta únicamente con selectividad y fixtures reales.
 
-### 7.3 Escritura
+##### 7.3 Escritura
 
 Tres variantes de insert sobre `attendance_logs` muestran medias de aproximadamente 34 a 71 ms y WAL acumulado relevante. La duplicidad de índices es una causa plausible de amplificación, pero **no se declara causalidad** hasta ejecutar benchmark antes y después.
 
-### 7.4 Ruido de plataforma
+##### 7.4 Ruido de plataforma
 
 Los mayores acumulados y consumidores de bloques temporales incluyen consultas de `supabase_admin`, `authenticator`, `supabase_auth_admin` y `postgres`. No deben mezclarse con consultas de aplicaciones al fijar prioridades. Una huella de catálogo de plataforma acumuló 1.989.303 temp blocks escritos, pero eso no autoriza modificar objetos empresariales.
 
-## 8. Mantenimiento y crecimiento
+#### 8. Mantenimiento y crecimiento
 
 | Configuración          | Valor observado |
 | ---------------------- | --------------- |
@@ -7110,9 +7112,9 @@ No se observó crisis severa de dead tuples. Sí existe churn elevado en `produc
 
 No hay tablas empresariales particionadas. Con aproximadamente 131 MB, esto no es por sí mismo una brecha de rendimiento. La brecha es no tener umbrales de filas, tamaño, latencia, ventana de mantenimiento y retención que indiquen cuándo particionar o archivar.
 
-## 9. Cron y retención de tablas
+#### 9. Cron y retención de tablas
 
-### 9.1 Jobs observados
+##### 9.1 Jobs observados
 
 Hay siete jobs activos. Solo dos tienen finalidad explícita de cleanup o expiración:
 
@@ -7121,19 +7123,19 @@ Hay siete jobs activos. Solo dos tienen finalidad explícita de cleanup o expira
 
 `auto-close-attendance` registra 179 éxitos y dos ejecuciones no exitosas; las demás ejecuciones resumidas están mayoritariamente exitosas.
 
-### 9.2 Historial de cron
+##### 9.2 Historial de cron
 
 `cron.job_run_details` contiene 47.056 filas desde enero de 2026; 13.800 superan 90 días. No se encontró una purga canónica. Debe definirse una ventana que conserve evidencia suficiente, exporte lo requerido y elimine de forma idempotente.
 
-### 9.3 Cotizaciones vencidas
+##### 9.3 Cotizaciones vencidas
 
 Aunque el job de cleanup reporta 1.512 ejecuciones exitosas, existen siete filas de `pass.delivery_quotes` con `expires_at < now()`. Esto puede reflejar una regla de conservación deliberada, un predicado distinto o cleanup incompleto. Se exige reconciliar semántica y resultado; no se borraron filas.
 
-### 9.4 Eventos y auditoría
+##### 9.4 Eventos y auditoría
 
 `attendance_logs`, `inventory_movements`, `shift_runtime_events`, `order_status_events`, `product_cost_events`, `shared_operational_device_events`, `payments.webhook_events` e `inventory_form_drafts` necesitan una matriz de retención que diferencie evidencia legal, replay, operación, privacidad, archivo y purga.
 
-## 10. Storage
+#### 10. Storage
 
 Los buckets con contenido reúnen aproximadamente 751 MB. Los principales son:
 
@@ -7147,7 +7149,7 @@ Los buckets con contenido reúnen aproximadamente 751 MB. Los principales son:
 
 La edad no prueba orfandad. Se requiere contrato por bucket y reconciliación objeto a referencia antes de cualquier lifecycle automático.
 
-## 11. Límites de la evidencia
+#### 11. Límites de la evidencia
 
 - `pg_stat_statements` es acumulativo y sus ventanas difieren por huella.
 - `track_io_timing` desactivado impide atribución exacta de tiempo de lectura física.
@@ -7157,7 +7159,7 @@ La edad no prueba orfandad. Se requiere contrato por bucket y reconciliación ob
 - No se inspeccionó el contenido sensible de archivos de Storage.
 - Las búsquedas de GitHub no sustituyen inventario completo de consumidores.
 
-## 12. Registro de brechas
+#### 12. Registro de brechas
 
 | ID                   | Brecha                                                                                                                          | Estado    | Prioridad |
 | -------------------- | ------------------------------------------------------------------------------------------------------------------------------- | --------- | --------- |
@@ -7187,7 +7189,7 @@ La edad no prueba orfandad. Se requiere contrato por bucket y reconciliación ob
 
 Toda brecha queda vinculada a los TREQ de esta tarea y a `SUPA-AUD-021`, `SUPA-AUD-022`, `SUPA-TRANS-009` o `SHELL-CI-017`; no quedan pendientes narrativos sin puerta documental.
 
-## 13. Decisiones y rutas de resolución
+#### 13. Decisiones y rutas de resolución
 
 1. **Consolidar, no borrar a ciegas:** los ocho grupos exactos requieren migración y rollback.
 2. **Priorizar FKs:** las 444 sin cobertura se clasifican, no se indexan masivamente.
@@ -7198,7 +7200,7 @@ Toda brecha queda vinculada a los TREQ de esta tarea y a `SUPA-AUD-021`, `SUPA-A
 7. **Formalizar retención:** cron, eventos, webhooks y Storage requieren matriz y owners.
 8. **Distinguir backup de retención:** recuperación técnica no sustituye archivo ni borrado verificable.
 
-## 14. Requisitos de prueba creados
+#### 14. Requisitos incorporados
 
 Se crean 30 requisitos en el registro 04A regenerado:
 
@@ -7206,7 +7208,7 @@ Se crean 30 requisitos en el registro 04A regenerado:
 
 El detalle normativo reside únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
 
-## 15. Manifiestos de integridad
+#### 15. Manifiestos de integridad
 
 | Manifiesto                           | SHA-256 o valor                                                    |
 | ------------------------------------ | ------------------------------------------------------------------ |
@@ -7219,7 +7221,7 @@ El detalle normativo reside únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_
 | Nuevos TREQ                          | `TREQ-SUPABASE-363` a `TREQ-SUPABASE-392`                          |
 | Reconstrucción exacta del 04A previo | `168122c61858d4de4884d347cef246b9fb1155c5a86198c11906a49e60c08d2d` |
 
-## 16. Criterios de cierre
+#### 16. Criterio de cierre
 
 `SUPA-AUD-020` queda documentalmente completa cuando:
 
@@ -7231,7 +7233,7 @@ El detalle normativo reside únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_
 
 La implementación de índices, retención, observabilidad y gates corresponde a tareas posteriores.
 
-## 17. Siguiente tarea canónica
+#### 17. Siguiente tarea canónica
 
 `SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos`
 
