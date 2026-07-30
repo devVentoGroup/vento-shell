@@ -7457,10 +7457,6 @@ El detalle normativo reside únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_
 
 La implementación de generación, paquete, clientes y gates corresponde a tareas posteriores.
 
-#### 18. Siguiente tarea canónica
-
-`SUPA-AUD-022 — Consolidar hallazgos y definir arquitectura objetivo de Supabase`
-
 
 ### [ ] SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales
 ### [ ] SUPA-AUD-023 — Crear mapa proceso → datos → RPC → eventos → aplicaciones
