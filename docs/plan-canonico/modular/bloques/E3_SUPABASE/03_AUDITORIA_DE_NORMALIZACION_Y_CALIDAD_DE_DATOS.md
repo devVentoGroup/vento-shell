@@ -1852,7 +1852,447 @@ DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integrac
 ```
 
 
-### [ ] DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad
+### ✅ DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto`
+
+**Tarea siguiente:** `DATA-NORM-ARC-001 — Definir política de normalización por dominio, entidad y campo`
+
+**Tipo de tarea:** auditoría documental de impacto semántico, contractual, relacional y operativo; sin cambios de código, migraciones, datos, índices, constraints, integraciones ni configuración.
+
+#### 1. Objetivo
+
+Medir el impacto que tendría introducir o cambiar reglas de normalización textual sobre:
+
+- búsquedas y comparaciones;
+- claves derivadas, slugs e identificadores técnicos;
+- constraints e índices de unicidad;
+- integraciones y valores externos;
+- copias, snapshots y proyecciones persistidas;
+- relaciones, inventario, movimientos, recetas, proveedores e historial;
+- aplicaciones, funciones, procesos programados y consumidores actuales.
+
+La tarea no define todavía la política objetivo ni autoriza correcciones, fusiones, backfills o cambios físicos.
+
+#### 2. Corte auditado
+
+La evidencia técnica fue consolidada sobre `vento-os-dev`, PostgreSQL 17.6, con corte de observación `2026-07-30T22:26:52.869004+00:00`.
+
+| Dimensión                                                                      |        Resultado observado |
+| ------------------------------------------------------------------------------ | -------------------------: |
+| Entidades incluidas en el corpus comparativo                                   |                         12 |
+| Filas textuales comparadas                                                     |                      4.030 |
+| Filas activas comparadas                                                       |                      3.667 |
+| Objetos PostgreSQL de Vento OS examinados para búsqueda o comparación          |                        361 |
+| Objetos de Vento OS con señales textuales de búsqueda o comparación            |                        100 |
+| Rutinas de Vento OS con señales                                                |                         96 |
+| Vistas de Vento OS con señales                                                 |                          4 |
+| Índices examinados en las fronteras observadas                                 |                        990 |
+| Definiciones de índice con `lower` o `trim`                                    |                         13 |
+| Columnas `citext` observadas                                                   |                          0 |
+| Índices empresariales de trigramas o búsqueda de texto completo observados     |                          0 |
+| Constraints de clave foránea entrantes sobre 15 entidades críticas de Vento OS |                        420 |
+| Tablas de Vento OS que referencian esas entidades                              |                        177 |
+| Relaciones adicionales desde la frontera separada de VITAL                     | 1 constraint desde 1 tabla |
+
+VITAL conserva una frontera separada: se observaron 47 objetos propios, de los cuales 15 contienen señales textuales, pero no se incorporaron al corpus de colisiones ni a decisiones transversales de Vento OS.
+
+#### 3. Método de medición
+
+Cada valor fue conservado en su forma original y comparado mediante representaciones diferentes:
+
+1. `LOWER_TRIM`: recorte de bordes y comparación sin distinguir caja;
+2. `VENTO_NORM`: compactación de espacios mediante `public._vento_norm`;
+3. `ACCENT_INSENSITIVE`: composición NFC, compactación, eliminación de tildes y comparación sin distinguir caja;
+4. `VENTO_SLUG`: salida actual de `public._vento_slugify`;
+5. `NAVIGATION_SLUG`: salida actual de `public._navigation_slugify`.
+
+Los scopes empleados son scopes provisionales de auditoría, no contratos de identidad aprobados:
+
+| Entidad                | Scope comparativo utilizado       |
+| ---------------------- | --------------------------------- |
+| producto               | tipo, categoría y unidad de stock |
+| categoría de producto  | sede, padre y dominio             |
+| área                   | sede                              |
+| posición de inventario | ubicación y posición padre        |
+| perfil UOM             | producto y contexto de uso        |
+| política de solicitud  | producto                          |
+| categoría de remisión  | sede y tipo de área               |
+| categoría comercial    | sede                              |
+| colección comercial    | sede y tipo de colección          |
+| ítem de catálogo       | sede                              |
+| proveedor              | alcance global observado          |
+| sede                   | alcance global observado          |
+
+Una colisión significa que dos o más filas producen la misma representación dentro del scope auditado. No significa que sean la misma entidad ni autoriza su fusión.
+
+#### 4. Clases de impacto
+
+| Clase                         | Descripción                                                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------- |
+| `SEARCH_RECALL_CHANGE`        | una consulta empieza a encontrar valores que antes no encontraba                            |
+| `SEARCH_PRECISION_COLLISION`  | una consulta devuelve varias entidades que colapsan en la misma clave                       |
+| `INDEX_COMPATIBILITY_CHANGE`  | la expresión consultada deja de coincidir con la expresión indexada                         |
+| `UNIQUE_CONSTRAINT_CONFLICT`  | una clave nueva produce colisiones entre filas existentes                                   |
+| `IDENTIFIER_STABILITY_CHANGE` | cambia un slug, código, SKU, token, referencia o clave externa ya consumida                 |
+| `DERIVED_COPY_DIVERGENCE`     | una fuente y su copia, snapshot o proyección quedan con representaciones diferentes         |
+| `RELATION_REASSIGNMENT`       | una consolidación exige mover relaciones entre identificadores persistidos                  |
+| `EXTERNAL_CONTRACT_CHANGE`    | cambia el valor enviado, recibido, firmado, comparado o preservado por una integración      |
+| `HISTORY_AND_AUDIT_CHANGE`    | una corrección altera la interpretación histórica o dificulta reconstruir el valor original |
+
+#### 5. Impacto sobre búsquedas y comparaciones
+
+Se observaron 100 objetos de Vento OS con operaciones como recorte, minúsculas, transliteración, sustitución por expresiones regulares o eliminación de tildes. La distribución demuestra que la comparación textual actual no depende de un único contrato.
+
+La infraestructura de índices también es parcial:
+
+- categorías de producto aplican unicidad por scope sobre `lower(trim(name))` y `lower(trim(slug))`;
+- políticas de solicitud aplican unicidad activa por producto sobre `lower(btrim(label))`;
+- categorías de remisión aplican unicidad por sede y área sobre `lower(btrim(name))`;
+- SKU de producto tiene unicidad exacta y otra unicidad sobre `lower(trim(sku))`;
+- correo de invitación tiene índice sobre `lower(email)`, pero no unicidad;
+- nombres de productos, proveedores, perfiles UOM, categorías comerciales, colecciones e ítems de catálogo no tienen un índice normalizado equivalente al usado en el corpus de auditoría;
+- no se observó una estrategia empresarial basada en trigramas, búsqueda de texto completo o `citext`.
+
+Por tanto, una política más tolerante podría aumentar el recall, pero también podría:
+
+- ampliar el conjunto de resultados ambiguos;
+- volver incompatibles expresiones de consulta e índices existentes;
+- degradar rendimiento si la representación se calcula en tiempo de consulta sin índice equivalente;
+- producir resultados diferentes entre SQL, RPC, Edge Functions y clientes;
+- cambiar ordenamiento, paginación y selección automática.
+
+Esta tarea mide cobertura estructural y colisiones. No mide latencia, concurrencia, carga, tamaño futuro ni planes de ejecución bajo tráfico real; esas mediciones pertenecen a `SUPA-TRANS-010`.
+
+#### 6. Divergencia entre helpers actuales
+
+Sobre 4.030 filas:
+
+| Resultado                                                                        | Filas | Proporción |
+| -------------------------------------------------------------------------------- | ----: | ---------: |
+| `_vento_slugify` y `_navigation_slugify` producen strings exactamente diferentes | 2.730 |    67,74 % |
+| continúan siendo semánticamente diferentes aun ignorando `-` frente a `_`        |   324 |     8,04 % |
+
+Resultados representativos:
+
+| Entidad                | Filas | Diferencia exacta | Diferencia semántica |
+| ---------------------- | ----: | ----------------: | -------------------: |
+| productos              |   963 |               840 |                  177 |
+| ítems de catálogo PASS |   288 |               258 |                   47 |
+| perfiles UOM           | 1.190 |               965 |                   23 |
+| categorías de producto |   155 |               105 |                   20 |
+
+La diferencia exacta incluye el uso de separadores distintos. La diferencia semántica captura además pérdida o tratamiento diferente de caracteres, especialmente tildes y alfabetos permitidos.
+
+Cambiar un helper por otro no es una refactorización neutral: puede modificar códigos persistidos, URLs, referencias de navegación y claves consumidas por integraciones.
+
+#### 7. Impacto sobre unicidad
+
+El corpus produjo:
+
+| Representación       | Grupos de colisión | Filas incluidas |
+| -------------------- | -----------------: | --------------: |
+| `LOWER_TRIM`         |                 26 |              52 |
+| `ACCENT_INSENSITIVE` |                 27 |              54 |
+| `VENTO_SLUG`         |                 26 |              52 |
+| `NAVIGATION_SLUG`    |                 27 |              54 |
+
+Bajo los scopes provisionales de auditoría, 17 de los 27 grupos `ACCENT_INSENSITIVE` contienen exclusivamente filas activas.
+
+Una restricción normalizada aplicada sin clasificación previa entraría en conflicto, como mínimo, con:
+
+- un grupo activo de productos;
+- dieciséis grupos activos de perfiles UOM.
+
+No entraría automáticamente en conflicto activo con los ocho grupos de catálogo PASS ni con los dos grupos de políticas de solicitud, porque cada uno conserva una sola fila activa; sin embargo, sí afectaría historial, reactivación, versionado y reglas de reutilización de claves.
+
+La estrategia futura deberá decidir de forma separada:
+
+- si la unicidad aplica al valor visible, a una clave derivada o a un identificador técnico;
+- si aplica a todas las filas o solo a filas activas;
+- cuál es el scope empresarial real;
+- cómo se conserva el historial;
+- cómo se detectan colisiones antes de activar un constraint;
+- qué ocurre con reactivaciones, versiones y aliases.
+
+#### 8. Colisiones medidas por entidad
+
+| Entidad                                                        | Resultado                               | Interpretación                                                                                                       |
+| -------------------------------------------------------------- | --------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+| productos                                                      | 1 grupo, 2 filas, ambas activas         | `Chai latte frio` y `Chai Latte Frío` colisionan en comparación sin tildes dentro del mismo tipo, categoría y unidad |
+| perfiles UOM                                                   | 16 grupos, 32 filas, todas activas      | la etiqueta repetida no demuestra equivalencia estructural                                                           |
+| ítems de catálogo PASS                                         | 8 grupos, 16 filas                      | cada grupo tiene una fila activa y una inactiva; los códigos permanecen distintos                                    |
+| políticas de solicitud                                         | 2 grupos, 4 filas                       | cada grupo corresponde a ciclo activo e histórico                                                                    |
+| categorías de producto                                         | 0 grupos dentro del scope auditado      | el constraint actual ya incorpora sede, padre, dominio y comparación en minúsculas                                   |
+| proveedores                                                    | 0 grupos dentro del scope auditado      | no demuestra ausencia de homónimos futuros ni validez de una unicidad global                                         |
+| sedes, áreas, posiciones, colecciones y categorías comerciales | 0 grupos dentro de sus scopes auditados | no autoriza simplificar sus scopes ni sus códigos                                                                    |
+
+##### 8.1 Producto `Chai`
+
+Los dos productos activos tienen tres referencias observadas en dos superficies muestreadas:
+
+- ambos tienen representación en catálogo PASS;
+- uno tiene una política de solicitud asociada.
+
+La coincidencia visible no permite escoger una fila superviviente. Antes de cualquier consolidación deberán revisarse todas las 66 constraints entrantes que pueden referenciar productos, incluso cuando el corte actual no muestre filas en cada superficie.
+
+##### 8.2 Perfiles UOM
+
+De los 16 grupos activos:
+
+- 2 grupos tienen una única huella estructural;
+- 14 grupos tienen estructuras diferentes aunque compartan etiqueta;
+- 14 identificadores incluidos ya tienen relaciones;
+- se observaron 103 filas relacionadas con esos identificadores en las superficies consultadas.
+
+Por tanto, una etiqueta UOM no puede convertirse en clave de identidad. Cantidad, unidad de entrada, cantidad en unidad de stock, contexto, procedencia, vigencia y condición predeterminada forman parte del contrato.
+
+##### 8.3 Catálogo PASS
+
+Los ocho grupos:
+
+- conservan un solo ítem activo por grupo;
+- están vinculados al mismo producto dentro de cada grupo;
+- utilizan códigos diferentes;
+- incluyen ocho identificadores con relaciones y dieciséis filas relacionadas.
+
+El resultado es compatible con historial o sustitución de catálogo, pero exige declarar si el código es inmutable, reutilizable o reemplazable mediante alias.
+
+#### 9. Impacto relacional
+
+Las quince entidades críticas examinadas reciben 420 constraints de clave foránea desde 177 tablas de Vento OS.
+
+| Entidad objetivo          | Constraints entrantes | Tablas consumidoras |
+| ------------------------- | --------------------: | ------------------: |
+| sedes                     |                   128 |                 115 |
+| trabajadores              |                    89 |                  62 |
+| productos                 |                    66 |                  61 |
+| ubicaciones de inventario |                    44 |                  34 |
+| áreas                     |                    26 |                  24 |
+| posiciones de inventario  |                    19 |                  17 |
+| perfiles UOM              |                    16 |                  16 |
+| ítems de catálogo PASS    |                     9 |                   9 |
+| usuarios                  |                     7 |                   7 |
+| proveedores               |                     5 |                   5 |
+| políticas de solicitud    |                     4 |                   4 |
+| categorías comerciales    |                     2 |                   2 |
+| colecciones comerciales   |                     2 |                   2 |
+| categorías de producto    |                     2 |                   2 |
+| categorías de remisión    |                     2 |                   2 |
+
+VITAL agrega una relación propia hacia trabajadores y debe mantenerse como dependencia de frontera, no como autorización para compartir reglas textuales.
+
+Una corrección del valor mostrado normalmente no cambia una clave foránea. En cambio, una deduplicación, fusión o sustitución de identidad obliga a revisar, según corresponda:
+
+- relaciones directas e indirectas;
+- inventario actual y snapshots;
+- movimientos y costos;
+- recetas, ingredientes, salidas y lotes;
+- proveedores, precios y órdenes de compra;
+- solicitudes, remisiones, despachos y recepciones;
+- catálogo, pedidos y reglas PULSO;
+- historial, auditoría y evidencia externa;
+- aliases, códigos y consumidores sin clave foránea declarada.
+
+#### 10. Impacto sobre copias y snapshots
+
+##### 10.1 Productos y catálogo PASS
+
+Los 288 ítems de catálogo están vinculados a productos. Se observaron:
+
+| Comparación                                        | Filas divergentes |
+| -------------------------------------------------- | ----------------: |
+| nombre exacto frente al producto                   |                50 |
+| nombre después de `lower + trim`                   |                40 |
+| nombre después de comparación sin tildes           |                36 |
+| descripción exacta                                 |                49 |
+| etiqueta de categoría frente a categoría comercial |                15 |
+
+Estas diferencias no se declaran defectos: pueden representar personalización comercial, historia o divergencia no gobernada. La arquitectura deberá clasificar cada campo como fuente, override, snapshot o proyección y definir su evento de resincronización.
+
+##### 10.2 Precios internos y UOM
+
+Se observó un snapshot de precio interno vinculado a un perfil UOM y no presentó divergencia actual de etiqueta, unidad o vigencia. El volumen es insuficiente para inferir paridad general; el contrato histórico del snapshot deberá definirse antes de cualquier resincronización.
+
+##### 10.3 PULSO
+
+En el corte auditado no existen filas en:
+
+- `pulso_external_sales_item_mappings`;
+- `pulso_daily_sales_import_rows`;
+- `pulso_sales_consumption_rules`.
+
+La ausencia de datos evita medir colisiones reales de importación, pero no elimina el impacto contractual. La compatibilidad deberá comprobarse con fixtures, staging o datos controlados antes de cambiar claves de comparación, estados, categorías o nombres externos.
+
+#### 11. Impacto sobre integraciones externas
+
+##### 11.1 Pagos
+
+Se observaron siete transacciones de un proveedor:
+
+- siete usan `COP` en mayúsculas;
+- una está en estado `approved` y seis en `cancelled`;
+- siete conservan respuesta externa no vacía;
+- cuatro conservan solicitud externa no vacía;
+- no se detectaron colisiones normalizadas en referencia del proveedor ni clave de idempotencia.
+
+La ausencia actual de colisiones no autoriza cambiar caja, caracteres, firma, referencia o idempotencia. El payload externo debe conservarse separadamente del estado canónico derivado.
+
+##### 11.2 Identidad, Auth e invitaciones
+
+Se observaron 181 representaciones de correo entre Auth, usuarios públicos, invitaciones y candidatos:
+
+- 74 claves de correo aparecen en más de una fuente;
+- 3 grupos se repiten dentro de una misma fuente;
+- no se observaron variantes de escritura dentro de esos grupos;
+- existen 28 invitaciones: 15 aceptadas, 8 canceladas y 5 vinculadas a usuarios existentes;
+- existen 56 trabajadores;
+- ningún trabajador tiene actualmente `document_number_normalized` poblado.
+
+La coincidencia entre fuentes representa propagación de identidad y no duplicidad por sí sola. La unicidad de documento normalizado existe como contrato de índice, pero no tiene cobertura material en el corte actual y deberá poblarse y verificarse mediante transición controlada.
+
+##### 11.3 Otras integraciones
+
+Google Maps, Google Wallet y Expo Push aplican transformaciones de consulta o salida. Esas proyecciones no deben retroalimentar la fuente persistida sin un proceso explícito. Los cambios en normalización deberán conservar:
+
+- valores originales del proveedor;
+- formato y firma de parámetros técnicos;
+- límites de longitud de proyecciones;
+- códigos y estados contractuales;
+- trazabilidad entre entrada, representación canónica y salida.
+
+#### 12. Matriz de impacto por cambio propuesto
+
+| Cambio futuro                | Impacto esperado                                                                        | Condición previa obligatoria                        |
+| ---------------------------- | --------------------------------------------------------------------------------------- | --------------------------------------------------- |
+| recortar bordes              | mejora igualdad formal; puede cambiar firmas, códigos o valores externos                | clasificar campo y representación                   |
+| compactar espacios           | mejora búsqueda de prosa; puede alterar direcciones, razones legales o texto técnico    | política por campo                                  |
+| comparar sin distinguir caja | aumenta recall; puede generar colisiones y cambiar unicidad                             | scope e índice equivalentes                         |
+| comparar sin tildes          | aumenta recall en español; produjo 27 grupos en el corpus                               | separar búsqueda de almacenamiento                  |
+| normalizar Unicode a NFC     | reduce diferencias de codificación; puede cambiar bytes firmados                        | excluir secretos, firmas y payload original         |
+| adoptar un slug único        | estabiliza consumo si se migra correctamente; hoy cambia resultados de cientos de filas | contrato de algoritmo, alias y compatibilidad       |
+| corregir valor visible       | mejora calidad comercial; puede dejar copias divergentes                                | fuente propietaria y propagación declaradas         |
+| activar unicidad normalizada | previene duplicados futuros; puede rechazar filas actuales                              | reporte previo de colisiones y estrategia histórica |
+| fusionar registros           | elimina duplicidad real; modifica relaciones e historial                                | decisión humana, reasignación completa y rollback   |
+| normalizar entrada externa   | facilita matching; puede perder evidencia o romper firma                                | preservar original y versionar el mapeo             |
+
+#### 13. Asignación de decisiones posteriores
+
+| Decisión pendiente                                       | Tarea propietaria                   |
+| -------------------------------------------------------- | ----------------------------------- |
+| política por dominio, entidad y campo                    | `DATA-NORM-ARC-001`                 |
+| clases de campo y tratamiento permitido                  | `DATA-NORM-ARC-002`                 |
+| representación de búsqueda y comparación                 | `DATA-NORM-ARC-008`                 |
+| auditoría, versionado e idempotencia                     | `DATA-NORM-ARC-009`                 |
+| estrategia de unicidad y duplicados normalizados         | `DATA-NORM-ARC-010`                 |
+| capa ejecutora y precedencia entre productores           | `DATA-NORM-ARC-011`                 |
+| datos e integraciones externas                           | `DATA-NORM-ARC-012`                 |
+| dependencias de aplicaciones, RPC, RLS, triggers y datos | `SUPA-TRANS-003`                    |
+| backfills y correcciones de datos                        | `SUPA-TRANS-005`                    |
+| compatibilidad temporal                                  | `SUPA-TRANS-006`                    |
+| adaptación coordinada de consumidores                    | `SUPA-TRANS-007`                    |
+| pruebas de transición                                    | `SUPA-TRANS-009`                    |
+| rendimiento y seguridad                                  | `SUPA-TRANS-010`                    |
+| rollback                                                 | `SUPA-TRANS-011`                    |
+| paridad entre ambientes y artefactos desplegados         | `SUPA-TRANS-013` y `SUPA-TRANS-014` |
+
+#### 14. Hallazgos
+
+| ID               | Hallazgo                                                                   | Evidencia                                                                     | Consecuencia propietaria                               |
+| ---------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `DN-AUD-007-H01` | la búsqueda textual no tiene un único contrato                             | 100 objetos de Vento OS con señales distribuidas                              | definir representación canónica en `DATA-NORM-ARC-008` |
+| `DN-AUD-007-H02` | los helpers actuales no son intercambiables                                | 2.730 diferencias exactas y 324 semánticas                                    | versionar algoritmo y propósito                        |
+| `DN-AUD-007-H03` | una comparación más tolerante aumenta colisiones                           | 27 grupos y 54 filas sin tildes                                               | separar recall de identidad                            |
+| `DN-AUD-007-H04` | la unicidad normalizada actual es local y heterogénea                      | 13 índices con señales y ausencia de contrato equivalente en varias entidades | diseñar unicidad por entidad                           |
+| `DN-AUD-007-H05` | una unicidad ingenua fallaría sobre filas activas                          | 17 grupos completamente activos bajo scopes auditados                         | resolver colisiones antes del constraint               |
+| `DN-AUD-007-H06` | los perfiles UOM no admiten identidad por etiqueta                         | 16 grupos activos; 14 estructuralmente divergentes                            | conservar contrato cuantitativo completo               |
+| `DN-AUD-007-H07` | el producto `Chai` requiere decisión relacional, no corrección ortográfica | dos productos activos y referencias diferenciadas                             | revisar las 66 dependencias potenciales de producto    |
+| `DN-AUD-007-H08` | catálogo y producto ya contienen divergencias visibles                     | 50 nombres exactos, 40 después de caja y espacios y 36 sin tildes             | declarar override, snapshot o divergencia              |
+| `DN-AUD-007-H09` | el radio relacional es amplio                                              | 420 constraints y 177 tablas consumidoras de Vento OS                         | prohibir fusiones basadas solo en texto                |
+| `DN-AUD-007-H10` | PULSO no tiene evidencia de datos reales en el corte                       | cero mappings, importaciones y reglas                                         | exigir pruebas controladas antes de transición         |
+| `DN-AUD-007-H11` | pagos preservan evidencia externa en el corte actual                       | siete respuestas y cuatro solicitudes no vacías                               | mantener original y estado derivado separados          |
+| `DN-AUD-007-H12` | el correo se propaga entre fuentes de identidad                            | 74 claves compartidas entre fuentes                                           | no tratar coincidencia transversal como duplicado      |
+| `DN-AUD-007-H13` | el índice de documento laboral no tiene cobertura material                 | cero trabajadores con documento normalizado poblado                           | planificar backfill antes de depender del constraint   |
+| `DN-AUD-007-H14` | la medición de rendimiento sigue abierta                                   | no se ejecutó carga ni benchmark                                              | resolver en `SUPA-TRANS-010`                           |
+| `DN-AUD-007-H15` | VITAL mantiene una dependencia de frontera                                 | una relación hacia trabajadores y productores textuales propios               | conservar contrato de integración separado             |
+
+#### 15. Riesgos y brechas vinculadas
+
+| ID               | Riesgo o brecha                                                         | Estado después de esta tarea                 | Tarea propietaria de resolución                            |
+| ---------------- | ----------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------------- |
+| `DN-AUD-007-R01` | cambiar búsqueda sin alinear índice y expresión                         | identificado; no mitigado                    | `DATA-NORM-ARC-008`; `SUPA-TRANS-010`                      |
+| `DN-AUD-007-R02` | adoptar un helper y modificar códigos ya consumidos                     | identificado; no mitigado                    | `DATA-NORM-ARC-009`; `DATA-NORM-ARC-011`; `SUPA-TRANS-006` |
+| `DN-AUD-007-R03` | activar unicidad sin resolver 17 grupos activos                         | identificado; bloqueante para esa estrategia | `DATA-NORM-ARC-010`; `SUPA-TRANS-005`                      |
+| `DN-AUD-007-R04` | fusionar productos por coincidencia visible                             | identificado; prohibido por esta auditoría   | `DATA-NORM-ARC-010`; `SUPA-TRANS-003`; `SUPA-TRANS-011`    |
+| `DN-AUD-007-R05` | fusionar perfiles UOM con estructuras diferentes                        | identificado; prohibido por esta auditoría   | `DATA-NORM-ARC-002`; `DATA-NORM-ARC-010`                   |
+| `DN-AUD-007-R06` | corregir producto sin actualizar o preservar catálogo                   | identificado; no mitigado                    | `DATA-NORM-ARC-001`; `DATA-NORM-ARC-009`; `SUPA-TRANS-007` |
+| `DN-AUD-007-R07` | interpretar divergencia de catálogo como defecto automático             | identificado; prohibido por esta auditoría   | `DATA-NORM-ARC-001`; `DATA-NORM-ARC-002`                   |
+| `DN-AUD-007-R08` | romper referencias externas, firmas o idempotencia                      | identificado; no mitigado                    | `DATA-NORM-ARC-012`; `SUPA-TRANS-006`; `SUPA-TRANS-009`    |
+| `DN-AUD-007-R09` | depender de documento normalizado sin poblarlo                          | identificado; no mitigado                    | `SUPA-TRANS-005`; `SUPA-TRANS-009`                         |
+| `DN-AUD-007-R10` | asumir compatibilidad PULSO por ausencia de datos                       | identificado; no mitigado                    | `SUPA-TRANS-003`; `SUPA-TRANS-007`; `SUPA-TRANS-013`       |
+| `DN-AUD-007-R11` | omitir consumidores sin clave foránea o fuera del repositorio observado | identificado; no mitigado                    | `SUPA-TRANS-003`; `SUPA-TRANS-007`; `SUPA-TRANS-014`       |
+| `DN-AUD-007-R12` | extender reglas a VITAL por dependencia compartida                      | restringido documentalmente; pendiente       | `SUPA-ARC-025`; contratos de integración aplicables        |
+
+Ningún riesgo se considera aceptado, mitigado o cerrado por esta tarea.
+
+#### 16. Decisiones reservadas
+
+Esta tarea no decide:
+
+- cuál representación de búsqueda será canónica;
+- si la búsqueda ignorará caja, tildes, signos, conectores o errores ortográficos;
+- qué campos tendrán columnas o índices derivados;
+- qué scopes tendrán unicidad;
+- qué constraints se crearán, sustituirán o retirarán;
+- qué helper se conservará o cómo se versionará;
+- qué divergencias entre producto y catálogo son overrides legítimos;
+- qué productos, perfiles UOM, políticas o ítems de catálogo representan la misma entidad;
+- qué registros se fusionarán, desactivarán o mantendrán históricos;
+- qué relaciones serán reasignadas;
+- qué valores externos serán transformados;
+- qué aliases o wrappers temporales existirán;
+- qué backfills, migraciones o cambios de código se ejecutarán;
+- ninguna modificación física en Supabase, aplicaciones o integraciones.
+
+#### 17. Criterios de integridad de la auditoría
+
+La medición se considera íntegra para esta etapa cuando:
+
+1. separa valor mostrado, valor de búsqueda, valor externo, identificador técnico, snapshot y proyección;
+2. declara el scope usado para cada comparación;
+3. distingue colisión de duplicidad real;
+4. mide filas activas e históricas por separado;
+5. compara los helpers existentes sin adoptar uno como objetivo;
+6. identifica constraints e índices que dependen de expresiones textuales;
+7. mide el radio relacional antes de considerar fusiones;
+8. revisa copias, snapshots e integraciones;
+9. conserva el original externo y la evidencia histórica;
+10. registra límites de datos y cobertura;
+11. vincula toda brecha con una tarea propietaria;
+12. mantiene VITAL como frontera separada;
+13. no autoriza cambios físicos, fusiones ni correcciones.
+
+#### 18. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: esta tarea mide el estado actual, identifica colisiones, dependencias y radios de impacto, pero no aprueba todavía una representación de búsqueda, algoritmo, scope de unicidad, contrato de integración, regla de propagación, criterio de aceptación, transición ni comportamiento exigible. Los requisitos verificables deberán originarse cuando `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012` y las tareas de transición definan las reglas objetivo, compatibilidad, rendimiento, migración, rollback y evidencia esperada.
+
+#### 19. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-001 — Definir política de normalización por dominio, entidad y campo
+```
+
 
 Regla de auditoría
 

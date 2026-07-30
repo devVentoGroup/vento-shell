@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **435** |
+| Aprobadas | **436** |
 | En propuesta | **0** |
-| No iniciadas | **1140** |
+| No iniciadas | **1139** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **27.62% (435/1575)** |
+| Porcentaje de completamiento | **27.68% (436/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-AUD-006` — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-AUD-007` — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | ⬜ NO INICIADA |
-| Siguiente | `DATA-NORM-ARC-001` — Definir política de normalización por dominio, entidad y campo | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-AUD-007` — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-ARC-001` — Definir política de normalización por dominio, entidad y campo | ⬜ NO INICIADA |
+| Siguiente | `DATA-NORM-ARC-002` — Definir clases de campo y tratamiento permitido | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -402,7 +402,7 @@
 | ✅ APROBADA | `DATA-NORM-AUD-004` | Detectar duplicados semánticos mediante valores normalizados de comparación | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ✅ APROBADA | `DATA-NORM-AUD-005` | Clasificar transformaciones deterministas, correcciones por diccionario y casos ambiguos | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ✅ APROBADA | `DATA-NORM-AUD-006` | Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-AUD-007` | Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
+| ✅ APROBADA | `DATA-NORM-AUD-007` | Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad | `bloques/E3_SUPABASE/03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ✅ APROBADA | `SUPA-ARC-001` | Definir principios de separación entre esquemas administrados y empresariales | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-002` | Definir dominios empresariales estables | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-003` | Definir esquema propietario de cada fuente de verdad | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |

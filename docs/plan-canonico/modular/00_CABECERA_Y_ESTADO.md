@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **435** |
+| Tareas aprobadas | **436** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1140** |
+| Tareas no iniciadas | **1139** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **27.62% (435/1575)** |
+| Porcentaje de completamiento | **27.68% (436/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto** |
-| Tarea actual | **DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad** |
+| Última tarea aprobada | **DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad** |
+| Tarea actual | **DATA-NORM-ARC-001 — Definir política de normalización por dominio, entidad y campo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-ARC-001 — Definir política de normalización por dominio, entidad y campo** |
+| Siguiente tarea | **DATA-NORM-ARC-002 — Definir clases de campo y tratamiento permitido** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 6 de 45 aprobadas; DATA-NORM-AUD-007 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 7 de 45 aprobadas; DATA-NORM-ARC-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-AUD-006` — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto |
-| Tarea actual | `DATA-NORM-AUD-007` — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-ARC-001` — Definir política de normalización por dominio, entidad y campo |
+| Última aprobada | `DATA-NORM-AUD-007` — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad |
+| Tarea actual | `DATA-NORM-ARC-001` — Definir política de normalización por dominio, entidad y campo — **NO INICIADA** |
+| Siguiente tarea | `DATA-NORM-ARC-002` — Definir clases de campo y tratamiento permitido |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **6 DE 45 APROBADAS — ACTUAL DATA-NORM-AUD-007** |
+| BLOQUE E3 | **7 DE 45 APROBADAS — ACTUAL DATA-NORM-ARC-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-AUD-006 — Inventariar triggers, funciones, código cliente y procesos externos que actualmente modifican texto
-        ↓
-TAREA ACTUAL
 DATA-NORM-AUD-007 — Medir impacto de normalización sobre búsquedas, integraciones, relaciones y unicidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-ARC-001 — Definir política de normalización por dominio, entidad y campo
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-002 — Definir clases de campo y tratamiento permitido
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 6 de 45 tareas aprobadas
+BLOQUE E3 — 7 de 45 tareas aprobadas
 ```
