@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **437** |
+| Tareas aprobadas | **438** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1138** |
+| Tareas no iniciadas | **1137** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **27.75% (437/1575)** |
+| Porcentaje de completamiento | **27.81% (438/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-ARC-001 — Definir política de normalización por dominio, entidad y campo** |
-| Tarea actual | **DATA-NORM-ARC-002 — Definir clases de campo y tratamiento permitido** |
+| Última tarea aprobada | **DATA-NORM-ARC-002 — Definir clases de campo y tratamiento permitido** |
+| Tarea actual | **DATA-NORM-ARC-003 — Definir reglas de capitalización para nombres empresariales** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-ARC-003 — Definir reglas de capitalización para nombres empresariales** |
+| Siguiente tarea | **DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 8 de 45 aprobadas; DATA-NORM-ARC-002 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 9 de 45 aprobadas; DATA-NORM-ARC-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-ARC-001` — Definir política de normalización por dominio, entidad y campo |
-| Tarea actual | `DATA-NORM-ARC-002` — Definir clases de campo y tratamiento permitido — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-ARC-003` — Definir reglas de capitalización para nombres empresariales |
+| Última aprobada | `DATA-NORM-ARC-002` — Definir clases de campo y tratamiento permitido |
+| Tarea actual | `DATA-NORM-ARC-003` — Definir reglas de capitalización para nombres empresariales — **NO INICIADA** |
+| Siguiente tarea | `DATA-NORM-ARC-004` — Definir conectores que permanecen en minúscula |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **8 DE 45 APROBADAS — ACTUAL DATA-NORM-ARC-002** |
+| BLOQUE E3 | **9 DE 45 APROBADAS — ACTUAL DATA-NORM-ARC-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-ARC-001 — Definir política de normalización por dominio, entidad y campo
-        ↓
-TAREA ACTUAL
 DATA-NORM-ARC-002 — Definir clases de campo y tratamiento permitido
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-ARC-003 — Definir reglas de capitalización para nombres empresariales
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 8 de 45 tareas aprobadas
+BLOQUE E3 — 9 de 45 tareas aprobadas
 ```
