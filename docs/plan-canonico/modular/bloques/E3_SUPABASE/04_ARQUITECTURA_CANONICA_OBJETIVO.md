@@ -1215,7 +1215,341 @@ SUPA-ARC-004 — Definir función futura de `public`
 `SUPA-ARC-004` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-004 — Definir función futura de `public`
+### ✅ SUPA-ARC-004 — Definir función futura de `public`
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-003 — Definir esquema propietario de cada fuente de verdad` — APROBADA
+**Siguiente tarea:** `SUPA-ARC-005 — Definir capa expuesta de vistas y RPC`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `7e8a7e55fd581b4dd8245c1c8af921f43d0bdf46`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `9937378f9bdd87d4a19841845001d59fc33d86f3`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`
+**Tipo de tarea:** definición normativa de la función objetivo y ciclo de vida de `public`; sin crear, renombrar, mover o retirar objetos, sin DDL, DML, migraciones, backfills, cambios de Data API, grants, RLS, Auth, Storage, Realtime, Edge Functions, cron, secretos, código, datos ni despliegues
+
+#### 1. Objetivo
+
+Definir la función futura de `public` después de asignar los 26 owner schemas empresariales, eliminando su papel de contenedor universal sin romper los consumidores actuales ni anticipar el inventario de la capa expuesta que corresponde a `SUPA-ARC-005`.
+
+```text
+PUBLIC ACTUAL MULTICAPACIDAD
+        ↓
+CLASIFICACIÓN OBJETO POR OBJETO
+        ↓
+FUENTES AUTORITATIVAS → VSCHEMA-001 A VSCHEMA-026
+CONTRATOS CANÓNICOS → CAPA EXPUESTA DE SUPA-ARC-005
+LÓGICA PRIVADA → SUPA-ARC-006
+AUDITORÍA Y EVENTOS → SUPA-ARC-007 Y SUPA-ARC-019
+COMPATIBILIDAD ACTUAL → PUBLIC TEMPORAL CON SALIDA
+        ↓
+PUBLIC SIN AUTORIDAD EMPRESARIAL
+```
+
+La decisión no modifica el schema desplegado. Define la frontera que deberán respetar la capa expuesta, la capa privada, la seguridad y la transición posterior.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-PUBLIC-SCHEMA-FUTURE-FUNCTION-001@1.0.0
+```
+
+| Propiedad | Valor |
+| --- | ---: |
+| `public_future_role` | `TRANSITIONAL_COMPATIBILITY_NAMESPACE` |
+| `business_domain_authority` | `NONE` |
+| `owner_schema_identity` | `NONE` |
+| `canonical_long_lived_api_role` | `NONE` — reservada a `SUPA-ARC-005` |
+| `authoritative_business_tables_target` | **0** |
+| `direct_client_business_mutations_target` | **0** |
+| `unclassified_public_objects_target` | **0** |
+| `new_business_sources_allowed` | **0** |
+| `transitional_compatibility_objects` | solo los necesarios, versionados y con gate de salida |
+| `terminal_state` | vacío de objetos empresariales o excepciones técnicas soportadas |
+| `physical_changes_authorized` | **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente | Decisión consumida |
+| --- | --- |
+| `01_PROTOCOLO.md` | Supabase como plataforma integral, `public` sin destino universal, propietarios y consumidores explícitos, compatibilidad, pruebas y rollback |
+| `delivery-contract.json` | archivo de una sola tarea, sin contenido operativo de chat y registro 04A completo con nombre único |
+| `active-sequence.json` | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; tarea actual derivada `SUPA-ARC-004` |
+| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0` | `SEP-004` a `SEP-007`, `SEP-018`, `SEP-022` y `SEP-024` |
+| `SUPABASE-STABLE-BUSINESS-DOMAIN-REGISTRY-001@1.0.0` | 26 dominios estables; `public` no es dominio |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0` | 26 owner schemas `VSCHEMA-001` a `VSCHEMA-026`; `public` sin autoridad empresarial |
+| `SUPABASE-OBJECT-CAPABILITY-OWNERSHIP-CONSUMER-MAP-022@1.0.0` | universo de objetos, funciones, dependencias y consumidores actuales |
+| `SUPABASE-PROCESS-DATA-RPC-EVENT-APPLICATION-MAP-023@1.0.0` | procesos, fuentes, RPC, eventos y aplicaciones que dependen del estado actual |
+| `SUPABASE-CONSOLIDATED-RISK-REGISTER-001@1.0.0` | riesgos de concentración, seguridad, legacy, consumidores ocultos, RPC y gobierno de objetos |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` | 4.915 requisitos hasta `SUPA-ARC-003`; rango `TREQ-SUPABASE-001` a `620` |
+
+#### 4. Decisión canónica
+
+`public` permanecerá como schema técnico existente durante la transición, pero su función objetivo será exclusivamente **compatibilidad temporal no autoritativa**.
+
+Esto implica simultáneamente:
+
+1. no representará dominio, aplicación, producto, proceso ni owner schema;
+2. no alojará fuentes empresariales autoritativas en el estado objetivo;
+3. no será la capa canónica permanente para contratos nuevos;
+4. podrá conservar temporalmente vistas o wrappers estrictamente necesarios para consumidores actuales;
+5. cada objeto temporal deberá declarar fuente, consumidor, reemplazo, seguridad, versión, paridad, rollback y gate de salida;
+6. cuando termine la transición quedará vacío de objetos empresariales de Vento o contendrá únicamente excepciones técnicas soportadas y no autoritativas;
+7. su mera existencia no concederá exposición ni privilegios.
+
+#### 5. Definiciones normativas
+
+| Concepto | Definición | Consecuencia |
+| --- | --- | --- |
+| namespace de compatibilidad transitoria | schema que conserva temporalmente nombres o firmas consumidas mientras el contrato canónico se adopta | cada objeto tiene salida obligatoria y no puede recibir nuevas fuentes |
+| fuente autoritativa | tabla o agregado que controla identidad, estado, corrección y cierre de un hecho | su destino es el owner schema aprobado, nunca `public` |
+| proyección de compatibilidad | vista de solo lectura que conserva temporalmente forma o nombre legacy | hereda la autoridad de la fuente y no admite mutación |
+| RPC de compatibilidad | wrapper versionado que delega en una consulta o comando canónico | no conserva reglas empresariales ni secretos propios |
+| capa expuesta canónica | superficie de vistas y RPC para consumidores aprobados | su diseño físico y catálogo pertenecen a `SUPA-ARC-005`, no a `public` por defecto |
+| excepción técnica soportada | objeto exigido por plataforma o extensión mediante mecanismo documentado | no contiene estado empresarial, no amplía acceso y conserva pruebas de upgrade |
+| estado terminal de `public` | schema existente sin fuentes ni contratos empresariales activos | compatibilidad residual o elemento sin destino bloquea el cierre |
+
+#### 6. Invariantes de arquitectura
+
+1. `public` tendrá **cero owner schemas**, **cero dominios** y **cero fuentes autoritativas** en el estado objetivo.
+2. Los 26 owner schemas aprobados conservarán autoridad aunque una vista o wrapper temporal permanezca físicamente en `public`.
+3. No se creará ningún objeto empresarial nuevo en `public` por comodidad, default del proveedor, ausencia de decisión o compatibilidad no documentada.
+4. Un objeto temporal en `public` no podrá escribir directamente en más de un owner schema ni coordinar transacciones interdominio sin contrato aprobado.
+5. Una vista, alias o RPC de compatibilidad no recibirá owner empresarial independiente.
+6. Data API, grants, RLS, `EXECUTE`, Realtime y credenciales permanecerán decisiones separadas.
+7. Toda referencia deberá ser determinista y sobrevivir a cambios de `search_path`.
+8. La compatibilidad tendrá responsable y condición verificable de salida; no se aceptará permanencia indefinida.
+9. La ausencia de consumidores localizados no bastará para retirar un objeto.
+10. Ninguna decisión de esta tarea cambia el estado AS-IS ni cierra riesgos.
+
+#### 7. Clases de destino obligatorias para objetos actuales
+
+| Clase de destino | Aplicación | Autoridad | Tarea que completa el diseño |
+| --- | --- | --- | --- |
+| `MOVE_TO_OWNER_SCHEMA` | tablas autoritativas, secuencias y dependientes propios del dominio | owner schema `VSCHEMA-*` | `SUPA-TRANS-001`; `SUPA-TRANS-005` |
+| `MOVE_TO_EXPOSED_LAYER` | vista o RPC que deba convertirse en contrato canónico estable | owner de origen; capa sin autoridad | `SUPA-ARC-005`; `SUPA-TRANS-003` |
+| `MOVE_TO_PRIVATE_LAYER` | helper, secreto, adaptador o función interna | owner del efecto | `SUPA-ARC-006`; `SUPA-TRANS-003` |
+| `MOVE_TO_AUDIT_OR_EVENT_LAYER` | auditoría, outbox, eventos y evidencia transversal | dominio productor | `SUPA-ARC-007`; `SUPA-ARC-019` |
+| `TRANSITIONAL_COMPATIBILITY` | nombre, vista o firma requerida temporalmente por consumidores vigentes | owner de origen; sin autoridad propia | `SUPA-TRANS-003`; `SUPA-TRANS-007` |
+| `RETIRE` | objeto sin finalidad vigente, reemplazado o legacy con salida demostrada | ninguna autoridad nueva | `SUPA-TRANS-002`; `SUPA-TRANS-012` |
+| `PLATFORM_EXCEPTION` | objeto técnico soportado que no puede relocalizarse todavía | ninguna autoridad empresarial | `SUPA-ARC-024`; `SUPA-TRANS-015` |
+
+Todo objeto deberá pertenecer exactamente a una clase primaria. Una clase secundaria podrá describir compatibilidad o dependencia, pero no sustituirá el destino principal.
+
+#### 8. Contenido permitido temporalmente en `public`
+
+| Clase | Condiciones acumulativas | Prohibición |
+| --- | --- | --- |
+| vista de compatibilidad | solo lectura; fuente exacta; consumidores inventariados; paridad; versión; reemplazo; salida | mutación, estado propio o fuente competidora |
+| RPC alias | firma exacta; delegación; autorización equivalente; idempotencia; telemetría; deprecación | lógica empresarial duplicada, secreto o DML lateral propio |
+| tipo de compatibilidad | requerido por una firma vigente; versionado; consumidor y reemplazo conocidos | usarlo como modelo canónico o expandirlo a contratos nuevos |
+| excepción técnica | mecanismo soportado; no expuesto por default; sin estado empresarial; prueba de upgrade | convertirla en contenedor general o precedente |
+
+No se permite crear una superficie nueva dentro de estas clases para evitar la capa expuesta, privada o propietaria correspondiente.
+
+#### 9. Contenido prohibido en el estado objetivo
+
+- tablas maestras, transaccionales, ledgers, catálogos o estados de proceso;
+- tablas compartidas entre dominios o aplicaciones;
+- escrituras directas de clientes a estado empresarial;
+- funciones que concentren reglas o mutaciones interdominio;
+- helpers internos, secretos, claves, tokens o configuración privilegiada;
+- outbox, auditoría, eventos, colas, staging, backups o importaciones temporales;
+- políticas o grants amplios heredados por costumbre;
+- aliases sin consumidor, reemplazo, versión y salida;
+- objetos cuyo propietario se infiera desde aplicación, nombre, rol PostgreSQL o ubicación;
+- contratos nuevos permanentes creados antes de `SUPA-ARC-005`.
+
+#### 10. Contrato mínimo por objeto de compatibilidad
+
+Cada objeto temporal de `public` deberá registrar:
+
+```text
+object_key
++ object_kind
++ current_signature_or_shape
++ source_owner_schema_id
++ source_owner_schema_name
++ process_ids
++ current_consumers
++ target_class
++ canonical_replacement_key
++ read_write_mode
++ exposure_and_security_owner
++ compatibility_version
++ parity_evidence
++ observability_signal
++ deprecation_owner
++ exit_gate
++ rollback_contract
++ test_requirement_ids
+```
+
+No se aceptarán `TBD`, propietario genérico, consumidor supuesto, fecha narrativa ni reemplazo sin identidad resoluble.
+
+#### 11. Ciclo de vida de compatibilidad
+
+| Etapa | Condición de entrada | Condición de salida |
+| --- | --- | --- |
+| `INVENTORIED` | identidad, firma, dependencias y consumidores localizados | destino primario aprobado |
+| `REPLACEMENT_AVAILABLE` | fuente y contrato canónicos disponibles | paridad y seguridad verificadas |
+| `DUAL_COMPATIBILITY` | objeto legacy delega en el reemplazo | adopción observada por consumidores |
+| `DEPRECATED` | aviso, versión y gate de retiro publicados | cero consumidores y ventana aprobada |
+| `RETIRED` | retiro ejecutado con evidencia | observación postcambio y rollback cerrado |
+
+Un objeto no podrá saltar directamente de inventariado a retirado. La transición podrá abreviarse únicamente cuando se demuestre que nunca tuvo consumidor ni datos y exista aprobación explícita en la tarea de transición.
+
+#### 12. Exposición y autorización
+
+1. `public` no se considerará expuesto por definición documental ni por su nombre.
+2. La lista de schemas expuestos, vistas, RPC, roles y privilegios se definirá en `SUPA-ARC-005` y `SUPA-ARC-015`.
+3. Todo objeto temporal permanecerá denegado por defecto hasta que un contrato identifique audiencia, operación y mínima autoridad.
+4. Una vista o wrapper no podrá degradar la autorización de su fuente ni ocultar un bypass privilegiado.
+5. `anon`, `authenticated`, roles empresariales y actores de sistema se tratarán como audiencias distintas.
+6. El uso de una credencial privilegiada por backend no convertirá la superficie en acceso autorizado para clientes.
+7. La compatibilidad deberá incluir pruebas negativas y de paridad antes de habilitarse o retirarse.
+
+#### 13. Reglas por clase de objeto actual
+
+| Objeto actual en `public` | Decisión de esta tarea | Destino documental |
+| --- | --- | --- |
+| tabla autoritativa | pierde toda autoridad objetivo en `public`; se asigna al owner schema lógico aprobado | `SUPA-ARC-003`; `SUPA-TRANS-001`; `SUPA-TRANS-005` |
+| vista | se clasifica como contrato canónico, compatibilidad, interno o retiro | `SUPA-ARC-005`; `SUPA-TRANS-003`; `SUPA-TRANS-007` |
+| función o RPC | se clasifica por firma, efecto, seguridad y audiencia | `SUPA-ARC-013` a `SUPA-ARC-016`; `SUPA-TRANS-003` |
+| trigger function | hereda objeto y efecto; no es API por residir en `public` | `SUPA-ARC-013`; `SUPA-ARC-014` |
+| tipo o enum | acompaña al contrato o dominio propietario; no convierte `public` en raíz de tipos | `SUPA-ARC-011`; `SUPA-ARC-023` |
+| secuencia, índice, constraint o política | hereda destino del objeto principal | `SUPA-ARC-012`; `SUPA-ARC-015`; transición correspondiente |
+| backup, staging o importación | conserva clase temporal y decisión de retención o retiro | `SUPA-ARC-022`; `SUPA-TRANS-002`; `SUPA-TRANS-012` |
+| extensión u objeto técnico | excepción soportada o traslado a superficie administrada | `SUPA-ARC-006`; `SUPA-ARC-024` |
+
+#### 14. Relación con consumidores y tipos
+
+- las aplicaciones actuales podrán conservar temporalmente contratos `public` únicamente mediante el manifiesto de compatibilidad;
+- un consumidor nuevo deberá adoptar la capa canónica y no el alias legacy;
+- los clientes generados distinguirán superficies canónicas y temporales;
+- una vista o RPC no podrá retirarse solo porque no aparezca en una búsqueda de código;
+- scripts, automatizaciones, integraciones externas, clientes desplegados y operación manual deberán formar parte de la búsqueda de consumidores;
+- la adopción se medirá por telemetría o evidencia reproducible, no por declaración narrativa.
+
+#### 15. Orden obligatorio de transición
+
+```text
+1. CONGELAR NUEVAS FUENTES EN PUBLIC
+2. INVENTARIAR Y CLASIFICAR CADA OBJETO
+3. MATERIALIZAR OWNER SCHEMA O CAPA DESTINO
+4. CREAR CONTRATO CANÓNICO Y COMPATIBILIDAD
+5. VALIDAR PARIDAD, SEGURIDAD Y ROLLBACK
+6. MIGRAR CONSUMIDORES POR OLEADAS
+7. DEMOSTRAR CERO CONSUMIDORES OCULTOS
+8. RETIRAR ALIAS O WRAPPER
+9. CERTIFICAR PUBLIC SIN AUTORIDAD
+```
+
+Este orden no autoriza ninguna migración. `SUPA-TRANS-001` a `SUPA-TRANS-015` definirán y ejecutarán documentalmente la preparación de cada cambio antes de los paquetes de implementación.
+
+#### 16. Riesgos restringidos y carryover
+
+| Riesgo | Efecto de esta tarea | Resolución restante |
+| --- | --- | --- |
+| `RSK-SUPA-004` | prohíbe interpretar `public` como autorización o exposición | `SUPA-ARC-005`; `014`; `015`; transición |
+| `RSK-SUPA-017` | define el retiro de toda autoridad empresarial y el rol transitorio de compatibilidad | `SUPA-ARC-005`; `SUPA-TRANS-001` a `007` |
+| `RSK-SUPA-022` | obliga a versionar, medir y retirar aliases y fachadas legacy | `SUPA-TRANS-006`; `007`; `012` |
+| `RSK-SUPA-033` | exige destino, owner de origen y ciclo de vida por objeto | `SUPA-ARC-011`; `016`; `SHELL-CI-017` |
+| `RSK-SUPA-035` | impide retirar superficies sin búsqueda completa de consumidores | `SUPA-TRANS-003`; `007`; `012` |
+| `RSK-SUPA-036` | exige identidad de firma y clasificación para funciones y RPC de `public` | `SUPA-ARC-013`; `014`; `SUPA-TRANS-003` |
+| `RSK-SUPA-041` | separa vacío, futuro, compatibilidad y abandono antes del retiro | `SUPA-TRANS-001`; `002`; `012` |
+
+Ningún riesgo queda aceptado, mitigado o cerrado. La tarea fija la función objetivo y los gates que deberán producir evidencia posterior.
+
+#### 17. Decisiones reservadas
+
+| Decisión | Tarea propietaria |
+| --- | --- |
+| nombre, schemas y catálogo exacto de la capa expuesta | `SUPA-ARC-005` |
+| ubicación y contrato de helpers o lógica privada | `SUPA-ARC-006` |
+| estructura de auditoría, outbox y eventos | `SUPA-ARC-007`; `SUPA-ARC-019` |
+| convenciones de nombres y tipos | `SUPA-ARC-011`; `SUPA-ARC-023` |
+| firmas, seguridad y privilegios de funciones | `SUPA-ARC-013` a `SUPA-ARC-015` |
+| contratos y escrituras entre dominios | `SUPA-ARC-016`; `SUPA-ARC-017` |
+| inventario exacto de objetos que permanecen temporalmente | `SUPA-TRANS-001`; `SUPA-TRANS-003` |
+| orden por consumidor, backfill, compatibilidad, retiro y rollback | `SUPA-TRANS-003` a `SUPA-TRANS-015` |
+| implementación física | paquetes E5 y BLOQUE R correspondientes |
+
+#### 18. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear una capa expuesta nueva;
+- cambiar la lista de schemas expuestos;
+- crear, mover, renombrar, alterar o retirar objetos en `public`;
+- modificar grants, RLS, owners PostgreSQL, privilegios o `search_path`;
+- cambiar firmas de vistas, RPC, funciones, tipos o clientes;
+- desplegar wrappers, aliases o telemetría;
+- ejecutar migraciones, DDL, DML, backfills, conciliaciones o cutovers;
+- declarar cero consumidores, paridad, seguridad o rollback sin evidencia;
+- marcar riesgos como resueltos;
+- iniciar `SUPA-ARC-005` antes de aprobación expresa.
+
+#### 19. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-621 a TREQ-SUPABASE-650
+```
+
+Los treinta requisitos protegen función única, cero autoridad, congelación de nuevas fuentes, clasificación completa, compatibilidad, RPC y vistas, seguridad, resolución calificada, tipos, transición por oleadas, rollback, retiro y verificación recurrente de `public`. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 20. Criterios de aceptación
+
+- [ ] `public` tiene una sola función objetivo: compatibilidad transitoria no autoritativa.
+- [ ] `public` no se registra como dominio, aplicación, owner schema ni capa canónica permanente.
+- [ ] El objetivo contiene cero tablas autoritativas y cero mutaciones directas de clientes.
+- [ ] Ninguna fuente nueva podrá crearse en `public` después de la decisión arquitectónica.
+- [ ] Cada objeto actual deberá recibir exactamente una clase de destino.
+- [ ] Toda compatibilidad declara fuente, consumidores, reemplazo, versión, paridad, seguridad, salida y rollback.
+- [ ] Vistas y RPC temporales no adquieren autoridad ni duplican reglas.
+- [ ] Privilegios, RLS y exposición permanecen decisiones independientes.
+- [ ] La capa expuesta canónica permanece reservada a `SUPA-ARC-005`.
+- [ ] Helpers, secretos, auditoría, eventos, staging y backups quedan fuera del estado objetivo.
+- [ ] La transición exige oleadas, adopción verificable, cero consumidores y rollback.
+- [ ] El estado terminal queda vacío de objetos empresariales o limitado a excepciones soportadas.
+- [ ] Se generan `TREQ-SUPABASE-621` a `TREQ-SUPABASE-650`.
+- [ ] No se ejecutan cambios físicos, código ni implementación.
+- [ ] `SUPA-ARC-005` permanece reservada.
+
+#### 21. Controles estructurales requeridos
+
+| Control | Resultado esperado |
+| --- | ---: |
+| funciones objetivo de `public` | **1** |
+| owner schemas asignados a `public` | **0** |
+| dominios asignados a `public` | **0** |
+| tablas autoritativas objetivo | **0** |
+| mutaciones directas cliente objetivo | **0** |
+| clases de destino permitidas | **7** |
+| objetos sin clase objetivo | **0** |
+| nuevas fuentes permitidas | **0** |
+| compatibilidades sin salida | **0** |
+| requisitos nuevos | **30** |
+| cambios físicos | **0** |
+
+#### 22. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-003 — Definir esquema propietario de cada fuente de verdad
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-004 — Definir función futura de `public`
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-005 — Definir capa expuesta de vistas y RPC
+```
+
+`SUPA-ARC-005` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-005 — Definir capa expuesta de vistas y RPC
 ### [ ] SUPA-ARC-006 — Definir capa privada de helpers y lógica interna
 ### [ ] SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos

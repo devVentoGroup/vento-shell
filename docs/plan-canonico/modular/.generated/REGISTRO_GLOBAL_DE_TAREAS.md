@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **408** |
+| Aprobadas | **409** |
 | En propuesta | **0** |
-| No iniciadas | **1167** |
+| No iniciadas | **1166** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **25.90% (408/1575)** |
+| Porcentaje de completamiento | **25.97% (409/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-ARC-003` — Definir esquema propietario de cada fuente de verdad | ✅ APROBADA |
-| Tarea actual | `SUPA-ARC-004` — Definir función futura de `public` | ⬜ NO INICIADA |
-| Siguiente | `SUPA-ARC-005` — Definir capa expuesta de vistas y RPC | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-ARC-004` — Definir función futura de `public` | ✅ APROBADA |
+| Tarea actual | `SUPA-ARC-005` — Definir capa expuesta de vistas y RPC | ⬜ NO INICIADA |
+| Siguiente | `SUPA-ARC-006` — Definir capa privada de helpers y lógica interna | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -406,7 +406,7 @@
 | ✅ APROBADA | `SUPA-ARC-001` | Definir principios de separación entre esquemas administrados y empresariales | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-002` | Definir dominios empresariales estables | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-003` | Definir esquema propietario de cada fuente de verdad | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
-| ⬜ NO INICIADA | `SUPA-ARC-004` | Definir función futura de `public` | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
+| ✅ APROBADA | `SUPA-ARC-004` | Definir función futura de `public` | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-005` | Definir capa expuesta de vistas y RPC | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-006` | Definir capa privada de helpers y lógica interna | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-007` | Definir esquema transversal de auditoría y eventos | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
