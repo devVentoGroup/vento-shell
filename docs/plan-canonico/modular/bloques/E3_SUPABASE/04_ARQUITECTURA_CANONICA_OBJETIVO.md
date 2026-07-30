@@ -11122,7 +11122,748 @@ SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron
 `SUPA-ARC-020` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron
+### ✅ SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-019 — Definir arquitectura de Realtime y eventos` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `e9271091a10235979209295e5f6b933a56cd85ad`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `63c2128b334c512bebd924e74409b036ae157ec9`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `9d4429c70b3db08d536ff4657ca3036f14c9d1f4`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`
+**Tipo de tarea:** definición normativa de arquitectura objetivo para Edge Functions, webhooks, cron, schedulers, trabajos durables, proveedores externos, tokens de capacidad, secretos, autorización, idempotencia, retry, leases, observabilidad, reproducibilidad y transición; sin desplegar funciones, modificar `verify_jwt`, crear colas, alterar cron jobs, rotar secretos, invocar endpoints, cambiar código, aplicar migraciones, modificar datos ni ejecutar cutover
+
+#### 1. Objetivo
+
+Definir una arquitectura única, cerrada y verificable para toda ejecución server-side y asíncrona de Vento OS, de modo que una función desplegada, una invocación aceptada, un cron exitoso, un request de `pg_net` o un HTTP `2xx` nunca se confundan con autorización válida ni con un efecto empresarial confirmado.
+
+```text
+ENTRADA AUTENTICADA, FIRMADA O PROGRAMADA
+        ↓
+ADAPTADOR VALIDA CONTRATO, IDENTIDAD Y LÍMITES
+        ↓
+TRABAJO DURABLE O COMANDO DEL OWNER
+        ↓
+CLAIM, LEASE, INTENTO, RETRY Y RESULTADO CONSULTABLE
+        ↓
+EFECTO EMPRESARIAL CONFIRMADO POR SU OWNER
+        ↓
+EVENTO, RECEIPT, AUDITORÍA Y CONCILIACIÓN
+```
+
+La tarea gobierna contratos y fronteras. No declara conforme ninguna automatización actual por existir, ni selecciona por inferencia una tecnología física de cola.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-EDGE-WEBHOOK-CRON-ARCHITECTURE-001@1.0.0
+```
+
+| Propiedad                                    |  Valor |
+| -------------------------------------------- | -----: |
+| `current_active_edge_function_count`         | **24** |
+| `current_verify_jwt_true_count`              | **12** |
+| `current_verify_jwt_false_count`             | **12** |
+| `current_active_cron_job_count`              |  **7** |
+| `current_pg_net_retained_response_count`     | **72** |
+| `current_pg_net_2xx_count`                   | **65** |
+| `current_pg_net_transport_error_count`       |  **7** |
+| `current_active_business_http_trigger_count` |  **1** |
+| `current_expected_missing_trigger_count`     |  **1** |
+| `current_technical_key_count`                |  **5** |
+| `current_pgmq_extension_count`               |  **0** |
+| `current_vault_secret_count`                 |  **0** |
+| `current_assigned_breach_count`              | **20** |
+| `automation_plane_count`                     |  **6** |
+| `workload_class_count`                       |  **9** |
+| `ingress_class_count`                        |  **7** |
+| `function_lifecycle_state_count`             |  **5** |
+| `durable_job_state_count`                    | **12** |
+| `retry_policy_count`                         |  **6** |
+| `closed_outcome_count`                       | **11** |
+| `current_edge_function_case_count`           | **24** |
+| `current_edge_disposition_count`             |  **9** |
+| `current_cron_case_count`                    |  **7** |
+| `current_cron_disposition_count`             |  **5** |
+| `current_route_case_count`                   |  **7** |
+| `drift_class_count`                          | **14** |
+| `new_test_requirements`                      | **64** |
+| `physical_changes_authorized`                |  **0** |
+
+El artefacto integra seis registros normativos:
+
+```text
+EDGE-FUNCTION-MANIFEST-001
+AUTOMATION-INGRESS-CLASS-REGISTRY-001
+DURABLE-WORK-CONTRACT-001
+WEBHOOK-INGRESS-CONTRACT-001
+CRON-SCHEDULE-MANIFEST-001
+CURRENT-AUTOMATION-DISPOSITION-REGISTRY-001
+```
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                      | Decisión consumida                                                                                                    |
+| ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                           | continuidad, fase documental, preservación de 04A y validación diferenciada                                           |
+| `delivery-contract.json`                                    | un único artefacto de tarea y registro 04A completo con nombre único                                                  |
+| `active-sequence.json`                                      | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`                                                                             |
+| `SUPA-AUD-014`                                              | 24 funciones, siete cron jobs, rutas, timeouts, webhooks, secretos, colas ausentes y veinte brechas asignadas         |
+| `SUPA-AUD-015`                                              | custodia de secretos, variables de Edge, Vault vacío, cron literal, claves públicas y privilegios técnicos observados |
+| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0`           | Edge, cron y `net` ejecutan o transportan; el resultado permanece en el owner de Vento                                |
+| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0`                 | `app_private` puede coordinar contratos sin ocultar HTTP, cron, webhook, worker o cola dentro de SQL                  |
+| `SUPABASE-FUNCTION-RPC-TRIGGER-STANDARD-001@1.0.0`          | firmas, efectos, seguridad, errores y triggers explícitos                                                             |
+| `SUPABASE-SECURITY-DEFINER-POLICY-001@1.0.0`                | privilegio excepcional y validación interna independiente                                                             |
+| `SUPABASE-EXPOSURE-GRANTS-RLS-POLICY-001@1.0.0`             | roles técnicos no sustituyen autorización empresarial                                                                 |
+| `SUPABASE-DOMAIN-READ-MUTATION-CONTRACT-REGISTRY-001@1.0.0` | comandos, outcomes, idempotencia y owner por dominio                                                                  |
+| `SUPABASE-CROSS-DOMAIN-WRITE-POLICY-001@1.0.0`              | outbox, inbox, coordinación, leases, parcialidad, compensación y conciliación                                         |
+| `SUPABASE-STORAGE-ARCHITECTURE-001@1.0.0`                   | procesamiento de archivos mediante jobs versionados y estados empresariales                                           |
+| `SUPABASE-REALTIME-EVENT-ARCHITECTURE-001@1.0.0`            | evento durable, publicación, consumidor y efecto separados                                                            |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`          | 5.613 requisitos hasta `SUPA-ARC-019`; rango `TREQ-SUPABASE-001` a `1318`                                             |
+
+#### 4. Distinciones normativas
+
+```text
+EDGE FUNCTION DESPLEGADA ≠ CONTRATO APROBADO
+VERIFY_JWT = TRUE ≠ AUTORIZACIÓN EMPRESARIAL
+VERIFY_JWT = FALSE ≠ ENDPOINT PÚBLICO SIN CONTROL
+SERVICE_ROLE ≠ PERMISO FUNCIONAL
+CRON SUCCEEDED ≠ EFECTO EMPRESARIAL CONFIRMADO
+REQUEST_ID PG_NET ≠ RESPUESTA HTTP
+HTTP 2XX ≠ RESULTADO DE DOMINIO
+WEBHOOK RECIBIDO ≠ WEBHOOK VERIFICADO
+WEBHOOK VERIFICADO ≠ EFECTO APLICADO
+RETRY ≠ NUEVA INTENCIÓN
+QUEUE ACK ≠ RESULTADO DEL JOB
+SECRET PRESENTE ≠ SECRET CORRECTAMENTE CUSTODIADO
+TOKEN DE CAPACIDAD ≠ SESIÓN GENERAL
+DEEP LINK ≠ PRUEBA DE PAGO O PEDIDO
+WORKER ≠ OWNER DEL PROCESO
+```
+
+#### 5. Planos canónicos de automatización
+
+| Plano                          | Responsabilidad                                                             | Autoridad                                                  | No podrá                                              |
+| ------------------------------ | --------------------------------------------------------------------------- | ---------------------------------------------------------- | ----------------------------------------------------- |
+| ingreso y gateway              | autenticar o verificar la entrada, aplicar límites y normalizar el envelope | contrato de ingreso y servicio administrado                | decidir por sí solo el efecto empresarial             |
+| scheduler y dispatch           | calcular una ocurrencia programada y crear una intención durable            | manifiesto de schedule y owner del job                     | declarar éxito por encolar HTTP                       |
+| trabajo durable                | conservar job, claim, lease, intentos, retry, deadline y outcome            | `operational_continuity` o owner primario aprobado         | adquirir autoridad de los dominios participantes      |
+| comando y efecto de dominio    | validar autorización, invariantes, concurrencia y confirmar el resultado    | owner schema del proceso                                   | delegar su decisión final al adaptador                |
+| proveedor y transporte externo | enviar, recibir, consultar estado y conservar receipts                      | adapter registrado y credencial mínima                     | convertir aceptación técnica en resultado empresarial |
+| control, seguridad y evidencia | secretos, manifiestos, despliegue, telemetría, auditoría y drift            | `vento-shell`, custodia aprobada y contratos transversales | almacenar valores secretos en documentación o logs    |
+
+#### 6. Clases de workload permitidas
+
+```text
+CLIENT_QUERY_OR_REPORT
+CLIENT_COMMAND
+INTERNAL_EVENT_CONSUMER
+SCHEDULED_DISPATCHER
+DURABLE_ASYNC_WORKER
+SIGNED_EXTERNAL_WEBHOOK
+PROVIDER_ADAPTER
+PUBLIC_RETURN_ADAPTER
+CAPABILITY_PORTAL
+```
+
+Cada función tendrá exactamente una clase primaria. Una función que mezcle portal público, comando administrativo, worker y webhook deberá dividirse antes de quedar `ACTIVE`.
+
+#### 7. Clases de ingreso
+
+| Clase                      | Identidad mínima                                                          | Regla                                                          |
+| -------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `AUTHENTICATED_CLIENT`     | JWT de plataforma, sesión y actor cuando aplique                          | gateway más autorización empresarial fresca                    |
+| `SIGNED_EXTERNAL_WEBHOOK`  | firma de proveedor, timestamp, event identity y allowlist contractual     | `verify_jwt=false` puede ser correcto; la firma es fail-closed |
+| `TRUSTED_INTERNAL_SERVICE` | identidad de servicio, audiencia, firma o credencial rotada y correlación | no reutiliza secretos entre dominios                           |
+| `SCHEDULED_DISPATCH`       | schedule manifest, run identity y credencial no embebida                  | crea trabajo durable o comando local idempotente               |
+| `DURABLE_WORKER_CLAIM`     | worker identity, claim, lease y job version                               | solo procesa jobs reclamados atómicamente                      |
+| `PUBLIC_CAPABILITY`        | token opaco, propósito, recurso, expiración y límites                     | concede acciones estrechas, no sesión general                  |
+| `PUBLIC_RETURN`            | parámetros no confiables y estado server-side consultable                 | nunca confirma ni muta por la URL recibida                     |
+
+#### 8. Manifiesto canónico de Edge Function
+
+Cada función declarará:
+
+```text
+edge_function_id
++ slug
++ lifecycle_status
++ workload_class
++ ingress_class
++ owner_schema_id
++ primary_effect_owner_schema_id
++ process_ids
++ source_repository
++ source_relative_path
++ source_commit
++ bundle_sha256
++ runtime_and_import_map
++ verify_jwt_mode
++ allowed_callers
++ authentication_contract
++ authorization_requirement
++ request_schema_and_limits
++ response_and_outcome_contract
++ idempotency_contract
++ concurrency_contract
++ timeout_profile
++ retry_policy
++ outbound_destination_allowlist
++ secret_reference_ids
++ observability_contract
++ deployment_and_rollback_contract
++ compatibility_and_deprecation_gate
++ test_requirement_ids
+```
+
+No se aceptarán rutas absolutas, `/tmp` como procedencia, owner “backend”, caller “interno”, secretos por nombre narrativo, payload libre, timeout implícito ni función sin rollback.
+
+#### 9. Lifecycle de funciones
+
+```text
+DRAFT
+ACTIVE
+BLOCKED_SECURITY
+DEPRECATED
+RETIRED
+```
+
+- `ACTIVE` exige fuente reproducible, configuración por ambiente, controles de ingreso, pruebas negativas, observabilidad y rollback.
+- `BLOCKED_SECURITY` impide nuevas consumidoras y efectos sensibles hasta corregir la brecha.
+- `DEPRECATED` exige sucesora activa, consumidores medidos y fecha de salida.
+- `RETIRED` exige cero tráfico, secretos revocados y rollback cerrado.
+
+#### 10. Pipeline de ejecución obligatorio
+
+```text
+RECEIVE
+→ CLASSIFY_INGRESS
+→ ENFORCE_SIZE_AND_RATE_LIMIT
+→ AUTHENTICATE_OR_VERIFY_SIGNATURE
+→ RESOLVE_PRINCIPAL_ACTOR_AND_PURPOSE
+→ VALIDATE_SCHEMA_VERSION_AND_IDEMPOTENCY
+→ PERSIST_RECEIPT_OR_CLAIM_JOB
+→ INVOKE_OWNER_COMMAND_OR_QUERY
+→ RECORD_OUTCOME
+→ EMIT_EVENT_OR_PROVIDER_RECEIPT
+→ RESPOND_WITH_MINIMIZED_CONTRACT
+```
+
+Un paso fallido no se convertirá en éxito silencioso. Los errores esperados tendrán códigos estables; los inesperados conservarán correlación sin revelar internals.
+
+#### 11. Autenticación y autorización
+
+1. `verify_jwt` deberá coincidir con la clase de ingreso y los headers reales del productor.
+2. La validación del gateway no sustituirá permiso, scope, territorio, recurso, actor, sesión, segregación ni vigencia.
+3. `raw_user_meta_data`, roles enviados por el cliente, UID humano fijo y sets hardcoded quedan prohibidos para autorizar.
+4. `service_role` solo existirá en runtime confiable y con operaciones mínimas; nunca se enviará a clientes.
+5. La ausencia de secreto, issuer, audience, key o configuración obligatoria producirá denegación fail-closed.
+6. Acciones administrativas, destructivas, financieras, laborales y de privacidad tendrán permisos independientes.
+7. Un caller interno deberá ser autorizado nuevamente dentro del handler; llegar desde otra función no concede confianza transitiva.
+
+#### 12. Custodia y rotación de secretos
+
+Custodias permitidas por finalidad:
+
+| Consumidor        | Custodia objetivo                                       | Prohibición                                             |
+| ----------------- | ------------------------------------------------------- | ------------------------------------------------------- |
+| Edge Function     | secret store administrado del ambiente                  | valor en repositorio, tabla cliente, respuesta o log    |
+| función DB o cron | referencia mediante superficie soportada y privada      | literal en `cron.job.command` o catálogo empresarial    |
+| GitHub Actions    | secret del repositorio o ambiente con mínimo privilegio | reutilizar credencial de producción en otros ambientes  |
+| proveedor externo | secret identity registrada y rotada                     | compartir el mismo secreto entre dominios o finalidades |
+
+Cada secreto tendrá `secret_reference_id`, owner, propósito, ambiente, consumidores, fecha de rotación, versión activa, versión siguiente, estado, prueba de rechazo del valor anterior y procedimiento de emergencia. Los valores nunca formarán parte del manifiesto.
+
+#### 13. Contrato de webhook externo
+
+```text
+raw_body
++ provider_id
++ provider_event_id_or_deterministic_fingerprint
++ signature_version
++ signature_timestamp
++ received_at
++ request_id
++ correlation_id
++ payload_schema_version
++ sensitivity_class
++ inbox_receipt_id
+```
+
+Secuencia obligatoria:
+
+1. limitar tamaño, método, content type y frecuencia;
+2. verificar firma sobre el cuerpo crudo antes de parsear o mutar;
+3. rechazar timestamp fuera de ventana y replay no autorizado;
+4. resolver event ID o fingerprint determinista; nunca UUID aleatorio como sustituto de idempotencia;
+5. registrar inbox o receipt durable con constraint de unicidad;
+6. validar esquema y minimizar persistencia del payload;
+7. ejecutar o encolar el comando del owner;
+8. responder según contrato del proveedor sin confundir aceptación con efecto;
+9. permitir consulta y conciliación del outcome.
+
+#### 14. Callbacks, retornos y deep links
+
+`PUBLIC_RETURN_ADAPTER` no mutará el dominio ni confiará en pedido, pago, transacción, redirect o estado recibidos por query string. Solo podrá:
+
+- validar formato y allowlist de redirect;
+- emitir una transición visual segura;
+- entregar una referencia opaca;
+- exigir que la aplicación consulte el resultado server-side;
+- impedir open redirect, inyección y exposición de detalles.
+
+#### 15. Manifiesto canónico de cron
+
+Cada schedule declarará:
+
+```text
+schedule_id
++ lifecycle_status
++ owner_schema_id
++ process_id
++ semantic_name
++ timezone_id
++ local_time_intent
++ cron_expression_utc
++ dispatcher_contract_id
++ target_job_or_local_command
++ idempotency_scope
++ concurrency_policy
++ overlap_policy
++ lease_and_heartbeat
++ misfire_policy
++ catch_up_policy
++ deadline
++ maintenance_window
++ expected_duration_profile
++ success_evidence
++ alerting_and_escalation
++ secret_reference_ids
++ environment_scope
++ rollback_contract
++ test_requirement_ids
+```
+
+El nombre, la intención local y la expresión UTC deberán coincidir. Una expresión válida sintácticamente no prueba una programación correcta.
+
+#### 16. Tiempo, misfires y concurrencia programada
+
+1. Toda intención local usará zona IANA, especialmente `America/Bogota` cuando corresponda.
+2. Cambio de nombre, expresión o timezone será cambio contractual y exigirá prueba de calendario.
+3. Jobs duplicados sobre la misma intención deberán consolidarse o demostrar finalidades distintas.
+4. Una ocurrencia tardía seguirá una política explícita: omitir, ejecutar una vez, recuperar una ventana o abrir conciliación.
+5. Overlap se bloqueará mediante claim, advisory lock o mecanismo aprobado; la UI o el cron no bastan.
+6. El scheduler no reintentará ciegamente un resultado desconocido.
+
+#### 17. Trabajo durable y decisión de cola
+
+La arquitectura exige una frontera durable común para eliminación de cuentas, notificaciones, webhooks, procesamiento de turnos, conciliaciones y lifecycle de Storage.
+
+```text
+OUTBOX O SCHEDULE
+        ↓
+DURABLE JOB
+        ↓
+ATOMIC CLAIM + LEASE
+        ↓
+ATTEMPT
+        ↓
+OWNER COMMAND OR PROVIDER CALL
+        ↓
+OUTCOME + RECEIPT + NEXT ACTION
+```
+
+La ausencia actual de `pgmq` no obliga a instalarlo ni permite seguir usando HTTP directo como cola. La materialización podrá usar outbox y tablas gobernadas o una capacidad administrada aprobada, pero deberá cumplir el mismo contrato y permanecer reproducible desde `vento-shell`.
+
+#### 18. Estados del job durable
+
+```text
+READY
+CLAIMED
+RUNNING
+WAITING_RETRY
+BLOCKED_DEPENDENCY
+SUCCEEDED
+FAILED_TERMINAL
+DEAD_LETTERED
+CANCELLED
+EXPIRED
+RESULT_UNKNOWN
+RECONCILIATION_REQUIRED
+```
+
+Los estados terminales no se reabren. Una nueva intención crea job sucesor y vínculo explícito. `RESULT_UNKNOWN` bloquea efecto dependiente, retry destructivo y compensación hasta consulta o conciliación.
+
+#### 19. Claim, lease e intentos
+
+1. El claim será atómico y excluirá doble propiedad del mismo job.
+2. El lease tendrá `claimed_by`, `claimed_at`, `lease_expires_at`, heartbeat y versión.
+3. Un worker caído permitirá reclaim después de expiración y comprobación de outcome.
+4. `attempt_id` cambia por intento; `job_id`, `command_id` e `idempotency_key` permanecen para la misma intención.
+5. El job conservará historial de intentos, errores redactados, tiempos y receipts.
+6. Lotes usarán claim por elemento o partición y no mantendrán locks amplios durante llamadas externas.
+7. Dead-letter no ejecutará una ruta alternativa; abre revisión o conciliación.
+
+#### 20. Políticas de retry
+
+```text
+NO_RETRY
+SAFE_IDEMPOTENT_RETRY
+STATUS_QUERY_BEFORE_RETRY
+SCHEDULE_CATCH_UP
+MANUAL_RECONCILIATION
+DEAD_LETTER_AFTER_BUDGET
+```
+
+Cada política declarará errores elegibles, máximo de intentos, backoff, jitter, deadline, consulta previa, idempotencia, alertas y estado final. Un `4xx` de contrato no se reintentará como timeout; un timeout no se convertirá en rechazo ni éxito.
+
+#### 21. Outcomes cerrados
+
+```text
+REJECTED_AUTHENTICATION
+REJECTED_AUTHORIZATION
+REJECTED_CONTRACT
+DUPLICATE_REPLAYED
+ACCEPTED_PENDING
+PROVIDER_ACCEPTED
+EFFECT_CONFIRMED
+RETRY_SCHEDULED
+FAILED_TERMINAL
+RESULT_UNKNOWN
+RECONCILIATION_REQUIRED
+```
+
+`PROVIDER_ACCEPTED` y `ACCEPTED_PENDING` no equivalen a `EFFECT_CONFIRMED`. Un receipt previo podrá devolverse por idempotencia sin producir un segundo efecto.
+
+#### 22. HTTP saliente y adaptadores de proveedor
+
+1. Destinos, métodos, puertos, DNS y redirects estarán allowlisted; queda prohibida una URL arbitraria suministrada por cliente.
+2. Timeout de conexión, lectura y total serán acotados por perfil.
+3. Se limitarán tamaño de request y response, redirects y content types.
+4. Retries respetarán idempotencia del proveedor; POST no idempotente no se repetirá sin clave o consulta.
+5. Circuit breaker, rate limit, budget y degradación se completarán en `SUPA-ARC-021`.
+6. Request, intento, response, provider receipt y resultado empresarial permanecerán separados.
+7. `pg_net` será transporte, no job store ni prueba de éxito.
+8. Logs excluirán Authorization, cookies, firmas, tokens, URL de capacidad y payload sensible.
+
+#### 23. Notificaciones, correo y push
+
+- Expo, Resend y proveedores equivalentes serán adapters, no owners del proceso.
+- `notification_id`, intención, audiencia, template version, provider attempt y receipt serán identidades distintas.
+- Se deduplicará por intención y destinatario dentro de una ventana contractual.
+- Aceptado por proveedor, entregado, rechazado, rebotado, expirado y desconocido serán estados diferenciados.
+- Preferencias, consentimiento, quiet hours, idioma y canal se resolverán server-side.
+- La falla de notificación no revertirá el hecho empresarial; generará retry, fallback aprobado o evidencia de no entrega.
+
+#### 24. Tokens de capacidad y portales públicos
+
+1. El token será aleatorio, opaco, almacenado como hash y vinculado a un único recurso, propósito y conjunto de acciones.
+2. Tendrá expiración, estado, intentos, bloqueo, revocación y consumo auditable.
+3. No aparecerá en logs, analytics, errores, referers o payloads posteriores.
+4. Cuando llegue por URL, el portal deberá minimizar su permanencia y evitar propagación a terceros.
+5. Rate limit, anti-enumeración, respuesta uniforme y detección de abuso serán obligatorios.
+6. El token no autoriza consultar otros pedidos, clientes, direcciones o entregas.
+7. Acciones mutantes seguirán comandos propietarios e idempotencia.
+
+#### 25. Propiedad de dominio y escrituras
+
+- La Edge Function es adapter o worker; el owner schema confirma el efecto.
+- Toda mutación se ejecutará mediante contrato registrado del owner con autorización, precondiciones y outcome.
+- Ninguna función usará `service_role` para DML genérico o escritura entre dominios.
+- Los efectos multiowner seguirán `SUPA-ARC-017`; cada owner confirma su paso.
+- Workers, cron y webhooks no corrigen fuentes mediante SQL manual lateral.
+- Auditoría técnica y receipts no sustituyen el estado empresarial.
+
+#### 26. Realtime, eventos y Storage
+
+1. Un evento durable o outbox podrá activar un worker; el worker no recreará el hecho emisor.
+2. Realtime podrá invalidar o avisar; no será la cola durable de trabajos críticos.
+3. Webhooks externos producirán receipts e intenciones propietarias antes de eventos consumidores.
+4. Procesamiento de Storage conservará `business_record_id`, versión, objeto, operación, idempotencia y outcome.
+5. Crear un derivado, enviar OCR o optimizar imagen no publicará automáticamente la versión.
+6. Fallo de publicación, notificación o derivado se resolverá sin borrar el hecho confirmado.
+
+#### 27. Disposición de las 24 Edge Functions actuales
+
+| Función actual              | Clase objetivo            | Disposición primaria                      | Gate obligatorio                                                                                        |
+| --------------------------- | ------------------------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `wallet-pass`               | `PROVIDER_ADAPTER`        | `KEEP_RECONTRACT`                         | autorización de usuario, custodia de credencial, respuesta mínima y trazabilidad de proveedor           |
+| `attendance-report`         | `CLIENT_QUERY_OR_REPORT`  | `KEEP_RECONTRACT`                         | propósito, filtros, límites, export asíncrono cuando exceda presupuesto y auditoría de acceso           |
+| `staff-invitations-create`  | `CLIENT_COMMAND`          | `KEEP_RECONTRACT`                         | capacidad canónica, invitación vinculante, idempotencia y cero roles suministrados libremente           |
+| `request-account-deletion`  | `CLIENT_COMMAND`          | `KEEP_RECONTRACT`                         | identidad fresca, confirmación explícita, lifecycle y traspaso durable al worker                        |
+| `account-deletion`          | `CLIENT_COMMAND`          | `SPLIT_REQUEST_AND_WORKER`                | separar solicitud autenticada, validación, job durable, efectos propietarios y cierre conciliado        |
+| `payments-create-intent`    | `PROVIDER_ADAPTER`        | `KEEP_RECONTRACT`                         | idempotencia, autorización, expiración, secreto de integridad y resultado consultable                   |
+| `shift-publish-notify`      | `INTERNAL_EVENT_CONSUMER` | `REMOVE_CLIENT_TRIGGER_AND_ROUTE_DURABLY` | evento de publicación confirmado, outbox, deduplicación y retiro de la invocación compensatoria cliente |
+| `pass-delivery-quote`       | `PROVIDER_ADAPTER`        | `KEEP_RECONTRACT`                         | scope de pedido, rate limit, timeout, cache o vigencia y separación entre cotización y compromiso       |
+| `pass-address-search`       | `PROVIDER_ADAPTER`        | `KEEP_RECONTRACT`                         | mínimo de datos, restricción de destino, rate limit y credencial server-side                            |
+| `support-message-notify`    | `INTERNAL_EVENT_CONSUMER` | `FIX_GATEWAY_AND_MINIMIZE`                | autenticación compatible, evento mínimo, recuperación autorizada del contenido, retry e inbox           |
+| `pass-register-push-token`  | `CLIENT_COMMAND`          | `KEEP_RECONTRACT`                         | propiedad del dispositivo, revocación, unicidad, plataforma y minimización                              |
+| `order-message-notify`      | `INTERNAL_EVENT_CONSUMER` | `CONVERT_EVENT_DRIVEN`                    | evento durable de mensaje, deduplicación, preferencias, receipt y cero dependencia del cliente          |
+| `staff-invitations-accept`  | `CLIENT_COMMAND`          | `BLOCK_AND_REWRITE_SECURITY`              | invitación vigente, single-use, rol y sede autorizados por servidor antes de cualquier efecto           |
+| `document-alerts`           | `DURABLE_ASYNC_WORKER`    | `REBUILD_DURABLE_WORKER`                  | job durable, secreto rotado, claim, lease, timeout, retry, receipt y resultado por documento            |
+| `process-account-deletions` | `DURABLE_ASYNC_WORKER`    | `REBUILD_LEASED_WORKER`                   | claim atómico, lease, heartbeat, intentos, dead-letter, idempotencia y conciliación                     |
+| `register-push-token`       | `CLIENT_COMMAND`          | `CONSOLIDATE_OR_RETIRE_DUPLICATE`         | mapping de consumidores, paridad y salida hacia un único contrato de registro de token                  |
+| `announcement-notify`       | `INTERNAL_EVENT_CONSUMER` | `REMOVE_HARDCODED_AUTHORIZATION`          | capacidad canónica, audiencia resuelta server-side, deduplicación y receipt por proveedor               |
+| `employee-delete`           | `CLIENT_COMMAND`          | `BLOCK_FIXED_IDENTITY_AUTHORIZATION`      | permiso exacto, segregación, actor, razón y offboarding; prohibido depender de UID humano fijo          |
+| `payments-webhook`          | `SIGNED_EXTERNAL_WEBHOOK` | `HARDEN_SIGNED_WEBHOOK`                   | firma sobre cuerpo crudo, inbox durable, idempotencia determinista, atomicidad de receipt y transición  |
+| `staff-invitations-resend`  | `CLIENT_COMMAND`          | `REMOVE_HARDCODED_AUTHORIZATION`          | capacidad canónica, estado de invitación, rate limit, idempotencia y auditoría                          |
+| `staff-invitations-cancel`  | `CLIENT_COMMAND`          | `REMOVE_HARDCODED_AUTHORIZATION`          | capacidad canónica, compare-and-set, razón, idempotencia y auditoría                                    |
+| `shift-runtime-processor`   | `DURABLE_ASYNC_WORKER`    | `REBUILD_DURABLE_WORKER`                  | dispatch durable, partición, lease, timeout superior al transporte, retry e outcome consultable         |
+| `payments-return`           | `PUBLIC_RETURN_ADAPTER`   | `KEEP_NO_MUTATION_REVALIDATE`             | query params como pistas no confiables, salida segura y revalidación server-side en PASS                |
+| `delivery-portal`           | `CAPABILITY_PORTAL`       | `HARDEN_CAPABILITY_PORTAL`                | token de capacidad, rate limit, minimización, no filtración en logs y acciones permitidas explícitas    |
+
+La disposición es documental. Cada caso exige trazabilidad de consumidoras, secretos, permisos, requests, efectos, métricas, compatibilidad y rollback antes de cualquier transición.
+
+#### 28. Disposición de los siete cron jobs actuales
+
+| Job actual                                           | Schedule UTC observado | Disposición primaria              | Gate obligatorio                                                                                      |
+| ---------------------------------------------------- | ---------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `document-alerts-daily`                              | `0 14 * * *`           | `HARDEN_SECRETLESS_EDGE_DISPATCH` | retirar credenciales literales, crear dispatch durable y correlacionar cada documento con outcome     |
+| `auto-close-attendance`                              | `59 4 * * *`           | `CONSOLIDATE_SINGLE_SCHEDULE`     | definir una única intención local America/Bogota, precondiciones, idempotencia y prueba de regresión  |
+| `anima_shift_runtime_processor_every_5m`             | `*/5 * * * *`          | `REBUILD_DURABLE_DISPATCH`        | cron crea trabajo durable; pg_net o Edge no equivalen al resultado del procesamiento                  |
+| `pass_delivery_quotes_cleanup_hourly`                | `17 * * * *`           | `KEEP_DB_LOCAL_CONTRACTED`        | mantener solo si el efecto es local, acotado, idempotente, observable y con retención aprobada        |
+| `anima_attendance_day_end_close_0005`                | `5 0 * * *`            | `RETIRE_INCORRECT_OR_DUPLICATE`   | contener y retirar después de demostrar que no existe necesidad distinta ni pérdida de cierre         |
+| `attendance_stale_open_shift_autoclose_daily_bogota` | `10 5 * * *`           | `KEEP_DB_LOCAL_CONTRACTED`        | semántica local explícita, alcance, límites, resultado y alerta por residuales                        |
+| `pass_payment_checkout_expiry_reconciliation`        | `*/5 * * * *`          | `KEEP_DB_LOCAL_CONTRACTED`        | owner de pagos, transacción local, idempotencia, eventos y conciliación con pedidos mediante contrato |
+
+Los dos jobs de cierre de asistencia no se declaran equivalentes o retirables solo por llamar la misma función; la transición deberá demostrar intención, ventana, filas afectadas, dependencias y paridad.
+
+#### 29. Disposición de rutas productor–consumidor observadas
+
+| Productor actual         | Transporte           | Consumidor                  | Autenticación observada                 | Disposición                                         |
+| ------------------------ | -------------------- | --------------------------- | --------------------------------------- | --------------------------------------------------- |
+| cron.job 1               | pg_net               | `document-alerts`           | bearer y x-cron-key literales           | `MIGRATE_TO_DURABLE_SECRETLESS_DISPATCH`            |
+| cron.job 3               | función SQL + pg_net | `shift-runtime-processor`   | secreto interno y timeout de transporte | `MIGRATE_TO_DURABLE_LEASED_WORK`                    |
+| trigger support_messages | pg_net               | `support-message-notify`    | headers incompatibles con verify_jwt    | `REPLACE_WITH_MINIMAL_OUTBOX_EVENT`                 |
+| cliente ANIMA            | functions.invoke     | `shift-publish-notify`      | JWT de usuario después del commit       | `REMOVE_CLIENT_SIDE_RELIABILITY_PATH`               |
+| GitHub Actions diario    | HTTPS                | `process-account-deletions` | bearer secreto                          | `KEEP_ONLY_AS_EXTERNAL_SCHEDULER_WITH_ATOMIC_CLAIM` |
+| Wompi                    | webhook HTTPS        | `payments-webhook`          | checksum de proveedor                   | `KEEP_SIGNED_WEBHOOK_WITH_DURABLE_INBOX`            |
+| repartidor externo       | capability URL       | `delivery-portal`           | token de capacidad                      | `HARDEN_CAPABILITY_EXCHANGE_AND_RATE_LIMIT`         |
+
+Una ruta ausente en esta matriz no queda autorizada. Toda automatización adicional detectada será drift y requerirá clasificación.
+
+#### 30. Reproducibilidad y despliegue
+
+Cada despliegue conservará:
+
+```text
+edge_function_id
++ environment_id
++ source_repository
++ source_relative_path
++ source_commit
++ dependency_lock_hash
++ runtime_version
++ import_map_hash
++ configuration_manifest_hash
++ bundle_sha256
++ deployment_actor_or_pipeline
++ deployed_at
++ remote_version
++ health_and_smoke_evidence
++ rollback_version
+```
+
+El entrypoint remoto no sustituye la fuente. Quedan prohibidas procedencias basadas únicamente en `/tmp`, OneDrive o rutas personales. Un mismo slug no podrá desplegarse desde fuentes competidoras.
+
+#### 31. Ambientes
+
+Desarrollo, pruebas, staging y producción tendrán:
+
+- project ref y URLs propios;
+- secrets y provider credentials propios;
+- schedules deshabilitados o seguros por defecto fuera de producción;
+- callbacks y webhook destinations separados;
+- topics, queues, jobs e idempotency scopes aislados;
+- rate limits y sandboxes de proveedor acordes al ambiente;
+- manifiesto y bundle hash comparables;
+- bloqueo de llamadas cruzadas entre ambientes.
+
+#### 32. Observabilidad y correlación
+
+Cadena mínima:
+
+```text
+schedule_run_id
+→ dispatch_id
+→ job_id
+→ attempt_id
+→ edge_invocation_id
+→ outbound_request_id
+→ provider_receipt_id
+→ owner_command_id
+→ business_result_ref
+→ event_id
+```
+
+Métricas mínimas:
+
+```text
+ingress_requests
+signature_failures
+authentication_denials
+authorization_denials
+rate_limit_denials
+jobs_ready
+jobs_claimed
+lease_expirations
+worker_heartbeats
+attempts_total
+retry_scheduled
+retry_exhausted
+dead_letter_count
+result_unknown_count
+reconciliation_open_count
+provider_latency
+provider_non_2xx
+transport_timeouts
+cron_dispatch_latency
+cron_misfire_count
+outcome_latency
+secret_rotation_failures
+drift_findings
+```
+
+No se registrarán cuerpos completos, secretos, tokens, firmas, direcciones, correos ni PII innecesaria.
+
+#### 33. Clases de drift
+
+```text
+UNREGISTERED_EDGE_FUNCTION
+REMOTE_SOURCE_MISMATCH
+BUNDLE_HASH_MISMATCH
+VERIFY_JWT_CONTRACT_MISMATCH
+UNREGISTERED_CALLER
+HARDCODED_AUTHORIZATION
+SECRET_IN_CLIENT_OR_DATABASE
+SECRET_REUSE_ACROSS_PURPOSES
+CRON_TIMEZONE_MISMATCH
+DUPLICATE_OR_OVERLAPPING_SCHEDULE
+HTTP_SUCCESS_AS_BUSINESS_SUCCESS
+WORK_WITHOUT_ATOMIC_CLAIM
+MISSING_RETRY_OR_RECONCILIATION
+CROSS_ENVIRONMENT_INVOCATION
+```
+
+Cada hallazgo tendrá owner, severidad, disposición, evidencia, compatibilidad, fecha objetivo y gate de cierre.
+
+#### 34. Riesgos y controles
+
+| Riesgo                   | Control obligatorio                                           | Continuidad responsable           |
+| ------------------------ | ------------------------------------------------------------- | --------------------------------- |
+| escalamiento por payload | invitación vinculante, allowlist server-side y permiso exacto | AUTH-SRV, AUTH-DB y paquete ANIMA |
+| secreto expuesto         | rotación, custodia aprobada y prueba de rechazo anterior      | `SUPA-TRANS-*`; `SUPA-ARC-024`    |
+| gateway incompatible     | prueba E2E de productor, headers, `verify_jwt` y handler      | paquetes E5 y `SHELL-CI-017`      |
+| cron en hora incorrecta  | timezone IANA, calendario y consolidación de schedule         | paquete ANIMA                     |
+| falso éxito de `pg_net`  | receipt, outcome y conciliación correlacionados               | `SUPA-TRANS-009`; `SUPA-ARC-021`  |
+| trabajo duplicado        | claim, lease, heartbeat e idempotencia                        | `SUPA-TRANS-009`                  |
+| webhook duplicado        | firma, inbox y fingerprint determinista                       | paquete PASS pagos                |
+| provider timeout         | status query, resultado desconocido y retry acotado           | `SUPA-ARC-021`; paquetes E5       |
+| notificación duplicada   | notification intent, deduplicación y receipt                  | paquetes ANIMA, PASS y PULSO      |
+| token filtrado           | hash, expiración, rate limit y redacción                      | paquete delivery portal           |
+| worker multiowner        | comandos propietarios y cero DML lateral                      | `SUPA-ARC-017`; `SUPA-TRANS-003`  |
+| drift de despliegue      | manifiesto, commit, bundle SHA y gate CI                      | `SUPA-ARC-024`; `SUPA-ARC-025`    |
+
+#### 35. Decisiones reservadas
+
+| Decisión                                                                 | Tarea propietaria                                 |
+| ------------------------------------------------------------------------ | ------------------------------------------------- |
+| límites exactos, concurrencia, rate limits, timeouts y pruebas de carga  | `SUPA-ARC-021`                                    |
+| retención de jobs, intentos, payloads, receipts y dead-letter; RPO y RTO | `SUPA-ARC-022`                                    |
+| tipos generados de requests, outcomes, jobs y manifests                  | `SUPA-ARC-023`                                    |
+| variables, secrets, schedules, project refs y overlays por ambiente      | `SUPA-ARC-024`                                    |
+| ADR, linter y gate integral de arquitectura                              | `SUPA-ARC-025`                                    |
+| selección física de queue, tablas, funciones, Edge, cron y migraciones   | `SUPA-TRANS-*` y paquetes E5                      |
+| nombres finales de endpoints, workers y adapters de producto             | roadmaps funcionales y paquetes E5                |
+| proveedores, plantillas, callbacks y credenciales concretas              | mini-bloques de integración externa y paquetes E5 |
+
+#### 36. Límites de autorización
+
+Esta tarea no autoriza:
+
+- desplegar, invocar, crear, modificar, retirar o renombrar Edge Functions;
+- cambiar `verify_jwt`, import maps, variables, secrets o API keys;
+- rotar credenciales ni copiar valores entre custodias;
+- crear o modificar cron jobs, `pg_net`, triggers, workflows, colas, workers, outbox, inbox o dead-letter;
+- instalar `pgmq` o cualquier extensión;
+- modificar Auth, RLS, grants, policies, funciones SQL, tablas o datos;
+- enviar webhooks, notificaciones, correos, push, pagos o callbacks de prueba;
+- ejecutar account deletion, cierre de asistencia, limpieza, conciliación, replay o backfill;
+- iniciar `SUPA-ARC-021` antes de aprobación expresa.
+
+#### 37. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-1319 a TREQ-SUPABASE-1382
+```
+
+Los sesenta y cuatro requisitos protegen planos, clases, manifiestos, procedencia, ingreso, autorización, secretos, webhooks, callbacks, cron, jobs, claims, leases, retry, outcomes, HTTP saliente, proveedores, notificaciones, portales, ownership, eventos, Storage, disposiciones actuales, ambientes, observabilidad, drift y gate integral.
+
+#### 38. Criterios de aceptación
+
+- [ ] Existe una arquitectura versionada única para Edge Functions, webhooks y cron.
+- [ ] Los seis planos, nueve workloads y siete clases de ingreso están definidos.
+- [ ] Las 24 Edge Functions y siete cron jobs reciben disposición individual.
+- [ ] Las siete rutas productor–consumidor observadas quedan gobernadas.
+- [ ] `verify_jwt` se evalúa por clase y productor, no por regla universal.
+- [ ] Roles, UID y metadata controlables por usuario quedan excluidos de autorización.
+- [ ] Los secretos tienen custodia, propósito, ambiente, rotación y prueba de revocación.
+- [ ] Webhooks verifican cuerpo crudo, deduplican y registran receipt antes del efecto.
+- [ ] Cron expresa intención local, timezone, misfire, overlap y resultado consultable.
+- [ ] El trabajo durable usa doce estados, claim atómico, lease, heartbeat e intentos.
+- [ ] Retry usa seis políticas y `RESULT_UNKNOWN` bloquea reintentos ciegos.
+- [ ] Los once outcomes separan aceptación, proveedor y efecto empresarial.
+- [ ] `pg_net`, HTTP `2xx`, queue ACK y cron succeeded no prueban éxito empresarial.
+- [ ] La arquitectura no exige instalar `pgmq` por inferencia.
+- [ ] Edge, worker y service role no adquieren propiedad de dominio ni DML lateral.
+- [ ] La procedencia y despliegue son reproducibles por repo, path, commit y bundle SHA.
+- [ ] Ambientes, observabilidad, redacción y drift tienen contratos verificables.
+- [ ] Se generan `TREQ-SUPABASE-1319` a `TREQ-SUPABASE-1382`.
+- [ ] No se ejecutan cambios físicos ni se inicia la tarea siguiente.
+
+#### 39. Controles estructurales requeridos
+
+| Control                                                | Resultado esperado |
+| ------------------------------------------------------ | -----------------: |
+| planos canónicos                                       |              **6** |
+| clases de workload                                     |              **9** |
+| clases de ingreso                                      |              **7** |
+| estados de lifecycle de función                        |              **5** |
+| estados de job durable                                 |             **12** |
+| políticas de retry                                     |              **6** |
+| outcomes cerrados                                      |             **11** |
+| Edge Functions clasificadas                            |       **24 de 24** |
+| disposiciones Edge                                     |              **9** |
+| cron jobs clasificados                                 |         **7 de 7** |
+| disposiciones cron                                     |              **5** |
+| rutas observadas clasificadas                          |         **7 de 7** |
+| brechas auditadas cubiertas                            |       **20 de 20** |
+| secretos literales permitidos en cron                  |              **0** |
+| autorizaciones por UID fijo o rol hardcoded permitidas |              **0** |
+| claims de éxito por HTTP, cron o queue ACK             |              **0** |
+| requisitos nuevos                                      |             **64** |
+| cambios físicos                                        |              **0** |
+
+#### 40. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-019 — Definir arquitectura de Realtime y eventos
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-020 — Definir arquitectura de Edge Functions, webhooks y cron
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento
+```
+
+`SUPA-ARC-021` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-021 — Definir estrategia de índices, rendimiento y crecimiento
 ### [ ] SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
 ### [ ] SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
