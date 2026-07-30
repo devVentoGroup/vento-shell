@@ -1984,7 +1984,564 @@ SUPA-ARC-006 — Definir capa privada de helpers y lógica interna
 `SUPA-ARC-006` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-006 — Definir capa privada de helpers y lógica interna
+### ✅ SUPA-ARC-006 — Definir capa privada de helpers y lógica interna
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-005 — Definir capa expuesta de vistas y RPC` — APROBADA
+**Siguiente tarea:** `SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `a2bb7436b2af25ec938b92ae73886a29a49374ff`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `2d3b9a9a43569227fd52b36e6bb126382af1789a`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`
+**Tipo de tarea:** definición normativa de la capa técnica privada de helpers y lógica interna; sin crear, renombrar, mover o retirar schemas u objetos, sin DDL, DML, migraciones, backfills, cambios de Data API, `api.schemas`, `extra_search_path`, grants, RLS, Auth, Storage, Realtime, Edge Functions, cron, Vault, secretos, código, datos ni despliegues
+
+#### 1. Objetivo
+
+Definir la capa técnica privada de Vento OS que podrá alojar helpers compartidos, primitivas de seguridad, adaptadores de plataforma y coordinadores internos no expuestos, preservando simultáneamente la autoridad de los 26 owner schemas, la frontera contractual de `api`, la compatibilidad temporal de `public` y las capas reservadas de auditoría, eventos e integración.
+
+```text
+CONSUMIDOR INTERNO AUTORIZADO
+        ↓
+CONTRATO api U OBJETO DE DOMINIO
+        ↓
+CAPA PRIVADA app_private
+        ↓
+HELPER, PRIMITIVA O COORDINADOR INTERNO
+        ↓
+OWNER SCHEMA O SUPERFICIE ADMINISTRADA SOPORTADA
+```
+
+La capa privada no será fuente de verdad, dominio, API, almacén genérico de secretos ni contenedor universal de lógica. Su existencia permitirá reutilizar capacidades técnicas internas sin publicar internals ni centralizar reglas empresariales que pertenecen a un dominio.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0
+```
+
+| Propiedad                              |                           Valor |
+| -------------------------------------- | ------------------------------: |
+| `canonical_private_schema_name`        |                   `app_private` |
+| `schema_class`                         | `VENTO_PRIVATE_TECHNICAL_LAYER` |
+| `business_domain_authority`            |                          `NONE` |
+| `owner_schema_identity`                |                          `NONE` |
+| `data_api_exposure_target`             |                          `NONE` |
+| `direct_client_execution_target`       |                           **0** |
+| `authoritative_business_tables_target` |                           **0** |
+| `persistent_secret_values_target`      |                           **0** |
+| `primary_private_object_kinds`         |                           **7** |
+| `current_relations_in_app_private`     |                           **1** |
+| `current_functions_in_app_private`     |                           **1** |
+| `current_views_in_app_private`         |                           **0** |
+| `current_triggers_in_app_private`      |                           **0** |
+| `physical_changes_authorized`          |                           **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                       | Decisión consumida                                                                                                                       |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                            | separación entre plataforma, dominio, schema, aplicación, exposición, autorización, transición, pruebas y rollback                       |
+| `delivery-contract.json`                                     | una sola tarea, sin contenido operativo de chat y registro 04A completo con nombre único                                                 |
+| `active-sequence.json`                                       | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-006` como tarea actual                                                              |
+| `SUPA-AUD-003`                                               | `app_private` clasificado `PRIVADO_NO_EXPONER`, fuera de `api.schemas`, sin acceso de `anon` o `authenticated`                           |
+| `SUPA-AUD-004`                                               | una relación actual en `app_private` y ausencia de vistas, materialized views y otras superficies tabulares del schema                   |
+| `SUPA-AUD-006`                                               | una firma directa en `app_private`, `SECURITY DEFINER`, sin ejecución efectiva para roles cliente                                        |
+| `SUPA-AUD-007`                                               | modos de seguridad, owners, ACL, `search_path`, `PUBLIC EXECUTE` y riesgos de funciones privilegiadas                                    |
+| `SUPA-AUD-008`                                               | cero triggers explícitos en `app_private` y separación entre helpers privados y automatismos de dominio                                  |
+| `SUPA-AUD-009`                                               | cero privilegios de relación o ejecución para `anon` y `authenticated`; tabla actual con RLS deshabilitado pero aislada por ACL y schema |
+| `SUPA-AUD-015`                                               | reglas de custodia, rotación, registro y redacción de secretos; Vault instalado sin consumo canónico observado                           |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0` | 26 owner schemas y autoridad única de las fuentes empresariales                                                                          |
+| `SUPABASE-PUBLIC-SCHEMA-FUTURE-FUNCTION-001@1.0.0`           | `public` como compatibilidad transitoria no autoritativa                                                                                 |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0`                  | `api` como única capa empresarial canónica expuesta; helpers privados excluidos                                                          |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`           | 4.981 requisitos hasta `SUPA-ARC-005`; rango `TREQ-SUPABASE-001` a `686`                                                                 |
+
+#### 4. Decisión canónica
+
+Vento OS conservará el nombre `app_private` como único schema técnico privado transversal de base de datos.
+
+```text
+app_private
+├── INTERNAL_READ_VIEW
+├── INTERNAL_QUERY_HELPER
+├── INTERNAL_COMMAND_HELPER
+├── PLATFORM_ADAPTER
+├── SECURITY_PRIMITIVE
+├── INTERNAL_COORDINATOR
+└── TRANSITIONAL_PRIVATE_COMPATIBILITY
+```
+
+La decisión implica:
+
+1. `app_private` no representa aplicación, dominio, owner schema, proceso ni producto;
+2. `app_private` no se incluirá en Data API ni en el `extra_search_path` global;
+3. `public`, `anon` y `authenticated` no tendrán `USAGE`, acceso relacional ni `EXECUTE` directo sobre la capa;
+4. la lógica específica de un solo dominio permanecerá en su owner schema, aunque sea privada;
+5. `app_private` alojará únicamente lógica técnica compartida o coordinación interna que no pueda asignarse honestamente a un solo dominio;
+6. ninguna tabla autoritativa ni secreto persistente tendrá destino objetivo en `app_private`;
+7. toda función conservará owner de efecto, llamadores, seguridad, dependencias, lifecycle y requisitos de prueba explícitos;
+8. la materialización física dependerá de las tareas de seguridad, contratos y transición posteriores.
+
+#### 5. Fronteras de ubicación
+
+| Responsabilidad                                                 | Ubicación objetivo                                    | Regla                                                 |
+| --------------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------- |
+| identidad, estado, invariantes y cierre de un hecho empresarial | owner schema `VSCHEMA-*`                              | autoridad única del dominio                           |
+| vista o RPC consumida mediante Data API                         | `api`                                                 | contrato expuesto, versionado y sin autoridad propia  |
+| wrapper legacy de cliente                                       | `public` temporal                                     | compatibilidad con salida obligatoria                 |
+| helper privado específico de un dominio                         | owner schema correspondiente                          | privacidad no justifica extraer la lógica del dominio |
+| helper técnico compartido o primitiva interna                   | `app_private`                                         | no expuesto y sin autoridad empresarial               |
+| auditoría, evidencia transversal y outbox                       | capas de `SUPA-ARC-007` y `SUPA-ARC-019`              | conserva productor y finalidad                        |
+| HTTP, webhook, Edge, cron y ejecución asíncrona                 | `SUPA-ARC-020`                                        | no se ocultan dentro de un helper SQL privado         |
+| secreto operativo                                               | custodia aprobada por `SUPA-ARC-020` y `SUPA-ARC-024` | nunca tabla empresarial ni valor embebido             |
+| objeto administrado por Supabase o extensión                    | schema administrado y punto soportado                 | Vento no se apropia de internals                      |
+
+#### 6. Regla de colocación determinista
+
+Todo objeto interno deberá resolver el siguiente árbol antes de recibir schema:
+
+```text
+¿PERSISTE O AUTORIZA UN HECHO DE UN DOMINIO?
+  sí → OWNER SCHEMA
+  no ↓
+¿ES CONTRATO PARA CLIENTE O SISTEMA CONSUMIDOR?
+  sí → api
+  no ↓
+¿ES AUDITORÍA, EVENTO, OUTBOX O EVIDENCIA TRANSVERSAL?
+  sí → SUPA-ARC-007 / SUPA-ARC-019
+  no ↓
+¿EJECUTA HTTP, CRON, WEBHOOK, EDGE O COLA?
+  sí → SUPA-ARC-020
+  no ↓
+¿ES SECRETO O CREDENCIAL?
+  sí → CUSTODIA APROBADA
+  no ↓
+¿ES HELPER TÉCNICO COMPARTIDO, PRIMITIVA O COORDINADOR INTERNO?
+  sí → app_private
+  no → CLASIFICACIÓN BLOQUEADA
+```
+
+No se aceptará una colocación basada únicamente en conveniencia, nombre actual, owner PostgreSQL, aplicación consumidora, necesidad temporal o deseo de ocultar un objeto.
+
+#### 7. Clases privadas permitidas
+
+| Clase                                | Propósito                                               | Persistencia propia | Efecto permitido                     |
+| ------------------------------------ | ------------------------------------------------------- | ------------------: | ------------------------------------ |
+| `INTERNAL_READ_VIEW`                 | proyección interna reutilizable no expuesta             |               **0** | lectura declarada y acotada          |
+| `INTERNAL_QUERY_HELPER`              | consulta técnica o transformación interna               |               **0** | sin DML ni efectos laterales         |
+| `INTERNAL_COMMAND_HELPER`            | primitiva interna de escritura                          |               **0** | un owner schema primario             |
+| `PLATFORM_ADAPTER`                   | adaptación a una superficie administrada soportada      |               **0** | operación mínima y explícita         |
+| `SECURITY_PRIMITIVE`                 | hash, verificación, firma o derivación técnica estrecha |               **0** | sin decidir autorización empresarial |
+| `INTERNAL_COORDINATOR`               | secuenciar contratos internos aprobados                 |               **0** | coordinación sin autoridad propia    |
+| `TRANSITIONAL_PRIVATE_COMPATIBILITY` | helper interno temporal durante migración               |               **0** | delegación con gate de salida        |
+
+Toda clase es lógica. `SUPA-ARC-011` y `SUPA-ARC-013` completarán las convenciones físicas sin convertir `app_private` en contenedor universal.
+
+#### 8. Contenido prohibido en `app_private`
+
+- tablas maestras, transaccionales, ledgers, catálogos o estados de proceso;
+- tablas compartidas que oculten una fuente de verdad sin owner schema;
+- secretos, tokens, API keys, private keys, contraseñas o credenciales persistentes;
+- objetos expuestos directamente a `anon` o `authenticated`;
+- contratos Data API nuevos o wrappers de cliente permanentes;
+- reglas de autorización empresarial duplicadas o roles hardcoded;
+- funciones de trigger colocadas allí solo para ocultarlas del dominio propietario;
+- auditoría, outbox, eventos, colas, staging, backups o importaciones temporales;
+- llamadas HTTP, webhooks, cron o ejecución asíncrona embebida como helper SQL genérico;
+- SQL dinámico abierto, nombres de objetos suministrados por cliente o ejecución arbitraria;
+- dependencias de `public` o `api` como fuente de verdad;
+- excepciones `SECURITY DEFINER` sin la política de `SUPA-ARC-014`;
+- objetos sin llamadores, owner de efecto, lifecycle, observabilidad y pruebas.
+
+#### 9. Registro canónico de objetos privados
+
+Cada objeto de la capa deberá registrarse con:
+
+```text
+private_object_id
++ private_object_kind
++ qualified_name
++ lifecycle_status
++ technical_owner
++ primary_effect_owner_schema_id
++ additional_owner_schema_dependencies
++ process_ids
++ authorized_caller_classes
++ current_callers
++ invocation_path
++ read_write_mode
++ security_mode
++ owner_role
++ fixed_search_path
++ qualified_dependency_set
++ volatility
++ idempotency_contract
++ concurrency_contract
++ error_contract
++ secret_handling_class
++ platform_dependencies
++ observability_contract
++ supersedes_object_id
++ deprecation_gate
++ rollback_contract
++ test_requirement_ids
+```
+
+No se aceptarán `TBD`, owner “backend”, llamador “interno”, dependencia narrativa, secreto sin clasificación, función sin identidad completa ni objeto sin gate de salida cuando sea temporal.
+
+#### 10. Clases de llamador autorizadas
+
+| Clase                           | Ejemplo de entrada                     | Regla                                                                           |
+| ------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------- |
+| `API_CONTRACT`                  | vista o RPC de `api`                   | el contrato expuesto autentica, autoriza y limita el resultado antes de delegar |
+| `DOMAIN_OBJECT`                 | función o automatismo del owner schema | la llamada conserva el dominio y no transfiere autoridad a `app_private`        |
+| `DATABASE_AUTOMATION`           | trigger o job aprobado                 | el entrypoint permanece en su capa propietaria y registra el efecto             |
+| `TRUSTED_BACKEND`               | Edge Function o servicio controlado    | no expone credencial ni representa usuario final                                |
+| `SCHEDULED_OR_ASYNC_WORKER`     | cron, worker o consumidor durable      | usa contrato, identidad de servicio, idempotencia y observabilidad aprobados    |
+| `MIGRATION_OR_MAINTENANCE_ROLE` | operación versionada y excepcional     | no se convierte en dependencia de runtime                                       |
+
+`ANON_PUBLIC` y `AUTHENTICATED_ACTOR` no serán llamadores directos de `app_private`. Deberán atravesar `api` u otra superficie aprobada.
+
+#### 11. Dirección de dependencias
+
+| Origen        | Destino permitido   | Restricción                                                                 |
+| ------------- | ------------------- | --------------------------------------------------------------------------- |
+| `api`         | `app_private`       | solo helper registrado; autorización y contrato permanecen en `api`         |
+| owner schema  | `app_private`       | solo primitiva técnica compartida; no llama de vuelta generando ciclo       |
+| `app_private` | owner schema        | fuente o efecto explícito; referencias calificadas y owner primario         |
+| `app_private` | schema administrado | únicamente punto de extensión soportado y documentado                       |
+| `app_private` | `public`            | prohibido como dependencia objetivo; solo transición excepcional registrada |
+| `app_private` | `api`               | prohibido; la capa privada no depende de la fachada expuesta                |
+| `app_private` | auditoría o eventos | mediante contrato de `SUPA-ARC-007` o `SUPA-ARC-019`, sin escritura ad hoc  |
+
+El grafo completo deberá ser acíclico. Un coordinador podrá depender de varios owner schemas, pero ningún owner schema participante podrá depender del mismo coordinador en una ruta recursiva.
+
+#### 12. Separación entre lógica de dominio y lógica técnica
+
+1. Una función que valida estados, calcula un resultado empresarial o controla el ciclo de una entidad pertenece al owner schema del dominio.
+2. Una función no cambia de owner por ser llamada desde varias aplicaciones.
+3. La reutilización no autoriza mover reglas empresariales a `app_private`.
+4. Una primitiva puramente técnica podrá ser compartida si sus entradas y salidas no deciden el resultado empresarial.
+5. Un helper con un efecto primario deberá declarar el `VSCHEMA-*` responsable y no podrá escribir en otro dominio por conveniencia.
+6. Una coordinación entre dominios requerirá el contrato de `SUPA-ARC-017`, incluyendo orden, idempotencia, compensación y conciliación.
+7. `app_private` no resolverá permisos mediante nombres de rol, metadata editable o supuestos de aplicación.
+
+#### 13. Reglas para `INTERNAL_READ_VIEW` e `INTERNAL_QUERY_HELPER`
+
+1. no tendrán estado propio ni DML;
+2. declararán fuentes, joins, filtros, límite y consistencia esperada;
+3. utilizarán columnas explícitas y referencias calificadas;
+4. no devolverán secretos, credenciales, internals ni datos fuera de finalidad;
+5. no se expondrán automáticamente por existir o por ser consumidos desde una RPC;
+6. usarán semántica de volatilidad compatible con su comportamiento real;
+7. cualquier consulta de colección tendrá límites y orden determinista;
+8. una proyección interna no será fuente de verdad ni contrato público.
+
+#### 14. Reglas para `INTERNAL_COMMAND_HELPER`
+
+1. tendrá exactamente un efecto primario y un owner schema responsable;
+2. no aceptará identificadores de schema, tabla, función o SQL suministrados libremente por el llamador;
+3. validará invariantes del dominio mediante el owner correspondiente, no mediante copias locales;
+4. declarará transacción, bloqueo, concurrencia, reintentos e idempotencia cuando apliquen;
+5. no devolverá resultados brutos de DML ni mensajes SQL internos;
+6. no coordinará escrituras entre dominios antes de `SUPA-ARC-017`;
+7. no usará `service_role` o `SECURITY DEFINER` como sustituto de autorización;
+8. registrará resultado y fallo sin persistir secretos ni payloads innecesarios.
+
+#### 15. Reglas para `INTERNAL_COORDINATOR`
+
+Un coordinador privado:
+
+- no tendrá tablas ni estado autoritativo propio;
+- declarará proceso, owner primario, participantes, orden de efectos y contrato de compensación;
+- invocará contratos estables de los dominios y no escribirá tablas ajenas de forma lateral;
+- exigirá idempotencia y correlación cuando pueda reintentarse;
+- separará resultado empresarial, evento, auditoría y transporte;
+- no ocultará HTTP, cron, webhook o cola dentro de una función SQL;
+- permanecerá bloqueado hasta completar `SUPA-ARC-016`, `SUPA-ARC-017` y, cuando aplique, `SUPA-ARC-020`.
+
+#### 16. Reglas para `PLATFORM_ADAPTER`
+
+1. utilizará exclusivamente APIs, funciones o puntos de extensión soportados de Auth, Storage, Realtime, Vault, cron, `net` o extensiones;
+2. no consultará internals administrados como fuente empresarial;
+3. no trasladará modelos administrados completos a tablas de Vento;
+4. conservará finalidad, versión, dependencia de plataforma, fallback y prueba de upgrade;
+5. no expondrá directamente la superficie administrada a clientes;
+6. cualquier llamada externa, retry o cola pertenece a `SUPA-ARC-020` y no se implementará como efecto opaco de base de datos;
+7. una dependencia de plataforma no convierte `app_private` en schema administrado.
+
+#### 17. Primitivas de seguridad y custodia de secretos
+
+`SECURITY_PRIMITIVE` podrá realizar operaciones técnicas estrechas —por ejemplo hash, comparación constante, derivación o validación criptográfica—, pero no decidirá por sí sola roles, permisos, territorio, contexto ni autorización empresarial.
+
+Reglas obligatorias:
+
+1. `app_private` no será secret store canónico;
+2. ningún valor secreto persistirá en tablas, funciones, comentarios, errores, logs o artefactos de la capa;
+3. los secretos residirán en custodia aprobada y cifrada, con identidad de servicio mínima, rotación y revocación;
+4. la capa podrá consumir una referencia opaca o un valor efímero mediante superficie soportada, sin registrarlo;
+5. un helper no devolverá un secreto a un llamador que no tenga contrato explícito para recibir el resultado derivado;
+6. toda rotación comprobará rechazo del valor anterior y continuidad de consumidores;
+7. el registro canónico conservará metadata no sensible, nunca el valor.
+
+#### 18. Seguridad, grants y modos de ejecución
+
+1. `app_private` permanecerá fuera de `api.schemas` y de `extra_search_path` global.
+2. `PUBLIC`, `anon` y `authenticated` tendrán `USAGE`, privilegios relacionales y `EXECUTE` revocados.
+3. Las ACL por defecto impedirán que objetos nuevos hereden acceso cliente o `PUBLIC EXECUTE`.
+4. `service_role` no recibirá acceso global por defecto; cualquier acceso directo será mínimo, nominal y aprobado.
+5. `SECURITY INVOKER` será el modo predeterminado.
+6. `SECURITY DEFINER` requerirá excepción individual de `SUPA-ARC-014`, owner controlado, `search_path` seguro, validación interna, grants mínimos y pruebas negativas.
+7. Una función privilegiada no asumirá que su llamador ya fue autorizado por el simple hecho de llegar desde otra función.
+8. RLS, grants, owner, modo de seguridad y autorización empresarial se evaluarán como controles separados.
+
+#### 19. Resolución de nombres y `search_path`
+
+- toda dependencia empresarial o técnica se referenciará mediante nombre calificado;
+- `app_private` no se añadirá al `extra_search_path` de todas las solicitudes;
+- las funciones declararán un `search_path` fijo cuando su modo y dependencias lo requieran;
+- el `search_path` no incluirá schemas mutables o controlados por llamadores sin una justificación y protección explícitas;
+- el uso de `public` dentro del `search_path` actual no se considerará automáticamente aceptado para el objetivo;
+- cambios de orden, inclusión o ausencia de `pg_temp` se revisarán en `SUPA-ARC-014`;
+- ningún objeto se resolverá por coincidencia de nombre entre ambientes.
+
+#### 20. SQL dinámico y superficies genéricas
+
+El SQL dinámico estará prohibido por defecto. Una excepción deberá:
+
+1. demostrar que una consulta estática o un contrato tipado no resuelve el caso;
+2. limitar identificadores a una allowlist versionada;
+3. separar identificadores de valores y parametrizar estos últimos;
+4. impedir que el llamador proporcione expresiones, predicates, order clauses o cuerpos SQL libres;
+5. registrar owner, consumidor, riesgo, pruebas negativas y rollback;
+6. quedar sometida a `SUPA-ARC-013`, `SUPA-ARC-014` y `SUPA-ARC-015` antes de materializarse.
+
+No se permitirá una función genérica de lectura, escritura, bypass de RLS o ejecución arbitraria.
+
+#### 21. Contrato mínimo de funciones privadas
+
+Toda función o vista privada declarará:
+
+- identidad calificada y firma inequívoca;
+- tipos de entrada y salida, nulabilidad y semántica;
+- clase privada y lifecycle;
+- owner técnico y owner schema de efecto;
+- llamadores exactos y ruta de invocación;
+- modo de lectura o escritura;
+- modo de seguridad, owner PostgreSQL y `search_path`;
+- volatilidad compatible con comportamiento;
+- autorización requerida antes y dentro del helper;
+- idempotencia, concurrencia y reintento;
+- catálogo de errores estable;
+- observabilidad y redacción de datos sensibles;
+- dependencias de plataforma y dominios;
+- compatibilidad, deprecación, rollback y requisitos de prueba.
+
+No habrá sobrecargas ambiguas dentro del mismo nombre lógico. Toda firma deberá ser resoluble por nombre y tipos sin depender de heurísticas del cliente.
+
+#### 22. Manejo de errores y observabilidad
+
+1. no se capturará `WHEN OTHERS` para convertir cualquier fallo en éxito silencioso;
+2. un error esperado usará código estable y contexto mínimo, sin revelar internals;
+3. un fallo inesperado se propagará o se registrará mediante la capa aprobada, sin ocultar estado parcial;
+4. cada comando tendrá correlación, duración, resultado y señal de retry cuando aplique;
+5. logs y auditoría excluirán secretos, tokens, SQL sensible y PII innecesaria;
+6. telemetría no sustituirá la fuente empresarial ni el evento canónico;
+7. auditoría y outbox definitivos pertenecen a `SUPA-ARC-007` y `SUPA-ARC-019`.
+
+#### 23. Ciclo de vida de objetos privados
+
+| Estado       | Condición                                                               |
+| ------------ | ----------------------------------------------------------------------- |
+| `DRAFT`      | objeto definido, sin consumidor habilitado                              |
+| `ACTIVE`     | seguridad, dependencias, llamadores, pruebas y observabilidad aprobados |
+| `DEPRECATED` | reemplazo activo, consumidores identificados y gate de salida medido    |
+| `RETIRED`    | cero consumidores, retiro ejecutado, observación y rollback cerrados    |
+
+Un helper no podrá permanecer indefinidamente como temporal. Los objetos de compatibilidad deberán registrar reemplazo y gate desde su creación.
+
+#### 24. Línea base actual de `app_private`
+
+El corte auditado contiene:
+
+| Objeto                                       | Clase actual                                 | Señales positivas                                                 | Gate pendiente                                                                                 |
+| -------------------------------------------- | -------------------------------------------- | ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `app_private.delivery_pin_secrets`           | tabla técnica con secreto persistido         | schema privado; sin grants cliente observados                     | custodia aprobada, rotación, retiro de tabla y paridad de consumidores                         |
+| `app_private.delivery_pin_for_session(uuid)` | función directa `STABLE`, `SECURITY DEFINER` | sin `EXECUTE` para `anon` o `authenticated`; `search_path` fijado | revisión `SECURITY DEFINER`, dependencia de secreto, callers, autorización, rotación y pruebas |
+
+Invariantes observados:
+
+```text
+RELACIONES app_private = 1
+FUNCIONES app_private = 1
+VISTAS app_private = 0
+TRIGGERS EXPLÍCITOS app_private = 0
+PRIVILEGIOS CLIENTE OBSERVADOS = 0
+```
+
+La línea base describe el estado actual. No certifica esos objetos como arquitectura objetivo.
+
+#### 25. Clasificación obligatoria de la línea base
+
+1. `delivery_pin_secrets` se clasifica `CURRENT_SECRET_STORAGE_LEGACY_REVIEW`; no podrá permanecer como secret store objetivo.
+2. `delivery_pin_for_session(uuid)` se clasifica `CURRENT_SECURITY_PRIMITIVE_CANDIDATE`; no se declara `ACTIVE` hasta superar `SUPA-ARC-014`, seguridad, custodia, rotación y pruebas.
+3. La transición deberá localizar todos los llamadores y consumidores, incluidos triggers, RPC, Edge Functions, scripts y clientes desplegados.
+4. La migración del secreto deberá coordinar creación de custodia, rotación, actualización de consumidores, rechazo del valor anterior y rollback seguro.
+5. El retiro de la tabla no podrá ejecutarse antes de demostrar paridad del PIN derivado y ausencia de dependencias ocultas.
+6. Cualquier objeto adicional detectado en `app_private` constituye drift y bloquea el cierre hasta clasificarse.
+
+Destinos exactos: `SUPA-ARC-014`, `SUPA-ARC-015`, `SUPA-ARC-020`, `SUPA-ARC-024`, `SUPA-TRANS-001` a `SUPA-TRANS-004`, `SUPA-TRANS-009`, `SUPA-TRANS-011` a `SUPA-TRANS-013` y `SUPA-TRANS-015`.
+
+#### 26. Relación con las demás capas
+
+| Capa                  | Relación con `app_private`                                                               |
+| --------------------- | ---------------------------------------------------------------------------------------- |
+| owner schemas         | conservan toda autoridad; consumen primitivas o reciben efectos declarados               |
+| `api`                 | puede delegar en helpers registrados; conserva contrato, audiencia y autorización        |
+| `public`              | no es dependencia objetivo; solo compatibilidad temporal con salida                      |
+| auditoría             | recibe evidencia mediante el contrato de `SUPA-ARC-007`                                  |
+| eventos y Realtime    | reciben eventos canónicos mediante `SUPA-ARC-019`                                        |
+| Edge, webhooks y cron | invocan contratos internos mediante `SUPA-ARC-020`; no exponen `app_private`             |
+| Auth y Storage        | se consumen mediante superficies soportadas, no por internals como fuente                |
+| tipos de consumidor   | excluyen internals de `app_private` salvo paquete server-only separado en `SUPA-ARC-023` |
+| VITAL                 | permanece fuera de Vento OS; no comparte helpers privados por coexistencia               |
+
+#### 27. Orden obligatorio de materialización futura
+
+```text
+1. INVENTARIAR Y CLASIFICAR TODA LÓGICA INTERNA
+2. CONFIRMAR OWNER DE EFECTO Y LLAMADORES
+3. SEPARAR LÓGICA DE DOMINIO, API, PRIVADA Y EVENTOS
+4. DEFINIR SEGURIDAD, search_path Y GRANTS
+5. MIGRAR SECRETOS A CUSTODIA APROBADA
+6. CREAR O AJUSTAR app_private Y SUS OBJETOS
+7. IMPLEMENTAR PRUEBAS NEGATIVAS, CONTRATOS Y DRIFT
+8. ADAPTAR LLAMADORES POR OLEADAS
+9. DEPRECAR Y RETIRAR HELPERS LEGACY
+10. VERIFICAR PARIDAD ENTRE AMBIENTES Y ROLLBACK
+```
+
+Este orden no autoriza ejecución física. La materialización depende de las tareas `SUPA-ARC-007` a `SUPA-ARC-025`, `SUPA-TRANS-001` a `SUPA-TRANS-015` y los paquetes de implementación correspondientes.
+
+#### 28. Riesgos restringidos y carryover
+
+| Riesgo o hallazgo                  | Efecto de esta tarea                                | Resolución restante                          |
+| ---------------------------------- | --------------------------------------------------- | -------------------------------------------- |
+| exposición de `app_private`        | fija no exposición y cero acceso cliente directo    | `SUPA-ARC-015`; transición                   |
+| `PUBLIC EXECUTE` y ACL por defecto | exige defaults privados y grants nominales          | `SUPA-ARC-014`; `015`; `024`                 |
+| `SECURITY DEFINER`                 | lo prohíbe por defecto y exige excepción individual | `SUPA-ARC-014`; transición                   |
+| secreto persistido en tabla        | declara que no es estado objetivo                   | `SUPA-ARC-020`; `024`; transición y rotación |
+| lógica de dominio centralizada     | obliga a mantenerla en owner schema                 | `SUPA-ARC-016`; `017`                        |
+| SQL dinámico o helper genérico     | queda bloqueado por defecto                         | `SUPA-ARC-013`; `014`; `015`                 |
+| HTTP, cron o cola oculta           | separa ejecución externa de helper SQL              | `SUPA-ARC-020`; `022`                        |
+| error silenciado sin evidencia     | exige error estable y observabilidad                | `SUPA-ARC-007`; `019`; `020`                 |
+| drift de objetos privados          | exige registro y validación recurrente              | `SUPA-ARC-025`; `SUPA-TRANS-015`             |
+
+Ningún riesgo queda aceptado, mitigado o cerrado por esta definición.
+
+#### 29. Decisiones reservadas
+
+| Decisión                                                       | Tarea propietaria                       |
+| -------------------------------------------------------------- | --------------------------------------- |
+| esquema de auditoría, evidencia y outbox                       | `SUPA-ARC-007`                          |
+| Auth, principal, vínculo y sesión                              | `SUPA-ARC-008` a `SUPA-ARC-010`         |
+| convenciones físicas de nombres                                | `SUPA-ARC-011`                          |
+| funciones, RPC y triggers                                      | `SUPA-ARC-013`                          |
+| excepciones `SECURITY DEFINER` y `search_path`                 | `SUPA-ARC-014`                          |
+| grants, RLS, ACL por defecto y roles de ejecución              | `SUPA-ARC-015`                          |
+| contratos detallados por dominio                               | `SUPA-ARC-016`                          |
+| escrituras y coordinaciones interdominio                       | `SUPA-ARC-017`                          |
+| eventos, Realtime, Edge, webhooks y cron                       | `SUPA-ARC-019`; `SUPA-ARC-020`          |
+| retención, respaldo y recuperación                             | `SUPA-ARC-022`                          |
+| tipos server-only y consumidores                               | `SUPA-ARC-023`                          |
+| secretos, ambientes y paridad                                  | `SUPA-ARC-024`; `SUPA-TRANS-013`        |
+| inventario, adaptación, rotación, retiro y rollback por objeto | `SUPA-TRANS-001` a `SUPA-TRANS-015`     |
+| implementación física                                          | paquetes E5 y BLOQUE R correspondientes |
+
+#### 30. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear, renombrar, alterar o retirar `app_private`;
+- mover funciones, vistas, tablas, secretos o dependencias;
+- crear custodia, rotar secretos o modificar Vault;
+- cambiar `delivery_pin_secrets` o `delivery_pin_for_session(uuid)`;
+- modificar `api.schemas`, `extra_search_path`, grants, ACL por defecto, RLS, owners o `search_path`;
+- convertir funciones `SECURITY DEFINER` a `INVOKER` o viceversa;
+- crear helpers, adaptadores, coordinadores, triggers, jobs o Edge Functions;
+- ejecutar migraciones, DDL, DML, backfills, pruebas mutantes o despliegues;
+- declarar un helper actual como canónico sin clasificación y evidencia;
+- iniciar `SUPA-ARC-007` antes de aprobación expresa.
+
+#### 31. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-687 a TREQ-SUPABASE-718
+```
+
+Los treinta y dos requisitos protegen identidad y no exposición de `app_private`, ausencia de autoridad y persistencia, colocación por responsabilidad, clases privadas, callers, dependencias, seguridad, `search_path`, SQL dinámico, dominio, coordinación, secretos, errores, observabilidad, lifecycle, clasificación de la línea base y detección recurrente de drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 32. Criterios de aceptación
+
+- [ ] Existe exactamente una capa técnica privada transversal llamada `app_private`.
+- [ ] `app_private` no representa dominio, aplicación, owner schema ni fuente de verdad.
+- [ ] La capa no se expone mediante Data API ni `extra_search_path` global.
+- [ ] `public`, `anon` y `authenticated` conservan cero acceso directo.
+- [ ] El objetivo contiene cero tablas autoritativas y cero secretos persistentes.
+- [ ] La lógica específica de un dominio permanece en su owner schema.
+- [ ] Se permiten exactamente siete clases privadas con responsabilidades diferenciadas.
+- [ ] Todo objeto privado declara owner de efecto, llamadores, seguridad, dependencias, lifecycle y pruebas.
+- [ ] `SECURITY INVOKER` es el modo predeterminado y toda excepción queda reservada a `SUPA-ARC-014`.
+- [ ] Las referencias son calificadas y el grafo de dependencias es acíclico.
+- [ ] `INTERNAL_QUERY_HELPER` no ejecuta DML ni efectos laterales.
+- [ ] `INTERNAL_COMMAND_HELPER` tiene un único efecto primario.
+- [ ] La coordinación interdominio permanece bloqueada hasta `SUPA-ARC-017`.
+- [ ] HTTP, cron, webhooks, colas, auditoría y eventos permanecen fuera de la capa.
+- [ ] Los secretos usan custodia aprobada y nunca se persisten como estado objetivo.
+- [ ] La tabla y función actuales de `app_private` quedan clasificadas sin aceptación automática.
+- [ ] Se generan `TREQ-SUPABASE-687` a `TREQ-SUPABASE-718`.
+- [ ] No se ejecutan cambios físicos, código ni implementación.
+- [ ] `SUPA-ARC-007` permanece reservada.
+
+#### 33. Controles estructurales requeridos
+
+| Control                                 | Resultado esperado |
+| --------------------------------------- | -----------------: |
+| schemas técnicos privados transversales |              **1** |
+| nombre del schema privado               |      `app_private` |
+| dominios asignados                      |              **0** |
+| owner schemas asignados                 |              **0** |
+| schemas expuestos                       |              **0** |
+| acceso directo de roles cliente         |              **0** |
+| tablas autoritativas objetivo           |              **0** |
+| secretos persistentes objetivo          |              **0** |
+| clases privadas primarias               |              **7** |
+| relaciones actuales clasificadas        |         **1 de 1** |
+| funciones actuales clasificadas         |         **1 de 1** |
+| vistas actuales                         |              **0** |
+| triggers actuales                       |              **0** |
+| requisitos nuevos                       |             **32** |
+| cambios físicos                         |              **0** |
+
+#### 34. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-005 — Definir capa expuesta de vistas y RPC
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-006 — Definir capa privada de helpers y lógica interna
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos
+```
+
+`SUPA-ARC-007` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-007 — Definir esquema transversal de auditoría y eventos
 ### [ ] SUPA-ARC-008 — Definir modelo canónico de Auth e identidad empresarial
 ### [ ] SUPA-ARC-009 — Definir vínculo de `auth.users` con trabajador, cliente y dispositivo
