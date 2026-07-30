@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **427** |
+| Aprobadas | **428** |
 | En propuesta | **0** |
-| No iniciadas | **1148** |
+| No iniciadas | **1147** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **27.11% (427/1575)** |
+| Porcentaje de completamiento | **27.17% (428/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-ARC-022` — Definir retención, archivado, respaldo y recuperación | ✅ APROBADA |
-| Tarea actual | `SUPA-ARC-023` — Definir generación canónica de tipos para consumidores | ⬜ NO INICIADA |
-| Siguiente | `SUPA-ARC-024` — Definir entornos local, pruebas, staging y producción | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-ARC-023` — Definir generación canónica de tipos para consumidores | ✅ APROBADA |
+| Tarea actual | `SUPA-ARC-024` — Definir entornos local, pruebas, staging y producción | ⬜ NO INICIADA |
+| Siguiente | `SUPA-ARC-025` — Consolidar y aprobar ADR de arquitectura canónica de datos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -425,7 +425,7 @@
 | ✅ APROBADA | `SUPA-ARC-020` | Definir arquitectura de Edge Functions, webhooks y cron | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-021` | Definir estrategia de índices, rendimiento y crecimiento | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ✅ APROBADA | `SUPA-ARC-022` | Definir retención, archivado, respaldo y recuperación | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
-| ⬜ NO INICIADA | `SUPA-ARC-023` | Definir generación canónica de tipos para consumidores | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
+| ✅ APROBADA | `SUPA-ARC-023` | Definir generación canónica de tipos para consumidores | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-024` | Definir entornos local, pruebas, staging y producción | `bloques/E3_SUPABASE/04_ARQUITECTURA_CANONICA_OBJETIVO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-001` | Definir política de normalización por dominio, entidad y campo | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-002` | Definir clases de campo y tratamiento permitido | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |

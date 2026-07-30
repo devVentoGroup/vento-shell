@@ -13499,5 +13499,857 @@ SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
 `SUPA-ARC-023` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
+### ✅ SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `70b3b61abee5b78bb393f3c58d58095ff3e87789`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `c8deee30ca2db201174b709cf19c43a80f7ed25a`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `f05253ff9f7294c5f1d960181f8a609ff18eedb7`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `01_EVENTOS_ENTRE_APLICACIONES.md` blob `8502533e144e5c1878192f470e766da99c522ecd`; `07_VERSIONADO_Y_CONSUMO.md` blob `dbd4d1829bd032054fc5b67c967cb40064d1b0c2`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`
+**Tipo de tarea:** definición normativa de fuente, generación, versionado, distribución, recortes, imports, runtime validation, compatibilidad, adopción, drift, deprecación y rollback de tipos derivados de Supabase para consumidores; sin generar o publicar paquetes, modificar repositorios consumidores, crear clientes, cambiar schemas, tablas, vistas, funciones, enums, contratos, RLS, grants, migraciones, datos, configuración, ambientes, código, cutover ni despliegues
+
+#### 1. Objetivo
+
+Definir una arquitectura única, reproducible y verificable para generar y distribuir tipos de Supabase a todos los consumidores de Vento OS sin convertir el esquema físico en API empresarial, exponer owner schemas a clientes, mantener uniones o DTO paralelos, confiar en un remoto mutable como fuente única ni permitir que una migración incompatible llegue a runtime sin fallar compilación y validación contractual.
+
+```text
+MIGRACIONES APROBADAS + CONTRATOS CANÓNICOS
+        ↓
+SCHEMA RECONSTRUIDO Y COMPARADO CON REMOTO
+        ↓
+ARTEFACTO FÍSICO ÚNICO + BUNDLES CONTRACTUALES
+        ↓
+MANIFESTS + HASHES + VALIDADORES RUNTIME
+        ↓
+PAQUETE VERSIONADO + RECORTES POR CONSUMIDOR
+        ↓
+COMPILACIÓN TRANSVERSAL + GATE DE COMPATIBILIDAD
+        ↓
+PUBLICACIÓN INMUTABLE, ADOPCIÓN Y RETIRO MEDIDO
+```
+
+La tarea define contratos, categorías, tiers, bundles, stages, manifests, gates y carryovers. No genera físicamente `Database`, no crea el paquete y no declara tipado ningún cliente actual.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-CONSUMER-TYPE-GENERATION-ARCHITECTURE-001@1.0.0
+```
+
+| Propiedad                                        | Valor     |
+| ------------------------------------------------ | --------- |
+| `current_vento_governed_schema_count`            | **9**     |
+| `target_owner_schema_count`                      | **26**    |
+| `target_vento_schema_count`                      | **29**    |
+| `managed_schema_excluded_by_default_count`       | **14**    |
+| `current_relation_count`                         | **379**   |
+| `current_column_count`                           | **4.619** |
+| `current_function_signature_count`               | **347**   |
+| `current_view_count`                             | **62**    |
+| `current_defined_enum_count`                     | **21**    |
+| `current_potential_consumer_repository_count`    | **12**    |
+| `current_canonical_database_type_artifact_count` | **0**     |
+| `current_canonical_generation_command_count`     | **0**     |
+| `current_type_drift_workflow_count`              | **0**     |
+| `current_typed_client_factory_count`             | **0**     |
+| `current_audit_gap_count`                        | **23**    |
+| `distribution_tier_count`                        | **3**     |
+| `generated_bundle_count`                         | **8**     |
+| `consumer_runtime_class_count`                   | **7**     |
+| `generation_stage_count`                         | **10**    |
+| `artifact_lifecycle_state_count`                 | **5**     |
+| `version_axis_count`                             | **5**     |
+| `schema_disposition_class_count`                 | **7**     |
+| `public_type_category_count`                     | **12**    |
+| `drift_class_count`                              | **20**    |
+| `new_test_requirements`                          | **64**    |
+| `physical_changes_authorized`                    | **0**     |
+
+El artefacto integra siete registros normativos:
+
+```text
+TYPE-GENERATION-PIPELINE-CONTRACT-001
+TYPE-SOURCE-PROVENANCE-MANIFEST-001
+GENERATED-BUNDLE-REGISTRY-001
+SCHEMA-INCLUSION-AND-SLICE-MATRIX-001
+CONSUMER-TYPE-ADOPTION-REGISTRY-001
+TYPE-COMPATIBILITY-AND-DEPRECATION-LEDGER-001
+TYPE-DRIFT-AND-ESCAPE-REGISTER-001
+```
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                              | Decisión consumida                                                                                              |
+| ------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                                   | continuidad, fase documental, preservación histórica y separación entre definición e implementación             |
+| `delivery-contract.json`                                            | una sola tarea y registro 04A completo con nombre único                                                         |
+| `active-sequence.json`                                              | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-023` como tarea actual                                     |
+| `SUPA-AUD-021`                                                      | corte de nueve schemas, 379 relaciones, 4.619 columnas, 347 funciones, 21 enums, doce repositorios y 23 brechas |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0`                         | `api` como frontera de contratos y separación respecto de owner schemas                                         |
+| `SUPABASE-FUNCTION-RPC-TRIGGER-STANDARD-001@1.0.0`                  | firmas inequívocas, parámetros, retornos, errores y funciones de trigger                                        |
+| `SUPABASE-DOMAIN-READ-MUTATION-CONTRACT-REGISTRY-001@1.0.0`         | 26 perfiles, 69 procesos, tres clases expuestas, request, response y generated types                            |
+| `SUPABASE-STORAGE-ARCHITECTURE-001@1.0.0`                           | buckets, referencias, roles, rutas, metadata y lifecycle de objetos                                             |
+| `SUPABASE-REALTIME-EVENT-ARCHITECTURE-001@1.0.0`                    | 395 eventos, 2.020 relaciones consumidoras, señales, canales y lifecycle                                        |
+| `SUPABASE-EDGE-WEBHOOK-CRON-ARCHITECTURE-001@1.0.0`                 | requests, jobs, attempts, leases, outcomes y manifests de ejecución                                             |
+| `SUPABASE-RETENTION-ARCHIVE-BACKUP-RECOVERY-ARCHITECTURE-001@1.0.0` | clases y estados de retención, backup y restauración                                                            |
+| `ENTERPRISE-EVENT-CATALOG-001@1.0.0`                                | identidad estable y fuente normativa de las 395 definiciones normales                                           |
+| `AUTH-CAT-018`                                                      | patrón aprobado de generación determinista dentro de `@vento/contracts` sin fuente TypeScript paralela          |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`                  | 5.813 requisitos hasta `SUPA-ARC-022`; rango `TREQ-SUPABASE-001` a `1518`                                       |
+
+#### 4. Distinciones normativas
+
+```text
+TIPO GENERADO ≠ FUENTE DE VERDAD
+DATABASE PHYSICAL ≠ API EMPRESARIAL
+TIPO DISPONIBLE ≠ ACCESO AUTORIZADO
+SCHEMA INCLUIDO ≠ SCHEMA EXPUESTO
+COMPILACIÓN CORRECTA ≠ PAYLOAD CONFIABLE
+TYPESCRIPT ≠ VALIDACIÓN RUNTIME
+ROW ≠ INSERT ≠ UPDATE
+TIPO DE TABLA ≠ DTO DE INTERFAZ
+JSON ≠ CONTRATO JSONB DE DOMINIO
+RPC NAME ≠ FIRMA POSTGRESQL
+EVENTO EMPRESARIAL ≠ PAYLOAD REALTIME
+URL FIRMADA ≠ IDENTIDAD DE STORAGE
+CURRENT ≠ VERSIÓN HISTÓRICA REPRODUCIBLE
+RANGO SEMVER ≠ VERSIÓN REALMENTE DESPLEGADA
+REMOTE HEALTHY ≠ SCHEMA RECONSTRUIBLE
+SERVICE ROLE ≠ AUTORIZACIÓN EMPRESARIAL
+```
+
+Los tipos reducen incompatibilidades estáticas. No reemplazan RLS, grants, autorización, invariantes de base, validación runtime, ownership ni pruebas de comportamiento.
+
+#### 5. Principios obligatorios
+
+1. `vento-shell` será el productor técnico único de artefactos de tipos Supabase.
+2. Las migraciones aprobadas y los contratos canónicos serán fuentes; el TypeScript generado será una proyección.
+3. La generación física ocurrirá una vez y los recortes se derivarán determinísticamente del mismo artefacto.
+4. `api` será la frontera empresarial ordinaria de cliente; los owner schemas no se convertirán en API por aparecer en tipos.
+5. `app_private` será server-only y `audit` permanecerá restringido.
+6. Los schemas administrados se consumirán mediante superficies soportadas, no como internals empresariales.
+7. VITAL mantendrá paquete, recorte y consumidores separados de Vento OS.
+8. Cada consumidor recibirá solo los bundles y objetos necesarios para su runtime y finalidad.
+9. Toda versión publicada será inmutable y reproducible desde su manifiesto.
+10. Una migración y su cambio de tipos formarán una sola unidad de compatibilidad.
+11. Todo contrato no confiable conservará validación runtime aunque tenga tipos estáticos.
+12. Toda excepción de tipado tendrá owner, riesgo, prueba y fecha de salida.
+13. Un cambio incompatible bloqueará promoción hasta que consumidores y transición estén resueltos.
+14. La ausencia de referencias localizadas no demostrará por sí sola cero consumidores.
+15. La generación y distribución deberán poder validarse automáticamente y revertirse.
+
+#### 6. Productor, fuentes y precedencia
+
+La precedencia será:
+
+```text
+DECISIONES DOCUMENTALES APROBADAS
+        ↓
+MIGRACIONES APROBADAS Y ORDENADAS
+        ↓
+BASE LIMPIA RECONSTRUIDA
+        ↓
+CONTRATOS api, EVENTOS, STORAGE, REALTIME, ASYNC Y RECOVERY
+        ↓
+GENERACIÓN Y COMPOSICIÓN DETERMINISTA
+        ↓
+ARTEFACTOS CANDIDATE
+```
+
+1. El remoto podrá demostrar drift o paridad, pero no será la única fuente reproducible.
+2. El generador no inventará objetos, nullability, defaults, relaciones, owners, contratos o valores ausentes.
+3. Una diferencia entre migraciones, remoto y documentación quedará bloqueada hasta clasificación.
+4. Los contratos empresariales prevalecerán para la superficie pública aunque la tabla física posea más columnas o capacidades.
+5. Las fuentes publicadas conservarán su hash, versión y tarea propietaria.
+
+#### 7. Tiers de distribución
+
+| Tier                 | Consumidor                                                          | Puede incluir                                                          | Debe excluir                                                                  |
+| -------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `CONSUMER_SAFE`      | browser, móvil y consumidor ordinario                               | contratos `api`, eventos, señales y referencias mínimas                | owner schemas, `app_private`, `audit`, internals administrados y credenciales |
+| `SERVER_ONLY`        | servidores, Edge Functions y workers de confianza                   | contratos públicos más recortes internos expresamente allowlisted      | superficie privilegiada global o tipos ajenos a la función                    |
+| `PRIVILEGED_TOOLING` | migraciones, CI, recuperación, auditoría técnica y pruebas aisladas | artefacto físico completo necesario y recortes de plataforma aprobados | uso desde runtime de cliente o como API empresarial                           |
+
+Un tipo borrado en runtime sigue siendo una dependencia de compilación y diseño. Por ello la restricción de tier se aplicará mediante exports, lint, manifests y matriz de consumidores, no únicamente mediante ausencia de valores en el bundle JavaScript.
+
+#### 8. Bundles generados
+
+| Bundle                            | Contenido                                                        | Tier principal                          | Límite                                           |
+| --------------------------------- | ---------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------ |
+| `DATABASE_PHYSICAL`               | forma física generada de relaciones, columnas, enums y funciones | `SERVER_ONLY` y `PRIVILEGED_TOOLING`    | no constituye API empresarial                    |
+| `API_BUSINESS_CONTRACTS`          | `READ_VIEW`, `QUERY_RPC` y `COMMAND_RPC` aprobados               | `CONSUMER_SAFE`                         | request, response, errors y outcomes versionados |
+| `COMMON_IDENTIFIERS_AND_OUTCOMES` | IDs, referencias, versiones, paginación y resultados compartidos | todos según recorte                     | sin aliases técnicos ni strings libres           |
+| `ENTERPRISE_EVENTS`               | definiciones, envelopes y payload contracts empresariales        | productores y consumidores registrados  | no crea catálogo paralelo                        |
+| `REALTIME_CONSUMERS`              | señales, canales, snapshots, cursores y lifecycle de consumidor  | consumidores registrados                | no convierte Realtime en fuente                  |
+| `STORAGE_RECORDS`                 | buckets aprobados, referencias, roles, metadata y lifecycle      | clientes y servidores según acceso      | URL firmada separada de identidad                |
+| `ASYNC_EXECUTION`                 | requests, jobs, attempts, leases, receipts, outcomes y manifests | Edge, workers y adapters registrados    | secrets y credenciales excluidos                 |
+| `RETENTION_AND_RECOVERY`          | retención, archivo, backup, restore y anti-resurrección          | servidor, administración y recuperación | sin duraciones jurídicas inventadas              |
+
+`AUTH-CAT-018` conserva propiedad sobre `@vento/contracts/authorization`. `SUPA-ARC-023` lo referencia y no genera una segunda unión de permisos, aplicaciones, scopes o requisitos.
+
+#### 9. Clases de consumidor
+
+| Clase                     | Uso                                           | Tier permitido                                 | Regla dominante                                         |
+| ------------------------- | --------------------------------------------- | ---------------------------------------------- | ------------------------------------------------------- |
+| `PUBLIC_BROWSER`          | web anónima o pública                         | `CONSUMER_SAFE` mínimo                         | cero tipos privados y cero servicio privilegiado        |
+| `AUTHENTICATED_BROWSER`   | web con sesión y actor cuando aplique         | `CONSUMER_SAFE` por capacidad                  | la presencia del tipo no concede acceso                 |
+| `NATIVE_MOBILE`           | Expo o cliente móvil                          | `CONSUMER_SAFE` y contratos offline aplicables | sin owner schemas completos                             |
+| `TRUSTED_SERVER`          | servidor Next.js o backend de aplicación      | `SERVER_ONLY` allowlisted                      | sin cliente universal ni service role como autorización |
+| `EDGE_FUNCTION`           | Supabase Edge Function registrada             | recorte server-side por función                | inputs y outputs externos requieren runtime validation  |
+| `BACKGROUND_WORKER`       | worker, publicador, reconciliador o scheduler | recorte por job y owner                        | sin escritura lateral por importar tipos                |
+| `MIGRATION_TEST_RECOVERY` | CLI, CI, migración, clean room y recuperación | `PRIVILEGED_TOOLING`                           | uso temporal, segregado y auditable                     |
+
+Cada fábrica de cliente declarará una sola clase. Un proceso que combine clases deberá separar módulos, credenciales, imports y manifests.
+
+#### 10. Pipeline canónico de generación
+
+| Etapa                        | Resultado obligatorio                                                                    |
+| ---------------------------- | ---------------------------------------------------------------------------------------- |
+| `RESOLVE_CANONICAL_INPUTS`   | resolver migraciones, contratos, versiones, manifests y hashes aprobados                 |
+| `REBUILD_APPROVED_SCHEMA`    | reconstruir una base limpia desde migraciones aprobadas                                  |
+| `COMPARE_REBUILT_AND_REMOTE` | comparar estructura reconstruida con el remoto observado sin convertirlo en fuente única |
+| `GENERATE_PHYSICAL_TYPES`    | producir una sola representación física completa y determinista                          |
+| `GENERATE_CONTRACT_BUNDLES`  | derivar bundles públicos y privados desde registros canónicos aprobados                  |
+| `GENERATE_RUNTIME_SCHEMAS`   | producir o vincular validadores para fronteras no confiables y JSON estructurado         |
+| `NORMALIZE_AND_HASH`         | normalizar orden, UTF-8, LF, metadatos y hashes                                          |
+| `VERIFY_TYPES_AND_CONTRACTS` | ejecutar type tests, fixtures y paridad estructural                                      |
+| `RUN_CONSUMER_MATRIX`        | compilar cada consumidor con versión y runtime declarados                                |
+| `PROMOTE_OR_BLOCK`           | promover candidato inmutable o bloquear con diff y owner                                 |
+
+Una etapa fallida conserva el artefacto en `DRAFT` o bloquea la promoción. Ningún stage se marca exitoso por la mera existencia de un archivo.
+
+#### 11. Lifecycle de artefactos
+
+| Estado       | Regla                                                                            |
+| ------------ | -------------------------------------------------------------------------------- |
+| `DRAFT`      | salida local o CI todavía mutable y no consumible fuera del cambio               |
+| `CANDIDATE`  | fuentes, hashes y matriz de consumidores congelados para revisión                |
+| `PUBLISHED`  | artefacto inmutable disponible mediante versión exacta                           |
+| `SUPERSEDED` | reemplazado por otra versión y preservado para reproducción y rollback           |
+| `WITHDRAWN`  | retirado por defecto crítico; no reutiliza identidad ni se elimina su manifiesto |
+
+Una versión `WITHDRAWN` no podrá reutilizarse bajo el mismo número con contenido diferente. Los consumidores deberán fallar de manera explícita o fijar una versión anterior compatible aprobada.
+
+#### 12. Clases de schema y superficie
+
+| Clase                  | Superficie                                                           | Tratamiento                                                   |
+| ---------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `PUBLIC_CONTRACT`      | `api` y contratos administrados expresamente permitidos              | bundle consumidor mínimo                                      |
+| `OWNER_SERVER_ONLY`    | 26 owner schemas objetivo                                            | server, migración y recuperación según allowlist              |
+| `PRIVATE_INTERNAL`     | `app_private`                                                        | server-only por helper o coordinador registrado               |
+| `AUDIT_RESTRICTED`     | `audit`                                                              | consulta, append, investigación o recuperación autorizadas    |
+| `PLATFORM_ADAPTER`     | Auth, Storage, Realtime, cron, net y otras superficies administradas | tipos SDK o adapters soportados, nunca internals como negocio |
+| `LEGACY_COMPATIBILITY` | objetos actuales preservados durante transición                      | solo consumidores existentes y fecha de retiro                |
+| `EXCLUDED_PRODUCT`     | `vital` respecto de Vento OS                                         | paquete o recorte separado para VITAL                         |
+
+La línea base actual de nueve schemas describe el AS-IS. La arquitectura objetivo de 29 schemas gobernados por Vento comprende los 26 owner schemas, `api`, `app_private` y `audit` cuando sean materializados.
+
+#### 13. Artefacto físico `Database`
+
+El artefacto físico completo deberá representar, según el conjunto allowlisted:
+
+```text
+Tables.Row
+Tables.Insert
+Tables.Update
+Views.Row
+Relationships
+Functions.Args
+Functions.Returns
+Enums
+CompositeTypes
+Json
+```
+
+Reglas:
+
+1. Se generará desde schema real reconstruido, no desde interfaces manuales.
+2. Columnas generated, identity, defaulted, nullable y read-only conservarán semántica distinta.
+3. Las funciones se identificarán por schema, nombre y tipos de identidad de argumentos.
+4. Las vistas conservarán nullability y relaciones demostrables; no heredarán mutabilidad.
+5. El artefacto completo será interno; los recortes públicos no expondrán owner tables.
+6. Un helper generado no autoriza una operación ni garantiza que RLS permita la fila.
+
+#### 14. Tipos contractuales de `api`
+
+Para cada contrato aprobado se derivarán, cuando correspondan:
+
+```text
+ContractId
+ContractMajorVersion
+ContractRevision
+ReadViewRow
+QueryRequest
+QueryResponse
+CommandRequest
+CommandResponse
+OutcomeCode
+ErrorCode
+PaginationCursor
+ConsistencyMode
+ResourceReference
+ContractDefinitionHash
+```
+
+1. `READ_VIEW` podrá exponer únicamente columnas y relaciones declaradas.
+2. `QUERY_RPC` tendrá `Args` y `Returns` sin DML ni shape genérico.
+3. `COMMAND_RPC` tendrá request, outcome, resource refs, resulting version o state, replay indicator y pending effects.
+4. Los códigos de máquina serán uniones cerradas; mensajes humanos no gobernarán lógica.
+5. Un cambio incompatible de campos, nullability, semántica, autorización o outcome crea versión mayor.
+6. Un contrato `DRAFT` no aparecerá en el bundle ordinario salvo subpath de pruebas expresamente separado.
+
+#### 15. Request, response y nullability
+
+1. Campo ausente, `null`, default y limpieza explícita conservarán tipos distintos cuando la semántica los distinga.
+2. Los campos desconocidos seguirán la política versionada del contrato.
+3. IDs aportados por el cliente serán selectores, no autoridad.
+4. Owner, actor, permiso, estado privilegiado, totals derivados y timestamps del sistema no serán campos confiables por ser tipables.
+5. Collections conservarán cursor, orden determinista, límites y `as_of` o versión cuando aplique.
+6. `UNKNOWN_OUTCOME`, `RESULT_UNKNOWN` y pending effects deberán ser exhaustivos y no reducibles a booleano.
+
+#### 16. Funciones, RPC y overloads
+
+1. Las 347 firmas actuales quedan cubiertas en el artefacto físico.
+2. Las 232 firmas directas Vento OS se tiparán como contrato, compatibilidad, privada o retiro después de su clasificación.
+3. Las 73 funciones de trigger no serán endpoints ni aparecerán en bundles cliente.
+4. Las 41 firmas VITAL y la firma directa privada conservarán fronteras separadas.
+5. Ningún overload nuevo en `api` será aceptado; compatibilidad legacy usará firma exacta y retiro medido.
+6. `record`, JSON genérico o retorno no declarado no podrán convertirse en contrato público estable.
+
+#### 17. Vistas, joins y relaciones
+
+1. Las 62 vistas actuales recibirán shape generado para auditoría y transición, sin aceptación automática como `READ_VIEW`.
+2. Una vista privilegiada permanecerá bloqueada hasta resolver seguridad y destino.
+3. Embedded selects y joins deberán comprobar cardinalidad y nullability frente a relaciones generadas.
+4. Un override permitido conservará objeto, limitación del generador, fixture, owner y fecha de retiro.
+5. La compatibilidad en `public` se distinguirá del contrato canónico `api` y no se convertirá en raíz universal de `Database`.
+
+#### 18. Enums, estados y códigos
+
+1. Los 21 enums físicos actuales se generarán una vez desde sus schemas de definición.
+2. Un schema consumidor referenciará el mismo tipo; no inventará una copia local.
+3. Los vocabularios contractuales documentales se derivarán de sus registros aprobados aunque no sean enums PostgreSQL.
+4. Un string de un sistema externo se mapeará exhaustivamente antes de ingresar a un tipo canónico.
+5. Estados `UNRESOLVED`, `BLOCKED`, `UNKNOWN` o equivalentes aprobados no se omitirán para simplificar interfaces.
+6. Los consumidores usarán checks exhaustivos para estados y outcomes materiales.
+
+#### 19. JSONB y validación runtime
+
+La estrategia será:
+
+```text
+Json GENERADO COMO PRIMITIVA
+        +
+TIPO DE DOMINIO VERSIONADO
+        +
+VALIDADOR RUNTIME
+        +
+MIGRACIÓN O TRANSFORMACIÓN EXPLÍCITA
+```
+
+1. `Json` no será suficiente para payloads empresariales críticos.
+2. El tipo de dominio declarará versión, owner, sensibilidad, límites y política de campos desconocidos.
+3. `unknown` será preferible a un cast no validado en una frontera externa.
+4. Webhooks, Realtime, Storage metadata, Edge inputs, archivos y datos offline siempre validarán runtime.
+5. Una validación fallida no se corregirá por coerción silenciosa.
+
+#### 20. Integración con autorización
+
+1. `PermissionKey`, `AppCode`, scopes, modalidades y contratos de autorización se importarán desde `@vento/contracts/authorization`.
+2. El bundle Supabase podrá referenciar permisos y requirements, pero no redefinirlos.
+3. La versión y hash de autorización usados por un contrato quedarán en el manifest o contract metadata.
+4. Un tipo de request no concede autorización; el servidor resolverá principal, actor, recurso, scope y territorio.
+5. Public client, authenticated client, server client y service role conservarán configuraciones y capacidades separadas.
+
+#### 21. Eventos empresariales
+
+1. `ENTERPRISE_EVENTS` adoptará las 395 definiciones normales y ocho familias condicionales por referencia.
+2. `EventDefinitionId` y `EventType` serán uniones literales generadas desde el catálogo publicado.
+3. El envelope conservará event ID, version, process, aggregate, owner, actor, tiempos, correlation, causation y sensitivity.
+4. Los 2.020 vínculos event-consumer podrán generar metadata y pruebas de exhaustividad.
+5. Las 197 relaciones AURA mantendrán estado diferido; la existencia del tipo no activa productor, transporte o consumidor.
+6. Replay y versiones históricas fijarán contrato exacto, no reinterpretarán payload con `current`.
+
+#### 22. Realtime
+
+`REALTIME_CONSUMERS` deberá representar:
+
+```text
+RealtimeContractId
+DeliveryMode
+ChannelPatternId
+PrivateChannelReference
+SignalEnvelope
+SnapshotContract
+CursorContract
+ConsumerLifecycleState
+DeduplicationPolicy
+ReconnectPolicy
+RecoveryReference
+```
+
+1. El topic no se aceptará como string arbitrario donde exista un contrato publicado.
+2. Un payload Postgres Changes derivará su Row de una relación allowlisted y validará schema, table y event.
+3. Un signal envelope no duplicará el evento durable ni una fila completa.
+4. `LIVE` exigirá snapshot, buffer y gap policy compatibles.
+5. Tipos estáticos no permitirán asumir `payload.old`, exactly-once u orden global.
+6. Cambiar actor o contexto invalidará channel, buffer y referencias del actor anterior.
+
+#### 23. Storage
+
+`STORAGE_RECORDS` deberá distinguir:
+
+```text
+BucketId
+StorageClass
+AccessMode
+ObjectRole
+BusinessRecordId
+RecordVersionId
+StorageObjectReference
+ObjectLifecycleState
+UploadReservation
+FinalizationRequest
+DispositionRequest
+DispositionReceipt
+SignedAccessUrl
+```
+
+1. La URL firmada será efímera y no asignable a una referencia empresarial estable.
+2. Bucket y path se resolverán desde contrato o builder tipado, no texto libre del cliente.
+3. Los catorce buckets actuales podrán tiparse para transición, pero su existencia no los declara conformes.
+4. Las rutas futuras conservarán owner, entity, record, version y opaque object ID.
+5. `storage.objects` no será fuente de metadata empresarial por aparecer en el artefacto físico.
+6. Publicación, sustitución y disposición conservarán estados y receipts diferenciados.
+
+#### 24. Edge Functions, webhooks, jobs y cron
+
+`ASYNC_EXECUTION` deberá cubrir:
+
+```text
+EdgeFunctionContractId
+IngressClass
+RequestContract
+ResponseContract
+WebhookEnvelope
+JobDefinition
+JobInstance
+Attempt
+Lease
+RetryPolicy
+Receipt
+ClosedOutcome
+CronManifest
+DeploymentManifest
+```
+
+1. Solo una función, ruta o job registrado tendrá tipos públicos o server-side estables.
+2. Las 24 Edge Functions y siete cron jobs actuales quedan sujetas a clasificación individual.
+3. `verify_jwt`, service role o un `2xx` no se representarán como outcome empresarial.
+4. Un job aceptado, leased, completed, failed, dead-lettered o unknown conservará estado tipado separado.
+5. Los manifests excluirán secretos, valores de credencial y capability tokens.
+6. Webhooks y callbacks validarán firma y payload runtime antes de construir un command request tipado.
+
+#### 25. Retención, respaldo y recuperación
+
+`RETENTION_AND_RECOVERY` adoptará:
+
+```text
+9 RetentionClass
+14 RetentionLifecycleState
+5 RecoveryPriority
+9 BackupLifecycleState
+12 RestoreLifecycleState
+```
+
+1. `POLICY_UNRESOLVED` y `UNRESOLVED_BLOCKING` permanecerán representables y bloquearán gates aplicables.
+2. Las duraciones legales, RTO, RPO, MTPD y WRT numéricos no se generarán hasta su fuente aprobada.
+3. Backup, archive, restore y disposition conservarán tipos distintos.
+4. Restore request, recovery point, validation result y reconciliation result no se colapsarán en success booleano.
+5. Una versión histórica de datos usará las versiones de contratos y tipos compatibles con el punto restaurado.
+6. El ledger anti-resurrección conservará referencias y outcomes tipados sin reintroducir contenido dispuesto.
+
+#### 26. Versiones y compatibilidad
+
+| Eje                           | Significado                                                  |
+| ----------------------------- | ------------------------------------------------------------ |
+| `generator_version`           | versión exacta del generador, CLI y normalizador             |
+| `physical_schema_fingerprint` | huella del esquema reconstruido y orden de migraciones       |
+| `database_artifact_version`   | identidad versionada de la representación física generada    |
+| `contract_bundle_version`     | SemVer de los contratos públicos y bundles compartidos       |
+| `package_version`             | versión distribuida y fijada por cada repositorio consumidor |
+
+Reglas:
+
+1. `contract_bundle_version` y `package_version` usarán Semantic Versioning con clasificación basada en consumidores.
+2. Un cambio físico que no afecta bundles públicos podrá modificar fingerprint sin romper consumidor, pero seguirá requiriendo manifest y diff.
+3. Un cambio aditivo solo será non-breaking cuando los consumidores y runtime validators lo toleren.
+4. Retirar, renombrar, estrechar tipos o cambiar nullability, semantics u outcomes será breaking.
+5. `current` resolverá una versión publicada, pero una release conservará el valor exacto resuelto.
+6. Reproducción histórica y rollback importarán versión fija.
+
+#### 27. Categorías públicas de tipos
+
+| Categoría                | Cobertura                                                                                            |
+| ------------------------ | ---------------------------------------------------------------------------------------------------- |
+| `Database` y helpers     | schemas allowlisted, `Tables`, `TablesInsert`, `TablesUpdate`, `Enums`, `CompositeTypes` y funciones |
+| identidad y referencias  | IDs, versiones, resource refs, timestamps y branded values controlados                               |
+| contratos `api`          | requests, responses, rows de vistas, args, returns, pagination y consistency                         |
+| errores y outcomes       | uniones cerradas y discriminadas; mensajes humanos separados                                         |
+| eventos empresariales    | definition IDs, event types, versions, envelope y payload contract refs                              |
+| Realtime                 | delivery modes, signal envelope, channel pattern, snapshot, cursor y consumer lifecycle              |
+| Storage                  | bucket ID, object role, reference, metadata, lifecycle, upload y disposition contracts               |
+| ejecución asíncrona      | job, attempt, lease, retry, receipt, route, cron y deployment manifest                               |
+| retención y recuperación | classes, lifecycle, backup, recovery point, restore y anti-resurrection refs                         |
+| compatibilidad           | aliases, deprecations, current resolution y exact historical versions                                |
+| metadatos de procedencia | source commit, migration, hashes, toolchain y ordered schema set                                     |
+| diagnósticos             | drift, escape budget, incompatibility y gate result                                                  |
+
+No todas las categorías se exportarán a todos los runtimes. La matriz de bundles y tiers constituye la allowlist.
+
+#### 28. Topología objetivo del paquete
+
+La implementación futura extenderá `packages/contracts` de forma equivalente a:
+
+```text
+packages/contracts/supabase/
+├── manifests/
+├── schemas/
+├── generated/
+│   ├── database/
+│   ├── api/
+│   ├── events/
+│   ├── realtime/
+│   ├── storage/
+│   ├── async/
+│   └── recovery/
+├── current/
+├── versions/
+├── runtime-schemas/
+├── scripts/
+└── README.md
+```
+
+Subpaths lógicos mínimos:
+
+```text
+@vento/contracts/supabase
+@vento/contracts/supabase/current
+@vento/contracts/supabase/database/server
+@vento/contracts/supabase/api
+@vento/contracts/supabase/events
+@vento/contracts/supabase/realtime
+@vento/contracts/supabase/storage
+@vento/contracts/supabase/async
+@vento/contracts/supabase/recovery
+@vento/contracts/supabase/versions/<version>
+```
+
+Los nombres físicos podrán ajustarse durante implementación por limitación real, pero deberán preservar tiers, bundles, versiones exactas, hashes, exports allowlisted y ausencia de copias.
+
+#### 29. Manifiesto de procedencia
+
+Cada candidato deberá incluir:
+
+```text
+type_artifact_id
++ package_version
++ contract_bundle_version
++ database_artifact_version
++ generator_version
++ supabase_cli_version
++ postgres_version
++ project_ref_or_local_source
++ source_mode
++ source_commit
++ ordered_migrations
++ max_migration
++ ordered_schemas
++ schema_dispositions
++ schema_hashes
++ contract_source_hashes
++ bundle_hashes
++ runtime_schema_hashes
++ consumer_matrix_version
++ compatibility_result
++ generated_at_metadata
++ artifact_hash
++ lifecycle_status
+```
+
+`generated_at_metadata` podrá existir en el manifest, pero no alterará hashes de contenido determinista cuando las fuentes sean idénticas.
+
+#### 30. Registro de consumidores actuales
+
+| Repositorio     | Perfil observado                              | Disposición de adopción                                |
+| --------------- | --------------------------------------------- | ------------------------------------------------------ |
+| `vento-shell`   | productor técnico, CI, servidor y migraciones | produce artefactos; consume versiones exactas          |
+| `vento-pass`    | cliente y servidor de experiencia cliente     | registro obligatorio antes de adoptar bundles          |
+| `vento-anima`   | cliente laboral y móvil                       | registro obligatorio antes de adoptar bundles          |
+| `vento-nexo`    | cliente y servidor de inventario              | registro obligatorio antes de adoptar bundles          |
+| `vento-pulso`   | cliente y servidor POS                        | registro obligatorio y consolidación de fábricas       |
+| `vento-origo`   | cliente y servidor de compras                 | registro obligatorio antes de adoptar bundles          |
+| `vento-fogo`    | cliente y servidor de producción              | registro obligatorio antes de adoptar bundles          |
+| `vento-viso`    | cliente y servidor administrativo             | registro obligatorio antes de adoptar bundles          |
+| `vento-talento` | consumidor de reclutamiento                   | registro obligatorio antes de adoptar bundles          |
+| `vento-numera`  | consumidor financiero                         | registro obligatorio antes de adoptar bundles          |
+| `Vento-Group`   | repositorio activo potencial                  | no recibe bundles hasta demostrar uso y runtime        |
+| `vento-vital`   | producto separado                             | recorte o paquete propio; excluido del bundle Vento OS |
+
+La tabla es un universo de adopción, no una autorización para importar todos los bundles. Cada fila deberá materializar runtime, aplicación, finalidad, objetos, versión y owner durante transición.
+
+#### 31. Fábricas de clientes
+
+1. Cada fábrica declarará runtime class, credential class, schema slice y package version.
+2. Browser y mobile importarán contratos consumer-safe, nunca service role ni owner schemas completos.
+3. Trusted server, Edge y worker usarán slices distintos aun si comparten paquete.
+4. PULSO deberá consolidar sus dos fábricas browser o demostrar una frontera explícita.
+5. Cambiar fábrica, SDK o slice ejecutará pruebas de auth, sesión, RLS, RPC, Storage y Realtime aplicables.
+6. Un cliente tipado no podrá utilizar `schema()` o `.from()` arbitrarios fuera de su allowlist sin fallo estático o lint.
+
+#### 32. DTO, mappings y código de presentación
+
+1. Los DTO de UI podrán adaptar nombres, agrupaciones y estados de presentación sin replicar autoridad física.
+2. Todo mapping conservará fuente, versión, exhaustividad y tratamiento de campos nuevos.
+3. Un DTO no podrá redefinir nullability, enum, ID o outcome para ocultar incompatibilidad.
+4. Los campos derivados deberán indicar cálculo o source contract.
+5. Los tipos de formularios permanecerán separados de `Insert` y `CommandRequest` cuando su lifecycle sea distinto.
+6. La adaptación de un contrato deprecated deberá producir telemetría de uso y fecha de salida.
+
+#### 33. Escapes y excepciones
+
+Cada excepción conservará:
+
+```text
+escape_id
++ repository
++ object_or_contract
++ code_location
++ escape_kind
++ technical_limitation
++ risk
++ owner
++ runtime_validation
++ test_reference
++ introduced_at
++ removal_target
++ status
+```
+
+1. `any`, casts, `overrideTypes` y módulos locales duplicados no se aceptarán sin registro.
+2. El presupuesto solo podrá mantenerse o disminuir; un aumento bloquea CI salvo decisión excepcional aprobada.
+3. `overrideTypes` se limitará a limitación demostrada del generador o JSON de dominio validado.
+4. Una excepción vencida será error, no warning permanente.
+5. El registro no convierte una práctica insegura en contrato estable.
+
+#### 34. Gates de CI y release
+
+Una versión candidata deberá superar:
+
+1. reconstrucción completa desde migraciones;
+2. comparación de schema y remoto objetivo;
+3. generación determinista sin diff no declarado;
+4. cobertura de schemas y bundles;
+5. validación de hashes y manifests;
+6. ausencia de edición o fork de generados;
+7. type tests positivos y negativos;
+8. runtime schemas y fixtures;
+9. lint de imports por tier;
+10. presupuesto de escapes;
+11. matriz de SDK y toolchain;
+12. compilación de consumidores registrados;
+13. pruebas contractuales de `api`;
+14. eventos, Realtime, Storage y async según aplique;
+15. clasificación breaking o non-breaking;
+16. deprecación, rollout y rollback;
+17. evidencia de cero consumidores para retiros.
+
+Un build local aislado no cierra el gate transversal.
+
+#### 35. Secuencia de cambios compatibles
+
+Cambio aditivo ordinario:
+
+```text
+FUENTES Y CONTRATOS CANDIDATE
+→ TIPOS Y VALIDADORES CANDIDATE
+→ CONSUMIDORES COMPATIBLES
+→ MIGRACIÓN ADITIVA
+→ OBSERVACIÓN
+→ ADOPCIÓN COMPLETA
+```
+
+Cambio incompatible:
+
+```text
+NUEVA VERSIÓN MAYOR O SUCESOR
+→ COMPATIBILIDAD TEMPORAL
+→ TIPOS DUALES CONTROLADOS
+→ MIGRACIÓN Y BACKFILL
+→ ADOPCIÓN MEDIDA
+→ CERO CONSUMIDORES LEGACY
+→ RETIRO CON ROLLBACK
+```
+
+No se retirará primero el objeto y se intentará corregir después la compilación de consumidores.
+
+#### 36. Rollback y reproducción histórica
+
+1. Cada versión publicada conservará artefactos, manifests, hashes y toolchain.
+2. El rollback seleccionará una combinación compatible de schema, paquete y contrato; no regenerará la versión anterior desde `current`.
+3. Una restauración de backup o PITR utilizará el contrato compatible con el punto recuperado.
+4. Eventos, jobs y payloads históricos se interpretarán con su versión, no con la unión vigente.
+5. Un paquete withdrawn conservará manifest y motivo para impedir reutilización.
+6. El retorno a una versión anterior no reactivará aliases, permisos o datos retirados fuera de su procedimiento aprobado.
+
+#### 37. Clases de drift
+
+```text
+MISSING_GENERATED_ARTIFACT
+MANUAL_CONTRACT_TYPE
+GENERATED_FILE_EDITED
+SOURCE_HASH_MISMATCH
+PHYSICAL_SCHEMA_DRIFT
+SCHEMA_SELECTION_DRIFT
+API_CONTRACT_DRIFT
+FUNCTION_SIGNATURE_DRIFT
+VIEW_SHAPE_DRIFT
+NULLABILITY_DRIFT
+ENUM_VALUE_DRIFT
+JSON_RUNTIME_VALIDATION_GAP
+EVENT_TYPE_DRIFT
+REALTIME_CONTRACT_DRIFT
+STORAGE_CONTRACT_DRIFT
+ASYNC_CONTRACT_DRIFT
+RETENTION_RECOVERY_TYPE_DRIFT
+PRIVATE_TYPE_EXPOSURE
+CONSUMER_VERSION_DRIFT
+TYPE_ESCAPE_BUDGET_BREACH
+```
+
+Cada hallazgo tendrá owner, severidad, fuentes divergentes, consumidores afectados, disposición, deadline, compatibilidad, rollback y requisito de prueba. Regenerar sin entender la diferencia no constituye corrección.
+
+#### 38. Riesgos y continuidad
+
+| Riesgo                              | Control obligatorio                                        | Continuidad responsable            |
+| ----------------------------------- | ---------------------------------------------------------- | ---------------------------------- |
+| tipos físicos tratados como API     | separar `DATABASE_PHYSICAL` de `API_BUSINESS_CONTRACTS`    | `SUPA-TRANS-010`; `SUPA-TRANS-014` |
+| schema privado expuesto por imports | exports allowlisted y linter por tier                      | `SHELL-CI-017`; `SUPA-ARC-025`     |
+| generación contra remoto mutable    | reconstrucción desde migraciones y comparación de paridad  | `SUPA-TRANS-010`; `SUPA-ARC-024`   |
+| migración sin tipos                 | cambio atómico de fuentes, artefactos y manifest           | `SUPA-TRANS-010`; `SHELL-CI-017`   |
+| tipos sin runtime validation        | schemas runtime para JSONB, eventos y entradas externas    | paquetes E5; `SHELL-CI-017`        |
+| forks entre repositorios            | paquete versionado, hashes y detector de copias            | `SHELL-PKG-001`; `SHELL-CI-017`    |
+| retiro rompe consumidor oculto      | registro de consumidores, telemetría y cero uso demostrado | `SUPA-TRANS-012`; `SUPA-TRANS-014` |
+| VITAL contamina Vento OS            | bundle y matriz de producto separados                      | `SUPA-ARC-024`; `SUPA-TRANS-014`   |
+| casts ocultan drift                 | ledger, pruebas y presupuesto decreciente                  | `SHELL-CI-017`; `SUPA-TRANS-010`   |
+| toolchain divergente                | pinning, lockfiles y matriz de compatibilidad              | `SHELL-PKG-001`; `SUPA-TRANS-010`  |
+
+#### 39. Decisiones reservadas
+
+| Decisión                                                              | Tarea propietaria                                |
+| --------------------------------------------------------------------- | ------------------------------------------------ |
+| implementación del generador, package exports y adopción de clientes  | `SUPA-TRANS-010`; `SHELL-PKG-001`                |
+| actualización de documentación, comentarios, manifests y consumidores | `SUPA-TRANS-014`                                 |
+| linter, drift gate y CI transversal                                   | `SHELL-CI-017`; `SUPA-ARC-025`                   |
+| overlays, project refs, toolchain y paridad por ambiente              | `SUPA-ARC-024`                                   |
+| nombres finales de contratos físicos y migraciones                    | `SUPA-TRANS-*` y paquetes E5                     |
+| tipos específicos de pantallas, formularios y DTO de presentación     | paquetes funcionales y contratos UX propietarios |
+| activación de AURA                                                    | roadmap y gates propios de AURA                  |
+| decisión física de separación de VITAL                                | gobierno de plataforma y transición aplicable    |
+
+No queda una brecha narrativa sin destino. Esta tarea no sustituye las implementaciones propietarias.
+
+#### 40. Límites de autorización
+
+Esta tarea no autoriza:
+
+- ejecutar `supabase gen types` ni persistir su salida;
+- crear, publicar o versionar físicamente `@vento/contracts/supabase`;
+- modificar `packages/contracts`, package exports, lockfiles o dependencias;
+- cambiar fábricas `createClient`, imports, DTOs, casts o código consumidor;
+- crear, alterar, mover o retirar schemas, tablas, vistas, funciones, enums, policies, grants o RLS;
+- aplicar migraciones, seeds, backfills, datos, validadores runtime o workflows;
+- cambiar Auth, Storage, Realtime, Edge Functions, cron, secrets o configuración;
+- desplegar paquetes, aplicaciones, contratos o ambientes;
+- declarar conformes los doce repositorios por existir;
+- iniciar `SUPA-ARC-024` antes de aprobación expresa.
+
+#### 41. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-1519 a TREQ-SUPABASE-1582
+```
+
+Los sesenta y cuatro requisitos protegen fuente única, reconstrucción, paridad, procedencia, determinismo, integridad, lifecycle, package, schemas, tiers, bundles, Database, API, requests, responses, RPC, vistas, enums, JSONB, autorización, eventos, Realtime, Storage, Edge, jobs, recuperación, consumidores, toolchain, escapes, runtime validation, CI, compatibilidad, retiro, rollback y drift.
+
+#### 42. Criterios de aceptación
+
+- [ ] Existe una arquitectura versionada única para generación de tipos de consumidores.
+- [ ] `vento-shell` es productor técnico único y la base reconstruida es fuente reproducible.
+- [ ] Se preservan nueve schemas, 379 relaciones, 4.619 columnas, 347 funciones, 62 vistas, 21 enums, doce repositorios y 23 brechas del corte auditado.
+- [ ] Los tres tiers, ocho bundles, siete runtimes, diez stages, cinco estados, cinco ejes de versión y siete clases de schema están definidos.
+- [ ] `DATABASE_PHYSICAL` y `API_BUSINESS_CONTRACTS` permanecen separados.
+- [ ] Los owner schemas, `app_private`, `audit`, schemas administrados y VITAL no se filtran al bundle ordinario.
+- [ ] Row, Insert, Update, Views, Functions, Enums y JSONB tienen reglas verificables.
+- [ ] Los contratos `api` generan request, response, errors y outcomes cerrados.
+- [ ] Authorization se reutiliza desde su paquete propietario sin duplicación.
+- [ ] Eventos, Realtime, Storage, async y recovery tienen bundles y runtime validation.
+- [ ] Los doce repositorios requieren registro y versión exacta antes de adoptar.
+- [ ] DTOs, casts y `overrideTypes` no pueden convertirse en fuentes paralelas.
+- [ ] CI reconstruye, genera, compara, compila consumidores y clasifica cambios.
+- [ ] Retiro y rollback preservan consumidores, versiones y reproducción histórica.
+- [ ] Las veinte clases de drift son detectables.
+- [ ] Se generan `TREQ-SUPABASE-1519` a `TREQ-SUPABASE-1582`.
+- [ ] No se ejecutan cambios físicos ni se inicia la tarea siguiente.
+
+#### 43. Controles estructurales requeridos
+
+| Control                                     | Resultado esperado |
+| ------------------------------------------- | -----------------: |
+| schemas Vento actuales cubiertos            |         **9 de 9** |
+| owner schemas objetivo contemplados         |       **26 de 26** |
+| schemas Vento objetivo contemplados         |             **29** |
+| schemas administrados excluidos por defecto |             **14** |
+| relaciones actuales cubiertas               |            **379** |
+| columnas actuales cubiertas                 |          **4.619** |
+| funciones actuales cubiertas                |            **347** |
+| vistas actuales cubiertas                   |             **62** |
+| enums actuales cubiertos                    |             **21** |
+| repositorios sujetos a registro             |       **12 de 12** |
+| tiers de distribución                       |              **3** |
+| bundles generados                           |              **8** |
+| clases de runtime                           |              **7** |
+| etapas de generación                        |             **10** |
+| estados de lifecycle                        |              **5** |
+| ejes de versión                             |              **5** |
+| clases de schema                            |              **7** |
+| categorías públicas                         |             **12** |
+| clases de drift                             |             **20** |
+| artefactos canónicos actuales               |              **0** |
+| clientes tipados actuales certificados      |              **0** |
+| tipos manuales promovidos como fuente       |              **0** |
+| requisitos nuevos                           |             **64** |
+| cambios físicos                             |              **0** |
+
+#### 44. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-022 — Definir retención, archivado, respaldo y recuperación
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción
+```
+
+`SUPA-ARC-024` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción
