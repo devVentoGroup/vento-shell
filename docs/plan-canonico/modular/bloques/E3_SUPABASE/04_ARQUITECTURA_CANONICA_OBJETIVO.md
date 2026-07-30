@@ -14352,4 +14352,929 @@ SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción
 `SUPA-ARC-024` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción
+### ✅ SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-023 — Definir generación canónica de tipos para consumidores` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos`
+**Proyecto remoto actual de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`; clasificación ambiental definitiva `UNRESOLVED_BLOCKING`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `58176a1cf6e6aec911126831f49c7efde843a4e0`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `c02f8bdb3ff605db4c5f38fc996cc2171c7de209`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `9b8f74a4d52fedc585b5bff3ff811e39abc28795`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `01_PRINCIPIOS_OBLIGATORIOS.md` blob `36bb9a4c19f6d8e7edbaa03687219fb642c9c526`; `supabase/config.toml` blob `cc013305bf617ba469cde361bc57d035b423847f`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`; `06_PLAN_DE_TRANSICION.md` blob `e0d6e7c1dfb66348b4be57cf74d5f7a9e4f087ec`
+**Tipo de tarea:** definición normativa de topología, identidad, lifecycle, configuración, datos, credenciales, proveedores, promoción, paridad, evidencia, rollback, drift y retiro para los ambientes local, pruebas, staging y producción; sin crear proyectos o branches, modificar configuración, revelar o rotar secretos, copiar datos, ejecutar pruebas, aplicar migraciones, desplegar recursos, cambiar Supabase, realizar cutover ni retirar ambientes
+
+#### 1. Objetivo
+
+Definir una arquitectura ambiental única, cerrada y verificable para que Vento OS pueda desarrollarse, probarse, certificarse y operar sin compartir identidad, datos, credenciales, proveedores, callbacks, recursos hosted o efectos entre local, pruebas, staging y producción.
+
+```text
+FUENTES VERSIONADAS EN vento-shell
+        ↓
+INSTANCIAS AISLADAS Y MANIFESTADAS
+        ↓
+CONFIGURACIÓN + DATOS + SECRETOS POR AMBIENTE
+        ↓
+PARIDAD DE MIGRACIONES, CONTRATOS Y RECURSOS
+        ↓
+PROMOCIÓN DEL MISMO CANDIDATO INMUTABLE
+        ↓
+EVIDENCIA + OBSERVABILIDAD + ROLLBACK
+        ↓
+PRODUCCIÓN SIN DRIFT NI EFECTOS DE PRUEBA
+```
+
+La tarea define clases, estados, manifiestos, perfiles de datos, gates y carryovers. No asigna por inferencia el proyecto actual a staging o producción y no aprovisiona ningún ambiente.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-ENVIRONMENT-TOPOLOGY-PARITY-ARCHITECTURE-001@1.0.0
+```
+
+| Propiedad                                | Valor  |
+| ---------------------------------------- | ------ |
+| `canonical_environment_class_count`      | **4**  |
+| `current_remote_reference_project_count` | **1**  |
+| `certified_staging_project_count`        | **0**  |
+| `certified_production_project_count`     | **0**  |
+| `promotion_transition_count`             | **3**  |
+| `environment_lifecycle_state_count`      | **8**  |
+| `environment_manifest_section_count`     | **18** |
+| `data_profile_count`                     | **5**  |
+| `promotion_gate_count`                   | **12** |
+| `drift_class_count`                      | **26** |
+| `integrated_registry_count`              | **7**  |
+| `new_test_requirements`                  | **73** |
+| `physical_changes_authorized`            | **0**  |
+
+#### 3. Registros normativos integrados
+
+```text
+ENVIRONMENT-CLASS-REGISTRY-001
+ENVIRONMENT-INSTANCE-MANIFEST-001
+ENVIRONMENT-DATA-PROFILE-MATRIX-001
+ENVIRONMENT-CONFIGURATION-OVERLAY-CONTRACT-001
+ENVIRONMENT-PROMOTION-AND-EVIDENCE-GATE-001
+ENVIRONMENT-DRIFT-REGISTER-001
+ENVIRONMENT-DECOMMISSIONING-LEDGER-001
+```
+
+Los siete registros forman una sola arquitectura. Ninguno autoriza recursos físicos ni valores secretos.
+
+#### 4. Fuentes canónicas consumidas
+
+| Fuente                                                              | Decisión consumida                                                                                                     |
+| ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                                   | continuidad, preservación histórica, fase documental y separación entre definición e implementación                    |
+| `delivery-contract.json`                                            | una sola tarea y registro 04A completo con nombre único                                                                |
+| `active-sequence.json`                                              | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-024` como tarea actual                                            |
+| `SUPA-AUD-015`                                                      | extensiones, claves, secretos, variables, settings, Auth, configuración y ausencia de inventario ambiental certificado |
+| `SUPA-AUD-016`                                                      | 549 migraciones, `config.toml`, recursos administrados, paridad no certificada y necesidad de overlays                 |
+| `SUPA-AUD-017`                                                      | drift fuera de banda, objetos sin procedencia y adopción forward-only                                                  |
+| `SUPABASE-SCHEMA-SEPARATION-PRINCIPLES-001@1.0.0`                   | separación entre infraestructura administrada y gobierno Vento                                                         |
+| `SUPABASE-EXPOSURE-GRANTS-RLS-POLICY-001@1.0.0`                     | exposición, grants, RLS, defaults y audiencias independientes                                                          |
+| `SUPABASE-REALTIME-EVENT-ARCHITECTURE-001@1.0.0`                    | manifiestos, publicaciones, canales, consumidores y recuperación por ambiente                                          |
+| `SUPABASE-EDGE-WEBHOOK-CRON-ARCHITECTURE-001@1.0.0`                 | fuentes, bundles, variables, proveedores, schedules y ejecución server-side                                            |
+| `SUPABASE-RETENTION-ARCHIVE-BACKUP-RECOVERY-ARCHITECTURE-001@1.0.0` | backups, PITR, clean room, grupos de consistencia y anti-resurrección                                                  |
+| `SUPABASE-CONSUMER-TYPE-GENERATION-ARCHITECTURE-001@1.0.0`          | toolchain, manifests, package versions, consumidores y paridad de tipos                                                |
+| `supabase/config.toml`                                              | baseline local actual; no constituye snapshot hosted                                                                   |
+| `SUPA-TRANS-013` a `SUPA-TRANS-015`                                 | paridad ambiental, actualización de contratos y roadmap ejecutable de migraciones                                      |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`                  | 5.877 requisitos hasta `SUPA-ARC-023`; rango `TREQ-SUPABASE-001` a `1582`                                              |
+
+#### 5. Distinciones normativas
+
+```text
+AMBIENTE ≠ NOMBRE DE PROYECTO
+LOCAL ≠ REMOTO DE DESARROLLO
+TEST ≠ STAGING
+STAGING ≠ PRODUCCIÓN CON MENOS USUARIOS
+BRANCH ≠ CLASE AMBIENTAL AUTOMÁTICA
+CONFIG.TOML ≠ CONFIGURACIÓN HOSTED CERTIFICADA
+MISMO SCHEMA ≠ MISMO AMBIENTE
+PARIDAD ≠ IDENTIDAD DE VALORES SECRETOS
+PROMOCIÓN ≠ COPIA DE BASE DE DATOS
+FIXTURE ≠ DATO REAL
+ANONIMIZACIÓN ≠ CAMBIO DE CORREO SOLAMENTE
+TIPO COMPATIBLE ≠ RELEASE DESPLEGADO
+BACKUP ≠ AMBIENTE DE PRUEBAS
+RESTORE CLEAN ROOM ≠ STAGING ORDINARIO
+SERVICE_ROLE ≠ AUTORIZACIÓN EMPRESARIAL
+FEATURE FLAG ≠ CORRECCIÓN DE DRIFT
+```
+
+La clase ambiental expresa finalidad y restricciones. La identidad técnica de una instancia, su estado desplegado y la evidencia de paridad permanecen artefactos separados.
+
+#### 6. Principios obligatorios
+
+1. Existirán exactamente cuatro clases canónicas: `LOCAL`, `TEST`, `STAGING` y `PRODUCTION`.
+2. Cada instancia tendrá identidad, clase, lifecycle, owner, finalidad y manifiesto inequívocos.
+3. `vento-shell` será fuente versionada de migraciones, configuración declarativa, contratos y pruebas.
+4. Los ambientes hosted que representen staging y producción tendrán project refs distintos y credenciales independientes.
+5. Un branch, preview o proyecto llamado dev no recibirá clase canónica por su nombre.
+6. Los cambios se promoverán como commits, migraciones, manifests, contratos, paquetes y artefactos inmutables; no como estado mutable copiado entre bases.
+7. Las diferencias legítimas se expresarán mediante overlays allowlisted, nunca mediante edición manual no registrada.
+8. Ningún secreto, dato real, callback live, canal, bucket o proveedor se compartirá por conveniencia entre clases incompatibles.
+9. Todo ambiente fallará cerrado cuando falte identidad, configuración crítica, secreto, provider mode o evidencia requerida.
+10. La paridad exigirá equivalencia contractual y estructural; no igualdad de endpoints, valores secretos o volumen de datos.
+11. Staging reproducirá la arquitectura y el release de producción sin operar el negocio real.
+12. Producción solo recibirá un candidato ya certificado en staging, salvo procedimiento de emergencia documentado y reconciliado.
+13. Los datos de producción no se copiarán a ambientes inferiores sin transformación irreversible, finalidad, aprobación y prueba de no reidentificación.
+14. La eliminación de un ambiente incluirá consumidores, datos, objetos, secretos, callbacks, jobs, logs y backups aplicables.
+15. Toda diferencia, excepción o incertidumbre bloqueará promoción hasta tener owner, riesgo, tarea y criterio de cierre.
+
+#### 7. Clases canónicas de ambiente
+
+| Clase        | Instancia esperada                                                   | Finalidad                                                                | Frontera dominante                                                              |
+| ------------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `LOCAL`      | instancia local descartable por desarrollador o ejecución controlada | desarrollo, depuración y verificación temprana                           | datos sintéticos; efectos externos suprimidos                                   |
+| `TEST`       | instancia efímera o persistente dedicada a pruebas automatizadas     | contratos, integración, seguridad, concurrencia, migraciones y regresión | datos deterministas; destrucción y reset permitidos bajo aislamiento            |
+| `STAGING`    | instancia hosted dedicada y semejante a producción                   | candidato de release, paridad, capacidad, operación y rollback           | datos sintéticos o derivados irreversiblemente sanitizados; proveedores sandbox |
+| `PRODUCTION` | instancia hosted dedicada a operación empresarial real               | datos reales, integraciones live y continuidad operativa                 | controles máximos; cambios solo mediante promoción aprobada                     |
+
+Una organización podrá tener múltiples instancias de una clase, pero cada una conservará identidad propia. Una instancia no podrá pertenecer simultáneamente a dos clases.
+
+#### 8. Lifecycle ambiental
+
+| Estado            | Regla                                                                                  |
+| ----------------- | -------------------------------------------------------------------------------------- |
+| `PLANNED`         | identidad, propósito y owner definidos; todavía no aprovisionado                       |
+| `PROVISIONING`    | recursos en creación y aún no habilitados para su finalidad                            |
+| `READY`           | manifiesto, seguridad y pruebas mínimas completos; no recibe todavía tráfico ordinario |
+| `ACTIVE`          | habilitado para la finalidad exacta declarada                                          |
+| `FROZEN`          | sin cambios ordinarios mientras se investiga, compara, migra o retira                  |
+| `BLOCKED`         | incumple un gate y no puede promover, desplegar ni recibir nueva carga                 |
+| `DECOMMISSIONING` | consumidores, datos, secretos y recursos se retiran de forma controlada                |
+| `DECOMMISSIONED`  | sin tráfico, credenciales ni recursos activos; evidencia y disposición cerradas        |
+
+`ACTIVE` no significa conforme de manera permanente. Drift, secreto comprometido, datos indebidos o gate vencido podrán mover la instancia a `FROZEN` o `BLOCKED` sin cambiar su clase.
+
+#### 9. Clasificación del remoto actual
+
+El único proyecto remoto certificado por la auditoría como existente es:
+
+```text
+project_name = vento-os-dev
+project_ref = clzdpinthhtknkmefsxx
+region = us-east-2
+postgres = 17.6
+```
+
+Su disposición ambiental será:
+
+```text
+environment_class = UNRESOLVED_BLOCKING
+operational_use = OBSERVED_CURRENT_REMOTE
+promotion_authority = NONE
+```
+
+Reglas:
+
+1. el sufijo `dev` no prueba que sea `TEST` ni `STAGING`;
+2. la presencia de datos, funciones, buckets, cron y consumidores no lo convierte en `PRODUCTION` canónico;
+3. podrá seguir usándose como referencia observada mientras la operación actual lo requiera, sin ampliar su autoridad arquitectónica;
+4. `SUPA-TRANS-013` deberá inventariar finalidad, usuarios, datos, secretos, dominios, proveedores y consumidores antes de asignar una clase;
+5. `SUPA-TRANS-015` deberá decidir adopción, limpieza, transición o retiro;
+6. no se inventan project refs para los ambientes faltantes.
+
+#### 10. Topología lógica objetivo
+
+```text
+DESARROLLADOR / WORKSTATION
+        ↓
+LOCAL DESCARTABLE
+        ↓
+TEST AISLADO POR PIPELINE O SUITE
+        ↓
+STAGING HOSTED DEDICADO
+        ↓
+PRODUCTION HOSTED DEDICADO
+```
+
+| Frontera         | `LOCAL`                  | `TEST`                    | `STAGING`                            | `PRODUCTION`                           |
+| ---------------- | ------------------------ | ------------------------- | ------------------------------------ | -------------------------------------- |
+| identidad        | local instance ID        | test instance o branch ID | project ref dedicado                 | project ref dedicado                   |
+| duración         | descartable              | efímera por defecto       | persistente                          | persistente                            |
+| datos reales     | prohibidos               | prohibidos                | solo derivados sanitizados aprobados | permitidos por finalidad               |
+| proveedores      | stubs o sandbox          | stubs o sandbox           | sandbox o cuentas de certificación   | live                                   |
+| efectos externos | suprimidos               | suprimidos                | allowlist controlada                 | habilitados por contrato               |
+| acceso humano    | desarrollador autorizado | CI y QA autorizado        | equipo de release y QA               | operación y administración autorizadas |
+| cambio directo   | local y descartable      | recreación desde fuente   | prohibido fuera de procedimiento     | prohibido fuera de procedimiento       |
+
+La tecnología física de `TEST` podrá ser local efímera, branch o proyecto dedicado. La elección deberá preservar todas las fronteras y quedar registrada; no podrá usar producción como banco de pruebas.
+
+#### 11. Manifiesto obligatorio de cada instancia
+
+| Sección         | Contenido mínimo                                                                      |
+| --------------- | ------------------------------------------------------------------------------------- |
+| `IDENTITY`      | environment_instance_id, class, lifecycle, owner, propósito y criticidad              |
+| `TOPOLOGY`      | local instance, project ref o branch ref, región, red, dominios y dependencias        |
+| `SOURCE`        | commit, release, migraciones, manifests, hashes y toolchain                           |
+| `DATABASE`      | PostgreSQL, schemas, extensiones, configuración, fingerprints y datos de referencia   |
+| `API`           | schemas expuestos, extra search path, límites, grants, RLS y contratos activos        |
+| `AUTH`          | site URL, redirects, proveedores, sesiones, MFA, SMTP, rate limits y signing metadata |
+| `STORAGE`       | buckets, visibilidad, límites, MIME, policies, lifecycle y referencias                |
+| `REALTIME`      | publicaciones, relaciones, operaciones, canales, consumidores y recuperación          |
+| `EDGE`          | funciones, fuente, bundle, verify_jwt, variables, CORS, runtime y despliegue          |
+| `AUTOMATION`    | cron, webhooks, jobs, schedules, autenticación, retry y outcomes                      |
+| `SECRETS`       | identificadores redactados, custodia, consumidores, rotación y revocación             |
+| `PROVIDERS`     | modo sandbox o live, cuentas, endpoints, callbacks, cuotas y owners                   |
+| `DATA`          | perfil permitido, fixtures, anonimización, retención, resets y prohibiciones          |
+| `CONSUMERS`     | repositorios, aplicaciones, package versions, rutas y compatibilidad                  |
+| `OBSERVABILITY` | logs, métricas, trazas, alertas, redacción, retención y accesos                       |
+| `RECOVERY`      | backup, PITR, recovery profile, clean room, RPO/RTO aprobados y rollback              |
+| `PROMOTION`     | candidato, gates, aprobaciones, ventana, rollout y criterios de abandono              |
+| `EVIDENCE`      | resultados, hashes, actor, fecha, excepciones, drift y cierre                         |
+
+Los valores sensibles se representarán mediante identificadores, estado, fecha y referencia de custodia. El manifiesto nunca contendrá el secreto, token, private key o payload confidencial.
+
+#### 12. Identidad y nombres
+
+Cada instancia deberá conservar:
+
+```text
+environment_instance_id
++ environment_class
++ lifecycle_state
++ project_ref_or_local_instance
++ branch_ref_when_applicable
++ region_or_locality
++ business_purpose
++ technical_owner
++ business_owner
++ data_profile
++ release_channel
++ created_at
++ expires_at_when_ephemeral
+```
+
+1. La identidad no se derivará de hostname, variable `NODE_ENV`, nombre de branch, subdominio o correo.
+2. `NODE_ENV` podrá describir modo de build, pero no sustituirá `environment_class`.
+3. Los nombres humanos deberán ser inequívocos y no reutilizarse después del retiro para otra instancia incompatible.
+4. Project ref, branch ref, instance ID y release channel serán conceptos distintos.
+5. Toda URL y callback se resolverá desde la identidad ambiental, no mediante reemplazos de texto no validados.
+
+#### 13. Fuente, procedencia y reproducción
+
+La fuente de cada ambiente será la combinación versionada de:
+
+```text
+commit de vento-shell
++ migraciones ordenadas
++ manifests de recursos administrados
++ contratos y tipos publicados
++ configuración base
++ overlay ambiental
++ fixtures o data profile
++ toolchain fijada
+```
+
+Reglas:
+
+- una instancia hosted no será fuente de configuración por sí misma;
+- la comparación remota detectará drift, pero no reconstruirá silenciosamente la intención;
+- la misma versión de migración aplicada conservará contenido y hash inmutables;
+- todo recurso no cubierto por schema diff tendrá manifest declarativo;
+- un ambiente recreado desde las mismas fuentes deberá producir el mismo contrato y fingerprints esperados, excepto valores efímeros o secretos declarados como tales.
+
+#### 14. Transiciones de promoción
+
+| Transición              | Origen    | Destino      | Objeto promovido                                                  |
+| ----------------------- | --------- | ------------ | ----------------------------------------------------------------- |
+| `LOCAL_TO_TEST`         | `LOCAL`   | `TEST`       | commit, migraciones, contratos, fixtures y manifiestos candidatos |
+| `TEST_TO_STAGING`       | `TEST`    | `STAGING`    | release candidate inmutable que superó suites automatizadas       |
+| `STAGING_TO_PRODUCTION` | `STAGING` | `PRODUCTION` | mismo candidato aprobado con evidencia, ventana y rollback        |
+
+No existen transiciones directas `LOCAL_TO_PRODUCTION` o `TEST_TO_PRODUCTION`. Un hotfix seguirá la misma secuencia con ventanas abreviadas y gates explícitos, no un carril oculto.
+
+#### 15. Semántica de promoción
+
+```text
+PROMOVER
+=
+FIJAR EL MISMO CANDIDATO
++ APLICAR OVERLAY DEL DESTINO
++ VERIFICAR PARIDAD
++ EJECUTAR GATES DEL DESTINO
+```
+
+No se promueven:
+
+- filas de negocio desde test hacia producción;
+- secretos o keys entre ambientes;
+- sesiones, usuarios de prueba o dispositivos ficticios;
+- callbacks sandbox a producción;
+- logs, cursors, inboxes o estados técnicos de prueba;
+- cambios hechos manualmente después de congelar el candidato.
+
+El candidato incluirá commit, migraciones, contratos, tipos, packages, Edge bundles, manifests y hashes exactos. Si cualquiera cambia, nace un candidato distinto y se repiten los gates afectados.
+
+#### 16. Configuración base y overlays
+
+La configuración se separará en:
+
+```text
+BASE VERSIONADA NO SENSIBLE
++ OVERLAY LOCAL
++ OVERLAY TEST
++ OVERLAY STAGING
++ OVERLAY PRODUCTION
++ REFERENCIAS A SECRETOS EN CUSTODIA
+```
+
+1. `supabase/config.toml` continúa siendo baseline del stack local y no evidencia el hosted.
+2. Los overlays hosted declararán intención y valores no sensibles; la comparación administrativa generará un snapshot redactado.
+3. Un valor no definido no heredará silenciosamente el default local.
+4. Cada propiedad tendrá clase: `INVARIANT`, `ENVIRONMENT_SPECIFIC`, `SECRET_REFERENCE`, `EPHEMERAL` o `UNSUPPORTED_FOR_PARITY`.
+5. Las diferencias permitidas serán allowlisted por propiedad, ambiente, razón, owner y vencimiento.
+6. La configuración crítica ausente bloqueará arranque o promoción.
+
+#### 17. Contrato de `LOCAL`
+
+`LOCAL` deberá:
+
+- reconstruirse desde migraciones y configuración versionadas;
+- usar PostgreSQL major y toolchain compatibles con el candidato;
+- mantener seed canónico deshabilitado mientras no exista dataset aprobado;
+- utilizar fixtures sintéticos explícitos por suite;
+- usar Inbucket, stubs o sinks para correo y mensajes;
+- utilizar proveedores sandbox o simuladores;
+- impedir acceso a secretos y datos de producción;
+- permitir reset y destrucción sin afectar otra instancia;
+- aislar puertos, volúmenes y project ID entre workspaces cuando coexistan;
+- mostrar claramente que no representa hosted ni producción.
+
+Los defaults actuales de localhost, red abierta y Auth de desarrollo son aceptables únicamente como propiedades locales documentadas. No podrán propagarse a un ambiente hosted.
+
+#### 18. Contrato de `TEST`
+
+`TEST` deberá:
+
+1. crearse desde una fuente y candidato identificados;
+2. usar datos sintéticos deterministas y fixtures versionados;
+3. admitir reloj, IDs, fallos, retries y dependencias controlables;
+4. permitir pruebas destructivas, concurrencia, seguridad, migración y recuperación dentro del aislamiento;
+5. no enviar correo, SMS, push, pago, webhook o llamada real;
+6. no usar dominios, redirects, keys o cuentas de producción;
+7. expirar y destruirse automáticamente cuando sea efímero;
+8. conservar evidencia mínima cuando una falla de suite requiera investigación;
+9. tener presupuesto de recursos y límites para impedir abuso;
+10. quedar `BLOCKED` cuando no pueda demostrarse limpieza entre ejecuciones.
+
+Una instancia persistente de pruebas sigue siendo `TEST`; su persistencia no la convierte en staging.
+
+#### 19. Contrato de `STAGING`
+
+`STAGING` deberá ser hosted, dedicado y suficientemente equivalente a producción para certificar un candidato sin ejecutar operación real.
+
+Requisitos:
+
+- project ref distinto de producción;
+- misma versión mayor de PostgreSQL y toolchain compatible;
+- mismo orden de migraciones y contratos objetivo;
+- schemas, grants, RLS, API, Auth, Storage, Realtime, Edge, cron y extensiones con paridad declarada;
+- claves, secretos, dominios, callbacks y cuentas de proveedor propios;
+- proveedores sandbox o certificación, nunca credenciales live;
+- datos sintéticos representativos o producción-derived sanitizada aprobada;
+- usuarios, trabajadores, clientes, pagos y dispositivos ficticios identificables;
+- capacidad y observabilidad suficientes para pruebas de release;
+- backup o snapshot previo cuando el candidato lo requiera;
+- ventana de certificación, freeze y limpieza posterior.
+
+Staging no podrá convertirse en operación alternativa, contingencia informal ni fuente de corrección de producción.
+
+#### 20. Contrato de `PRODUCTION`
+
+`PRODUCTION` será la única clase autorizada para datos reales, proveedores live y efectos empresariales ordinarios.
+
+Deberá:
+
+- tener project ref, región, owner y finalidad aprobados;
+- recibir únicamente releases promovidos desde staging;
+- usar keys y secretos exclusivos con rotación y revocación;
+- restringir red, roles administrativos y acceso a datos según necesidad;
+- aplicar schemas expuestos, grants, RLS y funciones exactamente manifestados;
+- conservar observabilidad redactada, alertas, runbooks y guardias aplicables;
+- ejecutar backups, PITR y ejercicios conforme a perfiles aprobados;
+- registrar actor, release, migraciones, configuración, ventana y resultado de cada cambio;
+- bloquear fixtures, usuarios de prueba no autorizados, callbacks sandbox y feature flags experimentales sin owner;
+- mantener procedimiento de rollback, forward-fix y reconciliación.
+
+#### 21. Perfiles canónicos de datos
+
+| Perfil                         | Definición                                                                    | Ambientes permitidos                   |
+| ------------------------------ | ----------------------------------------------------------------------------- | -------------------------------------- |
+| `SYNTHETIC_DETERMINISTIC`      | datos inventados, reproducibles y libres de personas reales                   | `LOCAL`, `TEST`, `STAGING`             |
+| `REFERENCE_FIXTURE`            | catálogos y escenarios mínimos versionados para pruebas                       | `LOCAL`, `TEST`, `STAGING`             |
+| `SANITIZED_PRODUCTION_DERIVED` | derivado de producción con transformación irreversible y finalidad aprobada   | solo `STAGING` o clean room autorizado |
+| `EXTERNAL_SANDBOX`             | identidades, instrumentos y respuestas pertenecientes a proveedores de prueba | `LOCAL`, `TEST`, `STAGING`             |
+| `PRODUCTION_LIVE`              | datos empresariales y personales reales                                       | solo `PRODUCTION`                      |
+
+Un ambiente declarará un perfil primario y podrá incluir perfiles auxiliares solo mediante allowlist por dataset. `PRODUCTION_LIVE` queda prohibido fuera de producción.
+
+#### 22. Datos derivados de producción
+
+Una extracción derivada de producción solo será admisible cuando exista:
+
+```text
+finalidad aprobada
++ campos mínimos
++ transformación irreversible
++ prueba de no reidentificación
++ exclusión de secretos y credenciales
++ owner y acceso restringido
++ retención y fecha de disposición
++ lineage y receipt de transformación
+```
+
+Quedan prohibidos como supuesta anonimización:
+
+- cambiar únicamente correo o nombre;
+- conservar documento, teléfono, dirección, coordenadas precisas o identificadores correlacionables;
+- copiar hashes, tokens, imágenes, archivos, mensajes o notas sensibles;
+- mantener relaciones que permitan recomponer identidad;
+- restaurar un backup productivo en staging y confiar en que la interfaz no lo muestre.
+
+La tarea de transición y gobierno de información deberá definir el procedimiento físico antes de cualquier uso.
+
+#### 23. Identidades, usuarios y dispositivos de prueba
+
+1. Las cuentas de prueba tendrán namespace, owner, finalidad y expiración.
+2. Nunca reutilizarán correo, teléfono, documento, QR, PIN, wallet, push token o dispositivo real.
+3. Los shared devices de prueba se registrarán como técnicos y no como trabajadores o clientes.
+4. MFA, invitaciones, recuperación y revocación se probarán con identidades propias de la clase.
+5. La creación de usuarios de prueba en producción estará prohibida salvo ejercicio aprobado, aislado, trazable y con retiro inmediato.
+6. Los fixtures no concederán roles, permisos o scopes más amplios por comodidad.
+7. Cambiar de ambiente invalidará sesión, tokens, caches, channels y almacenamiento local del ambiente anterior.
+
+#### 24. Claves, secretos y credenciales
+
+Cada combinación `secret_id + environment_instance_id` será independiente.
+
+Reglas:
+
+- publishable, anon legacy, secret, service role, provider keys, OAuth secrets, signing keys y webhook secrets conservarán clases distintas;
+- no se reutilizará un valor entre staging y producción;
+- un cliente público solo recibirá la key pública de su ambiente;
+- service role y secret keys permanecerán exclusivamente server-side;
+- los repositorios almacenarán referencias y nombres, nunca valores;
+- los secretos tendrán owner, consumidores, creación, última rotación, próxima rotación, revocación y prueba de rechazo;
+- una credencial expuesta en un ambiente no se copiará a otro durante rotación;
+- logs, manifests, evidencia y hashes no revelarán valores secretos.
+
+#### 25. Proveedores externos y efectos
+
+Cada proveedor declarará por ambiente:
+
+```text
+provider_account
++ mode SANDBOX or LIVE
++ credentials_ref
++ endpoint
++ callback_urls
++ allowed_origins
++ data_scope
++ quotas
++ sender_or_merchant_identity
++ test_instruments
++ owner
+```
+
+1. `LOCAL` y `TEST` usarán stub o sandbox.
+2. `STAGING` usará sandbox, certificación o allowlist sin operación real.
+3. `PRODUCTION` podrá usar live después de gate.
+4. Wompi, Google, Resend, Expo, Wallet, mapas y futuros proveedores no compartirán credenciales o callbacks entre clases.
+5. Un `2xx`, entrega de webhook o aceptación de proveedor no equivale a efecto empresarial confirmado.
+6. Los callbacks incluirán identidad ambiental verificable y rechazarán tráfico cruzado.
+
+#### 26. Auth, dominios y redirects
+
+Cada ambiente tendrá manifiesto de Auth para:
+
+- site URL y redirects exactos;
+- signup, confirmación, recuperación y cambio de correo;
+- expiración y rotación de refresh tokens;
+- requisitos de contraseña y protección contra filtradas;
+- MFA y anonymous sign-ins;
+- SMTP, remitente y templates;
+- proveedores OAuth y redirect URIs;
+- rate limits, CAPTCHA y hooks;
+- signing metadata y rotación sin exponer claves.
+
+No se permitirán localhost, wildcards, dominios de preview no registrados o redirects de otro ambiente en producción. La diferencia entre configuración local y hosted será explícita y comprobada.
+
+#### 27. Database, API, grants y RLS
+
+1. Todos los ambientes compartirán la misma arquitectura de schemas y contratos correspondiente al candidato.
+2. `api.schemas`, `extra_search_path`, max rows y límites serán manifestados por ambiente.
+3. Las diferencias de grants, default privileges, RLS, policies o owner serán bloqueantes salvo excepción aprobada.
+4. Los datos y volúmenes podrán diferir; las invariantes, constraints, firmas y autorización no.
+5. Un schema incluido en tipos o presente en local no se expondrá automáticamente en hosted.
+6. Local y test deberán ejecutar pruebas negativas de acceso equivalentes a staging.
+7. Producción no recibirá un permiso más amplio para compensar diferencias de fixtures o configuración.
+8. Las superficies administradas conservarán mínimos privilegios y configuración soportada en cada ambiente.
+
+#### 28. Migraciones y datos de referencia
+
+La promoción de base de datos exigirá:
+
+```text
+historia local y remota reconciliada
++ timestamps y hashes válidos
++ replay limpio en TEST
++ diff clasificado
++ ejecución en STAGING
++ validaciones de datos
++ backup o punto de recuperación
++ aplicación del mismo conjunto en PRODUCTION
+```
+
+- no se editará una migración ya aplicada;
+- no se usarán migraciones `preview`, `from_dev`, `manual` o equivalentes sin clasificación y salida;
+- seeds, fixtures y datos de referencia serán artefactos separados;
+- DML ambiental deberá declarar destino y no filtrarse a producción;
+- los cambios fuera de banda se reconciliarán mediante migración forward-only;
+- un cambio incompatible coordinará contratos, tipos, consumidores y rollback.
+
+#### 29. Storage por ambiente
+
+Cada instancia declarará sus buckets con visibilidad, límite, MIME, policies, owner, datos permitidos, lifecycle y transición.
+
+Reglas:
+
+1. los nombres podrán repetirse entre proyectos, pero la identidad completa incluirá ambiente y project ref;
+2. no se copiarán objetos productivos a ambientes inferiores sin el gate de datos;
+3. local y test usarán fixtures pequeños y dispondrán objetos al cerrar la suite;
+4. staging no utilizará buckets live ni URLs de producción;
+5. signed URLs estarán ligadas al ambiente y expirarán;
+6. metadata empresarial permanecerá separada de `storage.objects`;
+7. la paridad comprobará buckets, policies, límites, MIME y referencias, no los bytes reales uno a uno;
+8. restore o migración de objetos tendrá inventario, hash, reconciliación y rollback.
+
+#### 30. Realtime por ambiente
+
+Cada ambiente conservará publicaciones, relaciones, operaciones, replica identity, patrones de canal, consumidores y fallback propios.
+
+- topics, channels, cursors e inboxes no cruzarán project refs;
+- un cliente no se suscribirá a otro ambiente aunque comparta usuario o código;
+- staging replicará contratos y capacidad sin transportar datos productivos;
+- canales de prueba tendrán expiración y cleanup;
+- Postgres Changes, Broadcast y Presence mantendrán autorización y snapshot por ambiente;
+- la promoción comparará manifests, no copiará estado efímero;
+- una publicación presente solo en producción constituirá drift bloqueante salvo decisión aprobada.
+
+#### 31. Edge Functions, webhooks, jobs y cron
+
+Cada función, ruta, job y schedule deberá declarar por ambiente:
+
+```text
+source_commit
++ canonical_path
++ bundle_hash
++ runtime_version
++ verify_jwt
++ variable_manifest
++ secret_refs
++ CORS
++ provider_mode
++ schedule_or_trigger
++ enabled_state
++ rollback
+```
+
+1. Las 24 funciones y siete cron jobs observados deberán clasificarse individualmente durante transición.
+2. `verify_jwt` será explícito; no dependerá de defaults.
+3. Una función puede estar habilitada en staging y producción únicamente con manifests distintos y misma fuente candidata.
+4. Cron de local y test estará deshabilitado o controlado por la suite.
+5. Staging no enviará efectos live; producción no aceptará callbacks sandbox.
+6. Una fuente sin remoto o un remoto sin fuente bloqueará promoción.
+7. Jobs pendientes, leases, retries y dead letters no se copian entre ambientes.
+
+#### 32. Contratos, tipos y paquetes
+
+1. Cada release fijará versiones exactas de contratos de autorización, Supabase, eventos y consumidores.
+2. `current` podrá facilitar desarrollo, pero el manifiesto de staging y producción conservará la versión resuelta.
+3. El mismo candidato de tipos y runtime schemas se compilará en la matriz de consumidores.
+4. Un bundle generado contra un ambiente distinto deberá producir el mismo hash cuando las fuentes contractuales sean equivalentes.
+5. Diferencias ambientales legítimas no modificarán uniones de estados, permisos, events u outcomes.
+6. Los tipos no expondrán owner schemas a browser por estar disponibles en tooling.
+7. La promoción se bloqueará ante package ranges incompatibles, forks o consumidores fuera de la matriz.
+
+#### 33. Estrategia de pruebas por ambiente
+
+| Cobertura                   | `LOCAL`       | `TEST`                 | `STAGING`                           | `PRODUCTION`                          |
+| --------------------------- | ------------- | ---------------------- | ----------------------------------- | ------------------------------------- |
+| unitarias y estáticas       | sí            | sí                     | artefactos ya aprobados             | smoke no mutante                      |
+| contractuales               | parcial       | completa               | completa contra hosted              | canary o smoke controlado             |
+| migraciones y replay        | iteración     | obligatorio desde cero | dry run y aplicación candidata      | aplicación promovida                  |
+| RLS y seguridad negativa    | básica        | exhaustiva             | exhaustiva con configuración hosted | probes no destructivos aprobados      |
+| concurrencia e idempotencia | dirigida      | carga determinista     | carga representativa                | observación y canary                  |
+| E2E                         | limitada      | automatizada           | release candidate                   | flujos críticos controlados           |
+| fallos de proveedor         | stub          | simulados              | sandbox                             | no inducidos salvo ejercicio aprobado |
+| restore y recuperación      | local aislado | clean room             | ejercicio aislado                   | solo procedimiento aprobado           |
+
+Producción no será el lugar donde se descubre por primera vez una incompatibilidad conocida y reproducible en clases inferiores.
+
+#### 34. Rendimiento y capacidad
+
+1. TEST tendrá fixtures que permitan detectar regresiones de planes y límites sin imitar volumen mediante datos personales.
+2. STAGING ejecutará carga representativa, fan-out, reconexión, Storage, jobs y consultas críticas con cuotas aprobadas.
+3. Los resultados declararán escala, dataset, toolchain, región, concurrencia y duración.
+4. La paridad no exige igual tamaño de cómputo, pero toda diferencia de capacidad deberá modelarse y no invalidar la prueba.
+5. Producción tendrá thresholds, alertas y capacidad para el release promovido.
+6. Un resultado de staging no se extrapolará cuando región, compute, índices, configuración o datos cambien materialmente.
+7. Los cambios de plan, extensión o versión exigirán reevaluar gates afectados.
+
+#### 35. Observabilidad y evidencia ambiental
+
+Cada señal incluirá `environment_instance_id`, release, servicio, correlation y sensibilidad sin PII innecesaria.
+
+- métricas, logs y trazas de ambientes diferentes permanecerán separables;
+- alertas de test no paginarán como incidentes reales, pero tampoco se perderán;
+- staging usará dashboards y runbooks equivalentes a producción cuando aplique;
+- producción redactará secretos, SQL sensible, correos, documentos y coordenadas precisas;
+- el acceso a observabilidad seguirá roles y finalidad;
+- la evidencia de promoción conservará hashes y resultados, no payloads sensibles;
+- una métrica sin etiqueta ambiental o con identidad ambigua se tratará como drift.
+
+#### 36. Backup, restore y clean room
+
+1. Backups, PITR, exports y recovery points permanecerán ligados al project ref que los produjo.
+2. No se restaurará producción en `LOCAL`, `TEST` o `STAGING` ordinarios.
+3. Un ejercicio con backup productivo usará clean room aislado, acceso excepcional, efectos externos suprimidos y disposición verificable.
+4. El clean room tendrá identidad y lifecycle propios, pero no constituye una quinta clase ambiental; será una instancia temporal de `TEST` bajo perfil de recuperación restringido.
+5. La restauración validará grupos de consistencia, contratos, tipos y anti-resurrección compatibles con el punto recuperado.
+6. Las credenciales y callbacks se reemplazarán antes de abrir acceso.
+7. Cerrar el ejercicio exigirá destruir datos, objetos, secretos temporales, logs sensibles y accesos.
+8. Ninguna configuración de backup se certificará sin restore y validación.
+
+#### 37. Gates de promoción
+
+| Gate                            | Condición de aprobación                                                             |
+| ------------------------------- | ----------------------------------------------------------------------------------- |
+| `ENVIRONMENT_IDENTITY_GATE`     | identidad, clase, lifecycle, owner, project o instance ref y región inequívocos     |
+| `SOURCE_PROVENANCE_GATE`        | commit, release, toolchain, manifests y hashes inmutables                           |
+| `MIGRATION_SCHEMA_GATE`         | historia, replay, fingerprint, diff y datos de referencia coherentes                |
+| `CONFIGURATION_RESOURCE_GATE`   | API, Auth, Storage, Realtime, Edge, cron, extensiones y overlays completos          |
+| `SECURITY_AUTHORIZATION_GATE`   | claves, secretos, red, grants, RLS, permisos y pruebas negativas                    |
+| `DATA_PRIVACY_GATE`             | perfil de datos, sanitización, retención, accesos y ausencia de producción indebida |
+| `CONTRACT_TYPE_CONSUMER_GATE`   | contratos, tipos, paquetes y matriz de consumidores compatibles                     |
+| `FUNCTIONAL_REGRESSION_GATE`    | pruebas unitarias, contractuales, integración, E2E y regresión aplicables           |
+| `PERFORMANCE_CAPACITY_GATE`     | carga, planes, índices, límites, fan-out, cuotas y presupuesto operacional          |
+| `RECOVERY_ROLLBACK_GATE`        | backup, punto de recuperación, restore, rollback, forward-fix y conciliación        |
+| `OBSERVABILITY_OPERATIONS_GATE` | telemetría, alertas, runbooks, soporte, redacción y estado degradado                |
+| `APPROVAL_EVIDENCE_GATE`        | evidencia consolidada, excepciones vigentes y aprobación del owner autorizado       |
+
+Los doce gates son acumulativos. Un gate `BLOCKED`, evidencia vencida o excepción expirada impide la promoción aunque los demás estén conformes.
+
+#### 38. Candidato de release y evidencia
+
+Cada candidato conservará:
+
+```text
+release_candidate_id
++ source_commit
++ ordered_migrations
++ configuration_base_hash
++ target_overlay_hash
++ contract_and_type_versions
++ package_lock_hashes
++ edge_bundle_hashes
++ managed_resource_manifest_hashes
++ fixture_or_data_profile
++ gate_results
++ exception_refs
++ staging_execution
++ production_window
++ rollback_and_forward_fix_refs
++ approvals
+```
+
+El resultado de una ejecución no podrá reutilizarse para otro candidato, ambiente o overlay sin demostrar equivalencia exacta.
+
+#### 39. Rollout, cutover y rollback
+
+1. La estrategia de despliegue declarará orden entre migraciones, contratos, backend, Edge, clientes y jobs.
+2. Los cambios incompatibles usarán expansión, compatibilidad temporal, adopción medida y contracción posterior.
+3. El rollout podrá ser canary o gradual cuando el producto lo permita, conservando versión y cohortes.
+4. El rollback no ejecutará `DOWN` destructivo por defecto; elegirá revertir artefactos, desactivar ruta, restaurar compatibilidad o aplicar forward-fix.
+5. Si ya existen efectos empresariales, la reversión preservará datos y usará corrección o conciliación.
+6. El punto de abandono, timeout, owner y criterio de éxito estarán definidos antes de producción.
+7. Una restauración no reintroducirá secretos, datos dispuestos o aliases retirados.
+
+#### 40. Cambios de emergencia
+
+Un cambio urgente en producción requerirá:
+
+```text
+incidente o riesgo inmediato
++ actor y autorización de emergencia
++ alcance mínimo
++ backup o recuperación
++ comando o cambio registrado
++ observación reforzada
++ resultado
++ reconciliación forward-only en vento-shell
++ ejecución retroactiva de gates aplicables
+```
+
+La emergencia no autoriza editar historia, compartir secretos, desactivar RLS sin límite, usar SQL sin registro ni dejar el ambiente divergente. Toda diferencia no reconciliada mantendrá producción `FROZEN` para cambios ordinarios.
+
+#### 41. Retiro de ambientes
+
+El decommissioning deberá cerrar:
+
+- tráfico, DNS, redirects y callbacks;
+- aplicaciones, workers, cron y webhooks;
+- users, sessions, devices y tokens de prueba;
+- keys, secrets, OAuth clients y provider accounts;
+- base, Storage, Realtime y colas;
+- logs, exports, backups y recovery points según retención;
+- branches, preview resources y CI references;
+- package channels y consumer manifests;
+- costos, alertas y ownership;
+- evidencia de disposición y recursos residuales.
+
+Una instancia abandonada no podrá permanecer `ACTIVE` por no tener tráfico observado.
+
+#### 42. Clases de drift ambiental
+
+```text
+PROJECT_IDENTITY_DRIFT
+REGION_DRIFT
+TOOLCHAIN_DRIFT
+MIGRATION_HISTORY_DRIFT
+SCHEMA_FINGERPRINT_DRIFT
+API_EXPOSURE_DRIFT
+GRANT_RLS_DRIFT
+AUTH_CONFIG_DRIFT
+REDIRECT_DRIFT
+KEY_CLASS_DRIFT
+SECRET_REGISTRY_DRIFT
+STORAGE_MANIFEST_DRIFT
+REALTIME_PUBLICATION_DRIFT
+REALTIME_CHANNEL_DRIFT
+EDGE_SOURCE_DRIFT
+EDGE_VERIFY_JWT_DRIFT
+EDGE_VARIABLE_DRIFT
+CRON_SCHEDULE_DRIFT
+EXTENSION_DRIFT
+NETWORK_POLICY_DRIFT
+PROVIDER_MODE_DRIFT
+DATA_PROFILE_DRIFT
+TYPE_PACKAGE_DRIFT
+BACKUP_RECOVERY_DRIFT
+OBSERVABILITY_DRIFT
+UNDECLARED_MANUAL_CHANGE
+```
+
+Cada hallazgo tendrá ambiente, owner, severidad, fuentes divergentes, riesgo, consumidores, contención, tarea, deadline, rollback y evidencia. Una diferencia no se corrige copiando el valor del remoto sin comprender su procedencia.
+
+#### 43. Línea base actual y brechas preservadas
+
+La arquitectura recibe sin reinterpretar:
+
+```text
+1 proyecto remoto observado
+549 migraciones remotas
+24 Edge Functions activas
+12 verify_jwt=true
+12 verify_jwt=false
+14 buckets
+2 publicaciones
+7 cron jobs
+8 extensiones instaladas
+2 claves públicas activas observadas
+0 inventarios certificados de staging
+0 inventarios certificados de producción
+```
+
+Además:
+
+- `config.toml` describe principalmente local;
+- no se certificaron branches, hosted Auth completo, restricciones de red ni secret keys privadas;
+- existen diferencias entre fuente, config y remoto;
+- hay drift fuera de banda y recursos sin procedencia;
+- no existe matriz integral de proyectos, datos, proveedores y secretos por ambiente.
+
+Estos hechos son línea base, no arquitectura aceptada. `SUPA-TRANS-013` deberá cerrarlos instancia por instancia.
+
+#### 44. Riesgos y continuidad
+
+| Riesgo                                      | Control obligatorio                                                         | Continuidad responsable                   |
+| ------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------- |
+| ambiente inferido por nombre                | manifest de identidad y estado `UNRESOLVED_BLOCKING` para lo no certificado | `SUPA-TRANS-013`; `SUPA-TRANS-015`        |
+| producción compartida con pruebas           | proyectos, credenciales, datos, callbacks y proveedores separados           | `SUPA-TRANS-013`; paquetes E5             |
+| config local tratada como hosted            | overlays redactados y comparación administrativa remota                     | `SUPA-TRANS-013`; `SHELL-CI-017`          |
+| secreto reutilizado                         | registro por ambiente, rotación, revocación y pruebas de rechazo            | `SUPA-TRANS-013`; paquetes de seguridad   |
+| datos reales fuera de producción            | perfiles allowlisted, sanitización irreversible y gate de privacidad        | `SUPA-TRANS-013`; gobierno de información |
+| release distinto entre staging y producción | candidato inmutable, hashes y promoción del mismo artefacto                 | `SUPA-TRANS-015`; `SHELL-CI-017`          |
+| drift no SQL                                | manifests de Storage, Realtime, Edge, cron, Auth y proveedores              | `SUPA-TRANS-013`; `SUPA-TRANS-015`        |
+| prueba con efecto real                      | sinks, sandboxes, allowlists y suppressions fail-closed                     | paquetes E5; `AUTH-QA-030`                |
+| rollback imposible                          | punto de recuperación, versiones exactas, forward-fix y conciliación        | `SUPA-TRANS-011`; `SUPA-TRANS-013`        |
+| entorno abandonado                          | lifecycle, revocación, disposición y ledger de decommissioning              | `SUPA-TRANS-013`; gobierno de plataforma  |
+
+#### 45. Decisiones reservadas
+
+| Decisión                                                | Tarea propietaria                                     |
+| ------------------------------------------------------- | ----------------------------------------------------- |
+| project refs, branches, regiones y compute concretos    | `SUPA-TRANS-013`; `SUPA-TRANS-015`                    |
+| inventario y asignación definitiva de `vento-os-dev`    | `SUPA-TRANS-013`; `SUPA-TRANS-015`                    |
+| aprovisionamiento, linking y configuración hosted       | `SUPA-TRANS-015`; paquetes E5                         |
+| secrets, keys, rotación, revocación y custodias físicas | `SUPA-TRANS-013`; paquetes de seguridad e integración |
+| datasets, sanitización y disposición de datos derivados | gobierno de información; `SUPA-TRANS-013`             |
+| implementación de overlays y manifests                  | `SUPA-TRANS-013`; `SUPA-TRANS-015`                    |
+| pipelines, gates y comparación remota                   | `SHELL-CI-017`; `SUPA-TRANS-013`                      |
+| migraciones, backfills, cutover y rollback físico       | `SUPA-TRANS-004` a `SUPA-TRANS-015`                   |
+| separación física de VITAL                              | gobierno de plataforma y transición aplicable         |
+| consolidación normativa mediante ADR                    | `SUPA-ARC-025`                                        |
+
+No queda una brecha narrativa sin destino. Esta tarea no selecciona plan comercial, región, tamaño de cómputo o proveedor alternativo.
+
+#### 46. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear, clonar, pausar, enlazar, restaurar o eliminar proyectos o branches;
+- asignar `vento-os-dev` a una clase definitiva;
+- cambiar `config.toml`, hosted configuration, Auth, API, red o extensiones;
+- revelar, copiar, crear, rotar o revocar keys y secretos;
+- copiar, anonimizar, exportar o eliminar datos y objetos;
+- crear buckets, publicaciones, canales, Edge Functions, cron, jobs o proveedores;
+- ejecutar migraciones, replay, diff, tests, carga, restore o clean room;
+- modificar grants, RLS, policies, schemas, tablas, vistas, funciones o tipos;
+- publicar packages, cambiar consumidores, desplegar aplicaciones o hacer cutover;
+- declarar staging o producción certificados por inferencia;
+- iniciar `SUPA-ARC-025` antes de aprobación expresa.
+
+#### 47. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-1583 a TREQ-SUPABASE-1655
+```
+
+Los setenta y tres requisitos protegen clases, identidad, lifecycle, manifiestos, proyecto actual, promoción, procedencia, configuración, local, pruebas, staging, producción, datos, sanitización, identidades, secretos, proveedores, Auth, API, RLS, red, migraciones, Storage, Realtime, Edge, cron, contratos, tipos, suites, capacidad, recuperación, observabilidad, rollout, emergencia, retiro, drift y gate integral. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 48. Criterios de aceptación
+
+- [ ] Existe una arquitectura ambiental versionada única.
+- [ ] Se definen exactamente cuatro clases sin inferirlas desde nombres o branches.
+- [ ] `vento-os-dev` permanece `UNRESOLVED_BLOCKING` hasta inventario y decisión explícitos.
+- [ ] Se definen tres transiciones de promoción y se prohíben atajos a producción.
+- [ ] Los ocho estados de lifecycle cubren aprovisionamiento, bloqueo y retiro.
+- [ ] Cada instancia utiliza las dieciocho secciones del manifiesto.
+- [ ] Local, test, staging y producción tienen fronteras inequívocas de datos y efectos.
+- [ ] Los cinco perfiles de datos impiden `PRODUCTION_LIVE` fuera de producción.
+- [ ] Configuración base, overlays y referencias de secretos permanecen separados.
+- [ ] `config.toml` no se trata como snapshot hosted.
+- [ ] Project refs, keys, secrets, providers, redirects y callbacks hosted no se comparten entre staging y producción.
+- [ ] Auth, API, RLS, Storage, Realtime, Edge, cron y extensiones tienen paridad declarativa.
+- [ ] Se promueve el mismo candidato inmutable, no una copia del estado de base.
+- [ ] Datos derivados de producción exigen sanitización irreversible y disposición.
+- [ ] Clean room no se confunde con staging ni abre efectos externos.
+- [ ] Los doce gates cubren seguridad, datos, contratos, pruebas, capacidad y recuperación.
+- [ ] Emergencias se reconcilian forward-only y no dejan drift permanente.
+- [ ] El retiro cubre recursos, secretos, datos, callbacks, logs y backups.
+- [ ] Las veintiséis clases de drift son detectables.
+- [ ] Se generan `TREQ-SUPABASE-1583` a `TREQ-SUPABASE-1655`.
+- [ ] No se ejecutan cambios físicos ni se inicia la tarea siguiente.
+
+#### 49. Controles estructurales requeridos
+
+| Control                                   | Resultado esperado |
+| ----------------------------------------- | -----------------: |
+| clases ambientales                        |              **4** |
+| proyectos remotos observados              |              **1** |
+| proyectos staging certificados            |              **0** |
+| proyectos producción certificados         |              **0** |
+| transiciones de promoción                 |              **3** |
+| estados de lifecycle                      |              **8** |
+| secciones de manifest                     |             **18** |
+| perfiles de datos                         |              **5** |
+| gates de promoción                        |             **12** |
+| clases de drift                           |             **26** |
+| registros normativos integrados           |              **7** |
+| datos live permitidos fuera de producción |              **0** |
+| secretos compartidos staging-producción   |              **0** |
+| atajos directos hacia producción          |              **0** |
+| requisitos nuevos                         |             **73** |
+| cambios físicos                           |              **0** |
+
+#### 50. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-023 — Definir generación canónica de tipos para consumidores
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-024 — Definir entornos local, pruebas, staging y producción
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos
+```
+
+`SUPA-ARC-025` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
