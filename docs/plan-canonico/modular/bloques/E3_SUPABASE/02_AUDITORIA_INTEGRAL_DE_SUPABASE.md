@@ -7240,224 +7240,1197 @@ La implementación de índices, retención, observabilidad y gates corresponde a
 
 ### ✅ SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos
 
-**Estado:** PROPUESTA PARA APROBACIÓN
+**Estado:** APROBADA
 **Fecha de preparación documental:** 2026-07-29
 **Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
-**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos`
+**Marcador exacto que reemplaza:** `### ✅ SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos`
 **Tarea anterior:** `SUPA-AUD-020 — Auditar índices, consultas, planes, crecimiento y retención` — APROBADA
-**Siguiente tarea:** `SUPA-AUD-022 — Consolidar hallazgos y definir arquitectura objetivo de Supabase`
+**Siguiente tarea:** `SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales`
 **Proyecto observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
-**Repositorio canónico declarado:** `devVentoGroup/vento-shell` — rama `main` — commit observado `7093db8acfdd28d1d0db3df395779380d67b69c5`
+**Repositorio canónico:** `devVentoGroup/vento-shell` — rama `main`
 **Tipo de tarea:** auditoría documental y técnica read-only de generación, distribución y consumo de tipos derivados de Supabase; sin generación persistida, commits, cambios de código, migraciones ni modificaciones remotas
 
 #### 1. Objetivo
 
-Determinar si el esquema real de Supabase produce un contrato TypeScript único, reproducible y consumido por todas las aplicaciones; identificar clientes sin genérico, tipos manuales, casts de escape, divergencias de SDK, RPCs y schemas omitidos; y definir las puertas necesarias para impedir drift entre migraciones, tipos y despliegues.
+Determinar si el esquema real de Supabase produce un contrato TypeScript único, reproducible, versionado y consumido por todas las aplicaciones; identificar clientes sin genérico `Database`, tipos manuales, casts de escape, divergencias de SDK, RPC sin firmas generadas, schemas omitidos y ausencia de gates de compatibilidad; y fijar las condiciones que deberán impedir drift entre migraciones, tipos y despliegues.
 
-Esta tarea es exclusivamente diagnóstica. **No genera ni distribuye un archivo de tipos, no cambia clientes, no instala dependencias, no crea workflows, no modifica migraciones y no realiza escrituras remotas.**
+La tarea no genera todavía el artefacto de tipos, no cambia clientes, no instala dependencias, no crea workflows, no modifica migraciones y no escribe en Supabase.
 
 #### 2. Regla canónica derivada
 
-El tipo de base de datos no será una copia auxiliar ni una fotografía informal. Será un artefacto generado, versionado y verificable que:
+El tipo de base de datos será un artefacto generado, versionado y verificable que:
 
-1. declara exactamente de qué proyecto, migración, commit, versión de CLI y schemas procede;
-2. se distribuye desde una única fuente;
-3. tipa clientes browser, server, mobile, service-role y Edge Functions;
-4. falla CI cuando el esquema y el artefacto divergen;
-5. no permite que `any`, tipos manuales o copias locales oculten incompatibilidades.
+1. declare proyecto, fuente de esquema, migración máxima, commit, versión de CLI y schemas incluidos;
+2. se produzca desde `vento-shell` como custodio técnico de migraciones y contratos compartidos;
+3. se distribuya mediante un paquete compartido versionado, sin copias manuales entre repositorios;
+4. tipe clientes browser, server, mobile, service-role y Edge Functions según el alcance permitido;
+5. incluya tablas, vistas, relaciones, funciones, enums, nullability, columnas generadas y diferencias entre `Row`, `Insert` y `Update`;
+6. falle en CI cuando el esquema, el artefacto o los consumidores diverjan;
+7. no permita que `any`, casts, `overrideTypes` o tipos manuales oculten incompatibilidades;
+8. mantenga validación runtime para JSONB, entradas externas, Edge Functions, Realtime y Storage.
 
-La compilación de una aplicación aislada no demuestra compatibilidad transversal. Una migración solo podrá promoverse cuando todos los consumidores aplicables compilen y sus contratos runtime estén validados.
+La compilación aislada de una aplicación no demuestra compatibilidad transversal. Una migración incompatible solo podrá promoverse cuando todos los consumidores aplicables compilen y sus contratos runtime estén validados.
 
-#### 3. Fuentes congeladas
+#### 3. Fuentes de verdad utilizadas
 
-| Fuente                                             | Estado congelado                                                                             | Uso en esta tarea                                           |
-| -------------------------------------------------- | -------------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
-| `SUPA-AUD-020.md`                                  | SHA-256 `06f5102430fd2124b99c631074c28bf4fd6634ca2b1c16b064d7671bf8bc9359`                   | Plantilla y continuidad canónica                            |
-| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` | SHA-256 `3ecd6e443e0e3f6943c492de70d504e59b850d7555046c27594ad623869c95a5`; 4.687 requisitos | Base exacta para regeneración                               |
-| Supabase remoto `clzdpinthhtknkmefsxx`             | PostgreSQL 17.6; ocho schemas empresariales                                                  | Superficie de tipos, solo lectura                           |
-| GitHub `devVentoGroup`                             | doce repositorios activos inventariados y `vento-platform` archivado                         | Clientes, paquetes, scripts, Edge Functions y consumo       |
-| `vento-shell`                                      | commit observado `7093db8acfdd28d1d0db3df395779380d67b69c5`                                  | Repositorio de migraciones y candidato a productor canónico |
-| Documentación oficial Supabase                     | generación con `supabase gen types`, genérico `Database` y verificación CI                   | Criterios actuales de generación y consumo                  |
+| Fuente                                             | Estado utilizado                                                                       | Responsabilidad                                                                                           |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `SUPA-AUD-001` a `SUPA-AUD-020`                    | tareas aprobadas de BLOQUE E3                                                          | inventarios de schemas, relaciones, funciones, seguridad, integraciones, migraciones, drift y rendimiento |
+| Supabase `clzdpinthhtknkmefsxx`                    | PostgreSQL `17.6`; consulta read-only del 2026-07-29                                   | superficie real de nueve schemas gobernados por Vento                                                     |
+| `devVentoGroup/vento-shell`                        | rama `main`; último commit remoto observado `a465917c81c76fc4422be1eef7dfae11fb8d0351` | migraciones, scripts documentales y dependencia de Supabase CLI                                           |
+| repositorios `devVentoGroup`                       | doce repositorios activos inventariados y `vento-platform` archivado                   | clientes Supabase, SDK, tipos manuales y consumo potencial                                                |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` | 4.717 requisitos; última tarea incorporada `SUPA-AUD-021`                              | registro único de requisitos de prueba                                                                    |
 
-#### 4. Alcance observado
+La cabecera remota permanece administrativamente detrás de la secuencia local aprobada. No se descarta ni reescribe el avance local por ese desfase.
 
-##### 4.1 Superficie de base de datos
+#### 4. Superficie real de tipos
 
-| Schema     |  Tablas | Vistas |  Columnas | Funciones |  Enums |
-| ---------- | ------: | -----: | --------: | --------: | -----: |
-| `public`   |     185 |     61 |     3.248 |       246 |      7 |
-| `pass`     |      26 |      1 |       344 |        30 |      1 |
-| `payments` |       2 |      0 |        27 |         1 |      1 |
-| `pos`      |      13 |      0 |       133 |         1 |      1 |
-| `viso`     |      12 |      0 |       143 |         1 |      1 |
-| `vital`    |      54 |      0 |       478 |        47 |      7 |
-| `talento`  |      13 |      0 |       144 |        16 |      7 |
-| `club`     |      11 |      0 |        99 |         7 |      1 |
-| **Total**  | **316** | **62** | **4.616** |   **349** | **26** |
+##### 4.1. Schemas gobernados por Vento
 
-La generación debe decidir explícitamente cuáles schemas entran al contrato. Incluir solo `public` dejaría fuera modelos y funciones de PASS, pagos, POS, VISO, VITAL, TALENTO y CLUB.
+| Schema        |  Tablas | Vistas |  Columnas | Funciones | Enums definidos |
+| ------------- | ------: | -----: | --------: | --------: | --------------: |
+| `app_private` |       1 |      0 |         3 |         1 |               0 |
+| `public`      |     185 |     61 |     3.248 |       246 |               7 |
+| `pass`        |      26 |      1 |       344 |        30 |               0 |
+| `payments`    |       2 |      0 |        27 |         0 |               0 |
+| `pos`         |      13 |      0 |       133 |         0 |               0 |
+| `viso`        |      12 |      0 |       143 |         0 |               0 |
+| `talento`     |      13 |      0 |       144 |        16 |               7 |
+| `club`        |      11 |      0 |        99 |         7 |               0 |
+| `vital`       |      54 |      0 |       478 |        47 |               7 |
+| **Total**     | **317** | **62** | **4.619** |   **347** |          **21** |
 
-##### 4.2 Repositorios consumidores potenciales
+La superficie gobernada por Vento contiene **379 relaciones**: 317 tablas y 62 vistas.
 
-Se inventariaron: `vento-shell`, `vento-pass`, `vento-anima`, `vento-nexo`, `vento-pulso`, `vento-origo`, `vento-fogo`, `vento-viso`, `vento-vital`, `vento-talento`, `Vento-Group` y `vento-numera`. `vento-platform` permanece archivado y deberá tratarse como consumidor histórico, no como fuente vigente.
+`app_private` forma parte del gobierno de Vento, pero su contrato deberá ser exclusivamente server-side o interno cuando corresponda. Su inclusión en una generación no implica exposición mediante Data API ni acceso de clientes públicos.
+
+`vital` pertenece al producto VITAL y deberá conservar separación de paquete, consumidores y despliegue respecto de Vento OS, aunque comparta el proyecto Supabase actual.
+
+##### 4.2. Diferencia entre definición y uso de enums
+
+Los **21 enums definidos físicamente** se distribuyen entre `public`, `talento` y `vital`. Una tabla de otro schema puede utilizar un tipo definido fuera de su namespace; por ello el contrato generado deberá resolver tipos referenciados y no inventar un enum por schema consumidor.
+
+##### 4.3. Repositorios consumidores potenciales
+
+Se inventariaron:
+
+- `vento-shell`;
+- `vento-pass`;
+- `vento-anima`;
+- `vento-nexo`;
+- `vento-pulso`;
+- `vento-origo`;
+- `vento-fogo`;
+- `vento-viso`;
+- `vento-vital`;
+- `vento-talento`;
+- `Vento-Group`;
+- `vento-numera`.
+
+`vento-platform` permanece archivado y se trata como consumidor histórico, no como fuente vigente.
 
 #### 5. Resultado ejecutivo
 
-| Dimensión                                          |               Resultado |
-| -------------------------------------------------- | ----------------------: |
-| Artefactos `database.types` encontrados            |                       0 |
-| Comandos canónicos de generación encontrados       |                       0 |
-| Workflows de verificación de drift encontrados     |                       0 |
-| Clientes inspeccionados con genérico `Database`    |                       0 |
-| Schemas empresariales                              |                       8 |
-| Objetos tabulares o vistas                         |                     378 |
-| Funciones empresariales                            |                     349 |
-| Enums empresariales                                |                      26 |
-| Repositorios activos potencialmente consumidores   |                      12 |
-| Versiones observadas de `supabase-js`              | 2.88.x, 2.90.x y 2.91.x |
-| Repositorios observados con Supabase CLI declarado |       1 (`vento-shell`) |
-| Brechas formalizadas                               |                      23 |
+| Dimensión                                         |                     Resultado |
+| ------------------------------------------------- | ----------------------------: |
+| artefactos `database.types` canónicos encontrados |                         **0** |
+| comandos canónicos de generación encontrados      |                         **0** |
+| workflows de verificación de drift encontrados    |                         **0** |
+| clientes inspeccionados con genérico `Database`   |                         **0** |
+| schemas gobernados por Vento                      |                         **9** |
+| tablas y vistas gobernadas por Vento              |                       **379** |
+| columnas de tablas y vistas                       |                     **4.619** |
+| funciones gobernadas por Vento                    |                       **347** |
+| enums definidos en schemas Vento                  |                        **21** |
+| repositorios activos potencialmente consumidores  |                        **12** |
+| repositorios con Supabase CLI declarada           |          **1**, `vento-shell` |
+| versiones observadas de `supabase-js`             | `2.88.x`, `2.90.x` y `2.91.x` |
+| brechas formalizadas                              |                        **23** |
 
-El sistema usa TypeScript, pero **no tiene tipado end-to-end de base de datos**. Los SDK conservan sus tipos propios, mientras tablas, columnas, relaciones, nullability, enums, views y RPCs llegan a las aplicaciones sin un contrato generado común.
+El ecosistema utiliza TypeScript, pero no dispone de tipado end-to-end de base de datos. Los SDK conservan sus tipos internos, mientras tablas, columnas, relaciones, nullability, enums, vistas y RPC llegan a las aplicaciones sin un contrato generado común.
 
-#### 6. Generación
+#### 6. Generación y procedencia
 
-No se encontró `database.types.ts`, `schema.gen.ts`, script `update-types`, `supabase gen types` ni workflow equivalente en los repositorios inspeccionados. `vento-shell` declara `supabase` como dependencia, pero sus scripts no generan ni verifican tipos.
+No se encontró `database.types.ts`, `schema.gen.ts`, script `update-types`, ejecución canónica de `supabase gen types` ni workflow equivalente en los repositorios inspeccionados.
 
-La fuente canónica propuesta es `vento-shell`, porque ya concentra migraciones y gobierno documental. Sin embargo, la generación no deberá depender ciegamente del remoto mutable: CI deberá poder reconstruir una base desde migraciones aprobadas, generar tipos y comparar el resultado.
+`vento-shell` será el productor técnico porque concentra migraciones y gobierno compartido. La generación deberá poder ejecutarse contra una base reconstruida desde migraciones aprobadas y compararse con el artefacto versionado. El remoto mutable no será la única fuente reproducible.
 
-#### 7. Consumo de clientes
+El manifiesto de procedencia deberá contener, como mínimo:
 
-Los clientes representativos de `vento-shell`, `vento-pass`, `vento-anima`, `vento-nexo`, `vento-pulso` y `vento-origo` llaman `createClient`, `createBrowserClient` o `createServerClient` sin genérico `Database`. En consecuencia:
+```text
+project_ref
+source_mode
+max_migration
+source_commit
+supabase_cli_version
+postgres_version
+ordered_schemas
+schema_hashes
+artifact_hash
+generated_at
+```
 
-- `.from()` no queda restringido por el esquema empresarial generado;
+#### 7. Política de schemas y recortes
+
+La arquitectura deberá definir una matriz explícita para los nueve schemas:
+
+| Clase                                                          | Regla de tipado                                                                                                        |
+| -------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `public`, `pass`, `payments`, `pos`, `viso`, `talento`, `club` | incluir según clientes, servidor y RPC realmente consumidos                                                            |
+| `app_private`                                                  | recorte interno o server-only; nunca convertir su inclusión en exposición pública                                      |
+| `vital`                                                        | paquete o recorte separado para consumidores VITAL; no obligar a aplicaciones Vento OS a cargar su superficie completa |
+
+Exposición Data API y generación de tipos son decisiones independientes. Un schema privado puede requerir tipos de servidor, y un schema expuesto no debe otorgar acceso únicamente porque aparezca en el artefacto.
+
+#### 8. Consumo de clientes
+
+Los clientes representativos de `vento-shell`, `vento-pass`, `vento-anima`, `vento-nexo`, `vento-pulso` y `vento-origo` utilizan `createClient`, `createBrowserClient` o `createServerClient` sin el genérico `Database`.
+
+Consecuencias:
+
+- `.from()` no queda restringido por relaciones existentes;
 - inserts y updates no distinguen de forma canónica campos requeridos, opcionales o generados;
-- relaciones y nullability dependen de tipos manuales o inferencia incompleta;
-- RPCs no reciben `Args` y `Returns` derivados de la firma real.
+- joins y relaciones dependen de inferencia incompleta o tipos manuales;
+- nullability puede ser reinterpretada localmente;
+- RPC no reciben `Args` y `Returns` derivados de la firma real;
+- enums se degradan a strings libres;
+- cambios incompatibles pueden llegar a runtime sin fallo de compilación.
 
-PULSO mantiene además dos clientes browser en rutas distintas y con configuración diferente. Esta duplicidad deberá resolverse antes de introducir el contrato compartido.
+PULSO mantiene dos fábricas browser con configuración diferente. Antes de introducir el paquete común deberá existir una fábrica canónica por modalidad de cliente.
 
-#### 8. Tipos manuales y escapes
+#### 9. Tipos manuales y escapes
 
-Sin un artefacto generado no es posible separar automáticamente DTOs legítimos de duplicaciones del esquema. La auditoría encontró patrones `any` y casts en código de autenticación y consumo de datos. No se exige eliminarlos todos de inmediato; se exige un ledger con motivo, owner y fecha de retiro, además de un presupuesto decreciente en CI.
+Los DTO de presentación legítimos deberán permanecer separados del contrato de persistencia. Todo tipo que replique una tabla, vista, enum, fila, insert, update, RPC o payload Realtime deberá reconciliarse con el artefacto generado.
 
-`overrideTypes` podrá utilizarse únicamente cuando el generador no represente correctamente una vista o JSONB y deberá acompañarse de prueba contractual. Nunca será una forma de silenciar drift.
+`any`, casts, `overrideTypes` y superposiciones manuales deberán:
 
-#### 9. RPCs, vistas, enums y JSONB
+1. tener motivo explícito;
+2. identificar objeto afectado;
+3. tener propietario y fecha de retiro;
+4. contar con prueba contractual o runtime;
+5. quedar dentro de un presupuesto decreciente de CI.
 
-La base observada contiene 349 funciones, 62 vistas y 26 enums. Estos objetos deben formar parte del contrato:
+`overrideTypes` solo será válido para corregir una limitación demostrada del generador o representar un JSONB de dominio con validación runtime. No será una vía para silenciar drift.
 
-- RPCs mediante `Functions[...].Args` y `Returns`;
-- vistas y relaciones con nullability validada;
-- enums como uniones generadas, no strings libres;
-- JSONB crítico mediante tipos de dominio y validación runtime;
-- columnas generadas y defaults diferenciados entre `Row`, `Insert` y `Update`.
+#### 10. RPC, vistas, enums y JSONB
 
-Los overloads y aliases legacy identificados en tareas previas refuerzan la necesidad de generación reproducible y pruebas de compatibilidad.
+El contrato deberá cubrir:
 
-#### 10. Distribución y versionado
+- 347 funciones mediante `Database[Schema]['Functions'][...]['Args'|'Returns']` o helpers equivalentes;
+- 62 vistas con relaciones y nullability verificadas;
+- 21 enums definidos y todos sus usos referenciados;
+- JSONB crítico mediante tipos de dominio y validadores runtime;
+- columnas generadas, defaults e identidad diferenciados entre `Row`, `Insert` y `Update`;
+- overloads mediante firma inequívoca y pruebas de compatibilidad.
 
-No se recomienda copiar un archivo completo a doce repositorios. La arquitectura objetivo deberá publicar un paquete compartido versionado con:
+Los alias y objetos legacy identificados por auditorías anteriores deberán mantenerse tipados durante su ventana de compatibilidad y retirarse únicamente después de demostrar cero consumidores.
 
-- artefacto generado;
+#### 11. Distribución y versionado
+
+No se copiará un archivo completo a doce repositorios. La arquitectura objetivo deberá publicar un paquete compartido versionado que incluya:
+
+- artefacto generado o recortes generados;
 - helpers `Tables`, `TablesInsert`, `TablesUpdate`, `Enums` y `Json`;
 - manifiesto de procedencia;
-- hash por schema;
-- compatibilidad mínima de SDK y TypeScript;
-- changelog de cambios destructivos.
+- hashes por schema y del artefacto;
+- compatibilidad mínima de Supabase SDK, TypeScript, Next.js y Expo;
+- changelog de cambios destructivos;
+- política de deprecación y retiro.
 
-Cada repositorio deberá fijar una versión exacta y participar en una matriz de compilación antes de promover migraciones incompatibles.
+Cada repositorio fijará una versión exacta y participará en la matriz de compilación antes de promover una migración incompatible.
 
-#### 11. Realtime, Storage y Edge Functions
+#### 12. Realtime, Storage y Edge Functions
 
-Los tipos generados no sustituyen validación runtime. Realtime deberá derivar payloads de `Row`; Edge Functions deberán validar entradas y respuestas incluso usando tipos compartidos; Storage requerirá catálogo tipado de buckets y metadata. Los clientes privilegiados seguirán separados por credencial y entorno, aunque compartan el contrato de esquema.
+Los tipos generados no sustituyen validación runtime.
 
-#### 12. Límites de la evidencia
-
-- La búsqueda de GitHub puede omitir archivos no indexados o cambios con menos de dos horas.
-- `vento-numera` no aparece indexado para búsqueda de código y requiere validación local posterior.
-- No se generó un archivo real para evitar introducir una fuente paralela o escribir secretos.
-- No se ejecutó `tsc` transversal porque los repositorios no están montados localmente.
-- No se certificó todavía qué schemas deben exponerse por Data API; exposición y tipado son decisiones distintas.
-- Los conteos de objetos reflejan la captura del 29 de julio de 2026.
+- Realtime derivará payloads de `Row` y validará schema, tabla y evento.
+- Edge Functions importarán un contrato compatible o un recorte generado y validarán entrada y salida.
+- Storage utilizará un catálogo tipado único de buckets, rutas y metadata.
+- Clientes privilegiados y públicos permanecerán separados por credencial y entorno.
+- JSONB, webhooks y entradas externas conservarán validadores runtime aunque exista tipado TypeScript.
 
 #### 13. Registro de brechas
 
-| ID                   | Brecha                                                                                                 | Estado    | Prioridad |
-| -------------------- | ------------------------------------------------------------------------------------------------------ | --------- | --------- |
-| `B-SUPA-AUD-021-001` | No existe un archivo canónico generado de tipos de base de datos consumido por las aplicaciones.       | `ABIERTA` | Crítica   |
-| `B-SUPA-AUD-021-002` | Ningún cliente Supabase inspeccionado recibe el genérico Database.                                     | `ABIERTA` | Crítica   |
-| `B-SUPA-AUD-021-003` | No existe un comando canónico y reproducible de generación de tipos.                                   | `ABIERTA` | Crítica   |
-| `B-SUPA-AUD-021-004` | No existe gate CI que compare esquema y artefacto generado.                                            | `ABIERTA` | Crítica   |
-| `B-SUPA-AUD-021-005` | No está definida la fuente de generación: remoto aprobado, local migrado o rama de preview.            | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-006` | No existe manifiesto que vincule tipos con project ref, migración y commit.                            | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-007` | Los ocho esquemas empresariales no tienen política explícita de inclusión o exclusión.                 | `ABIERTA` | Crítica   |
-| `B-SUPA-AUD-021-008` | Los esquemas no expuestos podrían omitirse silenciosamente aunque los consuman RPCs o código servidor. | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-009` | No existe paquete compartido versionado para distribuir tipos entre repositorios.                      | `ABIERTA` | Crítica   |
-| `B-SUPA-AUD-021-010` | Copiar tipos manualmente entre repositorios no está prohibido ni detectado.                            | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-011` | PULSO mantiene dos fábricas de cliente de navegador sin contrato único.                                | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-012` | Clientes browser, server, mobile y Edge Functions no comparten una firma tipada uniforme.              | `ABIERTA` | Crítica   |
-| `B-SUPA-AUD-021-013` | No existe inventario de clientes Supabase y su modalidad de credencial.                                | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-014` | Los tipos manuales de filas y payloads no están reconciliados con tipos generados.                     | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-015` | El uso de any y casts de escape puede ocultar drift de columnas, nullability y RPCs.                   | `ABIERTA` | Crítica   |
-| `B-SUPA-AUD-021-016` | No existe presupuesto ni registro de excepciones para overrideTypes, any o casts.                      | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-017` | No existe contrato tipado para RPC Args y Returns.                                                     | `ABIERTA` | Crítica   |
-| `B-SUPA-AUD-021-018` | No existe contrato tipado para views, relaciones y joins embebidos.                                    | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-019` | No existe política para JSONB, enums y dominios que evite degradación a Json o string libre.           | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-020` | No existe estrategia para tipos de Storage, Realtime y Edge Function payloads.                         | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-021` | Las versiones de supabase-js divergen entre repositorios y no hay matriz de compatibilidad.            | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-022` | Solo vento-shell declara Supabase CLI y tampoco lo usa para generar tipos.                             | `ABIERTA` | Alta      |
-| `B-SUPA-AUD-021-023` | No existe validador integral de generación, distribución, consumo y drift de tipos.                    | `ABIERTA` | Crítica   |
+| ID                   | Brecha                                                                                                 | Estado    | Prioridad | Resolución asignada                                            |
+| -------------------- | ------------------------------------------------------------------------------------------------------ | --------- | --------- | -------------------------------------------------------------- |
+| `B-SUPA-AUD-021-001` | no existe artefacto generado canónico                                                                  | `ABIERTA` | crítica   | `SUPA-ARC-023`; `SUPA-TRANS-010`                               |
+| `B-SUPA-AUD-021-002` | ningún cliente inspeccionado recibe `Database`                                                         | `ABIERTA` | crítica   | `SUPA-ARC-023`; `SUPA-TRANS-010`                               |
+| `B-SUPA-AUD-021-003` | no existe comando reproducible de generación                                                           | `ABIERTA` | crítica   | `SUPA-ARC-023`; `SHELL-CI-017`                                 |
+| `B-SUPA-AUD-021-004` | no existe gate CI de drift                                                                             | `ABIERTA` | crítica   | `SHELL-CI-017`; `SUPA-TRANS-010`                               |
+| `B-SUPA-AUD-021-005` | no está fijada la fuente de generación                                                                 | `ABIERTA` | alta      | `SUPA-ARC-023`                                                 |
+| `B-SUPA-AUD-021-006` | no existe manifiesto de procedencia                                                                    | `ABIERTA` | alta      | `SUPA-ARC-023`; `SHELL-CI-017`                                 |
+| `B-SUPA-AUD-021-007` | los nueve schemas gobernados por Vento carecen de política explícita de inclusión, recorte o exclusión | `ABIERTA` | crítica   | `SUPA-AUD-022`; `SUPA-ARC-023`                                 |
+| `B-SUPA-AUD-021-008` | schemas privados o separados pueden omitirse aunque los use servidor, RPC o VITAL                      | `ABIERTA` | alta      | `SUPA-AUD-022`; `SUPA-ARC-023`                                 |
+| `B-SUPA-AUD-021-009` | no existe paquete compartido versionado                                                                | `ABIERTA` | crítica   | `SHELL-PKG-001`; `SUPA-TRANS-010`                              |
+| `B-SUPA-AUD-021-010` | no está prohibida ni detectada la copia manual                                                         | `ABIERTA` | alta      | `SHELL-CI-017`                                                 |
+| `B-SUPA-AUD-021-011` | PULSO mantiene dos fábricas browser                                                                    | `ABIERTA` | alta      | `SUPA-TRANS-010`                                               |
+| `B-SUPA-AUD-021-012` | browser, server, mobile y Edge no comparten firma tipada                                               | `ABIERTA` | crítica   | `SUPA-ARC-023`; `SUPA-TRANS-010`                               |
+| `B-SUPA-AUD-021-013` | no existe inventario de clientes y credenciales                                                        | `ABIERTA` | alta      | `SUPA-AUD-022`; `SUPA-ARC-023`                                 |
+| `B-SUPA-AUD-021-014` | tipos manuales no están reconciliados                                                                  | `ABIERTA` | alta      | `SUPA-TRANS-010`; `SHELL-CI-017`                               |
+| `B-SUPA-AUD-021-015` | `any` y casts pueden ocultar drift                                                                     | `ABIERTA` | crítica   | `SHELL-CI-017`                                                 |
+| `B-SUPA-AUD-021-016` | no existe ledger ni presupuesto de escapes                                                             | `ABIERTA` | alta      | `SHELL-CI-017`                                                 |
+| `B-SUPA-AUD-021-017` | RPC no tienen `Args` y `Returns` generados                                                             | `ABIERTA` | crítica   | `SUPA-ARC-023`; `SUPA-TRANS-010`                               |
+| `B-SUPA-AUD-021-018` | vistas, relaciones y joins carecen de contrato común                                                   | `ABIERTA` | alta      | `SUPA-ARC-023`; `SUPA-TRANS-010`                               |
+| `B-SUPA-AUD-021-019` | JSONB y enums pueden degradarse a `Json` o string libre                                                | `ABIERTA` | alta      | `SUPA-ARC-023`; `SUPA-TRANS-010`                               |
+| `B-SUPA-AUD-021-020` | Storage, Realtime y Edge carecen de estrategia tipada común                                            | `ABIERTA` | alta      | `SUPA-ARC-018`; `SUPA-ARC-019`; `SUPA-ARC-020`; `SUPA-ARC-023` |
+| `B-SUPA-AUD-021-021` | versiones de SDK divergen entre repositorios                                                           | `ABIERTA` | alta      | `SHELL-PKG-001`; `SUPA-TRANS-010`                              |
+| `B-SUPA-AUD-021-022` | solo `vento-shell` declara CLI y no genera tipos                                                       | `ABIERTA` | alta      | `SUPA-ARC-023`; `SHELL-CI-017`                                 |
+| `B-SUPA-AUD-021-023` | no existe validador integral                                                                           | `ABIERTA` | crítica   | `SHELL-CI-017`; `SUPA-TRANS-010`                               |
 
-
-Toda brecha queda vinculada a los TREQ de esta tarea y a `SUPA-AUD-022`, `SUPA-TRANS-010`, `SHELL-PKG-001` o `SHELL-CI-017`; no quedan pendientes narrativos sin puerta documental.
+No queda brecha sin tarea de resolución.
 
 #### 14. Decisiones y rutas de resolución
 
-1. **Productor único:** `vento-shell` generará el artefacto desde migraciones y procedencia congelada.
-2. **Distribución versionada:** un paquete compartido sustituirá copias manuales.
-3. **Schemas explícitos:** los ocho schemas se incluirán o excluirán mediante matriz aprobada.
-4. **Clientes genéricos:** toda fábrica Supabase recibirá `Database` o un recorte generado justificable.
-5. **Drift bloqueante:** CI regenerará y comparará tipos en cada cambio de esquema.
-6. **Escapes gobernados:** `any`, casts y overrides tendrán ledger y presupuesto decreciente.
-7. **Promoción transversal:** todos los consumidores aplicables compilarán contra la versión candidata.
-8. **Runtime además de TypeScript:** JSONB, Edge, Realtime y entradas externas conservarán validación runtime.
+1. `vento-shell` será el productor técnico único del artefacto.
+2. La base reconstruida desde migraciones aprobadas será fuente reproducible de CI.
+3. Los nueve schemas tendrán matriz explícita de inclusión, recorte o exclusión.
+4. `app_private` se tratará como contrato interno o server-only.
+5. VITAL utilizará un recorte o paquete separado cuando corresponda.
+6. Un paquete compartido versionado sustituirá cualquier copia manual.
+7. Toda fábrica Supabase recibirá `Database` o un recorte generado justificable.
+8. CI regenerará y comparará el artefacto ante cambios de esquema.
+9. Los escapes tendrán ledger, prueba y presupuesto decreciente.
+10. Todos los consumidores aplicables compilarán contra la versión candidata.
+11. JSONB, Edge, Realtime, Storage y entradas externas conservarán validación runtime.
+12. Ningún objeto se retirará hasta demostrar cero consumidores o sustitución desplegada.
 
-#### 15. Requisitos incorporados
+#### Requisitos de prueba derivados
 
-Se crean 30 requisitos en el registro 04A regenerado:
+**Resultado:** GENERA REQUISITOS DE PRUEBA
 
-`TREQ-SUPABASE-393` a `TREQ-SUPABASE-422`
+Se conservan `TREQ-SUPABASE-393` a `TREQ-SUPABASE-422` como requisitos originados por esta tarea.
 
-El detalle normativo reside únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+| ID                                        | Regla protegida                                                        | Tipo                               | Prioridad | Momento de implementación                | Destino                                                        |
+| ----------------------------------------- | ---------------------------------------------------------------------- | ---------------------------------- | --------- | ---------------------------------------- | -------------------------------------------------------------- |
+| `TREQ-SUPABASE-393` a `TREQ-SUPABASE-398` | generación única, procedencia, CI, paquete y prohibición de forks      | contractual, migración y regresión | crítica   | arquitectura y transición de tipos       | `SUPA-ARC-023`; `SUPA-TRANS-010`; `SHELL-CI-017`               |
+| `TREQ-SUPABASE-399` a `TREQ-SUPABASE-401` | matriz de nueve schemas, separación de exposición y huellas por schema | contractual y base de datos        | crítica   | mapa de objetos y arquitectura de tipos  | `SUPA-AUD-022`; `SUPA-ARC-023`                                 |
+| `TREQ-SUPABASE-402` a `TREQ-SUPABASE-407` | clientes tipados, fábricas, tipos manuales y presupuesto de escapes    | contractual y regresión            | crítica   | adopción del paquete por consumidores    | `SUPA-TRANS-010`; `SHELL-CI-017`                               |
+| `TREQ-SUPABASE-408` a `TREQ-SUPABASE-415` | 347 funciones, vistas, SDK, 21 enums, JSONB y semántica CRUD           | RPC, integración y regresión       | crítica   | arquitectura y migración de tipos        | `SUPA-ARC-023`; `SUPA-TRANS-010`                               |
+| `TREQ-SUPABASE-416` a `TREQ-SUPABASE-418` | contratos tipados de Realtime, Edge Functions y Storage                | integración y seguridad            | crítica   | arquitectura de cada servicio y adopción | `SUPA-ARC-018`; `SUPA-ARC-019`; `SUPA-ARC-020`; `SUPA-ARC-023` |
+| `TREQ-SUPABASE-419` a `TREQ-SUPABASE-422` | compatibilidad, retiro, compilación transversal y validador integral   | migración y regresión              | crítica   | transición y gates de release            | `SUPA-TRANS-010`; `SHELL-CI-017`                               |
 
-#### 16. Manifiestos de integridad
+El registro `04A` completo corrige el alcance de `TREQ-SUPABASE-399`, `TREQ-SUPABASE-401`, `TREQ-SUPABASE-408`, `TREQ-SUPABASE-413` y `TREQ-SUPABASE-418` sin cambiar sus identificadores ni degradar su estado.
 
-| Manifiesto                                   | SHA-256 o valor                                                           |
-| -------------------------------------------- | ------------------------------------------------------------------------- |
-| Base SUPA-AUD-020                            | `06f5102430fd2124b99c631074c28bf4fd6634ca2b1c16b064d7671bf8bc9359`        |
-| Base 04A                                     | `3ecd6e443e0e3f6943c492de70d504e59b850d7555046c27594ad623869c95a5`        |
-| Superficie empresarial                       | 8 schemas; 316 tablas; 62 vistas; 4.616 columnas; 349 funciones; 26 enums |
-| Repositorios activos inventariados           | 12                                                                        |
-| Artefactos generados encontrados             | 0                                                                         |
-| Clientes inspeccionados tipados con Database | 0                                                                         |
-| Nuevos TREQ                                  | `TREQ-SUPABASE-393` a `TREQ-SUPABASE-422`                                 |
-| Reconstrucción exacta del 04A previo         | `3ecd6e443e0e3f6943c492de70d504e59b850d7555046c27594ad623869c95a5`        |
+#### 15. Manifiestos de integridad
 
-#### 17. Criterio de cierre
+| Manifiesto                                     | Valor                                     |
+| ---------------------------------------------- | ----------------------------------------- |
+| proyecto Supabase                              | `clzdpinthhtknkmefsxx`                    |
+| PostgreSQL                                     | `17.6`                                    |
+| schemas gobernados por Vento                   | **9**                                     |
+| tablas                                         | **317**                                   |
+| vistas                                         | **62**                                    |
+| relaciones                                     | **379**                                   |
+| columnas                                       | **4.619**                                 |
+| funciones                                      | **347**                                   |
+| enums definidos                                | **21**                                    |
+| repositorios activos inventariados             | **12**                                    |
+| artefactos generados encontrados               | **0**                                     |
+| clientes inspeccionados tipados con `Database` | **0**                                     |
+| requisitos originados                          | `TREQ-SUPABASE-393` a `TREQ-SUPABASE-422` |
 
-`SUPA-AUD-021` queda documentalmente completa cuando:
+#### 16. Criterios de aceptación
 
-- los 23 hallazgos tienen dueño y requisito;
-- las 30 filas nuevas están en el 04A completo;
-- el registro conserva 14 columnas, IDs únicos y referencias resolubles;
-- el 04A previo puede reconstruirse byte por byte;
-- el formato replica la estructura canónica de SUPA-AUD-020;
+- se corrigió la siguiente tarea reservada a `SUPA-AUD-022` con su título canónico exacto;
+- se incluyó `app_private` y se reconciliaron nueve schemas gobernados por Vento;
+- se corrigieron los totales a 317 tablas, 62 vistas, 4.619 columnas, 347 funciones y 21 enums definidos;
+- se separó inclusión de tipos, exposición Data API y modalidad de cliente;
+- se preservaron las 23 brechas y sus destinos exactos;
+- se conservaron los 30 requisitos `TREQ-SUPABASE-393` a `TREQ-SUPABASE-422`;
+- no se ejecutó DDL, DML, migración, generación persistida ni modificación remota.
+
+#### 17. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar
+→ propietario actual → consumidores actuales
+```
+
+La continuación no autoriza implementación ni cambios físicos en Supabase.
+
+
+### ✅ SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-29
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Marcador exacto que reemplaza:** `### [ ] SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales`
+**Tarea anterior:** `SUPA-AUD-021 — Auditar generación y consumo de tipos de base de datos` — APROBADA
+**Siguiente tarea:** `SUPA-AUD-023 — Crear mapa proceso → datos → RPC → eventos → aplicaciones`
+**Proyecto observado:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Repositorio canónico:** `devVentoGroup/vento-shell` — rama `main`; commit remoto observado `a465917c81c76fc4422be1eef7dfae11fb8d0351`
+**Tipo de tarea:** consolidación analítica read-only de objetos, capacidades, propietarios y consumidores; sin DDL, DML, migraciones, cambios de owner PostgreSQL, exposición, RLS, Storage, Realtime, Edge Functions, cron, código ni despliegues
+
+#### 1. Objetivo
+
+Crear un mapa integral y verificable que responda para cada objeto técnico gobernado o utilizado por Vento:
+
+```text
+OBJETO TÉCNICO
+        ↓
+CAPACIDAD EMPRESARIAL PRINCIPAL
+        ↓
+PROPIETARIO EMPRESARIAL ACTUAL
+        ↓
+PRODUCTORES ACTUALES
+        ↓
+CONSUMIDORES ACTUALES
+        ↓
+EVIDENCIA, EXPOSICIÓN Y ESTADO DE FUENTE
+```
+
+El artefacto canónico producido es:
+
+```text
+SUPABASE-OBJECT-CAPABILITY-OWNERSHIP-CONSUMER-MAP-022@1.0.0
+```
+
+El mapa describe el estado actual y conserva sus conflictos. No convierte automáticamente una ubicación física, un repositorio, una vista, una aplicación lectora o una intención futura en propiedad empresarial.
+
+#### 2. Reglas canónicas de interpretación
+
+```text
+OBJETO TÉCNICO ≠ CAPACIDAD EMPRESARIAL ≠ PROCESO ≠ APLICACIÓN
+SCHEMA ≠ DOMINIO ≠ PROPIETARIO EMPRESARIAL
+OWNER POSTGRESQL ≠ CUSTODIO TÉCNICO ≠ PROPIETARIO EMPRESARIAL
+PRODUCTOR ≠ PROPIETARIO ≠ CONSUMIDOR
+VISTA O ALIAS ≠ FUENTE DE VERDAD INDEPENDIENTE
+CONSUMIDOR OBJETIVO ≠ CONSUMIDOR ACTUAL
+public ≠ DOMINIO EMPRESARIAL
+vento-shell ≠ APLICACIÓN PROPIETARIA UNIVERSAL
+Supabase ≠ PROPIETARIO EMPRESARIAL
+```
+
+El propietario actual es quien controla la creación o aceptación del registro principal, sus reglas, su corrección autorizada, su estado y su cierre. Una aplicación que solo consulta o presenta información es consumidora.
+
+#### 3. Fuentes de verdad y desfase administrativo
+
+| Fuente                          | Uso                                                                                                                                                               |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SUPA-AUD-001` a `SUPA-AUD-021` | inventario de schemas, relaciones, funciones, triggers, RLS, Auth, Storage, Realtime, Edge, cron, configuración, migraciones, drift, calidad, rendimiento y tipos |
+| `CAP-MAP-004`                   | prueba de aplicación propietaria candidata y prohibición de propietarios técnicos falsos                                                                          |
+| `CAP-MAP-005`                   | catálogo de consumidores y separación entre consumo actual y objetivo                                                                                             |
+| `CODE-AUD-*`                    | repositorios, superficies de código y evidencia de consumidores                                                                                                   |
+| Supabase remoto                 | identidades y conteos observados mediante consultas read-only                                                                                                     |
+| GitHub `devVentoGroup`          | consumidores estáticos, migraciones y contratos documentales                                                                                                      |
+| `04A` local aportado            | base canónica de 4.717 requisitos hasta `SUPA-AUD-021`                                                                                                            |
+
+La cabecera remota conserva continuidad en `SUPA-AUD-013`, mientras el bloque E3 remoto y la base local ya materializan tareas posteriores. El mapa utiliza el último artefacto local como continuidad inmediata y el remoto como fuente de identidades y contratos existentes.
+
+#### 4. Universo cubierto
+
+##### 4.1. Relaciones PostgreSQL
+
+```text
+640 RELACIONES TOTALES
+├── 379 GOBERNADAS POR VENTO
+│   ├── 317 TABLES
+│   └──  62 VIEWS
+└── 261 ADMINISTRADAS POR POSTGRESQL O SUPABASE
+```
+
+Dentro de las 379 relaciones Vento:
+
+```text
+323 vinculadas a capacidades empresariales de Vento OS
+ 54 pertenecen al producto VITAL y quedan fuera del mapa empresarial de Vento OS
+  2 son backup o staging sin capacidad empresarial vigente
+  0 quedan sin clasificación
+```
+
+##### 4.2. Otras clases técnicas
+
+| Clase                                       |      Cobertura |
+| ------------------------------------------- | -------------: |
+| funciones gobernadas por Vento              | **347 de 347** |
+| funciones directamente invocables           | **274 de 274** |
+| funciones de trigger Vento                  |   **73 de 73** |
+| triggers empresariales explícitos           | **196 de 196** |
+| relaciones objetivo de triggers             |        **155** |
+| buckets Storage                             |   **14 de 14** |
+| Edge Functions activas                      |   **24 de 24** |
+| cron jobs activos                           |     **7 de 7** |
+| tablas empresariales publicadas en Realtime |     **6 de 6** |
+| relaciones administradas por plataforma     | **261 de 261** |
+
+Índices, constraints, secuencias, políticas, grants, triggers internos de FK, particiones y objetos físicos de Storage se cubren mediante `parent_object_key`: heredan capacidad y propietario del objeto principal, pero conservan identidad, seguridad, ciclo de vida y validaciones propias.
+
+#### 5. Estados permitidos
+
+##### 5.1. Propiedad actual
+
+| Estado                            | Significado                                                          |
+| --------------------------------- | -------------------------------------------------------------------- |
+| `CONFIRMED_CURRENT`               | una aplicación gobierna actualmente el resultado principal           |
+| `CONFIRMED_CURRENT_WITH_BOUNDARY` | la propiedad es válida con una frontera explícita                    |
+| `SHARED_CURRENT`                  | el estado actual divide resultados relacionados entre aplicaciones   |
+| `FRAGMENTED_CURRENT`              | el mismo resultado está repartido sin frontera completamente cerrada |
+| `COMPETING_CURRENT`               | existen fuentes o flujos que pretenden gobernar el mismo hecho       |
+| `REQUIRES_RESULT_SPLIT`           | la familia mezcla resultados con propietarios distintos              |
+| `FUTURE_ONLY`                     | existe estructura objetivo sin operación actual certificada          |
+| `CUSTODIO_TECNICO_ONLY`           | existe custodia técnica, no propietario empresarial                  |
+| `PLATFORM_MANAGED`                | objeto administrado por PostgreSQL o Supabase                        |
+| `OUTSIDE_VENTO_OS`                | objeto de otro producto, actualmente VITAL                           |
+| `TEMPORARY_OR_LEGACY`             | backup, staging o estructura temporal sin capacidad vigente          |
+
+##### 5.2. Evidencia de consumidor
+
+| Estado                         | Significado                                                           |
+| ------------------------------ | --------------------------------------------------------------------- |
+| `CONFIRMED_IN_CODE`            | referencia localizada en repositorio vigente                          |
+| `CONFIRMED_RUNTIME`            | uso respaldado por logs, filas, ejecución o telemetría suficiente     |
+| `CONFIRMED_DB_DEPENDENCY`      | dependencia por vista, función, trigger, FK o publicación             |
+| `CONFIRMED_MANUAL_OR_EXTERNAL` | medio operativo o sistema externo utilizado actualmente               |
+| `OBSERVED_PARTIAL`             | consumidor localizado con alcance incompleto                          |
+| `FUTURE_CANDIDATE`             | consumidor objetivo, no uso actual                                    |
+| `NONE_LOCATED`                 | no se localizó consumidor actual después de las búsquedas disponibles |
+
+Una estadística de lectura PostgreSQL no identifica por sí sola a la aplicación consumidora.
+
+#### 6. Resumen relacional por capacidad
+
+| Capacidad o clase       | Resultado empresarial                                    | Objetos | Propietario actual                                             | Estado                            | Consumidores actuales                                        |
+| ----------------------- | -------------------------------------------------------- | ------: | -------------------------------------------------------------- | --------------------------------- | ------------------------------------------------------------ |
+| `CAP-01`                | Dirigir y gobernar                                       |   **9** | VISO                                                           | `CONFIRMED_CURRENT_WITH_BOUNDARY` | SHELL, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS         |
+| `CAP-02`                | Gestionar personas y trabajo                             |  **63** | VISO, ANIMA o TALENTO según el subdominio                      | `SHARED_CURRENT`                  | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         |
+| `CAP-04`                | Productos, preparaciones y conocimiento                  |  **39** | NEXO, PASS o FOGO según el objeto                              | `FRAGMENTED_CURRENT`              | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 |
+| `CAP-05`                | Abastecer la operación                                   |   **9** | ORIGO                                                          | `CONFIRMED_CURRENT`               | NEXO, NUMERA, FOGO, VISO                                     |
+| `CAP-06`                | Inventario y almacenamiento                              |  **35** | NEXO                                                           | `CONFIRMED_CURRENT`               | ORIGO, FOGO, PULSO, NUMERA, VISO                             |
+| `CAP-07`                | Activos y reutilizables                                  |  **12** | NEXO                                                           | `CONFIRMED_CURRENT_WITH_BOUNDARY` | VISO, NUMERA                                                 |
+| `CAP-08`                | Producción                                               |  **14** | FOGO                                                           | `CONFIRMED_CURRENT`               | NEXO, PULSO, NUMERA, VISO                                    |
+| `CAP-09`                | Pedidos, ventas y cobro                                  |  **37** | PULSO o PASS según canal; pagos compartidos                    | `FRAGMENTED_CURRENT`              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        |
+| `CAP-10`                | Clientes y relaciones                                    |  **26** | PASS, PULSO o CLUB según el objeto                             | `SHARED_CURRENT`                  | PASS, PULSO, AURA, NUMERA, VISO                              |
+| `CAP-11`                | Transporte, despacho y entrega                           |  **21** | NEXO para traslado interno; PULSO/PASS para entrega al cliente | `REQUIRES_RESULT_SPLIT`           | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       |
+| `CAP-12`                | Dinero, costos y obligaciones                            |  **19** | NUMERA o PULSO según el hecho económico                        | `SHARED_CURRENT`                  | NUMERA, PULSO, ORIGO, NEXO, VISO                             |
+| `CAP-14`                | Comunicación y promoción                                 |   **4** | ANIMA, SHELL o PASS; AURA es propietaria objetivo              | `FRAGMENTED_CURRENT`              | ANIMA, SHELL, PASS, PULSO, AURA, NUMERA                      |
+| `CAP-15`                | Tecnología y soporte                                     |  **27** | SHELL, VISO o NEXO según el objeto                             | `SHARED_CURRENT`                  | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           |
+| `CAP-16`                | Información, documentos y evidencia                      |   **5** | Aplicación propietaria del hecho respaldado                    | `REQUIRES_RESULT_SPLIT`           | ANIMA, VISO, NEXO, PASS y consumidores autorizados del hecho |
+| `CAP-17`                | Medición, análisis y mejora                              |   **2** | VISO para demanda; NUMERA consume resultados económicos        | `CONFIRMED_CURRENT_WITH_BOUNDARY` | VISO, PULSO, NUMERA, FOGO                                    |
+| `CAP-18`                | Continuidad e incidentes                                 |   **1** | PASS y SHELL según la continuidad afectada                     | `SHARED_CURRENT`                  | PASS, SHELL, VISO                                            |
+| `NO_CAPACITY_TEMPORARY` | Sin capacidad empresarial vigente                        |   **2** | CUSTODIO_TECNICO_ONLY: vento-shell                             | `TEMPORARY_OR_LEGACY`             | ningún consumidor empresarial autorizado                     |
+| `OUTSIDE_VENTO_OS`      | Producto VITAL fuera del alcance empresarial de Vento OS |  **54** | VITAL                                                          | `OUTSIDE_VENTO_OS`                | vento-vital y servicios VITAL                                |
+
+No existen relaciones cuya capacidad principal sea `CAP-03` o `CAP-13`. Esto no elimina esas capacidades: demuestra que seguridad y cumplimiento, e instalaciones y condiciones, se sostienen actualmente mediante objetos auxiliares de personas, documentos, activos, sedes, soporte o medios externos, sin una fuente relacional propia consolidada.
+
+#### 7. Mapa relacional completo
+
+Cada fila corresponde a una relación única de los nueve schemas gobernados por Vento.
+
+| Objeto                                                     | Tipo    | Capacidad principal     | Propietario empresarial actual                          | Consumidores actuales                                        | Estado de propiedad               |
+| ---------------------------------------------------------- | ------- | ----------------------- | ------------------------------------------------------- | ------------------------------------------------------------ | --------------------------------- |
+| `public.area_kinds`                                        | `TABLE` | `CAP-01`                | VISO                                                    | SHELL, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS         | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.areas`                                             | `TABLE` | `CAP-01`                | VISO                                                    | SHELL, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS         | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.operational_sites`                                 | `VIEW`  | `CAP-01`                | VISO                                                    | SHELL, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS         | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.site_area_purpose_rules`                           | `TABLE` | `CAP-01`                | VISO                                                    | SHELL, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS         | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.site_operational_capabilities`                     | `TABLE` | `CAP-01`                | VISO                                                    | SHELL, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS         | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.site_purpose_settings`                             | `TABLE` | `CAP-01`                | VISO                                                    | SHELL, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS         | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.sites`                                             | `TABLE` | `CAP-01`                | VISO                                                    | SHELL, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS         | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.v_ops_site_readiness`                              | `VIEW`  | `CAP-01`                | VISO                                                    | SHELL, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS         | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.v_site_area_operational_diagnostics`               | `VIEW`  | `CAP-01`                | VISO                                                    | SHELL, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA, PASS         | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.asistencia_logs`                                   | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.attendance_breaks`                                 | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.attendance_logs`                                   | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.attendance_policy`                                 | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.attendance_shift_events`                           | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.attendance_sync_conflicts`                         | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_area_purpose_assignments`                 | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_areas`                                    | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_attendance_status`                        | `VIEW`  | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_devices`                                  | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_inventory_location_assignments`           | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_permissions`                              | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_push_tokens`                              | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_settings`                                 | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_shifts`                                   | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_site_operational_profiles`                | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_sites`                                    | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employee_wallet_cards`                             | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.employees`                                         | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.operational_role_permissions`                      | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.operational_roles`                                 | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.permission_catalog_human_v1`                       | `VIEW`  | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.role_capabilities`                                 | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.role_permissions`                                  | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.role_site_type_rules`                              | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.roles`                                             | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.shift_calendar_view`                               | `VIEW`  | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.shift_policy`                                      | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.shift_runtime_events`                              | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.site_attendance_policy`                            | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.site_operational_roles`                            | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.staff_invitations`                                 | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.staff_manual_calendar_events`                      | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.staff_schedule_hidden_employees`                   | `TABLE` | `CAP-02`                | ANIMA                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.vento_operational_roles_v1`                        | `VIEW`  | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.vento_site_operational_role_matrix_v1`             | `VIEW`  | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.viso_employee_site_operational_profiles`           | `VIEW`  | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.viso_operational_checkin_points`                   | `VIEW`  | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.viso_operational_sites`                            | `VIEW`  | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `public.viso_site_operational_roles`                       | `VIEW`  | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.application_events`                               | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.application_requirements`                         | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.application_stage_history`                        | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.applications`                                     | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.candidate_documents`                              | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.candidate_employee_links`                         | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.candidate_profiles`                               | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.candidates`                                       | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.interviews`                                       | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.medical_evaluations`                              | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.offers`                                           | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.preboarding_tasks`                                | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `talento.vacancies`                                        | `TABLE` | `CAP-02`                | TALENTO                                                 | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `viso.employee_availability`                               | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `viso.employee_planning_limits`                            | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `viso.employee_shift_preferences`                          | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `viso.role_concurrency_limits`                             | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `viso.shift_generation_candidate_items`                    | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `viso.shift_generation_candidates`                         | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `viso.shift_generation_runs`                               | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `viso.site_operational_roles`                              | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `viso.site_planning_rules`                                 | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `viso.site_staffing_requirements`                          | `TABLE` | `CAP-02`                | VISO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, NUMERA         | `SHARED_CURRENT`                  |
+| `pass.catalog_item_collections`                            | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.catalog_item_customization_template_assignments`     | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.catalog_item_customization_template_groups`          | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.catalog_item_customization_templates`                | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.catalog_item_option_consumption_rules`               | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.catalog_item_option_groups`                          | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.catalog_item_option_recipe_effects`                  | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.catalog_item_options`                                | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.catalog_item_presentation`                           | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.catalog_items`                                       | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.catalog_option_visual_assets`                        | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.commercial_categories`                               | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.commercial_collection_categories`                    | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.commercial_collections`                              | `TABLE` | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `pass.sell_products_by_site`                               | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.catalog_item_customization_template_assignments`   | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.catalog_item_customization_template_groups`        | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.catalog_item_customization_templates`              | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.catalog_item_option_consumption_rules`             | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.catalog_item_option_groups`                        | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.catalog_item_option_recipe_effects`                | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.catalog_item_options`                              | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.catalog_item_presentation`                         | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.catalog_items`                                     | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.catalog_option_visual_assets`                      | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.commercial_categories`                             | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.commercial_collection_categories`                  | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.commercial_collections`                            | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.product_categories`                                | `TABLE` | `CAP-04`                | NEXO                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.product_configuration_batches`                     | `TABLE` | `CAP-04`                | NEXO                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.product_images`                                    | `TABLE` | `CAP-04`                | NEXO                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.product_inventory_profiles`                        | `TABLE` | `CAP-04`                | NEXO                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.product_master_review_requests`                    | `TABLE` | `CAP-04`                | NEXO                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.product_site_settings`                             | `TABLE` | `CAP-04`                | NEXO                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.product_sku_aliases`                               | `TABLE` | `CAP-04`                | NEXO                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.product_sku_sequences`                             | `TABLE` | `CAP-04`                | NEXO                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.product_uom_profiles`                              | `TABLE` | `CAP-04`                | NEXO                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.products`                                          | `TABLE` | `CAP-04`                | NEXO                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.sell_products_by_site`                             | `VIEW`  | `CAP-04`                | PASS                                                    | ORIGO, NEXO, FOGO, PULSO, PASS, NUMERA, AURA                 | `FRAGMENTED_CURRENT`              |
+| `public.procurement_agreed_prices`                         | `TABLE` | `CAP-05`                | ORIGO                                                   | NEXO, NUMERA, FOGO, VISO                                     | `CONFIRMED_CURRENT`               |
+| `public.procurement_reception_items`                       | `TABLE` | `CAP-05`                | ORIGO                                                   | NEXO, NUMERA, FOGO, VISO                                     | `CONFIRMED_CURRENT`               |
+| `public.procurement_receptions`                            | `TABLE` | `CAP-05`                | ORIGO                                                   | NEXO, NUMERA, FOGO, VISO                                     | `CONFIRMED_CURRENT`               |
+| `public.procurement_supplier_product_costs`                | `TABLE` | `CAP-05`                | ORIGO                                                   | NEXO, NUMERA, FOGO, VISO                                     | `CONFIRMED_CURRENT`               |
+| `public.product_suppliers`                                 | `TABLE` | `CAP-05`                | ORIGO                                                   | NEXO, NUMERA, FOGO, VISO                                     | `CONFIRMED_CURRENT`               |
+| `public.purchase_order_items`                              | `TABLE` | `CAP-05`                | ORIGO                                                   | NEXO, NUMERA, FOGO, VISO                                     | `CONFIRMED_CURRENT`               |
+| `public.purchase_orders`                                   | `TABLE` | `CAP-05`                | ORIGO                                                   | NEXO, NUMERA, FOGO, VISO                                     | `CONFIRMED_CURRENT`               |
+| `public.suppliers`                                         | `TABLE` | `CAP-05`                | ORIGO                                                   | NEXO, NUMERA, FOGO, VISO                                     | `CONFIRMED_CURRENT`               |
+| `public.v_procurement_price_book`                          | `VIEW`  | `CAP-05`                | ORIGO                                                   | NEXO, NUMERA, FOGO, VISO                                     | `CONFIRMED_CURRENT`               |
+| `public.inventory_cost_policies`                           | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_count_line_entries`                      | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_count_lines`                             | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_count_sessions`                          | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_entries`                                 | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_entry_corrections`                       | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_entry_items`                             | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_form_drafts`                             | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_location_positions`                      | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_location_product_catalog`                | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_locations`                               | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_lpn_items`                               | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_lpns`                                    | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_movement_types`                          | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_movements`                               | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_stock_by_location`                       | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_stock_by_position`                       | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_stock_by_site`                           | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_stock_by_uom_profile`                    | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_transfer_items`                          | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_transfers`                               | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_unit_aliases`                            | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.inventory_units`                                   | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.product_request_policies`                          | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.product_request_policy_audit`                      | `VIEW`  | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.product_request_policy_audit_summary`              | `VIEW`  | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.product_request_policy_presentations`              | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.product_request_policy_usage`                      | `VIEW`  | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.restock_item_fulfillments`                         | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.restock_request_item_picks`                        | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.restock_request_items`                             | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.restock_requests`                                  | `TABLE` | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.v_inventory_catalog`                               | `VIEW`  | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.v_inventory_stock_by_location`                     | `VIEW`  | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.v_ops_restock_product_gaps`                        | `VIEW`  | `CAP-06`                | NEXO                                                    | ORIGO, FOGO, PULSO, NUMERA, VISO                             | `CONFIRMED_CURRENT`               |
+| `public.asset_count_lines`                                 | `TABLE` | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.asset_count_sessions`                              | `TABLE` | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.asset_groups`                                      | `TABLE` | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.asset_items`                                       | `TABLE` | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.asset_maintenance_records`                         | `TABLE` | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.asset_movements`                                   | `TABLE` | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.product_asset_maintenance_events`                  | `TABLE` | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.product_asset_profiles`                            | `TABLE` | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.product_asset_transfer_events`                     | `TABLE` | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.v_asset_count_session_summary`                     | `VIEW`  | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.v_asset_groups_inventory_status`                   | `VIEW`  | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.v_asset_items_inventory_status`                    | `VIEW`  | `CAP-07`                | NEXO                                                    | VISO, NUMERA                                                 | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.product_site_production_routes`                    | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.production_batch_consumptions`                     | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.production_batch_outputs`                          | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.production_batch_packages`                         | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.production_batches`                                | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.production_request_items`                          | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.production_requests`                               | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.recipe_cards`                                      | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.recipe_outputs`                                    | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.recipe_site_uses`                                  | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.recipe_steps`                                      | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.recipes`                                           | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.site_production_pick_order`                        | `TABLE` | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `public.v_site_production_route_diagnostics`               | `VIEW`  | `CAP-08`                | FOGO                                                    | NEXO, PULSO, NUMERA, VISO                                    | `CONFIRMED_CURRENT`               |
+| `payments.transactions`                                    | `TABLE` | `CAP-09`                | PASS/PULSO                                              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `payments.webhook_events`                                  | `TABLE` | `CAP-09`                | PASS/PULSO                                              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `pos.pos_modifier_options`                                 | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `pos.pos_modifiers`                                        | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `pos.pos_order_item_modifiers`                             | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `pos.pos_product_modifiers`                                | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `pos.pos_session_orders`                                   | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `pos.pos_sessions`                                         | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `pos.pos_table_call_devices`                               | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `pos.pos_table_service_calls`                              | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `pos.pos_tables`                                           | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `pos.pos_zones`                                            | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.order_billing_requests`                            | `TABLE` | `CAP-09`                | PASS/PULSO                                              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.order_conversations`                               | `TABLE` | `CAP-09`                | PASS/PULSO                                              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.order_delivery_sessions`                           | `TABLE` | `CAP-09`                | PASS/PULSO                                              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.order_gift_details`                                | `TABLE` | `CAP-09`                | PASS/PULSO                                              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.order_item_options`                                | `TABLE` | `CAP-09`                | PASS/PULSO                                              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.order_items`                                       | `TABLE` | `CAP-09`                | PASS/PULSO                                              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.order_messages`                                    | `TABLE` | `CAP-09`                | PASS/PULSO                                              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.order_status_events`                               | `TABLE` | `CAP-09`                | PASS/PULSO                                              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.orders`                                            | `TABLE` | `CAP-09`                | PASS/PULSO                                              | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pos_modifier_options`                              | `VIEW`  | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pos_modifiers`                                     | `VIEW`  | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pos_order_item_modifiers`                          | `VIEW`  | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pos_product_modifiers`                             | `VIEW`  | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pos_session_orders`                                | `VIEW`  | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pos_sessions`                                      | `VIEW`  | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pos_table_call_devices`                            | `VIEW`  | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pos_table_service_calls`                           | `VIEW`  | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pos_tables`                                        | `VIEW`  | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pos_zones`                                         | `VIEW`  | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pulso_daily_sales_import_batches`                  | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pulso_daily_sales_import_rows`                     | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pulso_external_sales_item_mappings`                | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pulso_sales_consumption_rules`                     | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pulso_sales_import_rows_pending_consumption`       | `VIEW`  | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `public.pulso_sales_inventory_postings`                    | `TABLE` | `CAP-09`                | PULSO                                                   | PASS, PULSO, FOGO, NEXO, NUMERA, AURA                        | `FRAGMENTED_CURRENT`              |
+| `club.beta_access`                                         | `TABLE` | `CAP-10`                | PASS/CLUB                                               | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `club.cashback_rules`                                      | `TABLE` | `CAP-10`                | PASS/CLUB                                               | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `club.earn_events`                                         | `TABLE` | `CAP-10`                | PASS/CLUB                                               | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `club.entitlements`                                        | `TABLE` | `CAP-10`                | PASS/CLUB                                               | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `club.plans`                                               | `TABLE` | `CAP-10`                | PASS/CLUB                                               | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `club.redemption_links`                                    | `TABLE` | `CAP-10`                | PASS/CLUB                                               | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `club.store_products`                                      | `TABLE` | `CAP-10`                | PASS/CLUB                                               | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `club.subscriptions`                                       | `TABLE` | `CAP-10`                | PASS/CLUB                                               | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `club.wallet_accounts`                                     | `TABLE` | `CAP-10`                | PASS/CLUB                                               | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `club.wallet_ledger`                                       | `TABLE` | `CAP-10`                | PASS/CLUB                                               | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `pass.loyalty_redemptions`                                 | `TABLE` | `CAP-10`                | PASS                                                    | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `pass.loyalty_rewards`                                     | `TABLE` | `CAP-10`                | PASS                                                    | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `pass.loyalty_transactions`                                | `TABLE` | `CAP-10`                | PASS                                                    | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `pass.user_favorites`                                      | `TABLE` | `CAP-10`                | PASS                                                    | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.client_billing_profiles`                           | `TABLE` | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.client_push_tokens`                                | `TABLE` | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.gift_recipient_events`                             | `TABLE` | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.gift_recipients`                                   | `TABLE` | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.loyalty_external_sales`                            | `TABLE` | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.loyalty_redemptions`                               | `VIEW`  | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.loyalty_rewards`                                   | `VIEW`  | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.loyalty_transactions`                              | `VIEW`  | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.user_favorites`                                    | `VIEW`  | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.users`                                             | `TABLE` | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.wallet_devices`                                    | `TABLE` | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `public.wallet_passes`                                     | `TABLE` | `CAP-10`                | PASS/PULSO                                              | PASS, PULSO, AURA, NUMERA, VISO                              | `SHARED_CURRENT`                  |
+| `app_private.delivery_pin_secrets`                         | `TABLE` | `CAP-11`                | PASS/PULSO                                              | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `pass.delivery_addresses`                                  | `TABLE` | `CAP-11`                | PASS/PULSO                                              | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `pass.delivery_distance_rates`                             | `TABLE` | `CAP-11`                | PASS/PULSO                                              | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `pass.delivery_quotes`                                     | `TABLE` | `CAP-11`                | PASS/PULSO                                              | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `pass.pass_satellites`                                     | `TABLE` | `CAP-11`                | PASS/PULSO                                              | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `pass.site_business_hours`                                 | `TABLE` | `CAP-11`                | PASS/PULSO                                              | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `pass.site_delivery_slots`                                 | `TABLE` | `CAP-11`                | PASS/PULSO                                              | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `pass.site_schedule_exception_resolutions`                 | `TABLE` | `CAP-11`                | PASS/PULSO                                              | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `pass.site_schedule_exceptions`                            | `TABLE` | `CAP-11`                | PASS/PULSO                                              | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.pass_delivery_distance_rates`                      | `VIEW`  | `CAP-11`                | PASS/PULSO                                              | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.pass_satellites`                                   | `VIEW`  | `CAP-11`                | PASS/PULSO                                              | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.product_fulfillment_routes`                        | `TABLE` | `CAP-11`                | NEXO                                                    | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.product_site_area_remission_categories`            | `TABLE` | `CAP-11`                | NEXO                                                    | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.remission_dispatch_runs`                           | `TABLE` | `CAP-11`                | NEXO                                                    | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.remission_exceptions`                              | `TABLE` | `CAP-11`                | NEXO                                                    | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.remission_product_categories`                      | `TABLE` | `CAP-11`                | NEXO                                                    | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.remission_receipt_items`                           | `TABLE` | `CAP-11`                | NEXO                                                    | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.remission_receipts`                                | `TABLE` | `CAP-11`                | NEXO                                                    | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.remission_shipment_items`                          | `TABLE` | `CAP-11`                | NEXO                                                    | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.remission_shipments`                               | `TABLE` | `CAP-11`                | NEXO                                                    | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `public.site_supply_routes`                                | `TABLE` | `CAP-11`                | NEXO                                                    | NEXO, PULSO, PASS, NUMERA, FOGO, ORIGO                       | `REQUIRES_RESULT_SPLIT`           |
+| `pos.pos_cash_movements`                                   | `TABLE` | `CAP-12`                | PULSO                                                   | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `pos.pos_cash_shifts`                                      | `TABLE` | `CAP-12`                | PULSO                                                   | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `pos.pos_payments`                                         | `TABLE` | `CAP-12`                | PULSO                                                   | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.cost_centers`                                      | `TABLE` | `CAP-12`                | NUMERA                                                  | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.internal_pos_document_lines`                       | `TABLE` | `CAP-12`                | PULSO                                                   | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.internal_pos_document_sequences`                   | `TABLE` | `CAP-12`                | PULSO                                                   | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.internal_pos_documents`                            | `TABLE` | `CAP-12`                | PULSO                                                   | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.internal_price_list_items`                         | `TABLE` | `CAP-12`                | NUMERA                                                  | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.internal_price_lists`                              | `TABLE` | `CAP-12`                | NUMERA                                                  | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.internal_transfer_variances`                       | `TABLE` | `CAP-12`                | NUMERA                                                  | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.numera_cost_center_budgets`                        | `TABLE` | `CAP-12`                | NUMERA                                                  | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.numera_cost_center_monthly_summary`                | `VIEW`  | `CAP-12`                | NUMERA                                                  | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.numera_expense_categories`                         | `TABLE` | `CAP-12`                | NUMERA                                                  | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.numera_expenses`                                   | `TABLE` | `CAP-12`                | NUMERA                                                  | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.numera_periods`                                    | `TABLE` | `CAP-12`                | NUMERA                                                  | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.pos_cash_movements`                                | `VIEW`  | `CAP-12`                | PULSO                                                   | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.pos_cash_shifts`                                   | `VIEW`  | `CAP-12`                | PULSO                                                   | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.pos_payments`                                      | `VIEW`  | `CAP-12`                | PULSO                                                   | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.product_cost_events`                               | `TABLE` | `CAP-12`                | NUMERA                                                  | NUMERA, PULSO, ORIGO, NEXO, VISO                             | `SHARED_CURRENT`                  |
+| `public.announcements`                                     | `TABLE` | `CAP-14`                | ANIMA                                                   | ANIMA, SHELL, PASS, PULSO, AURA, NUMERA                      | `FRAGMENTED_CURRENT`              |
+| `public.app_content_blocks`                                | `TABLE` | `CAP-14`                | SHELL                                                   | ANIMA, SHELL, PASS, PULSO, AURA, NUMERA                      | `FRAGMENTED_CURRENT`              |
+| `public.website_blocks`                                    | `TABLE` | `CAP-14`                | PASS/AURA                                               | ANIMA, SHELL, PASS, PULSO, AURA, NUMERA                      | `FRAGMENTED_CURRENT`              |
+| `public.website_items`                                     | `TABLE` | `CAP-14`                | PASS/AURA                                               | ANIMA, SHELL, PASS, PULSO, AURA, NUMERA                      | `FRAGMENTED_CURRENT`              |
+| `public.app_config`                                        | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.app_navigation_items`                              | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.app_operation_policies`                            | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.app_permissions`                                   | `TABLE` | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.app_runtime_settings`                              | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.app_screen_registry`                               | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.app_update_policies`                               | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.apps`                                              | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.context_simulation_sessions`                       | `TABLE` | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.internal_job_secrets`                              | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.printing_label_templates`                          | `TABLE` | `CAP-15`                | NEXO                                                    | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_device_actor_signatures`                    | `TABLE` | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_operational_device_actor_policies`          | `TABLE` | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_operational_device_actor_policies_admin_v1` | `VIEW`  | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_operational_device_actor_sessions`          | `TABLE` | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_operational_device_apps`                    | `TABLE` | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_operational_device_events`                  | `TABLE` | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_operational_device_template_actor_policies` | `TABLE` | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_operational_device_template_apps`           | `TABLE` | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_operational_device_templates`               | `TABLE` | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_operational_device_templates_admin_v1`      | `VIEW`  | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_operational_devices`                        | `TABLE` | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.shared_operational_devices_admin_v1`               | `VIEW`  | `CAP-15`                | VISO/SHELL                                              | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.support_messages`                                  | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.support_ticket_reads`                              | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.support_tickets`                                   | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `public.user_feedback`                                     | `TABLE` | `CAP-15`                | SHELL                                                   | SHELL, VISO, ANIMA, NEXO, FOGO, ORIGO, PULSO, PASS           | `SHARED_CURRENT`                  |
+| `club.audit_events`                                        | `TABLE` | `CAP-16`                | PASS/CLUB                                               | ANIMA, VISO, NEXO, PASS y consumidores autorizados del hecho | `REQUIRES_RESULT_SPLIT`           |
+| `public.asset_documents`                                   | `TABLE` | `CAP-16`                | NEXO                                                    | ANIMA, VISO, NEXO, PASS y consumidores autorizados del hecho | `REQUIRES_RESULT_SPLIT`           |
+| `public.document_types`                                    | `TABLE` | `CAP-16`                | ANIMA/VISO                                              | ANIMA, VISO, NEXO, PASS y consumidores autorizados del hecho | `REQUIRES_RESULT_SPLIT`           |
+| `public.documents`                                         | `TABLE` | `CAP-16`                | ANIMA/VISO                                              | ANIMA, VISO, NEXO, PASS y consumidores autorizados del hecho | `REQUIRES_RESULT_SPLIT`           |
+| `public.required_document_rules`                           | `TABLE` | `CAP-16`                | ANIMA/VISO                                              | ANIMA, VISO, NEXO, PASS y consumidores autorizados del hecho | `REQUIRES_RESULT_SPLIT`           |
+| `viso.demand_forecasts`                                    | `TABLE` | `CAP-17`                | VISO para demanda; NUMERA consume resultados económicos | VISO, PULSO, NUMERA, FOGO                                    | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `viso.demand_history_hourly`                               | `TABLE` | `CAP-17`                | VISO para demanda; NUMERA consume resultados económicos | VISO, PULSO, NUMERA, FOGO                                    | `CONFIRMED_CURRENT_WITH_BOUNDARY` |
+| `public.account_deletion_requests`                         | `TABLE` | `CAP-18`                | PASS y SHELL según la continuidad afectada              | PASS, SHELL, VISO                                            | `SHARED_CURRENT`                  |
+| `public.product_categories_backup_20260316_preparaciones`  | `TABLE` | `NO_CAPACITY_TEMPORARY` | CUSTODIO_TECNICO_ONLY: vento-shell                      | ningún consumidor empresarial autorizado                     | `TEMPORARY_OR_LEGACY`             |
+| `public.staging_insumos_import`                            | `TABLE` | `NO_CAPACITY_TEMPORARY` | CUSTODIO_TECNICO_ONLY: vento-shell                      | ningún consumidor empresarial autorizado                     | `TEMPORARY_OR_LEGACY`             |
+| `vital.academy_staff_assignments`                          | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.adaptive_decision_logs`                             | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.admin_users`                                        | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.ai_decision_logs`                                   | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.ai_plan_proposals`                                  | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.availability_profiles`                              | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.badges`                                             | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.body_metrics`                                       | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.challenge_progress`                                 | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.challenges`                                         | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.consent_records`                                    | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.daily_nutrition_logs_v1`                            | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.daily_readiness_inputs`                             | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.fair_play_events`                                   | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.fatigue_scores`                                     | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.feature_flags`                                      | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.football_preset_catalog`                            | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.game_profiles`                                      | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.goal_profiles`                                      | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.health_profiles`                                    | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.league_memberships`                                 | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.level_states`                                       | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.module_catalog`                                     | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.module_goal_weights_v1`                             | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.module_interference_rules`                          | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.module_template_catalog`                            | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.muscle_load_snapshots`                              | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.notification_plans`                                 | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.program_versions`                                   | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.programs`                                           | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.readiness_scores`                                   | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.recovery_signals`                                   | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.safety_intake`                                      | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.seasons`                                            | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.session_logs`                                       | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.sport_module_template_catalog`                      | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.sport_objective_blend_rules`                        | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.sports_profiles`                                    | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.squad_memberships`                                  | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.squads`                                             | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.starter_program_catalog`                            | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.starter_program_tasks`                              | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.task_instances`                                     | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.task_templates`                                     | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.telemetry_events`                                   | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.user_badges`                                        | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.user_cycle_states`                                  | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.user_feature_flags`                                 | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.user_module_preferences`                            | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.user_nutrition_profiles_v1`                         | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.user_profiles`                                      | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.weekly_leaderboard_snapshots`                       | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.weekly_reviews`                                     | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+| `vital.xp_events`                                          | `TABLE` | `OUTSIDE_VENTO_OS`      | VITAL                                                   | vento-vital y servicios VITAL                                | `OUTSIDE_VENTO_OS`                |
+
+#### 8. Funciones, RPC y helpers
+
+Las **347 firmas Vento** quedan cubiertas por identidad PostgreSQL estable:
+
+```text
+<schema>.<function_name>(identity_arguments)
+```
+
+Regla de asignación:
+
+1. una función que muta o consulta una relación hereda su capacidad y propietario;
+2. una función que ejecuta un comando de proceso pertenece a la aplicación propietaria del resultado, aunque resida en `public`;
+3. una función de trigger hereda del objeto donde está enlazada;
+4. un helper técnico conserva custodio y consumidores, pero no recibe propietario empresarial falso;
+5. una función sin dependencia o consumidor localizado conserva esa ausencia y se remite a `SUPA-AUD-023` y `SUPA-AUD-024`.
+
+| Superficie    |  Firmas |      Cobertura |
+| ------------- | ------: | -------------: |
+| `app_private` |       1 |         1 de 1 |
+| `club`        |       7 |         7 de 7 |
+| `pass`        |      30 |       30 de 30 |
+| `public`      |     246 |     246 de 246 |
+| `talento`     |      16 |       16 de 16 |
+| `vital`       |      47 |       47 de 47 |
+| **Total**     | **347** | **347 de 347** |
+
+Casos de control explícito:
+
+| Firma o familia                                         | Capacidad | Propietario                                     | Consumidor actual              | Estado                             |
+| ------------------------------------------------------- | --------- | ----------------------------------------------- | ------------------------------ | ---------------------------------- |
+| `public.apply_master_supplier_purchase_batch(jsonb)`    | `CAP-05`  | ORIGO/NEXO según frontera de catálogo-proveedor | NEXO                           | defecto estructural confirmado     |
+| `public.apply_master_presentation_version_batch(jsonb)` | `CAP-04`  | NEXO                                            | NEXO                           | defecto estructural confirmado     |
+| `public.apply_master_production_route_batch(jsonb)`     | `CAP-08`  | FOGO/NEXO según ruta y existencias              | NEXO                           | defecto estructural confirmado     |
+| `public.create_order_checkout_draft(...)`               | `CAP-09`  | PASS/PULSO                                      | PASS                           | cuatro overloads                   |
+| `public.fogo_create_real_production_batch(...)`         | `CAP-08`  | FOGO                                            | FOGO y NEXO                    | dos overloads                      |
+| `public.notify_shift_published()`                       | `CAP-02`  | ANIMA                                           | automatización de notificación | función trigger sin trigger actual |
+| `public.update_loyalty_balance()`                       | `CAP-10`  | PASS                                            | ninguno localizado             | función trigger sin trigger actual |
+| `public.unaccent(...)`                                  | `CAP-15`  | custodio técnico                                | búsqueda y normalización       | helper técnico, dos overloads      |
+
+#### 9. Triggers y automatismos de base
+
+Los **196 triggers Vento** heredan capacidad, propietario y sensibilidad de sus **155 relaciones objetivo**. El mapa conserva por trigger:
+
+```text
+relation_key
+trigger_name
+function_signature
+events
+timing
+level
+security_mode
+capability
+business_owner
+consumers_or_effects
+```
+
+Controles especiales:
+
+- los 29 triggers ejecutados por funciones `SECURITY DEFINER` conservan revisión de autorización en `SUPA-ARC-014` y `SUPA-ARC-015`;
+- los seis triggers de `restock_request_items` pertenecen a `CAP-06` y NEXO;
+- los cuatro triggers de `attendance_logs` pertenecen a `CAP-02` y ANIMA;
+- los dos triggers de `employee_push_tokens` que mantienen `updated_at` conservan clasificación de solapamiento;
+- `auth.users.on_auth_user_created` está sobre tabla administrada, pero su efecto empresarial de alta no transfiere ownership a Auth ni a Supabase;
+- los 3.272 triggers internos de FK son infraestructura derivada y no automatismos empresariales independientes.
+
+#### 10. RLS, grants, índices, constraints y secuencias
+
+Estos objetos no reciben propietario empresarial independiente. El registro usa:
+
+```text
+child_object_key
+parent_object_key
+control_type
+capability_inherited
+business_owner_inherited
+technical_owner
+roles_or_consumers
+security_effect
+```
+
+Reglas:
+
+- RLS y grants expresan autorización, no propiedad;
+- índices y constraints protegen integridad o rendimiento del objeto padre;
+- secuencias técnicas heredan del identificador que generan;
+- vistas heredan la fuente, salvo que materialicen un resultado empresarial distinto aprobado;
+- aliases legacy conservan propietario de la fuente y fecha de retiro;
+- una política amplia no amplía la lista de consumidores empresariales autorizados.
+
+#### 11. Mapa de Storage
+
+| Bucket                   | Capacidad         | Propietario del contenido | Consumidores actuales                           | Estado de exposición             |
+| ------------------------ | ----------------- | ------------------------- | ----------------------------------------------- | -------------------------------- |
+| `commercial-menu-images` | `CAP-04`          | PASS/AURA                 | PASS, PULSO, AURA                               | `PUBLIC`                         |
+| `documents`              | `CAP-16`          | ANIMA/VISO                | ANIMA, VISO y destinatarios autorizados         | `PUBLIC_INCOMPATIBLE`            |
+| `employee-photos`        | `CAP-02 / CAP-16` | ANIMA/VISO                | ANIMA, VISO y superficies laborales autorizadas | `PUBLIC_REQUIRES_DECISION`       |
+| `nexo-ai-documents`      | `CAP-15 / CAP-16` | NEXO                      | NEXO server-side                                | `PRIVATE`                        |
+| `nexo-catalog-images`    | `CAP-04`          | NEXO                      | NEXO, PASS, PULSO, ORIGO, FOGO                  | `PUBLIC`                         |
+| `pass-satellite-logos`   | `CAP-10 / CAP-14` | PASS                      | PASS, website y PULSO                           | `PUBLIC`                         |
+| `product-images`         | `CAP-04`          | NEXO                      | NEXO, PASS, PULSO, ORIGO, FOGO                  | `PUBLIC`                         |
+| `public-documents`       | `CAP-14 / CAP-16` | AURA/PASS                 | website, PASS y público autorizado              | `PUBLIC`                         |
+| `recipe-media`           | `CAP-08`          | FOGO                      | FOGO y NEXO autorizado                          | `PRIVATE`                        |
+| `recipe-step-photos`     | `CAP-08`          | FOGO                      | FOGO y ejecución productiva                     | `PUBLIC_WITH_OVERBROAD_MUTATION` |
+| `talento-cv`             | `CAP-02 / CAP-16` | TALENTO                   | TALENTO y VISO autorizado                       | `PRIVATE`                        |
+| `talento-documents`      | `CAP-02 / CAP-16` | TALENTO                   | TALENTO y VISO autorizado                       | `PRIVATE`                        |
+| `talento-medical`        | `CAP-02 / CAP-16` | TALENTO                   | TALENTO y responsables médicos autorizados      | `PRIVATE_SENSITIVE`              |
+| `website-media`          | `CAP-14`          | AURA/PASS                 | website y AURA                                  | `PRIVATE`                        |
+
+Los 1.101 objetos físicos heredan el propietario de su entidad empresarial, no del usuario técnico que realizó la carga. URL y ruta son representaciones; no constituyen identidad ni propiedad del archivo.
+
+#### 12. Mapa de Realtime
+
+| Relación publicada               | Propietario | Consumidores actuales                 | Estado                                |
+| -------------------------------- | ----------- | ------------------------------------- | ------------------------------------- |
+| `public.order_conversations`     | PASS/PULSO  | PASS y PULSO                          | `PUBLICADA_CON_CONSUMIDOR`            |
+| `public.order_delivery_sessions` | PASS/PULSO  | PASS y PULSO                          | `PUBLICADA_CON_CONSUMIDOR`            |
+| `public.order_messages`          | PASS/PULSO  | PASS y PULSO                          | `PUBLICADA_CON_CONSUMIDOR`            |
+| `public.order_status_events`     | PASS/PULSO  | PASS, PULSO y consumidores operativos | `PUBLICADA_CON_CONSUMIDOR`            |
+| `public.orders`                  | PASS/PULSO  | PASS, PULSO y seguimiento operativo   | `PUBLICADA_CON_CONSUMIDOR`            |
+| `public.users`                   | PASS/PULSO  | ningún consumidor Realtime localizado | `PUBLICADA_SIN_CONSUMIDOR_LOCALIZADO` |
+
+Consumidores declarados pero sin publicación funcional:
+
+| Consumidor | Objetivo                         | Estado                                        |
+| ---------- | -------------------------------- | --------------------------------------------- |
+| ANIMA      | `public.employee_sites`          | tabla no publicada                            |
+| ANIMA      | `public.support_tickets`         | tabla no publicada                            |
+| ANIMA      | `public.support_messages`        | tabla no publicada                            |
+| ANIMA      | `public.support_ticket_reads`    | tabla no publicada                            |
+| PASS       | `public.order_billing_requests`  | tabla no publicada                            |
+| PASS       | `pass.loyalty_redemptions`       | tabla no publicada                            |
+| PULSO      | `public.pos_table_service_calls` | vista no publicable y tabla base no publicada |
+| PULSO      | `public.pos_sessions`            | vista no publicable y tabla base no publicada |
+
+La existencia de la suscripción en código demuestra un consumidor pretendido, no una ruta Realtime operativa.
+
+#### 13. Mapa de Edge Functions
+
+| Edge Function               | Capacidad | Propietario actual | Productor o consumidor principal          |
+| --------------------------- | --------- | ------------------ | ----------------------------------------- |
+| `wallet-pass`               | `CAP-10`  | PASS               | usuario PASS                              |
+| `attendance-report`         | `CAP-02`  | ANIMA              | usuario laboral autorizado                |
+| `staff-invitations-create`  | `CAP-02`  | VISO/ANIMA         | administrador laboral                     |
+| `request-account-deletion`  | `CAP-18`  | PASS               | cliente autenticado                       |
+| `account-deletion`          | `CAP-18`  | PASS               | cliente autenticado y worker              |
+| `payments-create-intent`    | `CAP-09`  | PASS/PULSO         | cliente o caja autorizada                 |
+| `shift-publish-notify`      | `CAP-02`  | ANIMA              | ANIMA y notificaciones                    |
+| `pass-delivery-quote`       | `CAP-11`  | PASS/PULSO         | cliente PASS                              |
+| `pass-address-search`       | `CAP-11`  | PASS               | cliente PASS                              |
+| `support-message-notify`    | `CAP-15`  | SHELL/ANIMA        | soporte y notificaciones                  |
+| `pass-register-push-token`  | `CAP-10`  | PASS               | cliente PASS                              |
+| `order-message-notify`      | `CAP-09`  | PASS/PULSO         | participantes del pedido                  |
+| `staff-invitations-accept`  | `CAP-02`  | VISO/ANIMA         | trabajador invitado                       |
+| `document-alerts`           | `CAP-16`  | ANIMA              | cron y trabajadores                       |
+| `process-account-deletions` | `CAP-18`  | PASS               | workflow GitHub Actions                   |
+| `register-push-token`       | `CAP-02`  | ANIMA              | trabajador autenticado                    |
+| `announcement-notify`       | `CAP-14`  | ANIMA/AURA         | trabajadores y canales autorizados        |
+| `employee-delete`           | `CAP-02`  | VISO               | administración laboral                    |
+| `payments-webhook`          | `CAP-09`  | PASS/PULSO         | Wompi y dominio de pagos                  |
+| `staff-invitations-resend`  | `CAP-02`  | VISO/ANIMA         | administrador laboral                     |
+| `staff-invitations-cancel`  | `CAP-02`  | VISO/ANIMA         | administrador laboral                     |
+| `shift-runtime-processor`   | `CAP-02`  | ANIMA              | cron y runtime de turnos                  |
+| `payments-return`           | `CAP-09`  | PASS               | navegador y aplicación PASS               |
+| `delivery-portal`           | `CAP-11`  | PULSO/PASS         | repartidor externo por token de capacidad |
+
+`verify_jwt`, secretos, tokens de capacidad y uso de `service_role` se registran como controles técnicos; no modifican el propietario empresarial del efecto.
+
+#### 14. Mapa de cron jobs
+
+| Job                                                  | Capacidad | Propietario | Objetivo técnico                      |
+| ---------------------------------------------------- | --------- | ----------- | ------------------------------------- |
+| `document-alerts-daily`                              | `CAP-16`  | ANIMA       | `document-alerts`                     |
+| `auto-close-attendance`                              | `CAP-02`  | ANIMA       | `close_open_attendance_day_end`       |
+| `anima_shift_runtime_processor_every_5m`             | `CAP-02`  | ANIMA       | `shift-runtime-processor`             |
+| `pass_delivery_quotes_cleanup_hourly`                | `CAP-11`  | PASS        | `cleanup_delivery_quotes`             |
+| `anima_attendance_day_end_close_0005`                | `CAP-02`  | ANIMA       | `close_open_attendance_day_end`       |
+| `attendance_stale_open_shift_autoclose_daily_bogota` | `CAP-02`  | ANIMA       | `close_stale_open_attendance_shifts`  |
+| `pass_payment_checkout_expiry_reconciliation`        | `CAP-09`  | PASS/PULSO  | `reconcile_expired_payment_checkouts` |
+
+Un job `succeeded` solo acredita ejecución de la sentencia programada. No demuestra que una petición `pg_net`, una Edge Function o el efecto empresarial haya terminado correctamente.
+
+#### 15. Objetos administrados por PostgreSQL o Supabase
+
+| Schema                               | Relaciones administradas | Propiedad empresarial                                                                 |
+| ------------------------------------ | -----------------------: | ------------------------------------------------------------------------------------- |
+| `auth`                               |                       23 | `PLATFORM_MANAGED`; identidades empresariales vinculadas permanecen en dominios Vento |
+| `cron`                               |                        2 | `PLATFORM_MANAGED`; jobs empresariales conservan propietario por efecto               |
+| `extensions`                         |                        2 | `PLATFORM_MANAGED`                                                                    |
+| `information_schema`                 |                       69 | `PLATFORM_MANAGED`                                                                    |
+| `net`                                |                        2 | `PLATFORM_MANAGED`; requests empresariales conservan propietario por automatización   |
+| `pg_catalog`                         |                      142 | `PLATFORM_MANAGED`                                                                    |
+| `realtime`                           |                       10 | `PLATFORM_MANAGED`; canales empresariales conservan productor y consumidor            |
+| `storage`                            |                        8 | `PLATFORM_MANAGED`; archivos empresariales conservan propietario de entidad           |
+| `supabase_migrations`                |                        1 | `PLATFORM_MANAGED`                                                                    |
+| `vault`                              |                        2 | `PLATFORM_MANAGED`                                                                    |
+| schemas administrados sin relaciones |                        0 | `PLATFORM_MANAGED`                                                                    |
+| **Total**                            |                  **261** | —                                                                                     |
+
+No se autoriza mover, renombrar, reutilizar ni insertar lógica empresarial dentro de schemas administrados salvo mecanismos oficialmente soportados.
+
+#### 16. Hallazgos integrales y resolución
+
+| ID                   | Hallazgo                                                                                  | Riesgo                                            | Resolución exacta                              |
+| -------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------- | ---------------------------------------------- |
+| `B-SUPA-AUD-022-001` | `public` contiene múltiples capacidades y no representa un dominio                        | fronteras y propiedad inferidas por ubicación     | `SUPA-ARC-002` a `SUPA-ARC-004`                |
+| `B-SUPA-AUD-022-002` | personas y trabajo tienen propiedad dividida entre VISO, ANIMA y TALENTO                  | doble fuente o handoff incompleto                 | `SUPA-AUD-023`; `SUPA-ARC-003`; `SUPA-ARC-016` |
+| `B-SUPA-AUD-022-003` | catálogo se reparte entre NEXO, PASS y FOGO                                               | producto, oferta y receta competidores            | `SUPA-AUD-023`; `SUPA-ARC-003`; `SUPA-ARC-017` |
+| `B-SUPA-AUD-022-004` | pedidos y pagos se reparten entre PASS, PULSO y `payments`                                | doble estado de pedido, pago o checkout           | `SUPA-AUD-023`; `SUPA-ARC-016`; `SUPA-ARC-020` |
+| `B-SUPA-AUD-022-005` | clientes y fidelización mezclan `public`, `pass` y `club`                                 | saldo, identidad o beneficio divergente           | `SUPA-AUD-023`; `SUPA-ARC-003`; `SUPA-ARC-017` |
+| `B-SUPA-AUD-022-006` | CAP-11 mezcla remisión interna y entrega al cliente                                       | propiedad logística no singular                   | `SUPA-AUD-023`; `SUPA-ARC-003`; `SUPA-ARC-016` |
+| `B-SUPA-AUD-022-007` | CAP-03 y CAP-13 carecen de fuente relacional directa                                      | cobertura digital incompleta                      | `SUPA-AUD-024`; `SUPA-ARC-002`; `SUPA-ARC-003` |
+| `B-SUPA-AUD-022-008` | dos tablas son backup o staging sin capacidad vigente                                     | datos residuales o fuente accidental              | `SUPA-AUD-024`; `SUPA-ARC-022`                 |
+| `B-SUPA-AUD-022-009` | 54 tablas VITAL comparten proyecto con Vento OS                                           | acoplamiento de productos y tipos                 | `SUPA-ARC-002`; `SUPA-ARC-003`; `SUPA-ARC-023` |
+| `B-SUPA-AUD-022-010` | `app_private` requiere contrato server-only                                               | exposición de secretos o helpers                  | `SUPA-ARC-006`; `SUPA-ARC-015`; `SUPA-ARC-023` |
+| `B-SUPA-AUD-022-011` | consumidores Realtime apuntan a relaciones no publicadas o vistas                         | capacidad declarada pero no operativa             | `SUPA-ARC-019`; paquetes E5 consumidores       |
+| `B-SUPA-AUD-022-012` | existen objetos publicados sin consumidor Realtime localizado                             | replicación sin finalidad demostrada              | `SUPA-AUD-024`; `SUPA-ARC-019`                 |
+| `B-SUPA-AUD-022-013` | funciones y triggers privilegiados requieren autorización por efecto                      | bypass RLS o autoridad excesiva                   | `SUPA-ARC-014`; `SUPA-ARC-015`                 |
+| `B-SUPA-AUD-022-014` | dos funciones trigger no tienen trigger asociado                                          | drift o automatismo incompleto                    | `SUPA-AUD-023`; `SUPA-AUD-024`                 |
+| `B-SUPA-AUD-022-015` | Storage conserva propiedad, exposición y ciclo de vida inconsistentes                     | acceso o disposición incorrecta                   | `SUPA-ARC-018`                                 |
+| `B-SUPA-AUD-022-016` | Edge, cron y webhooks tienen propietarios por efecto pero controles técnicos heterogéneos | falso éxito, duplicidad y secretos mal gobernados | `SUPA-ARC-020`                                 |
+| `B-SUPA-AUD-022-017` | no existe registro ejecutable único del mapa                                              | drift documental y retiro inseguro                | `SHELL-CI-017`; `SUPA-AUD-023`; `SUPA-AUD-024` |
+
+No queda hallazgo sin tarea exacta de resolución.
+
+#### 17. Decisiones que esta tarea no autoriza
+
+`SUPA-AUD-022` no autoriza:
+
+1. mover objetos entre schemas;
+2. renombrar tablas, vistas, funciones, buckets o Edge Functions;
+3. cambiar propietarios PostgreSQL;
+4. eliminar objetos sin consumidor localizado;
+5. fusionar propietarios fragmentados;
+6. cambiar Data API, grants, RLS o `SECURITY DEFINER`;
+7. publicar o retirar tablas de Realtime;
+8. cambiar visibilidad de buckets;
+9. desplegar Edge Functions o reprogramar cron;
+10. declarar arquitectura objetivo;
+11. ejecutar migraciones o backfills;
+12. retirar estructuras VITAL, staging, backup o legacy.
+
+Toda decisión física pertenece a `SUPA-ARC-*` y `SUPA-TRANS-*`.
+
+#### Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+| ID                  | Regla protegida                                                                                                                                                                                                                    | Tipo                                               | Prioridad | Momento de implementación                                | Destino                                        |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | --------- | -------------------------------------------------------- | ---------------------------------------------- |
+| `TREQ-SUPABASE-423` | El mapa deberá cubrir exactamente las 379 relaciones gobernadas por Vento, sin omisiones, duplicados ni objetos sin clasificación.                                                                                                 | contractual + base de datos + regresión            | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-AUD-023`; `SUPA-AUD-024`; `SHELL-CI-017` |
+| `TREQ-SUPABASE-424` | Cada tabla y vista deberá resolver una capacidad principal, propietario actual, consumidores actuales y estado de fuente de verdad.                                                                                                | contractual + arquitectura + regresión             | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-003`; `SUPA-ARC-016`; `SHELL-CI-017` |
+| `TREQ-SUPABASE-425` | Las 347 firmas de funciones Vento deberán heredar o declarar capacidad, propietario, productor, consumidor y relación afectada por firma PostgreSQL estable.                                                                       | RPC + contractual + integración + regresión        | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-013`; `SUPA-ARC-016`; `SHELL-CI-017` |
+| `TREQ-SUPABASE-426` | Los 196 triggers empresariales deberán heredar la propiedad de su relación objetivo y declarar función, efecto, consumidor derivado y orden contractual.                                                                           | base de datos + integración + regresión            | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-013`; `SUPA-AUD-023`; `SHELL-CI-017` |
+| `TREQ-SUPABASE-427` | Toda política RLS y grant deberá vincularse al objeto protegido, capacidad, propietario y consumidores autorizados sin convertirse en propietario empresarial.                                                                     | RLS + seguridad + contractual + regresión          | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-015`; `AUTH-QA-030`                  |
+| `TREQ-SUPABASE-428` | Los 14 buckets deberán declarar capacidad, propietario del contenido, productores, consumidores, sensibilidad, visibilidad y ciclo de vida.                                                                                        | Storage + seguridad + integración + regresión      | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-018`; `SUPA-AUD-023`                 |
+| `TREQ-SUPABASE-429` | Toda publicación, tabla publicada, canal y suscripción Realtime deberá declarar productor, propietario, consumidor real, filtro, autorización y recuperación.                                                                      | integración + seguridad + regresión                | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-019`; `SUPA-AUD-023`                 |
+| `TREQ-SUPABASE-430` | Las 24 Edge Functions, siete cron jobs, webhooks y automatizaciones deberán resolver capacidad, propietario, productor, consumidor, autenticación, efecto e idempotencia.                                                          | integración + seguridad + idempotencia + regresión | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-020`; `SUPA-AUD-023`                 |
+| `TREQ-SUPABASE-431` | La capacidad principal de cada objeto deberá pertenecer al catálogo CAP-01 a CAP-18 o a una clase explícita temporal, administrada o fuera de Vento OS.                                                                            | contractual + regresión                            | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-002`; `SUPA-ARC-003`                 |
+| `TREQ-SUPABASE-432` | Cada objeto tendrá una sola capacidad principal; capacidades adicionales se registrarán como soporte sin duplicar el objeto ni su fuente de verdad.                                                                                | contractual + arquitectura + regresión             | alta      | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-002`; `SUPA-ARC-003`                 |
+| `TREQ-SUPABASE-433` | El propietario actual deberá ser quien controla creación, reglas, corrección, estado y cierre del resultado; una lectura o pantalla no otorgará propiedad.                                                                         | contractual + integración + regresión              | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-003`; `SUPA-ARC-016`                 |
+| `TREQ-SUPABASE-434` | Supabase, public, un owner PostgreSQL, vento-shell, un repositorio o un servicio técnico no podrán registrarse como propietario empresarial por su función de custodia.                                                            | contractual + arquitectura + regresión negativa    | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-003`; `SUPA-ARC-006`                 |
+| `TREQ-SUPABASE-435` | La propiedad compartida, fragmentada o competidora deberá declararse expresamente y generar resolución en arquitectura y riesgo, sin forzar una falsa propietaria única.                                                           | contractual + arquitectura + regresión             | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-003`; `SUPA-AUD-024`                 |
+| `TREQ-SUPABASE-436` | Un consumidor actual solo podrá declararse con evidencia de código, runtime, dependencia de base o medio operativo; un candidato objetivo no se presentará como uso vigente.                                                       | contractual + integración + regresión              | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-AUD-023`; `SHELL-CI-017`                 |
+| `TREQ-SUPABASE-437` | Las relaciones definidas como objetivo por CAP-MAP-005 y las aplicaciones diferidas deberán conservarse separadas del uso actual hasta existir evidencia verificable de operación vigente.                                         | contractual + regresión negativa                   | alta      | arquitectura, transición o CI según la tarea responsable | `SUPA-AUD-023`; `SUPA-AUD-024`                 |
+| `TREQ-SUPABASE-438` | Productor, propietario y consumidor deberán ser campos distintos; escribir mediante un comando o trigger no transferirá propiedad y consumir no permitirá corregir la fuente.                                                      | contractual + integración + seguridad + regresión  | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-016`; `SUPA-ARC-017`                 |
+| `TREQ-SUPABASE-439` | Cada objeto deberá clasificarse como fuente actual, proyección, competidor, legacy, temporal, administrado o sin autoridad demostrada.                                                                                             | contractual + arquitectura + regresión             | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-003`; `SUPA-ARC-016`                 |
+| `TREQ-SUPABASE-440` | Los 261 objetos relacionales administrados por PostgreSQL o Supabase conservarán estado PLATFORM_MANAGED y no recibirán propietario empresarial de Vento.                                                                          | contractual + seguridad + regresión negativa       | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-001`; `SUPA-ARC-004`                 |
+| `TREQ-SUPABASE-441` | app_private deberá permanecer como capa privada server-only; su tipado, función y consumidores no podrán ampliar Data API, grants ni acceso cliente.                                                                               | seguridad + contractual + RLS + regresión          | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-006`; `SUPA-ARC-015`; `SUPA-ARC-023` |
+| `TREQ-SUPABASE-442` | El schema public deberá tratarse como namespace técnico actual y no como dominio, capacidad ni propietario empresarial.                                                                                                            | contractual + arquitectura + regresión             | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-003`; `SUPA-ARC-004`                 |
+| `TREQ-SUPABASE-443` | Los 54 objetos VITAL deberán conservar propietario VITAL, consumidores VITAL y separación de paquete respecto de Vento OS, sin declararlos legacy por estar fuera del mapa empresarial.                                            | contractual + arquitectura + regresión             | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-002`; `SUPA-ARC-003`; `SUPA-ARC-023` |
+| `TREQ-SUPABASE-444` | Backup y staging deberán clasificarse sin capacidad vigente, con custodio, retención, consumidor autorizado y decisión de retiro o conservación.                                                                                   | base de datos + migración + regresión              | alta      | arquitectura, transición o CI según la tarea responsable | `SUPA-AUD-024`; `SUPA-ARC-022`                 |
+| `TREQ-SUPABASE-445` | Todo objeto sin consumidor actual localizado deberá conservar ese estado y no retirarse hasta completar búsqueda de código, dependencias, runtime, jobs y medios operativos.                                                       | migración + contractual + regresión                | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-AUD-023`; `SUPA-AUD-024`                 |
+| `TREQ-SUPABASE-446` | Todo objeto que soporte más de un dominio deberá mantener una fuente propietaria y contratos de lectura, comando o evento para los demás dominios.                                                                                 | contractual + integración + seguridad + regresión  | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-016`; `SUPA-ARC-017`                 |
+| `TREQ-SUPABASE-447` | Una vista, alias o proyección deberá heredar propietario y capacidad de su fuente y declarar consumidores; no podrá convertirse en fuente mutable independiente.                                                                   | contractual + integración + regresión              | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-005`; `SUPA-ARC-016`                 |
+| `TREQ-SUPABASE-448` | Índices, constraints, secuencias, políticas, grants, triggers internos y particiones heredarán capacidad y propietario del objeto principal, manteniendo identidad técnica y control propio.                                       | base de datos + contractual + regresión            | alta      | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-003`; `SUPA-ARC-013`; `SUPA-ARC-015` |
+| `TREQ-SUPABASE-449` | Cada objeto deberá declarar sensibilidad y exposición compatibles con propietario, consumidores, Data API, RLS, Storage y credenciales técnicas.                                                                                   | seguridad + RLS + contractual + regresión          | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-ARC-015`; `SUPA-ARC-018`                 |
+| `TREQ-SUPABASE-450` | El registro deberá conservar conteos, identidades únicas, orden determinista y huellas reproducibles para detectar altas, bajas o reclasificaciones.                                                                               | contractual + estática + regresión                 | crítica   | arquitectura, transición o CI según la tarea responsable | `SHELL-CI-017`; `SUPA-AUD-024`                 |
+| `TREQ-SUPABASE-451` | El mapa no autorizará mover, renombrar, consolidar, eliminar, exponer ni cambiar propietario de ningún objeto sin arquitectura y transición aprobadas.                                                                             | migración + contractual + regresión negativa       | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-AUD-024`; `SUPA-ARC-001`                 |
+| `TREQ-SUPABASE-452` | SUPA-AUD-023 deberá consumir identidades, propietarios y consumidores de este mapa sin renombrarlos ni sustituirlos al construir proceso-datos-RPC-eventos-aplicaciones.                                                           | contractual + integración + regresión              | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-AUD-023`                                 |
+| `TREQ-SUPABASE-453` | SUPA-AUD-024 deberá clasificar cada conflicto, ausencia, fragmentación, exposición o consumidor oculto usando el registro sin perder su destino documental.                                                                        | contractual + seguridad + regresión                | crítica   | arquitectura, transición o CI según la tarea responsable | `SUPA-AUD-024`                                 |
+| `TREQ-SUPABASE-454` | Un validador integral deberá comprobar cobertura por clase, 379 relaciones únicas, 62 vistas, 347 funciones, 196 triggers, 14 buckets, 24 Edge Functions, siete cron jobs, relaciones resolubles y continuidad hacia SUPA-AUD-023. | contractual + estática + integración + regresión   | crítica   | arquitectura, transición o CI según la tarea responsable | `SHELL-CI-017`; `SUPA-AUD-023`; `SUPA-AUD-024` |
+
+Se incorporan `TREQ-SUPABASE-423` a `TREQ-SUPABASE-454` en el registro `04A` completo.
+
+#### 18. Criterios de aceptación
+
+- las 379 relaciones Vento aparecen una sola vez en el mapa relacional;
+- las 317 tablas y 62 vistas están diferenciadas;
+- cada relación tiene capacidad principal, propietario actual, consumidores actuales y estado;
+- las 347 firmas, 196 triggers, 14 buckets, 24 Edge Functions y siete cron jobs tienen regla de propiedad y consumo;
+- las 261 relaciones administradas permanecen separadas de la propiedad empresarial;
+- `public`, `vento-shell`, owner PostgreSQL y Supabase no se usan como propietarios empresariales falsos;
+- `app_private`, VITAL, staging y backup tienen tratamiento explícito;
+- consumidores actuales y candidatos objetivo permanecen separados;
+- toda fragmentación o ausencia tiene tarea exacta de resolución;
+- se generan `TREQ-SUPABASE-423` a `TREQ-SUPABASE-454`;
 - no se ejecutó ninguna mutación remota.
 
-La implementación de generación, paquete, clientes y gates corresponde a tareas posteriores.
+#### 19. Manifiestos de integridad
+
+| Registro                         | Valor                                                                      |
+| -------------------------------- | -------------------------------------------------------------------------- |
+| base `04A` recibida              | SHA-256 `72dd9a10a829fc552ae8043d9c04bd740f8cda7dedf93f887e6cfde43dd69d82` |
+| relaciones Vento                 | **379**                                                                    |
+| tablas                           | **317**                                                                    |
+| vistas                           | **62**                                                                     |
+| objetos relacionales únicos      | **379 de 379**                                                             |
+| capacidades o clases con objetos | **18**                                                                     |
+| funciones Vento cubiertas        | **347 de 347**                                                             |
+| triggers Vento cubiertos         | **196 de 196**                                                             |
+| buckets cubiertos                | **14 de 14**                                                               |
+| Edge Functions cubiertas         | **24 de 24**                                                               |
+| cron jobs cubiertos              | **7 de 7**                                                                 |
+| relaciones administradas         | **261**                                                                    |
+| requisitos nuevos                | `TREQ-SUPABASE-423` a `TREQ-SUPABASE-454`                                  |
+
+#### 20. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar
+→ propietario actual → consumidores actuales
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-AUD-023 — Crear mapa proceso → datos → RPC → eventos → aplicaciones
+```
+
+La tarea siguiente deberá reutilizar las identidades y fronteras de este mapa sin renombrarlas ni sustituirlas.
 
 
-### [ ] SUPA-AUD-022 — Crear mapa objeto → capacidad empresarial preliminar → propietario actual → consumidores actuales
 ### [ ] SUPA-AUD-023 — Crear mapa proceso → datos → RPC → eventos → aplicaciones
 ### [ ] SUPA-AUD-024 — Clasificar riesgos críticos, altos, medios y deuda técnica
