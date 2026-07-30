@@ -1,14 +1,14 @@
 {
   "schema_version": 1,
-  "sequence_id": "E3-SUPABASE-AUDIT-001",
+  "sequence_id": "E3-SUPABASE-ARCHITECTURE-001",
   "block_code": "BLOQUE E3",
   "block_title": "Arquitectura canónica de datos y gobierno integral de Supabase",
-  "previous_task_id": "INT-APP-010",
+  "previous_task_id": "SUPA-AUD-024",
   "segments": [
     {
-      "prefix": "SUPA-AUD",
+      "prefix": "SUPA-ARC",
       "from": 1,
-      "to": 24
+      "to": 25
     }
   ]
 }
