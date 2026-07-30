@@ -6159,7 +6159,720 @@ SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
 `SUPA-ARC-013` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
+### ✅ SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps` — APROBADA
+**Tarea siguiente:** SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `1a9b90c9d8baf95c5a4310d9695ba9f2de550866`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `5fbdd5fc3f2899c14de5453db9b36dc5bfe1b368`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `01ba74d6b4ecb218a76be710e5ecd0dd9769d642`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `01_PRINCIPIOS_OBLIGATORIOS.md` blob `36bb9a4c19f6d8e7edbaa03687219fb642c9c526`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`
+**Tipo de tarea:** definición normativa de clasificación, identidad, firma, semántica, seguridad declarativa, transacción, errores, observabilidad, compatibilidad y automatismos PostgreSQL para funciones, RPC y triggers gobernados por Vento; sin crear, alterar, ejecutar o retirar funciones, procedimientos, triggers, schemas, tablas, datos, policies, grants, RLS, configuración, migraciones, código, backfills, cutover ni despliegues
+
+#### 1. Objetivo
+
+Definir un estándar único, verificable y fail closed para todas las funciones PostgreSQL, RPC y automatismos de trigger de Vento OS, de modo que cada rutina tenga clase, identidad, propietario, firma, efecto, nivel de exposición, reglas transaccionales, contrato de error, seguridad declarada, observabilidad y lifecycle inequívocos.
+
+```text
+CAPACIDAD Y OWNER APROBADOS
+        ↓
+CLASE DE RUTINA ÚNICA
+        ↓
+FIRMA ESTABLE + EFECTO EXPLÍCITO
+        ↓
+TRANSACCIÓN + SEGURIDAD + ERRORES + AUDITORÍA
+        ↓
+CONSUMIDORES, COMPATIBILIDAD Y DRIFT CONTROLADOS
+```
+
+La tarea define la política objetivo. No clasifica físicamente cada una de las 347 firmas actuales, no corrige sobrecargas o triggers existentes y no anticipa la política excepcional de `SECURITY DEFINER`, los grants, RLS ni los contratos concretos de cada dominio.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-FUNCTION-RPC-TRIGGER-STANDARD-001@1.0.0
+```
+
+| Propiedad                           |   Valor |
+| ----------------------------------- | ------: |
+| `canonical_routine_classes`         |  **13** |
+| `exposed_rpc_classes`               |   **2** |
+| `owner_schema_function_classes`     |   **3** |
+| `private_function_classes`          |   **5** |
+| `audit_function_classes`            |   **2** |
+| `trigger_function_classes`          |   **1** |
+| `trigger_order_slots`               |   **7** |
+| `business_procedure_target_count`   |   **0** |
+| `current_vento_function_signatures` | **347** |
+| `current_direct_signatures`         | **274** |
+| `current_trigger_functions`         |  **73** |
+| `current_explicit_triggers`         | **196** |
+| `current_trigger_target_relations`  | **155** |
+| `current_overloaded_names`          |   **3** |
+| `new_test_requirements`             |  **44** |
+| `physical_changes_authorized`       |   **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                       | Decisión consumida                                                                                         |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                            | continuidad, integridad histórica, una sola tarea y separación entre definición e implementación           |
+| `delivery-contract.json`                                     | artefacto único de tarea y registro 04A completo con identidad de entrega única                            |
+| `active-sequence.json`                                       | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-013` como tarea actual                                |
+| `SUPABASE-SCHEMA-TABLE-COLUMN-NAMING-STANDARD-001@1.0.0`     | inglés, ASCII, `lower_snake_case`, límite de 63 bytes, vocabulario y versionado nominal de `api`           |
+| `SUPABASE-KEY-CONSTRAINT-STATE-TIME-STANDARD-001@1.0.0`      | claves, concurrencia, estados, timestamps, idempotencia y semántica temporal                               |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0`                  | `api`, `QUERY_RPC`, `COMMAND_RPC`, versión mayor y prohibición de sobrecargas expuestas                    |
+| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0`                  | helpers privados, adapters, primitivas de seguridad y coordinadores internos                               |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`          | auditoría append-only, evento durable, outbox, causalidad, resultados y conciliación                       |
+| `SUPABASE-AUTHORITATIVE-SCHEMA-OWNERSHIP-REGISTRY-001@1.0.0` | owner schema único para cada efecto empresarial                                                            |
+| `SUPA-AUD-006` a `SUPA-AUD-008`                              | firmas, superficie RPC, seguridad, `search_path`, triggers, orden, duplicidades y funciones sin asociación |
+| `SUPA-AUD-016` a `SUPA-AUD-018`                              | procedencia, drift, compatibilidad, sobrecargas y consumidores legacy                                      |
+| `SUPA-AUD-022` a `SUPA-AUD-024`                              | relación de funciones y triggers con capacidades, propietarios, consumidores, procesos y riesgos           |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`           | 5.255 requisitos hasta `SUPA-ARC-012`; rango `TREQ-SUPABASE-001` a `960`                                   |
+
+#### 4. Alcance y frontera de la decisión
+
+Esta tarea gobierna:
+
+1. clasificación de funciones PostgreSQL gobernadas por Vento;
+2. distinción entre función interna, RPC expuesta y función de trigger;
+3. identidad calificada de firma, nombres y versionado;
+4. parámetros, defaults, nullability lógica y contratos de retorno;
+5. volatilidad, paralelismo y lenguaje de implementación;
+6. efectos, transacciones, concurrencia, idempotencia y locks;
+7. errores, denegaciones y resultados parciales;
+8. referencias calificadas, `search_path` y SQL dinámico;
+9. identidad, nombre, timing, evento, nivel y orden de triggers;
+10. observabilidad, comentarios, deprecación, compatibilidad y gates recurrentes.
+
+Esta tarea no gobierna:
+
+- aprobación de excepciones `SECURITY DEFINER`;
+- grants, ACL, RLS, policies y roles de ejecución;
+- contratos concretos de lectura y mutación por dominio;
+- escrituras entre dominios y compensaciones concretas;
+- Edge Functions, webhooks, cron, Realtime o Storage;
+- tipos compartidos generados para consumidores;
+- migración individual, renombre, retiro o corrección de rutinas actuales.
+
+Esas decisiones permanecen en `SUPA-ARC-014` a `SUPA-ARC-025`, `SUPA-TRANS-*` y los paquetes de implementación correspondientes.
+
+#### 5. Distinción canónica entre función, RPC y trigger
+
+```text
+FUNCIÓN POSTGRESQL
+→ unidad ejecutable identificada por schema, nombre y tipos de argumentos
+
+RPC
+→ función ubicada en `api` y publicada como contrato explícito para una audiencia
+
+FUNCIÓN DE TRIGGER
+→ función de retorno `trigger` invocada exclusivamente por un trigger asociado
+
+TRIGGER
+→ vínculo declarativo entre relación, timing, evento, nivel, condición, orden y función
+```
+
+Reglas:
+
+1. toda RPC es una función PostgreSQL, pero no toda función es RPC;
+2. la ubicación actual en `public` o un grant heredado no convierte una función en contrato aprobado;
+3. una función de trigger nunca será RPC ni helper directamente invocable por clientes;
+4. el trigger y su función tendrán identidades separadas y trazables;
+5. la clase de rutina no se inferirá únicamente desde nombre, lenguaje, owner PostgreSQL o modo de seguridad.
+
+#### 6. Taxonomía cerrada de rutinas
+
+| Clase                     | Ubicación objetivo     | Semántica                                                              |
+| ------------------------- | ---------------------- | ---------------------------------------------------------------------- |
+| `QUERY_RPC`               | `api`                  | lectura parametrizada expuesta, sin DML ni efectos laterales           |
+| `COMMAND_RPC`             | `api`                  | comando empresarial expuesto con un efecto primario autorizado         |
+| `DOMAIN_QUERY_FUNCTION`   | owner schema           | lectura o cálculo interno propio del dominio, no expuesto directamente |
+| `DOMAIN_COMMAND_FUNCTION` | owner schema           | mutación interna cuyo efecto primario pertenece al mismo owner schema  |
+| `DOMAIN_RULE_FUNCTION`    | owner schema           | validación, derivación o regla determinista del dominio                |
+| `INTERNAL_QUERY_HELPER`   | `app_private`          | consulta técnica transversal sin DML                                   |
+| `INTERNAL_COMMAND_HELPER` | `app_private`          | primitiva interna de escritura con owner primario declarado            |
+| `PLATFORM_ADAPTER`        | `app_private`          | adaptación mínima a una superficie administrada soportada              |
+| `SECURITY_PRIMITIVE`      | `app_private`          | hash, firma, verificación o derivación técnica estrecha                |
+| `INTERNAL_COORDINATOR`    | `app_private`          | coordinación explícita de contratos internos aprobados                 |
+| `AUDIT_QUERY_FUNCTION`    | `audit`                | consulta interna y acotada sobre evidencia autorizada                  |
+| `AUDIT_APPEND_FUNCTION`   | `audit`                | append de evidencia, evento, outbox, intento o conciliación            |
+| `TRIGGER_FUNCTION`        | owner schema o `audit` | automatismo ligado a una relación y sin invocación directa como RPC    |
+
+Toda rutina nueva tendrá exactamente una clase primaria. Una función no podrá declararse simultáneamente consulta y comando, helper y RPC, o regla pura y automatismo con efectos.
+
+#### 7. Ubicación y autoridad
+
+1. `api` contendrá únicamente `QUERY_RPC` y `COMMAND_RPC`.
+2. Los owner schemas contendrán reglas y funciones cuya autoridad pertenece a su dominio.
+3. `app_private` contendrá únicamente capacidades técnicas transversales ya admitidas por `SUPA-ARC-006`.
+4. `audit` contendrá rutinas de lectura controlada y append de evidencia; no se convertirá en owner del hecho empresarial.
+5. `public` no recibirá funciones nuevas permanentes; cualquier wrapper actual será compatibilidad transitoria.
+6. Una función que escriba tendrá exactamente un owner schema primario y no trasladará autoridad al schema donde se publique un wrapper.
+7. Una función no se ubicará por aplicación consumidora, pantalla, repositorio, equipo o conveniencia de `search_path`.
+8. Las superficies administradas por Supabase o PostgreSQL solo se usarán mediante puntos de extensión soportados y contratos explícitos.
+
+#### 8. Identidad canónica de una rutina
+
+La identidad técnica completa será:
+
+```text
+<schema>.<routine_name>(<identity_argument_types>)
+```
+
+El registro de rutina conservará, como mínimo:
+
+```text
+routine_id
++ qualified_signature
++ routine_class
++ owner_schema
++ primary_business_capability
++ process_ids
++ language
++ volatility
++ parallel_safety
++ security_mode
++ search_path_contract
++ input_contract
++ return_contract
++ primary_effect
++ affected_relations
++ caller_audiences
++ authorization_contract
++ idempotency_contract
++ concurrency_contract
++ error_contract
++ observability_contract
++ consumers
++ compatibility_status
++ replacement_signature
++ lifecycle_state
++ source_migration
++ definition_hash
+```
+
+Nombre sin schema, nombre sin argumentos o `specific_name` generado no serán identidad suficiente para inventario, compatibilidad, grants o retiro.
+
+#### 9. Forma léxica y verbos permitidos
+
+Toda rutina nueva cumplirá el estándar de `SUPA-ARC-011`: inglés, ASCII, `lower_snake_case`, sin comillas y con máximo de 63 bytes.
+
+Reglas:
+
+1. no usar prefijos genéricos `fn_`, `func_`, `rpc_`, `sp_`, `proc_`, `do_` o `run_`;
+2. no repetir el nombre del schema o de la aplicación en la rutina cuando no añada semántica;
+3. no usar verbos ambiguos aislados como `process`, `handle`, `manage`, `execute`, `perform`, `apply` o `sync` sin objeto, dirección y efecto definidos;
+4. consultas unitarias usarán `get_<entity_or_projection>`;
+5. colecciones acotadas usarán `list_<plural_concept>`;
+6. búsqueda por relevancia o texto usará `search_<plural_concept>`;
+7. resolución contextual usará `resolve_<concept>`;
+8. cálculo puro o reproducible usará `calculate_<concept>`;
+9. predicados booleanos usarán `is_<predicate>` o `has_<predicate>`;
+10. reglas de validación usarán `validate_<concept>` y devolverán resultado tipado o fallarán con código estable;
+11. comandos usarán el verbo empresarial exacto: `create`, `assign`, `activate`, `approve`, `reject`, `receive`, `dispatch`, `complete`, `cancel`, `reverse`, `correct`, `reconcile` u otro aprobado por el proceso;
+12. `set_` se limitará a una asignación local directa y no ocultará un cambio de lifecycle;
+13. `sync_` solo se permitirá cuando declare fuente, destino, dirección, precedencia y reconciliación.
+
+#### 10. Convención para RPC expuestas
+
+La identidad nominal permanecerá:
+
+```text
+api.<contract_name>_v<major>
+```
+
+Reglas:
+
+1. el nombre deberá comunicar si el contrato consulta o ejecuta una acción empresarial mediante su verbo;
+2. cada nombre y versión tendrá una sola firma efectiva;
+3. no existirán sobrecargas en `api`;
+4. un cambio incompatible en parámetros, retorno, autorización, semántica o efecto exigirá nueva versión mayor;
+5. un cambio compatible no alterará nombres, tipos, orden semántico, defaults ni códigos existentes de forma sorpresiva;
+6. `QUERY_RPC` no mutará estado ni emitirá efectos externos;
+7. `COMMAND_RPC` declarará un único efecto primario y su owner schema;
+8. una RPC no devolverá internals, nombres físicos no contractuales, SQLSTATE sin mapear ni mensajes del motor;
+9. la versión nominal no autoriza coexistencia indefinida: cada versión tendrá consumidores, fecha de deprecación y puerta de salida;
+10. un wrapper de compatibilidad conservará telemetría, precedencia y sucesor explícitos.
+
+#### 11. Convención para funciones de owner schema
+
+1. `DOMAIN_QUERY_FUNCTION` leerá únicamente fuentes declaradas y no tendrá DML.
+2. `DOMAIN_COMMAND_FUNCTION` producirá un efecto primario en su owner schema y mantendrá invariantes dentro de la misma transacción.
+3. `DOMAIN_RULE_FUNCTION` no actuará como API, no escribirá y tendrá inputs y outputs reproducibles.
+4. Una función de dominio no aceptará nombres de aplicación, rutas o pantallas como contexto de autoridad.
+5. Una función de dominio no escribirá directamente en otro owner schema por conveniencia.
+6. Las escrituras cruzadas utilizarán el contrato de `SUPA-ARC-017` y un coordinador u outbox cuando corresponda.
+7. Los consumidores externos no invocarán funciones de owner schema directamente; usarán `api` o un servicio aprobado.
+
+#### 12. Convención para helpers privados y auditoría
+
+1. Los helpers de `app_private` conservarán las cinco clases aprobadas por `SUPA-ARC-006`.
+2. Un helper transversal no decidirá reglas empresariales que pertenecen a un owner schema.
+3. `SECURITY_PRIMITIVE` no concederá autorización, rol, permiso, territorio ni actor efectivo.
+4. `PLATFORM_ADAPTER` utilizará una superficie administrada soportada y no sus internals como fuente empresarial.
+5. `INTERNAL_COORDINATOR` declarará contratos llamados, orden, idempotencia, compensación, resultado parcial y conciliación.
+6. `AUDIT_APPEND_FUNCTION` solo agregará evidencia append-only y no corregirá el hecho fuente por mutación retrospectiva.
+7. `AUDIT_QUERY_FUNCTION` limitará finalidad, audiencia, filtros, volumen y sensibilidad.
+8. Ninguna rutina privada será ejecutable por cliente por simple pertenencia a un schema existente.
+
+#### 13. Parámetros y argumentos
+
+1. Todos los parámetros expuestos tendrán nombre semántico estable y `lower_snake_case`.
+2. No se usarán prefijos genéricos `p_`, `arg_`, `in_`, `input_` o `param_` en contratos nuevos.
+3. Las referencias usarán nombres canónicos como `order_id`, `employee_id`, `site_id` o `expected_version`.
+4. Un cliente no podrá afirmar libremente `actor_id`, rol, permiso, sede activa, área activa, sesión o autorización; esos valores se resolverán server-side.
+5. Los argumentos obligatorios precederán a los opcionales en la firma física.
+6. Todo default será explícito, determinista y compatible con la semántica del contrato.
+7. `NULL` no significará simultáneamente omitir, borrar, usar default, todos, ninguno o desconocido.
+8. Un parámetro opcional distinguirá ausencia de valor, valor nulo empresarial y solicitud de limpieza cuando esas semánticas existan.
+9. `VARIADIC`, tipos polimórficos, `record`, `anyelement`, `anyarray` y argumentos sin tipo contractual quedan prohibidos en `api`.
+10. Un payload JSON solo se admitirá con schema, versión, campos permitidos, límites, sensibilidad y validación estricta.
+11. No se aceptarán nombres de schema, tabla, columna, función, operador u ordenamiento arbitrarios aportados por clientes.
+12. `idempotency_key`, `expected_version`, `request_id`, paginación y filtros tendrán semántica transversal estable cuando apliquen.
+
+#### 14. Contratos de retorno
+
+1. Toda RPC tendrá retorno explícito y estable.
+2. `QUERY_RPC` devolverá un tipo compuesto o `TABLE` con columnas declaradas; `record` sin shape queda prohibido.
+3. Una colección tendrá orden determinista, cursor o paginación aprobada, límite máximo y regla de consistencia.
+4. Una consulta unitaria declarará si retorna exactamente una fila, cero o una, o una denegación; no mezclará esos resultados.
+5. `COMMAND_RPC` no retornará `void`; devolverá outcome, identificadores afectados, versión resultante, tiempos relevantes e indicador de replay idempotente cuando aplique.
+6. Un retorno JSON no sustituirá tipos estables por conveniencia; requerirá contrato versionado y validación de shape.
+7. No se expondrán tipos internos administrados, filas completas por `SELECT *`, secretos, stack traces ni texto SQL.
+8. El orden de campos, nullability lógica y significado no cambiarán silenciosamente dentro de una versión mayor.
+9. Una función interna podrá usar un tipo técnico específico, pero deberá conservar un consumidor, propósito y lifecycle declarados.
+
+#### 15. Semántica de consultas
+
+1. `QUERY_RPC`, `DOMAIN_QUERY_FUNCTION`, `DOMAIN_RULE_FUNCTION`, `INTERNAL_QUERY_HELPER` y `AUDIT_QUERY_FUNCTION` no ejecutarán DML, DDL, colas, webhooks ni cambios de sesión.
+2. Una consulta no producirá efectos mediante funciones llamadas, triggers indirectos o SQL dinámico.
+3. Toda fuente, join, filtro, orden, límite y consistencia esperada será explícita.
+4. Los objetos se referenciarán con schema y nombre calificados.
+5. Una consulta no convertirá caché, snapshot, vista o agregado en fuente de verdad.
+6. La ausencia de filas no se traducirá automáticamente en autorización, éxito o inexistencia empresarial.
+7. Cálculos sensibles a tiempo, configuración, sesión o locale declararán esas dependencias y no se marcarán como puros.
+
+#### 16. Semántica de comandos
+
+1. `COMMAND_RPC`, `DOMAIN_COMMAND_FUNCTION`, `INTERNAL_COMMAND_HELPER`, `INTERNAL_COORDINATOR` y `AUDIT_APPEND_FUNCTION` serán mutantes únicamente según su clase.
+2. Todo comando declarará exactamente un efecto primario y el owner schema responsable.
+3. Autenticación técnica, identidad, actor, contexto, autorización y aseguramiento se resolverán antes del efecto protegido.
+4. El comando validará estado anterior, precondiciones, `expected_version` cuando aplique y transición permitida.
+5. El efecto, evento durable, outbox y evidencia requerida se persistirán atómicamente cuando el contrato lo exija.
+6. Un comando no presentará `UNKNOWN_OUTCOME`, fallo parcial o conciliación pendiente como éxito.
+7. El resultado de un backend privilegiado conservará principal y actor humanos cuando la acción haya sido iniciada por una persona.
+8. Un comando no aceptará datos derivados del cliente como saldo, total, owner, permiso, actor o estado final sin recomputación confiable.
+
+#### 17. Volatilidad y seguridad de paralelismo
+
+| Declaración           | Condición obligatoria                                                                                           |
+| --------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `IMMUTABLE`           | no lee tablas, reloj, aleatoriedad, secuencias, configuración mutable, sesión, locale mutable ni estado externo |
+| `STABLE`              | solo lectura dentro del snapshot de la sentencia y sin efectos laterales                                        |
+| `VOLATILE`            | comandos, triggers, tiempo actual, aleatoriedad, secuencias, sesión mutable o cualquier escritura               |
+| `PARALLEL SAFE`       | solo si cada operación llamada también es segura y no existe estado dependiente de sesión o side effect         |
+| `PARALLEL RESTRICTED` | cuando la rutina requiere recursos permitidos únicamente en líder                                               |
+| `PARALLEL UNSAFE`     | comandos, triggers, locks, secuencias, configuración mutable o efectos no demostrablemente paralelos            |
+
+Toda rutina declarará volatilidad y paralelismo de forma explícita. La declaración deberá coincidir con el cuerpo y con todas las funciones transitivamente llamadas.
+
+#### 18. Lenguaje y estructura del cuerpo
+
+1. `LANGUAGE sql` se preferirá para expresiones declarativas simples y consultas acotadas.
+2. `LANGUAGE plpgsql` se usará cuando exista control procedural, validación secuencial, manejo conocido de excepciones o coordinación transaccional.
+3. Otros lenguajes requerirán decisión de plataforma, procedencia, seguridad, disponibilidad por ambiente y rollback.
+4. El cuerpo no dependerá de orden accidental de filas, casts implícitos ambiguos o nombres resueltos por el caller.
+5. No se usará `SELECT *` en retornos contractuales ni en asignaciones cuya shape deba permanecer estable.
+6. Las consultas mutantes comprobarán cardinalidad y no asumirán que una operación afectó una sola fila sin evidencia.
+7. Las constantes empresariales no se duplicarán en cuerpos cuando exista catálogo o contrato canónico.
+8. Una rutina no contendrá credenciales, tokens, URLs sensibles, PII de ejemplo ni identificadores reales.
+
+#### 19. Transacción, idempotencia y concurrencia
+
+1. Una función no ejecutará `COMMIT`, `ROLLBACK` ni control de transacción autónoma.
+2. El comando completo permanecerá atómico dentro de la transacción invocante o declarará explícitamente sus efectos externos y conciliación.
+3. Todo comando reintentable desde red, cola, webhook o UI tendrá idempotencia basada en clave, operación, actor o aggregate y resultado persistido.
+4. La misma clave idempotente con payload incompatible será rechazada.
+5. Mutaciones sobre agregados versionados comprobarán `expected_version` o mecanismo equivalente.
+6. Los locks tendrán recurso, alcance, orden determinista, timeout y conducta de conflicto definidos.
+7. Queda prohibido usar locks globales o advisory locks sin namespace, owner, límite y liberación transaccional.
+8. Un `UPSERT` declarará conflict target, precedencia, campos actualizables y comportamiento ante replay.
+9. La concurrencia no podrá producir doble número, doble movimiento, doble redención, doble emisión o transición regresiva.
+10. Los reintentos no duplicarán auditoría principal; registrarán intentos y resultado idempotente según contrato.
+
+#### 20. Errores y denegaciones
+
+1. Toda RPC publicará un catálogo cerrado de códigos de error de máquina.
+2. Mensajes humanos serán traducibles y no constituirán identidad contractual del error.
+3. No se expondrán stack traces, SQL dinámico, nombres internos, constraints sensibles ni mensajes crudos del motor.
+4. Errores esperados distinguirán validación, conflicto, concurrencia, autorización, estado, no encontrado, dependencia y conciliación.
+5. Una denegación de autorización nunca se reinterpretará como ausencia de datos o éxito vacío.
+6. Un error de integridad no se capturará para continuar con un estado parcial silencioso.
+7. `WHEN OTHERS` no podrá devolver éxito, ignorar la excepción o sustituir evidencia obligatoria.
+8. Solo se capturarán excepciones conocidas para traducir código, compensar una operación aprobada o añadir contexto no sensible antes de relanzar.
+9. Un resultado incierto utilizará `UNKNOWN_OUTCOME` o `RECONCILIATION_REQUIRED` y bloqueará confirmación empresarial.
+
+#### 21. Modo de seguridad y autorización
+
+1. Toda función gobernada por Vento declarará explícitamente `SECURITY INVOKER` o `SECURITY DEFINER` en su fuente.
+2. `SECURITY INVOKER` será la regla predeterminada.
+3. Esta tarea no aprueba ninguna excepción `SECURITY DEFINER`; cada caso deberá superar `SUPA-ARC-014`.
+4. Una función privilegiada nunca se creará para ocultar un error de grants, RLS o ownership.
+5. `service_role`, owner PostgreSQL o `postgres` no representan actor empresarial ni autorización de dominio.
+6. Las RPC no confiarán en `raw_user_meta_data`, nombres de rol del cliente, parámetros de actor o claims potencialmente obsoletos como autoridad final.
+7. Las funciones de trigger heredarán el contexto de la operación, pero deberán proteger sus propios límites y no asumir que toda escritura proviene de una RPC aprobada.
+8. La asignación exacta de `EXECUTE`, `USAGE`, RLS y audiencias permanece reservada a `SUPA-ARC-015`.
+
+#### 22. `search_path`, referencias calificadas y SQL dinámico
+
+1. Toda rutina tendrá contrato explícito y mínimo de `search_path`.
+2. Todos los objetos empresariales, tipos y funciones llamados se referenciarán mediante nombres calificados.
+3. La resolución nunca dependerá del `search_path` aportado por caller, rol, pooler o sesión.
+4. Ningún schema escribible por una audiencia no confiable precederá a schemas confiables.
+5. La política exacta para rutinas `SECURITY DEFINER` se cierra en `SUPA-ARC-014`.
+6. SQL dinámico queda prohibido cuando una sentencia estática pueda expresar el contrato.
+7. Cuando sea imprescindible, identificadores y literales se construirán mediante mecanismos seguros, allowlists cerradas y tipos validados.
+8. No se concatenarán fragmentos SQL, operadores, órdenes, filtros o nombres enviados por clientes.
+9. Cada uso de SQL dinámico tendrá razón, consumidores, pruebas negativas y revisión de inyección.
+
+#### 23. Procedimientos PostgreSQL
+
+1. Vento OS no publicará procedimientos empresariales mediante Data API.
+2. La arquitectura objetivo mantiene **0** procedimientos empresariales para aplicaciones.
+3. Las operaciones empresariales transaccionales se expresarán mediante funciones clasificadas y contratos RPC cuando deban exponerse.
+4. Un procedimiento futuro de mantenimiento será administrativo, no RPC, no ejecutable por clientes y requerirá owner, ambiente, autorización, observabilidad y rollback propios.
+5. Ningún consumidor documentará `CALL` mientras el contrato vigente utilice funciones.
+
+#### 24. Identidad y nombre de triggers
+
+La identidad completa de un trigger será:
+
+```text
+<schema>.<relation>.<trigger_name>
+        → <trigger_function_qualified_signature>
+```
+
+Patrón nominal objetivo:
+
+```text
+trigger_<order>_<timing>_<event>_<purpose>
+```
+
+Ejemplos normativos:
+
+```text
+trigger_10_before_insert_set_defaults
+trigger_20_before_update_validate_state_transition
+trigger_80_after_insert_append_outbox
+trigger_90_after_update_append_audit_entry
+```
+
+Reglas:
+
+1. `order` será un token de dos dígitos perteneciente al registro aprobado;
+2. `timing` será `before`, `after` o `instead_of`;
+3. `event` será `insert`, `update`, `delete` o `truncate`;
+4. `purpose` describirá un único efecto verificable;
+5. el nombre de la relación no se repetirá dentro del trigger porque forma parte de su identidad calificada;
+6. no se usarán nombres genéricos como `trigger_update`, `handle_changes` o `process_row`;
+7. el nombre no sustituirá comentarios, orden contractual, pruebas ni registro de efectos.
+
+#### 25. Convención para funciones de trigger
+
+1. Toda función de trigger tendrá clase `TRIGGER_FUNCTION` y retorno `trigger`.
+2. Una función específica se nombrará `<entity_or_relation>_<purpose>_trigger`.
+3. Una función reutilizable se nombrará `<purpose>_trigger` únicamente cuando la semántica, owner y precondiciones sean idénticos para todas sus relaciones.
+4. Reutilización no permitirá dispatch dinámico por nombre de tabla o schema.
+5. La función declarará relación o conjunto cerrado de relaciones admitidas, eventos, columnas observadas, efectos y condición de salida.
+6. Usará `NEW`, `OLD`, `TG_OP` y demás metadata únicamente según contrato y comprobará combinaciones inválidas.
+7. Una función de trigger sin trigger asociado se clasificará como pendiente, compatibilidad o retiro; no se considerará activa.
+8. Una función directa no cambiará a retorno `trigger` ni viceversa conservando la misma identidad contractual.
+
+#### 26. Timing, evento y nivel
+
+1. Cada trigger tendrá un solo timing, un solo evento, un solo nivel y un solo propósito primario.
+2. Eventos múltiples con la misma función se materializarán como triggers separados para conservar identidad y pruebas explícitas.
+3. `BEFORE ROW` se limitará a defaults confiables, normalización, validación y derivación de la misma fila.
+4. `AFTER ROW` se usará para efectos dependientes de la persistencia confirmada de la fila, como evidencia, evento u outbox local.
+5. `AFTER STATEMENT` requerirá semántica de lote, transition tables cuando apliquen, cardinalidad acotada y ausencia de bucles fila por fila ocultos.
+6. `INSTEAD OF` se limitará a vistas de compatibilidad aprobadas, con sucesor, telemetría y fecha de salida.
+7. `TRUNCATE` no formará parte de procesos empresariales ordinarios ni de contratos cliente.
+8. `UPDATE OF` declarará columnas relevantes cuando el efecto dependa de un subconjunto.
+9. `WHEN` podrá evitar trabajo innecesario, pero no será el único control de autorización, integridad o transición.
+
+#### 27. Registro de orden de triggers
+
+Los slots de orden son:
+
+| Slot | Finalidad                                     |
+| ---: | --------------------------------------------- |
+| `10` | defaults y normalización local                |
+| `20` | validación de invariantes y transición        |
+| `30` | resolución de referencias y contexto local    |
+| `40` | derivación de campos de la misma fila         |
+| `50` | mantenimiento same-domain explícito y acotado |
+| `80` | append de evento u outbox después del efecto  |
+| `90` | append de evidencia de auditoría              |
+
+Reglas:
+
+1. los slots expresan orden visible y reservan espacio para evolución;
+2. el orden lexicográfico nominal no será la única garantía de corrección;
+3. si un efecto depende estrictamente de otro, ambos se consolidarán en una sola función orquestadora o declararán una dependencia probada y atómica;
+4. dos triggers no podrán mantener el mismo campo o efecto sin precedencia y reconciliación explícitas;
+5. el cambio de slot es un cambio de comportamiento y exige pruebas de regresión;
+6. un slot no utilizado permanecerá libre y no se rellenará con un automatismo ajeno a su finalidad.
+
+#### 28. Límites de efectos de triggers
+
+1. El trigger heredará el owner de su relación objetivo para su efecto primario.
+2. Un trigger no se usará para implementar un proceso empresarial completo invisible al contrato invocante.
+3. Un trigger no escribirá directamente en otro owner schema salvo contrato aprobado en `SUPA-ARC-017`.
+4. Un trigger no ejecutará HTTP, webhook, Edge Function, cron, correo, push, llamada externa ni espera de red.
+5. Los efectos externos se iniciarán mediante evento u outbox durable después del hecho empresarial.
+6. Un trigger de auditoría agregará evidencia y no mutará retrospectivamente el hecho auditado.
+7. Un trigger no concederá permisos, cambiará actor efectivo ni inferirá identidad desde metadata editable.
+8. Un trigger de timestamp tendrá una sola responsabilidad y no coexistirá con otro que mantenga el mismo campo.
+9. Un automatismo que pueda fallar después del commit tendrá estado pending, reintento, idempotencia y conciliación fuera del trigger transaccional.
+
+#### 29. Reentrancia, recursión e idempotencia de triggers
+
+1. Toda función declarará si puede provocar DML sobre su relación origen o sobre otra relación con triggers.
+2. La recursión directa o indirecta queda prohibida salvo profundidad acotada, prueba formal e invariantes de terminación.
+3. `pg_trigger_depth()` no sustituirá un diseño idempotente ni será la única barrera de seguridad.
+4. Una actualización que no cambia el valor semántico no volverá a emitir evento, auditoría principal o efecto dependiente.
+5. El replay de una operación no duplicará movimiento, saldo, outbox, evento o evidencia principal.
+6. Los triggers que reaccionan a estado comprobarán transición anterior y nueva, no solo el valor final.
+7. Una excepción propagada revertirá el efecto transaccional completo; no se ocultará para conservar una fila parcialmente válida.
+8. Concurrencia y orden de locks se probarán sobre cadenas completas de triggers y funciones llamadas.
+
+#### 30. Observabilidad y auditoría
+
+Toda invocación sensible o mutante deberá poder correlacionarse mediante:
+
+```text
+request_id
++ correlation_id
++ causation_id
++ principal_id
++ actor_id
++ routine_id
++ qualified_signature
++ operation_or_process_id
++ primary_resource_id
++ idempotency_key_reference
++ started_at
++ completed_at
++ outcome
++ error_code
++ affected_row_count
++ source_version
+```
+
+Reglas:
+
+1. no se registrarán tokens, contraseñas, OTP, PIN, secretos, payloads completos ni PII innecesaria;
+2. argumentos sensibles se omitirán, reducirán o hashearán con finalidad declarada;
+3. la telemetría diferenciará invocación, éxito empresarial, replay idempotente, denegación, fallo técnico y conciliación;
+4. triggers conservarán relación, evento, timing, slot y función ejecutada;
+5. métricas no sustituirán auditoría durable cuando el contrato la exija;
+6. ausencia de telemetría no se interpretará como ausencia de consumidores.
+
+#### 31. Comentarios y manifiesto de rutinas
+
+Toda rutina y trigger gobernados por Vento tendrán metadata versionada que incluya:
+
+- clase y propósito;
+- owner schema y capacidad;
+- procesos y consumidores;
+- parámetros y retorno;
+- seguridad, volatilidad, paralelismo y `search_path`;
+- relaciones leídas y escritas;
+- efecto primario y efectos derivados;
+- idempotencia, concurrencia y errores;
+- sensibilidad y observabilidad;
+- source migration, commit y definition hash;
+- estado de lifecycle, deprecación, sucesor y condición de retiro.
+
+El comentario PostgreSQL será una proyección útil del manifiesto, no su única fuente. El cuerpo de la función no será la única documentación de su contrato.
+
+#### 32. Compatibilidad, sobrecargas y deprecación
+
+1. No se crearán nuevas sobrecargas en `api`.
+2. Las sobrecargas internas también quedan prohibidas por defecto; una excepción deberá demostrar resolución inequívoca, ausencia de consumidores ambiguos y necesidad no resoluble mediante nombre distinto.
+3. `CREATE OR REPLACE FUNCTION` no se usará como estrategia de versionado incompatible.
+4. Cambiar tipos de argumentos, retorno, clase, seguridad, efecto o nullability lógica exigirá nueva identidad o migración coordinada.
+5. Una firma legacy conservará inventario de consumidores, wrapper, telemetría, fecha de deprecación y sucesor.
+6. Un alias no escribirá en dos fuentes sin precedencia, idempotencia y detección de divergencia.
+7. El retiro exigirá cero consumidores certificados, cero grants residuales, paridad, pruebas, rollback y ventana aprobada.
+8. Las tres familias sobrecargadas actuales permanecerán AS-IS hasta su clasificación individual y adaptación de consumidores.
+
+#### 33. Línea base AS-IS protegida
+
+| Evidencia auditada                                   | Tratamiento objetivo                                                                            |
+| ---------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| 347 firmas Vento                                     | clasificar una por una mediante identidad calificada y clase primaria                           |
+| 274 firmas directamente invocables                   | decidir RPC, función interna, compatibilidad o retiro; invocabilidad actual no concede contrato |
+| 73 funciones de trigger                              | vincular con triggers, relaciones, owner, orden y efecto                                        |
+| 0 procedimientos                                     | conservar el objetivo de cero procedimientos empresariales expuestos                            |
+| 210 funciones `SECURITY DEFINER`                     | bloquear aceptación automática y remitir cada excepción a `SUPA-ARC-014`                        |
+| tres nombres sobrecargados                           | congelar nuevas firmas y definir sucesor sin resolución ambigua                                 |
+| 196 triggers sobre 155 relaciones                    | registrar identidad, timing, evento, nivel, slot, función, efecto y dependencias                |
+| 181 `BEFORE ROW` y 15 `AFTER ROW`                    | validar semántica contra timing y efecto objetivo                                               |
+| 29 triggers que usan función `SECURITY DEFINER`      | revisar función y camino completo en `SUPA-ARC-014` y `015`                                     |
+| dos funciones de trigger sin trigger asociado        | clasificar como drift, compatibilidad o retiro                                                  |
+| duplicidad de `updated_at` en `employee_push_tokens` | impedir doble mantenimiento y reconciliar procedencia                                           |
+| seis triggers en `restock_request_items`             | certificar orden, solapamiento, locks y efectos                                                 |
+| cuatro triggers en `attendance_logs`                 | certificar precedencia, contexto y no duplicidad                                                |
+
+Esta tarea no altera los conteos ni declara conformes las rutinas actuales.
+
+#### 34. Orden obligatorio de materialización futura
+
+```text
+1. INVENTARIAR FIRMA, CUERPO, GRANTS, SECURITY MODE, SEARCH_PATH Y CONSUMIDORES
+2. CLASIFICAR CADA RUTINA Y TRIGGER MEDIANTE LA TAXONOMÍA APROBADA
+3. IDENTIFICAR EFECTOS, OWNERS, PROCESOS, RELACIONES Y DEPENDENCIAS
+4. CONGELAR NUEVAS SOBRECARGAS, WRAPPERS Y TRIGGERS NO REGISTRADOS
+5. DISEÑAR SUCESORES, VERSIONES, PARÁMETROS, RETORNOS Y ERRORES
+6. RESOLVER SECURITY DEFINER, GRANTS Y RLS EN LAS TAREAS PROPIETARIAS
+7. ADAPTAR CONSUMIDORES Y TIPOS SIN DUALIDAD AMBIGUA
+8. PROBAR TRANSACCIÓN, CONCURRENCIA, IDEMPOTENCIA, ORDEN Y FALLOS
+9. EJECUTAR CUTOVER GRADUAL CON TELEMETRÍA Y ROLLBACK
+10. RETIRAR FIRMAS Y TRIGGERS LEGACY SOLO DESPUÉS DE CERO CONSUMIDORES
+```
+
+El orden no autoriza implementación física.
+
+#### 35. Riesgos restringidos y carryover
+
+| Riesgo                               | Efecto de esta tarea                                       | Resolución restante              |
+| ------------------------------------ | ---------------------------------------------------------- | -------------------------------- |
+| firma identificada solo por nombre   | establece identidad calificada y manifiesto                | `SUPA-ARC-023`; transición       |
+| RPC tratada como helper interno      | separa clase, ubicación y audiencia                        | `SUPA-ARC-015`; `016`            |
+| helper expuesto accidentalmente      | exige `api` como contrato y función interna no cliente     | `SUPA-ARC-015`                   |
+| sobrecarga ambigua                   | prohíbe nuevas y exige sucesor nominal                     | `SUPA-TRANS-006`; `007`; `014`   |
+| función privilegiada sin control     | adopta invoker por defecto y gate de excepción             | `SUPA-ARC-014`; `015`            |
+| escritura cruzada oculta             | limita owner y remite coordinación                         | `SUPA-ARC-017`                   |
+| efecto externo dentro de transacción | exige outbox o automatización posterior                    | `SUPA-ARC-007`; `019`; `020`     |
+| trigger duplicado o fuera de orden   | define identidad, slots y no dependencia nominal exclusiva | transición y paquetes de dominio |
+| función de trigger huérfana          | exige clasificación y procedencia                          | `SUPA-TRANS-001`; `012`          |
+| error convertido en éxito            | define códigos, propagación y conciliación                 | `SUPA-ARC-016`; paquetes E5      |
+| drift entre remoto y migraciones     | exige definition hash y gate recurrente                    | `SUPA-ARC-025`; `SUPA-TRANS-015` |
+
+Ningún riesgo queda cerrado físicamente por esta definición.
+
+#### 36. Decisiones reservadas
+
+| Decisión                                                 | Tarea propietaria                   |
+| -------------------------------------------------------- | ----------------------------------- |
+| excepciones, checklist y ejecución de `SECURITY DEFINER` | `SUPA-ARC-014`                      |
+| grants, RLS, audiences y permisos de ejecución           | `SUPA-ARC-015`                      |
+| inputs, outputs, errores y efectos concretos por dominio | `SUPA-ARC-016`                      |
+| coordinación y escrituras entre owner schemas            | `SUPA-ARC-017`                      |
+| Storage                                                  | `SUPA-ARC-018`                      |
+| Realtime, publicación y consumo de eventos               | `SUPA-ARC-019`                      |
+| Edge Functions, webhooks, cron y workers                 | `SUPA-ARC-020`                      |
+| índices y rendimiento de rutinas                         | `SUPA-ARC-021`                      |
+| retención de auditoría y telemetría                      | `SUPA-ARC-022`                      |
+| tipos generados de tablas, enums y RPC                   | `SUPA-ARC-023`                      |
+| paridad por ambiente                                     | `SUPA-ARC-024`                      |
+| ADR, linter y drift recurrente                           | `SUPA-ARC-025`                      |
+| inventario, adaptación, cutover y retiro físico          | `SUPA-TRANS-001` a `SUPA-TRANS-015` |
+
+#### 37. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear, alterar, ejecutar, renombrar, mover, versionar o retirar funciones, procedimientos o triggers;
+- cambiar argumentos, tipos de retorno, volatilidad, paralelismo, `search_path`, modo de seguridad, owner o grants;
+- crear wrappers, aliases, sobrecargas, vistas, tablas, events, outbox o auditoría física;
+- modificar RLS, policies, ACL, Data API, Auth, Storage, Realtime, Edge Functions, cron o secretos;
+- editar datos, ejecutar backfills, reconciliar efectos o corregir drift;
+- modificar aplicaciones, tipos TypeScript, SDK, consultas o integraciones;
+- ejecutar DDL, DML, migraciones, pruebas mutantes, cutover o despliegues;
+- declarar conforme una rutina actual por coincidir parcialmente con el estándar;
+- iniciar `SUPA-ARC-014` antes de aprobación expresa.
+
+#### 38. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-961 a TREQ-SUPABASE-1004
+```
+
+Los cuarenta y cuatro requisitos protegen clasificación, firma, nombres, parámetros, retornos, consulta, comando, volatilidad, transacción, concurrencia, idempotencia, errores, seguridad declarativa, `search_path`, SQL dinámico, procedimientos, identidad y orden de triggers, efectos, reentrancia, compatibilidad, cobertura y drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 39. Criterios de aceptación
+
+- [ ] Existe un estándar versionado único para funciones, RPC y triggers.
+- [ ] Toda rutina nueva pertenece a exactamente una de trece clases.
+- [ ] Función, RPC, función de trigger y trigger permanecen conceptos separados.
+- [ ] La identidad de función incluye schema, nombre y tipos de argumentos.
+- [ ] `api` admite únicamente `QUERY_RPC` y `COMMAND_RPC` con una firma por nombre y versión.
+- [ ] No se crean sobrecargas nuevas por defecto.
+- [ ] Parámetros y retornos son tipados, estables y libres de autoridad aportada por cliente.
+- [ ] Consultas no ejecutan DML ni efectos laterales.
+- [ ] Comandos declaran un efecto primario, owner, idempotencia y concurrencia.
+- [ ] Volatilidad y paralelismo coinciden con cuerpos y dependencias.
+- [ ] No existen procedimientos empresariales expuestos.
+- [ ] `SECURITY INVOKER` es la regla predeterminada y `SUPA-ARC-014` controla excepciones.
+- [ ] Objetos llamados están calificados y `search_path` no depende del caller.
+- [ ] SQL dinámico queda restringido a allowlists y pruebas negativas.
+- [ ] Los errores son códigos estables y no exponen internals.
+- [ ] Cada trigger declara relación, nombre, slot, timing, evento, nivel, función y propósito.
+- [ ] Los slots no sustituyen dependencias transaccionales probadas.
+- [ ] Triggers no ejecutan red ni escrituras cruzadas sin contrato.
+- [ ] Recursión, replay y concurrencia no duplican efectos.
+- [ ] Las 347 firmas y los 196 triggers actuales quedan como universo obligatorio de clasificación.
+- [ ] Se generan `TREQ-SUPABASE-961` a `TREQ-SUPABASE-1004`.
+- [ ] No se ejecutan cambios físicos, código ni implementación.
+- [ ] `SUPA-ARC-014` permanece reservada.
+
+#### 40. Controles estructurales requeridos
+
+| Control                                   | Resultado esperado |
+| ----------------------------------------- | -----------------: |
+| clases de rutina                          |             **13** |
+| clases RPC expuestas                      |              **2** |
+| clases de owner schema                    |              **3** |
+| clases privadas                           |              **5** |
+| clases de auditoría                       |              **2** |
+| clases de función trigger                 |              **1** |
+| slots de orden de triggers                |              **7** |
+| procedimientos empresariales expuestos    |              **0** |
+| sobrecargas nuevas en `api`               |              **0** |
+| modos de seguridad implícitos permitidos  |              **0** |
+| referencias no calificadas permitidas     |              **0** |
+| efectos de red desde triggers             |              **0** |
+| firmas Vento AS-IS cubiertas              |     **347 de 347** |
+| funciones de trigger AS-IS cubiertas      |       **73 de 73** |
+| triggers AS-IS cubiertos                  |     **196 de 196** |
+| relaciones objetivo de triggers cubiertas |     **155 de 155** |
+| requisitos nuevos                         |             **44** |
+| cambios físicos                           |              **0** |
+
+#### 41. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-012 — Definir convenciones de claves, constraints, estados y timestamps
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
+```
+
+`SUPA-ARC-014` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
 ### [ ] SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
 ### [ ] SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
