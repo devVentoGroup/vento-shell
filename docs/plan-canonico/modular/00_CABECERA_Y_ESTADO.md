@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **418** |
+| Tareas aprobadas | **419** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1157** |
+| Tareas no iniciadas | **1156** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **26.54% (418/1575)** |
+| Porcentaje de completamiento | **26.60% (419/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers** |
-| Tarea actual | **SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`** |
+| Última tarea aprobada | **SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`** |
+| Tarea actual | **SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS** |
+| Siguiente tarea | **SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 13 de 25 aprobadas; SUPA-ARC-014 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 14 de 25 aprobadas; SUPA-ARC-015 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-ARC-013` — Definir convenciones para funciones, RPC y triggers |
-| Tarea actual | `SUPA-ARC-014` — Definir política canónica de `SECURITY DEFINER` — **NO INICIADA** |
-| Siguiente tarea | `SUPA-ARC-015` — Definir política canónica de exposición, grants y RLS |
+| Última aprobada | `SUPA-ARC-014` — Definir política canónica de `SECURITY DEFINER` |
+| Tarea actual | `SUPA-ARC-015` — Definir política canónica de exposición, grants y RLS — **NO INICIADA** |
+| Siguiente tarea | `SUPA-ARC-016` — Definir contratos de lectura y mutación por dominio |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **13 DE 25 APROBADAS — ACTUAL SUPA-ARC-014** |
+| BLOQUE E3 | **14 DE 25 APROBADAS — ACTUAL SUPA-ARC-015** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
-        ↓
-TAREA ACTUAL
 SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 13 de 25 tareas aprobadas
+BLOQUE E3 — 14 de 25 tareas aprobadas
 ```

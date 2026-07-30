@@ -6873,7 +6873,682 @@ SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
 `SUPA-ARC-014` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
 
 
-### [ ] SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
+### ✅ SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
+
+**Estado:** APROBADA
+**Fecha de preparación documental:** 2026-07-30
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase
+**Tarea anterior:** `SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS`
+**Proyecto de referencia:** `vento-os-dev` — `clzdpinthhtknkmefsxx`
+**Fuentes remotas observadas:** `00_CABECERA_Y_ESTADO.md` blob `d2c9f94b984af8b575288a04bbff87d7df7315aa`; `04_ARQUITECTURA_CANONICA_OBJETIVO.md` blob `267687e931aaaf4ccc7d308724c1120faee8653f`; `02_AUDITORIA_INTEGRAL_DE_SUPABASE.md` blob `02198192088e1c24def67b73e23322b6e78d1ca4`; `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` blob `cd7e9121141ac40079653f6999082eb421f82147`; `01_PROTOCOLO.md` blob `a5213ffd355917ec47bc5b79ad3f002905939e6b`; `delivery-contract.json` blob `01f197364800a1998867eb4e9a8d104429bb222f`; `active-sequence.json` blob `0c63430b3efff08c308482196d781a20a424d172`; `01_PRINCIPIOS_OBLIGATORIOS.md` blob `36bb9a4c19f6d8e7edbaa03687219fb642c9c526`; `package.json` blob `1f7c4e5a6894e24c2e15aeb11168055689bca2eb`; `validate-task-delivery.mjs` blob `6e1dc15ac9359dd4f311be73cbcfce2c6f40c286`; `validate-treq-registry.mjs` blob `0af0cac4cad0fed7994c211a845198e51ce56ba6`
+**Tipo de tarea:** definición normativa de necesidad, clasificación, ubicación, ownership, identidad de ejecución, autorización, alcance, `search_path`, dependencias, transacción, errores, auditoría, compatibilidad y lifecycle de funciones PostgreSQL `SECURITY DEFINER` gobernadas por Vento; sin crear, alterar, ejecutar, conceder, revocar, mover o retirar funciones, triggers, roles, schemas, tablas, policies, grants, RLS, datos, configuración, migraciones, código, backfills, cutover ni despliegues
+
+#### 1. Objetivo
+
+Definir una política única, restrictiva y verificable para toda función `SECURITY DEFINER` gobernada por Vento OS, de modo que la elevación de privilegios exista únicamente cuando una capacidad aprobada no pueda implementarse de forma segura mediante `SECURITY INVOKER`, RLS, constraints o separación de datos, y que cada excepción sea mínima, explícita, auditable, revocable y resistente a manipulación del caller.
+
+```text
+SECURITY INVOKER COMO REGLA
+        ↓
+NECESIDAD PRIVILEGIADA DEMOSTRADA
+        ↓
+CLASE DE EXCEPCIÓN + OWNER NO LOGIN + ALCANCE MÍNIMO
+        ↓
+AUTORIZACIÓN INTERNA + SEARCH_PATH FIJO + OBJETOS CALIFICADOS
+        ↓
+GRANTS EXPLÍCITOS + PRUEBAS NEGATIVAS + AUDITORÍA + RETIRO
+```
+
+La tarea define la política objetivo. No aprueba automáticamente ninguna de las 210 funciones `SECURITY DEFINER` actuales, no asigna todavía los grants concretos, no diseña las policies RLS de cada objeto y no ejecuta correcciones físicas.
+
+#### 2. Artefacto producido
+
+```text
+SUPABASE-SECURITY-DEFINER-POLICY-001@1.0.0
+```
+
+| Propiedad                                              |              Valor |
+| ------------------------------------------------------ | -----------------: |
+| `default_security_mode`                                | `SECURITY_INVOKER` |
+| `approved_exception_classes`                           |              **7** |
+| `allowed_exposed_definer_functions`                    |              **0** |
+| `allowed_definer_functions_in_public`                  |              **0** |
+| `allowed_superuser_or_bypassrls_owners`                |              **0** |
+| `allowed_caller_controlled_search_paths`               |              **0** |
+| `allowed_unqualified_business_references`              |              **0** |
+| `allowed_implicit_public_execute_grants`               |              **0** |
+| `current_vento_function_signatures`                    |            **347** |
+| `current_security_definer_functions`                   |            **210** |
+| `current_direct_security_definer_functions`            |            **179** |
+| `current_security_definer_executable_by_anon`          |             **45** |
+| `current_security_definer_executable_by_authenticated` |            **151** |
+| `current_triggers_using_security_definer`              |             **29** |
+| `mandatory_disposition_classes`                        |              **7** |
+| `new_test_requirements`                                |             **42** |
+| `physical_changes_authorized`                          |              **0** |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                                          | Decisión consumida                                                                                               |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                               | continuidad, preservación histórica, una sola tarea y separación entre definición e implementación               |
+| `delivery-contract.json`                                        | artefacto único de tarea y registro 04A completo con nombre de entrega único                                     |
+| `active-sequence.json`                                          | secuencia `SUPA-ARC-001` a `SUPA-ARC-025`; `SUPA-ARC-014` como tarea actual                                      |
+| `SUPABASE-FUNCTION-RPC-TRIGGER-STANDARD-001@1.0.0`              | `SECURITY INVOKER` como regla, clasificación de rutinas, referencias calificadas, contratos de efecto y triggers |
+| `SUPABASE-EXPOSED-CONTRACT-LAYER-001@1.0.0`                     | `api` como única capa expuesta y contratos `QUERY_RPC` / `COMMAND_RPC` sin autoridad propia                      |
+| `SUPABASE-PRIVATE-INTERNAL-LAYER-001@1.0.0`                     | helpers privados, primitivas de seguridad, adapters y coordinadores en `app_private`                             |
+| `SUPABASE-TRANSVERSAL-AUDIT-EVENT-SCHEMA-001@1.0.0`             | evidencia append-only, actor, causalidad, resultado, intento y conciliación                                      |
+| `SUPABASE-AUTH-MODEL-001@1.0.0` y tareas `SUPA-ARC-008` a `010` | principal, identidad empresarial, actor efectivo, sesión, revocación y desactivación                             |
+| `SUPA-AUD-006` a `SUPA-AUD-009`                                 | firmas, modos de seguridad, owners, `search_path`, triggers, grants, RLS y superficies ejecutables actuales      |
+| `SUPA-AUD-016` a `SUPA-AUD-019`                                 | procedencia, drift, compatibilidad, overloads, aliases y consumidores legacy                                     |
+| `SUPA-AUD-022` a `SUPA-AUD-024`                                 | capacidades, propietarios, consumidores, procesos y riesgos de funciones y triggers                              |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`              | 5.299 requisitos hasta `SUPA-ARC-013`; rango `TREQ-SUPABASE-001` a `1004`                                        |
+
+#### 4. Alcance y frontera de la decisión
+
+Esta tarea gobierna:
+
+1. cuándo puede existir una función `SECURITY DEFINER`;
+2. clases cerradas de excepción;
+3. ubicación y frontera de exposición;
+4. owner PostgreSQL de la función y privilegios necesarios;
+5. resolución de principal, actor, sesión, contexto y autorización;
+6. relación con RLS y acceso a objetos protegidos;
+7. `search_path`, calificación de objetos, dependencias y SQL dinámico;
+8. alcance de lectura o mutación, transacción, concurrencia e idempotencia;
+9. errores, auditoría, minimización, compatibilidad y lifecycle;
+10. clasificación y transición de las funciones actuales.
+
+Esta tarea no gobierna:
+
+- nombres concretos de roles técnicos o matrices de grants;
+- policies RLS por tabla, operación, actor o territorio;
+- contratos de lectura y mutación de cada dominio;
+- escrituras interdominio y compensaciones específicas;
+- implementación física, migraciones, backfills, cutover o retiro.
+
+Esas decisiones permanecen en `SUPA-ARC-015` a `SUPA-ARC-025`, `SUPA-TRANS-*` y los paquetes de implementación correspondientes.
+
+#### 5. Decisión canónica predeterminada
+
+```text
+NUEVA FUNCIÓN
+        ↓
+SECURITY INVOKER
+        ↓
+¿FALTA PRIVILEGIO PARA UNA CAPACIDAD APROBADA?
+        ├── NO → CONSERVAR SECURITY INVOKER
+        └── SÍ → DEMOSTRAR QUE RLS, GRANTS, CONSTRAINTS O REDISEÑO NO RESUELVEN EL CASO
+                        ↓
+                 GATE DE EXCEPCIÓN
+                        ↓
+              SECURITY DEFINER ACOTADO
+```
+
+Reglas:
+
+1. `SECURITY INVOKER` será el modo obligatorio por defecto.
+2. `SECURITY DEFINER` no será una solución genérica a errores de permisos, RLS, exposición o diseño.
+3. La conveniencia, reducción de código cliente, reutilización o rendimiento sin evidencia no justifican elevación.
+4. La excepción deberá ser necesaria para una capacidad y un owner aprobados.
+5. La ausencia de una policy o grant correcto deberá corregirse en su capa propietaria, no ocultarse con privilegio.
+6. Toda duda sobre necesidad, alcance, owner o autorización producirá `BLOCKED_PENDING_EVIDENCE`.
+
+#### 6. Modelo de amenaza
+
+Una función `SECURITY DEFINER` ejecuta con la identidad efectiva de su owner y puede ampliar el acceso del caller. Por tanto, la política protege contra:
+
+- bypass de RLS o grants sin autorización empresarial equivalente;
+- owner superusuario, `BYPASSRLS` o propietario de datos con radio excesivo;
+- resolución de objetos mediante `search_path` manipulable;
+- shadowing mediante schemas o temporales controlables;
+- SQL dinámico e identificadores aportados por el caller;
+- confianza en `raw_user_meta_data`, roles nominales o IDs enviados como autoridad;
+- exposición accidental por `EXECUTE` heredado de `PUBLIC`;
+- escritura cruzada, doble efecto, replay o concurrencia no controlada;
+- errores que revelan internals, secretos o PII;
+- compatibilidad privilegiada sin fecha de salida;
+- triggers privilegiados con efectos invisibles o recursivos.
+
+#### 7. Clases cerradas de excepción
+
+| Clase                                   | Propósito permitido                                                         | Restricción principal                                              |
+| --------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `PRIVILEGED_READ_BRIDGE`                | lectura mínima de datos protegidos para un contrato autorizado              | sin DML, sin colección abierta y con filtros de actor/recurso      |
+| `PRIVILEGED_COMMAND_GATEWAY`            | un comando con un efecto primario que requiere privilegio técnico adicional | autorización interna completa, idempotencia y owner único          |
+| `RLS_SUPPORT_PRIMITIVE`                 | lookup estrecho y estable usado por una policy o gate de autorización       | no concede por rol nominal ni sustituye el modelo de autorización  |
+| `AUDIT_APPEND_GATE`                     | append de evidencia, evento, outbox, intento o conciliación                 | append-only, payload mínimo y sin mutar la fuente empresarial      |
+| `TRIGGER_INVARIANT_ENFORCER`            | preservar una invariante o evidencia ligada a una relación                  | alcance row/statement declarado, sin proceso completo ni red       |
+| `PLATFORM_ADAPTER`                      | operar una superficie administrada soportada con mínimo privilegio          | contrato de plataforma, allowlist y sin apropiarse de internals    |
+| `TRANSITIONAL_PRIVILEGED_COMPATIBILITY` | mantener temporalmente un consumidor legacy durante cutover                 | sucesor, telemetría, fecha, gate de salida y rollback obligatorios |
+
+No existe clase `ADMIN_BYPASS`, `GENERIC_HELPER`, `SERVICE_ROLE_WRAPPER`, `RLS_FIX`, `RUN_ANY_SQL` ni equivalente.
+
+#### 8. Ubicación y exposición
+
+1. Una implementación `SECURITY DEFINER` gobernada por Vento residirá únicamente en su owner schema, `app_private` o `audit`, según su clase.
+2. No existirán funciones `SECURITY DEFINER` objetivo en `api`.
+3. No se crearán nuevas funciones `SECURITY DEFINER` permanentes en `public`.
+4. No se ubicarán dentro de schemas administrados salvo punto de extensión oficialmente soportado y aprobado como `PLATFORM_ADAPTER`.
+5. Un contrato expuesto en `api` permanecerá `SECURITY INVOKER`; si depende de un núcleo privilegiado, el núcleo deberá ser seguro incluso ante invocación directa y no confiar en el wrapper para autorizar.
+6. La ubicación privada no sustituye ACL, autorización, auditoría ni pruebas negativas.
+7. Una función de trigger privilegiada permanecerá junto al owner de la relación o en `audit` cuando su único efecto sea evidencia transversal.
+
+#### 9. Owner PostgreSQL y privilegio mínimo
+
+El owner de una función `SECURITY DEFINER` será un rol técnico dedicado y no login.
+
+Reglas:
+
+1. no será `postgres`, `supabase_admin`, `service_role`, `anon`, `authenticated`, un usuario humano ni un rol de aplicación;
+2. no tendrá `SUPERUSER`, `BYPASSRLS`, creación de roles, creación de bases ni privilegios administrativos globales;
+3. no será owner de tablas de dominio por conveniencia;
+4. recibirá únicamente los privilegios requeridos por el cuerpo y sobre objetos explícitos;
+5. no heredará membresías amplias o mutables;
+6. owner de función, owner empresarial y owner de datos permanecerán conceptos separados;
+7. toda rotación o sustitución del owner exigirá inventario, diff de privilegios, pruebas y rollback;
+8. la identidad exacta del rol y sus grants se materializarán en `SUPA-ARC-015`.
+
+#### 10. Contrato mínimo de una excepción
+
+Cada función aprobada conservará un registro con:
+
+```text
+qualified_signature
++ policy_version
++ exception_class
++ capability_id
++ owner_schema
++ business_owner
++ technical_owner_role
++ caller_audiences
++ principal_classes
++ required_actor_class
++ required_session_state
++ required_permission_and_scope
++ target_resources
++ read_set
++ write_set
++ called_routines
++ search_path
++ volatility
++ idempotency_policy
++ concurrency_policy
++ audit_policy
++ error_contract
++ grants_contract_reference
++ migration_and_definition_hash
++ compatibility_state
++ review_expires_at
++ rollback_and_exit_gate
+```
+
+Ningún campo crítico podrá quedar implícito en el nombre o cuerpo.
+
+#### 11. Resolución de principal, actor y contexto
+
+1. La función resolverá server-side principal, sesión, identidad empresarial y actor efectivo.
+2. No aceptará `employee_id`, `customer_id`, `device_id`, rol, permiso, sede, área o actor enviados por el caller como prueba de autoridad.
+3. Un identificador objetivo podrá recibirse como dato, pero deberá comprobarse contra el scope autorizado del actor.
+4. `raw_user_meta_data` y otros campos autoadministrables quedan prohibidos para autorización.
+5. `service_role` o una conexión privilegiada identifican capacidad técnica, no usuario, trabajador ni actor empresarial.
+6. Las operaciones sensibles comprobarán estado fresco de sesión, vínculo, identidad, revocación, actor y contexto.
+7. Ausencia, ambigüedad, expiración o conflicto producirán denegación fail closed.
+8. Una acción iniciada por humano conservará atribución humana aunque el efecto se ejecute con privilegio técnico.
+
+#### 12. Autorización interna obligatoria
+
+Una función privilegiada deberá aplicar autorización equivalente o más restrictiva que la superficie que atraviesa.
+
+```text
+PRINCIPAL VÁLIDO
++ SESIÓN ACTIVA
++ IDENTIDAD VIGENTE
++ ACTOR EFECTIVO
++ PERMISO ATÓMICO
++ SCOPE Y TERRITORIO
++ RECURSO RESUELTO
++ PRECONDICIONES DEL PROCESO
+= EFECTO PERMITIDO
+```
+
+Reglas:
+
+1. autenticación técnica no equivale a autorización empresarial;
+2. `current_user`, owner de función, rol PostgreSQL o pertenencia a `authenticated` no conceden por sí mismos capacidad;
+3. la autorización se evaluará antes de leer datos sensibles o producir efectos;
+4. las restricciones se repetirán en cada recurso afectado cuando el comando opere colecciones;
+5. una decisión cacheada no podrá prevalecer sobre revocación, desactivación o contexto fresco;
+6. la función no podrá ampliar scope respecto del contrato expuesto o del proceso propietario;
+7. los fallos parciales no se reinterpretarán como éxito ni como permiso implícito.
+
+#### 13. Relación con RLS
+
+1. `SECURITY DEFINER` no elimina la obligación de diseñar y probar RLS donde corresponda.
+2. La función no confiará en una policy que su identidad efectiva pueda omitir.
+3. Todo acceso que atraviese RLS declarará la regla empresarial equivalente aplicada dentro del gate privilegiado.
+4. Las policies no invocarán una primitiva privilegiada con argumentos controlables que permitan seleccionar actor, rol, schema, tabla o predicate.
+5. Una `RLS_SUPPORT_PRIMITIVE` tendrá retorno estrecho, dependencias calificadas, semántica estable y pruebas de filas positivas y negativas.
+6. La relación exacta entre policy, roles, grants, `FORCE RLS` y función será definida por `SUPA-ARC-015`.
+7. Una función no se aprobará únicamente porque el resultado actual de RLS parezca correcto con el owner observado.
+
+#### 14. `search_path` y resolución de objetos
+
+1. Toda función `SECURITY DEFINER` fijará un `search_path` explícito, mínimo y no controlable por el caller.
+2. La configuración preferida será `pg_catalog`; cualquier schema adicional requerirá justificación y deberá ser confiable y no escribible por callers ordinarios.
+3. `public`, `"$user"`, `pg_temp` y schemas controlables por clientes quedan excluidos del `search_path` configurado.
+4. Tablas, vistas, secuencias, funciones, tipos, operadores y extensiones utilizados por el cuerpo se referenciarán mediante nombre calificado cuando PostgreSQL lo permita.
+5. No se dependerá del `search_path` de sesión, de la aplicación o de una conexión pooler.
+6. Las pruebas crearán objetos homónimos en schemas no confiables y verificarán que no alteren la resolución.
+7. Un cambio de dependencia o de orden de resolución cambiará el hash contractual y exigirá revisión.
+
+#### 15. Dependencias y superficies confiables
+
+1. Cada dependencia tendrá identidad calificada, owner, modo de seguridad y finalidad.
+2. Una función privilegiada no llamará otra función no inventariada, sobrecargada de forma ambigua o con `search_path` inseguro.
+3. La cadena completa conservará el privilegio mínimo; un helper no podrá ampliar el write set del caller principal.
+4. Dependencias administradas se consumirán solo mediante superficies soportadas.
+5. Extensiones y operadores deberán resolverse en schemas confiables y versionados.
+6. Una dependencia retirada, reemplazada o degradada bloqueará la función hasta reconciliar paridad y rollback.
+7. Los ciclos entre funciones privilegiadas quedan prohibidos salvo modelo de terminación explícito y probado.
+
+#### 16. SQL dinámico
+
+1. SQL dinámico queda prohibido por defecto.
+2. No se aceptarán nombres de schema, tabla, columna, función, operador, rol, policy u orden SQL aportados por el caller.
+3. Una excepción requerirá universo cerrado de identificadores, allowlist server-side, quoting correcto, parámetros separados y pruebas de inyección.
+4. Los valores se transmitirán mediante parámetros, no concatenación.
+5. No se permitirán fragmentos libres para `WHERE`, `ORDER BY`, `SELECT`, `JOIN`, `SET`, `ALTER`, `GRANT` o comandos equivalentes.
+6. La necesidad de recorrer objetos arbitrarios corresponde a tooling administrativo fuera de la superficie cliente, no a una RPC empresarial.
+7. Todo SQL dinámico aprobado tendrá límite de filas, timeout, observabilidad y rollback o ejecución read-only según su clase.
+
+#### 17. Alcance de lectura y retorno
+
+Una `PRIVILEGED_READ_BRIDGE`:
+
+1. será `STABLE` cuando sus dependencias y semántica lo permitan;
+2. ejecutará cero DML, red, colas, webhooks o cambios de sesión;
+3. declarará columnas, filtros, joins, orden, paginación y límite máximo;
+4. devolverá únicamente los campos necesarios para la finalidad;
+5. no permitirá enumeración transversal por omitir filtros o usar comodines;
+6. aplicará minimización y masking cuando corresponda;
+7. no convertirá una proyección en fuente de verdad;
+8. no retornará mensajes SQL, definiciones, ACL, secretos ni internals.
+
+#### 18. Alcance de mutación
+
+Una `PRIVILEGED_COMMAND_GATEWAY`:
+
+1. tendrá exactamente un efecto primario y un owner schema;
+2. validará actor, permiso, scope, recurso y precondiciones antes del primer efecto;
+3. declarará read set, write set y llamadas dependientes;
+4. no escribirá en otro owner schema sin contrato aprobado por `SUPA-ARC-017`;
+5. será idempotente o declarará por qué la operación no admite reintento automático;
+6. usará control de concurrencia y locks mínimos compatibles con el proceso;
+7. no hará `COMMIT`, `ROLLBACK` ni manejo transaccional autónomo dentro de la función;
+8. retornará resultado tipado con identidad, estado y versión confirmados;
+9. un resultado desconocido abrirá conciliación y no repetirá ciegamente el efecto.
+
+#### 19. `AUDIT_APPEND_GATE`
+
+1. solo insertará evidencia append-only autorizada.
+2. no modificará ni eliminará hechos previos.
+3. no se convertirá en owner del hecho empresarial.
+4. conservará principal, actor, causalidad, correlación, operación, resultado y referencias mínimas.
+5. evitará access tokens, refresh tokens, OTP, PIN, contraseñas, secretos y payloads completos innecesarios.
+6. un fallo de auditoría que forme parte del compromiso transaccional deberá fallar cerrado o quedar en conciliación según el contrato aprobado.
+7. lectura posterior de auditoría utilizará contratos separados y minimizados.
+
+#### 20. `RLS_SUPPORT_PRIMITIVE`
+
+1. tendrá propósito único y retorno escalar o conjunto estrictamente acotado.
+2. no aceptará rol, permiso, actor o schema como texto libre.
+3. resolverá referencias desde fuentes autoritativas y estado vigente.
+4. evitará efectos laterales, red y SQL dinámico.
+5. declarará volatilidad real y límites de costo.
+6. no reemplazará el evaluador canónico de autorización mediante una condición simplificada.
+7. cada policy consumidora tendrá pruebas de aislamiento por actor, recurso, sede, área y caso anónimo cuando aplique.
+
+#### 21. Funciones de trigger privilegiadas
+
+Una `TRIGGER_INVARIANT_ENFORCER`:
+
+1. estará asociada a un conjunto cerrado de triggers y relaciones objetivo;
+2. heredará owner y sensibilidad de la relación;
+3. declarará slot, timing, evento, nivel, condición, columnas y orden;
+4. no será invocable como RPC ni tendrá grants de cliente;
+5. no ejecutará red, webhooks, cron ni procesos empresariales completos;
+6. no escribirá entre dominios sin el contrato de `SUPA-ARC-017`;
+7. tendrá terminación demostrada y prevención de doble efecto;
+8. tratará bulk operations, replay, reintento y concurrencia;
+9. una función sin trigger asociado quedará bloqueada como drift, compatibilidad o retiro;
+10. el privilegio adicional deberá justificarse por la invariante, no por comodidad del trigger.
+
+#### 22. `PLATFORM_ADAPTER`
+
+1. operará únicamente una superficie administrada soportada.
+2. declarará proveedor, versión, operación, permisos, límites y respuesta esperada.
+3. no accederá a internals no contractuales de Auth, Storage, Realtime, cron, Vault, `net` o extensiones.
+4. no persistirá secretos ni los devolverá al caller.
+5. una credencial técnica no se presentará como actor empresarial.
+6. los efectos externos y asincrónicos permanecerán fuera de la transacción empresarial y se gobernarán en `SUPA-ARC-020`.
+7. fallos y timeouts producirán resultado explícito y conciliación cuando el efecto sea incierto.
+
+#### 23. Errores y denegaciones
+
+1. Los errores cliente usarán código estable, categoría, mensaje seguro, retriable, correlation ID y detalle permitido.
+2. No expondrán SQL, stack trace, `search_path`, nombres internos, ACL, owner, secretos, parámetros sensibles ni datos de otras filas.
+3. Las denegaciones distinguirán autenticación, sesión, actor, permiso, scope, recurso, estado y precondición sin revelar información explotable.
+4. Excepciones PostgreSQL se traducirán mediante allowlist; lo desconocido será error interno seguro.
+5. Una violación de integridad no se convertirá en éxito parcial.
+6. El caller no podrá seleccionar el código de error ni forzar una rama privilegiada mediante mensajes o reasons libres.
+
+#### 24. Transacción, concurrencia e idempotencia
+
+1. La función participará en la transacción del statement que la invoca.
+2. No iniciará transacciones autónomas ni ocultará commits externos.
+3. Cada comando declarará clave de idempotencia, deduplicación o prohibición explícita de retry.
+4. La autorización y la escritura usarán una vista consistente o control de versión apropiado.
+5. Los locks serán mínimos, ordenados y observables.
+6. Reintentos concurrentes no duplicarán efectos, eventos, auditoría ni numeración.
+7. Deadlock, timeout y serialization failure tendrán comportamiento de retry definido y límite.
+8. `UNKNOWN_OUTCOME` exigirá consulta o conciliación antes de repetir.
+
+#### 25. Auditoría de invocación privilegiada
+
+Según sensibilidad, cada ejecución conservará:
+
+```text
+qualified_signature
++ policy_version
++ exception_class
++ principal_id
++ actor_id_and_class
++ session_reference
++ caller_role
++ capability_and_permission
++ owner_schema
++ resource_references
++ request_id
++ correlation_id
++ idempotency_key_hash
++ started_at
++ completed_at
++ result_code
++ affected_row_count
++ denial_or_failure_reason_code
++ source_and_contract_versions
+```
+
+La evidencia no almacenará secretos, credenciales, tokens ni payloads completos. La auditoría se vinculará con el hecho empresarial sin duplicar su fuente de verdad.
+
+#### 26. Comentarios, manifiesto y procedencia
+
+Toda función privilegiada tendrá:
+
+1. comentario con propósito, clase, owner, audiencia y sensibilidad;
+2. entrada en el registro versionado de funciones;
+3. migración de origen y hash normalizado de definición;
+4. owner PostgreSQL y grants esperados;
+5. dependencias y objetos afectados;
+6. procesos, aplicaciones y consumidores;
+7. TREQ aplicables y evidencia de pruebas;
+8. estado `ACTIVE`, `TRANSITIONAL`, `BLOCKED`, `DEPRECATED` o `RETIRED`;
+9. fecha de revisión y owner de renovación;
+10. rollback y condición de salida cuando exista compatibilidad.
+
+#### 27. Gate obligatorio de aprobación
+
+Una excepción solo podrá pasar a `ACTIVE` cuando exista evidencia de:
+
+- clase permitida y necesidad no resoluble mediante alternativa menos privilegiada;
+- capacidad, owner schema, proceso y consumidores;
+- owner técnico no login y privilegios mínimos;
+- firma, parámetros, retorno, volatilidad y paralelismo;
+- `search_path` seguro y referencias calificadas;
+- autorización interna y relación con RLS;
+- read set, write set, dependencias y ausencia de efectos no declarados;
+- errores, auditoría, idempotencia, concurrencia y límites;
+- grants explícitos definidos por `SUPA-ARC-015`;
+- pruebas unitarias, integración, seguridad, RLS/RPC según aplique y regresión;
+- pruebas negativas de caller, actor, scope, recurso, `search_path`, SQL dinámico y replay;
+- paridad local, pruebas, staging y producción;
+- migración, hash, rollback, revisión y gate de retiro.
+
+La ausencia de cualquiera de estos elementos mantiene la función bloqueada.
+
+#### 28. Frontera con grants y RLS
+
+Esta tarea establece que:
+
+1. `EXECUTE` para `PUBLIC` será cero en el objetivo;
+2. `anon`, `authenticated`, roles técnicos y roles de servicio no recibirán acceso por herencia implícita;
+3. cada audiencia tendrá grant explícito solo después del gate;
+4. revocar `PUBLIC` será parte obligatoria de la materialización de toda función nueva;
+5. acceso al schema, ejecución de la función y acceso a datos son controles diferentes;
+6. la matriz concreta de roles, grants, policies, owners y `FORCE RLS` pertenece a `SUPA-ARC-015`;
+7. ninguna función se considerará activa antes de reconciliar los cuatro controles.
+
+#### 29. Línea base AS-IS obligatoria
+
+El universo de revisión conserva:
+
+| Métrica observada                                  | Cantidad |
+| -------------------------------------------------- | -------: |
+| firmas Vento                                       |  **347** |
+| funciones `SECURITY DEFINER` Vento                 |  **210** |
+| firmas directamente invocables                     |  **274** |
+| directas `SECURITY DEFINER`                        |  **179** |
+| `SECURITY DEFINER` ejecutables por `anon`          |   **45** |
+| `SECURITY DEFINER` ejecutables por `authenticated` |  **151** |
+| funciones de trigger                               |   **73** |
+| triggers explícitos Vento                          |  **196** |
+| triggers que usan función `SECURITY DEFINER`       |   **29** |
+| nombres sobrecargados                              |    **3** |
+| procedimientos PostgreSQL                          |    **0** |
+
+Los conteos describen el corte auditado. No certifican necesidad, seguridad, uso actual ni destino de ninguna firma.
+
+#### 30. Clases de disposición obligatorias
+
+Cada firma actual recibirá exactamente una decisión:
+
+| Clase                                  | Resultado                                                           |
+| -------------------------------------- | ------------------------------------------------------------------- |
+| `KEEP_AS_DEFINER`                      | conserva privilegio tras superar el gate completo                   |
+| `CONVERT_TO_INVOKER`                   | no requiere privilegio adicional y adopta el modo predeterminado    |
+| `SPLIT_CONTRACT_AND_PRIVILEGED_CORE`   | separa contrato `api` invoker de núcleo no expuesto y autocontenido |
+| `REPLACE_WITH_RLS_CONSTRAINT_OR_MODEL` | la necesidad desaparece al corregir seguridad o modelo              |
+| `TRANSITIONAL_COMPATIBILITY`           | se mantiene temporalmente con telemetría y salida definida          |
+| `RETIRE`                               | carece de consumidor o fue sustituida con paridad demostrada        |
+| `BLOCKED_PENDING_EVIDENCE`             | no puede aprobarse ni exponerse hasta resolver evidencia faltante   |
+
+No se inferirá la clase desde nombre, schema, owner, grants o uso de `SECURITY DEFINER` por sí solo.
+
+#### 31. Orden de revisión del universo actual
+
+```text
+1. 45 DEFINER EJECUTABLES POR anon
+2. 151 DEFINER EJECUTABLES POR authenticated
+3. 179 DEFINER DIRECTAMENTE INVOCABLES
+4. TRIGGERS QUE USAN DEFINER
+5. HELPERS INTERNOS Y ADAPTERS
+6. COMPATIBILIDAD, OVERLOADS Y FUNCIONES HUÉRFANAS
+7. RESTO DEL UNIVERSO HASTA 210 DE 210
+```
+
+La pertenencia a varios grupos no duplica la firma. El orden prioriza exposición y radio de impacto, no declara vulnerabilidad automática.
+
+#### 32. Compatibilidad y deprecación
+
+1. Una función privilegiada legacy conservará firma congelada durante la transición.
+2. No recibirá capacidades, parámetros ni consumidores nuevos salvo contención aprobada.
+3. Tendrá sucesor, equivalencia, telemetría, aviso, fecha objetivo y gate de salida.
+4. Una sobrecarga privilegiada no se mantendrá sin matriz de resolución y consumidores.
+5. El retiro exigirá cero consumo observado durante la ventana aprobada, paridad, rollback y reconciliación.
+6. Un alias o wrapper no podrá reducir la autorización o auditoría del sucesor.
+7. La compatibilidad no justificará owner o `search_path` inseguros.
+
+#### 33. Drift y validación recurrente
+
+El control recurrente comparará, por firma:
+
+```text
+schema
++ name
++ identity_arguments
++ return_type
++ language
++ volatility
++ parallel_safety
++ security_mode
++ owner
++ owner_attributes
++ search_path
++ row_security_config
++ ACL_and_effective_execute
++ definition_hash
++ dependencies
++ trigger_associations
++ exception_class
++ disposition
++ policy_version
+```
+
+Generarán drift bloqueante:
+
+- nueva función `SECURITY DEFINER` sin registro;
+- cambio a `SECURITY DEFINER` fuera de migración aprobada;
+- owner, membresía o privilegio ampliado;
+- `EXECUTE` nuevo para `PUBLIC`, `anon` o `authenticated`;
+- `search_path` eliminado, ampliado o reordenado;
+- referencia no calificada o dependencia nueva;
+- cambio de cuerpo, firma, retorno, volatilidad o write set;
+- trigger nuevo, huérfano o con asociación distinta;
+- excepción vencida o sin evidencia vigente.
+
+#### 34. Riesgos restringidos y carryover
+
+| Riesgo                                                       | Efecto de esta tarea                                    | Resolución restante              |
+| ------------------------------------------------------------ | ------------------------------------------------------- | -------------------------------- |
+| 210 funciones privilegiadas sin decisión objetivo individual | crea gate, clases y disposición obligatoria             | `SUPA-TRANS-001` a `015`         |
+| 45 ejecutables por `anon`                                    | prioridad máxima y bloqueo hasta aprobación explícita   | `SUPA-ARC-015`; transición       |
+| 151 ejecutables por `authenticated`                          | exige audiencia, actor, scope, recurso y grants mínimos | `SUPA-ARC-015`; `016`            |
+| owner o `search_path` inseguro                               | fija owner no login, ruta mínima y objetos calificados  | `SUPA-ARC-015`; transición       |
+| bypass de RLS                                                | exige autorización equivalente y gate conjunto          | `SUPA-ARC-015`; `016`            |
+| triggers privilegiados                                       | limita invariantes, asociaciones y efectos              | `SUPA-ARC-017`; transición       |
+| overloads y compatibilidad                                   | exige firma inequívoca, telemetría y salida             | `SUPA-TRANS-006`; `007`; `012`   |
+| drift de definición y ACL                                    | define comparación recurrente                           | `SUPA-ARC-025`; `SUPA-TRANS-015` |
+
+Ningún riesgo queda cerrado físicamente por esta definición.
+
+#### 35. Decisiones reservadas
+
+| Decisión                                               | Tarea propietaria                   |
+| ------------------------------------------------------ | ----------------------------------- |
+| roles técnicos exactos, grants, ACL, RLS y `FORCE RLS` | `SUPA-ARC-015`                      |
+| contratos concretos de lectura y mutación por dominio  | `SUPA-ARC-016`                      |
+| escrituras interdominio, compensación y conciliación   | `SUPA-ARC-017`                      |
+| Storage                                                | `SUPA-ARC-018`                      |
+| Realtime y propagación                                 | `SUPA-ARC-019`                      |
+| Edge Functions, webhooks, cron y workers               | `SUPA-ARC-020`                      |
+| rendimiento e índices                                  | `SUPA-ARC-021`                      |
+| retención y recuperación                               | `SUPA-ARC-022`                      |
+| tipos para consumidores                                | `SUPA-ARC-023`                      |
+| paridad de ambientes                                   | `SUPA-ARC-024`                      |
+| ADR y linter consolidado                               | `SUPA-ARC-025`                      |
+| clasificación, migración, cutover y retiro por firma   | `SUPA-TRANS-001` a `SUPA-TRANS-015` |
+
+#### 36. Límites de autorización
+
+Esta tarea no autoriza:
+
+- crear, alterar, reemplazar, ejecutar, mover o eliminar funciones o triggers;
+- cambiar `SECURITY INVOKER` por `SECURITY DEFINER` o viceversa;
+- crear roles, cambiar owners, membresías, atributos o contraseñas;
+- conceder o revocar `USAGE`, `EXECUTE`, acceso a datos u otros privilegios;
+- crear, modificar, activar o retirar policies RLS;
+- cambiar `search_path`, `row_security`, volatilidad, lenguaje, firma, retorno o cuerpo;
+- crear wrappers, aliases, overloads o compatibilidad física;
+- modificar aplicaciones, tipos, SDK, Edge Functions, cron, webhooks o workers;
+- ejecutar DDL, DML, migraciones, pruebas mutantes, backfills, cutover o despliegues;
+- declarar conforme una función actual sin clasificación individual y evidencia;
+- iniciar `SUPA-ARC-015` antes de aprobación expresa.
+
+#### 37. Requisitos de prueba generados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al Registro Canónico de Requisitos de Prueba:
+
+```text
+TREQ-SUPABASE-1005 a TREQ-SUPABASE-1046
+```
+
+Los cuarenta y dos requisitos protegen el modo invoker predeterminado, clases de excepción, ubicación, owner no login, privilegio mínimo, autorización, relación con RLS, `search_path`, dependencias, SQL dinámico, lecturas, comandos, auditoría, triggers, errores, idempotencia, grants, clasificación del universo actual, compatibilidad y drift. El detalle completo existe únicamente en `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`.
+
+#### 38. Criterios de aceptación
+
+- [ ] `SECURITY INVOKER` es el modo predeterminado y toda elevación supera un gate explícito.
+- [ ] Existen exactamente siete clases permitidas de excepción.
+- [ ] El objetivo contiene cero funciones `SECURITY DEFINER` en `api` y cero nuevas permanentes en `public`.
+- [ ] El owner es no login, no superusuario, no `BYPASSRLS` y posee privilegio mínimo.
+- [ ] La función resuelve principal, actor, sesión y autorización server-side.
+- [ ] La elevación no confía en RLS que pueda omitir ni en metadata autoadministrable.
+- [ ] `search_path` es explícito, mínimo y no controlable por el caller.
+- [ ] Todas las dependencias empresariales son calificadas e inventariadas.
+- [ ] SQL dinámico queda prohibido por defecto y toda excepción usa allowlist cerrada.
+- [ ] Una lectura privilegiada no muta ni enumera datos fuera de scope.
+- [ ] Un comando privilegiado tiene un efecto primario, owner, idempotencia y concurrencia.
+- [ ] Los triggers privilegiados no son RPC, no ejecutan red y no ocultan procesos completos.
+- [ ] Errores y auditoría no revelan internals, PII ni secretos.
+- [ ] `EXECUTE` implícito para `PUBLIC` es cero en el objetivo.
+- [ ] Las 210 funciones actuales reciben disposición individual y trazable.
+- [ ] Las 45 ejecutables por `anon` y 151 por `authenticated` se revisan con prioridad.
+- [ ] Drift de owner, ACL, `search_path`, cuerpo, dependencias o clase bloquea promoción.
+- [ ] Se generan `TREQ-SUPABASE-1005` a `TREQ-SUPABASE-1046`.
+- [ ] No se ejecutan cambios físicos, código ni implementación.
+- [ ] `SUPA-ARC-015` permanece reservada.
+
+#### 39. Controles estructurales requeridos
+
+| Control                                          | Resultado esperado |
+| ------------------------------------------------ | -----------------: |
+| modo de seguridad predeterminado                 | `SECURITY_INVOKER` |
+| clases de excepción                              |              **7** |
+| funciones definer permitidas en `api`            |              **0** |
+| funciones definer nuevas permanentes en `public` |              **0** |
+| owners superusuario o `BYPASSRLS` permitidos     |              **0** |
+| rutas controlables por caller                    |              **0** |
+| referencias empresariales no calificadas         |              **0** |
+| grants implícitos a `PUBLIC`                     |              **0** |
+| clases de disposición                            |              **7** |
+| funciones Vento AS-IS cubiertas                  |     **347 de 347** |
+| funciones `SECURITY DEFINER` AS-IS cubiertas     |     **210 de 210** |
+| directas `SECURITY DEFINER` cubiertas            |     **179 de 179** |
+| ejecutables por `anon` cubiertas                 |       **45 de 45** |
+| ejecutables por `authenticated` cubiertas        |     **151 de 151** |
+| triggers con función definer cubiertos           |       **29 de 29** |
+| requisitos nuevos                                |             **42** |
+| cambios físicos                                  |              **0** |
+
+#### 40. Continuidad inmediata
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-ARC-013 — Definir convenciones para funciones, RPC y triggers
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-014 — Definir política canónica de `SECURITY DEFINER`
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
+```
+
+`SUPA-ARC-015` permanece reservada y no se inicia hasta una solicitud expresa de continuidad.
+
+
 ### [ ] SUPA-ARC-015 — Definir política canónica de exposición, grants y RLS
 ### [ ] SUPA-ARC-016 — Definir contratos de lectura y mutación por dominio
 ### [ ] SUPA-ARC-017 — Definir política de escrituras entre dominios
