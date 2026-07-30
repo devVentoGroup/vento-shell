@@ -442,7 +442,6 @@ try {
         estado = "lstEstadosRemision"; producto_id = "lstProductos"; unidad = "lstUnidades"
     }
     $remissionFormulas = @{
-        cantidad_recibida = '=IF(OR(A8="",G8=""),"",SUMIFS(''05_RECEPCIONES''!$I$8:$I$200,''05_RECEPCIONES''!$B$8:$B$200,A8,''05_RECEPCIONES''!$F$8:$F$200,G8,''05_RECEPCIONES''!$G$8:$G$200,I8))'
         diferencia_recepcion = '=IF(OR(P8="",Q8=""),"",Q8-P8)'
         cumplimiento_pct = '=IF(OR(P8="",Q8=""),"",IFERROR(Q8/P8,0))'
     }
@@ -476,6 +475,14 @@ try {
         "tblRecepciones" $receptionHeaders @() $receptionWidths $receptionValidations @{} `
         @("fecha_recepcion") @("cantidad_recibida", "cantidad_conforme", "cantidad_no_conforme", "temperatura_c") @()
     Write-BuildLog "SHEET_05"
+
+    # La fórmula cruzada se asigna solo después de que 05_RECEPCIONES existe.
+    # Así Excel conserva una referencia interna y no crea un vínculo de libro externo.
+    $receivedColumn = $remissions.ListObjects.Item("tblRemisiones").ListColumns.Item("cantidad_recibida").DataBodyRange
+    $receivedColumn.Formula = '=IF(OR(A8="",G8=""),"",SUMIFS(''05_RECEPCIONES''!$I$8:$I$200,''05_RECEPCIONES''!$B$8:$B$200,A8,''05_RECEPCIONES''!$F$8:$F$200,G8,''05_RECEPCIONES''!$G$8:$G$200,I8))'
+    $receivedColumn.Interior.Color = $colors.Formula
+    $receivedColumn.Font.Color = $colors.Navy
+    Write-BuildLog "REMISSION_INTERNAL_REFERENCE_CREATED"
 
     $countHeaders = @(
         "sesion_conteo_id", "fecha_corte", "sede", "ubicacion_id", "responsable", "metodo",
@@ -651,18 +658,21 @@ try {
     for ($i = 0; $i -lt $kpis.Count; $i++) {
         $row = $positions[$i][0]
         $col = $positions[$i][1]
-        $range = $panel.Range($panel.Cells.Item($row, $col), $panel.Cells.Item($row + 2, $col + 1))
-        $range.Merge()
-        $range.Interior.Color = $colors.Gray50
-        Set-CellBorder $range $colors.Gray200
-        $range.HorizontalAlignment = -4108
-        $range.VerticalAlignment = -4108
-        $range.WrapText = $true
-        $range.Font.Color = $colors.Gray500
-        $range.Font.Size = 10
-        $range.Value2 = $kpis[$i][0]
+        $cardRange = $panel.Range($panel.Cells.Item($row, $col), $panel.Cells.Item($row + 2, $col + 1))
+        $cardRange.Interior.Color = $colors.Gray50
+        Set-CellBorder $cardRange $colors.Gray200
+        $labelRange = $panel.Range($panel.Cells.Item($row, $col), $panel.Cells.Item($row, $col + 1))
+        $labelRange.Merge()
+        $labelRange.HorizontalAlignment = -4108
+        $labelRange.VerticalAlignment = -4108
+        $labelRange.WrapText = $true
+        $labelRange.Font.Color = $colors.Gray500
+        $labelRange.Font.Size = 10
+        $labelRange.Value2 = $kpis[$i][0]
         $valueRange = $panel.Range($panel.Cells.Item($row + 1, $col), $panel.Cells.Item($row + 2, $col + 1))
         $valueRange.Merge()
+        $valueRange.HorizontalAlignment = -4108
+        $valueRange.VerticalAlignment = -4108
         $valueRange.Formula = $kpis[$i][1]
         $valueRange.Font.Size = 23
         $valueRange.Font.Bold = $true
@@ -674,14 +684,13 @@ try {
         }
     }
 
-    $panel.Range("A18:D23").Value2 = @(
-        @("Indicador", "Valor", $null, $null),
-        @("Solicitudes abiertas", $null, $null, $null),
-        @("Remisiones en tránsito", $null, $null, $null),
-        @("Diferencias recepción", $null, $null, $null),
-        @("Diferencias conteo", $null, $null, $null),
-        @("Alertas calidad", $null, $null, $null)
-    )
+    $panel.Range("A18").Value2 = "Indicador"
+    $panel.Range("B18").Value2 = "Valor"
+    $panel.Range("A19").Value2 = "Solicitudes abiertas"
+    $panel.Range("A20").Value2 = "Remisiones en tránsito"
+    $panel.Range("A21").Value2 = "Diferencias recepción"
+    $panel.Range("A22").Value2 = "Diferencias conteo"
+    $panel.Range("A23").Value2 = "Alertas calidad"
     $panel.Range("B19").Formula = '=COUNTIFS(''03_SOLICITUDES''!$A$8:$A$200,"<>",''03_SOLICITUDES''!$G$8:$G$200,"<>CERRADA",''03_SOLICITUDES''!$G$8:$G$200,"<>CANCELADA")'
     $panel.Range("B20").Formula = '=COUNTIF(''04_REMISIONES''!$F$8:$F$200,"EN TRÁNSITO")'
     $panel.Range("B21").Formula = '=COUNTIFS(''04_REMISIONES''!$A$8:$A$200,"<>",''04_REMISIONES''!$R$8:$R$200,"<>0")'
