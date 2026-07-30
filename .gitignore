@@ -43,3 +43,5 @@ next-env.d.ts
 # Plan canónico: snapshots locales y copias de recuperación
 /docs/plan-canonico/modular/.generated/.state/
 /docs/plan-canonico/modular/.generated/.recovery/
+
+.delivery/
