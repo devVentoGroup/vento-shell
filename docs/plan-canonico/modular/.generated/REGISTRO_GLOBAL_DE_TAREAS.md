@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1585** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **449** |
+| Aprobadas | **450** |
 | En propuesta | **0** |
-| No iniciadas | **1136** |
+| No iniciadas | **1135** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **28.33% (449/1585)** |
+| Porcentaje de completamiento | **28.39% (450/1585)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-ARC-025` — Consolidar y aprobar ADR de arquitectura canónica de datos | ✅ APROBADA |
-| Tarea actual | `SUPA-TRANS-001` — Mapear cada objeto actual hacia la arquitectura objetivo | ⬜ NO INICIADA |
-| Siguiente | `SUPA-TRANS-002` — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-TRANS-001` — Mapear cada objeto actual hacia la arquitectura objetivo | ✅ APROBADA |
+| Tarea actual | `SUPA-TRANS-002` — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar | ⬜ NO INICIADA |
+| Siguiente | `SUPA-TRANS-003` — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -441,7 +441,7 @@
 | ✅ APROBADA | `DATA-NORM-ARC-011` | Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-012` | Definir tratamiento de datos recibidos desde integraciones externas | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `SUPA-ARC-025` | Consolidar y aprobar ADR de arquitectura canónica de datos | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-001` | Mapear cada objeto actual hacia la arquitectura objetivo | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
+| ✅ APROBADA | `SUPA-TRANS-001` | Mapear cada objeto actual hacia la arquitectura objetivo | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-002` | Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-003` | Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-004` | Definir orden de migración por dominio | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |

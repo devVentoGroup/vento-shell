@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **267** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **449** |
+| Tareas aprobadas | **450** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1136** |
+| Tareas no iniciadas | **1135** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **28.33% (449/1585)** |
+| Porcentaje de completamiento | **28.39% (450/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos** |
-| Tarea actual | **SUPA-TRANS-001 — Mapear cada objeto actual hacia la arquitectura objetivo** |
+| Última tarea aprobada | **SUPA-TRANS-001 — Mapear cada objeto actual hacia la arquitectura objetivo** |
+| Tarea actual | **SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar** |
+| Siguiente tarea | **SUPA-TRANS-003 — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 20 de 45 aprobadas; SUPA-TRANS-001 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 21 de 45 aprobadas; SUPA-TRANS-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-ARC-025` — Consolidar y aprobar ADR de arquitectura canónica de datos |
-| Tarea actual | `SUPA-TRANS-001` — Mapear cada objeto actual hacia la arquitectura objetivo — **NO INICIADA** |
-| Siguiente tarea | `SUPA-TRANS-002` — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar |
+| Última aprobada | `SUPA-TRANS-001` — Mapear cada objeto actual hacia la arquitectura objetivo |
+| Tarea actual | `SUPA-TRANS-002` — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar — **NO INICIADA** |
+| Siguiente tarea | `SUPA-TRANS-003` — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **20 DE 45 APROBADAS — ACTUAL SUPA-TRANS-001** |
+| BLOQUE E3 | **21 DE 45 APROBADAS — ACTUAL SUPA-TRANS-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos
-        ↓
-TAREA ACTUAL
 SUPA-TRANS-001 — Mapear cada objeto actual hacia la arquitectura objetivo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-TRANS-003 — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 20 de 45 tareas aprobadas
+BLOQUE E3 — 21 de 45 tareas aprobadas
 ```
