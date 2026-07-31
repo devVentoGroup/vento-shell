@@ -4851,7 +4851,892 @@ DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas
 ```
 
 
-### [ ] DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas
+### ✅ DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación` — APROBADA
+**Tarea siguiente:** `DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados`
+**Tipo de tarea:** definición normativa del contrato lógico de auditoría, identidad y ciclo de vida de versiones, vigencia temporal, reproducibilidad, concurrencia e idempotencia de reglas de normalización, revisión y búsqueda; sin DDL, DML, migraciones, backfills, correcciones de datos, cambios de índices, constraints, funciones, triggers, clientes, integraciones, configuración ni despliegues
+
+#### 1. Objetivo
+
+Definir el contrato canónico que deberá permitir reconstruir, explicar y reproducir toda decisión de normalización textual de Vento OS, incluyendo la regla solicitada, la coordenada evaluada, las versiones efectivas, la entrada protegida, el resultado, el actor o proceso iniciador, la evidencia, el motivo, la vigencia y cualquier efecto persistido o derivado.
+
+La política deberá impedir reglas editadas en sitio, versiones implícitas, uso ambiguo de `latest`, reintentos con efectos duplicados, evaluaciones no reproducibles, mezclas silenciosas de algoritmos y pérdida de historia. Una misma operación lógica, con la misma entrada, coordenada y conjunto de versiones, deberá producir el mismo resultado lógico; una repetición sobre un efecto ya aplicado deberá devolver el resultado anterior o una no operación verificable, sin volver a mutar datos ni duplicar eventos empresariales.
+
+#### 2. Artefacto producido
+
+```text
+VENTO_TEXT_RULE_AUDIT_VERSION_AND_IDEMPOTENCY_POLICY@1.0.0
+```
+
+| Propiedad                                     | Valor |
+| --------------------------------------------- | ----: |
+| Familias cerradas de registro lógico          |     6 |
+| Estados unificados de ciclo de vida           |     8 |
+| Modos cerrados de compatibilidad de versiones |     5 |
+| Clases cerradas de evento de auditoría        |    12 |
+| Resultados cerrados de evaluación             |    10 |
+| Clases de operación idempotente               |     6 |
+| Clases de retención lógica                    |     5 |
+| Niveles de reproducibilidad                   |     3 |
+| Requisitos de prueba nuevos                   |    22 |
+| Cambios físicos autorizados                   |     0 |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                | Decisión consumida                                                                                                              |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                     | continuidad, una sola tarea, fase exclusivamente documental, preservación histórica y generación inmediata de requisitos        |
+| `delivery-contract.json`              | identidad del artefacto de tarea y actualización integral del registro 04A al crear requisitos                                  |
+| `active-sequence.json`                | `DATA-NORM-ARC-009` como tarea actual y `DATA-NORM-ARC-010` como siguiente tarea reservada                                      |
+| `DATA-NORM-AUD-001`                   | representaciones separadas, reglas locales y necesidad de atribuir toda transformación a campo, propósito y fuente              |
+| `DATA-NORM-AUD-002`                   | diferencias formales que no pueden reinterpretarse sin conservar original, contexto y resultado                                 |
+| `DATA-NORM-AUD-003`                   | marcas, siglas, unidades, nombres legales, personas, externos, identificadores y material protegido                             |
+| `DATA-NORM-AUD-004`                   | colisiones, homónimos, versiones, scopes y prohibición de convertir claves comparativas en identidad                            |
+| `DATA-NORM-AUD-005`                   | separación entre operación determinista, diccionario, revisión, preservación y resolución estructural                           |
+| `DATA-NORM-AUD-006`                   | productores distribuidos, helpers divergentes, copias, snapshots, jobs, integraciones y riesgo de efectos duplicados            |
+| `DATA-NORM-AUD-007`                   | incompatibilidad entre helpers, alcance relacional, coexistencia de versiones, necesidad de paridad y transición                |
+| `DATA-NORM-ARC-001`                   | toda regla versionada, idempotente, resoluble por coordenada y con comportamiento cerrado                                       |
+| `DATA-NORM-ARC-002`                   | clases, representaciones, fuentes, modos de tratamiento y operación solicitada                                                  |
+| `DATA-NORM-ARC-003` a `006`           | capitalización, conectores, excepciones y diccionario con versión, vigencia, procedencia, paridad e idempotencia                |
+| `DATA-NORM-ARC-007`                   | decisiones humanas inmutables, casos vinculados, SLA, concurrencia, reintentos y separación entre decisión y materialización    |
+| `DATA-NORM-ARC-008`                   | siete representaciones de búsqueda, nueve modos, ranking estable, vínculo con fuente y obligación de usar versiones compatibles |
+| Regla canónica del bloque propietario | `normalize(normalize(value)) = normalize(value)` y reserva de auditoría, versionado e idempotencia para esta tarea              |
+
+#### 4. Alcance y fronteras
+
+Esta tarea define:
+
+1. la identidad estable de una regla y de cada una de sus versiones inmutables;
+2. el conjunto de versiones efectivo que deberá fijarse para cada evaluación;
+3. los estados y transiciones lógicas del ciclo de vida de reglas;
+4. la vigencia temporal y la activación atómica por coordenada;
+5. los modos de coexistencia y compatibilidad entre versiones;
+6. la procedencia del algoritmo y del artefacto ejecutor;
+7. las familias de registros y eventos de auditoría;
+8. el contrato lógico mínimo de evaluación, mutación, derivación, revisión y transición;
+9. los resultados cerrados de evaluación;
+10. el modelo de idempotencia por clase de operación;
+11. la construcción y validación de claves de idempotencia;
+12. la conducta ante concurrencia, entrada obsoleta, reintentos y payload incompatible;
+13. la reproducibilidad, el replay controlado y la verificación de determinismo;
+14. la supersesión, suspensión, retiro y rollback lógico de versiones;
+15. la minimización de valores, consultas y evidencia sensible;
+16. la correlación entre capas, consumidores, jobs, integraciones y efectos posteriores;
+17. el corpus mínimo de conformidad.
+
+Esta tarea no define:
+
+- tablas, columnas, tipos, índices, constraints, RLS, grants, funciones, RPC, triggers, jobs, colas físicas ni almacenamiento concreto;
+- duración numérica final de cada retención, particionamiento, archivado o eliminación física;
+- la identidad empresarial, scopes de unicidad, duplicados, sobrevivientes o fusiones;
+- qué capa técnica ejecutará o persistirá cada registro;
+- el contrato físico de originales externos;
+- backfills, lotes, dual write, cutover, despliegue, observabilidad física o rollback operativo;
+- modificaciones sobre datos existentes;
+- la aprobación de nuevas entradas, aliases, excepciones, perfiles o algoritmos.
+
+Estas decisiones permanecen en `DATA-NORM-ARC-010` a `DATA-NORM-ARC-012`, `SUPA-TRANS-001` a `SUPA-TRANS-015` y `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009`, según su propiedad.
+
+#### 5. Principios obligatorios
+
+1. **Una regla es inmutable por versión.** Cualquier cambio de contenido, alcance, evidencia, precedencia o algoritmo crea otra versión.
+2. **No existe `latest` implícito.** Toda evaluación fija el conjunto exacto de versiones efectivas.
+3. **La auditoría describe el resultado real.** No registra solo la intención; conserva la decisión, el efecto y el motivo observados.
+4. **La historia es aditiva.** Suspender, retirar, superseder o corregir no elimina ni reescribe decisiones anteriores.
+5. **La idempotencia se define por operación lógica.** No depende de que una petición HTTP se ejecute una sola vez.
+6. **Un reintento compatible reutiliza el resultado.** No vuelve a mutar, propagar, aprobar ni emitir efectos duplicados.
+7. **Una clave reutilizada con otro payload es conflicto.** Nunca se interpreta como una nueva operación válida.
+8. **La entrada obsoleta bloquea la mutación.** Si cambió el valor fuente, la versión o la política, se reevalúa antes de escribir.
+9. **Todo resultado es reproducible o explicablemente no reproducible.** La política declara qué evidencia permite reconstruirlo.
+10. **La auditoría no expone por defecto el dato.** Valores sensibles se representan mediante referencias protegidas, hashes o metadatos mínimos.
+11. **El algoritmo es parte de la versión.** Locale, Unicode, catálogos, tokenizer, ranking, orden y artefacto ejecutor deben quedar fijados.
+12. **La paridad es obligatoria.** La misma operación lógica no cambia de significado entre aplicación, servicio, RPC, job, trigger o integración.
+13. **Auditar no autoriza identidad.** Una traza de coincidencia, corrección o búsqueda no permite unicidad, fusión ni reasignación.
+14. **VITAL permanece separado.** No hereda versiones, trazas ni reglas transversales de Vento OS por coexistencia física.
+
+#### 6. Familias cerradas de registro lógico
+
+| Familia                             | Finalidad                                                                                                 | Obligación mínima                                                                                     |
+| ----------------------------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `RULE_GOVERNANCE_RECORD`            | identidad, contenido, aprobación, estado y vigencia de una versión                                        | conservar definición inmutable, autoridad, evidencia, hash y relaciones de supersesión                |
+| `RULE_EVALUATION_RECORD`            | decisión producida al evaluar una entrada sin afirmar todavía un efecto persistido                        | fijar coordenada, entrada o referencia, versiones, resultado, motivo y huella de salida               |
+| `PERSISTED_MUTATION_RECORD`         | efecto confirmado sobre un valor persistido                                                               | conservar antes y después protegidos, expectativa de concurrencia, efecto, actor y reversibilidad     |
+| `DERIVATION_MATERIALIZATION_RECORD` | creación o renovación de búsqueda, proyección, snapshot sincronizable u otra derivación                   | vincular fuente, versión o hash del valor, algoritmo, representación, vigencia y salida               |
+| `REVIEW_DECISION_RECORD`            | decisión humana sobre ambigüedad, conflicto, clasificación, preservación o escalamiento                   | enlazar caso, evidencia, funciones decisoras, alcance, resultado y versión propuesta                  |
+| `PROPAGATION_OR_TRANSITION_RECORD`  | solicitud, aplicación o compensación posterior sobre copias, lotes, consumidores o versiones coexistentes | conservar causación, alcance, elementos afectados, resultados parciales, reintentos y destino técnico |
+
+Las familias son lógicas. La distribución física, ownership de escritura y APIs pertenecen a `DATA-NORM-ARC-011` y a las tareas de transición.
+
+#### 7. Identidad estable de regla y versión
+
+Cada regla deberá distinguir:
+
+```text
+rule_key
+rule_version_id
+rule_family
+policy_coordinate
+semantic_class
+operation_kind
+language_profile
+version_number
+content_digest
+status
+effective_from
+effective_to
+supersedes_rule_version_id
+```
+
+Reglas:
+
+1. `rule_key` identifica el concepto estable y no cambia cuando aparece una nueva versión;
+2. `rule_version_id` identifica una definición inmutable;
+3. `version_number` no sustituye al identificador estable y no podrá reutilizarse;
+4. `content_digest` cubre la definición normativa ejecutable, alcance, precedencia, exclusiones y dependencias;
+5. una edición que altere el digest crea una versión distinta;
+6. una corrección administrativa no destructiva se registra como evento aditivo y no modifica silenciosamente el contenido firmado;
+7. una versión no podrá tener dos contenidos distintos entre ambientes;
+8. el identificador visible o nombre humano no se utiliza como identidad técnica de versión.
+
+#### 8. Conjunto efectivo de versiones
+
+Toda evaluación deberá resolver un `resolved_version_set` completo y producir su huella estable `version_set_digest`.
+
+El conjunto incluirá cuando aplique:
+
+```text
+field_policy_version
+field_class_catalog_version
+capitalization_policy_version
+connector_catalog_version
+official_exception_catalog_version
+orthographic_dictionary_version
+review_decision_version
+search_policy_version
+language_and_unicode_profile_version
+algorithm_artifact_version
+external_mapping_version
+```
+
+Reglas:
+
+1. solo se incluyen dependencias realmente consumidas y se declara `NOT_APPLICABLE` para las demás;
+2. ninguna dependencia se resuelve por hora actual, orden de carga, caché o configuración local no registrada;
+3. el mismo `version_set_digest` representa exactamente el mismo conjunto y compatibilidad;
+4. una versión ausente, suspendida, incompatible o no vigente produce bloqueo y no fallback silencioso;
+5. la consulta, el valor indexado y el ranking deberán fijar el mismo conjunto compatible;
+6. la traza histórica conserva el conjunto usado aunque posteriormente se retire una versión;
+7. una capa no podrá reemplazar una dependencia por otra semánticamente parecida.
+
+#### 9. Estados unificados del ciclo de vida
+
+| Estado                        | Ejecutable para decisiones nuevas | Significado                                                                                |
+| ----------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------ |
+| `DRAFT`                       | no                                | definición incompleta o pendiente de revisión                                              |
+| `APPROVED_PENDING_ACTIVATION` | no                                | contenido aprobado, todavía sin vigencia operativa                                         |
+| `ACTIVE`                      | sí                                | versión vigente dentro de coordenada, ambiente y ventana declarados                        |
+| `SUSPENDED`                   | no                                | versión temporalmente bloqueada por riesgo, investigación o incompatibilidad               |
+| `SUPERSEDED`                  | no                                | reemplazada para decisiones nuevas por otra versión explícita                              |
+| `RETIRED`                     | no                                | retirada sin sustitución activa; disponible para reconstrucción histórica                  |
+| `REJECTED`                    | no                                | propuesta descartada con motivo y evidencia conservados                                    |
+| `INVALIDATED`                 | no                                | versión cuya integridad, autoridad o contenido quedó comprometido; exige bloqueo inmediato |
+
+Los estados específicos ya aprobados en diccionario, excepciones y cola se mapearán sin perder su semántica. Por ejemplo, `APPROVED_ACTIVE` corresponde al estado unificado `ACTIVE`, pero conserva su nombre de origen en la evidencia histórica.
+
+#### 10. Transiciones de ciclo de vida
+
+```text
+DRAFT
+→ APPROVED_PENDING_ACTIVATION | REJECTED
+
+APPROVED_PENDING_ACTIVATION
+→ ACTIVE | SUSPENDED | REJECTED
+
+ACTIVE
+→ SUSPENDED | SUPERSEDED | RETIRED | INVALIDATED
+
+SUSPENDED
+→ ACTIVE | SUPERSEDED | RETIRED | INVALIDATED
+```
+
+Reglas:
+
+1. `SUPERSEDED`, `RETIRED`, `REJECTED` e `INVALIDATED` son terminales para esa versión;
+2. reactivar una definición terminal requiere otra versión que declare procedencia;
+3. toda transición valida estado esperado y autoridad;
+4. una transición repetida con la misma clave idempotente devuelve el resultado ya registrado;
+5. una transición incompatible no se corrige por orden de llegada;
+6. activar una versión no modifica registros históricos;
+7. invalidar una versión bloquea nuevas decisiones y abre evaluación de impacto, pero no borra efectos previos;
+8. ningún estado se infiere por ausencia de fecha o por no encontrar una versión en caché.
+
+#### 11. Vigencia y activación atómica
+
+Toda versión ejecutable deberá declarar:
+
+```text
+approved_at
+approved_by_authority
+effective_from
+effective_to
+activation_scope
+activation_environment
+activation_event_id
+```
+
+Reglas:
+
+1. aprobación y activación son decisiones distintas;
+2. la activación deberá cambiar de forma atómica el conjunto efectivo aplicable a una coordenada;
+3. no puede existir una ventana en la que una evaluación mezcle dependencias del conjunto anterior y del nuevo;
+4. las operaciones iniciadas antes del cambio conservan su conjunto fijado o se cancelan y reevalúan según el contrato de transición;
+5. `effective_to` es exclusivo para decisiones nuevas y no altera la interpretación histórica;
+6. el reloj de aplicación se declara en UTC y la presentación local no cambia la vigencia;
+7. una fecha futura no convierte la versión en activa antes del evento de activación válido;
+8. el mecanismo físico de coordinación pertenece a `DATA-NORM-ARC-011`.
+
+#### 12. Modos de compatibilidad y coexistencia
+
+| Modo                     | Conducta                                                                                                  |
+| ------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `ACTIVE_ONLY`            | una sola versión atiende decisiones nuevas y derivaciones vigentes                                        |
+| `DUAL_EVALUATION_SHADOW` | la versión candidata evalúa en sombra, sin mutar ni alterar respuestas, para comparar paridad e impacto   |
+| `HISTORICAL_READ_ONLY`   | la versión anterior se usa únicamente para interpretar resultados o snapshots creados durante su vigencia |
+| `REPLAY_ONLY`            | la versión se carga solo dentro de un replay controlado, aislado de decisiones nuevas                     |
+| `INCOMPATIBLE_BLOCKED`   | no se permite comparar, mezclar ni continuar hasta resolver migración o compatibilidad                    |
+
+Reglas:
+
+1. no existe dual write implícito;
+2. `DUAL_EVALUATION_SHADOW` no emite efectos empresariales, eventos funcionales ni correcciones;
+3. el resultado en sombra se vincula al resultado activo y se minimiza como evidencia de comparación;
+4. una versión histórica nunca recupera autoridad por ser la única disponible en un cliente;
+5. cualquier coexistencia declara inicio, fin, owner, corpus, métricas y puerta de salida;
+6. la transición operativa y los aliases temporales pertenecen a `SUPA-TRANS-006`, `SUPA-TRANS-007` y `DATA-NORM-TRANS-*` aplicables.
+
+#### 13. Procedencia del algoritmo
+
+Toda evaluación ejecutada deberá poder atribuirse a:
+
+```text
+algorithm_key
+algorithm_version
+artifact_identity
+artifact_digest
+source_revision_or_commit
+runtime_contract_version
+language_profile
+unicode_version
+tokenizer_version
+catalog_version_set
+configuration_digest
+```
+
+Reglas:
+
+1. un mismo `algorithm_version` no podrá señalar artefactos con digests distintos;
+2. locale, Unicode, tokenizer, stopwords, aliases, diccionario, ranking y configuración forman parte de la procedencia cuando afecten el resultado;
+3. el ambiente no modifica semántica mediante defaults locales;
+4. una dependencia externa no determinista deberá capturarse mediante versión o evidencia inmutable, o la evaluación quedará bloqueada;
+5. una salida de modelo, servicio lingüístico o proveedor no constituye algoritmo canónico sin contrato versionado;
+6. el registro de despliegue deberá poder demostrar qué artefacto ejecutó cada resultado;
+7. la selección de repositorio, servicio o capa ejecutora pertenece a `DATA-NORM-ARC-011`.
+
+#### 14. Clases cerradas de evento de auditoría
+
+| Evento lógico                            | Finalidad                                                                              |
+| ---------------------------------------- | -------------------------------------------------------------------------------------- |
+| `RULE_VERSION_PROPOSED`                  | registrar la propuesta inmutable y sus dependencias                                    |
+| `RULE_VERSION_APPROVED`                  | registrar autoridad, evidencia y aprobación sin activar                                |
+| `RULE_VERSION_ACTIVATED`                 | fijar vigencia, scope, ambiente y conjunto efectivo                                    |
+| `RULE_VERSION_SUSPENDED`                 | bloquear decisiones nuevas conservando causa e impacto                                 |
+| `RULE_VERSION_SUPERSEDED`                | enlazar versión reemplazada y reemplazante                                             |
+| `RULE_VERSION_RETIRED`                   | retirar la versión de decisiones nuevas                                                |
+| `RULE_EVALUATED`                         | registrar resultado lógico de una evaluación                                           |
+| `RULE_MUTATION_COMMITTED`                | confirmar una mutación persistida y su expectativa de concurrencia                     |
+| `RULE_DERIVATION_MATERIALIZED`           | confirmar una representación derivada vinculada a fuente y versión                     |
+| `RULE_BLOCK_OR_REVIEW_EMITTED`           | registrar preservación, bloqueo, conflicto, revisión o escalamiento                    |
+| `RULE_REPLAY_OR_RECONCILIATION_RECORDED` | documentar replay, comparación de versiones o reconciliación sin ocultar diferencias   |
+| `RULE_COMPENSATION_OR_ROLLBACK_RECORDED` | registrar compensación o rollback técnico conservando la decisión y el efecto original |
+
+Una implementación podrá almacenar varios eventos en una misma transacción, pero no fusionará semánticas ni omitirá cuál ocurrió.
+
+#### 15. Contrato lógico mínimo de auditoría
+
+Todo registro aplicable deberá poder expresar:
+
+```text
+audit_event_id
+logical_operation_id
+attempt_id
+correlation_id
+causation_id
+event_kind
+event_time
+recorded_at
+actor_or_service_identity
+authorization_context
+reason_code
+policy_coordinate
+entity_type
+entity_id
+source_field_coordinate
+source_value_version_or_hash
+before_value_reference_or_hash
+after_value_reference_or_hash
+requested_operation
+resolved_version_set
+version_set_digest
+algorithm_provenance
+idempotency_key
+idempotency_payload_digest
+expected_source_version_or_hash
+outcome
+outcome_reason
+review_case_or_decision_reference
+propagation_or_transition_reference
+environment
+```
+
+Reglas:
+
+1. los campos no aplicables se declaran de forma explícita y no se omiten por conveniencia;
+2. `logical_operation_id` permanece estable entre reintentos;
+3. `attempt_id` distingue intentos técnicos sin crear otra decisión lógica;
+4. `correlation_id` agrupa el proceso de extremo a extremo;
+5. `causation_id` identifica el evento que originó el actual;
+6. `recorded_at` no sustituye el momento efectivo del hecho;
+7. toda mutación persistida conserva la expectativa usada para evitar escritura sobre una versión obsoleta;
+8. toda evidencia sensible se referencia bajo el modelo de minimización.
+
+#### 16. Resultados cerrados de evaluación
+
+| Resultado                     | Significado                                                                                |
+| ----------------------------- | ------------------------------------------------------------------------------------------ |
+| `APPLIED_CHANGE`              | una operación autorizada produjo y confirmó un cambio                                      |
+| `NO_CHANGE_ALREADY_CANONICAL` | la entrada ya satisfacía la versión efectiva; no hubo mutación                             |
+| `DERIVED`                     | se produjo una representación separada sin modificar la fuente                             |
+| `PRESERVED`                   | la política ordenó conservar el valor o representación                                     |
+| `NOT_APPLICABLE`              | la regla no corresponde a la coordenada evaluada                                           |
+| `BLOCKED_POLICY`              | falta política, versión, autoridad, vigencia, clase, fuente o representación compatible    |
+| `BLOCKED_CONFLICT`            | dos decisiones o dependencias aplicables son incompatibles                                 |
+| `REVIEW_REQUIRED`             | el valor se conserva y se requiere el proceso de `DATA-NORM-ARC-007`                       |
+| `ESCALATED_STRUCTURAL`        | el problema pertenece a estructura, identidad, unicidad, integración o transición          |
+| `FAILED_TECHNICAL`            | la ejecución no pudo completar el efecto; no se presenta como decisión empresarial exitosa |
+
+`FAILED_TECHNICAL` no modifica el resultado lógico aprobado ni autoriza reintentar con otra versión. El reintento conservará la misma operación lógica y revalidará precondiciones.
+
+#### 17. Clases de retención lógica
+
+| Clase                        | Contenido                                                                              | Obligación lógica                                                                              |
+| ---------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `GOVERNANCE_IMMUTABLE`       | versiones, aprobaciones, estados, supersesiones, invalidaciones y decisiones humanas   | conservación íntegra y aditiva mientras sea necesario interpretar reglas y efectos             |
+| `MUTATION_EVIDENCE`          | antes, después, motivo, actor, expectativa, resultado y reversibilidad de una mutación | conservar evidencia suficiente para investigación, reconciliación y rollback                   |
+| `DERIVATION_REPRODUCIBILITY` | fuente o hash, versión, algoritmo y huella de salida de una derivación                 | permitir verificar vigencia, recomputación y paridad                                           |
+| `OPERATIONAL_DIAGNOSTIC`     | intentos, latencia, error técnico, retry y metadatos de ejecución                      | retención limitada por finalidad, sin convertirse en autoridad canónica                        |
+| `SENSITIVE_REFERENCE`        | referencias protegidas a personales, legales, externos, secretos, firmas o evidencia   | acceso restringido, minimización y conservación conforme a finalidad y gobierno de información |
+
+La duración, archivado y eliminación física se definirán en la arquitectura de información y transición aplicable. La falta de plazo físico no permite eliminar evidencia necesaria ni conservar datos sensibles indefinidamente por defecto.
+
+#### 18. Niveles de reproducibilidad
+
+| Nivel                      | Condición                                                                                                             |
+| -------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `FULL_REPLAYABLE`          | entrada, contexto, versiones, algoritmo y dependencias pueden reproducirse en un entorno controlado                   |
+| `REFERENCE_REPLAYABLE`     | la entrada completa permanece en una evidencia protegida e inmutable accesible mediante referencia                    |
+| `DECISION_RECONSTRUCTABLE` | por privacidad o retención no se conserva la entrada completa, pero hashes, contexto y versiones explican la decisión |
+
+Reglas:
+
+1. cada familia de evento declara su nivel;
+2. `DECISION_RECONSTRUCTABLE` no se presenta como replay exacto;
+3. una mutación crítica deberá alcanzar `FULL_REPLAYABLE` o `REFERENCE_REPLAYABLE` salvo prohibición legal documentada;
+4. los secretos no se vuelven replayables mediante exposición de su valor;
+5. un hash sin metadatos de algoritmo y contexto no demuestra reproducibilidad;
+6. toda degradación de nivel queda auditada con motivo, autoridad y fecha.
+
+#### 19. Valores, consultas y evidencia sensible
+
+1. El valor original completo solo se almacena en la traza cuando sea necesario, autorizado y protegido.
+2. Personas, direcciones, nombres legales, payloads externos, secretos, firmas, tokens y material probatorio utilizarán referencias protegidas o hashes cuando el contenido no sea necesario.
+3. El hash deberá declarar algoritmo, canonicalización previa permitida, salt o clave cuando aplique y versión.
+4. No se calculará una huella que convierta un secreto de baja entropía en dato enumerable.
+5. Consultas de búsqueda sensibles no se registrarán completas por defecto.
+6. Los fragmentos visibles y notas humanas no se convierten en evidencia autorizada sin procedencia.
+7. El masking deberá permitir distinguir eventos sin revelar el valor.
+8. Una exportación, métrica o panel no podrá reconstruir el corpus original.
+9. El derecho de consulta de auditoría se separará del derecho de ejecutar, aprobar o modificar reglas.
+10. VITAL tendrá política y almacenamiento propios.
+
+#### 20. Semántica temporal
+
+Toda auditoría distinguirá, cuando aplique:
+
+```text
+observed_at
+requested_at
+evaluated_at
+effect_committed_at
+effective_from
+effective_to
+recorded_at
+```
+
+Reglas:
+
+1. `observed_at` describe cuándo se observó la entrada o señal;
+2. `requested_at` identifica el inicio de la operación lógica;
+3. `evaluated_at` fija cuándo se resolvió el conjunto de versiones;
+4. `effect_committed_at` existe solo cuando el efecto fue confirmado;
+5. `effective_from` y `effective_to` pertenecen a la vigencia normativa;
+6. `recorded_at` describe la incorporación de la evidencia al registro;
+7. los tiempos no se sustituyen por una única fecha de creación;
+8. relojes locales se convierten a UTC conservando zona original cuando sea relevante;
+9. una entrega tardía de auditoría no cambia la hora efectiva del hecho.
+
+#### 21. Modelo canónico de idempotencia
+
+La idempotencia se expresa mediante dos garantías complementarias:
+
+```text
+same logical input
++ same policy coordinate
++ same resolved version set
++ same requested operation
+=
+same logical outcome
+```
+
+```text
+reapply an already committed logical operation
+=
+return prior committed outcome without a second business effect
+```
+
+La primera garantía cubre determinismo. La segunda cubre reintentos, concurrencia y entrega al menos una vez.
+
+#### 22. Construcción de clave de idempotencia
+
+La clave lógica deberá incluir o vincular de manera estable:
+
+```text
+operation_kind
++ actor_or_service_scope
++ target_entity_type
++ target_entity_id
++ source_field_coordinate
++ source_value_version_or_hash
++ requested_operation
++ version_set_digest
++ business_correlation_or_command_id
+```
+
+Reglas:
+
+1. la clave no se deriva únicamente del valor textual;
+2. el payload completo y precondiciones producen `idempotency_payload_digest`;
+3. la misma clave y el mismo digest reutilizan el resultado previo;
+4. la misma clave con digest distinto produce `BLOCKED_CONFLICT` con motivo `IDEMPOTENCY_PAYLOAD_CONFLICT` y bloquea el efecto;
+5. una nueva versión de fuente o política crea otra operación lógica o exige reevaluación explícita;
+6. el cliente no podrá escoger una clave global que mezcle entidades o scopes;
+7. el almacenamiento y expiración física de claves dependerán del tipo de operación y retención aplicable;
+8. una clave expirada físicamente no elimina la obligación de detectar un efecto empresarial ya confirmado.
+
+#### 23. Clases de operación idempotente
+
+| Clase                               | Garantía requerida                                                                                                  |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `PURE_EVALUATION`                   | misma entrada y versiones producen mismo resultado y huella, sin efectos persistidos                                |
+| `PERSISTED_MUTATION`                | un solo cambio confirmado; reintento devuelve el resultado previo o no operación verificable                        |
+| `DERIVATION_MATERIALIZATION`        | una sola derivación vigente por fuente, representación y versión; recomputación compatible conserva la misma huella |
+| `RULE_LIFECYCLE_TRANSITION`         | una transición de estado ocurre una vez sobre el estado esperado                                                    |
+| `REVIEW_DECISION_RECORDING`         | una resolución lógica inmutable; reintentos no crean otra decisión ni alteran la anterior                           |
+| `PROPAGATION_OR_TRANSITION_COMMAND` | cada destino registra efecto individual y reanudable; no se repiten destinos ya confirmados                         |
+
+Una operación compuesta tendrá una operación raíz y efectos hijos idempotentes. El éxito parcial no se presentará como éxito total y conservará los destinos pendientes o fallidos.
+
+#### 24. Reintentos y resultados
+
+1. Un reintento conservará `logical_operation_id`, `idempotency_key`, payload digest y conjunto de versiones.
+2. Cada intento tendrá `attempt_id`, inicio, fin y resultado técnico propios.
+3. Una respuesta perdida no origina otra mutación.
+4. Un timeout no implica que el efecto no ocurrió; antes de repetir se consultará el resultado lógico.
+5. Un error transitorio no autoriza cambiar de versión, locale, catálogo o algoritmo.
+6. Un error permanente se registra como `FAILED_TECHNICAL` o bloqueo, según corresponda.
+7. Un retry después de cambio de fuente o política deberá reevaluar y no reutilizar ciegamente el resultado anterior.
+8. La capa cliente no podrá simular idempotencia ocultando errores mientras el servidor ejecuta efectos múltiples.
+9. Los jobs conservarán cursores o destinos confirmados para reanudar sin reiniciar el lote completo.
+
+#### 25. Concurrencia y entrada obsoleta
+
+Toda mutación o materialización deberá validar:
+
+```text
+expected_source_version_or_hash
+expected_policy_coordinate
+expected_version_set_digest
+expected_current_state
+```
+
+Reglas:
+
+1. si la fuente cambió después de la evaluación, el efecto queda bloqueado como entrada obsoleta;
+2. si cambió el conjunto efectivo de versiones, se requiere una nueva evaluación;
+3. dos operaciones concurrentes sobre la misma fuente no se resuelven por último escritor;
+4. una transición de regla valida el estado esperado;
+5. dos cierres de revisión incompatibles producen conflicto de versión;
+6. una derivación vieja no sobrescribe otra producida desde una fuente más reciente;
+7. una copia offline revalida fuente, política, autoridad y vigencia antes de sincronizar;
+8. la estrategia física de locking u optimistic concurrency pertenece a `DATA-NORM-ARC-011`.
+
+#### 26. Determinismo y fuentes de no determinismo
+
+Quedan prohibidos como dependencias implícitas:
+
+- locale del sistema operativo, navegador, proceso o base de datos;
+- versión Unicode no declarada;
+- orden físico de filas o catálogos;
+- hora actual usada para seleccionar una regla sin vigencia registrada;
+- aleatoriedad no fijada;
+- respuesta mutable de un proveedor sin versión o evidencia;
+- caché no identificada;
+- configuración local fuera del digest;
+- orden de concurrencia usado para resolver conflictos;
+- modelo lingüístico o heurística sin contrato y versión;
+- primer resultado de búsqueda usado como verdad.
+
+Si una operación depende de una fuente que no puede fijarse, se conserva el valor y se produce bloqueo o revisión. No se registra un resultado como determinista cuando solo fue repetible accidentalmente.
+
+#### 27. Replay, verificación y reconciliación
+
+Un replay controlado deberá declarar:
+
+```text
+replay_id
+source_event_or_decision_set
+source_snapshot_or_reference
+version_set_digest
+algorithm_provenance
+replay_environment
+expected_outcomes
+actual_outcomes
+difference_classification
+```
+
+Reglas:
+
+1. un replay no modifica producción;
+2. una versión `REPLAY_ONLY` no participa en decisiones nuevas;
+3. las diferencias se clasifican como cambio esperado de versión, deriva de artefacto, dato distinto, configuración distinta o defecto;
+4. una igualdad de salida con distinta procedencia no demuestra paridad completa;
+5. la reconciliación no sobrescribe evidencia para hacerla coincidir;
+6. las diferencias críticas generan caso, incidente o tarea propietaria;
+7. los corpus de `DATA-NORM-ARC-003` a `008` se reutilizan con versiones y resultados esperados fijados;
+8. la ejecución de dry-run y comparación masiva pertenece a `DATA-NORM-TRANS-001`, `DATA-NORM-TRANS-002` y `SUPA-TRANS-009`.
+
+#### 28. Supersesión, rollback lógico y corrección
+
+1. Una versión nueva declara qué versión supersede y por qué.
+2. Superseder no elimina ni reescribe evaluaciones anteriores.
+3. El rollback lógico activa una versión anterior compatible o una versión correctiva nueva mediante otro evento gobernado.
+4. Una versión anterior no se reactiva si su evidencia, artefacto o dependencias ya no son compatibles.
+5. El rollback de código no cambia por sí solo la versión normativa activa.
+6. Una compensación de datos conserva el efecto original, el efecto compensatorio y la relación causal.
+7. Una decisión humana incorrecta se corrige mediante una revisión vinculada, no mediante edición.
+8. Un error administrativo se rectifica de forma aditiva con antes, después, actor y motivo.
+9. Las filas ya transformadas no se revierten desde esta tarea; requieren transición, dry-run y rollback operativo.
+10. Ningún rollback borra evidencia de un resultado que existió.
+
+#### 29. Auditoría de búsqueda, comparación y ranking
+
+Toda búsqueda gobernada deberá poder demostrar, según finalidad y minimización:
+
+- consulta protegida o huella compatible;
+- perfil, locale y versión;
+- scope y filtros autorizados;
+- representaciones consultadas;
+- modo principal de coincidencia;
+- motivos secundarios;
+- tupla de ranking y versión;
+- fuente o snapshot de cada resultado;
+- condición histórica o inactiva;
+- versión del corpus o índice;
+- resultado degradado, bloqueo o fallback declarado.
+
+Reglas:
+
+1. no se registra la clave completa si permite reconstruir el dato;
+2. un cambio de ranking crea otra versión;
+3. la paginación conserva el mismo conjunto de versiones durante el cursor;
+4. un cursor obsoleto falla o reinicia explícitamente; no mezcla páginas;
+5. la auditoría de búsqueda no se convierte en perfilado indiscriminado de personas;
+6. una coincidencia no crea evidencia de identidad ni regla de corrección;
+7. las obligaciones de `TREQ-DATA-123` a `TREQ-DATA-142` deberán poder demostrarse mediante este contrato.
+
+#### 30. Auditoría de cola y decisiones humanas
+
+1. Cada revisión de `DATA-NORM-ARC-007` conserva caso, revisión, evidencia, asignaciones, estados, SLA, decisión y relaciones de supersesión.
+2. La resolución cerrada es inmutable.
+3. La aprobación humana no activa por sí sola una entrada de diccionario, excepción, política o búsqueda.
+4. La incorporación a un catálogo crea una versión y evento separados.
+5. La materialización sobre datos crea otra operación idempotente y otra evidencia.
+6. Rechazo, preservación, solicitud de evidencia, diferimiento y escalamiento también se auditan.
+7. Un reintento de cierre devuelve la resolución previa; un resultado distinto produce conflicto.
+8. Los actores se registran por identidad estable y función ejercida, no solo por nombre visible.
+9. Los valores sensibles permanecen bajo referencias protegidas.
+
+#### 31. Fuentes, copias, snapshots y propagación
+
+1. La fuente propietaria y cada copia o snapshot conservan versiones de valor distintas.
+2. Una mutación de fuente no se confunde con la resincronización de sus copias.
+3. Cada destino de propagación registra estado, entrada esperada, resultado, intento y causalidad.
+4. Un snapshot inmutable no recibe propagación retroactiva.
+5. Una copia sincronizable no ejecuta una regla local diferente.
+6. Un override aprobado conserva su propia vigencia y versión.
+7. Una propagación parcial no se presenta como completada.
+8. Un reintento omite destinos confirmados y revalida los pendientes.
+9. El orden técnico, eventos y ownership de ejecución pertenecen a `DATA-NORM-ARC-011` y `DATA-NORM-TRANS-008`.
+
+#### 32. Valores externos e integraciones
+
+1. Un original externo conserva payload, procedencia, identificador del proveedor, momento y versión de contrato cuando corresponda.
+2. El mapeo interno tiene versión propia y no sobrescribe el original.
+3. Una firma, checksum, referencia o clave de idempotencia externa se preserva exactamente.
+4. Un webhook repetido utiliza la identidad externa y el contrato interno sin duplicar efectos.
+5. Dos eventos externos con el mismo identificador y payload distinto producen conflicto.
+6. Una nueva versión de mapeo no reinterpreta historia silenciosamente.
+7. Los detalles de persistencia y privacidad externa pertenecen a `DATA-NORM-ARC-012`.
+8. La traza interna no expondrá secretos ni payload completo cuando no sea necesario.
+
+#### 33. Seguridad, autorización e integridad de la auditoría
+
+1. Crear, consultar, exportar, aprobar, activar, suspender, retirar y corregir evidencias son acciones diferenciadas.
+2. El acceso se limita por dominio, finalidad, sensibilidad, territorio y función.
+3. Ningún actor podrá borrar una decisión o mutación para ocultar un error.
+4. Los registros de gobierno y decisión deberán ser append-only a nivel lógico.
+5. Toda rectificación tendrá evento, actor, motivo y relación con el registro rectificado.
+6. El contenido deberá tener digest verificable y procedencia de artefacto.
+7. Una discrepancia de digest produce `INVALIDATED` o incidente, no reparación silenciosa.
+8. Los administradores técnicos no adquieren autoridad empresarial por operar infraestructura.
+9. Las métricas agregadas no sustituirán la evidencia individual exigida para casos críticos.
+10. La implementación física de integridad, cifrado, firma y retención pertenece a las tareas propietarias de seguridad y datos.
+
+#### 34. Paridad entre capas
+
+Para la misma operación lógica, entrada, coordenada y versiones, aplicación, servicio de dominio, RPC, Edge Function, job y defensa de base deberán coincidir en:
+
+- regla y versión seleccionadas;
+- conjunto efectivo y digest;
+- clasificación de tokens o componentes;
+- resultado cerrado;
+- valor o huella de salida;
+- bloqueo, revisión o escalamiento;
+- clave de idempotencia y payload digest;
+- expectativa de concurrencia;
+- correlación y causación;
+- ausencia de efectos duplicados.
+
+Ninguna capa podrá:
+
+- cambiar una versión por fallback local;
+- omitir auditoría porque otra capa también registra;
+- crear otra operación lógica para cada retry;
+- considerar éxito una escritura sin confirmación;
+- reconstruir el valor sensible desde logs;
+- corregir una traza para ocultar deriva;
+- aplicar una versión de Vento OS a VITAL.
+
+La autoridad ejecutora y la estrategia para evitar auditoría duplicada serán definidas por `DATA-NORM-ARC-011`.
+
+#### 35. Ejemplos normativos
+
+| Escenario                                                             | Resultado obligatorio                                                                                  |
+| --------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `harina de maiz` evaluada dos veces con el mismo conjunto             | mismo resultado, mismas reglas y misma huella lógica                                                   |
+| la primera mutación se confirma y la respuesta se pierde              | el retry devuelve `APPLIED_CHANGE` previo; no vuelve a escribir ni propagar                            |
+| la misma clave llega con otro valor o versión                         | `IDEMPOTENCY_PAYLOAD_CONFLICT`; ningún efecto                                                          |
+| el valor fuente cambia entre evaluación y escritura                   | entrada obsoleta; conservar el valor nuevo y reevaluar                                                 |
+| se activa un diccionario nuevo mientras una operación está en curso   | la operación conserva su conjunto fijado o se cancela explícitamente; no mezcla versiones              |
+| `Maíz` ya cumple la regla activa                                      | `NO_CHANGE_ALREADY_CANONICAL`, sin mutación ni evento duplicado                                        |
+| se materializa `SEARCH_ACCENT_KEY` dos veces                          | una derivación vigente con la misma fuente y versión; recomputación compatible produce la misma huella |
+| un ranking cambia por código distinto sin nueva versión               | deriva no conforme y evento de integridad                                                              |
+| una regla activa cambia de contenido sin cambiar identificador        | discrepancia de digest; versión invalidada o despliegue bloqueado                                      |
+| un revisor intenta cerrar dos veces el mismo caso con igual resultado | se reutiliza la resolución existente                                                                   |
+| el segundo cierre propone otro resultado                              | conflicto de estado o payload; la primera decisión permanece inmutable                                 |
+| una propagación alcanza tres de cinco destinos                        | éxito parcial con tres destinos confirmados y dos pendientes; no se declara completada                 |
+| un snapshot histórico se consulta con una regla retirada              | interpretación mediante `HISTORICAL_READ_ONLY` o `REPLAY_ONLY`; no autoridad para decisiones nuevas    |
+| se revierte código pero no la activación normativa                    | inconsistencia bloqueante hasta alinear artefacto y versión                                            |
+| un secreto participa en validación                                    | registro mínimo sin valor ni clave de búsqueda reversible                                              |
+| un webhook externo se repite                                          | misma operación lógica y efecto único; payload distinto con el mismo identificador produce conflicto   |
+| una búsqueda paginada atraviesa una activación de versión             | cursor fijado a la versión original o reinicio explícito; nunca páginas mezcladas                      |
+| una coincidencia exacta sugiere posible duplicado                     | auditoría de búsqueda solamente; identidad y fusión permanecen fuera de alcance                        |
+
+#### 36. Conductas no conformes
+
+Quedan prohibidas:
+
+1. editar el contenido de una versión activa;
+2. resolver versiones mediante `latest` implícito;
+3. reutilizar un número o identificador de versión con otro digest;
+4. activar parcialmente un conjunto de dependencias;
+5. mezclar versiones entre consulta, índice, valor y ranking;
+6. reintentar con otra política para evitar un error;
+7. usar la misma clave idempotente con payload diferente;
+8. deduplicar operaciones únicamente por el texto normalizado;
+9. aceptar último escritor ante fuente o estado obsoleto;
+10. registrar solo éxito y omitir bloqueos, preservaciones, revisiones o fallos;
+11. sobrescribir eventos, decisiones o evidencia;
+12. registrar secretos, tokens, firmas o consultas sensibles completas sin necesidad y protección;
+13. declarar replay completo cuando solo existe una huella;
+14. reactivar una versión terminal sin crear otra versión;
+15. usar rollback de código como rollback normativo automático;
+16. modificar snapshots históricos por una regla nueva;
+17. ocultar éxito parcial de propagación;
+18. permitir tokenizers, catálogos, locales o configuración no incluidos en la procedencia;
+19. utilizar auditoría o ranking como autorización de identidad, unicidad o fusión;
+20. aplicar la política transversal de Vento OS a VITAL;
+21. introducir cambios físicos desde esta tarea documental.
+
+#### 37. Corpus mínimo de conformidad
+
+El corpus deberá cubrir, como mínimo:
+
+1. todas las familias de registro y eventos lógicos;
+2. los ocho estados y cada transición permitida o prohibida;
+3. activación inmediata, futura, suspendida, supersedida, retirada e invalidada;
+4. conjuntos de versiones completos, incompletos, incompatibles y con digest diferente;
+5. artefactos iguales y distintos bajo el mismo identificador;
+6. las diez salidas cerradas;
+7. cada clase de operación idempotente;
+8. retries antes, durante y después de confirmación;
+9. respuesta perdida, timeout y error transitorio;
+10. misma clave con mismo payload y con payload diferente;
+11. concurrencia sobre valor, derivación, transición y caso de revisión;
+12. fuente o política obsoleta;
+13. éxito total, parcial y compensación;
+14. `FULL_REPLAYABLE`, `REFERENCE_REPLAYABLE` y `DECISION_RECONSTRUCTABLE`;
+15. valores ordinarios, marcas, nombres legales, personas, externos, identificadores y secretos;
+16. búsqueda, ranking, cursor y cambio de versión entre páginas;
+17. copias sincronizables, overrides y snapshots inmutables;
+18. webhook, job y lote reanudable;
+19. rectificación aditiva y discrepancia de digest;
+20. paridad entre capas, ambientes y artefactos;
+21. ausencia de efectos de identidad, unicidad o fusión;
+22. frontera separada de VITAL.
+
+El corpus deberá reutilizar los escenarios de `TREQ-DATA-037` a `TREQ-DATA-142` que involucren versiones, idempotencia, auditoría, revisión, búsqueda, fuentes y paridad.
+
+#### 38. Hallazgos y carryovers
+
+| ID               | Decisión o brecha                                                  | Resultado de esta tarea                                                                    | Propietario siguiente                                             |
+| ---------------- | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------------ | ----------------------------------------------------------------- |
+| `DN-ARC-009-H01` | versiones y reglas podían resolverse mediante estado mutable       | identidad estable, digest, estados y conjunto efectivo aprobados                           | `DATA-NORM-ARC-011`; `SUPA-TRANS-006`; `DATA-NORM-TRANS-004`      |
+| `DN-ARC-009-H02` | aprobación podía confundirse con activación                        | separación temporal y activación atómica aprobadas                                         | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-005`                        |
+| `DN-ARC-009-H03` | no existía contrato único de auditoría                             | seis familias, doce eventos y contrato mínimo aprobados                                    | `DATA-NORM-ARC-011`; tareas de gobierno de información aplicables |
+| `DN-ARC-009-H04` | retries y jobs podían duplicar cambios o propagaciones             | seis clases idempotentes, claves, digests y reanudación aprobados                          | `DATA-NORM-ARC-011`; `SUPA-TRANS-009`; `DATA-NORM-TRANS-006`      |
+| `DN-ARC-009-H05` | concurrencia podía aplicar resultados sobre fuentes obsoletas      | expectativas de fuente, política y estado aprobadas                                        | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-005`; `DATA-NORM-TRANS-006` |
+| `DN-ARC-009-H06` | helpers y ambientes podían compartir nombre con contenido distinto | procedencia de artefacto y digest obligatorios                                             | `DATA-NORM-ARC-011`; `SUPA-TRANS-013`; `SUPA-TRANS-014`           |
+| `DN-ARC-009-H07` | auditoría podía exponer valores protegidos                         | minimización, referencias, niveles de reproducibilidad y acceso separado                   | `DATA-NORM-ARC-011`; `DATA-NORM-ARC-012`                          |
+| `DN-ARC-009-H08` | búsqueda y ranking podían cambiar dentro de un cursor              | conjunto fijado, cursor versionado y replay aprobado                                       | `DATA-NORM-ARC-011`; `SUPA-TRANS-007`; `SUPA-TRANS-009`           |
+| `DN-ARC-009-H09` | decisiones humanas podían activarse o editarse silenciosamente     | inmutabilidad y separación entre decisión, versión, activación y materialización aprobadas | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-004`; `DATA-NORM-TRANS-005` |
+| `DN-ARC-009-H10` | rollback podía borrar o reinterpretar historia                     | rollback lógico y compensación aditiva aprobados                                           | `SUPA-TRANS-011`; `DATA-NORM-TRANS-008`                           |
+| `DN-ARC-009-H11` | no existe aún persistencia ni autoridad ejecutora física           | contrato lógico completo aprobado; implementación reservada                                | `DATA-NORM-ARC-011`; tareas de transición aplicables              |
+| `DN-ARC-009-H12` | auditoría podía confundirse con identidad o unicidad               | frontera absoluta mantenida                                                                | `DATA-NORM-ARC-010`; `DATA-NORM-TRANS-003`                        |
+
+#### 39. Decisiones reservadas
+
+| Decisión                                                        | Tarea propietaria                                              |
+| --------------------------------------------------------------- | -------------------------------------------------------------- |
+| identidad, scope de unicidad, colisiones y duplicados           | `DATA-NORM-ARC-010`                                            |
+| capa ejecutora, APIs, persistencia, transacciones y precedencia | `DATA-NORM-ARC-011`                                            |
+| originales, mapeos, evidencia y privacidad externa              | `DATA-NORM-ARC-012`                                            |
+| dependencias y adaptación de consumidores                       | `SUPA-TRANS-003`; `SUPA-TRANS-007`; `SUPA-TRANS-014`           |
+| tablas, columnas, índices, backfills y materialización          | `SUPA-TRANS-005`; `DATA-NORM-TRANS-004`; `DATA-NORM-TRANS-005` |
+| compatibilidad y coexistencia técnica de versiones              | `SUPA-TRANS-006`; `DATA-NORM-TRANS-004`; `DATA-NORM-TRANS-005` |
+| pruebas de transición, paridad, concurrencia e idempotencia     | `SUPA-TRANS-009`; `DATA-NORM-TRANS-009`                        |
+| rendimiento, capacidad, seguridad y observabilidad física       | `SUPA-TRANS-010`                                               |
+| rollback operativo, compensaciones y restauración               | `SUPA-TRANS-011`; `DATA-NORM-TRANS-008`                        |
+| paridad entre ambientes y artefactos desplegados                | `SUPA-TRANS-013`; `SUPA-TRANS-014`                             |
+| activación, observación y cierre del cambio                     | `DATA-NORM-TRANS-005` a `DATA-NORM-TRANS-009`                  |
+
+#### 40. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+| ID              | Regla protegida                                                                                                     | Tipo                                     | Prioridad | Momento de implementación                          | Destino                                                             |
+| --------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | --------- | -------------------------------------------------- | ------------------------------------------------------------------- |
+| `TREQ-DATA-143` | identificar cada regla y versión mediante claves estables, contenido inmutable y digest verificable                 | contractual + auditoría + regresión      | crítica   | registro canónico de reglas                        | `DATA-NORM-ARC-011`; `SUPA-TRANS-013`; `SUPA-TRANS-014`             |
+| `TREQ-DATA-144` | fijar para cada evaluación el conjunto exacto de versiones y su digest, sin `latest` ni fallback implícito          | contractual + integración + regresión    | crítica   | resolución de políticas                            | `DATA-NORM-ARC-011`; `SUPA-TRANS-006`                               |
+| `TREQ-DATA-145` | aplicar exactamente los ocho estados y sus transiciones cerradas                                                    | contractual + concurrencia + regresión   | crítica   | ciclo de vida de reglas                            | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-005`                          |
+| `TREQ-DATA-146` | separar aprobación de activación y cambiar atómicamente el conjunto efectivo                                        | contractual + concurrencia + regresión   | crítica   | activación y cutover                               | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-005`                          |
+| `TREQ-DATA-147` | respetar los cinco modos de compatibilidad y prohibir mezclas o dual write implícito                                | contractual + integración + migración    | crítica   | coexistencia de versiones                          | `SUPA-TRANS-006`; `DATA-NORM-TRANS-004`; `DATA-NORM-TRANS-005`      |
+| `TREQ-DATA-148` | atribuir cada resultado a artefacto, digest, commit, runtime, locale, Unicode, tokenizer, catálogos y configuración | contractual + auditoría + regresión      | crítica   | procedencia de ejecución                           | `DATA-NORM-ARC-011`; `SUPA-TRANS-013`; `SUPA-TRANS-014`             |
+| `TREQ-DATA-149` | emitir las seis familias de registro y doce eventos con el contrato lógico mínimo                                   | contractual + auditoría + integración    | crítica   | persistencia y observabilidad                      | `DATA-NORM-ARC-011`; tareas de gobierno de información              |
+| `TREQ-DATA-150` | mantener versiones, decisiones y rectificaciones de forma aditiva, inmutable y verificable                          | seguridad + auditoría + regresión        | crítica   | integridad de auditoría                            | `DATA-NORM-ARC-011`; `DATA-NORM-ARC-012`                            |
+| `TREQ-DATA-151` | distinguir exactamente los diez resultados, incluidos no cambio, preservación, bloqueo, revisión y fallo técnico    | contractual + integración + regresión    | crítica   | evaluador canónico                                 | `DATA-NORM-ARC-011`; `SUPA-TRANS-009`                               |
+| `TREQ-DATA-152` | minimizar valores, consultas y evidencia sensible mediante referencias, hashes y masking no reversibles             | seguridad + privacidad + regresión       | crítica   | auditoría y acceso                                 | `DATA-NORM-ARC-011`; `DATA-NORM-ARC-012`                            |
+| `TREQ-DATA-153` | conservar tiempos de observación, solicitud, evaluación, efecto, vigencia y registro sin colapsarlos                | contractual + auditoría + regresión      | alta      | modelo temporal                                    | `DATA-NORM-ARC-011`; `DATA-NORM-ARC-012`                            |
+| `TREQ-DATA-154` | construir la clave idempotente con operación, actor, entidad, campo, fuente, acción, versiones y correlación        | idempotencia + contractual + regresión   | crítica   | operaciones mutantes y derivaciones                | `DATA-NORM-ARC-011`; `SUPA-TRANS-009`                               |
+| `TREQ-DATA-155` | reutilizar el resultado con misma clave y payload y bloquear toda clave reutilizada con payload distinto            | idempotencia + seguridad + concurrencia  | crítica   | deduplicación de comandos                          | `DATA-NORM-ARC-011`; `SUPA-TRANS-009`                               |
+| `TREQ-DATA-156` | cumplir las garantías específicas de las seis clases de operación idempotente                                       | idempotencia + integración + regresión   | crítica   | mutaciones, derivaciones, revisiones y propagación | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-006`; `SUPA-TRANS-009`        |
+| `TREQ-DATA-157` | bloquear efectos cuando fuente, política, conjunto de versiones o estado esperado hayan cambiado                    | concurrencia + idempotencia + regresión  | crítica   | control optimista y sincronización                 | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-005`; `DATA-NORM-TRANS-006`   |
+| `TREQ-DATA-158` | eliminar locale, tiempo, aleatoriedad, orden, caché, proveedor o configuración implícitos del resultado             | contractual + idempotencia + regresión   | crítica   | determinismo transversal                           | `DATA-NORM-ARC-011`; `SUPA-TRANS-009`; `SUPA-TRANS-014`             |
+| `TREQ-DATA-159` | clasificar reproducibilidad, ejecutar replay controlado y explicar toda diferencia sin modificar producción         | auditoría + integración + regresión      | crítica   | corpus, replay y reconciliación                    | `DATA-NORM-TRANS-001`; `DATA-NORM-TRANS-002`; `DATA-NORM-TRANS-009` |
+| `TREQ-DATA-160` | superseder, suspender, retirar, invalidar y revertir de forma lógica sin reescribir historia                        | contractual + migración + regresión      | crítica   | versionado y rollback                              | `DATA-NORM-ARC-011`; `SUPA-TRANS-011`; `DATA-NORM-TRANS-008`        |
+| `TREQ-DATA-161` | auditar perfil, scope, versiones, modo, ranking, cursor y fuente de cada búsqueda sin exponer datos innecesarios    | seguridad + auditoría + experiencia      | crítica   | motor y API de búsqueda                            | `DATA-NORM-ARC-011`; `SUPA-TRANS-007`; `SUPA-TRANS-009`             |
+| `TREQ-DATA-162` | conservar decisiones de revisión inmutables y separar decisión, versión, activación y materialización               | contractual + auditoría + idempotencia   | crítica   | cola y catálogos                                   | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-004`; `DATA-NORM-TRANS-005`   |
+| `TREQ-DATA-163` | correlacionar capas, intentos, efectos y destinos y demostrar paridad sin auditoría o efectos duplicados            | integración + idempotencia + regresión   | crítica   | certificación transversal                          | `DATA-NORM-ARC-011`; `SUPA-TRANS-009`; `SUPA-TRANS-014`             |
+| `TREQ-DATA-164` | ejecutar corpus integral de versiones, estados, auditoría, retries, concurrencia, seguridad, replay y VITAL         | unitaria + integración + E2E + regresión | crítica   | pruebas canónicas y transición                     | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-009`; `SUPA-TRANS-009`        |
+
+El detalle canónico de cada requisito reside en el registro 04A actualizado hasta esta tarea.
+
+#### 41. Criterios de integridad
+
+La política se considera íntegra para esta etapa cuando:
+
+1. define exactamente seis familias de registro lógico;
+2. separa identidad estable de regla y versión inmutable;
+3. fija un conjunto efectivo y digest para cada evaluación;
+4. prohíbe `latest` y fallback implícitos;
+5. define ocho estados y transiciones cerradas;
+6. separa aprobación, activación y vigencia;
+7. define cinco modos de compatibilidad;
+8. atribuye el resultado a algoritmo, artefacto, configuración y versiones;
+9. define doce eventos y un contrato mínimo de auditoría;
+10. distingue diez resultados cerrados;
+11. define cinco clases de retención lógica y tres niveles de reproducibilidad;
+12. minimiza valores y consultas sensibles;
+13. conserva tiempos de hecho, efecto, vigencia y registro;
+14. define dos garantías complementarias de idempotencia;
+15. construye claves por operación, entidad, fuente, acción, versiones y correlación;
+16. bloquea la reutilización de clave con payload incompatible;
+17. define seis clases de operación idempotente;
+18. gobierna reintentos, timeouts, éxito parcial y reanudación;
+19. bloquea fuente, política o estado obsoletos;
+20. elimina no determinismo implícito;
+21. define replay, reconciliación, supersesión y rollback lógico;
+22. audita búsqueda, cola, copias, snapshots y externos sin confundirlos con fuente;
+23. exige integridad aditiva, autorización y paridad entre capas;
+24. impide identidad, unicidad o fusión desde la auditoría;
+25. conserva VITAL fuera del alcance transversal;
+26. no autoriza cambios físicos ni anticipa decisiones reservadas.
+
+#### 42. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados
+```
+
+
 ### [ ] DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados
 ### [ ] DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo
 ### [ ] DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas

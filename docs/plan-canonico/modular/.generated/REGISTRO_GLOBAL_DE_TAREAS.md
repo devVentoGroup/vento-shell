@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **444** |
+| Aprobadas | **445** |
 | En propuesta | **0** |
-| No iniciadas | **1131** |
+| No iniciadas | **1130** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **28.19% (444/1575)** |
+| Porcentaje de completamiento | **28.25% (445/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-ARC-008` — Definir representación de búsqueda y comparación | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-ARC-009` — Definir auditoría, versionado e idempotencia de reglas | ⬜ NO INICIADA |
-| Siguiente | `DATA-NORM-ARC-010` — Definir estrategia de unicidad y detección de duplicados normalizados | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-ARC-009` — Definir auditoría, versionado e idempotencia de reglas | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-ARC-010` — Definir estrategia de unicidad y detección de duplicados normalizados | ⬜ NO INICIADA |
+| Siguiente | `DATA-NORM-ARC-011` — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -435,7 +435,7 @@
 | ✅ APROBADA | `DATA-NORM-ARC-006` | Definir diccionario ortográfico canónico y su gobierno | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-007` | Definir cola de revisión para correcciones ambiguas | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-008` | Definir representación de búsqueda y comparación | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
-| ⬜ NO INICIADA | `DATA-NORM-ARC-009` | Definir auditoría, versionado e idempotencia de reglas | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
+| ✅ APROBADA | `DATA-NORM-ARC-009` | Definir auditoría, versionado e idempotencia de reglas | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-010` | Definir estrategia de unicidad y detección de duplicados normalizados | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-011` | Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-012` | Definir tratamiento de datos recibidos desde integraciones externas | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |

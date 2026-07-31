@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **444** |
+| Tareas aprobadas | **445** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1131** |
+| Tareas no iniciadas | **1130** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **28.19% (444/1575)** |
+| Porcentaje de completamiento | **28.25% (445/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación** |
-| Tarea actual | **DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas** |
+| Última tarea aprobada | **DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas** |
+| Tarea actual | **DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados** |
+| Siguiente tarea | **DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 15 de 45 aprobadas; DATA-NORM-ARC-009 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 16 de 45 aprobadas; DATA-NORM-ARC-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-ARC-008` — Definir representación de búsqueda y comparación |
-| Tarea actual | `DATA-NORM-ARC-009` — Definir auditoría, versionado e idempotencia de reglas — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-ARC-010` — Definir estrategia de unicidad y detección de duplicados normalizados |
+| Última aprobada | `DATA-NORM-ARC-009` — Definir auditoría, versionado e idempotencia de reglas |
+| Tarea actual | `DATA-NORM-ARC-010` — Definir estrategia de unicidad y detección de duplicados normalizados — **NO INICIADA** |
+| Siguiente tarea | `DATA-NORM-ARC-011` — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **15 DE 45 APROBADAS — ACTUAL DATA-NORM-ARC-009** |
+| BLOQUE E3 | **16 DE 45 APROBADAS — ACTUAL DATA-NORM-ARC-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación
-        ↓
-TAREA ACTUAL
 DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 15 de 45 tareas aprobadas
+BLOQUE E3 — 16 de 45 tareas aprobadas
 ```
