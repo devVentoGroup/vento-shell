@@ -7268,7 +7268,906 @@ DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones
 ```
 
 
-### [ ] DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas
+### ✅ DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo` — APROBADA
+**Tarea siguiente:** `SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos`
+**Tipo de tarea:** definición normativa de admisión, preservación, autenticidad, clasificación, mapeo, idempotencia, cuarentena, trazabilidad y tratamiento semántico de datos recibidos desde integraciones externas; sin DDL, DML, migraciones, backfills, correcciones de datos, activación de integraciones, cambios de contratos, funciones, RPC, triggers, clientes, jobs, credenciales, configuración ni despliegues
+
+#### 1. Objetivo
+
+Definir el contrato canónico mediante el cual Vento OS deberá recibir, verificar, preservar, clasificar y mapear datos provenientes de proveedores, sistemas gestionados, webhooks, APIs, archivos, importaciones, POS, herramientas operativas y otras fuentes externas, sin perder el valor original, sin convertir una representación externa en autoridad empresarial automática y sin ejecutar transformaciones silenciosas que impidan reconstruir qué fue recibido y cómo se obtuvo el resultado interno.
+
+La política deberá separar transporte, autenticidad, evidencia original, interpretación estructural, mapeo semántico, comando interno, persistencia, auditoría y efectos posteriores. También deberá impedir que un payload válido técnicamente sea tratado como hecho empresarial confirmado, que un estado externo sobrescriba el estado canónico sin mapeo versionado, que eventos repetidos produzcan efectos duplicados, que mensajes fuera de orden reviertan hechos más recientes o que una integración degradada active fallbacks locales incompatibles.
+
+#### 2. Artefacto producido
+
+```text
+VENTO_EXTERNAL_INBOUND_DATA_TREATMENT_POLICY@1.0.0
+```
+
+| Propiedad                          | Valor |
+| ---------------------------------- | ----: |
+| Clases cerradas de fuente externa  |     6 |
+| Representaciones lógicas separadas |     7 |
+| Etapas del pipeline de admisión    |    12 |
+| Capas cerradas de validación       |     7 |
+| Modos cerrados de mapeo            |     8 |
+| Resultados cerrados de admisión    |    12 |
+| Conceptos canónicos separados      |    10 |
+| Estados cerrados de cuarentena     |     8 |
+| Requisitos de prueba nuevos        |    26 |
+| Cambios físicos autorizados        |     0 |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                        | Decisión consumida                                                                                                                                             |
+| ----------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`             | continuidad, una sola tarea, fase exclusivamente documental, preservación histórica, lectura remota obligatoria y separación entre definición e implementación |
+| `delivery-contract.json`      | identidad del artefacto y actualización integral del registro 04A al crear requisitos                                                                          |
+| `active-sequence.json`        | `DATA-NORM-ARC-012` como tarea actual y `SUPA-ARC-025` como siguiente tarea reservada                                                                          |
+| `DATA-NORM-AUD-001`           | separación entre valor mostrado, valor de búsqueda, valor externo original, identificador técnico, texto libre y estructuras compuestas                        |
+| `DATA-NORM-AUD-006`           | Supabase Auth, Wompi, Google Maps, Google Wallet, Expo Push, imports, webhooks, jobs y clientes como superficies con transformaciones y contratos distintos    |
+| `DATA-NORM-AUD-007`           | impacto de cambios textuales sobre búsquedas, integraciones, relaciones, consumidores y paridad entre capas                                                    |
+| `DATA-NORM-ARC-001` y `002`   | política por coordenada, clases semánticas, representaciones, roles de fuente, preservación de originales y comportamiento cerrado                             |
+| `DATA-NORM-ARC-003` a `006`   | capitalización, conectores, excepciones y diccionario como reglas internas que no pueden aplicarse por inferencia sobre originales externos                    |
+| `DATA-NORM-ARC-007`           | revisión humana, evidencia, segregación, decisiones inmutables y prohibición de aplicar propuestas mientras un caso permanece abierto                          |
+| `DATA-NORM-ARC-008`           | derivaciones de búsqueda separadas, aliases explícitos, ranking explicable y prohibición de convertir coincidencias en identidad                               |
+| `DATA-NORM-ARC-009`           | versiones inmutables, auditoría, procedencia, idempotencia, concurrencia, reintentos, replay, payload conflictivo y minimización de datos sensibles            |
+| `DATA-NORM-ARC-010`           | identidad, scopes, referencias externas por emisor, colisiones, duplicidad y prohibición de fusionar por representación comparativa                            |
+| `DATA-NORM-ARC-011`           | servicio de dominio como autoridad semántica, RPC como frontera transaccional, imports y webhooks bajo el mismo contrato y trigger limitado a defensas         |
+| `INT-APP-001` a `INT-APP-010` | separación entre comando, evento empresarial, evento de integración, notificación, sobre común, idempotencia y prohibición de escrituras cruzadas sin contrato |
+| Registro 04A vigente          | requisitos históricos, relaciones y secuencia del dominio `DATA` hasta `TREQ-DATA-214`                                                                         |
+
+#### 4. Evidencia que obliga esta política
+
+La auditoría aprobada identificó superficies externas con semánticas diferentes que no pueden tratarse mediante una función universal:
+
+| Evidencia canónica                                                                       | Riesgo que deberá resolver esta política                                                                                              |
+| ---------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| Supabase Auth transmite correo, metadata, nombre, rol y sede                             | metadata gestionada por un proveedor puede confundirse con fuente empresarial o duplicar transformaciones de identidad laboral        |
+| Wompi transmite evento, referencia, estado, moneda y payload                             | un estado externo puede mapearse sin preservar el original, recibirse repetido, llegar fuera de orden o compartir ID con otro payload |
+| Google Maps devuelve `place_id`, dirección, etiquetas y respuesta del proveedor          | la proyección del proveedor puede convertirse indebidamente en dirección oficial o identidad interna                                  |
+| Google Wallet y Expo Push producen o reciben respuestas, tokens y estados técnicos       | respuestas de canal pueden confundirse con hechos empresariales o exponer tokens y metadata                                           |
+| imports CSV, Excel, POS, PULSO, VISO, HubRise y webhooks omiten validaciones de interfaz | cada canal puede aplicar recortes, vacíos, formatos o helpers propios y producir resultados divergentes                               |
+| siete jobs activos y rutinas HTTP pueden reintentar o propagar datos                     | timeout, entrega al menos una vez y éxito parcial pueden duplicar efectos o perder trazabilidad                                       |
+| cobertura incompleta de clientes externos al repositorio                                 | una política local no demuestra paridad transversal                                                                                   |
+| Edge Functions activas no están necesariamente atadas a una única revisión de fuente     | el mismo nombre desplegado puede ejecutar otro artefacto o versión                                                                    |
+
+La existencia de un proveedor, SDK, firma, webhook o payload almacenado no demuestra por sí sola autoridad, autenticidad, vigencia, completitud ni equivalencia con una entidad de Vento OS.
+
+#### 5. Alcance y fronteras
+
+Esta tarea define:
+
+1. las clases de fuente externa y su nivel mínimo de confianza;
+2. las representaciones que deberán conservarse separadas desde la recepción hasta el commit;
+3. el sobre lógico mínimo de un ingreso externo;
+4. las reglas para preservar payload, bytes, estructura, headers, referencias y procedencia;
+5. la autenticación del canal, integridad del mensaje y autorización del emisor;
+6. el pipeline cerrado de admisión y sus doce resultados;
+7. la compatibilidad de schema, contrato, versión, locale, encoding y semántica temporal;
+8. la clasificación por clase semántica antes de cualquier normalización;
+9. los modos permitidos de mapeo entre valores externos e internos;
+10. la identidad, idempotencia, deduplicación y conflicto de eventos externos;
+11. la conducta ante eventos tardíos, fuera de orden, parciales, corregidos o retractados;
+12. la semántica de ausencia, `null`, vacío, clear explícito y actualización parcial;
+13. el tratamiento de importaciones por archivo, lote, fila y celda;
+14. la cuarentena, revisión, reanudación, replay y reconciliación;
+15. la autoridad del proveedor, del dominio interno y del propietario de cada mapeo;
+16. la aplicación de la arquitectura de capas aprobada en `DATA-NORM-ARC-011`;
+17. la seguridad, privacidad, minimización, retención y eliminación lógica;
+18. el corpus mínimo de conformidad.
+
+Esta tarea no define:
+
+- tablas, columnas, buckets, índices, constraints, RLS, grants, funciones, RPC, triggers, colas, topics, cron o almacenamiento físico;
+- URLs, nombres de endpoints, secretos, certificados, algoritmos criptográficos concretos o ventanas numéricas de replay;
+- contratos nuevos con proveedores ni cambios de payload de terceros;
+- reglas empresariales definitivas para cada integración futura no inventariada;
+- una fuente de autoridad concreta para cada campo de todos los proveedores;
+- correcciones, backfills, importaciones reales, activación de webhooks, reenvíos, despliegues o cutover;
+- fusiones, selección de sobreviviente, reasignación de relaciones o activación de unicidad;
+- modificaciones sobre VITAL.
+
+Las decisiones físicas y operativas permanecen en `SUPA-ARC-025`, `SUPA-TRANS-003`, `SUPA-TRANS-005` a `SUPA-TRANS-014` y `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009`, según su propiedad.
+
+#### 6. Principios obligatorios
+
+1. **El original externo se preserva.** Una forma interna nunca sustituye la evidencia de lo recibido.
+2. **Transporte no equivale a verdad empresarial.** Firma, autenticación o entrega válida solo demuestran propiedades del canal y del mensaje.
+3. **La autoridad se declara por campo.** Un proveedor puede ser autoritativo para una referencia y no para un nombre, estado o relación.
+4. **Todo mapeo es explícito y versionado.** No se traducen estados, monedas, unidades, roles, direcciones o identidades mediante listas locales o inferencias.
+5. **El ingreso falla de forma cerrada.** Ausencia de contrato, versión, autenticidad, scope o mapeo conserva evidencia y bloquea efectos empresariales.
+6. **La idempotencia utiliza identidad externa y payload.** Un retry compatible reutiliza el resultado; un mismo ID con otro payload produce conflicto.
+7. **El orden externo no se presume.** Timestamp de proveedor, llegada, registro y efecto se conservan separadamente.
+8. **Ausente, `null`, vacío y clear son distintos.** Ninguno se convierte silenciosamente en otro.
+9. **La estructura precede a la cadena visible.** Cantidad, moneda, unidad, dirección, referencia y componentes no se aplanan para decidir identidad.
+10. **Los procesos no interactivos usan la misma autoridad semántica.** CSV, Excel, jobs, webhooks y Edge Functions no mantienen normalizadores paralelos.
+11. **Aceptar un mensaje no confirma un proceso.** ACK técnico, evento de integración y evento empresarial son hechos distintos.
+12. **La cuarentena preserva; no corrige.** Un caso bloqueado no se modifica para forzar su admisión.
+13. **La historia no se reinterpreta.** Una versión nueva de mapping no cambia silenciosamente decisiones anteriores.
+14. **Los secretos no se convierten en datos analíticos.** Tokens, firmas y credenciales se minimizan y protegen.
+15. **VITAL permanece separado.** No hereda mappings, identificadores ni contratos transversales de Vento OS.
+
+#### 7. Conceptos canónicos separados
+
+| Concepto                      | Definición                                                                                         | No equivale a                                |
+| ----------------------------- | -------------------------------------------------------------------------------------------------- | -------------------------------------------- |
+| `EXTERNAL_DELIVERY`           | intento concreto de entrega por webhook, API, archivo, import o canal gestionado                   | hecho empresarial confirmado                 |
+| `TRANSPORT_EVIDENCE`          | headers, firma, certificado, checksum, identidad de conexión y resultado de verificación           | autoridad sobre el significado del payload   |
+| `EXTERNAL_ORIGINAL_PAYLOAD`   | bytes o estructura recibidos, preservados con procedencia y huella                                 | valor interno normalizado                    |
+| `EXTERNAL_SEMANTIC_RECORD`    | interpretación estructural de un mensaje según schema y contrato externos                          | entidad interna                              |
+| `VERSIONED_MAPPING_DECISION`  | regla que traduce una forma externa a una representación o comando interno                         | corrección del original                      |
+| `INTERNAL_CANONICAL_COMMAND`  | solicitud interna validada que puede atravesar la RPC y el servicio de dominio                     | evento empresarial ya ocurrido               |
+| `INTERNAL_CONFIRMED_EFFECT`   | resultado persistido y auditado después de autorización, revalidación y commit                     | aceptación del transporte                    |
+| `QUARANTINED_EXTERNAL_CASE`   | evidencia preservada cuya autenticidad, schema, mapping, autoridad o contexto no permite continuar | rechazo destructivo ni corrección automática |
+| `INTEGRATION_ACKNOWLEDGEMENT` | respuesta técnica de recepción, rechazo o duplicado                                                | aprobación del hecho empresarial             |
+| `ENTERPRISE_EVENT`            | hecho durable emitido después del commit interno conforme al catálogo de eventos                   | reenvío del payload externo                  |
+
+Las implementaciones deberán conservar referencias entre estos conceptos sin fusionarlos en una sola fila, log o estado opaco.
+
+#### 8. Clases cerradas de fuente externa
+
+| Clase                                  | Definición                                                                              | Confianza mínima y restricción                                                                  |
+| -------------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `SIGNED_PROVIDER_EVENT`                | evento de proveedor con mecanismo contractual de firma o integridad                     | verificar identidad, integridad, versión y replay; la firma no resuelve semántica empresarial   |
+| `AUTHENTICATED_PARTNER_API`            | dato obtenido mediante API autenticada de un partner o plataforma                       | validar tenant, ambiente, scope, contrato y paginación; no asumir completitud global            |
+| `MANAGED_IDENTITY_OR_PLATFORM_DATA`    | metadata, claims o resultados de un servicio gestionado como Supabase Auth              | separar identidad del proveedor, metadata recibida y atributos empresariales                    |
+| `USER_MEDIATED_PROVIDER_RESPONSE`      | respuesta externa obtenida a partir de una acción humana, como selección de Google Maps | conservar query, resultado y selección; no convertir sugerencia en dirección oficial automática |
+| `FILE_OR_BATCH_IMPORT`                 | CSV, Excel, archivo exportado, lote o transferencia estructurada                        | fijar archivo, hash, formato, fila, encoding, mapping y resultado por elemento                  |
+| `LEGACY_OR_UNVERIFIED_EXTERNAL_SOURCE` | dato de sistema heredado, herramienta manual o canal sin autenticidad suficiente        | preservar y cuarentenar o admitir solo en observación; nunca mutar por confianza implícita      |
+
+Una integración podrá combinar clases, pero deberá declarar cuál aplica a cada entrega y qué evidencia sustenta el cambio de confianza.
+
+#### 9. Representaciones lógicas separadas
+
+| Representación                    | Contenido                                                                                       | Regla obligatoria                                                   |
+| --------------------------------- | ----------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| `TRANSPORT_ENVELOPE`              | canal, endpoint lógico, headers permitidos, emisor, ambiente, timestamps y referencias técnicas | preservar metadatos necesarios sin almacenar secretos completos     |
+| `EXTERNAL_ORIGINAL`               | payload original o referencia inmutable a este                                                  | no reescribir, capitalizar, traducir ni completar                   |
+| `VERIFIED_EXTERNAL_EVIDENCE`      | resultado de firma, checksum, autenticación, schema y contrato                                  | registrar prueba y versión sin convertirla en contenido empresarial |
+| `EXTERNAL_PARSED_STRUCTURE`       | campos obtenidos por parseo determinista conforme a schema                                      | mantener vínculo con posiciones, claves o celdas originales         |
+| `INTERNAL_MAPPING_RESULT`         | valores internos derivados mediante mapping aprobado                                            | conservar entrada, mapping, salida, motivo y versión                |
+| `INTERNAL_CANONICAL_INPUT`        | comando o DTO interno autorizado para evaluación semántica                                      | no persistir como hecho hasta superar RPC y commit                  |
+| `QUARANTINE_OR_REVIEW_PROJECTION` | vista minimizada para análisis de bloqueos y evidencia                                          | no adquirir autoridad ni exponer payload sensible innecesario       |
+
+Una misma entrega podrá producir varias representaciones. Ninguna representación derivada reemplaza la original ni modifica retrospectivamente su interpretación histórica.
+
+#### 10. Sobre lógico mínimo de ingreso
+
+Toda entrega deberá poder expresar, cuando corresponda:
+
+```text
+external_delivery_id
+integration_key
+integration_contract_version
+source_class
+provider_or_issuer
+provider_environment
+provider_tenant_or_account
+transport_kind
+endpoint_or_import_profile
+external_event_or_record_id
+external_object_type
+external_object_id
+external_revision_or_sequence
+provider_occurred_at
+provider_created_at
+received_at
+verified_at
+content_type
+content_encoding
+schema_identifier
+schema_version
+payload_reference
+payload_digest
+transport_evidence_reference
+signature_or_checksum_metadata
+correlation_id
+causation_reference
+external_idempotency_key
+internal_logical_operation_id
+mapping_profile
+mapping_version
+processing_status
+sensitivity_class
+retention_class
+```
+
+Reglas:
+
+1. los campos no aplicables deberán declararse de forma explícita, no inferirse por ausencia ambigua;
+2. los identificadores del proveedor conservarán emisor, ambiente, tenant y tipo;
+3. `received_at` no sustituye el momento declarado por el proveedor;
+4. una referencia protegida podrá sustituir el payload completo en superficies de consulta, nunca en la evidencia autorizada cuando esta sea necesaria;
+5. el sobre no convierte headers o claims no confiables en identidad verificada;
+6. todo mapping deberá vincularse a este sobre o a una unidad hija de archivo o lote.
+
+#### 11. Preservación del payload original
+
+1. El payload se preservará como bytes, texto o estructura según el contrato de transporte.
+2. La huella se calculará sobre la representación definida por el contrato, no sobre una versión normalizada localmente.
+3. Whitespace, orden de claves, Unicode, encoding, signos y caja solo podrán canonicalizarse antes de la huella si el protocolo externo lo exige de forma explícita y versionada.
+4. Un JSON parseado no reemplaza la evidencia de bytes cuando firma, orden, duplicidad de claves o encoding puedan ser relevantes.
+5. Archivos conservarán hash, tamaño, nombre externo, media type, encoding, hoja, fila, columna y perfil de importación cuando aplique.
+6. Un payload truncado, malformado o superior al límite permitido se rechazará o cuarentenará conservando evidencia mínima segura.
+7. Secretos, credenciales y material firmado no se duplicarán en logs, métricas, notas ni errores.
+8. La eliminación física futura deberá respetar retención, investigación, conciliación y obligaciones legales sin dejar referencias engañosas.
+9. Una transformación interna nunca se escribirá sobre el mismo campo o artefacto que representa el original.
+
+#### 12. Autenticidad, integridad y autorización del emisor
+
+Las siguientes comprobaciones permanecen separadas:
+
+| Comprobación              | Pregunta respondida                                                              | No demuestra                                                     |
+| ------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| autenticación del canal   | la conexión o credencial corresponde a un actor técnico esperado                 | que cada campo sea correcto                                      |
+| verificación de firma     | el mensaje coincide con el material firmado bajo el contrato                     | que el emisor tenga autoridad empresarial sobre todos los campos |
+| checksum o digest         | los bytes no cambiaron respecto de la referencia                                 | intención, vigencia o unicidad                                   |
+| autorización del emisor   | el emisor puede enviar ese tipo de mensaje para ese tenant, ambiente y scope     | aceptación automática del efecto                                 |
+| validación de replay      | la entrega está dentro de la política temporal o ya fue procesada                | orden empresarial total                                          |
+| validación de contrato    | schema, versión y tipo de evento son soportados                                  | mapeo semántico completo                                         |
+| validación de procedencia | provider, cuenta, ambiente y endpoint se vinculan con una integración registrada | identidad interna de la entidad referenciada                     |
+
+Una comprobación fallida no se corrige cambiando el payload. Una evidencia no verificable produce bloqueo o cuarentena según el riesgo y nunca un fallback a una fuente menos confiable sin decisión explícita.
+
+#### 13. Pipeline cerrado de admisión
+
+Toda entrega seguirá, conceptualmente, estas etapas:
+
+```text
+1. recibir sin interpretar semántica empresarial
+        ↓
+2. asignar identidad de entrega y correlación
+        ↓
+3. preservar sobre, original o referencia protegida y huella
+        ↓
+4. verificar canal, firma, integridad, emisor y replay
+        ↓
+5. resolver integración, ambiente, tenant, contrato y schema
+        ↓
+6. parsear estructura sin perder procedencia
+        ↓
+7. validar tipos, presencia, límites y semántica técnica
+        ↓
+8. clasificar campos, representaciones y autoridad
+        ↓
+9. aplicar mappings explícitos y versionados
+        ↓
+10. construir comando interno o caso de cuarentena
+        ↓
+11. revalidar y confirmar efectos mediante servicio de dominio y RPC
+        ↓
+12. registrar resultado, ACK y efectos posteriores idempotentes
+```
+
+No se permite saltar desde recepción a persistencia empresarial porque el proveedor parezca confiable, el payload coincida con un ejemplo o el cliente ya haya transformado los datos.
+
+#### 14. Capas cerradas de validación
+
+| Capa                          | Alcance                                                                        | Resultado esperado                                                 |
+| ----------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+| `TRANSPORT_VALIDATION`        | método, tamaño, content type, encoding, headers y límites                      | aceptar transporte o rechazar antes de interpretación              |
+| `AUTHENTICITY_VALIDATION`     | firma, checksum, credencial, certificado, replay y emisor                      | evidencia verificada o rechazo de seguridad                        |
+| `CONTRACT_VALIDATION`         | integración, ambiente, tenant, evento, schema y versión                        | contrato compatible o bloqueo de versión                           |
+| `STRUCTURAL_VALIDATION`       | parseo, tipos, claves, arrays, cardinalidad y campos obligatorios              | estructura utilizable o cuarentena                                 |
+| `SEMANTIC_MAPPING_VALIDATION` | enums, estados, moneda, unidad, locale, identifiers y reglas de mapping        | resultado interno o revisión                                       |
+| `DOMAIN_AUTHORITY_VALIDATION` | owner, scope, estado actual, relación, permisos y precondiciones empresariales | comando admisible o bloqueo                                        |
+| `COMMIT_VALIDATION`           | idempotencia, concurrencia, orden, versión de fuente, invariantes y atomicidad | efecto confirmado, duplicado compatible, conflicto o fallo técnico |
+
+Cada capa deberá conservar su propio resultado. Un fallo de mapping no se reportará como firma inválida y un fallo técnico no se presentará como rechazo empresarial.
+
+#### 15. Compatibilidad de schema y contrato
+
+1. Cada integración declarará versiones soportadas y su compatibilidad.
+2. Una versión desconocida no se procesará mediante la versión más cercana ni mediante `latest` implícito.
+3. Campos adicionales solo serán ignorables cuando el contrato los permita y la evidencia original permanezca íntegra.
+4. La ausencia de un campo antes obligatorio no se completará con un default local no versionado.
+5. Un cambio de tipo, unidad, significado, enum, cardinalidad o semántica de `null` será tratado como cambio potencialmente incompatible.
+6. Un alias de campo deberá ser explícito, direccional, temporal y auditable.
+7. La coexistencia de versiones deberá declarar cuál admite nuevas entregas, cuál permanece para replay y cuándo termina la ventana.
+8. Un payload histórico se interpreta con el contrato vigente al momento de su entrega o con un modo `REPLAY_ONLY`, nunca con el mapping actual por defecto.
+9. La versión desplegada del adaptador deberá estar vinculada a artefacto, digest y revisión de fuente conforme a `DATA-NORM-ARC-009`.
+
+#### 16. Clasificación semántica de campos externos
+
+Antes de normalizar o mapear, cada campo deberá resolver:
+
+```text
+clase semántica
++ representación = EXTERNAL_ORIGINAL o derivada
++ rol de fuente = EXTERNAL_EVIDENCE o autoridad aprobada
++ provider y contrato
++ dominio, entidad y campo interno destino
++ finalidad
++ versión de mapping
+```
+
+Reglas por clase:
+
+- nombres comerciales podrán producir una forma interna solo mediante política explícita y sin alterar el original;
+- marcas, nombres legales, personas y direcciones conservarán forma y procedencia y exigirán autoridad apropiada;
+- estados, tipos, roles, monedas y unidades se mapearán como vocabularios controlados, no como prosa;
+- SKU, referencias, `place_id`, IDs de proveedor, tokens y códigos conservarán contrato técnico y scope de emisor;
+- texto libre se preservará y no recibirá corrección comercial automática;
+- secretos, firmas y material criptográfico se preservarán exactamente o mediante referencia protegida;
+- campos no clasificados recibirán `UNCLASSIFIED_PRESERVE` y no producirán mutación automática.
+
+#### 17. Modos cerrados de mapeo
+
+| Modo                              | Conducta                                                                                               |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `EXACT_CONTRACT_MAPPING`          | una forma externa exacta produce el valor interno declarado por el contrato                            |
+| `VERSIONED_ENUM_MAPPING`          | estado, tipo, rol, moneda o código se traduce mediante tabla cerrada y versionada                      |
+| `APPROVED_ALIAS_MAPPING`          | un alias explícito, acotado y vigente enlaza la forma externa con una forma interna                    |
+| `STRUCTURED_COMPONENT_MAPPING`    | componentes ya parseados se convierten conservando cantidad, unidad, emisor, contexto y precisión      |
+| `DERIVE_WITHOUT_SOURCE_MUTATION`  | se produce una representación interna separada sin sobrescribir el original                            |
+| `PRESERVE_AND_DEFER`              | se conserva la evidencia y no se produce comando hasta completar contrato o autoridad                  |
+| `HUMAN_REVIEW_REQUIRED`           | el valor se conserva y se crea o vincula un caso de revisión                                           |
+| `ESCALATE_STRUCTURAL_OR_IDENTITY` | el problema corresponde a estructura, identidad, unicidad, legalidad o relación y no a mapping textual |
+
+No existe matching difuso, aprendizaje por frecuencia, selección del primer resultado ni equivalencia por normalización como modo de mapping.
+
+#### 18. Resultados cerrados de admisión
+
+| Resultado                            | Significado                                                                   |
+| ------------------------------------ | ----------------------------------------------------------------------------- |
+| `ACCEPTED_INTERNAL_EFFECT_CONFIRMED` | el comando fue autorizado y el efecto interno quedó confirmado                |
+| `ACCEPTED_NO_BUSINESS_CHANGE`        | la entrega fue válida, pero no requirió cambio empresarial                    |
+| `DUPLICATE_REPLAY_PRIOR_RESULT`      | misma identidad externa y mismo payload reutilizaron el resultado previo      |
+| `PRESERVED_EXTERNAL_ONLY`            | la evidencia se conservó sin producir efecto interno                          |
+| `QUARANTINED_SCHEMA`                 | schema, versión o estructura no permiten continuar                            |
+| `QUARANTINED_MAPPING`                | no existe mapping compatible o la forma es ambigua                            |
+| `QUARANTINED_AUTHORITY`              | falta owner, scope, fuente o autoridad empresarial                            |
+| `BLOCKED_IDEMPOTENCY_CONFLICT`       | la misma identidad externa llegó con payload incompatible                     |
+| `BLOCKED_ORDER_OR_STALE_EVENT`       | la entrega es obsoleta, fuera de orden o contradice la revisión actual        |
+| `REJECTED_AUTHENTICITY_OR_SECURITY`  | canal, firma, checksum, emisor o replay no superaron controles                |
+| `REJECTED_UNSUPPORTED_CONTRACT`      | integración, tipo de entrega o contrato no están admitidos                    |
+| `FAILED_TECHNICAL`                   | la ejecución no pudo completarse y no se presenta como aceptación empresarial |
+
+Una misma entrega tendrá un resultado final y podrá conservar resultados intermedios por capa. El ACK deberá reflejar únicamente la información autorizada para el emisor.
+
+#### 19. Identidad externa e idempotencia
+
+La identidad lógica de una entrega deberá incluir, según contrato:
+
+```text
+integration_key
++ provider_or_issuer
++ provider_environment
++ provider_tenant_or_account
++ external_event_or_record_id
++ external_object_type
++ delivery_class
++ contract_version
+```
+
+Reglas:
+
+1. un ID externo nunca se considera global sin emisor, ambiente, tenant y tipo;
+2. la misma identidad con el mismo `payload_digest` y precondiciones reutiliza el resultado anterior;
+3. la misma identidad con otro digest produce `BLOCKED_IDEMPOTENCY_CONFLICT`;
+4. la ausencia de ID externo requiere una clave interna derivada del contrato, nunca solo del texto normalizado;
+5. cada fila de un archivo podrá tener identidad propia además de la identidad del archivo y del lote;
+6. un retry técnico conservará la operación lógica y distinguirá intentos;
+7. timeout o respuesta perdida exigirán consultar el resultado antes de repetir efectos;
+8. la expiración física de una clave no permite duplicar un efecto financiero, laboral, operativo o relacional ya confirmado;
+9. un proveedor que reutiliza IDs requiere una versión correctiva del contrato o cuarentena, no una deduplicación relajada.
+
+#### 20. Orden, concurrencia, eventos tardíos y correcciones externas
+
+1. Se conservarán `provider_occurred_at`, `provider_created_at`, `received_at`, `evaluated_at`, `effect_committed_at` y `recorded_at` cuando apliquen.
+2. El orden de llegada no define el orden empresarial.
+3. Una secuencia o revisión externa se comparará únicamente dentro de su emisor, objeto, ambiente y contrato.
+4. Un evento más antiguo no sobrescribirá un estado interno más reciente sin una regla de reconciliación explícita.
+5. Eventos tardíos podrán preservarse como historia, producir reconciliación o bloquearse; no se descartarán silenciosamente.
+6. Una corrección o retractación externa será un mensaje nuevo vinculado al anterior, no una edición de evidencia.
+7. Dos entregas concurrentes sobre la misma entidad deberán revalidar fuente, estado, versión, scope e idempotencia en la RPC.
+8. Un proveedor sin garantía de orden deberá declarar estrategia de versión, secuencia, timestamp, consulta de estado o reconciliación.
+9. Un lote parcial conservará resultados por elemento y no se presentará como éxito total.
+10. El replay controlado no volverá a emitir efectos confirmados ni cambiará el mapping aplicado históricamente.
+
+#### 21. Ausencia, `null`, vacío y actualizaciones parciales
+
+Se distinguen obligatoriamente:
+
+| Estado externo    | Significado inicial                                  | Conducta                                                                |
+| ----------------- | ---------------------------------------------------- | ----------------------------------------------------------------------- |
+| campo ausente     | el proveedor no lo envió o el contrato no lo incluye | no modificar el valor interno salvo semántica PATCH explícita           |
+| `null` explícito  | ausencia declarada por el proveedor                  | mapear solo si el contrato define su significado                        |
+| cadena vacía      | valor presente sin caracteres                        | no convertir automáticamente a `null`, ausencia o clear                 |
+| solo espacios     | valor presente cuya validez depende del contrato     | preservar original; normalización interna solo si está autorizada       |
+| clear explícito   | instrucción contractual para retirar un valor        | exigir permiso, precondición, auditabilidad y campo nullable compatible |
+| valor desconocido | el proveedor declara desconocimiento                 | conservar semántica distinta de ausencia y no aplicable                 |
+| no aplicable      | el campo no corresponde al caso                      | no convertir en placeholder textual                                     |
+| valor parcial     | componente incompleto de una estructura              | bloquear efecto o preservar hasta completar según política              |
+
+Un import o API no podrá utilizar `N/A`, `0`, `-`, `SIN DATO` u otro placeholder como equivalente universal sin mapping explícito.
+
+#### 22. Números, moneda, unidades y precisión
+
+1. Los números se parsearán con locale, separador decimal, separador de miles, signo, escala y precisión declarados.
+2. No se inferirá locale desde la IP, navegador o sede cuando el contrato no lo declare.
+3. La moneda conservará código externo, valor original, monto minor unit cuando aplique y mapping a código canónico.
+4. Pasar moneda a mayúsculas es una canonicalización técnica condicionada, no una corrección comercial.
+5. Cantidad y unidad se mapearán por componentes; `500 g`, `0.5 kg` y una equivalencia matemática no demuestran el mismo propósito operativo.
+6. Conversión de unidades exige catálogo, factor, precisión, rounding mode, vigencia y finalidad explícitos.
+7. Una pérdida de precisión, overflow o valor fuera de rango produce bloqueo o cuarentena.
+8. Importes financieros no se corrigen por redondeo silencioso.
+9. Un código de unidad o moneda desconocido se preserva y no se aproxima al más parecido.
+
+#### 23. Tiempo, zona, locale, Unicode y encoding
+
+1. Todo timestamp conservará valor original, zona u offset, precisión y significado contractual.
+2. Un timestamp sin zona no se interpretará mediante la zona local del servidor por defecto.
+3. DST, ambigüedad de fecha, formatos regionales y calendarios deberán resolverse por contrato.
+4. Fechas y horas inválidas o imposibles se bloquean; no se corrigen por intuición.
+5. El encoding del transporte o archivo se declara y valida antes del parseo.
+6. Reemplazar caracteres inválidos por `�`, retirar diacríticos o transliterar sin evidencia queda prohibido.
+7. La composición Unicode interna podrá derivarse conforme a una política, preservando siempre el original.
+8. Idioma y locale pertenecen al mapping y no se infieren desde una palabra aislada.
+9. Cambiar versión Unicode, parser o locale constituye cambio de algoritmo y requiere nueva versión y corpus.
+
+#### 24. Archivos, importaciones y lotes
+
+Toda importación deberá conservar:
+
+```text
+import_profile
+file_id
+file_name_external
+file_digest
+file_size
+content_type
+encoding
+delimiter
+quote_and_escape_rules
+sheet_or_section
+header_mapping_version
+row_number
+column_or_path
+raw_cell_or_reference
+row_digest
+batch_id
+chunk_id
+```
+
+Reglas:
+
+1. el archivo se valida antes de procesar filas;
+2. la cabecera y cada columna se mapean mediante una versión explícita;
+3. una columna inesperada no se ignora si puede cambiar significado o evidencia;
+4. cada fila conserva resultado, idempotencia, error, mapping y referencia al original;
+5. filas válidas y bloqueadas podrán coexistir solo cuando el modo de atomicidad del perfil lo autorice;
+6. la atomicidad total, parcial o por grupo se declara antes de ejecutar;
+7. reanudar omite filas confirmadas y revalida pendientes;
+8. el orden de chunks no cambia semántica, versión ni resultado;
+9. una corrección manual del archivo crea otro artefacto y otra importación vinculada;
+10. exportar y volver a importar no convierte una proyección en fuente autoritativa;
+11. fórmulas, celdas calculadas, macros y formatos visibles no se interpretan como valores sin contrato;
+12. CSV y Excel no comparten parser ni semántica implícita.
+
+#### 25. Cuarentena y revisión
+
+Los estados cerrados son:
+
+| Estado                      | Significado                                                                   |
+| --------------------------- | ----------------------------------------------------------------------------- |
+| `QUARANTINED_NEW`           | evidencia preservada y triage pendiente                                       |
+| `AWAITING_AUTHENTICITY`     | falta verificar firma, emisor, checksum o procedencia                         |
+| `AWAITING_CONTRACT`         | integración, schema o versión no están resueltos                              |
+| `AWAITING_MAPPING`          | falta mapping o existe forma externa no catalogada                            |
+| `AWAITING_DOMAIN_AUTHORITY` | falta owner, scope o decisión empresarial                                     |
+| `UNDER_RECONCILIATION`      | se compara con estado interno, entregas relacionadas o fuente actual          |
+| `RESOLVED_REPROCESSABLE`    | existe decisión versionada y la entrega puede reevaluarse de forma controlada |
+| `RESOLVED_NO_EFFECT`        | la evidencia se conserva y queda cerrado sin efecto empresarial               |
+
+Reglas:
+
+1. cuarentena no significa eliminación, aceptación ni rechazo definitivo del proveedor;
+2. toda espera tendrá owner, evidencia faltante y fecha de revisión;
+3. el payload visible a revisores se minimizará según finalidad;
+4. una corrección propuesta no modificará el original;
+5. la resolución podrá crear una versión de mapping, contrato o clasificación, pero no activar por sí sola un backfill;
+6. el reprocess utilizará la evidencia original, la nueva versión explícita y una operación idempotente vinculada;
+7. casos de identidad, legalidad, estructura o unicidad se escalarán a la autoridad correspondiente;
+8. no existe cierre por silencio, vencimiento o mayoría de casos similares.
+
+#### 26. Tratamiento de integraciones observadas
+
+| Integración o canal                              | Original que deberá preservarse                                             | Mapping interno permitido                                                              | Restricción principal                                                                    |
+| ------------------------------------------------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Supabase Auth                                    | provider user ID, correo recibido, metadata, claims y evento aplicable      | identidad técnica, contacto y atributos laborales mediante contratos separados         | metadata Auth no sustituye `employees`, roles, sedes ni decisiones laborales             |
+| Wompi                                            | evento, referencia, estado, moneda, timestamps, firma y payload             | estado canónico, referencia interna y resultado financiero mediante mapping versionado | preservar estado externo; impedir replay, fuera de orden y mismo ID con payload distinto |
+| Google Maps                                      | query, `place_id`, dirección, componentes, locale y respuesta del proveedor | proyección o componentes internos de dirección según selección y política              | sugerencia del proveedor no define identidad, sede ni dirección oficial por sí sola      |
+| Google Wallet                                    | respuesta, identificadores y estado técnico recibido del canal              | estado de proyección o sincronización separado                                         | no convertir confirmación técnica en hecho empresarial ni retroalimentar texto fuente    |
+| Expo Push                                        | ticket, receipt, token afectado, error y metadata permitida                 | estado técnico del envío e invalidación gobernada de token                             | no almacenar token en logs ni interpretar entrega como lectura o acción humana           |
+| CSV y Excel                                      | archivo, hoja, fila, celda, encoding y perfil                               | comando interno por fila o grupo conforme a mapping                                    | no perder errores parciales ni aplicar helpers de interfaz                               |
+| POS, HubRise, webhooks y herramientas operativas | IDs, payload, emisor, ambiente, timestamps y contrato                       | comandos internos mediante adaptador y servicio de dominio                             | ningún canal recibe bypass por operar sin interfaz                                       |
+
+La tabla documenta familias observadas y no afirma que todos los contratos estén implementados, completos o activos.
+
+#### 27. Autoridad por campo y propiedad del mapping
+
+1. Cada mapping tendrá propietario empresarial, steward técnico y evidencia contractual.
+2. La autoridad podrá variar por campo dentro del mismo payload.
+3. Un proveedor de identidad puede ser autoritativo para su `provider_user_id`, pero no para el rol operativo efectivo.
+4. Un procesador de pagos puede ser autoritativo para el estado que reporta, mientras Vento OS conserva autoridad sobre el proceso empresarial derivado.
+5. Google Maps puede proveer un `place_id` y componentes, pero una persona o proceso interno confirma su uso operativo.
+6. Un archivo entregado por una persona conserva autor, canal y fecha; no se vuelve fuente canónica por estar firmado o enviado por un administrador.
+7. El owner del mapping no podrá ampliar la autoridad del proveedor sin decisión del dominio afectado.
+8. Un mapping transversal exige revisión de todos los dominios consumidores y no se infiere por ausencia de reglas locales.
+9. VITAL requerirá owners, mappings y contratos propios.
+
+#### 28. Ciclo de vida y versionado de mappings
+
+Cada mapping deberá expresar:
+
+```text
+mapping_key
+mapping_version_id
+integration_key
+external_contract_version
+external_field_or_path
+external_value_or_pattern
+internal_target_coordinate
+mapping_mode
+canonical_internal_value_or_action
+authority_reference
+evidence_reference
+status
+effective_from
+effective_to
+supersedes_mapping_version_id
+```
+
+Estados aplicables:
+
+```text
+DRAFT
+APPROVED_PENDING_ACTIVATION
+ACTIVE
+SUSPENDED
+SUPERSEDED
+RETIRED
+REJECTED
+INVALIDATED
+```
+
+Reglas:
+
+1. una versión es inmutable;
+2. un cambio de fuente, path, valor, destino, scope, autoridad o semántica crea otra versión;
+3. solo `ACTIVE` participa en nuevas admisiones;
+4. mappings históricos permanecen disponibles para reconstrucción;
+5. suspensión o invalidación bloquea nuevos efectos y abre análisis de impacto;
+6. no existe fallback a una versión retirada;
+7. activar una versión no reprocesa historia automáticamente;
+8. toda coexistencia declara modo, inicio, fin, métricas y puerta de salida;
+9. el `version_set_digest` incluirá contrato externo, parser, mapping, política de campo y algoritmo interno consumidos.
+
+#### 29. Aplicación de las capas de ejecución
+
+| Capa de `DATA-NORM-ARC-011`     | Responsabilidad para ingresos externos                                                                                                         |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| aplicación o adaptador de canal | recibir, autenticar el canal cuando corresponda, capturar evidencia, limitar tamaño y transmitir el original sin decisiones semánticas locales |
+| servicio de dominio             | resolver clasificación, autoridad, mappings, versiones, precedencia, resultado y comando interno                                               |
+| frontera RPC transaccional      | autorizar integración, validar idempotencia y orden, cargar estado, revalidar, persistir efecto y auditoría atómicamente                       |
+| trigger defensivo               | comprobar invariantes acotados, contexto de operación y consistencia entre fuente, derivación y versión; nunca llamar al proveedor             |
+
+Reglas:
+
+1. el adaptador no reescribe el payload para hacerlo aceptable;
+2. parseo técnico puede ocurrir antes del servicio, pero la interpretación semántica permanece en la autoridad de dominio;
+3. jobs, imports y webhooks consumen el mismo servicio y contrato que las aplicaciones;
+4. el trigger no valida firmas remotas, no ejecuta HTTP, no consulta catálogos externos y no decide mapping;
+5. una credencial privilegiada no permite omitir política, auditoría o precondiciones;
+6. cada elemento de lote conserva operación lógica propia o una relación explícita con la operación raíz;
+7. una integración no podrá escribir directamente campos gobernados después del cutover certificado.
+
+#### 30. Persistencia, auditoría y confirmación transaccional
+
+La operación raíz deberá correlacionar:
+
+```text
+external_delivery_id
+external identity and payload digest
+transport verification
+contract and schema versions
+parsed structure digest
+mapping version set
+internal command
+expected internal state
+commit result
+enterprise event or no-effect outcome
+acknowledgement
+child effects
+```
+
+Reglas:
+
+1. la RPC conserva una sola auditoría raíz de la mutación;
+2. el adaptador registra evidencia de transporte y el servicio aporta la decisión semántica;
+3. la persistencia del efecto y su registro causal se confirman juntos;
+4. un ACK previo al commit solo podrá indicar recepción técnica, no éxito empresarial;
+5. si el commit falla, el payload continúa preservado y el resultado es reanudable o fallido, no aceptado;
+6. propagaciones, notificaciones y respuestas a terceros son efectos hijos posteriores al commit salvo contrato atómico local explícito;
+7. un evento empresarial se emite desde el hecho interno confirmado, no copiando sin control el evento externo;
+8. la auditoría minimiza valores sensibles y conserva referencias suficientes para replay o reconstrucción.
+
+#### 31. ACK, eventos y efectos posteriores
+
+1. `INTEGRATION_ACKNOWLEDGEMENT` confirma recepción, rechazo, duplicidad o estado de procesamiento según contrato.
+2. Un ACK `2xx`, respuesta de SDK o inserción en inbox no demuestra efecto empresarial confirmado.
+3. El evento externo puede originar un comando; el evento empresarial describe el hecho interno después del commit.
+4. Un evento de integración de salida adapta el evento empresarial y no modifica su definición.
+5. La respuesta al proveedor deberá ser idempotente y no exponer decisiones, datos o errores internos innecesarios.
+6. Si el proveedor exige respuesta antes de completar el procesamiento, se distinguirá `RECEIVED_FOR_PROCESSING` de `ACCEPTED_INTERNAL_EFFECT_CONFIRMED`.
+7. Reintentos de entrega no emitirán eventos empresariales duplicados.
+8. Notificaciones, Google Wallet y Expo Push se tratarán como efectos hijos y sus receipts como evidencia técnica separada.
+9. Un fallo de efecto hijo no revierte silenciosamente el hecho interno; se registra y reanuda o compensa mediante su contrato.
+
+#### 32. Seguridad, privacidad y minimización
+
+1. Secrets, API keys, tokens, firmas, certificados y credenciales no se almacenarán completos fuera del almacén autorizado.
+2. Headers sensibles se filtrarán antes de logs, errores, métricas y vistas de cuarentena.
+3. Payloads personales, laborales, financieros, legales o de ubicación exigirán finalidad, scope y acceso diferenciados.
+4. La autenticidad no elimina la obligación de autorización y minimización.
+5. Un payload completo no se expondrá cuando una referencia, hash o proyección sea suficiente.
+6. Los hashes deberán evitar enumeración de secretos o datos de baja entropía.
+7. Consultar original, exportarlo, reprocessarlo, aprobar un mapping o activar una integración serán capacidades separadas.
+8. El proveedor y sus subprocesadores no se inferirán como destinatarios autorizados de datos internos.
+9. Errores devueltos externamente no revelarán existencia de entidades, reglas, permisos o candidatos no autorizados.
+10. Datos de VITAL no participarán en cuarentenas, mappings o paneles de Vento OS.
+
+#### 33. Retención, rectificación y eliminación
+
+1. El sobre, original, mapping, efecto y auditoría podrán tener clases de retención distintas pero conservarán referencias coherentes.
+2. La retención se definirá por finalidad, sensibilidad, contrato, investigación, conciliación y obligación legal.
+3. El vencimiento del payload no elimina el mapping y resultado histórico necesarios para interpretar un efecto, salvo mandato aplicable documentado.
+4. Una rectificación externa se registra como nueva evidencia vinculada.
+5. La eliminación o anonimización deberá conservar prueba de que ocurrió sin mantener datos que debían eliminarse.
+6. Un tombstone no se presentará como payload disponible.
+7. Reprocesar después de una eliminación solo será posible cuando exista evidencia suficiente y autorización; de lo contrario, se bloqueará.
+8. Backups, exports, DLQ, cuarentena y observabilidad deberán participar en la misma política de retención.
+9. Los plazos concretos y mecanismos físicos pertenecen a las tareas de arquitectura de información e implementación.
+
+#### 34. Compatibilidad y transición de integraciones existentes
+
+Antes de conservar, sustituir o retirar un flujo existente deberá inventariarse:
+
+- proveedor, ambiente, tenant y contrato;
+- endpoints, webhooks, archivos, jobs y Edge Functions;
+- artefacto desplegado y revisión de fuente;
+- original preservado actualmente y gaps de procedencia;
+- transformaciones y helpers por capa;
+- mappings de estados, monedas, unidades, nombres, roles y referencias;
+- claves de idempotencia y comportamiento ante retries;
+- orden, timestamps y reconciliación;
+- productores, consumidores y escrituras directas;
+- datos sensibles, retención y permisos;
+- fixtures, payloads históricos y corpus;
+- estrategia de shadow, cutover, rollback y reprocess.
+
+Reglas:
+
+1. una integración legacy podrá operar en observación o `DUAL_EVALUATION_SHADOW` sin dual write implícito;
+2. el resultado nuevo se comparará con el actual sin modificar producción;
+3. un canal sin paridad no podrá seguir mutando campos gobernados después del cutover;
+4. una Edge Function desplegada sin digest o revisión demostrable quedará fuera de certificación;
+5. no se retirará el almacenamiento del original antes de comprobar replay, auditoría y obligaciones de retención;
+6. el cambio de contrato externo no se tratará como refactor interno neutral;
+7. toda diferencia tendrá dueño y tarea de transición.
+
+#### 35. Ejemplos normativos
+
+| Escenario                                                               | Resultado obligatorio                                                                                       |
+| ----------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| Wompi repite el mismo evento con el mismo payload                       | reutilizar el resultado previo sin duplicar efecto                                                          |
+| Wompi usa el mismo ID con otro payload                                  | conflicto de idempotencia; preservar ambas evidencias y no mutar                                            |
+| un estado Wompi nuevo no existe en el mapping activo                    | cuarentena de mapping; conservar estado externo y no elegir el más parecido                                 |
+| un evento financiero antiguo llega después de uno más reciente          | bloquear como obsoleto o reconciliar según secuencia; nunca revertir por orden de llegada                   |
+| Supabase Auth entrega nombre y rol en metadata                          | preservar metadata; mapear identidad técnica; no sobrescribir rol laboral sin autoridad del dominio         |
+| correo de Auth llega con espacios o caja distinta                       | conservar original; canonicalizar contacto mediante contrato propio y mapping versionado                    |
+| Google Maps devuelve una dirección y `place_id`                         | preservar respuesta y selección; derivar componentes internos; no crear identidad de sede automáticamente   |
+| Expo receipt declara token inválido                                     | tratar como evidencia técnica y ejecutar proceso gobernado de token; no registrar el token completo en logs |
+| CSV contiene una columna inesperada                                     | validar perfil; bloquear o cuarentenarla según compatibilidad, sin ignorarla silenciosamente                |
+| dos filas del mismo archivo comparten texto pero IDs externos distintos | procesar por identidad y scope; no deduplicar por nombre normalizado                                        |
+| una fila válida y otra inválida en perfil de atomicidad parcial         | confirmar la válida, cuarentenizar la inválida y declarar éxito parcial por fila                            |
+| el mismo archivo se reenvía                                             | reconocer digest y perfil; reutilizar resultados por archivo y fila según contrato                          |
+| cambia el mapping después de la recepción                               | la entrega histórica conserva versión previa; reprocess requiere operación explícita                        |
+| firma válida, pero tenant o ambiente incorrectos                        | rechazo de autorización del emisor; firma no permite cruzar scope                                           |
+| payload válido técnicamente sin owner de campo                          | preservar y cuarentenizar por autoridad                                                                     |
+| webhook recibe ACK antes del commit interno                             | ACK de recepción únicamente; el éxito empresarial permanece pendiente                                       |
+| adaptador cae después del commit y antes de responder                   | retry devuelve resultado confirmado; no repite mutación                                                     |
+| una notificación posterior falla                                        | el hecho interno permanece; efecto hijo pendiente y reanudable                                              |
+| payload contiene un secreto                                             | preservar en almacén protegido o referencia; no exponer en auditoría, cuarentena ni métricas                |
+| dato pertenece a VITAL                                                  | excluir de política transversal y remitir a su contrato propio                                              |
+
+#### 36. Conductas no conformes
+
+Quedan prohibidas:
+
+1. sobrescribir el payload original con la forma interna;
+2. persistir únicamente el valor mapeado sin emisor, contrato, versión y evidencia;
+3. tratar firma válida como autoridad sobre todos los campos;
+4. utilizar `latest` implícito para schema o mapping;
+5. mapear estados, monedas, unidades, roles o códigos mediante `if` locales no versionados;
+6. corregir marcas, nombres legales, personas o direcciones externas con capitalización comercial universal;
+7. deduplicar eventos únicamente por payload normalizado o texto visible;
+8. aceptar el mismo ID con payload diferente;
+9. utilizar orden de llegada como orden empresarial sin contrato;
+10. convertir `null`, vacío, ausencia y clear en el mismo estado;
+11. interpretar números, fechas o unidades con locale implícito;
+12. ignorar campos o columnas desconocidos cuando puedan cambiar semántica;
+13. reportar éxito total para lotes parciales;
+14. reintentar todo el lote y duplicar filas confirmadas;
+15. editar un archivo original para permitir importarlo;
+16. seleccionar por similitud una entidad, dirección, moneda, unidad o estado;
+17. crear identidad interna desde `place_id`, nombre o referencia externa sin scope de emisor;
+18. permitir escrituras directas de webhooks, imports o service roles fuera del servicio y RPC;
+19. ejecutar HTTP, firma remota, mapping o workflow dentro de un trigger;
+20. emitir evento empresarial antes del commit interno;
+21. registrar tokens, firmas, secretos o payload sensible completo en logs;
+22. reprocessar historia con mappings nuevos sin operación explícita;
+23. borrar evidencia para ocultar un conflicto o una corrección externa;
+24. aplicar mappings de Vento OS a VITAL;
+25. introducir cambios físicos desde esta tarea documental.
+
+#### 37. Corpus mínimo de conformidad
+
+El corpus deberá cubrir, como mínimo:
+
+1. las seis clases de fuente externa;
+2. las siete representaciones separadas;
+3. sobre completo, campos no aplicables y referencias protegidas;
+4. payload JSON, texto, binario, CSV y Excel;
+5. firma válida, inválida, ausente, rotada y con timestamp fuera de ventana;
+6. emisor, tenant, cuenta y ambiente válidos e incompatibles;
+7. schema conocido, aditivo compatible, incompatible, desconocido y retirado;
+8. parseo exitoso, truncado, encoding inválido, duplicidad de claves y límites de tamaño;
+9. las siete capas de validación y doce resultados;
+10. las ocho modalidades de mapping;
+11. estados, monedas, unidades, roles, nombres, direcciones, texto libre, IDs y secretos;
+12. mismo ID y mismo payload, mismo ID y payload distinto, ID ausente y clave derivada;
+13. retry, timeout, respuesta perdida, caída antes y después del commit;
+14. eventos en orden, fuera de orden, tardíos, corregidos y retractados;
+15. campo ausente, `null`, vacío, espacios, clear, desconocido, no aplicable y parcial;
+16. números, precisión, rounding, moneda y overflow;
+17. timestamps con y sin zona, DST, locale y formatos ambiguos;
+18. archivos repetidos, cabeceras cambiadas, columnas extra, fórmulas y hojas;
+19. atomicidad total, parcial y por grupo;
+20. cuarentena, revisión, reprocess y cierre sin efecto;
+21. Supabase Auth, Wompi, Google Maps, Google Wallet, Expo Push y canales batch observados;
+22. autoridad por campo y conflicto entre proveedor y dominio;
+23. mapping activo, suspendido, supersedido, retirado e invalidado;
+24. paridad entre adaptador, servicio, RPC, job y trigger defensivo;
+25. auditoría, minimización, retención, rectificación y eliminación;
+26. coexistencia legacy, shadow, cutover, rollback, VITAL y ausencia de efectos no autorizados.
+
+El corpus deberá reutilizar escenarios de `TREQ-DATA-006` a `TREQ-DATA-214` relacionados con originales, representaciones, fuentes, revisión, búsqueda, identidad, auditoría, idempotencia, capas, imports, jobs y webhooks.
+
+#### 38. Hallazgos y carryovers
+
+| ID               | Decisión o brecha                                                            | Resultado de esta tarea                                                | Propietario siguiente                                          |
+| ---------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `DN-ARC-012-H01` | el valor externo original podía perderse durante parseo o mapping            | siete representaciones y preservación de original aprobadas            | `SUPA-TRANS-005`; `SUPA-TRANS-007`                             |
+| `DN-ARC-012-H02` | autenticidad podía confundirse con verdad empresarial                        | capas de validación y autoridad por campo aprobadas                    | `SUPA-TRANS-005`; `SUPA-TRANS-009`                             |
+| `DN-ARC-012-H03` | estados, monedas, unidades y roles podían mapearse localmente                | ocho modos cerrados y versiones inmutables aprobados                   | `SUPA-TRANS-003`; `SUPA-TRANS-006`; `SUPA-TRANS-014`           |
+| `DN-ARC-012-H04` | webhooks y archivos podían duplicar efectos o aceptar payload conflictivo    | identidad externa, digest, retry y conflicto aprobados                 | `DATA-NORM-TRANS-006`; `SUPA-TRANS-009`                        |
+| `DN-ARC-012-H05` | orden de llegada podía sobrescribir estados más recientes                    | temporalidad, secuencia, stale event y reconciliación aprobadas        | `DATA-NORM-TRANS-007`; `DATA-NORM-TRANS-008`                   |
+| `DN-ARC-012-H06` | ausencia, null, vacío y clear no tenían contrato transversal                 | semántica diferenciada aprobada                                        | `SUPA-TRANS-005`; `SUPA-TRANS-007`                             |
+| `DN-ARC-012-H07` | imports podían ocultar errores parciales y perder procedencia por fila       | contrato de archivo, fila, celda, atomicidad y reanudación aprobado    | `SUPA-TRANS-003`; `DATA-NORM-TRANS-006`                        |
+| `DN-ARC-012-H08` | payloads bloqueados carecían de cuarentena gobernada                         | ocho estados, owners y reprocess controlado aprobados                  | `SUPA-TRANS-005`; tareas de gobierno de información aplicables |
+| `DN-ARC-012-H09` | proveedor podía asumirse como owner de atributos internos                    | autoridad por campo, dominio y evidencia aprobadas                     | `SUPA-ARC-025`; `SUPA-TRANS-003`                               |
+| `DN-ARC-012-H10` | ACK técnico y evento externo podían confundirse con evento empresarial       | conceptos, commit y emisión posterior separados                        | tareas `INT-APP-*`; `SUPA-TRANS-007`; `SUPA-TRANS-009`         |
+| `DN-ARC-012-H11` | tokens, firmas y payloads podían exponerse en observabilidad o revisión      | minimización, referencias protegidas y capacidades separadas aprobadas | `SUPA-TRANS-005`; `SUPA-TRANS-010`                             |
+| `DN-ARC-012-H12` | integraciones existentes carecen todavía de inventario y paridad exhaustivos | contrato completo aprobado; transición física reservada                | `SUPA-TRANS-003`; `SUPA-TRANS-013`; `SUPA-TRANS-014`           |
+| `DN-ARC-012-H13` | mappings podían reinterpretar historia al cambiar de versión                 | ciclo de vida, replay y reprocess explícitos aprobados                 | `SUPA-TRANS-006`; `DATA-NORM-TRANS-008`; `DATA-NORM-TRANS-009` |
+| `DN-ARC-012-H14` | VITAL comparte infraestructura y proveedores potenciales                     | frontera separada mantenida                                            | `SUPA-ARC-025`                                                 |
+
+#### 39. Decisiones reservadas
+
+| Decisión                                                        | Tarea propietaria                                        |
+| --------------------------------------------------------------- | -------------------------------------------------------- |
+| arquitectura consolidada, ownership físico y frontera VITAL     | `SUPA-ARC-025`                                           |
+| inventario exhaustivo de integraciones, clientes y dependencias | `SUPA-TRANS-003`                                         |
+| tablas, inbox, payload store, cuarentena, mappings e índices    | `SUPA-TRANS-005`                                         |
+| coexistencia de contratos y versiones                           | `SUPA-TRANS-006`                                         |
+| adaptación de APIs, Edge Functions, imports, jobs y clientes    | `SUPA-TRANS-007`; `SUPA-TRANS-014`                       |
+| orden técnico y dependencias de migración                       | `SUPA-TRANS-008`                                         |
+| pruebas de paridad, retries, concurrencia e idempotencia        | `SUPA-TRANS-009`; `DATA-NORM-TRANS-009`                  |
+| rendimiento, límites, seguridad y observabilidad física         | `SUPA-TRANS-010`                                         |
+| compensación, restauración y rollback                           | `SUPA-TRANS-011`; `DATA-NORM-TRANS-008`                  |
+| corte, despliegue, credenciales y recuperación                  | `SUPA-TRANS-012`; `SUPA-TRANS-013`                       |
+| baseline, dry-run, mappings y reprocess de datos existentes     | `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-007`            |
+| contratos específicos de eventos empresariales e integración    | tareas `INT-APP-*` propietarias                          |
+| retención física y eliminación                                  | tareas de gobierno de información y seguridad aplicables |
+
+#### 40. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se crean los requisitos:
+
+- `TREQ-DATA-215`;
+- `TREQ-DATA-216`;
+- `TREQ-DATA-217`;
+- `TREQ-DATA-218`;
+- `TREQ-DATA-219`;
+- `TREQ-DATA-220`;
+- `TREQ-DATA-221`;
+- `TREQ-DATA-222`;
+- `TREQ-DATA-223`;
+- `TREQ-DATA-224`;
+- `TREQ-DATA-225`;
+- `TREQ-DATA-226`;
+- `TREQ-DATA-227`;
+- `TREQ-DATA-228`;
+- `TREQ-DATA-229`;
+- `TREQ-DATA-230`;
+- `TREQ-DATA-231`;
+- `TREQ-DATA-232`;
+- `TREQ-DATA-233`;
+- `TREQ-DATA-234`;
+- `TREQ-DATA-235`;
+- `TREQ-DATA-236`;
+- `TREQ-DATA-237`;
+- `TREQ-DATA-238`;
+- `TREQ-DATA-239`;
+- `TREQ-DATA-240`.
+
+El detalle canónico de cada requisito reside en el registro 04A actualizado hasta esta tarea.
+
+#### 41. Criterios de integridad
+
+La política se considera íntegra para esta etapa cuando:
+
+1. separa entrega, transporte, original, estructura, mapping, comando, efecto, cuarentena, ACK y evento empresarial;
+2. define exactamente seis clases de fuente externa;
+3. conserva siete representaciones sin sobrescribir el original;
+4. exige un sobre lógico con emisor, ambiente, tenant, contrato, timestamps, referencias y digests;
+5. preserva bytes o estructura según el contrato y evita normalización previa no autorizada;
+6. separa siete capas de validación;
+7. aplica las doce etapas del pipeline en orden;
+8. distingue doce resultados cerrados;
+9. bloquea versiones desconocidas y `latest` implícito;
+10. clasifica cada campo antes de normalizar o mapear;
+11. define exactamente ocho modos de mapping;
+12. construye identidad externa con emisor, ambiente, tenant, tipo y contrato;
+13. reutiliza el resultado con mismo ID y payload y bloquea payload conflictivo;
+14. gobierna eventos tardíos, fuera de orden, corregidos y concurrentes;
+15. diferencia ausencia, null, vacío, clear, desconocido, no aplicable y parcial;
+16. gobierna números, moneda, unidades, precisión, tiempo, locale, Unicode y encoding;
+17. conserva procedencia por archivo, lote, fila y celda;
+18. define ocho estados de cuarentena y reprocess controlado;
+19. asigna autoridad por campo y owner del mapping;
+20. versiona mappings sin reinterpretar historia;
+21. aplica la arquitectura de capas sin decisiones semánticas locales ni red desde triggers;
+22. confirma efecto y auditoría antes de emitir evento empresarial;
+23. separa ACK técnico de éxito empresarial;
+24. minimiza secretos, datos sensibles y payloads;
+25. gobierna retención, rectificación y eliminación sin perder coherencia histórica;
+26. exige inventario, shadow, paridad y transición para integraciones existentes;
+27. incorpora corpus positivo, negativo, conflictivo, tardío, batch y sensible;
+28. mantiene VITAL fuera del alcance transversal;
+29. no autoriza cambios físicos ni anticipa decisiones reservadas.
+
+#### 42. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos
+```
+
 
 Regla canónica de normalización
 
