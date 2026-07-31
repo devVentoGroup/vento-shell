@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **448** |
+| Aprobadas | **449** |
 | En propuesta | **0** |
-| No iniciadas | **1127** |
+| No iniciadas | **1126** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **28.44% (448/1575)** |
+| Porcentaje de completamiento | **28.51% (449/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-ARC-012` — Definir tratamiento de datos recibidos desde integraciones externas | ✅ APROBADA |
-| Tarea actual | `SUPA-ARC-025` — Consolidar y aprobar ADR de arquitectura canónica de datos | ⬜ NO INICIADA |
-| Siguiente | `SUPA-TRANS-001` — Mapear cada objeto actual hacia la arquitectura objetivo | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-ARC-025` — Consolidar y aprobar ADR de arquitectura canónica de datos | ✅ APROBADA |
+| Tarea actual | `SUPA-TRANS-001` — Mapear cada objeto actual hacia la arquitectura objetivo | ⬜ NO INICIADA |
+| Siguiente | `SUPA-TRANS-002` — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -439,7 +439,7 @@
 | ✅ APROBADA | `DATA-NORM-ARC-010` | Definir estrategia de unicidad y detección de duplicados normalizados | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-011` | Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-012` | Definir tratamiento de datos recibidos desde integraciones externas | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
-| ⬜ NO INICIADA | `SUPA-ARC-025` | Consolidar y aprobar ADR de arquitectura canónica de datos | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
+| ✅ APROBADA | `SUPA-ARC-025` | Consolidar y aprobar ADR de arquitectura canónica de datos | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-001` | Mapear cada objeto actual hacia la arquitectura objetivo | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-002` | Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-003` | Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |

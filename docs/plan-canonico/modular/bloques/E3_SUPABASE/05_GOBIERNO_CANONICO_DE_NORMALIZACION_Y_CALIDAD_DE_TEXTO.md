@@ -8302,4 +8302,636 @@ normalize(normalize(value))
 normalize(value)
 ```
 
-### [ ] SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos
+### ✅ SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas` — APROBADA
+**Tarea siguiente:** `SUPA-TRANS-001 — Inventariar contratos, vistas, RPC y clientes afectados`
+**Tipo de tarea:** consolidación y aprobación documental del registro de decisión arquitectónica de datos de Vento OS, adopción normativa de las decisiones aprobadas en el BLOQUE E3, cierre de decisiones arquitectónicas y definición de puertas para transición; sin DDL, DML, migraciones, backfills, correcciones de datos, fusiones, reasignaciones, cambios de esquema, constraints, índices, funciones, RPC, triggers, RLS, clientes, integraciones, credenciales, configuración ni despliegues
+
+#### 1. Objetivo
+
+Consolidar y aprobar el registro de decisión arquitectónica que gobernará la evolución de datos de Vento OS, cerrando en una única decisión vinculante las políticas aprobadas sobre dominios, ownership, agregados, referencias, schemas, capas de ejecución, transacciones, eventos, identidad, autorización, seguridad, auditoría, calidad, búsqueda, almacenamiento, integraciones, compatibilidad, migración, ambientes y normalización.
+
+El ADR deberá impedir que la transición física reabra decisiones ya aprobadas por conveniencia técnica, que una implementación local sustituya el ownership empresarial, que una tabla existente se convierta en fuente de verdad por antigüedad, que un cliente o trigger adquiera autoridad semántica no concedida, que VITAL herede reglas de Vento OS por coexistencia física o que un paquete avance sin inventario, compatibilidad, evidencia y reversibilidad.
+
+#### 2. ADR producido
+
+```text
+ADR-DATA-001 — Arquitectura canónica de datos de Vento OS
+```
+
+| Propiedad                                            | Valor                                                                        |
+| ---------------------------------------------------- | ---------------------------------------------------------------------------- |
+| Identificador                                        | `ADR-DATA-001`                                                               |
+| Versión                                              | `1.0.0`                                                                      |
+| Estado                                               | `ACCEPTED`                                                                   |
+| Fecha                                                | `2026-07-30`                                                                 |
+| Tarea gobernante                                     | `SUPA-ARC-025`                                                               |
+| Bloque propietario                                   | `BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase` |
+| Decisiones arquitectónicas adoptadas                 | `SUPA-ARC-001` a `SUPA-ARC-024`                                              |
+| Auditorías de normalización adoptadas como evidencia | `DATA-NORM-AUD-001` a `DATA-NORM-AUD-007`                                    |
+| Políticas de normalización adoptadas                 | `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012`                                    |
+| Siguiente fase autorizada                            | transición documental y preparación controlada desde `SUPA-TRANS-001`        |
+| Implementación física autorizada por este ADR        | ninguna                                                                      |
+| Requisitos de prueba nuevos                          | 40                                                                           |
+
+#### 3. Owner y reviewers
+
+| Responsabilidad                | Asignación canónica                                                                                                |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| Owner del ADR                  | gobierno de arquitectura de datos de Vento OS bajo el BLOQUE E3                                                    |
+| Autoridad final de aceptación  | `propietario`, sin bypass técnico ni delegación implícita de decisiones reservadas                                 |
+| Reviewer ejecutivo obligatorio | `gerente_general`                                                                                                  |
+| Reviewers funcionales          | owners o stewards de los dominios empresariales afectados                                                          |
+| Reviewers técnicos             | responsables de Plataforma Supabase, Seguridad y Autorización, Integraciones y aplicaciones consumidoras afectadas |
+| Custodia documental            | fuente modular propietaria de `SUPA-ARC-025` y registro 04A                                                        |
+| Sustitución de reviewers       | solo mediante decisión explícita, trazable y sin reducir segregación de funciones                                  |
+
+La aceptación del ADR no convierte al owner documental en dueño de todos los datos. El ownership de cada entidad y atributo continúa gobernado por las decisiones de dominio y fuente de verdad adoptadas.
+
+#### 4. Fuentes canónicas consumidas
+
+| Fuente                                                | Decisión consumida                                                                                                  |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                     | continuidad, fase documental, lectura remota, separación entre definición e implementación y preservación histórica |
+| `delivery-contract.json`                              | identidad del artefacto de tarea y actualización integral de 04A al crear requisitos                                |
+| `active-sequence.json`                                | `SUPA-ARC-025` como tarea actual y `SUPA-TRANS-001` como siguiente tarea reservada                                  |
+| `00_CABECERA_Y_ESTADO.md`                             | revisión 58, cierre de `DATA-NORM-ARC-012`, progreso del BLOQUE E3 y prohibición de cambios físicos                 |
+| `04_ARQUITECTURA_CANONICA_OBJETIVO.md`                | decisiones aprobadas `SUPA-ARC-001` a `SUPA-ARC-024`                                                                |
+| `03_AUDITORIA_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` | evidencia `DATA-NORM-AUD-001` a `DATA-NORM-AUD-007`                                                                 |
+| archivo modular propietario de esta tarea             | objetivo, contenido mínimo del ADR y condición de cierre de arquitectura                                            |
+| `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012`             | gobierno completo de normalización, búsqueda, identidad, auditoría, capas y datos externos                          |
+| Registro 04A vigente                                  | requisitos históricos y secuencia del dominio `SUPABASE` hasta `TREQ-SUPABASE-1655`                                 |
+| `package.json` y validadores documentales             | comandos y restricciones que deberán comprobar la materialización posterior                                         |
+
+#### 5. Contexto
+
+Vento OS evolucionó con múltiples aplicaciones, schemas, tablas, RPC, funciones, triggers, políticas RLS, Edge Functions, jobs, integraciones y clientes que fueron incorporando reglas de identidad, operación, inventario, producción, logística, compras, ventas, talento, fidelización, pagos y administración.
+
+La auditoría del BLOQUE E3 demostró que la ubicación física actual no equivale a dominio, que `public` concentra responsabilidades heterogéneas, que existen fuentes y copias con autoridad desigual, que los consumidores pueden aplicar transformaciones propias y que una modificación aparentemente local puede afectar relaciones, snapshots, búsquedas, índices, eventos, integraciones o trazabilidad histórica.
+
+Antes de modificar el esquema o los datos era necesario definir la arquitectura objetivo, sus fronteras, las responsabilidades de cada capa, la forma de transición y las condiciones que hacen inaceptable una implementación.
+
+#### 6. Problema arquitectónico
+
+El sistema necesita responder de manera uniforme y demostrable:
+
+```text
+qué dominio es propietario del dato
+qué entidad y agregado gobiernan su ciclo de vida
+cuál es la fuente de verdad
+qué representaciones son originales, canónicas, derivadas o históricas
+qué capa puede decidir, validar, persistir, proyectar o propagar
+qué identidad, contexto y autorización exige cada operación
+qué invariantes deben confirmarse dentro de la transacción
+qué efectos son síncronos y cuáles asíncronos
+cómo se conserva idempotencia, concurrencia, auditoría y reversibilidad
+cómo se protegen datos sensibles, secretos, archivos e integraciones
+cómo conviven versiones y ambientes
+cómo se migra sin degradar contratos ni historia
+```
+
+La respuesta no puede depender de la tabla más antigua, del schema donde hoy reside el dato, del cliente que envía el comando, de un helper local, de la credencial privilegiada utilizada, del orden accidental de despliegue ni de la capacidad física de escribir.
+
+#### 7. Alcance
+
+Este ADR consolida:
+
+1. las decisiones de arquitectura de `SUPA-ARC-001` a `SUPA-ARC-024`;
+2. la evidencia de `DATA-NORM-AUD-001` a `DATA-NORM-AUD-007`;
+3. las políticas normativas de `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012`;
+4. la jerarquía entre decisiones específicas y esta consolidación;
+5. las consecuencias positivas y los trade-offs aceptados;
+6. los riesgos aceptados y no aceptados;
+7. las condiciones de reversión y los disparadores de un nuevo ADR;
+8. la relación con los BLOQUES E4 y E5;
+9. las puertas que habilitan transición sin autorizar implementación física;
+10. el gobierno del propio ADR.
+
+Este ADR no crea ni modifica objetos físicos, datos, credenciales, ambientes, contratos desplegados ni configuraciones.
+
+#### 8. Regla de adopción normativa
+
+`ADR-DATA-001` adopta por referencia las decisiones aprobadas y no crea una segunda versión resumida que pueda divergir de ellas.
+
+Reglas:
+
+1. cada tarea adoptada conserva su texto, vocabularios, conteos, prohibiciones, reservas y requisitos;
+2. ante diferencia entre este ADR y una decisión específica adoptada, prevalece la decisión específica;
+3. una síntesis del ADR no podrá ampliar permisos, reducir evidencias ni convertir una reserva de transición en autorización física;
+4. una tarea posterior podrá materializar una decisión, pero no reinterpretarla silenciosamente;
+5. una contradicción descubierta bloqueará el paquete afectado hasta corregir la fuente propietaria o aprobar un ADR supersesor;
+6. las tareas de transición deberán citar la decisión arquitectónica concreta que implementan;
+7. una excepción temporal no modifica el ADR ni se convierte en precedente;
+8. el estado `ACCEPTED` expresa cierre arquitectónico, no implementación ni verificación operativa.
+
+#### 9. Jerarquía de decisión
+
+```text
+PRINCIPIOS CANÓNICOS Y ADR TRANSVERSALES VIGENTES
+        ↓
+ADR-DATA-001
+        ↓
+DECISIONES ESPECÍFICAS ADOPTADAS
+SUPA-ARC-001 A SUPA-ARC-024
+DATA-NORM-ARC-001 A DATA-NORM-ARC-012
+        ↓
+CONTRATOS DE DOMINIO, ENTIDAD, CAMPO, EVENTO E INTEGRACIÓN
+        ↓
+PAQUETES DE TRANSICIÓN Y MATERIALIZACIÓN
+        ↓
+IMPLEMENTACIÓN FÍSICA CERTIFICADA
+```
+
+La precedencia se resuelve por especificidad sin permitir que una decisión inferior contradiga una superior o que una decisión general elimine una restricción específica.
+
+#### 10. Decisiones adoptadas de estructura y ownership
+
+| Tarea          | Decisión adoptada                                                                             |
+| -------------- | --------------------------------------------------------------------------------------------- |
+| `SUPA-ARC-001` | dominios y contextos acotados como fronteras empresariales estables                           |
+| `SUPA-ARC-002` | una fuente de verdad declarada por entidad y atributo gobernado                               |
+| `SUPA-ARC-003` | límites de agregado y referencias entre dominios sin agregados distribuidos implícitos        |
+| `SUPA-ARC-004` | schemas, ownership y fronteras lógicas de despliegue separados de la ubicación legacy         |
+| `SUPA-ARC-005` | distribución explícita de lógica entre base de datos, servicio, Edge Functions y aplicaciones |
+| `SUPA-ARC-006` | contratos síncronos y asíncronos definidos por finalidad, consistencia y fallo                |
+
+#### 11. Decisiones adoptadas de comportamiento y consistencia
+
+| Tarea          | Decisión adoptada                                                                                  |
+| -------------- | -------------------------------------------------------------------------------------------------- |
+| `SUPA-ARC-007` | comandos, eventos, flujos y side effects con identidad y causalidad separadas                      |
+| `SUPA-ARC-008` | idempotencia, concurrencia, reintentos y deduplicación como contratos obligatorios                 |
+| `SUPA-ARC-009` | estados, transiciones, cancelación, reversión y corrección explícitos                              |
+| `SUPA-ARC-010` | actor, razón, evidencia y auditoría vinculados al hecho y no solo a la fila técnica                |
+| `SUPA-ARC-011` | aislamiento territorial y organizacional resuelto desde la fuente del recurso y el contexto válido |
+| `SUPA-ARC-012` | RLS, grants, RPC y schemas privados como defensa coordinada, sin autoridad en el cliente           |
+
+#### 12. Decisiones adoptadas de identidad, seguridad y gobierno
+
+| Tarea          | Decisión adoptada                                                                   |
+| -------------- | ----------------------------------------------------------------------------------- |
+| `SUPA-ARC-013` | integración explícita entre Supabase Auth e identidades de dominio                  |
+| `SUPA-ARC-014` | origen, propagación y retención del contexto de acceso con trazabilidad             |
+| `SUPA-ARC-015` | clasificación, cifrado, retención y eliminación de datos sensibles                  |
+| `SUPA-ARC-016` | auditoría, observabilidad y calidad de datos como contratos verificables            |
+| `SUPA-ARC-017` | invariantes y consistencia transaccional confirmadas por la autoridad propietaria   |
+| `SUPA-ARC-018` | particionamiento, archivo y retención histórica gobernados por significado y acceso |
+
+#### 13. Decisiones adoptadas de consumo, plataforma y evolución
+
+| Tarea          | Decisión adoptada                                                                                               |
+| -------------- | --------------------------------------------------------------------------------------------------------------- |
+| `SUPA-ARC-019` | búsqueda, índices, filtros, paginación y ordenamiento bajo representaciones y versiones explícitas              |
+| `SUPA-ARC-020` | archivos y activos con ownership, metadatos, acceso, retención y eliminación gobernados                         |
+| `SUPA-ARC-021` | secretos, configuración, funciones, jobs y webhooks separados de datos empresariales y con lifecycle controlado |
+| `SUPA-ARC-022` | compatibilidad entre versiones de base de datos, contratos y aplicaciones                                       |
+| `SUPA-ARC-023` | migración objetivo con inventario, gates, verificación, reconciliación y reversibilidad                         |
+| `SUPA-ARC-024` | cuatro clases ambientales, promoción ordenada, paridad, evidencia y bloqueo de drift                            |
+
+#### 14. Evidencia y políticas de normalización adoptadas
+
+1. `DATA-NORM-AUD-001` a `DATA-NORM-AUD-007` se adoptan como evidencia de campos, inconsistencias, excepciones, colisiones, transformaciones, productores e impactos.
+2. `DATA-NORM-ARC-001` a `DATA-NORM-ARC-006` gobiernan política, clases, capitalización, conectores, excepciones y diccionario.
+3. `DATA-NORM-ARC-007` gobierna revisión humana y decisiones ambiguas.
+4. `DATA-NORM-ARC-008` separa búsqueda y comparación de presentación e identidad.
+5. `DATA-NORM-ARC-009` gobierna persistencia, versiones, vigencias, auditoría, replay e idempotencia.
+6. `DATA-NORM-ARC-010` gobierna unicidad y detección de duplicados sin fusión automática.
+7. `DATA-NORM-ARC-011` asigna autoridad semántica al servicio de dominio, commit a RPC y defensa acotada al trigger.
+8. `DATA-NORM-ARC-012` preserva originales externos, mappings versionados, autoridad por campo y cuarentena.
+9. Ninguna política de normalización autoriza por sí sola corrección masiva, fusión, cambio de identidad o activación física.
+
+#### 15. Decisión central
+
+Vento OS adoptará una arquitectura de datos orientada por dominio, con ownership explícito, contratos versionados y autoridad servidor, bajo estas invariantes:
+
+```text
+UN DATO EMPRESARIAL
+        ↓
+TIENE DOMINIO Y ENTIDAD PROPIETARIOS
+        ↓
+TIENE FUENTE DE VERDAD Y REPRESENTACIONES DECLARADAS
+        ↓
+SE MODIFICA MEDIANTE COMANDO AUTORIZADO
+        ↓
+VALIDA INVARIANTES EN UNA FRONTERA TRANSACCIONAL
+        ↓
+CONFIRMA UN HECHO AUDITABLE
+        ↓
+EMITE EFECTOS Y PROYECCIONES IDÉMPOTENTES
+        ↓
+CONSERVA HISTORIA, COMPATIBILIDAD Y REVERSIBILIDAD
+```
+
+Una aplicación, integración, job, trigger o credencial técnica podrá ejecutar responsabilidades asignadas, pero no adquirir ownership por conveniencia.
+
+#### 16. Dominios y fuentes de verdad
+
+1. el dominio se determina por responsabilidad empresarial, no por schema o aplicación;
+2. cada entidad material tendrá un owner y una fuente de verdad inequívocos;
+3. un atributo podrá tener autoridad diferente de otros atributos de la misma entidad cuando el contrato lo declare;
+4. vistas, snapshots, caches, catálogos, reportes y proyecciones no se convierten en fuentes por ser consumidos ampliamente;
+5. una copia sincronizable conserva referencia, versión y política de reconciliación;
+6. un snapshot histórico no se reescribe como si fuera la fuente vigente;
+7. los datos compartidos se exponen mediante contratos, no mediante escrituras cruzadas libres;
+8. un ownership no resuelto bloquea migración y mutación automática.
+
+#### 17. Agregados, referencias y transacciones
+
+1. cada agregado define su raíz, invariantes, comandos y límites de consistencia fuerte;
+2. una transacción no abarcará dominios por comodidad si no existe una decisión explícita;
+3. referencias cross-domain usarán identidades estables y contratos de integridad;
+4. la inexistencia temporal de una proyección no invalida el hecho confirmado de la fuente;
+5. side effects posteriores al commit serán idempotentes, reanudables y observables;
+6. la compensación no se confunde con rollback físico de historia empresarial;
+7. cancelación, reversión, corrección y rectificación conservan el hecho anterior;
+8. concurrencia y reintentos deberán producir un único efecto lógico o un conflicto explícito.
+
+#### 18. Capas de ejecución
+
+| Capa                         | Autoridad consolidada                                                                 |
+| ---------------------------- | ------------------------------------------------------------------------------------- |
+| aplicación                   | captura, guía, presentación y previsualización no vinculante                          |
+| servicio de dominio          | única autoridad semántica para políticas y decisiones de dominio                      |
+| RPC o frontera transaccional | autorización, revalidación, idempotencia, concurrencia, persistencia y commit         |
+| base de datos                | integridad, constraints, RLS, aislamiento y defensas locales certificadas             |
+| trigger defensivo            | assert, derivación determinista acotada o stamping; nunca motor empresarial ambiguo   |
+| Edge Function o adaptador    | transporte, integración y orquestación autorizada; no fuente de verdad por despliegue |
+| job o proceso batch          | ejecución del mismo contrato, con lote, cursor, reanudación y evidencia               |
+
+Quedan prohibidas cuatro implementaciones semánticas independientes para la misma regla.
+
+#### 19. Identidad, contexto y autorización
+
+1. identidad autenticada, identidad de dominio, actor efectivo y contexto de acceso permanecen separados;
+2. Supabase Auth prueba un principal y no sustituye la identidad empresarial;
+3. la autorización efectiva se resuelve en servidor con permiso, recurso, territorio, contexto y denegaciones;
+4. RLS es defensa obligatoria y no reemplaza la autorización de comando ni la auditoría;
+5. credenciales de servicio, `service_role` o bypass técnicos no conceden autoridad empresarial;
+6. toda operación privilegiada tendrá finalidad, actor o sistema, alcance, ventana, evidencia y cierre;
+7. el contexto enviado por el cliente es una solicitud que debe revalidarse;
+8. datos de acceso retenidos deberán cumplir finalidad, minimización y política histórica.
+
+#### 20. Seguridad, privacidad y retención
+
+1. datos personales, laborales, financieros, legales, de ubicación, salud, seguridad y secretos se clasifican antes de uso o exposición;
+2. cifrado, masking, tokenización o referencia protegida se aplican según clase y finalidad;
+3. logs, auditoría y observabilidad no expondrán secretos ni payloads completos por defecto;
+4. retención, legal hold, archivo, anonimización y eliminación deberán ser coherentes entre fuente, copias, backups e integraciones;
+5. eliminación física no borrará evidencia obligatoria ni dejará referencias inválidas;
+6. acceso a datos sensibles se separa del acceso al proceso que los produce;
+7. exports y archivos heredarán clasificación y controles equivalentes;
+8. una excepción de seguridad será temporal, aprobada, medible y revocable.
+
+#### 21. Auditoría, observabilidad y calidad
+
+1. cada mutación material conservará actor, contexto, comando, razón, estado anterior, resultado, versiones y evidencia;
+2. auditoría empresarial, log técnico, métrica y evento son conceptos distintos y correlacionables;
+3. calidad se medirá por contrato de dominio, no por apariencia textual o ausencia de errores SQL;
+4. drift, duplicidad, ruptura de referencias, valores huérfanos y divergencia de proyecciones tendrán owner y severidad;
+5. no se declarará éxito total cuando existan efectos parciales pendientes;
+6. replay y reconstrucción usarán versiones históricas o registrarán imposibilidad explícita;
+7. observabilidad deberá permitir distinguir rechazo, bloqueo, conflicto, retry, compensación y confirmación;
+8. la evidencia será reproducible sin incluir material sensible innecesario.
+
+#### 22. Búsqueda, índices, filtros y paginación
+
+1. búsqueda y comparación derivan representaciones separadas y no reescriben el valor mostrado;
+2. coincidencia textual no prueba identidad ni autoriza fusión;
+3. índice, query, RPC y cliente deberán compartir semántica y versión;
+4. ranking, scope, autorización, filtros y desempates se resuelven en servidor;
+5. paginación usa orden total estable y cursor compatible con la versión;
+6. un cambio de versión no mezclará páginas ni resultados sin reinicio explícito;
+7. índices se diseñan después de fijar contrato, cardinalidad, workload y plan de transición;
+8. búsqueda degradada o fallback no ampliará acceso ni seleccionará una entidad ambigua.
+
+#### 23. Archivos, Storage y activos
+
+1. archivo, blob, metadata, entidad propietaria, versión y derivaciones permanecen vinculados;
+2. bucket o ruta no determinan ownership por sí solos;
+3. subida, lectura, transformación, firma, expiración y eliminación requieren autorización y auditoría;
+4. URLs públicas o firmadas no sustituyen políticas de acceso;
+5. thumbnails, exports, adjuntos y documentos derivados declaran si son regenerables, históricos o autoritativos;
+6. malware, tamaño, tipo, checksum, duplicidad y contenido sensible se controlan antes de exposición;
+7. retención y borrado incluyen copias, CDN, backups y proveedores cuando aplique;
+8. nombres de archivo no se usan como identidad empresarial estable.
+
+#### 24. Integraciones y datos externos
+
+1. payload original, transporte, autenticidad, mapping, comando, efecto, ACK y evento empresarial permanecen separados;
+2. autenticidad del proveedor no equivale a verdad empresarial;
+3. mappings son exactos, versionados, auditables y no reinterpretan historia silenciosamente;
+4. identidad externa incluye emisor, ambiente, tenant, tipo, contrato e identificador;
+5. mismo identificador y payload distinto produce conflicto;
+6. eventos tardíos, fuera de orden, corregidos o retractados requieren reconciliación explícita;
+7. imports conservan archivo, hash, lote, fila, columna y celda cuando corresponda;
+8. cuarentena no confirma el hecho ni autoriza un fallback local;
+9. ACK técnico no demuestra commit interno ni resultado empresarial;
+10. integraciones existentes deberán demostrar inventario, paridad y retiro de helpers divergentes.
+
+#### 25. Frontera de VITAL
+
+VITAL permanece como producto separado aunque comparta proyecto, proveedor, infraestructura o capacidad técnica.
+
+Queda prohibido:
+
+- aplicar automáticamente dominios, RLS, normalización, eventos, mappings o retención de Vento OS a VITAL;
+- usar datos VITAL como fixtures, catálogo, identidad o fuente de verdad de Vento OS sin contrato;
+- compartir secretos, jobs, buckets, funciones o tablas por inferencia;
+- incluir VITAL en una migración masiva del BLOQUE E3;
+- declarar una decisión transversal porque un objeto tenga estructura similar.
+
+Toda interoperabilidad futura requerirá contrato explícito y, si altera la frontera de producto, un nuevo ADR.
+
+#### 26. Versiones, migración y ambientes
+
+1. schema, contrato, función, RPC, evento, mapping, política y cliente tendrán versiones compatibles y observables;
+2. no existe `latest` implícito para decisiones sensibles o replay;
+3. transición comienza con inventario de contratos, vistas, RPC y clientes afectados;
+4. coexistencia, shadow, dual evaluation, backfill, cutover y retiro requieren gates separados;
+5. migraciones expand-contract preceden cambios incompatibles cuando aplique;
+6. rollback no borrará hechos confirmados ni reinterpretará historia;
+7. LOCAL, TEST, STAGING y PRODUCTION conservan identidad y controles propios;
+8. promoción seguirá `LOCAL_TO_TEST`, `TEST_TO_STAGING` y `STAGING_TO_PRODUCTION`;
+9. drift no allowlisted bloquea promoción;
+10. datos productivos no se copian a ambientes inferiores sin minimización, autorización y trazabilidad.
+
+#### 27. Consecuencias positivas
+
+- una fuente de verdad y owner explícitos por entidad o atributo;
+- menor divergencia entre aplicaciones, RPC, triggers e integraciones;
+- migraciones trazables y reversibles;
+- autorización, RLS y auditoría alineadas;
+- eventos, side effects y retries idempotentes;
+- búsqueda y normalización sin destruir presentación ni identidad;
+- ambientes comparables y promociones gobernadas;
+- mejor capacidad de reconciliación, replay, soporte e investigación;
+- separación verificable de VITAL;
+- base común para servicios transversales del BLOQUE E4 y paquetes del BLOQUE E5.
+
+#### 28. Trade-offs
+
+1. aumenta el trabajo inicial de inventario, clasificación y mapping;
+2. exige contratos explícitos donde antes existían accesos directos;
+3. puede mantener temporalmente proyecciones o compatibilidad duplicada durante transición;
+4. introduce metadatos, auditoría, versiones y evidencia adicionales;
+5. limita refactorizaciones rápidas que no demuestren paridad;
+6. algunos flujos deberán aceptar consistencia eventual y compensación;
+7. la segregación de ambientes y secretos incrementa costo operativo;
+8. índices, storage y retención deberán balancear rendimiento, costo y cumplimiento;
+9. la revisión humana seguirá siendo necesaria para ambigüedad, identidad y decisiones legales;
+10. el cierre arquitectónico no elimina deuda legacy; la convierte en trabajo de transición trazable.
+
+#### 29. Riesgos aceptados
+
+Se aceptan únicamente bajo control y seguimiento:
+
+| Riesgo                                                             | Condición de aceptación                                                         |
+| ------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| coexistencia temporal legacy y objetivo                            | inventario, shadow, paridad, owner, fecha y criterio de retiro                  |
+| duplicación temporal de proyecciones                               | fuente inequívoca, reconciliación, idempotencia y prohibición de dual ownership |
+| consistencia eventual entre dominios                               | hecho durable, outbox o mecanismo equivalente, retry y visibilidad de lag       |
+| mayor costo de auditoría y retención                               | clasificación, presupuesto, minimización y lifecycle aprobado                   |
+| degradación temporal de throughput durante backfill o verificación | límites, ventanas, observación y rollback o pausa                               |
+| compatibilidad por varias versiones                                | matriz, telemetría de adopción y fecha de retiro                                |
+| decisiones humanas en casos ambiguos                               | segregación, evidencia, SLA y no aplicación antes de aprobación                 |
+| rollback mediante forward-fix                                      | preservación de hechos, compensación y prueba previa                            |
+
+Aceptar estos riesgos no autoriza omitir controles ni convertirlos en estado permanente.
+
+#### 30. Riesgos no aceptados
+
+Quedan bloqueados:
+
+- ownership ambiguo o dos fuentes activas sin regla de autoridad;
+- escrituras cross-domain sin contrato;
+- autorización o normalización decidida únicamente en cliente;
+- bypass ordinario mediante credenciales privilegiadas;
+- pérdida del original, procedencia, actor, razón o versión;
+- fusión, desactivación o reasignación por coincidencia textual;
+- side effects no idempotentes o retries sin deduplicación;
+- migración irreversible sin evidencia, reconciliación y estrategia de recuperación;
+- exposición de secretos o datos sensibles en logs, URLs, fixtures o ambientes inferiores;
+- drift ambiental desconocido o promoción directa a producción;
+- reinterpretación silenciosa de historia con una versión nueva;
+- propagación de reglas de Vento OS a VITAL por coexistencia física;
+- implementación física mientras exista una contradicción arquitectónica abierta.
+
+#### 31. Condiciones de reversión
+
+`ADR-DATA-001` no se elimina ni se edita para simular que una decisión anterior nunca existió. Podrá cambiar a `SUPERSEDED` mediante un nuevo ADR cuando:
+
+1. la evidencia demuestre que una decisión aceptada produce riesgo mayor que su alternativa;
+2. una obligación legal, contractual o de seguridad haga incompatible una decisión central;
+3. cambie la frontera entre productos, tenants o dominios;
+4. el proveedor de plataforma impida un control esencial y exista arquitectura sustituta aprobada;
+5. la transición demuestre imposibilidad material con evidencia reproducible;
+6. un incidente revele pérdida de integridad, confidencialidad, disponibilidad o auditabilidad atribuible al ADR;
+7. una reversión sea aprobada con impacto, compatibilidad, migración, evidencia y tratamiento de historia.
+
+Revertir una implementación no revierte automáticamente el ADR. Revertir el ADR exige decisión explícita y plan de transición propio.
+
+#### 32. Criterios que obligan a un nuevo ADR
+
+Se requiere un ADR nuevo o supersesor para:
+
+- crear, fusionar o dividir dominios o bounded contexts;
+- cambiar la fuente de verdad o owner de una entidad crítica;
+- modificar límites de agregado o consistencia;
+- introducir multi-tenancy o cambiar aislamiento territorial u organizacional;
+- trasladar autoridad semántica entre aplicación, servicio, RPC, base o proveedor externo;
+- sustituir el modelo RLS, identidad o contexto de acceso;
+- adoptar event sourcing, CDC, broker, lakehouse o almacén analítico como fuente operacional;
+- cambiar clases de sensibilidad, retención o eliminación de forma incompatible;
+- hacer pública una superficie o activo previamente restringido;
+- modificar la frontera Vento OS–VITAL;
+- admitir una integración externa como owner de atributos internos nuevos;
+- eliminar un ambiente, gate o etapa obligatoria de promoción;
+- aceptar pérdida de compatibilidad o irreversibilidad no contemplada;
+- contradecir una invariante central de este ADR.
+
+#### 33. Relación con BLOQUE E4
+
+El BLOQUE E4 deberá materializar servicios transversales compatibles con este ADR, incluyendo observabilidad, auditoría, outbox o entrega equivalente, jobs, notificaciones, archivos, secretos, integración, reintentos y recuperación.
+
+Reglas:
+
+1. E4 consume contratos de dominio; no redefine ownership;
+2. un servicio transversal no se convierte en fuente de verdad por centralizar transporte;
+3. observabilidad no sustituye auditoría ni autorización;
+4. un bus, cola o webhook transporta hechos; no decide su semántica;
+5. jobs y automatizaciones usan las mismas versiones, identidades e idempotencia;
+6. cualquier servicio E4 que requiera contradecir este ADR deberá bloquearse y promover un nuevo ADR.
+
+#### 34. Relación con BLOQUE E5
+
+El BLOQUE E5 deberá convertir las decisiones en paquetes implementables, con alcance, dependencias, repositorios, migraciones, pruebas, ambientes, rollout, soporte y rollback.
+
+Cada paquete E5 deberá declarar:
+
+- decisión o requisito que materializa;
+- fuente y destino;
+- contratos afectados;
+- estrategia de compatibilidad;
+- orden y dependencias;
+- datos existentes y backfill;
+- controles de seguridad;
+- corpus y evidencia;
+- criterio de activación;
+- observación y abandono;
+- rollback o forward-fix;
+- owner operativo y cierre.
+
+E5 no podrá reinterpretar una decisión ni agrupar cambios incompatibles para reducir pasos.
+
+#### 35. Puerta de transición
+
+El estado `ACCEPTED` habilita iniciar `SUPA-TRANS-001`, pero no autoriza DDL, DML ni despliegue.
+
+Antes de cualquier materialización física deberán cumplirse, como mínimo:
+
+1. inventario completo de contratos, vistas, RPC, funciones, triggers, RLS, índices, clientes, jobs, Edge Functions e integraciones afectados;
+2. clasificación source, target, retained, migrated, derived, deprecated o removed;
+3. mapa de consumidores y productores;
+4. compatibilidad por versión;
+5. estrategia de seguridad, datos sensibles y secretos;
+6. baseline y evidencia reproducible;
+7. dry-run y análisis de colisiones;
+8. orden técnico de migración;
+9. pruebas de paridad, concurrencia, idempotencia y rendimiento;
+10. rollback, forward-fix, reconciliación y restauración;
+11. ambiente de validación y gate de promoción;
+12. ausencia de decisión arquitectónica abierta o contradicción canónica.
+
+#### 36. Gobierno del ADR
+
+1. la versión `1.0.0` es inmutable una vez aceptada;
+2. correcciones editoriales sin cambio semántico se registran sin alterar decisiones;
+3. cambio semántico compatible crea una revisión aditiva documentada;
+4. cambio incompatible crea un ADR supersesor;
+5. owner y reviewers deberán reexaminar el ADR ante incidente grave, cambio legal, nueva plataforma, nueva frontera de producto o hallazgo de transición;
+6. cada excepción tendrá owner, motivo, alcance, inicio, vencimiento, controles y cierre;
+7. ninguna excepción reduce RLS, auditoría, integridad, protección de secretos o separación de VITAL sin nuevo ADR;
+8. los requisitos 04A son la base verificable de conformidad y conservan historia aun cuando el ADR sea supersedido.
+
+#### 37. Alternativas rechazadas
+
+| Alternativa                                               | Motivo de rechazo                                                                |
+| --------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| mantener el modelo actual y corregir casos aislados       | conserva ownership ambiguo y helpers divergentes                                 |
+| centralizar toda lógica en PostgreSQL                     | convierte triggers y funciones en motor empresarial oculto y dificulta evolución |
+| centralizar toda lógica en clientes                       | rompe autoridad servidor, paridad, seguridad e idempotencia                      |
+| usar un schema por aplicación como dominio                | confunde consumidor con propietario y perpetúa escrituras cruzadas               |
+| usar `public` como dominio universal                      | mantiene mezcla de responsabilidades y superficie excesiva                       |
+| migración big bang                                        | impide compatibilidad, observación, rollback y reconciliación gradual            |
+| dual write indefinido                                     | crea dos fuentes activas y divergencia silenciosa                                |
+| normalización universal de texto                          | destruye marcas, nombres legales, identificadores, originales e historia         |
+| usar eventos como fuente completa sin decisión específica | confunde transporte, auditoría y estado autoritativo                             |
+| compartir arquitectura con VITAL por similitud            | viola frontera de producto y ownership                                           |
+
+#### 38. Decisiones reservadas a transición
+
+Este ADR no decide todavía:
+
+- nombres físicos finales de schemas, tablas, columnas, índices, constraints o funciones;
+- qué objetos legacy se conservan, migran, encapsulan o retiran;
+- contenido exacto de cada migración;
+- batches, ventanas y throughput de backfill;
+- orden definitivo de paquetes después del inventario;
+- solución física concreta de outbox, inbox, cola, CDC o procesamiento asíncrono;
+- proveedor o herramienta adicional;
+- configuración de secretos, proyectos, regiones o ambientes;
+- fecha de cutover;
+- datos concretos que requieren corrección o fusión;
+- aceptación de excepciones descubiertas durante transición.
+
+Estas decisiones pertenecen a `SUPA-TRANS-001` a `SUPA-TRANS-016`, `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009`, BLOQUE E4 y paquetes E5 según su propiedad.
+
+#### 39. Corpus de conformidad
+
+El corpus integral deberá demostrar, como mínimo:
+
+1. ownership único y atributos con autoridad diferenciada;
+2. referencias dentro y fuera del agregado;
+3. comando autorizado, rechazado, repetido y concurrente;
+4. commit, rollback técnico, compensación y corrección;
+5. evento, side effect, retry, duplicado y orden invertido;
+6. RLS, RPC, service role y bypass controlado;
+7. actor humano, dispositivo, servicio y contexto territorial;
+8. dato ordinario, personal, financiero, legal, secreto y archivo;
+9. retención, legal hold, anonimización y eliminación;
+10. búsqueda exacta, tolerante, paginada y con cambio de versión;
+11. original externo, mapping, cuarentena, ACK y reconciliación;
+12. snapshot histórico, proyección sincronizable y cache regenerable;
+13. cliente compatible, legacy, desactualizado y retirado;
+14. LOCAL, TEST, STAGING y PRODUCTION con promoción y drift;
+15. shadow, backfill, cutover, rollback y forward-fix;
+16. separación de VITAL;
+17. evidencia suficiente sin exposición sensible;
+18. ausencia de cambios físicos anticipados por este ADR.
+
+#### 40. Hallazgos y carryovers
+
+| ID                 | Decisión o brecha                                                                                           | Resultado de esta tarea                                  | Propietario siguiente                                |
+| ------------------ | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------- |
+| `SUPA-ARC-025-H01` | las decisiones arquitectónicas estaban distribuidas en 43 tareas de arquitectura, auditoría y normalización | adopción normativa única mediante `ADR-DATA-001`         | `SUPA-TRANS-001`; gobierno documental                |
+| `SUPA-ARC-025-H02` | una síntesis podía contradecir decisiones específicas                                                       | regla de precedencia y no reinterpretación aprobada      | todas las tareas de transición                       |
+| `SUPA-ARC-025-H03` | estado `ACCEPTED` podía confundirse con implementación                                                      | cierre arquitectónico separado de materialización física | `SUPA-TRANS-001` a `SUPA-TRANS-016`                  |
+| `SUPA-ARC-025-H04` | riesgos temporales carecían de clasificación consolidada                                                    | riesgos aceptados y no aceptados definidos               | `SUPA-TRANS-009`; `SUPA-TRANS-010`; `SUPA-TRANS-015` |
+| `SUPA-ARC-025-H05` | no existían condiciones consolidadas de reversión o supersesión                                             | condiciones y disparadores de nuevo ADR aprobados        | gobierno de arquitectura                             |
+| `SUPA-ARC-025-H06` | E4 y E5 podían reinterpretar ownership o secuencia                                                          | relación de consumo y materialización delimitada         | BLOQUES E4 y E5                                      |
+| `SUPA-ARC-025-H07` | transición podía iniciar sin inventario completo                                                            | puerta de doce condiciones aprobada                      | `SUPA-TRANS-001`; `SUPA-TRANS-015`                   |
+| `SUPA-ARC-025-H08` | VITAL podía incluirse por coexistencia física                                                               | exclusión transversal ratificada                         | cualquier ADR o contrato futuro de interoperabilidad |
+| `SUPA-ARC-025-H09` | roles de owner y reviewers no estaban consolidados                                                          | gobierno mínimo aprobado                                 | gobierno documental y de plataforma                  |
+| `SUPA-ARC-025-H10` | implementación física permanece inexistente                                                                 | ADR aceptado con cero cambios físicos                    | tareas de transición y paquetes E5                   |
+
+#### 41. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se crean los requisitos:
+
+- `TREQ-SUPABASE-1656` a `TREQ-SUPABASE-1695`.
+
+El detalle canónico de cada requisito reside en el registro 04A actualizado hasta esta tarea.
+
+#### 42. Criterios de integridad
+
+El ADR se considera íntegro para esta etapa cuando:
+
+1. identifica `ADR-DATA-001`, versión `1.0.0` y estado `ACCEPTED`;
+2. declara fecha, owner, reviewers y custodia;
+3. adopta `SUPA-ARC-001` a `SUPA-ARC-024` sin reinterpretación;
+4. adopta la evidencia `DATA-NORM-AUD-001` a `DATA-NORM-AUD-007`;
+5. adopta `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012`;
+6. define precedencia entre ADR, decisiones específicas y transición;
+7. consolida dominios, ownership, agregados, referencias y schemas;
+8. consolida capas, transacciones, eventos, idempotencia y estados;
+9. consolida identidad, RLS, seguridad, auditoría y calidad;
+10. consolida búsqueda, Storage, secretos, jobs e integraciones;
+11. consolida compatibilidad, migración y ambientes;
+12. ratifica la separación de VITAL;
+13. enumera consecuencias positivas y trade-offs;
+14. distingue riesgos aceptados y no aceptados;
+15. define condiciones de reversión y nuevo ADR;
+16. delimita los BLOQUES E4 y E5;
+17. habilita transición desde `SUPA-TRANS-001` sin autorizar cambios físicos;
+18. exige una puerta de doce condiciones antes de materialización;
+19. reserva decisiones físicas a sus tareas propietarias;
+20. incorpora un corpus integral y cuarenta requisitos nuevos;
+21. mantiene cero cambios físicos y cero decisiones arquitectónicas abiertas dentro del alcance consolidado.
+
+#### 43. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-TRANS-001 — Inventariar contratos, vistas, RPC y clientes afectados
+```
+

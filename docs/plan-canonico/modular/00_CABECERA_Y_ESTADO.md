@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **448** |
+| Tareas aprobadas | **449** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1127** |
+| Tareas no iniciadas | **1126** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **28.44% (448/1575)** |
+| Porcentaje de completamiento | **28.51% (449/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas** |
-| Tarea actual | **SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos** |
+| Última tarea aprobada | **SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos** |
+| Tarea actual | **SUPA-TRANS-001 — Mapear cada objeto actual hacia la arquitectura objetivo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-TRANS-001 — Mapear cada objeto actual hacia la arquitectura objetivo** |
+| Siguiente tarea | **SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 19 de 45 aprobadas; SUPA-ARC-025 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 20 de 45 aprobadas; SUPA-TRANS-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-ARC-012` — Definir tratamiento de datos recibidos desde integraciones externas |
-| Tarea actual | `SUPA-ARC-025` — Consolidar y aprobar ADR de arquitectura canónica de datos — **NO INICIADA** |
-| Siguiente tarea | `SUPA-TRANS-001` — Mapear cada objeto actual hacia la arquitectura objetivo |
+| Última aprobada | `SUPA-ARC-025` — Consolidar y aprobar ADR de arquitectura canónica de datos |
+| Tarea actual | `SUPA-TRANS-001` — Mapear cada objeto actual hacia la arquitectura objetivo — **NO INICIADA** |
+| Siguiente tarea | `SUPA-TRANS-002` — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **19 DE 45 APROBADAS — ACTUAL SUPA-ARC-025** |
+| BLOQUE E3 | **20 DE 45 APROBADAS — ACTUAL SUPA-TRANS-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas
-        ↓
-TAREA ACTUAL
 SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-TRANS-001 — Mapear cada objeto actual hacia la arquitectura objetivo
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 19 de 45 tareas aprobadas
+BLOQUE E3 — 20 de 45 tareas aprobadas
 ```
