@@ -1226,7 +1226,745 @@ SUPA-TRANS-006 — SIGUIENTE RESERVADA; NO INICIADA
 La aprobación de esta tarea quedó incorporada sin iniciar trabajo de `SUPA-TRANS-005`.
 
 
-### [ ] SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos
+### ✅ SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos
+
+**Estado:** APROBADA  
+**Fecha de preparación documental:** 2026-07-31  
+**Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase  
+**Tarea anterior:** `SUPA-TRANS-004 — Definir orden de migración por dominio` — APROBADA  
+**Tarea siguiente:** `SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad`  
+**Tipo de tarea:** definición documental del contrato de backfill, reconciliación y corrección de calidad por unidad de migración; sin DDL, DML, ejecución de migraciones, mutación de datos, despliegues, cambios de RLS, cambios de writers, cutover, rollback operativo ni retiros físicos
+
+#### 1. Resultado concreto
+
+Esta tarea establece el contrato canónico:
+
+```text
+BACKFILL-AND-DATA-QUALITY-PLAN-005@1.0.0
+```
+
+El contrato extiende cada `migration_unit` de `MIGRATION-ORDER-004@1.0.0` con una estrategia verificable para:
+
+- determinar si necesita backfill;
+- fijar el corte y baseline de la fuente;
+- seleccionar un modo cerrado de tratamiento;
+- preservar identidad, historia, procedencia y autoridad;
+- clasificar defectos y ambigüedades;
+- definir lotes, checkpoints, reanudación e idempotencia;
+- reconciliar fuente, destino y efectos derivados;
+- impedir pérdida, invención o fusión silenciosa de datos;
+- producir evidencia consumible por las tareas posteriores.
+
+El contrato aplica a las **970 identidades** preservadas por `TRANSITION-MAP-001@1.0.0`, clasificadas por `DISPOSITION-MAP-002@1.0.2` y ordenadas mediante `MIGRATION-ORDER-004@1.0.0`.
+
+Esta tarea no ejecuta backfills ni declara que una unidad haya superado dry run, reconciliación, cutover o rollback.
+
+#### 2. Fuentes canónicas aplicadas
+
+| Fuente                                    | Decisión consumida                                                                                                          |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `TRANSITION-MAP-001@1.0.0`                | universo cerrado de 970 identidades y claves estables de transición                                                         |
+| `DISPOSITION-MAP-002@1.0.2`               | 420 `CONSERVAR`, 494 `MOVER`, 11 `FUSIONAR`, 6 `DIVIDIR`, 0 `RENOMBRAR` y 39 `RETIRAR`                                      |
+| `DEPENDENCY-MAP-003@1.0.0`                | dependencias estructurales, candidatas, dinámicas, externas y bloqueadas                                                    |
+| `MIGRATION-ORDER-004@1.0.0`               | 26 responsabilidades, oleadas, unidades, gates y secuencia de transición                                                    |
+| `DATA-NORM-AUD-001` a `DATA-NORM-AUD-007` | defectos, excepciones, duplicados, transformaciones, consumidores e impacto de normalización                                |
+| `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012` | políticas por campo, clases, transformaciones, excepciones, revisión, búsqueda, auditoría, unicidad, capas y datos externos |
+| `SUPA-AUD-022` a `SUPA-AUD-024`           | inventario, dependencias, riesgos y cohortes de calidad ya identificadas                                                    |
+| `SUPA-ARC-001` a `SUPA-ARC-025`           | ownership, contratos, seguridad, eventos, escrituras, recuperación, ambientes y ADR aceptado                                |
+| registro canónico `04A`                   | requisitos vigentes de migración, calidad, identidad, replay, lotes, reconciliación y recuperación                          |
+
+#### 3. Alcance exacto
+
+La tarea define:
+
+1. el contrato mínimo de backfill por `migration_unit`;
+2. los modos cerrados de backfill;
+3. los modos permitidos de mapping y corrección;
+4. el baseline y los tipos de corte de fuente;
+5. las dimensiones obligatorias de calidad;
+6. la preservación de originales, lineage y autoridad;
+7. las reglas de identidad, crosswalk y referencias;
+8. la semántica de nulos, números, unidades, tiempo, texto y valores externos;
+9. el tratamiento de duplicados, huérfanos, merges y splits;
+10. los lotes, checkpoints, outcomes, reanudación e idempotencia;
+11. la cuarentena y revisión de casos ambiguos;
+12. las reglas de reconciliación y tolerancia;
+13. la conducta por clase de objeto y disposición;
+14. la estrategia base por las 26 responsabilidades objetivo;
+15. los gates documentales y handoffs hacia `SUPA-TRANS-006` a `SUPA-TRANS-015`.
+
+La tarea no define ni ejecuta:
+
+- nombres físicos finales;
+- scripts DDL o DML;
+- estrategia de compatibilidad temporal, propiedad de `SUPA-TRANS-006`;
+- adaptación de consumidores, propiedad de `SUPA-TRANS-007`;
+- writers, doble escritura o concurrencia durante coexistencia, propiedad de `SUPA-TRANS-008`;
+- suites ejecutables antes y después de migrar, propiedad de `SUPA-TRANS-009`;
+- certificación de seguridad o rendimiento, propiedad de `SUPA-TRANS-010`;
+- rollback ejecutable, propiedad de `SUPA-TRANS-011`;
+- retiro físico, propiedad de `SUPA-TRANS-012`;
+- promoción por ambientes, propiedad de `SUPA-TRANS-013`;
+- tipos y contratos generados, propiedad de `SUPA-TRANS-014`;
+- roadmap ejecutable, propiedad de `SUPA-TRANS-015`.
+
+#### 4. Extensión obligatoria de cada unidad de migración
+
+Cada `migration_unit` deberá incorporar como mínimo:
+
+```text
+backfill_plan_id
+migration_unit_id
+transition_keys
+owner_schema
+wave_id
+source_authority
+target_authority
+source_cut_strategy
+source_cut_reference
+source_snapshot_or_digest
+disposition_set
+backfill_mode
+mapping_contract
+policy_versions
+identity_contract
+reference_contract
+temporal_contract
+null_semantics_contract
+duplicate_resolution_contract
+quarantine_contract
+batch_contract
+checkpoint_contract
+idempotency_contract
+reconciliation_contract
+acceptance_profile
+zero_tolerance_invariants
+security_profile
+evidence_bundle
+downstream_handoffs
+backfill_status
+```
+
+Reglas:
+
+1. `backfill_plan_id` será estable y versionado.
+2. `transition_keys` conservará las claves de `TRANSITION-MAP-001@1.0.0` sin reconstruir identidades.
+3. una unidad con varias identidades declarará tratamiento por identidad y reglas comunes del grupo;
+4. una identidad en más de una fase deberá conservar un plan raíz y revisiones vinculadas, no planes independientes contradictorios;
+5. todo campo desconocido o no resuelto bloqueará la elegibilidad de ejecución;
+6. un plan no podrá declararse listo únicamente porque el destino exista o porque los conteos coincidan.
+
+#### 5. Modos cerrados de backfill
+
+Cada unidad seleccionará exactamente uno como modo principal y podrá declarar submodos por componente sin contradecirlo:
+
+| Modo                       | Uso permitido                                                                                     | Condición principal                                                                                  |
+| -------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
+| `NO_BACKFILL_REQUIRED`     | funciones, triggers, políticas, contratos u objetos sin estado persistido que trasladar           | demostrar que no existe dato, cola, checkpoint, archivo, configuración o historia asociada pendiente |
+| `EXACT_COPY`               | valores y filas cuya identidad, semántica y autoridad permanecen sin transformación               | igualdad de claves, tipos, nulabilidad y significado demostrada                                      |
+| `VERSIONED_TRANSFORMATION` | cambio determinista de estructura, enum, representación o formato                                 | mapping y políticas inmutables, versionadas e idempotentes                                           |
+| `REFERENCE_CROSSWALK`      | cambio de claves o referencias entre identidades estables                                         | crosswalk completo, auditable y sin resolución por nombre                                            |
+| `LEDGER_OR_HISTORY_REPLAY` | reconstrucción desde hechos, eventos, outbox, snapshots o historia durable                        | replay seguro, orden, idempotencia, audiencia y causalidad preservados                               |
+| `PROJECTION_REBUILD`       | vistas materializadas lógicas, saldos, agregados, disponibilidad, búsqueda o reportes derivados   | fuente certificada y fórmula versionada; la proyección no se copia como autoridad                    |
+| `APPROVED_MERGE_PLAN`      | grupos `FUSIONAR` con autoridad, sobreviviente, crosswalk y tratamiento de divergencias aprobados | prohibida la selección por schema, antigüedad, frecuencia, completitud o nombre                      |
+| `APPROVED_SPLIT_PLAN`      | identidades `DIVIDIR` con discriminador y destino por propietario, finalidad o sensibilidad       | cobertura total de filas, metadata, archivos, referencias y retención                                |
+| `QUARANTINE_ONLY`          | datos no transformables responsablemente dentro del corte                                         | owner, motivo, evidencia, estado y puerta de resolución obligatorios                                 |
+| `NO_COPY_RETIREMENT`       | objetos `RETIRAR` sin dato que deba continuar en el destino                                       | retención, evidencia, cero consumidores y recuperación definidos antes del retiro                    |
+
+Ningún modo autoriza por sí mismo la ejecución física.
+
+#### 6. Modos permitidos de mapping y corrección
+
+Cuando exista transformación, se reutilizarán los modos canónicos de `DATA-NORM-ARC-012`:
+
+```text
+EXACT_CONTRACT_MAPPING
+VERSIONED_ENUM_MAPPING
+APPROVED_ALIAS_MAPPING
+STRUCTURED_COMPONENT_MAPPING
+DERIVE_WITHOUT_SOURCE_MUTATION
+PRESERVE_AND_DEFER
+HUMAN_REVIEW_REQUIRED
+ESCALATE_STRUCTURAL_OR_IDENTITY
+```
+
+Reglas obligatorias:
+
+1. no se permite similitud, frecuencia, primer resultado ni heurística local como mapping;
+2. `APPROVED_ALIAS_MAPPING` exige alias explícito, fuente y versión;
+3. `DERIVE_WITHOUT_SOURCE_MUTATION` crea una representación separada y no sobrescribe el original;
+4. `PRESERVE_AND_DEFER` mantiene el dato y bloquea la mutación dependiente;
+5. `HUMAN_REVIEW_REQUIRED` no produce automáticamente un valor objetivo;
+6. `ESCALATE_STRUCTURAL_OR_IDENTITY` impide continuar hasta resolver ownership, identidad o modelo;
+7. un cambio de mapping, catálogo, diccionario, locale, Unicode, parser o regla produce una nueva versión y un nuevo dry run.
+
+#### 7. Baseline y corte de fuente
+
+Toda unidad deberá declarar un baseline reproducible que incluya:
+
+```text
+ambiente
+owner
+source_object_versions
+schema_or_contract_version
+source_cut_strategy
+source_cut_timestamp_or_watermark
+row_or_object_count
+primary_key_set_or_digest
+reference_set_or_digest
+null_and_domain_profile
+critical_aggregates
+policy_and_mapping_versions
+sensitivity_and_retention_profile
+capture_actor_and_evidence
+```
+
+Los tipos de corte permitidos son:
+
+| Estrategia                  | Aplicación                                                                                      |
+| --------------------------- | ----------------------------------------------------------------------------------------------- |
+| `QUIESCED_SNAPSHOT`         | fuente temporalmente estable con writers suspendidos mediante una decisión posterior autorizada |
+| `HIGH_WATERMARK_PLUS_DELTA` | fuente activa con corte y delta posterior gobernados por `SUPA-TRANS-008`                       |
+| `APPEND_ONLY_RANGE`         | hechos o ledger acotados por rango inmutable y checkpoint                                       |
+| `EVENT_REPLAY_WINDOW`       | reconstrucción desde eventos u outbox durables dentro de una ventana explícita                  |
+| `EXTERNAL_BATCH_VERSION`    | archivo, importación o entrega externa identificada por versión y digest                        |
+
+Si la fuente puede cambiar durante la ejecución y `SUPA-TRANS-008` todavía no ha resuelto writers, concurrencia y delta, la unidad permanece bloqueada.
+
+#### 8. Preservación del original, autoridad y lineage
+
+1. El valor o registro original se conservará cuando sea externo, oficial, personal, técnico, histórico, sensible o necesario para auditoría.
+2. Ninguna corrección destruirá payload, archivo, snapshot, ledger, evento, comprobante o evidencia original.
+3. Toda salida transformada conservará fuente, clave, versión, mapping, actor o sistema, tiempo, causalidad y resultado.
+4. Un dato derivado no adquiere autoridad sobre su fuente.
+5. Una vista, snapshot, reporte, proyección o catálogo consumidor no corregirá el owner original.
+6. Un valor más completo o reciente no se declarará correcto sin autoridad y vigencia demostradas.
+7. Credenciales, secretos y material criptográfico no ingresarán al pipeline general; solo se migrarán mediante referencias o mecanismos protegidos definidos por su owner.
+8. La trazabilidad mínima enlazará `source_record`, `target_record`, `transition_key`, `mapping_version`, `batch_id`, `checkpoint_id` y `outcome`.
+
+#### 9. Identidad, crosswalk y referencias
+
+1. UUID, claves naturales, IDs externos y claves de negocio se tratarán como conceptos distintos.
+2. No se generará una identidad nueva cuando exista una identidad estable que deba preservarse.
+3. No se impondrá el UUID recibido desde un cliente como autoridad sin contrato server-side.
+4. Todo cambio de clave usará un crosswalk versionado y auditable.
+5. Correo, teléfono, documento, nombre, slug, SKU o referencia externa no fusionarán registros automáticamente.
+6. Las referencias externas conservarán emisor, ambiente, tenant, tipo, vigencia y contrato.
+7. Cada FK o referencia lógica deberá terminar como válida, redirigida por crosswalk, conservada en cuarentena o clasificada como bloqueo.
+8. Un registro padre no se considerará migrado mientras existan hijos, snapshots, JSON, archivos o consumidores que aún lo referencien sin tratamiento.
+9. Las referencias circulares se resolverán mediante fases o constraints diferibles aprobados posteriormente; no se rompen eliminando vínculos.
+10. El backfill no podrá crear huérfanos ni ocultarlos mediante valores nulos o placeholders.
+
+#### 10. Semántica de ausencia, números, unidades, tiempo y texto
+
+El plan deberá preservar como estados distintos:
+
+```text
+campo ausente
+null explícito
+cadena vacía
+solo espacios
+clear explícito
+desconocido
+no aplicable
+valor parcial
+```
+
+Reglas:
+
+1. no se utilizará un valor predeterminado para encubrir desconocimiento;
+2. un `NOT NULL` futuro requiere resolver o aislar los datos existentes antes de validarse;
+3. números conservan forma original, signo, escala, precisión, moneda, unidad, locale y contexto;
+4. conversiones de unidad o moneda exigen regla versionada y evidencia de origen;
+5. timestamps conservan instante, zona, offset, precisión, fuente y semántica empresarial;
+6. eventos tardíos, fuera de orden, corregidos o retractados no sobrescriben por orden de llegada;
+7. texto se gobierna por dominio, entidad, campo, representación y versión, nunca por una función global;
+8. marcas, siglas, unidades, nombres legales, personas, direcciones, identificadores y originales externos conservan las protecciones de `DATA-NORM-ARC-001` a `DATA-NORM-ARC-012`;
+9. JSON y arreglos se tratan por clave o elemento, no como una sola cadena;
+10. VITAL no hereda las políticas transversales de Vento OS.
+
+#### 11. Dimensiones obligatorias de calidad
+
+| Dimensión                  | Evidencia mínima                                           | Condición de cierre                                                |
+| -------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------ |
+| completitud                | campos requeridos, ausencias y cobertura por cohorte       | toda ausencia queda resuelta, permitida o aislada con owner        |
+| validez contractual        | tipos, dominios, enums, formatos y constraints             | cero valores incompatibles no clasificados                         |
+| identidad y unicidad       | claves, scopes, vigencias, duplicados y colisiones         | ninguna fusión o constraint se activa por similitud no certificada |
+| integridad referencial     | FK, referencias lógicas, JSON, archivos y externos         | cero huérfanos no explicados                                       |
+| consistencia               | equivalencia entre fuentes, copias, aliases y proyecciones | divergencias clasificadas y con autoridad definida                 |
+| integridad temporal        | orden, vigencia, supersesión, estados y secuencias         | cero inversión o solapamiento que altere el significado            |
+| autoridad y exactitud      | owner, fuente, evidencia y política                        | cada corrección tiene autoridad suficiente y reproducible          |
+| lineage y auditoría        | origen, mapping, lote, actor, causalidad y resultado       | cada efecto objetivo puede trazarse hasta la fuente                |
+| seguridad y privacidad     | sensibilidad, minimización, acceso, retención y masking    | cero exposición nueva o mezcla de fronteras                        |
+| reconciliación empresarial | conteos, sumas, saldos, movimientos, documentos y hechos   | diferencias dentro del perfil aprobado y sin pérdida silenciosa    |
+
+Una dimensión no evaluada mantiene el gate abierto.
+
+#### 12. Correcciones permitidas y prohibidas
+
+Se permiten únicamente:
+
+- correcciones deterministas respaldadas por contrato y versión;
+- mapeos exactos o aliases aprobados;
+- reconstrucción de proyecciones desde fuentes certificadas;
+- reparación de referencias mediante crosswalk aprobado;
+- rectificaciones aditivas que preserven el hecho anterior;
+- aislamiento o cuarentena con owner y evidencia;
+- decisiones humanas registradas mediante workflow autorizado.
+
+Quedan prohibidos:
+
+1. inventar valores para completar campos;
+2. elegir el registro más antiguo, más reciente, más usado o más completo como autoridad automática;
+3. deduplicar por nombre normalizado, correo, teléfono, texto parecido o coincidencia parcial;
+4. sobrescribir ledgers, historia, comprobantes, snapshots o eventos para que coincidan;
+5. convertir error técnico en corrección de datos;
+6. reinterpretar una versión histórica con la política vigente;
+7. ocultar diferencias mediante truncamiento, rounding, `coalesce`, defaults o nulificación;
+8. mezclar tenants, sedes, productos, ambientes o fronteras de producto;
+9. ejecutar correcciones semánticas dentro de triggers defensivos;
+10. continuar cuando owner, mapping o autoridad estén en conflicto.
+
+#### 13. Tratamiento de duplicados, fusiones y divisiones
+
+Todo candidato a duplicado deberá pasar por las políticas de `DATA-NORM-ARC-010` y conservar:
+
+```text
+scope
+miembros y versiones
+evidencia positiva y negativa
+autoridad por atributo
+relaciones y hechos
+referencias externas
+estado y vigencia
+plan de transición
+crosswalk
+rollback o compensación
+aprobaciones
+```
+
+Reglas:
+
+1. `CONFIRMED_DUPLICATE_PENDING_PLAN` no habilita backfill de consolidación.
+2. Solo `CONFIRMED_DUPLICATE_WITH_APPROVED_PLAN` puede alimentar `APPROVED_MERGE_PLAN`.
+3. La selección de sobreviviente nunca es implícita.
+4. Una fusión preserva IDs históricos, aliases, redirecciones, tombstones, hechos y auditoría.
+5. Una división debe asignar cada fila, archivo, metadata y referencia a un destino explícito o a cuarentena.
+6. Un elemento puede producir varios destinos únicamente cuando la regla aprobada lo exija y se preserve causalidad.
+7. Ninguna fila puede desaparecer porque no cumpla el discriminador esperado.
+8. Los seis casos `DIVIDIR` conservarán owner, finalidad, sensibilidad, retención, consumidores y metadata antes de separar binarios o registros.
+
+#### 14. Lotes, checkpoints, reanudación e idempotencia
+
+Cada ejecución futura deberá declarar:
+
+```text
+backfill_run_id
+batch_id
+chunk_id
+source_cut_reference
+mapping_and_policy_versions
+first_and_last_source_key
+expected_item_count
+confirmed_item_count
+rejected_item_count
+quarantined_item_count
+checkpoint_digest
+started_at
+committed_at
+status
+```
+
+Reglas:
+
+1. el tamaño y orden de chunk serán deterministas o quedarán registrados;
+2. el checkpoint se confirma únicamente después del commit de sus efectos;
+3. una reanudación usa el mismo corte, mapping, políticas y reglas;
+4. elementos ya confirmados no vuelven a mutarse;
+5. la misma identidad de operación con payload igual reutiliza el resultado;
+6. la misma identidad con payload o versión diferente produce conflicto;
+7. timeout o respuesta perdida exige consultar el resultado antes de reintentar;
+8. un fallo parcial registra outcome por elemento y no se presenta como rollback global;
+9. cambiar el source cut crea una nueva corrida vinculada, no reescribe la anterior;
+10. todo bypass administrativo exige actor, finalidad, ventana, autorización y evidencia equivalentes.
+
+#### 15. Outcomes por elemento
+
+Cada fila, archivo, evento o componente procesado deberá terminar exactamente en uno:
+
+| Outcome                         | Significado                                                              |
+| ------------------------------- | ------------------------------------------------------------------------ |
+| `NO_ACTION_REQUIRED`            | la unidad no requiere mutación de datos                                  |
+| `PRESERVED_SOURCE`              | se conserva en origen o como evidencia sin transformación                |
+| `COPIED_EXACTLY`                | se copió sin cambio semántico                                            |
+| `TRANSFORMED_BY_VERSIONED_RULE` | se produjo una salida determinista mediante contrato versionado          |
+| `REFERENCE_REMAPPED`            | se actualizó una referencia mediante crosswalk aprobado                  |
+| `PROJECTION_REBUILT`            | se reconstruyó un derivado desde fuentes certificadas                    |
+| `MERGED_BY_APPROVED_PLAN`       | se consolidó dentro de un plan aprobado y auditable                      |
+| `SPLIT_BY_APPROVED_PLAN`        | se distribuyó según una regla de división aprobada                       |
+| `QUARANTINED`                   | quedó aislado con owner, motivo y evidencia                              |
+| `REVIEW_REQUIRED`               | requiere decisión humana o de autoridad de dominio                       |
+| `REJECTED_FROM_TARGET`          | no puede entrar al destino, pero el original se preserva                 |
+| `FAILED_TECHNICALLY`            | no se obtuvo outcome empresarial y puede requerir reanudación controlada |
+
+No se admite un estado genérico de éxito que oculte resultados parciales.
+
+#### 16. Cuarentena y revisión
+
+Toda excepción deberá registrar como mínimo:
+
+```text
+exception_id
+migration_unit_id
+transition_key
+source_record_or_object
+exception_class
+original_reference
+source_cut
+mapping_and_policy_versions
+owner
+required_authority
+sensitivity
+status
+evidence
+resolution_task
+reprocess_eligibility
+```
+
+Clases mínimas:
+
+```text
+UNMAPPED_VALUE
+AMBIGUOUS_IDENTITY
+MISSING_REFERENCE
+CONFLICTING_AUTHORITY
+INVALID_TEMPORAL_ORDER
+DUPLICATE_CANDIDATE
+UNSUPPORTED_CONTRACT_VERSION
+SENSITIVE_DATA_REVIEW
+SOURCE_DRIFT
+INVARIANT_VIOLATION
+```
+
+Reglas:
+
+1. cuarentena no equivale a descarte;
+2. todo caso conserva el original y una tarea propietaria;
+3. una revisión no muta datos por sí misma;
+4. una resolución crea evidencia nueva y no edita la decisión anterior;
+5. reprocess solo opera con versiones compatibles y una identidad estable;
+6. un caso no se cierra por silencio, antigüedad o vencimiento de SLA;
+7. datos sensibles permanecen minimizados y con acceso segregado;
+8. una excepción bloqueante impide certificar la unidad aunque el resto haya reconciliado.
+
+#### 17. Reconciliación obligatoria
+
+Cada unidad declarará comparaciones antes y después del backfill, como mínimo:
+
+- conteo total y por cohorte;
+- conjunto o digest de claves primarias;
+- conjunto o digest de referencias;
+- distribución de nulos y valores de dominio;
+- duplicados y colisiones por scope;
+- huérfanos físicos y lógicos;
+- conteos por estado y vigencia;
+- mínimos, máximos y rangos temporales;
+- sumas, saldos y agregados críticos;
+- secuencia de ledger, eventos o movimientos;
+- cantidad y digest de archivos, objetos y metadata;
+- resultados por outcome;
+- divergencias entre fuente, destino, compatibilidad y proyecciones;
+- errores, cuarentenas y casos pendientes;
+- exposición, tenant y frontera de producto.
+
+La reconciliación deberá explicar cada diferencia. La igualdad de conteos no prueba por sí sola igualdad semántica, identidad, referencias, seguridad o efectos.
+
+#### 18. Invariantes de tolerancia cero
+
+No se permitirá ninguna tolerancia para:
+
+1. pérdida o duplicación de identificadores estables;
+2. referencias autoritativas huérfanas;
+3. valores de estado o enum sin mapping;
+4. filas omitidas sin outcome;
+5. mezcla de tenant, sede, ambiente o producto;
+6. saldo, cantidad o movimiento irreconciliable en ledgers y hechos críticos;
+7. evento o efecto empresarial duplicado;
+8. original externo o evidencia destruida;
+9. secreto o dato sensible expuesto por el proceso;
+10. VITAL incorporado a una autoridad de Vento OS;
+11. política, mapping o source cut no identificables;
+12. caso bloqueante sin owner ni tarea de resolución;
+13. writer activo no cubierto por la estrategia de `SUPA-TRANS-008`;
+14. rollback requerido sin handoff a `SUPA-TRANS-011`.
+
+Las tolerancias distintas de cero solo podrán aplicarse a métricas no autoritativas, con umbral, justificación, owner, periodo, tendencia y puerta de cierre. Nunca podrán ocultar pérdida de datos o integridad.
+
+#### 19. Tratamiento por clase de objeto
+
+| Clase                                  | Estrategia base                                                                                                     |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| tabla o relación persistida            | plan completo de datos, identidad, referencias, lotes y reconciliación                                              |
+| vista o proyección                     | `PROJECTION_REBUILD` o `NO_BACKFILL_REQUIRED`; nunca se copia como fuente autoritativa                              |
+| función o RPC                          | `NO_BACKFILL_REQUIRED`, salvo que administre estado auxiliar, checkpoints, colas o resultados persistidos           |
+| trigger                                | sin backfill propio; su tabla, función y efectos históricos deben estar reconciliados antes de activarlo            |
+| política RLS o grant                   | sin backfill de datos; requiere demostrar que el tratamiento no amplía visibilidad                                  |
+| bucket de Storage                      | inventario de objetos, digest, tamaño, content type, metadata, owner, entidad, sensibilidad, retención y referencia |
+| Edge Function                          | sin backfill por código; colas, inbox, outbox, receipts, configuraciones y estados asociados sí requieren plan      |
+| cron job                               | sin backfill del job; checkpoints, runs, locks, resultados y efectos pendientes requieren reconciliación            |
+| evidencia de migración                 | preservar de forma inmutable; no ejecutar ni reinterpretar como estado productivo                                   |
+| componente administrado por plataforma | no mover datos empresariales; verificar dependencia y frontera soportada                                            |
+
+#### 20. Tratamiento por disposición
+
+| Disposición | Identidades | Regla de datos                                                                                                                             |
+| ----------- | ----------: | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CONSERVAR` |         420 | baseline, calidad y drift obligatorios; no se asume ausencia de deuda por permanecer en la misma frontera                                  |
+| `MOVER`     |         494 | preservar identidad y autoridad; aplicar `EXACT_COPY`, `VERSIONED_TRANSFORMATION`, `REFERENCE_CROSSWALK`, replay o rebuild según el objeto |
+| `FUSIONAR`  |          11 | requiere `APPROVED_MERGE_PLAN`, crosswalk, divergencias resueltas, historia preservada y cero doble escritura implícita                    |
+| `DIVIDIR`   |           6 | requiere `APPROVED_SPLIT_PLAN`, discriminador exhaustivo, cobertura de metadata, archivos, referencias, retención y consumidores           |
+| `RENOMBRAR` |           0 | no existen casos vigentes; cualquier caso nuevo exige revisión de disposición y no se trata como refactor neutral                          |
+| `RETIRAR`   |          39 | reconciliar datos, retención, sustitución y cero consumidores; usar `NO_COPY_RETIREMENT` solo cuando no exista estado que preservar        |
+
+#### 21. Casos explícitos de disposición
+
+##### 21.1. Fusión de asistencia
+
+`public.asistencia_logs`, `public.attendance_logs` y sus automatismos conservarán toda historia, actores, timestamps, estados, correcciones y efectos. `public.attendance_logs` es ancla de identidad, pero no se convierte automáticamente en autoridad de cada valor divergente. Toda divergencia deberá resolverse por contrato o cuarentena.
+
+##### 21.2. Fusión de roles operativos por sede
+
+`public.site_operational_roles` y `viso.site_operational_roles` deberán reconciliar identidad, sede, rol, vigencia, referencias y consumidores. La convergencia no admite doble escritura implícita ni selección por schema.
+
+##### 21.3. Fusión del cierre diario de asistencia
+
+Los jobs `cron.auto-close-attendance` y `cron.anima_attendance_day_end_close_0005` no requieren copiar un job como dato. Sus runs, checkpoints, cierres ejecutados, omisiones, reintentos y efectos deberán reconciliarse antes de mantener una sola programación.
+
+##### 21.4. División documental y de Storage
+
+`public.documents`, `public.document_types`, `public.required_document_rules` y los buckets `documents`, `employee-photos` y `public-documents` deberán separar propietario, finalidad, sensibilidad, retención, metadata, binario y consumidores. Ningún archivo se moverá únicamente por ruta, nombre o bucket actual.
+
+##### 21.5. Temporales y legacy
+
+`public.product_categories_backup_20260316_preparaciones` y `public.staging_insumos_import` conservarán custodio, datos, lote, procedencia, consumidores, retención y reconciliación. Su disposición `RETIRAR` no autoriza eliminación y exige demostrar que ninguna fila continúa siendo autoridad o evidencia necesaria.
+
+##### 21.6. Proyecciones y funciones retirables
+
+Las proyecciones `CURRENT_COMPATIBILITY_PROJECTION`, `public.notify_shift_published()` y `public.update_loyalty_balance()` deberán demostrar fuente sucesora, equivalencia, consumidores, historia y ausencia de estado auxiliar antes del retiro. Una función sin filas propias puede seguir teniendo efectos o dependencias que requieren reconciliación.
+
+#### 22. Estrategia base por responsabilidad objetivo
+
+| Oleada                           | Responsabilidad                      | Estrategia base de backfill y calidad                                                                                            |
+| -------------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------- |
+| `W0_CONTROL_FOUNDATION`          | `VSCHEMA-001 org_governance`         | copiar identidades organizacionales y referencias estables; validar tenant, entidad legal, sede, área, jerarquía y vigencia      |
+| `W0_CONTROL_FOUNDATION`          | `VSCHEMA-023 identity_access`        | usar crosswalk de cuenta, sujeto, sesión, rol y dispositivo; prohibir fusiones por correo, teléfono o nombre                     |
+| `W0_CONTROL_FOUNDATION`          | `VSCHEMA-022 technology_operations`  | preservar configuración, jobs y referencias protegidas; secretos se tratan fuera del pipeline general                            |
+| `W1_PEOPLE_OPERATIONS`           | `VSCHEMA-002 recruiting`             | preservar candidatos, consentimientos, documentos y procedencia externa; separar identidad de contratación                       |
+| `W1_PEOPLE_OPERATIONS`           | `VSCHEMA-003 workforce`              | conservar trabajador, relación laboral, historia, documentos y vínculos Auth sin aprovisionamiento o fusión automática           |
+| `W1_PEOPLE_OPERATIONS`           | `VSCHEMA-004 work_scheduling`        | preservar versiones, fechas, zonas, turnos, borradores, publicaciones y temporalidad                                             |
+| `W1_PEOPLE_OPERATIONS`           | `VSCHEMA-005 attendance`             | aplicar el merge aprobado, conservar marcaciones, cierres, correcciones, fuentes y secuencia temporal                            |
+| `W1_PEOPLE_OPERATIONS`           | `VSCHEMA-006 payroll`                | tratar hechos económicos y laborales como historia reconciliable; no recomputar ni sobrescribir periodos cerrados sin contrato   |
+| `W1_PEOPLE_OPERATIONS`           | `VSCHEMA-007 operational_compliance` | preservar evidencia, vigencia, responsable, documento y relación con trabajador o proceso                                        |
+| `W2_PRODUCT_AND_OFFER`           | `VSCHEMA-008 product_catalog`        | preservar IDs, variantes, roles, presentaciones, unidades y taxonomías; duplicados se revisan por scope y estructura             |
+| `W2_PRODUCT_AND_OFFER`           | `VSCHEMA-009 recipes`                | conservar versiones, composición, rendimiento, unidades, vigencia e ingredientes sin fusionar por nombre                         |
+| `W2_PRODUCT_AND_OFFER`           | `VSCHEMA-010 commercial_offer`       | reconstruir disponibilidad, precio y oferta desde catálogo y reglas certificadas cuando sean proyecciones                        |
+| `W3_SUPPLY_AND_PRODUCTION`       | `VSCHEMA-011 procurement`            | conservar proveedor, contratos, presentaciones, órdenes, recepciones, obligaciones y referencias externas                        |
+| `W3_SUPPLY_AND_PRODUCTION`       | `VSCHEMA-012 inventory`              | reconstruir saldos desde movimientos y hechos autorizados; prohibido fijar stock para cuadrar diferencias                        |
+| `W3_SUPPLY_AND_PRODUCTION`       | `VSCHEMA-013 assets`                 | preservar identidad de activo, serial, modelo, sede, estado, mantenimiento, evidencia y vida útil                                |
+| `W3_SUPPLY_AND_PRODUCTION`       | `VSCHEMA-020 facilities`             | reconciliar referencias a sedes, activos, compras, mantenimiento y cumplimiento sin absorber sus autoridades                     |
+| `W3_SUPPLY_AND_PRODUCTION`       | `VSCHEMA-014 production`             | conservar lotes, recetas, consumos, rendimientos, resultados, fechas y trazabilidad hacia inventario                             |
+| `W4_COMMERCIAL_FULFILLMENT`      | `VSCHEMA-017 customer_engagement`    | separar persona, cuenta, contactos, consentimiento, perfil y relación de marca; no fusionar por contacto coincidente             |
+| `W4_COMMERCIAL_FULFILLMENT`      | `VSCHEMA-015 sales_orders`           | conservar orden, líneas, versiones, estados, correcciones, cancelaciones y referencias comerciales                               |
+| `W4_COMMERCIAL_FULFILLMENT`      | `VSCHEMA-016 payments`               | preservar intentos, autorizaciones, capturas, reversos, conciliación y ledger; nunca sobrescribir para obtener un saldo esperado |
+| `W4_COMMERCIAL_FULFILLMENT`      | `VSCHEMA-018 logistics`              | conservar solicitud, producción, carga, tránsito, recepción, cantidades, evidencias y secuencia de estados                       |
+| `W5_RECORD_AND_ECONOMIC_CLOSURE` | `VSCHEMA-019 finance`                | reconstruir proyecciones desde hechos certificados y preservar asientos, obligaciones, ajustes y periodos cerrados               |
+| `W5_RECORD_AND_ECONOMIC_CLOSURE` | `VSCHEMA-024 business_records`       | aplicar la división documental, conservar original, hash, metadata, retención, owner y entidad vinculada                         |
+| `W5_RECORD_AND_ECONOMIC_CLOSURE` | `VSCHEMA-021 marketing`              | preservar campaña, canal, audiencia, consentimiento, versión y resultados sin ampliar finalidad                                  |
+| `W6_DERIVED_AND_CONTINUITY`      | `VSCHEMA-025 business_insights`      | usar `PROJECTION_REBUILD`; no copiar métricas o reportes como fuente que corrija dominios operativos                             |
+| `W6_DERIVED_AND_CONTINUITY`      | `VSCHEMA-026 operational_continuity` | preservar contratos, incidentes, degradaciones, checkpoints, recuperación y evidencia de ejercicios                              |
+
+La estrategia base no sustituye el plan por unidad. Una dependencia o sensibilidad más restrictiva prevalece.
+
+#### 23. Fronteras especiales
+
+1. Las 54 relaciones VITAL y sus objetos asociados permanecen en `OUTSIDE_VENTO_OS_VITAL`.
+2. Ningún backfill de Vento OS escribirá, normalizará, fusionará o corregirá datos de VITAL.
+3. Una interoperabilidad futura requerirá contrato y ADR propios.
+4. Los componentes administrados por Supabase o PostgreSQL no se reclasifican como datos empresariales.
+5. Buckets, Auth, Realtime, cron y extensiones se tratan mediante interfaces soportadas y sin modificar tablas internas por conveniencia.
+6. Los objetos `TEMPORARY_OR_LEGACY` no se convierten en fuentes permanentes por participar en reconciliación.
+7. El delta mensual de VISO permanece como evidencia propuesta y no se ejecuta desde esta tarea.
+
+#### 24. Estados del plan
+
+Cada unidad utilizará exactamente uno:
+
+| Estado                                     | Significado                                                                          |
+| ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `BACKFILL_NOT_APPLICABLE`                  | no existe estado que trasladar y la ausencia fue demostrada                          |
+| `BACKFILL_PLAN_BLOCKED`                    | falta owner, fuente, mapping, dependencia, writer strategy, seguridad o autoridad    |
+| `BACKFILL_PLAN_SPECIFIED`                  | contrato completo definido, todavía sin dry run                                      |
+| `BACKFILL_DRY_RUN_ELIGIBLE`                | baseline, versiones, datos y dependencias permiten ejecutar un dry run futuro        |
+| `BACKFILL_DRY_RUN_RECONCILED`              | dry run futuro ejecutado y diferencias explicadas con evidencia                      |
+| `BACKFILL_EXECUTION_ELIGIBLE`              | gates de writers, compatibilidad, seguridad, pruebas y rollback completos            |
+| `BACKFILL_EXECUTED_PENDING_RECONCILIATION` | ejecución futura confirmada, todavía sin cierre de paridad                           |
+| `BACKFILL_RECONCILED`                      | fuente, destino, efectos, excepciones y evidencia reconciliados                      |
+| `BACKFILL_FAILED`                          | fallo técnico o empresarial que impide continuar y conserva checkpoint y diagnóstico |
+
+Esta tarea deja las unidades en `BACKFILL_PLAN_SPECIFIED`, `BACKFILL_PLAN_BLOCKED` o `BACKFILL_NOT_APPLICABLE` según la evidencia disponible. No declara dry runs ni ejecuciones realizadas.
+
+#### 25. Gates previos a ejecución
+
+Una unidad no podrá llegar a `BACKFILL_EXECUTION_ELIGIBLE` hasta demostrar simultáneamente:
+
+1. identidad, owner, disposición y destino inequívocos;
+2. baseline y source cut reproducibles;
+3. mapping, políticas y catálogos versionados;
+4. inventario de writers y tratamiento de cambios concurrentes;
+5. compatibilidad y consumidores tratados;
+6. referencias, duplicados, nulos y temporalidad clasificados;
+7. plan de lotes, checkpoints e idempotencia;
+8. dry run reconciliado;
+9. cuarentenas con owner y sin bloqueos ocultos;
+10. seguridad, RLS, grants y minimización certificadas;
+11. pruebas positivas, negativas, migratorias y de regresión definidas;
+12. rendimiento y duración dentro de la ventana aprobada;
+13. rollback ejecutable y evidencia de recuperación;
+14. paridad del ambiente requerido;
+15. aprobaciones de owner, steward y autoridades adicionales aplicables.
+
+La falta de una puerta produce `BACKFILL_PLAN_BLOCKED`; no se compensa con una ventana de mantenimiento más amplia.
+
+#### 26. Handoffs obligatorios
+
+| Trabajo derivado                      | Tarea propietaria | Entrega mínima de esta tarea                                                                   |
+| ------------------------------------- | ----------------- | ---------------------------------------------------------------------------------------------- |
+| compatibilidad de lectura y escritura | `SUPA-TRANS-006`  | forma antigua, forma objetivo, periodo, source cut y campos aún no convergidos                 |
+| adaptación de consumidores            | `SUPA-TRANS-007`  | mappings, IDs, outcomes, errores, cohortes y datos que pueden permanecer en cuarentena         |
+| writers y delta                       | `SUPA-TRANS-008`  | estrategia de corte, fuentes activas, claves idempotentes, checkpoints y riesgo de divergencia |
+| pruebas migratorias                   | `SUPA-TRANS-009`  | baseline, corpus, dimensiones, reconciliaciones, tolerancias y outcomes esperados              |
+| seguridad y rendimiento               | `SUPA-TRANS-010`  | sensibilidad, acceso, volumen, batch, coste, exposición y datos de prueba permitidos           |
+| rollback                              | `SUPA-TRANS-011`  | source cut, crosswalk, efectos confirmados, checkpoints, reversibilidad y datos no reversibles |
+| retiro legacy                         | `SUPA-TRANS-012`  | datos preservados, retención, cuarentena, cero consumidores y evidencia de sustitución         |
+| paridad ambiental                     | `SUPA-TRANS-013`  | versiones, digests, baseline y resultados requeridos por ambiente                              |
+| tipos y contratos                     | `SUPA-TRANS-014`  | modos, estados, outcomes, errores, mapping y versiones publicables                             |
+| roadmap ejecutable                    | `SUPA-TRANS-015`  | unidades, gates, owners, dependencias, estados, evidencias y tareas bloqueantes                |
+
+Ningún handoff autoriza automáticamente a la tarea siguiente a ejecutar cambios físicos.
+
+#### 27. Evidencia mínima por unidad
+
+El `evidence_bundle` deberá contener, como mínimo:
+
+```text
+migration_unit_id
+backfill_plan_id
+transition_keys
+disposition_map_version
+dependency_map_version
+migration_order_version
+source_cut_reference
+source_baseline_digest
+target_baseline_digest cuando exista
+mapping_and_policy_versions
+dry_run_reference cuando exista
+reconciliation_report_reference
+exception_register_reference
+batch_and_checkpoint_reference
+security_review_reference
+test_plan_reference
+rollback_plan_reference
+owner_approval
+steward_approval
+status_and_decision_timestamp
+```
+
+Una referencia vacía, inexistente o no reproducible no satisface el gate. La evidencia podrá quedar pendiente en esta etapa, pero deberá conservar propietario y tarea de producción.
+
+#### 28. Conductas no conformes
+
+Quedan prohibidas:
+
+1. ejecutar un backfill sin `migration_unit_id` y `backfill_plan_id`;
+2. reconstruir identidades por nombre, schema, posición o orden de consulta;
+3. usar la fecha actual, usuario actual o defaults para rellenar historia desconocida;
+4. actualizar directamente una proyección para cuadrarla con la expectativa;
+5. fijar stock, saldo, puntos, pago, costo o disponibilidad sin hechos reconciliables;
+6. fusionar registros por representación normalizada;
+7. aplicar constraints antes de resolver los datos existentes;
+8. ignorar filas fallidas y reportar éxito del lote;
+9. reanudar con otra versión de mapping sin una nueva corrida;
+10. borrar staging, backups, archivos o legacy antes de retención, consumidores y rollback;
+11. migrar secretos a tablas ordinarias o logs;
+12. usar triggers para revisión humana, similitud, red o corrección semántica;
+13. ampliar audiencia histórica durante replay o backfill;
+14. tratar la igualdad de conteos como paridad suficiente;
+15. aceptar tolerancias sobre pérdida de identidad, referencias, ledgers, seguridad o fronteras;
+16. aplicar políticas de Vento OS a VITAL;
+17. declarar ejecución, dry run o reconciliación sin evidencia real;
+18. iniciar `SUPA-TRANS-006` dentro de esta tarea.
+
+#### 29. Requisitos de prueba derivados
+
+Se incorporan los siguientes requisitos:
+
+- `TREQ-SUPABASE-1736` — plan obligatorio por `migration_unit`;
+- `TREQ-SUPABASE-1737` — baseline y corte reproducibles;
+- `TREQ-SUPABASE-1738` — modo cerrado compatible con disposición;
+- `TREQ-SUPABASE-1739` — mapping determinista, versionado e idempotente;
+- `TREQ-SUPABASE-1740` — preservación de original, autoridad y lineage;
+- `TREQ-SUPABASE-1741` — identidad, crosswalk y referencias sin huérfanos;
+- `TREQ-SUPABASE-1742` — semántica de ausencia, números, unidades, tiempo y texto;
+- `TREQ-SUPABASE-1743` — duplicados, merges, splits y cuarentena controlados;
+- `TREQ-SUPABASE-1744` — lotes, checkpoints y reanudación idempotente;
+- `TREQ-SUPABASE-1745` — outcome obligatorio por elemento y éxito parcial explícito;
+- `TREQ-SUPABASE-1746` — reconciliación multidimensional por unidad;
+- `TREQ-SUPABASE-1747` — invariantes de tolerancia cero y gate de elegibilidad;
+- `TREQ-SUPABASE-1748` — tratamiento específico por clase de objeto;
+- `TREQ-SUPABASE-1749` — bloqueo mientras writers y delta permanezcan sin resolver;
+- `TREQ-SUPABASE-1750` — tratamiento de fusiones, divisiones y retiros explícitos;
+- `TREQ-SUPABASE-1751` — fronteras VITAL, plataforma y datos sensibles;
+- `TREQ-SUPABASE-1752` — evidencia y handoff completo hacia tareas posteriores.
+
+También se corrige la evidencia de `TREQ-SUPABASE-1702`, `TREQ-SUPABASE-1725` y `TREQ-SUPABASE-1735` para referenciar la versión canónica `DISPOSITION-MAP-002@1.0.2`.
+
+#### 30. Criterios de aceptación
+
+- [x] conserva las 970 identidades y sus claves de transición;
+- [x] consume las seis disposiciones y sus conteos aprobados;
+- [x] extiende cada unidad con un contrato de backfill y calidad;
+- [x] define diez modos cerrados de backfill;
+- [x] reutiliza los ocho modos canónicos de mapping y corrección;
+- [x] define baseline, source cut, lote, checkpoint, outcome, cuarentena y evidencia;
+- [x] separa identidad, autoridad, representación, original y proyección;
+- [x] prohíbe valores inventados, fusiones por heurística y pérdida silenciosa;
+- [x] cubre nulos, números, unidades, tiempo, texto, JSON, archivos y datos externos;
+- [x] define diez dimensiones obligatorias de calidad;
+- [x] establece invariantes de tolerancia cero;
+- [x] trata tablas, vistas, funciones, triggers, Storage, Edge, cron, plataforma y evidencia;
+- [x] concreta el tratamiento de los grupos de fusión, las seis divisiones y los retiros legacy explícitos;
+- [x] fija estrategia base para las 26 responsabilidades objetivo;
+- [x] mantiene VITAL separado de Vento OS;
+- [x] entrega handoffs sin invadir `SUPA-TRANS-006` a `SUPA-TRANS-015`;
+- [x] no ejecuta DDL, DML, backfills, dry runs, cutover, rollback ni retiros físicos;
+- [x] reserva únicamente `SUPA-TRANS-006` como siguiente tarea.
+
+#### 31. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+SUPA-TRANS-004 — Definir orden de migración por dominio
+        ↓
+TAREA ACTUAL APROBADA
+SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad
+```
+
+La aprobación de esta tarea no inicia ni desarrolla `SUPA-TRANS-006`.
+
+
 ### [ ] SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad
 ### [ ] SUPA-TRANS-007 — Definir adaptación coordinada de consumidores
 ### [ ] SUPA-TRANS-008 — Definir estrategia ante escrituras durante la transición

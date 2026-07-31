@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **267** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **453** |
+| Tareas aprobadas | **454** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1132** |
+| Tareas no iniciadas | **1131** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **28.58% (453/1585)** |
+| Porcentaje de completamiento | **28.64% (454/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-TRANS-004 — Definir orden de migración por dominio** |
-| Tarea actual | **SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos** |
+| Última tarea aprobada | **SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos** |
+| Tarea actual | **SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad** |
+| Siguiente tarea | **SUPA-TRANS-007 — Definir adaptación coordinada de consumidores** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 24 de 45 aprobadas; SUPA-TRANS-005 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 25 de 45 aprobadas; SUPA-TRANS-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-TRANS-004` — Definir orden de migración por dominio |
-| Tarea actual | `SUPA-TRANS-005` — Definir backfills y correcciones de calidad de datos — **NO INICIADA** |
-| Siguiente tarea | `SUPA-TRANS-006` — Definir vistas, wrappers o aliases temporales de compatibilidad |
+| Última aprobada | `SUPA-TRANS-005` — Definir backfills y correcciones de calidad de datos |
+| Tarea actual | `SUPA-TRANS-006` — Definir vistas, wrappers o aliases temporales de compatibilidad — **NO INICIADA** |
+| Siguiente tarea | `SUPA-TRANS-007` — Definir adaptación coordinada de consumidores |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **24 DE 45 APROBADAS — ACTUAL SUPA-TRANS-005** |
+| BLOQUE E3 | **25 DE 45 APROBADAS — ACTUAL SUPA-TRANS-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-TRANS-004 — Definir orden de migración por dominio
-        ↓
-TAREA ACTUAL
 SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-TRANS-007 — Definir adaptación coordinada de consumidores
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 24 de 45 tareas aprobadas
+BLOQUE E3 — 25 de 45 tareas aprobadas
 ```

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1585** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **453** |
+| Aprobadas | **454** |
 | En propuesta | **0** |
-| No iniciadas | **1132** |
+| No iniciadas | **1131** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **28.58% (453/1585)** |
+| Porcentaje de completamiento | **28.64% (454/1585)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-TRANS-004` — Definir orden de migración por dominio | ✅ APROBADA |
-| Tarea actual | `SUPA-TRANS-005` — Definir backfills y correcciones de calidad de datos | ⬜ NO INICIADA |
-| Siguiente | `SUPA-TRANS-006` — Definir vistas, wrappers o aliases temporales de compatibilidad | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-TRANS-005` — Definir backfills y correcciones de calidad de datos | ✅ APROBADA |
+| Tarea actual | `SUPA-TRANS-006` — Definir vistas, wrappers o aliases temporales de compatibilidad | ⬜ NO INICIADA |
+| Siguiente | `SUPA-TRANS-007` — Definir adaptación coordinada de consumidores | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -445,7 +445,7 @@
 | ✅ APROBADA | `SUPA-TRANS-002` | Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
 | ✅ APROBADA | `SUPA-TRANS-003` | Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
 | ✅ APROBADA | `SUPA-TRANS-004` | Definir orden de migración por dominio | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-005` | Definir backfills y correcciones de calidad de datos | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
+| ✅ APROBADA | `SUPA-TRANS-005` | Definir backfills y correcciones de calidad de datos | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-006` | Definir vistas, wrappers o aliases temporales de compatibilidad | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-007` | Definir adaptación coordinada de consumidores | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-008` | Definir estrategia ante escrituras durante la transición | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
