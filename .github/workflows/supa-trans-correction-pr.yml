@@ -25,6 +25,10 @@ jobs:
           python <<'PY'
           from pathlib import Path
           source = Path('.github/workflows/supa-trans-001-002-canonical-fix.yml').read_text(encoding='utf-8')
+          source = source.replace(
+              'd43b45430c81fff890291f9ecc781d86bd61de4a3a24a98af2a03acef523a360',
+              'dc0ab660965a77a4d1b3878794a74bd50a254e57944a26098b63eeae82bcd7fd',
+          )
           start = source.index("          python <<'PY'\n") + len("          python <<'PY'\n")
           end = source.index("\n          PY", start)
           code = '\n'.join(line[10:] if line.startswith('          ') else line for line in source[start:end].splitlines())
