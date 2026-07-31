@@ -416,7 +416,7 @@ Resolver la disposición documental de cada identidad incluida en `TRANSITION-MA
 El resultado de esta tarea es:
 
 ```text
-DISPOSITION-MAP-002@1.0.1
+DISPOSITION-MAP-002@1.0.2
 ```
 
 Cada una de las **970 identidades** queda asignada exactamente a una de estas disposiciones:
@@ -449,8 +449,8 @@ La clasificación completa produce:
 
 | Disposición | Identidades |
 | ----------- | ----------: |
-| `CONSERVAR` |     **416** |
-| `MOVER`     |     **498** |
+| `CONSERVAR` |     **420** |
+| `MOVER`     |     **494** |
 | `FUSIONAR`  |      **11** |
 | `DIVIDIR`   |       **6** |
 | `RENOMBRAR` |       **0** |
@@ -525,7 +525,7 @@ No se fijan todavía nombres físicos para las identidades resultantes.
 
 #### 7. Decisiones de movimiento
 
-Se mueven **498 identidades** porque la responsabilidad continúa, pero la frontera actual no es la arquitectura objetivo:
+Se mueven **494 identidades** porque la responsabilidad continúa, pero la frontera actual no es la arquitectura objetivo:
 
 - tablas y modelos escribibles de dominio alojados en `public`;
 - triggers vinculados a esos modelos;
@@ -541,7 +541,7 @@ La guardia mensual de VISO conserva su efecto operacional, pero no su ubicación
 
 #### 8. Decisiones de conservación
 
-Se conservan **416 identidades**, incluidas:
+Se conservan **420 identidades**, incluidas:
 
 - las 54 relaciones de VITAL dentro de su frontera de producto separada;
 - objetos ya ubicados en fronteras especializadas válidas;
@@ -595,7 +595,7 @@ docs/plan-canonico/modular/bloques/E3_SUPABASE/SUPA-TRANS-002_DISPOSITION_MAP.sq
 
 Contrato del artefacto:
 
-- versión: `DISPOSITION-MAP-002@1.0.1`;
+- versión: `DISPOSITION-MAP-002@1.0.2`;
 - ejecutor: cliente `psql` con `ON_ERROR_STOP`;
 - fuente única: ejecución directa de `SUPA-TRANS-001_TRANSITION_MAP.sql` mediante `\ir`;
 - handoff: conserva sin reconstrucción `current_object_key`, `current_object_class` y `target_transition_key`;
@@ -603,9 +603,9 @@ Contrato del artefacto:
 - efectos: solo tablas temporales de sesión y archivos CSV locales bajo `/tmp`;
 - efectos prohibidos: DDL o DML persistente, cambios de configuración, despliegues, backfills, renombres físicos y retiros;
 - salida: 970 filas ordenadas por clase e identidad;
-- comprobaciones incorporadas: universo, unicidad, reserva, conjunto cerrado y conteos por categoría.
+- comprobaciones incorporadas: universo, unicidad, reserva, conjunto cerrado, conteos por categoría y autoridad resoluble para toda fusión.
 
-El artefacto corrige la ruptura anterior: `SUPA-TRANS-002` ya no reconstruye un inventario paralelo ni conserva el CTE inválido sin coma.
+El artefacto corrige la ruptura anterior: `SUPA-TRANS-002` ya no reconstruye un inventario paralelo ni conserva el CTE inválido sin coma. La revisión `1.0.2` sincroniza la distribución ejecutada por las reglas vigentes y hace explícita la autoridad de convergencia de los cinco triggers incluidos en grupos de fusión.
 #### 11. Requisitos de prueba
 
 **Resultado:** NO CREA IDENTIFICADORES NUEVOS; ACTUALIZA REQUISITOS EXISTENTES EN `04A`.
@@ -629,8 +629,603 @@ La tarea queda documentalmente completa porque:
 10. no se ejecuta DDL o DML persistente, despliegue, backfill, renombre físico, retiro ni cambio de configuración; solo se usan objetos temporales de sesión para comprobar el handoff.
 
 
-### [ ] SUPA-TRANS-003 — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos
-### [ ] SUPA-TRANS-004 — Definir orden de migración por dominio
+### ✅ SUPA-TRANS-003 — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos
+
+**Estado:** APROBADA
+**Tarea anterior:** `SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar` — APROBADA
+**Siguiente tarea reservada:** `SUPA-TRANS-004 — Definir orden de migración por dominio`
+**Tipo de tarea:** inventario documental y técnico read-only; sin DDL o DML persistente, migraciones, backfills, cambios de RLS, despliegues, renombres, retiros ni cambios de configuración
+
+#### 1. Resultado concreto
+
+Esta tarea fija el registro de dependencias que deberá acompañar las 970 identidades de `TRANSITION-MAP-001@1.0.0` y `DISPOSITION-MAP-002@1.0.2`.
+
+El resultado canónico es:
+
+```text
+DEPENDENCY-MAP-003@1.0.0
+```
+
+Una dependencia es cualquier relación demostrable o candidata que pueda romperse, ampliar autoridad, duplicar efectos, perder historia o dejar un consumidor incompatible durante la transición. La ausencia de una clave foránea o de una coincidencia literal en código no demuestra ausencia de dependencia.
+
+#### 2. Fuentes y corte de evidencia
+
+| Fuente                               | Uso en esta tarea                                                        |
+| ------------------------------------ | ------------------------------------------------------------------------ |
+| `TRANSITION-MAP-001@1.0.0`           | conserva las 970 identidades y sus claves estables                       |
+| `DISPOSITION-MAP-002@1.0.2`          | conserva disposición, grupo, gates y autoridad de convergencia           |
+| catálogo read-only de `vento-os-dev` | FK, vistas, funciones, triggers, RLS, publicaciones y relaciones         |
+| `SUPA-AUD-022` y `SUPA-AUD-023`      | owner, consumidores, procesos, datos, RPC, eventos y aplicaciones        |
+| `SUPA-ARC-001` a `SUPA-ARC-025`      | fronteras, autoridad, contratos, seguridad y política de transición      |
+| repositorios `vento-*` del workspace | referencias literales de cliente a tablas, RPC, Storage y Edge Functions |
+| stack local de `vento-shell`         | comprobación de paridad disponible; `cron.job` ausente en el corte local |
+
+La evidencia remota fue leída el 2026-07-31 sin ejecutar cambios persistentes.
+
+#### 3. Contrato de cada dependencia
+
+Cada arista del registro deberá conservar:
+
+```text
+source_transition_key
+dependent_key
+dependency_class
+dependency_direction
+access_or_effect
+application_or_role
+evidence_mode
+evidence_reference
+confidence
+resolution_state
+blocking_reason
+owning_followup_task
+```
+
+Catálogo cerrado de `dependency_class`:
+
+```text
+FOREIGN_KEY
+VIEW_SOURCE
+FUNCTION_RELATION
+FUNCTION_FUNCTION
+RPC_CLIENT
+RLS_POLICY
+RLS_HELPER
+TRIGGER_RELATION
+TRIGGER_FUNCTION
+REALTIME_PUBLICATION
+STORAGE_CLIENT
+EDGE_CLIENT
+CRON_TARGET
+APPLICATION_RELATION
+DATA_HISTORY_OR_BACKFILL
+EXTERNAL_OR_DYNAMIC_CONSUMER
+```
+
+Catálogo de evidencia:
+
+```text
+CONFIRMED_CATALOG
+CONFIRMED_CODE_LITERAL
+CONFIRMED_CANONICAL_AUDIT
+LEXICAL_BODY_CANDIDATE
+DYNAMIC_OR_EXTERNAL_REVIEW
+NEGATIVE_SEARCH_ONLY
+```
+
+`NEGATIVE_SEARCH_ONLY` nunca podrá cerrar un objeto como `SIN_CONSUMIDORES`.
+
+#### 4. Línea base materializada de base de datos
+
+| Familia                                |                  Aristas u objetos | Cobertura confirmada                                                     |
+| -------------------------------------- | ---------------------------------: | ------------------------------------------------------------------------ |
+| relaciones gobernadas                  |                            **379** | nueve schemas del mapa `001`                                             |
+| claves foráneas                        |                    **795 aristas** | 276 relaciones hijas y 106 relaciones padre                              |
+| dependencias de vistas                 |                    **149 aristas** | las 62 vistas tienen al menos una fuente catalogada                      |
+| triggers                               | **197 aristas relación → trigger** | 155 relaciones y 71 funciones ejecutoras                                 |
+| políticas RLS                          |                            **790** | 300 relaciones protegidas                                                |
+| dependencias policy → función          |                  **1.156 aristas** | 711 políticas con helper o función dependiente                           |
+| dependencias policy → relación         |                    **972 aristas** | las 790 políticas conservan relación protegida y referencias catalogadas |
+| referencias léxicas función → relación |                 **868 candidatas** | 280 funciones; requieren confirmación por parser o prueba                |
+| referencias léxicas función → función  |                 **265 candidatas** | 148 funciones; requieren confirmación por firma                          |
+| publicación `supabase_realtime`        |                   **6 relaciones** | inventario nominal cerrado para este corte                               |
+
+PostgreSQL no registra de forma completa en `pg_depend` las referencias internas de cuerpos PL/pgSQL. Por ello, las 868 y 265 aristas léxicas son candidatas trazables, no dependencias estructurales confirmadas ni autorización para retirar código.
+
+#### 5. Dependencias de datos
+
+Las 795 claves foráneas son dependencias mínimas, no el universo completo. Cada relación deberá declarar adicionalmente:
+
+- escritoras directas y funciones que cambian estado;
+- vistas y proyecciones que leen sus columnas;
+- triggers `BEFORE`, `AFTER` o `INSTEAD OF`, evento y orden;
+- políticas, helpers y roles efectivos;
+- historial, ledger, auditoría, archivos y eventos relacionados;
+- imports, hojas, POS, webhooks, jobs o integraciones sin FK;
+- volumen, nulabilidad, defaults y calidad que condicionen `SUPA-TRANS-005`;
+- claves naturales, aliases y equivalencias que no puedan inferirse por texto.
+
+Las fusiones `ATTENDANCE_LOGS` y `SITE_OPERATIONAL_ROLES` permanecen bloqueadas hasta reconciliar relaciones entrantes, salientes, automatismos, consumidores y datos divergentes. Las divisiones documentales permanecen bloqueadas hasta separar owner, sensibilidad, retención, metadata, binario y referencias.
+
+#### 6. Dependencias RLS y exposición
+
+Estado observado:
+
+| Control                                    | Resultado |
+| ------------------------------------------ | --------: |
+| relaciones con RLS activo                  |   **305** |
+| políticas sobre relaciones gobernadas      |   **790** |
+| relaciones con RLS activo y cero políticas |     **5** |
+| relaciones persistidas con RLS desactivado |    **12** |
+
+RLS activo sin políticas:
+
+```text
+pass.site_business_hours
+pass.site_delivery_slots
+pass.site_schedule_exception_resolutions
+pass.site_schedule_exceptions
+public.client_push_tokens
+```
+
+Relaciones persistidas con RLS desactivado:
+
+```text
+app_private.delivery_pin_secrets
+viso.demand_forecasts
+viso.demand_history_hourly
+viso.employee_availability
+viso.employee_planning_limits
+viso.employee_shift_preferences
+viso.shift_generation_candidate_items
+viso.shift_generation_candidates
+viso.shift_generation_runs
+viso.site_operational_roles
+viso.site_planning_rules
+viso.site_staffing_requirements
+```
+
+`app_private.delivery_pin_secrets` no se trata como tabla pública por tener RLS desactivado: su ACL y frontera server-only se revisan por separado. Las once relaciones `viso.*` no adquieren autorización de cliente por estar fuera del schema `public`. `SUPA-TRANS-010` resolverá seguridad y rendimiento; esta tarea únicamente conserva dependencia, exposición y gate.
+
+#### 7. Dependencias Realtime
+
+La publicación `supabase_realtime` contiene:
+
+```text
+public.order_conversations
+public.order_delivery_sessions
+public.order_messages
+public.order_status_events
+public.orders
+public.users
+```
+
+Cada una queda bloqueada frente a movimiento, división, renombre o retiro hasta identificar canales, filtros, eventos, replica identity, volumen, autorización y consumidores efectivos. Una publicación de tabla no demuestra que exista consumidor activo; una búsqueda de `.channel(...)` sin literal tampoco demuestra ausencia.
+
+#### 8. Dependencias de aplicaciones
+
+El barrido estático de archivos TypeScript y JavaScript del workspace encontró el siguiente límite inferior de identificadores literales:
+
+| Repositorio       | tablas/vistas |  RPC | buckets | Edge Functions |
+| ----------------- | ------------: | ---: | ------: | -------------: |
+| `vento-anima`     |            24 |   10 |       1 |              8 |
+| `vento-fogo`      |            25 |    8 |       0 |              0 |
+| `vento-group-web` |             2 |    0 |       0 |              0 |
+| `vento-nexo`      |            90 |   40 |       0 |              0 |
+| `vento-numera`    |            18 |    5 |       0 |              0 |
+| `vento-origo`     |            29 |    9 |       0 |              0 |
+| `vento-pass`      |            27 |   12 |       0 |              5 |
+| `vento-pulso`     |            30 |   15 |       0 |              1 |
+| `vento-shell`     |            31 |   14 |       0 |              0 |
+| `vento-talento`   |            12 |    4 |       0 |              0 |
+| `vento-viso`      |            97 |   14 |       0 |              1 |
+| `vento-vital`     |             0 |    0 |       0 |              0 |
+
+El conjunto combinado contiene al menos **217 identificadores literales de relación**, **102 nombres de RPC**, **13 Edge Functions** y **1 bucket**. Los conteos por repositorio se solapan y no deben sumarse como objetos únicos.
+
+El barrido literal no cubre identificadores construidos, wrappers, SQL dinámico, secretos de integración, clientes externos, ramas no presentes, dashboards, hojas ni consumidores manuales. Esos casos quedan `DYNAMIC_OR_EXTERNAL_REVIEW`; nunca `SIN_CONSUMIDORES`.
+
+#### 9. Edge Functions y Storage
+
+Las trece Edge Functions con invocación literal localizada son:
+
+```text
+account-deletion
+announcement-notify
+employee-delete
+order-message-notify
+pass-address-search
+pass-delivery-quote
+pass-register-push-token
+payments-create-intent
+register-push-token
+shift-publish-notify
+staff-invitations-cancel
+staff-invitations-create
+staff-invitations-resend
+```
+
+Las otras once Edge Functions desplegadas no se declaran huérfanas: pueden ser webhooks, callbacks, jobs o endpoints externos. El bucket `documents` tiene referencia literal localizada; los demás buckets requieren correlación con URL, policy, contrato o consumidor externo antes de cualquier decisión de salida.
+
+#### 10. Triggers, funciones y RPC
+
+Cada uno de los 197 triggers conserva obligatoriamente:
+
+- relación padre;
+- función ejecutora por firma;
+- momento, evento, nivel y condición;
+- privilegio y `security_definer` de la función;
+- tablas o funciones afectadas por el cuerpo;
+- relación con otros triggers del mismo evento;
+- consumidor funcional y efecto empresarial.
+
+Las 348 funciones se identifican por firma PostgreSQL, no solo por nombre. Una coincidencia de `.rpc('nombre')` sin resolución de overload permanece bloqueada. Las funciones de trigger no son RPC por su presencia en `public`, y una función `SECURITY DEFINER` no adquiere autorización empresarial por ejecutarse correctamente.
+
+La guardia mensual de VISO queda ligada a `public.employee_shifts`, su trigger, callers administrativos, owner, grants, `search_path`, regla provisional de 186 horas y pruebas posteriores. Su concurrencia pertenece a `SUPA-TRANS-008`; seguridad y coste a `SUPA-TRANS-010`.
+
+#### 11. Dependencias cron y paridad local
+
+Los siete cron jobs permanecen vinculados a scheduler, comando o endpoint, secreto, dominio propietario, observabilidad y resultado empresarial. El stack local activo de `vento-shell` no contiene `cron.job`; por eso `SUPA-TRANS-001_TRANSITION_MAP.sql` no puede reproducir localmente el bloque cron completo en este corte.
+
+Esta diferencia se clasifica:
+
+```text
+LOCAL_PLATFORM_PARITY_GAP
+```
+
+No autoriza crear jobs, extensiones ni datos locales dentro de esta tarea. La paridad corresponde a `SUPA-TRANS-013` y el gate ejecutable a `SUPA-TRANS-015`.
+
+#### 12. Estados de resolución
+
+Cada identidad y arista usará exactamente uno:
+
+| Estado                            | Significado                                                                       |
+| --------------------------------- | --------------------------------------------------------------------------------- |
+| `RESOLVED_CONFIRMED`              | dependencia demostrada por catálogo, código o auditoría canónica                  |
+| `RESOLVED_NEGATIVE_WITH_SCOPE`    | búsqueda negativa con alcance explícito; no equivale a cero consumidores globales |
+| `CANDIDATE_REQUIRES_CONFIRMATION` | referencia léxica, dinámica o ambigua                                             |
+| `BLOCKED_EXTERNAL_CONSUMER`       | consumidor fuera del workspace o sin evidencia accesible                          |
+| `BLOCKED_SIGNATURE_OR_OVERLOAD`   | RPC sin firma única resoluble                                                     |
+| `BLOCKED_SECURITY_BOUNDARY`       | RLS, grants, definer, secreto o exposición sin resolución                         |
+| `BLOCKED_DATA_RELATIONSHIP`       | datos, historia o relación no representada completamente por FK                   |
+| `BLOCKED_LOCAL_PARITY`            | objeto remoto sin representación local equivalente                                |
+
+Ningún estado bloqueado impide documentar `SUPA-TRANS-004`; sí impide ejecutar la migración física del objeto afectado.
+
+#### 13. Entrega a tareas siguientes
+
+| Trabajo derivado                                          | Tarea propietaria |
+| --------------------------------------------------------- | ----------------- |
+| orden topológico y oleadas por dominio                    | `SUPA-TRANS-004`  |
+| reconciliación, calidad y backfill                        | `SUPA-TRANS-005`  |
+| vistas, wrappers y aliases temporales                     | `SUPA-TRANS-006`  |
+| adaptación exacta de repositorios y consumidores externos | `SUPA-TRANS-007`  |
+| writers, concurrencia, doble escritura e idempotencia     | `SUPA-TRANS-008`  |
+| pruebas de dependencias y regresión                       | `SUPA-TRANS-009`  |
+| RLS, grants, definer, exposición y rendimiento            | `SUPA-TRANS-010`  |
+| rollback por componente conectado                         | `SUPA-TRANS-011`  |
+| cero consumidores y retiro progresivo                     | `SUPA-TRANS-012`  |
+| paridad local, staging y producción                       | `SUPA-TRANS-013`  |
+| tipos, firmas, contratos y documentación                  | `SUPA-TRANS-014`  |
+| materialización de gates en roadmap                       | `SUPA-TRANS-015`  |
+
+No queda un hallazgo accionable sin tarea propietaria.
+
+#### 14. Requisitos de prueba
+
+**NO GENERA REQUISITOS DE PRUEBA.** Esta tarea no crea, modifica ni elimina identificadores `TREQ-*`; aplica requisitos existentes, especialmente:
+
+```text
+TREQ-SUPABASE-255
+TREQ-SUPABASE-265 a TREQ-SUPABASE-266
+TREQ-SUPABASE-274
+TREQ-SUPABASE-287
+TREQ-SUPABASE-294 a TREQ-SUPABASE-295
+TREQ-SUPABASE-302
+TREQ-SUPABASE-425 a TREQ-SUPABASE-427
+TREQ-SUPABASE-445 a TREQ-SUPABASE-452
+TREQ-SUPABASE-510 a TREQ-SUPABASE-513
+TREQ-SUPABASE-518
+TREQ-SUPABASE-522
+TREQ-SUPABASE-549
+TREQ-SUPABASE-619
+TREQ-SUPABASE-636 a TREQ-SUPABASE-647
+TREQ-SUPABASE-682 a TREQ-SUPABASE-684
+TREQ-SUPABASE-1696 a TREQ-SUPABASE-1735
+TREQ-DATA-173
+TREQ-DATA-183
+TREQ-DATA-196
+TREQ-DATA-207
+TREQ-DATA-213
+TREQ-DATA-217
+TREQ-DATA-223
+TREQ-DATA-227
+TREQ-DATA-229
+TREQ-DATA-237
+```
+
+Como no cambia filas del registro `04A`, no requiere reemplazar ese archivo en esta propuesta.
+
+#### 15. Criterios de aceptación
+
+- [x] conserva las 970 identidades y sus claves de transición;
+- [x] separa dependencias confirmadas, candidatas, negativas y externas;
+- [x] registra FK, vistas, funciones, triggers, RLS, Realtime, aplicaciones, Storage, Edge y cron;
+- [x] identifica 795 FK, 149 aristas de vistas y 197 triggers;
+- [x] registra las 790 políticas y sus dependencias catalogadas;
+- [x] no convierte referencias léxicas en autoridad ni certeza estructural;
+- [x] preserva las cinco relaciones RLS sin policy y las doce persistidas sin RLS;
+- [x] conserva las seis relaciones Realtime;
+- [x] inventaría el límite inferior de consumidores en los repositorios disponibles;
+- [x] no declara huérfano un objeto por ausencia de coincidencia literal;
+- [x] clasifica la ausencia local de `cron.job` sin crear objetos de prueba;
+- [x] enruta cada resolución pendiente a `SUPA-TRANS-004` a `SUPA-TRANS-015`;
+- [x] no ejecuta cambios remotos ni físicos.
+
+#### 16. Continuidad preservada
+
+```text
+SUPA-TRANS-003 — APROBADA
+        ↓
+SUPA-TRANS-004 — ÚLTIMA APROBADA
+        ↓
+SUPA-TRANS-005 — TAREA ACTUAL; NO INICIADA
+```
+
+La aprobación de esta tarea quedó incorporada sin iniciar trabajo de `SUPA-TRANS-005`.
+
+
+### ✅ SUPA-TRANS-004 — Definir orden de migración por dominio
+
+**Estado:** APROBADA
+**Tarea anterior:** `SUPA-TRANS-003 — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos` — APROBADA
+**Siguiente tarea reservada:** `SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos`
+**Tipo de tarea:** diseño documental del orden de transición; sin DDL, DML, backfills, despliegues, cambios de RLS, escrituras remotas ni movimiento físico de objetos
+
+#### 1. Resultado concreto
+
+Esta tarea fija el orden topológico por dominios para las 26 responsabilidades objetivo `VSCHEMA-001` a `VSCHEMA-026`, preservando las 970 identidades de `TRANSITION-MAP-001@1.0.0`, sus disposiciones en `DISPOSITION-MAP-002@1.0.2` y las dependencias de `DEPENDENCY-MAP-003@1.0.0`.
+
+El resultado canónico es:
+
+```text
+MIGRATION-ORDER-004@1.0.0
+```
+
+El orden define cuándo puede entrar cada dominio a preparación, materialización, paridad, cambio de consumidores y certificación. No autoriza ejecución física y no transforma una dependencia candidata en dependencia resuelta.
+
+#### 2. Fuentes canónicas aplicadas
+
+| Fuente                                             | Uso en esta tarea                                                                    |
+| -------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `TRANSITION-MAP-001@1.0.0`                         | universo cerrado de 970 identidades y claves estables                                |
+| `DISPOSITION-MAP-002@1.0.2`                        | disposición, destino, autoridad y gates por identidad                                |
+| `DEPENDENCY-MAP-003@1.0.0`                         | aristas confirmadas, candidatas, dinámicas, externas y bloqueadas                    |
+| `SUPA-ARC-001` a `SUPA-ARC-025`                    | fronteras de autoridad, responsabilidades `VSCHEMA-*`, contratos, seguridad y retiro |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` | controles vigentes aplicables al orden, identidad, compatibilidad y gates            |
+
+#### 3. Unidad de avance
+
+La unidad mínima de avance es un `migration_unit`, no un schema completo. Cada unidad conserva:
+
+```text
+migration_unit_id
+transition_keys
+owner_schema
+wave_id
+intra_wave_order
+predecessor_units
+dependency_state
+compatibility_contract
+consumer_cohort
+data_reconciliation_gate
+security_gate
+rollback_unit
+entry_evidence
+exit_evidence
+status
+```
+
+Un schema puede tener unidades en momentos distintos cuando contiene maestros, hechos, proyecciones o compatibilidad con dependencias diferentes. La pertenencia a una misma oleada no implica paralelismo: prevalecen `predecessor_units` y las aristas de `DEPENDENCY-MAP-003@1.0.0`.
+
+#### 4. Secuencia obligatoria dentro de cada unidad
+
+Cada unidad sigue este orden cerrado:
+
+1. congelar nuevas fuentes de autoridad en `public` y en schemas legados;
+2. confirmar identidad, disposición, owner y consumidores conocidos;
+3. resolver o aislar dependencias bloqueantes;
+4. materializar el destino canónico sin retirar el origen;
+5. publicar contrato de compatibilidad, RLS, grants y observabilidad;
+6. demostrar paridad de estructura, datos, efectos, seguridad y rollback;
+7. mover consumidores por cohortes controladas;
+8. demostrar ausencia de consumidores ocultos dentro del alcance declarado;
+9. certificar la nueva autoridad;
+10. habilitar el retiro posterior de aliases, wrappers y fuentes antiguas.
+
+Ninguna unidad puede saltar pasos porque otra unidad de su oleada haya finalizado.
+
+#### 5. Carriles transversales
+
+Los siguientes carriles acompañan todas las oleadas y no se posponen como limpieza final:
+
+| Carril                            | Regla de orden                                                                                                                                                                             |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| identidad y autorización          | `identity_access` publica contratos y referencias estables antes del cambio de cualquier consumidor; los datos laborales, de cliente o dispositivo permanecen en sus dominios propietarios |
+| evidencia y trazabilidad          | `business_records` admite referencias estables desde cada oleada, sin apropiarse del estado empresarial                                                                                    |
+| eventos e integraciones           | todo evento conserva owner, versión, idempotencia, consumidor, replay y compatibilidad antes del cambio de escritor                                                                        |
+| RLS, grants y código privilegiado | se certifican por unidad antes de exponer el destino o redirigir tráfico                                                                                                                   |
+| datos y rollback                  | reconciliación, backfill, doble escritura y reversa deben estar definidos antes de mover consumidores                                                                                      |
+| tipos y contratos                 | firmas, aliases y tipos generados se versionan por cohorte, nunca mediante un cambio global no trazado                                                                                     |
+| observabilidad                    | cada unidad conserva señales de paridad, divergencia, errores, latencia y decisión de reversa                                                                                              |
+
+#### 6. Orden canónico por oleadas
+
+| Oleada                           | Orden interno obligatorio | Responsabilidad                      | Razón topológica principal                                                                                           |
+| -------------------------------- | ------------------------- | ------------------------------------ | -------------------------------------------------------------------------------------------------------------------- |
+| `W0_CONTROL_FOUNDATION`          | `001`                     | `VSCHEMA-001 org_governance`         | publica organización, sedes, tenant, unidades y referencias comunes                                                  |
+|                                  | `002`                     | `VSCHEMA-023 identity_access`        | estabiliza sujeto, cuenta, sesión, rol y decisión de acceso sin asumir datos de otros dominios                       |
+|                                  | `003`                     | `VSCHEMA-022 technology_operations`  | establece configuración, secretos, webhooks, jobs y controles técnicos necesarios para operar oleadas                |
+| `W1_PEOPLE_OPERATIONS`           | `001`                     | `VSCHEMA-002 recruiting`             | prepara candidatos y entrega explícita hacia workforce                                                               |
+|                                  | `002`                     | `VSCHEMA-003 workforce`              | publica trabajador y relación laboral para los consumidores posteriores                                              |
+|                                  | `003`                     | `VSCHEMA-004 work_scheduling`        | depende de workforce y publica el plan operativo                                                                     |
+|                                  | `004`                     | `VSCHEMA-005 attendance`             | consume trabajador y planificación; produce asistencia real                                                          |
+|                                  | `005`                     | `VSCHEMA-006 payroll`                | consume hechos laborales y de asistencia ya estabilizados                                                            |
+|                                  | `006`                     | `VSCHEMA-007 operational_compliance` | consolida cumplimiento sobre referencias laborales y operativas estables                                             |
+| `W2_PRODUCT_AND_OFFER`           | `001`                     | `VSCHEMA-008 product_catalog`        | publica producto, presentación, unidad y taxonomía compartida                                                        |
+|                                  | `002`                     | `VSCHEMA-009 recipes`                | consume catálogo y publica composición y rendimiento                                                                 |
+|                                  | `003`                     | `VSCHEMA-010 commercial_offer`       | consume catálogo y publica disponibilidad, precio y oferta comercial                                                 |
+| `W3_SUPPLY_AND_PRODUCTION`       | `001`                     | `VSCHEMA-011 procurement`            | inicia abastecimiento sobre catálogo y referencias organizacionales estables                                         |
+|                                  | `002`                     | `VSCHEMA-012 inventory`              | recibe movimientos de abastecimiento y se vuelve autoridad de existencias                                            |
+|                                  | `003`                     | `VSCHEMA-013 assets`                 | estabiliza activos y mantenimientos vinculados a sedes y operación                                                   |
+|                                  | `004`                     | `VSCHEMA-020 facilities`             | coordina sede, activos, compras y cumplimiento sin absorber sus autoridades                                          |
+|                                  | `005`                     | `VSCHEMA-014 production`             | consume catálogo, recetas e inventario y publica resultados productivos                                              |
+| `W4_COMMERCIAL_FULFILLMENT`      | `001`                     | `VSCHEMA-017 customer_engagement`    | estabiliza perfil, consentimiento y relación con cliente antes del ciclo de pedido                                   |
+|                                  | `002`                     | `VSCHEMA-015 sales_orders`           | consume cliente, catálogo y oferta; publica la orden comercial                                                       |
+|                                  | `003`                     | `VSCHEMA-016 payments`               | registra hechos de pago contra órdenes y sujetos estables                                                            |
+|                                  | `004`                     | `VSCHEMA-018 logistics`              | acepta la entrega de órdenes y coordina cumplimiento con inventario y sedes                                          |
+| `W5_RECORD_AND_ECONOMIC_CLOSURE` | `001`                     | `VSCHEMA-019 finance`                | consume hechos económicos estabilizados de compras, inventario, órdenes, pagos y producción                          |
+|                                  | `002`                     | `VSCHEMA-024 business_records`       | consolida vínculos documentales sobre identidades empresariales ya estables; sus adaptadores acompañaron cada oleada |
+|                                  | `003`                     | `VSCHEMA-021 marketing`              | activa canales sobre oferta, consentimiento y cliente sin asumir sus autoridades                                     |
+| `W6_DERIVED_AND_CONTINUITY`      | `001`                     | `VSCHEMA-025 business_insights`      | consume fuentes certificadas y no escribe de vuelta sobre dominios operativos                                        |
+|                                  | `002`                     | `VSCHEMA-026 operational_continuity` | registra contratos, degradación y recuperación después de estabilizar dependencias de servicio                       |
+
+Las 26 responsabilidades aparecen una sola vez. `business_records` mantiene adaptadores tempranos, pero su autoridad consolidada entra en `W5`; `identity_access` puede publicar referencias en `W0`, pero no adelanta la migración de perfiles laborales o de clientes.
+
+#### 7. Dependencias entre oleadas
+
+```text
+W0_CONTROL_FOUNDATION
+ ├─> W1_PEOPLE_OPERATIONS
+ └─> W2_PRODUCT_AND_OFFER
+
+W2_PRODUCT_AND_OFFER ─> W3_SUPPLY_AND_PRODUCTION
+W1_PEOPLE_OPERATIONS ─> W3_SUPPLY_AND_PRODUCTION
+
+W2_PRODUCT_AND_OFFER ─> W4_COMMERCIAL_FULFILLMENT
+W3_SUPPLY_AND_PRODUCTION ─> W4_COMMERCIAL_FULFILLMENT
+
+W3_SUPPLY_AND_PRODUCTION ─> W5_RECORD_AND_ECONOMIC_CLOSURE
+W4_COMMERCIAL_FULFILLMENT ─> W5_RECORD_AND_ECONOMIC_CLOSURE
+
+W1..W5 CERTIFICADAS ─> W6_DERIVED_AND_CONTINUITY
+```
+
+Una unidad puede iniciar preparación documental antes de que termine su predecesora, pero no puede asumir autoridad, cambiar writers ni retirar compatibilidad hasta que todas sus aristas bloqueantes estén cerradas.
+
+#### 8. Compuertas de entrada por unidad
+
+Una unidad entra a materialización únicamente si:
+
+- su `transition_key` existe en los tres artefactos `001`, `002` y `003`;
+- owner, destino, disposición y claves de identidad son inequívocos;
+- toda FK, vista, trigger, RLS, función, RPC, Realtime, Storage, Edge, cron y consumidor conocido tiene tratamiento;
+- las candidatas léxicas y consumidores dinámicos tienen resolución o aislamiento explícito;
+- las relaciones con RLS sin policy y las relaciones sin RLS no adquieren exposición accidental;
+- cada función está identificada por firma y cada trigger por relación, evento y ejecutora;
+- existe estrategia de reconciliación, backfill, compatibilidad, observabilidad y rollback;
+- la paridad del entorno requerido está demostrada o declarada como gate bloqueante.
+
+Los RPC defectuosos identificados por `TREQ-SUPABASE-080`, `TREQ-SUPABASE-081` y `TREQ-SUPABASE-082` no pueden ser invocados como compuertas confiables hasta que su precondición estructural esté resuelta y probada.
+
+#### 9. Compuertas de salida por unidad y oleada
+
+Una unidad sale de su oleada únicamente con evidencia de:
+
+- paridad de conteos, claves, nulabilidad, semántica, historia y efectos laterales;
+- autorización equivalente o más restrictiva por actor, tenant, sede y propósito;
+- idempotencia y orden de eventos, triggers, jobs y webhooks;
+- consumidores migrados por cohorte y métricas dentro de umbral;
+- doble escritura reconciliada cuando aplique;
+- rollback ejecutable dentro de la ventana definida;
+- cero consumidores ocultos dentro del alcance medido, sin inferirlo solo por búsqueda literal.
+
+La oleada se certifica cuando todas sus unidades están certificadas o cuando las excepciones restantes están aisladas y no son predecesoras de la siguiente oleada. Una excepción nunca se hereda silenciosamente.
+
+#### 10. Reglas para identidad compartida
+
+- se preservan UUID y claves externas durante toda la coexistencia;
+- cuenta, trabajador, cliente y dispositivo siguen siendo identidades separables;
+- no se provisiona Auth automáticamente por existencia de perfil empresarial;
+- cuentas compartidas trabajador/dispositivo se separan antes del cambio de autoridad;
+- cuentas de dispositivo no adquieren perfil de cliente;
+- duplicados por email o teléfono requieren resolución explícita, sin fusión automática;
+- deshabilitar una identidad aplica al contexto correcto y conserva historia y relaciones;
+- sesiones y refresh tokens incompatibles se revocan antes del cambio de cohorte;
+- perfiles sin Auth permanecen válidos cuando el contrato de negocio lo permita.
+
+Estas reglas bloquean unidades concretas; no fuerzan detener toda una oleada si la dependencia puede aislarse sin degradar integridad o autorización.
+
+#### 11. Objetos derivados y plataforma
+
+Vistas, funciones auxiliares, triggers, políticas, grants, publicaciones, índices, tipos y objetos técnicos heredan la oleada de su objeto padre salvo que `DEPENDENCY-MAP-003@1.0.0` demuestre una dependencia anterior. No forman una oleada autónoma ni pueden adelantarse por conveniencia de despliegue.
+
+La experiencia pública `VITAL` no constituye un dominio migrable. Solo entra como cohorte de compatibilidad y paridad sobre contratos autorizados; no crea tablas, RPC ni fuente de autoridad propia.
+
+#### 12. Estados del orden
+
+Cada unidad usa exactamente uno:
+
+| Estado                       | Significado                                                                |
+| ---------------------------- | -------------------------------------------------------------------------- |
+| `ORDERED_NOT_READY`          | posición asignada, con gates todavía abiertos                              |
+| `READY_FOR_MATERIALIZATION`  | entrada completa; puede preparar destino sin cambiar autoridad             |
+| `READY_FOR_CONSUMER_COHORT`  | paridad y compatibilidad certificadas; puede mover una cohorte             |
+| `COHORT_IN_PROGRESS`         | una cohorte controlada está activa                                         |
+| `DOMAIN_AUTHORITY_CERTIFIED` | autoridad canónica demostrada con rollback vigente                         |
+| `RETIREMENT_ELIGIBLE`        | cero consumidores demostrado; el retiro corresponde a su tarea propietaria |
+| `BLOCKED`                    | existe una dependencia que impide el siguiente estado                      |
+
+El avance es monotónico salvo rollback declarado. `BLOCKED` conserva la última evidencia válida y el propietario de resolución.
+
+#### 13. Entrega a tareas siguientes
+
+| Trabajo derivado                                      | Tarea propietaria |
+| ----------------------------------------------------- | ----------------- |
+| estrategia de reconciliación y backfill por unidad    | `SUPA-TRANS-005`  |
+| vistas, aliases y wrappers temporales                 | `SUPA-TRANS-006`  |
+| adaptación de aplicaciones y consumidores             | `SUPA-TRANS-007`  |
+| writers, doble escritura, concurrencia e idempotencia | `SUPA-TRANS-008`  |
+| pruebas de paridad y regresión por oleada             | `SUPA-TRANS-009`  |
+| RLS, grants, exposición y rendimiento                 | `SUPA-TRANS-010`  |
+| rollback ejecutable por unidad                        | `SUPA-TRANS-011`  |
+| demostración de cero consumidores y retiro            | `SUPA-TRANS-012`  |
+| promoción local, staging y producción                 | `SUPA-TRANS-013`  |
+| tipos, contratos y documentación derivados            | `SUPA-TRANS-014`  |
+| materialización de gates y owners en roadmap          | `SUPA-TRANS-015`  |
+
+#### 14. Requisitos de prueba
+
+**NO GENERA REQUISITOS DE PRUEBA.** Esta tarea no crea, modifica ni elimina identificadores `TREQ-*`. Aplica los requisitos vigentes del registro 04A relacionados con orden de transición, identidad compartida, compatibilidad por consumidor, objetos derivados, RLS, RPC y gates de corte.
+
+#### 15. Criterios de aceptación
+
+- [x] ordena las 26 responsabilidades `VSCHEMA-*` exactamente una vez;
+- [x] preserva las 970 identidades y las decisiones de `SUPA-TRANS-001` a `SUPA-TRANS-003`;
+- [x] distingue oleada de unidad física y prohíbe asumir paralelismo implícito;
+- [x] fija predecesores e intraorden para personas, producto, suministro, comercio, finanzas y derivados;
+- [x] aplica identidad, evidencia, eventos, seguridad, datos, contratos y observabilidad como carriles transversales;
+- [x] define compuertas de entrada y salida sin declarar resueltos los bloqueos existentes;
+- [x] preserva separación entre cuenta, trabajador, cliente y dispositivo;
+- [x] mantiene `VITAL` fuera de la autoridad de datos;
+- [x] hereda los objetos derivados desde su padre canónico;
+- [x] asigna toda ejecución posterior a su tarea propietaria;
+- [x] no ejecuta cambios físicos, remotos ni productivos;
+- [x] reserva únicamente `SUPA-TRANS-005` como siguiente tarea.
+
+#### 16. Continuidad preservada
+
+```text
+SUPA-TRANS-004 — ÚLTIMA APROBADA
+        ↓
+SUPA-TRANS-005 — TAREA ACTUAL; NO INICIADA
+        ↓
+SUPA-TRANS-006 — SIGUIENTE RESERVADA; NO INICIADA
+```
+
+La aprobación de esta tarea quedó incorporada sin iniciar trabajo de `SUPA-TRANS-005`.
+
+
 ### [ ] SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos
 ### [ ] SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad
 ### [ ] SUPA-TRANS-007 — Definir adaptación coordinada de consumidores

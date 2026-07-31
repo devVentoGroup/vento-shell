@@ -1,4 +1,4 @@
--- DISPOSITION-MAP-002@1.0.1
+-- DISPOSITION-MAP-002@1.0.2
 -- SUPA-TRANS-002 - Clasificacion read-only del universo producido por SUPA-TRANS-001.
 -- Ejecutar con psql. No modifica objetos persistentes ni configuracion remota.
 -- Usa tablas temporales de sesion y archivos CSV locales bajo /tmp.
@@ -206,13 +206,17 @@ with disposition_classified as (
         then 'TRANS::RELATION::pos.' || replace(tm.current_object_key, 'public.', '')
       when tm.current_object_class = 'RELATION' and tm.current_source_status = 'CURRENT_COMPATIBILITY_PROJECTION'
         then 'TRANS::RELATION::pass.' || replace(tm.current_object_key, 'public.', '')
-      when tm.current_object_key in ('public.asistencia_logs', 'public.attendance_logs') then 'TRANS::RELATION::public.attendance_logs'
-      when tm.current_object_key in ('public.site_operational_roles', 'viso.site_operational_roles') then 'TRANS::RELATION::public.site_operational_roles'
+      when tm.current_object_key in ('public.asistencia_logs', 'public.attendance_logs')
+        or (tm.current_object_class = 'TRIGGER' and (tm.current_object_key like 'public.asistencia_logs::trigger::%' or tm.current_object_key like 'public.attendance_logs::trigger::%'))
+        then 'TRANS::RELATION::public.attendance_logs'
+      when tm.current_object_key in ('public.site_operational_roles', 'viso.site_operational_roles')
+        or (tm.current_object_class = 'TRIGGER' and (tm.current_object_key like 'public.site_operational_roles::trigger::%' or tm.current_object_key like 'viso.site_operational_roles::trigger::%'))
+        then 'TRANS::RELATION::public.site_operational_roles'
       when tm.current_object_key in ('cron.auto-close-attendance', 'cron.anima_attendance_day_end_close_0005') then 'TRANS::CRON_JOB::anima_attendance_day_end_close_0005'
       when tm.current_object_key = 'public.role_capabilities' then 'MULTIPLE::TRANS::RELATION::public.app_permissions|TRANS::RELATION::public.role_permissions|TRANS::RELATION::public.operational_role_permissions'
       else null
     end as successor_transition_key,
-    tm.evidence_refs || ';SUPA-TRANS-002;DISPOSITION-MAP-002@1.0.1' as disposition_evidence_refs
+    tm.evidence_refs || ';SUPA-TRANS-002;DISPOSITION-MAP-002@1.0.2' as disposition_evidence_refs
   from supa_trans_001_transition_map tm
 ),
 disposition_map as (
@@ -249,8 +253,10 @@ declare
   total_rows integer;
   invalid_rows integer;
   reserved_rows integer;
+  merge_without_authority integer;
+  split_without_gate integer;
   actual_counts jsonb;
-  expected_counts constant jsonb := '{"CONSERVAR":416,"MOVER":498,"FUSIONAR":11,"DIVIDIR":6,"RENOMBRAR":0,"RETIRAR":39}'::jsonb;
+  expected_counts constant jsonb := '{"CONSERVAR":420,"MOVER":494,"FUSIONAR":11,"DIVIDIR":6,"RENOMBRAR":0,"RETIRAR":39}'::jsonb;
 begin
   select count(*) into total_rows from supa_trans_002_disposition_map;
   select count(*) into invalid_rows
@@ -259,6 +265,14 @@ begin
   select count(*) into reserved_rows
   from supa_trans_002_disposition_map
   where disposition_status = 'RESERVED_FOR_SUPA_TRANS_002';
+  select count(*) into merge_without_authority
+  from supa_trans_002_disposition_map
+  where disposition_status = 'FUSIONAR'
+    and (disposition_group_key is null or successor_transition_key is null);
+  select count(*) into split_without_gate
+  from supa_trans_002_disposition_map
+  where disposition_status = 'DIVIDIR'
+    and (disposition_group_key is null or execution_gate is null);
 
   select jsonb_object_agg(disposition, quantity)
     into actual_counts
@@ -280,6 +294,10 @@ begin
 
   if actual_counts <> expected_counts then
     raise exception 'Conteos de disposicion divergentes. Esperado %, actual %', expected_counts, actual_counts;
+  end if;
+
+  if merge_without_authority <> 0 or split_without_gate <> 0 then
+    raise exception 'Invariantes de convergencia divergentes: % fusiones sin autoridad y % divisiones sin gate', merge_without_authority, split_without_gate;
   end if;
 end
 $$;

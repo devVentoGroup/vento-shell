@@ -80,4 +80,4 @@ ALCANCE
 - conserva la información retirada sin reinsertar instrucciones operativas dentro de la tarea;
 - no autoriza cambios físicos ni remotos;
 - no inicia SUPA-TRANS-003;
-- no sustituye TRANSITION-MAP-001@1.0.0 ni DISPOSITION-MAP-002@1.0.1.
+- no sustituye TRANSITION-MAP-001@1.0.0 ni DISPOSITION-MAP-002@1.0.2.

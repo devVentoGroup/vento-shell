@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **267** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **451** |
+| Tareas aprobadas | **453** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1134** |
+| Tareas no iniciadas | **1132** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **28.45% (451/1585)** |
+| Porcentaje de completamiento | **28.58% (453/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar** |
-| Tarea actual | **SUPA-TRANS-003 — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos** |
+| Última tarea aprobada | **SUPA-TRANS-004 — Definir orden de migración por dominio** |
+| Tarea actual | **SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-TRANS-004 — Definir orden de migración por dominio** |
+| Siguiente tarea | **SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 22 de 45 aprobadas; SUPA-TRANS-003 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 24 de 45 aprobadas; SUPA-TRANS-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-TRANS-002` — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar |
-| Tarea actual | `SUPA-TRANS-003` — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos — **NO INICIADA** |
-| Siguiente tarea | `SUPA-TRANS-004` — Definir orden de migración por dominio |
+| Última aprobada | `SUPA-TRANS-004` — Definir orden de migración por dominio |
+| Tarea actual | `SUPA-TRANS-005` — Definir backfills y correcciones de calidad de datos — **NO INICIADA** |
+| Siguiente tarea | `SUPA-TRANS-006` — Definir vistas, wrappers o aliases temporales de compatibilidad |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **22 DE 45 APROBADAS — ACTUAL SUPA-TRANS-003** |
+| BLOQUE E3 | **24 DE 45 APROBADAS — ACTUAL SUPA-TRANS-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar
-        ↓
-TAREA ACTUAL
-SUPA-TRANS-003 — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos
-        ↓
-SIGUIENTE TAREA RESERVADA
 SUPA-TRANS-004 — Definir orden de migración por dominio
         ↓
+TAREA ACTUAL
+SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos
+        ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 22 de 45 tareas aprobadas
+BLOQUE E3 — 24 de 45 tareas aprobadas
 ```
