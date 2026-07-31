@@ -8,13 +8,13 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1575** |
-| Tareas `AUTH` | **316** |
+| Tareas con marcador | **1585** |
+| Tareas `AUTH` | **317** |
 | Aprobadas | **449** |
 | En propuesta | **0** |
-| No iniciadas | **1126** |
+| No iniciadas | **1136** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **28.51% (449/1575)** |
+| Porcentaje de completamiento | **28.33% (449/1585)** |
 
 ## Continuidad activa
 
@@ -211,6 +211,7 @@
 | ✅ APROBADA | `CODE-AUD-018` | Auditar operación offline, reintentos, concurrencia e idempotencia | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_04_VALIDACION_TECNICA_SEGURIDAD_RESILIENCIA_Y_BACKLOG.md` |
 | ✅ APROBADA | `CODE-AUD-019` | Vincular cada capacidad con su implementación actual verificable | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_04_VALIDACION_TECNICA_SEGURIDAD_RESILIENCIA_Y_BACKLOG.md` |
 | ✅ APROBADA | `CODE-AUD-020` | Crear backlog técnico y funcional trazable por repositorio | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_04_VALIDACION_TECNICA_SEGURIDAD_RESILIENCIA_Y_BACKLOG.md` |
+| ⬜ NO INICIADA | `CODE-AUD-021` | Reconciliar el delta técnico de programación mensual VISO | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/04B_RECONCILIACION_DELTA_VISO_PROGRAMACION.md` |
 | ✅ APROBADA | `CAP-SCOPE-001` | Evaluar gobierno, empresas, sedes y organización | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_01_GOBIERNO_PERSONAS_Y_SEGURIDAD_LABORAL.md` |
 | ✅ APROBADA | `CAP-SCOPE-002` | Evaluar personal, contratación, turnos, asistencia, capacitación y retiro | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_01_GOBIERNO_PERSONAS_Y_SEGURIDAD_LABORAL.md` |
 | ✅ APROBADA | `CAP-SCOPE-003` | Evaluar seguridad y salud en el trabajo | `bloques/E1_DESCUBRIMIENTO_OPERATIVO/05_01_GOBIERNO_PERSONAS_Y_SEGURIDAD_LABORAL.md` |
@@ -652,6 +653,14 @@
 | ⬜ NO INICIADA | `VISO-AUTH-018` | Auditar cambios de seguridad | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-019` | Restringir quién administra seguridad | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-020` | Crear exporte de matriz de acceso | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
+| ⬜ NO INICIADA | `VISO-SCH-001` | Definir contrato funcional de programación laboral | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
+| ⬜ NO INICIADA | `VISO-SCH-002` | Definir horizontes semanal y mensual | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
+| ⬜ NO INICIADA | `VISO-SCH-003` | Definir bloques, fechas, duración y modalidad rápida | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
+| ⬜ NO INICIADA | `VISO-SCH-004` | Definir límites mensuales, advertencias, vigencia y excepciones | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
+| ⬜ NO INICIADA | `VISO-SCH-005` | Definir borrador, revisión, publicación y corrección | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
+| ⬜ NO INICIADA | `VISO-SCH-006` | Definir conflictos, integridad, concurrencia y recuperación | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
+| ⬜ NO INICIADA | `VISO-SCH-007` | Definir autorización, auditoría, eventos y notificaciones | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
+| ⬜ NO INICIADA | `VISO-SCH-008` | Aprobar contrato de programación antes de E5 | `bloques/G_VISO/01A_PROGRAMACION_LABORAL.md` |
 | ⬜ NO INICIADA | `VISO-CORE-001` | Definir núcleo mínimo de VISO | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ⬜ NO INICIADA | `VISO-CORE-002` | Vincular núcleo con capacidades empresariales | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ⬜ NO INICIADA | `VISO-CORE-003` | Implementar dependencias administrativas mínimas | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
@@ -849,6 +858,7 @@
 | ⬜ NO INICIADA | `AUTH-UI-058` | Probar con usuarios reales | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-059` | Registrar problemas encontrados | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-060` | Aprobar la pantalla antes de retirarla del roadmap | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
+| ⬜ NO INICIADA | `AUTH-UI-061` | Reconciliar rutas y superficies VISO posteriores al inventario aprobado | `bloques/I_NAVEGACION_Y_PANTALLAS/07_RECONCILIACION_DE_DERIVA_POSTERIOR.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-001` | Inventariar Server Actions de todos los repositorios | `bloques/J_ACCIONES_DE_SERVIDOR/01_INVENTARIO_DE_SUPERFICIES_DE_SERVIDOR.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-002` | Inventariar API routes | `bloques/J_ACCIONES_DE_SERVIDOR/01_INVENTARIO_DE_SUPERFICIES_DE_SERVIDOR.md` |
 | ⬜ NO INICIADA | `AUTH-SRV-003` | Inventariar RPC utilizadas | `bloques/J_ACCIONES_DE_SERVIDOR/01_INVENTARIO_DE_SUPERFICIES_DE_SERVIDOR.md` |

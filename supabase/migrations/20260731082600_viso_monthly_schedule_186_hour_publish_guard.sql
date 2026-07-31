@@ -1,5 +1,9 @@
+-- Package reservation: VISO-SCHEDULE-MONTHLY-001.
+-- Status: provisional policy; not authorized for production rollout.
+-- Canonical process: VPROC-0007.
+-- Canonical migration repository: vento-shell.
 -- VISO: límite mensual de publicación de turnos por trabajador.
--- Regla operativa aprobada para esta implementación:
+-- Regla provisional local pendiente de aprobación canónica en VISO-SCH-004 y VISO-SCH-008:
 --   * Los borradores pueden superar 186 horas para permitir ajustes.
 --   * Cualquier publicación queda bloqueada mientras el plan completo del mes
 --     del trabajador exceda 11.160 minutos (186 horas).
@@ -88,7 +92,7 @@ end;
 $$;
 
 comment on function public.viso_enforce_monthly_schedule_publish_limit() is
-  'Impide publicar turnos cuando el plan mensual completo del trabajador supera 186 horas. Permite mantener el exceso en borrador para corrección.';
+  'Reserved for package VISO-SCHEDULE-MONTHLY-001. Guards publication of VPROC-0007 scheduling against the provisional 186-hour monthly threshold. Value, validity, policy versioning and approved exception handling remain required before production rollout.';
 
 drop trigger if exists trg_viso_monthly_schedule_publish_limit
   on public.employee_shifts;

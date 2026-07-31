@@ -38,6 +38,14 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
    la continuidad ni el cierre documental de E1.
 
    La recolección de evidencia de `OPS-PLAN-002` a `OPS-PLAN-004` puede comenzar en paralelo, pero su aprobación formal respetará esta secuencia.
+
+### Reconciliación de deltas posteriores a snapshots E1
+
+Un cambio material posterior al cierre de E1 no reabre ni reescribe snapshots aprobados.
+`CODE-AUD-021` se ejecutará sobre el commit estable de
+`DELTA-VISO-SCHEDULE-20260731-001` antes de aprobar
+`VISO-SCHEDULE-MONTHLY-001`, sin modificar la tarea documental activa.
+
 7. BLOQUE E1 está **CERRADO DOCUMENTALMENTE** mediante `E1-GATE-001 — APROBADA` y `E1-GATE-MANIFEST-002`, con resultado `PASS_WITH_CARRYOVER`. El catálogo de procesos `PROC-CAT-001` a `PROC-CAT-020` y el mapa de actores `PROC-ACTOR-001` a `PROC-ACTOR-010` están **APROBADOS**; la continuidad documental pasa a `UX-STATION-001`.
 8. BLOQUE E2 — Diseñar procesos TO-BE, actores, pantallas, experiencia y requisitos no funcionales.
 
@@ -68,7 +76,7 @@ FASE 2 — DESCUBRIMIENTO, ARQUITECTURA FUNCIONAL, DATOS Y PREPARACIÓN DE IMPLE
    La cabecera, la tarea actual y la siguiente tarea se derivan
    automáticamente de `active-sequence.json`; no deberán corregirse
    manualmente al terminar cada subbloque.
-9. Ejecutar `AUTH-UI-001` a `AUTH-UI-029` y aprobar propiedad funcional y contrato de pantallas
+9. Ejecutar `AUTH-UI-001` a `AUTH-UI-029` y aprobar propiedad funcional y contrato de pantallas. Las rutas posteriores a inventarios aprobados se reconciliarán mediante `AUTH-UI-061` sin renumerar identidades históricas.
 10. BLOQUE X — Definir documentalmente integraciones internas, externas, traspasos y contrato canónico de ventas, sin ejecutar sincronizaciones, pilotos ni efectos operativos
 11. Aprobar los contratos y planes de traspaso entre aplicaciones y de integración temporal del POS externo; su implementación y ejecución quedan reservadas a los paquetes E5 y sus puertas
 12. BLOQUE E3 — Auditar Supabase, normalización, fuentes de verdad y arquitectura objetivo
@@ -104,6 +112,7 @@ SUPA-TRANS-016
    exacta, sin invalidar en bloque decisiones estructurales compatibles.
 14. BLOQUE E4 — Definir colas, impresión, notificaciones, documentos y evidencia
 15. Aprobar contratos, planes de implementación y criterios de piloto de los servicios transversales
+15A. Para programación laboral VISO, completar `VISO-SCH-001` a `VISO-SCH-008`, `CODE-AUD-021` y `AUTH-UI-061` antes de materializar `VISO-SCHEDULE-MONTHLY-001`.
 16. BLOQUE E5 — Convertir capacidades aprobadas en paquetes y planes verificables de implementación, readiness, cutover, piloto, rollback e hypercare
 17. Reabrir el catálogo y actualizar matrices o datasets únicamente cuando una capacidad nueva madura lo requiera
 18. Aprobar la puerta documental `E5-GATE-008` para habilitar posteriormente la ejecución por `SHELL-CI-020` a `SHELL-CI-024`
@@ -192,6 +201,24 @@ migración, backfill, cambio físico, creación de paquete compartido o protecci
 de consumidor se ejecutará antes de `E5-GATE-008::<package_id>`.
 
 <!-- PRIORITY-DELIVERY-LANES:START -->
+### Secuencia VISO-SCHEDULE-MONTHLY-001
+
+```text
+CODE-AUD-021
+→ AUTH-UI-061
+→ VISO-SCH-001 a VISO-SCH-008
+→ VISO-UX / AUTH-UI / AUTH-SRV aplicables
+→ SUPA-TRANS aplicables
+→ DELIV-PKG-001 a DELIV-PKG-025::VISO-SCHEDULE-MONTHLY-001
+→ E5-GATE-008::VISO-SCHEDULE-MONTHLY-001
+→ SHELL-CI-020::VISO-SCHEDULE-MONTHLY-001
+→ BLOQUE R
+→ AUTH-QA / UX-QA
+→ SHELL-CI-021 a SHELL-CI-024::VISO-SCHEDULE-MONTHLY-001
+```
+
+No se agrega a `priority-delivery-lanes.json`.
+
 ### Carril vertical prioritario por paquete
 
 El orden de implementación conserva todas sus fases, tareas, dependencias y
