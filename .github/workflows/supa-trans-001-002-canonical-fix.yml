@@ -1,0 +1,395 @@
+name: Apply SUPA-TRANS canonical corrections
+
+on:
+  push:
+    branches:
+      - fix/supa-trans-001-002-canonical
+
+permissions:
+  contents: write
+
+jobs:
+  apply-corrections:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout correction branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/supa-trans-001-002-canonical
+          fetch-depth: 0
+
+      - name: Patch canonical artifacts
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          import hashlib
+          import re
+
+          ROOT = Path.cwd()
+          OWNER = ROOT / "docs/plan-canonico/modular/bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md"
+          REGISTRY = ROOT / "docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md"
+          CONTRACT = ROOT / "docs/plan-canonico/modular/delivery-contract.json"
+          SQL_001 = ROOT / "docs/plan-canonico/modular/bloques/E3_SUPABASE/SUPA-TRANS-001_TRANSITION_MAP.sql"
+          SQL_002 = ROOT / "docs/plan-canonico/modular/bloques/E3_SUPABASE/SUPA-TRANS-002_DISPOSITION_MAP.sql"
+          EXPECTED_CONTRACT_SHA256 = "d43b45430c81fff890291f9ecc781d86bd61de4a3a24a98af2a03acef523a360"
+
+          def require(condition: bool, message: str) -> None:
+              if not condition:
+                  raise RuntimeError(message)
+
+          actual_contract_sha = hashlib.sha256(CONTRACT.read_bytes()).hexdigest()
+          require(actual_contract_sha == EXPECTED_CONTRACT_SHA256, f"Contrato inesperado: {actual_contract_sha}")
+
+          owner = OWNER.read_text(encoding="utf-8")
+          require(owner.count("### ✅ SUPA-TRANS-001") == 1, "SUPA-TRANS-001 no es única")
+          require(owner.count("### ✅ SUPA-TRANS-002") == 1, "SUPA-TRANS-002 no es única")
+
+          section_002 = owner.split("#### 10. Mapa completo ejecutable", 1)[1].split("#### 11. Requisitos de prueba", 1)[0]
+          embedded_match = re.search(r"```sql\n(.*?)\n```", section_002, re.S)
+          require(embedded_match is not None, "No se encontró el SQL embebido de SUPA-TRANS-002")
+          embedded_sql = embedded_match.group(1)
+          require("disposition_classified as (" in embedded_sql, "No se encontró la clasificación de SUPA-TRANS-002")
+          disposition_tail = embedded_sql.split("disposition_classified as (", 1)[1]
+          disposition_tail = "disposition_classified as (" + disposition_tail
+          disposition_tail = disposition_tail.replace("from transition_map tm", "from supa_trans_001_transition_map tm", 1)
+          disposition_tail = disposition_tail.replace("DISPOSITION-MAP-002@1.0.0", "DISPOSITION-MAP-002@1.0.1")
+          disposition_tail, replaced = re.subn(
+              r"select \*\nfrom disposition_map\norder by current_object_class, current_object_key;\s*$",
+              "select *\nfrom disposition_map;",
+              disposition_tail,
+              count=1,
+          )
+          require(replaced == 1, "No se normalizó la salida final de la clasificación")
+
+          sql_preamble = r'''-- DISPOSITION-MAP-002@1.0.1
+-- SUPA-TRANS-002 - Clasificacion read-only del universo producido por SUPA-TRANS-001.
+-- Ejecutar con psql. No modifica objetos persistentes ni configuracion remota.
+-- Usa tablas temporales de sesion y archivos CSV locales bajo /tmp.
+
+\set ON_ERROR_STOP on
+\pset footer off
+\pset tuples_only off
+\pset format csv
+\o /tmp/supa_trans_001_transition_map.csv
+\ir SUPA-TRANS-001_TRANSITION_MAP.sql
+\o
+\pset format aligned
+\pset footer on
+
+create temporary table supa_trans_001_transition_map (
+  current_object_key text,
+  current_object_class text,
+  current_source_status text,
+  current_product_boundary text,
+  current_capability_key text,
+  current_owner text,
+  current_consumers text,
+  current_ownership_state text,
+  target_domain_or_special_class text,
+  target_component_role text,
+  target_authority_mode text,
+  target_contract_mode text,
+  target_security_boundary text,
+  target_compatibility_dependencies text,
+  target_transition_key text,
+  mapping_status text,
+  disposition_status text,
+  evidence_refs text
+) on commit preserve rows;
+
+\copy supa_trans_001_transition_map from '/tmp/supa_trans_001_transition_map.csv' with (format csv, header true)
+
+do $$
+declare
+  total_rows integer;
+  unique_rows integer;
+begin
+  select count(*), count(distinct current_object_class || E'\\x1f' || current_object_key)
+    into total_rows, unique_rows
+  from supa_trans_001_transition_map;
+
+  if total_rows <> 970 then
+    raise exception 'SUPA-TRANS-001 devolvio % filas; se esperaban 970', total_rows;
+  end if;
+
+  if unique_rows <> total_rows then
+    raise exception 'SUPA-TRANS-001 contiene identidades duplicadas: % filas y % identidades unicas', total_rows, unique_rows;
+  end if;
+
+  if exists (
+    select 1
+    from supa_trans_001_transition_map
+    where disposition_status is distinct from 'RESERVED_FOR_SUPA_TRANS_002'
+  ) then
+    raise exception 'SUPA-TRANS-001 contiene disposiciones anticipadas';
+  end if;
+end
+$$;
+
+create temporary table supa_trans_002_disposition_map as
+with '''
+
+          sql_assertions = r'''
+
+do $$
+declare
+  total_rows integer;
+  invalid_rows integer;
+  reserved_rows integer;
+  actual_counts jsonb;
+  expected_counts constant jsonb := '{"CONSERVAR":416,"MOVER":498,"FUSIONAR":11,"DIVIDIR":6,"RENOMBRAR":0,"RETIRAR":39}'::jsonb;
+begin
+  select count(*) into total_rows from supa_trans_002_disposition_map;
+  select count(*) into invalid_rows
+  from supa_trans_002_disposition_map
+  where disposition_status not in ('CONSERVAR', 'MOVER', 'FUSIONAR', 'DIVIDIR', 'RENOMBRAR', 'RETIRAR');
+  select count(*) into reserved_rows
+  from supa_trans_002_disposition_map
+  where disposition_status = 'RESERVED_FOR_SUPA_TRANS_002';
+
+  select jsonb_object_agg(disposition, quantity)
+    into actual_counts
+  from (
+    select expected.disposition, count(actual.disposition_status)::integer as quantity
+    from jsonb_object_keys(expected_counts) as expected(disposition)
+    left join supa_trans_002_disposition_map actual
+      on actual.disposition_status = expected.disposition
+    group by expected.disposition
+  ) counts;
+
+  if total_rows <> 970 then
+    raise exception 'SUPA-TRANS-002 produjo % filas; se esperaban 970', total_rows;
+  end if;
+
+  if invalid_rows <> 0 or reserved_rows <> 0 then
+    raise exception 'SUPA-TRANS-002 contiene % disposiciones invalidas y % reservas sin resolver', invalid_rows, reserved_rows;
+  end if;
+
+  if actual_counts <> expected_counts then
+    raise exception 'Conteos de disposicion divergentes. Esperado %, actual %', expected_counts, actual_counts;
+  end if;
+end
+$$;
+
+\copy (select * from supa_trans_002_disposition_map order by current_object_class, current_object_key) to '/tmp/supa_trans_002_disposition_map.csv' with (format csv, header true)
+
+select *
+from supa_trans_002_disposition_map
+order by current_object_class, current_object_key;
+'''
+          SQL_002.write_text(sql_preamble + disposition_tail + sql_assertions, encoding="utf-8")
+
+          owner = re.sub(r"\*\*Marcador exacto que reemplaza:\*\*.*\n", "", owner, count=1)
+          owner = owner.replace("SUPA_TRANS_001_TRANSITION_MAP.sql", "SUPA-TRANS-001_TRANSITION_MAP.sql")
+          owner, replaced = re.subn(
+              r"El archivo SQL debe incorporarse al repositorio junto con esta tarea en:\n\n```text\n"
+              r"docs/plan-canonico/modular/bloques/E3_SUPABASE/SUPA-TRANS-001_TRANSITION_MAP\.sql\n"
+              r"```\n\nNo se considera cerrada la incorporación documental si se reemplaza esta sección sin incorporar también el archivo SQL\.",
+              "Artefacto canónico asociado:\n\n```text\n"
+              "docs/plan-canonico/modular/bloques/E3_SUPABASE/SUPA-TRANS-001_TRANSITION_MAP.sql\n"
+              "```\n\nLa sección canónica y el artefacto SQL representan conjuntamente el resultado de `SUPA-TRANS-001`.",
+              owner,
+              count=1,
+          )
+          require(replaced == 1, "No se normalizó la declaración del artefacto SUPA-TRANS-001")
+
+          new_001_treq = r'''#### 13. Requisitos de prueba
+
+**Resultado:** CONSERVA CUARENTA REQUISITOS CANÓNICOS Y ACTUALIZA SU EVIDENCIA.
+
+`SUPA-TRANS-001` está protegido por `TREQ-SUPABASE-1696` a `TREQ-SUPABASE-1735`, además de los requisitos de auditoría y arquitectura relacionados. El rango cubre identidad, campos obligatorios, capacidad, roles, autoridad, funciones, triggers, RLS, Storage, Realtime, Edge Functions, cron, integraciones, VITAL, plataforma administrada, objetos temporales, bloqueos, contratos, dependencias, reproducibilidad y handoff a `SUPA-TRANS-002`.
+
+La corrección conjunta con `SUPA-TRANS-002` no crea identificadores adicionales. Actualiza en el registro canónico `04A` el universo vigente de 348 funciones y 197 triggers, la evidencia de resolución de la reserva, el contrato de handoff para seis disposiciones y la última tarea incorporada.'''
+          owner, replaced = re.subn(
+              r"#### 13\. Requisitos de prueba\n.*?(?=\n#### 14\. Validaciones ejecutadas)",
+              new_001_treq,
+              owner,
+              count=1,
+              flags=re.S,
+          )
+          require(replaced == 1, "No se actualizó la sección de requisitos de SUPA-TRANS-001")
+          owner, removed = re.subn(
+              r"\n#### 14\. Validaciones ejecutadas\n.*?(?=\n#### 15\. Criterios de aceptación)",
+              "\n",
+              owner,
+              count=1,
+              flags=re.S,
+          )
+          require(removed == 1, "No se retiró la sección de validaciones del archivo de tarea")
+          owner = owner.replace("#### 15. Criterios de aceptación", "#### 14. Criterios de aceptación", 1)
+
+          new_continuity = r'''#### 15. Continuidad
+
+```text
+SUPA-ARC-025 — APROBADA
+        ↓
+SUPA-TRANS-001 — APROBADA; mapa canónico materializado
+        ↓
+SUPA-TRANS-002 — APROBADA; disposición canónica materializada
+        ↓
+SUPA-TRANS-003 — NO INICIADA
+```
+
+La secuencia activa permanece en `SUPA-TRANS-003`; esta corrección no inicia ni desarrolla esa tarea.'''
+          owner, replaced = re.subn(
+              r"#### 16\. Continuidad\n.*?(?=\n\n### ✅ SUPA-TRANS-002)",
+              new_continuity,
+              owner,
+              count=1,
+              flags=re.S,
+          )
+          require(replaced == 1, "No se normalizó la continuidad de SUPA-TRANS-001")
+          owner = owner.replace("DISPOSITION-MAP-002@1.0.0", "DISPOSITION-MAP-002@1.0.1")
+
+          new_002_artifact = r'''#### 10. Artefacto ejecutable y trazabilidad
+
+La clasificación completa se materializa en:
+
+```text
+docs/plan-canonico/modular/bloques/E3_SUPABASE/SUPA-TRANS-002_DISPOSITION_MAP.sql
+```
+
+Contrato del artefacto:
+
+- versión: `DISPOSITION-MAP-002@1.0.1`;
+- ejecutor: cliente `psql` con `ON_ERROR_STOP`;
+- fuente única: ejecución directa de `SUPA-TRANS-001_TRANSITION_MAP.sql` mediante `\\ir`;
+- handoff: conserva sin reconstrucción `current_object_key`, `current_object_class` y `target_transition_key`;
+- transformación: añade disposición, grupo, razón, confianza, puertas y sucesor cuando aplique;
+- efectos: solo tablas temporales de sesión y archivos CSV locales bajo `/tmp`;
+- efectos prohibidos: DDL o DML persistente, cambios de configuración, despliegues, backfills, renombres físicos y retiros;
+- salida: 970 filas ordenadas por clase e identidad;
+- comprobaciones incorporadas: universo, unicidad, reserva, conjunto cerrado y conteos por categoría.
+
+El artefacto corrige la ruptura anterior: `SUPA-TRANS-002` ya no reconstruye un inventario paralelo ni conserva el CTE inválido sin coma.'''
+          owner, replaced = re.subn(
+              r"#### 10\. Mapa completo ejecutable\n.*?(?=\n#### 11\. Requisitos de prueba)",
+              new_002_artifact,
+              owner,
+              count=1,
+              flags=re.S,
+          )
+          require(replaced == 1, "No se extrajo el SQL embebido de SUPA-TRANS-002")
+
+          new_002_treq = r'''#### 11. Requisitos de prueba
+
+**Resultado:** NO CREA IDENTIFICADORES NUEVOS; ACTUALIZA REQUISITOS EXISTENTES EN `04A`.
+
+La corrección consolida los conteos vigentes de 348 funciones y 197 triggers; la resolución de `RESERVED_FOR_SUPA_TRANS_002`; la clasificación condicionada de objetos temporales; el consumo del mismo mapa sin reinventario; las seis disposiciones canónicas; y la evidencia conjunta del mapa y la clasificación sin autorizar cambios físicos.
+
+El registro canónico conserva 6.287 requisitos, catorce columnas por fila, identificadores únicos y relaciones resolubles.'''
+          owner, replaced = re.subn(
+              r"#### 11\. Requisitos de prueba\n.*?(?=\n#### 12\. Invariantes de cierre)",
+              new_002_treq,
+              owner,
+              count=1,
+              flags=re.S,
+          )
+          require(replaced == 1, "No se actualizó la sección de requisitos de SUPA-TRANS-002")
+          owner = owner.replace(
+              "10. no se ejecuta DDL, DML, despliegue, backfill, renombre físico, retiro ni cambio de configuración.",
+              "10. no se ejecuta DDL o DML persistente, despliegue, backfill, renombre físico, retiro ni cambio de configuración; solo se usan objetos temporales de sesión para comprobar el handoff.",
+              1,
+          )
+
+          forbidden = [
+              "Marcador exacto que reemplaza", "Instrucción de reemplazo", "Descargar",
+              "Reemplazar completamente 04A", "copiar o combinar filas",
+              "VALIDACIÓN REAL DEL REPOSITORIO PENDIENTE", "Validaciones ejecutadas",
+              "Validaciones pendientes",
+          ]
+          for task_id, start, end in [
+              ("SUPA-TRANS-001", "### ✅ SUPA-TRANS-001", "### ✅ SUPA-TRANS-002"),
+              ("SUPA-TRANS-002", "### ✅ SUPA-TRANS-002", "### [ ] SUPA-TRANS-003"),
+          ]:
+              block = owner.split(start, 1)[1].split(end, 1)[0]
+              for phrase in forbidden:
+                  require(phrase not in block, f"Contenido exclusivo del chat dentro de {task_id}: {phrase}")
+          require("SUPA-TRANS-001_TRANSITION_MAP.sql" in owner, "Ruta de SUPA-TRANS-001 ausente")
+          require("SUPA_TRANS_001_TRANSITION_MAP.sql" not in owner, "Ruta antigua de SUPA-TRANS-001 persiste")
+          require("SUPA-TRANS-002_DISPOSITION_MAP.sql" in owner, "Ruta de SUPA-TRANS-002 ausente")
+          require("with recursive\nrelation_base" not in owner.split("### ✅ SUPA-TRANS-002", 1)[1], "SQL duplicado persiste en 002")
+          require(owner.count("### [ ] SUPA-TRANS-003") == 1, "SUPA-TRANS-003 fue alterada o duplicada")
+          OWNER.write_text(owner, encoding="utf-8")
+
+          registry = REGISTRY.read_text(encoding="utf-8")
+          registry = re.sub(r"(\| Última tarea incorporada\s+\|)\s*`SUPA-ARC-025`\s*\|", r"\1 `SUPA-TRANS-002` |", registry, count=1)
+          registry = re.sub(r"(\| Fecha de normalización\s+\|)\s*`2026-07-30`\s*\|", r"\1 `2026-07-31` |", registry, count=1)
+          lines = registry.splitlines()
+
+          def update_treq(treq_id: str, updates: dict[int, str]) -> None:
+              matches = [i for i, line in enumerate(lines) if line.startswith(f"| `{treq_id}` |")]
+              require(len(matches) == 1, f"{treq_id} aparece {len(matches)} veces")
+              index = matches[0]
+              cells = [cell.strip() for cell in lines[index].strip().strip("|").split("|")]
+              require(len(cells) == 14, f"{treq_id} tiene {len(cells)} columnas")
+              for cell_index, value in updates.items():
+                  cells[cell_index] = value
+              lines[index] = "| " + " | ".join(cells) + " |"
+
+          update_treq("TREQ-SUPABASE-425", {2: "Las 348 firmas de funciones Vento deberán heredar o declarar capacidad, propietario, productor, consumidor y relación afectada por firma PostgreSQL estable.", 12: "SUPA-AUD-006 inventarió 347 firmas Vento; SUPA-TRANS-001 incorporó la función mensual de VISO y cerró el universo vigente en 348."})
+          update_treq("TREQ-SUPABASE-426", {2: "Los 197 triggers empresariales deberán heredar la propiedad de su relación objetivo y declarar función, efecto, consumidor derivado y orden contractual.", 12: "SUPA-AUD-008 inventarió 196 triggers Vento; SUPA-TRANS-001 incorporó el trigger mensual de VISO y cerró el universo vigente en 197."})
+          update_treq("TREQ-SUPABASE-454", {2: "Un validador integral deberá comprobar cobertura por clase, 379 relaciones únicas, 62 vistas, 348 funciones, 197 triggers, 14 buckets, 24 Edge Functions, siete cron jobs, relaciones resolubles y continuidad hacia SUPA-AUD-023.", 12: "La cobertura cuantitativa vigente incorpora el delta mensual de VISO: 348 funciones y 197 triggers."})
+          update_treq("TREQ-SUPABASE-1532", {2: "La línea base actual deberá cubrir los nueve schemas gobernados por Vento, 379 relaciones, 4.619 columnas, 348 funciones y 21 enums sin omisiones.", 12: "Línea base actualizada con la función mensual de VISO; implementación, automatización y evidencia de ejecución permanecen pendientes."})
+          update_treq("TREQ-SUPABASE-1702", {11: "SUPA-TRANS-002 resolvió la reserva para las 970 identidades; la automatización del gate permanece pendiente.", 12: "`DISPOSITION-MAP-002@1.0.1` conserva las identidades de `TRANSITION-MAP-001@1.0.0` y asigna una disposición cerrada a cada fila."})
+          update_treq("TREQ-SUPABASE-1706", {2: "Las 348 firmas de funciones deberán conservar schema, nombre y tipos de argumentos y declarar rol objetivo, relaciones afectadas, autorización, transacción, idempotencia y consumidores.", 12: "Correspondencia por 348 firmas aprobada, incluida la función mensual de VISO; contratos ejecutables y pruebas remotas permanecen pendientes."})
+          update_treq("TREQ-SUPABASE-1708", {2: "Los 197 triggers deberán resolver su parent_object_key entre las relaciones objetivo, función, evento, momento, orden, condición, efecto y rol objetivo subordinado.", 12: "Modelo de herencia actualizado a 197 triggers, incluido el guard mensual de VISO; inspección y pruebas por trigger permanecen pendientes."})
+          update_treq("TREQ-SUPABASE-1725", {11: "Dos identidades preservadas y clasificadas como RETIRAR, condicionadas a reconciliación, retención, cero consumidores y rollback.", 12: "`DISPOSITION-MAP-002@1.0.1`; la clasificación no autoriza eliminación física."})
+          update_treq("TREQ-SUPABASE-1732", {2: "El gate de cobertura deberá reconciliar 379 relaciones, 317 tablas, 62 vistas, 323 Vento OS, 54 VITAL, dos temporales, 348 funciones, 197 triggers, 14 buckets, 24 Edge Functions y siete cron jobs.", 11: "Conteos actualizados con el delta mensual de VISO; automatización del validador pendiente.", 12: "`TRANSITION-MAP-001@1.0.0` produce 970 identidades con 348 funciones y 197 triggers."})
+          update_treq("TREQ-SUPABASE-1734", {2: "SUPA-TRANS-002 deberá consumir exactamente las mismas identidades y target_transition_key de SUPA-TRANS-001, sin reconstruir el inventario, y añadir una única clasificación entre CONSERVAR, MOVER, FUSIONAR, DIVIDIR, RENOMBRAR o RETIRAR, con grupo, razón, evidencia y puertas de ejecución cuando apliquen.", 11: "Clasificación canónica resuelta para 970 identidades; ejecución física no autorizada.", 12: "`SUPA-TRANS-002_DISPOSITION_MAP.sql` ejecuta `SUPA-TRANS-001_TRANSITION_MAP.sql` mediante `\\ir`, conserva sus claves y comprueba los seis estados."})
+          update_treq("TREQ-SUPABASE-1735", {11: "Mapa y clasificación aprobados documentalmente; automatización, implementación y evidencia operativa permanecen pendientes.", 12: "`TRANSITION-MAP-001@1.0.0`; `DISPOSITION-MAP-002@1.0.1`; cero cambios físicos autorizados."})
+
+          registry = "\n".join(lines) + "\n"
+          REGISTRY.write_text(registry, encoding="utf-8")
+          treq_lines = [line for line in lines if line.startswith("| `TREQ-")]
+          treq_ids = [line.split("`", 2)[1] for line in treq_lines]
+          require(len(treq_lines) == 6287, f"El registro contiene {len(treq_lines)} requisitos, se esperaban 6287")
+          require(len(treq_ids) == len(set(treq_ids)), "El registro contiene identificadores duplicados")
+          registry_after = REGISTRY.read_text(encoding="utf-8")
+          require("`SUPA-TRANS-002`" in registry_after.split("Última tarea incorporada", 1)[1].splitlines()[0], "Resumen 04A no actualizado")
+          row_1734 = next(line for line in registry_after.splitlines() if line.startswith("| `TREQ-SUPABASE-1734` |"))
+          for disposition in ("CONSERVAR", "MOVER", "FUSIONAR", "DIVIDIR", "RENOMBRAR", "RETIRAR"):
+              require(disposition in row_1734, f"TREQ-SUPABASE-1734 omite {disposition}")
+
+          sql_text = SQL_002.read_text(encoding="utf-8")
+          require("\\ir SUPA-TRANS-001_TRANSITION_MAP.sql" in sql_text, "El artefacto 002 no consume 001")
+          require(")\ndisposition_classified as" not in sql_text, "Persiste el CTE sin coma")
+          require("create temporary table supa_trans_002_disposition_map as\nwith disposition_classified as" in sql_text, "El CTE no inicia correctamente")
+          require("from supa_trans_001_transition_map tm" in sql_text, "La clasificación no consume el handoff")
+          require("from transition_map tm" not in sql_text, "La clasificación reconstruye el inventario")
+          require("create table" not in sql_text.lower().replace("create temporary table", ""), "Existe DDL persistente")
+          require("alter table" not in sql_text.lower() and "drop table" not in sql_text.lower(), "Existe DDL persistente no permitido")
+          require("DISPOSITION-MAP-002@1.0.1" in sql_text, "Versión de artefacto incorrecta")
+          require("970" in sql_text and "416" in sql_text and "498" in sql_text and "39" in sql_text, "Faltan invariantes cuantitativas")
+          require(SQL_001.exists() and SQL_001.name == "SUPA-TRANS-001_TRANSITION_MAP.sql", "Artefacto 001 ausente o mal nombrado")
+
+          print("Canonical patch prepared")
+          print(f"delivery-contract sha256={actual_contract_sha}")
+          print(f"registry treq rows={len(treq_lines)}")
+          print(f"sql002 sha256={hashlib.sha256(SQL_002.read_bytes()).hexdigest()}")
+          PY
+
+      - name: Remove one-shot workflow before validation
+        shell: bash
+        run: rm .github/workflows/supa-trans-001-002-canonical-fix.yml
+
+      - name: Validate canonical documentation
+        shell: bash
+        run: |
+          npm run docs:plan:build
+          npm run docs:plan:check
+          npm run docs:plan:test
+          npm run docs:treq:check
+          npm run docs:treq:test
+          git diff --check
+
+      - name: Commit validated corrections
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "fix(docs): reconcile SUPA-TRANS-001 and SUPA-TRANS-002"
+          git push origin HEAD:fix/supa-trans-001-002-canonical
