@@ -5737,7 +5737,778 @@ DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados 
 ```
 
 
-### [ ] DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados
+### ✅ DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas` — APROBADA
+**Tarea siguiente:** `DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo`
+**Tipo de tarea:** definición normativa de identidad empresarial, alcances de unicidad, detección de colisiones, expedientes de duplicidad, decisiones de supervivencia y fronteras de consolidación; sin DDL, DML, migraciones, backfills, correcciones de datos, fusiones, desactivaciones, reasignaciones, cambios de relaciones, constraints, índices, funciones, triggers, clientes, integraciones, configuración ni despliegues
+
+#### 1. Objetivo
+
+Definir la estrategia canónica mediante la cual Vento OS distinguirá identidad empresarial, unicidad permitida, coincidencia textual, colisión normalizada, homonimia legítima, par de ciclo de vida, candidato estructural y duplicado confirmado, sin convertir una representación de búsqueda en clave de identidad ni autorizar fusiones automáticas.
+
+La estrategia deberá resolver cada regla de unicidad mediante una coordenada empresarial explícita; generar candidatos de duplicidad por etapas reproducibles; conservar evidencia positiva, negativa y relacional; tratar la similitud como señal y no como decisión; impedir que un score, un nombre o el primer resultado seleccione un registro sobreviviente; y exigir puertas cerradas antes de cualquier constraint, bloqueo, consolidación, reasignación o retiro futuro.
+
+#### 2. Artefacto producido
+
+```text
+VENTO_NORMALIZED_UNIQUENESS_AND_DUPLICATE_GOVERNANCE_POLICY@1.0.0
+```
+
+| Propiedad                                      | Valor |
+| ---------------------------------------------- | ----: |
+| Conceptos de identidad y comparación separados |     6 |
+| Clases de alcance de unicidad                  |     8 |
+| Clases canónicas de colisión preservadas       |    10 |
+| Etapas del pipeline de detección               |    12 |
+| Dimensiones mínimas de evidencia               |    12 |
+| Disposiciones cerradas de resolución           |    10 |
+| Puertas previas a enforcement físico           |    14 |
+| Requisitos de prueba nuevos                    |    26 |
+| Cambios físicos autorizados                    |     0 |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                      | Decisión consumida                                                                                                                                      |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`           | continuidad, una sola tarea, fase exclusivamente documental, preservación histórica y separación entre definición e implementación                      |
+| `delivery-contract.json`    | identidad del artefacto y actualización integral del registro 04A al crear requisitos                                                                   |
+| `active-sequence.json`      | `DATA-NORM-ARC-010` como tarea actual y `DATA-NORM-ARC-011` como siguiente tarea reservada                                                              |
+| `DATA-NORM-AUD-001`         | universo textual, veinte índices con comparación o representación y prohibición de inferir política desde schema o tipo                                 |
+| `DATA-NORM-AUD-003`         | marcas, siglas, unidades, razones sociales, personas, externos e identificadores protegidos frente a fusiones por clave comparativa                     |
+| `DATA-NORM-AUD-004`         | taxonomía de diez resultados, cortes de productos, catálogo, categorías, jerarquías, UOM y personas, y evidencia relacional previa a una posible fusión |
+| `DATA-NORM-AUD-005`         | separación entre corrección de forma, diccionario, revisión humana y resolución estructural o relacional                                                |
+| `DATA-NORM-AUD-006`         | productores distribuidos, helpers, copias, snapshots, clientes y procesos externos que pueden divergir                                                  |
+| `DATA-NORM-AUD-007`         | impacto de las colisiones sobre búsqueda, integraciones, relaciones, unicidad y consumidores                                                            |
+| `DATA-NORM-ARC-001` y `002` | política por coordenada, clases semánticas, roles de representación y prohibición de derivar identidad desde texto                                      |
+| `DATA-NORM-ARC-003` a `007` | reglas visibles, excepciones, diccionario y cola de revisión sin efectos estructurales automáticos                                                      |
+| `DATA-NORM-ARC-008`         | siete representaciones, seis perfiles, nueve modos de coincidencia y ranking que recupera candidatos sin decidir identidad                              |
+| `DATA-NORM-ARC-009`         | versiones inmutables, conjuntos efectivos, auditoría aditiva, resultados cerrados, idempotencia, concurrencia y replay                                  |
+| Registro 04A vigente        | requisitos históricos, relaciones y secuencia del dominio `DATA` hasta `TREQ-DATA-164`                                                                  |
+
+#### 4. Alcance y fronteras
+
+Esta tarea define:
+
+1. la separación normativa entre identidad, clave empresarial, política de unicidad, representación comparativa, colisión y duplicado;
+2. la coordenada mínima de una política de unicidad;
+3. ocho clases de alcance y su conducta conceptual;
+4. el tratamiento de nulos, vacíos, valores parciales, desconocidos, temporales y externos;
+5. la relación entre vigencia, estado, versión, supersesión y unicidad;
+6. un pipeline cerrado de detección de candidatos;
+7. las diez clases de colisión aprobadas por la auditoría;
+8. la evidencia mínima positiva, negativa, estructural y relacional;
+9. las disposiciones que puede producir una revisión de duplicidad;
+10. las reglas para selección de registro de referencia o sobreviviente futuro;
+11. las fronteras de consolidación, alias, redirección, historial, relaciones y rollback;
+12. las puertas previas a cualquier enforcement físico;
+13. las métricas, corpus y paridad exigibles;
+14. la exclusión de VITAL de la política transversal de Vento OS.
+
+Esta tarea no define:
+
+- tablas, columnas, tipos, constraints, índices, extensiones, funciones, RPC, triggers, RLS o jobs;
+- la capa que ejecutará cada comprobación;
+- nombres físicos finales de claves o estructuras;
+- un registro sobreviviente concreto para los casos auditados;
+- correcciones, fusiones, desactivaciones, reasignaciones o backfills;
+- migraciones de referencias ni crosswalks físicos;
+- formas oficiales de valores externos ni reglas de integración;
+- umbrales físicos de rendimiento o capacidad;
+- activación de unicidad en producción;
+- ninguna modificación de VITAL.
+
+La ejecución física pertenece a `DATA-NORM-ARC-011`, `DATA-NORM-ARC-012`, `SUPA-TRANS-003`, `SUPA-TRANS-005` a `SUPA-TRANS-014` y `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009`, según su propiedad.
+
+#### 5. Principios obligatorios
+
+1. **La identidad precede a la unicidad.** No se impone unicidad hasta definir qué entidad existe, qué la diferencia y dentro de qué alcance.
+2. **La unicidad es una política empresarial.** Un índice o constraint es una implementación posible, no la definición de la regla.
+3. **La coincidencia no demuestra identidad.** Valor exacto, forma, tildes, aliases, tokens, transliteración, similitud o ranking solo producen evidencia.
+4. **El scope es parte de la regla.** Dominio, tipo, sede, padre, jerarquía, contexto, fuente, vigencia y estado no se omiten para aumentar coincidencias.
+5. **La estructura prevalece sobre la etiqueta.** Cantidad, unidad, multiplicador, contexto y fuente no se reducen a una cadena visible.
+6. **El historial no es duplicidad operativa por defecto.** Un registro inactivo, supersedido o histórico puede coexistir legítimamente.
+7. **La homonimia entre capas es válida.** Insumo, preparación y venta pueden compartir nombre sin representar la misma entidad.
+8. **La evidencia negativa pesa.** Diferencias funcionales, legales, temporales, relacionales o de procedencia pueden descartar una coincidencia fuerte.
+9. **La decisión no se deriva de un score.** Ningún umbral, frecuencia, popularidad, orden físico o primer resultado confirma duplicidad.
+10. **La fusión es una transición distinta.** Confirmar duplicidad no ejecuta consolidación ni define por sí solo el registro sobreviviente.
+11. **Toda decisión es versionada y auditable.** Algoritmos, políticas, evidencia, actor, resultado y vigencia deberán quedar fijados.
+12. **Toda operación es idempotente.** Repetir detección, revisión o transición con la misma entrada no crea casos ni efectos adicionales.
+13. **La ambigüedad falla de forma cerrada.** Se conservan los registros y se exige revisión.
+14. **VITAL permanece separado.** La coexistencia física no transfiere políticas de identidad o unicidad.
+
+#### 6. Conceptos canónicos separados
+
+| Concepto                       | Definición                                                                                                                                                                 | Autoridad permitida                                                           |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `ENTITY_IDENTITY`              | continuidad estable de una entidad empresarial o técnica, representada por identificador inmutable y relaciones autorizadas                                                | vincular hechos y preservar historia; nunca se infiere únicamente desde texto |
+| `BUSINESS_IDENTITY_COORDINATE` | conjunto de atributos estructurales y de alcance que distingue una entidad dentro de su dominio                                                                            | sustentar una política de unicidad después de aprobación explícita            |
+| `UNIQUENESS_POLICY`            | regla versionada que declara qué combinación no puede coexistir bajo condiciones y vigencia determinadas                                                                   | evaluar conflicto y, tras superar puertas, habilitar enforcement físico       |
+| `COMPARISON_REPRESENTATION`    | valor derivado para búsqueda, ordenamiento o generación de candidatos                                                                                                      | recuperar candidatos y explicar coincidencias                                 |
+| `COLLISION_GROUP`              | conjunto reproducible de registros que coincide bajo una representación y scope declarados                                                                                 | abrir análisis; no declarar equivalencia                                      |
+| `CONFIRMED_DUPLICATE_DECISION` | conclusión humana o contractual, versionada y respaldada por evidencia suficiente, de que registros distintos representan una misma identidad dentro del alcance aplicable | habilitar una transición posterior controlada; no ejecutarla automáticamente  |
+
+Un identificador técnico estable puede ser único sin ser legible. Una clave empresarial puede ser compuesta y cambiar de representación sin cambiar identidad. Una representación comparativa puede colisionar legítimamente. Un duplicado confirmado conserva varios identificadores históricos hasta que una transición explícita resuelva sus referencias.
+
+#### 7. Coordenada canónica de identidad y unicidad
+
+Toda política deberá declarar como mínimo:
+
+```text
+dominio propietario
++ tipo de entidad
++ identidad técnica estable
++ atributos empresariales determinantes
++ scope territorial u organizacional
++ padre, camino o agregado cuando aplique
++ rol, capa o contexto funcional
++ fuente o emisor cuando aplique
++ estado y vigencia
++ versión de la política
+```
+
+Reglas:
+
+1. el nombre físico de una tabla no define el dominio propietario;
+2. una aplicación consumidora no redefine identidad;
+3. una misma entidad puede tener múltiples nombres, códigos externos, snapshots y proyecciones;
+4. una misma etiqueta puede identificar entidades distintas por padre, tipo, contexto o fuente;
+5. una misma identidad puede conservar versiones históricas sin violar unicidad operativa;
+6. un scope incompleto invalida la evaluación y produce bloqueo, no fallback global;
+7. las claves de búsqueda quedan fuera de la coordenada de identidad salvo que un contrato técnico específico las declare como datos empresariales, nunca por conveniencia;
+8. cualquier cambio de coordenada crea una versión nueva y exige volver a medir colisiones.
+
+#### 8. Registro mínimo de política de unicidad
+
+Cada entrada del registro lógico deberá declarar:
+
+| Atributo                          | Obligación                                                           |
+| --------------------------------- | -------------------------------------------------------------------- |
+| `uniqueness_policy_key`           | identidad estable de la política                                     |
+| `uniqueness_policy_version_id`    | versión inmutable y auditable                                        |
+| dominio y entidad                 | propietario semántico exacto                                         |
+| clase de alcance                  | una de las ocho clases aprobadas                                     |
+| componentes                       | campos o atributos estructurales que participan                      |
+| exclusiones                       | estados, roles, fuentes, capas o casos que no participan             |
+| semántica de nulos                | conducta para ausente, desconocido, no aplicable y valor parcial     |
+| semántica temporal                | intervalo, estado activo, supersesión e historia                     |
+| representación permitida          | exacta, contractual o estructural; nunca una tolerancia implícita    |
+| evidencia de autoridad            | decisión empresarial, legal, técnica o externa que sustenta la regla |
+| propietario y steward             | responsables de significado y resolución de conflictos               |
+| consumidores                      | productores, lectores, integraciones y procesos afectados            |
+| modo de observación o enforcement | fase aprobada y conducta ante conflicto                              |
+| versión de algoritmo              | conjunto efectivo y digest definidos en `DATA-NORM-ARC-009`          |
+| corpus y métricas                 | positivos, negativos, colisiones, falsos positivos y rendimiento     |
+| transición y rollback             | tratamiento de datos existentes y restauración segura                |
+| vigencia                          | inicio, suspensión, supersesión y retiro                             |
+
+La ausencia de cualquiera de estos atributos bloquea la activación de la política.
+
+#### 9. Clases de alcance de unicidad
+
+| Clase                         | Uso conceptual                                             | Ejemplo de alcance                                             | Restricción                                                |
+| ----------------------------- | ---------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------- |
+| `GLOBAL_IMMUTABLE_IDENTIFIER` | identificador técnico que no puede reutilizarse            | UUID o clave interna estable dentro del producto               | no deriva del nombre ni se recicla después de retiro       |
+| `DOMAIN_ENTITY_SCOPE`         | clave empresarial única dentro de un dominio y tipo        | código de una entidad dentro de su dominio propietario         | no cruza tipos o dominios por compartir forma              |
+| `TERRITORY_OR_ORG_SCOPE`      | unicidad dentro de empresa, sede, área, canal o territorio | categoría operativa dentro de una sede                         | el scope deberá formar parte de la evaluación              |
+| `PARENT_OR_PATH_SCOPE`        | unicidad bajo padre o camino jerárquico                    | posición dentro de una estantería o ubicación                  | no usar únicamente etiqueta o nivel                        |
+| `STRUCTURED_COMPONENT_SCOPE`  | unicidad por componentes funcionales                       | presentación por producto, cantidad, unidad, contexto y fuente | la etiqueta visible no participa como identidad suficiente |
+| `ACTIVE_INTERVAL_SCOPE`       | no coexistencia durante un intervalo o estado operativo    | versión vigente de catálogo o regla activa                     | historia e inactivos pueden coexistir de forma controlada  |
+| `SOURCE_OR_ISSUER_SCOPE`      | identificador único dentro de una fuente o emisor          | referencia de proveedor o sistema externo                      | exige emisor, tipo, ambiente y vigencia                    |
+| `NON_UNIQUE_DISCOVERY_ONLY`   | campo deliberadamente no único usado para búsqueda         | nombre comercial, nombre personal o descripción                | nunca habilita constraint ni fusión por sí solo            |
+
+Una política puede combinar scopes, pero deberá declarar la composición exacta. No existe unicidad global predeterminada para nombres, etiquetas, razones sociales, marcas, personas, direcciones o descripciones.
+
+#### 10. Nulos, vacíos, desconocidos y claves parciales
+
+1. `NULL`, cadena vacía, solo espacios, valor desconocido, valor no aplicable y valor pendiente son estados semánticos distintos.
+2. Una normalización que convierta varios estados en la misma cadena no podrá usarse para unicidad.
+3. Una clave parcial no se evalúa como si sus componentes ausentes coincidieran.
+4. La ausencia de un componente obligatorio produce `BLOCKED_INCOMPLETE_IDENTITY_COORDINATE`.
+5. Un placeholder como `N/A`, `SIN DEFINIR`, `0`, `1`, `PENDIENTE` o equivalente no se presume único ni canónico.
+6. Los valores vacíos rechazados por reglas de presencia no se convierten en identidad compartida.
+7. Los códigos temporales deberán declarar namespace, emisor, vigencia y estrategia de sustitución.
+8. Una política deberá especificar si múltiples nulos son permitidos, prohibidos o excluidos; esa decisión no se infiere de la semántica física de PostgreSQL.
+9. La corrección futura de un componente incompleto deberá revalidar toda la coordenada y sus conflictos.
+
+#### 11. Estado, vigencia y temporalidad
+
+La evaluación distinguirá:
+
+```text
+identidad estable
++ versión o registro material
++ estado operativo
++ intervalo de vigencia
++ relación de supersesión
+```
+
+Reglas:
+
+1. dos registros con la misma identidad pueden representar versiones sucesivas válidas;
+2. un activo y un inactivo no se clasifican automáticamente como duplicado ni como coexistencia correcta;
+3. una política `ACTIVE_INTERVAL_SCOPE` deberá impedir solapamientos no autorizados, no borrar historia;
+4. estados locales como activo, inactivo, cancelado, aceptado o supersedido se interpretan mediante su contrato de dominio;
+5. reactivar un registro exige comprobar conflictos con la política y versión vigentes;
+6. retirar un registro no libera automáticamente un código o referencia para reutilización;
+7. la unicidad histórica y la unicidad operativa se registran por separado;
+8. decisiones posteriores no reinterpretarán hechos anteriores sin una transición y evidencia aditiva.
+
+#### 12. Pipeline cerrado de detección
+
+El análisis seguirá exactamente estas etapas:
+
+```text
+1. autorizar finalidad, actor y alcance
+        ↓
+2. resolver dominio, entidad y política de identidad
+        ↓
+3. fijar conjunto de versiones y algoritmo
+        ↓
+4. validar completitud de la coordenada
+        ↓
+5. filtrar territorio, padre, contexto, fuente, estado y vigencia
+        ↓
+6. evaluar identificadores y referencias contractuales exactas
+        ↓
+7. evaluar componentes estructurales exactos
+        ↓
+8. generar candidatos por valor, forma y búsqueda permitida
+        ↓
+9. construir grupo o grafo de colisión reproducible
+        ↓
+10. recopilar evidencia positiva, negativa y relacional
+        ↓
+11. clasificar o enviar a revisión humana
+        ↓
+12. emitir disposición sin ejecutar consolidación
+```
+
+No se permite saltar a una búsqueda tolerante cuando falta identidad, scope o estructura. Cada etapa deberá explicar inclusiones, exclusiones y bloqueos.
+
+#### 13. Generación de candidatos
+
+La generación podrá utilizar, en orden de mayor a menor fuerza:
+
+1. mismo identificador técnico donde la coexistencia sea inválida;
+2. misma referencia externa bajo el mismo emisor y tipo;
+3. misma clave empresarial exacta dentro del scope completo;
+4. misma huella estructural dentro del mismo producto, contexto y vigencia;
+5. mismo valor fuente exacto dentro del mismo campo y scope;
+6. `FORM_EQUIVALENT_MATCH` compatible;
+7. `ACCENT_TOLERANT_MATCH` compatible;
+8. alias aprobado y acotado;
+9. cobertura de frase o tokens autorizada;
+10. transliteración habilitada explícitamente;
+11. similitud como candidato de mínima confianza;
+12. señal humana documentada.
+
+Reglas:
+
+- una etapa de menor fuerza no sustituye evidencia estructural ausente;
+- un candidato puede pertenecer a varias señales, pero conserva su motivo principal y secundarios;
+- la conectividad no es transitividad de identidad: si A se parece a B y B a C, no se presume que A, B y C sean la misma entidad;
+- un grupo deberá conservar pares, componentes y razones, no únicamente un identificador de cluster;
+- cambios de algoritmo o versión reconstruyen candidatos y no editan la evidencia anterior;
+- candidatos históricos permanecen reproducibles aunque la política vigente ya no los agrupe.
+
+#### 14. Taxonomía canónica de colisiones
+
+Se preservan sin renombrar las diez clases aprobadas por `DATA-NORM-AUD-004`:
+
+| Código                                | Significado normativo                                   | Efecto permitido                                    |
+| ------------------------------------- | ------------------------------------------------------- | --------------------------------------------------- |
+| `EXACT_VALUE_COLLISION`               | valor persistido idéntico dentro del corte              | revisar scope, estructura, estado y relaciones      |
+| `FORM_VARIANT_COLLISION`              | diferencia limitada a caja, bordes o espacios           | evaluar normalización visible separada de identidad |
+| `SEARCH_KEY_COLLISION`                | convergencia por tildes, signos o separación tolerante  | abrir candidato; no imponer igualdad                |
+| `PROBABLE_SAME_ENTITY`                | señales compatibles de dominio, tipo, scope y atributos | priorizar revisión, sin consolidar                  |
+| `STRUCTURAL_DUPLICATE_CANDIDATE`      | huella funcional equivalente dentro del mismo contexto  | revisar procedencia, prioridad y relaciones         |
+| `LIFECYCLE_OR_VERSION_PAIR`           | coexistencia asociada a historia, estado o supersesión  | preservar historia y revisar vigencia               |
+| `CROSS_LAYER_HOMONYM`                 | mismo nombre para objetos funcionalmente distintos      | conservar separación                                |
+| `LABEL_COLLISION_DIFFERENT_STRUCTURE` | etiqueta igual con componentes distintos                | prohibir deduplicación por etiqueta                 |
+| `SCOPE_FALSE_POSITIVE`                | agrupación causada por scope incompleto                 | corregir política o consulta, no los datos          |
+| `AMBIGUOUS_COLLISION`                 | evidencia insuficiente o contradictoria                 | conservar registros y revisar humanamente           |
+
+Ninguna clase, incluida `PROBABLE_SAME_ENTITY`, equivale a `CONFIRMED_DUPLICATE_DECISION`.
+
+#### 15. Evidencia mínima por candidato
+
+Todo expediente deberá cubrir doce dimensiones:
+
+| Dimensión                  | Evidencia mínima                                                                     |
+| -------------------------- | ------------------------------------------------------------------------------------ |
+| identidad técnica          | IDs estables, tipo y dominio                                                         |
+| valores y representaciones | originales, mostrados, claves derivadas y versiones                                  |
+| scope                      | empresa, sede, área, canal, territorio, padre, camino y contexto aplicables          |
+| estructura                 | cantidades, unidades, multiplicadores, categorías, roles y atributos funcionales     |
+| estado y tiempo            | vigencia, actividad, supersesión, creación, retiro y secuencia histórica             |
+| procedencia                | fuente propietaria, emisor externo, importación, actor y evidencia oficial           |
+| relaciones entrantes       | referencias que dependen de cada registro                                            |
+| relaciones salientes       | referencias y configuraciones que cada registro consume                              |
+| actividad y hechos         | inventario, movimientos, recetas, compras, producción, ventas, catálogo y remisiones |
+| consumidores               | aplicaciones, RPC, funciones, reportes, integraciones y procesos externos            |
+| auditoría                  | creación, cambios, decisiones, versiones, razones e idempotencia                     |
+| evidencia negativa         | diferencias que prueban separación legítima o hacen insegura la consolidación        |
+
+La ausencia de relaciones declaradas no demuestra que no existan dependencias sin clave foránea, snapshots, JSON, cachés, códigos externos o consumidores fuera del esquema.
+
+#### 16. Evaluación de evidencia
+
+1. La evidencia se registra como hechos y no como un score opaco.
+2. Cada hecho declara fuente, versión, fecha, autoridad, alcance y confiabilidad.
+3. Evidencia positiva y negativa se conservan simultáneamente.
+4. Un identificador oficial compatible pesa más que una coincidencia textual, pero su emisor y vigencia deberán validarse.
+5. Una diferencia de tipo, unidad, padre, contexto, fuente o relación puede descartar una coincidencia exacta.
+6. Un registro con más relaciones no se vuelve automáticamente sobreviviente.
+7. Antigüedad, actividad reciente, frecuencia de uso o completitud no son autoridad por sí solas.
+8. Un algoritmo puede priorizar revisión, pero no emitir una decisión irreversible.
+9. Toda regla de priorización deberá ser versionada, explicable y evaluada contra falsos positivos.
+10. Evidencia conflictiva produce revisión o bloqueo, nunca desempate silencioso.
+
+#### 17. Disposiciones cerradas de resolución
+
+Una revisión podrá emitir exactamente una de estas disposiciones:
+
+| Disposición                              | Significado                                                    | Consecuencia normativa                                   |
+| ---------------------------------------- | -------------------------------------------------------------- | -------------------------------------------------------- |
+| `DISTINCT_IDENTITY`                      | entidades distintas aunque compartan señales                   | conservar ambas y registrar razón                        |
+| `LEGITIMATE_HOMONYM`                     | mismo valor visible en roles o capas diferentes                | conservar separación funcional                           |
+| `SCOPE_FALSE_POSITIVE_CONFIRMED`         | el grupo surgió por scope incompleto                           | corregir detector y cerrar sin tocar datos               |
+| `LIFECYCLE_HISTORY_PRESERVED`            | registros vinculados como historia o versión                   | conservar sucesión y vigencia                            |
+| `PRESENTATION_VARIANT_ONLY`              | defecto o variante visible sin duplicidad de entidad           | remitir corrección textual separada                      |
+| `STRUCTURAL_MODEL_REVIEW_REQUIRED`       | la colisión revela estructura o clasificación insuficiente     | remitir al dominio o transición propietaria              |
+| `CONFIRMED_DUPLICATE_PENDING_PLAN`       | misma identidad confirmada, sin plan de consolidación aprobado | bloquear efectos estructurales y preparar expediente     |
+| `CONFIRMED_DUPLICATE_WITH_APPROVED_PLAN` | misma identidad y plan completo aprobado                       | habilitar únicamente una transición posterior autorizada |
+| `INSUFFICIENT_EVIDENCE`                  | evidencia incompleta                                           | conservar registros y mantener caso abierto o diferido   |
+| `ESCALATED_IDENTITY_OR_LEGAL`            | requiere autoridad de identidad, legal, privacidad o externa   | trasladar a propietario competente sin decidir           |
+
+La disposición es inmutable y supersedible mediante una nueva revisión. No cambia datos, relaciones, constraints ni estados por sí sola.
+
+#### 18. Cola, deduplicación de casos y revisión
+
+1. Los candidatos utilizarán la cola y segregación aprobadas en `DATA-NORM-ARC-007`.
+2. La identidad lógica del caso incluirá política, versión, entidad, scope, conjunto ordenado de registros y digest de evidencia.
+3. El mismo conjunto bajo la misma versión no creará casos duplicados.
+4. Un cambio de miembros, scope, algoritmo o evidencia crea revisión vinculada, no edición del expediente anterior.
+5. Un grupo de tres o más registros deberá conservar comparaciones por pares y no asumir equivalencia transitiva.
+6. El caso declarará prioridad según riesgo relacional, operativo, legal, financiero, de seguridad o privacidad; no solo por similitud.
+7. La aprobación exigirá autoridad del dominio y, cuando corresponda, seguridad, privacidad, legal, contabilidad o integración.
+8. El cierre por silencio, SLA vencido o ausencia de objeción permanece prohibido.
+9. Una decisión humana no activa automáticamente una regla de unicidad ni una transición de datos.
+
+#### 19. Reglas por familia representativa
+
+| Familia                      | Coordenada o evidencia obligatoria                                                                                     | Conducta prohibida                                               |
+| ---------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| producto                     | tipo funcional, categoría, unidad, abastecimiento, recetas, catálogo, inventario y consumidores                        | fusionar por nombre o categoría solamente                        |
+| ítem de catálogo             | sede, producto enlazado, código comercial, estado y vigencia                                                           | eliminar el inactivo por compartir nombre con el activo          |
+| categoría operativa          | sede, propósito, relaciones, enrutamiento y vigencia                                                                   | decidir por etiqueta exacta sin revisar dependencias             |
+| posición de inventario       | sede, ubicación, padre o camino y código                                                                               | imponer `location_id + normalized_name`                          |
+| perfil UOM o política        | producto, cantidad, unidad de entrada, cantidad de stock, unidad de stock, contexto, fuente, proveedor y vigencia      | usar etiqueta visible como identidad                             |
+| persona o actor              | vínculos persistidos, documento, identidad de autenticación, contacto, estado y procedencia, bajo finalidad autorizada | fusionar por nombre normalizado                                  |
+| proveedor o razón social     | fuente oficial, identificación legal, país, emisor y procedencia                                                       | retirar signos o declarar igualdad por razón social tolerante    |
+| referencia externa           | emisor, tipo, ambiente, scope, valor original y vigencia                                                               | comparar referencias de emisores distintos como una clave global |
+| marca o denominación oficial | fuente autorizada, propietario, forma oficial y contexto                                                               | inferir entidad desde tokens o similitud                         |
+| texto libre                  | ninguna unicidad empresarial                                                                                           | usar descripciones, notas o mensajes para deduplicar entidades   |
+
+#### 20. Aplicación a los hallazgos auditados
+
+La estrategia conserva los siguientes resultados como baseline, sin resolverlos por inferencia:
+
+| Corte canónico                                                    | Lectura obligatoria                                                                  |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| once fuentes, 1.753 registros, 17 grupos y 94 registros agrupados | conjunto inicial de auditoría; no universo completo                                  |
+| 963 productos y nueve grupos por clave de búsqueda                | dos candidatos probables, un par de ciclo, un ambiguo y cinco homónimos entre capas  |
+| ocho pares de catálogo activo e inactivo                          | historia o migración potencial; nombre compartido no autoriza eliminación            |
+| dos categorías activas `VÍVERES & BODEGA PRINCIPAL`               | candidato estructural prioritario sujeto a relaciones y enrutamiento                 |
+| 72 posiciones `Nivel 1` a `Nivel 6`                               | falsos positivos; padre, camino y código forman parte del scope                      |
+| 2.312 perfiles o políticas, 86 grupos y 186 registros             | mayoría de colisiones legítimas por contexto; dos huellas estructurales prioritarias |
+| 106 registros de personas y 24 grupos por nombre                  | representaciones relacionadas; nombre no constituye identidad                        |
+| 26 grupos bajo `LOWER_TRIM` y 27 sin tildes                       | colisiones de comparación, no duplicados confirmados                                 |
+| 26 grupos por `_vento_slugify` y 27 por `_navigation_slugify`     | helpers incompatibles que no pueden definir identidad                                |
+| 420 relaciones del alcance auditado                               | revisión mínima antes de cualquier consolidación de entidad                          |
+
+`Chai latte frio` frente a `Chai Latte Frío`, `LATTE FRIO` frente a `Latte Frío`, `Maiz Dulce` frente a `Maíz Dulce`, `Choco Bites` frente a `Chocobites`, `Queso Gouda`, `Queso Mozzarella Tajado` y la categoría de remisión permanecen como candidatos, no decisiones finales.
+
+#### 21. Selección de registro de referencia o sobreviviente
+
+Una eventual selección deberá producir un paquete explícito que contenga:
+
+1. identidad confirmada y scope;
+2. registros participantes y razón de inclusión;
+3. autoridad de cada atributo;
+4. mapa de atributos que se preservan, corrigen, combinan o mantienen históricos;
+5. inventario de relaciones y consumidores;
+6. referencias externas, códigos, aliases y contratos afectados;
+7. hechos financieros, de inventario, producción, ventas, recetas y auditoría;
+8. estado y vigencia objetivo;
+9. estrategia de crosswalk, redirección o tombstone;
+10. plan de transición, verificación, compensación y rollback;
+11. responsables y segregación de funciones;
+12. evidencia de aprobación.
+
+Quedan prohibidas como regla automática de supervivencia:
+
+- fila más antigua;
+- fila más nueva;
+- fila activa;
+- fila con más relaciones;
+- fila con nombre mejor escrito;
+- fila más usada o popular;
+- menor o mayor identificador;
+- primer resultado del ranking;
+- registro elegido por un helper legacy;
+- valor con más campos no nulos.
+
+La autoridad puede resolverse por atributo. Un registro de referencia no obliga a copiar todos sus valores sobre los demás.
+
+#### 22. Fronteras de consolidación
+
+Confirmar un duplicado no autoriza consolidarlo. Una transición futura deberá:
+
+1. fijar el conjunto de miembros y sus versiones;
+2. impedir nuevas divergencias durante la ventana controlada;
+3. inventariar referencias con y sin claves foráneas;
+4. conservar hechos históricos y no reescribir eventos pasados;
+5. remapear únicamente relaciones autorizadas;
+6. mantener crosswalks de identificadores retirados;
+7. preservar referencias externas que no puedan sustituirse;
+8. definir aliases, redirecciones o tombstones sin convertirlos en fuentes activas;
+9. distinguir desactivación, supersesión, fusión, separación y corrección;
+10. emitir auditoría aditiva y claves idempotentes;
+11. verificar conteos, saldos, recetas, costos, inventario, documentos y consumidores;
+12. soportar rollback o compensación compatible con los hechos ya emitidos;
+13. certificar ausencia de referencias huérfanas;
+14. conservar evidencia suficiente para reconstruir la decisión.
+
+No se reescribirán identificadores dentro de snapshots históricos, comprobantes, eventos o payloads probatorios salvo que su contrato lo exija expresamente y preserve el original.
+
+#### 23. Creación, actualización y reactivación
+
+La evaluación previa a una escritura podrá operar en cuatro modos versionados:
+
+| Modo                           | Conducta                                                                          |
+| ------------------------------ | --------------------------------------------------------------------------------- |
+| `OBSERVE_ONLY`                 | registra candidatos y métricas sin advertir ni bloquear                           |
+| `WARN_EXPLICIT_CONFIRMATION`   | presenta candidatos explicables y exige confirmación autorizada                   |
+| `REVIEW_REQUIRED_BEFORE_WRITE` | bloquea la operación hasta resolver un caso cuando el riesgo lo exige             |
+| `ENFORCE_CERTIFIED_UNIQUENESS` | rechaza únicamente una violación de una política de unicidad certificada y activa |
+
+Reglas:
+
+1. una representación de búsqueda no habilita `ENFORCE_CERTIFIED_UNIQUENESS`;
+2. el modo pertenece a la versión de política y al ambiente;
+3. crear, actualizar, reactivar, cambiar padre, mover scope o modificar componentes estructurales reevalúa la regla completa;
+4. una advertencia deberá mostrar motivo, scope y registros candidatos sin exponer información no autorizada;
+5. la confirmación no convierte un conflicto certificado en permitido;
+6. el modo observación no se presentará como protección activa;
+7. un bloqueo técnico o dependencia ausente no se reportará como duplicado;
+8. la implementación de estos modos permanece en `DATA-NORM-ARC-011` y tareas de transición.
+
+#### 24. Concurrencia e idempotencia
+
+1. Dos escrituras concurrentes deberán evaluarse contra la misma política activa y estado esperado.
+2. La detección previa no sustituye una protección atómica futura cuando la política deba impedir coexistencia.
+3. La decisión física entre constraint, índice, lock, serialización, RPC o trigger pertenece a `DATA-NORM-ARC-011`.
+4. Cada análisis conservará `candidate_run_id`, política, versión, corte, scope y digest del conjunto.
+5. Repetir el mismo análisis devuelve el mismo grupo lógico o una revisión vinculada, no casos nuevos.
+6. Crear o cerrar un caso utilizará la idempotencia aprobada en `DATA-NORM-ARC-009`.
+7. Una decisión basada en una versión obsoleta de miembros, relaciones o política se bloqueará y reevaluará.
+8. Una consolidación parcial nunca se reintentará desde cero sin reconocer sus efectos hijos.
+9. Timeout o respuesta perdida no autorizan repetir una fusión o reasignación como una operación nueva.
+10. La paridad deberá cubrir aplicación, servicio, RPC, job y mecanismo defensivo.
+
+#### 25. Versionado, auditoría y reproducibilidad
+
+Cada ejecución deberá conservar:
+
+```text
+candidate_run_id
+uniqueness_policy_key
+uniqueness_policy_version_id
+resolved_version_set
+version_set_digest
+algorithm_key y algorithm_version
+scope_coordinate
+source_cut_or_snapshot
+member_ids y member_versions
+signals y collision_class
+positive_evidence
+negative_evidence
+result_or_disposition
+case_id y review_id cuando existan
+actor, autorización, correlación y causalidad
+```
+
+Reglas:
+
+1. la misma versión no podrá producir lógica distinta entre ambientes;
+2. una versión nueva genera un corte nuevo y conserva el anterior;
+3. los grupos históricos pueden reproducirse aunque dejen de ser candidatos vigentes;
+4. una rectificación crea evidencia vinculada y no edita el resultado anterior;
+5. las consultas y valores sensibles se minimizan conforme a `DATA-NORM-ARC-009`;
+6. un replay no muta registros ni vuelve a ejecutar consolidaciones;
+7. las diferencias entre ejecuciones se clasifican por datos, política, algoritmo, scope o ambiente;
+8. la auditoría no se usa como sustituto de identidad ni como fuente para fusionar por frecuencia.
+
+#### 26. Puertas previas a enforcement físico
+
+Una política no podrá pasar a `ENFORCE_CERTIFIED_UNIQUENESS` hasta superar simultáneamente:
+
+1. identidad y propietario definidos;
+2. scope completo y casos excluidos documentados;
+3. componentes estructurales y semántica de nulos aprobados;
+4. estado, vigencia, supersesión y reutilización resueltos;
+5. representación exacta y algoritmo versionados;
+6. baseline completo de colisiones en datos existentes;
+7. clasificación y resolución de los conflictos que impedirían activación;
+8. corpus positivo, negativo, ambiguo y temporal aprobado;
+9. precisión y falsos positivos dentro de criterios aprobados;
+10. inventario de productores, consumidores, integraciones y referencias;
+11. estrategia de transición, compatibilidad y rollback;
+12. prueba de concurrencia e idempotencia;
+13. rendimiento, seguridad y RLS certificados;
+14. aprobación del propietario, steward y autoridades adicionales aplicables.
+
+La falta de una puerta mantiene la política en observación, advertencia o revisión. No se permitirá un constraint parcial para descubrir errores directamente en producción.
+
+#### 27. Métricas obligatorias
+
+Cada política deberá medir, como mínimo:
+
+- registros evaluados y elegibles;
+- candidatos y grupos por clase;
+- candidatos por cada etapa de generación;
+- falsos positivos confirmados;
+- falsos negativos detectados por revisión o incidente;
+- casos ambiguos y tiempo de resolución;
+- grupos de ciclo de vida e historia;
+- homónimos y falsos positivos de scope;
+- operaciones advertidas, revisadas y bloqueadas;
+- conflictos concurrentes;
+- decisiones supersedidas;
+- consolidaciones planificadas, ejecutadas, compensadas o revertidas;
+- referencias huérfanas detectadas;
+- divergencias entre capas y ambientes;
+- deriva después de cambiar versión;
+- latencia y costo por modo de evaluación.
+
+Las métricas no crean aliases, reglas, identidad ni decisiones por frecuencia. Su función es medir seguridad, cobertura y deriva.
+
+#### 28. Privacidad, seguridad y acceso
+
+1. Casos sobre personas, documentos, correos, teléfonos, direcciones o datos legales exigirán finalidad y autorización.
+2. El nombre normalizado de una persona no se usa como clave de identidad.
+3. Evidencia sensible se conserva mediante referencia protegida, hash contextualizado o acceso restringido.
+4. La interfaz no expondrá candidatos fuera del scope del revisor.
+5. Un actor no podrá aprobar y ejecutar una consolidación sensible sin la segregación requerida.
+6. Logs y métricas no permitirán enumerar identificadores o reconstruir datos protegidos.
+7. Referencias externas se validarán contra su emisor y no se compararán globalmente.
+8. Secretos, firmas, tokens y credenciales quedan fuera de la detección general.
+9. Una diferencia legal o de identidad prevalece sobre similitud comercial.
+10. La retención seguirá la clase de evidencia aprobada en `DATA-NORM-ARC-009`.
+
+#### 29. Paridad entre capas
+
+Para la misma política, versión, corte, scope y miembros, todas las capas deberán producir:
+
+- el mismo conjunto elegible;
+- las mismas señales deterministas;
+- la misma clase principal de colisión;
+- el mismo digest de grupo;
+- las mismas exclusiones y bloqueos;
+- la misma necesidad de revisión;
+- la misma conducta ante versión obsoleta;
+- la misma disposición ya aprobada;
+- la misma idempotencia y correlación.
+
+Ninguna aplicación, RPC, función, job, trigger o integración podrá:
+
+- definir su propio scope o clave normalizada;
+- omitir estado, padre, contexto o fuente;
+- seleccionar el primer candidato;
+- fusionar silenciosamente al crear o importar;
+- mantener listas locales de equivalencias;
+- tratar un error de infraestructura como duplicado;
+- reinterpretar una disposición cerrada;
+- extender la política de Vento OS a VITAL.
+
+#### 30. Corpus mínimo de conformidad
+
+El corpus deberá incluir:
+
+1. identificadores exactos válidos y conflictos reales;
+2. claves empresariales iguales en scopes distintos;
+3. padres y caminos jerárquicos distintos con la misma etiqueta;
+4. nulos, vacíos, desconocidos, placeholders y claves parciales;
+5. activos, inactivos, históricos, supersedidos y solapamientos temporales;
+6. productos probables, ambiguos y homónimos entre capas;
+7. ocho pares de catálogo activo e inactivo;
+8. categoría de remisión duplicada dentro de sede;
+9. 72 posiciones que deben permanecer distintas;
+10. presentaciones con misma etiqueta y distinta estructura;
+11. huellas UOM fuertes de `Queso Gouda` y `Queso Mozzarella Tajado`;
+12. personas homónimas y representaciones vinculadas entre fuentes;
+13. marcas, nombres legales y referencias externas;
+14. exactitud, forma, tildes, aliases, transliteración y similitud;
+15. clusters no transitivos A-B-C;
+16. evidencia positiva y negativa conflictiva;
+17. selección de sobreviviente prohibida por heurística;
+18. relaciones con y sin clave foránea, JSON, snapshots y consumidores externos;
+19. creación, actualización, reactivación y cambio de scope;
+20. carreras concurrentes y reintentos;
+21. versiones compatibles, obsoletas e incompatibles;
+22. replay, supersesión, compensación y rollback;
+23. autorización, masking y segregación;
+24. paridad entre capas y ambientes;
+25. frontera separada de VITAL;
+26. ausencia de efectos de escritura durante detección y revisión.
+
+#### 31. Conductas no conformes
+
+Quedan prohibidas:
+
+1. imponer unicidad sobre `SEARCH_FORM_KEY`, `SEARCH_ACCENT_KEY`, tokens, aliases, transliteración o similitud;
+2. usar `lower(trim(value))`, `unaccent`, slug o helper legacy como identidad universal;
+3. comparar nombres fuera de dominio, tipo o scope;
+4. deduplicar posiciones por etiqueta sin padre, camino y código;
+5. deduplicar UOM por etiqueta sin estructura y contexto;
+6. fusionar persona, proveedor o razón social por nombre;
+7. convertir un par activo e inactivo en error por defecto;
+8. agrupar insumo, preparación y venta como una sola entidad por nombre;
+9. decidir por score, umbral opaco, frecuencia o primer resultado;
+10. tratar clusters transitivos como equivalencia confirmada;
+11. borrar, editar o reciclar identificadores históricos;
+12. elegir sobreviviente por antigüedad, actividad, popularidad o completitud;
+13. reasignar relaciones sin inventario, plan y rollback;
+14. ejecutar una consolidación desde la cola de revisión;
+15. activar un constraint antes de resolver datos existentes y consumidores;
+16. interpretar modo observación como protección efectiva;
+17. mezclar versiones de política o algoritmo;
+18. repetir una transición como operación nueva después de timeout;
+19. exponer evidencia sensible o candidatos no autorizados;
+20. aplicar la política transversal a VITAL;
+21. introducir cambios físicos desde esta tarea documental.
+
+#### 32. Hallazgos y carryovers
+
+| ID               | Decisión o brecha                                                     | Resultado de esta tarea                                                    | Propietario siguiente                                             |
+| ---------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `DN-ARC-010-H01` | búsqueda y unicidad podían compartir una misma clave                  | separación absoluta entre identidad, política y representación comparativa | `DATA-NORM-ARC-011`; `SUPA-TRANS-005`                             |
+| `DN-ARC-010-H02` | los scopes actuales producen homónimos y falsos positivos             | ocho clases de alcance y coordenada completa aprobadas                     | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-003`                        |
+| `DN-ARC-010-H03` | nulos, placeholders y claves parciales no tenían semántica cerrada    | conducta bloqueante y obligación de política explícita aprobadas           | `DATA-NORM-ARC-011`; `SUPA-TRANS-005`                             |
+| `DN-ARC-010-H04` | activos, inactivos e históricos podían confundirse con duplicados     | unicidad temporal, vigencia y supersesión separadas                        | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-003`; `DATA-NORM-TRANS-008` |
+| `DN-ARC-010-H05` | los candidatos podían convertirse en clusters transitivos opacos      | pipeline, pares y grafo explicable aprobados                               | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-002`                        |
+| `DN-ARC-010-H06` | no existía paquete cerrado de evidencia y disposición                 | doce dimensiones y diez disposiciones aprobadas                            | `DATA-NORM-ARC-007`; `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-003`   |
+| `DN-ARC-010-H07` | la selección de sobreviviente podía derivarse de heurísticas          | paquete de autoridad por atributo y heurísticas prohibidas                 | `DATA-NORM-TRANS-003`; `DATA-NORM-TRANS-004`                      |
+| `DN-ARC-010-H08` | una decisión de duplicidad podía confundirse con fusión               | confirmación, plan y transición separados                                  | `DATA-NORM-ARC-011`; `SUPA-TRANS-011`; `DATA-NORM-TRANS-004`      |
+| `DN-ARC-010-H09` | las relaciones y hechos podían perderse durante consolidación         | catorce guardas de transición y preservación histórica aprobadas           | `SUPA-TRANS-003`; `DATA-NORM-TRANS-004`; `DATA-NORM-TRANS-008`    |
+| `DN-ARC-010-H10` | no existían modos graduales de prevención                             | observación, advertencia, revisión y enforcement certificado definidos     | `DATA-NORM-ARC-011`; `DATA-NORM-TRANS-005`                        |
+| `DN-ARC-010-H11` | enforcement sin baseline podía bloquear datos legítimos               | catorce puertas obligatorias aprobadas                                     | `SUPA-TRANS-005`; `SUPA-TRANS-009`; `SUPA-TRANS-010`              |
+| `DN-ARC-010-H12` | personas y externos presentan riesgos de identidad y privacidad       | finalidad, emisor, masking y escalamiento obligatorios                     | `DATA-NORM-ARC-012`; `DATA-NORM-ARC-011`                          |
+| `DN-ARC-010-H13` | productores distribuidos pueden detectar o bloquear de forma distinta | paridad lógica e idempotencia transversal aprobadas                        | `DATA-NORM-ARC-011`; `SUPA-TRANS-009`; `SUPA-TRANS-014`           |
+| `DN-ARC-010-H14` | VITAL comparte infraestructura física                                 | exclusión transversal mantenida                                            | `SUPA-ARC-025`                                                    |
+
+#### 33. Decisiones reservadas
+
+| Decisión                                                     | Tarea propietaria                                         |
+| ------------------------------------------------------------ | --------------------------------------------------------- |
+| tablas, columnas, constraints, índices, funciones y triggers | `DATA-NORM-ARC-011`; `SUPA-TRANS-005`                     |
+| API, servicio, RPC, job y precedencia ejecutora              | `DATA-NORM-ARC-011`                                       |
+| tratamiento de referencias y valores externos                | `DATA-NORM-ARC-012`                                       |
+| inventario exhaustivo de consumidores y relaciones           | `SUPA-TRANS-003`                                          |
+| baseline completo y dry-run de candidatos                    | `DATA-NORM-TRANS-001`; `DATA-NORM-TRANS-002`              |
+| decisión de casos y registro sobreviviente concreto          | `DATA-NORM-TRANS-003`                                     |
+| consolidación, crosswalks y reasignación de relaciones       | `DATA-NORM-TRANS-004`                                     |
+| activación gradual de políticas y constraints                | `DATA-NORM-TRANS-005`; `SUPA-TRANS-005`; `SUPA-TRANS-006` |
+| reintentos, lotes y propagación                              | `DATA-NORM-TRANS-006`; `DATA-NORM-TRANS-007`              |
+| observabilidad, compensación y rollback                      | `DATA-NORM-TRANS-008`; `SUPA-TRANS-011`                   |
+| certificación de paridad y transición                        | `DATA-NORM-TRANS-009`; `SUPA-TRANS-009`; `SUPA-TRANS-014` |
+| rendimiento y seguridad bajo carga                           | `SUPA-TRANS-010`                                          |
+| arquitectura consolidada de datos                            | `SUPA-ARC-025`                                            |
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se crean los requisitos:
+
+- `TREQ-DATA-165`;
+- `TREQ-DATA-166`;
+- `TREQ-DATA-167`;
+- `TREQ-DATA-168`;
+- `TREQ-DATA-169`;
+- `TREQ-DATA-170`;
+- `TREQ-DATA-171`;
+- `TREQ-DATA-172`;
+- `TREQ-DATA-173`;
+- `TREQ-DATA-174`;
+- `TREQ-DATA-175`;
+- `TREQ-DATA-176`;
+- `TREQ-DATA-177`;
+- `TREQ-DATA-178`;
+- `TREQ-DATA-179`;
+- `TREQ-DATA-180`;
+- `TREQ-DATA-181`;
+- `TREQ-DATA-182`;
+- `TREQ-DATA-183`;
+- `TREQ-DATA-184`;
+- `TREQ-DATA-185`;
+- `TREQ-DATA-186`;
+- `TREQ-DATA-187`;
+- `TREQ-DATA-188`;
+- `TREQ-DATA-189`;
+- `TREQ-DATA-190`.
+
+El detalle canónico de cada requisito reside en el registro 04A actualizado hasta esta tarea.
+
+#### 35. Criterios de integridad
+
+La estrategia se considera íntegra para esta etapa cuando:
+
+1. separa los seis conceptos canónicos sin convertir comparación en identidad;
+2. resuelve cada política mediante una coordenada empresarial completa;
+3. define exactamente ocho clases de alcance;
+4. trata nulos, desconocidos y claves parciales de forma explícita;
+5. separa identidad, versión, estado, intervalo y supersesión;
+6. aplica las doce etapas del pipeline en orden cerrado;
+7. preserva las diez clases de colisión auditadas sin renombrarlas;
+8. conserva pares y evita transitividad implícita de clusters;
+9. exige doce dimensiones de evidencia positiva y negativa;
+10. impide decisiones por score, frecuencia o primer resultado;
+11. emite exactamente una de diez disposiciones sin ejecutar cambios;
+12. reutiliza la cola y segregación de revisión aprobadas;
+13. define coordenadas mínimas para productos, catálogo, jerarquías, UOM, personas, proveedores y externos;
+14. conserva los hallazgos auditados como candidatos no resueltos;
+15. exige un paquete de autoridad por atributo antes de elegir referencia;
+16. prohíbe heurísticas automáticas de supervivencia;
+17. separa confirmación, plan y consolidación;
+18. protege relaciones, hechos, crosswalks, historia y rollback;
+19. define cuatro modos graduales de prevención;
+20. integra concurrencia, idempotencia, versiones y auditoría;
+21. exige catorce puertas antes del enforcement físico;
+22. define métricas sin aprendizaje implícito de identidad;
+23. protege datos personales, legales, externos y sensibles;
+24. exige paridad entre capas y ambientes;
+25. incorpora corpus positivo, negativo, ambiguo, temporal, relacional y concurrente;
+26. conserva VITAL fuera del alcance transversal;
+27. no autoriza cambios físicos ni anticipa decisiones reservadas.
+
+#### 36. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo
+```
+
+
 ### [ ] DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo
 ### [ ] DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas
 
