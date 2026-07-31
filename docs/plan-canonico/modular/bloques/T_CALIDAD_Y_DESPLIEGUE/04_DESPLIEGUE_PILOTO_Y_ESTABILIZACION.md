@@ -19,14 +19,31 @@ E5-GATE-008
 → SHELL-CI-024
 ```
 
+### Contrato genérico de ejecución por paquete
+
+Toda capacidad aprobada por `E5-GATE-008::<package_id>` se ejecuta mediante una
+instancia correlacionada del ciclo de despliegue:
+
+```text
+SHELL-CI-020::<package_id>
+→ SHELL-CI-021::<package_id>
+→ SHELL-CI-022::<package_id>
+→ SHELL-CI-023::<package_id>
+→ SHELL-CI-024::<package_id>
+```
+
+La ejecución de una instancia correlacionada no modifica el estado de la tarea canónica
+global `SHELL-CI-020` a `SHELL-CI-024`; únicamente registra el estado, evidencia,
+resultado y cierre del paquete identificado por `<package_id>`.
+
 ### Instancia VISO mensual
 
 ```text
 SHELL-CI-020::VISO-SCHEDULE-MONTHLY-001
-→ 021::VISO-SCHEDULE-MONTHLY-001
-→ 022::VISO-SCHEDULE-MONTHLY-001
-→ 023::VISO-SCHEDULE-MONTHLY-001
-→ 024::VISO-SCHEDULE-MONTHLY-001
+→ SHELL-CI-021::VISO-SCHEDULE-MONTHLY-001
+→ SHELL-CI-022::VISO-SCHEDULE-MONTHLY-001
+→ SHELL-CI-023::VISO-SCHEDULE-MONTHLY-001
+→ SHELL-CI-024::VISO-SCHEDULE-MONTHLY-001
 ```
 
 Evidencia: commits, build/typecheck, pruebas, rollback, política/configuración, piloto, paridad semana/mes, métricas, ANIMA, regresiones y soporte.
