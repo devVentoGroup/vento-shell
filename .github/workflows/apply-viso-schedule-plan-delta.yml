@@ -1,0 +1,323 @@
+name: Apply VISO schedule plan delta
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - .github/workflows/apply-viso-schedule-plan-delta.yml
+
+permissions:
+  contents: write
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Apply remaining plan changes
+        shell: bash
+        run: |
+          python3 <<'PY'
+          from pathlib import Path
+          import json
+          import re
+
+          root = Path('.')
+
+          def insert_after(items, anchor, value):
+              if value in items:
+                  return
+              try:
+                  index = items.index(anchor)
+              except ValueError as exc:
+                  raise SystemExit(f'No se encontró el ancla en manifest: {anchor}') from exc
+              items.insert(index + 1, value)
+
+          # 1. manifest.json
+          manifest_path = root / 'docs/plan-canonico/modular/manifest.json'
+          manifest = json.loads(manifest_path.read_text(encoding='utf-8'))
+          files = manifest['files']
+          insert_after(files, '02_ROADMAP_MAESTRO.md', 'deltas/DELTA-VISO-SCHEDULE-20260731-001.md')
+          insert_after(
+              files,
+              'bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_04_VALIDACION_TECNICA_SEGURIDAD_RESILIENCIA_Y_BACKLOG.md',
+              'bloques/E1_DESCUBRIMIENTO_OPERATIVO/04B_RECONCILIACION_DELTA_VISO_PROGRAMACION.md',
+          )
+          insert_after(
+              files,
+              'bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md',
+              'bloques/G_VISO/01A_PROGRAMACION_LABORAL.md',
+          )
+          insert_after(
+              files,
+              'bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md',
+              'bloques/I_NAVEGACION_Y_PANTALLAS/07_RECONCILIACION_DE_DERIVA_POSTERIOR.md',
+          )
+          manifest_path.write_text(json.dumps(manifest, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+
+          # 2. Orden de implementación
+          order_path = root / 'docs/plan-canonico/modular/90_ORDEN_DE_IMPLEMENTACION.md'
+          order = order_path.read_text(encoding='utf-8')
+
+          reconciliation = '''\n### Reconciliación de deltas posteriores a snapshots E1\n\nUn cambio material posterior al cierre de E1 no reabre ni reescribe snapshots aprobados.\n`CODE-AUD-021` se ejecutará sobre el commit estable de\n`DELTA-VISO-SCHEDULE-20260731-001` antes de aprobar\n`VISO-SCHEDULE-MONTHLY-001`, sin modificar la tarea documental activa.\n'''
+          if '### Reconciliación de deltas posteriores a snapshots E1' not in order:
+              anchor = '7. BLOQUE E1 está **CERRADO DOCUMENTALMENTE**'
+              pos = order.find(anchor)
+              if pos < 0:
+                  raise SystemExit('No se encontró el punto 7 para insertar reconciliación E1.')
+              order = order[:pos] + reconciliation + '\n' + order[pos:]
+
+          original_point_9 = '9. Ejecutar `AUTH-UI-001` a `AUTH-UI-029` y aprobar propiedad funcional y contrato de pantallas'
+          replacement_point_9 = ('9. Ejecutar `AUTH-UI-001` a `AUTH-UI-029` y aprobar propiedad funcional y contrato de pantallas. '
+                                 'Las rutas posteriores a inventarios aprobados se reconciliarán mediante `AUTH-UI-061` '
+                                 'sin renumerar identidades históricas.')
+          if replacement_point_9 not in order:
+              if original_point_9 not in order:
+                  raise SystemExit('No se encontró el punto 9 del orden de implementación.')
+              order = order.replace(original_point_9, replacement_point_9, 1)
+
+          point_15a = ('15A. Para programación laboral VISO, completar `VISO-SCH-001` a `VISO-SCH-008`, '
+                       '`CODE-AUD-021` y `AUTH-UI-061` antes de materializar '
+                       '`VISO-SCHEDULE-MONTHLY-001`.')
+          if point_15a not in order:
+              anchor = '16. BLOQUE E5 — Convertir capacidades aprobadas en paquetes'
+              pos = order.find(anchor)
+              if pos < 0:
+                  raise SystemExit('No se encontró el punto 16 para insertar 15A.')
+              order = order[:pos] + point_15a + '\n' + order[pos:]
+
+          package_sequence = '''\n### Secuencia VISO-SCHEDULE-MONTHLY-001\n\n```text\nCODE-AUD-021\n→ AUTH-UI-061\n→ VISO-SCH-001 a VISO-SCH-008\n→ VISO-UX / AUTH-UI / AUTH-SRV aplicables\n→ SUPA-TRANS aplicables\n→ DELIV-PKG-001 a DELIV-PKG-025::VISO-SCHEDULE-MONTHLY-001\n→ E5-GATE-008::VISO-SCHEDULE-MONTHLY-001\n→ SHELL-CI-020::VISO-SCHEDULE-MONTHLY-001\n→ BLOQUE R\n→ AUTH-QA / UX-QA\n→ SHELL-CI-021 a SHELL-CI-024::VISO-SCHEDULE-MONTHLY-001\n```\n\nNo se agrega a `priority-delivery-lanes.json`.\n'''
+          if '### Secuencia VISO-SCHEDULE-MONTHLY-001' not in order:
+              anchor = '### Ciclo obligatorio de ejecución de cada paquete aprobado'
+              pos = order.find(anchor)
+              if pos < 0:
+                  raise SystemExit('No se encontró el ciclo obligatorio por paquete.')
+              next_heading = order.find('\n### ', pos + len(anchor))
+              if next_heading < 0:
+                  order += package_sequence
+              else:
+                  order = order[:next_heading] + package_sequence + order[next_heading:]
+
+          order_path.write_text(order, encoding='utf-8')
+
+          columns = [
+              'ID', 'Dominio', 'Regla protegida', 'Origen', 'Riesgo / prioridad',
+              'Tipo / modalidad', 'Tarea responsable', 'Paquete',
+              'Repositorio / ambiente', 'Estado', 'Artefacto', 'Último resultado',
+              'Evidencia', 'Relación',
+          ]
+
+          def split_row(line):
+              body = line.strip()[1:-1]
+              cells, current, escaped = [], '', False
+              for char in body:
+                  if escaped:
+                      current += char
+                      escaped = False
+                  elif char == '\\':
+                      current += char
+                      escaped = True
+                  elif char == '|':
+                      cells.append(current.strip())
+                      current = ''
+                  else:
+                      current += char
+              cells.append(current.strip())
+              return cells
+
+          def clean(value):
+              return value.strip().replace('**', '').strip('`').strip()
+
+          def md(value):
+              return str(value).replace('|', '\\|').replace('\n', ' ')
+
+          def render(cells):
+              return '| ' + ' | '.join(md(cell) for cell in cells) + ' |'
+
+          registry_path = root / 'docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md'
+          registry = registry_path.read_text(encoding='utf-8')
+          if not registry.strip():
+              raise SystemExit('04A está vacío; se aborta para no destruir el registro canónico.')
+
+          section_start = registry.find('\n#### VISO\n')
+          if section_start < 0:
+              raise SystemExit('No se encontró la sección #### VISO en 04A.')
+          section_start += 1
+          section_end = registry.find('\n#### ', section_start + 1)
+          if section_end < 0:
+              section_end = registry.find('\n### Reglas obligatorias', section_start)
+          if section_end < 0:
+              raise SystemExit('No se pudo determinar el final de la sección VISO.')
+
+          section = registry[section_start:section_end]
+          lines = section.splitlines()
+          table_indexes = [i for i, line in enumerate(lines) if line.strip().startswith('|')]
+          if len(table_indexes) < 3:
+              raise SystemExit('La tabla VISO de 04A no está completa.')
+          header_index = table_indexes[0]
+          data_indexes = table_indexes[2:]
+          header = [clean(cell) for cell in split_row(lines[header_index])]
+          if header != columns:
+              raise SystemExit(f'Cabecera VISO inesperada: {header}')
+
+          rows = {}
+          for index in data_indexes:
+              cells = split_row(lines[index])
+              if len(cells) != 14:
+                  raise SystemExit(f'Fila VISO inválida con {len(cells)} columnas: {lines[index][:120]}')
+              row = {column: clean(cells[pos]) for pos, column in enumerate(columns)}
+              rows[row['ID']] = (index, row)
+
+          required_existing = [f'TREQ-VISO-{number:03d}' for number in (4, 5, 6, 12, 13, 15, 23)]
+          missing = [identifier for identifier in required_existing if identifier not in rows]
+          if missing:
+              raise SystemExit('Faltan requisitos VISO existentes: ' + ', '.join(missing))
+
+          package_id = 'VISO-SCHEDULE-MONTHLY-001'
+          existing_updates = {
+              'TREQ-VISO-004': {'Regla protegida': 'El inventario reconciliado de VISO registra 61 páginas sobre un commit estable y conserva el snapshot histórico anterior.', 'Origen': 'CODE-AUD-021', 'Tarea responsable': 'CODE-AUD-021', 'Paquete': package_id, 'Artefacto': 'Inventario técnico reconciliado de rutas, layouts, componentes y acciones de VISO.', 'Último resultado': 'Pendiente de ejecutar sobre el commit estable del paquete.', 'Evidencia': 'Delta esperado: 61 páginas VISO; la cifra final se acepta únicamente después de CODE-AUD-021.', 'Relación': 'TREQ-VISO-023'},
+              'TREQ-VISO-005': {'Regla protegida': 'El registro estable de rutas VISO cubre VISO-ROUTE-001 a VISO-ROUTE-061 sin renumerar identidades históricas.', 'Origen': 'AUTH-UI-061', 'Tarea responsable': 'AUTH-UI-061', 'Paquete': package_id, 'Artefacto': 'Registro de rutas reconciliado hasta VISO-ROUTE-061.', 'Último resultado': 'Pendiente de reconciliación formal.', 'Evidencia': 'La ruta mensual se reserva como VISO-ROUTE-061 y debe contrastarse con el código desplegado.', 'Relación': 'TREQ-VISO-013'},
+              'TREQ-VISO-006': {'Regla protegida': 'La clasificación reconciliada mantiene 48 rutas estáticas y 13 dinámicas en VISO.', 'Origen': 'CODE-AUD-021', 'Tarea responsable': 'CODE-AUD-021', 'Paquete': package_id, 'Artefacto': 'Matriz de clasificación estática y dinámica actualizada.', 'Último resultado': 'Pendiente de verificación contra commit estable.', 'Evidencia': 'Delta esperado: una ruta estática adicional y ninguna ruta dinámica adicional.', 'Relación': 'TREQ-VISO-004'},
+              'TREQ-VISO-012': {'Regla protegida': 'La reconciliación confirma 59 rutas protegidas y conserva exactamente 2 rutas públicas controladas en VISO.', 'Origen': 'AUTH-UI-061', 'Tarea responsable': 'AUTH-UI-061; AUTH-UI-041', 'Paquete': package_id, 'Artefacto': 'Matriz de exposición y protección de rutas VISO.', 'Último resultado': 'Pendiente de prueba de acceso directo y sesión.', 'Evidencia': 'La ruta mensual debe heredar autenticación y guard especializado sin ampliar superficie pública.', 'Relación': 'TREQ-VISO-045'},
+              'TREQ-VISO-013': {'Regla protegida': 'La ruta /staff/schedule/month queda inventariada, vinculada con VPROC-0007 y protegida mediante autorización de servidor.', 'Origen': 'AUTH-UI-061; VISO-SCH-007', 'Tarea responsable': 'AUTH-UI-061; AUTH-UI-043', 'Paquete': package_id, 'Artefacto': 'Contrato de ruta VISO-ROUTE-061 y matriz de acciones.', 'Último resultado': 'Ruta reservada; implementación todavía no certificada.', 'Evidencia': 'Debe comprobarse navegación Semana/Mes, acceso directo y protección de cada escritura.', 'Relación': 'TREQ-VISO-005; TREQ-VISO-045'},
+              'TREQ-VISO-015': {'Regla protegida': 'Toda deriva del módulo mensual queda registrada como delta de ruta, layout, componentes y Server Actions antes del paquete.', 'Origen': 'CODE-AUD-021; AUTH-UI-061', 'Tarea responsable': 'CODE-AUD-021; AUTH-SRV-001', 'Paquete': package_id, 'Artefacto': 'Delta técnico trazable de programación mensual VISO.', 'Último resultado': 'Pendiente de inventario reproducible.', 'Evidencia': 'El delta no reabre snapshots aprobados y debe indicar commit, archivos y conteos finales.', 'Relación': 'TREQ-VISO-004; TREQ-VISO-023'},
+              'TREQ-VISO-023': {'Regla protegida': 'La reconciliación final cubre las 61 rutas VISO y vincula VISO-ROUTE-061 con proceso, aplicación, autorización y paquete.', 'Origen': 'CODE-AUD-021; AUTH-UI-061', 'Tarea responsable': 'CODE-AUD-021; AUTH-UI-061', 'Paquete': package_id, 'Artefacto': 'Acta de reconciliación integral de superficies VISO.', 'Último resultado': 'Pendiente de ejecutar después de estabilizar el commit.', 'Evidencia': 'Debe cerrar diferencias entre inventario histórico, código final y registro de rutas.', 'Relación': 'TREQ-VISO-004; TREQ-VISO-005; TREQ-VISO-015'},
+          }
+
+          for identifier, updates in existing_updates.items():
+              index, row = rows[identifier]
+              row.update(updates)
+              lines[index] = render([row[column] for column in columns])
+              rows[identifier] = (index, row)
+
+          last_row = rows['TREQ-VISO-023'][1]
+          new_rules = {
+              24: ('Los meses de 28, 29, 30 y 31 días muestran exclusivamente fechas válidas.', 'VISO-SCH-002', 'TREQ-VISO-006'),
+              25: ('Las vistas Semana y Mes leen la misma fuente de programación y no generan turnos paralelos.', 'VISO-SCH-001', 'TREQ-VISO-013'),
+              26: ('El preview mensual recalcula de forma reactiva minutos actuales, propuestos y proyectados.', 'VISO-SCH-003', 'TREQ-VISO-023'),
+              27: ('La creación multibloque conserva fechas, horarios, pausas, rol, área y notas de cada bloque.', 'VISO-SCH-003', 'TREQ-VISO-026'),
+              28: ('Una fecha pertenece a un solo bloque y cualquier movimiento entre bloques es explícito.', 'VISO-SCH-003', 'TREQ-VISO-027'),
+              29: ('El máximo de bloques mensuales se valida de forma equivalente en cliente y servidor.', 'VISO-SCH-003', 'TREQ-VISO-027'),
+              30: ('Cada horario valida inicio, fin, pausas y regla overnight sin producir duración inválida.', 'VISO-SCH-003', 'TREQ-VISO-026'),
+              31: ('La política de descanso se aplica de forma visible y nunca se corrige silenciosamente.', 'VISO-SCH-003', 'TREQ-VISO-030'),
+              32: ('El límite mensual se calcula con una política exacta, versionada y auditable.', 'VISO-SCH-004', 'TREQ-VISO-034'),
+              33: ('El total mensual considera todas las sedes del trabajador sin ampliar el acceso visible del administrador.', 'VISO-SCH-004; AUTH-SRV-012', 'TREQ-VISO-032'),
+              34: ('Umbral preventivo y límite de bloqueo provienen de una sola política y no divergen entre TypeScript y PostgreSQL.', 'VISO-SCH-004', 'TREQ-VISO-032'),
+              35: ('Una proyección sobre el límite puede guardarse únicamente como borrador y no publicarse.', 'VISO-SCH-005', 'TREQ-VISO-032'),
+              36: ('La publicación semanal y mensual aplica el mismo bloqueo y la misma política.', 'VISO-SCH-005; AUTH-DB-027', 'TREQ-VISO-035'),
+              37: ('Guardar borrador y publicar son comandos separados, con permisos y resultados distintos.', 'VISO-SCH-005; AUTH-SRV-005', 'TREQ-VISO-035'),
+              38: ('Los conflictos se recalculan en servidor inmediatamente antes de guardar o publicar.', 'VISO-SCH-006; AUTH-SRV-004', 'TREQ-VISO-037'),
+              39: ('Dos publicaciones concurrentes no superan el límite ni dejan una publicación parcial.', 'VISO-SCH-006; AUTH-DB-027', 'TREQ-VISO-038'),
+              40: ('El rollback restaura el estado anterior sin retirar la protección del límite vigente.', 'VISO-SCH-006; AUTH-DB-029', 'TREQ-VISO-039'),
+              41: ('La eliminación masiva afecta solo borradores autorizados y conserva auditoría.', 'VISO-SCH-005; AUTH-SRV-011', 'TREQ-VISO-037'),
+              42: ('Persona, sede, área, rol, fechas y alcance se validan nuevamente en servidor.', 'VISO-SCH-007; AUTH-SRV-005', 'TREQ-VISO-038'),
+              43: ('La auditoría conserva actor real, actor efectivo, simulación, versión, política y published_by.', 'VISO-SCH-007; AUTH-SRV-014', 'TREQ-VISO-042'),
+              44: ('La notificación hacia ANIMA es idempotente, recuperable y correlacionada con la versión publicada.', 'VISO-SCH-007; INT-APP-003', 'TREQ-VISO-036'),
+              45: ('Una URL, formulario o Server Action manipulados quedan bloqueados con un error canónico comprensible.', 'AUTH-UI-061; AUTH-SRV-004', 'TREQ-VISO-013'),
+          }
+
+          for number, (rule, task_refs, relation) in new_rules.items():
+              identifier = f'TREQ-VISO-{number:03d}'
+              row = {'ID': identifier, 'Dominio': 'VISO', 'Regla protegida': rule, 'Origen': task_refs, 'Riesgo / prioridad': last_row['Riesgo / prioridad'], 'Tipo / modalidad': last_row['Tipo / modalidad'], 'Tarea responsable': task_refs, 'Paquete': package_id, 'Repositorio / ambiente': 'vento-viso y vento-shell / staging y producción', 'Estado': last_row['Estado'], 'Artefacto': f'Prueba y evidencia {identifier} del paquete {package_id}.', 'Último resultado': 'Pendiente de implementación y ejecución dentro del paquete.', 'Evidencia': f'Requisito materializado por {task_refs}; debe vincularse mediante DELIV-PKG-016 y ejecutarse con SHELL-CI-020.', 'Relación': relation}
+              if identifier in rows:
+                  index, _ = rows[identifier]
+                  lines[index] = render([row[column] for column in columns])
+              else:
+                  lines.append(render([row[column] for column in columns]))
+
+          new_section = '\n'.join(lines)
+          registry = registry[:section_start] + new_section + registry[section_end:]
+
+          reg_start = registry.index('### Registro')
+          reg_end = registry.index('### Reglas obligatorias', reg_start)
+          registry_body = registry[reg_start:reg_end]
+          all_rows = []
+          per_domain = {}
+          for line in registry_body.splitlines():
+              if not line.strip().startswith('|'):
+                  continue
+              cells = split_row(line)
+              if len(cells) != 14:
+                  continue
+              identifier = clean(cells[0])
+              match = re.fullmatch(r'TREQ-([A-Z]+)-(\d{3,})', identifier)
+              if not match:
+                  continue
+              all_rows.append(identifier)
+              per_domain.setdefault(match.group(1), []).append(identifier)
+
+          total = len(all_rows)
+          domains_count = sum(1 for values in per_domain.values() if values)
+
+          def replace_summary(source, label, value):
+              pattern = re.compile(rf'^(\|\s*{re.escape(label)}\s*\|).*?(\|\s*)$', re.M)
+              updated, count = pattern.subn(lambda m: f'{m.group(1)} {value} {m.group(2)}', source, count=1)
+              if count != 1:
+                  raise SystemExit(f'No se pudo actualizar el resumen: {label}.')
+              return updated
+
+          registry = replace_summary(registry, 'Requisitos vigentes', f'**{total}**')
+          registry = replace_summary(registry, 'Dominios con requisitos', f'**{domains_count}**')
+          registry = replace_summary(registry, 'Identificadores duplicados', '**0**')
+          registry = replace_summary(registry, 'Relaciones `TREQ-*` no resolubles', '**0**')
+          registry = replace_summary(registry, 'Filas con catorce columnas', f'**{total} de {total}**')
+
+          dist_start = registry.index('Distribución vigente:')
+          dist_end = registry.index('### Procedimiento obligatorio de actualización', dist_start)
+          dist = registry[dist_start:dist_end]
+          for domain, identifiers in per_domain.items():
+              expected_range = identifiers[0] if len(identifiers) == 1 else f'{identifiers[0]} a {identifiers[-1]}'
+              pattern = re.compile(rf'^\|\s*`?{re.escape(domain)}`?\s*\|.*$', re.M)
+              replacement = f'| `{domain}` | `{expected_range}` | **{len(identifiers)}** |'
+              dist, count = pattern.subn(replacement, dist, count=1)
+              if count != 1:
+                  raise SystemExit(f'No se pudo actualizar distribución para {domain}.')
+          registry = registry[:dist_start] + dist + registry[dist_end:]
+          registry_path.write_text(registry, encoding='utf-8')
+
+          migration_path = root / 'supabase/migrations/20260731082600_viso_monthly_schedule_186_hour_publish_guard.sql'
+          if migration_path.exists():
+              migration = migration_path.read_text(encoding='utf-8')
+              package_header = ('-- Package reservation: VISO-SCHEDULE-MONTHLY-001.\n-- Status: provisional policy; not authorized for production rollout.\n-- Canonical process: VPROC-0007.\n-- Canonical migration repository: vento-shell.\n')
+              if not migration.startswith('-- Package reservation:'):
+                  migration = package_header + migration
+              migration = migration.replace('-- Regla operativa aprobada para esta implementación:', '-- Regla provisional local pendiente de aprobación canónica en VISO-SCH-004 y VISO-SCH-008:')
+              migration = re.sub(r"comment on function public\.viso_enforce_monthly_schedule_publish_limit\(\) is\n\s*'[^']*';", "comment on function public.viso_enforce_monthly_schedule_publish_limit() is\n  'Reserved for package VISO-SCHEDULE-MONTHLY-001. Guards publication of VPROC-0007 scheduling against the provisional 186-hour monthly threshold. Value, validity, policy versioning and approved exception handling remain required before production rollout.';", migration, count=1)
+              migration_path.write_text(migration, encoding='utf-8')
+
+          print(f'Cambios aplicados. Registro TREQ recalculado con {total} requisitos y {len(per_domain.get("VISO", []))} requisitos VISO.')
+          PY
+
+      - name: Validate documentation
+        shell: bash
+        run: |
+          npm run docs:plan:build
+          npm run docs:plan:check
+          npm run docs:plan:test
+          npm run docs:treq:check
+          npm run docs:treq:test
+          npm run docs:process-apps:check
+          npm run docs:screens:check
+          npm run docs:screen-processes:check
+          npm run docs:screen-matrices:check
+          git diff --check
+
+      - name: Commit remaining changes
+        shell: bash
+        run: |
+          if git diff --quiet; then
+            echo "No remaining changes were necessary."
+            exit 0
+          fi
+          git config user.name "vento-plan-bot"
+          git config user.email "dev.ventogroup@gmail.com"
+          git add docs/plan-canonico/modular/manifest.json \
+                  docs/plan-canonico/modular/90_ORDEN_DE_IMPLEMENTACION.md \
+                  docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md \
+                  docs/plan-canonico/modular/.generated \
+                  supabase/migrations/20260731082600_viso_monthly_schedule_186_hour_publish_guard.sql
+          git commit -m "docs: complete VISO schedule plan cascade"
+          git push origin HEAD:main
