@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **440** |
+| Tareas aprobadas | **441** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1135** |
+| Tareas no iniciadas | **1134** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **27.94% (440/1575)** |
+| Porcentaje de completamiento | **28.00% (441/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula** |
-| Tarea actual | **DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales** |
+| Última tarea aprobada | **DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales** |
+| Tarea actual | **DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno** |
+| Siguiente tarea | **DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 11 de 45 aprobadas; DATA-NORM-ARC-005 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 12 de 45 aprobadas; DATA-NORM-ARC-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-ARC-004` — Definir conectores que permanecen en minúscula |
-| Tarea actual | `DATA-NORM-ARC-005` — Definir excepciones de marcas, siglas, unidades y nombres legales — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-ARC-006` — Definir diccionario ortográfico canónico y su gobierno |
+| Última aprobada | `DATA-NORM-ARC-005` — Definir excepciones de marcas, siglas, unidades y nombres legales |
+| Tarea actual | `DATA-NORM-ARC-006` — Definir diccionario ortográfico canónico y su gobierno — **NO INICIADA** |
+| Siguiente tarea | `DATA-NORM-ARC-007` — Definir cola de revisión para correcciones ambiguas |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **11 DE 45 APROBADAS — ACTUAL DATA-NORM-ARC-005** |
+| BLOQUE E3 | **12 DE 45 APROBADAS — ACTUAL DATA-NORM-ARC-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula
-        ↓
-TAREA ACTUAL
 DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 11 de 45 tareas aprobadas
+BLOQUE E3 — 12 de 45 tareas aprobadas
 ```

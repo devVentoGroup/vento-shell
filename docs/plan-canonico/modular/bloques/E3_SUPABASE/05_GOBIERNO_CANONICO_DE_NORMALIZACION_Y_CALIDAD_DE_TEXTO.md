@@ -2146,7 +2146,634 @@ DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres 
 ```
 
 
-### [ ] DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales
+### ✅ DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula` — APROBADA
+**Tarea siguiente:** `DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno`
+**Tipo de tarea:** definición normativa del catálogo cerrado, versionado, contextual y trazable de excepciones oficiales para marcas, siglas, unidades y nombres legales; sin DDL, DML, migraciones, backfills, correcciones de datos, fusiones, cambios de índices, constraints, funciones, triggers, clientes, integraciones, configuración ni despliegues
+
+#### 1. Objetivo
+
+Definir el contrato canónico que permite reconocer, preservar, validar o emitir formas oficiales de marcas, siglas, unidades y nombres legales sin someterlas a capitalización empresarial, conectores, diccionario ortográfico, búsqueda tolerante ni heurísticas genéricas.
+
+La política deberá impedir que la caja observada, la frecuencia, una coincidencia parcial o una variante almacenada se conviertan por sí solas en autoridad. Cada excepción deberá declarar forma aprobada, clase, alcance, modo de coincidencia, modo de aplicación, fuente autorizada, evidencia, versión y vigencia. Ante ausencia, ambigüedad o conflicto, el valor se conserva y la mutación queda bloqueada.
+
+#### 2. Artefacto producido
+
+```text
+VENTO_OFFICIAL_TEXT_EXCEPTION_CATALOG@1.0.0
+```
+
+| Propiedad                                        | Valor |
+| ------------------------------------------------ | ----: |
+| Familias de excepción aprobadas                  |     4 |
+| Alcances de coincidencia cerrados                |     4 |
+| Modos de coincidencia cerrados                   |     3 |
+| Modos de aplicación cerrados                     |     4 |
+| Resultados cerrados de evaluación                |     7 |
+| Formas normativas iniciales                      |    28 |
+| Formas con emisión canónica o validación técnica |    22 |
+| Protecciones contextuales de sufijo legal        |     6 |
+| Requisitos de prueba nuevos                      |    18 |
+| Cambios físicos autorizados                      |     0 |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                | Decisión consumida                                                                                                |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                     | continuidad, una sola tarea, fase exclusivamente documental y preservación de decisiones aprobadas                |
+| `delivery-contract.json`              | identidad del artefacto y actualización integral del registro 04A al crear requisitos                             |
+| `active-sequence.json`                | `DATA-NORM-ARC-005` como tarea actual y `DATA-NORM-ARC-006` como siguiente tarea reservada                        |
+| `DATA-NORM-AUD-003`                   | inventario de marcas, siglas, unidades, nombres legales, falsos positivos y fuentes insuficientes                 |
+| `DATA-NORM-AUD-005`                   | separación entre transformación determinista, diccionario, revisión humana, preservación y resolución estructural |
+| `DATA-NORM-AUD-006`                   | productores distribuidos, copias, snapshots, clientes y riesgo de reglas locales divergentes                      |
+| `DATA-NORM-AUD-007`                   | impacto sobre consumidores, búsqueda, identidad, relaciones, colisiones y transición                              |
+| `DATA-NORM-ARC-001`                   | política por dominio, entidad y campo; representaciones separadas; comportamiento cerrado e idempotencia          |
+| `DATA-NORM-ARC-002`                   | clases `OFFICIAL_BRAND_FORM`, `OFFICIAL_LEGAL_NAME`, `MEASUREMENT_OR_UNIT_CODE` y modos de tratamiento            |
+| `DATA-NORM-ARC-003`                   | precedencia de excepciones sobre conectores y palabras ordinarias; tokenización y capitalización empresarial      |
+| `DATA-NORM-ARC-004`                   | precedencia de frase, token y protecciones; coincidencia lexical exacta y catálogo cerrado de conectores          |
+| Regla canónica del bloque propietario | preservación de `3M`, `iPhone`, `Coca-Cola`, razones sociales y cantidades con unidades                           |
+
+#### 4. Alcance y fronteras
+
+Esta tarea define:
+
+1. las cuatro familias canónicas de excepción;
+2. el contrato lógico mínimo de una entrada;
+3. los alcances y modos de coincidencia permitidos;
+4. los modos de aplicación y resultados cerrados;
+5. la jerarquía de fuentes autorizadas y evidencia mínima;
+6. la precedencia entre excepciones, conectores, palabras ordinarias y ambigüedad;
+7. el tratamiento específico de marcas y frases de marca;
+8. el tratamiento específico de siglas, abreviaturas y códigos controlados;
+9. el tratamiento específico de símbolos, códigos y familias de unidad;
+10. la preservación de nombres legales completos y de sus componentes significativos;
+11. las formas normativas iniciales que ya cuentan con respaldo canónico suficiente;
+12. el tratamiento de candidatos observados que todavía carecen de autoridad suficiente;
+13. los invariantes de alcance, versionado, determinismo, idempotencia y paridad;
+14. el corpus mínimo de conformidad.
+
+Esta tarea no define:
+
+- correcciones ortográficas, tildes o sustituciones léxicas ordinarias;
+- el workflow físico de revisión humana;
+- la representación de búsqueda, transliteración o comparación tolerante;
+- tablas, columnas, índices, constraints, RLS, funciones, RPC o triggers;
+- la capa ejecutora definitiva;
+- unicidad, deduplicación, fusión o selección de registro sobreviviente;
+- el tratamiento físico de originales externos;
+- backfills, lotes, compatibilidad, despliegue o rollback;
+- nuevas formas oficiales cuya evidencia no esté aprobada.
+
+Las decisiones permanecen en `DATA-NORM-ARC-006` a `DATA-NORM-ARC-012`, `SUPA-TRANS-001` a `SUPA-TRANS-015` y `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009`, según su propiedad.
+
+#### 5. Principios obligatorios
+
+1. Una excepción es una decisión explícita y acotada, no una heurística.
+2. La forma observada, la forma más frecuente y la forma visualmente plausible no constituyen autoridad.
+3. Toda entrada deberá tener fuente, evidencia, owner, alcance y versión.
+4. La excepción más específica solo podrá restringir o determinar una forma dentro de su alcance; no ampliará una clase incompatible.
+5. Una marca, sigla o unidad no se reconocerá por mayúsculas, longitud, patrón visual o frecuencia.
+6. Un nombre legal no se reconstruirá a partir de palabras, conectores o sufijos aislados.
+7. Los aliases deberán declararse uno por uno; no existirán aliases implícitos.
+8. Ninguna coincidencia eliminará tildes, signos, guiones, puntos, espacios ni unirá o dividirá palabras.
+9. Los códigos y unidades conservarán significado técnico y contexto estructural.
+10. Los originales externos, snapshots y evidencia no serán sobrescritos.
+11. Un conflicto, una versión ausente o una fuente insuficiente producirá conservación y bloqueo.
+12. La aplicación repetida con la misma entrada, alcance y versiones será idempotente.
+13. Una forma oficial no crea identidad, unicidad ni autorización de fusión.
+14. VITAL permanece fuera de este catálogo transversal y requiere gobierno propio.
+
+#### 6. Familias canónicas de excepción
+
+| Familia                         | Clase o contexto primario                                                     | Propósito                                                      | Regla base                                                 |
+| ------------------------------- | ----------------------------------------------------------------------------- | -------------------------------------------------------------- | ---------------------------------------------------------- |
+| `OFFICIAL_BRAND_EXCEPTION`      | `OFFICIAL_BRAND_FORM` o fragmento protegido dentro de `COMMERCIAL_NAME`       | preservar o emitir una marca o denominación comercial aprobada | grafía oficial exacta, alcance explícito y frase más larga |
+| `CONTROLLED_ACRONYM_EXCEPTION`  | vocabulario, aplicación, código empresarial, moneda o abreviatura contractual | preservar o emitir una sigla o código controlado               | token completo y catálogo contextual                       |
+| `MEASUREMENT_UNIT_EXCEPTION`    | `MEASUREMENT_OR_UNIT_CODE` o componente estructurado de presentación          | validar o emitir un código técnico de unidad                   | catálogo de unidad, contexto y significado dimensional     |
+| `OFFICIAL_LEGAL_NAME_EXCEPTION` | `OFFICIAL_LEGAL_NAME`                                                         | preservar el nombre completo respaldado por fuente autorizada  | coincidencia de valor completo, procedencia y vigencia     |
+
+Las cuatro familias son cerradas. Agregar otra familia requiere una decisión canónica que defina frontera, fuente, precedencia, compatibilidad y pruebas.
+
+#### 7. Contrato lógico de una entrada
+
+Toda entrada deberá poder expresar, como mínimo:
+
+```text
+exception_key
+family
+canonical_form
+scope_kind
+domain_scope
+entity_scope
+field_scope
+semantic_class
+representation_role
+source_role
+language_profile
+match_mode
+accepted_variants
+application_mode
+authority_type
+authority_owner
+evidence_reference
+status
+valid_from
+valid_to
+catalog_version
+supersedes
+reason
+```
+
+Reglas:
+
+1. `exception_key` será estable y no dependerá de la forma visible.
+2. `canonical_form` conservará Unicode, caja, tildes, signos, separación y puntuación aprobados.
+3. `accepted_variants` será una lista explícita; una lista vacía no implica comparación flexible.
+4. El alcance mínimo será dominio, entidad y campo o una coordenada más restrictiva.
+5. `semantic_class`, representación y fuente deberán ser compatibles con `DATA-NORM-ARC-002`.
+6. La versión de catálogo deberá ser compatible con capitalización y conectores cuando la excepción participe en `COMMERCIAL_CAPITALIZATION`.
+7. Una entrada incompleta no será ejecutable.
+8. La estructura física, auditoría y persistencia pertenecen a `DATA-NORM-ARC-009` y `DATA-NORM-ARC-011`.
+
+#### 8. Alcances cerrados de coincidencia
+
+| Alcance                | Definición                                           | Uso permitido                                                           |
+| ---------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------- |
+| `FULL_VALUE`           | la entrada cubre todo el valor de la representación  | nombres legales y formas oficiales que no admiten contenido adicional   |
+| `PHRASE`               | secuencia contigua de tokens y separadores aprobados | marcas compuestas y denominaciones oficiales embebidas                  |
+| `TOKEN`                | token lexical completo                               | siglas, códigos, marcas de un token y protecciones legales contextuales |
+| `STRUCTURED_COMPONENT` | componente ya interpretado dentro de una estructura  | unidad, cantidad, multiplicador, moneda o código técnico                |
+
+Una coincidencia de `PHRASE` o `TOKEN` exige fronteras completas. Una entrada no podrá coincidir como subcadena dentro de otra palabra, código, modelo, URL, correo, ruta o identificador.
+
+#### 9. Modos cerrados de coincidencia
+
+| Modo             | Regla                                                                                                    | Operaciones prohibidas durante la coincidencia                         |
+| ---------------- | -------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `EXACT`          | coincidencia exacta con la forma o variante registrada                                                   | cambio de caja, eliminación de tildes, signos o espacios               |
+| `CASEFOLD_EXACT` | comparación sin distinguir caja, conservando caracteres, diacríticos, puntuación, separación y fronteras | `unaccent`, transliteración, compactación, unión, división o similitud |
+| `EXPLICIT_ALIAS` | coincidencia exacta con uno de los aliases aprobados y trazables                                         | generación automática de aliases o aprendizaje por frecuencia          |
+
+No se admite coincidencia difusa, fonética, por distancia de edición, prefijo, sufijo, subcadena, token parcial ni representación de búsqueda. Esas capacidades no forman parte del catálogo de excepciones.
+
+#### 10. Modos cerrados de aplicación
+
+| Modo                    | Conducta                                                                                                          |
+| ----------------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `PRESERVE_MATCHED_FORM` | conserva exactamente la forma recibida porque ya procede de una fuente o representación que no admite reescritura |
+| `EMIT_CANONICAL_FORM`   | emite la forma aprobada únicamente desde una variante admitida y dentro de un alcance mutable                     |
+| `VALIDATE_ONLY`         | confirma pertenencia al catálogo o rechaza el valor sin reescribirlo                                              |
+| `DERIVE_ONLY`           | produce una representación separada sin modificar el valor de origen                                              |
+
+`EMIT_CANONICAL_FORM` solo podrá operar sobre `PRIMARY_VALUE` de `AUTHORITATIVE_SOURCE` o `DISPLAY_OVERRIDE` de `APPROVED_OVERRIDE` cuando la clase y la política del campo permitan la operación. Las demás coordenadas permanecerán en preservación, validación o derivación.
+
+#### 11. Resultados cerrados de evaluación
+
+| Resultado                        | Significado                                                                                    |
+| -------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `EXCEPTION_CANONICAL_EMITTED`    | una variante aprobada produjo la forma canónica dentro de un alcance mutable                   |
+| `EXCEPTION_PRESERVED_OFFICIAL`   | la forma oficial o el original protegido se conservó sin reescritura                           |
+| `EXCEPTION_VALIDATED_NO_REWRITE` | el código o componente fue validado y no se modificó                                           |
+| `EXCEPTION_DERIVATION_ONLY`      | se produjo una representación separada y vinculada                                             |
+| `EXCEPTION_NOT_APPLICABLE`       | no existe una entrada compatible con la coordenada evaluada                                    |
+| `EXCEPTION_AMBIGUOUS_REVIEW`     | existe evidencia insuficiente o más de una interpretación válida                               |
+| `EXCEPTION_POLICY_BLOCKED`       | falta o entra en conflicto una versión, fuente, clase, alcance, estado o evidencia obligatoria |
+
+Una entrada sin cambios porque ya coincide con la forma esperada deberá distinguirse de un bloqueo, una ausencia de coincidencia y una preservación obligatoria.
+
+#### 12. Fuentes de autoridad y evidencia
+
+| Tipo de autoridad                       | Puede aprobar                                                    | Restricción                                                                                 |
+| --------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `INTERNAL_CANONICAL_OWNER`              | marcas propias, aplicaciones, códigos y vocabularios de Vento OS | debe declarar owner empresarial y alcance                                                   |
+| `BRAND_OWNER_OR_MANUFACTURER`           | grafía de una marca externa y aliases aceptados                  | la evidencia debe identificar producto, marca o fabricante sin mezclar descripción o modelo |
+| `LEGAL_OR_REGULATORY_SOURCE`            | nombre legal completo y vigencia                                 | se conserva documento, fecha, jurisdicción y procedencia                                    |
+| `CONTROLLED_STANDARD_OR_DOMAIN_CATALOG` | unidades, monedas y códigos técnicos                             | debe declarar significado, contexto y versión del catálogo                                  |
+| `APPROVED_EXTERNAL_EVIDENCE`            | original recibido y posible mapeo interno                        | no convierte por sí sola el original externo en fuente autoritativa global                  |
+
+No son fuentes suficientes por sí solas:
+
+- frecuencia en base de datos;
+- forma más reciente;
+- uso en una interfaz;
+- mayúsculas o minúsculas observadas;
+- coincidencia en un nombre de producto;
+- nombre de tabla o columna;
+- resultado de búsqueda en internet no incorporado como evidencia aprobada;
+- inferencia del desarrollador o consumidor.
+
+#### 13. Estados de ejecución del catálogo
+
+| Estado      | Conducta                                                                                      |
+| ----------- | --------------------------------------------------------------------------------------------- |
+| `ACTIVE`    | la entrada puede evaluarse en su versión y alcance aprobados                                  |
+| `SUSPENDED` | no se aplica a nuevas decisiones; conserva historia y produce bloqueo o revisión              |
+| `RETIRED`   | no se aplica a nuevas decisiones; permanece disponible para reconstruir decisiones históricas |
+
+Un candidato sin aprobación no pertenece al catálogo ejecutable. La decisión de ingreso, rechazo o corrección de un candidato será gobernada por `DATA-NORM-ARC-007`; la traza de estados y versiones será definida por `DATA-NORM-ARC-009`.
+
+#### 14. Precedencia y resolución de conflictos
+
+La precedencia obligatoria es:
+
+```text
+1. excepción FULL_VALUE compatible
+2. excepción PHRASE compatible más larga
+3. excepción TOKEN compatible
+4. protección STRUCTURED_COMPONENT compatible
+5. conector exacto del catálogo
+6. palabra ordinaria elegible
+7. preservación ambigua o bloqueo
+```
+
+Dentro del mismo nivel prevalece la coordenada más específica en este orden:
+
+```text
+campo
+→ entidad
+→ dominio
+→ política transversal
+```
+
+Reglas:
+
+1. la especificidad nunca permite atravesar una clase, representación o fuente incompatible;
+2. una frase válida más larga prevalece sobre sus tokens internos;
+3. dos entradas activas incompatibles con igual especificidad bloquean la mutación;
+4. un alias no prevalece sobre una forma oficial más específica;
+5. una entrada suspendida o retirada no participa en decisiones nuevas;
+6. no se resolverá un conflicto por fecha de creación, orden de consulta o prioridad local no documentada;
+7. la decisión deberá conservar las versiones de capitalización, conectores y excepciones utilizadas.
+
+#### 15. Excepciones de marca
+
+1. La forma oficial de marca incluye caja, diacríticos, signos, guiones, apóstrofos, espacios y capitalización interna.
+2. Una marca compuesta se trata como `PHRASE` atómica cuando su entrada lo declara.
+3. La coincidencia de frase exige fronteras completas y preserva separadores aprobados.
+4. Una marca embebida dentro de `COMMERCIAL_NAME` solo se aplica cuando el campo admite fragmentos de marca y la entrada declara ese alcance.
+5. Un campo `OFFICIAL_BRAND_FORM` utiliza la entrada como valor completo o token de marca, no como corrección de prosa.
+6. Marca, fabricante, modelo, referencia y descripción no se fusionan en una sola excepción.
+7. Una forma que mezcla marca y modelo permanece bloqueada hasta clasificación estructural.
+8. La excepción no traduce, abrevia, expande, singulariza ni pluraliza una marca.
+9. Una variante no declarada se conserva y se envía a revisión; no se aproxima a la forma más parecida.
+10. La forma oficial no autoriza consolidar registros que la contengan.
+
+#### 16. Formas normativas iniciales de marca
+
+El catálogo versión `1.0.0` aprueba como formas de conformidad:
+
+| Forma canónica | Alcance                            | Coincidencia     | Aplicación                                        | Restricción                                                |
+| -------------- | ---------------------------------- | ---------------- | ------------------------------------------------- | ---------------------------------------------------------- |
+| `3M`           | `TOKEN` o `FULL_VALUE` compatible  | `CASEFOLD_EXACT` | `EMIT_CANONICAL_FORM` o preservación según fuente | no coincide como subcadena dentro de modelos o códigos     |
+| `iPhone`       | `TOKEN` o `PHRASE` compatible      | `CASEFOLD_EXACT` | `EMIT_CANONICAL_FORM` o preservación según fuente | conserva capitalización interna                            |
+| `Coca-Cola`    | `PHRASE` o `FULL_VALUE` compatible | `CASEFOLD_EXACT` | `EMIT_CANONICAL_FORM` o preservación según fuente | el guion es obligatorio; `Coca Cola` no es alias implícito |
+
+Estas formas demuestran el contrato de excepción. Su presencia en el catálogo no afirma que exista actualmente un producto, proveedor o relación comercial asociado.
+
+#### 17. Candidatos de marca todavía no activables
+
+La evidencia de auditoría conserva el siguiente tratamiento:
+
+| Caso                                                                           | Resultado canónico de esta tarea                                                              | Propietario de la decisión pendiente                                        |
+| ------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- |
+| `Oster` / `oster`                                                              | candidato a alias de caja; falta fuente autorizada que confirme la forma oficial y el alcance | `DATA-NORM-ARC-007` y owner empresarial de la marca                         |
+| `Wellmix` / `Welmix`                                                           | ambiguo; puede ser error, marca distinta o variante oficial                                   | `DATA-NORM-ARC-007`                                                         |
+| `Volnic` / `VOLNIC PALLOMARO`                                                  | posible mezcla de marca, fabricante o proveedor                                               | `DATA-NORM-ARC-007`; `DATA-NORM-ARC-010` si afecta identidad o duplicidad   |
+| `Daza` / `acero daza`                                                          | posible mezcla de marca, material o descriptor                                                | `DATA-NORM-ARC-007`; `DATA-NORM-ARC-010` si afecta identidad o duplicidad   |
+| `MODELO DUC 72 R` y `TORNADO MODELO (TH33M.110.)`                              | contaminación de marca con modelo o referencia                                                | `DATA-NORM-ARC-007`; `DATA-NORM-ARC-010` cuando exista impacto de identidad |
+| `Hatsu`, `Vento`, `Molka`, `Saudo`, `Nutella`, `Klim`, `Kraft`, `Kinder Bueno` | candidatos por uso observado; frecuencia y caja no bastan para activarlos                     | `DATA-NORM-ARC-007` y owner empresarial correspondiente                     |
+
+Ninguno de estos casos se transforma automáticamente mediante la versión `1.0.0`.
+
+#### 18. Excepciones de siglas y códigos controlados
+
+1. Una sigla se reconoce por entrada de catálogo y contexto, no por estar en mayúsculas.
+2. Palabras completas como `BOLSA`, `POTE`, `CAJA` o `PIZZA` no se convierten en siglas.
+3. La excepción opera sobre token completo; no coincide dentro de otra palabra o código.
+4. No se expande, traduce, pluraliza ni puntúa una sigla automáticamente.
+5. Una abreviatura con puntos solo coincide si la forma puntuada está registrada.
+6. Códigos de aplicación, empresa y moneda conservan contrato técnico y no se convierten en nombres visibles.
+7. Una misma secuencia de letras puede tener significados distintos por alcance; la forma global no sustituye el contexto.
+8. Una sigla desconocida se preserva y se envía a revisión, no se convierte mediante regla de palabras ordinarias.
+
+#### 19. Formas normativas iniciales de siglas y códigos
+
+| Grupo                                 | Formas canónicas                                   | Alcance y aplicación                                                             |
+| ------------------------------------- | -------------------------------------------------- | -------------------------------------------------------------------------------- |
+| aplicaciones Vento OS                 | `NEXO`, `VISO`, `ORIGO`, `NUMERA`, `FOGO`, `PULSO` | `TOKEN`; `CASEFOLD_EXACT`; emitir forma canónica en coordenadas autorizadas      |
+| códigos de marca o unidad empresarial | `VGR`, `SAU`, `VCF`                                | `TOKEN`; `CASEFOLD_EXACT`; validación o emisión técnica según campo              |
+| código monetario                      | `COP`                                              | `TOKEN` o `STRUCTURED_COMPONENT`; `CASEFOLD_EXACT`; validación o emisión técnica |
+
+`BBQ`, `HIT`, `AA`, `CMS`, `PAM`, `REF`, `T26`, `WIP`, `AVSA`, `FC` y `SVV` permanecen como candidatos contextuales. No se activan, expanden ni recategorizan hasta que su significado, owner y alcance queden aprobados.
+
+#### 20. Excepciones de unidades
+
+1. `MEASUREMENT_OR_UNIT_CODE` pertenece a un catálogo técnico y no a capitalización comercial.
+2. Un código de unidad solo se evalúa en un campo dedicado o como `STRUCTURED_COMPONENT` ya interpretado.
+3. La unidad embebida no se detecta por subcadena ni por eliminación de signos.
+4. Cantidad, unidad, multiplicador, empaque, contexto, factor de conversión y vigencia permanecen separados.
+5. El símbolo o código canónico no es una etiqueta visible ni una identidad de presentación.
+6. La coincidencia sin distinguir caja solo se permite después de resolver el contexto como unidad.
+7. La aplicación no cambia magnitud, convierte unidades ni modifica factores.
+8. El plural, la palabra visible y el código técnico no son aliases implícitos.
+9. Una unidad desconocida o una cadena mixta se conserva y requiere resolución estructural.
+10. `count`, `mass` y `volume` son familias técnicas, no etiquetas para personas.
+
+#### 21. Formas normativas iniciales de unidades
+
+| Clase              | Formas canónicas          | Alcance                                             | Aplicación                                                         |
+| ------------------ | ------------------------- | --------------------------------------------------- | ------------------------------------------------------------------ |
+| símbolos de medida | `g`, `kg`, `ml`, `l`      | `MEASUREMENT_OR_UNIT_CODE` o `STRUCTURED_COMPONENT` | `CASEFOLD_EXACT`; emitir código canónico o validar según política  |
+| códigos de conteo  | `un`, `dz`                | `MEASUREMENT_OR_UNIT_CODE` o `STRUCTURED_COMPONENT` | `CASEFOLD_EXACT`; emitir código canónico o validar según política  |
+| familias técnicas  | `count`, `mass`, `volume` | vocabulario técnico controlado                      | `CASEFOLD_EXACT`; `VALIDATE_ONLY` salvo contrato técnico posterior |
+
+No se aprueban equivalencias automáticas entre:
+
+```text
+bolsa / Bolsa / BOLSA
+paquete / Paquete / PAQUETE
+pote / Pote / POTE
+Unidad / UNIDAD
+Six Pack / six_pack
+Pote x 2 / pote
+```
+
+`Botellla`, `Costo`, `1`, `presentacion`, `piezas`, `bolsas`, `Six Pack`, `six_pack` y composiciones como `Bolsa 1 kg` permanecen fuera del catálogo unitario ejecutable hasta resolver clase, estructura y significado.
+
+#### 22. Excepciones de nombres legales
+
+1. La unidad mínima de autoridad es el nombre legal completo, no una colección de palabras normalizadas.
+2. La entrada principal utiliza `FULL_VALUE` y una fuente legal, regulatoria o documental autorizada.
+3. Caja, tildes, puntos, comas, guiones, ampersands, conectores, sufijos y separación se preservan según la fuente.
+4. No se aplica capitalización empresarial, catálogo de conectores ni diccionario ortográfico genérico.
+5. No se infiere una forma oficial desde la mayoría de registros ni desde una captura manual.
+6. Un nombre recibido de proveedor o integración permanece como `EXTERNAL_ORIGINAL` hasta su vinculación con una fuente autorizada.
+7. Una actualización legal crea vigencia y versión nuevas; no reescribe snapshots, facturas, órdenes ni evidencia histórica.
+8. Un alias comercial o nombre corto se modela como representación separada y no sustituye el nombre legal.
+9. Dos nombres visualmente similares no se fusionan sin resolver identidad jurídica y relaciones.
+10. Una corrección propuesta sin evidencia suficiente produce revisión humana.
+
+#### 23. Protecciones contextuales de sufijo legal
+
+La versión `1.0.0` protege, únicamente dentro de `OFFICIAL_LEGAL_NAME`, las formas observadas:
+
+```text
+SAS
+S.A.S.
+SA
+S.A.
+LTDA
+CIA
+```
+
+Reglas:
+
+1. cada forma se preserva como token exacto dentro del nombre completo;
+2. las seis formas no son aliases entre sí;
+3. no se agregan ni eliminan puntos;
+4. no se expande ni contrae una forma;
+5. no se inserta un sufijo faltante;
+6. no se determina naturaleza jurídica desde el sufijo aislado;
+7. `&`, guiones y conectores se preservan como parte del valor oficial, sin convertirse en entradas independientes;
+8. una forma distinta puede ser válida si la fuente oficial la respalda, pero requerirá una entrada o evidencia propia.
+
+Los 92 valores escritos distintos observados en la auditoría permanecen preservados. Esta tarea no declara oficial una grafía individual sin su evidencia autorizada.
+
+#### 24. Aliases y emisión de forma canónica
+
+1. Un alias deberá pertenecer a una sola entrada activa dentro de una coordenada resoluble.
+2. Cada alias declarará motivo, fuente, alcance y vigencia.
+3. Un alias no se generará desde minúsculas, mayúsculas, `unaccent`, eliminación de signos o compactación.
+4. `CASEFOLD_EXACT` es un modo explícito de una entrada, no un generador de aliases persistidos.
+5. Una variante de puntuación o separación requiere `EXPLICIT_ALIAS`; no se deduce.
+6. Una variante ortográfica que cambia letras requiere evidencia oficial o revisión humana; no pertenece al diccionario ordinario mientras pueda ser marca o nombre legal.
+7. La emisión canónica no modifica originales externos, snapshots ni evidencia.
+8. Retirar un alias impide decisiones futuras, pero conserva la traza de decisiones históricas.
+
+#### 25. Representaciones, fuentes y propagación
+
+1. `PRIMARY_VALUE` de `AUTHORITATIVE_SOURCE` puede recibir `EMIT_CANONICAL_FORM` cuando su política lo autorice.
+2. `DISPLAY_OVERRIDE` de `APPROVED_OVERRIDE` puede emitir una forma oficial dentro de su canal y alcance.
+3. `EXTERNAL_ORIGINAL` de `EXTERNAL_EVIDENCE` se preserva; una forma interna se deriva o almacena separadamente.
+4. `HISTORICAL_SNAPSHOT` de `IMMUTABLE_SNAPSHOT` no se resincroniza por una versión nueva.
+5. `AUDIT_EVIDENCE` permanece inmutable.
+6. `OUTPUT_PROJECTION` de `OUTPUT_ONLY` puede renderizar una forma autorizada sin retroalimentar la fuente.
+7. `SYNCHRONIZED_COPY` no mantiene un catálogo local y recibe cambios únicamente desde la fuente propietaria.
+8. Una corrección de excepción no se propaga hasta que `DATA-NORM-ARC-009`, `DATA-NORM-ARC-011` y las tareas de transición definan evento, compatibilidad, reintento y rollback.
+
+#### 26. Separación de operaciones
+
+La aplicación de excepciones no ejecuta:
+
+- recorte ni compactación de espacios;
+- composición o descomposición Unicode;
+- corrección ortográfica o adición de tildes;
+- catálogo de conectores fuera de su precedencia;
+- traducción o transliteración;
+- expansión de siglas;
+- conversión de unidades;
+- cambio de cantidad o factor;
+- parseo heurístico de presentaciones;
+- generación de búsqueda o slug;
+- identidad, unicidad, deduplicación o fusión.
+
+Una etapa previa podrá entregar una entrada determinísticamente normalizada solo cuando su política la autorice. La excepción consumirá esa entrada sin ocultar qué operaciones ocurrieron antes y sin asumir que el resultado define identidad.
+
+#### 27. Versionado, determinismo e idempotencia
+
+Cada decisión deberá poder atribuirse a:
+
+```text
+versión de política del campo
+versión de capitalización
+versión de conectores
+versión de excepciones
+exception_key
+forma o alias coincidente
+alcance efectivo
+representación
+rol de fuente
+modo de aplicación
+```
+
+Para una misma entrada y contexto:
+
+```text
+apply_exception(apply_exception(value, context), context)
+=
+apply_exception(value, context)
+```
+
+La igualdad deberá cubrir valor, entrada seleccionada, alcance, resultado, bloqueo, traza y ausencia de efectos duplicados. Una versión nueva puede cambiar decisiones futuras mediante transición explícita, pero no reinterpreta silenciosamente historia, snapshots ni evidencia de versiones anteriores.
+
+#### 28. Paridad entre capas
+
+Para la misma entrada, coordenada y versiones, aplicación, servicio de dominio, RPC, proceso programado y trigger defensivo deberán producir:
+
+- la misma entrada compatible;
+- el mismo alcance y modo de coincidencia;
+- la misma precedencia;
+- la misma forma emitida o preservada;
+- el mismo resultado y motivo;
+- el mismo bloqueo ante conflicto;
+- la misma conducta idempotente.
+
+Ninguna capa podrá:
+
+- añadir aliases o formas locales;
+- usar una lista de marcas, siglas o unidades distinta;
+- suavizar una coincidencia exacta;
+- aplicar búsqueda tolerante como matcher de excepción;
+- convertir un candidato en entrada activa;
+- sobrescribir originales o snapshots;
+- resolver un conflicto por orden de ejecución.
+
+La capa ejecutora definitiva pertenece a `DATA-NORM-ARC-011`.
+
+#### 29. Corpus mínimo de conformidad
+
+| Entrada y contexto                                            | Resultado esperado                                | Regla demostrada                           |
+| ------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------ |
+| `3m` en campo compatible con la excepción `3M`                | `3M`                                              | emisión de forma canónica por caja         |
+| `iPHONE` en campo compatible                                  | `iPhone`                                          | capitalización interna oficial             |
+| `Coca-Cola`                                                   | `Coca-Cola`                                       | preservación exacta                        |
+| `Coca Cola`                                                   | conservar y revisar                               | el guion no se elimina ni se infiere alias |
+| `NEXO`                                                        | `NEXO`                                            | sigla contractual                          |
+| `nexo` en coordenada autorizada                               | `NEXO`                                            | `CASEFOLD_EXACT` contextual                |
+| `BOLSA` sin entrada de sigla                                  | no clasificar como sigla                          | mayúsculas no demuestran acrónimo          |
+| `BBQ` sin alcance aprobado                                    | conservar y revisar                               | candidato contextual                       |
+| `KG` en campo unitario mutable con `EMIT_CANONICAL_FORM`      | `kg`                                              | emisión de código unitario contextual      |
+| `KG` en campo unitario con `VALIDATE_ONLY`                    | validar sin reescritura                           | separación entre validación y emisión      |
+| `kg` dentro de un modelo o texto no estructurado              | no aplicar                                        | protección por clase y alcance             |
+| `Bolsa 1 kg` estructurada                                     | preservar cantidad; resolver `kg` como componente | unidad separada de etiqueta                |
+| `Six Pack` / `six_pack`                                       | no mapear automáticamente                         | etiqueta y código no equivalentes          |
+| `COMERCIALIZADORA EL NOVILLON S.A.S.` desde fuente autorizada | preservar exactamente                             | nombre legal completo                      |
+| el mismo nombre sin evidencia autorizada                      | preservar como original y revisar                 | fuente insuficiente                        |
+| `SAS` y `S.A.S.`                                              | no declarar equivalencia                          | sufijos exactos y contextuales             |
+| `Oster` / `oster` sin fuente                                  | conservar y revisar                               | variante de marca no activada              |
+| `Wellmix` / `Welmix`                                          | conservar y revisar                               | diferencia ortográfica ambigua             |
+| dos entradas activas incompatibles                            | conservar y bloquear                              | conflicto fail closed                      |
+| forma suspendida o retirada                                   | no aplicar a decisión nueva                       | ciclo de vida                              |
+| valor en VITAL                                                | no aplicar catálogo transversal                   | frontera de producto                       |
+
+El corpus deberá cubrir además frases más largas, tokens adyacentes, puntuación, guiones, tildes, aliases explícitos, fuentes no autoritativas, snapshots, proyecciones, múltiples capas, reintentos y cambios de versión.
+
+#### 30. Conductas no conformes
+
+Quedan prohibidas:
+
+1. inferir una marca o sigla por mayúsculas o frecuencia;
+2. aprobar una forma desde el valor más repetido;
+3. usar `unaccent`, similitud o distancia de edición para aplicar una excepción;
+4. eliminar guiones, puntos, tildes o espacios para forzar coincidencia;
+5. aplicar una marca como subcadena;
+6. expandir o traducir siglas automáticamente;
+7. tratar palabras completas en mayúsculas como acrónimos;
+8. detectar unidades fuera de un campo o componente estructurado;
+9. convertir etiquetas de empaque en códigos de unidad;
+10. convertir `Six Pack` y `six_pack` en aliases implícitos;
+11. uniformar `SAS`, `S.A.S.`, `SA`, `S.A.`, `LTDA` o `CIA`;
+12. reconstruir un nombre legal desde tokens;
+13. modificar originales externos, snapshots o evidencia;
+14. mantener catálogos locales por cliente o capa;
+15. ejecutar una entrada suspendida, retirada, conflictiva o sin versión;
+16. usar la forma resultante para fusionar, desactivar o reasignar registros.
+
+#### 31. Hallazgos y carryovers
+
+| ID               | Decisión o brecha                                         | Resultado de esta tarea                                          | Propietario siguiente                                                      |
+| ---------------- | --------------------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `DN-ARC-005-H01` | ausencia de catálogo único de excepciones                 | contrato cerrado aprobado                                        | `DATA-NORM-ARC-009`; `DATA-NORM-ARC-011`                                   |
+| `DN-ARC-005-H02` | marcas observadas sin fuente suficiente                   | permanecen fuera del catálogo ejecutable                         | `DATA-NORM-ARC-007`                                                        |
+| `DN-ARC-005-H03` | siglas contextuales y palabras en mayúsculas              | separación normativa aprobada                                    | `DATA-NORM-ARC-007` para casos no resueltos                                |
+| `DN-ARC-005-H04` | mezcla de código, etiqueta, cantidad y empaque            | códigos iniciales aprobados; cadenas mixtas siguen estructurales | `DATA-NORM-ARC-007`; `DATA-NORM-ARC-010` si afectan identidad o duplicidad |
+| `DN-ARC-005-H05` | nombres legales sin evidencia vinculada                   | preservación y contrato de autoridad aprobados                   | `DATA-NORM-ARC-007`; `DATA-NORM-ARC-012`                                   |
+| `DN-ARC-005-H06` | aliases y versiones todavía sin persistencia              | semántica aprobada; estructura física pendiente                  | `DATA-NORM-ARC-009`                                                        |
+| `DN-ARC-005-H07` | productores distribuidos pueden divergir                  | paridad obligatoria aprobada                                     | `DATA-NORM-ARC-011`; `SUPA-TRANS-003`; `SUPA-TRANS-007`                    |
+| `DN-ARC-005-H08` | datos existentes requieren evaluación sin mutación global | reglas de transición delimitadas                                 | `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009`                              |
+| `DN-ARC-005-H09` | una excepción puede colisionar con búsqueda o identidad   | separación aprobada                                              | `DATA-NORM-ARC-008`; `DATA-NORM-ARC-010`                                   |
+| `DN-ARC-005-H10` | VITAL comparte infraestructura                            | exclusión transversal mantenida                                  | `SUPA-ARC-025`                                                             |
+
+#### 32. Decisiones reservadas
+
+| Decisión                                                        | Tarea propietaria                                                      |
+| --------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| diccionario ortográfico y correcciones léxicas ordinarias       | `DATA-NORM-ARC-006`                                                    |
+| cola, actores, evidencia y resolución de candidatos ambiguos    | `DATA-NORM-ARC-007`                                                    |
+| búsqueda, comparación tolerante y transliteración               | `DATA-NORM-ARC-008`                                                    |
+| persistencia, auditoría, versiones, vigencias y trazas          | `DATA-NORM-ARC-009`                                                    |
+| identidad, unicidad, colisiones y duplicados normalizados       | `DATA-NORM-ARC-010`                                                    |
+| aplicación, servicio de dominio, RPC y trigger defensivo        | `DATA-NORM-ARC-011`                                                    |
+| originales recibidos desde integraciones externas               | `DATA-NORM-ARC-012`                                                    |
+| dependencias, adaptación de consumidores y compatibilidad       | `SUPA-TRANS-003`, `SUPA-TRANS-006`, `SUPA-TRANS-007`, `SUPA-TRANS-014` |
+| baseline, dry-run, colisiones, backfills, activación y rollback | `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009`                          |
+
+#### 33. Criterios de integridad
+
+La política se considera íntegra para esta etapa cuando:
+
+1. define exactamente cuatro familias de excepción;
+2. exige fuente, evidencia, owner, alcance, versión y vigencia;
+3. define cuatro alcances y tres modos de coincidencia cerrados;
+4. prohíbe matching difuso, subcadenas y aliases implícitos;
+5. define cuatro modos de aplicación y siete resultados cerrados;
+6. aplica precedencia por valor completo, frase más larga, token y componente estructurado;
+7. bloquea conflictos de igual especificidad;
+8. preserva la grafía completa de marcas;
+9. separa siglas contractuales de palabras en mayúsculas;
+10. separa código unitario, etiqueta, cantidad, empaque y conversión;
+11. preserva nombres legales completos y sufijos exactos sin declararlos equivalentes;
+12. aprueba únicamente formas iniciales con respaldo canónico suficiente;
+13. asigna candidatos no resueltos a revisión humana;
+14. restringe mutación a representaciones y fuentes autorizadas;
+15. preserva originales, snapshots y evidencia;
+16. separa excepciones, diccionario, búsqueda e identidad;
+17. exige versionado, paridad e idempotencia;
+18. mantiene VITAL fuera del alcance transversal;
+19. incluye corpus positivo, negativo, ambiguo y de conflicto;
+20. no autoriza cambios físicos, backfills, fusiones ni decisiones reservadas.
+
+#### 34. Requisitos de prueba derivados
+
+Se crean los requisitos:
+
+- `TREQ-DATA-069`;
+- `TREQ-DATA-070`;
+- `TREQ-DATA-071`;
+- `TREQ-DATA-072`;
+- `TREQ-DATA-073`;
+- `TREQ-DATA-074`;
+- `TREQ-DATA-075`;
+- `TREQ-DATA-076`;
+- `TREQ-DATA-077`;
+- `TREQ-DATA-078`;
+- `TREQ-DATA-079`;
+- `TREQ-DATA-080`;
+- `TREQ-DATA-081`;
+- `TREQ-DATA-082`;
+- `TREQ-DATA-083`;
+- `TREQ-DATA-084`;
+- `TREQ-DATA-085`;
+- `TREQ-DATA-086`.
+
+El detalle canónico de cada requisito reside en el registro 04A actualizado hasta esta tarea.
+
+#### 35. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno
+```
+
+
 ### [ ] DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno
 ### [ ] DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas
 ### [ ] DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación
