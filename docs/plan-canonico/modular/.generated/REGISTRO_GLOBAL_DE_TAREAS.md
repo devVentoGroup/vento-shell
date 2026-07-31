@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **446** |
+| Aprobadas | **447** |
 | En propuesta | **0** |
-| No iniciadas | **1129** |
+| No iniciadas | **1128** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **28.32% (446/1575)** |
+| Porcentaje de completamiento | **28.38% (447/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-ARC-010` — Definir estrategia de unicidad y detección de duplicados normalizados | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-ARC-011` — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo | ⬜ NO INICIADA |
-| Siguiente | `DATA-NORM-ARC-012` — Definir tratamiento de datos recibidos desde integraciones externas | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-ARC-011` — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-ARC-012` — Definir tratamiento de datos recibidos desde integraciones externas | ⬜ NO INICIADA |
+| Siguiente | `SUPA-ARC-025` — Consolidar y aprobar ADR de arquitectura canónica de datos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -437,7 +437,7 @@
 | ✅ APROBADA | `DATA-NORM-ARC-008` | Definir representación de búsqueda y comparación | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-009` | Definir auditoría, versionado e idempotencia de reglas | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-010` | Definir estrategia de unicidad y detección de duplicados normalizados | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
-| ⬜ NO INICIADA | `DATA-NORM-ARC-011` | Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
+| ✅ APROBADA | `DATA-NORM-ARC-011` | Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-012` | Definir tratamiento de datos recibidos desde integraciones externas | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `SUPA-ARC-025` | Consolidar y aprobar ADR de arquitectura canónica de datos | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-001` | Mapear cada objeto actual hacia la arquitectura objetivo | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |

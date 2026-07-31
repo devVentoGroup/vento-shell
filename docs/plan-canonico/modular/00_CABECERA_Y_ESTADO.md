@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **446** |
+| Tareas aprobadas | **447** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1129** |
+| Tareas no iniciadas | **1128** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **28.32% (446/1575)** |
+| Porcentaje de completamiento | **28.38% (447/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados** |
-| Tarea actual | **DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo** |
+| Última tarea aprobada | **DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo** |
+| Tarea actual | **DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas** |
+| Siguiente tarea | **SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 17 de 45 aprobadas; DATA-NORM-ARC-011 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 18 de 45 aprobadas; DATA-NORM-ARC-012 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-ARC-010` — Definir estrategia de unicidad y detección de duplicados normalizados |
-| Tarea actual | `DATA-NORM-ARC-011` — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-ARC-012` — Definir tratamiento de datos recibidos desde integraciones externas |
+| Última aprobada | `DATA-NORM-ARC-011` — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo |
+| Tarea actual | `DATA-NORM-ARC-012` — Definir tratamiento de datos recibidos desde integraciones externas — **NO INICIADA** |
+| Siguiente tarea | `SUPA-ARC-025` — Consolidar y aprobar ADR de arquitectura canónica de datos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **17 DE 45 APROBADAS — ACTUAL DATA-NORM-ARC-011** |
+| BLOQUE E3 | **18 DE 45 APROBADAS — ACTUAL DATA-NORM-ARC-012** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados
-        ↓
-TAREA ACTUAL
 DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 17 de 45 tareas aprobadas
+BLOQUE E3 — 18 de 45 tareas aprobadas
 ```

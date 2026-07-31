@@ -6509,7 +6509,765 @@ DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de domi
 ```
 
 
-### [ ] DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo
+### ✅ DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados` — APROBADA
+**Tarea siguiente:** `DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas`
+**Tipo de tarea:** definición normativa de autoridad, distribución, precedencia, contratos transaccionales y defensas entre aplicación, servicio de dominio, RPC y trigger de base de datos; sin DDL, DML, migraciones, backfills, correcciones de datos, fusiones, desactivaciones, reasignaciones, cambios de relaciones, constraints, índices, funciones, RPC, triggers, clientes, integraciones, configuración ni despliegues
+
+#### 1. Objetivo
+
+Definir la arquitectura canónica mediante la cual las reglas de normalización, clasificación, búsqueda, revisión, auditoría, unicidad y propagación textual de Vento OS deberán distribuirse entre cuatro capas lógicas: aplicación, servicio de dominio, frontera RPC transaccional y trigger defensivo de base de datos.
+
+La política deberá impedir cuatro implementaciones semánticas independientes, helpers locales divergentes, correcciones silenciosas en clientes, escrituras directas que omitan reglas, RPC que inventen decisiones, triggers que ejecuten lógica empresarial ambigua y auditoría duplicada entre capas. Para una misma operación lógica, entrada, coordenada y conjunto de versiones, todas las capas participantes deberán compartir el mismo contrato, pero cada una conservará una responsabilidad distinta y no intercambiable.
+
+#### 2. Artefacto producido
+
+```text
+VENTO_TEXT_NORMALIZATION_EXECUTION_LAYER_POLICY@1.0.0
+```
+
+| Propiedad                                 | Valor |
+| ----------------------------------------- | ----: |
+| Capas lógicas de ejecución                |     4 |
+| Funciones cerradas de autoridad           |     4 |
+| Familias de comando o consulta gobernadas |     7 |
+| Modos cerrados de trigger defensivo       |     4 |
+| Etapas del flujo transaccional canónico   |    10 |
+| Perfiles de colocación de operaciones     |    10 |
+| Requisitos de prueba nuevos               |    24 |
+| Cambios físicos autorizados               |     0 |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                      | Decisión consumida                                                                                                                                                   |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`           | continuidad, una sola tarea, fase exclusivamente documental, separación entre aprobación e implementación y preservación histórica                                   |
+| `delivery-contract.json`    | identidad del artefacto y actualización integral del registro 04A al crear requisitos                                                                                |
+| `active-sequence.json`      | `DATA-NORM-ARC-011` como tarea actual y `DATA-NORM-ARC-012` como siguiente tarea reservada                                                                           |
+| `DATA-NORM-AUD-001`         | universo textual, mecanismos locales y prohibición de inferir política desde schema, tipo o función existente                                                        |
+| `DATA-NORM-AUD-006`         | 111 bindings de trigger, 97 funciones de trigger, 175 funciones o procedimientos, helpers divergentes, 160 transformaciones directas en clientes y procesos externos |
+| `DATA-NORM-AUD-007`         | 100 objetos con señales de búsqueda, 13 índices locales, 137 funciones buscables, 420 relaciones y necesidad de paridad entre productores y consumidores             |
+| `DATA-NORM-ARC-001` y `002` | resolución por coordenada, clases semánticas, representaciones, fuentes, operaciones y comportamiento cerrado                                                        |
+| `DATA-NORM-ARC-003` a `006` | capitalización, conectores, excepciones y diccionario como reglas versionadas que no pueden divergir por capa                                                        |
+| `DATA-NORM-ARC-007`         | revisión humana, segregación, decisiones inmutables y separación entre decisión y materialización                                                                    |
+| `DATA-NORM-ARC-008`         | derivaciones, búsqueda, filtros, ranking, explicación, paridad y prohibición de usar coincidencias para escribir o fusionar                                          |
+| `DATA-NORM-ARC-009`         | conjuntos de versiones, procedencia, auditoría, idempotencia, concurrencia, reintentos, replay y obligación de una sola operación lógica                             |
+| `DATA-NORM-ARC-010`         | identidad, scopes, detección, cuatro modos de prevención, protección atómica futura y catorce puertas antes de enforcement                                           |
+| Registro 04A vigente        | requisitos históricos, relaciones y secuencia del dominio `DATA` hasta `TREQ-DATA-190`                                                                               |
+
+#### 4. Evidencia arquitectónica que obliga esta política
+
+El estado auditado no permite asumir que una sola capa ya ejerza autoridad coherente:
+
+| Evidencia aprobada                                                                      | Riesgo arquitectónico                                                                                           |
+| --------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| 111 bindings asociados con 97 funciones de trigger                                      | múltiples defensas o transformaciones pueden operar con alcance, orden y semántica distintos                    |
+| 175 funciones o procedimientos en el corte textual                                      | funciones existentes pueden mezclar validación, transformación, derivación, auditoría y reglas de dominio       |
+| 160 transformaciones o escrituras directas detectadas en clientes                       | clientes pueden corregir, recortar, convertir vacíos, normalizar contactos o alterar nombres antes del servidor |
+| `_product_normalize_name`, `_normalize_token`, `_vento_slugify` y `_navigation_slugify` | helpers con finalidades y resultados incompatibles no pueden considerarse una implementación canónica única     |
+| 100 objetos con señales de búsqueda y 13 índices locales                                | la búsqueda puede cambiar según tabla, función, índice, consumidor o versión                                    |
+| 420 relaciones dentro del alcance auditado                                              | una decisión textual o de duplicidad puede afectar hechos y referencias que una capa local no observa           |
+| imports, CSV, Excel, webhooks, POS, PULSO, VISO y HubRise                               | procesos no interactivos pueden omitir validaciones de interfaz y ejecutar transformaciones propias             |
+
+La existencia de una función o trigger no convierte su comportamiento actual en política aprobada. Cada mecanismo deberá inventariarse, clasificarse y alinearse con esta arquitectura antes de conservarse, reemplazarse o retirarse.
+
+#### 5. Alcance y fronteras
+
+Esta tarea define:
+
+1. las cuatro capas lógicas y su autoridad relativa;
+2. las cuatro funciones cerradas que una capa puede ejercer;
+3. la separación entre ayuda de captura, decisión semántica, commit transaccional y defensa final;
+4. el descriptor lógico que deberá declarar la colocación de cada operación;
+5. las familias de comando y consulta que deberán atravesar el contrato;
+6. el flujo canónico desde solicitud hasta commit, respuesta y propagación;
+7. la conducta ante previsualización, cambios concurrentes y divergencias entre cliente y servidor;
+8. la ubicación de normalización determinista, capitalización, conectores, excepciones, diccionario, revisión, búsqueda y unicidad;
+9. los modos permitidos y prohibidos de un trigger defensivo;
+10. la política para escrituras directas, procesos por lotes, imports, jobs y bypass controlado;
+11. la autoridad sobre auditoría, idempotencia, concurrencia, fallos y reintentos;
+12. los límites de seguridad, rendimiento, observabilidad y compatibilidad legacy;
+13. la paridad entre ambientes, artefactos y consumidores;
+14. el corpus mínimo de conformidad.
+
+Esta tarea no define:
+
+- tablas, columnas, tipos, constraints, índices, extensiones, RLS, grants, funciones, firmas RPC o triggers concretos;
+- repositorio, lenguaje, framework, runtime o proveedor físico del servicio de dominio;
+- nombres de endpoints, payloads físicos o contratos HTTP finales;
+- políticas concretas para valores recibidos desde integraciones externas;
+- la estrategia de transición de cada helper, trigger, cliente o import existente;
+- correcciones, backfills, materialización de derivaciones, activación de constraints o despliegues;
+- selección o consolidación de registros duplicados;
+- cambios sobre VITAL.
+
+Estas decisiones permanecen en `DATA-NORM-ARC-012`, `SUPA-TRANS-003`, `SUPA-TRANS-005` a `SUPA-TRANS-014` y `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009`, según su propiedad.
+
+#### 6. Principios obligatorios
+
+1. **Existe una sola autoridad semántica.** Las reglas no se reimplementan independientemente en aplicación, RPC y trigger.
+2. **La interfaz orienta; no decide.** Toda corrección, clasificación o bloqueo mostrado antes del commit es una previsualización hasta que el servidor revalide.
+3. **El servicio de dominio decide significado.** Resuelve coordenada, clases, versiones, precedencia, resultado y evidencia lógica.
+4. **La RPC gobierna el commit.** Autoriza, revalida, aplica idempotencia, controla concurrencia y confirma los efectos dentro de una frontera transaccional.
+5. **El trigger defiende; no interpreta.** Solo comprueba invariantes o materializa derivaciones deterministas estrictamente acotadas.
+6. **Una defensa no repara silenciosamente.** Cuando detecta una violación, rechaza o registra; no elige una forma alternativa para continuar.
+7. **No existe fallback cliente.** Si el servicio o la política no están disponibles, el cliente conserva el valor y no ejecuta una versión local.
+8. **Toda escritura gobernada atraviesa un comando canónico.** Una escritura directa no adquiere validez por producir el mismo valor aparente.
+9. **La versión se fija antes de evaluar.** Todas las capas participantes consumen el mismo `version_set_digest`.
+10. **La transacción conserva causalidad.** Fuente, derivaciones, auditoría y efectos sincrónicos pertenecen a una sola operación lógica.
+11. **La propagación no ocurre dentro del trigger.** Copias, eventos, lotes y destinos posteriores se procesan después del commit mediante comandos hijos idempotentes.
+12. **La búsqueda es del lado servidor.** Autorización, scope, filtros, matching, ranking y paginación no se delegan a listas locales del cliente.
+13. **La unicidad certificada requiere protección atómica.** Una consulta previa o advertencia visual no impide carreras concurrentes.
+14. **VITAL permanece separado.** Ninguna implementación compartida transfiere automáticamente reglas de Vento OS.
+
+#### 7. Modelo cerrado de capas
+
+| Capa lógica                     | Función principal                                                                     | Autoridad que no posee                                                                                           |
+| ------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `APPLICATION_INTERACTION_LAYER` | captura, guía, previsualización, explicación y presentación de errores o candidatos   | no define política, no selecciona versiones, no confirma mutación, no activa unicidad ni corrige silenciosamente |
+| `DOMAIN_NORMALIZATION_SERVICE`  | resolución semántica canónica y evaluación pura o gobernada de reglas                 | no confirma por sí solo una escritura ni sustituye autorización, transacción, RLS o concurrencia                 |
+| `TRANSACTIONAL_RPC_BOUNDARY`    | autorización, revalidación, idempotencia, concurrencia, persistencia y commit atómico | no inventa reglas, aliases, scopes, correcciones ni criterios distintos del servicio de dominio                  |
+| `DEFENSIVE_DATABASE_TRIGGER`    | última defensa ante bypass y comprobación de invariantes sobre el estado persistido   | no ejecuta revisión humana, fuzzy matching, selección de sobreviviente, propagación, red ni lógica ambigua       |
+
+Las capas son lógicas. Una implementación física podrá alojar más de una en el mismo proceso o repositorio, pero deberá conservar fronteras de autoridad, contratos, pruebas y auditoría diferenciables.
+
+#### 8. Funciones cerradas de autoridad
+
+| Función                                 | Significado                                                                                           | Capa primaria                              |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `PREVIEW_AND_GUIDANCE`                  | producir sugerencia, explicación o validación no vinculante para interacción humana                   | aplicación, consumiendo resultado servidor |
+| `AUTHORITATIVE_SEMANTIC_EVALUATION`     | resolver coordenada, reglas, versiones, precedencia, resultado y evidencia lógica                     | servicio de dominio                        |
+| `TRANSACTIONAL_REVALIDATION_AND_COMMIT` | volver a comprobar estado actual, autorizar y confirmar efectos con idempotencia y concurrencia       | RPC                                        |
+| `DEFENSIVE_INVARIANT_ENFORCEMENT`       | rechazar estados imposibles o materializar una derivación determinista permitida durante la escritura | trigger defensivo                          |
+
+Una capa secundaria puede observar o comprobar un resultado, pero no asumir otra función primaria. En particular, el trigger no se convierte en servicio de dominio y la aplicación no se convierte en RPC por invocar Supabase directamente.
+
+#### 9. Capa de aplicación
+
+La aplicación deberá:
+
+1. capturar intención, valor visible, contexto y referencia de versión conocida;
+2. solicitar previsualizaciones al contrato servidor cuando la experiencia las requiera;
+3. mostrar valor original, propuesta, motivo, nivel de confianza, bloqueo o revisión sin presentar la sugerencia como aplicada;
+4. conservar el valor introducido hasta recibir una respuesta autoritativa;
+5. generar o conservar un `client_command_id` estable para reintentos de la misma intención;
+6. enviar expectativa de versión o hash del registro que la persona observó;
+7. distinguir error de política, conflicto, revisión, obsolescencia y fallo técnico;
+8. volver a solicitar decisión cuando cambien valor, campo, scope, fuente o versiones;
+9. presentar candidatos de duplicidad con scope y motivo, sin seleccionar automáticamente uno;
+10. aplicar masking y minimización según autorización.
+
+La aplicación no podrá:
+
+- mantener catálogos locales de conectores, marcas, aliases o diccionario como autoridad;
+- ejecutar un helper local y persistir su resultado sin revalidación servidor;
+- convertir vacíos, nulos o placeholders de manera distinta al contrato del campo;
+- corregir nombres, razones sociales, marcas, unidades, personas, direcciones o externos antes de enviarlos;
+- decidir que una advertencia puede omitirse por preferencia del usuario;
+- usar el primer resultado de búsqueda como destino seguro de una mutación;
+- emitir una respuesta de éxito antes de confirmación del commit;
+- reintentar con otro identificador después de timeout sin consultar el resultado previo.
+
+Una transformación puramente visual y reversible podrá existir en la interfaz solo cuando no altere el payload canónico ni se presente como decisión persistida.
+
+#### 10. Servicio de dominio de normalización
+
+El servicio de dominio será la única autoridad semántica y deberá:
+
+1. resolver dominio, entidad, campo, clase, representación y rol de fuente;
+2. fijar el conjunto efectivo de versiones y su digest;
+3. seleccionar el pipeline permitido y bloquear dependencias ausentes o incompatibles;
+4. aplicar precedencia entre políticas, conectores, excepciones, diccionario y revisión;
+5. producir resultados cerrados y explicables;
+6. derivar búsqueda y componentes mediante los algoritmos versionados;
+7. evaluar señales de unicidad o duplicidad sin ejecutar consolidación;
+8. construir evidencia lógica para auditoría, revisión o transición;
+9. operar de forma determinista e idempotente sobre entradas lógicas equivalentes;
+10. exponer el mismo contrato a previsualización, RPC, job y replay;
+11. conservar separadas evaluación pura, intención de mutación y efecto persistido;
+12. rechazar cualquier operación que intente atravesar una clase, fuente o representación incompatible.
+
+El servicio no podrá resolver versiones mediante `latest`, configuración local, orden de carga o disponibilidad accidental. Tampoco podrá escribir directamente fuera de la frontera transaccional ni considerar que una evaluación exitosa equivale a un commit confirmado.
+
+#### 11. Frontera RPC transaccional
+
+Toda escritura gobernada deberá ingresar por una RPC o comando servidor equivalente que ejerza una única frontera transaccional lógica.
+
+La frontera deberá:
+
+1. autenticar al actor o servicio y resolver su contexto efectivo;
+2. autorizar acción, dominio, entidad, campo, scope, sensibilidad y finalidad;
+3. construir o validar la clave idempotente y el digest del payload;
+4. cargar el estado actual y sus versiones bajo una estrategia de concurrencia explícita;
+5. invocar el servicio de dominio con el conjunto de versiones fijado;
+6. revalidar unicidad, relaciones, vigencia y precondiciones sobre el estado actual;
+7. persistir de forma atómica el valor autorizado, derivaciones sincrónicas y auditoría requerida;
+8. permitir que las defensas de base comprueben invariantes antes del commit;
+9. devolver resultado, versión, efecto y referencias de auditoría de la misma operación lógica;
+10. registrar destinos posteriores sin ejecutarlos dentro de la transacción cuando pertenezcan a propagación asincrónica.
+
+Una RPC no podrá contener una segunda implementación de capitalización, diccionario, aliases, tokenización o matching. Podrá llamar funciones de base de datos que materialicen el contrato canónico, pero no reemplazar la autoridad semántica mediante expresiones locales distintas.
+
+#### 12. Trigger defensivo
+
+El trigger defensivo será una última barrera frente a escrituras que alcancen la tabla por una vía no prevista, una versión legacy, una importación, una credencial privilegiada o un defecto de implementación.
+
+Podrá:
+
+1. comprobar presencia de contexto de operación cuando el campo lo exija;
+2. verificar que política, versión, clase, fuente y representación sean compatibles;
+3. comprobar expectativa de versión o invariantes que solo el estado persistido puede confirmar;
+4. rechazar una escritura directa sobre un campo gobernado cuando no exista comando válido;
+5. asegurar que una derivación persistida corresponde al valor fuente y versión declarados;
+6. materializar una derivación determinista, local, acotada y sin ambigüedad cuando el descriptor lo autorice;
+7. estampar metadatos técnicos defensivos sin sustituir la auditoría raíz de la RPC;
+8. producir un evento hijo cuando intervenga, rechace o detecte una desviación.
+
+No podrá:
+
+- decidir ortografía, marca, razón social, nombre personal o forma oficial;
+- consultar la cola y aprobar una revisión;
+- ejecutar similitud, búsqueda difusa, ranking o selección del mejor candidato;
+- decidir identidad, duplicidad, sobreviviente, fusión, desactivación o reasignación;
+- ejecutar llamadas de red, HTTP, webhook, proveedor lingüístico o almacenamiento externo;
+- recorrer grandes conjuntos, escanear tablas completas o construir clusters;
+- propagar cambios a otras tablas como workflow oculto;
+- elegir otra versión cuando la declarada no está disponible;
+- reparar el valor y continuar cuando la política exige bloqueo;
+- producir una segunda auditoría raíz de la misma operación.
+
+#### 13. Modos cerrados de trigger defensivo
+
+| Modo                            | Conducta                                                                                                |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `NO_TRIGGER`                    | la operación no requiere defensa de trigger; otras barreras permanecen obligatorias                     |
+| `ASSERT_AND_REJECT`             | comprueba invariantes y aborta la escritura ante incumplimiento, sin modificar el valor                 |
+| `DERIVE_BOUNDED_REPRESENTATION` | materializa una derivación determinista desde la fila actual, con algoritmo y versión explícitos        |
+| `STAMP_DEFENSIVE_METADATA`      | registra metadatos técnicos mínimos de defensa, correlación o procedencia sin crear autoridad semántica |
+
+Reglas:
+
+1. cada operación tendrá exactamente un modo principal de trigger;
+2. `DERIVE_BOUNDED_REPRESENTATION` solo opera sobre representaciones derivadas, nunca sobre originales externos, snapshots, evidencia o valores mostrados protegidos;
+3. una derivación deberá depender de la fila afectada y de artefactos inmutables disponibles localmente;
+4. si la derivación requiere consulta ambigua, catálogo no fijado, llamada externa o revisión, el modo queda prohibido;
+5. `STAMP_DEFENSIVE_METADATA` no sustituye actor, autorización, motivo, antes, después ni resultado registrados por la operación raíz;
+6. deshabilitar temporalmente un trigger no convierte la escritura en conforme y deberá pertenecer a una transición controlada.
+
+#### 14. Descriptor canónico de colocación
+
+Toda operación textual gobernada deberá declarar un descriptor lógico con, como mínimo:
+
+```text
+execution_policy_key
+operation_kind
+policy_coordinate
+semantic_class
+representation_role
+source_role
+primary_semantic_authority
+transactional_boundary
+application_preview_mode
+trigger_mode
+allowed_callers
+required_authorization_context
+resolved_version_dependencies
+idempotency_class
+concurrency_expectations
+mutation_target
+synchronous_derivations
+audit_owner
+failure_mode
+bypass_policy
+propagation_policy
+```
+
+Reglas:
+
+1. la ausencia del descriptor bloquea automatización y mutación;
+2. `primary_semantic_authority` será el servicio de dominio para toda regla de normalización;
+3. `transactional_boundary` será la RPC para toda mutación gobernada;
+4. `trigger_mode` no se infiere desde la existencia de un trigger legacy;
+5. una aplicación no podrá ampliar `allowed_callers` ni `bypass_policy`;
+6. cambiar colocación, autoridad, modo de trigger o frontera transaccional crea una nueva versión y exige pruebas de paridad;
+7. el descriptor pertenece al conjunto efectivo de versiones y deberá ser reproducible en replay.
+
+#### 15. Familias de comando y consulta
+
+| Familia lógica                          | Finalidad                                                                        | Frontera obligatoria                                 |
+| --------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `NORMALIZATION_EVALUATION_QUERY`        | obtener previsualización o evaluación sin mutar                                  | servicio de dominio mediante endpoint servidor       |
+| `AUTHORITATIVE_TEXT_MUTATION_COMMAND`   | modificar un valor fuente autorizado                                             | servicio de dominio dentro de RPC transaccional      |
+| `DERIVATION_MATERIALIZATION_COMMAND`    | crear o renovar una representación de búsqueda, proyección o copia sincronizable | servicio de dominio y RPC o job servidor idempotente |
+| `REVIEW_CASE_COMMAND`                   | crear, actualizar o resolver un expediente de ambigüedad                         | workflow servidor y RPC con segregación              |
+| `SEARCH_AND_COMPARISON_QUERY`           | buscar, filtrar, rankear y explicar resultados autorizados                       | servicio servidor o RPC de lectura                   |
+| `UNIQUENESS_AND_DUPLICATE_COMMAND`      | observar, advertir, exigir revisión o aplicar unicidad certificada               | servicio de dominio y RPC; defensa atómica aprobada  |
+| `RULE_LIFECYCLE_OR_PROPAGATION_COMMAND` | activar versiones o aplicar efectos hijos posteriores                            | RPC o job servidor con idempotencia y auditoría      |
+
+Una familia puede tener variantes de lectura o escritura, pero no podrá saltar la autoridad semántica ni la frontera transaccional que le corresponda.
+
+#### 16. Flujo transaccional canónico
+
+```text
+1. la aplicación captura intención, valor, contexto y versión observada
+        ↓
+2. opcionalmente solicita una previsualización servidor no vinculante
+        ↓
+3. envía el comando con client_command_id y expectativa de fuente
+        ↓
+4. la RPC autentica, autoriza y construye la operación lógica idempotente
+        ↓
+5. el servicio de dominio resuelve coordenada, conjunto de versiones y resultado
+        ↓
+6. la RPC revalida estado, concurrencia, unicidad y precondiciones actuales
+        ↓
+7. la transacción persiste fuente, derivaciones sincrónicas y auditoría raíz
+        ↓
+8. el trigger comprueba únicamente invariantes defensivos autorizados
+        ↓
+9. el commit confirma un único efecto y la RPC devuelve el resultado
+        ↓
+10. propagaciones, copias o destinos asincrónicos continúan como comandos hijos idempotentes
+```
+
+Ninguna etapa podrá omitirse porque la entrada ya fue previsualizada, porque el actor sea administrador o porque un trigger pueda corregir el resultado después.
+
+#### 17. Previsualización y divergencia antes del commit
+
+1. La previsualización consume el mismo servicio y versiones que una operación futura, pero no reserva el estado ni garantiza commit.
+2. La respuesta deberá indicar que es no vinculante y conservar `version_set_digest`, fuente observada y momento.
+3. El comando de escritura volverá a evaluar con el estado actual.
+4. Si valor, scope, política, versiones, unicidad o relaciones cambiaron, la RPC no reutilizará ciegamente la previsualización.
+5. Una diferencia material devolverá resultado actualizado, conflicto, bloqueo o revisión; no aplicará silenciosamente otra salida.
+6. La aplicación deberá mostrar la diferencia cuando cambie el valor resultante o la decisión humana requerida.
+7. Una confirmación anterior no autoriza una nueva versión, otro registro o un scope distinto.
+8. Un resultado sin cambios porque ya era canónico se distinguirá de una operación bloqueada.
+
+#### 18. Colocación de normalización determinista
+
+Las operaciones deterministas autorizadas seguirán este perfil:
+
+| Capa       | Responsabilidad                                                                                  |
+| ---------- | ------------------------------------------------------------------------------------------------ |
+| aplicación | mostrar previsualización servidor y validaciones de formato no autoritativas                     |
+| servicio   | decidir si la operación aplica y producir salida, versiones, explicación y huella                |
+| RPC        | revalidar fuente y persistir la salida autorizada con auditoría e idempotencia                   |
+| trigger    | `ASSERT_AND_REJECT` o `DERIVE_BOUNDED_REPRESENTATION` únicamente cuando el descriptor lo permita |
+
+Recorte, compactación, Unicode, capitalización y puntuación no se agruparán en una función universal. Cada operación conservará su orden, clase, fuente, versión y resultado. Un trigger no transformará el valor mostrado si la RPC no solicitó y auditó esa mutación.
+
+#### 19. Colocación de capitalización, conectores, excepciones y diccionario
+
+1. La aplicación no mantendrá versiones ejecutables de catálogos ni diccionario.
+2. El servicio de dominio resolverá tokenización, capitalización, conectores, excepciones y diccionario en el orden aprobado.
+3. La RPC fijará el conjunto de versiones y persistirá únicamente un resultado autorizado.
+4. El trigger podrá comprobar que la salida y el digest corresponden al contexto, pero no volverá a decidir palabras, aliases o excepciones.
+5. Una versión suspendida, retirada o ausente bloqueará la mutación; no se reemplazará por una lista local.
+6. Un original externo, nombre legal, marca, persona, dirección, snapshot o evidencia se preservará según su clase y fuente.
+7. Una corrección ambigua producirá revisión; el trigger no elegirá el valor más frecuente ni el más parecido.
+8. Una diferencia entre servicio y trigger es una desviación crítica, no una oportunidad para que la última capa prevalezca silenciosamente.
+
+#### 20. Colocación de revisión humana
+
+1. Los clientes pueden originar candidatos, pero no aprobarlos.
+2. El servicio de dominio clasifica el detonante, scope, evidencia y destino.
+3. La RPC registra estados y decisiones con autorización, segregación, idempotencia y concurrencia.
+4. Los triggers no crean decisiones, no asignan responsables y no cambian estados de revisión como efecto colateral de una escritura empresarial.
+5. Una decisión aprobada produce una versión o paquete lógico separado; no modifica datos por sí misma.
+6. La materialización posterior regresa al flujo transaccional canónico con otra operación lógica.
+7. Las notificaciones, SLA y escalamiento se ejecutarán fuera del trigger.
+8. Una revisión cerrada permanece inmutable aunque la materialización falle o se revierta.
+
+#### 21. Colocación de búsqueda y comparación
+
+1. La consulta original se envía al servidor con finalidad, scope y filtros permitidos.
+2. El servicio aplica la política de `DATA-NORM-ARC-008`, versiones, derivaciones, modos y ranking.
+3. La frontera de lectura autoriza antes de exponer resultados y conserva orden y paginación estables.
+4. La aplicación podrá resaltar, agrupar o filtrar visualmente la página ya autorizada, pero no redefinir el ranking canónico del corpus.
+5. Una caché cliente deberá estar vinculada a scope, cursor, versiones y expiración; no se convierte en fuente de verdad.
+6. El trigger no participa en una consulta de búsqueda ni ejecuta similitud.
+7. La materialización de claves podrá usar `DERIVE_BOUNDED_REPRESENTATION` solo cuando sea determinista, acotada y compatible con el índice futuro.
+8. Un resultado de búsqueda utilizado en una mutación deberá revalidarse por identificador estable dentro de la RPC.
+9. La ausencia del servicio no habilita búsqueda local sobre datos almacenados localmente como sustituto contractual.
+
+#### 22. Colocación de unicidad y duplicidad
+
+| Modo de `DATA-NORM-ARC-010`    | Aplicación                                             | Servicio de dominio                  | RPC y base de datos                                                                                   |
+| ------------------------------ | ------------------------------------------------------ | ------------------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `OBSERVE_ONLY`                 | no presenta protección como activa                     | genera candidatos y métricas         | registra sin bloquear                                                                                 |
+| `WARN_EXPLICIT_CONFIRMATION`   | muestra candidatos y exige acción explícita autorizada | explica señales, scope y diferencias | revalida antes del commit y conserva confirmación                                                     |
+| `REVIEW_REQUIRED_BEFORE_WRITE` | presenta bloqueo y expediente requerido                | determina la necesidad de revisión   | impide commit hasta decisión compatible y vigente                                                     |
+| `ENFORCE_CERTIFIED_UNIQUENESS` | muestra el conflicto devuelto por servidor             | resuelve la política certificada     | aplica protección atómica mediante el mecanismo físico aprobado; una consulta previa no es suficiente |
+
+Reglas:
+
+1. el trigger no ejecutará fuzzy matching ni selección de duplicados;
+2. una constraint o índice futuro protegerá únicamente una política certificada y exacta;
+3. el servicio puede generar candidatos, pero la RPC revalida miembros, scope y versiones actuales;
+4. un caso confirmado no activa fusión ni reasignación;
+5. una carrera concurrente no se resuelve por la advertencia de la interfaz;
+6. errores técnicos, timeouts o dependencias ausentes no se presentarán como duplicidad;
+7. el enforcement permanecerá bloqueado hasta superar las catorce puertas aprobadas.
+
+#### 23. Representaciones y roles de fuente
+
+| Representación o fuente      | Colocación obligatoria                                                                                |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `PRIMARY_VALUE` autoritativo | mutación decidida por servicio y confirmada por RPC                                                   |
+| `DISPLAY_OVERRIDE` aprobado  | evaluación por servicio y persistencia acotada por RPC                                                |
+| `SEARCH_DERIVATION`          | derivación canónica por servicio; materialización por RPC, job o trigger acotado                      |
+| `EXTERNAL_ORIGINAL`          | preservación obligatoria; cualquier mapeo interno será separado y se detallará en `DATA-NORM-ARC-012` |
+| `HISTORICAL_SNAPSHOT`        | no se resincroniza ni corrige desde una versión nueva                                                 |
+| `OUTPUT_PROJECTION`          | se deriva para el canal sin retroalimentar la fuente                                                  |
+| `AUDIT_EVIDENCE`             | inmutable; rectificación aditiva y acceso restringido                                                 |
+| `SYNCHRONIZED_COPY`          | recibe propagación desde la fuente por comando hijo; no ejecuta reglas locales independientes         |
+| `APPROVED_OVERRIDE`          | conserva scope y precedencia; no redefine el valor principal                                          |
+| `UNCLASSIFIED_PRESERVE`      | conserva valor y bloquea mutación, derivación y unicidad hasta clasificación                          |
+
+#### 24. Escrituras directas y bypass controlado
+
+1. Los campos gobernados no deberán modificarse desde clientes mediante escritura directa a tablas.
+2. RLS, grants, contratos de cliente y APIs deberán orientar las mutaciones hacia la frontera RPC.
+3. Una credencial privilegiada, consola administrativa o script no queda exenta de política.
+4. Cuando una transición requiera bypass, deberá declarar actor, finalidad, alcance, ventana, versión, controles compensatorios, evidencia y rollback.
+5. El trigger defensivo deberá rechazar o evidenciar escrituras sin contexto cuando el descriptor lo exija.
+6. Un bypass no podrá deshabilitar auditoría, idempotencia, expectativa de fuente o verificación posterior.
+7. Las correcciones manuales no se ejecutarán como SQL informal sobre datos gobernados.
+8. Un acceso de emergencia no seleccionará otra versión ni relajará una clase protegida.
+9. Deshabilitar una defensa exige una tarea de transición y una certificación posterior de las filas afectadas.
+10. La capacidad física de escribir no equivale a autoridad empresarial para corregir texto.
+
+#### 25. Imports, jobs, lotes y procesos externos
+
+1. Imports de Excel o CSV, POS, webhooks, Edge Functions, jobs, procesos programados y herramientas internas consumirán el mismo servicio de dominio.
+2. Podrán usar comandos batch o canales internos, pero cada elemento conservará operación lógica, idempotencia, fuente, versión y resultado.
+3. El chunking no cambiará el orden semántico ni el conjunto de versiones dentro de una unidad declarada.
+4. Un lote parcial conservará elementos confirmados, pendientes, bloqueados y fallidos; no se presentará como éxito total.
+5. Reanudar omitirá efectos confirmados y revalidará los pendientes.
+6. Un proceso no interactivo no podrá asumir que la ausencia de interfaz elimina revisión humana o autorización.
+7. Los helpers de importación no se convertirán en catálogos paralelos.
+8. Los valores externos conservarán su original y contrato conforme a `DATA-NORM-ARC-012`.
+9. El trigger no orquestará el lote ni enviará eventos externos.
+10. Un proceso legacy permanecerá bloqueado o en modo de observación hasta demostrar paridad.
+
+#### 26. Propagación y sincronización
+
+1. El commit de la fuente y la creación del comando de propagación deberán compartir causalidad.
+2. Cada destino tendrá efecto hijo, idempotencia, expectativa y estado propios.
+3. La propagación ocurrirá después del commit de la fuente salvo que un contrato aprobado exija atomicidad local dentro de la misma transacción.
+4. Un trigger no llamará servicios externos ni actualizará silenciosamente agregados no pertenecientes a su invariante local.
+5. Una copia sincronizable no ejecutará otra versión de la regla.
+6. Un snapshot inmutable no recibe propagación.
+7. Un override no se sobrescribe salvo que su contrato lo ordene expresamente.
+8. El éxito parcial conservará destinos pendientes y fallidos.
+9. Una compensación se registra como efecto nuevo y no borra la propagación original.
+10. La transición concreta de copias y consumidores pertenece a `DATA-NORM-TRANS-007` y `DATA-NORM-TRANS-008`.
+
+#### 27. Autoridad y deduplicación de auditoría
+
+La RPC será propietaria del registro raíz de una operación mutante. El servicio aportará la evaluación semántica y el trigger únicamente evidencia defensiva vinculada.
+
+Reglas:
+
+1. todas las capas compartirán `logical_operation_id`, correlación, causación y `version_set_digest`;
+2. la aplicación podrá registrar telemetría de experiencia, pero no crear una auditoría canónica de commit;
+3. el servicio producirá un `RULE_EVALUATION_RECORD` lógico sin afirmar persistencia;
+4. la RPC confirmará `PERSISTED_MUTATION_RECORD`, `DERIVATION_MATERIALIZATION_RECORD` o resultado equivalente;
+5. el trigger registrará un evento hijo solo cuando intervenga, rechace o materialice una derivación defensiva;
+6. una misma mutación no producirá cuatro eventos raíz independientes;
+7. una escritura revertida no se registrará como cambio confirmado;
+8. un error de auditoría obligatorio abortará la transacción cuando no pueda conservarse evidencia mínima;
+9. logs técnicos no reemplazan el contrato de auditoría de `DATA-NORM-ARC-009`;
+10. valores sensibles se minimizan en todas las capas.
+
+#### 28. Idempotencia, concurrencia y reintentos
+
+1. El cliente conserva el identificador de la misma intención entre reintentos.
+2. La RPC construye o valida la clave idempotente servidor usando operación, actor, entidad, campo, fuente, acción, versiones y correlación.
+3. El servicio no genera un resultado distinto por el número de intento.
+4. La misma clave y payload devuelven el resultado previo.
+5. La misma clave con payload distinto produce conflicto y ningún efecto.
+6. La RPC valida `expected_source_version_or_hash`, `expected_version_set_digest` y estado esperado.
+7. El trigger comprueba invariantes finales, pero no resuelve una carrera mediante último escritor.
+8. Un timeout obliga a consultar la operación antes de crear otra.
+9. Una previsualización no sustituye la expectativa del commit.
+10. Jobs y propagaciones conservan cursores o destinos confirmados.
+11. Una versión nueva exige reevaluación y no se introduce en un retry existente.
+12. Una mutación y su auditoría deberán confirmar o revertirse juntas.
+
+#### 29. Contrato de fallos
+
+| Condición                                 | Resultado obligatorio                                                              |
+| ----------------------------------------- | ---------------------------------------------------------------------------------- |
+| servicio de dominio no disponible         | no ejecutar fallback local; conservar entrada y devolver fallo técnico             |
+| política, versión o dependencia ausente   | `BLOCKED_POLICY`                                                                   |
+| dos reglas o resultados incompatibles     | `BLOCKED_CONFLICT`                                                                 |
+| valor, scope o estado obsoleto            | conflicto de concurrencia y reevaluación                                           |
+| corrección ambigua                        | `REVIEW_REQUIRED`                                                                  |
+| problema estructural o de identidad       | `ESCALATED_STRUCTURAL`                                                             |
+| trigger detecta invariante violado        | abortar transacción; no reparar y continuar                                        |
+| respuesta perdida después de commit       | recuperar resultado mediante idempotencia                                          |
+| fallo después de commit en propagación    | fuente confirmada y destino pendiente o fallido; reanudar como operación hija      |
+| mismatch entre artefacto y versión        | bloquear ejecución e iniciar incidente o reconciliación                            |
+| escritura directa sin contexto autorizado | rechazar o dejar evidencia defensiva según el descriptor; nunca asumir conformidad |
+
+Una capa no podrá traducir un bloqueo semántico en éxito, ocultar un fallo técnico como ausencia de cambio ni convertir una revisión en corrección.
+
+#### 30. Seguridad y autorización
+
+1. La aplicación no será una frontera de seguridad.
+2. La RPC revalidará autorización aunque la interfaz haya ocultado la acción.
+3. El servicio de dominio recibirá un contexto autorizado y no inferirá permisos desde el payload.
+4. La implementación física de una RPC privilegiada deberá aplicar privilegio mínimo, contexto explícito y aislamiento del actor invocador.
+5. Credenciales de servicio no se distribuirán a clientes ni se usarán como bypass general.
+6. El trigger no confiará en campos de actor suministrados libremente por el cliente.
+7. Lectura, previsualización, mutación, aprobación, activación, búsqueda sensible y exportación serán capacidades diferenciadas.
+8. Los resultados de búsqueda y duplicidad se filtrarán antes de exponerse.
+9. Secretos, firmas, tokens y material criptográfico no ingresarán al pipeline general.
+10. La auditoría no ampliará visibilidad sobre datos protegidos.
+11. Un administrador técnico no adquiere autoridad de dominio por operar infraestructura.
+12. VITAL utilizará contratos y permisos propios.
+
+#### 31. Rendimiento y límites defensivos
+
+1. El trigger deberá tener costo acotado por fila o conjunto pequeño declarado.
+2. No ejecutará scans globales, similitud, clustering, llamadas externas ni esperas de workflow.
+3. La detección masiva de candidatos se realizará en jobs o consultas servidor con corte y versión explícitos.
+4. El servicio de dominio podrá ser una librería pura o servicio, pero deberá ser reproducible, observable y compatible con carga.
+5. La RPC limitará tamaño de payload, cantidad de elementos y duración según el contrato físico futuro.
+6. Las derivaciones sincrónicas deberán justificarse por necesidad transaccional; las demás se materializarán después del commit.
+7. Un índice o constraint no sustituye pruebas de semántica, scope y paridad.
+8. Una optimización no podrá cambiar ranking, tokenización, normalización o errores sin nueva versión.
+9. Timeouts y circuit breakers no autorizarán fallback semántico.
+10. La certificación de carga y seguridad pertenece a `SUPA-TRANS-010`.
+
+#### 32. Compatibilidad con mecanismos existentes
+
+1. Cada función, trigger, helper, cliente, import, job e índice existente deberá mapearse a una capa, función de autoridad, operación y versión.
+2. `_product_normalize_name`, `_normalize_token`, `_vento_slugify` y `_navigation_slugify` permanecerán distintos hasta demostrar propósito, compatibilidad y transición.
+3. Un helper con nombre parecido no se sustituirá como refactorización neutral.
+4. `set_updated_at` y variantes de stamping se clasificarán separadamente de reglas semánticas.
+5. Triggers de validación de productos, documentos, wallets, dispositivos o regalos no se adoptarán transversalmente por analogía.
+6. Transformaciones de email, espacios, vacíos y nombres en clientes deberán inventariarse antes de retirarse o alinearse.
+7. Imports y webhooks conservarán fixtures de paridad y evidencia de valores originales.
+8. Durante coexistencia, la versión nueva podrá operar en `DUAL_EVALUATION_SHADOW`, sin dual write implícito.
+9. Un consumidor legacy sin paridad no podrá seguir mutando campos gobernados después del cutover.
+10. La adaptación concreta pertenece a `SUPA-TRANS-003`, `SUPA-TRANS-006`, `SUPA-TRANS-007` y `SUPA-TRANS-014`.
+
+#### 33. Matriz canónica de colocación por operación
+
+| Operación                              | Aplicación                          | Servicio de dominio          | RPC                                                | Trigger defensivo                                     |
+| -------------------------------------- | ----------------------------------- | ---------------------------- | -------------------------------------------------- | ----------------------------------------------------- |
+| clasificación de campo                 | mostrar estado                      | autoridad                    | persistir decisión aprobada                        | no decidir                                            |
+| recorte, espacios o Unicode autorizado | previsualizar                       | autoridad                    | revalidar y persistir                              | assert o derivación acotada                           |
+| capitalización y conectores            | previsualizar                       | autoridad                    | revalidar y persistir                              | assert; no recapitular semántica                      |
+| excepción oficial                      | mostrar forma y fuente              | autoridad                    | revalidar y persistir                              | assert; no elegir alias                               |
+| diccionario                            | mostrar propuesta                   | autoridad                    | revalidar y persistir                              | assert; no corregir                                   |
+| revisión ambigua                       | capturar evidencia                  | clasificar y proponer        | registrar workflow y decisión                      | no participar                                         |
+| búsqueda y ranking                     | enviar consulta y presentar         | autoridad                    | autorizar, filtrar y paginar                       | no participar en consulta                             |
+| derivación de búsqueda                 | ninguna autoridad                   | producir algoritmo y versión | materializar o programar                           | derivar solo si es local, determinista y acotada      |
+| unicidad y candidatos                  | advertir o bloquear según respuesta | autoridad de evaluación      | revalidar y aplicar protección atómica certificada | assert exacto únicamente si el mecanismo fue aprobado |
+| propagación y copias                   | mostrar estado                      | decidir contrato             | confirmar comando raíz e hijos                     | no orquestar                                          |
+
+#### 34. Ejemplos normativos
+
+| Escenario                                                                  | Conducta obligatoria                                                                                           |
+| -------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| la aplicación propone `Harina de Maíz`                                     | muestra una previsualización servidor; la RPC vuelve a evaluar antes de persistir                              |
+| el cliente aplica `trim()` y envía solo el resultado                       | no se considera evidencia del original ni autoridad; el contrato deberá recibir el valor y contexto requeridos |
+| la versión del diccionario cambia entre preview y commit                   | la RPC devuelve decisión actualizada o conflicto; no mezcla versiones                                          |
+| una escritura directa intenta modificar un nombre gobernado                | la defensa rechaza por falta de contexto o versión; no corrige silenciosamente                                 |
+| el trigger puede calcular una clave de búsqueda determinista desde la fila | solo `DERIVE_BOUNDED_REPRESENTATION`, con versión fija, huella de fuente y pruebas de paridad                  |
+| la derivación requiere alias, consulta externa o revisión                  | no se ejecuta en trigger; servicio y comando separado                                                          |
+| dos usuarios crean simultáneamente la misma clave certificada              | la RPC revalida y la protección atómica permite un solo commit; la advertencia previa no decide la carrera     |
+| la búsqueda devuelve dos categorías exactas                                | la aplicación muestra ambos IDs y scope; ninguna capa selecciona o fusiona automáticamente                     |
+| un job procesa mil filas y falla después de 600                            | conserva 600 efectos confirmados, reanuda los restantes con las mismas versiones y no reinicia todo el lote    |
+| un webhook repite el mismo evento                                          | misma operación lógica y efecto único; payload distinto bajo la misma identidad produce conflicto              |
+| una copia sincronizable usa otro helper                                    | desviación bloqueante; debe consumir la misma versión o recibir la derivación de la fuente                     |
+| una corrección ambigua llega al trigger                                    | el trigger no decide; la transacción preserva o bloquea y el servicio origina revisión                         |
+| la RPC confirma el valor y luego falla una notificación                    | el commit permanece confirmado; la notificación es efecto hijo pendiente y reanudable                          |
+| la auditoría de aplicación y trigger parece duplicar la mutación           | solo la RPC conserva el evento raíz; los demás registros se vinculan como telemetría o evento defensivo hijo   |
+| un script de mantenimiento usa credencial privilegiada                     | debe ejecutar el mismo comando o un bypass controlado con versiones, evidencia, actor, ventana y verificación  |
+| un valor pertenece a VITAL                                                 | queda fuera del contrato transversal y no consume reglas de Vento OS                                           |
+
+#### 35. Conductas no conformes
+
+Quedan prohibidas:
+
+1. mantener cuatro implementaciones independientes de la misma regla;
+2. persistir el resultado de un helper cliente sin evaluación servidor;
+3. seleccionar versiones desde el cliente;
+4. permitir escritura directa a campos gobernados como flujo ordinario;
+5. usar una RPC como wrapper de SQL sin autorización, idempotencia o concurrencia;
+6. duplicar capitalización, diccionario o aliases dentro de la RPC;
+7. ejecutar lógica ambigua, búsqueda difusa o revisión humana en trigger;
+8. modificar el valor fuente en trigger sin comando, resultado y auditoría autorizados;
+9. efectuar llamadas de red desde trigger;
+10. usar trigger para propagar workflow entre agregados;
+11. reparar silenciosamente una violación y permitir el commit;
+12. considerar una previsualización como reserva o confirmación;
+13. reintentar un timeout como operación nueva;
+14. registrar múltiples auditorías raíz para el mismo efecto;
+15. usar logs de aplicación como prueba única de commit;
+16. permitir que un job o import mantenga su propio diccionario;
+17. ejecutar búsqueda o ranking canónico sobre una lista cliente incompleta;
+18. usar consulta previa como única protección de unicidad concurrente;
+19. activar un constraint antes de las puertas de `DATA-NORM-ARC-010`;
+20. mezclar versiones entre servicio, RPC, trigger, índice o cliente;
+21. elegir fallback legacy cuando el artefacto canónico no está disponible;
+22. ocultar éxito parcial de lote o propagación;
+23. ampliar permisos mediante una función privilegiada;
+24. aplicar reglas de Vento OS a VITAL;
+25. introducir cambios físicos desde esta tarea documental.
+
+#### 36. Corpus mínimo de conformidad
+
+El corpus deberá cubrir, como mínimo:
+
+1. cada una de las cuatro capas y funciones de autoridad;
+2. preview igual y diferente al resultado del commit;
+3. cliente online, offline, caché obsoleta y reintento después de timeout;
+4. política y catálogo activos, ausentes, suspendidos, retirados e incompatibles;
+5. recorte, espacios, Unicode, capitalización, conectores, excepciones y diccionario;
+6. valores ya canónicos, preservados, bloqueados, ambiguos y fallidos técnicamente;
+7. marcas, nombres legales, personas, direcciones, unidades, identificadores y secretos;
+8. originales externos, snapshots, overrides, proyecciones y copias sincronizadas;
+9. búsqueda exacta, forma, tildes, alias, tokens, transliteración y similitud deshabilitada;
+10. ranking, empates, cursor, autorización y scope;
+11. los cuatro modos de unicidad y carreras concurrentes;
+12. trigger ausente, assertivo, derivador acotado y stamping defensivo;
+13. escritura directa, credencial privilegiada y bypass controlado;
+14. import, job, Edge Function, webhook, CSV y Excel;
+15. lote total, parcial, reanudado, compensado y fallido;
+16. auditoría raíz, evaluación del servicio y evento defensivo hijo;
+17. misma clave idempotente con payload igual y distinto;
+18. fuente, política y estado obsoletos;
+19. transacción revertida por trigger;
+20. propagación posterior al commit con destinos confirmados y pendientes;
+21. helpers legacy iguales por nombre y distintos por salida;
+22. paridad entre aplicación, servicio, RPC, job, trigger y ambientes;
+23. rendimiento acotado del trigger y carga masiva fuera de la transacción;
+24. frontera separada de VITAL;
+25. ausencia de corrección, fusión o reasignación no autorizadas.
+
+El corpus deberá reutilizar los escenarios de `TREQ-DATA-006` a `TREQ-DATA-190` cuya implementación depende de autoridad, versión, auditoría, búsqueda, unicidad, concurrencia o paridad entre capas.
+
+#### 37. Hallazgos y carryovers
+
+| ID               | Decisión o brecha                                                   | Resultado de esta tarea                                                | Propietario siguiente                                              |
+| ---------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `DN-ARC-011-H01` | aplicación, funciones y triggers podían ejecutar reglas divergentes | una autoridad semántica y cuatro funciones cerradas aprobadas          | `SUPA-TRANS-003`; `SUPA-TRANS-006`; `SUPA-TRANS-007`               |
+| `DN-ARC-011-H02` | las escrituras directas podían omitir política y auditoría          | RPC como frontera transaccional y defensa ante bypass aprobadas        | `SUPA-TRANS-005`; `DATA-NORM-TRANS-005`                            |
+| `DN-ARC-011-H03` | el trigger podía convertirse en motor empresarial oculto            | cuatro modos limitados y prohibición de ambigüedad, red y orquestación | `SUPA-TRANS-005`; `SUPA-TRANS-009`; `SUPA-TRANS-010`               |
+| `DN-ARC-011-H04` | previsualización podía confundirse con resultado confirmado         | reevaluación servidor y manejo de divergencia aprobados                | `SUPA-TRANS-007`; `DATA-NORM-TRANS-005`                            |
+| `DN-ARC-011-H05` | búsqueda y ranking podían desplazarse al cliente                    | autoridad servidor y revalidación por ID estable aprobadas             | `SUPA-TRANS-007`; `SUPA-TRANS-009`; `SUPA-TRANS-010`               |
+| `DN-ARC-011-H06` | consulta previa podía presentarse como unicidad concurrente         | protección atómica certificada reservada a RPC y base aprobada         | `SUPA-TRANS-005`; `DATA-NORM-TRANS-005`; `SUPA-TRANS-009`          |
+| `DN-ARC-011-H07` | auditoría podía duplicarse o contradecirse entre capas              | un evento raíz y evidencias hijas vinculadas aprobados                 | tareas de gobierno de información; `SUPA-TRANS-009`                |
+| `DN-ARC-011-H08` | imports, jobs y webhooks podían usar helpers propios                | mismo servicio, comandos batch e idempotencia por elemento aprobados   | `DATA-NORM-ARC-012`; `SUPA-TRANS-003`; `DATA-NORM-TRANS-006`       |
+| `DN-ARC-011-H09` | propagación podía ejecutarse dentro de triggers                     | efectos hijos posteriores al commit y reanudación aprobados            | `DATA-NORM-TRANS-007`; `DATA-NORM-TRANS-008`                       |
+| `DN-ARC-011-H10` | los helpers legacy carecen de clasificación de autoridad            | mapeo obligatorio antes de coexistencia, retiro o sustitución          | `SUPA-TRANS-003`; `SUPA-TRANS-006`; `SUPA-TRANS-014`               |
+| `DN-ARC-011-H11` | valores externos todavía requieren contrato propio                  | preservación mantenida; decisión detallada reservada                   | `DATA-NORM-ARC-012`                                                |
+| `DN-ARC-011-H12` | no existe todavía implementación física certificada                 | contrato lógico completo aprobado; materialización reservada           | `SUPA-TRANS-005` a `SUPA-TRANS-014`; `DATA-NORM-TRANS-004` a `009` |
+| `DN-ARC-011-H13` | VITAL comparte infraestructura física                               | exclusión transversal mantenida                                        | `SUPA-ARC-025`                                                     |
+
+#### 38. Decisiones reservadas
+
+| Decisión                                                     | Tarea propietaria                             |
+| ------------------------------------------------------------ | --------------------------------------------- |
+| tratamiento de originales, mappings y eventos externos       | `DATA-NORM-ARC-012`                           |
+| inventario exhaustivo y clasificación de consumidores legacy | `SUPA-TRANS-003`                              |
+| tablas, columnas, constraints, índices, funciones y triggers | `SUPA-TRANS-005`                              |
+| coexistencia de versiones y compatibilidad temporal          | `SUPA-TRANS-006`; `DATA-NORM-TRANS-004`       |
+| adaptación de clientes, APIs, jobs e integraciones           | `SUPA-TRANS-007`; `SUPA-TRANS-014`            |
+| orden técnico de migraciones y dependencias                  | `SUPA-TRANS-008`                              |
+| pruebas de paridad, concurrencia e idempotencia              | `SUPA-TRANS-009`; `DATA-NORM-TRANS-009`       |
+| rendimiento, capacidad, seguridad y observabilidad física    | `SUPA-TRANS-010`                              |
+| rollback operativo y compensaciones                          | `SUPA-TRANS-011`; `DATA-NORM-TRANS-008`       |
+| estrategia de corte, despliegue y recuperación               | `SUPA-TRANS-012`; `DATA-NORM-TRANS-005`       |
+| paridad entre ambientes y artefactos                         | `SUPA-TRANS-013`; `SUPA-TRANS-014`            |
+| baseline, dry-run, colisiones, backfill y lotes              | `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-007` |
+| arquitectura consolidada de datos y frontera VITAL           | `SUPA-ARC-025`                                |
+
+#### 39. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se crean los requisitos:
+
+- `TREQ-DATA-191`;
+- `TREQ-DATA-192`;
+- `TREQ-DATA-193`;
+- `TREQ-DATA-194`;
+- `TREQ-DATA-195`;
+- `TREQ-DATA-196`;
+- `TREQ-DATA-197`;
+- `TREQ-DATA-198`;
+- `TREQ-DATA-199`;
+- `TREQ-DATA-200`;
+- `TREQ-DATA-201`;
+- `TREQ-DATA-202`;
+- `TREQ-DATA-203`;
+- `TREQ-DATA-204`;
+- `TREQ-DATA-205`;
+- `TREQ-DATA-206`;
+- `TREQ-DATA-207`;
+- `TREQ-DATA-208`;
+- `TREQ-DATA-209`;
+- `TREQ-DATA-210`;
+- `TREQ-DATA-211`;
+- `TREQ-DATA-212`;
+- `TREQ-DATA-213`;
+- `TREQ-DATA-214`.
+
+El detalle canónico de cada requisito reside en el registro 04A actualizado hasta esta tarea.
+
+#### 40. Criterios de integridad
+
+La política se considera íntegra para esta etapa cuando:
+
+1. define exactamente cuatro capas lógicas y cuatro funciones de autoridad;
+2. asigna al servicio de dominio la única autoridad semántica;
+3. asigna a la RPC la frontera de autorización, revalidación y commit;
+4. limita la aplicación a captura, guía y previsualización no vinculante;
+5. limita el trigger a cuatro modos defensivos cerrados;
+6. prohíbe decisiones ambiguas, red, scans y orquestación dentro de triggers;
+7. exige descriptor de colocación para cada operación;
+8. define siete familias de comando o consulta;
+9. aplica las diez etapas del flujo transaccional en orden;
+10. reevalúa toda previsualización antes del commit;
+11. distribuye correctamente normalización, catálogos, diccionario y revisión;
+12. conserva búsqueda, filtros y ranking como autoridad servidor;
+13. protege los cuatro modos de unicidad y exige enforcement atómico certificado;
+14. gobierna representaciones y roles de fuente sin convertir copias en autoridad;
+15. bloquea escrituras directas y define bypass controlado;
+16. obliga imports, jobs, lotes y externos a consumir el mismo servicio;
+17. separa commit de propagación y prohíbe workflow oculto en trigger;
+18. define una sola auditoría raíz y evita duplicados entre capas;
+19. integra idempotencia, concurrencia, retries y obsolescencia;
+20. define fallos cerrados sin fallback semántico;
+21. preserva autorización, privilegio mínimo, masking y segregación;
+22. limita costo del trigger y reserva carga masiva a procesos servidor;
+23. exige mapeo y transición explícitos para helpers y mecanismos legacy;
+24. incorpora corpus positivo, negativo, ambiguo, concurrente, batch y de paridad;
+25. conserva VITAL fuera del alcance transversal;
+26. no autoriza cambios físicos ni anticipa decisiones reservadas.
+
+#### 41. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-ARC-011 — Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas
+```
+
+
 ### [ ] DATA-NORM-ARC-012 — Definir tratamiento de datos recibidos desde integraciones externas
 
 Regla canónica de normalización
