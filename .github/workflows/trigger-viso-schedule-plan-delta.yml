@@ -1,3 +1,4 @@
+# Triggered after workflow registration.
 name: Trigger VISO schedule plan delta
 
 on:
