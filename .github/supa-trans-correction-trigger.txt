@@ -1,1 +1,1 @@
-Trigger the one-shot canonical correction workflow on the existing branch.
+Trigger the corrected PR workflow after reconciling the material TREQ count to 6258.
