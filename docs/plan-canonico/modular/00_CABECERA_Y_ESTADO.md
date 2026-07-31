@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **263** |
 | Tareas canónicas con marcador | **1575** |
 | Tareas `AUTH` únicas | **316** |
-| Tareas aprobadas | **443** |
+| Tareas aprobadas | **444** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1132** |
+| Tareas no iniciadas | **1131** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **28.13% (443/1575)** |
+| Porcentaje de completamiento | **28.19% (444/1575)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas** |
-| Tarea actual | **DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación** |
+| Última tarea aprobada | **DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación** |
+| Tarea actual | **DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas** |
+| Siguiente tarea | **DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 14 de 45 aprobadas; DATA-NORM-ARC-008 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 15 de 45 aprobadas; DATA-NORM-ARC-009 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `DATA-NORM-ARC-007` — Definir cola de revisión para correcciones ambiguas |
-| Tarea actual | `DATA-NORM-ARC-008` — Definir representación de búsqueda y comparación — **NO INICIADA** |
-| Siguiente tarea | `DATA-NORM-ARC-009` — Definir auditoría, versionado e idempotencia de reglas |
+| Última aprobada | `DATA-NORM-ARC-008` — Definir representación de búsqueda y comparación |
+| Tarea actual | `DATA-NORM-ARC-009` — Definir auditoría, versionado e idempotencia de reglas — **NO INICIADA** |
+| Siguiente tarea | `DATA-NORM-ARC-010` — Definir estrategia de unicidad y detección de duplicados normalizados |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **14 DE 45 APROBADAS — ACTUAL DATA-NORM-ARC-008** |
+| BLOQUE E3 | **15 DE 45 APROBADAS — ACTUAL DATA-NORM-ARC-009** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas
-        ↓
-TAREA ACTUAL
 DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas
         ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 14 de 45 tareas aprobadas
+BLOQUE E3 — 15 de 45 tareas aprobadas
 ```
