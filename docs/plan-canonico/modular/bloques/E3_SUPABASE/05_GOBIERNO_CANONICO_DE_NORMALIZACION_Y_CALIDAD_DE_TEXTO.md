@@ -1595,7 +1595,557 @@ DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula
 ```
 
 
-### [ ] DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula
+### ✅ DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-ARC-003 — Definir reglas de capitalización para nombres empresariales` — APROBADA
+**Tarea siguiente:** `DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales`
+**Tipo de tarea:** definición normativa del catálogo cerrado, versionado y posicional de conectores en minúscula para nombres empresariales `COMMERCIAL_NAME`; sin DDL, DML, migraciones, backfills, correcciones de datos, fusiones, cambios de índices, constraints, funciones, triggers, clientes, integraciones, configuración ni despliegues
+
+#### 1. Objetivo
+
+Definir el catálogo canónico de conectores del perfil lingüístico `es-CO` que deberán emitirse en minúscula cuando ocupen una posición interna dentro de un nombre empresarial clasificado como `COMMERCIAL_NAME`, así como las reglas exactas de reconocimiento, posición, precedencia, segmentación, ambigüedad, versionado e idempotencia que impiden listas locales o inferencias gramaticales divergentes.
+
+La política deberá preservar el significado, la puntuación, los signos, la ortografía y la estructura recibida; capitalizar un conector cuando sea la primera palabra lexical del nombre o de un segmento declarado; respetar excepciones oficiales; y mantener separadas la capitalización visible, la corrección ortográfica, la búsqueda, la identidad y la unicidad.
+
+#### 2. Artefacto producido
+
+```text
+VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0
+```
+
+| Propiedad                          | Valor |
+| ---------------------------------- | ----: |
+| Conectores definitivos aprobados   |    18 |
+| Familias lingüísticas descriptivas |     3 |
+| Posiciones normativas              |     3 |
+| Resultados cerrados de evaluación  |     5 |
+| Requisitos de prueba nuevos        |    15 |
+| Cambios físicos autorizados        |     0 |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                | Decisión consumida                                                                                                            |
+| ------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                     | continuidad, una sola tarea, fase exclusivamente documental y preservación de decisiones aprobadas                            |
+| `delivery-contract.json`              | identidad del artefacto y actualización integral del registro 04A al crear requisitos                                         |
+| `active-sequence.json`                | `DATA-NORM-ARC-004` como tarea actual y `DATA-NORM-ARC-005` como siguiente tarea reservada                                    |
+| `DATA-NORM-ARC-001`                   | ausencia de `Title Case` universal, política por campo, separación de representaciones, idempotencia y comportamiento cerrado |
+| `DATA-NORM-ARC-002`                   | clase `COMMERCIAL_NAME`, roles de representación y fuente, modos cerrados de tratamiento y exclusiones                        |
+| `DATA-NORM-ARC-003`                   | perfil de capitalización, posiciones, segmentación, precedencia, fuentes autorizadas y corpus de conformidad                  |
+| `DATA-NORM-AUD-002`                   | variantes observadas de conectores, caja, espacios y puntuación                                                               |
+| `DATA-NORM-AUD-003`                   | falsos positivos asociados a marcas, siglas, unidades, nombres legales y formas protegidas                                    |
+| `DATA-NORM-AUD-005`                   | separación entre normalización determinista, diccionario, ambigüedad y resolución estructural                                 |
+| `DATA-NORM-AUD-006`                   | productores distribuidos y riesgo de listas locales o algoritmos incompatibles                                                |
+| `DATA-NORM-AUD-007`                   | impacto de diferencias textuales sobre búsqueda, copias, consumidores, unicidad e identidad                                   |
+| Regla canónica del bloque propietario | conjunto preliminar de dieciocho conectores y mandato de aprobación definitiva en esta tarea                                  |
+
+#### 4. Alcance y fronteras
+
+Esta tarea define:
+
+1. el conjunto definitivo de conectores del perfil `es-CO` versión `1.0.0`;
+2. el reconocimiento exacto de un conector como token lexical completo;
+3. la conducta en `NAME_START`, `DECLARED_SEGMENT_START` e `INTERNAL`;
+4. la relación con signos iniciales, comillas, paréntesis y puntuación;
+5. el comportamiento de conectores consecutivos;
+6. el tratamiento atómico de `al` y `del`;
+7. la preservación de `e`, `u`, `o` y `y` sin sustituciones fonológicas automáticas;
+8. la conducta frente a formas compuestas o unidas por signos;
+9. la precedencia frente a excepciones oficiales, siglas, unidades, códigos y tokens ambiguos;
+10. el comportamiento cerrado cuando falta catálogo, versión, locale o contexto;
+11. los invariantes de determinismo, idempotencia y paridad entre capas;
+12. el corpus mínimo de conformidad del catálogo.
+
+Esta tarea no define:
+
+- formas oficiales concretas de marcas, siglas, unidades o nombres legales;
+- reglas de corrección ortográfica o adición de tildes;
+- sustituciones lingüísticas contextuales entre conjunciones;
+- análisis sintáctico completo del español;
+- reglas de texto libre, nombres personales o direcciones;
+- búsqueda, transliteración, slug o comparación tolerante;
+- estructura física de auditoría y versionado;
+- capa ejecutora definitiva;
+- scopes o constraints de unicidad;
+- tratamiento detallado de integraciones externas;
+- correcciones, fusiones, backfills, migraciones ni cambios de datos.
+
+Estas decisiones permanecen en `DATA-NORM-ARC-005` a `DATA-NORM-ARC-012` y en las tareas de transición aplicables.
+
+#### 5. Principios obligatorios
+
+1. El catálogo es cerrado, explícito y versionado.
+2. Un token no se convierte en conector por longitud, frecuencia, posición, traducción, semejanza o inferencia gramatical.
+3. El reconocimiento se realiza sobre el token lexical completo, nunca sobre una subcadena.
+4. La forma emitida depende de la posición normativa, no de la caja recibida.
+5. El primer token lexical del nombre o de un segmento declarado se capitaliza aunque pertenezca al catálogo.
+6. Un conector interno se emite en la forma minúscula aprobada.
+7. Las excepciones oficiales y los tokens protegidos prevalecen sobre el catálogo de conectores.
+8. La política no corrige ortografía, no agrega tildes y no cambia las palabras seleccionadas por el autor.
+9. `al` y `del` son entradas atómicas; la política no expande ni contrae expresiones.
+10. `e` y `u` son entradas independientes; la política no sustituye automáticamente `y` por `e` ni `o` por `u`.
+11. La ausencia, retiro o conflicto de versión bloquea la mutación automática.
+12. La forma capitalizada o normalizada no define identidad, unicidad ni fusión.
+13. VITAL permanece fuera del alcance transversal de esta política salvo contrato explícito posterior.
+
+#### 6. Catálogo definitivo de conectores
+
+El catálogo aprobado para `es-CO` versión `1.0.0` contiene exactamente las siguientes entradas:
+
+```text
+a
+al
+con
+de
+del
+e
+el
+en
+la
+las
+lo
+los
+o
+para
+por
+sin
+u
+y
+```
+
+No existen aliases implícitos, variantes plurales adicionales, abreviaturas, formas con puntuación ni entradas inferidas.
+
+#### 7. Familias descriptivas
+
+Las familias solo documentan el origen lingüístico y no cambian la precedencia ni el tratamiento:
+
+| Familia descriptiva           | Entradas                                                  |
+| ----------------------------- | --------------------------------------------------------- |
+| preposiciones y contracciones | `a`, `al`, `con`, `de`, `del`, `en`, `para`, `por`, `sin` |
+| artículos                     | `el`, `la`, `las`, `lo`, `los`                            |
+| conjunciones coordinantes     | `e`, `o`, `u`, `y`                                        |
+
+La familia no autoriza concordancia, sustitución, contracción, expansión ni análisis sintáctico. Cada entrada conserva un contrato independiente.
+
+#### 8. Puerta de activación
+
+El catálogo solo podrá intervenir cuando todas las condiciones siguientes sean verdaderas:
+
+1. la clase semántica es `COMMERCIAL_NAME`;
+2. la operación solicitada es `COMMERCIAL_CAPITALIZATION`;
+3. la representación y el rol de fuente permiten la operación;
+4. el perfil lingüístico activo es `es-CO`;
+5. la versión de capitalización es compatible con este catálogo;
+6. la versión `VENTO_COMMERCIAL_CONNECTOR_CATALOG_ES_CO@1.0.0` está activa;
+7. la tokenización produjo un token lexical completo y no ambiguo;
+8. no existe una excepción oficial o protección de mayor precedencia;
+9. la posición normativa puede resolverse sin heurística;
+10. la decisión y las versiones pueden quedar trazadas.
+
+El catálogo no podrá utilizarse por separado para reescribir texto libre, etiquetas, razones sociales, marcas, personas, direcciones, identificadores, valores externos, snapshots o evidencia.
+
+#### 9. Reconocimiento exacto de token
+
+Un token se reconoce como conector únicamente cuando:
+
+1. fue clasificado como token lexical completo por la segmentación aprobada;
+2. después de la comparación de caja definida por el perfil `es-CO`, coincide exactamente con una entrada activa;
+3. no contiene letras, números, signos ni marcas adicionales fuera de esa entrada;
+4. no forma parte de una excepción oficial de frase o token;
+5. no fue clasificado como sigla, unidad, código, marca, modelo, referencia o token ambiguo.
+
+Ejemplos:
+
+| Token recibido | Coincidencia de catálogo | Motivo                                  |
+| -------------- | ------------------------ | --------------------------------------- |
+| `DE`           | `de`                     | coincidencia exacta sin distinguir caja |
+| `Del`          | `del`                    | coincidencia exacta sin distinguir caja |
+| `de`           | `de`                     | coincidencia exacta                     |
+| `deluxe`       | ninguna                  | `del` es solo una subcadena             |
+| `paraíso`      | ninguna                  | `para` es solo una subcadena            |
+| `y/o`          | ninguna                  | contiene puntuación y no es una entrada |
+| `de-la`        | ninguna                  | no es un token exacto del catálogo      |
+| `eCommerce`    | ninguna                  | forma interna protegida o ambigua       |
+
+La comparación del catálogo no elimina tildes, signos, guiones, apóstrofos ni caracteres. Esas operaciones pertenecen a otros contratos.
+
+#### 10. Posiciones normativas
+
+| Posición                 | Definición                                                                             | Resultado para un conector reconocido                  |
+| ------------------------ | -------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `NAME_START`             | primer token lexical de todo el nombre                                                 | aplicar la regla ordinaria de inicial: `De`, `El`, `Y` |
+| `DECLARED_SEGMENT_START` | primer token lexical después de una frontera que reinicia posición por política activa | aplicar la regla ordinaria de inicial                  |
+| `INTERNAL`               | cualquier posición lexical restante                                                    | emitir exactamente la entrada minúscula del catálogo   |
+
+La posición se calcula sobre tokens lexicales. Espacios, comillas, signos de apertura y separadores no lexicales anteriores no consumen `NAME_START` ni `DECLARED_SEGMENT_START`.
+
+#### 11. Resultados cerrados de evaluación
+
+| Resultado                          | Significado                                                                                  |
+| ---------------------------------- | -------------------------------------------------------------------------------------------- |
+| `CONNECTOR_INITIAL_CAPITALIZED`    | conector reconocido en inicio de nombre o segmento, emitido con inicial según el perfil      |
+| `CONNECTOR_INTERNAL_LOWERCASED`    | conector reconocido en posición interna, emitido en su forma minúscula aprobada              |
+| `CONNECTOR_PRESERVED_BY_EXCEPTION` | una excepción oficial de mayor precedencia determinó la forma                                |
+| `CONNECTOR_PRESERVED_AMBIGUOUS`    | el valor se conserva y requiere revisión por contexto no resoluble                           |
+| `CONNECTOR_POLICY_BLOCKED`         | no se produce mutación por falta, retiro, conflicto o incompatibilidad de política o versión |
+
+La ausencia de cambio porque el token ya tenía la forma esperada deberá distinguirse de un resultado bloqueado o ambiguo.
+
+#### 12. Inicio lexical y signos iniciales
+
+1. El primer token lexical conserva la posición `NAME_START` aunque esté precedido por espacios, comillas, paréntesis o signos de apertura.
+2. Los signos se preservan exactamente y no reciben tratamiento del catálogo.
+3. El catálogo no inserta ni elimina espacios entre el signo y el token.
+4. Una comilla o paréntesis inicial no convierte el conector en posición interna.
+5. Un prefijo técnico o código sí cuenta como token lexical o protegido según su clasificación y puede hacer que el conector siguiente sea interno.
+
+Ejemplos:
+
+```text
+"de la casa" → "De la Casa"
+(de la casa) → (De la Casa)
+¿de la casa? → ¿De la Casa?
+3M de Colombia → 3M de Colombia
+```
+
+#### 13. Fronteras de segmento
+
+La conducta hereda las fronteras aprobadas por `DATA-NORM-ARC-003`:
+
+1. el inicio del valor es `NAME_START`;
+2. dos puntos y raya corta o larga rodeada por espacios solo crean `DECLARED_SEGMENT_START` cuando la política activa del campo lo declara;
+3. coma, punto, ampersand, signo más, barra, paréntesis, guion interno y apóstrofo no reinician segmentos por defecto;
+4. una frontera no declarada conserva `INTERNAL`;
+5. la puntuación se preserva exactamente;
+6. el catálogo no decide por sí mismo si un signo inicia segmento.
+
+Ejemplos:
+
+```text
+café: de la casa
+→ Café: De la Casa
+cuando los dos puntos tienen reinicio declarado
+
+café, de la casa
+→ Café, de la Casa
+
+café / de la casa
+→ Café / de la Casa
+```
+
+#### 14. Conectores consecutivos
+
+1. Solo el primer token lexical de `NAME_START` o `DECLARED_SEGMENT_START` recibe la regla de inicial.
+2. Los conectores siguientes conservan posición `INTERNAL` y se emiten en minúscula.
+3. La secuencia no se simplifica ni reescribe por sonar inusual.
+4. Una secuencia gramaticalmente dudosa se conserva o se envía a revisión; no se corrige mediante este catálogo.
+
+Ejemplos:
+
+```text
+de la casa → De la Casa
+el de la casa → El de la Casa
+para el día → Para el Día
+café: de la casa → Café: De la Casa
+```
+
+#### 15. Tratamiento atómico de `al` y `del`
+
+1. `al` y `del` son tokens independientes del catálogo.
+2. No se dividen en `a` + `el` ni `de` + `el` durante capitalización.
+3. No se crean automáticamente a partir de secuencias separadas.
+4. No se expanden para búsqueda, visualización o auditoría.
+5. Una forma separada o contraída se conserva tal como fue seleccionada; cualquier corrección pertenece al diccionario o a revisión humana.
+
+Ejemplos:
+
+```text
+pan del campo → Pan del Campo
+pan de el campo → Pan de el Campo
+al horno → Al Horno
+a el horno → A el Horno
+```
+
+La política no afirma que las formas separadas sean lingüísticamente correctas; únicamente evita corregirlas silenciosamente dentro de una operación de caja.
+
+#### 16. Tratamiento de `e`, `u`, `o` y `y`
+
+1. Las cuatro formas son entradas exactas e independientes.
+2. La política preserva la palabra elegida y solo resuelve su caja posicional.
+3. No se ejecuta sustitución automática `y` → `e` frente a sonidos vocálicos.
+4. No se ejecuta sustitución automática `o` → `u` frente a sonidos vocálicos.
+5. No se infiere pronunciación desde ortografía, número, sigla, marca o término extranjero.
+6. Una posible mejora lingüística deberá ser propuesta por diccionario o revisión humana con contexto explícito.
+
+Ejemplos:
+
+```text
+pan y higos → Pan y Higos
+pan e higos → Pan e Higos
+café o uvas → Café o Uvas
+café u uvas → Café u Uvas
+```
+
+#### 17. Formas compuestas y signos internos
+
+1. `y/o`, `o/u`, `de-la` y formas equivalentes no son entradas del catálogo.
+2. El catálogo no divide automáticamente un token unido por barra, guion, apóstrofo o punto.
+3. Una gramática compuesta deberá aprobarse de manera independiente y no se infiere desde el listado de conectores.
+4. Sin una excepción o gramática activa, el token se preserva y puede producir revisión humana.
+5. Una forma oficial que incluya un conector y puntuación se resuelve por excepción de frase o token, no por coincidencia parcial.
+
+#### 18. Precedencia frente a excepciones y tokens protegidos
+
+La precedencia obligatoria es:
+
+```text
+1. excepción oficial de frase válida más larga
+2. excepción oficial de token
+3. sigla, unidad, código, marca o forma técnica protegida
+4. conector exacto del catálogo
+5. palabra ordinaria
+6. token ambiguo
+```
+
+Consecuencias:
+
+- una marca o razón oficial que contiene una palabra del catálogo conserva su forma aprobada;
+- una unidad, código o sigla de una letra no se convierte en conector por coincidencia textual;
+- una excepción retirada no permite usar su forma histórica como regla vigente;
+- dos decisiones activas incompatibles bloquean la mutación;
+- la capitalización observada no demuestra que una forma sea oficial.
+
+Las entradas concretas y fuentes autorizadas de excepciones pertenecen a `DATA-NORM-ARC-005`.
+
+#### 19. Separación de operaciones
+
+El catálogo exclusivamente decide la caja posicional de sus dieciocho entradas dentro de la operación `COMMERCIAL_CAPITALIZATION`.
+
+No ejecuta:
+
+- recorte ni compactación de espacios;
+- composición o descomposición Unicode;
+- corrección ortográfica;
+- adición o retiro de tildes;
+- singularización o pluralización;
+- contracción o expansión;
+- traducción o transliteración;
+- sustitución entre conjunciones;
+- cambio de puntuación;
+- unión o división de palabras;
+- generación de búsqueda, slug o código;
+- deduplicación, unicidad o fusión.
+
+Una secuencia de operaciones solo será válida cuando cada etapa tenga política, versión, entrada, salida y trazabilidad propias.
+
+#### 20. Representaciones, fuentes y propagación
+
+1. Un `PRIMARY_VALUE` de `AUTHORITATIVE_SOURCE` o un `DISPLAY_OVERRIDE` con `APPROVED_OVERRIDE` puede recibir la mutación cuando la política del campo la autorice.
+2. `EXTERNAL_ORIGINAL`, `HISTORICAL_SNAPSHOT` y `AUDIT_EVIDENCE` se preservan exactamente.
+3. `OUTPUT_PROJECTION` puede emitir una forma derivada sin retroalimentar la fuente.
+4. `SEARCH_DERIVATION` no usa este catálogo como contrato de identidad o unicidad.
+5. Una `SYNCHRONIZED_COPY` no mantiene una lista local ni corrige de manera independiente.
+6. Un `IMMUTABLE_SNAPSHOT` no se resincroniza por una versión nueva del catálogo.
+7. Un override conserva su alcance y no redefine el catálogo global.
+8. La propagación técnica y la precedencia entre capas pertenecen a `DATA-NORM-ARC-009` y `DATA-NORM-ARC-011`.
+
+#### 21. Perfil lingüístico y otros idiomas
+
+1. El catálogo aplica exclusivamente al perfil `es-CO` declarado.
+2. No se activa mediante detección automática de idioma.
+3. Un nombre con idioma distinto, mixto o no declarado se conserva o pasa a revisión humana.
+4. Una palabra funcional de otro idioma no se incorpora por similitud con un conector español.
+5. La convivencia de términos extranjeros dentro de un nombre español no autoriza traducirlos ni recategorizarlos.
+6. Un catálogo para otro idioma requerirá artefacto, versión, alcance, pruebas y aprobación propios.
+7. VITAL no hereda este catálogo por compartir infraestructura.
+
+#### 22. Versionado, determinismo e idempotencia
+
+Cada evaluación deberá poder atribuirse a:
+
+```text
+perfil lingüístico
+versión de capitalización
+versión de conectores
+versión de excepciones
+política del campo
+representación
+rol de fuente
+```
+
+Para una misma entrada y contexto:
+
+```text
+apply_connectors(apply_connectors(value, context), context)
+=
+apply_connectors(value, context)
+```
+
+La igualdad deberá cubrir:
+
+- valor resultante;
+- posición de cada token;
+- entrada del catálogo coincidente;
+- resultado cerrado de cada token;
+- excepción o protección aplicada;
+- decisión global;
+- ausencia de efectos duplicados.
+
+Una versión nueva podrá cambiar el resultado futuro mediante transición explícita, pero no reinterpreta silenciosamente snapshots, evidencia ni historia creada por versiones anteriores.
+
+#### 23. Paridad entre capas
+
+Para la misma entrada, coordenada y versiones, aplicación, servicio de dominio, RPC, proceso programado y trigger defensivo deberán producir:
+
+- el mismo token reconocido;
+- la misma posición normativa;
+- la misma forma emitida;
+- la misma precedencia de excepción;
+- la misma decisión global;
+- la misma conducta ante ambigüedad o bloqueo.
+
+Ninguna capa podrá:
+
+- añadir o retirar conectores localmente;
+- aplicar una lista de idioma genérica;
+- inferir conectores desde paquetes de interfaz;
+- alterar el orden de precedencia;
+- convertir un bloqueo en mutación;
+- usar la forma resultante como identidad por conveniencia.
+
+La capa ejecutora definitiva será aprobada en `DATA-NORM-ARC-011`.
+
+#### 24. Corpus mínimo de conformidad
+
+| Entrada y contexto                        | Resultado esperado                       | Regla demostrada                              |
+| ----------------------------------------- | ---------------------------------------- | --------------------------------------------- |
+| `jugo de naranja y mango`                 | `Jugo de Naranja y Mango`                | conectores internos                           |
+| `de la casa`                              | `De la Casa`                             | conector en `NAME_START`                      |
+| `el sabor de la casa`                     | `El Sabor de la Casa`                    | inicio e internos consecutivos                |
+| `para el día`                             | `Para el Día`                            | primer conector capitalizado, segundo interno |
+| `café: de la casa` con reinicio declarado | `Café: De la Casa`                       | `DECLARED_SEGMENT_START`                      |
+| `café, de la casa`                        | `Café, de la Casa`                       | coma sin reinicio                             |
+| `"de la casa"`                            | `"De la Casa"`                           | signo inicial no consume posición             |
+| `pan del campo`                           | `Pan del Campo`                          | `del` atómico interno                         |
+| `al horno`                                | `Al Horno`                               | `al` atómico al inicio                        |
+| `pan de el campo`                         | `Pan de el Campo`                        | no contracción automática                     |
+| `pan y higos`                             | `Pan y Higos`                            | sin sustitución `y` → `e`                     |
+| `pan e higos`                             | `Pan e Higos`                            | forma recibida preservada                     |
+| `café o uvas`                             | `Café o Uvas`                            | sin sustitución `o` → `u`                     |
+| `café u uvas`                             | `Café u Uvas`                            | forma recibida preservada                     |
+| `deluxe`                                  | `Deluxe`                                 | `del` no coincide como subcadena              |
+| `paraíso de café`                         | `Paraíso de Café`                        | `para` no coincide como subcadena             |
+| `pan y/o queso`                           | conservar y revisar                      | forma compuesta no catalogada                 |
+| `3M de Colombia`                          | `3M de Colombia`                         | protección previa al conector                 |
+| `Coca-Cola de Café` con excepción         | preservar `Coca-Cola`; emitir `de`       | excepción oficial y conector interno          |
+| `500 g de Café`                           | preservar cantidad y unidad; emitir `de` | tokens protegidos y conector                  |
+
+El corpus deberá comprobar además todas las entradas en las tres posiciones normativas, cajas de entrada diferentes, signos iniciales, fronteras declaradas y no declaradas, conflictos de versión, ausencia de locale, tokens mixtos, paridad entre capas e idempotencia.
+
+#### 25. Conductas no conformes
+
+Quedan prohibidas:
+
+1. aplicar minúscula a un conector en `NAME_START`;
+2. capitalizar un conector interno por `Title Case` genérico;
+3. reconocer una entrada como subcadena;
+4. extender el catálogo mediante una lista local;
+5. dividir `al` o `del`;
+6. contraer `a el` o `de el`;
+7. sustituir `y` por `e` u `o` por `u` automáticamente;
+8. tratar `y/o` como dos conectores sin gramática aprobada;
+9. eliminar signos o normalizar espacios durante esta operación;
+10. aplicar el catálogo a clases distintas de `COMMERCIAL_NAME`;
+11. modificar valores externos, snapshots o evidencia;
+12. convertir una coincidencia en identidad, unicidad o autorización de fusión;
+13. producir resultados distintos entre capas con la misma versión;
+14. usar el locale implícito del runtime;
+15. ejecutar una versión retirada o incompatible sin transición explícita.
+
+#### 26. Relación con identidad, unicidad y fusiones
+
+1. La forma emitida por el catálogo pertenece al valor mostrado.
+2. Una coincidencia después de aplicar conectores solo es una señal textual.
+3. El catálogo no crea claves de búsqueda ni de identidad.
+4. El catálogo no activa constraints de unicidad.
+5. El catálogo no selecciona registro sobreviviente, no desactiva filas y no reasigna relaciones.
+6. Toda posible consolidación deberá revisar relaciones, movimientos, recetas, inventario, proveedores, integraciones, historial, auditoría, evidencia y rollback.
+7. La estrategia de duplicados normalizados pertenece a `DATA-NORM-ARC-010`.
+
+#### 27. Decisiones reservadas
+
+| Decisión                                                       | Tarea propietaria                                      |
+| -------------------------------------------------------------- | ------------------------------------------------------ |
+| formas oficiales de marcas, siglas, unidades y nombres legales | `DATA-NORM-ARC-005`                                    |
+| correcciones ortográficas y tildes                             | `DATA-NORM-ARC-006`                                    |
+| workflow, evidencia y decisión de ambigüedad                   | `DATA-NORM-ARC-007`                                    |
+| búsqueda, transliteración y comparación tolerante              | `DATA-NORM-ARC-008`                                    |
+| estructura de auditoría, versionado y trazas                   | `DATA-NORM-ARC-009`                                    |
+| identidad, unicidad y duplicados normalizados                  | `DATA-NORM-ARC-010`                                    |
+| aplicación, servicio de dominio, RPC y trigger defensivo       | `DATA-NORM-ARC-011`                                    |
+| valores recibidos desde integraciones externas                 | `DATA-NORM-ARC-012`                                    |
+| materialización, backfills, compatibilidad, pruebas y rollback | tareas `SUPA-TRANS-*` y `DATA-NORM-TRANS-*` aplicables |
+
+#### 28. Criterios de integridad
+
+La política se considera íntegra para esta etapa cuando:
+
+1. aprueba exactamente dieciocho conectores;
+2. mantiene el catálogo cerrado, explícito y versionado;
+3. reconoce solo tokens lexicales completos;
+4. aplica el catálogo exclusivamente a `COMMERCIAL_NAME` bajo el perfil `es-CO`;
+5. capitaliza conectores en inicio de nombre o segmento declarado;
+6. emite en minúscula los conectores internos;
+7. conserva signos iniciales sin consumir la primera posición lexical;
+8. respeta las fronteras declaradas por la política de capitalización;
+9. resuelve conectores consecutivos de forma posicional y determinista;
+10. trata `al` y `del` como entradas atómicas;
+11. prohíbe sustituciones automáticas entre `y`/`e` y `o`/`u`;
+12. bloquea formas compuestas no catalogadas;
+13. aplica excepciones y tokens protegidos antes del catálogo;
+14. separa caja, ortografía, Unicode, espacios, búsqueda e identidad;
+15. restringe mutación a fuentes y representaciones autorizadas;
+16. exige versionado, paridad entre capas e idempotencia;
+17. incluye corpus positivo, negativo, ambiguo y de bloqueo;
+18. no autoriza fusiones, cambios físicos ni decisiones reservadas.
+
+#### 29. Requisitos de prueba derivados
+
+Se crean los requisitos:
+
+- `TREQ-DATA-054`;
+- `TREQ-DATA-055`;
+- `TREQ-DATA-056`;
+- `TREQ-DATA-057`;
+- `TREQ-DATA-058`;
+- `TREQ-DATA-059`;
+- `TREQ-DATA-060`;
+- `TREQ-DATA-061`;
+- `TREQ-DATA-062`;
+- `TREQ-DATA-063`;
+- `TREQ-DATA-064`;
+- `TREQ-DATA-065`;
+- `TREQ-DATA-066`;
+- `TREQ-DATA-067`;
+- `TREQ-DATA-068`.
+
+El detalle canónico de cada requisito reside en el registro 04A actualizado hasta esta tarea.
+
+#### 30. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-ARC-003 — Definir reglas de capitalización para nombres empresariales
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-ARC-004 — Definir conectores que permanecen en minúscula
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales
+```
+
+
 ### [ ] DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales
 ### [ ] DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno
 ### [ ] DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas
