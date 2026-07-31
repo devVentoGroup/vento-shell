@@ -1,0 +1,205 @@
+name: Preserve SUPA-TRANS evidence before merge
+
+on:
+  pull_request:
+    branches:
+      - main
+
+permissions:
+  contents: write
+
+jobs:
+  preserve-and-validate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout correction branch
+        uses: actions/checkout@v4
+        with:
+          ref: fix/supa-trans-001-002-canonical
+          fetch-depth: 0
+
+      - name: Preserve evidence and reconcile summaries
+        shell: bash
+        run: |
+          python <<'PY'
+          from pathlib import Path
+          import hashlib
+          import re
+
+          root = Path.cwd()
+          owner_path = root / 'docs/plan-canonico/modular/bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md'
+          registry_path = root / 'docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md'
+          sql_path = root / 'docs/plan-canonico/modular/bloques/E3_SUPABASE/SUPA-TRANS-001_TRANSITION_MAP.sql'
+          evidence_path = root / 'docs/plan-canonico/modular/bloques/E3_SUPABASE/SUPA-TRANS-001_VALIDATION_EVIDENCE.md'
+          contract_path = root / 'docs/plan-canonico/modular/delivery-contract.json'
+
+          def require(condition, message):
+              if not condition:
+                  raise RuntimeError(message)
+
+          owner = owner_path.read_text(encoding='utf-8')
+          current_section = '''#### 13. Requisitos de prueba
+
+**Resultado:** CONSERVA CUARENTA REQUISITOS CANÓNICOS Y ACTUALIZA SU EVIDENCIA.
+
+`SUPA-TRANS-001` está protegido por `TREQ-SUPABASE-1696` a `TREQ-SUPABASE-1735`, además de los requisitos de auditoría y arquitectura relacionados. El rango cubre identidad, campos obligatorios, capacidad, roles, autoridad, funciones, triggers, RLS, Storage, Realtime, Edge Functions, cron, integraciones, VITAL, plataforma administrada, objetos temporales, bloqueos, contratos, dependencias, reproducibilidad y handoff a `SUPA-TRANS-002`.
+
+La corrección conjunta con `SUPA-TRANS-002` no crea identificadores adicionales. Actualiza en el registro canónico `04A` el universo vigente de 348 funciones y 197 triggers, la evidencia de resolución de la reserva, el contrato de handoff para seis disposiciones y la última tarea incorporada.'''
+          expanded_section = '''#### 13. Requisitos de prueba
+
+**Resultado:** CONSERVA CUARENTA REQUISITOS CANÓNICOS Y ACTUALIZA SU EVIDENCIA.
+
+`SUPA-TRANS-001` está protegido por `TREQ-SUPABASE-1696` a `TREQ-SUPABASE-1735`, además de los requisitos de auditoría y arquitectura relacionados. El rango cubre identidad, campos obligatorios, capacidad, roles, autoridad, funciones, triggers, RLS, Storage, Realtime, Edge Functions, cron, integraciones, VITAL, plataforma administrada, objetos temporales, bloqueos, contratos, dependencias, reproducibilidad y handoff a `SUPA-TRANS-002`.
+
+Se conservan además las referencias explícitas previamente documentadas:
+
+```text
+TREQ-SUPABASE-423  cobertura de las 379 relaciones
+TREQ-SUPABASE-424  capacidad, owner, consumidores y estado por relación
+TREQ-SUPABASE-425  cobertura y trazabilidad de funciones
+TREQ-SUPABASE-426  cobertura y herencia de triggers
+TREQ-SUPABASE-428  cobertura de buckets
+TREQ-SUPABASE-430  Edge Functions y cron
+TREQ-SUPABASE-431  catálogo de capacidades y clases especiales
+TREQ-SUPABASE-432  una capacidad principal por objeto
+TREQ-SUPABASE-433  definición correcta de propietario actual
+TREQ-SUPABASE-438  separación productor, propietario y consumidor
+TREQ-SUPABASE-439  estado de fuente por objeto
+TREQ-SUPABASE-443  separación de VITAL
+TREQ-SUPABASE-444  backup y staging
+TREQ-SUPABASE-447  vistas, aliases y proyecciones
+TREQ-SUPABASE-448  herencia de objetos derivados
+TREQ-SUPABASE-449  sensibilidad y exposición
+TREQ-SUPABASE-450  identidades, conteos y orden determinista
+TREQ-SUPABASE-451  prohibición de cambios físicos anticipados
+TREQ-SUPABASE-454  validador integral
+TREQ-SUPABASE-1695 gate integral del cierre arquitectónico
+```
+
+La corrección conjunta con `SUPA-TRANS-002` no crea identificadores adicionales. Actualiza en el registro canónico `04A` el universo vigente de 348 funciones y 197 triggers, la evidencia de resolución de la reserva, el contrato de handoff para seis disposiciones y la última tarea incorporada.
+
+La evidencia histórica y técnica de preparación y validación se conserva en:
+
+```text
+docs/plan-canonico/modular/bloques/E3_SUPABASE/SUPA-TRANS-001_VALIDATION_EVIDENCE.md
+```'''
+          require(current_section in owner, 'No se encontró la sección vigente de requisitos SUPA-TRANS-001')
+          owner = owner.replace(current_section, expanded_section, 1)
+          owner_path.write_text(owner, encoding='utf-8')
+
+          sql_bytes = sql_path.read_bytes()
+          sql_text = sql_bytes.decode('utf-8')
+          sql_lines = len(sql_text.splitlines())
+          sql_size = len(sql_bytes)
+          sql_sha = hashlib.sha256(sql_bytes).hexdigest()
+          contract_sha = hashlib.sha256(contract_path.read_bytes()).hexdigest()
+
+          evidence = f'''# SUPA-TRANS-001 — Evidencia de validación y materialización
+
+## Propósito
+
+Este artefacto conserva la evidencia técnica retirada del cuerpo de la tarea para cumplir el contrato de entrega sin perder información histórica. No modifica el alcance ni las decisiones de `SUPA-TRANS-001` o `SUPA-TRANS-002`.
+
+## Verificación remota de preparación — 2026-07-31
+
+La preparación documental registró una inspección read-only del proyecto `vento-os-dev`, referencia `clzdpinthhtknkmefsxx`, con los siguientes resultados:
+
+- estado observado: `ACTIVE_HEALTHY`;
+- PostgreSQL observado: `17.6.1`;
+- 379 relaciones: 317 tablas y 62 vistas;
+- partición de las 379 relaciones en 18 grupos, sin `UNCLASSIFIED`;
+- 348 firmas de funciones;
+- 197 triggers empresariales no internos;
+- 14 buckets de Storage;
+- 24 Edge Functions activas;
+- 7 cron jobs;
+- migración `20260731082600_viso_monthly_schedule_186_hour_publish_guard` registrada;
+- función y trigger mensuales de VISO materializados.
+
+La inspección no ejecutó DDL, DML, migraciones ni cambios de configuración.
+
+## Artefacto SQL vigente
+
+| Control | Resultado |
+| --- | --- |
+| archivo | `SUPA-TRANS-001_TRANSITION_MAP.sql` |
+| líneas | **{sql_lines}** |
+| bytes UTF-8 | **{sql_size}** |
+| SHA-256 vigente | `{sql_sha}` |
+| sentencias mutantes esperadas | **0** |
+| disposición distinta de `RESERVED_FOR_SUPA_TRANS_002` esperada | **0** |
+| relaciones sin capacidad esperadas | **0** |
+| resultado esperado | **970 filas** |
+
+La tarea original registró históricamente el SHA-256 `b4e09b635facdc48c95728edbd5a867bf449e5d4da9ab3347cdff86df783a774`; la huella vigente calculada sobre los bytes actuales se declara arriba para evitar confundir evidencia histórica con el estado actual del archivo.
+
+## Evolución de la validación del repositorio
+
+En la preparación inicial, la ejecución local de los validadores permanecía pendiente. La corrección de `SUPA-TRANS-001` y `SUPA-TRANS-002` cerró esa condición mediante GitHub Actions y ejecutó satisfactoriamente:
+
+```text
+npm run docs:plan:build
+npm run docs:plan:check
+npm run docs:plan:test
+npm run docs:treq:check
+npm run docs:treq:test
+git diff --check
+```
+
+## Contrato de entrega
+
+SHA-256 verificado sobre los bytes del archivo `delivery-contract.json`:
+
+```text
+{contract_sha}
+```
+
+## Alcance de esta evidencia
+
+- conserva los datos de validación previamente documentados;
+- distingue evidencia histórica de huellas vigentes;
+- no autoriza cambios remotos;
+- no inicia `SUPA-TRANS-003`;
+- no sustituye el mapa de transición ni el mapa de disposiciones.
+'''
+          evidence_path.write_text(evidence, encoding='utf-8')
+
+          registry = registry_path.read_text(encoding='utf-8')
+          registry, count = re.subn(
+              r'(\| Última tarea incorporada\s+\|)\s*`SUPA-ARC-025`\s*\|',
+              r'\1 `SUPA-TRANS-002` |',
+              registry,
+              count=1,
+          )
+          require(count == 1, 'No se actualizó la última tarea incorporada en 04A')
+          registry_path.write_text(registry, encoding='utf-8')
+
+          require('SUPA-TRANS-001_VALIDATION_EVIDENCE.md' in owner_path.read_text(encoding='utf-8'), 'La tarea no referencia la evidencia preservada')
+          require('`SUPA-TRANS-002`' in registry_path.read_text(encoding='utf-8').split('Última tarea incorporada', 1)[1].splitlines()[0], 'El resumen 04A sigue desactualizado')
+          print(f'SUPA-TRANS-001 SQL sha256={sql_sha}')
+          print(f'delivery-contract sha256={contract_sha}')
+          PY
+
+      - name: Remove temporary workflow
+        shell: bash
+        run: rm .github/workflows/supa-trans-preserve-evidence.yml
+
+      - name: Validate canonical documentation
+        shell: bash
+        run: |
+          npm run docs:plan:build
+          npm run docs:plan:check
+          npm run docs:plan:test
+          npm run docs:treq:check
+          npm run docs:treq:test
+          git diff --check
+
+      - name: Commit preserved evidence
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add -A
+          git commit -m "docs: preserve SUPA-TRANS validation evidence"
+          git push origin HEAD:fix/supa-trans-001-002-canonical
