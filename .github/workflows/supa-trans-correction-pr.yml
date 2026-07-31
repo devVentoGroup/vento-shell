@@ -29,6 +29,7 @@ jobs:
               'd43b45430c81fff890291f9ecc781d86bd61de4a3a24a98af2a03acef523a360',
               'dc0ab660965a77a4d1b3878794a74bd50a254e57944a26098b63eeae82bcd7fd',
           )
+          source = source.replace('6287', '6258').replace('6.287', '6.258')
           start = source.index("          python <<'PY'\n") + len("          python <<'PY'\n")
           end = source.index("\n          PY", start)
           code = '\n'.join(line[10:] if line.startswith('          ') else line for line in source[start:end].splitlines())
