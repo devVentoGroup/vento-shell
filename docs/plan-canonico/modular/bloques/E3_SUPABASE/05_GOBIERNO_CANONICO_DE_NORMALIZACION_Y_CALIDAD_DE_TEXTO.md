@@ -3423,7 +3423,675 @@ DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas
 ```
 
 
-### [ ] DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas
+### ✅ DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno` — APROBADA
+**Tarea siguiente:** `DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación`
+**Tipo de tarea:** definición normativa de la cola canónica de revisión humana para candidatos textuales ambiguos, su admisión, priorización, asignación, evidencia, SLA, decisión, segregación, escalamiento y cierre; sin DDL, DML, migraciones, backfills, correcciones de datos, activación de reglas, fusiones, cambios de índices, constraints, funciones, triggers, clientes, integraciones, configuración ni despliegues
+
+#### 1. Objetivo
+
+Definir el contrato canónico mediante el cual toda corrección, excepción, clasificación o forma textual que no pueda resolverse de manera determinista y autorizada deberá conservar el valor original y convertirse en un caso trazable de revisión humana.
+
+La cola deberá impedir que una sugerencia, frecuencia observada, semejanza, decisión local o urgencia operativa se transforme en corrección automática. Cada caso deberá tener identidad estable, coordenada semántica, evidencia, riesgo, propietario, prioridad, SLA, decisión cerrada y destino documental. La resolución podrá autorizar una propuesta de política o catálogo, pero nunca modificará por sí sola datos existentes ni ejecutará fusiones, backfills o cambios estructurales.
+
+#### 2. Artefacto producido
+
+```text
+VENTO_AMBIGUOUS_TEXT_REVIEW_QUEUE_POLICY@1.0.0
+```
+
+| Propiedad                                       | Valor |
+| ----------------------------------------------- | ----: |
+| Familias cerradas de detonante                  |    10 |
+| Estados cerrados de la cola                     |    11 |
+| Clases de prioridad y SLA                       |     4 |
+| Funciones de responsabilidad                    |     7 |
+| Resultados cerrados de decisión                 |     9 |
+| Grupos iniciales de candidatos contextualizados |     8 |
+| Requisitos de prueba nuevos                     |    18 |
+| Cambios físicos autorizados                     |     0 |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                   | Decisión consumida                                                                                                                       |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`        | continuidad, fase exclusivamente documental, preservación histórica, destino obligatorio de brechas y generación inmediata de requisitos |
+| `delivery-contract.json` | identidad del artefacto de tarea y actualización integral del registro 04A al crear requisitos                                           |
+| `active-sequence.json`   | `DATA-NORM-ARC-007` como tarea actual y `DATA-NORM-ARC-008` como siguiente tarea reservada                                               |
+| `DATA-NORM-AUD-003`      | falsos positivos, formas oficiales, marcas, siglas, unidades, nombres legales, personas y candidatos sin autoridad suficiente            |
+| `DATA-NORM-AUD-004`      | colisiones, homónimos, scopes, identidad y prohibición de fusionar por similitud textual                                                 |
+| `DATA-NORM-AUD-005`      | separación entre normalización determinista, diccionario, revisión humana, preservación y resolución estructural                         |
+| `DATA-NORM-AUD-006`      | productores distribuidos, copias, snapshots, integraciones y riesgo de decisiones locales divergentes                                    |
+| `DATA-NORM-AUD-007`      | impacto sobre búsquedas, consumidores, relaciones, unicidad, contratos y transición                                                      |
+| `DATA-NORM-ARC-001`      | ambigüedad fail closed, política por coordenada, preservación del original y niveles de decisión                                         |
+| `DATA-NORM-ARC-002`      | clases semánticas, representaciones, fuentes y modo `HUMAN_REVIEW_REQUIRED`                                                              |
+| `DATA-NORM-ARC-003`      | tokens, modelos, siglas, compuestos y formas internas ambiguas                                                                           |
+| `DATA-NORM-ARC-004`      | conectores, formas compuestas, conflictos y precedencia contextual                                                                       |
+| `DATA-NORM-ARC-005`      | candidatos de excepción, fuentes de autoridad, aliases, unidades y nombres legales                                                       |
+| `DATA-NORM-ARC-006`      | diccionario cerrado, `expresso`, conflictos, evidencia, ciclo de vida y reserva expresa de cola, responsables y SLA                      |
+
+#### 4. Alcance y fronteras
+
+Esta tarea define:
+
+1. qué resultados y condiciones deben crear o actualizar un caso de revisión;
+2. la puerta que distingue una ambigüedad textual de un incidente técnico o problema estructural;
+3. la identidad lógica y deduplicación de casos;
+4. el contrato mínimo de cada caso;
+5. los estados y transiciones cerrados de la cola;
+6. las prioridades, relojes y objetivos de atención;
+7. las funciones responsables y su segregación;
+8. la evidencia mínima por clase de candidato;
+9. el flujo de triage, análisis, decisión, aprobación y cierre;
+10. los resultados cerrados y el efecto permitido de cada decisión;
+11. la reapertura, supersesión, agrupación y tratamiento masivo;
+12. la relación con catálogos, diccionario, búsqueda, identidad, capas de ejecución e integraciones;
+13. el backlog inicial derivado de las tareas aprobadas;
+14. los invariantes de seguridad, privacidad, determinismo e idempotencia.
+
+Esta tarea no define:
+
+- tablas, columnas, índices, RLS, grants, funciones, RPC, triggers, jobs, colas físicas ni interfaz;
+- el almacenamiento definitivo de auditoría, versiones, decisiones o evidencias;
+- el algoritmo de búsqueda, transliteración o comparación tolerante;
+- scopes de unicidad, deduplicación empresarial, fusión o selección de sobreviviente;
+- qué capa técnica ejecutará cada regla;
+- el contrato físico de valores externos;
+- backfills, correcciones de datos, activación de catálogos, propagación, despliegue o rollback;
+- permisos concretos del catálogo de autorización.
+
+Estas decisiones permanecen en `DATA-NORM-ARC-008` a `DATA-NORM-ARC-012`, `SUPA-TRANS-001` a `SUPA-TRANS-015` y `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009`, según su propiedad.
+
+#### 5. Principios obligatorios
+
+1. **La ambigüedad preserva el valor.** Ningún caso pendiente, vencido, escalado o sin evidencia autoriza mutación.
+2. **La cola gobierna decisiones, no datos.** Una resolución produce una decisión versionable; la corrección de registros pertenece a una transición separada.
+3. **Una sugerencia no es autoridad.** Teclado, navegador, librería, frecuencia, búsqueda externa, modelo lingüístico o preferencia local solo pueden originar candidatos.
+4. **La coordenada prevalece.** El mismo texto puede requerir decisiones distintas por dominio, entidad, campo, clase, representación, fuente, idioma y vigencia.
+5. **La evidencia se evalúa por finalidad.** Una forma oficial, legal, técnica, histórica o externa exige la fuente adecuada para su clase.
+6. **La revisión no define identidad.** Aprobar una forma textual no fusiona, desactiva, reasigna ni vuelve únicos registros.
+7. **Las decisiones son aditivas e inmutables.** Un cambio posterior crea una revisión o supersesión vinculada; no reescribe la decisión anterior.
+8. **La prioridad no reduce controles.** Una urgencia acorta el SLA, pero no elimina evidencia, segregación ni aprobación.
+9. **La falta de respuesta no es aprobación.** El vencimiento conserva el caso abierto y bloqueado.
+10. **La deduplicación no elimina contexto.** Solo casos con la misma clave lógica pueden compartir expediente; casos parecidos permanecen vinculados, no fusionados por intuición.
+11. **Toda salida tiene propietario.** Ningún diferimiento, solicitud de evidencia o escalamiento quedará sin responsable y fecha de revisión.
+12. **VITAL permanece separado.** Ninguna decisión transversal de Vento OS se aplica a VITAL por compartir infraestructura.
+
+#### 6. Definición de caso de revisión
+
+Un caso de revisión es un expediente lógico que representa una decisión textual no resoluble automáticamente y que conserva, como mínimo:
+
+```text
+valor original protegido
++ coordenada de política
++ candidato o conflicto observado
++ evidencia disponible
++ riesgo de una decisión incorrecta
++ responsables de análisis y decisión
++ estado, prioridad y SLA
++ resolución o escalamiento trazable
+```
+
+El caso no equivale a una entrada activa de diccionario, excepción, política de campo, alias, regla de búsqueda ni instrucción de modificación de datos.
+
+#### 7. Familias cerradas de detonante
+
+| Código lógico                         | Condición de ingreso                                                                                               | Ejemplo canónico                           |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| `DICTIONARY_AMBIGUOUS_REVIEW`         | el diccionario reconoce una forma ambigua o expresamente excluida                                                  | `expresso`                                 |
+| `DICTIONARY_CONFLICT_BLOCKED`         | dos entradas o decisiones ortográficas aplicables son incompatibles                                                | dos destinos para el mismo token y scope   |
+| `OFFICIAL_EXCEPTION_CANDIDATE`        | una posible marca, sigla, unidad o forma legal carece de fuente, alcance o evidencia suficientes                   | `Oster`, `BBQ`, `SAS` sin contexto         |
+| `OFFICIAL_EXCEPTION_CONFLICT`         | dos formas oficiales, aliases o fuentes de autoridad compiten en la misma coordenada                               | `Wellmix` frente a `Welmix`                |
+| `CAPITALIZATION_AMBIGUOUS_TOKEN`      | caja interna, modelo, sigla, guion, apóstrofo o token mixto no puede clasificarse de manera determinista           | `iPhone` sin excepción; `TH33M.110.`       |
+| `CONNECTOR_OR_COMPOUND_AMBIGUITY`     | un token compuesto o una secuencia no pertenece al catálogo cerrado y no tiene gramática aprobada                  | `y/o`, `de-la`                             |
+| `UNCLASSIFIED_FIELD_OR_VALUE`         | clase semántica, representación, fuente, locale o política del campo no puede resolverse                           | columna legacy mezclada                    |
+| `STRUCTURED_TEXT_RESOLUTION_REQUIRED` | cantidad, unidad, empaque, modelo, marca o descriptor aparecen mezclados y cambiar texto no resuelve la estructura | `Bolsa 1 kg`, `VOLNIC PALLOMARO`           |
+| `AUTHORITY_OR_EVIDENCE_MISSING`       | existe una forma plausible, pero falta propietario, documento, estándar, fabricante o fuente autorizada            | razón social o marca observada sin soporte |
+| `CROSS_LAYER_DECISION_DIVERGENCE`     | dos capas, consumidores o versiones producen decisiones distintas para la misma entrada y coordenada               | aplicación corrige y RPC preserva          |
+
+El catálogo es cerrado. Un nuevo detonante requiere una decisión canónica que defina frontera, admisión, riesgo, evidencia, responsables y requisitos de prueba.
+
+#### 8. Puerta de admisión
+
+Un evento solo ingresará a la cola cuando:
+
+1. exista un valor o huella protegida del valor original;
+2. pueda identificarse el dominio, entidad, campo o trayectoria estructurada afectada;
+3. exista una clase de detonante del catálogo;
+4. la decisión no pueda resolverse mediante una regla activa, exacta y compatible;
+5. el caso no corresponda exclusivamente a indisponibilidad, error de red, fallo de despliegue o configuración ausente;
+6. la propuesta no intente resolver identidad, unicidad, fusión o una estructura relacional mediante texto;
+7. exista un propietario inicial o una ruta de escalamiento por dominio;
+8. puedan conservarse fuente, momento, versiones y consumidor que detectó el caso.
+
+Los fallos técnicos sin ambigüedad semántica se remitirán al proceso de incidentes correspondiente. Los problemas de estructura o identidad podrán usar la cola para documentar la evidencia inicial, pero deberán terminar en un resultado de escalamiento, no en una corrección textual.
+
+#### 9. Identidad lógica y deduplicación
+
+Cada caso deberá tener una clave estable independiente de la presentación visible:
+
+```text
+review_case_key =
+  candidate_kind
+  + domain_scope
+  + entity_scope
+  + field_scope
+  + semantic_class
+  + representation_role
+  + source_role
+  + locale
+  + original_value_hash
+  + proposed_action
+  + policy_version_set
+```
+
+Reglas:
+
+1. el valor original exacto se conserva por separado; la clave utiliza una huella y no sustituye la evidencia;
+2. solo una coincidencia exacta de todos los componentes permite deduplicar un caso abierto;
+3. una versión, scope, fuente, representación o acción propuesta distinta crea un caso distinto y vinculado;
+4. dos valores que convergen después de capitalización, diccionario o búsqueda no comparten identidad de caso por esa sola razón;
+5. un evento repetido añade ocurrencia, consumidor, timestamp y evidencia al caso existente sin crear otra decisión;
+6. una colisión de huella o una clave incompatible bloquea la deduplicación y crea revisión técnica vinculada;
+7. el cierre de un caso no impide crear una revisión nueva cuando cambien evidencia, alcance o versiones.
+
+#### 10. Contrato lógico mínimo del caso
+
+Todo caso deberá poder expresar, como mínimo:
+
+```text
+review_case_id
+review_case_key
+candidate_kind
+original_value_protected
+original_value_hash
+proposed_value_or_action
+policy_coordinate
+semantic_class
+representation_role
+source_role
+locale
+source_system_or_consumer
+source_record_reference
+detection_result
+policy_version_set
+candidate_rule_or_entries
+risk_class
+priority
+status
+occurrence_count
+first_detected_at
+last_detected_at
+sla_acknowledgement_due_at
+sla_decision_due_at
+assigned_domain_steward
+assigned_normalization_owner
+evidence_requirements
+evidence_references
+conflicting_references
+review_notes_protected
+decision_outcome
+decision_reason
+decision_scope
+decision_version
+supersedes_review_case_id
+escalation_target
+resolved_at
+```
+
+Una entrada incompleta podrá permanecer en `OPEN` o `AWAITING_EVIDENCE`, pero no podrá pasar a aprobación ni producir una decisión ejecutable.
+
+#### 11. Estados cerrados de la cola
+
+| Estado                            | Significado                                                                                                   |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `OPEN`                            | caso admitido, original preservado y triage pendiente                                                         |
+| `TRIAGED`                         | detonante, coordenada, riesgo, prioridad y ruta inicial confirmados                                           |
+| `AWAITING_EVIDENCE`               | faltan evidencias concretas, con responsable y fecha de entrega                                               |
+| `ASSIGNED`                        | responsables de dominio y normalización aceptaron la asignación                                               |
+| `UNDER_REVIEW`                    | análisis activo de evidencia, alcance, falsos positivos y consumidores                                        |
+| `AWAITING_DOMAIN_DECISION`        | análisis completo y decisión empresarial del dominio pendiente                                                |
+| `AWAITING_NORMALIZATION_APPROVAL` | decisión de dominio emitida y aprobación canónica de normalización pendiente                                  |
+| `RESOLVED_APPROVED`               | decisión aprobada con alcance, evidencia, versión y destino posteriores definidos                             |
+| `RESOLVED_REJECTED`               | candidato rechazado con justificación, evidencia y protección contra reingreso idéntico sin información nueva |
+| `ESCALATED_STRUCTURAL`            | el problema pertenece a estructura, identidad, unicidad, integración o transición y tiene tarea destino       |
+| `CANCELLED_DUPLICATE`             | ocurrencia unida a otro caso con clave lógica idéntica; conserva vínculo y procedencia                        |
+
+No existe un estado de aprobación por silencio ni cierre automático por vencimiento. Un SLA vencido conserva el estado real y añade condición de incumplimiento visible.
+
+#### 12. Transiciones permitidas
+
+```text
+OPEN
+→ TRIAGED
+→ AWAITING_EVIDENCE | ASSIGNED | ESCALATED_STRUCTURAL | CANCELLED_DUPLICATE
+
+AWAITING_EVIDENCE
+→ TRIAGED | ESCALATED_STRUCTURAL
+
+ASSIGNED
+→ UNDER_REVIEW | AWAITING_EVIDENCE
+
+UNDER_REVIEW
+→ AWAITING_EVIDENCE | AWAITING_DOMAIN_DECISION | ESCALATED_STRUCTURAL
+
+AWAITING_DOMAIN_DECISION
+→ UNDER_REVIEW | AWAITING_NORMALIZATION_APPROVAL | RESOLVED_REJECTED | ESCALATED_STRUCTURAL
+
+AWAITING_NORMALIZATION_APPROVAL
+→ UNDER_REVIEW | RESOLVED_APPROVED | RESOLVED_REJECTED | ESCALATED_STRUCTURAL
+```
+
+Los estados terminales no admiten edición ni retorno directo. Nueva evidencia crea una revisión vinculada que conserva la resolución original.
+
+#### 13. Prioridad y SLA
+
+Los SLA se miden en horas transcurridas desde `first_detected_at`. La espera de evidencia no detiene la edad total ni elimina el incumplimiento; deberá mostrarse separadamente quién conserva la acción pendiente.
+
+| Prioridad     | Criterio mínimo                                                                                                                 | Acuse máximo | Decisión o escalamiento máximo |
+| ------------- | ------------------------------------------------------------------------------------------------------------------------------- | -----------: | -----------------------------: |
+| `P0_CRITICAL` | posible alteración de identidad, nombre legal, secreto, evidencia, código técnico, referencia financiera o cambio masivo activo |      2 horas |                       24 horas |
+| `P1_HIGH`     | bloquea una fuente propietaria, integración o varios consumidores; existe riesgo material de falso positivo o divergencia       |      8 horas |                       72 horas |
+| `P2_STANDARD` | candidato acotado sin mutación automática activa ni impacto crítico inmediato                                                   |     24 horas |                      240 horas |
+| `P3_RESEARCH` | señal exploratoria, calidad histórica o candidato sin evidencia suficiente ni ruta activa de mutación                           |     72 horas |                      720 horas |
+
+Reglas:
+
+1. el SLA obliga a decidir, rechazar, pedir evidencia concreta o escalar; no obliga a aprobar;
+2. una prioridad menor no podrá ocultar un cambio masivo, un dato protegido o una divergencia activa;
+3. todo cambio de prioridad conservará valor anterior, actor, motivo y timestamp;
+4. un incumplimiento deberá escalar al propietario del dominio y al responsable canónico de normalización;
+5. la ausencia de asignación no suspende los relojes;
+6. una reapertura inicia nuevos relojes y conserva los tiempos de la revisión anterior;
+7. las notificaciones y automatizaciones físicas se definirán en las tareas de implementación correspondientes.
+
+#### 14. Reglas de priorización
+
+Se evaluarán, en este orden:
+
+1. posibilidad de mutación destructiva o activación no autorizada;
+2. sensibilidad de la clase o representación;
+3. alcance de campo, entidad, dominio o transversal;
+4. cantidad de consumidores y capas divergentes;
+5. uso en contratos, documentos, etiquetas, integraciones o decisiones empresariales;
+6. recurrencia y crecimiento de ocurrencias;
+7. existencia de workaround seguro de preservación;
+8. disponibilidad y calidad de evidencia;
+9. impacto sobre transición, backfill o cutover;
+10. antigüedad del caso.
+
+Frecuencia y antigüedad pueden elevar prioridad, pero nunca constituyen evidencia de la forma correcta.
+
+#### 15. Funciones de responsabilidad
+
+Las siguientes son funciones del proceso y no roles de autorización ni permisos concedidos:
+
+| Función                        | Responsabilidad                                                                                                                 |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------- |
+| `CANDIDATE_PRODUCER`           | registra la ocurrencia, conserva el original y aporta contexto sin aprobar su propia propuesta                                  |
+| `QUEUE_TRIAGE_STEWARD`         | confirma admisión, detonante, clave, prioridad, SLA, duplicidad y ruta                                                          |
+| `DOMAIN_STEWARD`               | determina significado empresarial, alcance, consumidores y riesgo dentro del dominio                                            |
+| `EVIDENCE_VALIDATOR`           | verifica procedencia, vigencia, integridad y suficiencia de documentos, estándares o fuentes externas                           |
+| `NORMALIZATION_DECISION_OWNER` | asegura consistencia con políticas, catálogos, versiones, precedencia y frontera VITAL                                          |
+| `STRUCTURAL_ESCALATION_OWNER`  | recibe casos de estructura, identidad, unicidad, integración o transición y los vincula con su tarea propietaria                |
+| `IMPLEMENTATION_OPERATOR`      | materializa posteriormente una decisión aprobada sin cambiar alcance, evidencia ni resultado; no participa como aprobador único |
+
+La asignación concreta de permisos y capacidades pertenece al catálogo de autorización y a `DATA-NORM-ARC-011`.
+
+#### 16. Segregación y autoridad de decisión
+
+1. `CANDIDATE_PRODUCER` no podrá ser el único aprobador del caso que originó.
+2. `QUEUE_TRIAGE_STEWARD` podrá unir duplicados exactos, corregir clasificación administrativa y solicitar evidencia, pero no activar reglas.
+3. Toda decisión `RESOLVED_APPROVED` requerirá como mínimo la conformidad de `DOMAIN_STEWARD` y `NORMALIZATION_DECISION_OWNER`.
+4. Casos `P0_CRITICAL`, alcance transversal, nombres legales, marcas externas, unidades, códigos, secretos o evidencia exigirán además validación de fuente por `EVIDENCE_VALIDATOR` cuando aplique.
+5. Una persona que materialice la decisión no podrá ampliar su alcance, cambiar su resultado ni sustituir evidencia durante implementación.
+6. Un conflicto de interés, ausencia de propietario o desacuerdo no se resuelve por jerarquía técnica; deberá escalarse con el caso abierto.
+7. Rechazo y preservación también deberán conservar autoridad, motivo y alcance para evitar reingresos informales.
+8. La interfaz no podrá presentar una recomendación automática como aprobación humana.
+
+#### 17. Evidencia mínima por clase de candidato
+
+| Clase de candidato               | Evidencia mínima                                                                                                                  |
+| -------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| ortografía ordinaria             | forma observada, contexto completo, fuente propietaria, significado, corpus positivo y negativo, riesgo de falso positivo         |
+| marca o denominación comercial   | fuente del titular, fabricante o propietario interno; alcance de producto o entidad; aliases explícitos y vigencia                |
+| sigla, abreviatura o código      | catálogo o contrato que defina significado, contexto, caja, puntuación y consumidores                                             |
+| unidad o componente estructurado | catálogo dimensional, código, etiqueta, cantidad, multiplicador, contexto y factor cuando corresponda                             |
+| nombre legal                     | documento o fuente legal/regulatoria, jurisdicción, fecha, vigencia y vínculo con la entidad                                      |
+| persona o actor                  | fuente de identidad autorizada, consentimiento o proceso de rectificación aplicable; sin exponer datos innecesarios               |
+| texto externo                    | payload original protegido, sistema, contrato, momento de recepción y mapeo interno propuesto                                     |
+| texto histórico o evidencia      | razón que justifica cualquier derivación sin modificar el original, versión y relación con el hecho histórico                     |
+| clasificación de campo           | dominio, entidad, trayectoria, significado, consumidores, ejemplos válidos e inválidos, representaciones y rol de fuente          |
+| divergencia entre capas          | entrada, coordenada, versiones, resultados por capa, orden de ejecución, reintentos y evidencia reproducible                      |
+| estructura o identidad           | componentes, relaciones, referencias, movimientos, consumidores, posibles colisiones y tarea propietaria del análisis estructural |
+
+Una captura aislada, la forma mayoritaria o una búsqueda no incorporada como fuente autorizada no satisface por sí sola la evidencia mínima.
+
+#### 18. Flujo canónico de revisión
+
+```text
+1. detectar un resultado ambiguo, conflictivo o no clasificable
+        ↓
+2. preservar valor, fuente, versiones y contexto
+        ↓
+3. resolver o crear review_case_key
+        ↓
+4. registrar ocurrencia y consumidores afectados
+        ↓
+5. ejecutar triage, riesgo, prioridad y SLA
+        ↓
+6. verificar si corresponde a texto, estructura, identidad o incidente
+        ↓
+7. asignar steward de dominio y owner de normalización
+        ↓
+8. solicitar y validar evidencia específica
+        ↓
+9. analizar alcance, falsos positivos, colisiones y compatibilidad
+        ↓
+10. emitir decisión de dominio
+        ↓
+11. aprobar, rechazar, preservar, solicitar evidencia o escalar
+        ↓
+12. producir decisión versionable sin modificar datos existentes
+        ↓
+13. vincular la decisión con catálogo, política o tarea propietaria
+        ↓
+14. cerrar el expediente conservando historia y próximos controles
+```
+
+#### 19. Resultados cerrados de decisión
+
+| Resultado lógico                      | Efecto permitido                                                                                                 |
+| ------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `APPROVE_DICTIONARY_ENTRY`            | autoriza preparar una entrada o versión del diccionario con origen, destino, scope, evidencia y corpus aprobados |
+| `APPROVE_OFFICIAL_EXCEPTION`          | autoriza preparar una excepción oficial o alias explícito dentro de su familia y alcance                         |
+| `APPROVE_PRESERVE_AS_VALID`           | declara que la forma debe conservarse dentro del scope y evita correcciones más amplias incompatibles            |
+| `APPROVE_FIELD_POLICY_CLASSIFICATION` | autoriza clasificar el campo o componente con clase, representación, fuente y operaciones delimitadas            |
+| `REJECT_CANDIDATE`                    | rechaza la propuesta y conserva motivo, evidencia y condiciones que permitirían una revisión futura              |
+| `REQUEST_MORE_EVIDENCE`               | mantiene el caso abierto con evidencia concreta requerida, propietario y fecha de revisión                       |
+| `ESCALATE_TO_STRUCTURAL_RESOLUTION`   | remite mezcla de componentes o problema de modelo a la tarea de arquitectura o transición correspondiente        |
+| `ESCALATE_TO_IDENTITY_REVIEW`         | remite colisión, unicidad, homónimo, alias empresarial o posible fusión a `DATA-NORM-ARC-010` y su transición    |
+| `DEFER_WITH_OWNER_AND_REVIEW_AT`      | conserva el caso abierto, riesgo, owner, evidencia faltante y fecha obligatoria; no crea regla ejecutable        |
+
+Ningún resultado produce por sí mismo una corrección de filas, un backfill, una propagación, un constraint, una fusión o una activación en runtime.
+
+#### 20. Contrato mínimo de la decisión
+
+Toda decisión deberá declarar:
+
+- identificador y revisión del caso;
+- resultado cerrado;
+- valor original y candidato evaluado mediante referencias protegidas;
+- coordenada y scope exactos;
+- clases, representaciones y fuentes permitidas o excluidas;
+- evidencia utilizada y fuentes descartadas;
+- análisis de falsos positivos y colisiones;
+- consumidores y capas afectadas;
+- decisión de dominio y aprobación de normalización;
+- versión propuesta de catálogo o política, cuando aplique;
+- no retroactividad o tratamiento temporal esperado;
+- tarea responsable de materialización;
+- condiciones de activación, prueba y rollback posteriores;
+- motivo, actores y timestamps;
+- relación con decisiones supersedidas o casos vinculados.
+
+Una decisión sin scope, evidencia, responsables o destino no podrá marcarse `RESOLVED_APPROVED`.
+
+#### 21. Efecto sobre catálogos y políticas
+
+1. Una aprobación genera un paquete lógico de decisión, no una edición silenciosa de una entrada activa.
+2. El diccionario, catálogo de excepciones o clasificación deberá incorporar la decisión mediante una versión nueva o una entrada que declare supersesión.
+3. Una decisión específica no se convertirá en regla transversal por analogía.
+4. Una preservación aprobada tendrá precedencia solo dentro de su coordenada y vigencia.
+5. Un rechazo no elimina el caso ni la forma observada; impide reutilizar la misma propuesta sin evidencia nueva.
+6. Las entradas activas seguirán sujetas a los ciclos definidos por `DATA-NORM-ARC-005` y `DATA-NORM-ARC-006`.
+7. La estructura física de versiones, vigencias, traza y decisiones pertenece a `DATA-NORM-ARC-009`.
+8. La capa que consume y ejecuta la decisión pertenece a `DATA-NORM-ARC-011`.
+
+#### 22. Reutilización, agrupación y alcance
+
+1. Un caso podrá agrupar múltiples ocurrencias únicamente bajo la misma `review_case_key`.
+2. Las ocurrencias conservarán sistema, registro, consumidor, timestamp y resultado de detección propios.
+3. Casos con texto igual pero dominio, campo, clase, fuente, locale, versión o acción diferentes se vincularán como relacionados y no se deduplicarán.
+4. Una decisión de campo no se reutilizará automáticamente en entidad, dominio o política transversal.
+5. Un lote podrá presentar una decisión común solo si demuestra homogeneidad de coordenada, evidencia, riesgo y resultado para cada miembro.
+6. El muestreo no autoriza corregir elementos no examinados cuando pueda existir una excepción o falso positivo.
+7. Una agregación para métricas no podrá ocultar casos críticos, vencidos o sin propietario.
+8. La frecuencia de ocurrencias puede priorizar, pero no demostrar la forma canónica.
+
+#### 23. Conflictos, desacuerdos y escalamiento
+
+Se produce escalamiento obligatorio cuando:
+
+- dominio y normalización no coinciden en significado o alcance;
+- dos fuentes autorizadas vigentes son incompatibles;
+- la decisión afectaría identidad, unicidad, relaciones o selección de registro;
+- existe riesgo legal, contractual, financiero, de seguridad o evidencia;
+- una forma pertenece a varios idiomas o productos sin política compatible;
+- el candidato requiere descomponer una estructura mezclada;
+- una decisión transversal afectaría dominios no representados en la revisión;
+- dos capas ejecutan versiones incompatibles;
+- no existe propietario empresarial identificable;
+- el SLA de un caso `P0_CRITICAL` o `P1_HIGH` se incumple.
+
+El escalamiento deberá conservar responsable receptor, tarea destino, evidencia, riesgo, fecha y condición de retorno. `ESCALATED_STRUCTURAL` no equivale a resolución favorable ni permite mutación.
+
+#### 24. Reapertura, supersesión y corrección de decisiones
+
+1. Una decisión cerrada es inmutable.
+2. Evidencia nueva, cambio de autoridad, versión, scope o consumidor crea una revisión vinculada.
+3. La nueva revisión declara qué decisión evalúa y por qué podría supersederla.
+4. Una decisión supersedida conserva vigencia histórica y no desaparece.
+5. La reapertura no reactiva automáticamente una propuesta rechazada ni una regla retirada.
+6. Corregir un error administrativo del expediente requiere una entrada aditiva que conserve antes, después, actor y motivo.
+7. Una resolución nueva no modifica snapshots, evidencia o datos históricos sin una transición aprobada.
+8. El rollback de una regla materializada no borra la decisión; crea un resultado técnico vinculado y, cuando corresponda, un nuevo caso.
+
+#### 25. Concurrencia, reintentos e idempotencia
+
+1. Registrar dos veces la misma ocurrencia y clave deberá producir un solo caso y sumar evidencia sin duplicar decisiones.
+2. Dos revisores no podrán cerrar simultáneamente el mismo estado esperado con resultados distintos.
+3. Toda transición deberá validar versión o estado esperado del caso.
+4. Un reintento después de respuesta perdida devolverá el resultado previo sin crear otra resolución.
+5. Una clave reutilizada con coordenada o payload incompatible producirá conflicto y no deduplicación.
+6. La asignación concurrente tendrá un único responsable efectivo por función y conservará intentos rechazados.
+7. Una decisión pendiente en un cliente offline deberá revalidar estado, evidencia, autoridad y versión antes de sincronizar.
+8. La misma decisión, evidencia y versión deberán producir el mismo resultado lógico en todas las capas.
+
+#### 26. Seguridad, privacidad y minimización
+
+1. La cola almacenará o expondrá únicamente los campos necesarios para decidir.
+2. Valores personales, legales, externos, secretos, firmas y evidencia tendrán referencias protegidas cuando el contenido completo no sea necesario.
+3. Tokens, API keys, hashes, firmas o secretos no se incluirán completos en notas, eventos, métricas o logs.
+4. El acceso deberá limitarse por dominio, finalidad, sensibilidad, territorio y función del proceso.
+5. Consultar, exportar, adjuntar, reasignar, aprobar o corregir un caso sensible requerirá acciones diferenciadas.
+6. Una exportación de casos no convertirá originales protegidos en datos de libre circulación.
+7. Notas humanas no podrán introducir datos de terceros innecesarios ni convertirse en fuente canónica por sí mismas.
+8. La retención, auditoría física y autorización concreta se definirán en `DATA-NORM-ARC-009`, `DATA-NORM-ARC-011` y las tareas de gobierno de información aplicables.
+
+#### 27. Preservación de originales, copias e historia
+
+1. `EXTERNAL_ORIGINAL`, `HISTORICAL_SNAPSHOT`, `IMMUTABLE_SNAPSHOT` y `AUDIT_EVIDENCE` no se modifican durante revisión.
+2. El caso conserva referencias a la fuente y no crea una copia con autoridad competidora.
+3. Una forma propuesta puede mostrarse como comparación, nunca como valor ya aplicado.
+4. Una `SYNCHRONIZED_COPY` no recibe cambios hasta que la fuente propietaria materialice una decisión aprobada mediante el contrato correspondiente.
+5. Una proyección para análisis o visualización no retroalimenta la fuente.
+6. La revisión de un valor histórico no reinterpreta documentos, pedidos, etiquetas, eventos o auditorías anteriores.
+7. Una forma externa puede mapearse internamente sin perder payload, procedencia ni versión.
+8. La propagación y compatibilidad pertenecen a `DATA-NORM-ARC-009`, `DATA-NORM-ARC-011`, `DATA-NORM-ARC-012` y las transiciones aplicables.
+
+#### 28. Backlog inicial contextualizado
+
+Los siguientes grupos ingresarán como candidatos, no como decisiones aprobadas ni como reglas activas:
+
+| Grupo | Casos iniciales                                                                                    | Detonante principal                                    | Destino posible                                                                  |
+| ----: | -------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | -------------------------------------------------------------------------------- |
+|     1 | `expresso`                                                                                         | `DICTIONARY_AMBIGUOUS_REVIEW`                          | diccionario, preservación o rechazo según contexto                               |
+|     2 | `Oster` / `oster`; `Wellmix` / `Welmix`                                                            | excepción candidata o conflicto de forma oficial       | excepción oficial, alias explícito, preservación o rechazo                       |
+|     3 | `Volnic` / `VOLNIC PALLOMARO`; `Daza` / `acero daza`                                               | mezcla de marca, fabricante, material o descriptor     | revisión estructural y, si aplica, identidad                                     |
+|     4 | `MODELO DUC 72 R`; `TORNADO MODELO (TH33M.110.)`                                                   | contaminación entre marca, modelo y referencia         | descomposición estructural e identidad                                           |
+|     5 | `Hatsu`, `Vento`, `Molka`, `Saudo`, `Nutella`, `Klim`, `Kraft`, `Kinder Bueno`                     | formas observadas sin fuente suficiente                | verificación de owner o fabricante y scope                                       |
+|     6 | `BBQ`, `HIT`, `AA`, `CMS`, `PAM`, `REF`, `T26`, `WIP`, `AVSA`, `FC`, `SVV`                         | siglas, palabras o referencias contextuales            | catálogo contextual, preservación o rechazo                                      |
+|     7 | `Botellla`, `Costo`, `1`, `presentacion`, `piezas`, `bolsas`, `Six Pack`, `six_pack`, `Bolsa 1 kg` | unidad, etiqueta o estructura no resuelta              | corrección, catálogo técnico o resolución estructural                            |
+|     8 | nombres legales sin evidencia vinculada y decisiones distintas entre capas                         | autoridad insuficiente o divergencia de implementación | evidencia legal, preservación, política de campo o corrección de capas posterior |
+
+Cada valor deberá abrirse bajo su coordenada real. La tabla no autoriza agrupar todos los registros que compartan una cadena ni presupone el resultado de la revisión.
+
+#### 29. Relación con búsqueda, identidad y ejecución
+
+1. La cola puede mostrar similitudes o candidatos, pero la representación de búsqueda será definida por `DATA-NORM-ARC-008`.
+2. Una similitud de búsqueda no constituye evidencia ni deduplica casos con coordenadas diferentes.
+3. Cualquier resultado que afecte unicidad, colisiones o posible fusión se remite a `DATA-NORM-ARC-010`.
+4. La decisión no selecciona registro sobreviviente, no reasigna relaciones y no cambia constraints.
+5. La persistencia de casos, decisiones, versiones, vigencias y trazas se define en `DATA-NORM-ARC-009`.
+6. Aplicación, servicio de dominio, RPC, procesos programados y trigger defensivo se definen en `DATA-NORM-ARC-011`.
+7. Valores y evidencias externas se rigen además por `DATA-NORM-ARC-012`.
+8. Corrección de datos existentes, dry-run, lotes, activación y rollback pertenecen a `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009`.
+
+#### 30. Conductas no conformes
+
+Quedan prohibidas:
+
+1. aplicar el valor propuesto mientras el caso está abierto;
+2. aprobar por mayoría de registros, frecuencia, urgencia o popularidad;
+3. cerrar por vencimiento o ausencia de respuesta;
+4. usar una sugerencia automática como decisión humana;
+5. omitir la coordenada y aprobar una forma global por defecto;
+6. deduplicar casos porque sus textos se parecen o convergen después de normalizarse;
+7. permitir que el productor sea el único aprobador;
+8. aprobar sin evidencia mínima o con fuente no autorizada;
+9. modificar una resolución cerrada;
+10. ampliar un scope durante implementación;
+11. convertir revisión textual en fusión, desactivación, reasignación o constraint;
+12. sobrescribir originales, snapshots o evidencia;
+13. ocultar casos vencidos mediante cambio de prioridad o espera indefinida de evidencia;
+14. mantener colas, decisiones o catálogos locales por aplicación;
+15. exponer secretos o datos sensibles completos en notas y logs;
+16. aplicar decisiones de Vento OS a VITAL;
+17. ejecutar backfills o propagación desde la cola;
+18. dejar un escalamiento, diferimiento o evidencia faltante sin owner y fecha.
+
+#### 31. Corpus mínimo de conformidad
+
+| Escenario                                                | Resultado esperado                                                |
+| -------------------------------------------------------- | ----------------------------------------------------------------- |
+| `expresso` sin contexto suficiente                       | un caso abierto; valor preservado; ninguna sustitución automática |
+| mismo `expresso`, misma coordenada y versiones, repetido | una ocurrencia adicional sobre el mismo caso                      |
+| `expresso` en otro campo o fuente                        | caso distinto y relacionado                                       |
+| `Wellmix` y `Welmix` con fuentes incompatibles           | conflicto abierto; no elegir por frecuencia                       |
+| `Oster` con evidencia válida del fabricante              | candidato listo para decisión; no activación directa              |
+| `BBQ` sin significado ni scope                           | evidencia requerida o rechazo                                     |
+| `KG` en componente unitario y `KG` dentro de modelo      | casos y rutas distintas por clase y contexto                      |
+| razón social con documento vigente                       | preservación o forma oficial acotada; historia intacta            |
+| `Bolsa 1 kg` sin estructura separada                     | escalamiento estructural; no corrección plana                     |
+| dos capas con la misma versión y resultados distintos    | caso `P1_HIGH` o `P0_CRITICAL`, según impacto; mutación bloqueada |
+| productor intenta aprobar su propio candidato            | aprobación denegada por segregación                               |
+| dos decisiones concurrentes sobre el mismo estado        | un solo cierre; la segunda operación recibe conflicto de versión  |
+| reintento después de respuesta perdida                   | mismo resultado y decisión, sin duplicado                         |
+| caso vencido                                             | permanece abierto con condición de SLA incumplido y escalamiento  |
+| evidencia nueva después de un rechazo                    | nueva revisión vinculada; rechazo original inmutable              |
+| decisión aprobada para un campo aplicada a otro dominio  | prohibida; requiere caso y decisión propios                       |
+| original externo, snapshot o evidencia                   | preservado exactamente                                            |
+| candidato que podría fusionar registros                  | escalamiento a `DATA-NORM-ARC-010`; ninguna acción estructural    |
+| caso perteneciente a VITAL                               | fuera del alcance transversal de Vento OS                         |
+
+El corpus deberá cubrir además prioridades, SLA, estados, transiciones no permitidas, duplicados, scopes, evidencia faltante, autorizaciones, privacidad, reapertura, supersesión, lotes, múltiples idiomas, fuentes y versiones.
+
+#### 32. Hallazgos y carryovers
+
+| ID               | Decisión o brecha                                                  | Resultado de esta tarea                                              | Propietario siguiente                                                     |
+| ---------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------- | ------------------------------------------------------------------------- |
+| `DN-ARC-007-H01` | no existía contrato único de admisión y deduplicación              | detonantes, puerta y clave lógica aprobados                          | `DATA-NORM-ARC-009`; `DATA-NORM-ARC-011`                                  |
+| `DN-ARC-007-H02` | candidatos de marcas, siglas, unidades y nombres legales dispersos | backlog inicial contextualizado sin activar formas                   | `DATA-NORM-ARC-009`; `DATA-NORM-TRANS-001`                                |
+| `DN-ARC-007-H03` | `expresso` carecía de workflow, responsables y SLA                 | preservación, flujo, segregación y SLA aprobados                     | `DATA-NORM-ARC-009`; `DATA-NORM-ARC-011`                                  |
+| `DN-ARC-007-H04` | una decisión humana podía confundirse con corrección de datos      | separación entre decisión, versión de catálogo y transición aprobada | `DATA-NORM-ARC-009`; `DATA-NORM-TRANS-004`; `DATA-NORM-TRANS-005`         |
+| `DN-ARC-007-H05` | divergencias entre capas no tenían ruta canónica                   | detonante y escalamiento definidos                                   | `DATA-NORM-ARC-011`; `SUPA-TRANS-009`                                     |
+| `DN-ARC-007-H06` | similitud textual podía confundirse con identidad                  | escalamiento obligatorio y prohibición de fusión aprobados           | `DATA-NORM-ARC-010`; `DATA-NORM-TRANS-003`                                |
+| `DN-ARC-007-H07` | originales y evidencia podían exponerse en revisión                | minimización y preservación aprobadas                                | `DATA-NORM-ARC-009`; `DATA-NORM-ARC-012`                                  |
+| `DN-ARC-007-H08` | no existe todavía cola, interfaz ni automatización física          | contrato lógico completo aprobado; implementación reservada          | `DATA-NORM-ARC-009`; `DATA-NORM-ARC-011`; tareas de transición aplicables |
+
+#### 33. Decisiones reservadas
+
+| Decisión                                                         | Tarea propietaria                             |
+| ---------------------------------------------------------------- | --------------------------------------------- |
+| representación de búsqueda, transliteración y comparación        | `DATA-NORM-ARC-008`                           |
+| persistencia de casos, decisiones, auditoría, versiones y SLA    | `DATA-NORM-ARC-009`                           |
+| identidad, unicidad, colisiones y duplicados normalizados        | `DATA-NORM-ARC-010`                           |
+| aplicación, servicio de dominio, RPC, jobs y trigger defensivo   | `DATA-NORM-ARC-011`                           |
+| originales, mapeos y evidencia de integraciones externas         | `DATA-NORM-ARC-012`                           |
+| estructura física de la cola y políticas de acceso               | `DATA-NORM-ARC-009`; `DATA-NORM-ARC-011`      |
+| baseline y dry-run del backlog existente                         | `DATA-NORM-TRANS-001`; `DATA-NORM-TRANS-002`  |
+| análisis de colisiones e identidad                               | `DATA-NORM-TRANS-003`; `DATA-NORM-ARC-010`    |
+| backfill, lotes, propagación, activación, observación y rollback | `DATA-NORM-TRANS-004` a `DATA-NORM-TRANS-009` |
+
+#### 34. Criterios de integridad
+
+La política se considera íntegra para esta etapa cuando:
+
+1. define exactamente diez familias de detonante;
+2. preserva el valor ante ambigüedad, conflicto, evidencia insuficiente y SLA vencido;
+3. distingue revisión textual, incidente técnico, estructura e identidad;
+4. define una identidad de caso independiente de la forma visible;
+5. deduplica solo coordenadas y payloads lógicamente idénticos;
+6. exige un contrato mínimo completo antes de aprobar;
+7. define once estados y transiciones cerradas;
+8. prohíbe cierre por silencio o vencimiento;
+9. define cuatro prioridades con SLA verificables;
+10. asigna siete funciones y aplica segregación;
+11. exige evidencia específica por clase de candidato;
+12. define nueve resultados cerrados con efectos delimitados;
+13. separa decisión, versión de catálogo y corrección de datos;
+14. conserva decisiones cerradas y usa revisiones vinculadas;
+15. gobierna concurrencia, reintentos e idempotencia;
+16. protege originales, snapshots, evidencia y datos sensibles;
+17. contextualiza los candidatos heredados sin prejuzgar su resultado;
+18. remite búsqueda, identidad, persistencia, ejecución, externos y transición a sus tareas propietarias;
+19. mantiene VITAL fuera del alcance transversal;
+20. no autoriza cambios físicos, backfills, activación, unicidad ni fusión.
+
+#### 35. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se crean los requisitos:
+
+- `TREQ-DATA-105`;
+- `TREQ-DATA-106`;
+- `TREQ-DATA-107`;
+- `TREQ-DATA-108`;
+- `TREQ-DATA-109`;
+- `TREQ-DATA-110`;
+- `TREQ-DATA-111`;
+- `TREQ-DATA-112`;
+- `TREQ-DATA-113`;
+- `TREQ-DATA-114`;
+- `TREQ-DATA-115`;
+- `TREQ-DATA-116`;
+- `TREQ-DATA-117`;
+- `TREQ-DATA-118`;
+- `TREQ-DATA-119`;
+- `TREQ-DATA-120`;
+- `TREQ-DATA-121`;
+- `TREQ-DATA-122`.
+
+El detalle canónico de cada requisito reside en el registro 04A actualizado hasta esta tarea.
+
+#### 36. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación
+```
+
+
 ### [ ] DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación
 ### [ ] DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas
 ### [ ] DATA-NORM-ARC-010 — Definir estrategia de unicidad y detección de duplicados normalizados
