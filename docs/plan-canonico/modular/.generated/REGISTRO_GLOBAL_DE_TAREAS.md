@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1575** |
 | Tareas `AUTH` | **316** |
-| Aprobadas | **441** |
+| Aprobadas | **442** |
 | En propuesta | **0** |
-| No iniciadas | **1134** |
+| No iniciadas | **1133** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **28.00% (441/1575)** |
+| Porcentaje de completamiento | **28.06% (442/1575)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `DATA-NORM-ARC-005` — Definir excepciones de marcas, siglas, unidades y nombres legales | ✅ APROBADA |
-| Tarea actual | `DATA-NORM-ARC-006` — Definir diccionario ortográfico canónico y su gobierno | ⬜ NO INICIADA |
-| Siguiente | `DATA-NORM-ARC-007` — Definir cola de revisión para correcciones ambiguas | ⬜ NO INICIADA |
+| Última aprobada | `DATA-NORM-ARC-006` — Definir diccionario ortográfico canónico y su gobierno | ✅ APROBADA |
+| Tarea actual | `DATA-NORM-ARC-007` — Definir cola de revisión para correcciones ambiguas | ⬜ NO INICIADA |
+| Siguiente | `DATA-NORM-ARC-008` — Definir representación de búsqueda y comparación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -432,7 +432,7 @@
 | ✅ APROBADA | `DATA-NORM-ARC-003` | Definir reglas de capitalización para nombres empresariales | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-004` | Definir conectores que permanecen en minúscula | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-005` | Definir excepciones de marcas, siglas, unidades y nombres legales | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
-| ⬜ NO INICIADA | `DATA-NORM-ARC-006` | Definir diccionario ortográfico canónico y su gobierno | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
+| ✅ APROBADA | `DATA-NORM-ARC-006` | Definir diccionario ortográfico canónico y su gobierno | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-007` | Definir cola de revisión para correcciones ambiguas | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-008` | Definir representación de búsqueda y comparación | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ⬜ NO INICIADA | `DATA-NORM-ARC-009` | Definir auditoría, versionado e idempotencia de reglas | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |

@@ -2774,7 +2774,655 @@ DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno
 ```
 
 
-### [ ] DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno
+### ✅ DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno
+
+**Estado:** APROBADA
+**Tarea anterior:** `DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales` — APROBADA
+**Tarea siguiente:** `DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas`
+**Tipo de tarea:** definición normativa del diccionario ortográfico canónico, cerrado, direccional, versionado, contextual y auditable para correcciones aprobadas de texto empresarial; sin DDL, DML, migraciones, backfills, correcciones de datos, fusiones, cambios de índices, constraints, funciones, triggers, clientes, integraciones, configuración ni despliegues
+
+#### 1. Objetivo
+
+Definir el diccionario ortográfico canónico que permitirá corregir de manera automática únicamente errores o formas no canónicas previamente aprobadas, bajo una coordenada explícita de dominio, entidad, campo, clase semántica, representación, fuente, perfil lingüístico, alcance y versión.
+
+La política deberá separar la corrección ortográfica de la capitalización, la normalización de espacios, Unicode, conectores, excepciones oficiales, búsqueda, identidad y unicidad; impedir correcciones por similitud o inferencia; preservar originales externos, snapshots y evidencia; y remitir toda forma ambigua a revisión humana sin modificarla silenciosamente.
+
+#### 2. Artefacto producido
+
+```text
+VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0
+```
+
+| Propiedad                         | Valor |
+| --------------------------------- | ----: |
+| Perfil lingüístico aprobado       |     1 |
+| Formas canónicas iniciales        |     3 |
+| Alcances de coincidencia cerrados |     3 |
+| Modos de decisión cerrados        |     3 |
+| Estados de ciclo de vida          |     6 |
+| Resultados cerrados de evaluación |     7 |
+| Requisitos de prueba nuevos       |    18 |
+| Cambios físicos autorizados       |     0 |
+
+#### 3. Fuentes canónicas consumidas
+
+| Fuente                                | Decisión consumida                                                                                                        |
+| ------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                     | continuidad, una sola tarea, fase exclusivamente documental y preservación de decisiones aprobadas                        |
+| `delivery-contract.json`              | identidad del artefacto y actualización integral del registro 04A al crear requisitos                                     |
+| `active-sequence.json`                | `DATA-NORM-ARC-006` como tarea actual y `DATA-NORM-ARC-007` como siguiente tarea reservada                                |
+| `DATA-NORM-AUD-002`                   | inconsistencias observadas de tildes, caja, espacios, signos, Unicode y conectores                                        |
+| `DATA-NORM-AUD-003`                   | formas protegidas que no admiten transformación genérica                                                                  |
+| `DATA-NORM-AUD-005`                   | separación entre normalización determinista, diccionario aprobado, revisión humana, preservación y resolución estructural |
+| `DATA-NORM-AUD-006`                   | productores distribuidos y riesgo de reglas locales divergentes                                                           |
+| `DATA-NORM-AUD-007`                   | impacto de las transformaciones sobre búsquedas, consumidores, relaciones, unicidad e integraciones                       |
+| `DATA-NORM-ARC-001`                   | política por dominio, entidad y campo; separación de representaciones; comportamiento cerrado e idempotencia              |
+| `DATA-NORM-ARC-002`                   | clases semánticas, roles de representación y fuente, modos de tratamiento y exclusiones                                   |
+| `DATA-NORM-ARC-003`                   | capitalización empresarial separada de la ortografía y consumo posterior de un diccionario aprobado                       |
+| `DATA-NORM-ARC-004`                   | catálogo cerrado de conectores y prohibición de sustituir palabras mediante heurísticas lingüísticas                      |
+| `DATA-NORM-ARC-005`                   | precedencia de marcas, siglas, unidades y nombres legales sobre cualquier corrección ortográfica genérica                 |
+| Regla canónica del bloque propietario | corrección automática solo mediante diccionario aprobado, versionado y auditable; `expresso` permanece ambiguo            |
+
+#### 4. Alcance y fronteras
+
+Esta tarea define:
+
+1. la identidad y semántica del diccionario ortográfico canónico `es-CO`;
+2. el contrato lógico mínimo de cada entrada;
+3. los alcances exactos de coincidencia por valor completo, frase y token;
+4. la coincidencia direccional exacta sin similitud ni inferencia;
+5. la resolución de alcance entre campo, entidad, dominio y política transversal;
+6. la precedencia frente a excepciones oficiales y tokens protegidos;
+7. el catálogo inicial de correcciones respaldadas por ejemplos canónicos;
+8. la exclusión explícita de `expresso` de la corrección automática;
+9. la puerta de activación por clase, representación, fuente, locale y versión;
+10. los estados, responsabilidades y reglas de gobierno de altas, cambios, suspensión y retiro;
+11. la supersesión, no retroactividad y rollback lógico de versiones;
+12. la procedencia, evidencia y autoridad exigidas;
+13. los invariantes de determinismo, paridad e idempotencia;
+14. el corpus mínimo de conformidad.
+
+Esta tarea no define:
+
+- la cola, interfaz, SLA, asignación o resolución física de revisiones humanas;
+- la representación de búsqueda, transliteración o comparación tolerante;
+- tablas, columnas, índices, constraints, RLS, funciones, RPC o triggers;
+- la estructura física definitiva de auditoría y versionado;
+- la capa ejecutora definitiva;
+- unicidad, deduplicación, fusión o selección de registro sobreviviente;
+- tratamiento físico de valores recibidos desde integraciones externas;
+- backfills, lotes de corrección, despliegue, compatibilidad o migración de datos;
+- entradas adicionales sin evidencia y aprobación canónicas.
+
+Las decisiones permanecen en `DATA-NORM-ARC-007` a `DATA-NORM-ARC-012`, `SUPA-TRANS-001` a `SUPA-TRANS-015` y `DATA-NORM-TRANS-001` a `DATA-NORM-TRANS-009`, según su propiedad.
+
+#### 5. Principios obligatorios
+
+1. El diccionario es cerrado, explícito, direccional y versionado.
+2. Una entrada corrige únicamente la forma de origen declarada hacia la forma canónica declarada.
+3. La dirección inversa no se infiere.
+4. La frecuencia, cercanía visual, distancia de edición, pronunciación probable o popularidad no constituyen autoridad.
+5. No existe autocorrección por similitud.
+6. Toda entrada deberá declarar alcance, clase, representación, fuente, evidencia, aprobación, estado y versión.
+7. Solo una entrada `APPROVED_ACTIVE` podrá producir corrección automática.
+8. Las excepciones oficiales y protecciones técnicas prevalecen sobre el diccionario.
+9. Una entrada no podrá cambiar cantidad, unidad, código, marca, nombre legal, identidad ni estructura.
+10. Un conflicto, una dependencia ausente o una clasificación insuficiente conservará el valor y bloqueará la mutación.
+11. Los originales externos, snapshots y evidencia no serán sobrescritos.
+12. Una versión nueva no reinterpretará silenciosamente datos históricos.
+13. La aplicación repetida con la misma entrada, contexto y versiones será idempotente.
+14. Una coincidencia ortográfica no crea identidad, unicidad ni autorización de fusión.
+15. VITAL permanece fuera de este diccionario transversal salvo contrato propio explícito.
+
+#### 6. Identidad, perfil y versión
+
+El diccionario aprobado se identifica como:
+
+```text
+VENTO_CANONICAL_ORTHOGRAPHIC_DICTIONARY_ES_CO@1.0.0
+```
+
+Reglas:
+
+1. `es-CO` deberá declararse como perfil de política y no inferirse desde el sistema operativo, navegador, proceso o base de datos.
+2. La versión fija entradas, alcances, precedencia, segmentación compatible, proyección de caja y resultados cerrados.
+3. Una modificación de forma de origen, forma canónica, alcance, estado, evidencia o precedencia constituye cambio versionado.
+4. Ninguna capa podrá mantener un diccionario paralelo, ampliar entradas localmente o usar paquetes lingüísticos genéricos como sustituto.
+5. Un diccionario para otro idioma o producto requerirá identidad, versión, alcance, pruebas y aprobación propios.
+
+#### 7. Clases, representaciones y fuentes elegibles
+
+La corrección automática solo podrá evaluarse cuando todas las dimensiones sean compatibles:
+
+| Dimensión             | Elegible                                                                     | Conducta                                                                 |
+| --------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| clase semántica       | `COMMERCIAL_NAME` y otra clase expresamente autorizada por política de campo | aplicar únicamente entradas compatibles con la clase declarada           |
+| representación        | `PRIMARY_VALUE` mutable o `DISPLAY_OVERRIDE` aprobado                        | corregir dentro del alcance autorizado                                   |
+| fuente                | `AUTHORITATIVE_SOURCE` o `APPROVED_OVERRIDE`                                 | permitir mutación trazable                                               |
+| proyección            | `OUTPUT_PROJECTION`                                                          | derivar sin retroalimentar la fuente                                     |
+| copia sincronizada    | `SYNCHRONIZED_COPY`                                                          | recibir el resultado por propagación gobernada, no corregirse localmente |
+| original externo      | `EXTERNAL_ORIGINAL`                                                          | preservar exactamente                                                    |
+| histórico o evidencia | `HISTORICAL_SNAPSHOT`, `IMMUTABLE_SNAPSHOT`, `AUDIT_EVIDENCE`                | preservar exactamente                                                    |
+
+Quedan bloqueados por defecto:
+
+- `OFFICIAL_BRAND_FORM`;
+- `OFFICIAL_LEGAL_NAME`;
+- `MEASUREMENT_OR_UNIT_CODE`;
+- `TECHNICAL_IDENTIFIER`;
+- `CONTACT_IDENTIFIER`;
+- `SECRET_OR_SIGNATURE_MATERIAL`;
+- `UNCLASSIFIED_PRESERVE`;
+- texto libre sin política propia explícita;
+- valores de VITAL.
+
+#### 8. Contrato lógico de una entrada
+
+Toda entrada deberá poder expresar, como mínimo:
+
+```text
+dictionary_entry_key
+locale
+source_form
+canonical_form
+match_scope
+semantic_class
+domain_scope
+entity_scope
+field_scope
+representation_role
+source_role
+case_projection_mode
+decision_mode
+status
+valid_from
+valid_to
+dictionary_version
+supersedes
+evidence_reference
+approval_reference
+reason
+```
+
+Reglas:
+
+1. `dictionary_entry_key` será estable y no dependerá del texto visible.
+2. `source_form` y `canonical_form` conservarán Unicode, signos, separación y estructura aprobados.
+3. `source_form` no podrá estar vacío ni ser igual a `canonical_form` bajo la comparación definida para la entrada.
+4. `match_scope` deberá ser uno de los alcances cerrados de esta tarea.
+5. El alcance mínimo deberá identificar dominio, entidad y campo o declarar explícitamente un alcance superior aprobado.
+6. La clase, representación y fuente deberán ser compatibles con `DATA-NORM-ARC-002`.
+7. `case_projection_mode` deberá preservar la caja ya resuelta por la etapa de capitalización y no ejecutar una capitalización nueva.
+8. `evidence_reference` y `approval_reference` serán obligatorios para activar una entrada.
+9. Una entrada incompleta no será ejecutable.
+10. La estructura física y su persistencia pertenecen a `DATA-NORM-ARC-009` y `DATA-NORM-ARC-011`.
+
+#### 9. Alcances cerrados de coincidencia
+
+| Alcance      | Definición                                                    | Uso permitido                                                                      |
+| ------------ | ------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `FULL_VALUE` | la entrada cubre todo el valor textual                        | corrección aprobada de un valor completo dentro de un campo y contexto específicos |
+| `PHRASE`     | secuencia contigua y exacta de tokens con fronteras completas | locución o denominación cuya corrección no puede resolverse token por token        |
+| `TOKEN`      | token lexical completo                                        | palabra ordinaria con corrección aprobada                                          |
+
+Una coincidencia exige fronteras completas. No se admiten subcadenas dentro de palabras, códigos, modelos, URLs, correos, rutas, marcas, nombres legales o identificadores.
+
+#### 10. Coincidencia direccional exacta
+
+La evaluación deberá cumplir simultáneamente:
+
+1. comparar la forma de origen mediante casefold Unicode compatible con `es-CO`, conservando diacríticos, signos, separación y fronteras;
+2. aceptar únicamente coincidencia exacta del alcance declarado;
+3. tratar `source_form` como origen y `canonical_form` como destino, sin inferir reversibilidad;
+4. preservar la caja resuelta por la etapa anterior mediante `PRESERVE_RESOLVED_CASE_PATTERN`;
+5. bloquear valores con patrón de caja no resoluble o sin metadatos suficientes para proyectar la salida;
+6. no eliminar tildes para encontrar coincidencias distintas de la entrada explícita;
+7. no compactar espacios, cambiar Unicode, sustituir signos ni dividir o unir palabras durante el matching.
+
+Ejemplos de proyección aprobada para una entrada token:
+
+```text
+maiz  → maíz
+Maiz  → Maíz
+MAIZ  → MAÍZ
+```
+
+La proyección de caja no autoriza resultados mixtos arbitrarios ni reemplaza la política de capitalización.
+
+#### 11. Modos cerrados de decisión
+
+| Modo                   | Conducta                                                                                                         |
+| ---------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `REPLACE_ORTHOGRAPHY`  | emite la forma canónica y conserva la caja resuelta cuando existe coincidencia, autoridad y política compatibles |
+| `PRESERVE_AS_APPROVED` | conserva una forma válida dentro de un alcance específico y evita que una entrada más amplia la modifique        |
+| `REVIEW_REQUIRED`      | conserva el valor y declara que la corrección necesita decisión humana                                           |
+
+Una entrada de preservación o revisión deberá tener la misma trazabilidad, alcance, evidencia, vigencia y versión que una entrada de reemplazo.
+
+#### 12. Catálogo inicial aprobado
+
+La versión `1.0.0` contiene exactamente tres correcciones iniciales respaldadas por los ejemplos canónicos del bloque:
+
+| Clave lógica                  | Origen    | Forma canónica | Alcance | Modo                  | Restricción                                                      |
+| ----------------------------- | --------- | -------------- | ------- | --------------------- | ---------------------------------------------------------------- |
+| `ORTHO_ES_CO_MAIZ_MAIZ`       | `maiz`    | `maíz`         | `TOKEN` | `REPLACE_ORTHOGRAPHY` | palabra ordinaria no protegida dentro de clase y campo elegibles |
+| `ORTHO_ES_CO_CLASICO_CLASICO` | `clasico` | `clásico`      | `TOKEN` | `REPLACE_ORTHOGRAPHY` | palabra ordinaria no protegida dentro de clase y campo elegibles |
+| `ORTHO_ES_CO_FRIO_FRIO`       | `frio`    | `frío`         | `TOKEN` | `REPLACE_ORTHOGRAPHY` | palabra ordinaria no protegida dentro de clase y campo elegibles |
+
+Estas entradas no autorizan:
+
+- corregir una marca, nombre legal, código, unidad o término extranjero coincidente;
+- buscar por forma sin tilde como si fuera identidad;
+- crear aliases no declarados;
+- aplicar la corrección a originales externos o históricos;
+- agregar otras palabras por analogía.
+
+#### 13. Exclusión explícita de `expresso`
+
+`expresso` no forma parte de las correcciones automáticas de la versión `1.0.0`.
+
+La forma deberá conservarse y producir `DICTIONARY_AMBIGUOUS_REVIEW` cuando no exista una decisión contextual que determine si corresponde a:
+
+- error ortográfico;
+- denominación comercial;
+- nombre histórico;
+- marca;
+- producto externo;
+- término extranjero o variante deliberada.
+
+Quedan prohibidas las sustituciones automáticas `expresso` → `espresso`, `expreso` o cualquier otra forma. La resolución, evidencia y cola pertenecen a `DATA-NORM-ARC-007`.
+
+#### 14. Puerta de activación
+
+El diccionario solo podrá intervenir cuando todas las condiciones siguientes sean verdaderas:
+
+1. existe una política activa para dominio, entidad y campo;
+2. la clase semántica admite corrección mediante diccionario;
+3. la representación y el rol de fuente permiten mutación o derivación;
+4. el perfil lingüístico es `es-CO`;
+5. la versión del diccionario es compatible con capitalización, conectores y excepciones;
+6. la entrada está `APPROVED_ACTIVE` y dentro de vigencia;
+7. la coincidencia exacta y sus fronteras pueden resolverse;
+8. no existe una excepción oficial o protección de mayor precedencia;
+9. no existe conflicto entre entradas activas aplicables;
+10. la proyección de caja puede resolverse determinísticamente;
+11. la decisión, entrada y versiones pueden quedar trazadas.
+
+La ausencia de cualquiera de estas condiciones preservará el valor y producirá un resultado bloqueado o de revisión.
+
+#### 15. Resolución de alcance
+
+La especificidad se resolverá en este orden:
+
+```text
+1. FIELD_SCOPE
+2. ENTITY_SCOPE
+3. DOMAIN_SCOPE
+4. VENTO_OS_TRANSVERSAL_SCOPE
+5. conservación por ausencia de política
+```
+
+Reglas:
+
+1. una entrada más específica prevalece únicamente dentro de su alcance compatible;
+2. una entrada específica no amplía una clase, representación o fuente bloqueada;
+3. dos entradas activas incompatibles con la misma especificidad producen conflicto;
+4. no se elige por fecha más reciente, orden físico, frecuencia ni consumidor;
+5. un alcance transversal deberá estar aprobado expresamente y no se inferirá por ausencia de alcance local;
+6. VITAL no participa en `VENTO_OS_TRANSVERSAL_SCOPE`.
+
+#### 16. Precedencia general
+
+La precedencia obligatoria será:
+
+```text
+1. excepción oficial de frase válida más larga
+2. excepción oficial de token o componente estructurado
+3. protección técnica por clase, representación o fuente
+4. entrada de diccionario más específica
+5. entrada de frase más larga dentro de la misma especificidad
+6. entrada de token exacto
+7. token sin entrada
+8. forma ambigua o conflictiva
+```
+
+Consecuencias:
+
+- `3M`, `iPhone`, `Coca-Cola`, siglas, unidades y nombres legales no se reescriben por una entrada ortográfica ordinaria;
+- una entrada de diccionario no invalida el catálogo de conectores ni cambia su posición;
+- un conflicto no se resuelve por orden de carga;
+- una forma observada no se convierte en excepción o corrección por repetición.
+
+#### 17. Frases, tokens y fronteras
+
+1. Las entradas `PHRASE` se evaluarán antes que `TOKEN` dentro del mismo alcance y versión.
+2. Entre frases compatibles se aplicará la coincidencia válida más larga.
+3. Una frase deberá declarar exactamente sus tokens y separadores relevantes.
+4. La coincidencia no podrá atravesar una frontera de valor, componente estructurado, campo, representación o fuente.
+5. Una entrada token no coincidirá como subcadena.
+6. Una frase parcial o solapada sin resolución única producirá conflicto.
+7. La corrección no agregará, retirará ni moverá conectores, signos o palabras.
+
+#### 18. Prohibiciones de inferencia
+
+El diccionario no podrá utilizar:
+
+- distancia de Levenshtein u otra distancia de edición;
+- coincidencia difusa;
+- algoritmos fonéticos;
+- autocorrección del navegador, sistema operativo o teclado;
+- stemming o lematización;
+- singularización o pluralización;
+- traducción o transliteración;
+- inferencia por frecuencia, popularidad o forma mayoritaria;
+- aprendizaje automático no aprobado como autoridad;
+- eliminación de tildes para ampliar coincidencias;
+- generación automática de aliases;
+- sustitución entre `y`/`e` u `o`/`u`;
+- contracción o expansión de `a el`, `al`, `de el` o `del`;
+- unión o división de palabras;
+- corrección basada en nombre de tabla, columna, aplicación o consumidor.
+
+Una sugerencia producida por una herramienta no canónica podrá convertirse únicamente en candidato para revisión; nunca en corrección automática.
+
+#### 19. Separación de operaciones
+
+| Operación                                  | Pertenece a esta tarea | Conducta                                              |
+| ------------------------------------------ | ---------------------- | ----------------------------------------------------- |
+| reemplazo ortográfico aprobado             | sí                     | aplicar una entrada exacta y trazable                 |
+| preservación contextual aprobada           | sí                     | bloquear una corrección más amplia dentro del alcance |
+| clasificación como ambigua                 | sí, como resultado     | conservar y remitir a la tarea de revisión            |
+| recorte o compactación de espacios         | no                     | operación determinista separada                       |
+| composición Unicode NFC                    | no                     | operación previa separada cuando el campo la autorice |
+| capitalización empresarial                 | no                     | `DATA-NORM-ARC-003`                                   |
+| conectores                                 | no                     | `DATA-NORM-ARC-004`                                   |
+| marcas, siglas, unidades y nombres legales | no                     | `DATA-NORM-ARC-005`                                   |
+| búsqueda o comparación tolerante           | no                     | `DATA-NORM-ARC-008`                                   |
+| identidad, unicidad o fusión               | no                     | `DATA-NORM-ARC-010`                                   |
+
+La salida de una etapa solo podrá alimentar la siguiente mediante un pipeline aprobado, versionado y auditable. El diccionario no deberá ocultar qué operación produjo cada cambio.
+
+#### 20. Representaciones, fuentes y propagación
+
+1. Solo un `PRIMARY_VALUE` de `AUTHORITATIVE_SOURCE` o un `DISPLAY_OVERRIDE` con `APPROVED_OVERRIDE` podrá recibir corrección directa cuando la política lo autorice.
+2. `EXTERNAL_ORIGINAL`, `HISTORICAL_SNAPSHOT`, `IMMUTABLE_SNAPSHOT` y `AUDIT_EVIDENCE` se preservarán exactamente.
+3. `OUTPUT_PROJECTION` podrá derivar una forma corregida sin retroalimentar la fuente.
+4. `SEARCH_DERIVATION` utilizará su contrato propio y no convertirá la forma corregida en identidad.
+5. Una `SYNCHRONIZED_COPY` no ejecutará el diccionario de forma independiente; recibirá el resultado mediante propagación gobernada.
+6. Una versión nueva no resincronizará snapshots ni historia anterior.
+7. Un override conservará su alcance y no redefinirá el diccionario global.
+8. La propagación técnica, eventos y precedencia entre capas pertenecen a `DATA-NORM-ARC-009` y `DATA-NORM-ARC-011`.
+
+#### 21. Estados de ciclo de vida
+
+| Estado            | Ejecutable | Conducta                                                              |
+| ----------------- | ---------- | --------------------------------------------------------------------- |
+| `DRAFT`           | no         | propuesta incompleta o pendiente de evaluación                        |
+| `APPROVED_ACTIVE` | sí         | entrada aprobada, vigente y compatible                                |
+| `SUSPENDED`       | no         | entrada temporalmente bloqueada por riesgo, conflicto o investigación |
+| `SUPERSEDED`      | no         | reemplazada por otra entrada o versión explícita                      |
+| `RETIRED`         | no         | retirada sin sustitución ejecutable                                   |
+| `REJECTED`        | no         | propuesta descartada con justificación preservada                     |
+
+Solo `APPROVED_ACTIVE` podrá ejecutar `REPLACE_ORTHOGRAPHY` o `PRESERVE_AS_APPROVED`. Los demás estados conservarán historial y no podrán utilizarse como fallback.
+
+#### 22. Gobierno de altas y cambios
+
+Toda propuesta deberá incluir:
+
+1. forma de origen y forma canónica;
+2. locale, alcance y clase;
+3. representación y fuente autorizadas;
+4. evidencia reproducible;
+5. riesgo de falso positivo;
+6. consumidores afectados;
+7. colisiones con excepciones, conectores y entradas existentes;
+8. corpus positivo, negativo y ambiguo;
+9. responsable empresarial del dominio afectado;
+10. responsable canónico de normalización;
+11. decisión y justificación aprobadas.
+
+Reglas de gobierno:
+
+- no se editará silenciosamente una entrada activa;
+- una corrección transversal requerirá revisión de todos los dominios consumidores identificados;
+- una entrada específica no podrá usarse como precedente para ampliar el alcance;
+- una propuesta ambigua permanecerá fuera de ejecución automática;
+- una corrección observada en producción sin entrada activa será una desviación, no una nueva regla;
+- toda brecha detectada deberá quedar asignada a una tarea o decisión canónica concreta.
+
+#### 23. Versionado, supersesión y rollback lógico
+
+1. Cada cambio ejecutable deberá originar una nueva versión o una nueva entrada que declare `supersedes`.
+2. La entrada reemplazada conservará su historial y estado `SUPERSEDED`.
+3. El cambio no será retroactivo por defecto.
+4. La corrección de datos existentes requerirá una tarea de transición, análisis de impacto, pruebas y rollback propios.
+5. Revertir una versión exigirá activar explícitamente una versión anterior compatible o una versión correctiva nueva.
+6. El rollback no eliminará decisiones, evidencia, entradas ni resultados históricos.
+7. Una versión retirada no podrá reaparecer por caché, fallback o consumidor local.
+8. Los artefactos históricos deberán conservar la versión aplicada en el momento de su creación.
+
+#### 24. Conflictos y comportamiento cerrado
+
+Se considerará conflicto cuando:
+
+- dos entradas activas aplicables producen formas canónicas distintas;
+- una entrada de reemplazo y una de preservación tienen la misma especificidad;
+- dos frases aplicables se solapan sin resolución única;
+- la entrada contradice una excepción oficial vigente;
+- falta compatibilidad de versión entre diccionario y pipeline;
+- la evidencia o aprobación fue retirada;
+- la clase, representación, fuente o locale no pueden determinarse;
+- la proyección de caja no es determinista.
+
+Ante conflicto:
+
+1. se conserva el valor;
+2. no se selecciona una entrada por orden físico, fecha o frecuencia;
+3. se emite `DICTIONARY_CONFLICT_BLOCKED` o `DICTIONARY_AMBIGUOUS_REVIEW`;
+4. se registra la coordenada y las entradas involucradas;
+5. la resolución queda fuera de la mutación automática.
+
+#### 25. Resultados cerrados de evaluación
+
+| Resultado                        | Significado                                                                                  |
+| -------------------------------- | -------------------------------------------------------------------------------------------- |
+| `DICTIONARY_CANONICAL_EMITTED`   | una entrada activa y compatible produjo la forma canónica                                    |
+| `DICTIONARY_ALREADY_CANONICAL`   | el valor ya satisface la entrada aplicable y no requiere cambio                              |
+| `DICTIONARY_PRESERVED_PROTECTED` | una excepción, clase, representación, fuente o entrada de preservación bloqueó la corrección |
+| `DICTIONARY_NOT_APPLICABLE`      | no existe entrada compatible con la coordenada evaluada                                      |
+| `DICTIONARY_AMBIGUOUS_REVIEW`    | la forma requiere decisión humana y se conserva                                              |
+| `DICTIONARY_CONFLICT_BLOCKED`    | dos o más decisiones aplicables son incompatibles                                            |
+| `DICTIONARY_POLICY_BLOCKED`      | falta política, versión, evidencia, aprobación o contexto obligatorio                        |
+
+Una ausencia de cambio deberá distinguirse entre forma ya canónica, valor protegido, inexistencia de entrada, ambigüedad, conflicto y bloqueo de política.
+
+#### 26. Procedencia, evidencia y autoridad
+
+Toda decisión ejecutada deberá poder atribuirse lógicamente a:
+
+```text
+entrada de diccionario
+versión del diccionario
+forma de origen
+forma canónica
+alcance resuelto
+clase semántica
+representación
+rol de fuente
+perfil lingüístico
+modo de decisión
+evidencia
+aprobación
+fecha de vigencia
+```
+
+No constituyen evidencia suficiente por sí solas:
+
+- la forma más frecuente en la base de datos;
+- la forma más reciente;
+- una sugerencia del navegador o teclado;
+- el resultado de una búsqueda externa no incorporado como evidencia aprobada;
+- la preferencia de una interfaz o desarrollador;
+- una coincidencia sin tildes;
+- la salida de un modelo lingüístico;
+- el nombre de una tabla, columna o función.
+
+La materialización física de la traza pertenece a `DATA-NORM-ARC-009`.
+
+#### 27. Determinismo, paridad e idempotencia
+
+Para una misma entrada, coordenada y conjunto de versiones:
+
+```text
+apply_dictionary(apply_dictionary(value, context), context)
+=
+apply_dictionary(value, context)
+```
+
+La igualdad deberá cubrir:
+
+- valor resultante;
+- entrada seleccionada;
+- alcance resuelto;
+- forma de origen y forma canónica;
+- proyección de caja;
+- precedencia aplicada;
+- resultado cerrado;
+- bloqueo o revisión;
+- versiones y evidencia referenciadas;
+- ausencia de efectos duplicados.
+
+Aplicación, servicio de dominio, RPC, proceso programado y trigger defensivo deberán producir la misma decisión cuando consuman la misma entrada, coordenada y versiones. Ninguna capa podrá ampliar el diccionario, resolver conflictos de forma distinta ni convertir una revisión en corrección.
+
+#### 28. Corpus mínimo de conformidad
+
+| Entrada y contexto                                 | Resultado esperado                            | Regla demostrada                                 |
+| -------------------------------------------------- | --------------------------------------------- | ------------------------------------------------ |
+| `harina de maiz` después de capitalización         | `Harina de Maíz`                              | corrección token y preservación de caja resuelta |
+| `pan masa madre clasico` después de capitalización | `Pan Masa Madre Clásico`                      | corrección exacta de token                       |
+| `latte frio` después de capitalización             | `Latte Frío`                                  | corrección de tilde sin cambiar palabras         |
+| `MAIZ` en token elegible                           | `MAÍZ`                                        | proyección de caja estable                       |
+| `Maíz`                                             | sin cambio con `DICTIONARY_ALREADY_CANONICAL` | idempotencia                                     |
+| `expresso` sin decisión contextual                 | conservar y revisar                           | ambigüedad no automática                         |
+| `Coca-Cola`                                        | conservar                                     | precedencia de marca oficial                     |
+| `COMERCIALIZADORA ABC S.A.S.`                      | conservar                                     | nombre legal excluido                            |
+| `500 g`                                            | conservar                                     | cantidad y unidad protegidas                     |
+| `product_sku=FRIO`                                 | conservar                                     | identificador técnico excluido                   |
+| `EXTERNAL_ORIGINAL=maiz`                           | conservar exactamente                         | representación externa protegida                 |
+| `maizena`                                          | no aplicar                                    | token parcial prohibido                          |
+| entrada duplicada con dos destinos                 | conservar y bloquear                          | conflicto de misma especificidad                 |
+| entrada de campo y entrada transversal compatibles | aplicar la de campo                           | precedencia de alcance                           |
+| versión retirada en caché                          | bloquear                                      | no fallback a versión no activa                  |
+
+El corpus deberá cubrir además Unicode compuesto, signos, guiones, apóstrofos, frases, fronteras, múltiples cajas, campos excluidos, sources, overrides, snapshots, conflictos, versiones, múltiples capas e idempotencia.
+
+#### 29. Conductas no conformes
+
+Quedan prohibidas:
+
+1. corregir una palabra no registrada por similitud;
+2. aceptar una sugerencia de teclado, navegador o librería como autoridad;
+3. eliminar tildes para ampliar el matching;
+4. aplicar una entrada como subcadena;
+5. inferir la corrección inversa;
+6. generar aliases automáticamente;
+7. ejecutar una entrada distinta de `APPROVED_ACTIVE`;
+8. elegir entre conflictos por orden de carga, fecha o frecuencia;
+9. corregir marcas, siglas, unidades, nombres legales o identificadores mediante entradas ordinarias;
+10. modificar originales externos, snapshots o evidencia;
+11. ejecutar el diccionario sobre texto libre sin política propia;
+12. mezclar capitalización, espacios, Unicode, conectores o búsqueda dentro de la misma decisión;
+13. permitir diccionarios locales por aplicación o capa;
+14. reinterpretar historia con una versión nueva;
+15. aplicar el diccionario transversal de Vento OS a VITAL;
+16. usar una forma corregida como clave de identidad, unicidad o fusión.
+
+#### 30. Relación con búsqueda, identidad, unicidad y fusiones
+
+1. La forma corregida continúa siendo una representación mostrada o derivada según su contrato.
+2. La representación de búsqueda será definida por `DATA-NORM-ARC-008`.
+3. El diccionario no crea ni modifica SKU, slug, código, barcode, URL, email, referencia o clave externa.
+4. Dos valores que convergen después de una corrección solo producen una señal textual.
+5. La política no activa constraints de unicidad.
+6. La política no selecciona registro sobreviviente, no desactiva filas y no reasigna relaciones.
+7. Toda posible fusión deberá revisar relaciones, movimientos, recetas, inventario, proveedores, integraciones, historial, auditoría, evidencia y rollback.
+8. La estrategia de duplicados normalizados pertenece a `DATA-NORM-ARC-010`.
+
+#### 31. Decisiones reservadas
+
+| Decisión                                                                  | Tarea propietaria                                      |
+| ------------------------------------------------------------------------- | ------------------------------------------------------ |
+| cola, evidencia de revisión, responsables, SLA y resolución de ambigüedad | `DATA-NORM-ARC-007`                                    |
+| búsqueda, transliteración y comparación tolerante                         | `DATA-NORM-ARC-008`                                    |
+| persistencia de versiones, trazas y auditoría                             | `DATA-NORM-ARC-009`                                    |
+| identidad, unicidad y duplicados normalizados                             | `DATA-NORM-ARC-010`                                    |
+| aplicación, servicio de dominio, RPC y trigger defensivo                  | `DATA-NORM-ARC-011`                                    |
+| valores recibidos desde integraciones externas                            | `DATA-NORM-ARC-012`                                    |
+| materialización, backfills, compatibilidad, pruebas y rollback            | tareas `SUPA-TRANS-*` y `DATA-NORM-TRANS-*` aplicables |
+
+#### 32. Criterios de integridad
+
+La política se considera íntegra para esta etapa cuando:
+
+1. define un diccionario cerrado, direccional, versionado y específico de `es-CO`;
+2. exige coordenada, evidencia, aprobación, estado y versión para cada entrada;
+3. permite únicamente coincidencia exacta de valor, frase o token con fronteras completas;
+4. prohíbe similitud, fonética, distancia de edición, inferencia, traducción y aliases automáticos;
+5. aprueba únicamente `maiz` → `maíz`, `clasico` → `clásico` y `frio` → `frío` como entradas iniciales;
+6. excluye `expresso` de corrección automática;
+7. preserva la caja resuelta por la etapa de capitalización sin ejecutar una capitalización nueva;
+8. resuelve alcance por campo, entidad, dominio y política transversal;
+9. aplica excepciones oficiales y protecciones técnicas antes del diccionario;
+10. bloquea conflictos y dependencias ausentes;
+11. limita ejecución a entradas `APPROVED_ACTIVE`;
+12. preserva originales externos, snapshots, evidencia y VITAL;
+13. separa ortografía, capitalización, espacios, Unicode, conectores, búsqueda e identidad;
+14. exige supersesión explícita, no retroactividad y rollback lógico;
+15. exige procedencia, determinismo, paridad e idempotencia;
+16. incluye corpus positivo, negativo, ambiguo, conflictivo y de versiones;
+17. no autoriza correcciones de datos existentes, cambios físicos ni decisiones reservadas;
+18. no autoriza identidad, unicidad, consolidación ni fusión.
+
+#### 33. Requisitos de prueba derivados
+
+Se crean los requisitos:
+
+- `TREQ-DATA-087`;
+- `TREQ-DATA-088`;
+- `TREQ-DATA-089`;
+- `TREQ-DATA-090`;
+- `TREQ-DATA-091`;
+- `TREQ-DATA-092`;
+- `TREQ-DATA-093`;
+- `TREQ-DATA-094`;
+- `TREQ-DATA-095`;
+- `TREQ-DATA-096`;
+- `TREQ-DATA-097`;
+- `TREQ-DATA-098`;
+- `TREQ-DATA-099`;
+- `TREQ-DATA-100`;
+- `TREQ-DATA-101`;
+- `TREQ-DATA-102`;
+- `TREQ-DATA-103`;
+- `TREQ-DATA-104`.
+
+El detalle canónico de cada requisito reside en el registro 04A actualizado hasta esta tarea.
+
+#### 34. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+DATA-NORM-ARC-005 — Definir excepciones de marcas, siglas, unidades y nombres legales
+        ↓
+TAREA ACTUAL APROBADA
+DATA-NORM-ARC-006 — Definir diccionario ortográfico canónico y su gobierno
+        ↓
+SIGUIENTE TAREA RESERVADA
+DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas
+```
+
+
 ### [ ] DATA-NORM-ARC-007 — Definir cola de revisión para correcciones ambiguas
 ### [ ] DATA-NORM-ARC-008 — Definir representación de búsqueda y comparación
 ### [ ] DATA-NORM-ARC-009 — Definir auditoría, versionado e idempotencia de reglas
