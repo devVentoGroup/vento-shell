@@ -1,13 +1,7 @@
 ### MINI-BLOQUE — EXPERIENCIA ADMINISTRATIVA
 
 <!-- PLAN-SECTION-META:START -->
-Esta sección organiza **experiencia administrativa** dentro de **G VISO**. Agrupa tareas que producen un resultado funcional común y deben mantenerse juntas para conservar contexto, trazabilidad y orden de ejecución.
-
 **Cobertura canónica:** `VISO-UX-001` a `VISO-UX-020` — 20 tareas.
-
-**Resultado esperado:** al cerrar este mini-bloque, su resultado debe quedar definido, verificable y coherente con las secciones anterior y siguiente antes de avanzar.
-
-**Límites funcionales:** comienza con “Reorganizar navegación por dominios administrativos” y concluye con “Ejecutar pruebas con administradores reales”.
 <!-- PLAN-SECTION-META:END -->
 
 ### [ ] VISO-UX-001 — Reorganizar navegación por dominios administrativos
@@ -31,12 +25,12 @@ Esta sección organiza **experiencia administrativa** dentro de **G VISO**. Agru
 ### [ ] VISO-UX-019 — Aplicar divulgación progresiva a seguridad avanzada
 ### [ ] VISO-UX-020 — Ejecutar pruebas con administradores reales
 
-Regla:
+### Alcance del delta
 
-VISO
-→ administra personas, acceso y configuración transversal
+`VISO-UX-003` incluye Semana/Mes, contexto, vista semanal detallada, mensual masiva, calendario correcto, multibloque plegable, estados borrador/publicado, misma fuente y responsive.
 
-VISO
-≠
-duplicación de todos los formularios de NEXO, FOGO,
-ORIGO, PULSO, NUMERA, PASS o AURA
+`VISO-UX-015` muestra actual, nuevas, proyectado, límite, solapamientos, territorio, fechas movidas y consecuencia. El color no sustituye servidor.
+
+`VISO-UX-016` incluye total entre sedes sin revelar detalle innecesario.
+
+`VISO-UX-020` prueba multibloque, longitudes de mes, exceso, corrección, publicación, navegación y errores.

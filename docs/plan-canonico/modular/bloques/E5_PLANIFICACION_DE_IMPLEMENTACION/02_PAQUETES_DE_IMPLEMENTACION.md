@@ -25,3 +25,18 @@
 ### [ ] DELIV-PKG-023 — Definir criterios de aceptación y evidencia de cierre
 ### [ ] DELIV-PKG-024 — Vincular el paquete con el registro canónico de brechas
 ### [ ] DELIV-PKG-025 — Aprobar el paquete antes de iniciar implementación física
+
+### Package reservado
+
+```text
+VISO-SCHEDULE-MONTHLY-001
+status = RESERVED_NOT_APPROVED
+process = VPROC-0007
+repos = vento-viso, vento-shell
+```
+
+Entrada: `CODE-AUD-021`, `AUTH-UI-061`, `VISO-SCH-001..008`, UX/autorización/servidor aplicables, E3 y `04A`.
+
+Archivos iniciales: seis archivos VISO del delta y la migración. `DELIV-PKG-014` fija inventario final.
+
+Bloqueos: límite/excepciones, migración, pruebas, seguridad por acción, concurrencia y commit final.

@@ -1,13 +1,7 @@
 ### MINI-BLOQUE — PRUEBAS INTEGRALES DE AUTORIZACIÓN
 
 <!-- PLAN-SECTION-META:START -->
-Esta sección organiza **pruebas integrales de autorización** dentro de **U PRUEBAS INTEGRALES**. Agrupa tareas que producen un resultado funcional común y deben mantenerse juntas para conservar contexto, trazabilidad y orden de ejecución.
-
 **Cobertura canónica:** `AUTH-QA-001` a `AUTH-QA-030` — 30 tareas.
-
-**Resultado esperado:** al cerrar este mini-bloque, su resultado debe quedar definido, verificable y coherente con las secciones anterior y siguiente antes de avanzar.
-
-**Límites funcionales:** comienza con “Propietario sin check-in entra a administración” y concluye con “Ejecutar prueba de regresión completa”.
 <!-- PLAN-SECTION-META:END -->
 
 ### [ ] AUTH-QA-001 — Propietario sin check-in entra a administración
@@ -40,3 +34,7 @@ Esta sección organiza **pruebas integrales de autorización** dentro de **U PRU
 ### [ ] AUTH-QA-028 — Rollback funciona por aplicación
 ### [ ] AUTH-QA-029 — Auditoría conserva actor, turno, sede y área
 ### [ ] AUTH-QA-030 — Ejecutar prueba de regresión completa
+
+### Subconjunto VISO mensual
+
+`003`, `017`, `019`, `020`, `021`, `023`, `024`, `027`, `028`, `029` y `030` son obligatorias para el package.

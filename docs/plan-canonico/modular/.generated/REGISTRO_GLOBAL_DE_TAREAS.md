@@ -652,12 +652,12 @@
 | ⬜ NO INICIADA | `VISO-AUTH-018` | Auditar cambios de seguridad | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-019` | Restringir quién administra seguridad | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
 | ⬜ NO INICIADA | `VISO-AUTH-020` | Crear exporte de matriz de acceso | `bloques/G_VISO/01_GOBIERNO_DE_ACCESO_Y_SEGURIDAD.md` |
-| ⬜ NO INICIADA | `VISO-CORE-001` | Definir el alcance mínimo necesario para habilitar las aplicaciones operativas | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-002` | Priorizar las tareas VISO-AUTH necesarias para el primer piloto | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-003` | Implementar las dependencias administrativas mínimas | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-004` | Validar que NEXO, FOGO, ORIGO y PULSO puedan configurarse desde VISO | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-005` | Validar simulación, conflictos y auditoría del alcance mínimo | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
-| ⬜ NO INICIADA | `VISO-CORE-006` | Aprobar VISO Core antes del primer piloto operativo | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ⬜ NO INICIADA | `VISO-CORE-001` | Definir núcleo mínimo de VISO | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ⬜ NO INICIADA | `VISO-CORE-002` | Vincular núcleo con capacidades empresariales | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ⬜ NO INICIADA | `VISO-CORE-003` | Implementar dependencias administrativas mínimas | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ⬜ NO INICIADA | `VISO-CORE-004` | Implementar autorización real del núcleo | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ⬜ NO INICIADA | `VISO-CORE-005` | Implementar validación de conflictos y auditoría | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
+| ⬜ NO INICIADA | `VISO-CORE-006` | Aprobar núcleo antes de ampliar alcance | `bloques/G_VISO/02_NUCLEO_MINIMO_PARA_OPERACION.md` |
 | ⬜ NO INICIADA | `VISO-UX-001` | Reorganizar navegación por dominios administrativos | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ⬜ NO INICIADA | `VISO-UX-002` | Crear sección Personal | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ⬜ NO INICIADA | `VISO-UX-003` | Crear sección Programación | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |

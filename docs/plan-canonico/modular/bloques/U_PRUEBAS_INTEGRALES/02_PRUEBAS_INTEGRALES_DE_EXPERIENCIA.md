@@ -1,13 +1,7 @@
 ### MINI-BLOQUE — PRUEBAS INTEGRALES DE EXPERIENCIA
 
 <!-- PLAN-SECTION-META:START -->
-Esta sección organiza **pruebas integrales de experiencia** dentro de **U PRUEBAS INTEGRALES**. Agrupa tareas que producen un resultado funcional común y deben mantenerse juntas para conservar contexto, trazabilidad y orden de ejecución.
-
 **Cobertura canónica:** `UX-QA-001` a `UX-QA-030` — 30 tareas.
-
-**Resultado esperado:** al cerrar este mini-bloque, su resultado debe quedar definido, verificable y coherente con las secciones anterior y siguiente antes de avanzar.
-
-**Límites funcionales:** comienza con “El trabajador identifica su siguiente tarea” y concluye con “Probar AURA únicamente después de aprobar su continuidad”.
 <!-- PLAN-SECTION-META:END -->
 
 ### [ ] UX-QA-001 — El trabajador identifica su siguiente tarea
@@ -30,9 +24,6 @@ Esta sección organiza **pruebas integrales de experiencia** dentro de **U PRUEB
 ### [ ] UX-QA-018 — Los eventos idempotentes no duplican efectos
 ### [ ] UX-QA-019 — Los fallos parciales permiten recuperación
 ### [ ] UX-QA-020 — Cada aplicación supera piloto con usuarios reales
-
-PRUEBAS POR APLICACIÓN
-
 ### [ ] UX-QA-021 — Probar SHELL por tipo de actor
 ### [ ] UX-QA-022 — Probar ANIMA con trabajadores y administradores
 ### [ ] UX-QA-023 — Probar VISO por rol administrativo
@@ -43,3 +34,7 @@ PRUEBAS POR APLICACIÓN
 ### [ ] UX-QA-028 — Probar NUMERA por alcance financiero
 ### [ ] UX-QA-029 — Probar PASS como cliente
 ### [ ] UX-QA-030 — Probar AURA únicamente después de aprobar su continuidad
+
+### Subconjunto VISO mensual
+
+`002`, `003`, `004`, `006`, `007`, `008`, `009`, `010`, `012`, `015`, `016`, `017`, `018`, `019`, `020` y `023` son obligatorias.

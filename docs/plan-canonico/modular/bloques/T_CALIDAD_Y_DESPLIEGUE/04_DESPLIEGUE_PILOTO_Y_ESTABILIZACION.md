@@ -1,19 +1,7 @@
 ### MINI-BLOQUE — DESPLIEGUE PILOTO Y ESTABILIZACION
 
 <!-- PLAN-SECTION-META:START -->
-Esta sección organiza **despliegue piloto y estabilizacion** dentro de **T CALIDAD Y DESPLIEGUE**. Agrupa tareas que producen un resultado funcional común y deben mantenerse juntas para conservar contexto, trazabilidad y orden de ejecución.
-
 **Cobertura canónica:** `SHELL-CI-020` a `SHELL-CI-024` — 5 tareas.
-
-**Resultado esperado:** al cerrar este mini-bloque, su resultado debe quedar definido, verificable y coherente con las secciones anterior y siguiente antes de avanzar.
-
-**Contenido funcional:**
-
-- `SHELL-CI-020`: Implementar y desplegar cada paquete aprobado por E5
-- `SHELL-CI-021`: Ejecutar y resolver el checklist de readiness aprobado
-- `SHELL-CI-022`: Ejecutar cutover y piloto conforme al plan aprobado
-- `SHELL-CI-023`: Ejecutar hypercare, conciliación y estabilización
-- `SHELL-CI-024`: Certificar cierre del paquete y transferencia a soporte
 <!-- PLAN-SECTION-META:END -->
 
 ### [ ] SHELL-CI-020 — Implementar y desplegar cada paquete aprobado por E5
@@ -21,8 +9,6 @@ Esta sección organiza **despliegue piloto y estabilizacion** dentro de **T CALI
 ### [ ] SHELL-CI-022 — Ejecutar cutover y piloto conforme al plan aprobado
 ### [ ] SHELL-CI-023 — Ejecutar hypercare, conciliación y estabilización
 ### [ ] SHELL-CI-024 — Certificar cierre del paquete y transferencia a soporte
-
-### Ciclo de ejecución por paquete
 
 ```text
 E5-GATE-008
@@ -33,40 +19,14 @@ E5-GATE-008
 → SHELL-CI-024
 ```
 
-Reglas:
-
-- `SHELL-CI-020` ejecuta únicamente un paquete aprobado y conserva commit,
-  versión, ambiente, despliegue, migraciones aplicables, pruebas y rollback;
-- las migraciones y validaciones de datos se ejecutan mediante las tareas
-  exactas de BLOQUE R incluidas en el paquete;
-- `SHELL-CI-021` produce la evidencia real definida por `READY-GATE-001` a
-  `READY-GATE-015` y decide listo, suspendido o rechazado;
-- `SHELL-CI-022` ejecuta `CUTOVER-OPS-001` a `CUTOVER-OPS-010`, incluida la
-  decisión de continuar, pausar o revertir;
-- `SHELL-CI-023` ejecuta `HYPERCARE-OPS-001` a
-  `HYPERCARE-OPS-010` y convierte defectos en tareas y pruebas de regresión;
-- `SHELL-CI-024` no cierra con incidentes, conciliaciones, contingencias o
-  deuda sin tarea, propietario, fecha y evidencia;
-- BLOQUE U certifica pruebas integrales, pero no sustituye las verificaciones
-  realizadas durante implementación, readiness, piloto e hypercare.
-
-### Ejecuciones independientes
-
-Cada paso se materializará como una ejecución, no como una nueva tarea:
+### Instancia VISO mensual
 
 ```text
-SHELL-CI-020::<package_id>
-→ SHELL-CI-021::<package_id>
-→ SHELL-CI-022::<package_id>
-→ SHELL-CI-023::<package_id>
-→ SHELL-CI-024::<package_id>
+SHELL-CI-020::VISO-SCHEDULE-MONTHLY-001
+→ 021::VISO-SCHEDULE-MONTHLY-001
+→ 022::VISO-SCHEDULE-MONTHLY-001
+→ 023::VISO-SCHEDULE-MONTHLY-001
+→ 024::VISO-SCHEDULE-MONTHLY-001
 ```
 
-Todas las ejecuciones conservarán el mismo `package_id`. Aprobar una ejecución
-no modifica el estado de la tarea canónica ni de otros paquetes. El marcador
-de cada tarea `SHELL-CI-*` solo cambiará cuando se complete y apruebe su
-alcance canónico, no por el cierre aislado de una instancia.
-
-Para `NEXO-REMISSIONS-001`, `SHELL-CI-024` certificará únicamente el alcance
-de remisiones declarado en el paquete. No certificará inventario completo,
-NEXO completo, BLOQUE K ni Vento OS.
+Evidencia: commits, build/typecheck, pruebas, rollback, política/configuración, piloto, paridad semana/mes, métricas, ANIMA, regresiones y soporte.
