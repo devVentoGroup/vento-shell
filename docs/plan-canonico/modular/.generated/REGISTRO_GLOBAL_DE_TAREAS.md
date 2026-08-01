@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1585** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **457** |
+| Aprobadas | **458** |
 | En propuesta | **0** |
-| No iniciadas | **1128** |
+| No iniciadas | **1127** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **28.83% (457/1585)** |
+| Porcentaje de completamiento | **28.90% (458/1585)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-TRANS-008` — Definir estrategia ante escrituras durante la transición | ✅ APROBADA |
-| Tarea actual | `SUPA-TRANS-009` — Definir pruebas antes y después de cada migración | ⬜ NO INICIADA |
-| Siguiente | `SUPA-TRANS-010` — Definir mediciones de rendimiento y seguridad | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-TRANS-009` — Definir pruebas antes y después de cada migración | ✅ APROBADA |
+| Tarea actual | `SUPA-TRANS-010` — Definir mediciones de rendimiento y seguridad | ⬜ NO INICIADA |
+| Siguiente | `SUPA-TRANS-011` — Definir rollback por paquete de cambio | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -449,7 +449,7 @@
 | ✅ APROBADA | `SUPA-TRANS-006` | Definir vistas, wrappers o aliases temporales de compatibilidad | `bloques/E3_SUPABASE/06_06_SUPA_TRANS_006.md` |
 | ✅ APROBADA | `SUPA-TRANS-007` | Definir adaptación coordinada de consumidores | `bloques/E3_SUPABASE/06_07_SUPA_TRANS_007.md` |
 | ✅ APROBADA | `SUPA-TRANS-008` | Definir estrategia ante escrituras durante la transición | `bloques/E3_SUPABASE/06_08_SUPA_TRANS_008.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-009` | Definir pruebas antes y después de cada migración | `bloques/E3_SUPABASE/06_09_SUPA_TRANS_009.md` |
+| ✅ APROBADA | `SUPA-TRANS-009` | Definir pruebas antes y después de cada migración | `bloques/E3_SUPABASE/06_09_SUPA_TRANS_009.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-010` | Definir mediciones de rendimiento y seguridad | `bloques/E3_SUPABASE/06_10_SUPA_TRANS_010.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-011` | Definir rollback por paquete de cambio | `bloques/E3_SUPABASE/06_11_SUPA_TRANS_011.md` |
 | ⬜ NO INICIADA | `SUPA-TRANS-012` | Definir retiro progresivo de objetos legacy | `bloques/E3_SUPABASE/06_12_SUPA_TRANS_012.md` |

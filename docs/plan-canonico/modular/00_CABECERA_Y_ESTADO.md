@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **283** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **457** |
+| Tareas aprobadas | **458** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1128** |
+| Tareas no iniciadas | **1127** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **28.83% (457/1585)** |
+| Porcentaje de completamiento | **28.90% (458/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-TRANS-008 — Definir estrategia ante escrituras durante la transición** |
-| Tarea actual | **SUPA-TRANS-009 — Definir pruebas antes y después de cada migración** |
+| Última tarea aprobada | **SUPA-TRANS-009 — Definir pruebas antes y después de cada migración** |
+| Tarea actual | **SUPA-TRANS-010 — Definir mediciones de rendimiento y seguridad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-TRANS-010 — Definir mediciones de rendimiento y seguridad** |
+| Siguiente tarea | **SUPA-TRANS-011 — Definir rollback por paquete de cambio** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 28 de 45 aprobadas; SUPA-TRANS-009 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 29 de 45 aprobadas; SUPA-TRANS-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-TRANS-008` — Definir estrategia ante escrituras durante la transición |
-| Tarea actual | `SUPA-TRANS-009` — Definir pruebas antes y después de cada migración — **NO INICIADA** |
-| Siguiente tarea | `SUPA-TRANS-010` — Definir mediciones de rendimiento y seguridad |
+| Última aprobada | `SUPA-TRANS-009` — Definir pruebas antes y después de cada migración |
+| Tarea actual | `SUPA-TRANS-010` — Definir mediciones de rendimiento y seguridad — **NO INICIADA** |
+| Siguiente tarea | `SUPA-TRANS-011` — Definir rollback por paquete de cambio |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **28 DE 45 APROBADAS — ACTUAL SUPA-TRANS-009** |
+| BLOQUE E3 | **29 DE 45 APROBADAS — ACTUAL SUPA-TRANS-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-TRANS-008 — Definir estrategia ante escrituras durante la transición
-        ↓
-TAREA ACTUAL
 SUPA-TRANS-009 — Definir pruebas antes y después de cada migración
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-TRANS-010 — Definir mediciones de rendimiento y seguridad
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-TRANS-011 — Definir rollback por paquete de cambio
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 28 de 45 tareas aprobadas
+BLOQUE E3 — 29 de 45 tareas aprobadas
 ```
