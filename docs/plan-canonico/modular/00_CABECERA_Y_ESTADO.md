@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **267** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **455** |
+| Tareas aprobadas | **456** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1130** |
+| Tareas no iniciadas | **1129** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **28.71% (455/1585)** |
+| Porcentaje de completamiento | **28.77% (456/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad** |
-| Tarea actual | **SUPA-TRANS-007 — Definir adaptación coordinada de consumidores** |
+| Última tarea aprobada | **SUPA-TRANS-007 — Definir adaptación coordinada de consumidores** |
+| Tarea actual | **SUPA-TRANS-008 — Definir estrategia ante escrituras durante la transición** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-TRANS-008 — Definir estrategia ante escrituras durante la transición** |
+| Siguiente tarea | **SUPA-TRANS-009 — Definir pruebas antes y después de cada migración** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 26 de 45 aprobadas; SUPA-TRANS-007 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 27 de 45 aprobadas; SUPA-TRANS-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-TRANS-006` — Definir vistas, wrappers o aliases temporales de compatibilidad |
-| Tarea actual | `SUPA-TRANS-007` — Definir adaptación coordinada de consumidores — **NO INICIADA** |
-| Siguiente tarea | `SUPA-TRANS-008` — Definir estrategia ante escrituras durante la transición |
+| Última aprobada | `SUPA-TRANS-007` — Definir adaptación coordinada de consumidores |
+| Tarea actual | `SUPA-TRANS-008` — Definir estrategia ante escrituras durante la transición — **NO INICIADA** |
+| Siguiente tarea | `SUPA-TRANS-009` — Definir pruebas antes y después de cada migración |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **26 DE 45 APROBADAS — ACTUAL SUPA-TRANS-007** |
+| BLOQUE E3 | **27 DE 45 APROBADAS — ACTUAL SUPA-TRANS-008** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-TRANS-006 — Definir vistas, wrappers o aliases temporales de compatibilidad
-        ↓
-TAREA ACTUAL
 SUPA-TRANS-007 — Definir adaptación coordinada de consumidores
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SUPA-TRANS-008 — Definir estrategia ante escrituras durante la transición
         ↓
+SIGUIENTE TAREA RESERVADA
+SUPA-TRANS-009 — Definir pruebas antes y después de cada migración
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 26 de 45 tareas aprobadas
+BLOQUE E3 — 27 de 45 tareas aprobadas
 ```
