@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **293** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **483** |
+| Tareas aprobadas | **484** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1102** |
+| Tareas no iniciadas | **1101** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **30.47% (483/1585)** |
+| Porcentaje de completamiento | **30.54% (484/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-AUD-009 — Comparar tipos y contratos** |
-| Tarea actual | **SHELL-AUD-010 — Clasificar compartir / generar / mantener local** |
+| Última tarea aprobada | **SHELL-AUD-010 — Clasificar compartir / generar / mantener local** |
+| Tarea actual | **SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados** |
+| Siguiente tarea | **SHELL-PKG-001 — Elegir mecanismo de distribución** |
 | Bloque actual | **BLOQUE H — Fundación compartida** |
-| Progreso del bloque | **BLOQUE H: 9 de 11 aprobadas; SHELL-AUD-010 pendiente** |
+| Progreso del bloque | **BLOQUE H: 10 de 11 aprobadas; SHELL-AUD-011 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-AUD-009` — Comparar tipos y contratos |
-| Tarea actual | `SHELL-AUD-010` — Clasificar compartir / generar / mantener local — **NO INICIADA** |
-| Siguiente tarea | `SHELL-AUD-011` — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados |
+| Última aprobada | `SHELL-AUD-010` — Clasificar compartir / generar / mantener local |
+| Tarea actual | `SHELL-AUD-011` — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados — **NO INICIADA** |
+| Siguiente tarea | `SHELL-PKG-001` — Elegir mecanismo de distribución |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE H | **9 DE 11 APROBADAS — ACTUAL SHELL-AUD-010** |
+| BLOQUE H | **10 DE 11 APROBADAS — ACTUAL SHELL-AUD-011** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-AUD-009 — Comparar tipos y contratos
-        ↓
-TAREA ACTUAL
 SHELL-AUD-010 — Clasificar compartir / generar / mantener local
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-PKG-001 — Elegir mecanismo de distribución
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 9 de 11 tareas aprobadas
+BLOQUE H — 10 de 11 tareas aprobadas
 ```

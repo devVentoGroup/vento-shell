@@ -5484,6 +5484,515 @@ SHELL-AUD-010 — Clasificar compartir / generar / mantener local
 El handoff `SHELL-PKG-001` permanece reservado exclusivamente para después de completar `SHELL-AUD-011`.
 
 
-### [ ] SHELL-AUD-010 — Clasificar compartir / generar / mantener local
+### ✅ SHELL-AUD-010 — Clasificar compartir / generar / mantener local
+
+**Estado:** APROBADA
+**Bloque:** H — Fundación compartida
+**Tipo:** decisión documental de disposición arquitectónica para familias físicas, contratos, tipos y variantes compartidas
+**Entrada de continuidad:** `SHELL-AUD-009 — Comparar tipos y contratos`
+**Continuidad inmediata reservada:** `SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados`
+**Handoff posterior al segmento `SHELL-AUD-001..011`:** `SHELL-PKG-001 — Elegir mecanismo de distribución`
+**Fecha de corte:** 2026-08-01
+**Commit documental canónico:** `d42f9a1e6d74523c3cdf0a7aece870075d442d8c`
+**Cambios en código, tipos, contratos, paquetes, configuración, CI, despliegues, datos o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea convierte los inventarios y comparaciones de `SHELL-AUD-001` a `SHELL-AUD-009` en una decisión explícita por identidad. La disposición no se determina por nombre de archivo, cantidad de copias o igualdad de hash, sino por fuente de verdad, estabilidad transversal, necesidad de generación determinista y legitimidad de las extensiones locales.
+
+| Métrica                                          |    Resultado |
+| ------------------------------------------------ | -----------: |
+| Familias físicas heredadas                       |       **26** |
+| Familias clasificadas `COMPARTIR`                |       **18** |
+| Familias clasificadas `GENERAR`                  |        **1** |
+| Familias clasificadas `MANTENER_LOCAL`           |        **7** |
+| Identidades contractuales heredadas              |       **34** |
+| Contratos clasificados `COMPARTIR`               |       **20** |
+| Contratos clasificados `GENERAR`                 |       **13** |
+| Contratos clasificados `MANTENER_LOCAL`          |        **1** |
+| Variantes Supabase heredadas                     |       **16** |
+| Variantes Supabase clasificadas `COMPARTIR`      |        **8** |
+| Variantes Supabase clasificadas `MANTENER_LOCAL` |        **8** |
+| Superficies con rol de transición explícito      |   **9 de 9** |
+| Decisiones de disposición materializadas         | **76 de 76** |
+| Hallazgos con destino exacto                     |       **24** |
+| Cambios `TREQ-*`                                 |        **0** |
+
+Resultado central:
+
+```text
+COMPARTIR
+→ comportamiento transversal estable
+→ una implementación versionada
+→ configuración y extensiones explícitas
+
+GENERAR
+→ identidad o forma derivada de catálogo, schema, migraciones o manifiesto
+→ salida determinista
+→ edición manual prohibida
+
+MANTENER_LOCAL
+→ entrypoint, orquestación, view model o regla de dominio propia
+→ consume contratos compartidos y artefactos generados
+→ no duplica fuentes de verdad
+```
+
+No se adopta ningún blob actual como fuente canónica completa. Los archivos mixtos se descomponen: el núcleo transversal se comparte o genera y la composición o extensión empresarial permanece local.
+
+---
+
+#### 2. Fuentes y corte reproducible
+
+| Fuente                                              | Uso                                                                |
+| --------------------------------------------------- | ------------------------------------------------------------------ |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, integridad, trazabilidad y requisitos de prueba       |
+| `docs/plan-canonico/modular/delivery-contract.json` | contrato físico del artefacto                                      |
+| `docs/plan-canonico/modular/active-sequence.json`   | segmento vigente y handoff posterior                               |
+| `00_CABECERA_Y_ESTADO.md`                           | confirmación de tarea actual y siguiente reservada                 |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`        | propietario y tareas `SHELL-AUD-001..009` aprobadas                |
+| `SHELL-AUD-001`                                     | 26 familias físicas y 190 decisiones de presencia                  |
+| `SHELL-AUD-002` a `SHELL-AUD-005`                   | guards, permisos, contexto y role override                         |
+| `SHELL-AUD-006` y `SHELL-AUD-007`                   | AppShell, navegación, UI, CSS y extensiones                        |
+| `SHELL-AUD-008`                                     | 7 familias Supabase, 28 ocurrencias y 16 variantes                 |
+| `SHELL-AUD-009`                                     | 34 identidades contractuales y 9 superficies                       |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`         | tareas de distribución, versionado, compatibilidad y rollback      |
+| `03_CONTRATOS_COMPARTIDOS.md`                       | destinos `SHELL-CON-001..016`                                      |
+| `03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`         | frontera de `@vento/contracts`, `@vento/os-context` y Supabase     |
+| `07_COMPONENTES_WEB_COMPARTIDOS.md`                 | destino de componentes y patrones web                              |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`  | cobertura vigente; blob `fb8d32142299fd74619a7a8b63884cc735a11fbf` |
+| `package.json` y `validate-task-delivery.mjs`       | scripts y reglas de validación aplicables                          |
+
+Commits runtime heredados y no modificados por esta tarea:
+
+| Superficie | Repositorio                  | Commit                                     |
+| ---------- | ---------------------------- | ------------------------------------------ |
+| SHELL      | `devVentoGroup/vento-shell`  | `d42f9a1e6d74523c3cdf0a7aece870075d442d8c` |
+| VISO       | `devVentoGroup/vento-viso`   | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |
+| NEXO       | `devVentoGroup/vento-nexo`   | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |
+| FOGO       | `devVentoGroup/vento-fogo`   | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |
+| ORIGO      | `devVentoGroup/vento-origo`  | `b7a8303fa078ef087f522b6c99059ababfc27472` |
+| PULSO      | `devVentoGroup/vento-pulso`  | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| NUMERA     | `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |
+
+El commit documental actual incorpora `SHELL-AUD-009` y no cambia los archivos runtime clasificados.
+
+---
+
+#### 3. Continuidad interpretada
+
+```text
+SHELL-AUD-001
+→ ...
+→ SHELL-AUD-009 aprobada
+→ SHELL-AUD-010 actual
+→ SHELL-AUD-011 inmediata reservada
+→ SHELL-PKG-001
+```
+
+`SHELL-AUD-011` es la única continuidad inmediata. `SHELL-PKG-001` continúa siendo el handoff posterior al cierre completo del segmento `SHELL-AUD-001..011`. Esta tarea no modifica `active-sequence.json`.
+
+---
+
+#### 4. Taxonomía vinculante de disposición
+
+| Disposición      | Criterio positivo                                                                                         | Prohibición                                                                         | Resultado físico esperado                                                |
+| ---------------- | --------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `COMPARTIR`      | comportamiento transversal, estable y consumido por más de una superficie o requerido como frontera única | copiar el archivo a cada repositorio o permitir forks silenciosos                   | paquete versionado con API, configuración, pruebas y compatibilidad      |
+| `GENERAR`        | identidad, unión, schema, manifest o DTO derivable de una fuente canónica                                 | editar manualmente la salida o mantener un enum paralelo                            | artefacto determinista, reproducible y verificado contra su fuente       |
+| `MANTENER_LOCAL` | entrypoint, composición, view model o extensión empresarial propia de una aplicación                      | convertir la localidad en permiso para duplicar catálogos, autorización o contratos | archivo propietario que importa núcleo compartido y artefactos generados |
+
+Subclasificaciones permitidas dentro de la disposición primaria:
+
+- `COMPARTIR_CON_CONFIG_LOCAL`;
+- `COMPARTIR_RESTRINGIDO_SERVER_ONLY`;
+- `COMPARTIR_TRANSITORIO`;
+- `GENERAR_CON_ADAPTER_LOCAL`;
+- `MANTENER_LOCAL_CON_NUCLEO_COMPARTIDO`;
+- `MANTENER_LOCAL_EN_CUARENTENA`.
+
+Estas subclasificaciones no crean una cuarta disposición.
+
+---
+
+#### 5. Fronteras de propiedad resultantes
+
+```text
+@vento/contracts
+→ catálogos, schemas, códigos, tipos derivados, manifest, hashes y diagnósticos
+
+@vento/os-context
+→ guards, adapters, contexto, autorización, SSO, firma y clientes Supabase compartidos
+
+@vento/ui-web
+→ primitivas, Chrome, AppSwitcher, ProfileMenu, PageHeader, VentoLogo y CSS base
+
+REPOSITORIO DE CADA APLICACIÓN
+→ layout, middleware, compositor server, tema, estilos de dominio, view models y extensiones empresariales
+
+GENERADORES EN vento-shell
+→ aplicaciones, permisos, roles, scopes, Database, RPC y artefactos de publicación
+```
+
+No se crean `@vento/auth`, `@vento/operational-context` ni otro núcleo paralelo.
+
+---
+
+#### 6. Matriz completa de las 26 familias físicas
+| ID        | Familia                                          | Disposición    | Responsabilidad que conserva                                                                | Descomposición obligatoria                                                                                     | Destino                                                                               |
+| --------- | ------------------------------------------------ | -------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `FAM-001` | `src/app/layout.tsx`                             | MANTENER_LOCAL | Entrypoint de framework, metadata, fuentes y scripts propios por aplicación.                | Consumir políticas compartidas mediante imports; no copiar el layout completo.                                 | `SHELL-UI-010`; `SHELL-PKG-001`; `SHELL-AUTH-005`                                     |
+| `FAM-002` | `src/app/globals.css`                            | MANTENER_LOCAL | Entrypoint CSS, tema y estilos de dominio permanecen por aplicación.                        | Importar tokens, reset, primitivas y capas base versionadas desde `@vento/ui-web`.                             | `SHELL-UI-001`; `SHELL-PKG-004`; `SHELL-PKG-008`                                      |
+| `FAM-003` | `src/components/vento/standard/vento-shell.tsx`  | MANTENER_LOCAL | Compositor server por aplicación: consultas, navegación, contexto y extensiones de dominio. | Sustituir tipos, catálogos y componentes copiados por contratos y componentes compartidos.                     | `SHELL-UI-010`; `SHELL-CON-002`; `SHELL-CON-007`; `SHELL-CON-011`; `SHELL-AUTH-005`   |
+| `FAM-004` | `src/components/vento/standard/vento-chrome.tsx` | COMPARTIR      | Chrome presentacional y estructura común del AppShell.                                      | Exponer slots y configuración tipada; textos, navegación y extensiones se inyectan.                            | `SHELL-UI-001`; `SHELL-UI-010`; `SHELL-UI-011`                                        |
+| `FAM-005` | `src/components/vento/standard/ui.tsx`           | COMPARTIR      | Primitivas `Button`, `Card`, `Input`, `Select` y `Badge`.                                   | Publicar junto con su contrato CSS, estados, accesibilidad y compatibilidad.                                   | `SHELL-UI-001`; `SHELL-UI-003`; `SHELL-UI-004`; `SHELL-PKG-008`                       |
+| `FAM-006` | `src/components/vento/standard/table.tsx`        | COMPARTIR      | Wrappers semánticos de tabla HTML.                                                          | Mantener separada la tabla semántica de componentes avanzados de datos.                                        | `SHELL-UI-001`; `SHELL-PKG-006`; `SHELL-PKG-008`                                      |
+| `FAM-007` | `src/components/vento/standard/app-switcher.tsx` | COMPARTIR      | Componente de selección de aplicaciones.                                                    | Consumir metadata generada del catálogo y estado de acceso calculado; no contener catálogo manual.             | `SHELL-UI-001`; `SHELL-CON-002`; `SHELL-AUTH-005`                                     |
+| `FAM-008` | `src/components/vento/standard/profile-menu.tsx` | COMPARTIR      | Estructura común de perfil, sesión, sede y acciones.                                        | Exponer acciones por slots o capacidades; placeholders y acciones locales permanecen fuera del núcleo.         | `SHELL-UI-001`; `SHELL-UI-010`; `SHELL-AUTH-005`; `SHELL-AUD-011`                     |
+| `FAM-009` | `src/lib/auth/guard.ts`                          | COMPARTIR      | Adapter server de autenticación, contexto y autorización.                                   | Reemplazar tres firmas por una política discriminada; conservar extensiones como parámetros explícitos.        | `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                                  |
+| `FAM-010` | `src/lib/auth/permissions.ts`                    | COMPARTIR      | Adapter de evaluación y compatibilidad temporal.                                            | Aceptar `PermissionKey` generada y retornar decisión estructurada; el constructor string queda legacy.         | `SHELL-CON-003`; `SHELL-CON-008`; `SHELL-AUTH-002`; `SHELL-AUTH-004`                  |
+| `FAM-011` | `src/lib/auth/operational-session.ts`            | COMPARTIR      | Adapter transitorio de sesión operativa repetido byte a byte.                               | Reconciliar con `AccessContext@1.0.0`; no declararlo fuente autoritativa.                                      | `SHELL-CTX-001`; `SHELL-CON-007`; `SHELL-AUTH-005`                                    |
+| `FAM-012` | `src/lib/auth/role-override.ts`                  | COMPARTIR      | Módulo común de simulación/override y evaluación por rol.                                   | Extraer la excepción logística NEXO a una política local declarada; usar roles y scopes canónicos.             | `SHELL-AUTH-001`; `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-CON-006`; `SHELL-AUTH-005` |
+| `FAM-013` | `src/lib/auth/role-override-config.ts`           | GENERAR        | Roles, etiquetas, elegibilidad y metadata deben derivarse de fuentes canónicas.             | Eliminar listas manuales divergentes; la política de cookie queda en el SDK, no en catálogos por app.          | `SHELL-CON-002`; `SHELL-CON-004`; `SHELL-CON-005`; `AUTH-CAT-018`; `SHELL-AUTH-004`   |
+| `FAM-014` | `src/lib/supabase/client.ts`                     | COMPARTIR      | Factory browser con ciclo de vida y política de cookies configurables.                      | La aplicación aporta configuración validada; el factory no incorpora lógica de dominio.                        | `SHELL-AUTH-002`; `SHELL-PKG-004`; `SHELL-AUTH-005`                                   |
+| `FAM-015` | `src/lib/supabase/server.ts`                     | COMPARTIR      | Factory server con contrato único de cookies, host y errores.                               | Conservar host-aware como política configurable y producir diagnóstico observable.                             | `SHELL-AUTH-002`; `SHELL-CON-008`; `SHELL-AUTH-005`                                   |
+| `FAM-016` | `middleware.ts`                                  | MANTENER_LOCAL | Entrypoint y matcher pertenecen a cada aplicación y a su superficie de rutas.               | Componer adapters compartidos; separar kiosco, PDF y otras políticas empresariales del refresco de sesión.     | `SHELL-AUTH-002`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                                  |
+| `FAM-017` | `src/lib/supabase/proxy.ts`                      | MANTENER_LOCAL | Artefacto en cuarentena sin invocación externa confirmada.                                  | No promover, compartir ni retirar hasta completar evidencia de imports, framework y carga dinámica.            | `SHELL-AUD-011`                                                                       |
+| `FAM-018` | `src/lib/auth/operational-context.ts`            | MANTENER_LOCAL | Adapter especializado de NEXO y compatibilidad con su RPC actual.                           | Mantener como frontera legacy local hasta migrar al contexto autoritativo; no elevar su mutación local al SDK. | `SHELL-CTX-001`; `SHELL-CTX-002`; `SHELL-CTX-003`; `AUTH-DB-033`; `SHELL-AUTH-005`    |
+| `FAM-019` | `src/components/vento/standard/page-header.tsx`  | COMPARTIR      | Componente base reconciliado a partir de responsividad NEXO y acento VISO.                  | Publicar una sola API; ningún blob actual se adopta sin reconciliación.                                        | `SHELL-UI-001`; `SHELL-PKG-006`; `SHELL-AUD-011`                                      |
+| `FAM-020` | `src/components/vento/standard/vento-logo.tsx`   | COMPARTIR      | Componente de marca y representación gráfica común.                                         | Consumir aplicación, label, color y assets generados; eliminar fallbacks centrados en una app.                 | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-AUTH-005`                     |
+| `FAM-021` | `src/lib/auth/request-host.ts`                   | COMPARTIR      | Utilidad de host local y protocolo requerida por SSO y cookies.                             | Publicar como utilidad server sin defaults de una aplicación.                                                  | `SHELL-AUTH-002`; `SHELL-CON-008`; `SHELL-PKG-004`                                    |
+| `FAM-022` | `src/lib/auth/shared-device-signature.ts`        | COMPARTIR      | Adapter de firma de actor en dispositivo compartido.                                        | Conservar la unión discriminada, tipar app/acción/target y separar mensajes de códigos.                        | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`; `AUTH-DEV-007` a `AUTH-DEV-016`   |
+| `FAM-023` | `src/lib/auth/sso.ts`                            | COMPARTIR      | Constructor y validador común de destinos SSO y `returnTo`.                                 | URLs de aplicaciones provienen del catálogo; política local solo mediante configuración explícita.             | `SHELL-CON-002`; `SHELL-CON-008`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                  |
+| `FAM-024` | `src/lib/supabase/admin.ts`                      | COMPARTIR      | Factory restringido, `server-only`, para service role.                                      | Publicar como frontera privilegiada separada; consumidores y autorización administrativa siguen locales.       | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-005`                                  |
+| `FAM-025` | `src/lib/supabase/employee-sites.ts`             | COMPARTIR      | Normalizador semánticamente común de relación `employee_sites → sites`.                     | Mantenerlo transitorio y tipado contra `Database`; retirarlo solo si la generación elimina su necesidad.       | `SHELL-CON-007`; `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-011`                  |
+| `FAM-026` | `src/utils/supabase/client.ts`                   | MANTENER_LOCAL | Cliente alterno PULSO en cuarentena y sin consumidor confirmado.                            | No promover ni retirar antes del inventario de `SHELL-AUD-011`.                                                | `SHELL-AUD-011`                                                                       |
+
+**Conciliación:** 26 familias esperadas, 26 materializadas, 0 faltantes y 0 duplicadas. Distribución: **18 COMPARTIR**, **1 GENERAR** y **7 MANTENER_LOCAL**.
+
+---
+
+#### 7. Matriz completa de las 34 identidades contractuales
+| ID             | Contrato o tipo                              | Disposición    | Regla materializada                                                                                         | Destino                                                              |
+| -------------- | -------------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `TYPE-CON-001` | `AppCode`                                    | GENERAR        | Catálogo publicado de aplicaciones.                                                                         | `SHELL-CON-002`; `AUTH-CAT-018`                                      |
+| `TYPE-CON-002` | definición de aplicación / `AppSwitcherItem` | GENERAR        | Generar identidad, nombre, dominio, estado, URL y marca; derivar una proyección runtime de acceso.          | `SHELL-CON-002`; `SHELL-UI-002`; `SHELL-AUTH-005`                    |
+| `TYPE-CON-003` | `VentoEntity`                                | GENERAR        | Derivar de `AppCode` y del registro de marca; `default` no es aplicación canónica.                          | `SHELL-CON-002`; `SHELL-UI-002`                                      |
+| `TYPE-CON-004` | `IconName`                                   | COMPARTIR      | Vocabulario versionado y parser en `@vento/ui-web`; no depende de strings libres de navegación.             | `SHELL-UI-001`; `SHELL-CON-011`                                      |
+| `TYPE-CON-005` | `NavigationRow`                              | GENERAR        | Generar tipo de esquema/RPC y mapearlo mediante adapter; no publicarlo como contrato manual.                | `SHELL-CON-011`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                  |
+| `TYPE-CON-006` | `NavItem`                                    | COMPARTIR      | Contrato UI con identidad estable, destino, icono y `PermissionKey` generada.                               | `SHELL-CON-003`; `SHELL-CON-011`; `SHELL-UI-002`                     |
+| `TYPE-CON-007` | `NavGroup`                                   | COMPARTIR      | Agrupación por identificador estable; label es presentación.                                                | `SHELL-CON-011`; `SHELL-UI-002`                                      |
+| `TYPE-CON-008` | `OperatingGate`                              | MANTENER_LOCAL | View model de presentación derivado de contexto compartido; textos y acciones pertenecen a cada superficie. | `SHELL-CTX-005`; `SHELL-UI-015`; `SHELL-UI-016`                      |
+| `TYPE-CON-009` | `PageHeaderProps`                            | COMPARTIR      | API única que conserva acento y respuesta adaptable.                                                        | `SHELL-UI-001`                                                       |
+| `TYPE-CON-010` | `VentoLogoProps` / `VentoIconProps`          | COMPARTIR      | API de componente; entidad y datos de marca se reciben como tipos generados.                                | `SHELL-CON-002`; `SHELL-UI-002`                                      |
+| `TYPE-CON-011` | `SiteOption`                                 | COMPARTIR      | Proyección segura y estable para UI/contexto, con nulabilidad única.                                        | `SHELL-CON-007`; `SHELL-CTX-003`                                     |
+| `TYPE-CON-012` | `EmployeeSiteRow`                            | GENERAR        | Derivar del tipo `Database` o resultado RPC; no mantener relación manual objeto/arreglo.                    | `SHELL-CON-007`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                  |
+| `TYPE-CON-013` | `GuardOptions` base                          | COMPARTIR      | Entrada canónica tipada por app, permisos, contexto y política.                                             | `SHELL-CON-002`; `SHELL-CON-003`; `SHELL-CON-007`; `SHELL-AUTH-002`  |
+| `TYPE-CON-014` | `GuardOptions` VISO                          | COMPARTIR      | Absorber su semántica en una unión discriminada, no conservar un flag paralelo.                             | `SHELL-AUTH-002`; `SHELL-AUTH-005`                                   |
+| `TYPE-CON-015` | `GuardOptions` PULSO                         | COMPARTIR      | Absorber su semántica en la misma política discriminada y conservar el default de forma explícita.          | `SHELL-AUTH-002`; `SHELL-AUTH-005`                                   |
+| `TYPE-CON-016` | resultado de `requireAppAccess`              | COMPARTIR      | Resultado público con usuario, contexto, decisión, versión, razones y correlación.                          | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`                   |
+| `TYPE-CON-017` | `PermissionContext`                          | COMPARTIR      | Contexto de evaluación tipado, con fuente y frescura; no sustituye `AccessContext`.                         | `SHELL-CON-006`; `SHELL-CON-007`; `SHELL-AUTH-002`                   |
+| `TYPE-CON-018` | `PermissionKey` / entrada de permiso         | GENERAR        | Unión literal derivada del catálogo publicado; aliases, legacy y retirados permanecen categorías distintas. | `SHELL-CON-003`; `AUTH-CAT-018`; `AUTH-CAT-019`; `SHELL-AUTH-004`    |
+| `TYPE-CON-019` | resultado de evaluación de permiso           | COMPARTIR      | Unión de permitido, denegado, error técnico y bloqueo contextual.                                           | `SHELL-CON-008`; `SHELL-AUTH-002`; `AUTH-DB-034`                     |
+| `TYPE-CON-020` | `OperationalSession`                         | COMPARTIR      | Contrato transitorio discriminado que deberá converger hacia `AccessContext`.                               | `SHELL-CON-007`; `SHELL-CTX-001`; `SHELL-AUTH-005`                   |
+| `TYPE-CON-021` | `OperationalContextRow`                      | GENERAR        | Derivar del contrato RPC versionado; NEXO conserva un adapter local, no un tipo manual autoritativo.        | `SHELL-CON-007`; `SHELL-CON-008`; `AUTH-DB-033`                      |
+| `TYPE-CON-022` | `EffectiveContext`                           | COMPARTIR      | Reconciliar dentro de `@vento/os-context` con enums cerrados, parser y versión.                             | `SHELL-CON-004` a `SHELL-CON-008`; `SHELL-CTX-001`; `SHELL-AUTH-002` |
+| `TYPE-CON-023` | `ContextSimulationInput`                     | COMPARTIR      | Entrada de simulación con actor autorizante, versión, alcance y duración validados.                         | `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-CON-007`; `SHELL-AUTH-002`  |
+| `TYPE-CON-024` | `AccessContext@1.0.0`                        | COMPARTIR      | Contrato canónico inmutable y versionado del contexto efectivo.                                             | `SHELL-CON-007`; `SHELL-AUTH-001`; `SHELL-CTX-001`; `AUTH-DB-033`    |
+| `TYPE-CON-025` | rol base, rol operativo y `ROLE_OPTIONS`     | GENERAR        | Derivar códigos y etiquetas desde fuentes canónicas separadas por clase de rol.                             | `SHELL-CON-004`; `SHELL-CON-005`; `AUTH-CAT-018`; `SHELL-AUTH-004`   |
+| `TYPE-CON-026` | `RolePermissionRow`                          | GENERAR        | Derivar de `Database`/RPC; cada adapter puede proyectar solo campos necesarios.                             | `SHELL-CON-006`; `SHELL-AUTH-001`; `SHELL-AUTH-005`                  |
+| `TYPE-CON-027` | `RolePermissionEntry` y scope                | GENERAR        | Derivar vocabulario de scopes y forma contractual; no aceptar `scope_type` abierto.                         | `SHELL-CON-006`; `AUTH-CAT-018`; `SHELL-AUTH-001`                    |
+| `TYPE-CON-028` | adapter `SupabaseClient`                     | COMPARTIR      | Puerto mínimo por capacidad (`rpc`, auth, query, admin) y no cliente concreto obligatorio.                  | `SHELL-AUTH-002`; `SHELL-AUTH-005`                                   |
+| `TYPE-CON-029` | `Database` generado                          | GENERAR        | Salida determinista del esquema versionado de Supabase mantenido en `vento-shell`.                          | `SHELL-CON-001`; `SHELL-AUTH-002`; `SHELL-AUTH-004`                  |
+| `TYPE-CON-030` | inputs y outputs RPC                         | GENERAR        | Generar desde firmas versionadas y validar payloads en runtime.                                             | `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035`                      |
+| `TYPE-CON-031` | `SignatureResult`                            | COMPARTIR      | Conservar la unión discriminada y centralizar códigos, metadata y errores.                                  | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`                   |
+| `TYPE-CON-032` | destino SSO y `returnTo`                     | COMPARTIR      | Contrato de origen, destino, aplicación, ambiente y política de retorno seguro.                             | `SHELL-CON-002`; `SHELL-CON-008`; `SHELL-AUTH-002`                   |
+| `TYPE-CON-033` | razones, errores y estados                   | COMPARTIR      | Vocabularios versionados y separados por nivel; mensajes humanos son proyecciones locales.                  | `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-AUTH-004`                   |
+| `TYPE-CON-034` | manifiesto, versión, hash y diagnóstico      | GENERAR        | Generar al publicar catálogos, schemas y paquetes; nunca completar manualmente en consumidores.             | `AUTH-CAT-017`; `AUTH-CAT-018`; `SHELL-CON-001`; `SHELL-AUTH-003`    |
+
+**Conciliación:** 34 identidades esperadas, 34 materializadas, 0 faltantes y 0 duplicadas. Distribución: **20 COMPARTIR**, **13 GENERAR** y **1 MANTENER_LOCAL**.
+
+La clasificación `GENERAR` no implica que el dato nazca de Supabase. La fuente puede ser el catálogo publicado, JSON Schema, registro de aplicaciones, migraciones versionadas o manifiesto de paquete. La salida debe declarar su fuente exacta.
+
+---
+
+#### 8. Matriz de las 16 variantes Supabase
+| Variante                         | Disposición    | Regla de convergencia                                                                     | Destino                                              |
+| -------------------------------- | -------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------- |
+| `BROWSER-SHELL-DOMAIN-PER_CALL`  | COMPARTIR      | Opción de ciclo por llamada y dominio explícito dentro del factory browser.               | `SHELL-AUTH-002`                                     |
+| `BROWSER-SINGLETON-BASE`         | COMPARTIR      | Opción singleton del mismo factory; debe ser una política documentada, no otro fork.      | `SHELL-AUTH-002`; `SHELL-AUTH-005`                   |
+| `BROWSER-PULSO-PER_CALL`         | COMPARTIR      | Conservar como opción del factory mientras pruebas determinan el ciclo requerido.         | `SHELL-AUTH-002`; `SHELL-AUTH-005`                   |
+| `BROWSER-PULSO-ALT-UNCONSUMED`   | MANTENER_LOCAL | Cuarentena sin consumidor confirmado; no se promueve como alternativa oficial.            | `SHELL-AUD-011`                                      |
+| `SERVER-SHELL-COOKIE_OPTIONS`    | COMPARTIR      | Política de dominio global expresada mediante configuración tipada.                       | `SHELL-AUTH-002`; `SHELL-PKG-004`                    |
+| `SERVER-NEXO-HOST_AWARE`         | COMPARTIR      | Política host-aware preservada como opción explícita del adapter server.                  | `SHELL-AUTH-002`; `SHELL-PKG-004`                    |
+| `SERVER-STATIC-DOMAIN`           | COMPARTIR      | Política estática común con validación de dominio, path, borrado y errores.               | `SHELL-AUTH-002`; `SHELL-AUTH-005`                   |
+| `MW-SHELL-CENTRAL`               | MANTENER_LOCAL | Composición del launcher y matcher del Hub; usa adapters compartidos.                     | `SHELL-AUTH-002`; `SHELL-AUTH-005`                   |
+| `MW-VISO-LOCAL_BASE`             | MANTENER_LOCAL | Entrypoint de VISO; migra a composición común sin perder rutas locales.                   | `SHELL-AUTH-005`                                     |
+| `MW-NEXO-KIOSK`                  | MANTENER_LOCAL | Separar autenticación compartida de routing, no-store e inventario de kiosco.             | `SHELL-AUTH-002`; `SHELL-AUTH-005`                   |
+| `MW-FOGO_NUMERA-LOCAL_NO_ACCESS` | MANTENER_LOCAL | Matcher y exclusión local; comparte solo la frontera de sesión.                           | `SHELL-AUTH-005`                                     |
+| `MW-ORIGO-PDF_EXCEPTION`         | MANTENER_LOCAL | Excepción documental explícita con protección obligatoria en destino.                     | `SHELL-AUTH-004`; `SHELL-AUTH-005`                   |
+| `PROXY-BASE-UNCONSUMED`          | MANTENER_LOCAL | Cuarentena hasta demostrar importación, framework hook o ausencia real.                   | `SHELL-AUD-011`                                      |
+| `PROXY-PULSO-UNCONSUMED`         | MANTENER_LOCAL | Cuarentena; no suple la ausencia de middleware activo.                                    | `SHELL-AUD-011`                                      |
+| `ADMIN-VISO-SERVICE_ROLE`        | COMPARTIR      | Factory server-only restringido; autorización y casos administrativos permanecen en VISO. | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-005` |
+| `EMPLOYEE-SITES-NORMALIZER`      | COMPARTIR      | Normalizador transitorio tipado contra `Database`; su retiro requiere evidencia.          | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-011`  |
+
+**Conciliación:** 16 variantes esperadas, 16 materializadas y 0 códigos duplicados. Distribución: **8 COMPARTIR**, **0 GENERAR** y **8 MANTENER_LOCAL**.
+
+Las variantes locales de middleware no se convierten en forks de autenticación. Cada una deberá componer la misma frontera compartida y declarar únicamente matcher, rutas públicas y extensión empresarial local.
+
+---
+
+#### 9. Decisión por superficie de transición
+| ID             | Superficie          | Rol objetivo   | Límite                                                                                      | Destino                                                           |
+| -------------- | ------------------- | -------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `SURF-010-001` | SHELL runtime       | MANTENER_LOCAL | Launcher central y Hub; consume contratos y componentes, pero no es plantilla universal.    | `SHELL-UI-010`; `SHELL-AUTH-005`                                  |
+| `SURF-010-002` | VISO                | MANTENER_LOCAL | Composición administrativa y consumidores service-role locales; núcleo común compartido.    | `SHELL-AUTH-002`; `SHELL-AUTH-005`                                |
+| `SURF-010-003` | NEXO                | MANTENER_LOCAL | Composición logística, kiosco y contexto especializado locales; núcleo común compartido.    | `SHELL-CTX-001`; `SHELL-AUTH-005`                                 |
+| `SURF-010-004` | FOGO                | MANTENER_LOCAL | Tema y dominio de producción locales; adopta componentes, contratos y adapters compartidos. | `SHELL-UI-001`; `SHELL-AUTH-005`                                  |
+| `SURF-010-005` | ORIGO               | MANTENER_LOCAL | Compras y excepción PDF locales; adopta núcleo común.                                       | `SHELL-AUTH-004`; `SHELL-AUTH-005`                                |
+| `SURF-010-006` | PULSO               | MANTENER_LOCAL | POS, políticas globales y composición local; resolver frontera middleware antes de migrar.  | `SHELL-UI-001`; `SHELL-AUTH-005`                                  |
+| `SURF-010-007` | NUMERA              | MANTENER_LOCAL | Densidad y semántica financiera locales; adopta núcleo común.                               | `SHELL-UI-001`; `SHELL-AUTH-005`                                  |
+| `SURF-010-008` | plantilla AppShell  | GENERAR        | Scaffold futuro que instala/importa versiones, no fuente copiada de implementación.         | `SHELL-PKG-001`; `SHELL-PKG-003`; `SHELL-UI-010`; `SHELL-AUD-011` |
+| `SURF-010-009` | `@vento/os-context` | COMPARTIR      | Único SDK de contexto/autorización; reconciliar el paquete parcial existente.               | `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-AUD-011`                |
+
+**Conciliación:** 9 superficies esperadas, 9 decisiones materializadas y 0 superficies omitidas.
+
+---
+
+#### 10. Reglas para artefactos compartidos
+
+1. Un artefacto `COMPARTIR` tendrá una única implementación fuente en `vento-shell`.
+2. Su API pública no importará rutas, tablas, textos o reglas exclusivas de una aplicación.
+3. Toda extensión se expresará mediante configuración tipada, adapter, slot o estrategia registrada.
+4. El paquete y sus estilos, schemas o assets se versionarán como una unidad compatible.
+5. El consumo utilizará una versión resuelta y reproducible; no una copia pegada.
+6. Los adapters de seguridad fallarán cerrado y distinguirán denegación, bloqueo contextual y error técnico.
+7. El factory administrativo será `server-only` y no formará parte de exports browser.
+8. `@vento/os-context` será el único SDK de contexto y autorización; el paquete parcial actual se reconciliará, no se duplica.
+9. `@vento/ui-web` no absorberá estilos de logística, compras, POS, producción o finanzas.
+10. Los componentes compartidos consumirán contratos generados para aplicación, permiso, pantalla y marca.
+
+---
+
+#### 11. Reglas para artefactos generados
+
+1. Cada salida declara `source`, versión de schema y versión contractual cuando aplique.
+2. La generación es determinista: misma entrada normalizada produce los mismos bytes.
+3. La salida generada no se edita manualmente.
+4. El repositorio bloquea generación desactualizada mediante diff y checksum.
+5. Los tipos de aplicación, permiso, rol y scope se derivan de catálogos publicados.
+6. `Database` e inputs/outputs RPC se derivan del estado versionado de Supabase en `vento-shell`.
+7. Manifest, hashes y diagnósticos se producen durante publicación, no en cada consumidor.
+8. Los view models locales no se generan desde datos no validados.
+9. Un cast TypeScript no sustituye parsing de runtime.
+10. Una clave con formato válido no se trata como identidad publicada sin validación de catálogo.
+
+---
+
+#### 12. Reglas para artefactos locales
+
+1. La localidad requiere repositorio propietario y responsabilidad explícita.
+2. `layout.tsx` y `middleware.ts` permanecen entrypoints de cada aplicación.
+3. `vento-shell.tsx` permanece compositor server y no duplica componentes o contratos.
+4. El tema y los estilos de dominio pueden variar sin redefinir semántica de componentes.
+5. Kiosco NEXO, PDF ORIGO, densidad NUMERA y políticas PULSO permanecen extensiones explícitas.
+6. `OperatingGate` presenta una decisión; no la produce ni autoriza.
+7. El adapter NEXO de contexto puede permanecer durante la transición, pero no define `AccessContext`.
+8. Los artefactos en cuarentena no se consideran activos ni eliminables hasta `SHELL-AUD-011`.
+9. Una app no puede mantener listas locales de aplicaciones, permisos, roles o scopes por alegar localidad.
+10. Los cambios locales conservan compatibilidad con la versión compartida resuelta y su rollback.
+
+---
+
+#### 13. Estrategia de transición sin implementación
+
+| Etapa | Propietario                                                          | Resultado exigido                                                         | Puerta                                   |
+| ----- | -------------------------------------------------------------------- | ------------------------------------------------------------------------- | ---------------------------------------- |
+| 1     | `SHELL-AUD-011`                                                      | evidencia final de consumidores y disposición de artefactos en cuarentena | segmento de auditoría cerrado            |
+| 2     | `SHELL-PKG-001` a `SHELL-PKG-008`                                    | distribución, versionado, compatibilidad, deprecación y rollback          | no autoactualización sin pruebas         |
+| 3     | `SHELL-CON-001` a `SHELL-CON-008` y `SHELL-CON-011`                  | contratos compartidos y generadores                                       | identidades sin copias manuales          |
+| 4     | `SHELL-UI-001`, `SHELL-UI-002`, `SHELL-UI-010` y tareas dependientes | biblioteca UI, AppShell y proyecciones                                    | CSS, tema y consumidores probados        |
+| 5     | `SHELL-AUTH-001`; `SHELL-CTX-001`                                    | SDK y módulo contextual consolidados                                      | un solo núcleo compartido                |
+| 6     | `AUTH-DB-033`, `AUTH-DB-035`, `AUTH-DB-034`, `AUTH-DB-032`           | contexto, frescura, decisión y persistencia autoritativos                 | migraciones versionadas en `vento-shell` |
+| 7     | `SHELL-AUTH-002` a `SHELL-AUTH-004`                                  | adapters, registro de consumidores y gates legacy                         | contratos y backend disponibles          |
+| 8     | `SHELL-AUTH-005`                                                     | migración multi-repositorio con rollback y paridad                        | ninguna retirada anticipada              |
+
+Esta tabla conserva el orden contractual aprobado y no inicia ninguna etapa.
+
+---
+
+#### 14. Compatibilidad y rollback obligatorios
+
+- Cada aplicación podrá migrar y revertir de forma independiente.
+- La configuración local deberá indicar versión compatible de contratos, UI y SDK.
+- Una versión mayor incompatible bloqueará build o despliegue del consumidor.
+- Las extensiones locales deberán conservar pruebas antes y después de migración.
+- El rollback restaurará paquete, configuración y adapters compatibles como conjunto.
+- La plantilla o bootstrap no actualizará consumidores automáticamente.
+- Los artefactos generados se reproducirán desde la misma fuente versionada durante rollback.
+- No se retirará una ruta legacy mientras exista un consumidor o una carga dinámica no descartada.
+
+---
+
+#### 15. Hallazgos y destinos obligatorios
+| ID                | Hallazgo o decisión                                                                 | Estado                  | Propietario                                                      | Condición de salida                                                     |
+| ----------------- | ----------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `H-SHELL-010-001` | Las 26 familias físicas reciben una disposición primaria única.                     | DECIDIDO                | `SHELL-PKG-001`; `SHELL-AUD-011`                                 | mantener la matriz íntegra durante distribución y retiro                |
+| `H-SHELL-010-002` | Las 34 identidades contractuales reciben una disposición primaria única.            | DECIDIDO                | `SHELL-CON-001` a `SHELL-CON-008`; `SHELL-CON-011`               | materializar contratos y generación sin redefinir identidades           |
+| `H-SHELL-010-003` | Las 16 variantes Supabase reciben una disposición explícita.                        | DECIDIDO                | `SHELL-AUTH-002`; `SHELL-AUD-011`                                | adapters implementados y artefactos sin consumidor resueltos            |
+| `H-SHELL-010-004` | Los layouts raíz permanecen locales y no se convierten en paquete.                  | DECIDIDO                | `SHELL-UI-010`; `SHELL-AUTH-005`                                 | cada app consume imports versionados sin copiar el layout               |
+| `H-SHELL-010-005` | El CSS se divide en núcleo compartido, tema y dominio local.                        | DECIDIDO                | `SHELL-UI-001`; `SHELL-PKG-008`                                  | capas versionadas y pruebas paquete/tema/consumidor                     |
+| `H-SHELL-010-006` | El compositor `vento-shell.tsx` permanece local; Chrome se comparte.                | DECIDIDO                | `SHELL-UI-010`; `SHELL-CON-011`                                  | orquestadores locales sin duplicar contratos ni Chrome                  |
+| `H-SHELL-010-007` | Las primitivas UI y tabla se comparten junto con CSS y accesibilidad.               | DECIDIDO                | `SHELL-UI-001`; `SHELL-PKG-006`; `SHELL-PKG-008`                 | API y estilos publicados como una unidad compatible                     |
+| `H-SHELL-010-008` | AppSwitcher, ProfileMenu, PageHeader y VentoLogo se comparten tras reconciliación.  | DECIDIDO                | `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-UI-010`                   | una sola API y configuración generada                                   |
+| `H-SHELL-010-009` | Aplicaciones, permisos, roles, scopes y metadata de marca se generan.               | DECIDIDO                | `SHELL-CON-002` a `SHELL-CON-006`; `AUTH-CAT-018`                | artefactos deterministas sin listas manuales                            |
+| `H-SHELL-010-010` | Database, filas RPC y manifiestos se generan desde fuentes versionadas.             | DECIDIDO                | `SHELL-CON-001`; `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035` | codegen y parsers reproducibles disponibles                             |
+| `H-SHELL-010-011` | Guards, permisos, contexto y role override convergen en el SDK compartido.          | DECIDIDO                | `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-AUTH-002`              | API discriminada, errores estructurados y versión aplicada              |
+| `H-SHELL-010-012` | Los entrypoints `middleware.ts` permanecen locales.                                 | DECIDIDO                | `SHELL-AUTH-002`; `SHELL-AUTH-005`                               | matchers locales compuestos sobre adapters comunes                      |
+| `H-SHELL-010-013` | Kiosco NEXO, PDF ORIGO y políticas PULSO permanecen extensiones locales explícitas. | DECIDIDO                | `SHELL-AUTH-005`; `SHELL-UI-001`                                 | extensiones declaradas y probadas sin fork del núcleo                   |
+| `H-SHELL-010-014` | Los clientes browser/server se comparten como factories configurables.              | DECIDIDO                | `SHELL-AUTH-002`; `SHELL-PKG-004`                                | ciclo, cookies, localhost y error formalizados                          |
+| `H-SHELL-010-015` | El cliente admin se comparte solo como factory server-only restringido.             | DECIDIDO                | `SHELL-AUTH-002`; `SHELL-AUTH-003`                               | ningún export browser y consumidores privilegiados registrados          |
+| `H-SHELL-010-016` | SSO y request-host se comparten sin defaults de aplicación.                         | DECIDIDO                | `SHELL-CON-002`; `SHELL-CON-008`; `SHELL-AUTH-002`               | destinos derivados del catálogo y retorno validado                      |
+| `H-SHELL-010-017` | El contexto operacional especializado de NEXO permanece adapter local transitorio.  | DECIDIDO                | `SHELL-CTX-001`; `AUTH-DB-033`; `SHELL-AUTH-005`                 | migración a contexto canónico con paridad                               |
+| `H-SHELL-010-018` | `OperatingGate` permanece view model local, no fuente de autorización.              | DECIDIDO                | `SHELL-CTX-005`; `SHELL-UI-015`; `SHELL-UI-016`                  | UI derivada de razones compartidas y decisión server                    |
+| `H-SHELL-010-019` | La plantilla histórica deja de ser fuente normativa y pasa a scaffold generado.     | DECIDIDO                | `SHELL-PKG-001`; `SHELL-UI-010`; `SHELL-AUD-011`                 | bootstrap instala versiones y configuración sin copiar implementaciones |
+| `H-SHELL-010-020` | Proxy y cliente alterno PULSO quedan en cuarentena local.                           | PENDIENTE_DE_EVIDENCIA  | `SHELL-AUD-011`                                                  | inventario reproducible de imports, hooks y carga dinámica              |
+| `H-SHELL-010-021` | `@vento/os-context` se conserva y reconcilia; no se crea otro SDK paralelo.         | DECIDIDO                | `SHELL-AUTH-001`; `SHELL-CTX-001`                                | exports, versión, compatibilidad y consumidores canónicos               |
+| `H-SHELL-010-022` | Ningún archivo actual se eleva completo a fuente canónica por número de copias.     | DECIDIDO                | `SHELL-PKG-001`; `SHELL-CON-001`; `SHELL-UI-001`                 | paquetes implementados desde contratos reconciliados                    |
+| `H-SHELL-010-023` | La distribución y migración ocurren después de cerrar `SHELL-AUD-011`.              | BLOQUEADO_POR_SECUENCIA | `SHELL-AUD-011`; `SHELL-PKG-001`                                 | mini-bloque de auditoría cerrado y aprobado                             |
+| `H-SHELL-010-024` | No se autoriza retiro, código, Supabase ni cambios de continuidad en esta tarea.    | FUERA_DE_ALCANCE        | `SHELL-AUD-011`; tareas de implementación propietarias           | aprobaciones y puertas posteriores cumplidas                            |
+
+**Conciliación:** 24 hallazgos esperados, 24 materializados, 0 identificadores duplicados y 0 pendientes sin tarea responsable.
+
+---
+
+#### 16. Decisiones vinculantes
+
+1. La matriz de 26 familias es exhaustiva y sustituye cualquier clasificación implícita por cantidad de copias.
+2. La matriz de 34 identidades contractuales es exhaustiva para el alcance heredado de `SHELL-AUD-009`.
+3. Las 16 variantes Supabase no se colapsan antes de representar explícitamente su política válida.
+4. `COMPARTIR` significa una implementación fuente versionada, no sincronización manual de copias.
+5. `GENERAR` significa salida determinista desde una fuente canónica, no código escrito una vez y copiado.
+6. `MANTENER_LOCAL` no permite duplicar catálogos, autorización, contratos ni metadata canónica.
+7. Los layouts, middlewares, compositores server, temas y estilos empresariales permanecen locales.
+8. Chrome, primitivas, tabla, AppSwitcher, ProfileMenu, PageHeader y VentoLogo se comparten tras reconciliación.
+9. Los códigos y tipos de aplicación, permiso, rol, scope, Database, RPC y publicación se generan.
+10. Guards, permisos, contexto, SSO, firma y factories Supabase convergen en `@vento/os-context` y sus adapters.
+11. `@vento/contracts` conserva la autoridad estática; `@vento/os-context` conserva ejecución y compatibilidad; Supabase conserva resolución autoritativa y persistencia.
+12. El cliente service-role se comparte únicamente como factory server-only y no como sesión de usuario.
+13. Las reglas NEXO, ORIGO, PULSO, VISO y NUMERA que responden a dominio permanecen locales mediante contratos explícitos.
+14. La plantilla histórica no vuelve a ser fuente runtime; el scaffold futuro instalará imports y configuración versionados.
+15. Proxy y cliente alterno PULSO permanecen en cuarentena hasta `SHELL-AUD-011`.
+16. Esta tarea no autoriza eliminar, mover o modificar ningún archivo.
+17. Esta tarea no crea paquete, código, SQL, migración, configuración ni cambio de Supabase.
+18. No se modifica `active-sequence.json`.
+19. `SHELL-AUD-011` permanece como única continuidad inmediata.
+20. `SHELL-PKG-001` permanece reservado hasta aprobar el cierre de `SHELL-AUD-011`.
+
+---
+
+#### 17. Carryovers obligatorios
+
+| Carryover                                                                          | Estado                   | Propietario                                        | Condición de salida                                         |
+| ---------------------------------------------------------------------------------- | ------------------------ | -------------------------------------------------- | ----------------------------------------------------------- |
+| confirmar y resolver proxies, cliente alterno, placeholders y tipos sin consumidor | `PENDIENTE_DE_EVIDENCIA` | `SHELL-AUD-011`                                    | inventario reproducible y decisión conservar/migrar/retirar |
+| definir mecanismo físico de distribución                                           | `NO_IMPLEMENTADO`        | `SHELL-PKG-001`                                    | mecanismo aprobado para contratos, SDK y UI                 |
+| implementar generación y contratos                                                 | `NO_IMPLEMENTADO`        | `SHELL-CON-001` a `SHELL-CON-008`; `SHELL-CON-011` | outputs deterministas y APIs públicas disponibles           |
+| implementar biblioteca y AppShell                                                  | `NO_IMPLEMENTADO`        | `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-UI-010`     | componentes, CSS, tema y extensiones probados               |
+| reconciliar SDK parcial                                                            | `PARCIAL_TRANSITORIO`    | `SHELL-AUTH-001`; `SHELL-CTX-001`                  | único SDK con exports y compatibilidad definidos            |
+| implementar backend autoritativo                                                   | `NO_IMPLEMENTADO`        | `AUTH-DB-032` a `AUTH-DB-035`                      | contexto y decisiones versionados, frescos y auditables     |
+| implementar adapters y gates                                                       | `NO_IMPLEMENTADO`        | `SHELL-AUTH-002` a `SHELL-AUTH-004`                | fronteras tipadas y nuevos consumos legacy bloqueados       |
+| migrar consumidores                                                                | `NO_IMPLEMENTADO`        | `SHELL-AUTH-005`                                   | adopción por repositorio, paridad y rollback certificados   |
+
+Ningún carryover queda sin identificador, propietario y condición de salida.
+
+---
+
+#### 18. Trazabilidad con requisitos vigentes
+
+La clasificación consume sin modificar requisitos existentes:
+
+| Requisito        | Cobertura aplicada                                       |
+| ---------------- | -------------------------------------------------------- |
+| `TREQ-SHELL-002` | clasificación y paridad de responsabilidades compartidas |
+| `TREQ-SHELL-003` | catálogo único de aplicaciones y metadata                |
+| `TREQ-SHELL-004` | evidencia antes de retirar artefactos sin consumidor     |
+| `TREQ-SHELL-006` | compatibilidad entre paquete y consumidores              |
+| `TREQ-SHELL-007` | rollback independiente y compatibilidad entre versiones  |
+| `TREQ-SHELL-008` | impacto explícito sobre el registro de requisitos        |
+| `TREQ-SHELL-009` | evidencia reproducible por repositorio y commit          |
+| `TREQ-SHELL-028` | catálogo único entre launcher, plantilla y runtimes      |
+| `TREQ-SHELL-029` | plantilla separada de runtime y procedencia explícita    |
+| `TREQ-SHELL-032` | reconciliación antes de adoptar o retirar primitivas     |
+| `TREQ-SHELL-034` | destinos gobernados por catálogo activo                  |
+| `TREQ-SHELL-035` | integridad de nombres, estados y codificación            |
+| `TREQ-AUTH-004`  | paridad entre evaluadores para el mismo contexto         |
+| `TREQ-AUTH-013`  | revalidación server, RPC y RLS                           |
+| `TREQ-AUTH-015`  | evidencia, razones y versión de la decisión              |
+
+La tarea no cambia identificador, regla, riesgo, tipo, prioridad, responsable, paquete, repositorio, estado, artefacto, evidencia ni relaciones de ninguna fila.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa la disposición arquitectónica de identidades ya inventariadas y comparadas. Las obligaciones de paridad, generación, compatibilidad, rollback, evidencia, adopción, separación entre plantilla y runtime, y retiro seguro ya están protegidas por los requisitos vigentes enumerados. No introduce comportamiento ejecutable ni descubre una regla verificable sin cobertura previa.
+
+| Operación sobre `TREQ-*` | Cantidad |
+| ------------------------ | -------: |
+| creados                  |    **0** |
+| modificados              |    **0** |
+| diferidos                |    **0** |
+| descartados              |    **0** |
+| obsoletos                |    **0** |
+
+No corresponde generar una copia del registro `04A`.
+
+---
+
+#### 19. Criterios de aceptación materializados
+
+| Criterio                               |    Resultado | Estado     |
+| -------------------------------------- | -----------: | ---------- |
+| familias físicas clasificadas          | **26 de 26** | `CUMPLIDO` |
+| identidades contractuales clasificadas | **34 de 34** | `CUMPLIDO` |
+| variantes Supabase clasificadas        | **16 de 16** | `CUMPLIDO` |
+| superficies de transición con decisión |   **9 de 9** | `CUMPLIDO` |
+| disposiciones primarias válidas        | **76 de 76** | `CUMPLIDO` |
+| familias o identidades faltantes       |        **0** | `CUMPLIDO` |
+| identificadores duplicados             |        **0** | `CUMPLIDO` |
+| hallazgos con propietario exacto       | **24 de 24** | `CUMPLIDO` |
+| pendientes narrativos sin destino      |        **0** | `CUMPLIDO` |
+| nuevas tareas creadas                  |        **0** | `CUMPLIDO` |
+| cambios físicos en código o Supabase   |        **0** | `CUMPLIDO` |
+| cambios `TREQ-*`                       |        **0** | `CUMPLIDO` |
+
+La tarea queda documentalmente completa porque cada identidad heredada tiene una disposición primaria, una frontera de propiedad, un destino de implementación o evidencia y una condición de salida.
+
+---
+
+#### 20. Resultado y continuidad
+
+La cadena de gobierno resultante es:
+
+```text
+familia o identidad auditada
+→ fuente de verdad
+→ COMPARTIR / GENERAR / MANTENER_LOCAL
+→ paquete, generador o repositorio propietario
+→ compatibilidad y rollback
+→ migración por consumidor
+→ evidencia de paridad
+→ retiro condicionado de legacy
+```
+
+La única continuidad inmediata reservada es `SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados`. No se desarrolla ni modifica dentro de esta tarea.
+
+El handoff `SHELL-PKG-001` permanece reservado exclusivamente para después de completar y aprobar `SHELL-AUD-011`.
+
+
 ### [ ] SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados
 Arquitectura de paquetes
