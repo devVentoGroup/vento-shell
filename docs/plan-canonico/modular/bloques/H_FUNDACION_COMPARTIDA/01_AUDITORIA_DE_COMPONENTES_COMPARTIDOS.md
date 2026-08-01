@@ -756,7 +756,534 @@ SHELL-AUD-003 — Comparar helpers de permisos
 No se inicia, desarrolla ni modifica esa tarea dentro de este artefacto.
 
 
-### [ ] SHELL-AUD-003 — Comparar helpers de permisos
+### ✅ SHELL-AUD-003 — Comparar helpers de permisos
+
+**Estado:** APROBADA
+**Bloque:** H — Fundación compartida
+**Tipo:** auditoría transversal de paridad, consumidores y deuda contractual de permisos
+**Entradas aprobadas:** `SHELL-AUD-001`; `SHELL-AUD-002`
+**Continuidad reservada:** `SHELL-AUD-004 — Comparar contexto operativo`
+**Fecha de corte:** 2026-08-01
+**Corte documental de `vento-shell`:** `dfec6771ec3cee58144c5672a8f853d534bbeaba`
+**Cambios en código, CI, despliegues o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea compara la implementación real de los helpers de permisos en las siete superficies web runtime de Vento OS, identifica sus variantes físicas y semánticas, materializa sus consumidores y separa la construcción de claves, la evaluación de permisos, la compatibilidad RPC y las excepciones locales.
+
+| Métrica                                                                                     |    Resultado |
+| ------------------------------------------------------------------------------------------- | -----------: |
+| Superficies web runtime evaluadas                                                           |        **7** |
+| Copias de `src/lib/auth/permissions.ts`                                                     |        **6** |
+| Variantes físicas por blob SHA                                                              |        **4** |
+| Algoritmos runtime distintos dentro de `permissions.ts`                                     |        **1** |
+| Contratos TypeScript de cliente dentro de `permissions.ts`                                  |        **2** |
+| Superficies sin `permissions.ts`                                                            | **1: SHELL** |
+| Evaluadores locales de launcher                                                             |        **1** |
+| Archivos de negocio o launcher con llamadas directas confirmadas fuera de las familias auth |       **11** |
+| Referencias literales de permisos en esos 11 archivos                                       |       **18** |
+| Claves literales únicas en esos 11 archivos                                                 |       **16** |
+| Fallbacks locales de autorización por rol detectados                                        |        **1** |
+| Firmas RPC consumidas por el launcher de SHELL                                              |        **2** |
+| Firmas RPC localizadas en migraciones versionadas inspeccionadas                            |        **1** |
+| Artefactos de prueba dedicados al helper localizados                                        |        **0** |
+| Hallazgos materializados                                                                    |       **14** |
+
+Resultado central:
+
+```text
+SEIS COPIAS DE permissions.ts
+→ CUATRO BLOBS
+→ UN MISMO ALGORITMO RUNTIME
+→ DOS SUPERFICIES DE TIPADO
+
+PERO
+
+EVALUACIÓN DE PERMISOS REAL
+→ HELPER COMPARTIDO
++ GUARDS CON RPC DIRECTA
++ ROLE OVERRIDE
++ CONTEXTO OPERATIVO
++ LLAMADAS LOCALES DE NEGOCIO
++ FALLBACK DEL LAUNCHER SHELL
+```
+
+La identidad semántica de `permissions.ts` no demuestra paridad integral de autorización. La decisión final sigue distribuida entre múltiples rutas y algunos consumidores incorporan fallbacks o contratos distintos.
+
+---
+
+#### 2. Fuentes y corte reproducible
+
+| Fuente                                                   | Uso                                                                    |
+| -------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`             | continuidad, alcance, entrega y trazabilidad                           |
+| `docs/plan-canonico/modular/delivery-contract.json`      | contrato físico del artefacto                                          |
+| `docs/plan-canonico/modular/active-sequence.json`        | secuencia `H-SHARED-AUDIT-001`                                         |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`             | propietario, `SHELL-AUD-001`, `SHELL-AUD-002` y marcador actual        |
+| `SHELL-AUD-001`                                          | universo de repositorios, familias y hashes                            |
+| `SHELL-AUD-002`                                          | frontera de guards y separación de autenticación frente a autorización |
+| `AUTH-CAT-017` a `AUTH-CAT-019`                          | fuente técnica, tipos derivados y prohibición de cadenas manuales      |
+| `03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`              | arquitectura obligatoria de contratos, SDK y Supabase                  |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`       | cobertura vigente de paridad, claves y compatibilidad RPC              |
+| `20260117130000_permissions_core.sql`                    | firma versionada de `public.has_permission`                            |
+| Código de SHELL, VISO, NEXO, FOGO, ORIGO, PULSO y NUMERA | implementación y consumidores reales                                   |
+
+Commits de consumidores:
+
+| Superficie | Repositorio                  | Commit inspeccionado                       |
+| ---------- | ---------------------------- | ------------------------------------------ |
+| SHELL      | `devVentoGroup/vento-shell`  | `dfec6771ec3cee58144c5672a8f853d534bbeaba` |
+| VISO       | `devVentoGroup/vento-viso`   | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |
+| NEXO       | `devVentoGroup/vento-nexo`   | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |
+| FOGO       | `devVentoGroup/vento-fogo`   | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |
+| ORIGO      | `devVentoGroup/vento-origo`  | `b7a8303fa078ef087f522b6c99059ababfc27472` |
+| PULSO      | `devVentoGroup/vento-pulso`  | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| NUMERA     | `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |
+
+---
+
+#### 3. Límite exacto
+
+Se comparan:
+
+1. `src/lib/auth/permissions.ts` en los seis consumidores que lo contienen;
+2. construcción y normalización de claves;
+3. firma de `checkPermission`;
+4. parámetros enviados a `has_permission`;
+5. comportamiento ante concesión, denegación y error;
+6. consumidores dentro de guards y role override;
+7. llamadas directas a `has_permission` fuera de las familias auth;
+8. evaluador local del launcher de SHELL;
+9. firmas RPC consumidas y evidencia de migraciones versionadas;
+10. presencia de pruebas específicas del helper.
+
+Se excluyen de la decisión sustantiva de esta tarea:
+
+- resolución completa de turno, check-in, sesión y dispositivo compartido, reservada a `SHELL-AUD-004`;
+- validez y precedencia de role override, reservada a `SHELL-AUD-005`;
+- AppShell y navegación, reservadas a `SHELL-AUD-006`;
+- clientes Supabase, reservados a `SHELL-AUD-008`;
+- tipos y contratos definitivos, reservados a `SHELL-AUD-009`;
+- decisión final `compartir / generar / mantener local`, reservada a `SHELL-AUD-010`;
+- retiro de código sin consumidor, reservado a `SHELL-AUD-011`;
+- implementación del catálogo, SDK, RPC, RLS, migraciones o consumidores.
+
+---
+
+#### 4. Criterios de comparación
+
+| Dimensión           | Pregunta                                                    |
+| ------------------- | ----------------------------------------------------------- |
+| Identidad física    | ¿Los archivos son byte a byte iguales?                      |
+| Identidad semántica | ¿Producen la misma llamada y el mismo resultado observable? |
+| Entrada             | ¿Reciben una clave canónica o strings libres?               |
+| Normalización       | ¿Validan, resuelven o solo concatenan?                      |
+| Contexto            | ¿Qué dimensiones transmiten al evaluador?                   |
+| Backend             | ¿Qué RPC y firma consumen?                                  |
+| Fallo               | ¿Distinguen error técnico de denegación?                    |
+| Resultado           | ¿Retornan booleano o decisión estructurada?                 |
+| Compatibilidad      | ¿Gestionan aliases, legacy, retirados y versiones?          |
+| Consumo             | ¿Todos los consumidores usan la misma frontera?             |
+| Excepciones         | ¿Existe lógica local que amplíe o sustituya el evaluador?   |
+| Prueba              | ¿Hay evidencia automatizada de paridad y regresión?         |
+
+Un blob distinto por BOM, CRLF o salto final no se clasifica como divergencia funcional cuando el programa ejecutable permanece equivalente.
+
+---
+
+#### 5. Inventario de `permissions.ts`
+
+| ID             | Aplicación | Blob SHA                                   | Contrato de cliente                                | Algoritmo runtime                     | Clasificación                        |
+| -------------- | ---------- | ------------------------------------------ | -------------------------------------------------- | ------------------------------------- | ------------------------------------ |
+| `PERM-COPY-01` | VISO       | `fa81328fe4fd5ec2dd8ffd67f09b0e76578c99cd` | cliente derivado de `createClient` del repositorio | común                                 | `SEMANTICA_COMUN_FORMATO_DIVERGENTE` |
+| `PERM-COPY-02` | NEXO       | `a5a2b7e6f914075d78cc72a9b016994f5a102dde` | cliente derivado de `createClient` del repositorio | común                                 | `COPIA_BASE`                         |
+| `PERM-COPY-03` | FOGO       | `a5a2b7e6f914075d78cc72a9b016994f5a102dde` | cliente derivado de `createClient` del repositorio | común                                 | `COPIA_BASE`                         |
+| `PERM-COPY-04` | ORIGO      | `a5a2b7e6f914075d78cc72a9b016994f5a102dde` | cliente derivado de `createClient` del repositorio | común                                 | `COPIA_BASE`                         |
+| `PERM-COPY-05` | PULSO      | `8087fbe3b949c9b8fe553f1d1d76ef4da169bd22` | `Pick<SupabaseClient, "rpc">`                      | común                                 | `VARIANTE_DE_TIPO_COMPATIBLE`        |
+| `PERM-COPY-06` | NUMERA     | `a5b1debdfbc30c5d302f1bdc933cd832b759f856` | cliente derivado de `createClient` del repositorio | común                                 | `SEMANTICA_COMUN_FORMATO_DIVERGENTE` |
+| `PERM-COPY-07` | SHELL      | no existe                                  | no aplica                                          | evaluador local en `src/app/page.tsx` | `FRONTERA_LOCAL_DISTINTA`            |
+
+Conciliación:
+
+- 7 superficies esperadas;
+- 7 decisiones materializadas;
+- 6 archivos presentes;
+- 1 ausencia explícita;
+- 4 blobs únicos;
+- 1 algoritmo runtime dentro de las seis copias;
+- 2 contratos TypeScript de cliente;
+- 0 identidades omitidas.
+
+La variante de PULSO reduce correctamente la dependencia estática a la capacidad `rpc`. No cambia los parámetros, la normalización, el tratamiento del error ni el resultado runtime.
+
+---
+
+#### 6. Contrato ejecutado por las seis copias
+
+Las seis copias materializan este comportamiento equivalente:
+
+```text
+normalizePermissionCode(appId, code)
+    si code comienza por appId + "."
+        devolver code
+    en otro caso
+        devolver appId + "." + code
+
+checkPermission(client, appId, code, context)
+    llamar has_permission(
+        p_permission_code = normalizePermissionCode(appId, code),
+        p_site_id = context.siteId o null,
+        p_area_id = context.areaId o null
+    )
+
+    si RPC produce error
+        devolver false
+
+    devolver Boolean(data)
+```
+
+Matriz contractual:
+
+| Dimensión                               | Resultado actual                                          |
+| --------------------------------------- | --------------------------------------------------------- |
+| `appId`                                 | `string` libre                                            |
+| `code`                                  | `string` libre                                            |
+| `PermissionContext.siteId`              | `string                                                   | null | undefined` |
+| `PermissionContext.areaId`              | `string                                                   | null | undefined` |
+| Validación contra catálogo              | inexistente                                               |
+| Validación de aplicación                | inexistente                                               |
+| Resolución de alias                     | inexistente                                               |
+| Rechazo explícito de legacy o retirados | inexistente                                               |
+| Versión y hash contractual              | no transmitidos                                           |
+| Firma RPC                               | `has_permission(p_permission_code, p_site_id, p_area_id)` |
+| Error RPC                               | convertido a `false`                                      |
+| Denegación                              | `false`                                                   |
+| Resultado                               | `boolean`                                                 |
+| Razón estructurada                      | inexistente                                               |
+| Evidencia de decisión                   | no producida por el helper                                |
+
+La función llamada `normalizePermissionCode` no normaliza contra el catálogo. Solo evita repetir el prefijo cuando la cadena ya comienza exactamente por la aplicación recibida.
+
+Casos permitidos por su firma actual:
+
+| Entrada                                   | Salida construida   |
+| ----------------------------------------- | ------------------- |
+| `appId = "nexo"`, `code = "access"`       | `nexo.access`       |
+| `appId = "nexo"`, `code = "nexo.access"`  | `nexo.access`       |
+| `appId = "nexo"`, `code = "origo.access"` | `nexo.origo.access` |
+| `appId = "nexo"`, `code = ""`             | `nexo.`             |
+| `appId = ""`, `code = "access"`           | `.access`           |
+| espacios en cualquiera de los parámetros  | se conservan        |
+
+La construcción determinista no equivale a validación canónica.
+
+---
+
+#### 7. Topología de consumo dentro de autenticación y autorización
+
+| Aplicación | `normalizePermissionCode` | `checkPermission`   | RPC directa en guard                 | Fallback desde role override | Evaluador operativo separado |
+| ---------- | ------------------------- | ------------------- | ------------------------------------ | ---------------------------- | ---------------------------- |
+| VISO       | sí                        | sí                  | no para el carril personal principal | sí                           | sí                           |
+| NEXO       | sí                        | no en el guard base | sí                                   | sí                           | sí                           |
+| FOGO       | sí                        | no en el guard base | sí                                   | sí                           | sí                           |
+| ORIGO      | sí                        | no en el guard base | sí                                   | sí                           | sí                           |
+| PULSO      | sí                        | no en el guard      | sí                                   | sí                           | sí                           |
+| NUMERA     | sí                        | no en el guard base | sí                                   | sí                           | sí                           |
+| SHELL      | no consume la copia       | no consume la copia | evaluador local                      | no aplica                    | no aplica                    |
+
+Consecuencias:
+
+1. `normalizePermissionCode` forma parte de las seis rutas de guard.
+2. `checkPermission` no es la única frontera de evaluación personal.
+3. VISO usa `checkPermission` dentro de su guard; las demás variantes de guard llaman la RPC directamente.
+4. Los módulos de role override reutilizan `checkPermission` como fallback cuando no existe simulación válida.
+5. El dispositivo compartido usa otra función, `checkOperationalSessionPermission`, cuyo contrato se resolverá en `SHELL-AUD-004`.
+6. La misma RPC puede alcanzarse por helpers, guards y llamadas locales sin un adapter único que concentre telemetría, versión, error y razones.
+
+Las listas de permisos de los guards se evalúan actualmente con semántica `ALL`: cada elemento debe retornar verdadero. No existe en el helper una entrada estructurada que declare `ALL` o `ANY`.
+
+---
+
+#### 8. Evaluador local de SHELL
+
+SHELL no contiene `src/lib/auth/permissions.ts`. Su launcher implementa en `src/app/page.tsx` un evaluador local con cinco aplicaciones y cinco claves escritas manualmente:
+
+```text
+viso.access
+nexo.access
+fogo.access
+origo.access
+pulso.access
+```
+
+Flujo comprobado:
+
+```text
+1. llamar has_permission con p_permission_code completo;
+2. si la llamada no produce error, usar su booleano;
+3. solo si produce error, dividir la clave por el primer punto;
+4. llamar has_permission con p_app_id y p_code;
+5. si la segunda llamada produce error, deshabilitar la tarjeta.
+```
+
+La migración versionada `20260117130000_permissions_core.sql` contiene la firma:
+
+```text
+has_permission(
+    p_permission_code text,
+    p_site_id uuid default null,
+    p_area_id uuid default null
+)
+```
+
+No se localizó en el historial versionado inspeccionado una definición de `has_permission(p_app_id, p_code, ...)`. La existencia o ausencia de esa firma en el ambiente desplegado no se infiere desde el repositorio y permanece `PENDIENTE_DE_EVIDENCIA_REMOTA` para `AUTH-DB-034`.
+
+La compatibilidad está cubierta por `TREQ-SHELL-015`; no constituye un requisito nuevo.
+
+---
+
+#### 9. Llamadas directas fuera de las familias auth
+
+El siguiente inventario excluye `guard.ts`, `permissions.ts`, `operational-session.ts` y `role-override.ts`. Registra superficies de negocio o launcher que llaman directamente la RPC o mantienen su propia decisión.
+
+| Aplicación | Archivos | Referencias literales | Claves únicas | Comportamiento relevante                                                     |
+| ---------- | -------: | --------------------: | ------------: | ---------------------------------------------------------------------------- |
+| SHELL      |        1 |                     5 |             5 | launcher con fallback entre dos firmas                                       |
+| VISO       |        4 |                     7 |             6 | rutas server y flags de interfaz; error se trata como denegación             |
+| NEXO       |        0 |                     0 |             0 | no se localizaron llamadas de negocio fuera de las familias auth en el corte |
+| FOGO       |        0 |                     0 |             0 | no se localizaron llamadas de negocio fuera de las familias auth en el corte |
+| ORIGO      |        4 |                     4 |             3 | rutas server y helper local; incluye fallback por rol                        |
+| PULSO      |        2 |                     2 |             2 | una Server Action y una comprobación cliente de visibilidad                  |
+| NUMERA     |        0 |                     0 |             0 | no se localizaron llamadas de negocio fuera de las familias auth en el corte |
+| **Total**  |   **11** |                **18** |        **16** | —                                                                            |
+
+##### 9.1. VISO
+
+Superficies confirmadas:
+
+- `src/app/api/viso/upload-product-image/route.ts`;
+- `src/app/api/viso/upload-commercial-menu-image/route.ts`;
+- `src/app/api/viso/attendance-report/route.ts`;
+- `src/app/staff/[id]/page.tsx`.
+
+Claves:
+
+```text
+viso.menu.images.manage
+viso.access
+viso.staff.documents.manage
+viso.staff.employee_photos.manage
+viso.staff.permissions.manage
+viso.staff.manage
+```
+
+`viso.menu.images.manage` aparece en dos rutas. Los errores se convierten en `403` o en flags falsos.
+
+##### 9.2. ORIGO
+
+Superficies confirmadas:
+
+- `src/lib/suppliers.ts`;
+- `src/app/receipts/new/page.tsx`;
+- `src/app/product-master-review/page.tsx`;
+- `src/app/purchase-orders/[id]/pdf/route.ts`.
+
+Claves:
+
+```text
+origo.suppliers.manage
+origo.procurement.receipts
+origo.access
+```
+
+`origo.procurement.receipts` aparece en dos páginas.
+
+`src/lib/suppliers.ts` amplía localmente el resultado: si `has_permission("origo.suppliers.manage")` no concede, consulta `employees.role` y concede a `propietario`, `gerente_general` o `gerente`. La función no conserva el error de la RPC y no demuestra que esa ampliación pertenezca al contrato canónico. Su validez corresponde a `SHELL-AUD-005`; su disposición corresponde a `SHELL-AUD-010` y su migración a `SHELL-AUTH-005`.
+
+##### 9.3. PULSO
+
+Superficies confirmadas:
+
+- `src/modules/pos/actions/identify-client.action.ts` con `pulso.pos.main`;
+- `src/app/orders/delivery-override-bridge.tsx` con `pulso.delivery.override`.
+
+La Server Action trata error o falso como denegación. El bridge cliente extrae únicamente `data`; un error produce un valor no concedido sin diagnóstico y la comprobación solo controla la interfaz. La autoridad final deberá permanecer en servidor y en la RPC protegida.
+
+---
+
+#### 10. Comparación con el contrato canónico aprobado
+
+| Obligación canónica                                      | Estado actual                                      | Brecha        |
+| -------------------------------------------------------- | -------------------------------------------------- | ------------- |
+| Clave activa representada por `PermissionKey`            | `string` libre                                     | confirmada    |
+| Constantes derivadas de `@vento/contracts/authorization` | literales y concatenación                          | confirmada    |
+| Parser de frontera para valores externos                 | no existe en estos helpers                         | confirmada    |
+| Rechazo explícito de clave desconocida                   | depende de la RPC y se reduce a `false`            | confirmada    |
+| Alias resuelto explícitamente y con telemetría           | no modelado                                        | confirmada    |
+| Legacy y retirados separados de activos                  | no modelado                                        | confirmada    |
+| Versión y hash contractual conocidos                     | no modelados                                       | confirmada    |
+| Error técnico distinguible de denegación                 | ambos terminan como falso en el helper             | confirmada    |
+| Razones estructuradas                                    | no modeladas                                       | confirmada    |
+| Una frontera compartida para consumidores                | existen helpers, RPC directa y evaluadores locales | no demostrada |
+| Excepciones locales declaradas                           | existe fallback por rol en ORIGO                   | no demostrada |
+| Paridad automatizada entre evaluadores                   | no se localizó prueba dedicada                     | no demostrada |
+
+Arquitectura obligatoria aplicable:
+
+```text
+@vento/contracts/authorization
+→ PermissionKey, catálogo, constantes, aliases, estados y metadatos
+
+@vento/os-context
+→ adapter compartido, scope por solicitud, deduplicación y proyecciones seguras
+
+Supabase
+→ evaluate_authorization, contexto autoritativo, resolutores y persistencia
+```
+
+No se crea ni se propone un paquete paralelo `@vento/auth`.
+
+---
+
+#### 11. Hallazgos materializados
+
+| ID                    | Hallazgo                                                                                                               | Estado                          | Riesgo                                                          | Destino exacto                                                                                 |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `H-SHELL-AUD-003-001` | Seis copias de `permissions.ts` producen un algoritmo runtime equivalente, pero conservan cuatro blobs.                | `CONFIRMADO`                    | deriva física sin control de versión                            | `SHELL-AUD-010`; `SHELL-PKG-001` a `SHELL-PKG-008`                                             |
+| `H-SHELL-AUD-003-002` | PULSO usa una interfaz mínima `Pick<SupabaseClient, "rpc">`; las otras cinco copias dependen del cliente server local. | `CONFIRMADO`                    | acoplamiento de tipos y adapters incompatibles                  | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002`                                             |
+| `H-SHELL-AUD-003-003` | `appId` y `code` son strings libres.                                                                                   | `CONFIRMADO`                    | claves huérfanas, mal escritas o construidas dinámicamente      | `SHELL-CON-003`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                                            |
+| `H-SHELL-AUD-003-004` | `normalizePermissionCode` concatena, pero no valida aplicación, formato, catálogo ni pertenencia.                      | `CONFIRMADO`                    | identidades inválidas tratadas como permisos solicitables       | `SHELL-CON-003`; `SHELL-AUD-009`; `SHELL-AUD-010`                                              |
+| `H-SHELL-AUD-003-005` | Los helpers no distinguen permiso activo, alias, legacy o retirado.                                                    | `CONFIRMADO`                    | compatibilidad silenciosa o reactivación accidental             | `SHELL-AUD-009`; `SHELL-CON-003`; `SHELL-AUTH-001`; `SHELL-AUTH-004`                           |
+| `H-SHELL-AUD-003-006` | Error técnico y denegación retornan el mismo `false`.                                                                  | `CONFIRMADO`                    | diagnóstico incompleto y decisiones no reproducibles            | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002`; `AUTH-DB-034`                              |
+| `H-SHELL-AUD-003-007` | El resultado no conserva razón, versión, hash ni evidencia de decisión.                                                | `CONFIRMADO`                    | paridad y auditoría no demostrables                             | `SHELL-AUD-009`; `SHELL-AUTH-002`; `SHELL-AUTH-003`; `AUTH-DB-032`                             |
+| `H-SHELL-AUD-003-008` | Guards, role override, contexto operativo y código de negocio no consumen una única frontera.                          | `CONFIRMADO`                    | misma solicitud evaluada por rutas distintas                    | `SHELL-AUD-004`; `SHELL-AUD-005`; `SHELL-AUD-010`; `SHELL-AUTH-005`                            |
+| `H-SHELL-AUD-003-009` | SHELL implementa un evaluador local y un fallback entre dos firmas RPC.                                                | `CONFIRMADO`                    | transición permanente o divergencia de launcher                 | `SHELL-AUD-009`; `SHELL-AUD-010`; `AUTH-DB-034`; `SHELL-AUTH-005`                              |
+| `H-SHELL-AUD-003-010` | La firma dividida consumida por SHELL no fue localizada en las migraciones versionadas inspeccionadas.                 | `PENDIENTE_DE_EVIDENCIA_REMOTA` | dependencia desplegada no reproducible desde repositorio        | `AUTH-DB-034`; condición de salida: inventario remoto autorizado y comparación con migraciones |
+| `H-SHELL-AUD-003-011` | Once archivos de negocio o launcher conservan 18 referencias literales fuera de las familias auth.                     | `CONFIRMADO`                    | deuda transversal y bypass del adapter                          | `SHELL-CON-003`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                                            |
+| `H-SHELL-AUD-003-012` | ORIGO concede gestión de proveedores por una lista local de roles cuando la RPC no concede.                            | `CONFIRMADO`                    | excepción local que puede ampliar capacidad                     | `SHELL-AUD-005`; `SHELL-AUD-010`; `SHELL-AUTH-005`                                             |
+| `H-SHELL-AUD-003-013` | PULSO consulta `pulso.delivery.override` desde cliente para visibilidad y no conserva el error.                        | `CONFIRMADO`                    | interfaz divergente si no coincide con la autoridad de servidor | `SHELL-AUD-010`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                                            |
+| `H-SHELL-AUD-003-014` | No se localizó una prueba dedicada que compare normalización, parámetros, errores y paridad de las variantes.          | `CONFIRMADO`                    | regresión entre copias o consumidores                           | `SHELL-AUTH-004`; `AUTH-QA-027`; cobertura por `TREQ-AUTH-004`                                 |
+
+Todos los hallazgos tienen propietario y condición de resolución. No se crea una tarea nueva.
+
+---
+
+#### 12. Decisiones de esta auditoría
+
+1. Las seis copias de `permissions.ts` se consideran una sola familia semántica con deriva física.
+2. La variante de PULSO se conserva como evidencia de una necesidad válida: el adapter canónico no deberá exigir un cliente concreto cuando solo necesita `rpc`.
+3. `normalizePermissionCode` se clasifica como constructor legacy, no como parser ni validador canónico.
+4. `checkPermission` se clasifica como candidato de migración hacia un adapter compartido, pero su firma y su resultado actuales son insuficientes para convertirse sin cambios en contrato canónico.
+5. Las llamadas directas no se declaran incorrectas únicamente por ser directas; sí quedan registradas como consumidores que deberán migrar o justificar su localidad.
+6. El fallback de SHELL se conserva como compatibilidad temporal hasta que `AUTH-DB-034` determine la firma autoritativa y su transición.
+7. La lista local de roles de ORIGO no se acepta como regla transversal ni se elimina en esta tarea; requiere comparación de role override y decisión final.
+8. La comprobación cliente de PULSO se considera ayuda de interfaz y nunca autoridad final.
+9. La semántica `ALL` de arrays se conserva como comportamiento observado; cualquier necesidad `ANY` deberá expresarse mediante contrato explícito y no por inferencia local.
+10. No se mueve, elimina, centraliza ni modifica código durante esta auditoría.
+11. `active-sequence.json` permanece sin cambios.
+12. `SHELL-AUD-004` permanece como única continuidad reservada.
+
+---
+
+#### 13. Requisitos mínimos que deberá preservar la solución posterior
+
+La futura frontera compartida deberá preservar o materializar, como mínimo:
+
+| Dimensión      | Requisito                                                                               |
+| -------------- | --------------------------------------------------------------------------------------- |
+| Identidad      | recibir `PermissionKey` canónica, no `string` libre                                     |
+| Serialización  | aceptar texto externo solo después de `parsePermissionKey` o resolución equivalente     |
+| Catálogo       | conocer versión, schema y hash resueltos                                                |
+| Compatibilidad | separar activo, alias, legacy y retirado                                                |
+| Cliente        | depender de una capacidad mínima tipada y no de una implementación concreta innecesaria |
+| Contexto       | consumir el contexto canónico sin reconstruirlo localmente                              |
+| Backend        | usar la decisión autoritativa versionada definida por `AUTH-DB-034`                     |
+| Resultado      | distinguir concesión, denegación, incompatibilidad y fallo técnico                      |
+| Razones        | conservar códigos estructurados equivalentes entre consumidores                         |
+| Auditoría      | permitir correlación con actor, permiso, contexto y versión contractual                 |
+| Composición    | declarar `ALL`, `ANY` u otra política admitida de forma explícita                       |
+| Localidad      | toda excepción local deberá existir en el contrato o quedar rechazada                   |
+| Migración      | permitir convivencia temporal sin fallback indefinido                                   |
+| Pruebas        | comparar cada adapter y consumidor contra la misma matriz de casos                      |
+
+Esta tabla no implementa la solución ni modifica la arquitectura aprobada. Materializa los criterios que `SHELL-AUD-009`, `SHELL-AUD-010`, `SHELL-CON-003`, `SHELL-AUTH-001` a `SHELL-AUTH-005` y `AUTH-DB-034` deberán respetar.
+
+---
+
+#### 14. Trazabilidad con requisitos vigentes
+
+La auditoría reutiliza sin modificación:
+
+| Requisito        | Cobertura aplicada                                                                                          |
+| ---------------- | ----------------------------------------------------------------------------------------------------------- |
+| `TREQ-AUTH-002`  | claves canónicas, strings huérfanos, duplicados o mal escritos                                              |
+| `TREQ-AUTH-004`  | paridad de decisión y razones entre todos los evaluadores; prohibición de excepciones locales no declaradas |
+| `TREQ-SHELL-002` | paridad y clasificación de responsabilidades compartidas                                                    |
+| `TREQ-SHELL-015` | compatibilidad explícita y temporal entre las dos firmas de `has_permission` consumidas por SHELL           |
+
+La tarea no cambia regla, riesgo, prioridad, tipo, responsable, paquete, repositorio, estado, evidencia ni relaciones de esos requisitos.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** todos los comportamientos verificables y riesgos detectados ya están cubiertos por `TREQ-AUTH-002`, `TREQ-AUTH-004`, `TREQ-SHELL-002` y `TREQ-SHELL-015`. La tarea materializa variantes, consumidores, fallos y destinos sin crear ni modificar comportamiento ejecutable ni alterar el ciclo de vida de esos requisitos. Por tanto, genera cero cambios en el registro canónico `04A`.
+
+---
+
+#### 15. Criterios de aceptación
+
+`SHELL-AUD-003` queda materialmente completa cuando:
+
+- las siete superficies web runtime estén representadas una sola vez;
+- las seis copias de `permissions.ts` conserven ruta, hash, contrato de cliente y clasificación;
+- se distinga identidad byte a byte de identidad semántica;
+- se documente el algoritmo runtime común;
+- se registren las dos superficies TypeScript sin convertirlas en divergencia funcional;
+- se compruebe que `normalizePermissionCode` construye y no valida;
+- se documente la firma RPC consumida por las seis copias;
+- se distinga error técnico de denegación como brecha del contrato actual;
+- se identifiquen guards, role override y contexto operativo como rutas consumidoras distintas;
+- el evaluador local y el fallback de SHELL queden materializados;
+- la firma dividida quede marcada con evidencia remota faltante y propietario exacto;
+- los 11 archivos y 18 referencias literales fuera de las familias auth queden reconciliados;
+- la excepción por rol de ORIGO y la comprobación cliente de PULSO tengan destino exacto;
+- todos los hallazgos estén asignados a tareas existentes;
+- no se absorba el alcance de `SHELL-AUD-004`, `SHELL-AUD-005`, `SHELL-AUD-009`, `SHELL-AUD-010` ni `SHELL-AUD-011`;
+- se reutilicen los requisitos vigentes sin modificar `04A`;
+- no se modifique código, CI, Supabase, despliegues ni continuidad;
+- `SHELL-AUD-004` permanezca como única continuidad reservada.
+
+---
+
+#### 16. Resultado y continuidad
+
+Cadena resultante:
+
+```text
+clave solicitada
+→ constructor o literal local
+→ adapter, guard o llamada directa
+→ contexto transmitido
+→ firma RPC
+→ booleano, fallback o excepción local
+→ hallazgo de paridad
+→ contrato y adapter objetivo
+→ migración de consumidores
+```
+
+La única continuidad reservada es:
+
+```text
+SHELL-AUD-004
+— Comparar contexto operativo
+```
+
+
 ### [ ] SHELL-AUD-004 — Comparar contexto operativo
 ### [ ] SHELL-AUD-005 — Comparar role override
 ### [ ] SHELL-AUD-006 — Comparar AppShell y navegación

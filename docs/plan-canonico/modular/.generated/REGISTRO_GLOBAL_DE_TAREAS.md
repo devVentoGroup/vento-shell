@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1585** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **476** |
+| Aprobadas | **477** |
 | En propuesta | **0** |
-| No iniciadas | **1109** |
+| No iniciadas | **1108** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **30.03% (476/1585)** |
+| Porcentaje de completamiento | **30.09% (477/1585)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-AUD-002` — Comparar guards de autenticación | ✅ APROBADA |
-| Tarea actual | `SHELL-AUD-003` — Comparar helpers de permisos | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-AUD-004` — Comparar contexto operativo | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-AUD-003` — Comparar helpers de permisos | ✅ APROBADA |
+| Tarea actual | `SHELL-AUD-004` — Comparar contexto operativo | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-AUD-005` — Comparar role override | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -689,7 +689,7 @@
 | ⬜ NO INICIADA | `VISO-UX-020` | Ejecutar pruebas con administradores reales | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ✅ APROBADA | `SHELL-AUD-001` | Buscar código duplicado entre repositorios | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-AUD-002` | Comparar guards de autenticación | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-AUD-003` | Comparar helpers de permisos | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-AUD-003` | Comparar helpers de permisos | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-004` | Comparar contexto operativo | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-005` | Comparar role override | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-006` | Comparar AppShell y navegación | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |

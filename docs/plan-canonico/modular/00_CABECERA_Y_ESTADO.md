@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **293** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **476** |
+| Tareas aprobadas | **477** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1109** |
+| Tareas no iniciadas | **1108** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **30.03% (476/1585)** |
+| Porcentaje de completamiento | **30.09% (477/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-AUD-002 — Comparar guards de autenticación** |
-| Tarea actual | **SHELL-AUD-003 — Comparar helpers de permisos** |
+| Última tarea aprobada | **SHELL-AUD-003 — Comparar helpers de permisos** |
+| Tarea actual | **SHELL-AUD-004 — Comparar contexto operativo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-AUD-004 — Comparar contexto operativo** |
+| Siguiente tarea | **SHELL-AUD-005 — Comparar role override** |
 | Bloque actual | **BLOQUE H — Fundación compartida** |
-| Progreso del bloque | **BLOQUE H: 2 de 11 aprobadas; SHELL-AUD-003 pendiente** |
+| Progreso del bloque | **BLOQUE H: 3 de 11 aprobadas; SHELL-AUD-004 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-AUD-002` — Comparar guards de autenticación |
-| Tarea actual | `SHELL-AUD-003` — Comparar helpers de permisos — **NO INICIADA** |
-| Siguiente tarea | `SHELL-AUD-004` — Comparar contexto operativo |
+| Última aprobada | `SHELL-AUD-003` — Comparar helpers de permisos |
+| Tarea actual | `SHELL-AUD-004` — Comparar contexto operativo — **NO INICIADA** |
+| Siguiente tarea | `SHELL-AUD-005` — Comparar role override |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE H | **2 DE 11 APROBADAS — ACTUAL SHELL-AUD-003** |
+| BLOQUE H | **3 DE 11 APROBADAS — ACTUAL SHELL-AUD-004** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-AUD-002 — Comparar guards de autenticación
-        ↓
-TAREA ACTUAL
 SHELL-AUD-003 — Comparar helpers de permisos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-AUD-004 — Comparar contexto operativo
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-AUD-005 — Comparar role override
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 2 de 11 tareas aprobadas
+BLOQUE H — 3 de 11 tareas aprobadas
 ```
