@@ -2466,7 +2466,678 @@ SHELL-AUD-006 — Comparar AppShell y navegación
 El handoff `SHELL-PKG-001` se mantiene reservado exclusivamente para después de completar `SHELL-AUD-011`.
 
 
-### [ ] SHELL-AUD-006 — Comparar AppShell y navegación
+### ✅ SHELL-AUD-006 — Comparar AppShell y navegación
+
+**Estado:** APROBADA
+**Bloque:** H — Fundación compartida
+**Tipo:** auditoría transversal de composición AppShell, catálogo de aplicaciones, navegación interna, contexto visible y transferencia entre aplicaciones
+**Entrada de continuidad:** `SHELL-AUD-005 — Comparar role override`
+**Continuidad inmediata reservada:** `SHELL-AUD-007 — Comparar componentes UI base`
+**Handoff posterior al segmento `SHELL-AUD-001..011`:** `SHELL-PKG-001 — Elegir mecanismo de distribución`
+**Fecha de corte:** 2026-08-01
+**Cambios en código, SQL, Supabase, configuración, CI o despliegues:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea materializa la comparación del AppShell y la navegación actualmente presentes en SHELL, la plantilla fuente y las seis aplicaciones web consumidoras. La comparación separa el launcher central, la plantilla histórica, la navegación interna obtenida desde `app_navigation_items`, la visibilidad de aplicaciones, la selección visual de sede, el contexto mostrado y los contratos canónicos futuros.
+
+| Métrica                                                             |  Resultado |
+| ------------------------------------------------------------------- | ---------: |
+| Superficies comparadas                                              |      **8** |
+| Superficies runtime                                                 |      **7** |
+| Plantillas fuente no runtime                                        |      **1** |
+| Aplicaciones runtime que usan `VentoShell`                          |      **6** |
+| Launcher central independiente                                      |      **1** |
+| Familias físicas principales comparadas                             |      **5** |
+| Carriles actuales de navegación diferenciados                       |      **4** |
+| Catálogos locales de aplicaciones confirmados                       |      **8** |
+| Aplicaciones mostradas por SHELL runtime                            |      **5** |
+| Entradas de la plantilla AppSwitcher                                |      **7** |
+| Entradas de cada AppSwitcher runtime actual                         |      **9** |
+| Consumidores runtime de `app_navigation_items`                      |      **6** |
+| Campos del esquema de navegación no propagados al `NavItem` runtime |      **4** |
+| Decisiones por superficie materializadas                            | **8 de 8** |
+| Hallazgos con destino exacto                                        |     **24** |
+| Cambios `TREQ-*`                                                    |      **0** |
+
+Resultado central:
+
+```text
+SHELL RUNTIME
+→ launcher propio con cinco tarjetas y perfil propio
+
+PLANTILLA FUENTE
+→ navegación NEXO hardcodeada, siete aplicaciones y selector de sede en AppSwitcher
+
+SEIS APPS RUNTIME
+→ AppShell copiado
+→ navegación consultada en app_navigation_items
+→ visibilidad filtrada en servidor
+→ catálogo local de nueve aplicaciones
+→ Chrome cliente con sidebar, contexto y perfil
+```
+
+La paridad integral queda `NO_DEMOSTRADA`. Existe un pipeline runtime común, pero no una única fuente versionada para aplicaciones, pantallas, navegación, iconos, contexto visible, destinos o estados.
+
+---
+
+#### 2. Fuentes canónicas y corte reproducible
+
+La fuente documental propietaria se inspeccionó en `vento-shell` commit `73c429adf42124b8529d18cebf18c607ab61638c`.
+
+| Fuente                                              | Uso                                                          |
+| --------------------------------------------------- | ------------------------------------------------------------ |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, alcance, evidencia, entrega y pruebas           |
+| `docs/plan-canonico/modular/delivery-contract.json` | contrato físico del artefacto                                |
+| `docs/plan-canonico/modular/active-sequence.json`   | segmento `SHELL-AUD-001..011` y handoff posterior            |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`        | propietario, entradas aprobadas y marcador actual            |
+| `SHELL-AUD-001`                                     | inventario de familias, ocurrencias y hashes                 |
+| `SHELL-AUD-002` a `SHELL-AUD-005`                   | fronteras de autenticación, permisos, contexto y simulación  |
+| `docs/APP-SHELL-ESTANDARES.md`                      | estándar histórico de composición por copia                  |
+| `templates/app-shell-standard/README.md`            | procedimiento y dependencias declaradas de la plantilla      |
+| `templates/app-shell-standard/src/...`              | fuente física de AppShell, Chrome, switcher, perfil y layout |
+| `app_navigation_items` y migraciones relacionadas   | catálogo físico versionado de navegación interna             |
+| `UX-BASE-001` a `UX-BASE-005`                       | experiencia por actor, tarea y contexto visible              |
+| `SHELL-APP-001` a `SHELL-APP-016`                   | continuidad del hub, visibilidad, contexto y retorno         |
+| `SHELL-CON-001` a `SHELL-CON-016`                   | contratos futuros de aplicaciones, pantallas y handoffs      |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`  | cobertura vigente de AppShell, navegación y catálogo         |
+| Código de los siete repositorios runtime            | comportamiento técnico actual                                |
+
+Commits inspeccionados:
+
+| Superficie    | Repositorio / fuente                                     | Commit                                     |
+| ------------- | -------------------------------------------------------- | ------------------------------------------ |
+| SHELL runtime | `devVentoGroup/vento-shell`                              | `73c429adf42124b8529d18cebf18c607ab61638c` |
+| Plantilla     | `devVentoGroup/vento-shell/templates/app-shell-standard` | `73c429adf42124b8529d18cebf18c607ab61638c` |
+| VISO          | `devVentoGroup/vento-viso`                               | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |
+| NEXO          | `devVentoGroup/vento-nexo`                               | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |
+| FOGO          | `devVentoGroup/vento-fogo`                               | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |
+| ORIGO         | `devVentoGroup/vento-origo`                              | `b7a8303fa078ef087f522b6c99059ababfc27472` |
+| PULSO         | `devVentoGroup/vento-pulso`                              | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| NUMERA        | `devVentoGroup/vento-numera`                             | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |
+
+---
+
+#### 3. Continuidad aplicable
+
+`active-sequence.json` conserva el segmento completo:
+
+```text
+SHELL-AUD-001
+→ ...
+→ SHELL-AUD-005 aprobada
+→ SHELL-AUD-006 actual
+→ SHELL-AUD-007 inmediata reservada
+→ ...
+→ SHELL-AUD-011
+→ SHELL-PKG-001 como handoff del segmento
+```
+
+`handoff_task_id` representa la salida posterior al segmento, no la tarea inmediata. No existe contradicción de continuidad.
+
+---
+
+#### 4. Alcance exacto
+
+Se comparan:
+
+1. `src/app/layout.tsx` en SHELL, la plantilla y las seis aplicaciones;
+2. `vento-shell.tsx`, `vento-chrome.tsx`, `app-switcher.tsx` y `profile-menu.tsx` en la plantilla y los seis consumidores;
+3. launcher runtime de SHELL en `src/app/page.tsx`;
+4. catálogos locales de aplicaciones, estados, dominios, marcas y grupos;
+5. carga y transformación de `app_navigation_items`;
+6. agrupación, orden, iconos, rutas y permisos de navegación;
+7. visibilidad para sesión personal, simulación y dispositivo compartido;
+8. tratamiento de sede seleccionada y contexto operativo visible;
+9. patrón de ruta activa, sidebar, header, bloqueo operacional y navegación móvil;
+10. diferencias explícitas de VISO, NEXO, ORIGO y las demás aplicaciones;
+11. correspondencia con UX base, H2 SHELL APP y contratos compartidos futuros;
+12. cobertura de requisitos de prueba vigente.
+
+Se excluyen:
+
+- comparación visual y de primitivas UI, reservada a `SHELL-AUD-007`;
+- clientes Supabase, reservados a `SHELL-AUD-008`;
+- tipos públicos y contratos definitivos, reservados a `SHELL-AUD-009`;
+- disposición `compartir / generar / mantener local`, reservada a `SHELL-AUD-010`;
+- retiro de rutas, componentes o placeholders, reservado a `SHELL-AUD-011`;
+- diseño detallado de cada pantalla, reservado a los bloques E2, I y H2;
+- implementación de paquetes, navegación, catálogos o migraciones;
+- validación visual o E2E contra ambientes desplegados.
+
+---
+
+#### 5. Conceptos que no se tratarán como equivalentes
+
+| Concepto                 | Identidad                           | Regla                                                       |
+| ------------------------ | ----------------------------------- | ----------------------------------------------------------- |
+| SHELL runtime            | launcher central desplegable        | no es la plantilla AppShell                                 |
+| Plantilla AppShell       | fuente copiable bajo `templates/`   | no es superficie runtime                                    |
+| AppShell runtime         | composición de cada aplicación      | no es fuente normativa por existir en seis copias           |
+| Catálogo de aplicaciones | identidad, estado, dominio y marca  | no equivale a la lista local de un switcher                 |
+| Catálogo de navegación   | grupos e items de una aplicación    | no equivale al catálogo de pantallas canónicas              |
+| Pantalla canónica        | identidad funcional estable         | no se demuestra solo con `href` o `item_key`                |
+| Visibilidad              | decisión de presentación            | no sustituye autorización de servidor                       |
+| Sede seleccionada        | filtro o preferencia de navegación  | no es sede operativa autoritativa                           |
+| Contexto visible         | proyección para el usuario          | no es el snapshot canónico completo                         |
+| Ruta activa              | coincidencia de URL                 | no demuestra tarea actual ni etapa del proceso              |
+| Aplicación bloqueada     | estado de interfaz                  | no demuestra indisponibilidad técnica ni autorización final |
+| Handoff entre apps       | transferencia de destino y contexto | no es un enlace absoluto sin contrato                       |
+
+Reglas preservadas:
+
+```text
+PLANTILLA ≠ RUNTIME
+VISIBILIDAD ≠ AUTORIZACIÓN
+SELECCIÓN DE SEDE ≠ AUTORIDAD OPERATIVA
+HREF ≠ IDENTIFICADOR CANÓNICO DE PANTALLA
+RUTA ACTIVA ≠ TAREA ACTUAL
+LISTA LOCAL DE APPS ≠ CATÁLOGO CANÓNICO
+```
+
+---
+
+#### 6. Inventario completo por superficie
+
+| ID            | Superficie    | Composición actual                                             | Fuente de navegación                                    | Catálogo de aplicaciones | Clasificación                       |
+| ------------- | ------------- | -------------------------------------------------------------- | ------------------------------------------------------- | ------------------------ | ----------------------------------- |
+| `NAV-SURF-01` | SHELL runtime | layout y página propia; no usa `VentoShell`                    | cinco tarjetas locales                                  | cinco entradas locales   | `LAUNCHER_CENTRAL_INDEPENDIENTE`    |
+| `NAV-SURF-02` | plantilla     | layout + `VentoShell` + Chrome + switcher + perfil             | grupos NEXO hardcodeados                                | siete entradas locales   | `FUENTE_HISTORICA_DESFASADA`        |
+| `NAV-SURF-03` | VISO          | AppShell runtime con sidebar y gate                            | `app_navigation_items` + agregación local `/operations` | nueve entradas locales   | `RUNTIME_CON_AGREGACION_LOCAL`      |
+| `NAV-SURF-04` | NEXO          | AppShell runtime con contexto especializado                    | `app_navigation_items` + permisos operativos especiales | nueve entradas locales   | `RUNTIME_CON_EXTENSION_OPERATIVA`   |
+| `NAV-SURF-05` | FOGO          | AppShell runtime base con vocabulario de iconos propio         | `app_navigation_items`                                  | nueve entradas locales   | `RUNTIME_BASE_DIVERGENTE`           |
+| `NAV-SURF-06` | ORIGO         | AppShell runtime base con filtro local de sedes                | `app_navigation_items`                                  | nueve entradas locales   | `RUNTIME_CON_FILTRO_LOCAL`          |
+| `NAV-SURF-07` | PULSO         | AppShell runtime con scripts globales adicionales en layout    | `app_navigation_items`                                  | nueve entradas locales   | `RUNTIME_BASE_CON_LAYOUT_EXTENDIDO` |
+| `NAV-SURF-08` | NUMERA        | AppShell runtime con textos de catálogo parcialmente corruptos | `app_navigation_items`                                  | nueve entradas locales   | `RUNTIME_BASE_CON_DERIVA_TEXTUAL`   |
+
+**Conciliación:** 8 superficies esperadas, 8 materializadas, 0 faltantes y 0 identificadores duplicados.
+
+---
+
+#### 7. Identidad física de las cinco familias principales
+
+| Familia              | Ocurrencias | Variantes SHA | Grupos idénticos    | Resultado    |
+| -------------------- | ----------: | ------------: | ------------------- | ------------ |
+| `src/app/layout.tsx` |       **8** |         **8** | ninguno             | `DIVERGENTE` |
+| `vento-shell.tsx`    |       **7** |         **7** | ninguno             | `DIVERGENTE` |
+| `vento-chrome.tsx`   |       **7** |         **7** | ninguno             | `DIVERGENTE` |
+| `app-switcher.tsx`   |       **7** |         **5** | NEXO, ORIGO y PULSO | `MIXTA`      |
+| `profile-menu.tsx`   |       **7** |         **7** | ninguno             | `DIVERGENTE` |
+
+Identidades de `app-switcher.tsx`:
+
+| Fuente    | Blob SHA                                   |
+| --------- | ------------------------------------------ |
+| plantilla | `11d786b6327b4016fdd6e2354e0e6283cb8334e6` |
+| VISO      | `888f3d20bd317ff4234861c11237b1144e3a8ad8` |
+| NEXO      | `ea05dd60eef2e23427a4ee421aa279a88c5f4739` |
+| FOGO      | `839d6cc9dc984f526ced166611af6b47ca8c6f23` |
+| ORIGO     | `ea05dd60eef2e23427a4ee421aa279a88c5f4739` |
+| PULSO     | `ea05dd60eef2e23427a4ee421aa279a88c5f4739` |
+| NUMERA    | `ee23b7a3e2cceb8f61e6b86faf80f3ece19f3d87` |
+
+La diferencia de blob no implica por sí sola diferencia funcional. En esta familia VISO conserva el mismo comportamiento observable principal con formato de línea distinto, mientras la plantilla sí implementa otro contrato y NUMERA conserva deriva textual.
+
+---
+
+#### 8. Los cuatro carriles actuales de navegación
+
+| ID            | Carril                   | Fuente                                                                        | Consumidor                                   | Estado                      |
+| ------------- | ------------------------ | ----------------------------------------------------------------------------- | -------------------------------------------- | --------------------------- |
+| `NAV-LANE-01` | launcher SHELL           | arreglo `INTERNAL_APPS` en `src/app/page.tsx`                                 | usuario autenticado de SHELL                 | `ACTIVO_LOCAL`              |
+| `NAV-LANE-02` | plantilla histórica      | arrays hardcodeados en Chrome y AppSwitcher                                   | futuros repositorios que copien la plantilla | `FUENTE_DESFASADA`          |
+| `NAV-LANE-03` | AppShell runtime         | `app_navigation_items` + arrays locales de aplicaciones + evaluadores locales | seis aplicaciones web                        | `ACTIVO_DISTRIBUIDO`        |
+| `NAV-LANE-04` | contrato canónico futuro | UX base, H2 SHELL APP, contratos de aplicaciones, pantallas y handoffs        | implementación pendiente                     | `NORMATIVO_NO_IMPLEMENTADO` |
+
+**Conciliación:** 4 carriles identificados, 4 comparados y 0 declarados equivalentes sin evidencia.
+
+---
+
+#### 9. Catálogos de aplicaciones y estados
+
+| Proyección                      |               Cantidad | Entradas confirmadas                                     | Fuente                        | Resolución de acceso                             |
+| ------------------------------- | ---------------------: | -------------------------------------------------------- | ----------------------------- | ------------------------------------------------ |
+| SHELL runtime                   |                  **5** | VISO, NEXO, FOGO, ORIGO, PULSO                           | arreglo local                 | RPC de permiso con fallback de firma             |
+| plantilla AppSwitcher           |                  **7** | Hub, VISO, NEXO, FOGO, ORIGO, PULSO, AURA                | arreglo local                 | solo `active` o `soon`; sin decisión de permiso  |
+| AppSwitcher de cada app runtime |                  **9** | Hub, ANIMA, NEXO, ORIGO, PULSO, NUMERA, VISO, FOGO, AURA | arreglo local por repositorio | servidor resuelve `enabled`, `disabled` o `soon` |
+| `app_navigation_items`          | no es catálogo de apps | items internos por `app_code`                            | Supabase versionado           | permiso por item                                 |
+
+Divergencias materiales:
+
+1. NUMERA aparece activa en los seis AppSwitcher runtime y no existe en el launcher SHELL de cinco tarjetas.
+2. ANIMA aparece en los AppSwitcher runtime, pero no en la plantilla histórica ni como tarjeta del launcher laboral.
+3. FOGO permanece `soon` en la plantilla y `active` en los AppSwitcher runtime.
+4. AURA permanece `soon` en plantilla y runtimes, pero sus textos, logos y grupos se duplican localmente.
+5. SHELL usa `/logos/*.svg`; los AppSwitcher runtime usan `/apps/*.svg`; la identidad visual no proviene de un catálogo común.
+6. Los seis `vento-shell.tsx` duplican dominio, nombre, descripción, color, logo, grupo y estado de las nueve entradas.
+7. `brandColor` forma parte del tipo runtime, pero el `AppSwitcher` inspeccionado no lo usa para renderizar la tarjeta.
+8. La cantidad distinta puede corresponder a proyecciones válidas, pero no está producida desde un catálogo canónico único.
+
+Decisión:
+
+```text
+CATÁLOGO CANÓNICO ÚNICO
+→ puede producir proyecciones distintas por superficie
+→ no puede ser reemplazado por listas locales independientes
+```
+
+---
+
+#### 10. Contrato físico de `app_navigation_items`
+
+El esquema versionado contiene catorce campos funcionales o de comportamiento:
+
+```text
+app_code
+ group_key
+ group_label
+ group_order
+ item_key
+ label
+ description
+ href
+ icon
+ required_permission_code
+ sort_order
+ is_active
+ opens_in_new_tab
+ metadata
+```
+
+Los seis AppShell runtime:
+
+- filtran por `app_code`;
+- filtran `is_active = true`;
+- ordenan por `group_order` y `sort_order`;
+- seleccionan `group_label`, `group_order`, `label`, `description`, `href`, `icon`, `required_permission_code` y `sort_order`;
+- transforman cada fila al contrato local `NavItem`;
+- descartan o no propagan cuatro campos: `group_key`, `item_key`, `opens_in_new_tab` y `metadata`.
+
+Matriz:
+
+| Dimensión               | Esquema                    | Runtime actual                          | Resultado                  |
+| ----------------------- | -------------------------- | --------------------------------------- | -------------------------- |
+| identidad de aplicación | `app_code`                 | filtro de consulta                      | `CONSUMIDA`                |
+| identidad de grupo      | `group_key`                | no propagada                            | `PERDIDA`                  |
+| etiqueta de grupo       | `group_label`              | clave de agrupación visible             | `CONSUMIDA_COMO_IDENTIDAD` |
+| identidad de item       | `item_key`                 | no propagada                            | `PERDIDA`                  |
+| destino                 | `href`                     | identidad de React, ruta y active match | `SOBRECARGADA`             |
+| permiso                 | `required_permission_code` | decisión de visibilidad                 | `CONSUMIDA`                |
+| pestaña nueva           | `opens_in_new_tab`         | no propagada                            | `IGNORADA`                 |
+| metadata                | `metadata`                 | no propagada                            | `IGNORADA`                 |
+| icono                   | string libre               | enum local por aplicación               | `PARCIAL_DIVERGENTE`       |
+| estado                  | `is_active`                | filtro booleano                         | `CONSUMIDA`                |
+
+Consecuencias:
+
+1. `href` sustituye actualmente a una identidad canónica de pantalla dentro del render.
+2. dos items con etiquetas iguales pueden quedar agrupados juntos aunque tengan `group_key` distinto.
+3. cambiar la etiqueta del grupo puede alterar la agrupación visible.
+4. `opens_in_new_tab` no produce el comportamiento declarado por el registro.
+5. `metadata` no puede condicionar presentación o handoff aunque exista en la fila.
+6. `item_key` no llega al cliente y no puede correlacionarse con una pantalla o telemetría estable.
+7. el conjunto de iconos válidos depende del enum local de cada aplicación.
+
+---
+
+#### 11. Pipeline runtime de navegación interna
+
+El patrón general de las seis aplicaciones es:
+
+```text
+usuario o dispositivo autenticado
+→ resolver empleado, rol, sedes y contexto local
+→ consultar app_navigation_items por app_code
+→ evaluar required_permission_code por fila
+→ conservar filas permitidas
+→ convertir filas a NavGroup[]
+→ pasar navGroups a VentoChrome
+→ renderizar sidebar cliente
+```
+
+El pipeline común no constituye una implementación compartida porque está copiado dentro de seis `vento-shell.tsx` distintos.
+
+Variantes explícitas:
+
+| Aplicación | Variante                                                                           | Efecto                                                           |
+| ---------- | ---------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| VISO       | colapsa las rutas que comienzan por `/operations` en una entrada `/operations`     | varias filas físicas pueden producir una sola opción visible     |
+| NEXO       | usa evaluación operacional especial para permisos de remisiones seleccionados      | la fuente de decisión cambia según el permiso                    |
+| ORIGO      | excluye localmente una sede cuyo nombre es `app review (demo)`                     | la colección visible no usa el mismo criterio que las otras apps |
+| PULSO      | incorpora scripts globales de protección de formularios y rueda numérica en layout | el layout AppShell tiene responsabilidades adicionales           |
+| NUMERA     | conserva mojibake en textos del catálogo y mensajes del gate                       | la misma identidad se presenta con texto divergente              |
+| FOGO       | mantiene vocabulario local de iconos y shell propio                                | no existe paridad por versión con otros consumidores             |
+
+Estas variantes no se clasifican todavía como correctas o incorrectas. Su disposición pertenece a `SHELL-AUD-010`.
+
+---
+
+#### 12. Visibilidad, autorización y estados de bloqueo
+
+Los seis AppShell runtime resuelven visibilidad en servidor antes de entregar `navGroups` y `appSwitcherItems` al cliente. Esto evita depender únicamente de ocultamiento cliente, pero no sustituye los guards de ruta y servidor.
+
+| Carril                    | Fuente de visibilidad               | Estado presentado   | Autoridad final                               |
+| ------------------------- | ----------------------------------- | ------------------- | --------------------------------------------- |
+| usuario personal real     | permisos y scopes locales           | enabled / disabled  | guard, RPC y servidor de destino              |
+| usuario con role override | evaluador local de simulación       | navegación simulada | mecanismo legacy comparado en `SHELL-AUD-005` |
+| dispositivo compartido    | apps permitidas + rol de navegación | enabled / disabled  | intersección aún no canónica                  |
+| app futura                | `status = soon`                     | próximamente        | no navegable                                  |
+| navegación interna        | permiso de cada fila                | visible u omitida   | ruta y operación de destino                   |
+
+Brechas:
+
+- la razón de bloqueo del AppSwitcher es genérica: “Tu rol no tiene acceso”; no conserva razón estructurada;
+- SHELL muestra “Sin acceso” o “Bloqueada” sin explicar permiso, contexto, estado de despliegue o falta de superficie;
+- una app `soon` y una app sin permiso terminan visualmente en clases similares;
+- el launcher y los switchers no comparten el mismo modelo de estados;
+- no existe evidencia de una prueba que compare las proyecciones para el mismo actor y contexto.
+
+`SHELL-APP-010` conserva la responsabilidad de definir la explicación de bloqueo. Esta auditoría solo materializa el estado actual.
+
+---
+
+#### 13. Sede seleccionada y contexto mostrado
+
+La plantilla histórica ubica el selector de sede dentro de `AppSwitcher` y modifica únicamente el query parameter `site_id`.
+
+Los runtimes actuales movieron la selección al `ProfileMenu` y combinan:
+
+```text
+query parameter site_id
++ cookie local por aplicación
++ employee_settings.selected_site_id
++ activeSiteId resuelto por servidor
+```
+
+NEXO, por ejemplo:
+
+- escribe `nexo_site_override_id` durante 30 días;
+- hace `upsert` de `employee_settings.selected_site_id` desde cliente;
+- actualiza `site_id` en la URL;
+- refresca la navegación.
+
+El Chrome presenta:
+
+- tarjeta `Sede activa`;
+- una tarjeta agregada `Contexto operativo` cuando existe una etiqueta;
+- etiquetas como `Jornada activa`, `Dispositivo compartido`, `Acceso administrativo` o `Sin jornada activa`.
+
+No presenta de forma separada y homogénea:
+
+- identificador o franja del turno activo;
+- área activa;
+- rol operativo activo;
+- origen del contexto;
+- instante de resolución;
+- tarea pendiente o tarea actual.
+
+Decisión:
+
+```text
+site_id, cookie y employee_settings
+→ preferencia o filtro de navegación
+→ nunca autoridad operativa
+
+turno, sede, área y rol visibles
+→ deben provenir del contexto canónico resuelto en servidor
+```
+
+Los contratos detallados permanecen en `SHELL-APP-004` a `SHELL-APP-008`, `UX-BASE-002` a `UX-BASE-005` y `SHELL-CTX-001` a `SHELL-CTX-006`.
+
+---
+
+#### 14. Chrome, rutas activas y estructura de navegación
+
+Los Chrome runtime comparten el patrón:
+
+- sidebar fijo o sticky;
+- drawer móvil;
+- header sticky;
+- sidebar colapsable persistido en `localStorage`;
+- grupos e items recibidos del servidor;
+- coincidencia activa por `pathname === href` o prefijo `href/`;
+- AppSwitcher y ProfileMenu en el header;
+- gate que puede sustituir el contenido principal;
+- fallback “No hay pantallas disponibles”.
+
+Comparación con el estándar histórico:
+
+| Dimensión             | Estándar histórico           | Runtime actual                            | Resultado      |
+| --------------------- | ---------------------------- | ----------------------------------------- | -------------- |
+| navegación principal  | header                       | sidebar                                   | `DIVERGENTE`   |
+| switcher              | incluye selector de sede     | selector ya no se renderiza allí          | `DIVERGENTE`   |
+| perfil                | nombre, rol, email, logout   | agrega sede, simulación y limpieza de app | `EXTENDIDO`    |
+| contenido             | full-width bajo header       | sidebar + contenido flexible              | `DIVERGENTE`   |
+| fuente de nav         | rutas ajustadas por copia    | base de datos + filtros locales           | `EVOLUCIONADO` |
+| visibilidad           | permissionCodes del template | evaluación servidor por item              | `EVOLUCIONADO` |
+| identidad de pantalla | href local                   | continúa siendo href local                | `NO_RESUELTA`  |
+
+El documento histórico sigue describiendo copiar desde NEXO y “evitar estilos por app fuera del estándar”. Ya no representa con precisión la topología runtime y no puede actuar como contrato vigente sin reconciliación.
+
+---
+
+#### 15. Launcher SHELL frente al AppSwitcher runtime
+
+| Dimensión            | SHELL runtime                       | AppSwitcher runtime                             |
+| -------------------- | ----------------------------------- | ----------------------------------------------- |
+| propósito            | página central de acceso            | launcher contextual dentro de cada app          |
+| aplicaciones         | 5                                   | 9                                               |
+| grupos               | una cuadrícula principal            | Workspace, Operación, Próximamente              |
+| acceso               | enabled / disabled                  | enabled / disabled / soon                       |
+| perfil               | menú propio en `page.tsx`           | `ProfileMenu` por app                           |
+| contexto laboral     | no se muestra                       | sede y estado agregado en Chrome                |
+| tarea pendiente      | no se muestra                       | no se muestra transversalmente                  |
+| fuente               | arreglo `INTERNAL_APPS`             | arreglo `APP_SWITCHER_ITEMS` copiado seis veces |
+| permiso              | evaluador local con fallback de RPC | evaluadores de cada AppShell                    |
+| destinos             | enlaces absolutos                   | enlaces absolutos                               |
+| continuidad de tarea | no existe contrato                  | no existe contrato común                        |
+
+SHELL contiene además dos enlaces de perfil —`Mi perfil` y `Configuración de usuario`— que apuntan ambos a `/`. Se mantienen como placeholders confirmados y no se presentan como capacidades terminadas.
+
+---
+
+#### 16. Correspondencia con UX y H2 SHELL APP
+
+| Obligación canónica                            | Estado actual                                               | Resultado                                 |
+| ---------------------------------------------- | ----------------------------------------------------------- | ----------------------------------------- |
+| separar experiencia operativa y administrativa | el mismo sidebar puede contener ambas según registros       | `PENDIENTE_DE_CLASIFICACION_POR_PANTALLA` |
+| mostrar primero la tarea actual                | no existe contrato transversal de tarea actual              | `AUSENTE`                                 |
+| evitar nombres técnicos                        | etiquetas son libres y dependen de filas/migraciones        | `NO_DEMOSTRADO`                           |
+| ocultar funciones irrelevantes                 | se filtran por permiso, pero no por tarea y etapa canónicas | `PARCIAL`                                 |
+| mostrar sede activa                            | existe tarjeta y selector                                   | `IMPLEMENTADO_LEGACY`                     |
+| mostrar área activa                            | no se muestra separadamente en todas las apps               | `AUSENTE_COMUN`                           |
+| mostrar turno activo                           | etiqueta agregada “Jornada activa” sin identidad completa   | `PARCIAL`                                 |
+| mostrar rol operativo                          | no se muestra separadamente en todas las apps               | `AUSENTE_COMUN`                           |
+| mostrar tareas pendientes transversales        | no existe agregador                                         | `AUSENTE`                                 |
+| página inicial por tipo de usuario             | launcher único con proyección por permiso                   | `NO_DEFINIDA`                             |
+| explicar aplicación bloqueada                  | mensaje genérico                                            | `PARCIAL`                                 |
+| retorno seguro entre apps                      | enlaces absolutos sin contrato de handoff                   | `NO_DEMOSTRADO`                           |
+| conservar contexto al cambiar de app           | no existe payload o token común                             | `NO_DEMOSTRADO`                           |
+| conservar tarea en curso                       | no existe contrato común                                    | `AUSENTE`                                 |
+
+La tabla no implementa H2. Solo entrega el inventario y las diferencias que esas tareas deberán consumir.
+
+---
+
+#### 17. Decisión por superficie
+
+| Superficie    | Decisión de esta auditoría                                                                                | Destino obligatorio                                                  |
+| ------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| SHELL runtime | conservar como launcher independiente; migrar su catálogo y estados a una fuente común                    | `SHELL-APP-001` a `SHELL-APP-003`; `SHELL-CON-002`; `SHELL-AUD-010`  |
+| plantilla     | conservar como fuente histórica bloqueada para adopción hasta corregir parametrización, textos y contrato | `SHELL-AUD-007`; `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUD-011`   |
+| VISO          | conservar su agregación `/operations` como variante explícita hasta reconciliar pantallas                 | `SHELL-CON-011`; `SHELL-AUD-010`; bloque I                           |
+| NEXO          | conservar su extensión operacional como variante explícita y probarla contra el contrato común            | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-004`; `SHELL-AUTH-005` |
+| FOGO          | conservar runtime; no usarlo como baseline implícita por similitud visual                                 | `SHELL-AUD-009`; `SHELL-AUD-010`                                     |
+| ORIGO         | conservar filtro local como deuda explícita; no elevar el nombre demo a regla transversal                 | `SHELL-APP-003`; `SHELL-APP-005`; `SHELL-AUD-010`                    |
+| PULSO         | conservar scripts de layout como extensión local separada del contrato AppShell                           | `SHELL-AUD-007`; `SHELL-AUD-010`                                     |
+| NUMERA        | conservar runtime, bloquear propagación de textos corruptos y reconciliar catálogo                        | `SHELL-CON-002`; `SHELL-AUD-010`; `UX-QA-022`                        |
+
+Ninguna decisión ordena editar o retirar código durante esta fase.
+
+---
+
+#### 18. Hallazgos y destinos obligatorios
+
+| ID                | Hallazgo materializado                                                                                                     | Estado                         | Destino exacto                                                       |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | -------------------------------------------------------------------- |
+| `H-SHELL-006-001` | SHELL, plantilla y apps runtime implementan tres catálogos locales de aplicaciones con cantidades distintas                | `CONFIRMADO`                   | `SHELL-CON-002`; `SHELL-APP-001` a `SHELL-APP-003`; `SHELL-AUD-010`  |
+| `H-SHELL-006-002` | el launcher SHELL contiene cinco apps y omite NUMERA, activa en los switchers runtime                                      | `CONFIRMADO`                   | `SHELL-APP-001`; `SHELL-APP-002`; `SHELL-CON-002`                    |
+| `H-SHELL-006-003` | la plantilla conserva FOGO como `soon` mientras los runtimes la presentan activa                                           | `DERIVA_DE_ESTADO`             | `SHELL-CON-002`; `SHELL-AUD-010`; `SHELL-CI-017`                     |
+| `H-SHELL-006-004` | los seis runtimes duplican nueve identidades, dominios, logos, textos, colores y estados                                   | `CONFIRMADO`                   | `SHELL-CON-002`; `SHELL-AUD-009`; `SHELL-AUD-010`                    |
+| `H-SHELL-006-005` | la plantilla AppSwitcher contiene siete entradas, selector de sede y texto UTF-8 corrupto                                  | `FUENTE_DESFASADA`             | `SHELL-AUD-007`; `SHELL-AUD-010`; `UX-QA-022`                        |
+| `H-SHELL-006-006` | la plantilla Chrome conserva navegación y permisos NEXO hardcodeados                                                       | `FUENTE_ACOPLADA`              | `SHELL-CON-002`; `SHELL-CON-003`; `SHELL-CON-011`; `SHELL-AUD-010`   |
+| `H-SHELL-006-007` | el estándar histórico describe nav en header y selector de sede en switcher, pero runtime usa sidebar y ProfileMenu        | `DOCUMENTACION_DESFASADA`      | `SHELL-AUD-010`; `SHELL-PKG-001`; `SHELL-PKG-002`                    |
+| `H-SHELL-006-008` | las cinco familias principales mantienen 36 ocurrencias y ninguna versión o procedencia runtime común                      | `PARIDAD_NO_DEMOSTRADA`        | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-PKG-001` a `SHELL-PKG-008`  |
+| `H-SHELL-006-009` | NEXO, ORIGO y PULSO comparten el único blob idéntico de AppSwitcher runtime                                                | `CONFIRMADO`                   | `SHELL-AUD-010`                                                      |
+| `H-SHELL-006-010` | `brandColor` existe en el contrato local del AppSwitcher y no altera el render inspeccionado                               | `CAMPO_SIN_CONSUMO_CONFIRMADO` | `SHELL-AUD-009`; `SHELL-AUD-011`                                     |
+| `H-SHELL-006-011` | `sites` y `activeSiteId` permanecen en props del AppSwitcher runtime aunque el componente ya no los usa                    | `CONTRATO_RESIDUAL`            | `SHELL-AUD-009`; `SHELL-AUD-011`                                     |
+| `H-SHELL-006-012` | seis AppShell consultan `app_navigation_items`, pero descartan `group_key`, `item_key`, `opens_in_new_tab` y `metadata`    | `CONFIRMADO`                   | `SHELL-CON-011`; `SHELL-AUD-009`; `SHELL-AUD-010`                    |
+| `H-SHELL-006-013` | `href` actúa simultáneamente como destino, clave de render y base de active matching                                       | `IDENTIDAD_SOBRECARGADA`       | `SHELL-CON-011`; bloque I; `SHELL-AUD-009`                           |
+| `H-SHELL-006-014` | la etiqueta visible de grupo sustituye a `group_key` al construir los grupos runtime                                       | `DIVERGENCIA_CON_ESQUEMA`      | `SHELL-CON-011`; `SHELL-AUD-010`                                     |
+| `H-SHELL-006-015` | cada aplicación mantiene un enum local de iconos y descarta iconos desconocidos                                            | `PARIDAD_NO_DEMOSTRADA`        | `SHELL-AUD-007`; `SHELL-AUD-009`; `SHELL-AUD-010`                    |
+| `H-SHELL-006-016` | VISO agrega localmente todas las rutas `/operations` en una sola entrada                                                   | `EXTENSION_LOCAL_ACTIVA`       | `SHELL-CON-011`; bloque I; `SHELL-AUD-010`                           |
+| `H-SHELL-006-017` | NEXO cambia de evaluador para permisos operativos seleccionados de remisiones                                              | `EXTENSION_LOCAL_ACTIVA`       | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-004`; `SHELL-AUTH-005` |
+| `H-SHELL-006-018` | ORIGO excluye una sede demo mediante comparación literal de nombre                                                         | `EXTENSION_LOCAL_ACTIVA`       | `SHELL-APP-003`; `SHELL-APP-005`; `SHELL-AUD-010`                    |
+| `H-SHELL-006-019` | la sede seleccionada se propaga por query, cookie y `employee_settings`, sin contrato transversal de preferencia           | `DOBLE_TRIPLE_FUENTE`          | `SHELL-APP-005`; `SHELL-CON-007`; `SHELL-CTX-003`; `SHELL-AUD-010`   |
+| `H-SHELL-006-020` | Chrome muestra sede y estado agregado, pero no turno, área y rol operativo como nodos separados comunes                    | `COBERTURA_PARCIAL`            | `SHELL-APP-004` a `SHELL-APP-007`; `UX-BASE-005`                     |
+| `H-SHELL-006-021` | no existe navegación transversal que coloque primero la tarea actual o pendientes                                          | `AUSENTE`                      | `UX-BASE-002`; `SHELL-CON-015`; `SHELL-APP-008`; `SHELL-APP-009`     |
+| `H-SHELL-006-022` | el cambio de aplicación usa enlaces absolutos sin contrato común de retorno, contexto o tarea en curso                     | `PARIDAD_NO_DEMOSTRADA`        | `SHELL-CON-014`; `SHELL-APP-014` a `SHELL-APP-016`                   |
+| `H-SHELL-006-023` | SHELL presenta dos enlaces de perfil que resuelven a `/`                                                                   | `PLACEHOLDER_CONFIRMADO`       | `AUTH-UI-026` a `AUTH-UI-029`; `SHELL-AUD-011`                       |
+| `H-SHELL-006-024` | no se confirmó una suite automatizada que compare catálogo, nav, contexto visible, rutas y estados en las ocho superficies | `PENDIENTE_DE_EVIDENCIA`       | `SHELL-CI-017`; `SHELL-CI-018`; `AUTH-QA-027`; `UX-QA-022`           |
+
+**Conciliación:** 24 hallazgos esperados, 24 materializados, 0 identificadores duplicados y 0 hallazgos sin destino.
+
+---
+
+#### 19. Decisiones documentales resultantes
+
+1. SHELL runtime se conservará como launcher central distinto del AppShell de las aplicaciones.
+2. La plantilla se conservará como fuente no runtime y no podrá seguir propagándose sin versión, parametrización y pruebas.
+3. El catálogo de aplicaciones deberá centralizar identidad, dominio, nombre, marca, estado y disponibilidad; cada superficie podrá consumir una proyección autorizada.
+4. La ausencia de una aplicación en una proyección no se tratará automáticamente como defecto si la proyección está definida por contrato.
+5. `app_navigation_items` se conservará como fuente física legacy de navegación hasta que `SHELL-CON-011` y el bloque I definan la identidad canónica de pantalla.
+6. `item_key` y `group_key` no deberán perderse si forman parte del contrato futuro.
+7. `href` no será la identidad única de una pantalla.
+8. `opens_in_new_tab` y `metadata` deberán consumirse o retirarse mediante decisión explícita; no permanecerán como campos decorativos sin contrato.
+9. La visibilidad continuará resolviéndose en servidor, pero nunca sustituirá guards, autorización ni validación en destino.
+10. La razón de bloqueo deberá distinguir falta de permiso, contexto, despliegue, superficie o estado futuro.
+11. La sede seleccionada se clasificará como preferencia o filtro, no como sede operativa autoritativa.
+12. La interfaz común deberá mostrar turno, sede, área y rol operativo desde contexto canónico cuando apliquen.
+13. La tarea actual y los pendientes transversales no se inferirán desde la primera ruta del sidebar.
+14. El cambio entre aplicaciones requerirá contrato de handoff, retorno seguro, contexto admisible y conservación de tarea cuando corresponda.
+15. La agregación VISO, la evaluación NEXO, el filtro ORIGO y los scripts PULSO permanecerán como extensiones locales explícitas hasta `SHELL-AUD-010`.
+16. Los textos corruptos de plantilla o runtime bloquearán su adopción como fuente compartida.
+17. Los props o campos sin consumidor no se retirarán antes de `SHELL-AUD-011`.
+18. No se crea un catálogo paralelo dentro de esta auditoría.
+19. No se modifica `active-sequence.json`.
+20. No se modifica código, Supabase, configuración, CI ni despliegues.
+21. `SHELL-AUD-007` permanece como única continuidad inmediata reservada.
+
+---
+
+#### 20. Trazabilidad con requisitos vigentes
+
+Los hallazgos ya están cubiertos por requisitos existentes:
+
+| Requisito        | Cobertura aplicada                                                               |
+| ---------------- | -------------------------------------------------------------------------------- |
+| `TREQ-SHELL-001` | una app no es operativa por registro o permiso aislado                           |
+| `TREQ-SHELL-002` | clasificación y paridad de AppShell y navegación compartidos                     |
+| `TREQ-SHELL-003` | catálogo único de aplicación, dominio, estado y marca                            |
+| `TREQ-SHELL-014` | snapshot de cinco tarjetas del launcher SHELL                                    |
+| `TREQ-SHELL-015` | permiso canónico y transición de firmas RPC del launcher                         |
+| `TREQ-SHELL-016` | app sin acceso no navegable y protección en destino                              |
+| `TREQ-SHELL-027` | placeholders de perfil no presentados como capacidad real                        |
+| `TREQ-SHELL-028` | catálogo único entre launcher, login, template y runtimes                        |
+| `TREQ-SHELL-029` | plantilla separada de runtime y con procedencia explícita                        |
+| `TREQ-SHELL-030` | visibilidad por permiso/contexto y prohibición de NEXO hardcodeado como estándar |
+| `TREQ-SHELL-031` | selección de sede y simulación separadas de autoridad real                       |
+| `TREQ-SHELL-034` | destinos absolutos gobernados por catálogo activo                                |
+| `TREQ-SHELL-035` | UTF-8, nombres y estados consistentes                                            |
+| `TREQ-AUTH-004`  | paridad entre evaluadores para mismo actor y contexto                            |
+| `TREQ-AUTH-009`  | territorio determinista y sin ampliación por selección                           |
+| `TREQ-AUTH-012`  | simulación separada de autoridad real                                            |
+
+Esta tarea aporta evidencia y decisiones de clasificación, pero no cambia identificador, regla, riesgo, tipo, responsable, paquete, repositorio, estado, evidencia ni relaciones de ninguna fila.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las divergencias de catálogo, AppShell, navegación, visibilidad, destinos, sede seleccionada, plantilla, placeholders, codificación y paridad ya están cubiertas por `TREQ-SHELL-001` a `TREQ-SHELL-003`, `TREQ-SHELL-014` a `TREQ-SHELL-016`, `TREQ-SHELL-027` a `TREQ-SHELL-031`, `TREQ-SHELL-034`, `TREQ-SHELL-035`, `TREQ-AUTH-004`, `TREQ-AUTH-009` y `TREQ-AUTH-012`. La tarea no introduce comportamiento ejecutable ni una regla verificable sin cobertura previa. Genera **0** altas, **0** modificaciones, **0** diferimientos, **0** descartes y **0** obsolescencias `TREQ-*`.
+
+---
+
+#### 21. Criterios de aceptación
+
+`SHELL-AUD-006` se considera materialmente completa porque:
+
+- las ocho superficies están representadas una sola vez;
+- SHELL runtime, plantilla y seis consumidores están separados;
+- las cinco familias físicas conservan ocurrencias, variantes y grupos idénticos;
+- los cuatro carriles de navegación están diferenciados;
+- los catálogos de 5, 7 y 9 aplicaciones están reconciliados sin asumir que toda diferencia es un defecto;
+- la fuente, estado y acceso de cada proyección están materializados;
+- los catorce campos funcionales de `app_navigation_items` están contrastados con el consumo runtime;
+- los cuatro campos no propagados tienen decisión y destino;
+- el pipeline común de navegación y las variantes VISO, NEXO, ORIGO, PULSO y NUMERA están documentados;
+- visibilidad y autorización permanecen separadas;
+- selector de sede y contexto operativo están comparados sin convertir preferencia en autoridad;
+- el estándar histórico está contrastado con la estructura runtime actual;
+- el launcher SHELL y el AppSwitcher runtime están comparados por propósito, catálogo, perfil y contexto;
+- las obligaciones UX y H2 tienen estado explícito;
+- cada superficie tiene decisión y destino;
+- los 24 hallazgos tienen propietario documental exacto;
+- se declaran cero cambios del registro de requisitos de prueba;
+- no se modifica código, SQL, Supabase, configuración, CI, despliegues ni continuidad;
+- `SHELL-AUD-007` permanece como única tarea inmediata reservada;
+- `SHELL-PKG-001` permanece como handoff posterior al cierre de `SHELL-AUD-011`.
+
+---
+
+#### 22. Resultado y continuidad
+
+La cadena física actual queda materializada como:
+
+```text
+catálogo local de aplicaciones
+→ launcher o AppSwitcher
+→ usuario, simulación o dispositivo
+→ estado enabled / disabled / soon
+→ navegación interna desde app_navigation_items
+→ evaluación local por item
+→ NavGroup[]
+→ Chrome y sidebar
+→ ruta activa por href
+→ guard y servidor de destino
+```
+
+La cadena objetivo que deberán resolver las tareas posteriores es:
+
+```text
+catálogo canónico de aplicaciones
++ contrato canónico de pantallas
++ contexto canónico
++ tarea o pendiente actual
++ autorización estructurada
+→ proyección de navegación por actor y contexto
+→ handoff seguro entre aplicaciones
+→ evidencia y pruebas de paridad
+```
+
+La única continuidad inmediata reservada es:
+
+```text
+SHELL-AUD-007 — Comparar componentes UI base
+```
+
+El handoff `SHELL-PKG-001` se mantiene reservado exclusivamente para después de completar `SHELL-AUD-011`.
+
+
 ### [ ] SHELL-AUD-007 — Comparar componentes UI base
 ### [ ] SHELL-AUD-008 — Comparar clientes Supabase
 ### [ ] SHELL-AUD-009 — Comparar tipos y contratos

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1585** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **479** |
+| Aprobadas | **480** |
 | En propuesta | **0** |
-| No iniciadas | **1106** |
+| No iniciadas | **1105** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **30.22% (479/1585)** |
+| Porcentaje de completamiento | **30.28% (480/1585)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-AUD-005` — Comparar role override | ✅ APROBADA |
-| Tarea actual | `SHELL-AUD-006` — Comparar AppShell y navegación | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-AUD-007` — Comparar componentes UI base | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-AUD-006` — Comparar AppShell y navegación | ✅ APROBADA |
+| Tarea actual | `SHELL-AUD-007` — Comparar componentes UI base | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-AUD-008` — Comparar clientes Supabase | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -692,7 +692,7 @@
 | ✅ APROBADA | `SHELL-AUD-003` | Comparar helpers de permisos | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-AUD-004` | Comparar contexto operativo | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-AUD-005` | Comparar role override | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-AUD-006` | Comparar AppShell y navegación | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-AUD-006` | Comparar AppShell y navegación | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-007` | Comparar componentes UI base | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-008` | Comparar clientes Supabase | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-009` | Comparar tipos y contratos | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
