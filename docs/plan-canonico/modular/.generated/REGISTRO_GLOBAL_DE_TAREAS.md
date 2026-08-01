@@ -441,21 +441,21 @@
 | ✅ APROBADA | `DATA-NORM-ARC-011` | Definir capas de ejecución: aplicación, servicio de dominio, RPC y trigger defensivo | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `DATA-NORM-ARC-012` | Definir tratamiento de datos recibidos desde integraciones externas | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
 | ✅ APROBADA | `SUPA-ARC-025` | Consolidar y aprobar ADR de arquitectura canónica de datos | `bloques/E3_SUPABASE/05_GOBIERNO_CANONICO_DE_NORMALIZACION_Y_CALIDAD_DE_TEXTO.md` |
-| ✅ APROBADA | `SUPA-TRANS-001` | Mapear cada objeto actual hacia la arquitectura objetivo | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ✅ APROBADA | `SUPA-TRANS-002` | Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ✅ APROBADA | `SUPA-TRANS-003` | Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ✅ APROBADA | `SUPA-TRANS-004` | Definir orden de migración por dominio | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ✅ APROBADA | `SUPA-TRANS-005` | Definir backfills y correcciones de calidad de datos | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ✅ APROBADA | `SUPA-TRANS-006` | Definir vistas, wrappers o aliases temporales de compatibilidad | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ✅ APROBADA | `SUPA-TRANS-007` | Definir adaptación coordinada de consumidores | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-008` | Definir estrategia ante escrituras durante la transición | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-009` | Definir pruebas antes y después de cada migración | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-010` | Definir mediciones de rendimiento y seguridad | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-011` | Definir rollback por paquete de cambio | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-012` | Definir retiro progresivo de objetos legacy | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-013` | Definir verificación de paridad local, staging y producción | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-014` | Definir actualización de tipos, contratos y documentación | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-015` | Crear roadmap ejecutable de migraciones en `vento-shell` | `bloques/E3_SUPABASE/06_PLAN_DE_TRANSICION.md` |
+| ✅ APROBADA | `SUPA-TRANS-001` | Mapear cada objeto actual hacia la arquitectura objetivo | `bloques/E3_SUPABASE/06_01_SUPA_TRANS_001.md` |
+| ✅ APROBADA | `SUPA-TRANS-002` | Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar | `bloques/E3_SUPABASE/06_02_SUPA_TRANS_002.md` |
+| ✅ APROBADA | `SUPA-TRANS-003` | Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos | `bloques/E3_SUPABASE/06_03_SUPA_TRANS_003.md` |
+| ✅ APROBADA | `SUPA-TRANS-004` | Definir orden de migración por dominio | `bloques/E3_SUPABASE/06_04_SUPA_TRANS_004.md` |
+| ✅ APROBADA | `SUPA-TRANS-005` | Definir backfills y correcciones de calidad de datos | `bloques/E3_SUPABASE/06_05_SUPA_TRANS_005.md` |
+| ✅ APROBADA | `SUPA-TRANS-006` | Definir vistas, wrappers o aliases temporales de compatibilidad | `bloques/E3_SUPABASE/06_06_SUPA_TRANS_006.md` |
+| ✅ APROBADA | `SUPA-TRANS-007` | Definir adaptación coordinada de consumidores | `bloques/E3_SUPABASE/06_07_SUPA_TRANS_007.md` |
+| ⬜ NO INICIADA | `SUPA-TRANS-008` | Definir estrategia ante escrituras durante la transición | `bloques/E3_SUPABASE/06_08_SUPA_TRANS_008.md` |
+| ⬜ NO INICIADA | `SUPA-TRANS-009` | Definir pruebas antes y después de cada migración | `bloques/E3_SUPABASE/06_09_SUPA_TRANS_009.md` |
+| ⬜ NO INICIADA | `SUPA-TRANS-010` | Definir mediciones de rendimiento y seguridad | `bloques/E3_SUPABASE/06_10_SUPA_TRANS_010.md` |
+| ⬜ NO INICIADA | `SUPA-TRANS-011` | Definir rollback por paquete de cambio | `bloques/E3_SUPABASE/06_11_SUPA_TRANS_011.md` |
+| ⬜ NO INICIADA | `SUPA-TRANS-012` | Definir retiro progresivo de objetos legacy | `bloques/E3_SUPABASE/06_12_SUPA_TRANS_012.md` |
+| ⬜ NO INICIADA | `SUPA-TRANS-013` | Definir verificación de paridad local, staging y producción | `bloques/E3_SUPABASE/06_13_SUPA_TRANS_013.md` |
+| ⬜ NO INICIADA | `SUPA-TRANS-014` | Definir actualización de tipos, contratos y documentación | `bloques/E3_SUPABASE/06_14_SUPA_TRANS_014.md` |
+| ⬜ NO INICIADA | `SUPA-TRANS-015` | Crear roadmap ejecutable de migraciones en `vento-shell` | `bloques/E3_SUPABASE/06_15_SUPA_TRANS_015.md` |
 | ⬜ NO INICIADA | `DATA-NORM-TRANS-001` | Crear baseline de valores actuales antes de transformar | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-TRANS-002` | Ejecutar dry-run de cada regla de normalización | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
 | ⬜ NO INICIADA | `DATA-NORM-TRANS-003` | Identificar colisiones producidas por valores normalizados | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
