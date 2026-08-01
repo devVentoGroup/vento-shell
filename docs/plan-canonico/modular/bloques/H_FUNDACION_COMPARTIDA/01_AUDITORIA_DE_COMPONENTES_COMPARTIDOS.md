@@ -1284,7 +1284,447 @@ SHELL-AUD-004
 ```
 
 
-### [ ] SHELL-AUD-004 — Comparar contexto operativo
+### ✅ SHELL-AUD-004 — Comparar contexto operativo
+
+**Estado:** APROBADA
+**Bloque:** H — Fundación compartida
+**Tipo:** auditoría documental comparativa de resolución, precedencia y consumo del contexto operativo
+**Dependencia anterior aprobada:** `SHELL-AUD-003 — Comparar helpers de permisos`
+**Base inmediata:** artefacto aprobado `SHELL-AUD-003_APROBADA_PARA_REEMPLAZAR.md` — SHA-256 `424da9a546a76833890649d8c2b96d1b056cb2ea3ce6023f0eb41a3ce273782c`
+**Continuidad reservada:** `SHELL-AUD-005 — Comparar role override`
+**Fecha de corte:** 2026-08-01
+**Commit documental remoto inspeccionado:** `dfec6771ec3cee58144c5672a8f853d534bbeaba`
+**Cambios en código, SQL, configuración, despliegues o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de la tarea
+
+Esta tarea materializa la comparación del contexto operativo actualmente resuelto por las aplicaciones web, los adapters locales, las RPC transitorias y el contrato canónico aprobado. La comparación conserva separadas la descripción del estado físico y la arquitectura objetivo: no presenta una implementación legacy como fuente normativa ni convierte un diseño futuro en comportamiento ya desplegado.
+
+Resultado material:
+
+- **7** superficies runtime comparadas: SHELL, VISO, NEXO, FOGO, ORIGO, PULSO y NUMERA;
+- **10** familias de resolución o contrato materializadas con identidad estable;
+- **4** carriles coexistentes de contexto: sesión local copiada, contexto operacional NEXO, contexto efectivo v1 y `AccessContext` canónico;
+- **6** copias byte-idénticas de `src/lib/auth/operational-session.ts`;
+- **1** adapter adicional de contexto operacional localizado únicamente en NEXO;
+- **3** RPC o resolvers SQL de contexto comparados: `get_operational_context`, `get_effective_context_v1` y `current_shared_operational_device_v1`;
+- **1** paquete compartido `@vento/os-context` existente, sin adopción runtime confirmada;
+- **20** nodos o dimensiones contractuales contrastados;
+- **7** decisiones de adopción materializadas por superficie;
+- **18** hallazgos reconciliados con tareas responsables existentes;
+- **0** archivos runtime, migraciones, datos, configuración o despliegues modificados;
+- **0** requisitos de prueba creados, modificados, diferidos, descartados u obsoletos.
+
+**Resultado de paridad:** `NO_DEMOSTRADA`.
+
+La coincidencia byte a byte de las seis copias de `operational-session.ts` no demuestra un contexto operativo común. Ese helper no resuelve turno, check-in, rol operativo desde turno, readiness, simulación ni actor humano de dispositivo compartido; además permite que sede y área suministradas por el caller sustituyan sus valores locales. NEXO agrega un segundo carril con semántica distinta, y `get_effective_context_v1` agrega un tercero que tampoco implementa todavía `AccessContext@1.0.0`.
+
+---
+
+#### 2. Alcance exacto
+
+##### 2.1. Incluido
+
+- resolución local de sesión operativa en las seis aplicaciones consumidoras;
+- ramas de empleado y dispositivo compartido;
+- precedencia de sede y área en adapters y RPC;
+- resolución de turno, check-in, rol operativo, sede y área activas;
+- políticas por aplicación y su cobertura física;
+- bypass administrativo que afecta `can_operate`;
+- contexto efectivo de dispositivo, simulación y sesión real;
+- forma, razones, readiness, metadata y frescura de cada carril;
+- adopción efectiva por SHELL, VISO, NEXO, FOGO, ORIGO, PULSO y NUMERA;
+- comparación con `AccessContext@1.0.0`, `get_access_context` y la arquitectura aprobada de `@vento/os-context`;
+- trazabilidad de cada divergencia hacia una tarea existente.
+
+##### 2.2. Excluido y conservado para tareas posteriores
+
+| Materia                                                                     | Tarea propietaria                                                      |
+| --------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| legitimidad, firma, expiración y uso de cookies o sesiones de role override | `SHELL-AUD-005`                                                        |
+| forma definitiva de AppShell y navegación contextual                        | `SHELL-AUD-006`                                                        |
+| tipos y contratos públicos compartidos                                      | `SHELL-AUD-009`                                                        |
+| decisión compartir / generar / mantener local                               | `SHELL-AUD-010`                                                        |
+| retiro de declaraciones o adapters sin consumidor                           | `SHELL-AUD-011`                                                        |
+| contratos de roles base, roles operativos, scopes, contexto y errores       | `SHELL-CON-004` a `SHELL-CON-008`                                      |
+| consolidación del SDK único de autorización y contexto                      | `SHELL-AUTH-001` a `SHELL-AUTH-005`; `SHELL-CTX-001` a `SHELL-CTX-006` |
+| implementación autoritativa de contexto, decisión, frescura y retiro legacy | `AUTH-DB-033`, `AUTH-DB-034`, `AUTH-DB-035` y `AUTH-DB-030`            |
+
+La tarea compara el efecto observable de simulación y override sobre el contexto, pero no decide su autorización ni desarrolla `SHELL-AUD-005`.
+
+---
+
+#### 3. Fuentes, cortes y continuidad
+
+| ID                | Repositorio o fuente                      | Commit / identidad                              | Rol en la comparación                                               |
+| ----------------- | ----------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------------- |
+| `CTX-SURFACE-01`  | `vento-shell`                             | `dfec6771ec3cee58144c5672a8f853d534bbeaba`      | propietario documental, migraciones de contexto y paquete candidato |
+| `CTX-SURFACE-02`  | `vento-viso`                              | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4`      | consumidor de sesión local mediante guard                           |
+| `CTX-SURFACE-03`  | `vento-nexo`                              | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799`      | consumidor de sesión local y del carril operacional adicional       |
+| `CTX-SURFACE-04`  | `vento-fogo`                              | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2`      | consumidor de sesión local mediante guard                           |
+| `CTX-SURFACE-05`  | `vento-origo`                             | `b7a8303fa078ef087f522b6c99059ababfc27472`      | consumidor de sesión local y uso funcional directo                  |
+| `CTX-SURFACE-06`  | `vento-pulso`                             | `71e0184486b5fe11e0a42435baf4024807a80efd`      | consumidor de sesión local mediante guard                           |
+| `CTX-SURFACE-07`  | `vento-numera`                            | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1`      | consumidor de sesión local mediante guard                           |
+| `CTX-CONTRACT-01` | `AccessContext@1.0.0`                     | `AUTH-CTX-001`, `AUTH-CTX-009` a `AUTH-CTX-015` | fuente normativa del contexto canónico                              |
+| `CTX-CONTRACT-02` | diseño `get_access_context(text) → jsonb` | `AUTH-CTX-025`                                  | frontera SQL canónica futura                                        |
+| `CTX-CONTRACT-03` | arquitectura compartida                   | `03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`     | define `@vento/os-context` como único SDK                           |
+
+**Conciliación:** 7 superficies runtime esperadas, 7 materializadas, 0 omitidas y 0 duplicadas.
+
+El remoto inspeccionado conserva una contradicción administrativa: `00_CABECERA_Y_ESTADO.md` todavía declara `SHELL-AUD-003` como tarea actual, mientras `active-sequence.json` apunta a `SHELL-PKG-001`. Conforme al protocolo, el artefacto local de `SHELL-AUD-003` aprobado expresamente por el usuario es la base inmediata de continuidad. Esta tarea no modifica archivos de continuidad ni interpreta el salto de `active-sequence.json` como autorización para abandonar el mini-bloque de auditoría.
+
+---
+
+#### 4. Taxonomía de comparación
+
+| Estado                              | Criterio                                                                              |
+| ----------------------------------- | ------------------------------------------------------------------------------------- |
+| `PARIDAD_BYTE`                      | misma ruta y mismo blob Git                                                           |
+| `PARIDAD_SEMANTICA`                 | mismas fuentes, precedencia, invariantes, salida y razones                            |
+| `CONTEXTO_LOCAL_LEGACY`             | resolver copiado que produce una proyección local, no el snapshot canónico            |
+| `CONTEXTO_OPERACIONAL_LOCAL`        | resolver especializado en una aplicación o proceso                                    |
+| `CONTEXTO_EFECTIVO_TRANSITORIO`     | unifica varios carriles, pero conserva forma o reglas anteriores al contrato canónico |
+| `CONTRATO_CANONICO_NO_IMPLEMENTADO` | contrato aprobado cuya implementación física final todavía no existe                  |
+| `DIVERGENCIA_DE_FUENTE`             | el mismo nodo procede de fuentes distintas                                            |
+| `DIVERGENCIA_DE_PRECEDENCIA`        | cambia el orden entre fuentes o carriles                                              |
+| `DIVERGENCIA_DE_ATRIBUCION`         | principal, actor o dispositivo se representan de forma incompatible                   |
+| `DIVERGENCIA_DE_READINESS`          | cambia la condición para considerar operable un carril                                |
+| `CANDIDATO_SIN_ADOPCION`            | existe implementación compartida sin consumidor runtime confirmado                    |
+| `NO_DEMOSTRADA`                     | no existe evidencia suficiente para afirmar equivalencia                              |
+
+La comparación exige equivalencia de identidad, actor, rol, turno, check-in, territorio, dispositivo, simulación, readiness, razones, timestamp y frescura. La igualdad de un booleano `can_operate` no demuestra paridad contextual.
+
+---
+
+#### 5. Inventario de familias de contexto
+
+| ID             | Familia                                                    |                     Ocurrencias | Estado actual                                                                   | Clasificación                       | Destino                                                                               |
+| -------------- | ---------------------------------------------------------- | ------------------------------: | ------------------------------------------------------------------------------- | ----------------------------------- | ------------------------------------------------------------------------------------- |
+| `CTX-IMPL-001` | `resolveOperationalSession` copiado                        |                           **6** | misma implementación en VISO, NEXO, FOGO, ORIGO, PULSO y NUMERA                 | `CONTEXTO_LOCAL_LEGACY`             | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-CTX-001`; `SHELL-AUTH-005`                   |
+| `CTX-IMPL-002` | rama de empleado de `operational-session.ts`               |                           **6** | rol base y navegación colapsados; sede preferida o asignación/legacy            | `DIVERGENCIA_DE_FUENTE`             | `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-CTX-002`; `SHELL-CTX-003`; `AUTH-DB-033`     |
+| `CTX-IMPL-003` | rama de dispositivo compartido de `operational-session.ts` |                           **6** | `navigation_role` se trata como rol; sede y área admiten preferencia del caller | `DIVERGENCIA_DE_ATRIBUCION`         | `SHELL-CTX-001` a `SHELL-CTX-005`; `AUTH-DEV-007` a `AUTH-DEV-016`                    |
+| `CTX-IMPL-004` | `nexo/src/lib/auth/operational-context.ts`                 |                           **1** | adapter de `get_operational_context`, mensajes y mutación por override          | `CONTEXTO_OPERACIONAL_LOCAL`        | `SHELL-AUD-005`; `SHELL-AUD-010`; `SHELL-CTX-001` a `SHELL-CTX-005`                   |
+| `CTX-IMPL-005` | RPC `get_operational_context`                              |                           **1** | resuelve turno, check-in, rol, sitio, área, bypass y `can_operate`              | `CONTEXTO_OPERACIONAL_LEGACY`       | `AUTH-DB-033`; `AUTH-DB-030`; `SHELL-AUTH-005`                                        |
+| `CTX-IMPL-006` | `app_operation_policies`                                   | **1 tabla / 1 fila confirmada** | solo NEXO exige turno, check-in y coincidencia de sede                          | `COBERTURA_PARCIAL_POR_APLICACION`  | `SHELL-AUD-010`; `SHELL-CTX-002`; `SHELL-CTX-004`; `AUTH-DB-033`; `AUTH-DB-034`       |
+| `CTX-IMPL-007` | RPC `get_effective_context_v1`                             |                           **1** | precedencia dispositivo → simulación → contexto real                            | `CONTEXTO_EFECTIVO_TRANSITORIO`     | `AUTH-DB-033`; `AUTH-DB-034`; `AUTH-DB-030`; `SHELL-AUTH-001`                         |
+| `CTX-IMPL-008` | RPC `current_shared_operational_device_v1`                 |                           **1** | devuelve dispositivo, restricciones y apps; consumidores usan subconjunto       | `PROYECCION_DE_DISPOSITIVO_PARCIAL` | `SHELL-CTX-001`; `SHELL-CTX-003`; `AUTH-DEV-007` a `AUTH-DEV-016`                     |
+| `CTX-IMPL-009` | `@vento/os-context` client y tipos                         |                   **1 paquete** | expone contexto efectivo v1; no tiene consumidor runtime confirmado             | `CANDIDATO_SIN_ADOPCION`            | `SHELL-AUD-010`; `SHELL-AUD-011`; `SHELL-AUTH-001` a `SHELL-AUTH-005`                 |
+| `CTX-IMPL-010` | `AccessContext@1.0.0` + `get_access_context`               |                  **1 contrato** | snapshot normativo aprobado, implementación física pendiente                    | `CONTRATO_CANONICO_NO_IMPLEMENTADO` | `AUTH-DB-033`; `SHELL-CTX-001` a `SHELL-CTX-006`; `SHELL-AUTH-001` a `SHELL-AUTH-005` |
+
+**Conciliación:** 10 familias esperadas, 10 materializadas, 0 identificadores duplicados y 0 familias sin destino.
+
+---
+
+#### 6. Identidad física de las fronteras principales
+
+| Frontera                                                     | Identidad física                                                                                                                     | Distribución                       |
+| ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------- |
+| `src/lib/auth/operational-session.ts`                        | blob `ea2310bfda5b6981dba2f2549a69f18229af76ac`                                                                                      | 6 copias byte-idénticas            |
+| `nexo/src/lib/auth/operational-context.ts`                   | blob `d4355b544a5d9f37eb77b8bf56ff4e281dd73840`                                                                                      | solo NEXO                          |
+| `get_operational_context` vigente en el historial versionado | migración `20260701194950_validate_operational_context_role_matrix.sql`; blob `a0d151fbc98332d76c9364d3bb3061165a0a50e7`             | Supabase VENTO desde `vento-shell` |
+| `get_effective_context_v1` con sesiones                      | migración `20260713214153_effective_context_sessions_v1.sql`; blob `fbd4524da808dc9dc6ba96251c25d319677862fb`                        | Supabase VENTO desde `vento-shell` |
+| `current_shared_operational_device_v1`                       | migración `20260709220249_include_navigation_role_in_current_shared_device_rpc.sql`; blob `22f768e7cfcb05e3e194b341486ee0aa67bb915a` | Supabase VENTO desde `vento-shell` |
+| `packages/os-context/src/client.ts`                          | blob `43fab8004617175ae22e378032a69e92e4a922d1`                                                                                      | solo paquete SHELL                 |
+| `packages/os-context/src/types.ts`                           | blob `fa465800403f7b83fae9899c5799dc072e3c2ce4`                                                                                      | solo paquete SHELL                 |
+
+La identidad byte de las copias locales permite tratarlas como una sola clase de implementación. No elimina su divergencia respecto de las RPC ni del contrato canónico.
+
+---
+
+#### 7. Los cuatro carriles coexistentes
+
+| Carril                             | Entrada principal                       | Fuentes                                                       | Salida                                            | Consumidores confirmados                                       | Resultado                   |
+| ---------------------------------- | --------------------------------------- | ------------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------------- | --------------------------- |
+| `CTX-LANE-01` sesión local copiada | `userId`, `appId`, sede/área preferidas | dispositivo o empleado, `employee_sites`, `employees.site_id` | `OperationalSession` plano                        | guards de las seis aplicaciones y usos funcionales adicionales | `LEGACY_ACTIVO`             |
+| `CTX-LANE-02` operacional NEXO     | empleado, sede y app                    | turno, asistencia, políticas, rol operativo, matrices         | fila `OperationalContextRow` + booleano y razones | flujos de remisiones NEXO                                      | `LOCAL_ESPECIALIZADO`       |
+| `CTX-LANE-03` efectivo v1          | `auth.uid()` y app                      | dispositivo, simulación o carril operacional                  | `EffectiveContext` plano                          | cliente del paquete sin consumo runtime confirmado             | `TRANSITORIO_SIN_ADOPCION`  |
+| `CTX-LANE-04` canónico             | principal autenticado y app             | fuentes empresariales autoritativas validadas                 | `AccessContext@1.0.0` inmutable                   | implementación futura                                          | `NORMATIVO_NO_IMPLEMENTADO` |
+
+**Conciliación:** 4 carriles identificados, 4 comparados y 0 carriles presentados como equivalentes sin evidencia.
+
+---
+
+#### 8. Comparación nodo por nodo con `AccessContext@1.0.0`
+
+| ID              | Nodo o dimensión                   | Sesión local copiada            | Contexto operacional NEXO                    | Contexto efectivo v1                                                   | Resultado            |
+| --------------- | ---------------------------------- | ------------------------------- | -------------------------------------------- | ---------------------------------------------------------------------- | -------------------- |
+| `CTX-FIELD-001` | principal autenticado              | solo `userId`                   | `employee_id` suministrado o `auth.uid()`    | `user_id = auth.uid()`                                                 | `PARCIAL`            |
+| `CTX-FIELD-002` | actor efectivo                     | no existe                       | empleado asumido                             | no existe nodo de atribución                                           | `AUSENTE`            |
+| `CTX-FIELD-003` | identidad de dominio               | no existe                       | no existe                                    | no existe                                                              | `AUSENTE`            |
+| `CTX-FIELD-004` | empleado válido y estado laboral   | fila opcional sin estado        | ID y rol sin contrato laboral completo       | rol real opcional                                                      | `PARCIAL`            |
+| `CTX-FIELD-005` | rol base                           | `role` de empleado              | `employee.role` usado también para bypass    | `real_administrative_role`                                             | `PARCIAL_DIVERGENTE` |
+| `CTX-FIELD-006` | sedes asignadas                    | toma una sede primaria o legacy | no expone lista                              | no expone lista                                                        | `AUSENTE`            |
+| `CTX-FIELD-007` | áreas asignadas                    | no existe                       | no expone lista                              | no expone lista                                                        | `AUSENTE`            |
+| `CTX-FIELD-008` | cobertura administrativa           | no existe                       | se reemplaza por bypass/permiso              | no existe nodo explícito                                               | `AUSENTE`            |
+| `CTX-FIELD-009` | turno activo                       | no existe                       | ID, sede, área y rol del turno               | ID del turno real; nulo en dispositivo/simulación                      | `PARCIAL`            |
+| `CTX-FIELD-010` | check-in activo                    | no existe                       | ID y sede; área no resuelta                  | no expone check-in                                                     | `PARCIAL_INCOMPLETO` |
+| `CTX-FIELD-011` | rol operativo                      | `navigationRole = role`         | rol del turno o override local               | rol del dispositivo, simulación o turno                                | `DIVERGENTE`         |
+| `CTX-FIELD-012` | sede operativa                     | sede preferida/asignada/legacy  | precedencia configurable distinta al turno   | sede del carril elegido                                                | `DIVERGENTE`         |
+| `CTX-FIELD-013` | área operativa                     | área preferida o dispositivo    | turno; check-in no aporta área               | área del carril elegido                                                | `DIVERGENTE`         |
+| `CTX-FIELD-014` | dispositivo                        | proyección mínima               | no pertenece al resolver base                | ID y bandera, sin actor humano                                         | `PARCIAL_DIVERGENTE` |
+| `CTX-FIELD-015` | simulación                         | no existe                       | mutación local por cookie en NEXO            | sesión separada en precedencia, pero proyectada como contexto efectivo | `DIVERGENTE`         |
+| `CTX-FIELD-016` | readiness por carril               | no existe                       | booleano único `can_operate`                 | booleano único `can_operate`                                           | `NO_EQUIVALENTE`     |
+| `CTX-FIELD-017` | problemas estructurales            | no existen                      | códigos planos en `blocked_reasons`          | mismos códigos planos                                                  | `PARCIAL`            |
+| `CTX-FIELD-018` | `context_id` y `resolved_at`       | ausentes                        | ausentes                                     | ausentes                                                               | `AUSENTE`            |
+| `CTX-FIELD-019` | metadata, versiones y fingerprints | ausentes                        | ausentes                                     | `metadata` libre sin versiones/fingerprints                            | `AUSENTE`            |
+| `CTX-FIELD-020` | frescura e invalidación            | no representadas                | resolución por llamada sin token de frescura | resolución por llamada sin token contractual                           | `NO_DEMOSTRADA`      |
+
+**Conciliación:** 20 dimensiones esperadas, 20 materializadas y 0 duplicadas.
+
+El carril más completo físicamente es `get_effective_context_v1`, pero su forma continúa siendo una proyección plana y mutable por precedencia. No contiene principal tipado, actor efectivo, asignaciones, cobertura administrativa, readiness separado, structural issues estructurados, identidad del snapshot ni evidencia de versión.
+
+---
+
+#### 9. Precedencia de sede y área
+
+| Resolver                    | Precedencia de sede                                                                       | Precedencia de área                                                        | Consecuencia                                                                                    |
+| --------------------------- | ----------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| sesión local de empleado    | `preferredSiteId` → `employee_sites` primaria activa → `employees.site_id`                | `preferredAreaId` → `null`                                                 | el caller puede sustituir territorio; el área no deriva de turno                                |
+| sesión local de dispositivo | `preferredSiteId` → `device.site_id`                                                      | `preferredAreaId` → `device.area_id`                                       | el caller puede sustituir la configuración del dispositivo                                      |
+| `get_operational_context`   | `p_site_id` → sede seleccionada → sede de check-in → sede de turno → `employees.site_id`  | área de check-in → área de turno                                           | selección y parámetro preceden al turno; el check-in no aporta área en la implementación actual |
+| `get_effective_context_v1`  | dispositivo → simulación → resultado real                                                 | dispositivo → simulación → resultado real                                  | el tipo de fuente cambia completamente la semántica territorial                                 |
+| `AccessContext@1.0.0`       | sede administrativa y sede operativa separadas; la sede operativa deriva del turno válido | área operativa derivada del turno y confirmada por check-in cuando aplique | ninguna selección visual ni parámetro del caller se vuelve autoridad                            |
+
+Divergencias demostradas:
+
+1. la sede preferida del guard tiene mayor precedencia que las fuentes laborales del helper local;
+2. `p_site_id` y `employee_settings.selected_site_id` preceden a la sede del turno en SQL;
+3. `employees.site_id` permanece como fallback legacy en dos carriles;
+4. `preferredAreaId` puede convertirse directamente en área del contexto local;
+5. `attendance_logs` no aporta `area_id` al resolver actual, porque la consulta proyecta `null::uuid`;
+6. el contexto canónico prohíbe que navegación, selección o dato legacy sustituyan la sede y el área operativas.
+
+---
+
+#### 10. Turno, check-in y cobertura por aplicación
+
+La tabla `app_operation_policies` tiene una única fila versionada confirmada:
+
+| App    |    `requires_shift` |  `requires_checkin` | `requires_site_match` | bypass configurado                    | Estado                    |
+| ------ | ------------------: | ------------------: | --------------------: | ------------------------------------- | ------------------------- |
+| NEXO   |              `true` |              `true` |                `true` | `nexo.inventory.remissions.all_sites` | `POLITICA_CONFIRMADA`     |
+| SHELL  | sin fila confirmada | sin fila confirmada |   sin fila confirmada | sin fila confirmada                   | `SIN_POLITICA_CONFIRMADA` |
+| VISO   | sin fila confirmada | sin fila confirmada |   sin fila confirmada | sin fila confirmada                   | `SIN_POLITICA_CONFIRMADA` |
+| FOGO   | sin fila confirmada | sin fila confirmada |   sin fila confirmada | sin fila confirmada                   | `SIN_POLITICA_CONFIRMADA` |
+| ORIGO  | sin fila confirmada | sin fila confirmada |   sin fila confirmada | sin fila confirmada                   | `SIN_POLITICA_CONFIRMADA` |
+| PULSO  | sin fila confirmada | sin fila confirmada |   sin fila confirmada | sin fila confirmada                   | `SIN_POLITICA_CONFIRMADA` |
+| NUMERA | sin fila confirmada | sin fila confirmada |   sin fila confirmada | sin fila confirmada                   | `SIN_POLITICA_CONFIRMADA` |
+
+Para un `app_code` sin política activa, `get_operational_context` aplica `false` a los tres requisitos mediante `coalesce`. En ausencia de otra razón, `can_operate` permanece verdadero. Por tanto, la RPC no demuestra una política operacional transversal: el comportamiento estricto está materializado únicamente para NEXO.
+
+El resolver NEXO valida además que el turno traiga un rol operativo permitido para la sede/área. La razón `invalid_operational_role` existe en SQL, pero `buildOperationalBlockMessage` no tiene un mensaje específico y cae en el fallback genérico.
+
+---
+
+#### 11. Dispositivo compartido
+
+| Dimensión             | Sesión local copiada                   | Contexto efectivo v1                             | Contrato canónico                                                | Resultado             |
+| --------------------- | -------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------- | --------------------- |
+| identidad técnica     | usuario Auth asociado al dispositivo   | `user_id` y `shared_device_id`                   | principal `SHARED_DEVICE` separado del actor                     | `PARCIAL`             |
+| rol                   | `role = navigation_role`               | `effective_operational_role = navigation_role`   | el dispositivo no posee rol operativo propio                     | `DIVERGENTE`          |
+| sede/área             | configuración o preferencia del caller | configuración del dispositivo                    | configuración validada, sin ampliación por caller                | `DIVERGENTE`          |
+| aplicaciones          | lista `allowedAppCodes`                | lista del RPC                                    | límite técnico de la intersección                                | `PARCIAL`             |
+| actor humano          | no resuelto                            | no resuelto                                      | sesión de actor humano o estado explícito ausente                | `AUSENTE`             |
+| PIN y turno del actor | no evaluados por el contexto           | campos del dispositivo no aplicados al readiness | aplicados cuando la operación los requiere                       | `AUSENTE_EN_CONTEXTO` |
+| autoridad             | rol de navegación + matriz operacional | rol de navegación + matriz operacional           | autoridad del actor ∩ límites del dispositivo                    | `NO_EQUIVALENTE`      |
+| auditoría             | proyección mínima                      | metadata libre                                   | principal, actor, dispositivo, sede, área y cambio de trabajador | `PARCIAL`             |
+
+`current_shared_operational_device_v1` devuelve `requires_actor_pin`, `requires_active_actor_shift`, `allow_actor_without_pin` y `allow_actions_without_actor`. `get_effective_context_v1` no integra esos campos en `can_operate`; solo comprueba que la aplicación esté permitida. Existen firmas de actor en acciones concretas, pero no forman una resolución contextual común y no demuestran paridad transversal.
+
+---
+
+#### 12. Simulación y alteración del contexto
+
+Se observan dos mecanismos con efectos contextuales diferentes:
+
+##### 12.1. Sesión de simulación v1
+
+- tiene fila persistida, expiración y validación de sede/área/rol;
+- solo puede gestionarla un propietario o gerente general según nombre de rol;
+- precede al contexto real cuando no hay dispositivo compartido;
+- produce `can_operate = true`;
+- deja turno nulo y usa directamente sede, área y roles simulados;
+- no produce `AccessContext` real ni `SimulationContext` canónico separado.
+
+##### 12.2. Override local NEXO
+
+- se lee desde cookie mediante el adapter de role override;
+- mapea `cocinero → cocina`, `barista → bar` y `cajero → mostrador`;
+- busca un área de ese tipo en la sede;
+- sobrescribe `active_area_id`, `active_area_kind` y `active_operational_role` sobre el resultado real;
+- no cambia la fila SQL original ni produce una identidad de snapshot distinta.
+
+El contrato canónico exige que `AccessContext` real permanezca separado de `SimulationContext`. La legitimidad y ciclo de vida de ambos mecanismos se comparará en `SHELL-AUD-005`; esta tarea registra que actualmente alteran la fuente, precedencia y forma del contexto de manera no equivalente.
+
+---
+
+#### 13. Adopción por superficie
+
+| ID              | Superficie | Sesión local              | Contexto NEXO                  | Contexto efectivo / SDK            | Decisión                         |
+| --------------- | ---------- | ------------------------- | ------------------------------ | ---------------------------------- | -------------------------------- |
+| `CTX-ADOPT-001` | SHELL      | no usa la copia           | no aplica                      | paquete alojado, Hub no lo consume | `SIN_ADOPCION_RUNTIME`           |
+| `CTX-ADOPT-002` | VISO       | guard activo              | no                             | no consumido                       | `LOCAL_LEGACY`                   |
+| `CTX-ADOPT-003` | NEXO       | guard activo              | múltiples flujos de remisiones | no consumido                       | `DOBLE_CARRIL_ACTIVO`            |
+| `CTX-ADOPT-004` | FOGO       | guard activo              | no                             | no consumido                       | `LOCAL_LEGACY`                   |
+| `CTX-ADOPT-005` | ORIGO      | guard y recepción activos | no                             | no consumido                       | `LOCAL_LEGACY_CON_USO_FUNCIONAL` |
+| `CTX-ADOPT-006` | PULSO      | guard activo              | no                             | no consumido                       | `LOCAL_LEGACY`                   |
+| `CTX-ADOPT-007` | NUMERA     | guard activo              | no                             | no consumido                       | `LOCAL_LEGACY`                   |
+
+**Conciliación:** 7 superficies esperadas, 7 decisiones materializadas, 0 omitidas y 0 duplicadas.
+
+Ninguna superficie runtime importa `@vento/os-context`. NEXO es la única que combina de forma activa el helper copiado con el adapter de `get_operational_context`. Esta distribución impide afirmar que existe una única fuente de contexto operativo para Vento OS.
+
+---
+
+#### 14. Readiness, razones y frescura
+
+| Dimensión        | Estado físico                                           | Brecha respecto del contrato                                                                                 |
+| ---------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ |
+| readiness        | booleano único `can_operate` en RPC                     | no separa carril base y operacional ni capacidades de check-in/área                                          |
+| razones          | array de strings planas                                 | no incluye severidad, sujeto, fuente ni mensaje seguro contractual                                           |
+| razón no mapeada | `invalid_operational_role` cae en mensaje genérico      | diagnóstico desigual entre SQL y UI                                                                          |
+| snapshot         | no existe `context_id`                                  | no puede correlacionarse una decisión con un snapshot exacto                                                 |
+| tiempo           | no existe `resolved_at` en la salida                    | no se conserva el instante contractual de resolución                                                         |
+| versiones        | no se publican resolver, catálogo ni fuentes            | no puede reproducirse la resolución con versiones exactas                                                    |
+| fingerprints     | ausentes                                                | no existe evidencia de las filas fuente observadas                                                           |
+| frescura         | cada llamada vuelve a resolver, sin token transaccional | no existe garantía explícita contra contexto obsoleto entre lectura y acción                                 |
+| invalidación     | no existe registro común de consumidores                | no se demuestra invalidación transversal por checkout, cambio de turno, actor, dispositivo, rol o asignación |
+
+La resolución por llamada reduce algunos riesgos de caché persistente, pero no sustituye el token de frescura, el registro de consumidores ni la evidencia exigidos por `AUTH-DB-035`, `SHELL-CTX-006` y `TREQ-AUTH-014`.
+
+---
+
+#### 15. Hallazgos y destinos obligatorios
+
+| ID                | Hallazgo comprobado                                                                                                               | Estado                   | Destino exacto                                                                                                     |
+| ----------------- | --------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------ |
+| `H-SHELL-004-001` | Coexisten cuatro carriles de contexto sin prueba de paridad.                                                                      | `ESPECIFICADO`           | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-CTX-001`; `SHELL-AUTH-001`; `AUTH-DB-033`; `AUTH-DB-034`                  |
+| `H-SHELL-004-002` | Las seis copias de `operational-session.ts` son idénticas, pero `appId` se ignora durante la resolución.                          | `ESPECIFICADO`           | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-CTX-001`; `SHELL-AUTH-003`; `SHELL-AUTH-005`                              |
+| `H-SHELL-004-003` | Sede y área preferidas del caller sustituyen valores de empleado o dispositivo en el helper local.                                | `BLOQUEADO`              | `SHELL-CON-006`; `SHELL-CON-007`; `SHELL-CTX-003`; `SHELL-AUTH-003`; `AUTH-DB-033`                                 |
+| `H-SHELL-004-004` | El helper local usa el rol base como `role` y `navigationRole`, sin rol operativo derivado del turno.                             | `ESPECIFICADO`           | `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-CTX-001`; `SHELL-CTX-002`; `AUTH-DB-033`                                  |
+| `H-SHELL-004-005` | La sede del empleado puede resolverse desde una asignación primaria o `employees.site_id`, sin publicar todas las asignaciones.   | `ESPECIFICADO`           | `SHELL-CTX-003`; `AUTH-DB-033`; `AUTH-DB-030`                                                                      |
+| `H-SHELL-004-006` | `get_operational_context` prioriza `p_site_id` y sede seleccionada antes de check-in y turno.                                     | `BLOQUEADO`              | `SHELL-CTX-003`; `SHELL-AUTH-003`; `AUTH-DB-033`; `AUTH-DB-030`                                                    |
+| `H-SHELL-004-007` | Solo NEXO tiene política versionada que exige turno, check-in y coincidencia de sede.                                             | `ESPECIFICADO`           | `SHELL-AUD-010`; `SHELL-CTX-002`; `SHELL-CTX-004`; `AUTH-DB-033`; `AUTH-DB-034`                                    |
+| `H-SHELL-004-008` | El check-in activo no aporta área porque la consulta proyecta `null::uuid`.                                                       | `ESPECIFICADO`           | `SHELL-CTX-002`; `SHELL-CTX-003`; `AUTH-DB-033`                                                                    |
+| `H-SHELL-004-009` | Propietario y gerente general reciben bypass operacional por nombre de rol; también existe bypass por permiso.                    | `BLOQUEADO`              | `SHELL-AUD-010`; `AUTH-DB-033`; `AUTH-DB-034`; `AUTH-DB-030`                                                       |
+| `H-SHELL-004-010` | La RPC `SECURITY DEFINER` acepta `p_employee_id` y `p_site_id` del caller y usa `search_path = public`.                           | `BLOQUEADO`              | `AUTH-DB-033`; `AUTH-DB-030`; `SHELL-AUTH-002`                                                                     |
+| `H-SHELL-004-011` | Dispositivo compartido convierte `navigation_role` en rol operativo y no integra actor humano, PIN o turno en el readiness común. | `BLOQUEADO`              | `SHELL-CTX-001` a `SHELL-CTX-005`; `AUTH-DEV-007` a `AUTH-DEV-016`; `AUTH-DB-033`; `AUTH-DB-034`                   |
+| `H-SHELL-004-012` | La sesión de simulación precede al contexto real y establece `can_operate = true` sin turno ni check-in.                          | `ESPECIFICADO`           | `SHELL-AUD-005`; `SHELL-CTX-001`; `AUTH-SIM-001` a `AUTH-SIM-014`; `AUTH-DB-033`; `AUTH-DB-034`                    |
+| `H-SHELL-004-013` | El override local NEXO sobrescribe área y rol operativos sobre el contexto real.                                                  | `BLOQUEADO`              | `SHELL-AUD-005`; `SHELL-AUD-010`; `AUTH-DB-033`; `AUTH-DB-034`                                                     |
+| `H-SHELL-004-014` | Los contextos físicos son proyecciones planas sin snapshot inmutable, readiness por carril ni evidencia versionada.               | `ESPECIFICADO`           | `SHELL-AUD-009`; `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-CTX-004` a `SHELL-CTX-006`; `AUTH-DB-033`; `AUTH-DB-035` |
+| `H-SHELL-004-015` | `@vento/os-context` existe y refleja `EffectiveContext` legacy, pero ningún runtime lo consume.                                   | `PENDIENTE_DE_EVIDENCIA` | `SHELL-AUD-010`; `SHELL-AUD-011`; `SHELL-AUTH-001`; `SHELL-AUTH-005`                                               |
+| `H-SHELL-004-016` | `invalid_operational_role` no tiene traducción específica en el adapter NEXO.                                                     | `ESPECIFICADO`           | `SHELL-CON-008`; `SHELL-CTX-005`                                                                                   |
+| `H-SHELL-004-017` | La aplicación solicitante no condiciona el helper local y las apps sin política SQL reciben requisitos operativos en falso.       | `ESPECIFICADO`           | `SHELL-CTX-001`; `SHELL-CTX-002`; `SHELL-AUTH-003`; `AUTH-DB-033`                                                  |
+| `H-SHELL-004-018` | No existe evidencia de token de frescura, invalidación común ni registro completo de consumidores contextuales.                   | `PENDIENTE_DE_EVIDENCIA` | `AUTH-DB-035`; `SHELL-CTX-006`; `SHELL-AUTH-003`; `SHELL-AUTH-004`                                                 |
+
+**Conciliación:** 18 hallazgos esperados, 18 materializados, 0 identificadores duplicados y 0 hallazgos sin tarea responsable.
+
+`BLOQUEADO` significa que la variante no puede declararse equivalente ni incorporarse como estándar mientras su tarea responsable no determine y materialice la regla canónica. No significa que esta auditoría haya desactivado el comportamiento actual.
+
+---
+
+#### 16. Decisiones documentales resultantes
+
+1. `operational-session.ts` se clasifica como proyección local legacy uniforme, no como implementación de `AccessContext`.
+2. La igualdad byte de sus seis copias permite una migración coordinada, pero no certifica corrección semántica.
+3. `appId` deberá participar en la resolución canónica; no podrá permanecer como parámetro ignorado.
+4. Sede o área preferidas podrán ser solicitudes de vista, nunca hechos operativos autoritativos.
+5. Rol base, rol de navegación y rol operativo permanecerán separados.
+6. La sede operativa y el área operativa deberán derivarse de fuentes laborales validadas, no de selección visual ni fallback legacy silencioso.
+7. `get_operational_context` se conserva como resolver legacy activo hasta migración y retiro controlado; no se eleva a contrato final.
+8. La única política operacional físicamente confirmada es la de NEXO; no se infiere una política para otras aplicaciones.
+9. El bypass por nombres de rol no se incorpora al contrato canónico.
+10. El dispositivo compartido no tendrá rol empresarial propio ni ampliará la autoridad del actor.
+11. Las restricciones de actor, PIN, turno y aplicación del dispositivo deberán integrarse en un contexto común o una decisión posterior, sin quedar dispersas por acción.
+12. La simulación no modificará el `AccessContext` real ni producirá autoridad real.
+13. `get_effective_context_v1` se clasifica como contexto efectivo transitorio, no como sustituto final de `get_access_context`.
+14. `@vento/os-context` se conserva como candidato de consolidación sin declarar adopción o retiro antes de `SHELL-AUD-010` y `SHELL-AUD-011`.
+15. La frontera canónica deberá producir snapshot, instante, readiness por carril, structural issues y metadata reproducible.
+16. Ninguna razón SQL podrá perderse o degradarse a un mensaje genérico sin contrato explícito de errores.
+17. No se crea ninguna tarea nueva: todos los hallazgos tienen propietario documental e implementación existentes.
+18. No se modifica `active-sequence.json` ni se avanza fuera de `SHELL-AUD-005`.
+
+---
+
+#### 17. Trazabilidad con requisitos vigentes
+
+Los hallazgos están cubiertos por requisitos canónicos existentes:
+
+- `TREQ-AUTH-004`: exige la misma decisión y razones para igual principal, actor, simulación, permiso y territorio, e incluye expresamente `SHELL-AUD-004`;
+- `TREQ-AUTH-008`: separa capacidades administrativas y operativas y exige turno, check-in, rol, sede y área cuando corresponda;
+- `TREQ-AUTH-009`: exige resolución territorial determinista y denegación de cruces;
+- `TREQ-AUTH-011`: define la autoridad de dispositivo como intersección con el trabajador identificado;
+- `TREQ-AUTH-012`: mantiene la simulación separada de la autoridad real;
+- `TREQ-AUTH-014`: exige invalidación por checkout, sesión, turno, área, trabajador, dispositivo, rol o asignación;
+- `TREQ-AUTH-015`: exige evidencia correlacionable de principal, actor, contexto, dispositivo, decisión, versión y timestamp;
+- `TREQ-SHELL-002`: protege paridad y clasificación de responsabilidades compartidas;
+- `TREQ-SHELL-004`: impide retirar adapters o candidatos sin evidencia reproducible;
+- `TREQ-SHELL-029`: conserva la distinción entre fuente compartida y consumidor runtime.
+
+La auditoría aporta evidencia para esos requisitos, pero no cambia identificador, regla, riesgo, tipo, responsable, paquete, repositorio, estado, artefacto, evidencia ni relaciones de ninguna fila del registro canónico.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las divergencias de contexto, territorio, turno, check-in, roles, dispositivo, simulación, readiness, frescura, invalidación y evidencia ya están cubiertas por `TREQ-AUTH-004`, `TREQ-AUTH-008`, `TREQ-AUTH-009`, `TREQ-AUTH-011`, `TREQ-AUTH-012`, `TREQ-AUTH-014`, `TREQ-AUTH-015`, `TREQ-SHELL-002`, `TREQ-SHELL-004` y `TREQ-SHELL-029`. Esta tarea no introduce comportamiento ejecutable ni descubre una regla verificable sin cobertura previa.
+
+---
+
+#### 18. Criterios de aceptación
+
+`SHELL-AUD-004` queda materialmente completa cuando:
+
+- las siete superficies runtime estén representadas una sola vez;
+- las diez familias de contexto tengan identidad, ocurrencias, clasificación y destino;
+- los cuatro carriles coexistentes estén diferenciados sin declarar equivalencia no demostrada;
+- las seis copias de `operational-session.ts` estén reconciliadas como una clase byte-idéntica;
+- el adapter NEXO y las tres RPC relacionadas estén comparados por fuente, precedencia y salida;
+- las veinte dimensiones de `AccessContext@1.0.0` estén materializadas sin faltantes ni duplicados;
+- la precedencia de sede y área esté descrita para cada resolver;
+- la política operacional NEXO y la ausencia de filas confirmadas para las otras aplicaciones estén diferenciadas;
+- turno, check-in, rol operativo y `invalid_operational_role` estén contrastados;
+- el dispositivo compartido se compare por identidad, actor, rol, territorio, aplicación y restricciones;
+- simulación v1 y override local NEXO se registren como mecanismos distintos sin desarrollar su legitimidad;
+- las siete superficies tengan decisión explícita de adopción actual;
+- readiness, razones, snapshot, versiones, fingerprints, frescura e invalidación estén evaluados;
+- los dieciocho hallazgos tengan estado, destino exacto y condición de resolución;
+- no se cree ninguna tarea nueva ni se deje un pendiente narrativo;
+- se declaren cero cambios del registro de requisitos de prueba;
+- no se modifique código, SQL, configuración, Supabase, despliegues ni continuidad;
+- `SHELL-AUD-005` permanezca como única tarea reservada.
+
+---
+
+#### 19. Resultado y continuidad
+
+La cadena comparativa resultante es:
+
+```text
+principal técnico
+→ resolver local, operacional, efectivo o canónico
+→ fuente y precedencia de actor, rol, turno, check-in, sede, área y dispositivo
+→ readiness y razones
+→ snapshot, evidencia y frescura
+→ consumidor runtime
+→ hallazgo de paridad
+→ tarea exacta de contrato, implementación, migración o retiro
+```
+
+La única continuidad reservada es:
+
+```text
+SHELL-AUD-005
+— Comparar role override
+```
+
+No se inicia, desarrolla ni modifica esa tarea.
+
+
 ### [ ] SHELL-AUD-005 — Comparar role override
 ### [ ] SHELL-AUD-006 — Comparar AppShell y navegación
 ### [ ] SHELL-AUD-007 — Comparar componentes UI base
