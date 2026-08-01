@@ -1725,7 +1725,747 @@ SHELL-AUD-005
 No se inicia, desarrolla ni modifica esa tarea.
 
 
-### [ ] SHELL-AUD-005 — Comparar role override
+### ✅ SHELL-AUD-005 — Comparar role override
+
+**Estado:** APROBADA
+**Bloque:** H — Fundación compartida
+**Tipo:** auditoría transversal de simulación de rol, sustitución de evaluadores y propagación de contexto
+**Entrada de continuidad:** `SHELL-AUD-004 — Comparar contexto operativo`
+**Continuidad inmediata reservada:** `SHELL-AUD-006 — Comparar AppShell y navegación`
+**Handoff posterior al segmento `SHELL-AUD-001..011`:** `SHELL-PKG-001 — Elegir mecanismo de distribución`
+**Fecha de corte:** 2026-08-01
+**Cambios en código, SQL, Supabase, configuración, CI o despliegues:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea materializa la comparación completa del `role override` existente en las aplicaciones web de Vento OS y lo contrasta con la simulación persistida de contexto ya versionada en `vento-shell` y con los contratos canónicos aprobados de identidad, contexto y autorización.
+
+| Métrica                                                        |  Resultado |
+| -------------------------------------------------------------- | ---------: |
+| Superficies web evaluadas                                      |      **7** |
+| Aplicaciones con helper local de `role override`               |      **6** |
+| Superficies sin cookie local de override                       |      **1** |
+| Familias semánticas de helper local                            |      **2** |
+| Catálogos locales de roles simulables                          |      **6** |
+| Identificadores de cookie pertenecientes a otra aplicación     |      **2** |
+| Mecanismos de simulación coexistentes                          |      **2** |
+| Aplicaciones que inyectan el override en el contexto operativo |      **1** |
+| Concesiones locales fuera de `role_permissions`                |      **1** |
+| Decisiones por superficie materializadas                       | **7 de 7** |
+| Hallazgos con destino documental exacto                        |     **22** |
+| Cambios `TREQ-*`                                               |      **0** |
+
+La comparación demuestra que el nombre común `role override` agrupa actualmente dos mecanismos distintos:
+
+```text
+COOKIE LOCAL POR APLICACIÓN
+→ cambia el rol utilizado por evaluadores locales de permisos
+→ persiste en el navegador durante 30 días
+→ no crea una sesión central ni evidencia estructurada
+
+SESIÓN PERSISTIDA DE SIMULACIÓN
+→ se almacena y valida en Supabase
+→ alimenta get_effective_context_v1
+→ tiene vigencia, identidad, sede, área y cierre explícitos
+```
+
+No se declara ninguno de los dos como arquitectura final dentro de esta tarea. La disposición definitiva permanece reservada a `SHELL-AUD-010`, y su materialización técnica a `SHELL-AUTH-001..005` y `SHELL-CTX-001..006`.
+
+---
+
+#### 2. Fuentes canónicas y corte reproducible
+
+La fuente documental propietaria se inspeccionó en `vento-shell` commit `6bd79d0c44163fdbfa86143626e17bf13f2c2c49`.
+
+| Fuente                                              | Uso                                                             |
+| --------------------------------------------------- | --------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, alcance, evidencia, entrega y requisitos de prueba |
+| `docs/plan-canonico/modular/delivery-contract.json` | contrato físico del artefacto                                   |
+| `docs/plan-canonico/modular/active-sequence.json`   | segmento activo `SHELL-AUD-001..011` y handoff posterior        |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`        | propietario, tareas aprobadas y marcador actual                 |
+| `SHELL-AUD-001`                                     | universo de repositorios y familias duplicadas                  |
+| `SHELL-AUD-002`                                     | guards, middleware, login y separación de fronteras             |
+| `SHELL-AUD-003`                                     | helpers de permisos, firmas RPC y consumidores directos         |
+| `SHELL-AUD-004`                                     | contexto operativo, sesión local y contexto efectivo            |
+| `AccessContext@1.0.0` y contratos relacionados      | invariantes de identidad, simulación, territorio y carriles     |
+| `03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`         | arquitectura objetivo de contratos, SDK y Supabase              |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`  | cobertura vigente de paridad, sesión, contexto y simulación     |
+| Código y migraciones de los siete repositorios      | comportamiento técnico actual                                   |
+
+Commits de runtime:
+
+| Superficie | Repositorio                  | Commit inspeccionado                       |
+| ---------- | ---------------------------- | ------------------------------------------ |
+| SHELL      | `devVentoGroup/vento-shell`  | `6bd79d0c44163fdbfa86143626e17bf13f2c2c49` |
+| VISO       | `devVentoGroup/vento-viso`   | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |
+| NEXO       | `devVentoGroup/vento-nexo`   | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |
+| FOGO       | `devVentoGroup/vento-fogo`   | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |
+| ORIGO      | `devVentoGroup/vento-origo`  | `b7a8303fa078ef087f522b6c99059ababfc27472` |
+| PULSO      | `devVentoGroup/vento-pulso`  | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| NUMERA     | `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |
+
+---
+
+#### 3. Continuidad interpretada
+
+`active-sequence.json` define:
+
+```text
+segmento activo
+SHELL-AUD-001..011
+
+handoff_task_id
+SHELL-PKG-001
+```
+
+Por tanto:
+
+```text
+SHELL-AUD-004 aprobada
+→ SHELL-AUD-005 actual
+→ SHELL-AUD-006 inmediata reservada
+→ ...
+→ SHELL-AUD-011
+→ SHELL-PKG-001 como salida completa del segmento
+```
+
+`handoff_task_id` no representa la siguiente tarea inmediata. No existe salto de continuidad ni bloqueo para esta auditoría.
+
+---
+
+#### 4. Límite exacto
+
+Se comparan:
+
+1. `src/lib/auth/role-override.ts` en VISO, NEXO, FOGO, ORIGO, PULSO y NUMERA;
+2. `src/lib/auth/role-override-config.ts` en las seis aplicaciones;
+3. escritura, lectura, expiración y eliminación de la cookie local;
+4. elegibilidad del actor real para activar simulación;
+5. catálogo de roles presentado por cada aplicación;
+6. evaluación de `role_permissions`, scopes, allows y denies;
+7. integración con guards y consumidores funcionales;
+8. exclusión o inclusión del dispositivo compartido;
+9. propagación del override al contexto operativo de NEXO;
+10. sesión central `context_simulation_sessions` y RPC relacionadas;
+11. consumo por `get_effective_context_v1` y `has_effective_permission_v1`;
+12. compatibilidad con las decisiones canónicas de `AccessContext` y `SimulationContext`.
+
+Se excluyen:
+
+- la decisión final de compartir, generar o mantener local, reservada a `SHELL-AUD-010`;
+- el retiro de artefactos sin consumidor, reservado a `SHELL-AUD-011`;
+- la implementación del SDK compartido, reservada a `SHELL-AUTH-001..005`;
+- la implementación del módulo contextual, reservada a `SHELL-CTX-001..006`;
+- cambios de permisos, roles, scopes, migraciones, RLS, cookies, guards o UI;
+- pruebas contra un ambiente desplegado no accesible desde esta auditoría.
+
+---
+
+#### 5. Conceptos que no se tratarán como equivalentes
+
+| Concepto                  | Fuente actual                 | Autoridad representada                              |
+| ------------------------- | ----------------------------- | --------------------------------------------------- |
+| Rol administrativo real   | relación laboral del empleado | hecho real de identidad laboral                     |
+| Rol operativo real        | turno publicado y vigente     | hecho operativo temporal                            |
+| Cookie de `role override` | navegador de una aplicación   | solicitud local de simulación                       |
+| Rol evaluado por override | string leído desde cookie     | entrada del evaluador local                         |
+| Sesión de simulación v1   | `context_simulation_sessions` | sesión persistida y validada en servidor            |
+| Contexto operativo legacy | `get_operational_context`     | mezcla de turno, check-in, políticas y bypass       |
+| Contexto efectivo v1      | `get_effective_context_v1`    | proyección central que puede seleccionar simulación |
+| `AccessContext` canónico  | contrato documental aprobado  | snapshot real de identidad y contexto               |
+| `SimulationContext`       | contrato separado             | evaluación hipotética sin alterar el contexto real  |
+
+Reglas conservadas:
+
+```text
+ROL REAL ≠ ROL SIMULADO
+COOKIE ≠ SESIÓN AUTORITATIVA
+SIMULACIÓN ≠ MUTACIÓN DEL ACTOR REAL
+ROL DE NAVEGACIÓN ≠ PERMISO
+SELECCIÓN VISUAL ≠ AUTORIDAD
+```
+
+---
+
+#### 6. Inventario completo por superficie
+
+| ID           | Superficie | Helper local | Config local | Escritura UI | Integración principal                      | Clasificación                        |
+| ------------ | ---------- | ------------ | ------------ | ------------ | ------------------------------------------ | ------------------------------------ |
+| `RO-SURF-01` | SHELL      | no           | no           | no           | migraciones de simulación y SDK contextual | `FRONTERA_CENTRAL_DISTINTA`          |
+| `RO-SURF-02` | VISO       | sí           | sí           | sí           | guard y consumidores de autorización       | `LEGACY_LOCAL_BASELINE`              |
+| `RO-SURF-03` | NEXO       | sí           | sí           | sí           | guard, consumidores y contexto operativo   | `LEGACY_LOCAL_DIVERGENTE`            |
+| `RO-SURF-04` | FOGO       | sí           | sí           | sí           | guard y consumidores funcionales           | `LEGACY_LOCAL_BASELINE_COOKIE_AJENA` |
+| `RO-SURF-05` | ORIGO      | sí           | sí           | sí           | guard y servicios funcionales              | `LEGACY_LOCAL_BASELINE`              |
+| `RO-SURF-06` | PULSO      | sí           | sí           | sí           | guard y permisos funcionales               | `LEGACY_LOCAL_BASELINE_COOKIE_AJENA` |
+| `RO-SURF-07` | NUMERA     | sí           | sí           | sí           | guard y selector visual                    | `LEGACY_LOCAL_BASELINE`              |
+
+**Conciliación:** 7 superficies esperadas, 7 decisiones materializadas, 0 faltantes, 0 duplicadas.
+
+---
+
+#### 7. Familias semánticas de `role-override.ts`
+
+##### 7.1. Familia base
+
+VISO, FOGO, ORIGO, PULSO y NUMERA implementan el mismo contrato semántico:
+
+```text
+leer cookie local
+→ comprobar que el rol real pertenece a PRIVILEGED_ROLES
+→ consultar role_permissions para el rol simulado
+→ filtrar scopes localmente
+→ DENY coincidente prevalece
+→ se exige al menos un ALLOW coincidente
+→ retornar booleano
+```
+
+Las diferencias físicas de formato o tipado no cambian el algoritmo observable de esta familia.
+
+##### 7.2. Variante NEXO
+
+NEXO conserva la estructura general, pero modifica tres reglas sustantivas:
+
+1. obtiene una colección de sedes accesibles desde `employee_sites`;
+2. no carga `scope_site_id` ni `scope_area_id` desde `role_permissions` y los representa internamente como `null`;
+3. concede localmente `nexo.inventory.remissions.transit` al rol `conductor` sin requerir una fila coincidente en `role_permissions`.
+
+Por ello NEXO no es semánticamente equivalente a la familia base.
+
+---
+
+#### 8. Catálogos locales de configuración
+
+| Aplicación | Cookie configurada     | Roles reales privilegiados       | Roles simulables publicados                                                                                      | Cantidad | Propiedad del identificador |
+| ---------- | ---------------------- | -------------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------: | --------------------------- |
+| VISO       | `viso_role_override`   | `propietario`, `gerente_general` | propietario, gerente_general, gerente, administrador, cajero, mesero, domiciliario, barista, cocinero, bodeguero |   **10** | propia                      |
+| NEXO       | `nexo_role_override`   | `propietario`, `gerente_general` | propietario, gerente_general, gerente, administrador, bodeguero, conductor, cocinero, barista, cajero            |    **9** | propia                      |
+| FOGO       | `origo_role_override`  | `propietario`, `gerente_general` | propietario, gerente_general, gerente, administrador, cocinero, bodeguero                                        |    **6** | ajena: ORIGO                |
+| ORIGO      | `origo_role_override`  | `propietario`, `gerente_general` | propietario, gerente_general, gerente, administrador, bodeguero                                                  |    **5** | propia                      |
+| PULSO      | `nexo_role_override`   | `propietario`, `gerente_general` | propietario, gerente_general, gerente, administrador, cajero, mesero, domiciliario, barista                      |    **8** | ajena: NEXO                 |
+| NUMERA     | `numera_role_override` | `propietario`, `gerente_general` | propietario, gerente_general, gerente                                                                            |    **3** | propia                      |
+
+Conclusiones:
+
+- los seis repositorios limitan la activación visual a `propietario` y `gerente_general`;
+- no existe un catálogo compartido de roles simulables;
+- el mismo rol puede estar disponible en una aplicación y ausente en otra;
+- FOGO y PULSO contienen identificadores de cookie copiados desde otra aplicación;
+- las cookies no declaran `Domain`, por lo que actualmente son host-only y no se infiere una colisión automática entre hosts distintos;
+- la identidad ajena sigue siendo deriva de configuración y debe resolverse antes de cualquier distribución compartida.
+
+---
+
+#### 9. Ciclo de vida de la cookie local
+
+Las seis interfaces escriben la cookie con el patrón equivalente a:
+
+```text
+nombre=<rol>; path=/; max-age=2592000
+```
+
+Matriz:
+
+| Propiedad                             | Estado actual                                |
+| ------------------------------------- | -------------------------------------------- |
+| Escritura                             | JavaScript del cliente                       |
+| Lectura de servidor                   | `cookies()` de Next.js                       |
+| Duración                              | 30 días                                      |
+| Path                                  | `/`                                          |
+| Domain explícito                      | no                                           |
+| `HttpOnly`                            | no disponible al escribirse desde JavaScript |
+| `Secure` explícito                    | no                                           |
+| `SameSite` explícito                  | no                                           |
+| Firma o MAC                           | no                                           |
+| Cifrado                               | no                                           |
+| Identidad de usuario incorporada      | no                                           |
+| ID de sesión incorporado              | no                                           |
+| Timestamp de creación incorporado     | no                                           |
+| Expiración ligada a sesión Supabase   | no                                           |
+| Revocación central                    | no                                           |
+| Eliminación manual                    | sí, al elegir el rol real                    |
+| Eliminación confirmada durante logout | no localizada                                |
+
+Consecuencia observable:
+
+```text
+logout local
+→ termina la sesión Supabase local
+→ no se confirmó eliminación de la cookie de override
+→ la cookie puede permanecer en el mismo navegador
+→ un login posterior vuelve a someter su valor al control del rol real
+```
+
+La permanencia no concede autoridad por sí sola porque `canUseRoleOverride` exige que el actor autenticado real sea privilegiado. Sí demuestra que la vigencia del override no está ligada a la vigencia de la sesión que lo creó.
+
+---
+
+#### 10. Elegibilidad y validación del rol solicitado
+
+##### 10.1. Actor real
+
+Las seis aplicaciones aplican una comparación directa contra:
+
+```text
+propietario
+gerente_general
+```
+
+No se confirmó normalización central, alias, versión de catálogo ni resolución contractual del rol real dentro del helper.
+
+##### 10.2. Valor de la cookie
+
+El servidor acepta como candidato cualquier string no vacío leído desde la cookie.
+
+La lista `ROLE_OPTIONS` restringe la selección ofrecida por la UI, pero no constituye validación de servidor. Un valor fuera de la lista:
+
+- llega al evaluador local;
+- se usa como `role_code` de consulta;
+- normalmente queda sin grants coincidentes y falla cerrado;
+- no queda registrado como intento estructurado;
+- en NEXO, el valor exacto `conductor` activa además la concesión local específica.
+
+##### 10.3. Shared device
+
+Los guards separan el carril de dispositivo compartido del carril personal. La cookie de role override no sustituye el rol operativo de un dispositivo compartido dentro de esos guards.
+
+---
+
+#### 11. Evaluación de permisos de la familia base
+
+La familia base consulta `role_permissions` y su relación con `permissions` usando:
+
+- `role_code` igual al rol simulado;
+- `is_active = true`;
+- `permissions.app_id` igual a la aplicación;
+- `permissions.code` igual al permiso normalizado.
+
+Después aplica localmente:
+
+| `scope_type`      | Comprobación local                                        |
+| ----------------- | --------------------------------------------------------- |
+| `global`          | coincide sin territorio adicional                         |
+| `site_type`       | compara `scope_site_type` con el tipo de la sede recibida |
+| `area_type`       | compara `scope_area_kind` con el tipo del área recibida   |
+| `site`            | compara `scope_site_id` con `siteId`                      |
+| `area`            | compara `scope_area_id` con `areaId`                      |
+| otro o incompleto | no coincide                                               |
+
+Precedencia:
+
+```text
+si existe DENY coincidente
+→ false
+
+si no existe DENY y existe ALLOW coincidente
+→ true
+
+en otro caso
+→ false
+```
+
+Propiedades:
+
+| Dimensión                               | Resultado                                         |
+| --------------------------------------- | ------------------------------------------------- |
+| Backend autoritativo único              | no; la decisión se reconstruye en cada aplicación |
+| Resultado estructurado                  | no; retorna booleano                              |
+| Razón de denegación                     | no disponible                                     |
+| ID de decisión                          | no disponible                                     |
+| Evidencia de grants/denies              | no retornada                                      |
+| Versión de catálogo                     | no transmitida                                    |
+| Actor real auditado                     | no incorporado por el helper                      |
+| Rol simulado auditado                   | no persistido por el helper                       |
+| Paridad automatizada entre repositorios | no confirmada                                     |
+
+---
+
+#### 12. Divergencia territorial de NEXO
+
+NEXO no conserva en su selección local los campos exactos:
+
+```text
+scope_site_id
+scope_area_id
+```
+
+Su comparación materializa:
+
+| Scope       | Regla NEXO                                                      |
+| ----------- | --------------------------------------------------------------- |
+| `global`    | coincide                                                        |
+| `site_type` | compara tipo de sede                                            |
+| `area_type` | compara tipo de área                                            |
+| `site`      | exige `siteId` y que la sede aparezca en la colección accesible |
+| `area`      | exige `areaId` y, cuando existe, compara `scope_area_kind`      |
+
+Consecuencias:
+
+1. una fila `site` no se confronta con su `scope_site_id` exacto;
+2. una fila `area` no se confronta con su `scope_area_id` exacto;
+3. la pertenencia del usuario a una sede sustituye la identidad territorial del grant;
+4. la presencia de un área sustituye la identidad territorial exacta del grant;
+5. no existe equivalencia demostrada con la familia base para grants específicos de sede o área.
+
+La consulta de `employee_sites` no incorpora un filtro de empleado dentro del helper. Esta tarea no infiere exposición de datos porque la efectividad de su aislamiento depende también de RLS y grants, que no forman parte de la decisión de este artefacto.
+
+---
+
+#### 13. Concesión local de `conductor` en NEXO
+
+NEXO contiene esta regla fuera de `role_permissions`:
+
+```text
+rol simulado = conductor
+AND
+permiso = nexo.inventory.remissions.transit
+→ ALLOW
+```
+
+Características:
+
+- no existe en las otras cinco copias;
+- se evalúa antes de consultar grants y denies de la matriz local;
+- no requiere una fila allow;
+- no permite que un deny de `role_permissions` la revoque dentro de ese helper;
+- no produce evidencia de la regla aplicada;
+- transforma una decisión de catálogo o matriz en una excepción escrita en código.
+
+La tarea no decide conservarla ni retirarla. Su contrato deberá resolverse mediante `SHELL-CON-003`, `SHELL-CON-005`, `SHELL-AUD-010` y `SHELL-AUTH-005`.
+
+---
+
+#### 14. Sustitución del evaluador real
+
+Cuando existe un override elegible, `checkPermissionWithRoleOverride` no combina la autoridad real y la simulada.
+
+Flujo:
+
+```text
+sin override elegible
+→ checkPermission del usuario real
+
+con override elegible
+→ isPermissionAllowedForRole del rol simulado
+→ no se consulta el permiso real como fallback
+```
+
+Por tanto:
+
+```text
+DECISIÓN SIMULADA
+≠
+PERMISOS REALES ∪ PERMISOS SIMULADOS
+```
+
+La semántica actual es de sustitución del evaluador para esa comprobación. Los guards conservan separadamente autenticación, dispositivo compartido y, según la variante, la puerta general de aplicación.
+
+---
+
+#### 15. Propagación al contexto operativo
+
+NEXO es la única aplicación que conecta la cookie local con `operational-context.ts`.
+
+Para overrides concretos aplica:
+
+| Rol simulado | `area_kind` buscado |
+| ------------ | ------------------- |
+| `cocinero`   | `cocina`            |
+| `barista`    | `bar`               |
+| `cajero`     | `mostrador`         |
+
+Si localiza un área activa dentro de la sede resuelta, reemplaza en memoria:
+
+```text
+active_operational_role
+active_area_id
+active_area_kind
+```
+
+No modifica físicamente el turno ni el check-in, pero sí cambia el contexto operativo devuelto al consumidor.
+
+Las otras cinco aplicaciones:
+
+- usan el override para evaluar permisos o presentación visual;
+- no contienen esta adaptación específica dentro de su contexto operativo local;
+- no demuestran paridad con NEXO para una misma simulación.
+
+Esta divergencia entra en conflicto con la separación canónica según la cual el rol operativo real deriva del turno válido y la simulación debe permanecer en un contrato separado.
+
+---
+
+#### 16. Consumidores comprobados
+
+| Aplicación | Guard     | Helper funcional directo           | Selector visual | Mutación de contexto operativo | Estado de consumo             |
+| ---------- | --------- | ---------------------------------- | --------------- | ------------------------------ | ----------------------------- |
+| VISO       | sí        | sí                                 | sí              | no                             | `CONSUMIDO`                   |
+| NEXO       | sí        | sí, en múltiples flujos operativos | sí              | sí                             | `CONSUMIDO_DIVERGENTE`        |
+| FOGO       | sí        | sí                                 | sí              | no                             | `CONSUMIDO`                   |
+| ORIGO      | sí        | sí, en servicios funcionales       | sí              | no                             | `CONSUMIDO`                   |
+| PULSO      | sí        | guard y comprobaciones funcionales | sí              | no                             | `CONSUMIDO`                   |
+| NUMERA     | sí        | guard                              | sí              | no                             | `CONSUMIDO`                   |
+| SHELL      | no aplica | SDK y RPC centrales distintos      | no              | contexto efectivo v1           | `FRONTERA_CENTRAL_CONSUMIBLE` |
+
+No se clasifica ninguno de los seis helpers locales como artefacto sin consumidor. Su retiro no puede realizarse por `SHELL-AUD-011` sin una migración previa y evidencia de paridad.
+
+---
+
+#### 17. Simulación central persistida en Supabase
+
+`vento-shell` contiene una segunda familia de simulación:
+
+```text
+context_simulation_sessions
+start_context_simulation_v1
+stop_context_simulation_v1
+get_active_context_simulation_v1
+get_effective_context_v1
+has_effective_permission_v1
+```
+
+Propiedades comprobadas:
+
+| Dimensión                     | Sesión central v1                                                         |
+| ----------------------------- | ------------------------------------------------------------------------- |
+| Persistencia                  | tabla en Supabase                                                         |
+| Propietario técnico           | `vento-shell`                                                             |
+| Actor autorizado para iniciar | `propietario` o `gerente_general`                                         |
+| Sesiones activas por usuario  | máximo una                                                                |
+| Sede                          | obligatoria y validada                                                    |
+| Área                          | opcional y validada contra la sede                                        |
+| Rol operativo                 | validado contra `site_operational_roles`                                  |
+| Rol administrativo            | aceptado como campo separado                                              |
+| Duración                      | 15 a 720 minutos; 240 por defecto                                         |
+| Expiración                    | explícita                                                                 |
+| Cierre                        | RPC explícita                                                             |
+| Identidad del usuario         | almacenada                                                                |
+| Creador                       | almacenado                                                                |
+| Metadata                      | persistida                                                                |
+| Consumo                       | `get_effective_context_v1` y `has_effective_permission_v1`                |
+| Fuente devuelta               | `simulation`                                                              |
+| Evidencia estructurada        | superior a la cookie local, aunque no certificada como arquitectura final |
+
+La existencia física de este mecanismo no demuestra adopción por las seis aplicaciones ni conformidad completa con el contrato canónico. Ninguna de las seis copias locales de role override se apoya en esta sesión para leer el rol simulado.
+
+---
+
+#### 18. Comparación de los dos mecanismos
+
+| Dimensión                                         | Cookie local                      | Sesión central v1                           |
+| ------------------------------------------------- | --------------------------------- | ------------------------------------------- |
+| Ubicación                                         | navegador y código por aplicación | Supabase y `vento-shell`                    |
+| Fuente del rol                                    | string escrito por cliente        | parámetros validados por RPC                |
+| Persistencia                                      | cookie host-only                  | fila versionada                             |
+| Duración                                          | 30 días                           | 15 a 720 minutos                            |
+| Usuario vinculado                                 | no en la cookie                   | sí                                          |
+| Sesión vinculada                                  | no                                | sesión activa por usuario                   |
+| Sede validada                                     | depende del evaluador local       | sí                                          |
+| Área validada                                     | depende del evaluador local       | sí                                          |
+| Rol operativo validado                            | no de forma común                 | sí, contra matriz de sede/área              |
+| Rol administrativo validado contra catálogo común | no demostrado                     | no demostrado por esta auditoría            |
+| Auditoría                                         | no persistida por el helper       | creador, timestamps y metadata              |
+| Revocación                                        | eliminación local                 | cierre central                              |
+| Expiración automática                             | navegador por `max-age`           | consulta por `expires_at`                   |
+| Una sesión activa                                 | no                                | sí                                          |
+| Decisión de permiso                               | reconstruida localmente           | `has_effective_permission_v1`               |
+| Resultado estructurado                            | no                                | contexto estructurado; permiso aún booleano |
+| Adopción multi-repo                               | seis copias legacy                | no confirmada en consumidores               |
+| Integración con contexto real                     | NEXO lo muta localmente           | lo sustituye dentro de contexto efectivo v1 |
+
+No existe una capa de compatibilidad que mantenga ambas fuentes sincronizadas. Cada mecanismo puede representar una simulación distinta para el mismo usuario y momento.
+
+---
+
+#### 19. Compatibilidad con contratos canónicos
+
+| Invariante canónico                        | Cookie local              | NEXO con propagación                  | Sesión central v1                                                 |
+| ------------------------------------------ | ------------------------- | ------------------------------------- | ----------------------------------------------------------------- |
+| El actor real permanece identificable      | parcial                   | parcial                               | sí, conserva rol real                                             |
+| La simulación usa contrato separado        | no tipado                 | no; altera proyección operativa local | parcial; fuente `simulation` explícita                            |
+| El rol operativo real deriva del turno     | no lo resuelve            | no, puede reemplazarlo en memoria     | separa campo efectivo, pero lo usa para autorización simulada     |
+| La selección del cliente no es autoridad   | no cumple por sí sola     | no cumple por sí sola                 | validación de servidor                                            |
+| Sede y área se validan en servidor         | depende de cada copia     | semántica local divergente            | sí                                                                |
+| La simulación no modifica RLS              | no demostrado             | no demostrado                         | no demostrado dentro de esta tarea                                |
+| La simulación no modifica el contexto real | cinco apps no lo mutan    | no cumple                             | mantiene fuente separada, pero produce contexto efectivo simulado |
+| Vigencia explícita                         | 30 días sin sesión propia | 30 días sin sesión propia             | sí                                                                |
+| Revocación explícita                       | solo local/manual         | solo local/manual                     | sí                                                                |
+| Evidencia y correlación                    | no                        | no                                    | parcial                                                           |
+| Decisión estructurada de autorización      | no                        | no                                    | no; retorna booleano de permiso                                   |
+| Paridad entre aplicaciones                 | no demostrada             | divergente                            | adopción no demostrada                                            |
+
+La tabla identifica compatibilidad técnica observada; no convierte el mecanismo central v1 en contrato aprobado definitivo.
+
+---
+
+#### 20. Decisión por superficie
+
+| Superficie | Estado actual                   | Decisión de esta auditoría                                                | Destino obligatorio                                                 |
+| ---------- | ------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------- |
+| SHELL      | mecanismo central existente     | conservar como evidencia y candidato; no declarar canónico por existencia | `SHELL-AUD-009`, `SHELL-AUD-010`, `SHELL-AUTH-001`                  |
+| VISO       | helper base consumido           | mantener hasta migración con paridad                                      | `SHELL-AUD-010`, `SHELL-AUTH-005`                                   |
+| NEXO       | helper y contexto divergentes   | aislar como variante explícita; prohibido asumir equivalencia             | `SHELL-AUD-009`, `SHELL-AUD-010`, `SHELL-CTX-001`, `SHELL-AUTH-005` |
+| FOGO       | helper base con cookie de ORIGO | mantener como deriva explícita hasta definir su disposición y migración   | `SHELL-AUD-010`, `SHELL-AUTH-005`                                   |
+| ORIGO      | helper base consumido           | mantener hasta migración con paridad                                      | `SHELL-AUD-010`, `SHELL-AUTH-005`                                   |
+| PULSO      | helper base con cookie de NEXO  | mantener como deriva explícita hasta definir su disposición y migración   | `SHELL-AUD-010`, `SHELL-AUTH-005`                                   |
+| NUMERA     | helper base consumido           | mantener hasta migración con paridad                                      | `SHELL-AUD-010`, `SHELL-AUTH-005`                                   |
+
+Ninguna fila ordena retirar o modificar código durante esta fase documental.
+
+---
+
+#### 21. Hallazgos y destinos obligatorios
+
+| ID                | Hallazgo materializado                                                                     | Estado                               | Destino exacto                                                                        |
+| ----------------- | ------------------------------------------------------------------------------------------ | ------------------------------------ | ------------------------------------------------------------------------------------- |
+| `H-SHELL-005-001` | seis aplicaciones mantienen implementaciones locales de role override                      | `CONFIRMADO`                         | `SHELL-AUD-010`; `SHELL-AUTH-001`; `SHELL-AUTH-005`                                   |
+| `H-SHELL-005-002` | SHELL contiene un mecanismo central distinto y no una séptima copia de cookie              | `CONFIRMADO`                         | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-001`                                    |
+| `H-SHELL-005-003` | VISO, FOGO, ORIGO, PULSO y NUMERA forman una familia semántica base                        | `CONFIRMADO`                         | `SHELL-AUD-010`; `SHELL-AUTH-005`                                                     |
+| `H-SHELL-005-004` | NEXO constituye una familia divergente                                                     | `CONFIRMADO`                         | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-005`                                    |
+| `H-SHELL-005-005` | `ROLE_OPTIONS` limita la UI, pero no valida el valor en servidor                           | `IMPLEMENTADO_ACTIVO`                | `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                  |
+| `H-SHELL-005-006` | las cookies son client-writable, sin firma y con vigencia de 30 días                       | `IMPLEMENTADO_ACTIVO`                | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                |
+| `H-SHELL-005-007` | no se confirmó eliminación de la cookie durante logout                                     | `CONFIRMADO_EN_CODIGO_INSPECCIONADO` | `SHELL-AUTH-002`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                                  |
+| `H-SHELL-005-008` | la cookie no está ligada al usuario ni a la sesión que la creó                             | `CONFIRMADO`                         | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-005`                                  |
+| `H-SHELL-005-009` | FOGO utiliza el identificador `origo_role_override`                                        | `DERIVA_DE_CONFIGURACION`            | `SHELL-AUD-010`; `SHELL-AUTH-005`                                                     |
+| `H-SHELL-005-010` | PULSO utiliza el identificador `nexo_role_override`                                        | `DERIVA_DE_CONFIGURACION`            | `SHELL-AUD-010`; `SHELL-AUTH-005`                                                     |
+| `H-SHELL-005-011` | el alcance host-only actual evita inferir colisión automática entre hosts                  | `LIMITACION_EXPLICITA`               | `SHELL-AUD-010`                                                                       |
+| `H-SHELL-005-012` | los seis catálogos de roles simulables no son equivalentes                                 | `CONFIRMADO`                         | `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-AUD-009`; `SHELL-AUD-010`                    |
+| `H-SHELL-005-013` | solo `propietario` y `gerente_general` pueden activar el override local                    | `CONFIRMADO`                         | `SHELL-CON-004`; `SHELL-AUD-009`; `SHELL-AUD-010`                                     |
+| `H-SHELL-005-014` | el override sustituye el evaluador real para la comprobación solicitada                    | `CONFIRMADO`                         | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-001`; `SHELL-AUTH-005`                  |
+| `H-SHELL-005-015` | la precedencia allow/deny se reconstruye localmente en seis repositorios                   | `CONFIRMADO`                         | `SHELL-CON-006`; `SHELL-AUTH-001`; `SHELL-AUTH-005`                                   |
+| `H-SHELL-005-016` | NEXO no conserva `scope_site_id` ni `scope_area_id` al evaluar la simulación               | `DIVERGENCIA_ACTIVA`                 | `SHELL-CON-006`; `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-005`                   |
+| `H-SHELL-005-017` | NEXO concede localmente tránsito de remisiones al rol `conductor`                          | `EXCEPCION_LOCAL_ACTIVA`             | `SHELL-CON-003`; `SHELL-CON-005`; `SHELL-AUD-010`; `SHELL-AUTH-005`                   |
+| `H-SHELL-005-018` | NEXO inyecta rol y área simulados en el contexto operativo local                           | `DIVERGENCIA_ACTIVA`                 | `SHELL-CON-007`; `SHELL-CTX-001`; `SHELL-CTX-003`; `SHELL-AUTH-005`                   |
+| `H-SHELL-005-019` | las otras cinco aplicaciones no propagan la cookie al contexto operativo de la misma forma | `PARIDAD_NO_DEMOSTRADA`              | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-CTX-001`                                     |
+| `H-SHELL-005-020` | el carril de dispositivo compartido queda fuera del role override local                    | `SEPARACION_CONFIRMADA`              | `SHELL-AUTH-002`; `SHELL-AUTH-005`                                                    |
+| `H-SHELL-005-021` | cookie local y sesión central pueden coexistir con valores incompatibles                   | `DOBLE_FUENTE_ACTIVA`                | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-001`; `SHELL-AUTH-005`; `SHELL-CTX-001` |
+| `H-SHELL-005-022` | no se confirmó una suite automatizada que pruebe paridad entre evaluadores y consumidores  | `PENDIENTE_DE_EVIDENCIA`             | `SHELL-AUTH-004`; `SHELL-AUTH-005`                                                    |
+
+Ningún hallazgo queda diferido a una fase genérica. Todos tienen una tarea existente y una condición de salida verificable.
+
+---
+
+#### 22. Decisiones de esta tarea
+
+1. `role override` no se tratará como un único mecanismo mientras coexistan cookie local y sesión central.
+2. Las seis cookies locales se clasifican como compatibilidad legacy consumida, no como contrato canónico compartido.
+3. El mecanismo central v1 se clasifica como implementación existente y candidato de convergencia, no como arquitectura final aprobada por su sola existencia.
+4. La lista visual de roles no sustituye validación de servidor.
+5. Un valor desconocido de cookie debe permanecer fail closed; no se agregará fallback por rol real durante esta auditoría.
+6. La semántica de sustitución del evaluador se conserva como hecho actual y deberá declararse explícitamente en el contrato definitivo.
+7. La precedencia de denies no deberá seguir duplicada después de la migración a la frontera común.
+8. NEXO no se considerará equivalente a la familia base mientras omita identidades exactas de scope.
+9. La concesión local de `conductor` no se elevará a decisión canónica ni se retirará sin reconciliar catálogo y matrices.
+10. La propagación NEXO hacia `active_operational_role` y `active_area_id` se mantiene como divergencia explícita, no como comportamiento compartido.
+11. La identidad ajena de las cookies FOGO y PULSO deberá resolverse en `SHELL-AUD-010` y `SHELL-AUTH-005`, sin elegir aquí entre reemplazo, parametrización o retiro.
+12. La ausencia de limpieza en logout queda cubierta por la migración del adapter y los gates contra consumidores legacy.
+13. No se retirará ningún helper consumido antes de disponer de backend, adapters, pruebas de paridad y rollback.
+14. No se crea un tercer mecanismo de simulación.
+15. No se modifica `active-sequence.json`.
+16. El `handoff_task_id` se conserva como salida posterior a `SHELL-AUD-011`.
+17. No se modifica código, configuración, Supabase, CI ni despliegues.
+18. `SHELL-AUD-006` permanece como única tarea inmediata reservada.
+
+---
+
+#### 23. Trazabilidad con requisitos vigentes
+
+Los hallazgos permanecen cubiertos por requisitos ya existentes de:
+
+- paridad y clasificación de responsabilidades compartidas;
+- equivalencia entre evaluadores de autorización;
+- separación entre rol real, rol operativo y simulación;
+- resolución de contexto exclusivamente en servidor;
+- validación de sede, área y scopes;
+- invalidación de sesión, contexto y decisiones derivadas;
+- fallo cerrado ante valores inválidos o fuentes incompletas;
+- evidencia correlacionable de decisiones y denegaciones;
+- protección de consumidores antes de retirar compatibilidad legacy.
+
+Entre las identidades vigentes relacionadas se conservan:
+
+- `TREQ-SHELL-002`;
+- `TREQ-SHELL-004`;
+- `TREQ-AUTH-001`;
+- `TREQ-AUTH-004`;
+- `TREQ-AUTH-008`;
+- `TREQ-AUTH-009`;
+- `TREQ-AUTH-011`;
+- `TREQ-AUTH-012`;
+- `TREQ-AUTH-014`;
+- `TREQ-AUTH-015`.
+
+Esta tarea no cambia identificadores, reglas, estados, responsables, momentos, evidencia ni relaciones del registro canónico.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea compara implementaciones y divergencias ya existentes sin introducir ni modificar comportamiento ejecutable. Las reglas que requieren protección ya están cubiertas por requisitos vigentes de paridad, simulación, scopes, contexto, invalidación, fail closed y trazabilidad. Se generan **0** altas, **0** modificaciones, **0** diferimientos, **0** descartes y **0** obsolescencias `TREQ-*`.
+
+---
+
+#### 24. Criterios de aceptación
+
+`SHELL-AUD-005` se considera materialmente completa porque:
+
+- las siete superficies web están representadas una sola vez;
+- las seis implementaciones locales están clasificadas por familia semántica;
+- la ausencia de cookie local en SHELL está registrada;
+- los seis catálogos de roles y cookies están conciliados;
+- los dos identificadores de cookie ajenos están identificados sin inferir colisión entre hosts;
+- el ciclo de vida de 30 días, escritura cliente y eliminación manual están documentados;
+- la ausencia de limpieza de logout está diferenciada de la revocación manual;
+- la elegibilidad del actor real y la falta de validación server-side del catálogo visual están separadas;
+- la precedencia allow/deny de la familia base está materializada;
+- NEXO está comparado por scopes exactos, sedes accesibles y concesión local;
+- la inyección de override en el contexto operativo NEXO está materializada;
+- los consumidores activos impiden clasificar los helpers como código retirables sin migración;
+- cookie local y sesión central están comparadas por autoridad, vigencia, territorio, auditoría y consumo;
+- la compatibilidad con `AccessContext` y `SimulationContext` está contrastada;
+- cada hallazgo tiene un destino documental exacto;
+- se declaran cero cambios de requisitos de prueba;
+- no se modifica código, Supabase, configuración, CI, despliegues ni continuidad;
+- `SHELL-AUD-006` permanece como única continuidad inmediata reservada;
+- `SHELL-PKG-001` permanece como handoff posterior al cierre completo del segmento.
+
+---
+
+#### 25. Resultado y continuidad
+
+La comparación deja establecida la cadena actual:
+
+```text
+actor real privilegiado
+→ selector visual local
+→ cookie local de 30 días
+→ helper de role override por aplicación
+→ evaluador local de role_permissions
+→ sustitución del permiso real
+→ divergencias NEXO de scope, concesión y contexto
+```
+
+Y, en paralelo:
+
+```text
+actor real privilegiado
+→ start_context_simulation_v1
+→ context_simulation_sessions
+→ get_effective_context_v1
+→ has_effective_permission_v1
+```
+
+La única continuidad inmediata reservada es:
+
+```text
+SHELL-AUD-006 — Comparar AppShell y navegación
+```
+
+El handoff `SHELL-PKG-001` se mantiene reservado exclusivamente para después de completar `SHELL-AUD-011`.
+
+
 ### [ ] SHELL-AUD-006 — Comparar AppShell y navegación
 ### [ ] SHELL-AUD-007 — Comparar componentes UI base
 ### [ ] SHELL-AUD-008 — Comparar clientes Supabase

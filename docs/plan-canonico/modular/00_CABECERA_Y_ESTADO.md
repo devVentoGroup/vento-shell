@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **293** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **478** |
+| Tareas aprobadas | **479** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1107** |
+| Tareas no iniciadas | **1106** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **30.16% (478/1585)** |
+| Porcentaje de completamiento | **30.22% (479/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-AUD-004 — Comparar contexto operativo** |
-| Tarea actual | **SHELL-AUD-005 — Comparar role override** |
+| Última tarea aprobada | **SHELL-AUD-005 — Comparar role override** |
+| Tarea actual | **SHELL-AUD-006 — Comparar AppShell y navegación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-AUD-006 — Comparar AppShell y navegación** |
+| Siguiente tarea | **SHELL-AUD-007 — Comparar componentes UI base** |
 | Bloque actual | **BLOQUE H — Fundación compartida** |
-| Progreso del bloque | **BLOQUE H: 4 de 11 aprobadas; SHELL-AUD-005 pendiente** |
+| Progreso del bloque | **BLOQUE H: 5 de 11 aprobadas; SHELL-AUD-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-AUD-004` — Comparar contexto operativo |
-| Tarea actual | `SHELL-AUD-005` — Comparar role override — **NO INICIADA** |
-| Siguiente tarea | `SHELL-AUD-006` — Comparar AppShell y navegación |
+| Última aprobada | `SHELL-AUD-005` — Comparar role override |
+| Tarea actual | `SHELL-AUD-006` — Comparar AppShell y navegación — **NO INICIADA** |
+| Siguiente tarea | `SHELL-AUD-007` — Comparar componentes UI base |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE H | **4 DE 11 APROBADAS — ACTUAL SHELL-AUD-005** |
+| BLOQUE H | **5 DE 11 APROBADAS — ACTUAL SHELL-AUD-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-AUD-004 — Comparar contexto operativo
-        ↓
-TAREA ACTUAL
 SHELL-AUD-005 — Comparar role override
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-AUD-006 — Comparar AppShell y navegación
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-AUD-007 — Comparar componentes UI base
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 4 de 11 tareas aprobadas
+BLOQUE H — 5 de 11 tareas aprobadas
 ```
