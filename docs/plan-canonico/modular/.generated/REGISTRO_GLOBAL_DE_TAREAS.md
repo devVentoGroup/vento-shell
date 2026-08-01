@@ -10,18 +10,18 @@
 | --- | ---: |
 | Tareas con marcador | **1585** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **484** |
+| Aprobadas | **485** |
 | En propuesta | **0** |
-| No iniciadas | **1101** |
+| No iniciadas | **1100** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **30.54% (484/1585)** |
+| Porcentaje de completamiento | **30.60% (485/1585)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-AUD-010` — Clasificar compartir / generar / mantener local | ✅ APROBADA |
-| Tarea actual | `SHELL-AUD-011` — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-AUD-011` — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados | ✅ APROBADA |
+| Estado de secuencia | NINGUNA TAREA ACTUAL | ✅ SECUENCIA DOCUMENTAL COMPLETA |
 | Siguiente reservada | `SHELL-PKG-001` — Elegir mecanismo de distribución | ⬜ NO INICIADA |
 
 ## Registro completo
@@ -697,7 +697,7 @@
 | ✅ APROBADA | `SHELL-AUD-008` | Comparar clientes Supabase | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-AUD-009` | Comparar tipos y contratos | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-AUD-010` | Clasificar compartir / generar / mantener local | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-AUD-011` | Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-AUD-011` | Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-PKG-001` | Elegir mecanismo de distribución | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-PKG-002` | Definir versionado semántico | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-PKG-003` | Definir tags y releases | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |

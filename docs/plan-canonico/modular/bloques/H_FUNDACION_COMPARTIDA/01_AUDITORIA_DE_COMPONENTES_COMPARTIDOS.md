@@ -5994,5 +5994,580 @@ La única continuidad inmediata reservada es `SHELL-AUD-011 — Clasificar y ret
 El handoff `SHELL-PKG-001` permanece reservado exclusivamente para después de completar y aprobar `SHELL-AUD-011`.
 
 
-### [ ] SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados
+### ✅ SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados
+
+**Estado:** APROBADA
+**Bloque:** H — Fundación compartida
+**Tipo:** auditoría documental de consumidores y decisión controlada de conservación, cuarentena o retiro
+**Entrada de continuidad:** `SHELL-AUD-010 — Clasificar compartir / generar / mantener local`
+**Continuidad inmediata reservada:** `SHELL-PKG-001 — Elegir mecanismo de distribución`
+**Fecha de corte:** 2026-08-01
+**Commit documental canónico:** `aeaa3b2748a8e7a033baf833501baad60115e015`
+**Cambios en código, rutas, componentes, funciones, scripts, endpoints, configuración, CI, despliegues, datos o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea cierra el mini-bloque `SHELL-AUD-001..011` mediante una decisión explícita por artefacto cuya utilización no estaba confirmada. Distingue ausencia de importaciones estáticas de ausencia real de consumidores, protege entradas ejecutadas por convención de framework y separa el retiro documental autorizado de la eliminación física posterior.
+
+| Métrica                                                                |    Resultado |
+| ---------------------------------------------------------------------- | -----------: |
+| Repositorios runtime considerados                                      |        **7** |
+| Identidades de decisión materializadas                                 |       **17** |
+| Archivos de código autorizados para retiro físico posterior            |        **7** |
+| Entradas de navegación autorizadas para retiro o sustitución posterior |        **2** |
+| Paquetes transitorios sin adopción runtime que se conservan            |        **1** |
+| Controles negativos con consumo confirmado o ejecución implícita       |        **5** |
+| Grupos de endpoints autorizados para retiro                            |        **0** |
+| Scripts autorizados para retiro                                        |        **0** |
+| Eliminaciones físicas realizadas en esta tarea                         |        **0** |
+| Decisiones con propietario y condición de salida                       | **17 de 17** |
+| Hallazgos con destino exacto                                           |       **20** |
+| Cambios `TREQ-*`                                                       |        **0** |
+
+Resultado central:
+
+```text
+SIN IMPORT ESTÁTICO
+≠
+SIN CONSUMIDOR
+
+RETIRO DOCUMENTAL AUTORIZADO
+≠
+ELIMINACIÓN FÍSICA EJECUTADA
+
+ELIMINACIÓN FÍSICA
+→ repetir búsqueda de consumidores
+→ verificar convención de framework
+→ verificar scripts, CI, carga dinámica y operación manual
+→ ejecutar pruebas y build
+→ conservar rollback
+→ retirar en la tarea propietaria
+```
+
+La tarea autoriza el retiro posterior de siete archivos y dos entradas de navegación. No elimina ningún archivo porque la fase vigente es exclusivamente documental y prohíbe cambios de código.
+
+---
+
+#### 2. Fuentes y corte reproducible
+
+| Fuente                                              | Uso                                                             |
+| --------------------------------------------------- | --------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, límites de fase, evidencia y trazabilidad          |
+| `docs/plan-canonico/modular/delivery-contract.json` | contrato físico del artefacto                                   |
+| `docs/plan-canonico/modular/active-sequence.json`   | segmento `SHELL-AUD-001..011` y handoff                         |
+| `00_CABECERA_Y_ESTADO.md`                           | confirmación de tarea actual, restricción y siguiente reservada |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`        | propietario y resultados aprobados `SHELL-AUD-001..010`         |
+| `SHELL-AUD-001`                                     | universo de 26 familias y ocurrencias físicas                   |
+| `SHELL-AUD-002`                                     | guards, middleware, SSO y proxies sin consumidor confirmado     |
+| `SHELL-AUD-006`                                     | AppShell, perfil, navegación y placeholders                     |
+| `SHELL-AUD-007`                                     | componentes UI y `PageHeader`                                   |
+| `SHELL-AUD-008`                                     | clientes Supabase, proxies, helper alterno y `employee-sites`   |
+| `SHELL-AUD-009`                                     | contratos, paquete `@vento/os-context` y consumidores runtime   |
+| `SHELL-AUD-010`                                     | disposición compartir, generar o mantener local                 |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`         | compatibilidad, deprecación, rollback y actualizaciones         |
+| `03_CONTRATOS_COMPARTIDOS.md`                       | destinos de contratos compartidos                               |
+| `03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`         | SDK, adapters, gates y migración multi-repositorio              |
+| `07_COMPONENTES_WEB_COMPARTIDOS.md`                 | propiedad de componentes web compartidos                        |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`  | cobertura vigente de retiro seguro y evidencia                  |
+| `package.json` y scripts documentales               | validadores aplicables                                          |
+| código actual de los siete repositorios runtime     | declaraciones, imports, llamadas, convenciones y scripts        |
+
+Cortes runtime conservados:
+
+| Superficie | Repositorio                  | Commit                                     |
+| ---------- | ---------------------------- | ------------------------------------------ |
+| SHELL      | `devVentoGroup/vento-shell`  | `aeaa3b2748a8e7a033baf833501baad60115e015` |
+| VISO       | `devVentoGroup/vento-viso`   | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |
+| NEXO       | `devVentoGroup/vento-nexo`   | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |
+| FOGO       | `devVentoGroup/vento-fogo`   | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |
+| ORIGO      | `devVentoGroup/vento-origo`  | `b7a8303fa078ef087f522b6c99059ababfc27472` |
+| PULSO      | `devVentoGroup/vento-pulso`  | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| NUMERA     | `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |
+
+El commit documental vigente incorpora `SHELL-AUD-010` y no modifica los archivos runtime evaluados.
+
+---
+
+#### 3. Continuidad interpretada
+
+La continuidad verificada es:
+
+```text
+SHELL-AUD-001
+→ ...
+→ SHELL-AUD-010 aprobada
+→ SHELL-AUD-011 actual
+→ SHELL-PKG-001 reservada
+```
+
+`SHELL-AUD-011` es la última tarea del segmento de auditoría. Su aprobación habilita el handoff documental a `SHELL-PKG-001`, pero no implementa paquetes, no elimina código y no modifica `active-sequence.json`.
+
+---
+
+#### 4. Interpretación vinculante de “retirar”
+
+La restricción canónica de fase establece:
+
+```text
+FASE EXCLUSIVAMENTE DOCUMENTAL
+NO INICIAR CÓDIGO
+NO INICIAR MIGRACIONES
+NO MODIFICAR SUPABASE
+```
+
+Por tanto, esta tarea aplica tres niveles distintos:
+
+| Nivel                               | Significado                                                           | Efecto en esta tarea                 |
+| ----------------------------------- | --------------------------------------------------------------------- | ------------------------------------ |
+| `RETIRAR_DEL_DESTINO_CANONICO`      | el artefacto no será fuente ni parte de la arquitectura objetivo      | decisión documental inmediata        |
+| `AUTORIZAR_RETIRO_FISICO_POSTERIOR` | puede eliminarse cuando la tarea propietaria cumpla el gate de retiro | orden vinculante para implementación |
+| `ELIMINAR_FISICAMENTE`              | borrar archivo, export, ruta, script, endpoint o entrada runtime      | prohibido en la fase actual          |
+
+Una autorización de retiro queda revocada automáticamente si, antes de la eliminación física, aparece un consumidor no inventariado. En ese caso, el artefacto deberá reclasificarse como compatibilidad temporal y migrarse antes de borrarse.
+
+---
+
+#### 5. Modelo de evidencia de consumidor
+
+Un artefacto se considera consumido cuando existe al menos una evidencia válida de cualquiera de estas clases:
+
+| Código               | Clase de evidencia                                       | Ejemplos                                              |
+| -------------------- | -------------------------------------------------------- | ----------------------------------------------------- |
+| `CONSUMER-STATIC`    | importación, exportación o llamada estática              | `import`, `require`, invocación directa               |
+| `CONSUMER-DYNAMIC`   | carga dinámica o referencia construida                   | `import()`, resolución por string, registry           |
+| `CONSUMER-FRAMEWORK` | ejecución por convención del framework                   | `page.tsx`, `layout.tsx`, `route.ts`, `middleware.ts` |
+| `CONSUMER-SCRIPT`    | invocación desde `package.json`, shell, PowerShell o npm | script de build, sync o bootstrap                     |
+| `CONSUMER-CI`        | invocación desde workflow o gate                         | GitHub Actions, validadores, release                  |
+| `CONSUMER-MANUAL`    | procedimiento operativo vigente y documentado            | bootstrap o mantenimiento ejecutado por operador      |
+| `CONSUMER-PACKAGE`   | exportación pública, workspace o dependencia declarada   | `exports`, workspace, lockfile                        |
+| `CONSUMER-REMOTE`    | tráfico, logs, integración externa o despliegue          | endpoint o webhook invocado fuera del repositorio     |
+| `CONSUMER-DATA`      | dependencia desde SQL, RPC, trigger, RLS o función       | llamada de función o referencia de objeto             |
+| `CONSUMER-GENERATED` | referencia desde manifiesto o artefacto generado         | catálogo, registry, codegen                           |
+
+No son prueba suficiente de ausencia:
+
+- no encontrar un import mediante una sola consulta;
+- que una función no se invoque dentro de su propio archivo;
+- que un endpoint no tenga un consumidor en los siete repositorios web;
+- que una ruta no sea enlazada desde la navegación;
+- que un script no sea llamado por otro archivo JavaScript;
+- que un paquete no tenga importaciones runtime todavía.
+
+---
+
+#### 6. Gate obligatorio de retiro físico
+
+Todo retiro autorizado por esta tarea deberá volver a comprobar, en el commit exacto que se modificará:
+
+1. búsqueda de ruta, nombre exportado y aliases;
+2. importaciones estáticas y dinámicas;
+3. reexports y barrel files;
+4. referencias en `package.json`, lockfiles y workspaces;
+5. referencias en scripts, CI, Docker, despliegue y configuración;
+6. convenciones de Next y del framework propietario;
+7. referencias en documentación operativa vigente;
+8. consumidores externos o telemetría cuando aplique;
+9. SQL, RPC, RLS, triggers y funciones cuando aplique;
+10. pruebas, fixtures, mocks y snapshots;
+11. build, typecheck, lint y pruebas del repositorio propietario;
+12. rollback independiente y restauración del artefacto eliminado.
+
+El resultado del gate deberá registrar:
+
+```text
+repositorio
+commit anterior
+archivo o identidad
+consultas ejecutadas
+consumidores encontrados
+resultado de pruebas
+commit de retiro
+rollback
+responsable
+```
+
+---
+
+#### 7. Matriz maestra de decisiones
+
+| ID            | Categoría         | Repositorio               | Identidad                                                                             | Evidencia actual                                                                                                     | Decisión documental                            | Ejecución propietaria                             | Condición de salida                                                                                                   |
+| ------------- | ----------------- | ------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `RET-ART-001` | función/helper    | VISO                      | `src/lib/supabase/proxy.ts`                                                           | declaración de `updateSession`; sin invocación externa confirmada                                                    | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`                                  | gate completo; middleware y adapter canónicos activos; build y rollback aprobados                                     |
+| `RET-ART-002` | función/helper    | NEXO                      | `src/lib/supabase/proxy.ts`                                                           | declaración de `updateSession`; sin invocación externa confirmada; política de cookie distinta de la frontera activa | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`                                  | gate completo; no import dinámico; política host-aware cubierta por adapter canónico                                  |
+| `RET-ART-003` | función/helper    | PULSO                     | `src/lib/supabase/proxy.ts`                                                           | declaración de `updateSession`; sin invocación externa confirmada; no sustituye middleware ausente                   | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`                                  | gate completo; frontera PULSO implementada y probada antes del retiro                                                 |
+| `RET-ART-004` | cliente/helper    | PULSO                     | `src/utils/supabase/client.ts`                                                        | cliente alterno; sin importación por ruta ni alias confirmada                                                        | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`                                  | gate completo; cliente principal o adapter canónico cubre consumidores; build aprobado                                |
+| `RET-ART-005` | componente        | NEXO                      | `src/components/vento/standard/page-header.tsx`                                       | solo declaración localizada; VISO conserva consumidores reales de su variante                                        | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-UI-001`                                    | confirmar cero imports NEXO; preservar requisitos responsive/acento en diseño compartido; rollback disponible         |
+| `RET-ART-006` | función/helper    | FOGO                      | `src/lib/supabase/employee-sites.ts`                                                  | archivo presente; sin importación confirmada; ORIGO sí consume su copia equivalente                                  | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`                                  | gate completo; no consumidores dinámicos; proyección de sedes cubierta por adapter compartido                         |
+| `RET-ART-007` | función/helper    | NUMERA                    | `src/lib/supabase/employee-sites.ts`                                                  | presencia heredada confirmada; sin importación confirmada en búsqueda actual                                         | `AUTORIZAR_RETIRO_CON_GATE_REFORZADO`          | `SHELL-AUTH-005`                                  | verificar existencia y blob en commit de cambio; repetir búsqueda por export, ruta y contenido; build NUMERA aprobado |
+| `RET-ART-008` | navegación        | SHELL                     | acceso `Mi perfil` con destino `/`                                                    | entrada visible que resuelve al launcher y no a una capacidad de perfil                                              | `RETIRAR_O_SUSTITUIR_ENTRADA`                  | `AUTH-UI-026` a `AUTH-UI-029`                     | eliminar hasta existir destino real, o sustituir por ruta implementada y autorizada                                   |
+| `RET-ART-009` | navegación        | SHELL                     | acceso `Configuración` con destino `/`                                                | entrada visible que resuelve al launcher y no a una capacidad de configuración                                       | `RETIRAR_O_SUSTITUIR_ENTRADA`                  | `AUTH-UI-026` a `AUTH-UI-029`                     | eliminar hasta existir destino real, o sustituir por ruta implementada y autorizada                                   |
+| `RET-ART-010` | paquete           | SHELL                     | `packages/os-context` / `@vento/os-context`                                           | paquete privado parcial; sin importaciones runtime confirmadas; propietario canónico futuro aprobado                 | `CONSERVAR_EN_CUARENTENA_CONTRACTUAL`          | `SHELL-AUTH-001`; `SHELL-CTX-001`                 | reconciliar exports, contratos, versionado y adopción; no retirar por ausencia actual de consumidores                 |
+| `RET-ART-011` | componente        | VISO                      | `src/components/vento/standard/page-header.tsx`                                       | múltiples consumidores en páginas administrativas                                                                    | `CONSERVAR_CONSUMIDO`                          | `SHELL-UI-001`                                    | migrar solo cuando componente compartido preserve la API necesaria y exista paridad                                   |
+| `RET-ART-012` | función/helper    | ORIGO                     | `src/lib/supabase/employee-sites.ts`                                                  | consumidores confirmados en creación, edición y consulta de órdenes de compra                                        | `CONSERVAR_CONSUMIDO`                          | `SHELL-AUTH-005`                                  | retirar copia únicamente después de migrar consumidores al adapter compartido                                         |
+| `RET-ART-013` | función/helper    | NEXO, FOGO, ORIGO y PULSO | `src/lib/auth/shared-device-signature.ts`                                             | llamadas confirmadas en remisiones, producción, recepción y POS                                                      | `CONSERVAR_CONSUMIDO`                          | `SHELL-AUTH-002`; `SHELL-AUTH-005`                | centralizar sin perder firmas, targets, actor ni rollback                                                             |
+| `RET-ART-014` | ruta/entrypoint   | seis runtimes             | `middleware.ts`                                                                       | ejecución por convención de framework; diferencias locales activas                                                   | `CONSERVAR_POR_CONVENCION_FRAMEWORK`           | `SHELL-AUTH-002`; `SHELL-AUTH-005`                | migrar por repositorio con pruebas de rutas, cookies, redirección y excepciones                                       |
+| `RET-ART-015` | rutas/entrypoints | siete runtimes            | `src/app/**/page.tsx`, `layout.tsx` y `route.ts`                                      | ejecución por App Router, incluso sin imports                                                                        | `EXCLUIR_DE_RETIRO_POR_IMPORTS`                | tareas propietarias de cada superficie            | solo una auditoría funcional y de rutas puede autorizar retiro individual                                             |
+| `RET-ART-016` | script            | SHELL                     | `tools/bootstrap-app-shell.ps1` y bootstrap asociado                                  | consumo manual/documental y origen de la plantilla histórica                                                         | `CONSERVAR_COMO_HERRAMIENTA_LEGACY_CONTROLADA` | `SHELL-PKG-001`; `SHELL-PKG-007`; `SHELL-PKG-008` | deprecar o retirar únicamente cuando el mecanismo de distribución lo sustituya y exista rollback                      |
+| `RET-ART-017` | endpoint/RPC      | Supabase / autorización   | funciones de permisos, contexto, firma y compatibilidad observadas por las auditorías | consumidores directos, indirectos o futuros; ausencia remota no demostrada                                           | `NO_AUTORIZAR_RETIRO`                          | `AUTH-DB-030`; `AUTH-DB-031`                      | inventario Supabase completo, telemetría, migración de consumidores, paridad y certificación final                    |
+
+**Conciliación:** 17 identidades esperadas, 17 materializadas, 0 omitidas y 0 identificadores duplicados.
+
+---
+
+#### 8. Disposición por categoría
+
+##### 8.1. Rutas y navegación
+
+| Subcategoría                                                 | Resultado                                             |
+| ------------------------------------------------------------ | ----------------------------------------------------- |
+| archivos de ruta retirables por falta de imports             | **0**                                                 |
+| entradas de navegación placeholder retirables o sustituibles | **2**                                                 |
+| entrypoints protegidos por convención de framework           | `page.tsx`, `layout.tsx`, `route.ts`, `middleware.ts` |
+
+Decisiones:
+
+1. una ruta de App Router no puede declararse muerta porque ningún módulo la importe;
+2. una ruta no enlazada puede seguir siendo destino directo, callback, handoff, deep link o endpoint;
+3. los dos accesos de perfil de SHELL no representan rutas independientes: son enlaces visibles hacia `/` y deben retirarse o sustituirse para no presentar capacidades inexistentes;
+4. el retiro de una entrada visible no autoriza eliminar la página raíz del launcher;
+5. cualquier ruta futura candidata deberá reconciliarse con el catálogo de pantallas, procesos y consumidores antes de eliminarse.
+
+##### 8.2. Componentes
+
+| Componente        | Consumidores      | Decisión                                      |
+| ----------------- | ----------------- | --------------------------------------------- |
+| `PageHeader` NEXO | no confirmados    | retiro físico posterior autorizado            |
+| `PageHeader` VISO | múltiples páginas | conservar y usar como evidencia de requisitos |
+
+La familia no se elimina completa. Se retira únicamente la ocurrencia NEXO sin consumidor, y se preservan como entradas de diseño:
+
+- responsive de NEXO;
+- acento configurable de VISO;
+- actions y subtitle;
+- contrato CSS y accesibilidad.
+
+El componente compartido futuro deberá diseñarse en `SHELL-UI-001`; no se copiará ciegamente ninguna variante actual.
+
+##### 8.3. Funciones y helpers
+
+Se autorizan para retiro posterior:
+
+- tres proxies Supabase sin invocación externa confirmada;
+- el cliente browser alterno de PULSO;
+- las copias FOGO y NUMERA de `employee-sites` sin consumidor confirmado.
+
+Se conservan:
+
+- la copia ORIGO de `employee-sites`, porque tiene consumidores;
+- las cuatro copias de firma de dispositivo, porque tienen consumidores;
+- guards, permisos, contexto y clientes primarios, aunque deban migrarse;
+- helpers cuya ejecución dependa de un consumidor no visible en una búsqueda estática hasta completar el gate.
+
+##### 8.4. Scripts
+
+**Resultado:** **0 scripts autorizados para retiro**.
+
+Razones:
+
+1. los scripts pueden consumirse manualmente;
+2. pueden estar referenciados desde `package.json`, CI o procedimientos;
+3. el bootstrap actual explica el origen físico de la fundación copiada;
+4. su sustitución depende de `SHELL-PKG-001..008`;
+5. eliminar scripts antes de elegir distribución rompería rollback y reproducibilidad histórica.
+
+El bootstrap queda clasificado como herramienta legacy controlada. No será fuente normativa futura, pero tampoco se borra durante esta auditoría.
+
+##### 8.5. Endpoints y RPC
+
+**Resultado:** **0 endpoints o RPC autorizados para retiro**.
+
+La ausencia de consumidores en los siete repositorios web no demuestra ausencia de:
+
+- llamadas desde SQL;
+- RLS, triggers o funciones;
+- aplicaciones móviles;
+- integraciones externas;
+- jobs, cron, Edge Functions o webhooks;
+- versiones desplegadas anteriores;
+- scripts operativos;
+- clientes fuera del índice disponible.
+
+Los endpoints legacy solo podrán retirarse mediante `AUTH-DB-030` y certificarse en `AUTH-DB-031`, después de disponer de adapters, gates, telemetría, migración y paridad.
+
+---
+
+#### 9. Elementos retirados del destino arquitectónico
+
+Aunque no se borran físicamente, las siguientes identidades dejan de ser candidatas a fuente compartida o implementación objetivo:
+
+| Identidad                                  | Motivo                                                                               |
+| ------------------------------------------ | ------------------------------------------------------------------------------------ |
+| tres `src/lib/supabase/proxy.ts`           | helper paralelo sin invocación confirmada y semántica distinta del middleware activo |
+| `vento-pulso/src/utils/supabase/client.ts` | segundo cliente browser sin consumidor confirmado                                    |
+| `vento-nexo/.../page-header.tsx`           | ocurrencia local sin consumidor confirmado                                           |
+| `vento-fogo/.../employee-sites.ts`         | copia local sin consumidor confirmado                                                |
+| `vento-numera/.../employee-sites.ts`       | copia local sin consumidor confirmado, sujeta a gate reforzado                       |
+| acceso SHELL `Mi perfil` → `/`             | placeholder visible sin destino funcional propio                                     |
+| acceso SHELL `Configuración` → `/`         | placeholder visible sin destino funcional propio                                     |
+
+Ninguna de estas identidades deberá copiarse a un paquete, plantilla o nuevo repositorio durante su periodo de deprecación.
+
+---
+
+#### 10. Secuencia de retiro físico autorizada
+
+##### 10.1. Auth y Supabase client-side
+
+```text
+SHELL-PKG-001..008
+→ SHELL-CON-001..008
+→ SHELL-AUTH-001
+→ SHELL-CTX-001
+→ backend canónico aplicable
+→ SHELL-AUTH-002
+→ SHELL-AUTH-003
+→ SHELL-AUTH-004
+→ SHELL-AUTH-005
+→ retiro de proxies, cliente alterno y helpers locales sin consumidores
+```
+
+No se requiere esperar a retirar todos los legacy de Supabase para borrar un archivo local realmente inerte. Sí se requiere que el repositorio conserve una frontera funcional equivalente y que el gate no encuentre consumidores.
+
+##### 10.2. UI
+
+```text
+SHELL-PKG-001..008
+→ SHELL-UI-001
+→ contrato y componente compartido disponible
+→ verificación de consumidores NEXO
+→ retiro de PageHeader NEXO sin consumidor
+```
+
+El retiro no debe eliminar los requisitos de diseño obtenidos de las variantes auditadas.
+
+##### 10.3. Perfil SHELL
+
+```text
+AUTH-UI-026..029
+→ decidir superficie real de perfil y configuración
+→ retirar placeholders o sustituir destinos
+→ verificar que no se presente una capacidad inexistente
+```
+
+##### 10.4. Backend y endpoints
+
+```text
+contratos y adapters canónicos
+→ migración de consumidores
+→ telemetría y periodo de observación
+→ AUTH-DB-030
+→ AUTH-DB-031
+```
+
+No existe autorización de retiro anticipado de RPC o endpoints en esta tarea.
+
+---
+
+#### 11. Evidencia mínima por retiro
+
+Cada cambio físico futuro deberá adjuntar una fila equivalente a esta estructura:
+
+| Campo            | Obligación                                                  |
+| ---------------- | ----------------------------------------------------------- |
+| `artifact_id`    | usar el ID `RET-ART-*` correspondiente                      |
+| `repository`     | repositorio exacto                                          |
+| `base_commit`    | commit anterior al retiro                                   |
+| `search_scope`   | rutas, aliases, imports, dinámicos, scripts, CI y framework |
+| `consumer_count` | cantidad y lista de consumidores                            |
+| `decision`       | retirar, conservar o abortar retiro                         |
+| `tests`          | comandos y resultados reales                                |
+| `runtime_check`  | evidencia remota u operativa cuando aplique                 |
+| `rollback`       | commit, branch o parche restaurable                         |
+| `result_commit`  | commit de eliminación                                       |
+| `owner`          | tarea y responsable de ejecución                            |
+
+Si `consumer_count > 0`, la eliminación deberá abortarse hasta migrar cada consumidor.
+
+---
+
+#### 12. Rollback obligatorio
+
+El rollback de un retiro local deberá poder:
+
+1. restaurar el archivo con su último blob conocido;
+2. restaurar exports y aliases;
+3. restaurar entradas de navegación cuando proceda;
+4. revertir cambios de imports en consumidores migrados;
+5. reinstalar la versión anterior del paquete;
+6. restaurar variables o configuración eliminadas;
+7. volver a ejecutar build y pruebas del repositorio;
+8. registrar la causa del rollback.
+
+Para endpoints o Supabase, el rollback deberá cumplir además las reglas de migraciones versionadas de `vento-shell`; esta tarea no autoriza DDL, DML ni restauración manual desde Dashboard.
+
+---
+
+#### 13. Hallazgos y destinos exactos
+
+| ID                | Hallazgo                                                                  | Estado                                          | Riesgo                                                       | Destino exacto                                    |
+| ----------------- | ------------------------------------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------- |
+| `H-SHELL-011-001` | tres proxies Supabase no tienen invocación externa confirmada             | `CONFIRMADO_EN_CODIGO_INDEXADO`                 | mantener rutas de sesión paralelas e inconsistentes          | `SHELL-AUTH-005`                                  |
+| `H-SHELL-011-002` | el proxy NEXO no reproduce la política host-aware de su frontera activa   | `CONFIRMADO`                                    | reactivar accidentalmente cookies incompatibles en local     | `SHELL-AUTH-002`; `SHELL-AUTH-005`                |
+| `H-SHELL-011-003` | PULSO conserva un cliente browser alterno sin importaciones confirmadas   | `CONFIRMADO_EN_CODIGO_INDEXADO`                 | configuración paralela y cliente equivocado                  | `SHELL-AUTH-005`                                  |
+| `H-SHELL-011-004` | la copia NEXO de `PageHeader` no tiene consumidores confirmados           | `CONFIRMADO_EN_CODIGO_INDEXADO`                 | archivo huérfano presentado como estándar                    | `SHELL-UI-001`                                    |
+| `H-SHELL-011-005` | la variante VISO de `PageHeader` sí está consumida                        | `CONFIRMADO`                                    | retirar la familia completa rompería páginas administrativas | `SHELL-UI-001`                                    |
+| `H-SHELL-011-006` | FOGO mantiene `employee-sites` sin importaciones confirmadas              | `CONFIRMADO_EN_CODIGO_INDEXADO`                 | copia legacy no utilizada                                    | `SHELL-AUTH-005`                                  |
+| `H-SHELL-011-007` | NUMERA mantiene `employee-sites` sin importaciones confirmadas            | `PENDIENTE_DE_REVALIDACION_EN_COMMIT_DE_CAMBIO` | falso positivo por índice incompleto                         | `SHELL-AUTH-005`                                  |
+| `H-SHELL-011-008` | ORIGO sí consume `employee-sites` en órdenes de compra                    | `CONFIRMADO`                                    | borrar por familia rompería flujos de compra                 | `SHELL-AUTH-005`                                  |
+| `H-SHELL-011-009` | `@vento/os-context` no tiene adopción runtime confirmada                  | `CONFIRMADO`                                    | confundir transición sin adopción con paquete muerto         | `SHELL-AUTH-001`; `SHELL-CTX-001`                 |
+| `H-SHELL-011-010` | `@vento/os-context` es propietario canónico futuro aprobado               | `DECISION_CANONICA`                             | crear otro SDK o retirar la raíz prevista                    | `SHELL-AUTH-001`; `SHELL-CTX-001`                 |
+| `H-SHELL-011-011` | los dos accesos de perfil SHELL apuntan a `/`                             | `PLACEHOLDER_CONFIRMADO`                        | presentar capacidades inexistentes                           | `AUTH-UI-026` a `AUTH-UI-029`                     |
+| `H-SHELL-011-012` | los entrypoints Next pueden ejecutarse sin imports                        | `REGLA_DE_CLASIFICACION`                        | retirar rutas activas por una búsqueda incompleta            | `SHELL-CON-011`; `SHELL-UI-010`; `SHELL-AUTH-005` |
+| `H-SHELL-011-013` | `shared-device-signature` tiene consumidores en cuatro aplicaciones       | `CONFIRMADO`                                    | romper trazabilidad de actor en dispositivos compartidos     | `SHELL-AUTH-002`; `SHELL-AUTH-005`                |
+| `H-SHELL-011-014` | scripts y bootstrap pueden tener consumidores manuales o de CI            | `CONFIRMADO_COMO_CLASE_DE_CONSUMO`              | perder reproducibilidad y rollback                           | `SHELL-PKG-001`; `SHELL-PKG-007`; `SHELL-PKG-008` |
+| `H-SHELL-011-015` | no se demostró ausencia remota de consumidores de endpoints o RPC         | `PENDIENTE_DE_EVIDENCIA_REMOTA`                 | eliminar contratos aún usados fuera de los repositorios web  | `AUTH-DB-030`; `AUTH-DB-031`                      |
+| `H-SHELL-011-016` | la ausencia de import estático no prueba ausencia de carga dinámica       | `REGLA_DE_CLASIFICACION`                        | falsos positivos de código muerto                            | `SHELL-AUTH-004`; `SHELL-PKG-008`                 |
+| `H-SHELL-011-017` | no existe autorización para eliminar físicamente código en la fase actual | `RESTRICCION_CANONICA`                          | violar continuidad y mezclar auditoría con implementación    | `SHELL-PKG-001` como siguiente handoff            |
+| `H-SHELL-011-018` | siete archivos quedan autorizados para retiro posterior                   | `DECISION_DOCUMENTAL`                           | mantener indefinidamente artefactos sin propietario          | `SHELL-UI-001`; `SHELL-AUTH-005`                  |
+| `H-SHELL-011-019` | dos entradas visibles quedan autorizadas para retiro o sustitución        | `DECISION_DOCUMENTAL`                           | navegación engañosa                                          | `AUTH-UI-026` a `AUTH-UI-029`                     |
+| `H-SHELL-011-020` | todo retiro deberá conservar evidencia y rollback por repositorio         | `DECISION_DOCUMENTAL`                           | regresión sin restauración reproducible                      | `SHELL-PKG-004`; `SHELL-PKG-006`; `SHELL-PKG-008` |
+
+**Conciliación:** 20 hallazgos esperados, 20 materializados, 0 duplicados y 0 hallazgos sin propietario.
+
+---
+
+#### 14. Decisiones vinculantes
+
+1. Ningún archivo se elimina físicamente durante `SHELL-AUD-011`.
+2. Los siete archivos `RET-ART-001..007` se excluyen del destino arquitectónico y quedan autorizados para retiro posterior bajo gate.
+3. Las dos entradas `RET-ART-008..009` deben retirarse o sustituirse por destinos reales en sus tareas propietarias.
+4. `@vento/os-context` se conserva aunque no tenga consumidores runtime actuales.
+5. La ausencia de importación no se usará como criterio único para rutas, layouts, middleware, scripts o endpoints.
+6. Las rutas y entrypoints ejecutados por convención quedan fuera de cualquier barrido automático basado únicamente en referencias.
+7. Los scripts requieren comprobar `package.json`, CI, documentación y uso manual.
+8. Los endpoints requieren inventario Supabase, consumidores externos, telemetría y transición compatible.
+9. La ocurrencia consumida de una familia impide retirar la familia completa, pero no protege indefinidamente copias locales sin consumidor.
+10. Los requisitos funcionales de un artefacto huérfano pueden conservarse aunque su archivo se retire.
+11. Ningún artefacto autorizado para retiro podrá copiarse a nuevos repositorios.
+12. Toda reaparición de un consumidor antes de la eliminación revoca el retiro y obliga a migrar primero.
+13. Todo retiro se ejecutará en el repositorio propietario, excepto cambios de Supabase, que pertenecen exclusivamente a `vento-shell`.
+14. No se crea una tarea nueva; los destinos utilizados ya existen en el roadmap.
+15. `SHELL-PKG-001` queda como única continuidad inmediata reservada.
+
+---
+
+#### 15. Carryovers obligatorios
+
+| Carryover                                                   | Estado                              | Propietario                       | Condición de salida                                            |
+| ----------------------------------------------------------- | ----------------------------------- | --------------------------------- | -------------------------------------------------------------- |
+| elegir mecanismo físico de distribución                     | `NO_INICIADO`                       | `SHELL-PKG-001`                   | mecanismo aprobado para contratos, SDK y UI                    |
+| definir compatibilidad y deprecación                        | `NO_INICIADO`                       | `SHELL-PKG-004`; `SHELL-PKG-005`  | ventanas y consumidores soportados definidos                   |
+| definir rollback por aplicación                             | `NO_INICIADO`                       | `SHELL-PKG-006`                   | restauración comprobable por consumidor                        |
+| implementar adapters comunes                                | `NO_IMPLEMENTADO`                   | `SHELL-AUTH-002`                  | fronteras server/client disponibles y probadas                 |
+| bloquear nuevos consumidores legacy                         | `NO_IMPLEMENTADO`                   | `SHELL-AUTH-004`                  | lint, métricas y gates activos                                 |
+| retirar proxies, cliente alterno y helpers auth sin consumo | `AUTORIZADO_PENDIENTE_DE_EJECUCION` | `SHELL-AUTH-005`                  | gate, migración, pruebas y rollback completos                  |
+| retirar PageHeader NEXO huérfano                            | `AUTORIZADO_PENDIENTE_DE_EJECUCION` | `SHELL-UI-001`                    | componente compartido definido y cero consumidores revalidados |
+| retirar o sustituir placeholders de perfil                  | `AUTORIZADO_PENDIENTE_DE_EJECUCION` | `AUTH-UI-026` a `AUTH-UI-029`     | destino real o ausencia explícita de la acción                 |
+| reconciliar `@vento/os-context`                             | `CONSERVAR_TRANSITORIAMENTE`        | `SHELL-AUTH-001`; `SHELL-CTX-001` | SDK canónico adoptable y versionado                            |
+| retirar endpoints legacy                                    | `NO_AUTORIZADO_EN_ESTA_TAREA`       | `AUTH-DB-030`; `AUTH-DB-031`      | telemetría, migración, paridad y certificación final           |
+
+Ningún carryover queda sin tarea, propietario y condición de salida.
+
+---
+
+#### 16. Trazabilidad con requisitos vigentes
+
+Esta tarea consume sin modificar los siguientes requisitos existentes:
+
+| Requisito        | Cobertura aplicada                                            |
+| ---------------- | ------------------------------------------------------------- |
+| `TREQ-SHELL-002` | clasificación reproducible de responsabilidades compartidas   |
+| `TREQ-SHELL-004` | evidencia completa antes de retirar artefactos sin consumidor |
+| `TREQ-SHELL-006` | compatibilidad entre paquetes y consumidores                  |
+| `TREQ-SHELL-007` | rollback independiente por aplicación                         |
+| `TREQ-SHELL-008` | integridad del registro y declaración de impacto de pruebas   |
+| `TREQ-SHELL-009` | evidencia reproducible por repositorio y commit               |
+| `TREQ-SHELL-027` | placeholders no presentados como capacidades reales           |
+| `TREQ-SHELL-029` | separación entre plantilla, fuente y runtime                  |
+| `TREQ-SHELL-032` | reconciliación antes de adopción o retiro                     |
+| `TREQ-SHELL-035` | integridad de nombres, estados y artefactos                   |
+| `TREQ-AUTH-013`  | protección en servidor, RPC y mutaciones                      |
+| `TREQ-AUTH-014`  | invalidación y transición segura de sesión/contexto           |
+| `TREQ-AUTH-015`  | evidencia correlacionable de decisiones y denegaciones        |
+
+La tarea no modifica identificador, regla, riesgo, tipo, prioridad, responsable, paquete, repositorio, estado, artefacto, resultado, evidencia ni relaciones de ninguna fila vigente.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea clasifica artefactos existentes y autoriza retiros futuros bajo gates ya protegidos por requisitos vigentes de evidencia, compatibilidad, rollback, integridad, placeholders, protección de servidor y trazabilidad. No ejecuta un retiro, no introduce comportamiento nuevo y no descubre una obligación verificable independiente sin cobertura previa.
+
+Se generan:
+
+- **0** altas `TREQ-*`;
+- **0** modificaciones;
+- **0** diferimientos;
+- **0** descartes;
+- **0** obsolescencias.
+
+No corresponde generar una copia del registro `04A`.
+
+---
+
+#### 17. Criterios de aceptación
+
+`SHELL-AUD-011` se considera materialmente completa porque:
+
+- la continuidad vigente y la restricción documental están verificadas;
+- se diferencia retiro documental, autorización de retiro y eliminación física;
+- se materializan diez clases válidas de consumidor;
+- el gate de retiro cubre imports, dinámicos, framework, scripts, CI, operación, datos y remoto;
+- las 17 identidades tienen repositorio, evidencia, decisión, propietario y condición de salida;
+- los tres proxies sin consumo confirmado quedan clasificados individualmente;
+- el cliente alterno PULSO queda clasificado individualmente;
+- las ocurrencias de `PageHeader` se distinguen entre NEXO sin consumidor y VISO consumido;
+- las ocurrencias de `employee-sites` se distinguen entre ORIGO consumido y FOGO/NUMERA sin consumo confirmado;
+- `@vento/os-context` no se confunde con código muerto;
+- los dos accesos de perfil placeholder tienen decisión explícita;
+- los entrypoints de framework quedan protegidos contra falsos positivos;
+- la firma de dispositivo se conserva por consumidores confirmados;
+- scripts y endpoints tienen una decisión explícita de cero retiros autorizados;
+- los siete archivos y dos entradas autorizados para retiro tienen tarea de ejecución;
+- los veinte hallazgos tienen destino exacto;
+- no se crea ninguna tarea nueva;
+- se declaran cero cambios `TREQ-*`;
+- no se modifica código, Supabase, configuración, CI, despliegues ni continuidad;
+- `SHELL-PKG-001` permanece como única tarea inmediata reservada.
+
+---
+
+#### 18. Resultado y continuidad
+
+El mini-bloque de auditoría queda cerrado documentalmente con la cadena:
+
+```text
+inventario físico
+→ comparación semántica
+→ comparación contractual
+→ disposición compartir / generar / mantener local
+→ verificación de consumidores
+→ autorización o prohibición de retiro
+→ gate, pruebas y rollback
+→ mecanismo de distribución
+```
+
+La única continuidad inmediata reservada es:
+
+```text
+SHELL-PKG-001 — Elegir mecanismo de distribución
+```
+
+No se inicia, desarrolla ni modifica esa tarea dentro de este artefacto.
+
+
 Arquitectura de paquetes
