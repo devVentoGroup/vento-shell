@@ -3996,7 +3996,562 @@ SHELL-AUD-008 — Comparar clientes Supabase
 El handoff `SHELL-PKG-001` permanece reservado exclusivamente para después de completar `SHELL-AUD-011`.
 
 
-### [ ] SHELL-AUD-008 — Comparar clientes Supabase
+### ✅ SHELL-AUD-008 — Comparar clientes Supabase
+
+**Estado:** APROBADA
+**Bloque:** H — Fundación compartida
+**Tipo:** auditoría documental comparativa de clientes Supabase, políticas de sesión, fronteras de middleware y helpers asociados
+**Entrada de continuidad:** `SHELL-AUD-007 — Comparar componentes UI base`
+**Continuidad inmediata reservada:** `SHELL-AUD-009 — Comparar tipos y contratos`
+**Handoff posterior al segmento `SHELL-AUD-001..011`:** `SHELL-PKG-001 — Elegir mecanismo de distribución`
+**Fecha de corte:** 2026-08-01
+**Cambios en código, migraciones, configuración, datos, CI, despliegues o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea materializa la comparación completa de las fronteras Supabase actualmente distribuidas entre SHELL, VISO, NEXO, FOGO, ORIGO, PULSO y NUMERA. La comparación distingue identidad física, contrato ejecutable, ciclo de vida del cliente, precedencia de configuración, política de cookies, tratamiento de errores, privilegio administrativo, consumo y papel real dentro de la frontera de autenticación.
+
+| Métrica                                             |  Resultado |
+| --------------------------------------------------- | ---------: |
+| Superficies runtime comparadas                      |      **7** |
+| Familias canónicas reconciliadas                    |      **7** |
+| Ocurrencias físicas materializadas                  |     **28** |
+| Blobs físicos distintos dentro del alcance          |     **24** |
+| Variantes semánticas materializadas                 |     **16** |
+| Clientes browser primarios                          |      **7** |
+| Clientes server                                     |      **7** |
+| Middleware globales presentes                       |      **6** |
+| Helpers proxy presentes                             |      **3** |
+| Helpers proxy con consumidor externo confirmado     |      **0** |
+| Clientes administrativos service-role               |      **1** |
+| Normalizadores `employee-sites`                     |      **3** |
+| Clientes browser alternos                           |      **1** |
+| Clientes browser alternos con consumidor confirmado |      **0** |
+| Superficies con decisión explícita                  | **7 de 7** |
+| Hallazgos con destino exacto                        |     **27** |
+| Cambios `TREQ-*`                                    |      **0** |
+
+Resultado central:
+
+```text
+MISMA DEPENDENCIA SUPABASE DECLARADA
+≠ MISMA FRONTERA DE SESIÓN
+
+CLIENTE BROWSER
+→ SINGLETON EN CINCO RUNTIMES
+→ POR LLAMADA EN SHELL Y PULSO
+→ DOMINIO EXPLÍCITO SOLO EN SHELL
+
+CLIENTE SERVER
+→ TRES POLÍTICAS DE DOMINIO
+→ NEXO ES EL ÚNICO SENSIBLE AL HOST LOCAL
+
+MIDDLEWARE
+→ SEIS FRONTERAS ACTIVAS
+→ CINCO CONTRATOS SEMÁNTICOS
+→ PULSO SIN FRONTERA GLOBAL CONFIRMADA
+
+PROXY
+→ TRES HELPERS
+→ NINGÚN CONSUMIDOR EXTERNO CONFIRMADO
+→ NO CONSTITUYEN PROTECCIÓN ACTIVA
+```
+
+La paridad de clientes Supabase queda **NO DEMOSTRADA**. Existe un núcleo repetido de resolución de URL, clave y cookies, pero el ciclo de vida, la frontera de sesión, la semántica de fallo, el manejo de localhost y las extensiones de dominio no están gobernados por un contrato único ni por pruebas multi-repositorio.
+
+---
+
+#### 2. Fuentes y corte reproducible
+
+| Fuente                                              | Uso                                                                                   |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, evidencia, alcance y forma de entrega                                    |
+| `docs/plan-canonico/modular/delivery-contract.json` | contrato físico del artefacto                                                         |
+| `docs/plan-canonico/modular/active-sequence.json`   | segmento activo y handoff posterior                                                   |
+| `00_CABECERA_Y_ESTADO.md`                           | estado vigente de `SHELL-AUD-008`                                                     |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`        | archivo propietario, inventario y dependencias aprobadas                              |
+| `SHELL-AUD-001`                                     | familias `FAM-014`, `FAM-015`, `FAM-016`, `FAM-017`, `FAM-024`, `FAM-025` y `FAM-026` |
+| `SHELL-AUD-002`                                     | frontera de autenticación, middleware, proxy y rutas sin consumidor confirmado        |
+| `SHELL-AUD-003` a `SHELL-AUD-007`                   | permisos, contexto, role override, AppShell y UI ya comparados                        |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`         | destinos de distribución, compatibilidad y gates                                      |
+| `03_CONTRATOS_COMPARTIDOS.md`                       | destinos de tipos y códigos de error                                                  |
+| `03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`         | SDK, adapters y migración multi-repositorio                                           |
+| `package.json` de los siete runtimes                | versiones declaradas y scripts aplicables                                             |
+| código de los siete repositorios runtime            | implementación y consumo actuales                                                     |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`  | cobertura `TREQ-*` vigente                                                            |
+
+Commits runtime inspeccionados:
+
+| Superficie | Repositorio                  | Commit                                     |
+| ---------- | ---------------------------- | ------------------------------------------ |
+| SHELL      | `devVentoGroup/vento-shell`  | `7e7338ecef1c6723a0269d15c33adceec44e744d` |
+| VISO       | `devVentoGroup/vento-viso`   | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |
+| NEXO       | `devVentoGroup/vento-nexo`   | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |
+| FOGO       | `devVentoGroup/vento-fogo`   | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |
+| ORIGO      | `devVentoGroup/vento-origo`  | `b7a8303fa078ef087f522b6c99059ababfc27472` |
+| PULSO      | `devVentoGroup/vento-pulso`  | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| NUMERA     | `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |
+
+El commit de `vento-shell` contiene la cabecera que registra `SHELL-AUD-007` como última tarea aprobada y `SHELL-AUD-008` como tarea actual. No se usaron artefactos generados como fuente de decisión.
+
+---
+
+#### 3. Continuidad interpretada
+
+La secuencia vigente conserva un solo segmento activo:
+
+```text
+SHELL-AUD-001
+→ ...
+→ SHELL-AUD-007 aprobada
+→ SHELL-AUD-008 actual
+→ SHELL-AUD-009 inmediata reservada
+→ SHELL-AUD-010
+→ SHELL-AUD-011
+→ SHELL-PKG-001
+```
+
+`SHELL-PKG-001` es el handoff posterior al cierre completo de `SHELL-AUD-011`; no es la tarea inmediata. Esta tarea no modifica `active-sequence.json`.
+
+---
+
+#### 4. Alcance exacto
+
+Se comparan:
+
+1. las siete copias de `src/lib/supabase/client.ts`;
+2. las siete copias de `src/lib/supabase/server.ts`;
+3. los seis `middleware.ts` presentes;
+4. los tres `src/lib/supabase/proxy.ts` presentes;
+5. el único `src/lib/supabase/admin.ts`;
+6. las tres copias de `src/lib/supabase/employee-sites.ts`;
+7. el cliente alterno `src/utils/supabase/client.ts` de PULSO;
+8. ciclo de vida, configuración, claves, cookies, errores, privilegios y consumo;
+9. relación entre cliente, frontera de sesión y reglas locales de cada aplicación;
+10. compatibilidad declarada de `@supabase/ssr`, `@supabase/supabase-js` y Next;
+11. destino documental exacto de cada brecha.
+
+Se excluyen:
+
+| Materia                                                  | Tarea propietaria                                      |
+| -------------------------------------------------------- | ------------------------------------------------------ |
+| tipos públicos, generics y contratos definitivos         | `SHELL-AUD-009`; `SHELL-CON-007`; `SHELL-CON-008`      |
+| decisión final compartir / generar / mantener local      | `SHELL-AUD-010`                                        |
+| retiro de helpers o clientes sin consumidor confirmado   | `SHELL-AUD-011`                                        |
+| mecanismo físico de distribución y versionado            | `SHELL-PKG-001` a `SHELL-PKG-008`                      |
+| implementación de adapters server y client               | `SHELL-AUTH-002`                                       |
+| gates contra consumidores legacy                         | `SHELL-AUTH-004`                                       |
+| migración multi-repositorio                              | `SHELL-AUTH-005`                                       |
+| cambios de esquema, RLS, RPC, funciones o datos Supabase | bloques propietarios de Supabase                       |
+| validación remota, productiva o de dispositivo           | fase de implementación y certificación correspondiente |
+
+Esta auditoría no elige todavía el paquete, la API pública ni el mecanismo de actualización.
+
+---
+
+#### 5. Taxonomía de comparación
+
+| Estado                       | Criterio                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------- |
+| `PARIDAD_BYTE`               | mismo blob Git                                                            |
+| `PARIDAD_SEMANTICA`          | misma entrada, salida, ciclo de vida y efecto observable                  |
+| `DERIVA_DE_FORMATO`          | BOM, fin de línea, comentarios, espaciado o formato sin cambio ejecutable |
+| `DIVERGENCIA_DE_CICLO`       | singleton frente a nueva instancia por llamada                            |
+| `DIVERGENCIA_DE_COOKIE`      | cambia dominio, propagación, borrado o tratamiento por host               |
+| `DIVERGENCIA_DE_FALLO`       | cambia fail-open, redirección, limpieza o silenciamiento de error         |
+| `EXTENSION_LOCAL_CONFIRMADA` | comportamiento propio de una aplicación con evidencia actual              |
+| `MEZCLA_BASE_DOMINIO`        | una frontera compartida contiene reglas empresariales locales             |
+| `SIN_CONSUMIDOR_CONFIRMADO`  | solo se localizó declaración; no una invocación externa                   |
+| `FRONTERA_PRIVILEGIADA`      | usa service role o bypass de sesión de usuario                            |
+| `PENDIENTE_DE_EVIDENCIA`     | la fuente actual no demuestra comportamiento operativo o remoto           |
+
+Un hash distinto no implica automáticamente un contrato distinto. Un mismo helper tampoco se contabiliza como frontera activa si no existe un consumidor confirmado.
+
+---
+
+#### 6. Conciliación de familias canónicas
+
+| ID canónico | Ruta o responsabilidad               | Ocurrencias | Blobs | Variantes semánticas | Clasificación                                    | Destino                                             |
+| ----------- | ------------------------------------ | ----------: | ----: | -------------------: | ------------------------------------------------ | --------------------------------------------------- |
+| `FAM-014`   | `src/lib/supabase/client.ts`         |       **7** | **5** |                **3** | `DUPLICADA_MIXTA_CON_DERIVA_DE_CICLO_Y_COOKIE`   | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
+| `FAM-015`   | `src/lib/supabase/server.ts`         |       **7** | **6** |                **3** | `DUPLICADA_MIXTA_CON_DERIVA_DE_COOKIE`           | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002`  |
+| `FAM-016`   | `middleware.ts`                      |       **6** | **6** |                **5** | `DISTRIBUCION_PARCIAL_DIVERGENTE`                | `SHELL-AUD-010`; `SHELL-AUTH-002`; `SHELL-AUTH-005` |
+| `FAM-017`   | `src/lib/supabase/proxy.ts`          |       **3** | **3** |                **2** | `DISTRIBUCION_PARCIAL_SIN_CONSUMIDOR_CONFIRMADO` | `SHELL-AUD-010`; `SHELL-AUD-011`                    |
+| `FAM-024`   | `src/lib/supabase/admin.ts`          |       **1** | **1** |                **1** | `UNICA_PRIVILEGIADA_CONSUMIDA`                   | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002`  |
+| `FAM-025`   | `src/lib/supabase/employee-sites.ts` |       **3** | **2** |                **1** | `PARIDAD_SEMANTICA_CON_DERIVA_DE_FORMATO`        | `SHELL-AUD-009`; `SHELL-AUD-010`                    |
+| `FAM-026`   | `src/utils/supabase/client.ts`       |       **1** | **1** |                **1** | `UNICA_SIN_CONSUMIDOR_CONFIRMADO`                | `SHELL-AUD-010`; `SHELL-AUD-011`                    |
+
+**Conciliación:** 7 familias esperadas, 7 materializadas, 28 ocurrencias, 24 blobs, 16 variantes semánticas, 0 familias omitidas y 0 identificadores duplicados.
+
+---
+
+#### 7. Dependencias y compatibilidad declarada
+
+| Superficie | `@supabase/ssr` | `@supabase/supabase-js` | Next declarado |
+| ---------- | --------------- | ----------------------- | -------------- |
+| SHELL      | `^0.8.0`        | `^2.90.1`               | `16.1.1`       |
+| VISO       | `^0.8.0`        | `^2.90.1`               | `^16.1.6`      |
+| NEXO       | `^0.8.0`        | `^2.90.1`               | `^16.2.3`      |
+| FOGO       | `^0.8.0`        | `^2.90.1`               | `^16.2.4`      |
+| ORIGO      | `^0.8.0`        | `^2.90.1`               | `^16.2.1`      |
+| PULSO      | `^0.8.0`        | `^2.90.1`               | `16.1.1`       |
+| NUMERA     | `^0.8.0`        | `^2.90.1`               | `^16.2.1`      |
+
+Conclusiones permitidas:
+
+- las restricciones declaradas de Supabase son iguales en las siete superficies;
+- la deriva observada proviene del código local, no de restricciones Supabase diferentes en `package.json`;
+- existen cinco bandas declaradas de Next;
+- esta tarea no resolvió lockfiles, despliegues ni comportamiento remoto y no declara paridad operativa multi-versión.
+
+---
+
+#### 8. Clientes browser primarios
+
+##### 8.1. Contrato común
+
+Los siete clientes primarios:
+
+- usan `createBrowserClient` de `@supabase/ssr`;
+- resuelven URL en el orden `NEXT_PUBLIC_SUPABASE_URL` y luego `SUPABASE_URL`;
+- resuelven clave en el orden `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `NEXT_PUBLIC_SUPABASE_ANON_KEY` y `SUPABASE_ANON_KEY`;
+- fallan explícitamente cuando falta URL o clave;
+- no están parametrizados por un tipo compartido `Database`.
+
+La presencia de fallbacks server-only dentro de código browser no demuestra que esas variables estén disponibles en el bundle. Esa disponibilidad queda como evidencia pendiente, no como defecto confirmado.
+
+##### 8.2. Matriz semántica
+
+| Superficie | Ciclo de vida      | Fallbacks comunes | Dominio de cookie browser    | Variante                        |
+| ---------- | ------------------ | ----------------- | ---------------------------- | ------------------------------- |
+| SHELL      | `POR_LLAMADA`      | sí                | sí, mediante `cookieOptions` | `BROWSER-SHELL-DOMAIN-PER_CALL` |
+| VISO       | `SINGLETON_MODULO` | sí                | no                           | `BROWSER-SINGLETON-BASE`        |
+| NEXO       | `SINGLETON_MODULO` | sí                | no                           | `BROWSER-SINGLETON-BASE`        |
+| FOGO       | `SINGLETON_MODULO` | sí                | no                           | `BROWSER-SINGLETON-BASE`        |
+| ORIGO      | `SINGLETON_MODULO` | sí                | no                           | `BROWSER-SINGLETON-BASE`        |
+| PULSO      | `POR_LLAMADA`      | sí                | no                           | `BROWSER-PULSO-PER_CALL`        |
+| NUMERA     | `SINGLETON_MODULO` | sí                | no                           | `BROWSER-SINGLETON-BASE`        |
+
+La familia singleton conserva una sola instancia por módulo. SHELL y PULSO crean instancias nuevas por llamada, pero solo SHELL configura explícitamente dominio de cookie desde el cliente browser.
+
+##### 8.3. Cliente alterno de PULSO
+
+`src/utils/supabase/client.ts`:
+
+- usa únicamente `NEXT_PUBLIC_SUPABASE_URL` y `NEXT_PUBLIC_SUPABASE_ANON_KEY`;
+- valida que la URL comience por `http`;
+- crea una instancia nueva por llamada;
+- no aplica dominio de cookie;
+- contiene BOM;
+- no tuvo consumidor externo confirmado en la búsqueda actual.
+
+No se autoriza retirarlo aquí. Su disposición pertenece a `SHELL-AUD-011`.
+
+---
+
+#### 9. Clientes server
+
+##### 9.1. Contrato común
+
+Los siete clientes server:
+
+- usan `createServerClient`;
+- leen `cookies()` de Next;
+- conservan la misma precedencia de URL y clave que los clientes browser primarios;
+- exponen `getAll` y `setAll`;
+- silencian la excepción producida cuando un Server Component no puede escribir cookies;
+- no exponen razón estructurada ni telemetría cuando esa escritura falla;
+- no están parametrizados por un tipo compartido `Database`.
+
+##### 9.2. Matriz de política de cookies
+
+| Superficie | Mecanismo de dominio               | Sensibilidad al host                    | Variante                      |
+| ---------- | ---------------------------------- | --------------------------------------- | ----------------------------- |
+| SHELL      | `cookieOptions` global del cliente | no depende del host de la solicitud     | `SERVER-SHELL-COOKIE_OPTIONS` |
+| VISO       | mezcla dominio en cada `set`       | dominio configurado estático            | `SERVER-STATIC-DOMAIN`        |
+| NEXO       | mezcla dominio en cada `set`       | suprime dominio cuando el host es local | `SERVER-NEXO-HOST_AWARE`      |
+| FOGO       | mezcla dominio en cada `set`       | dominio configurado estático            | `SERVER-STATIC-DOMAIN`        |
+| ORIGO      | mezcla dominio en cada `set`       | dominio configurado estático            | `SERVER-STATIC-DOMAIN`        |
+| PULSO      | mezcla dominio en cada `set`       | dominio configurado estático            | `SERVER-STATIC-DOMAIN`        |
+| NUMERA     | mezcla dominio en cada `set`       | dominio configurado estático            | `SERVER-STATIC-DOMAIN`        |
+
+La diferencia de NEXO es sustantiva: inspecciona `x-forwarded-host` o `host` y elimina el dominio configurado cuando la solicitud es local. SHELL usa un mecanismo distinto, mediante `cookieOptions` del cliente. Los otros cinco runtimes aplican un dominio estático en cada escritura.
+
+---
+
+#### 10. Middleware y frontera activa de sesión
+
+| Superficie | Destino sin sesión         | Matcher o exclusiones                        | Extensión local                                                      | Variante                         |
+| ---------- | -------------------------- | -------------------------------------------- | -------------------------------------------------------------------- | -------------------------------- |
+| SHELL      | login central configurable | `_next`, `login`, estáticos, `api`           | headers de diagnóstico; dominio configurable                         | `MW-SHELL-CENTRAL`               |
+| VISO       | `/login` local             | `_next`, `login`, estáticos, `api`           | flujo local base                                                     | `MW-VISO-LOCAL_BASE`             |
+| NEXO       | `/login` local             | agrega `manifest.webmanifest`; excluye `api` | no-store; localhost-aware; lógica de kiosco y consulta de inventario | `MW-NEXO-KIOSK`                  |
+| FOGO       | `/login` local             | agrega `no-access`; excluye `api`            | flujo local base                                                     | `MW-FOGO_NUMERA-LOCAL_NO_ACCESS` |
+| ORIGO      | `/login` local             | agrega `no-access`; excluye `api`            | excepción pública de PDF de orden de compra                          | `MW-ORIGO-PDF_EXCEPTION`         |
+| PULSO      | `NO_APLICA`                | `NO_APLICA`                                  | no existe `middleware.ts` raíz                                       | `SIN_FRONTERA_GLOBAL_CONFIRMADA` |
+| NUMERA     | `/login` local             | agrega `no-access`; excluye `api`            | flujo local base                                                     | `MW-FOGO_NUMERA-LOCAL_NO_ACCESS` |
+
+Invariantes de los seis middleware presentes:
+
+1. detectan cookies Supabase por prefijo `sb-`;
+2. construyen un `createServerClient` por solicitud;
+3. ejecutan `auth.getUser()`;
+4. limpian cookies Supabase ante error de autenticación o usuario ausente;
+5. redirigen cuando falta configuración;
+6. excluyen `/api` de su matcher global.
+
+La exclusión de `/api` significa que la protección de route handlers no queda demostrada por middleware y debe depender de guards en destino y gates de migración.
+
+NEXO no es una variante base pura: incorpora no-store, resolución de dominio por host, identidad fija de kiosco, consulta a `inventory_locations` y redirecciones de negocio. ORIGO conserva una excepción pública de PDF cuya validación se delega al route handler. Ambas diferencias deben permanecer explícitas durante cualquier convergencia.
+
+---
+
+#### 11. Helpers proxy
+
+| Superficie | Blob                                       | Semántica de fallo                                                                         | Dominio                                                       | Variante                 |
+| ---------- | ------------------------------------------ | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------- | ------------------------ |
+| VISO       | `d02cbb7582f711f5d8e8ac535885faa548bf995e` | continúa sin configuración, sin cookies o ante error distinto de `refresh_token_not_found` | estático                                                      | `PROXY-BASE-UNCONSUMED`  |
+| NEXO       | `924419c77afff452ed3b13385fbf1c6016e4a34a` | mismo flujo ejecutable de VISO                                                             | estático; no replica la excepción local del server/middleware | `PROXY-BASE-UNCONSUMED`  |
+| PULSO      | `759477c537f3dc3e247d427418027affce07b707` | agrega extracción defensiva del código de error                                            | estático                                                      | `PROXY-PULSO-UNCONSUMED` |
+
+La búsqueda de `updateSession(` localizó la declaración en cada helper, pero no una invocación externa. Por tanto:
+
+```text
+proxy.ts PRESENTE
+≠ proxy.ts ACTIVO
+≠ middleware GLOBAL
+```
+
+Los helpers son fail-open cuando faltan variables, faltan cookies o ocurre un error distinto de `refresh_token_not_found`. En ese código específico limpian cookies solo para ese código. Esta semántica difiere del middleware activo, que redirige y limpia ante error o ausencia de usuario.
+
+NEXO tiene además una inconsistencia interna: su cliente server y middleware activos son sensibles al host local, mientras su proxy sin consumidor usa el dominio estático.
+
+---
+
+#### 12. Cliente administrativo privilegiado
+
+VISO contiene el único `src/lib/supabase/admin.ts` del alcance:
+
+- declara `server-only`;
+- usa `createClient` de `@supabase/supabase-js`;
+- requiere `SUPABASE_SERVICE_ROLE_KEY`;
+- desactiva `autoRefreshToken` y `persistSession`;
+- tiene consumidores confirmados en vacantes, usuarios, horarios y otras superficies administrativas;
+- no está tipado mediante un contrato compartido `Database`.
+
+Se clasifica como `FRONTERA_PRIVILEGIADA_LOCAL_CONSUMIDA`. No debe incorporarse sin distinción a un cliente de sesión de usuario. Su adapter, propiedad y migración corresponden a `SHELL-AUTH-002`, `SHELL-AUTH-005` y la decisión de `SHELL-AUD-010`.
+
+---
+
+#### 13. Normalizador `employee-sites`
+
+FOGO y ORIGO son byte-idénticos. NUMERA cambia comentarios y formato, pero conserva la misma API ejecutable:
+
+```ts
+normalizeSitesFromEmployeeSites(rows) => SiteOption[]
+```
+
+El helper acepta que la relación `sites` llegue como objeto, arreglo o `null`, toma el primer elemento cuando es arreglo y elimina resultados nulos. Se clasifica como una sola variante semántica. La decisión sobre su contrato tipado pertenece a `SHELL-AUD-009`; su disposición física pertenece a `SHELL-AUD-010`.
+
+---
+
+#### 14. Matriz completa de ocurrencias
+
+| ID             | Familia   | Superficie | Ruta                                 | Blob SHA                                   | Variante semántica               | Evidencia de uso               | Decisión de esta tarea                                 |
+| -------------- | --------- | ---------- | ------------------------------------ | ------------------------------------------ | -------------------------------- | ------------------------------ | ------------------------------------------------------ |
+| `SUPA-CLI-001` | `FAM-014` | SHELL      | `src/lib/supabase/client.ts`         | `1bc24c115914ffae21ddfcaecf1876d8fb8b6f14` | `BROWSER-SHELL-DOMAIN-PER_CALL`  | `IMPORTACIONES_CONFIRMADAS`    | conservar como variante hasta decisión de arquitectura |
+| `SUPA-CLI-002` | `FAM-014` | VISO       | `src/lib/supabase/client.ts`         | `dfed99c57cf1772c561b1f979cb948e564ad973a` | `BROWSER-SINGLETON-BASE`         | `IMPORTACIONES_CONFIRMADAS`    | paridad semántica con grupo singleton                  |
+| `SUPA-CLI-003` | `FAM-014` | NEXO       | `src/lib/supabase/client.ts`         | `eae6ae4a4ee970ab760ed771b0dc4a5d79ca7b22` | `BROWSER-SINGLETON-BASE`         | `IMPORTACIONES_CONFIRMADAS`    | paridad byte con FOGO y ORIGO                          |
+| `SUPA-CLI-004` | `FAM-014` | FOGO       | `src/lib/supabase/client.ts`         | `eae6ae4a4ee970ab760ed771b0dc4a5d79ca7b22` | `BROWSER-SINGLETON-BASE`         | `IMPORTACIONES_CONFIRMADAS`    | paridad byte con NEXO y ORIGO                          |
+| `SUPA-CLI-005` | `FAM-014` | ORIGO      | `src/lib/supabase/client.ts`         | `eae6ae4a4ee970ab760ed771b0dc4a5d79ca7b22` | `BROWSER-SINGLETON-BASE`         | `IMPORTACIONES_CONFIRMADAS`    | paridad byte con NEXO y FOGO                           |
+| `SUPA-CLI-006` | `FAM-014` | PULSO      | `src/lib/supabase/client.ts`         | `1306e2e4ef77265722d983f28e123bbac320d9f5` | `BROWSER-PULSO-PER_CALL`         | `IMPORTACIONES_CONFIRMADAS`    | cliente browser principal de PULSO                     |
+| `SUPA-CLI-007` | `FAM-014` | NUMERA     | `src/lib/supabase/client.ts`         | `23215c75eea9b51fa5b8e920a84d3ed20bda48ba` | `BROWSER-SINGLETON-BASE`         | `IMPORTACIONES_CONFIRMADAS`    | misma API ejecutable; deriva física de formato         |
+| `SUPA-CLI-008` | `FAM-015` | SHELL      | `src/lib/supabase/server.ts`         | `cffa5fd4faf351a44a382cfc4319617ec953341a` | `SERVER-SHELL-COOKIE_OPTIONS`    | `IMPORTACIONES_CONFIRMADAS`    | política global de cookie distinta                     |
+| `SUPA-CLI-009` | `FAM-015` | VISO       | `src/lib/supabase/server.ts`         | `f01589daefdd141a496d0d81a34ecdd7bf1e09fa` | `SERVER-STATIC-DOMAIN`           | `IMPORTACIONES_CONFIRMADAS`    | dominio estático por cookie                            |
+| `SUPA-CLI-010` | `FAM-015` | NEXO       | `src/lib/supabase/server.ts`         | `87d3638e1ce1d9751800def61f14dd7945d601a2` | `SERVER-NEXO-HOST_AWARE`         | `IMPORTACIONES_CONFIRMADAS`    | única variante sensible al host local                  |
+| `SUPA-CLI-011` | `FAM-015` | FOGO       | `src/lib/supabase/server.ts`         | `a5da4960b0d50c5436ffdf9ff1e7f199f4d98bdb` | `SERVER-STATIC-DOMAIN`           | `IMPORTACIONES_CONFIRMADAS`    | paridad byte con ORIGO                                 |
+| `SUPA-CLI-012` | `FAM-015` | ORIGO      | `src/lib/supabase/server.ts`         | `a5da4960b0d50c5436ffdf9ff1e7f199f4d98bdb` | `SERVER-STATIC-DOMAIN`           | `IMPORTACIONES_CONFIRMADAS`    | paridad byte con FOGO                                  |
+| `SUPA-CLI-013` | `FAM-015` | PULSO      | `src/lib/supabase/server.ts`         | `05743f75577d79c4ebe3bd5b81c944627e00fc35` | `SERVER-STATIC-DOMAIN`           | `IMPORTACIONES_CONFIRMADAS`    | misma semántica de dominio estático                    |
+| `SUPA-CLI-014` | `FAM-015` | NUMERA     | `src/lib/supabase/server.ts`         | `46d1ad65d091e9a204bee938e37193178dc80c5d` | `SERVER-STATIC-DOMAIN`           | `IMPORTACIONES_CONFIRMADAS`    | misma semántica; deriva física de formato              |
+| `SUPA-CLI-015` | `FAM-016` | SHELL      | `middleware.ts`                      | `862d185fd1bbc8101ed87db5e286d6b0b0dde659` | `MW-SHELL-CENTRAL`               | `EJECUCION_POR_FRAMEWORK`      | frontera global central                                |
+| `SUPA-CLI-016` | `FAM-016` | VISO       | `middleware.ts`                      | `3099628a445dca9c401b87441b3c05c24894161d` | `MW-VISO-LOCAL_BASE`             | `EJECUCION_POR_FRAMEWORK`      | frontera global local base                             |
+| `SUPA-CLI-017` | `FAM-016` | NEXO       | `middleware.ts`                      | `3db2c7e31dcada218a8e8cd1efc41db8c899b1d7` | `MW-NEXO-KIOSK`                  | `EJECUCION_POR_FRAMEWORK`      | mezcla autenticación y política de kiosco              |
+| `SUPA-CLI-018` | `FAM-016` | FOGO       | `middleware.ts`                      | `596e62e2716a32e3acea3e79c79b60c7762271f2` | `MW-FOGO_NUMERA-LOCAL_NO_ACCESS` | `EJECUCION_POR_FRAMEWORK`      | frontera local con exclusión `no-access`               |
+| `SUPA-CLI-019` | `FAM-016` | ORIGO      | `middleware.ts`                      | `0420a23343af1ab60055f090891823f6860afc00` | `MW-ORIGO-PDF_EXCEPTION`         | `EJECUCION_POR_FRAMEWORK`      | excepción pública explícita de PDF                     |
+| `SUPA-CLI-020` | `FAM-016` | NUMERA     | `middleware.ts`                      | `499444d0e05d0beb0824b0e6a964fa1d199cdbb7` | `MW-FOGO_NUMERA-LOCAL_NO_ACCESS` | `EJECUCION_POR_FRAMEWORK`      | misma semántica que FOGO; formato distinto             |
+| `SUPA-CLI-021` | `FAM-017` | VISO       | `src/lib/supabase/proxy.ts`          | `d02cbb7582f711f5d8e8ac535885faa548bf995e` | `PROXY-BASE-UNCONSUMED`          | `SOLO_DECLARACION_LOCALIZADA`  | no contabilizar como frontera activa                   |
+| `SUPA-CLI-022` | `FAM-017` | NEXO       | `src/lib/supabase/proxy.ts`          | `924419c77afff452ed3b13385fbf1c6016e4a34a` | `PROXY-BASE-UNCONSUMED`          | `SOLO_DECLARACION_LOCALIZADA`  | no replica política host-aware                         |
+| `SUPA-CLI-023` | `FAM-017` | PULSO      | `src/lib/supabase/proxy.ts`          | `759477c537f3dc3e247d427418027affce07b707` | `PROXY-PULSO-UNCONSUMED`         | `SOLO_DECLARACION_LOCALIZADA`  | no suple la ausencia de middleware                     |
+| `SUPA-CLI-024` | `FAM-024` | VISO       | `src/lib/supabase/admin.ts`          | `0c46abd8a9e9a1e17fa3077cf83a883085484850` | `ADMIN-VISO-SERVICE_ROLE`        | `IMPORTACIONES_CONFIRMADAS`    | frontera privilegiada local y server-only              |
+| `SUPA-CLI-025` | `FAM-025` | FOGO       | `src/lib/supabase/employee-sites.ts` | `d192e36a34afc313dc403348a36f17fefafb33f3` | `EMPLOYEE-SITES-NORMALIZER`      | `PRESENCIA_RUNTIME_CONFIRMADA` | paridad byte con ORIGO                                 |
+| `SUPA-CLI-026` | `FAM-025` | ORIGO      | `src/lib/supabase/employee-sites.ts` | `d192e36a34afc313dc403348a36f17fefafb33f3` | `EMPLOYEE-SITES-NORMALIZER`      | `IMPORTACIONES_CONFIRMADAS`    | paridad byte con FOGO                                  |
+| `SUPA-CLI-027` | `FAM-025` | NUMERA     | `src/lib/supabase/employee-sites.ts` | `fd925fa50a6400736100067de4114d1f2c6dc62e` | `EMPLOYEE-SITES-NORMALIZER`      | `PRESENCIA_RUNTIME_CONFIRMADA` | misma API ejecutable; comentarios/formato distintos    |
+| `SUPA-CLI-028` | `FAM-026` | PULSO      | `src/utils/supabase/client.ts`       | `34f32531942ea177f5a8f6bb1990ebc303855626` | `BROWSER-PULSO-ALT-UNCONSUMED`   | `SOLO_DECLARACION_LOCALIZADA`  | cliente paralelo sin consumidor confirmado             |
+
+**Conciliación de ocurrencias:** 28 esperadas, 28 materializadas, 28 identificadores únicos, 0 faltantes y 0 duplicados.
+
+---
+
+#### 15. Catálogo de variantes semánticas
+
+| Variante                         | Familia      | Superficies                      | Contrato distintivo                                                         | Destino                                            |
+| -------------------------------- | ------------ | -------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------- |
+| `BROWSER-SHELL-DOMAIN-PER_CALL`  | browser      | SHELL                            | nuevo cliente por llamada; `cookieOptions.domain` configurable              | `SHELL-AUD-010`; `SHELL-AUTH-002`                  |
+| `BROWSER-SINGLETON-BASE`         | browser      | VISO, NEXO, FOGO, ORIGO, NUMERA  | singleton de módulo; sin `cookieOptions` explícito                          | `SHELL-AUD-010`; `SHELL-AUTH-002`                  |
+| `BROWSER-PULSO-PER_CALL`         | browser      | PULSO                            | nuevo cliente por llamada; sin dominio explícito                            | `SHELL-AUD-010`; `SHELL-AUTH-002`                  |
+| `BROWSER-PULSO-ALT-UNCONSUMED`   | browser      | PULSO                            | variables públicas estrictas; valida URL; sin consumidor confirmado         | `SHELL-AUD-011`                                    |
+| `SERVER-SHELL-COOKIE_OPTIONS`    | server       | SHELL                            | dominio mediante opciones globales del cliente                              | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002` |
+| `SERVER-NEXO-HOST_AWARE`         | server       | NEXO                             | dominio por cookie y supresión en host local                                | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002` |
+| `SERVER-STATIC-DOMAIN`           | server       | VISO, FOGO, ORIGO, PULSO, NUMERA | dominio configurado estático aplicado en `setAll`                           | `SHELL-AUD-010`; `SHELL-AUTH-002`                  |
+| `MW-SHELL-CENTRAL`               | middleware   | SHELL                            | login central configurable y headers de diagnóstico                         | `SHELL-AUD-010`; `SHELL-AUTH-002`                  |
+| `MW-VISO-LOCAL_BASE`             | middleware   | VISO                             | login local y autenticación global base                                     | `SHELL-AUD-010`; `SHELL-AUTH-005`                  |
+| `MW-NEXO-KIOSK`                  | middleware   | NEXO                             | auth, no-store, política local de cookie y routing de kiosco                | `SHELL-AUD-009`; `SHELL-AUD-010`                   |
+| `MW-FOGO_NUMERA-LOCAL_NO_ACCESS` | middleware   | FOGO, NUMERA                     | login local con exclusión `no-access`                                       | `SHELL-AUD-010`; `SHELL-AUTH-005`                  |
+| `MW-ORIGO-PDF_EXCEPTION`         | middleware   | ORIGO                            | login local y excepción pública de PDF                                      | `SHELL-AUD-010`; `SHELL-AUTH-005`                  |
+| `PROXY-BASE-UNCONSUMED`          | proxy        | VISO, NEXO                       | renovación fail-open; solo limpia `refresh_token_not_found`; sin invocación | `SHELL-AUD-011`                                    |
+| `PROXY-PULSO-UNCONSUMED`         | proxy        | PULSO                            | misma base con extracción defensiva de código; sin invocación               | `SHELL-AUD-011`                                    |
+| `ADMIN-VISO-SERVICE_ROLE`        | admin        | VISO                             | cliente server-only con service role y sesión no persistente                | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002` |
+| `EMPLOYEE-SITES-NORMALIZER`      | normalizador | FOGO, ORIGO, NUMERA              | normaliza relación objeto/arreglo a `SiteOption[]`                          | `SHELL-AUD-009`; `SHELL-AUD-010`                   |
+
+**Conciliación semántica:** 16 variantes esperadas, 16 materializadas y 0 códigos duplicados.
+
+---
+
+#### 16. Decisión por superficie runtime
+
+| Superficie | Browser                       | Server               | Frontera activa            | Extensiones o helpers                              | Clasificación                            | Decisión                                                      |
+| ---------- | ----------------------------- | -------------------- | -------------------------- | -------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------- |
+| SHELL      | por llamada + dominio browser | cookieOptions global | central                    | sin cliente admin local                            | `DIVERGENTE_CONTROLADA`                  | preservar evidencia; decidir adapter común en `SHELL-AUD-010` |
+| VISO       | singleton                     | dominio estático     | local base                 | admin service-role consumido; proxy sin consumidor | `DIVERGENTE_PRIVILEGIADA`                | separar adapter común de frontera admin local                 |
+| NEXO       | singleton                     | host-aware           | local con kiosco           | proxy estático sin consumidor                      | `DIVERGENTE_POR_HOST_Y_DOMINIO`          | no mezclar auth compartida con política de kiosco             |
+| FOGO       | singleton                     | dominio estático     | local base con `no-access` | normalizador employee-sites                        | `BASE_REUTILIZABLE`                      | candidato a adapter común con extensión local explícita       |
+| ORIGO      | singleton                     | dominio estático     | local con PDF público      | normalizador employee-sites                        | `BASE_MAS_EXCEPCION_LOCAL`               | mantener excepción como política declarada, no fork implícito |
+| PULSO      | por llamada                   | dominio estático     | sin middleware global      | proxy y cliente alterno sin consumidor confirmado  | `BRECHA_DE_FRONTERA`                     | no asumir protección global; resolver migración y retiro      |
+| NUMERA     | singleton                     | dominio estático     | local base con `no-access` | normalizador employee-sites                        | `PARIDAD_SEMANTICA_CON_FORMATO_DISTINTO` | converger sin perder política local documentada               |
+
+**Conciliación:** 7 superficies esperadas, 7 decisiones materializadas, 0 superficies omitidas.
+
+---
+
+#### 17. Reglas de convergencia derivadas
+
+Cualquier diseño posterior deberá conservar simultáneamente estas reglas:
+
+1. distinguir cliente browser, cliente server y cliente administrativo privilegiado;
+2. definir explícitamente si el cliente browser es singleton o por llamada;
+3. definir una sola precedencia de URL y clave por entorno;
+4. no depender de variables server-only dentro del browser sin prueba de disponibilidad;
+5. formalizar dominio, path, borrado y excepción de localhost para cookies Supabase;
+6. no silenciar fallos de escritura sin una salida observable o razón estructurada;
+7. separar renovación de sesión de reglas empresariales de kiosco, inventario o documentos públicos;
+8. preservar extensiones locales mediante configuración o adapters, no mediante forks opacos;
+9. no contabilizar un helper sin invocación como protección activa;
+10. proteger route handlers excluidos del middleware mediante guards verificables;
+11. mantener service role fuera del browser y de clientes de sesión de usuario;
+12. tipar clientes y helpers contra contratos compartidos antes de migrar consumidores;
+13. comprobar compatibilidad en las bandas de Next realmente soportadas;
+14. aplicar gates antes de retirar clientes o rutas legacy.
+
+Estas reglas no deciden el mecanismo físico de distribución.
+
+---
+
+#### 18. Registro de hallazgos y destinos
+
+| ID                | Hallazgo                                                                                                                 | Estado                            | Tarea responsable                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------- | --------------------------------------------------- |
+| `H-SHELL-008-001` | siete clientes browser primarios producen cinco blobs y tres contratos semánticos                                        | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-PKG-001`                    |
+| `H-SHELL-008-002` | VISO, NEXO, FOGO, ORIGO y NUMERA comparten el patrón singleton                                                           | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
+| `H-SHELL-008-003` | SHELL crea cliente browser por llamada y aplica dominio de cookie explícito                                              | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
+| `H-SHELL-008-004` | PULSO crea el cliente browser principal por llamada sin dominio explícito                                                | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
+| `H-SHELL-008-005` | PULSO conserva un segundo cliente browser sin consumidor confirmado                                                      | `SIN_CONSUMIDOR_CONFIRMADO`       | `SHELL-AUD-011`                                     |
+| `H-SHELL-008-006` | los clientes primarios comparten la misma precedencia de URL y clave                                                     | `CONFIRMADO`                      | `SHELL-AUD-009`; `SHELL-AUD-010`                    |
+| `H-SHELL-008-007` | el fallback browser a variables no públicas existe en código, pero su disponibilidad efectiva en bundles no fue validada | `PENDIENTE_DE_EVIDENCIA`          | `SHELL-AUD-009`; `SHELL-AUTH-002`                   |
+| `H-SHELL-008-008` | siete clientes server producen seis blobs y tres contratos semánticos                                                    | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-PKG-001`                    |
+| `H-SHELL-008-009` | cinco runtimes aplican dominio estático dentro de `setAll`                                                               | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
+| `H-SHELL-008-010` | NEXO es el único cliente server que elimina dominio en hosts locales                                                     | `EXTENSION_LOCAL_CONFIRMADA`      | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002`  |
+| `H-SHELL-008-011` | SHELL delega el dominio a `cookieOptions` global del cliente                                                             | `CONFIRMADO`                      | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002`  |
+| `H-SHELL-008-012` | los siete clientes server silencian errores de escritura de cookies en Server Components                                 | `CONFIRMADO`                      | `SHELL-AUD-009`; `SHELL-CON-008`; `SHELL-AUTH-002`  |
+| `H-SHELL-008-013` | seis repositorios tienen middleware global y PULSO no                                                                    | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-001`; `SHELL-AUTH-005` |
+| `H-SHELL-008-014` | los seis middleware físicos representan cinco contratos semánticos                                                       | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-002`; `SHELL-AUTH-005` |
+| `H-SHELL-008-015` | NEXO mezcla renovación de sesión con routing y consulta de dominio de kiosco                                             | `MEZCLA_BASE_DOMINIO_CONFIRMADA`  | `SHELL-AUD-009`; `SHELL-AUD-010`                    |
+| `H-SHELL-008-016` | ORIGO conserva una excepción pública explícita para PDF con protección delegada al destino                               | `EXTENSION_LOCAL_CONFIRMADA`      | `SHELL-AUD-010`; `SHELL-AUTH-005`                   |
+| `H-SHELL-008-017` | todos los middleware presentes excluyen `/api` del matcher global                                                        | `CONFIRMADO`                      | `SHELL-AUTH-004`; `SHELL-AUTH-005`                  |
+| `H-SHELL-008-018` | los tres helpers proxy representan dos contratos y carecen de invocación externa confirmada                              | `SIN_CONSUMIDOR_CONFIRMADO`       | `SHELL-AUD-011`                                     |
+| `H-SHELL-008-019` | proxy permite continuar ante varios fallos mientras middleware redirige y limpia cookies                                 | `DIVERGENCIA_DE_FALLO_CONFIRMADA` | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
+| `H-SHELL-008-020` | el proxy de NEXO usa dominio estático y no replica su política host-aware activa                                         | `INCONSISTENCIA_LOCAL_CONFIRMADA` | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
+| `H-SHELL-008-021` | el proxy sin consumidor de PULSO no compensa la ausencia de middleware global                                            | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUD-011`; `SHELL-AUTH-005`  |
+| `H-SHELL-008-022` | VISO posee el único cliente service-role encapsulado como server-only y tiene consumidores confirmados                   | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-002`; `SHELL-AUTH-005` |
+| `H-SHELL-008-023` | el cliente admin no está parametrizado por un contrato compartido de base de datos                                       | `CONFIRMADO`                      | `SHELL-AUD-009`; `SHELL-CON-007`; `SHELL-AUTH-002`  |
+| `H-SHELL-008-024` | los tres helpers employee-sites implementan un solo contrato ejecutable                                                  | `PARIDAD_SEMANTICA_CONFIRMADA`    | `SHELL-AUD-009`; `SHELL-AUD-010`                    |
+| `H-SHELL-008-025` | ninguna fábrica auditada declara un genérico compartido `Database`                                                       | `CONFIRMADO`                      | `SHELL-AUD-009`; `SHELL-CON-007`; `SHELL-AUTH-002`  |
+| `H-SHELL-008-026` | los siete runtimes declaran las mismas restricciones de versión Supabase                                                 | `CONFIRMADO`                      | `SHELL-PKG-004`                                     |
+| `H-SHELL-008-027` | los runtimes declaran cinco bandas de Next y no existe evidencia operativa multi-versión en esta tarea                   | `PENDIENTE_DE_EVIDENCIA`          | `SHELL-PKG-004`; `SHELL-PKG-008`; `SHELL-AUTH-005`  |
+
+Ningún hallazgo queda asignado a una fase genérica. Cada brecha tiene un propietario documental o de implementación existente.
+
+---
+
+#### 19. Handoffs obligatorios
+
+| Materia                                                  | Destino                                           | Condición de salida                                                  |
+| -------------------------------------------------------- | ------------------------------------------------- | -------------------------------------------------------------------- |
+| tipos `Database`, errores, opciones y contratos públicos | `SHELL-AUD-009`; `SHELL-CON-007`; `SHELL-CON-008` | contrato materializado por identidad y sin tipos locales ambiguos    |
+| clasificación compartir / generar / mantener local       | `SHELL-AUD-010`                                   | decisión explícita para las 7 familias y 16 variantes                |
+| retiro de proxy y cliente alterno sin consumidor         | `SHELL-AUD-011`                                   | búsqueda de consumidores, pruebas, rollback y eliminación controlada |
+| mecanismo de distribución                                | `SHELL-PKG-001`                                   | forma de entrega elegida después de cerrar el segmento de auditoría  |
+| compatibilidad por versiones                             | `SHELL-PKG-004`; `SHELL-PKG-008`                  | matriz de versiones soportadas y gates ejecutables                   |
+| adapters canónicos server/client/admin                   | `SHELL-AUTH-002`                                  | implementación sobre contratos y política de cookie aprobados        |
+| bloqueo de nuevos consumidores legacy                    | `SHELL-AUTH-004`                                  | lint, métricas y gates activos                                       |
+| migración multi-repositorio                              | `SHELL-AUTH-005`                                  | consumidores migrados con paridad y rollback                         |
+
+---
+
+#### 20. Criterios de aceptación materializados
+
+| Criterio                                  | Resultado    | Estado     |
+| ----------------------------------------- | ------------ | ---------- |
+| familias canónicas del alcance            | **7 de 7**   | `CUMPLIDO` |
+| ocurrencias físicas esperadas             | **28 de 28** | `CUMPLIDO` |
+| identificadores de ocurrencia únicos      | **28 de 28** | `CUMPLIDO` |
+| variantes semánticas reconciliadas        | **16 de 16** | `CUMPLIDO` |
+| decisiones por superficie runtime         | **7 de 7**   | `CUMPLIDO` |
+| helpers sin consumidor con destino exacto | **4 de 4**   | `CUMPLIDO` |
+| hallazgos con tarea responsable           | **27 de 27** | `CUMPLIDO` |
+| cambios físicos en código o Supabase      | **0**        | `CUMPLIDO` |
+| cambios `TREQ-*`                          | **0**        | `CUMPLIDO` |
+
+La tarea queda documentalmente completa sin ejecutar código ni modificar los repositorios runtime.
+
+---
+
+#### 21. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea reconcilia implementación y consumo actuales, clasifica variantes y asigna cada brecha a tareas ya existentes. No introduce una nueva obligación verificable independiente, no modifica el alcance de un `TREQ-*` vigente y no difiere, descarta ni vuelve obsoleto ningún requisito. Las pruebas de adapters, cookies, middleware, migración, compatibilidad y retiro deberán materializarse en las tareas propietarias indicadas.
+
+| Operación sobre `TREQ-*` | Cantidad |
+| ------------------------ | -------: |
+| creados                  |    **0** |
+| modificados              |    **0** |
+| diferidos                |    **0** |
+| descartados              |    **0** |
+| obsoletos                |    **0** |
+
+No corresponde generar una copia del registro `04A`.
+
+---
+
+#### 22. Cierre y continuidad
+
+Queda establecido que la fundación Supabase actual combina un núcleo repetido con diferencias reales de ciclo de vida, cookies, frontera de sesión, privilegio y reglas locales. La centralización física no puede decidirse únicamente por nombre de archivo o hash.
+
+La única continuidad inmediata reservada es `SHELL-AUD-009 — Comparar tipos y contratos`. No se desarrolla ni modifica dentro de esta tarea. El handoff `SHELL-PKG-001` permanece reservado para después de completar `SHELL-AUD-011`.
+
+
 ### [ ] SHELL-AUD-009 — Comparar tipos y contratos
 ### [ ] SHELL-AUD-010 — Clasificar compartir / generar / mantener local
 ### [ ] SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados

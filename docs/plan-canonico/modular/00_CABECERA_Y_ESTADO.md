@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **293** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **481** |
+| Tareas aprobadas | **482** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1104** |
+| Tareas no iniciadas | **1103** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **30.35% (481/1585)** |
+| Porcentaje de completamiento | **30.41% (482/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-AUD-007 — Comparar componentes UI base** |
-| Tarea actual | **SHELL-AUD-008 — Comparar clientes Supabase** |
+| Última tarea aprobada | **SHELL-AUD-008 — Comparar clientes Supabase** |
+| Tarea actual | **SHELL-AUD-009 — Comparar tipos y contratos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-AUD-009 — Comparar tipos y contratos** |
+| Siguiente tarea | **SHELL-AUD-010 — Clasificar compartir / generar / mantener local** |
 | Bloque actual | **BLOQUE H — Fundación compartida** |
-| Progreso del bloque | **BLOQUE H: 7 de 11 aprobadas; SHELL-AUD-008 pendiente** |
+| Progreso del bloque | **BLOQUE H: 8 de 11 aprobadas; SHELL-AUD-009 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-AUD-007` — Comparar componentes UI base |
-| Tarea actual | `SHELL-AUD-008` — Comparar clientes Supabase — **NO INICIADA** |
-| Siguiente tarea | `SHELL-AUD-009` — Comparar tipos y contratos |
+| Última aprobada | `SHELL-AUD-008` — Comparar clientes Supabase |
+| Tarea actual | `SHELL-AUD-009` — Comparar tipos y contratos — **NO INICIADA** |
+| Siguiente tarea | `SHELL-AUD-010` — Clasificar compartir / generar / mantener local |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE H | **7 DE 11 APROBADAS — ACTUAL SHELL-AUD-008** |
+| BLOQUE H | **8 DE 11 APROBADAS — ACTUAL SHELL-AUD-009** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-AUD-007 — Comparar componentes UI base
-        ↓
-TAREA ACTUAL
 SHELL-AUD-008 — Comparar clientes Supabase
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-AUD-009 — Comparar tipos y contratos
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-AUD-010 — Clasificar compartir / generar / mantener local
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 7 de 11 tareas aprobadas
+BLOQUE H — 8 de 11 tareas aprobadas
 ```

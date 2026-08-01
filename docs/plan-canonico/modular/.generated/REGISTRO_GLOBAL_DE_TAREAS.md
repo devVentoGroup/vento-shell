@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1585** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **481** |
+| Aprobadas | **482** |
 | En propuesta | **0** |
-| No iniciadas | **1104** |
+| No iniciadas | **1103** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **30.35% (481/1585)** |
+| Porcentaje de completamiento | **30.41% (482/1585)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-AUD-007` — Comparar componentes UI base | ✅ APROBADA |
-| Tarea actual | `SHELL-AUD-008` — Comparar clientes Supabase | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-AUD-009` — Comparar tipos y contratos | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-AUD-008` — Comparar clientes Supabase | ✅ APROBADA |
+| Tarea actual | `SHELL-AUD-009` — Comparar tipos y contratos | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-AUD-010` — Clasificar compartir / generar / mantener local | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -694,7 +694,7 @@
 | ✅ APROBADA | `SHELL-AUD-005` | Comparar role override | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-AUD-006` | Comparar AppShell y navegación | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-AUD-007` | Comparar componentes UI base | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-AUD-008` | Comparar clientes Supabase | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-AUD-008` | Comparar clientes Supabase | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-009` | Comparar tipos y contratos | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-010` | Clasificar compartir / generar / mantener local | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-011` | Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
