@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **293** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **474** |
+| Tareas aprobadas | **475** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1111** |
+| Tareas no iniciadas | **1110** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **29.91% (474/1585)** |
+| Porcentaje de completamiento | **29.97% (475/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-TRANS-016 — Aprobar transición antes de iniciar BLOQUE R** |
-| Tarea actual | **NINGUNA — SECUENCIA DOCUMENTAL COMPLETA** |
-| Estado de la tarea actual | **SECUENCIA DOCUMENTAL COMPLETA** |
-| Siguiente tarea | **SHELL-AUD-001 — Buscar código duplicado entre repositorios** |
-| Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 45 de 45 aprobadas; secuencia documental completa** |
+| Última tarea aprobada | **SHELL-AUD-001 — Buscar código duplicado entre repositorios** |
+| Tarea actual | **SHELL-AUD-002 — Comparar guards de autenticación** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **SHELL-AUD-003 — Comparar helpers de permisos** |
+| Bloque actual | **BLOQUE H — Fundación compartida** |
+| Progreso del bloque | **BLOQUE H: 1 de 11 aprobadas; SHELL-AUD-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-TRANS-016` — Aprobar transición antes de iniciar BLOQUE R |
-| Tarea actual | NINGUNA — **SECUENCIA DOCUMENTAL COMPLETA** |
-| Siguiente tarea | `SHELL-AUD-001` — Buscar código duplicado entre repositorios |
+| Última aprobada | `SHELL-AUD-001` — Buscar código duplicado entre repositorios |
+| Tarea actual | `SHELL-AUD-002` — Comparar guards de autenticación — **NO INICIADA** |
+| Siguiente tarea | `SHELL-AUD-003` — Comparar helpers de permisos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **45 DE 45 APROBADAS — SECUENCIA DOCUMENTAL COMPLETA** |
+| BLOQUE H | **1 DE 11 APROBADAS — ACTUAL SHELL-AUD-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,13 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-TRANS-016 — Aprobar transición antes de iniciar BLOQUE R
-        ↓
-SECUENCIA DOCUMENTAL COMPLETA
-        ↓
-SIGUIENTE TAREA RESERVADA
 SHELL-AUD-001 — Buscar código duplicado entre repositorios
         ↓
+TAREA ACTUAL
+SHELL-AUD-002 — Comparar guards de autenticación
+        ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-AUD-003 — Comparar helpers de permisos
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 45 de 45 tareas aprobadas
+BLOQUE H — 1 de 11 tareas aprobadas
 ```

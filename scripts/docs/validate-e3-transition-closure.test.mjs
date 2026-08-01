@@ -55,6 +55,18 @@ test('acepta SUPA-TRANS-016 aprobada sin iniciar el handoff', () => {
   assert.equal(result.handoffTask, 'SHELL-AUD-001');
 });
 
+test('acepta activar la auditoría H después de aprobar el handoff', () => {
+  const sources = validSources();
+  sources.activeSequence = JSON.stringify({
+    sequence_id: 'H-SHARED-AUDIT-001',
+    previous_task_id: 'SUPA-TRANS-016',
+    handoff_task_id: 'SHELL-PKG-001',
+    handoff_sequence_id: 'H-SHARED-PACKAGES-001',
+  });
+  const result = validateE3TransitionClosureSources(sources);
+  assert.equal(result.handoffTask, 'SHELL-AUD-001');
+});
+
 test('rechaza omitir readiness, cutover o hypercare', () => {
   const sources = validSources();
   sources.supa016 = sources.supa016.replace('CUTOVER-OPS-001..010', '');

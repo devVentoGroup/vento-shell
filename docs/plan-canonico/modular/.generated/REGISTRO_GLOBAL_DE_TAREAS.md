@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1585** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **474** |
+| Aprobadas | **475** |
 | En propuesta | **0** |
-| No iniciadas | **1111** |
+| No iniciadas | **1110** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **29.91% (474/1585)** |
+| Porcentaje de completamiento | **29.97% (475/1585)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-TRANS-016` — Aprobar transición antes de iniciar BLOQUE R | ✅ APROBADA |
-| Estado de secuencia | NINGUNA TAREA ACTUAL | ✅ SECUENCIA DOCUMENTAL COMPLETA |
-| Siguiente reservada | `SHELL-AUD-001` — Buscar código duplicado entre repositorios | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-AUD-001` — Buscar código duplicado entre repositorios | ✅ APROBADA |
+| Tarea actual | `SHELL-AUD-002` — Comparar guards de autenticación | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-AUD-003` — Comparar helpers de permisos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -687,7 +687,7 @@
 | ⬜ NO INICIADA | `VISO-UX-018` | Enlazar a la aplicación propietaria cuando corresponda | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ⬜ NO INICIADA | `VISO-UX-019` | Aplicar divulgación progresiva a seguridad avanzada | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |
 | ⬜ NO INICIADA | `VISO-UX-020` | Ejecutar pruebas con administradores reales | `bloques/G_VISO/03_EXPERIENCIA_ADMINISTRATIVA.md` |
-| ⬜ NO INICIADA | `SHELL-AUD-001` | Buscar código duplicado entre repositorios | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-AUD-001` | Buscar código duplicado entre repositorios | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-002` | Comparar guards de autenticación | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-003` | Comparar helpers de permisos | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-AUD-004` | Comparar contexto operativo | `bloques/H_FUNDACION_COMPARTIDA/01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md` |

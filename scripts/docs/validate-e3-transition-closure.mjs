@@ -55,11 +55,13 @@ export function validateE3TransitionClosureSources({
   requireText(supa015, 'incidencia histórica; resuelta en la validación de cierre', 'SUPA-TRANS-015');
 
   const active = JSON.parse(activeSequence);
-  if (active.handoff_task_id !== 'SHELL-AUD-001') {
-    fail('active-sequence.json debe reservar SHELL-AUD-001 como handoff posterior a E3.');
-  }
-  if (active.handoff_sequence_id !== 'H-SHARED-AUDIT-001') {
-    fail('active-sequence.json debe identificar H-SHARED-AUDIT-001 como secuencia de handoff.');
+  const e3StillActive = active.handoff_task_id === 'SHELL-AUD-001'
+    && active.handoff_sequence_id === 'H-SHARED-AUDIT-001';
+  const hAuditActive = active.sequence_id === 'H-SHARED-AUDIT-001'
+    && active.previous_task_id === 'SUPA-TRANS-016'
+    && active.handoff_task_id === 'SHELL-PKG-001';
+  if (!e3StillActive && !hAuditActive) {
+    fail('active-sequence.json debe reservar H desde E3 o activar H-SHARED-AUDIT-001 después de SUPA-TRANS-016.');
   }
 
   requireOrdered(supa016, [
@@ -109,7 +111,7 @@ export function validateE3TransitionClosureSources({
     predecessorTasks: 24,
     gateConditions: 15,
     unresolvedPhysicalConditions: 12,
-    handoffTask: active.handoff_task_id,
+    handoffTask: e3StillActive ? active.handoff_task_id : 'SHELL-AUD-001',
   };
 }
 

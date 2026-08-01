@@ -174,13 +174,20 @@ export function buildCanonicalTreqContext({ baseDir, manifest }) {
     fs.readFileSync(path.join(baseDir, 'active-sequence.json'), 'utf8')
   );
   const activeIds = expandActiveSequence(activeConfig);
-  const expectedLatestTaskId = activeIds
+  const activeLatestTaskId = activeIds
     .map((id) => tasks.get(id))
     .filter((task) => task?.state === 'APROBADA' && task.derivedIds.length > 0)
     .at(-1)?.id;
+  const expectedLatestTaskId = activeLatestTaskId ?? activeConfig.latest_treq_task_id;
 
   if (!expectedLatestTaskId) {
     throw new Error('No se pudo derivar la última tarea aprobada que incorporó TREQ.');
+  }
+  const latestTask = tasks.get(expectedLatestTaskId);
+  if (latestTask?.state !== 'APROBADA' || latestTask.derivedIds.length === 0) {
+    throw new Error(
+      `La última tarea TREQ configurada ${expectedLatestTaskId} no existe, no está aprobada o no incorpora requisitos.`
+    );
   }
   return { tasks, activeIds, expectedLatestTaskId };
 }
