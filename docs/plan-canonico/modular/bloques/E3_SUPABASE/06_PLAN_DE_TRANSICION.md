@@ -21,6 +21,7 @@ y validación no dependan de un documento monolítico.
 | 013     | `06_13_SUPA_TRANS_013.md`     | `SUPA-TRANS-013`                                                |
 | 014     | `06_14_SUPA_TRANS_014.md`     | `SUPA-TRANS-014`                                                |
 | 015     | `06_15_SUPA_TRANS_015.md`     | `SUPA-TRANS-015`                                                |
+| Gate    | `07_10_SUPA_TRANS_016.md`     | `SUPA-TRANS-016`; cierre integral después de `DATA-NORM-TRANS`  |
 | Soporte | `06_99_DELTA_VISO_MENSUAL.md` | Delta transversal VISO conservado fuera de una tarea individual |
 
 El orden físico de compilación pertenece a `manifest.json`. Una tarea deberá

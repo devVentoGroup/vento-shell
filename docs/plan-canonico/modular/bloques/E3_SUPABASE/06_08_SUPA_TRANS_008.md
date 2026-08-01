@@ -5,7 +5,7 @@
 **Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase  
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/E3_SUPABASE/06_08_SUPA_TRANS_008.md`  
 **Tarea anterior:** `SUPA-TRANS-007 — Definir adaptación coordinada de consumidores` — APROBADA  
-**Tarea siguiente:** `SUPA-TRANS-009 — Definir pruebas antes y después de cada migración` — RESERVADA  
+**Tarea siguiente:** `SUPA-TRANS-009 — Definir pruebas antes y después de cada migración` — APROBADA
 **Tipo de tarea:** diseño documental materializado de autoridad de escritura, coexistencia, delta, concurrencia e idempotencia por identidad; sin DDL, DML, backfills, despliegues, activación de wrappers, cambios de writers, cutover, rollback operativo ni retiros físicos  
 **Corte canónico:** `devVentoGroup/vento-shell@ace611a769998a4f8e76aafe595f89a2c7296144`
 
@@ -1368,7 +1368,6 @@ SUPA-TRANS-007 — Definir adaptación coordinada de consumidores
 TAREA ACTUAL APROBADA
 SUPA-TRANS-008 — Definir estrategia ante escrituras durante la transición
         ↓
-SIGUIENTE TAREA RESERVADA
+SIGUIENTE TAREA CANÓNICAMENTE APROBADA
 SUPA-TRANS-009 — Definir pruebas antes y después de cada migración
 ```
-

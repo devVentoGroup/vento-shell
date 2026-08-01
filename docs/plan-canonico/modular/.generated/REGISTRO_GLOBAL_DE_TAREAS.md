@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1585** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **458** |
+| Aprobadas | **474** |
 | En propuesta | **0** |
-| No iniciadas | **1127** |
+| No iniciadas | **1111** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **28.90% (458/1585)** |
+| Porcentaje de completamiento | **29.91% (474/1585)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SUPA-TRANS-009` — Definir pruebas antes y después de cada migración | ✅ APROBADA |
-| Tarea actual | `SUPA-TRANS-010` — Definir mediciones de rendimiento y seguridad | ⬜ NO INICIADA |
-| Siguiente | `SUPA-TRANS-011` — Definir rollback por paquete de cambio | ⬜ NO INICIADA |
+| Última aprobada | `SUPA-TRANS-016` — Aprobar transición antes de iniciar BLOQUE R | ✅ APROBADA |
+| Estado de secuencia | NINGUNA TAREA ACTUAL | ✅ SECUENCIA DOCUMENTAL COMPLETA |
+| Siguiente reservada | `SHELL-AUD-001` — Buscar código duplicado entre repositorios | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -450,22 +450,22 @@
 | ✅ APROBADA | `SUPA-TRANS-007` | Definir adaptación coordinada de consumidores | `bloques/E3_SUPABASE/06_07_SUPA_TRANS_007.md` |
 | ✅ APROBADA | `SUPA-TRANS-008` | Definir estrategia ante escrituras durante la transición | `bloques/E3_SUPABASE/06_08_SUPA_TRANS_008.md` |
 | ✅ APROBADA | `SUPA-TRANS-009` | Definir pruebas antes y después de cada migración | `bloques/E3_SUPABASE/06_09_SUPA_TRANS_009.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-010` | Definir mediciones de rendimiento y seguridad | `bloques/E3_SUPABASE/06_10_SUPA_TRANS_010.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-011` | Definir rollback por paquete de cambio | `bloques/E3_SUPABASE/06_11_SUPA_TRANS_011.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-012` | Definir retiro progresivo de objetos legacy | `bloques/E3_SUPABASE/06_12_SUPA_TRANS_012.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-013` | Definir verificación de paridad local, staging y producción | `bloques/E3_SUPABASE/06_13_SUPA_TRANS_013.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-014` | Definir actualización de tipos, contratos y documentación | `bloques/E3_SUPABASE/06_14_SUPA_TRANS_014.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-015` | Crear roadmap ejecutable de migraciones en `vento-shell` | `bloques/E3_SUPABASE/06_15_SUPA_TRANS_015.md` |
-| ⬜ NO INICIADA | `DATA-NORM-TRANS-001` | Crear baseline de valores actuales antes de transformar | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-TRANS-002` | Ejecutar dry-run de cada regla de normalización | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-TRANS-003` | Identificar colisiones producidas por valores normalizados | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-TRANS-004` | Resolver duplicados antes de aplicar restricciones de unicidad | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-TRANS-005` | Definir backfills por dominio y lotes reversibles | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-TRANS-006` | Activar reglas sobre nuevas escrituras de forma progresiva | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-TRANS-007` | Validar búsquedas, relaciones e integraciones después del backfill | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-TRANS-008` | Definir rollback y recuperación del valor anterior | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `DATA-NORM-TRANS-009` | Definir evidencia de aprobación por dominio | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
-| ⬜ NO INICIADA | `SUPA-TRANS-016` | Aprobar transición antes de iniciar BLOQUE R | `bloques/E3_SUPABASE/07_TRANSICION_DE_NORMALIZACION_Y_CALIDAD_DE_DATOS.md` |
+| ✅ APROBADA | `SUPA-TRANS-010` | Definir mediciones de rendimiento y seguridad | `bloques/E3_SUPABASE/06_10_SUPA_TRANS_010.md` |
+| ✅ APROBADA | `SUPA-TRANS-011` | Definir rollback por paquete de cambio | `bloques/E3_SUPABASE/06_11_SUPA_TRANS_011.md` |
+| ✅ APROBADA | `SUPA-TRANS-012` | Definir retiro progresivo de objetos legacy | `bloques/E3_SUPABASE/06_12_SUPA_TRANS_012.md` |
+| ✅ APROBADA | `SUPA-TRANS-013` | Definir verificación de paridad local, staging y producción | `bloques/E3_SUPABASE/06_13_SUPA_TRANS_013.md` |
+| ✅ APROBADA | `SUPA-TRANS-014` | Definir actualización de tipos, contratos y documentación | `bloques/E3_SUPABASE/06_14_SUPA_TRANS_014.md` |
+| ✅ APROBADA | `SUPA-TRANS-015` | Crear roadmap ejecutable de migraciones en `vento-shell` | `bloques/E3_SUPABASE/06_15_SUPA_TRANS_015.md` |
+| ✅ APROBADA | `DATA-NORM-TRANS-001` | Crear baseline de valores actuales antes de transformar | `bloques/E3_SUPABASE/07_01_DATA_NORM_TRANS_001.md` |
+| ✅ APROBADA | `DATA-NORM-TRANS-002` | Ejecutar dry-run de cada regla de normalización | `bloques/E3_SUPABASE/07_02_DATA_NORM_TRANS_002.md` |
+| ✅ APROBADA | `DATA-NORM-TRANS-003` | Identificar colisiones producidas por valores normalizados | `bloques/E3_SUPABASE/07_03_DATA_NORM_TRANS_003.md` |
+| ✅ APROBADA | `DATA-NORM-TRANS-004` | Resolver duplicados antes de aplicar restricciones de unicidad | `bloques/E3_SUPABASE/07_04_DATA_NORM_TRANS_004.md` |
+| ✅ APROBADA | `DATA-NORM-TRANS-005` | Definir backfills por dominio y lotes reversibles | `bloques/E3_SUPABASE/07_05_DATA_NORM_TRANS_005.md` |
+| ✅ APROBADA | `DATA-NORM-TRANS-006` | Activar reglas sobre nuevas escrituras de forma progresiva | `bloques/E3_SUPABASE/07_06_DATA_NORM_TRANS_006.md` |
+| ✅ APROBADA | `DATA-NORM-TRANS-007` | Validar búsquedas, relaciones e integraciones después del backfill | `bloques/E3_SUPABASE/07_07_DATA_NORM_TRANS_007.md` |
+| ✅ APROBADA | `DATA-NORM-TRANS-008` | Definir rollback y recuperación del valor anterior | `bloques/E3_SUPABASE/07_08_DATA_NORM_TRANS_008.md` |
+| ✅ APROBADA | `DATA-NORM-TRANS-009` | Definir evidencia de aprobación por dominio | `bloques/E3_SUPABASE/07_09_DATA_NORM_TRANS_009.md` |
+| ✅ APROBADA | `SUPA-TRANS-016` | Aprobar transición antes de iniciar BLOQUE R | `bloques/E3_SUPABASE/07_10_SUPA_TRANS_016.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-001` | Inventariar servicios transversales actuales y faltantes | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-002` | Definir propietario técnico y gobierno de cada servicio | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-003` | Definir aplicaciones productoras y consumidoras | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |

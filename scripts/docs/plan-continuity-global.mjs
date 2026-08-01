@@ -70,6 +70,8 @@ function readActiveSequenceConfig(baseDir) {
   if (typeof config.block_code !== 'string') fail('active-sequence.json no define block_code.');
   if (typeof config.block_title !== 'string') fail('active-sequence.json no define block_title.');
   if (typeof config.previous_task_id !== 'string') fail('active-sequence.json no define previous_task_id.');
+  if (typeof config.handoff_task_id !== 'string') fail('active-sequence.json no define handoff_task_id.');
+  if (typeof config.handoff_sequence_id !== 'string') fail('active-sequence.json no define handoff_sequence_id.');
 
   return { ...config, taskIds: expandSequenceSegments(config.segments) };
 }
@@ -209,6 +211,19 @@ export function resolveContinuity(taskMap, sequenceIds) {
     next: tasks[currentIndex + 1] ?? null,
     isComplete: false,
   };
+}
+
+export function resolveHandoff(taskMap, activeConfig, sequenceIds) {
+  const { handoff_task_id: handoffId, handoff_sequence_id: handoffSequenceId } = activeConfig;
+  if (sequenceIds.includes(handoffId)) {
+    fail(`la tarea de handoff ${handoffId} no puede pertenecer a la secuencia activa que cierra.`);
+  }
+  const task = taskMap.get(handoffId);
+  if (!task) fail(`no se encontró la tarea de handoff declarada: ${handoffId}.`);
+  if (task.state !== 'NO INICIADA') {
+    fail(`la tarea de handoff ${handoffId} debe permanecer NO INICIADA hasta activar ${handoffSequenceId}.`);
+  }
+  return { ...task, handoffSequenceId };
 }
 
 function replaceRow(text, label, value) {
@@ -371,8 +386,9 @@ function buildControlBlock(continuity, activeConfig) {
     lines.push('TAREA ACTUAL', formatTask(continuity.current));
   }
 
-  if (!continuity.isComplete && continuity.next) {
-    lines.push('        ↓', 'SIGUIENTE TAREA RESERVADA', formatTask(continuity.next));
+  const reservedNext = continuity.next ?? continuity.handoff;
+  if (reservedNext) {
+    lines.push('        ↓', 'SIGUIENTE TAREA RESERVADA', formatTask(reservedNext));
   }
 
   lines.push(
@@ -404,11 +420,9 @@ function updateHeader(header, manifest, taskMap, stats, continuity, activeConfig
   updated = replaceRow(
     updated,
     'Siguiente tarea',
-    continuity.next
-      ? `**${formatTask(continuity.next)}**`
-      : continuity.isComplete
-        ? '**NINGUNA — SECUENCIA DOCUMENTAL COMPLETA**'
-        : '**NINGUNA — CIERRE DEL BLOQUE**'
+    continuity.next || continuity.handoff
+      ? `**${formatTask(continuity.next ?? continuity.handoff)}**`
+      : '**NINGUNA — CIERRE SIN HANDOFF DECLARADO**'
   );
   updated = replaceRow(updated, 'Progreso del bloque', `**${buildProgressSummary(continuity, activeConfig)}**`);
 
@@ -425,11 +439,9 @@ function updateHeader(header, manifest, taskMap, stats, continuity, activeConfig
     result = replaceRow(
       result,
       'Siguiente tarea',
-      continuity.next
-        ? formatTask(continuity.next, true)
-        : continuity.isComplete
-          ? 'NINGUNA — SECUENCIA DOCUMENTAL COMPLETA'
-          : 'NINGUNA — CIERRE DEL BLOQUE'
+      continuity.next || continuity.handoff
+        ? formatTask(continuity.next ?? continuity.handoff, true)
+        : 'NINGUNA — CIERRE SIN HANDOFF DECLARADO'
     );
     return result;
   });
@@ -488,8 +500,9 @@ function buildRegistryMarkdown(taskMap, stats, continuity) {
     lines.push(`| Tarea actual | \`${continuity.current.id}\` — ${escapeMarkdownCell(continuity.current.title)} | ${stateIcon(continuity.current.state)} ${continuity.current.state} |`);
   }
 
-  if (!continuity.isComplete && continuity.next) {
-    lines.push(`| Siguiente | \`${continuity.next.id}\` — ${escapeMarkdownCell(continuity.next.title)} | ${stateIcon(continuity.next.state)} ${continuity.next.state} |`);
+  const reservedNext = continuity.next ?? continuity.handoff;
+  if (reservedNext) {
+    lines.push(`| Siguiente reservada | \`${reservedNext.id}\` — ${escapeMarkdownCell(reservedNext.title)} | ${stateIcon(reservedNext.state)} ${reservedNext.state} |`);
   }
 
   lines.push(
@@ -529,6 +542,7 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
   const activeConfig = readActiveSequenceConfig(baseDir);
   const sequenceIds = buildExecutionSequence(activeConfig);
   const continuity = resolveContinuity(taskMap, sequenceIds);
+  continuity.handoff = resolveHandoff(taskMap, activeConfig, sequenceIds);
 
   const currentHeader = fs.readFileSync(headerPath, 'utf8');
   const nextHeader = updateHeader(currentHeader, manifest, taskMap, stats, continuity, activeConfig);
@@ -541,7 +555,7 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
       headerChanged ? 'cabecera' : null,
       registryChanged ? 'registro global' : null,
     ].filter(Boolean).join(' y ');
-    fail(`${pending} desactualizado(s). Estado derivado: última ${continuity.lastApproved.id}; actual ${continuity.current?.id ?? 'NINGUNA'}; siguiente ${continuity.next?.id ?? 'NINGUNA'}.`);
+    fail(`${pending} desactualizado(s). Estado derivado: última ${continuity.lastApproved.id}; actual ${continuity.current?.id ?? 'NINGUNA'}; siguiente ${(continuity.next ?? continuity.handoff)?.id ?? 'NINGUNA'}.`);
   }
 
   if (!checkOnly) {
@@ -557,7 +571,7 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
     `OK: continuidad y registro global ${action}; ${stats.total} tareas; ${stats.approved} aprobadas; ${stats.proposed} en propuesta; ${stats.notStarted} no iniciadas; ${stats.rejected} rechazadas.`
   );
   console.log(
-    `OK: secuencia activa; última ${continuity.lastApproved.id}; actual ${continuity.current?.id ?? 'NINGUNA'}; siguiente ${continuity.next?.id ?? 'NINGUNA'}.`
+    `OK: secuencia activa; última ${continuity.lastApproved.id}; actual ${continuity.current?.id ?? 'NINGUNA'}; siguiente ${(continuity.next ?? continuity.handoff)?.id ?? 'NINGUNA'}.`
   );
 
   return { changed: headerChanged || registryChanged, stats, taskMap, activeConfig, ...continuity };

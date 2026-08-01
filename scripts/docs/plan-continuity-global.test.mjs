@@ -3,6 +3,7 @@ import test from 'node:test';
 
 import {
   calculateCompletionPercentage,
+  resolveHandoff,
   resolveContinuity,
 } from './plan-continuity-global.mjs';
 
@@ -54,6 +55,35 @@ test('acepta una secuencia totalmente aprobada como estado terminal', () => {
   assert.equal(result.lastApproved.id, 'UX-STATION-001');
   assert.equal(result.current, null);
   assert.equal(result.next, null);
+});
+
+test('mantiene un handoff reservado fuera de la secuencia que cierra', () => {
+  const taskMap = new Map([
+    ['SUPA-TRANS-016', task('SUPA-TRANS-016', 'PROPUESTA PARA APROBACIÓN')],
+    ['SHELL-AUD-001', task('SHELL-AUD-001', 'NO INICIADA')],
+  ]);
+  const handoff = resolveHandoff(taskMap, {
+    handoff_task_id: 'SHELL-AUD-001',
+    handoff_sequence_id: 'H-SHARED-AUDIT-001',
+  }, ['SUPA-TRANS-016']);
+
+  assert.equal(handoff.id, 'SHELL-AUD-001');
+  assert.equal(handoff.handoffSequenceId, 'H-SHARED-AUDIT-001');
+});
+
+test('rechaza iniciar el handoff antes de activar su secuencia', () => {
+  const taskMap = new Map([
+    ['SUPA-TRANS-016', task('SUPA-TRANS-016', 'APROBADA')],
+    ['SHELL-AUD-001', task('SHELL-AUD-001', 'PROPUESTA PARA APROBACIÓN')],
+  ]);
+
+  assert.throws(
+    () => resolveHandoff(taskMap, {
+      handoff_task_id: 'SHELL-AUD-001',
+      handoff_sequence_id: 'H-SHARED-AUDIT-001',
+    }, ['SUPA-TRANS-016']),
+    /debe permanecer NO INICIADA/
+  );
 });
 
 test('rechaza aprobaciones fuera del orden declarado', () => {

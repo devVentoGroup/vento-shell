@@ -13,6 +13,7 @@ import {
 import { validateBlockISurfaceMatrices } from './validate-block-i-surface-matrices.mjs';
 import { validatePriorityDeliveryLanes } from './validate-priority-delivery-lanes.mjs';
 import { validateEventApplicationBlock } from './validate-event-application-block.mjs';
+import { validateE3TransitionClosure } from './validate-e3-transition-closure.mjs';
 
 const root = process.cwd();
 const checkOnly = process.argv.includes('--check');
@@ -173,6 +174,18 @@ try {
   );
 } catch (error) {
   fail(`Carriles prioritarios inválidos:\n- ${error instanceof Error ? error.message : String(error)}`);
+}
+
+try {
+  const closureStats = validateE3TransitionClosure({ root });
+  console.log(
+    `OK: cierre E3; ${closureStats.predecessorTasks} predecesores; `
+    + `${closureStats.gateConditions} condiciones; `
+    + `${closureStats.unresolvedPhysicalConditions} bloqueos físicos; `
+    + `handoff ${closureStats.handoffTask}.`
+  );
+} catch (error) {
+  fail(`Cierre E3 inválido:\n- ${error instanceof Error ? error.message : String(error)}`);
 }
 
 let compiled = '';

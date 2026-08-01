@@ -4,7 +4,7 @@
 **Fecha de preparación documental:** 2026-07-31  
 **Bloque propietario:** BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase  
 **Tarea anterior:** `SUPA-ARC-025 — Consolidar y aprobar ADR de arquitectura canónica de datos` — APROBADA  
-**Siguiente tarea reservada:** `SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar`  
+**Tarea siguiente:** `SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar` — APROBADA
 **Tipo de tarea:** mapeo documental y técnico read-only AS-IS → arquitectura objetivo; sin DDL, DML, cambios de configuración, migraciones nuevas, backfills, renombres, retiros ni despliegues
 
 #### 1. Resultado concreto
@@ -373,7 +373,21 @@ No queda una decisión diferida sin tarea responsable.
 
 La corrección conjunta con `SUPA-TRANS-002` no crea identificadores adicionales. Actualiza en el registro canónico `04A` el universo vigente de 348 funciones y 197 triggers, la evidencia de resolución de la reserva, el contrato de handoff para seis disposiciones y la última tarea incorporada.
 
-#### 14. Criterios de aceptación
+#### 14. Evidencia histórica de validación consolidada
+
+La evidencia antes almacenada en un `.txt` huérfano se integra aquí para conservar procedencia sin mantener un artefacto sin referencias:
+
+- corte remoto read-only: `2026-07-31`, proyecto `vento-os-dev` (`clzdpinthhtknkmefsxx`), estado observado `ACTIVE_HEALTHY`, PostgreSQL `17.6.1`;
+- universo observado: 379 relaciones —317 tablas y 62 vistas—, 348 funciones, 197 triggers empresariales, 14 buckets, 24 Edge Functions y 7 cron jobs;
+- delta VISO observado: migración `20260731082600_viso_monthly_schedule_186_hour_publish_guard` y su función/trigger mensual materializados;
+- no se ejecutó DDL, DML, migración ni modificación de configuración durante esa verificación;
+- huella histórica del SQL: 868 líneas, 42.395 bytes UTF-8 y SHA-256 `b4e09b635facdc48c95728edbd5a867bf449e5d4da9ab3347cdff86df783a774`;
+- resultado registrado: 970 filas, cero sentencias mutantes, cero disposiciones distintas de `RESERVED_FOR_SUPA_TRANS_002` y cero relaciones sin capacidad;
+- la batería documental posterior fue ejecutada satisfactoriamente sobre el repositorio actualizado.
+
+La huella histórica no sustituye el hash vigente del archivo cuando vuelva a usarse como evidencia. Los requisitos `TREQ-SUPABASE-423` a `454` y `TREQ-SUPABASE-1695` conservan su trazabilidad en el registro canónico `04A`.
+
+#### 15. Criterios de aceptación
 
 - [x] existe un mapa materializado, no únicamente una especificación;
 - [x] el mapa cubre 970 identidades lógicas actuales;
@@ -389,7 +403,7 @@ La corrección conjunta con `SUPA-TRANS-002` no crea identificadores adicionales
 - [x] no se inventan nombres físicos futuros;
 - [x] no se ejecutan cambios remotos.
 
-#### 15. Continuidad
+#### 16. Continuidad
 
 ```text
 SUPA-ARC-025 — APROBADA
@@ -398,8 +412,7 @@ SUPA-TRANS-001 — APROBADA; mapa canónico materializado
         ↓
 SUPA-TRANS-002 — APROBADA; disposición canónica materializada
         ↓
-SUPA-TRANS-003 — NO INICIADA
+SUPA-TRANS-003 — APROBADA; dependencias reconciliadas
 ```
 
-La secuencia activa permanece en `SUPA-TRANS-003`; esta corrección no inicia ni desarrolla esa tarea.
-
+Este registro histórico quedó reconciliado con las aprobaciones posteriores del bloque.

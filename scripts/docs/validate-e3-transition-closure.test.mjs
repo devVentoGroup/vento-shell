@@ -1,0 +1,74 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+
+import { validateE3TransitionClosureSources } from './validate-e3-transition-closure.mjs';
+
+const orderedSequence = [
+  'SHELL-AUD-001..011', 'SHELL-PKG-001..008', 'TSVC-CAT-001..010',
+  'AUTH-UI-030..039', 'AUTH-DEV-001..006', 'AUTH-SIM-001..006',
+  'AUTH-ERR-001..020', 'NEXO-DOM-001', 'NEXO-UX-001..025',
+  'AUTH-UI-052..060', 'DELIV-PKG-001..025::<package_id>', 'READY-GATE-001..015',
+  'CUTOVER-OPS-001..010', 'HYPERCARE-OPS-001..010', 'SHELL-CI-001..019',
+  'E5-GATE-001..007::<package_id>', 'E5-GATE-008::<package_id>',
+  'SHELL-CI-020::<package_id>', 'BLOQUE R aplicable al mismo package_id',
+].join('\n');
+const gateTokens = [
+  'POST_E3_DESIGN_STAGES_005_016_COMPLETE',
+  'E5_READINESS_PLAN_001_015_COMPLETE',
+  'E5_CUTOVER_PLAN_001_010_COMPLETE',
+  'E5_HYPERCARE_PLAN_001_010_COMPLETE',
+  'E5_ENTRY_GATES_001_007_APPROVED',
+].join('\n');
+
+function validSources() {
+  return {
+    supaIndex: '`07_10_SUPA_TRANS_016.md`',
+    normalizationIndex: '`DATA-NORM-DB-001` a `DATA-NORM-DB-010`',
+    supa016: `### 🟡 SUPA-TRANS-016 — Gate\n**Estado:** PROPUESTA PARA APROBACIÓN\n- [ ] el usuario aprobó explícitamente \`SUPA-TRANS-016\`;\n${orderedSequence}\n${gateTokens}\nREMOTE_CATALOG_ARTIFACT`,
+    gateSql: `${gateTokens}\nExpected 15 gate conditions\nExpected 12 unresolved physical-entry conditions\ndocs:plan:check`,
+    data009: '- [x] el usuario aprobó explícitamente este contrato.',
+    supa015: 'incidencia histórica; resuelta en la validación de cierre',
+    activeSequence: JSON.stringify({
+      handoff_task_id: 'SHELL-AUD-001',
+      handoff_sequence_id: 'H-SHARED-AUDIT-001',
+    }),
+    transitionHeaders: { 'task.md': '### ✅ TASK-001\n**Estado:** APROBADA' },
+  };
+}
+
+test('acepta el cierre coherente de E3', () => {
+  const result = validateE3TransitionClosureSources(validSources());
+  assert.equal(result.gateConditions, 15);
+  assert.equal(result.handoffTask, 'SHELL-AUD-001');
+});
+
+test('acepta SUPA-TRANS-016 aprobada sin iniciar el handoff', () => {
+  const sources = validSources();
+  sources.supa016 = sources.supa016
+    .replace('### 🟡', '### ✅')
+    .replace('**Estado:** PROPUESTA PARA APROBACIÓN', '**Estado:** APROBADA')
+    .replace(
+      '- [ ] el usuario aprobó explícitamente `SUPA-TRANS-016`;',
+      '- [x] el usuario aprobó explícitamente `SUPA-TRANS-016`;',
+    );
+  const result = validateE3TransitionClosureSources(sources);
+  assert.equal(result.handoffTask, 'SHELL-AUD-001');
+});
+
+test('rechaza omitir readiness, cutover o hypercare', () => {
+  const sources = validSources();
+  sources.supa016 = sources.supa016.replace('CUTOVER-OPS-001..010', '');
+  assert.throws(
+    () => validateE3TransitionClosureSources(sources),
+    /CUTOVER-OPS-001\.\.010/,
+  );
+});
+
+test('rechaza una continuidad histórica reservada en cabecera aprobada', () => {
+  const sources = validSources();
+  sources.transitionHeaders['task.md'] += '\n**Tarea siguiente:** TASK-002 — RESERVADA';
+  assert.throws(
+    () => validateE3TransitionClosureSources(sources),
+    /RESERVADA obsoleta/,
+  );
+});

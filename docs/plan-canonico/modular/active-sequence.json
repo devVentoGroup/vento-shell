@@ -4,6 +4,8 @@
   "block_code": "BLOQUE E3",
   "block_title": "Arquitectura canónica de datos y gobierno integral de Supabase",
   "previous_task_id": "SUPA-ARC-024",
+  "handoff_task_id": "SHELL-AUD-001",
+  "handoff_sequence_id": "H-SHARED-AUDIT-001",
   "segments": [
     {
       "prefix": "DATA-NORM-AUD",

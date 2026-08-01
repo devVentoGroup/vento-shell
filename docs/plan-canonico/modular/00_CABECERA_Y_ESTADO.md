@@ -17,32 +17,32 @@
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **283** |
+| Fragmentos canónicos | **293** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **458** |
+| Tareas aprobadas | **474** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1127** |
+| Tareas no iniciadas | **1111** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **28.90% (458/1585)** |
+| Porcentaje de completamiento | **29.91% (474/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SUPA-TRANS-009 — Definir pruebas antes y después de cada migración** |
-| Tarea actual | **SUPA-TRANS-010 — Definir mediciones de rendimiento y seguridad** |
-| Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SUPA-TRANS-011 — Definir rollback por paquete de cambio** |
+| Última tarea aprobada | **SUPA-TRANS-016 — Aprobar transición antes de iniciar BLOQUE R** |
+| Tarea actual | **NINGUNA — SECUENCIA DOCUMENTAL COMPLETA** |
+| Estado de la tarea actual | **SECUENCIA DOCUMENTAL COMPLETA** |
+| Siguiente tarea | **SHELL-AUD-001 — Buscar código duplicado entre repositorios** |
 | Bloque actual | **BLOQUE E3 — Arquitectura canónica de datos y gobierno integral de Supabase** |
-| Progreso del bloque | **BLOQUE E3: 29 de 45 aprobadas; SUPA-TRANS-010 pendiente** |
+| Progreso del bloque | **BLOQUE E3: 45 de 45 aprobadas; secuencia documental completa** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SUPA-TRANS-009` — Definir pruebas antes y después de cada migración |
-| Tarea actual | `SUPA-TRANS-010` — Definir mediciones de rendimiento y seguridad — **NO INICIADA** |
-| Siguiente tarea | `SUPA-TRANS-011` — Definir rollback por paquete de cambio |
+| Última aprobada | `SUPA-TRANS-016` — Aprobar transición antes de iniciar BLOQUE R |
+| Tarea actual | NINGUNA — **SECUENCIA DOCUMENTAL COMPLETA** |
+| Siguiente tarea | `SHELL-AUD-001` — Buscar código duplicado entre repositorios |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE E3 | **29 DE 45 APROBADAS — ACTUAL SUPA-TRANS-010** |
+| BLOQUE E3 | **45 DE 45 APROBADAS — SECUENCIA DOCUMENTAL COMPLETA** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,13 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SUPA-TRANS-009 — Definir pruebas antes y después de cada migración
+SUPA-TRANS-016 — Aprobar transición antes de iniciar BLOQUE R
         ↓
-TAREA ACTUAL
-SUPA-TRANS-010 — Definir mediciones de rendimiento y seguridad
+SECUENCIA DOCUMENTAL COMPLETA
         ↓
 SIGUIENTE TAREA RESERVADA
-SUPA-TRANS-011 — Definir rollback por paquete de cambio
+SHELL-AUD-001 — Buscar código duplicado entre repositorios
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE E3 — 29 de 45 tareas aprobadas
+BLOQUE E3 — 45 de 45 tareas aprobadas
 ```

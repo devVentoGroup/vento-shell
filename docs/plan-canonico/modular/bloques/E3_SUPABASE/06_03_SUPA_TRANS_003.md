@@ -2,7 +2,7 @@
 
 **Estado:** APROBADA
 **Tarea anterior:** `SUPA-TRANS-002 — Clasificar cada objeto como conservar, mover, fusionar, dividir, renombrar o retirar` — APROBADA
-**Siguiente tarea reservada:** `SUPA-TRANS-004 — Definir orden de migración por dominio`
+**Tarea siguiente:** `SUPA-TRANS-004 — Definir orden de migración por dominio` — APROBADA
 **Tipo de tarea:** inventario documental y técnico read-only; sin DDL o DML persistente, migraciones, backfills, cambios de RLS, despliegues, renombres, retiros ni cambios de configuración
 
 #### 1. Resultado concreto
@@ -336,11 +336,10 @@ Como no cambia filas del registro `04A`, no requiere reemplazar ese archivo en e
 ```text
 SUPA-TRANS-003 — APROBADA
         ↓
-SUPA-TRANS-004 — ÚLTIMA APROBADA
+SUPA-TRANS-004 — APROBADA
         ↓
-SUPA-TRANS-005 — TAREA ACTUAL; NO INICIADA
+SUPA-TRANS-005 — APROBADA
 ```
 
-La aprobación de esta tarea quedó incorporada sin iniciar trabajo de `SUPA-TRANS-005`.
-
+Este registro histórico quedó reconciliado con las aprobaciones posteriores del bloque.
 

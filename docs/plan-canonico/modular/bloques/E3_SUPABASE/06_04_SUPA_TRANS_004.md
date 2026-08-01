@@ -2,7 +2,7 @@
 
 **Estado:** APROBADA
 **Tarea anterior:** `SUPA-TRANS-003 — Identificar dependencias de aplicaciones, RPC, RLS, triggers y datos` — APROBADA
-**Siguiente tarea reservada:** `SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos`
+**Tarea siguiente:** `SUPA-TRANS-005 — Definir backfills y correcciones de calidad de datos` — APROBADA
 **Tipo de tarea:** diseño documental del orden de transición; sin DDL, DML, backfills, despliegues, cambios de RLS, escrituras remotas ni movimiento físico de objetos
 
 #### 1. Resultado concreto
@@ -234,18 +234,17 @@ El avance es monotónico salvo rollback declarado. `BLOCKED` conserva la última
 - [x] hereda los objetos derivados desde su padre canónico;
 - [x] asigna toda ejecución posterior a su tarea propietaria;
 - [x] no ejecuta cambios físicos, remotos ni productivos;
-- [x] reserva únicamente `SUPA-TRANS-005` como siguiente tarea.
+- [x] la continuidad histórica hacia `SUPA-TRANS-005` fue reconciliada con su aprobación posterior.
 
 #### 16. Continuidad preservada
 
 ```text
-SUPA-TRANS-004 — ÚLTIMA APROBADA
+SUPA-TRANS-004 — APROBADA
         ↓
-SUPA-TRANS-005 — TAREA ACTUAL; NO INICIADA
+SUPA-TRANS-005 — APROBADA
         ↓
-SUPA-TRANS-006 — SIGUIENTE RESERVADA; NO INICIADA
+SUPA-TRANS-006 — APROBADA
 ```
 
-La aprobación de esta tarea quedó incorporada sin iniciar trabajo de `SUPA-TRANS-005`.
-
+Este registro histórico quedó reconciliado con las aprobaciones posteriores del bloque.
 

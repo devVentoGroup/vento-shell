@@ -4,7 +4,7 @@
 
 **Tarea anterior:** `SUPA-TRANS-008 — Definir estrategia ante escrituras durante la transición` — APROBADA
 
-**Tarea siguiente:** `SUPA-TRANS-010 — Definir mediciones de rendimiento y seguridad` — RESERVADA
+**Tarea siguiente:** `SUPA-TRANS-010 — Definir mediciones de rendimiento y seguridad` — APROBADA
 
 **Tipo de tarea:** diseño documental materializado de pruebas de transición por identidad; sin ejecutar migraciones, DDL, DML, backfills, pruebas remotas, cambios de writers, despliegues, cutover, rollback, retiro físico ni modificaciones de Supabase
 
@@ -1383,7 +1383,6 @@ SUPA-TRANS-008 — Definir estrategia ante escrituras durante la transición
 TAREA ACTUAL APROBADA
 SUPA-TRANS-009 — Definir pruebas antes y después de cada migración
         ↓
-SIGUIENTE TAREA RESERVADA
+SIGUIENTE TAREA CANÓNICAMENTE APROBADA
 SUPA-TRANS-010 — Definir mediciones de rendimiento y seguridad
 ```
-

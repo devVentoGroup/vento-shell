@@ -1,36 +1,53 @@
-### TRANSICIÓN DE NORMALIZACIÓN Y CALIDAD DE DATOS
+# Transición de normalización y calidad de datos
 
-### [ ] DATA-NORM-TRANS-001 — Crear baseline de valores actuales antes de transformar
-### [ ] DATA-NORM-TRANS-002 — Ejecutar dry-run de cada regla de normalización
-### [ ] DATA-NORM-TRANS-003 — Identificar colisiones producidas por valores normalizados
-### [ ] DATA-NORM-TRANS-004 — Resolver duplicados antes de aplicar restricciones de unicidad
-### [ ] DATA-NORM-TRANS-005 — Definir backfills por dominio y lotes reversibles
-### [ ] DATA-NORM-TRANS-006 — Activar reglas sobre nuevas escrituras de forma progresiva
-### [ ] DATA-NORM-TRANS-007 — Validar búsquedas, relaciones e integraciones después del backfill
-### [ ] DATA-NORM-TRANS-008 — Definir rollback y recuperación del valor anterior
-### [ ] DATA-NORM-TRANS-009 — Definir evidencia de aprobación por dominio
+Este archivo es el índice propietario del plan `DATA-NORM-TRANS`. Cada tarea se
+mantiene completa en un archivo independiente para que su revisión, reemplazo
+y validación no dependan de un documento monolítico.
 
-Regla de transición
+| Orden | Archivo                            | Alcance               |
+| ----- | ---------------------------------- | --------------------- |
+| 001   | `07_01_DATA_NORM_TRANS_001.md`     | `DATA-NORM-TRANS-001` |
+| 002   | `07_02_DATA_NORM_TRANS_002.md`     | `DATA-NORM-TRANS-002` |
+| 003   | `07_03_DATA_NORM_TRANS_003.md`     | `DATA-NORM-TRANS-003` |
+| 004   | `07_04_DATA_NORM_TRANS_004.md`     | `DATA-NORM-TRANS-004` |
+| 005   | `07_05_DATA_NORM_TRANS_005.md`     | `DATA-NORM-TRANS-005` |
+| 006   | `07_06_DATA_NORM_TRANS_006.md`     | `DATA-NORM-TRANS-006` |
+| 007   | `07_07_DATA_NORM_TRANS_007.md`     | `DATA-NORM-TRANS-007` |
+| 008   | `07_08_DATA_NORM_TRANS_008.md`     | `DATA-NORM-TRANS-008` |
+| 009   | `07_09_DATA_NORM_TRANS_009.md`     | `DATA-NORM-TRANS-009` |
+| Gate  | `07_10_SUPA_TRANS_016.md`          | `SUPA-TRANS-016`      |
 
-No se ejecutará una actualización global indiscriminada equivalente a:
-
-```text
-UPDATE todas_las_tablas
-SET nombre = normalize(nombre)
-```
-
-Cada dominio deberá pasar por:
+Regla de transición:
 
 ```text
 baseline
-→ dry-run
-→ detección de colisiones
-→ revisión
-→ aprobación
-→ backfill por lote
-→ verificación
-→ activación sobre nuevas escrituras
-→ auditoría
+-> dry-run
+-> detección de colisiones
+-> resolución documental de duplicados
+-> backfill por lote
+-> activación sobre nuevas escrituras
+-> validación posterior al backfill
+-> rollback y recuperación del valor anterior
+-> evidencia y aprobación por dominio
 ```
 
-### [ ] SUPA-TRANS-016 — Aprobar transición antes de iniciar BLOQUE R
+Queda prohibida una actualización global indiscriminada equivalente a
+`UPDATE todas_las_tablas SET nombre = normalize(nombre)`.
+
+## Frontera común de desarrollo
+
+Estas tareas pertenecen a BLOQUE E3. Producen baseline, análisis, decisiones,
+planes, gates y evidencia aprobable antes de modificar la base. No crean ni
+ejecutan migraciones, funciones, tablas auxiliares, backfills, constraints,
+índices, triggers, despliegues ni cambios remotos.
+
+Los verbos `ejecutar`, `resolver`, `activar` y `validar` se interpretan dentro
+de E3 como trabajo analítico o de transición sobre evidencia y simulaciones
+sin mutación. La implementación física pertenece a BLOQUE R, especialmente a
+`AUTH-DB-028` y `DATA-NORM-DB-001` a `DATA-NORM-DB-010`. Cada tarea deberá
+declarar de forma explícita qué deja aprobado para R y qué ejecución continúa
+pendiente.
+
+El orden físico de compilación pertenece a `manifest.json`. Una tarea deberá
+existir en un solo archivo y toda entrega `*_APROBADA_PARA_REEMPLAZAR.md`
+reemplazará únicamente el archivo correspondiente a su identificador.
