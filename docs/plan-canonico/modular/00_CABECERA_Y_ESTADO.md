@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **293** |
 | Tareas canónicas con marcador | **1585** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **475** |
+| Tareas aprobadas | **476** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1110** |
+| Tareas no iniciadas | **1109** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **29.97% (475/1585)** |
+| Porcentaje de completamiento | **30.03% (476/1585)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-AUD-001 — Buscar código duplicado entre repositorios** |
-| Tarea actual | **SHELL-AUD-002 — Comparar guards de autenticación** |
+| Última tarea aprobada | **SHELL-AUD-002 — Comparar guards de autenticación** |
+| Tarea actual | **SHELL-AUD-003 — Comparar helpers de permisos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-AUD-003 — Comparar helpers de permisos** |
+| Siguiente tarea | **SHELL-AUD-004 — Comparar contexto operativo** |
 | Bloque actual | **BLOQUE H — Fundación compartida** |
-| Progreso del bloque | **BLOQUE H: 1 de 11 aprobadas; SHELL-AUD-002 pendiente** |
+| Progreso del bloque | **BLOQUE H: 2 de 11 aprobadas; SHELL-AUD-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-AUD-001` — Buscar código duplicado entre repositorios |
-| Tarea actual | `SHELL-AUD-002` — Comparar guards de autenticación — **NO INICIADA** |
-| Siguiente tarea | `SHELL-AUD-003` — Comparar helpers de permisos |
+| Última aprobada | `SHELL-AUD-002` — Comparar guards de autenticación |
+| Tarea actual | `SHELL-AUD-003` — Comparar helpers de permisos — **NO INICIADA** |
+| Siguiente tarea | `SHELL-AUD-004` — Comparar contexto operativo |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE H | **1 DE 11 APROBADAS — ACTUAL SHELL-AUD-002** |
+| BLOQUE H | **2 DE 11 APROBADAS — ACTUAL SHELL-AUD-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-AUD-001 — Buscar código duplicado entre repositorios
-        ↓
-TAREA ACTUAL
 SHELL-AUD-002 — Comparar guards de autenticación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-AUD-003 — Comparar helpers de permisos
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-AUD-004 — Comparar contexto operativo
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 1 de 11 tareas aprobadas
+BLOQUE H — 2 de 11 tareas aprobadas
 ```
