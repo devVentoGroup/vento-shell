@@ -8,13 +8,13 @@
 
 | Métrica | Cantidad |
 | --- | ---: |
-| Tareas con marcador | **1585** |
+| Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
 | Aprobadas | **485** |
 | En propuesta | **0** |
-| No iniciadas | **1100** |
+| No iniciadas | **1109** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **30.60% (485/1585)** |
+| Porcentaje de completamiento | **30.43% (485/1594)** |
 
 ## Continuidad activa
 
@@ -764,6 +764,14 @@
 | ⬜ NO INICIADA | `SHELL-UI-018` | Compartir patrón para kiosco | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-019` | Compartir patrón de proceso interrumpido | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-UI-020` | Compartir patrón de traspaso entre aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/07_COMPONENTES_WEB_COMPARTIDOS.md` |
+| ⬜ NO INICIADA | `SHELL-MIG-001` | Consolidar inventario ejecutable de consumidores | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ⬜ NO INICIADA | `SHELL-MIG-002` | Definir lotes reversibles por repositorio | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ⬜ NO INICIADA | `SHELL-MIG-003` | Preparar compatibilidad y bloqueo de nuevos consumidores legacy | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ⬜ NO INICIADA | `SHELL-MIG-004` | Sustituir la plantilla histórica por scaffold versionado | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ⬜ NO INICIADA | `SHELL-MIG-005` | Migrar componentes, Chrome y estilos por aplicación | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ⬜ NO INICIADA | `SHELL-MIG-006` | Verificar accesibilidad, tema y movimiento reducido | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ⬜ NO INICIADA | `SHELL-MIG-007` | Ejecutar pruebas de paridad de consumidores | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
+| ⬜ NO INICIADA | `SHELL-MIG-008` | Retirar copias legacy y certificar adopción | `bloques/H_FUNDACION_COMPARTIDA/07_01_MIGRACION_COORDINADA_DE_CONSUMIDORES_WEB.md` |
 | ⬜ NO INICIADA | `SHELL-NATIVE-001` | Crear tokens compatibles con ANIMA | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-NATIVE-002` | Compartir contratos y validadores | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-NATIVE-003` | Mantener UI React Native separada | `bloques/H_FUNDACION_COMPARTIDA/08_COMPONENTES_NATIVOS_COMPARTIDOS.md` |
@@ -798,6 +806,7 @@
 | ⬜ NO INICIADA | `SHELL-APP-018` | Diseñar experiencia para tablet | `bloques/H2_SHELL_APP/04_DISPOSITIVOS_Y_PRUEBAS_DE_NAVEGACION.md` |
 | ⬜ NO INICIADA | `SHELL-APP-019` | Probar navegación por rol | `bloques/H2_SHELL_APP/04_DISPOSITIVOS_Y_PRUEBAS_DE_NAVEGACION.md` |
 | ⬜ NO INICIADA | `SHELL-APP-020` | Probar navegación con bloqueos reales | `bloques/H2_SHELL_APP/04_DISPOSITIVOS_Y_PRUEBAS_DE_NAVEGACION.md` |
+| ⬜ NO INICIADA | `SHELL-APP-021` | Retirar placeholders de perfil y configuración sin destino real | `bloques/H2_SHELL_APP/04_DISPOSITIVOS_Y_PRUEBAS_DE_NAVEGACION.md` |
 | ✅ APROBADA | `AUTH-UI-001` | Inventariar todas las rutas de NEXO | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-002` | Inventariar todas las rutas de FOGO | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |
 | ✅ APROBADA | `AUTH-UI-003` | Inventariar todas las rutas de ORIGO | `bloques/I_NAVEGACION_Y_PANTALLAS/01_INVENTARIO_COMPLETO_DE_SUPERFICIES.md` |

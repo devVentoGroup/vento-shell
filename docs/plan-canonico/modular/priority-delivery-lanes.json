@@ -499,12 +499,22 @@
               "to": 20
             },
             {
+              "prefix": "SHELL-MIG",
+              "from": 1,
+              "to": 8
+            },
+            {
               "prefix": "SHELL-NATIVE",
               "from": 1,
               "to": 3
+            },
+            {
+              "prefix": "SHELL-APP",
+              "from": 1,
+              "to": 21
             }
           ],
-          "required_scope": "normalización compartida, acceso a datos, componentes web y compatibilidad nativa disponibles antes de consumidores finales"
+          "required_scope": "normalización compartida, acceso a datos, componentes web, migración reversible de consumidores, compatibilidad nativa y experiencia del Hub disponibles antes de consumidores finales"
         },
         {
           "artifact_group_id": "R2_NEXO_DATABASE_PACKAGE",

@@ -81,7 +81,9 @@ const EXPECTED_IMPLEMENTATION_GROUPS = new Map([
     ...range('SHELL-NORM', 1, 9),
     ...range('SHELL-DB', 1, 5),
     ...range('SHELL-UI', 1, 20),
+    ...range('SHELL-MIG', 1, 8),
     ...range('SHELL-NATIVE', 1, 3),
+    ...range('SHELL-APP', 1, 21),
   ]],
   ['R2_NEXO_DATABASE_PACKAGE', [
     'AUTH-DB-020',

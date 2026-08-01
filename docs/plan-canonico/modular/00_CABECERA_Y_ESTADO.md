@@ -17,14 +17,14 @@
 | Estado documental             | **VIGENTE**                                                                                     |
 | Arquitectura documental       | **MODULAR CANÓNICA**                                                                            |
 | Fuente de orden canónico      | `manifest.json`                                                                                 |
-| Fragmentos canónicos | **293** |
-| Tareas canónicas con marcador | **1585** |
+| Fragmentos canónicos | **294** |
+| Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
 | Tareas aprobadas | **485** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1100** |
+| Tareas no iniciadas | **1109** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **30.60% (485/1585)** |
+| Porcentaje de completamiento | **30.43% (485/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |

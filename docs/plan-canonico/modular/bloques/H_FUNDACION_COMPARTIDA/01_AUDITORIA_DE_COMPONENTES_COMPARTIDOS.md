@@ -3004,7 +3004,7 @@ Ninguna decisión ordena editar o retirar código durante esta fase.
 | `H-SHELL-006-020` | Chrome muestra sede y estado agregado, pero no turno, área y rol operativo como nodos separados comunes                    | `COBERTURA_PARCIAL`            | `SHELL-APP-004` a `SHELL-APP-007`; `UX-BASE-005`                     |
 | `H-SHELL-006-021` | no existe navegación transversal que coloque primero la tarea actual o pendientes                                          | `AUSENTE`                      | `UX-BASE-002`; `SHELL-CON-015`; `SHELL-APP-008`; `SHELL-APP-009`     |
 | `H-SHELL-006-022` | el cambio de aplicación usa enlaces absolutos sin contrato común de retorno, contexto o tarea en curso                     | `PARIDAD_NO_DEMOSTRADA`        | `SHELL-CON-014`; `SHELL-APP-014` a `SHELL-APP-016`                   |
-| `H-SHELL-006-023` | SHELL presenta dos enlaces de perfil que resuelven a `/`                                                                   | `PLACEHOLDER_CONFIRMADO`       | `AUTH-UI-026` a `AUTH-UI-029`; `SHELL-AUD-011`                       |
+| `H-SHELL-006-023` | SHELL presenta dos enlaces de perfil que resuelven a `/`                                                                   | `PLACEHOLDER_CONFIRMADO`       | `SHELL-UI-010`; `SHELL-APP-021`; `SHELL-AUD-011`                     |
 | `H-SHELL-006-024` | no se confirmó una suite automatizada que compare catálogo, nav, contexto visible, rutas y estados en las ocho superficies | `PENDIENTE_DE_EVIDENCIA`       | `SHELL-CI-017`; `SHELL-CI-018`; `AUTH-QA-027`; `UX-QA-022`           |
 
 **Conciliación:** 24 hallazgos esperados, 24 materializados, 0 identificadores duplicados y 0 hallazgos sin destino.
@@ -3287,7 +3287,8 @@ Se excluyen:
 | clasificación final compartir / generar / mantener local  | `SHELL-AUD-010`                         |
 | retiro de componentes o estilos sin consumidor confirmado | `SHELL-AUD-011`                         |
 | implementación de la biblioteca UI                        | `SHELL-UI-001`                          |
-| implementación del AppShell y launcher compartidos        | `SHELL-UI-002`; `SHELL-UI-003`          |
+| implementación de Chrome/AppShell compartido              | `SHELL-UI-001`; `SHELL-UI-010`; `SHELL-UI-011` |
+| comportamiento del launcher y Hub                         | `SHELL-APP-001` a `SHELL-APP-003`; `SHELL-APP-009` |
 | mecanismo físico de distribución                          | `SHELL-PKG-001` a `SHELL-PKG-008`       |
 | migración coordinada de consumidores                      | `SHELL-MIG-001` a `SHELL-MIG-008`       |
 | rediseño funcional de pantallas de negocio                | bloques propietarios de cada aplicación |
@@ -3325,7 +3326,7 @@ Un hash distinto no se tratará automáticamente como diferencia funcional. Del 
 | `UI-FAM-002` | `src/components/vento/standard/ui.tsx`          |       **7** | **3** | `PARIDAD_SEMANTICA_CON_DERIVA_DE_FORMATO`     | `SHELL-AUD-010`; `SHELL-UI-001`                  |
 | `UI-FAM-003` | `src/components/vento/standard/table.tsx`       |       **7** | **3** | `PARIDAD_SEMANTICA_CON_DERIVA_DE_FORMATO`     | `SHELL-AUD-010`; `SHELL-UI-001`                  |
 | `UI-FAM-004` | `src/components/vento/standard/page-header.tsx` |       **2** | **2** | `DISTRIBUCION_PARCIAL_CON_DIVERGENCIA_DE_API` | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-UI-001` |
-| `UI-FAM-005` | `src/components/vento/standard/vento-logo.tsx`  |       **6** | **5** | `DISTRIBUCION_PARCIAL_CON_DERIVA_SEMANTICA`   | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-UI-002` |
+| `UI-FAM-005` | `src/components/vento/standard/vento-logo.tsx`  |       **6** | **5** | `DISTRIBUCION_PARCIAL_CON_DERIVA_SEMANTICA`   | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-UI-001` |
 
 **Conciliación:** 5 familias esperadas, 5 materializadas, 30 ocurrencias, 21 blobs únicos, 0 familias omitidas y 0 identificadores duplicados.
 
@@ -3813,14 +3814,14 @@ No deberá volver a copiarse como estándar vigente hasta que `SHELL-AUD-010`, `
 
 | ID            | Superficie    | Estado actual                                                   | Decisión de esta tarea                                                                                                   | Destino                                           |
 | ------------- | ------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
-| `UI-SURF-001` | SHELL runtime | Hub con contrato visual propio                                  | mantener separado como superficie propietaria; comparar integración futura, no usar como fuente automática de primitivas | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-UI-002`   |
+| `UI-SURF-001` | SHELL runtime | Hub con contrato visual propio                                  | mantener separado como superficie propietaria; comparar integración futura, no usar como fuente automática de primitivas | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-UI-010`; `SHELL-APP-001` a `SHELL-APP-003`; `SHELL-APP-009` |
 | `UI-SURF-002` | plantilla     | origen histórico desfasado                                      | congelar como evidencia hasta decidir reemplazo o generación; no propagar nuevas copias                                  | `SHELL-AUD-010`; `SHELL-PKG-001`; `SHELL-MIG-004` |
 | `UI-SURF-003` | VISO          | núcleo común más extensiones administrativas                    | conservar extensiones válidas y separar dominio de base durante migración                                                | `SHELL-UI-001`; `SHELL-AUD-010`; `SHELL-MIG-005`  |
 | `UI-SURF-004` | NEXO          | núcleo común más extensiones operativas y responsive            | conservar capacidades operativas; no elevar clases de dominio al núcleo                                                  | `SHELL-UI-001`; `SHELL-AUD-010`; `SHELL-MIG-005`  |
-| `UI-SURF-005` | FOGO          | núcleo común tematizado y logo con fallback copiado             | mantener hasta migración; corregir procedencia mediante contrato compartido, no parche local en esta fase                | `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-MIG-005`   |
-| `UI-SURF-006` | ORIGO         | núcleo común tematizado                                         | mantener como consumidor; no usar como plantilla universal por coincidencia del fallback                                 | `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-MIG-005`   |
+| `UI-SURF-005` | FOGO          | núcleo común tematizado y logo con fallback copiado             | mantener hasta migración; corregir procedencia mediante contrato compartido, no parche local en esta fase                | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-MIG-005`  |
+| `UI-SURF-006` | ORIGO         | núcleo común tematizado                                         | mantener como consumidor; no usar como plantilla universal por coincidencia del fallback                                 | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-MIG-005`  |
 | `UI-SURF-007` | PULSO         | núcleo común, logo compartido con NEXO y dos políticas globales | mantener políticas como extensiones explícitas hasta decisión contractual                                                | `SHELL-UI-001`; `SHELL-AUD-010`; `SHELL-MIG-005`  |
-| `UI-SURF-008` | NUMERA        | núcleo común más densidad financiera y fallback copiado         | preservar densidad como extensión local; migrar datos de marca a contrato común                                          | `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-MIG-005`   |
+| `UI-SURF-008` | NUMERA        | núcleo común más densidad financiera y fallback copiado         | preservar densidad como extensión local; migrar datos de marca a contrato común                                          | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-MIG-005`  |
 
 **Conciliación:** 8 superficies esperadas, 8 decisiones materializadas, 0 faltantes y 0 duplicadas.
 
@@ -3856,7 +3857,7 @@ Esta tabla no implementa la solución; materializa las condiciones que deberán 
 | ----------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------ |
 | `H-SHELL-007-001` | existen ocho superficies `globals.css` y ocho blobs distintos                                                     | `CONFIRMADO`                    | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-008`                   |
 | `H-SHELL-007-002` | los seis consumidores comparten nombres de tokens y clases, pero no un manifiesto contractual                     | `CONTRATO_NO_DEMOSTRADO`        | `SHELL-AUD-009`; `SHELL-UI-001`; `SHELL-PKG-008`                   |
-| `H-SHELL-007-003` | el runtime de SHELL mantiene una superficie visual distinta del contrato de primitivas consumidor                 | `CONFIRMADO`                    | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-UI-002`                    |
+| `H-SHELL-007-003` | el runtime de SHELL mantiene una superficie visual distinta del contrato de primitivas consumidor                 | `CONFIRMADO`                    | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-UI-010`                    |
 | `H-SHELL-007-004` | la plantilla usa una generación CSS histórica y no representa los runtimes actuales                               | `FUENTE_HISTORICA_DESFASADA`    | `SHELL-AUD-010`; `SHELL-PKG-001`; `SHELL-PKG-004`; `SHELL-MIG-004` |
 | `H-SHELL-007-005` | `ui.tsx` tiene tres blobs, pero una sola API ejecutable                                                           | `PARIDAD_SEMANTICA`             | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-006`                   |
 | `H-SHELL-007-006` | la API de primitivas depende de clases CSS no tipadas ni versionadas junto al componente                          | `ACOPLAMIENTO_CSS`              | `SHELL-AUD-009`; `SHELL-UI-001`; `SHELL-PKG-003`; `SHELL-PKG-008`  |
@@ -3865,13 +3866,13 @@ Esta tabla no implementa la solución; materializa las condiciones que deberán 
 | `H-SHELL-007-009` | la tabla actual es un wrapper semántico y no un sistema de datos                                                  | `CONFIRMADO`                    | `SHELL-UI-001`                                                     |
 | `H-SHELL-007-010` | `PageHeader` existe solo en VISO y NEXO                                                                           | `DISTRIBUCION_PARCIAL`          | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-AUD-011`                   |
 | `H-SHELL-007-011` | VISO y NEXO exponen APIs distintas de acento y responsive                                                         | `DIVERGENCIA_DE_API`            | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-UI-001`                   |
-| `H-SHELL-007-012` | `VentoLogo` está duplicado en seis runtimes y ausente de la plantilla                                             | `CONFIRMADO`                    | `SHELL-AUD-010`; `SHELL-UI-002`; `SHELL-PKG-001`                   |
-| `H-SHELL-007-013` | códigos, labels y colores de aplicación se repiten dentro de `VentoLogo`                                          | `DERIVA_DE_CONFIGURACION`       | `SHELL-CON-002`; `SHELL-AUD-009`; `SHELL-UI-002`                   |
-| `H-SHELL-007-014` | existen dos algoritmos app-centric de fallback textual                                                            | `DIVERGENCIA_DE_COMPORTAMIENTO` | `SHELL-AUD-010`; `SHELL-UI-002`; `SHELL-PKG-008`                   |
-| `H-SHELL-007-015` | FOGO y NUMERA heredan el fallback centrado en ORIGO                                                               | `DERIVA_DE_CONFIGURACION`       | `SHELL-AUD-010`; `SHELL-UI-002`; `SHELL-MIG-005`                   |
-| `H-SHELL-007-016` | la representación icon-only del logo no tiene un contrato accesible común explícito                               | `CONTRATO_NO_DEMOSTRADO`        | `SHELL-AUD-009`; `SHELL-UI-001`; `SHELL-UI-002`                    |
+| `H-SHELL-007-012` | `VentoLogo` está duplicado en seis runtimes y ausente de la plantilla                                             | `CONFIRMADO`                    | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-001`                   |
+| `H-SHELL-007-013` | códigos, labels y colores de aplicación se repiten dentro de `VentoLogo`                                          | `DERIVA_DE_CONFIGURACION`       | `SHELL-CON-002`; `SHELL-AUD-009`; `SHELL-UI-001`                   |
+| `H-SHELL-007-014` | existen dos algoritmos app-centric de fallback textual                                                            | `DIVERGENCIA_DE_COMPORTAMIENTO` | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-008`                   |
+| `H-SHELL-007-015` | FOGO y NUMERA heredan el fallback centrado en ORIGO                                                               | `DERIVA_DE_CONFIGURACION`       | `SHELL-AUD-010`; `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-MIG-005` |
+| `H-SHELL-007-016` | la representación icon-only del logo no tiene un contrato accesible común explícito                               | `CONTRATO_NO_DEMOSTRADO`        | `SHELL-AUD-009`; `SHELL-UI-001`; `SHELL-MIG-006`                   |
 | `H-SHELL-007-017` | las animaciones del logo dependen de CSS local y la reducción de movimiento solo se localizó en VISO y NEXO       | `COBERTURA_PARCIAL`             | `SHELL-UI-001`; `SHELL-PKG-008`; `SHELL-MIG-006`                   |
-| `H-SHELL-007-018` | varios `globals.css` mezclan núcleo UI, AppShell y estilos de dominio                                             | `MEZCLA_BASE_DOMINIO`           | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-MIG-005`   |
+| `H-SHELL-007-018` | varios `globals.css` mezclan núcleo UI, AppShell y estilos de dominio                                             | `MEZCLA_BASE_DOMINIO`           | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-UI-010`; `SHELL-MIG-005`  |
 | `H-SHELL-007-019` | la tematización por aplicación no está separada físicamente del núcleo compartido                                 | `CONFIRMADO`                    | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-004`  |
 | `H-SHELL-007-020` | PULSO aplica una política global para impedir cambios accidentales por rueda en inputs numéricos                  | `EXTENSION_LOCAL_ACTIVA`        | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-008`                   |
 | `H-SHELL-007-021` | PULSO aplica una política global de doble submit y feedback mediante `data-*`                                     | `EXTENSION_LOCAL_ACTIVA`        | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-008`  |
@@ -4141,9 +4142,9 @@ Se excluyen:
 | decisión final compartir / generar / mantener local      | `SHELL-AUD-010`                                        |
 | retiro de helpers o clientes sin consumidor confirmado   | `SHELL-AUD-011`                                        |
 | mecanismo físico de distribución y versionado            | `SHELL-PKG-001` a `SHELL-PKG-008`                      |
-| implementación de adapters server y client               | `SHELL-AUTH-002`                                       |
+| implementación de factories server, browser y admin      | `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002` |
 | gates contra consumidores legacy                         | `SHELL-AUTH-004`                                       |
-| migración multi-repositorio                              | `SHELL-AUTH-005`                                       |
+| migración multi-repositorio                              | `SHELL-MIG-001` a `SHELL-MIG-008`; `SHELL-AUTH-005`   |
 | cambios de esquema, RLS, RPC, funciones o datos Supabase | bloques propietarios de Supabase                       |
 | validación remota, productiva o de dispositivo           | fase de implementación y certificación correspondiente |
 
@@ -4175,11 +4176,11 @@ Un hash distinto no implica automáticamente un contrato distinto. Un mismo help
 
 | ID canónico | Ruta o responsabilidad               | Ocurrencias | Blobs | Variantes semánticas | Clasificación                                    | Destino                                             |
 | ----------- | ------------------------------------ | ----------: | ----: | -------------------: | ------------------------------------------------ | --------------------------------------------------- |
-| `FAM-014`   | `src/lib/supabase/client.ts`         |       **7** | **5** |                **3** | `DUPLICADA_MIXTA_CON_DERIVA_DE_CICLO_Y_COOKIE`   | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
-| `FAM-015`   | `src/lib/supabase/server.ts`         |       **7** | **6** |                **3** | `DUPLICADA_MIXTA_CON_DERIVA_DE_COOKIE`           | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002`  |
+| `FAM-014`   | `src/lib/supabase/client.ts`         |       **7** | **5** |                **3** | `DUPLICADA_MIXTA_CON_DERIVA_DE_CICLO_Y_COOKIE`   | `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002` |
+| `FAM-015`   | `src/lib/supabase/server.ts`         |       **7** | **6** |                **3** | `DUPLICADA_MIXTA_CON_DERIVA_DE_COOKIE`           | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002` |
 | `FAM-016`   | `middleware.ts`                      |       **6** | **6** |                **5** | `DISTRIBUCION_PARCIAL_DIVERGENTE`                | `SHELL-AUD-010`; `SHELL-AUTH-002`; `SHELL-AUTH-005` |
 | `FAM-017`   | `src/lib/supabase/proxy.ts`          |       **3** | **3** |                **2** | `DISTRIBUCION_PARCIAL_SIN_CONSUMIDOR_CONFIRMADO` | `SHELL-AUD-010`; `SHELL-AUD-011`                    |
-| `FAM-024`   | `src/lib/supabase/admin.ts`          |       **1** | **1** |                **1** | `UNICA_PRIVILEGIADA_CONSUMIDA`                   | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002`  |
+| `FAM-024`   | `src/lib/supabase/admin.ts`          |       **1** | **1** |                **1** | `UNICA_PRIVILEGIADA_CONSUMIDA`                   | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002` |
 | `FAM-025`   | `src/lib/supabase/employee-sites.ts` |       **3** | **2** |                **1** | `PARIDAD_SEMANTICA_CON_DERIVA_DE_FORMATO`        | `SHELL-AUD-009`; `SHELL-AUD-010`                    |
 | `FAM-026`   | `src/utils/supabase/client.ts`       |       **1** | **1** |                **1** | `UNICA_SIN_CONSUMIDOR_CONFIRMADO`                | `SHELL-AUD-010`; `SHELL-AUD-011`                    |
 
@@ -4341,7 +4342,7 @@ VISO contiene el único `src/lib/supabase/admin.ts` del alcance:
 - tiene consumidores confirmados en vacantes, usuarios, horarios y otras superficies administrativas;
 - no está tipado mediante un contrato compartido `Database`.
 
-Se clasifica como `FRONTERA_PRIVILEGIADA_LOCAL_CONSUMIDA`. No debe incorporarse sin distinción a un cliente de sesión de usuario. Su adapter, propiedad y migración corresponden a `SHELL-AUTH-002`, `SHELL-AUTH-005` y la decisión de `SHELL-AUD-010`.
+Se clasifica como `FRONTERA_PRIVILEGIADA_LOCAL_CONSUMIDA`. No debe incorporarse sin distinción a un cliente de sesión de usuario. La factory y la separación de runtime corresponden a `SHELL-DB-001` y `SHELL-DB-005`; la semántica privilegiada permanece en `SHELL-AUTH-002`, `SHELL-AUTH-005` y la decisión de `SHELL-AUD-010`.
 
 ---
 
@@ -4398,13 +4399,13 @@ El helper acepta que la relación `sites` llegue como objeto, arreglo o `null`, 
 
 | Variante                         | Familia      | Superficies                      | Contrato distintivo                                                         | Destino                                            |
 | -------------------------------- | ------------ | -------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------- |
-| `BROWSER-SHELL-DOMAIN-PER_CALL`  | browser      | SHELL                            | nuevo cliente por llamada; `cookieOptions.domain` configurable              | `SHELL-AUD-010`; `SHELL-AUTH-002`                  |
-| `BROWSER-SINGLETON-BASE`         | browser      | VISO, NEXO, FOGO, ORIGO, NUMERA  | singleton de módulo; sin `cookieOptions` explícito                          | `SHELL-AUD-010`; `SHELL-AUTH-002`                  |
-| `BROWSER-PULSO-PER_CALL`         | browser      | PULSO                            | nuevo cliente por llamada; sin dominio explícito                            | `SHELL-AUD-010`; `SHELL-AUTH-002`                  |
-| `BROWSER-PULSO-ALT-UNCONSUMED`   | browser      | PULSO                            | variables públicas estrictas; valida URL; sin consumidor confirmado         | `SHELL-AUD-011`                                    |
-| `SERVER-SHELL-COOKIE_OPTIONS`    | server       | SHELL                            | dominio mediante opciones globales del cliente                              | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002` |
-| `SERVER-NEXO-HOST_AWARE`         | server       | NEXO                             | dominio por cookie y supresión en host local                                | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002` |
-| `SERVER-STATIC-DOMAIN`           | server       | VISO, FOGO, ORIGO, PULSO, NUMERA | dominio configurado estático aplicado en `setAll`                           | `SHELL-AUD-010`; `SHELL-AUTH-002`                  |
+| `BROWSER-SHELL-DOMAIN-PER_CALL`  | browser      | SHELL                            | nuevo cliente por llamada; `cookieOptions.domain` configurable              | `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002` |
+| `BROWSER-SINGLETON-BASE`         | browser      | VISO, NEXO, FOGO, ORIGO, NUMERA  | singleton de módulo; sin `cookieOptions` explícito                          | `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002` |
+| `BROWSER-PULSO-PER_CALL`         | browser      | PULSO                            | nuevo cliente por llamada; sin dominio explícito                            | `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002` |
+| `BROWSER-PULSO-ALT-UNCONSUMED`   | browser      | PULSO                            | variables públicas estrictas; valida URL; sin consumidor confirmado         | `SHELL-DB-005`; `SHELL-AUD-011`                    |
+| `SERVER-SHELL-COOKIE_OPTIONS`    | server       | SHELL                            | dominio mediante opciones globales del cliente                              | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002` |
+| `SERVER-NEXO-HOST_AWARE`         | server       | NEXO                             | dominio por cookie y supresión en host local                                | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002` |
+| `SERVER-STATIC-DOMAIN`           | server       | VISO, FOGO, ORIGO, PULSO, NUMERA | dominio configurado estático aplicado en `setAll`                           | `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002` |
 | `MW-SHELL-CENTRAL`               | middleware   | SHELL                            | login central configurable y headers de diagnóstico                         | `SHELL-AUD-010`; `SHELL-AUTH-002`                  |
 | `MW-VISO-LOCAL_BASE`             | middleware   | VISO                             | login local y autenticación global base                                     | `SHELL-AUD-010`; `SHELL-AUTH-005`                  |
 | `MW-NEXO-KIOSK`                  | middleware   | NEXO                             | auth, no-store, política local de cookie y routing de kiosco                | `SHELL-AUD-009`; `SHELL-AUD-010`                   |
@@ -4412,7 +4413,7 @@ El helper acepta que la relación `sites` llegue como objeto, arreglo o `null`, 
 | `MW-ORIGO-PDF_EXCEPTION`         | middleware   | ORIGO                            | login local y excepción pública de PDF                                      | `SHELL-AUD-010`; `SHELL-AUTH-005`                  |
 | `PROXY-BASE-UNCONSUMED`          | proxy        | VISO, NEXO                       | renovación fail-open; solo limpia `refresh_token_not_found`; sin invocación | `SHELL-AUD-011`                                    |
 | `PROXY-PULSO-UNCONSUMED`         | proxy        | PULSO                            | misma base con extracción defensiva de código; sin invocación               | `SHELL-AUD-011`                                    |
-| `ADMIN-VISO-SERVICE_ROLE`        | admin        | VISO                             | cliente server-only con service role y sesión no persistente                | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002` |
+| `ADMIN-VISO-SERVICE_ROLE`        | admin        | VISO                             | cliente server-only con service role y sesión no persistente                | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002` |
 | `EMPLOYEE-SITES-NORMALIZER`      | normalizador | FOGO, ORIGO, NUMERA              | normaliza relación objeto/arreglo a `SiteOption[]`                          | `SHELL-AUD-009`; `SHELL-AUD-010`                   |
 
 **Conciliación semántica:** 16 variantes esperadas, 16 materializadas y 0 códigos duplicados.
@@ -4462,14 +4463,14 @@ Estas reglas no deciden el mecanismo físico de distribución.
 
 | ID                | Hallazgo                                                                                                                 | Estado                            | Tarea responsable                                   |
 | ----------------- | ------------------------------------------------------------------------------------------------------------------------ | --------------------------------- | --------------------------------------------------- |
-| `H-SHELL-008-001` | siete clientes browser primarios producen cinco blobs y tres contratos semánticos                                        | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-PKG-001`                    |
-| `H-SHELL-008-002` | VISO, NEXO, FOGO, ORIGO y NUMERA comparten el patrón singleton                                                           | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
-| `H-SHELL-008-003` | SHELL crea cliente browser por llamada y aplica dominio de cookie explícito                                              | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
-| `H-SHELL-008-004` | PULSO crea el cliente browser principal por llamada sin dominio explícito                                                | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
-| `H-SHELL-008-005` | PULSO conserva un segundo cliente browser sin consumidor confirmado                                                      | `SIN_CONSUMIDOR_CONFIRMADO`       | `SHELL-AUD-011`                                     |
+| `H-SHELL-008-001` | siete clientes browser primarios producen cinco blobs y tres contratos semánticos                                        | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-PKG-001` |
+| `H-SHELL-008-002` | VISO, NEXO, FOGO, ORIGO y NUMERA comparten el patrón singleton                                                           | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002` |
+| `H-SHELL-008-003` | SHELL crea cliente browser por llamada y aplica dominio de cookie explícito                                              | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002` |
+| `H-SHELL-008-004` | PULSO crea el cliente browser principal por llamada sin dominio explícito                                                | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002` |
+| `H-SHELL-008-005` | PULSO conserva un segundo cliente browser sin consumidor confirmado                                                      | `SIN_CONSUMIDOR_CONFIRMADO`       | `SHELL-DB-005`; `SHELL-AUD-011`                     |
 | `H-SHELL-008-006` | los clientes primarios comparten la misma precedencia de URL y clave                                                     | `CONFIRMADO`                      | `SHELL-AUD-009`; `SHELL-AUD-010`                    |
 | `H-SHELL-008-007` | el fallback browser a variables no públicas existe en código, pero su disponibilidad efectiva en bundles no fue validada | `PENDIENTE_DE_EVIDENCIA`          | `SHELL-AUD-009`; `SHELL-AUTH-002`                   |
-| `H-SHELL-008-008` | siete clientes server producen seis blobs y tres contratos semánticos                                                    | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-PKG-001`                    |
+| `H-SHELL-008-008` | siete clientes server producen seis blobs y tres contratos semánticos                                                    | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-PKG-001` |
 | `H-SHELL-008-009` | cinco runtimes aplican dominio estático dentro de `setAll`                                                               | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
 | `H-SHELL-008-010` | NEXO es el único cliente server que elimina dominio en hosts locales                                                     | `EXTENSION_LOCAL_CONFIRMADA`      | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002`  |
 | `H-SHELL-008-011` | SHELL delega el dominio a `cookieOptions` global del cliente                                                             | `CONFIRMADO`                      | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-AUTH-002`  |
@@ -4480,13 +4481,13 @@ Estas reglas no deciden el mecanismo físico de distribución.
 | `H-SHELL-008-016` | ORIGO conserva una excepción pública explícita para PDF con protección delegada al destino                               | `EXTENSION_LOCAL_CONFIRMADA`      | `SHELL-AUD-010`; `SHELL-AUTH-005`                   |
 | `H-SHELL-008-017` | todos los middleware presentes excluyen `/api` del matcher global                                                        | `CONFIRMADO`                      | `SHELL-AUTH-004`; `SHELL-AUTH-005`                  |
 | `H-SHELL-008-018` | los tres helpers proxy representan dos contratos y carecen de invocación externa confirmada                              | `SIN_CONSUMIDOR_CONFIRMADO`       | `SHELL-AUD-011`                                     |
-| `H-SHELL-008-019` | proxy permite continuar ante varios fallos mientras middleware redirige y limpia cookies                                 | `DIVERGENCIA_DE_FALLO_CONFIRMADA` | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
+| `H-SHELL-008-019` | proxy permite continuar ante varios fallos mientras middleware redirige y limpia cookies                                 | `DIVERGENCIA_DE_FALLO_CONFIRMADA` | `SHELL-AUD-010`; `SHELL-DB-004`; `SHELL-AUTH-002`   |
 | `H-SHELL-008-020` | el proxy de NEXO usa dominio estático y no replica su política host-aware activa                                         | `INCONSISTENCIA_LOCAL_CONFIRMADA` | `SHELL-AUD-010`; `SHELL-AUTH-002`                   |
 | `H-SHELL-008-021` | el proxy sin consumidor de PULSO no compensa la ausencia de middleware global                                            | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUD-011`; `SHELL-AUTH-005`  |
-| `H-SHELL-008-022` | VISO posee el único cliente service-role encapsulado como server-only y tiene consumidores confirmados                   | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-AUTH-002`; `SHELL-AUTH-005` |
-| `H-SHELL-008-023` | el cliente admin no está parametrizado por un contrato compartido de base de datos                                       | `CONFIRMADO`                      | `SHELL-AUD-009`; `SHELL-CON-007`; `SHELL-AUTH-002`  |
+| `H-SHELL-008-022` | VISO posee el único cliente service-role encapsulado como server-only y tiene consumidores confirmados                   | `CONFIRMADO`                      | `SHELL-AUD-010`; `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-AUTH-005` |
+| `H-SHELL-008-023` | el cliente admin no está parametrizado por un contrato compartido de base de datos                                       | `CONFIRMADO`                      | `SHELL-AUD-009`; `SHELL-CON-007`; `SHELL-DB-002`; `SHELL-AUTH-002` |
 | `H-SHELL-008-024` | los tres helpers employee-sites implementan un solo contrato ejecutable                                                  | `PARIDAD_SEMANTICA_CONFIRMADA`    | `SHELL-AUD-009`; `SHELL-AUD-010`                    |
-| `H-SHELL-008-025` | ninguna fábrica auditada declara un genérico compartido `Database`                                                       | `CONFIRMADO`                      | `SHELL-AUD-009`; `SHELL-CON-007`; `SHELL-AUTH-002`  |
+| `H-SHELL-008-025` | ninguna fábrica auditada declara un genérico compartido `Database`                                                       | `CONFIRMADO`                      | `SHELL-AUD-009`; `SHELL-CON-007`; `SHELL-DB-002`; `SHELL-AUTH-002` |
 | `H-SHELL-008-026` | los siete runtimes declaran las mismas restricciones de versión Supabase                                                 | `CONFIRMADO`                      | `SHELL-PKG-004`                                     |
 | `H-SHELL-008-027` | los runtimes declaran cinco bandas de Next y no existe evidencia operativa multi-versión en esta tarea                   | `PENDIENTE_DE_EVIDENCIA`          | `SHELL-PKG-004`; `SHELL-PKG-008`; `SHELL-AUTH-005`  |
 
@@ -4706,7 +4707,7 @@ Se excluyen:
 | consolidación del contexto compartido                        | `SHELL-CTX-001` a `SHELL-CTX-006`                           |
 | definición de distribución, versionado y rollback            | `SHELL-PKG-001` a `SHELL-PKG-008`                           |
 | cambios de RPC, esquema, RLS, grants o datos                 | tareas propietarias de Supabase y autorización              |
-| implementación de UI compartida y AppShell                   | `SHELL-UI-001` a `SHELL-UI-003`                             |
+| implementación de UI, navegación y AppShell                  | `SHELL-UI-001`; `SHELL-UI-010`; `SHELL-UI-011`              |
 | ejecución de pruebas operativas o remotas                    | paquetes de implementación y certificación correspondientes |
 
 ---
@@ -4737,15 +4738,15 @@ La compatibilidad estructural TypeScript no demuestra equivalencia empresarial. 
 | ID             | Contrato o tipo                              | Superficie actual                                  | Estado                      | Brecha principal                                                                       | Destino exacto                                                                      |
 | -------------- | -------------------------------------------- | -------------------------------------------------- | --------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
 | `TYPE-CON-001` | `AppCode`                                    | uniones y strings locales                          | `NORMATIVO_NO_IMPLEMENTADO` | no existe export runtime del catálogo de diez aplicaciones                             | `SHELL-CON-002`; `AUTH-CAT-018`                                                     |
-| `TYPE-CON-002` | definición de aplicación / `AppSwitcherItem` | tres redeclaraciones por cada uno de seis runtimes | `LOCAL_DUPLICADO`           | datos, estado, acceso, grupo, URL y marca no proceden de una fuente única              | `SHELL-CON-002`; `SHELL-UI-002`; `SHELL-AUTH-005`                                   |
-| `TYPE-CON-003` | `VentoEntity`                                | `vento-logo.tsx` locales                           | `LOCAL_DIVERGENTE`          | incluye `default`, omite identidades canónicas y duplica colores                       | `SHELL-CON-002`; `SHELL-UI-002`                                                     |
+| `TYPE-CON-002` | definición de aplicación / `AppSwitcherItem` | tres redeclaraciones por cada uno de seis runtimes | `LOCAL_DUPLICADO`           | datos, estado, acceso, grupo, URL y marca no proceden de una fuente única              | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-APP-001` a `SHELL-APP-003`; `SHELL-AUTH-005` |
+| `TYPE-CON-003` | `VentoEntity`                                | `vento-logo.tsx` locales                           | `LOCAL_DIVERGENTE`          | incluye `default`, omite identidades canónicas y duplica colores                       | `SHELL-CON-002`; `SHELL-UI-001`                                                     |
 | `TYPE-CON-004` | `IconName`                                   | AppShell y Chrome locales                          | `LOCAL_DIVERGENTE`          | vocabularios de iconos no versionados ni validados contra navegación                   | `SHELL-UI-001`; `SHELL-AUD-010`                                                     |
-| `TYPE-CON-005` | `NavigationRow`                              | seis `vento-shell.tsx`                             | `TIPADO_ESTRUCTURAL_MINIMO` | solo modela ocho de catorce campos funcionales del esquema                             | `SHELL-CON-011`; `SHELL-UI-002`; `SHELL-AUTH-005`                                   |
-| `TYPE-CON-006` | `NavItem`                                    | `vento-shell.tsx` y `vento-chrome.tsx`             | `LOCAL_DUPLICADO`           | `href` reemplaza identidad estable; permiso es string libre                            | `SHELL-CON-003`; `SHELL-CON-011`; `SHELL-UI-002`                                    |
-| `TYPE-CON-007` | `NavGroup`                                   | AppShell y Chrome locales                          | `LOCAL_DUPLICADO`           | label visible funciona como identidad de agrupación                                    | `SHELL-CON-011`; `SHELL-UI-002`                                                     |
-| `TYPE-CON-008` | `OperatingGate`                              | AppShell y Chrome locales                          | `LOCAL_DUPLICADO`           | modos, bloqueo, textos y acción no están versionados                                   | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-UI-002`                   |
+| `TYPE-CON-005` | `NavigationRow`                              | seis `vento-shell.tsx`                             | `TIPADO_ESTRUCTURAL_MINIMO` | solo modela ocho de catorce campos funcionales del esquema                             | `SHELL-CON-011`; `SHELL-UI-011`; `SHELL-AUTH-005`                                   |
+| `TYPE-CON-006` | `NavItem`                                    | `vento-shell.tsx` y `vento-chrome.tsx`             | `LOCAL_DUPLICADO`           | `href` reemplaza identidad estable; permiso es string libre                            | `SHELL-CON-003`; `SHELL-CON-011`; `SHELL-UI-011`                                    |
+| `TYPE-CON-007` | `NavGroup`                                   | AppShell y Chrome locales                          | `LOCAL_DUPLICADO`           | label visible funciona como identidad de agrupación                                    | `SHELL-CON-011`; `SHELL-UI-011`                                                     |
+| `TYPE-CON-008` | `OperatingGate`                              | AppShell y Chrome locales                          | `LOCAL_DUPLICADO`           | modos, bloqueo, textos y acción no están versionados                                   | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-UI-015`; `SHELL-UI-016`   |
 | `TYPE-CON-009` | `PageHeaderProps`                            | VISO y NEXO                                        | `LOCAL_DIVERGENTE`          | VISO añade `accent`; NEXO aporta comportamiento responsive distinto                    | `SHELL-UI-001`; `SHELL-AUD-010`                                                     |
-| `TYPE-CON-010` | `VentoLogoProps` / `VentoIconProps`          | seis runtimes                                      | `LOCAL_DIVERGENTE`          | entidad, colores, labels, fallback y accesibilidad permanecen locales                  | `SHELL-CON-002`; `SHELL-UI-002`; `SHELL-AUD-010`                                    |
+| `TYPE-CON-010` | `VentoLogoProps` / `VentoIconProps`          | seis runtimes                                      | `LOCAL_DIVERGENTE`          | entidad, colores, labels, fallback y accesibilidad permanecen locales                  | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-AUD-010`                                    |
 | `TYPE-CON-011` | `SiteOption`                                 | AppShell, Chrome, perfil y helper Supabase         | `LOCAL_DIVERGENTE`          | `name` y `site_type` cambian en nulabilidad y presencia                                | `SHELL-CON-007`; `SHELL-CTX-003`; `SHELL-AUTH-005`                                  |
 | `TYPE-CON-012` | `EmployeeSiteRow`                            | FOGO, ORIGO y NUMERA                               | `LOCAL_DUPLICADO`           | relación `sites` admite objeto o array mediante tipo manual                            | `SHELL-CON-007`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                                 |
 | `TYPE-CON-013` | `GuardOptions` base                          | NEXO, FOGO, ORIGO y NUMERA                         | `LOCAL_DUPLICADO`           | app, permiso, sede y área son strings abiertas                                         | `SHELL-CON-002`; `SHELL-CON-003`; `SHELL-CON-007`; `SHELL-AUTH-002`                 |
@@ -4763,15 +4764,18 @@ La compatibilidad estructural TypeScript no demuestra equivalencia empresarial. 
 | `TYPE-CON-025` | rol base, rol operativo y `ROLE_OPTIONS`     | seis configuraciones locales                       | `LOCAL_DIVERGENTE`          | listas distintas; UI restringe selección pero servidor acepta strings                  | `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                |
 | `TYPE-CON-026` | `RolePermissionRow`                          | seis role overrides                                | `LOCAL_DIVERGENTE`          | forma de relación y campos de scope dependen de selección manual                       | `SHELL-CON-006`; `SHELL-AUTH-001`; `SHELL-AUTH-005`                                 |
 | `TYPE-CON-027` | `RolePermissionEntry` y scope                | role override base y NEXO                          | `STRING_ABIERTO`            | `scope_type`, site type y area kind no usan unión canónica                             | `SHELL-CON-006`; `AUTH-CAT-018`; `SHELL-AUTH-001`                                   |
-| `TYPE-CON-028` | adapter `SupabaseClient`                     | aliases locales y paquete                          | `LOCAL_DIVERGENTE`          | algunas firmas exigen cliente completo y PULSO usa `Pick<..., "rpc">`                  | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-010`                                 |
-| `TYPE-CON-029` | `Database` generado                          | siete runtimes                                     | `SIN_DATABASE_GENERADO`     | clientes y queries no están parametrizados con esquema generado                        | `SHELL-CON-001`; `SHELL-AUTH-002`; `SHELL-AUTH-004`                                 |
-| `TYPE-CON-030` | inputs y outputs RPC                         | contexto, permisos, firma y middleware             | `CAST_NO_VALIDADO`          | nombres, parámetros y filas se escriben manualmente y se castean                       | `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035`                                     |
+| `TYPE-CON-028` | adapter `SupabaseClient`                     | aliases locales y paquete                          | `LOCAL_DIVERGENTE`          | algunas firmas exigen cliente completo y PULSO usa `Pick<..., "rpc">`                  | `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-010` |
+| `TYPE-CON-029` | `Database` generado                          | siete runtimes                                     | `SIN_DATABASE_GENERADO`     | clientes y queries no están parametrizados con esquema generado                        | `SHELL-CON-001`; `SHELL-DB-002`; `SHELL-AUTH-002`; `SHELL-AUTH-004`                 |
+| `TYPE-CON-030` | inputs y outputs RPC                         | contexto, permisos, firma y middleware             | `CAST_NO_VALIDADO`          | nombres, parámetros y filas se escriben manualmente y se castean                       | `SHELL-DB-003`; `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035`                     |
 | `TYPE-CON-031` | `SignatureResult`                            | cuatro copias byte-idénticas                       | `UNION_DISCRIMINADA_LOCAL`  | buena discriminación local, pero códigos, targets, metadata y errores no son canónicos | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`; `AUTH-DEV-007` a `AUTH-DEV-016` |
 | `TYPE-CON-032` | destino SSO y `returnTo`                     | seis helpers y guards                              | `LOCAL_DIVERGENTE`          | string o URL sin tipo de origen, política, app destino ni validación uniforme          | `SHELL-CON-002`; `SHELL-CON-008`; `SHELL-AUTH-002`                                  |
-| `TYPE-CON-033` | razones, errores y estados                   | query params, arrays y headers                     | `STRING_ABIERTO`            | no existe unión/versionado común de códigos y razones seguras                          | `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-AUTH-002`; `SHELL-AUTH-004`                |
+| `TYPE-CON-033` | razones, errores y estados                   | query params, arrays y headers                     | `STRING_ABIERTO`            | no existe unión/versionado común de códigos y razones seguras                          | `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-DB-004`; `SHELL-AUTH-002`; `SHELL-AUTH-004` |
 | `TYPE-CON-034` | manifiesto, versión, hash y diagnóstico      | aprobado en `AUTH-CAT-018`                         | `NORMATIVO_NO_IMPLEMENTADO` | runtime no transporta `published_version`, hash ni diagnóstico estructurado            | `AUTH-CAT-017`; `AUTH-CAT-018`; `SHELL-CON-001`; `SHELL-AUTH-003`                   |
+| `TYPE-CON-035` | miembro `AppSwitcherItem.brandColor`         | AppSwitcher runtime                                | `CAMPO_SIN_CONSUMO_CONFIRMADO` | se declara localmente pero no altera el render inspeccionado                         | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-AUD-010`; `SHELL-AUD-011`                   |
+| `TYPE-CON-036` | prop `AppSwitcherProps.sites`                | AppSwitcher runtime                                | `CONTRATO_RESIDUAL`         | la selección de sede pertenece a ProfileMenu/contexto y el componente no usa la prop   | `SHELL-CTX-003`; `SHELL-UI-007`; `SHELL-AUD-010`; `SHELL-AUD-011`                   |
+| `TYPE-CON-037` | prop `AppSwitcherProps.activeSiteId`         | AppSwitcher runtime                                | `CONTRATO_RESIDUAL`         | el componente no desestructura ni consume el identificador de sede activa              | `SHELL-CTX-003`; `SHELL-UI-007`; `SHELL-AUD-010`; `SHELL-AUD-011`                   |
 
-**Conciliación:** 34 identidades esperadas, 34 materializadas, 0 omitidas y 0 identificadores duplicados.
+**Conciliación:** 37 identidades esperadas, 37 materializadas, 0 omitidas y 0 identificadores duplicados. La granularidad es una identidad por contrato o miembro contractual; las copias físicas se concilian en `SHELL-AUD-011`.
 
 ---
 
@@ -4863,7 +4867,7 @@ ApplicationAccessProjection
 ApplicationDestination
 ```
 
-Esta tarea no diseña esas interfaces finales; registra la separación obligatoria para `SHELL-CON-002`, `SHELL-UI-002` y `SHELL-AUD-010`.
+Esta tarea no diseña esas interfaces finales; registra la separación obligatoria para `SHELL-CON-002`, `SHELL-UI-001`, `SHELL-APP-001` a `SHELL-APP-003` y `SHELL-AUD-010`.
 
 ##### 8.3. Navegación
 
@@ -5271,7 +5275,7 @@ La futura compatibilidad no podrá basarse solo en semver del paquete. Deberá v
 | roles base y operativos                           | `SHELL-CON-004`; `SHELL-CON-005`                |
 | scopes territoriales y funcionales                | `SHELL-CON-006`                                 |
 | contexto, sesión, dispositivo y simulación        | `SHELL-CON-007`; `SHELL-CTX-001`                |
-| errores, razones y diagnósticos                   | `SHELL-CON-008`; `SHELL-CTX-005`                |
+| errores, razones y diagnósticos                   | `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-DB-004` |
 | identificadores de pantalla y navegación          | `SHELL-CON-011`                                 |
 | mecanismo de distribución                         | `SHELL-PKG-001` a `SHELL-PKG-008`               |
 | adapters de servidor y cliente                    | `SHELL-AUTH-002`                                |
@@ -5294,16 +5298,16 @@ No se crea ninguna tarea nueva. Todos los destinos existen en el roadmap canóni
 | `H-SHELL-009-002` | `@vento/os-context` existe como paquete privado parcial                    | `CONFIRMADO`                | adopción prematura como contrato completo             | `SHELL-AUTH-001`; `SHELL-CTX-001`                                   |
 | `H-SHELL-009-003` | no se confirmaron consumidores runtime de `@vento/os-context`              | `SIN_CONSUMIDOR_CONFIRMADO` | paquete transitorio sin adopción o retiro inseguro    | `SHELL-AUTH-003`; `SHELL-AUTH-005`; `SHELL-AUD-011`                 |
 | `H-SHELL-009-004` | los códigos de aplicación permanecen en strings y uniones locales          | `CONFIRMADO`                | catálogo divergente y destinos inválidos              | `SHELL-CON-002`; `SHELL-AUTH-004`                                   |
-| `H-SHELL-009-005` | `AppSwitcherItem` se redeclara dieciocho veces en runtimes                 | `CONFIRMADO`                | deriva de campos, estados y marca                     | `SHELL-CON-002`; `SHELL-UI-002`; `SHELL-AUTH-005`                   |
-| `H-SHELL-009-006` | `VentoEntity` no equivale al conjunto canónico de aplicaciones             | `CONFIRMADO`                | tipos aparentemente cerrados con cobertura incorrecta | `SHELL-CON-002`; `SHELL-UI-002`                                     |
-| `H-SHELL-009-007` | colores y labels de marca están embebidos en logos y catálogos locales     | `CONFIRMADO`                | identidad visual divergente                           | `SHELL-CON-002`; `SHELL-UI-002`                                     |
+| `H-SHELL-009-005` | `AppSwitcherItem` se redeclara dieciocho veces en runtimes                 | `CONFIRMADO`                | deriva de campos, estados y marca                     | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-APP-001` a `SHELL-APP-003`; `SHELL-AUTH-005` |
+| `H-SHELL-009-006` | `VentoEntity` no equivale al conjunto canónico de aplicaciones             | `CONFIRMADO`                | tipos aparentemente cerrados con cobertura incorrecta | `SHELL-CON-002`; `SHELL-UI-001`                                     |
+| `H-SHELL-009-007` | colores y labels de marca están embebidos en logos y catálogos locales     | `CONFIRMADO`                | identidad visual divergente                           | `SHELL-CON-002`; `SHELL-UI-001`                                     |
 | `H-SHELL-009-008` | `IconName` no está versionado ni unificado                                 | `CONFIRMADO`                | iconos omitidos o degradados silenciosamente          | `SHELL-UI-001`; `SHELL-AUD-010`                                     |
-| `H-SHELL-009-009` | `NavigationRow` omite cuatro campos funcionales del esquema                | `CONFIRMADO`                | pérdida de identidad y comportamiento de navegación   | `SHELL-CON-011`; `SHELL-UI-002`; `SHELL-AUTH-005`                   |
-| `H-SHELL-009-010` | `NavItem` usa `href` como destino e identidad y permiso como string        | `CONFIRMADO`                | keys inestables y permiso no validado                 | `SHELL-CON-003`; `SHELL-CON-011`; `SHELL-UI-002`                    |
-| `H-SHELL-009-011` | `NavGroup` usa label visible como identidad                                | `CONFIRMADO`                | renombrar texto altera agrupación                     | `SHELL-CON-011`; `SHELL-UI-002`                                     |
+| `H-SHELL-009-009` | `NavigationRow` omite cuatro campos funcionales del esquema                | `CONFIRMADO`                | pérdida de identidad y comportamiento de navegación   | `SHELL-CON-011`; `SHELL-UI-011`; `SHELL-AUTH-005`                   |
+| `H-SHELL-009-010` | `NavItem` usa `href` como destino e identidad y permiso como string        | `CONFIRMADO`                | keys inestables y permiso no validado                 | `SHELL-CON-003`; `SHELL-CON-011`; `SHELL-UI-011`                    |
+| `H-SHELL-009-011` | `NavGroup` usa label visible como identidad                                | `CONFIRMADO`                | renombrar texto altera agrupación                     | `SHELL-CON-011`; `SHELL-UI-011`                                     |
 | `H-SHELL-009-012` | `OperatingGate` mezcla estado contextual, bloqueo, texto y navegación      | `CONFIRMADO`                | UI convertida en fuente de decisión                   | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-CTX-005`                   |
 | `H-SHELL-009-013` | las dos APIs `PageHeaderProps` no son equivalentes                         | `CONFIRMADO`                | centralización que pierde responsive o acento         | `SHELL-UI-001`; `SHELL-AUD-010`                                     |
-| `H-SHELL-009-014` | props y datos de `VentoLogo` permanecen locales                            | `CONFIRMADO`                | fallback y accesibilidad inconsistentes               | `SHELL-CON-002`; `SHELL-UI-002`                                     |
+| `H-SHELL-009-014` | props y datos de `VentoLogo` permanecen locales                            | `CONFIRMADO`                | fallback y accesibilidad inconsistentes               | `SHELL-CON-002`; `SHELL-UI-001`                                     |
 | `H-SHELL-009-015` | `SiteOption` y `EmployeeSiteRow` tienen nulabilidad y relación variables   | `CONFIRMADO`                | supuestos distintos sobre sede y join                 | `SHELL-CON-007`; `SHELL-CTX-003`; `SHELL-AUTH-005`                  |
 | `H-SHELL-009-016` | existen tres contratos de entrada para `requireAppAccess`                  | `CONFIRMADO`                | flags incompatibles y acceso divergente               | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-010`                 |
 | `H-SHELL-009-017` | el resultado de guard es inferido y no exportado                           | `CONFIRMADO`                | consumidores acoplados a forma accidental             | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`                  |
@@ -5316,14 +5320,17 @@ No se crea ninguna tarea nueva. Todos los destinos existen en el roadmap canóni
 | `H-SHELL-009-024` | cuatro modelos de contexto coexisten sin equivalencia demostrada           | `CONFIRMADO`                | decisiones distintas para la misma sesión             | `SHELL-CTX-001`; `SHELL-AUTH-001`; `AUTH-DB-033`; `SHELL-AUTH-005`  |
 | `H-SHELL-009-025` | roles UI y servidor no comparten validación canónica                       | `CONFIRMADO`                | rol desconocido o mezcla base/operativo               | `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-AUTH-004`                  |
 | `H-SHELL-009-026` | scopes y metadatos territoriales son strings locales                       | `CONFIRMADO`                | comparación de alcance inconsistente                  | `SHELL-CON-006`; `AUTH-CAT-018`; `SHELL-AUTH-001`                   |
-| `H-SHELL-009-027` | no se localizó `Database` generado ni clientes parametrizados              | `CONFIRMADO_EN_EL_CORTE`    | deriva de esquema no detectada por TypeScript         | `SHELL-CON-001`; `SHELL-AUTH-002`; `SHELL-AUTH-004`                 |
-| `H-SHELL-009-028` | inputs y outputs RPC se declaran manualmente y se castean                  | `CONFIRMADO`                | incompatibilidad silenciosa de backend                | `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035`                     |
+| `H-SHELL-009-027` | no se localizó `Database` generado ni clientes parametrizados              | `CONFIRMADO_EN_EL_CORTE`    | deriva de esquema no detectada por TypeScript         | `SHELL-CON-001`; `SHELL-DB-002`; `SHELL-AUTH-002`; `SHELL-AUTH-004` |
+| `H-SHELL-009-028` | inputs y outputs RPC se declaran manualmente y se castean                  | `CONFIRMADO`                | incompatibilidad silenciosa de backend                | `SHELL-DB-003`; `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035`     |
 | `H-SHELL-009-029` | `SignatureResult` es una unión útil pero local y no versionada             | `CONFIRMADO`                | duplicación de un contrato valioso                    | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`                  |
 | `H-SHELL-009-030` | SSO, retorno y protocolo no usan contrato común de destino                 | `CONFIRMADO`                | redirecciones incompatibles o inseguras               | `SHELL-CON-002`; `SHELL-CON-008`; `SHELL-AUTH-002`                  |
-| `H-SHELL-009-031` | razones, errores y estados se representan con strings de niveles mezclados | `CONFIRMADO`                | mensajes, telemetría y decisiones no correlacionables | `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-AUTH-004`                  |
+| `H-SHELL-009-031` | razones, errores y estados se representan con strings de niveles mezclados | `CONFIRMADO`                | mensajes, telemetría y decisiones no correlacionables | `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-DB-004`; `SHELL-AUTH-004` |
 | `H-SHELL-009-032` | runtime no transporta versión, hash ni diagnóstico contractual             | `CONFIRMADO`                | paridad y reproducción de decisiones no demostrables  | `AUTH-CAT-017`; `AUTH-CAT-018`; `SHELL-AUTH-003`; `SHELL-PKG-004`   |
+| `H-SHELL-009-033` | `brandColor` permanece declarado sin consumidor de render confirmado       | `CAMPO_SIN_CONSUMO_CONFIRMADO` | contrato local conserva un dato muerto o ambiguo    | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-AUD-010`; `SHELL-AUD-011`  |
+| `H-SHELL-009-034` | `sites` permanece en `AppSwitcherProps` aunque AppSwitcher no lo consume    | `CONTRATO_RESIDUAL`         | selección de sede atribuida al componente equivocado   | `SHELL-CTX-003`; `SHELL-UI-007`; `SHELL-AUD-010`; `SHELL-AUD-011`  |
+| `H-SHELL-009-035` | `activeSiteId` permanece en `AppSwitcherProps` sin consumo confirmado       | `CONTRATO_RESIDUAL`         | contexto activo duplicado como prop inerte             | `SHELL-CTX-003`; `SHELL-UI-007`; `SHELL-AUD-010`; `SHELL-AUD-011`  |
 
-**Conciliación:** 32 hallazgos esperados, 32 materializados, 0 duplicados y 0 pendientes sin propietario.
+**Conciliación:** 35 hallazgos esperados, 35 materializados, 0 duplicados y 0 pendientes sin propietario.
 
 ---
 
@@ -5358,7 +5365,7 @@ No se crea ninguna tarea nueva. Todos los destinos existen en el roadmap canóni
 
 | Carryover                                                     | Estado                       | Propietario                       | Condición de salida                                            |
 | ------------------------------------------------------------- | ---------------------------- | --------------------------------- | -------------------------------------------------------------- |
-| elegir qué identidades se comparten, generan o quedan locales | `PENDIENTE_DE_CLASIFICACION` | `SHELL-AUD-010`                   | matriz de disposición por las 34 identidades                   |
+| elegir qué identidades se comparten, generan o quedan locales | `PENDIENTE_DE_CLASIFICACION` | `SHELL-AUD-010`                   | matriz de disposición por las 37 identidades                   |
 | confirmar consumidores antes de retirar contratos o paquetes  | `PENDIENTE_DE_EVIDENCIA`     | `SHELL-AUD-011`                   | inventario reproducible de imports, carga dinámica y framework |
 | crear `@vento/contracts`                                      | `NO_IMPLEMENTADO`            | `SHELL-CON-001`                   | paquete, exports, schemas y versionado disponibles             |
 | centralizar códigos y tipos de autorización                   | `NO_IMPLEMENTADO`            | `SHELL-CON-002` a `SHELL-CON-008` | contratos consumibles y validados                              |
@@ -5556,7 +5563,7 @@ No se adopta ningún blob actual como fuente canónica completa. Los archivos mi
 | `SHELL-AUD-002` a `SHELL-AUD-005`                   | guards, permisos, contexto y role override                         |
 | `SHELL-AUD-006` y `SHELL-AUD-007`                   | AppShell, navegación, UI, CSS y extensiones                        |
 | `SHELL-AUD-008`                                     | 7 familias Supabase, 28 ocurrencias y 16 variantes                 |
-| `SHELL-AUD-009`                                     | 34 identidades contractuales y 9 superficies                       |
+| `SHELL-AUD-009`                                     | 37 identidades contractuales y 9 superficies                       |
 | `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`         | tareas de distribución, versionado, compatibilidad y rollback      |
 | `03_CONTRATOS_COMPARTIDOS.md`                       | destinos `SHELL-CON-001..016`                                      |
 | `03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`         | frontera de `@vento/contracts`, `@vento/os-context` y Supabase     |
@@ -5655,17 +5662,17 @@ No se crean `@vento/auth`, `@vento/operational-context` ni otro núcleo paralelo
 | `FAM-011` | `src/lib/auth/operational-session.ts`            | COMPARTIR      | Adapter transitorio de sesión operativa repetido byte a byte.                               | Reconciliar con `AccessContext@1.0.0`; no declararlo fuente autoritativa.                                      | `SHELL-CTX-001`; `SHELL-CON-007`; `SHELL-AUTH-005`                                    |
 | `FAM-012` | `src/lib/auth/role-override.ts`                  | COMPARTIR      | Módulo común de simulación/override y evaluación por rol.                                   | Extraer la excepción logística NEXO a una política local declarada; usar roles y scopes canónicos.             | `SHELL-AUTH-001`; `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-CON-006`; `SHELL-AUTH-005` |
 | `FAM-013` | `src/lib/auth/role-override-config.ts`           | GENERAR        | Roles, etiquetas, elegibilidad y metadata deben derivarse de fuentes canónicas.             | Eliminar listas manuales divergentes; la política de cookie queda en el SDK, no en catálogos por app.          | `SHELL-CON-002`; `SHELL-CON-004`; `SHELL-CON-005`; `AUTH-CAT-018`; `SHELL-AUTH-004`   |
-| `FAM-014` | `src/lib/supabase/client.ts`                     | COMPARTIR      | Factory browser con ciclo de vida y política de cookies configurables.                      | La aplicación aporta configuración validada; el factory no incorpora lógica de dominio.                        | `SHELL-AUTH-002`; `SHELL-PKG-004`; `SHELL-AUTH-005`                                   |
-| `FAM-015` | `src/lib/supabase/server.ts`                     | COMPARTIR      | Factory server con contrato único de cookies, host y errores.                               | Conservar host-aware como política configurable y producir diagnóstico observable.                             | `SHELL-AUTH-002`; `SHELL-CON-008`; `SHELL-AUTH-005`                                   |
+| `FAM-014` | `src/lib/supabase/client.ts`                     | COMPARTIR      | Factory browser con ciclo de vida y política de cookies configurables.                      | La aplicación aporta configuración validada; el factory no incorpora lógica de dominio.                        | `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-PKG-004`; `SHELL-AUTH-005`   |
+| `FAM-015` | `src/lib/supabase/server.ts`                     | COMPARTIR      | Factory server con contrato único de cookies, host y errores.                               | Conservar host-aware como política configurable y producir diagnóstico observable.                             | `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-CON-008`; `SHELL-AUTH-005` |
 | `FAM-016` | `middleware.ts`                                  | MANTENER_LOCAL | Entrypoint y matcher pertenecen a cada aplicación y a su superficie de rutas.               | Componer adapters compartidos; separar kiosco, PDF y otras políticas empresariales del refresco de sesión.     | `SHELL-AUTH-002`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                                  |
 | `FAM-017` | `src/lib/supabase/proxy.ts`                      | MANTENER_LOCAL | Artefacto en cuarentena sin invocación externa confirmada.                                  | No promover, compartir ni retirar hasta completar evidencia de imports, framework y carga dinámica.            | `SHELL-AUD-011`                                                                       |
 | `FAM-018` | `src/lib/auth/operational-context.ts`            | MANTENER_LOCAL | Adapter especializado de NEXO y compatibilidad con su RPC actual.                           | Mantener como frontera legacy local hasta migrar al contexto autoritativo; no elevar su mutación local al SDK. | `SHELL-CTX-001`; `SHELL-CTX-002`; `SHELL-CTX-003`; `AUTH-DB-033`; `SHELL-AUTH-005`    |
 | `FAM-019` | `src/components/vento/standard/page-header.tsx`  | COMPARTIR      | Componente base reconciliado a partir de responsividad NEXO y acento VISO.                  | Publicar una sola API; ningún blob actual se adopta sin reconciliación.                                        | `SHELL-UI-001`; `SHELL-PKG-006`; `SHELL-AUD-011`                                      |
-| `FAM-020` | `src/components/vento/standard/vento-logo.tsx`   | COMPARTIR      | Componente de marca y representación gráfica común.                                         | Consumir aplicación, label, color y assets generados; eliminar fallbacks centrados en una app.                 | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-AUTH-005`                     |
+| `FAM-020` | `src/components/vento/standard/vento-logo.tsx`   | COMPARTIR      | Componente de marca y representación gráfica común.                                         | Consumir aplicación, label, color y assets generados; eliminar fallbacks centrados en una app.                 | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-AUTH-005`                                     |
 | `FAM-021` | `src/lib/auth/request-host.ts`                   | COMPARTIR      | Utilidad de host local y protocolo requerida por SSO y cookies.                             | Publicar como utilidad server sin defaults de una aplicación.                                                  | `SHELL-AUTH-002`; `SHELL-CON-008`; `SHELL-PKG-004`                                    |
 | `FAM-022` | `src/lib/auth/shared-device-signature.ts`        | COMPARTIR      | Adapter de firma de actor en dispositivo compartido.                                        | Conservar la unión discriminada, tipar app/acción/target y separar mensajes de códigos.                        | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`; `AUTH-DEV-007` a `AUTH-DEV-016`   |
 | `FAM-023` | `src/lib/auth/sso.ts`                            | COMPARTIR      | Constructor y validador común de destinos SSO y `returnTo`.                                 | URLs de aplicaciones provienen del catálogo; política local solo mediante configuración explícita.             | `SHELL-CON-002`; `SHELL-CON-008`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                  |
-| `FAM-024` | `src/lib/supabase/admin.ts`                      | COMPARTIR      | Factory restringido, `server-only`, para service role.                                      | Publicar como frontera privilegiada separada; consumidores y autorización administrativa siguen locales.       | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-005`                                  |
+| `FAM-024` | `src/lib/supabase/admin.ts`                      | COMPARTIR      | Factory restringido, `server-only`, para service role.                                      | Publicar como frontera privilegiada separada; consumidores y autorización administrativa siguen locales.       | `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-005`  |
 | `FAM-025` | `src/lib/supabase/employee-sites.ts`             | COMPARTIR      | Normalizador semánticamente común de relación `employee_sites → sites`.                     | Mantenerlo transitorio y tipado contra `Database`; retirarlo solo si la generación elimina su necesidad.       | `SHELL-CON-007`; `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-011`                  |
 | `FAM-026` | `src/utils/supabase/client.ts`                   | MANTENER_LOCAL | Cliente alterno PULSO en cuarentena y sin consumidor confirmado.                            | No promover ni retirar antes del inventario de `SHELL-AUD-011`.                                                | `SHELL-AUD-011`                                                                       |
 
@@ -5673,19 +5680,19 @@ No se crean `@vento/auth`, `@vento/operational-context` ni otro núcleo paralelo
 
 ---
 
-#### 7. Matriz completa de las 34 identidades contractuales
+#### 7. Matriz completa de las 37 identidades contractuales
 | ID             | Contrato o tipo                              | Disposición    | Regla materializada                                                                                         | Destino                                                              |
 | -------------- | -------------------------------------------- | -------------- | ----------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------- |
 | `TYPE-CON-001` | `AppCode`                                    | GENERAR        | Catálogo publicado de aplicaciones.                                                                         | `SHELL-CON-002`; `AUTH-CAT-018`                                      |
-| `TYPE-CON-002` | definición de aplicación / `AppSwitcherItem` | GENERAR        | Generar identidad, nombre, dominio, estado, URL y marca; derivar una proyección runtime de acceso.          | `SHELL-CON-002`; `SHELL-UI-002`; `SHELL-AUTH-005`                    |
-| `TYPE-CON-003` | `VentoEntity`                                | GENERAR        | Derivar de `AppCode` y del registro de marca; `default` no es aplicación canónica.                          | `SHELL-CON-002`; `SHELL-UI-002`                                      |
+| `TYPE-CON-002` | definición de aplicación / `AppSwitcherItem` | GENERAR        | Generar identidad, nombre, dominio, estado, URL y marca; derivar una proyección runtime de acceso.          | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-APP-001` a `SHELL-APP-003`; `SHELL-AUTH-005` |
+| `TYPE-CON-003` | `VentoEntity`                                | GENERAR        | Derivar de `AppCode` y del registro de marca; `default` no es aplicación canónica.                          | `SHELL-CON-002`; `SHELL-UI-001`                                      |
 | `TYPE-CON-004` | `IconName`                                   | COMPARTIR      | Vocabulario versionado y parser en `@vento/ui-web`; no depende de strings libres de navegación.             | `SHELL-UI-001`; `SHELL-CON-011`                                      |
 | `TYPE-CON-005` | `NavigationRow`                              | GENERAR        | Generar tipo de esquema/RPC y mapearlo mediante adapter; no publicarlo como contrato manual.                | `SHELL-CON-011`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                  |
-| `TYPE-CON-006` | `NavItem`                                    | COMPARTIR      | Contrato UI con identidad estable, destino, icono y `PermissionKey` generada.                               | `SHELL-CON-003`; `SHELL-CON-011`; `SHELL-UI-002`                     |
-| `TYPE-CON-007` | `NavGroup`                                   | COMPARTIR      | Agrupación por identificador estable; label es presentación.                                                | `SHELL-CON-011`; `SHELL-UI-002`                                      |
+| `TYPE-CON-006` | `NavItem`                                    | COMPARTIR      | Contrato UI con identidad estable, destino, icono y `PermissionKey` generada.                               | `SHELL-CON-003`; `SHELL-CON-011`; `SHELL-UI-011`                     |
+| `TYPE-CON-007` | `NavGroup`                                   | COMPARTIR      | Agrupación por identificador estable; label es presentación.                                                | `SHELL-CON-011`; `SHELL-UI-011`                                      |
 | `TYPE-CON-008` | `OperatingGate`                              | MANTENER_LOCAL | View model de presentación derivado de contexto compartido; textos y acciones pertenecen a cada superficie. | `SHELL-CTX-005`; `SHELL-UI-015`; `SHELL-UI-016`                      |
 | `TYPE-CON-009` | `PageHeaderProps`                            | COMPARTIR      | API única que conserva acento y respuesta adaptable.                                                        | `SHELL-UI-001`                                                       |
-| `TYPE-CON-010` | `VentoLogoProps` / `VentoIconProps`          | COMPARTIR      | API de componente; entidad y datos de marca se reciben como tipos generados.                                | `SHELL-CON-002`; `SHELL-UI-002`                                      |
+| `TYPE-CON-010` | `VentoLogoProps` / `VentoIconProps`          | COMPARTIR      | API de componente; entidad y datos de marca se reciben como tipos generados.                                | `SHELL-CON-002`; `SHELL-UI-001`                                      |
 | `TYPE-CON-011` | `SiteOption`                                 | COMPARTIR      | Proyección segura y estable para UI/contexto, con nulabilidad única.                                        | `SHELL-CON-007`; `SHELL-CTX-003`                                     |
 | `TYPE-CON-012` | `EmployeeSiteRow`                            | GENERAR        | Derivar del tipo `Database` o resultado RPC; no mantener relación manual objeto/arreglo.                    | `SHELL-CON-007`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                  |
 | `TYPE-CON-013` | `GuardOptions` base                          | COMPARTIR      | Entrada canónica tipada por app, permisos, contexto y política.                                             | `SHELL-CON-002`; `SHELL-CON-003`; `SHELL-CON-007`; `SHELL-AUTH-002`  |
@@ -5703,15 +5710,18 @@ No se crean `@vento/auth`, `@vento/operational-context` ni otro núcleo paralelo
 | `TYPE-CON-025` | rol base, rol operativo y `ROLE_OPTIONS`     | GENERAR        | Derivar códigos y etiquetas desde fuentes canónicas separadas por clase de rol.                             | `SHELL-CON-004`; `SHELL-CON-005`; `AUTH-CAT-018`; `SHELL-AUTH-004`   |
 | `TYPE-CON-026` | `RolePermissionRow`                          | GENERAR        | Derivar de `Database`/RPC; cada adapter puede proyectar solo campos necesarios.                             | `SHELL-CON-006`; `SHELL-AUTH-001`; `SHELL-AUTH-005`                  |
 | `TYPE-CON-027` | `RolePermissionEntry` y scope                | GENERAR        | Derivar vocabulario de scopes y forma contractual; no aceptar `scope_type` abierto.                         | `SHELL-CON-006`; `AUTH-CAT-018`; `SHELL-AUTH-001`                    |
-| `TYPE-CON-028` | adapter `SupabaseClient`                     | COMPARTIR      | Puerto mínimo por capacidad (`rpc`, auth, query, admin) y no cliente concreto obligatorio.                  | `SHELL-AUTH-002`; `SHELL-AUTH-005`                                   |
-| `TYPE-CON-029` | `Database` generado                          | GENERAR        | Salida determinista del esquema versionado de Supabase mantenido en `vento-shell`.                          | `SHELL-CON-001`; `SHELL-AUTH-002`; `SHELL-AUTH-004`                  |
-| `TYPE-CON-030` | inputs y outputs RPC                         | GENERAR        | Generar desde firmas versionadas y validar payloads en runtime.                                             | `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035`                      |
+| `TYPE-CON-028` | adapter `SupabaseClient`                     | COMPARTIR      | Puerto mínimo por capacidad (`rpc`, auth, query, admin) y no cliente concreto obligatorio.                  | `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-AUTH-005`  |
+| `TYPE-CON-029` | `Database` generado                          | GENERAR        | Salida determinista del esquema versionado de Supabase mantenido en `vento-shell`.                          | `SHELL-CON-001`; `SHELL-DB-002`; `SHELL-AUTH-002`; `SHELL-AUTH-004` |
+| `TYPE-CON-030` | inputs y outputs RPC                         | GENERAR        | Generar desde firmas versionadas y validar payloads en runtime.                                             | `SHELL-DB-003`; `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035`     |
 | `TYPE-CON-031` | `SignatureResult`                            | COMPARTIR      | Conservar la unión discriminada y centralizar códigos, metadata y errores.                                  | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`                   |
 | `TYPE-CON-032` | destino SSO y `returnTo`                     | COMPARTIR      | Contrato de origen, destino, aplicación, ambiente y política de retorno seguro.                             | `SHELL-CON-002`; `SHELL-CON-008`; `SHELL-AUTH-002`                   |
-| `TYPE-CON-033` | razones, errores y estados                   | COMPARTIR      | Vocabularios versionados y separados por nivel; mensajes humanos son proyecciones locales.                  | `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-AUTH-004`                   |
+| `TYPE-CON-033` | razones, errores y estados                   | COMPARTIR      | Vocabularios versionados y separados por nivel; mensajes humanos son proyecciones locales.                  | `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-DB-004`; `SHELL-AUTH-004`  |
 | `TYPE-CON-034` | manifiesto, versión, hash y diagnóstico      | GENERAR        | Generar al publicar catálogos, schemas y paquetes; nunca completar manualmente en consumidores.             | `AUTH-CAT-017`; `AUTH-CAT-018`; `SHELL-CON-001`; `SHELL-AUTH-003`    |
+| `TYPE-CON-035` | miembro `AppSwitcherItem.brandColor`         | GENERAR        | No conservar el miembro local inerte; el color se deriva de `ApplicationPresentation` y solo se expone si un consumidor visual lo utiliza. | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-AUD-011` |
+| `TYPE-CON-036` | prop `AppSwitcherProps.sites`                | MANTENER_LOCAL | No forma parte del AppSwitcher compartido; la colección pertenece al selector de sede y la prop residual se retira. | `SHELL-CTX-003`; `SHELL-UI-007`; `SHELL-AUD-011` |
+| `TYPE-CON-037` | prop `AppSwitcherProps.activeSiteId`         | MANTENER_LOCAL | No forma parte del AppSwitcher compartido; el contexto activo se resuelve fuera del componente y la prop residual se retira. | `SHELL-CTX-003`; `SHELL-UI-007`; `SHELL-AUD-011` |
 
-**Conciliación:** 34 identidades esperadas, 34 materializadas, 0 faltantes y 0 duplicadas. Distribución: **20 COMPARTIR**, **13 GENERAR** y **1 MANTENER_LOCAL**.
+**Conciliación:** 37 identidades esperadas, 37 materializadas, 0 faltantes y 0 duplicadas. Distribución: **20 COMPARTIR**, **14 GENERAR** y **3 MANTENER_LOCAL**.
 
 La clasificación `GENERAR` no implica que el dato nazca de Supabase. La fuente puede ser el catálogo publicado, JSON Schema, registro de aplicaciones, migraciones versionadas o manifiesto de paquete. La salida debe declarar su fuente exacta.
 
@@ -5720,13 +5730,13 @@ La clasificación `GENERAR` no implica que el dato nazca de Supabase. La fuente 
 #### 8. Matriz de las 16 variantes Supabase
 | Variante                         | Disposición    | Regla de convergencia                                                                     | Destino                                              |
 | -------------------------------- | -------------- | ----------------------------------------------------------------------------------------- | ---------------------------------------------------- |
-| `BROWSER-SHELL-DOMAIN-PER_CALL`  | COMPARTIR      | Opción de ciclo por llamada y dominio explícito dentro del factory browser.               | `SHELL-AUTH-002`                                     |
-| `BROWSER-SINGLETON-BASE`         | COMPARTIR      | Opción singleton del mismo factory; debe ser una política documentada, no otro fork.      | `SHELL-AUTH-002`; `SHELL-AUTH-005`                   |
-| `BROWSER-PULSO-PER_CALL`         | COMPARTIR      | Conservar como opción del factory mientras pruebas determinan el ciclo requerido.         | `SHELL-AUTH-002`; `SHELL-AUTH-005`                   |
-| `BROWSER-PULSO-ALT-UNCONSUMED`   | MANTENER_LOCAL | Cuarentena sin consumidor confirmado; no se promueve como alternativa oficial.            | `SHELL-AUD-011`                                      |
-| `SERVER-SHELL-COOKIE_OPTIONS`    | COMPARTIR      | Política de dominio global expresada mediante configuración tipada.                       | `SHELL-AUTH-002`; `SHELL-PKG-004`                    |
-| `SERVER-NEXO-HOST_AWARE`         | COMPARTIR      | Política host-aware preservada como opción explícita del adapter server.                  | `SHELL-AUTH-002`; `SHELL-PKG-004`                    |
-| `SERVER-STATIC-DOMAIN`           | COMPARTIR      | Política estática común con validación de dominio, path, borrado y errores.               | `SHELL-AUTH-002`; `SHELL-AUTH-005`                   |
+| `BROWSER-SHELL-DOMAIN-PER_CALL`  | COMPARTIR      | Opción de ciclo por llamada y dominio explícito dentro del factory browser.               | `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002`     |
+| `BROWSER-SINGLETON-BASE`         | COMPARTIR      | Opción singleton del mismo factory; debe ser una política documentada, no otro fork.      | `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-AUTH-005` |
+| `BROWSER-PULSO-PER_CALL`         | COMPARTIR      | Conservar como opción del factory mientras pruebas determinan el ciclo requerido.         | `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-AUTH-005` |
+| `BROWSER-PULSO-ALT-UNCONSUMED`   | MANTENER_LOCAL | Cuarentena sin consumidor confirmado; no se promueve como alternativa oficial.            | `SHELL-DB-005`; `SHELL-AUD-011`                      |
+| `SERVER-SHELL-COOKIE_OPTIONS`    | COMPARTIR      | Política de dominio global expresada mediante configuración tipada.                       | `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-PKG-004` |
+| `SERVER-NEXO-HOST_AWARE`         | COMPARTIR      | Política host-aware preservada como opción explícita del adapter server.                  | `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-PKG-004` |
+| `SERVER-STATIC-DOMAIN`           | COMPARTIR      | Política estática común con validación de dominio, path, borrado y errores.               | `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-AUTH-005` |
 | `MW-SHELL-CENTRAL`               | MANTENER_LOCAL | Composición del launcher y matcher del Hub; usa adapters compartidos.                     | `SHELL-AUTH-002`; `SHELL-AUTH-005`                   |
 | `MW-VISO-LOCAL_BASE`             | MANTENER_LOCAL | Entrypoint de VISO; migra a composición común sin perder rutas locales.                   | `SHELL-AUTH-005`                                     |
 | `MW-NEXO-KIOSK`                  | MANTENER_LOCAL | Separar autenticación compartida de routing, no-store e inventario de kiosco.             | `SHELL-AUTH-002`; `SHELL-AUTH-005`                   |
@@ -5734,8 +5744,8 @@ La clasificación `GENERAR` no implica que el dato nazca de Supabase. La fuente 
 | `MW-ORIGO-PDF_EXCEPTION`         | MANTENER_LOCAL | Excepción documental explícita con protección obligatoria en destino.                     | `SHELL-AUTH-004`; `SHELL-AUTH-005`                   |
 | `PROXY-BASE-UNCONSUMED`          | MANTENER_LOCAL | Cuarentena hasta demostrar importación, framework hook o ausencia real.                   | `SHELL-AUD-011`                                      |
 | `PROXY-PULSO-UNCONSUMED`         | MANTENER_LOCAL | Cuarentena; no suple la ausencia de middleware activo.                                    | `SHELL-AUD-011`                                      |
-| `ADMIN-VISO-SERVICE_ROLE`        | COMPARTIR      | Factory server-only restringido; autorización y casos administrativos permanecen en VISO. | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-005` |
-| `EMPLOYEE-SITES-NORMALIZER`      | COMPARTIR      | Normalizador transitorio tipado contra `Database`; su retiro requiere evidencia.          | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-011`  |
+| `ADMIN-VISO-SERVICE_ROLE`        | COMPARTIR      | Factory server-only restringido; autorización y casos administrativos permanecen en VISO. | `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-005` |
+| `EMPLOYEE-SITES-NORMALIZER`      | COMPARTIR      | Normalizador transitorio tipado contra `Database`; su retiro requiere evidencia.          | `SHELL-DB-002`; `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-011` |
 
 **Conciliación:** 16 variantes esperadas, 16 materializadas y 0 códigos duplicados. Distribución: **8 COMPARTIR**, **0 GENERAR** y **8 MANTENER_LOCAL**.
 
@@ -5812,7 +5822,7 @@ Las variantes locales de middleware no se convierten en forks de autenticación.
 | 1     | `SHELL-AUD-011`                                                      | evidencia final de consumidores y disposición de artefactos en cuarentena | segmento de auditoría cerrado            |
 | 2     | `SHELL-PKG-001` a `SHELL-PKG-008`                                    | distribución, versionado, compatibilidad, deprecación y rollback          | no autoactualización sin pruebas         |
 | 3     | `SHELL-CON-001` a `SHELL-CON-008` y `SHELL-CON-011`                  | contratos compartidos y generadores                                       | identidades sin copias manuales          |
-| 4     | `SHELL-UI-001`, `SHELL-UI-002`, `SHELL-UI-010` y tareas dependientes | biblioteca UI, AppShell y proyecciones                                    | CSS, tema y consumidores probados        |
+| 4     | `SHELL-UI-001`, `SHELL-UI-010`, `SHELL-UI-011` y tareas dependientes | biblioteca UI, AppShell, navegación y proyecciones                         | CSS, tema y consumidores probados        |
 | 5     | `SHELL-AUTH-001`; `SHELL-CTX-001`                                    | SDK y módulo contextual consolidados                                      | un solo núcleo compartido                |
 | 6     | `AUTH-DB-033`, `AUTH-DB-035`, `AUTH-DB-034`, `AUTH-DB-032`           | contexto, frescura, decisión y persistencia autoritativos                 | migraciones versionadas en `vento-shell` |
 | 7     | `SHELL-AUTH-002` a `SHELL-AUTH-004`                                  | adapters, registro de consumidores y gates legacy                         | contratos y backend disponibles          |
@@ -5839,20 +5849,20 @@ Esta tabla conserva el orden contractual aprobado y no inicia ninguna etapa.
 | ID                | Hallazgo o decisión                                                                 | Estado                  | Propietario                                                      | Condición de salida                                                     |
 | ----------------- | ----------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------------------------- | ----------------------------------------------------------------------- |
 | `H-SHELL-010-001` | Las 26 familias físicas reciben una disposición primaria única.                     | DECIDIDO                | `SHELL-PKG-001`; `SHELL-AUD-011`                                 | mantener la matriz íntegra durante distribución y retiro                |
-| `H-SHELL-010-002` | Las 34 identidades contractuales reciben una disposición primaria única.            | DECIDIDO                | `SHELL-CON-001` a `SHELL-CON-008`; `SHELL-CON-011`               | materializar contratos y generación sin redefinir identidades           |
-| `H-SHELL-010-003` | Las 16 variantes Supabase reciben una disposición explícita.                        | DECIDIDO                | `SHELL-AUTH-002`; `SHELL-AUD-011`                                | adapters implementados y artefactos sin consumidor resueltos            |
+| `H-SHELL-010-002` | Las 37 identidades contractuales reciben una disposición primaria única.            | DECIDIDO                | `SHELL-CON-001` a `SHELL-CON-008`; `SHELL-CON-011`               | materializar contratos y generación sin redefinir identidades           |
+| `H-SHELL-010-003` | Las 16 variantes Supabase reciben una disposición explícita.                        | DECIDIDO                | `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-AUD-011` | factories implementadas y artefactos sin consumidor resueltos |
 | `H-SHELL-010-004` | Los layouts raíz permanecen locales y no se convierten en paquete.                  | DECIDIDO                | `SHELL-UI-010`; `SHELL-AUTH-005`                                 | cada app consume imports versionados sin copiar el layout               |
 | `H-SHELL-010-005` | El CSS se divide en núcleo compartido, tema y dominio local.                        | DECIDIDO                | `SHELL-UI-001`; `SHELL-PKG-008`                                  | capas versionadas y pruebas paquete/tema/consumidor                     |
 | `H-SHELL-010-006` | El compositor `vento-shell.tsx` permanece local; Chrome se comparte.                | DECIDIDO                | `SHELL-UI-010`; `SHELL-CON-011`                                  | orquestadores locales sin duplicar contratos ni Chrome                  |
 | `H-SHELL-010-007` | Las primitivas UI y tabla se comparten junto con CSS y accesibilidad.               | DECIDIDO                | `SHELL-UI-001`; `SHELL-PKG-006`; `SHELL-PKG-008`                 | API y estilos publicados como una unidad compatible                     |
-| `H-SHELL-010-008` | AppSwitcher, ProfileMenu, PageHeader y VentoLogo se comparten tras reconciliación.  | DECIDIDO                | `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-UI-010`                   | una sola API y configuración generada                                   |
+| `H-SHELL-010-008` | AppSwitcher, ProfileMenu, PageHeader y VentoLogo se comparten tras reconciliación.  | DECIDIDO                | `SHELL-UI-001`; `SHELL-UI-007`; `SHELL-UI-010`; `SHELL-UI-011`  | una sola API y configuración generada                                   |
 | `H-SHELL-010-009` | Aplicaciones, permisos, roles, scopes y metadata de marca se generan.               | DECIDIDO                | `SHELL-CON-002` a `SHELL-CON-006`; `AUTH-CAT-018`                | artefactos deterministas sin listas manuales                            |
-| `H-SHELL-010-010` | Database, filas RPC y manifiestos se generan desde fuentes versionadas.             | DECIDIDO                | `SHELL-CON-001`; `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035` | codegen y parsers reproducibles disponibles                             |
+| `H-SHELL-010-010` | Database, filas RPC y manifiestos se generan desde fuentes versionadas.             | DECIDIDO                | `SHELL-CON-001`; `SHELL-DB-002`; `SHELL-DB-003`; `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035` | codegen y parsers reproducibles disponibles |
 | `H-SHELL-010-011` | Guards, permisos, contexto y role override convergen en el SDK compartido.          | DECIDIDO                | `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-AUTH-002`              | API discriminada, errores estructurados y versión aplicada              |
 | `H-SHELL-010-012` | Los entrypoints `middleware.ts` permanecen locales.                                 | DECIDIDO                | `SHELL-AUTH-002`; `SHELL-AUTH-005`                               | matchers locales compuestos sobre adapters comunes                      |
 | `H-SHELL-010-013` | Kiosco NEXO, PDF ORIGO y políticas PULSO permanecen extensiones locales explícitas. | DECIDIDO                | `SHELL-AUTH-005`; `SHELL-UI-001`                                 | extensiones declaradas y probadas sin fork del núcleo                   |
-| `H-SHELL-010-014` | Los clientes browser/server se comparten como factories configurables.              | DECIDIDO                | `SHELL-AUTH-002`; `SHELL-PKG-004`                                | ciclo, cookies, localhost y error formalizados                          |
-| `H-SHELL-010-015` | El cliente admin se comparte solo como factory server-only restringido.             | DECIDIDO                | `SHELL-AUTH-002`; `SHELL-AUTH-003`                               | ningún export browser y consumidores privilegiados registrados          |
+| `H-SHELL-010-014` | Los clientes browser/server se comparten como factories configurables.              | DECIDIDO                | `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-PKG-004` | ciclo, cookies, localhost y error formalizados |
+| `H-SHELL-010-015` | El cliente admin se comparte solo como factory server-only restringido.             | DECIDIDO                | `SHELL-DB-001`; `SHELL-DB-005`; `SHELL-AUTH-002`; `SHELL-AUTH-003` | ningún export browser y consumidores privilegiados registrados |
 | `H-SHELL-010-016` | SSO y request-host se comparten sin defaults de aplicación.                         | DECIDIDO                | `SHELL-CON-002`; `SHELL-CON-008`; `SHELL-AUTH-002`               | destinos derivados del catálogo y retorno validado                      |
 | `H-SHELL-010-017` | El contexto operacional especializado de NEXO permanece adapter local transitorio.  | DECIDIDO                | `SHELL-CTX-001`; `AUTH-DB-033`; `SHELL-AUTH-005`                 | migración a contexto canónico con paridad                               |
 | `H-SHELL-010-018` | `OperatingGate` permanece view model local, no fuente de autorización.              | DECIDIDO                | `SHELL-CTX-005`; `SHELL-UI-015`; `SHELL-UI-016`                  | UI derivada de razones compartidas y decisión server                    |
@@ -5870,7 +5880,7 @@ Esta tabla conserva el orden contractual aprobado y no inicia ninguna etapa.
 #### 16. Decisiones vinculantes
 
 1. La matriz de 26 familias es exhaustiva y sustituye cualquier clasificación implícita por cantidad de copias.
-2. La matriz de 34 identidades contractuales es exhaustiva para el alcance heredado de `SHELL-AUD-009`.
+2. La matriz de 37 identidades contractuales es exhaustiva para el alcance heredado de `SHELL-AUD-009`.
 3. Las 16 variantes Supabase no se colapsan antes de representar explícitamente su política válida.
 4. `COMPARTIR` significa una implementación fuente versionada, no sincronización manual de copias.
 5. `GENERAR` significa salida determinista desde una fuente canónica, no código escrito una vez y copiado.
@@ -5899,7 +5909,7 @@ Esta tabla conserva el orden contractual aprobado y no inicia ninguna etapa.
 | confirmar y resolver proxies, cliente alterno, placeholders y tipos sin consumidor | `PENDIENTE_DE_EVIDENCIA` | `SHELL-AUD-011`                                    | inventario reproducible y decisión conservar/migrar/retirar |
 | definir mecanismo físico de distribución                                           | `NO_IMPLEMENTADO`        | `SHELL-PKG-001`                                    | mecanismo aprobado para contratos, SDK y UI                 |
 | implementar generación y contratos                                                 | `NO_IMPLEMENTADO`        | `SHELL-CON-001` a `SHELL-CON-008`; `SHELL-CON-011` | outputs deterministas y APIs públicas disponibles           |
-| implementar biblioteca y AppShell                                                  | `NO_IMPLEMENTADO`        | `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-UI-010`     | componentes, CSS, tema y extensiones probados               |
+| implementar biblioteca, AppShell y navegación                                      | `NO_IMPLEMENTADO`        | `SHELL-UI-001`; `SHELL-UI-010`; `SHELL-UI-011`     | componentes, CSS, tema y extensiones probados               |
 | reconciliar SDK parcial                                                            | `PARCIAL_TRANSITORIO`    | `SHELL-AUTH-001`; `SHELL-CTX-001`                  | único SDK con exports y compatibilidad definidos            |
 | implementar backend autoritativo                                                   | `NO_IMPLEMENTADO`        | `AUTH-DB-032` a `AUTH-DB-035`                      | contexto y decisiones versionados, frescos y auditables     |
 | implementar adapters y gates                                                       | `NO_IMPLEMENTADO`        | `SHELL-AUTH-002` a `SHELL-AUTH-004`                | fronteras tipadas y nuevos consumos legacy bloqueados       |
@@ -5958,7 +5968,7 @@ No corresponde generar una copia del registro `04A`.
 | Criterio                               |    Resultado | Estado     |
 | -------------------------------------- | -----------: | ---------- |
 | familias físicas clasificadas          | **26 de 26** | `CUMPLIDO` |
-| identidades contractuales clasificadas | **34 de 34** | `CUMPLIDO` |
+| identidades contractuales clasificadas | **37 de 37** | `CUMPLIDO` |
 | variantes Supabase clasificadas        | **16 de 16** | `CUMPLIDO` |
 | superficies de transición con decisión |   **9 de 9** | `CUMPLIDO` |
 | disposiciones primarias válidas        | **76 de 76** | `CUMPLIDO` |
@@ -6046,7 +6056,7 @@ ELIMINACIÓN FÍSICA
 → retirar en la tarea propietaria
 ```
 
-La tarea autoriza el retiro posterior de siete archivos y dos entradas de navegación. No elimina ningún archivo porque la fase vigente es exclusivamente documental y prohíbe cambios de código.
+La tarea autoriza el retiro posterior de once archivos, cuatro miembros internos y dos entradas de navegación. No elimina código porque la fase vigente es exclusivamente documental y prohíbe cambios físicos.
 
 ---
 
@@ -6194,15 +6204,15 @@ responsable
 
 | ID            | Categoría         | Repositorio               | Identidad                                                                             | Evidencia actual                                                                                                     | Decisión documental                            | Ejecución propietaria                             | Condición de salida                                                                                                   |
 | ------------- | ----------------- | ------------------------- | ------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- | ------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
-| `RET-ART-001` | función/helper    | VISO                      | `src/lib/supabase/proxy.ts`                                                           | declaración de `updateSession`; sin invocación externa confirmada                                                    | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`                                  | gate completo; middleware y adapter canónicos activos; build y rollback aprobados                                     |
-| `RET-ART-002` | función/helper    | NEXO                      | `src/lib/supabase/proxy.ts`                                                           | declaración de `updateSession`; sin invocación externa confirmada; política de cookie distinta de la frontera activa | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`                                  | gate completo; no import dinámico; política host-aware cubierta por adapter canónico                                  |
-| `RET-ART-003` | función/helper    | PULSO                     | `src/lib/supabase/proxy.ts`                                                           | declaración de `updateSession`; sin invocación externa confirmada; no sustituye middleware ausente                   | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`                                  | gate completo; frontera PULSO implementada y probada antes del retiro                                                 |
-| `RET-ART-004` | cliente/helper    | PULSO                     | `src/utils/supabase/client.ts`                                                        | cliente alterno; sin importación por ruta ni alias confirmada                                                        | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`                                  | gate completo; cliente principal o adapter canónico cubre consumidores; build aprobado                                |
-| `RET-ART-005` | componente        | NEXO                      | `src/components/vento/standard/page-header.tsx`                                       | solo declaración localizada; VISO conserva consumidores reales de su variante                                        | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-UI-001`                                    | confirmar cero imports NEXO; preservar requisitos responsive/acento en diseño compartido; rollback disponible         |
-| `RET-ART-006` | función/helper    | FOGO                      | `src/lib/supabase/employee-sites.ts`                                                  | archivo presente; sin importación confirmada; ORIGO sí consume su copia equivalente                                  | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`                                  | gate completo; no consumidores dinámicos; proyección de sedes cubierta por adapter compartido                         |
-| `RET-ART-007` | función/helper    | NUMERA                    | `src/lib/supabase/employee-sites.ts`                                                  | presencia heredada confirmada; sin importación confirmada en búsqueda actual                                         | `AUTORIZAR_RETIRO_CON_GATE_REFORZADO`          | `SHELL-AUTH-005`                                  | verificar existencia y blob en commit de cambio; repetir búsqueda por export, ruta y contenido; build NUMERA aprobado |
-| `RET-ART-008` | navegación        | SHELL                     | acceso `Mi perfil` con destino `/`                                                    | entrada visible que resuelve al launcher y no a una capacidad de perfil                                              | `RETIRAR_O_SUSTITUIR_ENTRADA`                  | `AUTH-UI-026` a `AUTH-UI-029`                     | eliminar hasta existir destino real, o sustituir por ruta implementada y autorizada                                   |
-| `RET-ART-009` | navegación        | SHELL                     | acceso `Configuración` con destino `/`                                                | entrada visible que resuelve al launcher y no a una capacidad de configuración                                       | `RETIRAR_O_SUSTITUIR_ENTRADA`                  | `AUTH-UI-026` a `AUTH-UI-029`                     | eliminar hasta existir destino real, o sustituir por ruta implementada y autorizada                                   |
+| `RET-ART-001` | función/helper    | VISO                      | `src/lib/supabase/proxy.ts`                                                           | declaración de `updateSession`; sin invocación externa confirmada                                                    | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`; `SHELL-MIG-008`                 | revalidar cero consumidores estáticos, dinámicos, framework, CI y scripts; build, pruebas y rollback aprobados         |
+| `RET-ART-002` | función/helper    | NEXO                      | `src/lib/supabase/proxy.ts`                                                           | declaración de `updateSession`; sin invocación externa confirmada; política de cookie distinta de la frontera activa | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`; `SHELL-MIG-008`                 | revalidar cero consumidores estáticos, dinámicos, framework, CI y scripts; build, pruebas y rollback aprobados         |
+| `RET-ART-003` | función/helper    | PULSO                     | `src/lib/supabase/proxy.ts`                                                           | declaración de `updateSession`; sin invocación externa confirmada; no sustituye middleware ausente                   | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`; `SHELL-MIG-008`                 | revalidar cero consumidores; resolver la brecha de middleware por separado; build, pruebas y rollback aprobados        |
+| `RET-ART-004` | cliente/helper    | PULSO                     | `src/utils/supabase/client.ts`                                                        | cliente alterno; sin importación por ruta ni alias confirmada                                                        | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-DB-005`; `SHELL-AUTH-005`; `SHELL-MIG-008` | revalidar cero consumidores estáticos, dinámicos y por alias; build, pruebas y rollback aprobados                      |
+| `RET-ART-005` | componente        | NEXO                      | `src/components/vento/standard/page-header.tsx`                                       | solo declaración localizada; VISO conserva consumidores reales de su variante                                        | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-UI-001`; `SHELL-MIG-008`                   | revalidar cero consumidores NEXO; conservar requisitos como evidencia; build, pruebas y rollback aprobados             |
+| `RET-ART-006` | función/helper    | FOGO                      | `src/lib/supabase/employee-sites.ts`                                                  | archivo presente; sin importación confirmada; ORIGO sí consume su copia equivalente                                  | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`; `SHELL-MIG-008`                 | revalidar cero consumidores estáticos, dinámicos y por export; build, pruebas y rollback aprobados                     |
+| `RET-ART-007` | función/helper    | NUMERA                    | `src/lib/supabase/employee-sites.ts`                                                  | presencia heredada confirmada; sin importación confirmada en búsqueda actual                                         | `AUTORIZAR_RETIRO_CON_GATE_REFORZADO`          | `SHELL-AUTH-005`; `SHELL-MIG-008`                 | verificar existencia/blob; revalidar cero consumidores por export, ruta y contenido; build, pruebas y rollback         |
+| `RET-ART-008` | navegación        | SHELL                     | acceso `Mi perfil` con destino `/`                                                    | entrada visible que resuelve al launcher y no a una capacidad de perfil                                              | `RETIRAR_PLACEHOLDER`                          | `SHELL-UI-010`; `SHELL-APP-021`                   | eliminar la acción y verificar navegación; una capacidad futura requiere tarea y aprobación independientes            |
+| `RET-ART-009` | navegación        | SHELL                     | acceso `Configuración` con destino `/`                                                | entrada visible que resuelve al launcher y no a una capacidad de configuración                                       | `RETIRAR_PLACEHOLDER`                          | `SHELL-UI-010`; `SHELL-APP-021`                   | eliminar la acción y verificar navegación; una capacidad futura requiere tarea y aprobación independientes            |
 | `RET-ART-010` | paquete           | SHELL                     | `packages/os-context` / `@vento/os-context`                                           | paquete privado parcial; sin importaciones runtime confirmadas; propietario canónico futuro aprobado                 | `CONSERVAR_EN_CUARENTENA_CONTRACTUAL`          | `SHELL-AUTH-001`; `SHELL-CTX-001`                 | reconciliar exports, contratos, versionado y adopción; no retirar por ausencia actual de consumidores                 |
 | `RET-ART-011` | componente        | VISO                      | `src/components/vento/standard/page-header.tsx`                                       | múltiples consumidores en páginas administrativas                                                                    | `CONSERVAR_CONSUMIDO`                          | `SHELL-UI-001`                                    | migrar solo cuando componente compartido preserve la API necesaria y exista paridad                                   |
 | `RET-ART-012` | función/helper    | ORIGO                     | `src/lib/supabase/employee-sites.ts`                                                  | consumidores confirmados en creación, edición y consulta de órdenes de compra                                        | `CONSERVAR_CONSUMIDO`                          | `SHELL-AUTH-005`                                  | retirar copia únicamente después de migrar consumidores al adapter compartido                                         |
@@ -6211,8 +6221,18 @@ responsable
 | `RET-ART-015` | rutas/entrypoints | siete runtimes            | `src/app/**/page.tsx`, `layout.tsx` y `route.ts`                                      | ejecución por App Router, incluso sin imports                                                                        | `EXCLUIR_DE_RETIRO_POR_IMPORTS`                | tareas propietarias de cada superficie            | solo una auditoría funcional y de rutas puede autorizar retiro individual                                             |
 | `RET-ART-016` | script            | SHELL                     | `tools/bootstrap-app-shell.ps1` y bootstrap asociado                                  | consumo manual/documental y origen de la plantilla histórica                                                         | `CONSERVAR_COMO_HERRAMIENTA_LEGACY_CONTROLADA` | `SHELL-PKG-001`; `SHELL-PKG-007`; `SHELL-PKG-008` | deprecar o retirar únicamente cuando el mecanismo de distribución lo sustituya y exista rollback                      |
 | `RET-ART-017` | endpoint/RPC      | Supabase / autorización   | funciones de permisos, contexto, firma y compatibilidad observadas por las auditorías | consumidores directos, indirectos o futuros; ausencia remota no demostrada                                           | `NO_AUTORIZAR_RETIRO`                          | `AUTH-DB-030`; `AUTH-DB-031`                      | inventario Supabase completo, telemetría, migración de consumidores, paridad y certificación final                    |
+| `RET-ART-018` | función/helper    | NEXO                      | `src/lib/auth/sso.ts`                                                                 | consumidores confirmados                                                                                              | `CONSERVAR_CONSUMIDO_HASTA_MIGRACION`          | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-MIG-005`; `SHELL-MIG-008` | reemplazo implementado, consumidores migrados, paridad, bloqueo legacy y rollback                                     |
+| `RET-ART-019` | función/helper    | PULSO                     | `src/lib/auth/sso.ts`                                                                 | consumidores confirmados; fallback histórico de host requiere parametrización                                        | `CONSERVAR_CONSUMIDO_HASTA_MIGRACION`          | `SHELL-CON-002`; `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-MIG-005`; `SHELL-MIG-008` | reemplazo implementado, consumidores migrados, paridad, bloqueo legacy y rollback |
+| `RET-ART-020` | función/helper    | VISO                      | `src/lib/auth/sso.ts`                                                                 | sin consumidor externo confirmado                                                                                    | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`; `SHELL-MIG-008`                 | revalidar cero consumidores estáticos, dinámicos, framework, CI y scripts; build, pruebas y rollback                   |
+| `RET-ART-021` | función/helper    | FOGO                      | `src/lib/auth/sso.ts`                                                                 | sin consumidor confirmado; fallback copiado de ORIGO                                                                 | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`; `SHELL-MIG-008`                 | revalidar cero consumidores; impedir propagar el fallback ORIGO; build, pruebas y rollback                             |
+| `RET-ART-022` | función/helper    | ORIGO                     | `src/lib/auth/sso.ts`                                                                 | sin consumidor externo confirmado                                                                                    | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`; `SHELL-MIG-008`                 | revalidar cero consumidores estáticos, dinámicos, framework, CI y scripts; build, pruebas y rollback                   |
+| `RET-ART-023` | función/helper    | NUMERA                    | `src/lib/auth/sso.ts`                                                                 | sin consumidor externo confirmado                                                                                    | `AUTORIZAR_RETIRO_FISICO_POSTERIOR`            | `SHELL-AUTH-005`; `SHELL-MIG-008`                 | revalidar cero consumidores estáticos, dinámicos, framework, CI y scripts; build, pruebas y rollback                   |
+| `RET-ART-024` | rama contractual | PULSO                     | `GuardOptions.requireAppAccessPermission = false`                                     | capacidad latente; no se confirmó consumidor que desactive la puerta general                                         | `CAPACIDAD_LATENTE_NO_CANONICA`                | `SHELL-AUTH-005`; `SHELL-MIG-008`                 | búsqueda final de consumidores; retirar booleano inverso o sustituir por política discriminada aprobada                |
+| `RET-ART-025` | miembro de tipo   | runtimes AppSwitcher      | `AppSwitcherItem.brandColor`                                                          | declarado sin efecto de render confirmado                                                                            | `RETIRAR_MIEMBRO_LOCAL_INERTE`                 | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-MIG-008` | color futuro derivado de `ApplicationPresentation`; cero lecturas legacy; typecheck, pruebas y rollback                 |
+| `RET-ART-026` | prop de componente | runtimes AppSwitcher     | `AppSwitcherProps.sites`                                                              | prop residual; selección de sede resuelta fuera de AppSwitcher                                                        | `RETIRAR_PROP_RESIDUAL`                        | `SHELL-CTX-003`; `SHELL-UI-007`; `SHELL-MIG-008` | cero consumidores; selector/contexto propietario preservado; typecheck, pruebas y rollback                             |
+| `RET-ART-027` | prop de componente | runtimes AppSwitcher     | `AppSwitcherProps.activeSiteId`                                                       | prop residual sin consumo confirmado                                                                                  | `RETIRAR_PROP_RESIDUAL`                        | `SHELL-CTX-003`; `SHELL-UI-007`; `SHELL-MIG-008` | cero consumidores; contexto activo preservado fuera de AppSwitcher; typecheck, pruebas y rollback                      |
 
-**Conciliación:** 17 identidades esperadas, 17 materializadas, 0 omitidas y 0 identificadores duplicados.
+**Conciliación:** 27 identidades esperadas, 27 materializadas, 0 omitidas y 0 identificadores duplicados. La granularidad distingue ocurrencias físicas para retiro de archivos y miembros contractuales para ramas o props internas.
 
 ---
 
@@ -6256,14 +6276,27 @@ Se autorizan para retiro posterior:
 
 - tres proxies Supabase sin invocación externa confirmada;
 - el cliente browser alterno de PULSO;
-- las copias FOGO y NUMERA de `employee-sites` sin consumidor confirmado.
+- las copias FOGO y NUMERA de `employee-sites` sin consumidor confirmado;
+- las copias VISO, FOGO, ORIGO y NUMERA de `sso.ts`, condicionadas a revalidar cero consumidores;
+- la rama latente PULSO `requireAppAccessPermission=false`;
+- los miembros residuales `brandColor`, `sites` y `activeSiteId` en sus contratos AppSwitcher.
 
 Se conservan:
 
 - la copia ORIGO de `employee-sites`, porque tiene consumidores;
 - las cuatro copias de firma de dispositivo, porque tienen consumidores;
 - guards, permisos, contexto y clientes primarios, aunque deban migrarse;
+- los helpers SSO NEXO y PULSO, porque tienen consumidores confirmados;
 - helpers cuya ejecución dependa de un consumidor no visible en una búsqueda estática hasta completar el gate.
+
+##### 8.3.1. Gates de retiro no intercambiables
+
+| Clase | Condición obligatoria |
+| --- | --- |
+| artefacto o miembro realmente inerte | revalidar cero consumidores estáticos, dinámicos, de framework, CI y scripts; ejecutar build, pruebas y rollback; no exige reemplazo funcional |
+| legacy consumido | implementar reemplazo, migrar consumidores, demostrar paridad, bloquear nuevos consumidores legacy y probar rollback antes del retiro |
+
+La ausencia de middleware PULSO, la futura factory compartida o un componente UI todavía no publicado pueden seguir siendo brechas independientes; no convierten en necesario un archivo cuyo consumo permanezca en cero.
 
 ##### 8.4. Scripts
 
@@ -6309,6 +6342,11 @@ Aunque no se borran físicamente, las siguientes identidades dejan de ser candid
 | `vento-nexo/.../page-header.tsx`           | ocurrencia local sin consumidor confirmado                                           |
 | `vento-fogo/.../employee-sites.ts`         | copia local sin consumidor confirmado                                                |
 | `vento-numera/.../employee-sites.ts`       | copia local sin consumidor confirmado, sujeta a gate reforzado                       |
+| `sso.ts` VISO, FOGO, ORIGO y NUMERA        | copias locales sin consumidor confirmado; FOGO además contiene fallback de ORIGO      |
+| `GuardOptions.requireAppAccessPermission=false` | rama latente no canónica sin consumidor confirmado                               |
+| `AppSwitcherItem.brandColor`               | miembro local sin efecto de render confirmado                                        |
+| `AppSwitcherProps.sites`                   | prop residual; la selección de sede pertenece a otra frontera                        |
+| `AppSwitcherProps.activeSiteId`            | prop residual; el contexto activo se resuelve fuera de AppSwitcher                    |
 | acceso SHELL `Mi perfil` → `/`             | placeholder visible sin destino funcional propio                                     |
 | acceso SHELL `Configuración` → `/`         | placeholder visible sin destino funcional propio                                     |
 
@@ -6321,27 +6359,23 @@ Ninguna de estas identidades deberá copiarse a un paquete, plantilla o nuevo re
 ##### 10.1. Auth y Supabase client-side
 
 ```text
-SHELL-PKG-001..008
-→ SHELL-CON-001..008
-→ SHELL-AUTH-001
-→ SHELL-CTX-001
-→ backend canónico aplicable
-→ SHELL-AUTH-002
-→ SHELL-AUTH-003
-→ SHELL-AUTH-004
-→ SHELL-AUTH-005
-→ retiro de proxies, cliente alterno y helpers locales sin consumidores
+SHELL-MIG-001
+→ revalidar cero consumidores por identidad
+→ build, pruebas y rollback del repositorio
+→ SHELL-MIG-008
+→ retiro de proxies, cliente alterno, SSO inerte y helpers locales sin consumidores
 ```
 
-No se requiere esperar a retirar todos los legacy de Supabase para borrar un archivo local realmente inerte. Sí se requiere que el repositorio conserve una frontera funcional equivalente y que el gate no encuentre consumidores.
+No se requiere implementar una frontera sustituta para borrar un archivo local realmente inerte. Las brechas funcionales independientes conservan sus propietarios; el retiro exige que el gate no encuentre consumidores y que el repositorio siga pasando sus validaciones.
 
 ##### 10.2. UI
 
 ```text
-SHELL-PKG-001..008
-→ SHELL-UI-001
-→ contrato y componente compartido disponible
-→ verificación de consumidores NEXO
+SHELL-MIG-001
+→ verificación reforzada de consumidores NEXO
+→ conservar requisitos de diseño como evidencia
+→ build, pruebas y rollback NEXO
+→ SHELL-MIG-008
 → retiro de PageHeader NEXO sin consumidor
 ```
 
@@ -6350,11 +6384,13 @@ El retiro no debe eliminar los requisitos de diseño obtenidos de las variantes 
 ##### 10.3. Perfil SHELL
 
 ```text
-AUTH-UI-026..029
-→ decidir superficie real de perfil y configuración
-→ retirar placeholders o sustituir destinos
+SHELL-UI-010
+→ SHELL-APP-021
+→ retirar `Mi perfil` y `Configuración` mientras no exista capacidad aprobada
 → verificar que no se presente una capacidad inexistente
 ```
+
+Crear una superficie real de perfil o configuración no forma parte de `SHELL-APP-021`; requerirá una tarea funcional nueva y aprobación independiente.
 
 ##### 10.4. Backend y endpoints
 
@@ -6423,26 +6459,36 @@ Para endpoints o Supabase, el rollback deberá cumplir además las reglas de mig
 | `H-SHELL-011-008` | ORIGO sí consume `employee-sites` en órdenes de compra                    | `CONFIRMADO`                                    | borrar por familia rompería flujos de compra                 | `SHELL-AUTH-005`                                  |
 | `H-SHELL-011-009` | `@vento/os-context` no tiene adopción runtime confirmada                  | `CONFIRMADO`                                    | confundir transición sin adopción con paquete muerto         | `SHELL-AUTH-001`; `SHELL-CTX-001`                 |
 | `H-SHELL-011-010` | `@vento/os-context` es propietario canónico futuro aprobado               | `DECISION_CANONICA`                             | crear otro SDK o retirar la raíz prevista                    | `SHELL-AUTH-001`; `SHELL-CTX-001`                 |
-| `H-SHELL-011-011` | los dos accesos de perfil SHELL apuntan a `/`                             | `PLACEHOLDER_CONFIRMADO`                        | presentar capacidades inexistentes                           | `AUTH-UI-026` a `AUTH-UI-029`                     |
+| `H-SHELL-011-011` | los dos accesos de perfil SHELL apuntan a `/`                             | `PLACEHOLDER_CONFIRMADO`                        | presentar capacidades inexistentes                           | `SHELL-UI-010`; `SHELL-APP-021`                   |
 | `H-SHELL-011-012` | los entrypoints Next pueden ejecutarse sin imports                        | `REGLA_DE_CLASIFICACION`                        | retirar rutas activas por una búsqueda incompleta            | `SHELL-CON-011`; `SHELL-UI-010`; `SHELL-AUTH-005` |
 | `H-SHELL-011-013` | `shared-device-signature` tiene consumidores en cuatro aplicaciones       | `CONFIRMADO`                                    | romper trazabilidad de actor en dispositivos compartidos     | `SHELL-AUTH-002`; `SHELL-AUTH-005`                |
 | `H-SHELL-011-014` | scripts y bootstrap pueden tener consumidores manuales o de CI            | `CONFIRMADO_COMO_CLASE_DE_CONSUMO`              | perder reproducibilidad y rollback                           | `SHELL-PKG-001`; `SHELL-PKG-007`; `SHELL-PKG-008` |
 | `H-SHELL-011-015` | no se demostró ausencia remota de consumidores de endpoints o RPC         | `PENDIENTE_DE_EVIDENCIA_REMOTA`                 | eliminar contratos aún usados fuera de los repositorios web  | `AUTH-DB-030`; `AUTH-DB-031`                      |
 | `H-SHELL-011-016` | la ausencia de import estático no prueba ausencia de carga dinámica       | `REGLA_DE_CLASIFICACION`                        | falsos positivos de código muerto                            | `SHELL-AUTH-004`; `SHELL-PKG-008`                 |
 | `H-SHELL-011-017` | no existe autorización para eliminar físicamente código en la fase actual | `RESTRICCION_CANONICA`                          | violar continuidad y mezclar auditoría con implementación    | `SHELL-PKG-001` como siguiente handoff            |
-| `H-SHELL-011-018` | siete archivos quedan autorizados para retiro posterior                   | `DECISION_DOCUMENTAL`                           | mantener indefinidamente artefactos sin propietario          | `SHELL-UI-001`; `SHELL-AUTH-005`                  |
-| `H-SHELL-011-019` | dos entradas visibles quedan autorizadas para retiro o sustitución        | `DECISION_DOCUMENTAL`                           | navegación engañosa                                          | `AUTH-UI-026` a `AUTH-UI-029`                     |
+| `H-SHELL-011-018` | once archivos quedan autorizados para retiro posterior                    | `DECISION_DOCUMENTAL`                           | mantener indefinidamente artefactos sin propietario          | `SHELL-UI-001`; `SHELL-AUTH-005`; `SHELL-MIG-008` |
+| `H-SHELL-011-019` | dos entradas visibles quedan autorizadas para retiro                      | `DECISION_DOCUMENTAL`                           | navegación engañosa                                          | `SHELL-UI-010`; `SHELL-APP-021`                   |
 | `H-SHELL-011-020` | todo retiro deberá conservar evidencia y rollback por repositorio         | `DECISION_DOCUMENTAL`                           | regresión sin restauración reproducible                      | `SHELL-PKG-004`; `SHELL-PKG-006`; `SHELL-PKG-008` |
+| `H-SHELL-011-021` | NEXO consume su helper `sso.ts`                                            | `CONSUMIDOR_CONFIRMADO`                         | retirar antes de migrar rompe autenticación                  | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-MIG-005`; `SHELL-MIG-008` |
+| `H-SHELL-011-022` | PULSO consume su helper `sso.ts`                                           | `CONSUMIDOR_CONFIRMADO`                         | retirar antes de migrar rompe autenticación                  | `SHELL-CON-002`; `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-MIG-005`; `SHELL-MIG-008` |
+| `H-SHELL-011-023` | VISO conserva `sso.ts` sin consumidor externo confirmado                  | `SIN_CONSUMIDOR_CONFIRMADO`                     | código inerte o carga no indexada                             | `SHELL-AUTH-005`; `SHELL-MIG-008`                 |
+| `H-SHELL-011-024` | FOGO conserva `sso.ts` sin consumidor y con fallback de ORIGO              | `SIN_CONSUMIDOR_CONFIRMADO_CON_DERIVA`          | propagar configuración ajena o conservar código inerte       | `SHELL-AUTH-005`; `SHELL-MIG-008`                 |
+| `H-SHELL-011-025` | ORIGO conserva `sso.ts` sin consumidor externo confirmado                 | `SIN_CONSUMIDOR_CONFIRMADO`                     | código inerte o carga no indexada                             | `SHELL-AUTH-005`; `SHELL-MIG-008`                 |
+| `H-SHELL-011-026` | NUMERA conserva `sso.ts` sin consumidor externo confirmado                | `SIN_CONSUMIDOR_CONFIRMADO`                     | código inerte o carga no indexada                             | `SHELL-AUTH-005`; `SHELL-MIG-008`                 |
+| `H-SHELL-011-027` | PULSO declara `requireAppAccessPermission=false` sin consumidor confirmado | `CAPACIDAD_LATENTE_NO_CANONICA`                 | bypass silencioso de puerta general                           | `SHELL-AUTH-005`; `SHELL-MIG-008`                 |
+| `H-SHELL-011-028` | `brandColor` no altera el render inspeccionado                             | `CAMPO_SIN_CONSUMO_CONFIRMADO`                  | campo muerto perpetuado en contratos                          | `SHELL-CON-002`; `SHELL-UI-001`; `SHELL-MIG-008` |
+| `H-SHELL-011-029` | `sites` permanece como prop residual de AppSwitcher                       | `CONTRATO_RESIDUAL`                             | duplicar la frontera de selección de sede                     | `SHELL-CTX-003`; `SHELL-UI-007`; `SHELL-MIG-008` |
+| `H-SHELL-011-030` | `activeSiteId` permanece como prop residual de AppSwitcher                | `CONTRATO_RESIDUAL`                             | duplicar el contexto activo                                   | `SHELL-CTX-003`; `SHELL-UI-007`; `SHELL-MIG-008` |
 
-**Conciliación:** 20 hallazgos esperados, 20 materializados, 0 duplicados y 0 hallazgos sin propietario.
+**Conciliación:** 30 hallazgos esperados, 30 materializados, 0 duplicados y 0 hallazgos sin propietario.
 
 ---
 
 #### 14. Decisiones vinculantes
 
 1. Ningún archivo se elimina físicamente durante `SHELL-AUD-011`.
-2. Los siete archivos `RET-ART-001..007` se excluyen del destino arquitectónico y quedan autorizados para retiro posterior bajo gate.
-3. Las dos entradas `RET-ART-008..009` deben retirarse o sustituirse por destinos reales en sus tareas propietarias.
+2. Los once archivos `RET-ART-001..007` y `RET-ART-020..023` se excluyen del destino arquitectónico y quedan autorizados para retiro posterior bajo gate de cero consumidores.
+3. Las dos entradas `RET-ART-008..009` deben retirarse en `SHELL-APP-021`; crear capacidades reales requerirá tareas y aprobación independientes.
 4. `@vento/os-context` se conserva aunque no tenga consumidores runtime actuales.
 5. La ausencia de importación no se usará como criterio único para rutas, layouts, middleware, scripts o endpoints.
 6. Las rutas y entrypoints ejecutados por convención quedan fuera de cualquier barrido automático basado únicamente en referencias.
@@ -6453,8 +6499,10 @@ Para endpoints o Supabase, el rollback deberá cumplir además las reglas de mig
 11. Ningún artefacto autorizado para retiro podrá copiarse a nuevos repositorios.
 12. Toda reaparición de un consumidor antes de la eliminación revoca el retiro y obliga a migrar primero.
 13. Todo retiro se ejecutará en el repositorio propietario, excepto cambios de Supabase, que pertenecen exclusivamente a `vento-shell`.
-14. No se crea una tarea nueva; los destinos utilizados ya existen en el roadmap.
-15. `SHELL-PKG-001` queda como única continuidad inmediata reservada.
+14. Los artefactos inertes no esperan un reemplazo funcional; el legacy consumido exige migración, paridad y bloqueo de nuevos consumidores.
+15. `RET-ART-018..019` conservan los SSO consumidos hasta migrar NEXO y PULSO; `RET-ART-024..027` retiran ramas o props internas no canónicas bajo gate.
+16. Se materializan `SHELL-MIG-001..008` y `SHELL-APP-021` como destinos exactos sin modificar la continuidad activa.
+17. `SHELL-PKG-001` queda como única continuidad inmediata reservada.
 
 ---
 
@@ -6465,11 +6513,13 @@ Para endpoints o Supabase, el rollback deberá cumplir además las reglas de mig
 | elegir mecanismo físico de distribución                     | `NO_INICIADO`                       | `SHELL-PKG-001`                   | mecanismo aprobado para contratos, SDK y UI                    |
 | definir compatibilidad y deprecación                        | `NO_INICIADO`                       | `SHELL-PKG-004`; `SHELL-PKG-005`  | ventanas y consumidores soportados definidos                   |
 | definir rollback por aplicación                             | `NO_INICIADO`                       | `SHELL-PKG-006`                   | restauración comprobable por consumidor                        |
-| implementar adapters comunes                                | `NO_IMPLEMENTADO`                   | `SHELL-AUTH-002`                  | fronteras server/client disponibles y probadas                 |
+| implementar factories y adapters comunes                     | `NO_IMPLEMENTADO`                   | `SHELL-DB-001`; `SHELL-DB-004`; `SHELL-DB-005`; `SHELL-AUTH-002` | fronteras server/client/admin disponibles y probadas |
 | bloquear nuevos consumidores legacy                         | `NO_IMPLEMENTADO`                   | `SHELL-AUTH-004`                  | lint, métricas y gates activos                                 |
-| retirar proxies, cliente alterno y helpers auth sin consumo | `AUTORIZADO_PENDIENTE_DE_EJECUCION` | `SHELL-AUTH-005`                  | gate, migración, pruebas y rollback completos                  |
-| retirar PageHeader NEXO huérfano                            | `AUTORIZADO_PENDIENTE_DE_EJECUCION` | `SHELL-UI-001`                    | componente compartido definido y cero consumidores revalidados |
-| retirar o sustituir placeholders de perfil                  | `AUTORIZADO_PENDIENTE_DE_EJECUCION` | `AUTH-UI-026` a `AUTH-UI-029`     | destino real o ausencia explícita de la acción                 |
+| retirar proxies, cliente alterno y helpers auth sin consumo | `AUTORIZADO_PENDIENTE_DE_EJECUCION` | `SHELL-AUTH-005`; `SHELL-MIG-008` | cero consumidores revalidado, pruebas y rollback completos     |
+| retirar PageHeader NEXO huérfano                            | `AUTORIZADO_PENDIENTE_DE_EJECUCION` | `SHELL-UI-001`; `SHELL-MIG-008`   | cero consumidores revalidado, pruebas y rollback completos     |
+| migrar SSO NEXO y PULSO                                     | `NO_IMPLEMENTADO`                   | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-MIG-005` | reemplazo, consumidores migrados, paridad y rollback |
+| retirar rama PULSO y props AppSwitcher residuales           | `AUTORIZADO_PENDIENTE_DE_EJECUCION` | `SHELL-AUTH-005`; `SHELL-UI-001`; `SHELL-UI-007`; `SHELL-MIG-008` | cero consumidores, typecheck, pruebas y rollback |
+| retirar placeholders de perfil y configuración              | `AUTORIZADO_PENDIENTE_DE_EJECUCION` | `SHELL-UI-010`; `SHELL-APP-021`   | acciones ausentes y navegación SHELL verificada                |
 | reconciliar `@vento/os-context`                             | `CONSERVAR_TRANSITORIAMENTE`        | `SHELL-AUTH-001`; `SHELL-CTX-001` | SDK canónico adoptable y versionado                            |
 | retirar endpoints legacy                                    | `NO_AUTORIZADO_EN_ESTA_TAREA`       | `AUTH-DB-030`; `AUTH-DB-031`      | telemetría, migración, paridad y certificación final           |
 
@@ -6527,19 +6577,21 @@ No corresponde generar una copia del registro `04A`.
 - se diferencia retiro documental, autorización de retiro y eliminación física;
 - se materializan diez clases válidas de consumidor;
 - el gate de retiro cubre imports, dinámicos, framework, scripts, CI, operación, datos y remoto;
-- las 17 identidades tienen repositorio, evidencia, decisión, propietario y condición de salida;
+- las 27 identidades tienen repositorio, evidencia, decisión, propietario y condición de salida;
 - los tres proxies sin consumo confirmado quedan clasificados individualmente;
 - el cliente alterno PULSO queda clasificado individualmente;
 - las ocurrencias de `PageHeader` se distinguen entre NEXO sin consumidor y VISO consumido;
 - las ocurrencias de `employee-sites` se distinguen entre ORIGO consumido y FOGO/NUMERA sin consumo confirmado;
+- las seis ocurrencias de `sso.ts` distinguen NEXO/PULSO consumidos de VISO/FOGO/ORIGO/NUMERA sin consumo confirmado;
+- la rama latente PULSO y los miembros `brandColor`, `sites` y `activeSiteId` tienen disposición individual;
 - `@vento/os-context` no se confunde con código muerto;
 - los dos accesos de perfil placeholder tienen decisión explícita;
 - los entrypoints de framework quedan protegidos contra falsos positivos;
 - la firma de dispositivo se conserva por consumidores confirmados;
 - scripts y endpoints tienen una decisión explícita de cero retiros autorizados;
-- los siete archivos y dos entradas autorizados para retiro tienen tarea de ejecución;
-- los veinte hallazgos tienen destino exacto;
-- no se crea ninguna tarea nueva;
+- los once archivos, cuatro miembros internos y dos entradas autorizados para retiro tienen tarea de ejecución;
+- los treinta hallazgos tienen destino exacto;
+- `SHELL-MIG-001..008` y `SHELL-APP-021` quedan materializadas con propósito, dependencias y puerta de cierre;
 - se declaran cero cambios `TREQ-*`;
 - no se modifica código, Supabase, configuración, CI, despliegues ni continuidad;
 - `SHELL-PKG-001` permanece como única tarea inmediata reservada.
