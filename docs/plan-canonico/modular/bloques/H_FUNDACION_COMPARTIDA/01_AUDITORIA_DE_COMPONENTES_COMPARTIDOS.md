@@ -4552,7 +4552,938 @@ Queda establecido que la fundación Supabase actual combina un núcleo repetido 
 La única continuidad inmediata reservada es `SHELL-AUD-009 — Comparar tipos y contratos`. No se desarrolla ni modifica dentro de esta tarea. El handoff `SHELL-PKG-001` permanece reservado para después de completar `SHELL-AUD-011`.
 
 
-### [ ] SHELL-AUD-009 — Comparar tipos y contratos
+### ✅ SHELL-AUD-009 — Comparar tipos y contratos
+
+**Estado:** APROBADA
+**Bloque:** H — Fundación compartida
+**Tipo:** auditoría documental comparativa de tipos TypeScript, contratos runtime, esquemas de identidad y fronteras compartidas
+**Entrada de continuidad:** `SHELL-AUD-008 — Comparar clientes Supabase`
+**Continuidad inmediata reservada:** `SHELL-AUD-010 — Clasificar compartir / generar / mantener local`
+**Handoff posterior al segmento `SHELL-AUD-001..011`:** `SHELL-PKG-001 — Elegir mecanismo de distribución`
+**Fecha de corte:** 2026-08-01
+**Commit documental canónico:** `f66c6d8ed7b743926991f134a7b92dbd03f88991`
+**Cambios en código, tipos, contratos, paquetes, configuración, CI, despliegues, datos o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea materializa la comparación de los tipos y contratos que actualmente sostienen AppShell, navegación, autenticación, permisos, contexto operativo, simulación, dispositivos compartidos y clientes Supabase en las superficies web de Vento OS.
+
+La auditoría distingue cuatro niveles que no pueden tratarse como equivalentes:
+
+1. contratos normativos aprobados pero todavía no implementados;
+2. un paquete compartido parcial y transitorio;
+3. tipos locales copiados o redeclarados entre repositorios;
+4. estructuras inferidas mediante casts desde consultas, RPC y datos ambientales.
+
+| Métrica                                                       |  Resultado |
+| ------------------------------------------------------------- | ---------: |
+| Repositorios runtime comparados                               |      **7** |
+| Fuentes físicas de plantilla comparadas                       |      **1** |
+| Paquetes compartidos parciales comparados                     |      **1** |
+| Superficies contractuales con decisión explícita              | **9 de 9** |
+| Identidades contractuales materializadas                      |     **34** |
+| Modelos de contexto coexistentes                              |      **4** |
+| Variantes de entrada de `requireAppAccess`                    |      **3** |
+| Copias runtime de `OperationalSession`                        |      **6** |
+| Blobs de `OperationalSession`                                 |      **1** |
+| Declaraciones runtime locales de `AppSwitcherItem`            |     **18** |
+| Paquetes `@vento/contracts` existentes                        |      **0** |
+| Paquetes `@vento/os-context` existentes                       |      **1** |
+| Consumidores runtime confirmados de `@vento/os-context`       |      **0** |
+| Tipos `Database` generados localizados en las siete fronteras |      **0** |
+| Clientes Supabase parametrizados con `Database`               |      **0** |
+| Hallazgos con destino exacto                                  |     **32** |
+| Cambios `TREQ-*`                                              |      **0** |
+
+Resultado central:
+
+```text
+CONTRATO CANÓNICO DOCUMENTAL
+→ DEFINIDO PARCIALMENTE EN AUTH-CAT Y BLOQUE H
+→ @vento/contracts TODAVÍA AUSENTE
+
+CONTRATO COMPARTIDO FÍSICO
+→ @vento/os-context 0.1.0 PRIVADO
+→ TRES TIPOS EXPORTADOS
+→ SIN CONSUMO RUNTIME CONFIRMADO
+→ SIN VALIDACIÓN RUNTIME DE SUS PAYLOADS
+
+CONTRATOS RUNTIME
+→ TYPES LOCALES COPIADOS
+→ STRINGS ABIERTOS PARA APPS, PERMISOS, ROLES, SCOPES Y RAZONES
+→ ROW TYPES MANUALES Y CASTS DE RPC
+→ RESULTADOS BOOLEANOS O INFERIDOS
+
+PARIDAD CONTRACTUAL
+→ NO DEMOSTRADA
+```
+
+La tarea no decide todavía qué contrato se comparte, se genera o permanece local. Esa disposición corresponde exclusivamente a `SHELL-AUD-010`.
+
+---
+
+#### 2. Fuentes y corte reproducible
+
+| Fuente                                              | Uso                                                                                    |
+| --------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | continuidad, alcance, trazabilidad y forma de entrega                                  |
+| `docs/plan-canonico/modular/delivery-contract.json` | contrato físico del artefacto                                                          |
+| `docs/plan-canonico/modular/active-sequence.json`   | secuencia vigente y handoff posterior                                                  |
+| `00_CABECERA_Y_ESTADO.md`                           | confirmación de tarea actual y siguiente reservada                                     |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`        | propietario, dependencias y hallazgos heredados                                        |
+| `SHELL-AUD-001` a `SHELL-AUD-008`                   | inventario físico y comparaciones previas de auth, contexto, UI, navegación y Supabase |
+| `AUTH-CAT-017` y `AUTH-CAT-018`                     | destino normativo de contratos de autorización y tipos derivados                       |
+| `03_CONTRATOS_COMPARTIDOS.md`                       | tareas `SHELL-CON-001` a `SHELL-CON-016`                                               |
+| `03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`         | frontera entre `@vento/contracts`, `@vento/os-context` y Supabase                      |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`         | versionado, compatibilidad, rollback y distribución posteriores                        |
+| `packages/os-context`                               | paquete compartido parcial actualmente versionado                                      |
+| código runtime de los siete repositorios            | tipos, casts, firmas, consumidores y resultados actuales                               |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`  | cobertura de pruebas vigente                                                           |
+| `package.json` y scripts documentales               | validadores aplicables y dependencias declaradas                                       |
+
+Commits runtime inspeccionados:
+
+| Superficie | Repositorio                  | Commit                                     |
+| ---------- | ---------------------------- | ------------------------------------------ |
+| SHELL      | `devVentoGroup/vento-shell`  | `f66c6d8ed7b743926991f134a7b92dbd03f88991` |
+| VISO       | `devVentoGroup/vento-viso`   | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |
+| NEXO       | `devVentoGroup/vento-nexo`   | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |
+| FOGO       | `devVentoGroup/vento-fogo`   | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |
+| ORIGO      | `devVentoGroup/vento-origo`  | `b7a8303fa078ef087f522b6c99059ababfc27472` |
+| PULSO      | `devVentoGroup/vento-pulso`  | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| NUMERA     | `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |
+
+La fuente de plantilla se inspeccionó dentro de `vento-shell`; no se trató como un octavo runtime. El paquete `@vento/os-context` se trató como superficie contractual adicional, no como aplicación.
+
+---
+
+#### 3. Continuidad interpretada
+
+La secuencia vigente es:
+
+```text
+SHELL-AUD-001
+→ ...
+→ SHELL-AUD-008 aprobada
+→ SHELL-AUD-009 actual
+→ SHELL-AUD-010 inmediata reservada
+→ SHELL-AUD-011
+→ SHELL-PKG-001
+```
+
+`SHELL-PKG-001` permanece como handoff posterior al cierre de todo el segmento `SHELL-AUD-001..011`. Esta tarea no modifica `active-sequence.json`.
+
+---
+
+#### 4. Alcance exacto
+
+Se comparan:
+
+1. identificadores de aplicación y metadatos de presentación;
+2. tipos de AppSwitcher, logo, encabezado, navegación y gate operativo;
+3. contratos de entrada y salida de `requireAppAccess`;
+4. contratos de permisos, códigos, contexto y resultados de autorización;
+5. contratos de sesión operativa, contexto operacional y simulación;
+6. contratos de roles, scopes y role override;
+7. tipos de dispositivos compartidos y firma de actor;
+8. tipos de cliente Supabase, filas, consultas y RPC;
+9. contratos de SSO, retorno seguro, errores y razones;
+10. contratos normativos ya aprobados para `@vento/contracts/authorization`;
+11. el paquete físico `@vento/os-context` y su adopción actual;
+12. destinos exactos de migración, validación y compatibilidad.
+
+Se excluyen:
+
+| Materia                                                      | Tarea propietaria                                           |
+| ------------------------------------------------------------ | ----------------------------------------------------------- |
+| decisión final compartir / generar / mantener local          | `SHELL-AUD-010`                                             |
+| retiro de tipos o helpers sin consumidor confirmado          | `SHELL-AUD-011`                                             |
+| creación física de `@vento/contracts`                        | `SHELL-CON-001`                                             |
+| implementación de códigos, roles, scopes, contexto y errores | `SHELL-CON-002` a `SHELL-CON-008`                           |
+| implementación de SDK, adapters, scopes y migración          | `SHELL-AUTH-001` a `SHELL-AUTH-005`                         |
+| consolidación del contexto compartido                        | `SHELL-CTX-001` a `SHELL-CTX-006`                           |
+| definición de distribución, versionado y rollback            | `SHELL-PKG-001` a `SHELL-PKG-008`                           |
+| cambios de RPC, esquema, RLS, grants o datos                 | tareas propietarias de Supabase y autorización              |
+| implementación de UI compartida y AppShell                   | `SHELL-UI-001` a `SHELL-UI-003`                             |
+| ejecución de pruebas operativas o remotas                    | paquetes de implementación y certificación correspondientes |
+
+---
+
+#### 5. Taxonomía de comparación
+
+| Estado                       | Criterio                                                                |
+| ---------------------------- | ----------------------------------------------------------------------- |
+| `NORMATIVO_NO_IMPLEMENTADO`  | contrato aprobado documentalmente, sin artefacto runtime consumible     |
+| `COMPARTIDO_PARCIAL`         | paquete físico común con cobertura o adopción incompleta                |
+| `LOCAL_DUPLICADO`            | mismo contrato repetido en varios archivos o repositorios               |
+| `LOCAL_DIVERGENTE`           | contratos con propósito común y firmas o semántica distintas            |
+| `INFERIDO_NO_EXPORTADO`      | forma observable solo por inferencia del retorno o del consumidor       |
+| `STRING_ABIERTO`             | identidad o estado representado por `string` sin validación de catálogo |
+| `CAST_NO_VALIDADO`           | payload convertido con `as` sin parser o schema runtime                 |
+| `TIPADO_ESTRUCTURAL_MINIMO`  | interfaz local suficiente para compilar una operación puntual           |
+| `UNION_DISCRIMINADA_LOCAL`   | contrato local con discriminante correcto, no compartido ni versionado  |
+| `SIN_DATABASE_GENERADO`      | cliente y consultas sin tipo de esquema Supabase generado               |
+| `SIN_VERSION_CONTRACTUAL`    | resultado no conserva versión o hash del contrato aplicado              |
+| `PENDIENTE_DE_CLASIFICACION` | disposición reservada a `SHELL-AUD-010`                                 |
+
+La compatibilidad estructural TypeScript no demuestra equivalencia empresarial. Dos tipos pueden ser asignables y seguir representando roles, permisos, estados o razones con significado distinto.
+
+---
+
+#### 6. Matriz maestra de identidades contractuales
+
+| ID             | Contrato o tipo                              | Superficie actual                                  | Estado                      | Brecha principal                                                                       | Destino exacto                                                                      |
+| -------------- | -------------------------------------------- | -------------------------------------------------- | --------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `TYPE-CON-001` | `AppCode`                                    | uniones y strings locales                          | `NORMATIVO_NO_IMPLEMENTADO` | no existe export runtime del catálogo de diez aplicaciones                             | `SHELL-CON-002`; `AUTH-CAT-018`                                                     |
+| `TYPE-CON-002` | definición de aplicación / `AppSwitcherItem` | tres redeclaraciones por cada uno de seis runtimes | `LOCAL_DUPLICADO`           | datos, estado, acceso, grupo, URL y marca no proceden de una fuente única              | `SHELL-CON-002`; `SHELL-UI-002`; `SHELL-AUTH-005`                                   |
+| `TYPE-CON-003` | `VentoEntity`                                | `vento-logo.tsx` locales                           | `LOCAL_DIVERGENTE`          | incluye `default`, omite identidades canónicas y duplica colores                       | `SHELL-CON-002`; `SHELL-UI-002`                                                     |
+| `TYPE-CON-004` | `IconName`                                   | AppShell y Chrome locales                          | `LOCAL_DIVERGENTE`          | vocabularios de iconos no versionados ni validados contra navegación                   | `SHELL-UI-001`; `SHELL-AUD-010`                                                     |
+| `TYPE-CON-005` | `NavigationRow`                              | seis `vento-shell.tsx`                             | `TIPADO_ESTRUCTURAL_MINIMO` | solo modela ocho de catorce campos funcionales del esquema                             | `SHELL-CON-011`; `SHELL-UI-002`; `SHELL-AUTH-005`                                   |
+| `TYPE-CON-006` | `NavItem`                                    | `vento-shell.tsx` y `vento-chrome.tsx`             | `LOCAL_DUPLICADO`           | `href` reemplaza identidad estable; permiso es string libre                            | `SHELL-CON-003`; `SHELL-CON-011`; `SHELL-UI-002`                                    |
+| `TYPE-CON-007` | `NavGroup`                                   | AppShell y Chrome locales                          | `LOCAL_DUPLICADO`           | label visible funciona como identidad de agrupación                                    | `SHELL-CON-011`; `SHELL-UI-002`                                                     |
+| `TYPE-CON-008` | `OperatingGate`                              | AppShell y Chrome locales                          | `LOCAL_DUPLICADO`           | modos, bloqueo, textos y acción no están versionados                                   | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-UI-002`                   |
+| `TYPE-CON-009` | `PageHeaderProps`                            | VISO y NEXO                                        | `LOCAL_DIVERGENTE`          | VISO añade `accent`; NEXO aporta comportamiento responsive distinto                    | `SHELL-UI-001`; `SHELL-AUD-010`                                                     |
+| `TYPE-CON-010` | `VentoLogoProps` / `VentoIconProps`          | seis runtimes                                      | `LOCAL_DIVERGENTE`          | entidad, colores, labels, fallback y accesibilidad permanecen locales                  | `SHELL-CON-002`; `SHELL-UI-002`; `SHELL-AUD-010`                                    |
+| `TYPE-CON-011` | `SiteOption`                                 | AppShell, Chrome, perfil y helper Supabase         | `LOCAL_DIVERGENTE`          | `name` y `site_type` cambian en nulabilidad y presencia                                | `SHELL-CON-007`; `SHELL-CTX-003`; `SHELL-AUTH-005`                                  |
+| `TYPE-CON-012` | `EmployeeSiteRow`                            | FOGO, ORIGO y NUMERA                               | `LOCAL_DUPLICADO`           | relación `sites` admite objeto o array mediante tipo manual                            | `SHELL-CON-007`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                                 |
+| `TYPE-CON-013` | `GuardOptions` base                          | NEXO, FOGO, ORIGO y NUMERA                         | `LOCAL_DUPLICADO`           | app, permiso, sede y área son strings abiertas                                         | `SHELL-CON-002`; `SHELL-CON-003`; `SHELL-CON-007`; `SHELL-AUTH-002`                 |
+| `TYPE-CON-014` | `GuardOptions` VISO                          | VISO                                               | `LOCAL_DIVERGENTE`          | `allowPermissionAccess` altera la puerta general                                       | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-010`                                 |
+| `TYPE-CON-015` | `GuardOptions` PULSO                         | PULSO                                              | `LOCAL_DIVERGENTE`          | `requireAppAccessPermission` usa otra bandera y default                                | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-010`                                 |
+| `TYPE-CON-016` | resultado de `requireAppAccess`              | seis guards                                        | `INFERIDO_NO_EXPORTADO`     | no existe tipo público para usuario, sesión, sede y dispositivo devueltos              | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`                                  |
+| `TYPE-CON-017` | `PermissionContext`                          | seis helpers de permisos                           | `LOCAL_DUPLICADO`           | sede y área son strings opcionales, sin fuente ni frescura                             | `SHELL-CON-006`; `SHELL-CON-007`; `SHELL-AUTH-002`                                  |
+| `TYPE-CON-018` | `PermissionKey` / entrada de permiso         | helpers, guards y role override                    | `STRING_ABIERTO`            | concatena prefijo; no valida activo, alias, legacy o retirado                          | `SHELL-CON-003`; `AUTH-CAT-018`; `AUTH-CAT-019`; `SHELL-AUTH-004`                   |
+| `TYPE-CON-019` | resultado de evaluación de permiso           | helpers y RPC directas                             | `TIPADO_ESTRUCTURAL_MINIMO` | `boolean` fusiona denegación y error técnico                                           | `SHELL-CON-008`; `SHELL-AUTH-002`; `AUTH-DB-034`                                    |
+| `TYPE-CON-020` | `OperationalSession`                         | seis copias idénticas                              | `LOCAL_DUPLICADO`           | objeto plano combina `mode` e `isSharedDevice`; no estrecha campos por modo            | `SHELL-CON-007`; `SHELL-CTX-001`; `SHELL-AUTH-005`                                  |
+| `TYPE-CON-021` | `OperationalContextRow`                      | NEXO                                               | `CAST_NO_VALIDADO`          | veintidós campos planos, booleanos nulos y razones string                              | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-CTX-001`; `SHELL-CTX-005`                  |
+| `TYPE-CON-022` | `EffectiveContext`                           | `@vento/os-context`                                | `COMPARTIDO_PARCIAL`        | `session_mode`, roles, app, área y razones siguen abiertos                             | `SHELL-CON-004` a `SHELL-CON-008`; `SHELL-CTX-001`                                  |
+| `TYPE-CON-023` | `ContextSimulationInput`                     | `@vento/os-context`                                | `COMPARTIDO_PARCIAL`        | ids y roles son strings; no conserva versión, actor ni autorización para simular       | `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-CON-007`; `SHELL-AUTH-002`                 |
+| `TYPE-CON-024` | `AccessContext@1.0.0`                        | contrato normativo                                 | `NORMATIVO_NO_IMPLEMENTADO` | no existe payload runtime canónico consumido por los repositorios                      | `SHELL-CON-007`; `SHELL-AUTH-001`; `SHELL-CTX-001`; `AUTH-DB-033`                   |
+| `TYPE-CON-025` | rol base, rol operativo y `ROLE_OPTIONS`     | seis configuraciones locales                       | `LOCAL_DIVERGENTE`          | listas distintas; UI restringe selección pero servidor acepta strings                  | `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                |
+| `TYPE-CON-026` | `RolePermissionRow`                          | seis role overrides                                | `LOCAL_DIVERGENTE`          | forma de relación y campos de scope dependen de selección manual                       | `SHELL-CON-006`; `SHELL-AUTH-001`; `SHELL-AUTH-005`                                 |
+| `TYPE-CON-027` | `RolePermissionEntry` y scope                | role override base y NEXO                          | `STRING_ABIERTO`            | `scope_type`, site type y area kind no usan unión canónica                             | `SHELL-CON-006`; `AUTH-CAT-018`; `SHELL-AUTH-001`                                   |
+| `TYPE-CON-028` | adapter `SupabaseClient`                     | aliases locales y paquete                          | `LOCAL_DIVERGENTE`          | algunas firmas exigen cliente completo y PULSO usa `Pick<..., "rpc">`                  | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-010`                                 |
+| `TYPE-CON-029` | `Database` generado                          | siete runtimes                                     | `SIN_DATABASE_GENERADO`     | clientes y queries no están parametrizados con esquema generado                        | `SHELL-CON-001`; `SHELL-AUTH-002`; `SHELL-AUTH-004`                                 |
+| `TYPE-CON-030` | inputs y outputs RPC                         | contexto, permisos, firma y middleware             | `CAST_NO_VALIDADO`          | nombres, parámetros y filas se escriben manualmente y se castean                       | `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035`                                     |
+| `TYPE-CON-031` | `SignatureResult`                            | cuatro copias byte-idénticas                       | `UNION_DISCRIMINADA_LOCAL`  | buena discriminación local, pero códigos, targets, metadata y errores no son canónicos | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`; `AUTH-DEV-007` a `AUTH-DEV-016` |
+| `TYPE-CON-032` | destino SSO y `returnTo`                     | seis helpers y guards                              | `LOCAL_DIVERGENTE`          | string o URL sin tipo de origen, política, app destino ni validación uniforme          | `SHELL-CON-002`; `SHELL-CON-008`; `SHELL-AUTH-002`                                  |
+| `TYPE-CON-033` | razones, errores y estados                   | query params, arrays y headers                     | `STRING_ABIERTO`            | no existe unión/versionado común de códigos y razones seguras                          | `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-AUTH-002`; `SHELL-AUTH-004`                |
+| `TYPE-CON-034` | manifiesto, versión, hash y diagnóstico      | aprobado en `AUTH-CAT-018`                         | `NORMATIVO_NO_IMPLEMENTADO` | runtime no transporta `published_version`, hash ni diagnóstico estructurado            | `AUTH-CAT-017`; `AUTH-CAT-018`; `SHELL-CON-001`; `SHELL-AUTH-003`                   |
+
+**Conciliación:** 34 identidades esperadas, 34 materializadas, 0 omitidas y 0 identificadores duplicados.
+
+---
+
+#### 7. Estado de la fuente canónica de contratos
+
+La arquitectura documental aprobada separa responsabilidades:
+
+```text
+@vento/contracts/authorization
+→ catálogos, códigos, schemas, tipos derivados y diagnósticos
+
+@vento/os-context
+→ adapters, scopes por solicitud, proyecciones seguras y compatibilidad
+
+Supabase
+→ resolución autoritativa, persistencia y decisión
+```
+
+Estado físico actual:
+
+| Artefacto                        | Estado físico               | Cobertura actual                                           | Resultado             |
+| -------------------------------- | --------------------------- | ---------------------------------------------------------- | --------------------- |
+| `@vento/contracts`               | ausente                     | ninguna exportación runtime                                | `NO_IMPLEMENTADO`     |
+| `@vento/contracts/authorization` | ausente                     | contrato documental en `AUTH-CAT-017/018`                  | `NORMATIVO`           |
+| `@vento/os-context`              | presente, privado, `0.1.0`  | `EffectiveContext`, `ContextSimulationInput` y cliente RPC | `PARCIAL_TRANSITORIO` |
+| tipos `Database` generados       | no localizados              | ninguna parametrización de clientes                        | `AUSENTE_EN_EL_CORTE` |
+| contratos locales                | presentes en siete runtimes | compilación y comportamiento actual                        | `LEGACY_ACTIVO`       |
+
+`@vento/os-context` no constituye todavía la implementación completa del contrato canónico porque:
+
+- exporta tres tipos principales, pero no catálogos o schemas;
+- acepta un `SupabaseClient` sin tipo `Database`;
+- convierte respuestas RPC mediante casts;
+- usa strings abiertas para aplicaciones, roles, áreas, modos y razones;
+- no expone versión o hash del contrato aplicado;
+- la búsqueda de importaciones no confirmó consumidores runtime fuera del propio paquete y documentación.
+
+No se autoriza retirar el paquete ni considerarlo muerto. Su conservación o absorción se decide en `SHELL-AUD-010` y su consumo se verifica antes de cualquier retiro en `SHELL-AUD-011`.
+
+---
+
+#### 8. Aplicaciones, marca y navegación
+
+##### 8.1. Identidad de aplicación
+
+El contrato documental futuro exige un `AppCode` derivado del catálogo. El runtime utiliza:
+
+- strings en consultas y permisos;
+- uniones locales en `APP_ENTITY` y `VentoEntity`;
+- ids locales en listas de aplicación;
+- casts de variables de entorno hacia uniones sin parser runtime.
+
+La unión local observada en AppShell y logo incluye `default` y varias aplicaciones, pero no equivale al conjunto canónico de diez códigos. `default` es un fallback de presentación, no una aplicación empresarial.
+
+Decisión:
+
+```text
+APP CODE LOCAL
+→ NO ACEPTAR COMO CONTRATO CANÓNICO
+→ PRESERVAR COMO COMPATIBILIDAD TEMPORAL
+→ MIGRAR A SHELL-CON-002
+```
+
+##### 8.2. `AppSwitcherItem`
+
+Cada uno de los seis runtimes redeclara el contrato en:
+
+- `vento-shell.tsx`;
+- `vento-chrome.tsx`;
+- `app-switcher.tsx`.
+
+Eso produce dieciocho declaraciones locales para la misma responsabilidad nominal. Los campos actuales combinan:
+
+- identidad;
+- presentación;
+- URL;
+- marca;
+- estado de despliegue;
+- acceso calculado;
+- agrupación de interfaz.
+
+La mezcla impide distinguir datos canónicos de aplicación, proyección de autorización y preferencias visuales. La futura forma deberá separar al menos:
+
+```text
+ApplicationDefinition
+ApplicationPresentation
+ApplicationAvailability
+ApplicationAccessProjection
+ApplicationDestination
+```
+
+Esta tarea no diseña esas interfaces finales; registra la separación obligatoria para `SHELL-CON-002`, `SHELL-UI-002` y `SHELL-AUD-010`.
+
+##### 8.3. Navegación
+
+El esquema `app_navigation_items` posee campos estables que no llegan al contrato runtime. `NavigationRow` selecciona ocho campos y `NavItem` conserva una proyección menor.
+
+| Campo de esquema           | `NavigationRow` | `NavItem`        | Resultado                             |
+| -------------------------- | --------------- | ---------------- | ------------------------------------- |
+| `group_key`                | no              | no               | identidad de grupo perdida            |
+| `group_label`              | sí              | indirecto        | label visible usado como clave        |
+| `item_key`                 | no              | no               | identidad estable perdida             |
+| `href`                     | sí              | sí               | usado como destino, key y ruta activa |
+| `required_permission_code` | sí              | `permissionCode` | string libre                          |
+| `opens_in_new_tab`         | no              | no               | comportamiento declarado ignorado     |
+| `metadata`                 | no              | no               | extensión contractual descartada      |
+
+El contrato de navegación actual es una proyección local incompleta. No puede declararse equivalente al esquema ni al futuro contrato de pantalla.
+
+---
+
+#### 9. Contratos de guard y permiso
+
+##### 9.1. Tres contratos de entrada
+
+| Variante        | Consumidores              | Campo diferencial            | Default                    | Efecto                                        |
+| --------------- | ------------------------- | ---------------------------- | -------------------------- | --------------------------------------------- |
+| `GUARD-INPUT-A` | NEXO, FOGO, ORIGO, NUMERA | ninguno                      | acceso general obligatorio | base copiada                                  |
+| `GUARD-INPUT-B` | VISO                      | `allowPermissionAccess`      | `false`                    | un permiso específico puede habilitar entrada |
+| `GUARD-INPUT-C` | PULSO                     | `requireAppAccessPermission` | `true`                     | permite omitir la puerta general              |
+
+Los nombres y defaults no son equivalentes. Un adapter compartido no puede reducirlos a un booleano genérico sin conservar la intención semántica.
+
+Los campos comunes siguen abiertos:
+
+```text
+appId: string
+permissionCode?: string | string[]
+siteId?: string | null
+areaId?: string | null
+returnTo: string
+```
+
+La firma futura deberá usar identidades canónicas, contexto explícito y una política de acceso discriminada, no múltiples booleanos de interpretación inversa.
+
+##### 9.2. Resultado de guard
+
+Los seis guards devuelven una forma estructural parecida, pero no exportan un tipo público. El consumidor infiere:
+
+- cliente Supabase;
+- usuario;
+- sede;
+- sesión operativa;
+- descriptor de dispositivo compartido.
+
+No se conservan en el resultado:
+
+- versión contractual;
+- permiso solicitado normalizado;
+- decisión estructurada;
+- razones;
+- fuente del contexto;
+- timestamp de resolución;
+- evidencia o correlación.
+
+El resultado actual es un agregado de conveniencia, no un `AccessContext` ni una `AuthorizationDecision` canónica.
+
+##### 9.3. Permisos
+
+`normalizePermissionCode` concatena `appId` y `code`. No valida:
+
+- existencia en catálogo;
+- aplicación propietaria;
+- estado activo;
+- alias;
+- legacy;
+- retiro;
+- formato completo;
+- versión del catálogo.
+
+`checkPermission` y las RPC directas retornan booleanos. En varias rutas, un error técnico y una denegación producen el mismo `false`. La forma actual no es suficiente como contrato público de autorización.
+
+Contrato mínimo requerido por las tareas futuras:
+
+```text
+PermissionRequest
+→ PermissionKey canónica
+→ AccessContext canónico
+→ Resource / scope
+→ AuthorizationDecision discriminada
+→ reason codes seguras
+→ version + hash + timestamp
+```
+
+Esta tarea registra la necesidad; no implementa la forma final.
+
+---
+
+#### 10. Cuatro modelos de contexto coexistentes
+
+| Modelo                  | Ubicación                    | Naturaleza             | Consumidores confirmados  | Estado                      |
+| ----------------------- | ---------------------------- | ---------------------- | ------------------------- | --------------------------- |
+| `OperationalSession`    | seis runtimes                | sesión local copiada   | guards y lógica local     | `LEGACY_ACTIVO`             |
+| `OperationalContextRow` | NEXO                         | fila RPC especializada | flujos operativos NEXO    | `LOCAL_ESPECIALIZADO`       |
+| `EffectiveContext`      | `@vento/os-context`          | paquete parcial        | ninguno fuera del paquete | `TRANSITORIO_SIN_ADOPCION`  |
+| `AccessContext@1.0.0`   | contrato canónico documental | objetivo autoritativo  | implementación futura     | `NORMATIVO_NO_IMPLEMENTADO` |
+
+##### 10.1. `OperationalSession`
+
+Las seis copias comparten un blob y una forma única, pero la forma no es una unión discriminada completa:
+
+- `mode` discrimina `employee` o `shared_device`;
+- `isSharedDevice` repite el mismo hecho;
+- todos los campos de dispositivo admiten `null` en ambos modos;
+- `role` y `navigationRole` son strings;
+- `allowedAppCodes` es `string[]`;
+- sede y área preferidas provienen del caller y no conservan fuente.
+
+La identidad byte a byte demuestra una base compartida candidata; no demuestra corrección semántica ni autoridad.
+
+##### 10.2. `OperationalContextRow`
+
+NEXO modela una fila de veintidós campos provenientes de `get_operational_context`. La respuesta se convierte mediante cast y admite:
+
+- booleanos nulos;
+- razones como `string[]`;
+- códigos de aplicación y rol como strings;
+- ids sin marca;
+- mutación local posterior por role override.
+
+La forma representa un contrato RPC de hecho, pero no existe schema runtime que valide presencia, tipos, versión o compatibilidad.
+
+##### 10.3. `EffectiveContext`
+
+El paquete compartido aporta una forma más explícita, pero mantiene:
+
+- `session_mode` abierto por incluir `string`;
+- `app_code`, roles y área como strings;
+- arrays de razones sin unión canónica;
+- `metadata` libre;
+- respuestas RPC casteadas.
+
+No se declara obsoleto; se clasifica como transición parcial que debe reconciliarse con `AccessContext@1.0.0`.
+
+##### 10.4. `AccessContext@1.0.0`
+
+El contrato canónico futuro debe ser:
+
+- inmutable;
+- versionado;
+- derivado de identidades canónicas;
+- discriminado por carril y actor;
+- explícito sobre sede, área, turno, check-in, dispositivo y simulación;
+- acompañado de razones y frescura;
+- validado en runtime.
+
+No existe todavía una implementación consumida que satisfaga esas condiciones.
+
+---
+
+#### 11. Roles, scopes y simulación
+
+Las seis configuraciones `role-override-config.ts` usan:
+
+```text
+ROLE_OPTIONS: Array<{ value: string; label: string }>
+PRIVILEGED_ROLE_OVERRIDES: Set<string>
+ROLE_OVERRIDE_COOKIE: string
+```
+
+Problemas contractuales confirmados:
+
+1. las listas de roles difieren por aplicación;
+2. FOGO y PULSO usan identificadores de cookie correspondientes a otra aplicación;
+3. la lista UI no valida el valor recibido en servidor;
+4. base role y operational role se representan con el mismo tipo primitivo;
+5. no existe tipo distinto para rol elegible, simulado, efectivo o de navegación;
+6. `scope_type`, `site_type` y `area_kind` son strings abiertas;
+7. NEXO usa una forma distinta de `RolePermissionRow` y añade acceso a sedes;
+8. los resultados de simulación vuelven a ser booleanos.
+
+Decisión documental:
+
+```text
+BaseRoleCode
+OperationalRoleCode
+NavigationRoleCode
+SimulationRoleCode
+ScopeType
+SiteType
+AreaKind
+```
+
+son identidades distintas y no deberán colapsarse en `string` por conveniencia. Su implementación corresponde a `SHELL-CON-004`, `SHELL-CON-005`, `SHELL-CON-006` y los adapters posteriores.
+
+---
+
+#### 12. Supabase, filas y RPC
+
+##### 12.1. Ausencia de `Database` generado
+
+En las siete fronteras runtime inspeccionadas:
+
+- no se localizó `database.types.ts` ni export equivalente;
+- no se localizaron invocaciones `createBrowserClient<Database>`;
+- no se localizaron invocaciones `createServerClient<Database>`;
+- `@vento/os-context` acepta `SupabaseClient` sin parametrización de esquema.
+
+Consecuencia:
+
+```text
+TABLAS, COLUMNAS, RELACIONES Y RPC
+→ NO SE DERIVAN DE UN ESQUEMA TYPESCRIPT GENERADO
+→ SE MODELAN MEDIANTE ROW TYPES LOCALES
+→ SE COMPLETAN CON CASTS
+```
+
+La ausencia no demuestra que las consultas sean incorrectas. Sí impide que TypeScript detecte de forma centralizada deriva de nombres, nulabilidad, relaciones o firmas RPC.
+
+##### 12.2. Row types manuales
+
+Se observaron tipos locales como:
+
+- `SiteRow`;
+- `EmployeeSiteRow`;
+- `AttendanceLogRow`;
+- `ShiftContextRow`;
+- `SharedOperationalDeviceRow`;
+- `RolePermissionRow`;
+- `SignatureRpcRow`;
+- `OperationalContextRow`.
+
+Estos tipos modelan proyecciones distintas y pueden ser válidos como DTOs locales. La brecha es que no existe una relación verificable con un `Database` generado ni un parser runtime.
+
+##### 12.3. RPC
+
+Las firmas de RPC se consumen mediante strings y objetos literales. Los resultados se transforman mediante:
+
+- `Boolean(data)`;
+- `String(...)`;
+- `as OperationalContextRow`;
+- `as SharedOperationalDeviceRow`;
+- `as SignatureRpcRow`;
+- comprobaciones parciales de propiedades.
+
+No se conserva de forma transversal:
+
+- versión de RPC;
+- schema de entrada;
+- schema de salida;
+- código de error estructurado;
+- versión o hash de contrato;
+- correlación de decisión.
+
+Esos elementos se resuelven en los adapters de `SHELL-AUTH-002` y en las tareas `AUTH-DB-032` a `AUTH-DB-035`.
+
+---
+
+#### 13. Contratos locales con diseño útil
+
+La auditoría no clasifica todo contrato local como defecto.
+
+##### 13.1. `SignatureResult`
+
+`shared-device-signature.ts` usa una unión discriminada local:
+
+```text
+ok=true, required=false
+ok=true, required=true
+ok=false
+```
+
+Esta forma permite estrechamiento correcto y diferencia firma no requerida, firma creada y fallo. Se conserva como evidencia de una decisión útil.
+
+Brechas restantes:
+
+- `appId`, `actionCode` y `targetTable` son strings;
+- el error es un mensaje humano, no un código;
+- metadata es abierta;
+- el tipo no es exportado desde un paquete canónico;
+- no transporta versión contractual.
+
+##### 13.2. `resolveRequestProtocol`
+
+NEXO retorna la unión literal `"http" | "https"`, lo que es más preciso que `string`. Sin embargo, el helper es local y su política no está vinculada a un contrato común de host, destino o ambiente.
+
+##### 13.3. `PageHeaderProps`
+
+Las dos variantes modelan correctamente props de presentación, pero sus diferencias de API deben reconciliarse antes de compartir el componente. No pertenecen al contrato de autorización.
+
+La regla resultante es:
+
+```text
+PRESERVAR DECISIONES LOCALES ÚTILES
+≠ ADOPTAR SU ARCHIVO COMO CONTRATO CANÓNICO SIN RECONCILIACIÓN
+```
+
+---
+
+#### 14. Errores, razones y estados
+
+Actualmente coexisten strings en:
+
+- query parameter `reason` de `/no-access`;
+- `blocked_reasons` de contexto;
+- status headers de middleware;
+- mensajes de firma de dispositivo;
+- mensajes de bloqueo operacional;
+- errores de configuración Supabase;
+- códigos de error de Auth;
+- estados de aplicación y acceso;
+- modos de gate operativo.
+
+Ejemplos observados:
+
+```text
+no_access
+no_permission
+role_override
+shared_device_app_not_allowed
+shared_device_no_permission
+out_of_shift
+checkin_required
+shift_site_mismatch
+checkin_site_mismatch
+unauthenticated
+refresh_token_not_found
+```
+
+No todos representan el mismo nivel:
+
+- algunos son causas de autorización;
+- otros son fallos técnicos;
+- otros son estados de sesión;
+- otros son mensajes de interfaz.
+
+`SHELL-CON-008` deberá separar al menos:
+
+```text
+AuthorizationReasonCode
+ContextBlockReasonCode
+AuthenticationFailureCode
+ContractValidationCode
+UserSafeMessageKey
+DiagnosticCode
+```
+
+Esta tarea no asigna todavía el vocabulario final.
+
+---
+
+#### 15. Versionado y validación runtime
+
+`AUTH-CAT-018` exige distinguir:
+
+- fuente raw;
+- datos validados por schema;
+- datos validados por contrato;
+- artefacto publicado;
+- versión publicada;
+- hash;
+- diagnóstico de fallo.
+
+El runtime actual no transporta esas capas. Las identidades locales se aceptan por compilación, cast o concatenación.
+
+| Frontera                | Validación compile-time  | Validación runtime       | Versión / hash |
+| ----------------------- | ------------------------ | ------------------------ | -------------- |
+| uniones locales de app  | parcial                  | no                       | no             |
+| `ROLE_OPTIONS`          | UI local                 | no en servidor           | no             |
+| `PermissionContext`     | estructural              | no                       | no             |
+| `OperationalSession`    | estructural              | no schema                | no             |
+| `OperationalContextRow` | cast                     | no                       | no             |
+| `EffectiveContext`      | estructural              | cast de RPC              | no             |
+| row types Supabase      | estructural local        | comprobaciones parciales | no             |
+| `SignatureResult`       | unión local              | comprobaciones parciales | no             |
+| catálogo futuro         | definido documentalmente | pendiente                | requerido      |
+
+La futura compatibilidad no podrá basarse solo en semver del paquete. Deberá validar versión de catálogo, schema, RPC y consumidores.
+
+---
+
+#### 16. Decisión por superficie
+
+| ID                | Superficie          | Estado contractual                                     | Decisión de esta tarea                  | Bloqueo o condición de salida                                           |
+| ----------------- | ------------------- | ------------------------------------------------------ | --------------------------------------- | ----------------------------------------------------------------------- |
+| `TYPE-SURFACE-01` | SHELL runtime       | contratos propios y evaluador local                    | `MANTENER_COMO_EVIDENCIA`               | reconciliar app codes, decisiones y RPC en `SHELL-AUD-010`              |
+| `TYPE-SURFACE-02` | VISO                | guard y role override extendidos; admin client         | `PRESERVAR_EXTENSIONES_EXPLICITAS`      | adapters y contratos deben conservar necesidades administrativas        |
+| `TYPE-SURFACE-03` | NEXO                | mayor cantidad de contratos operativos locales         | `PRESERVAR_DOMINIO_SEPARADO`            | separar contexto y excepciones de logística de la base común            |
+| `TYPE-SURFACE-04` | FOGO                | familia base con configuración local divergente        | `MIGRACION_REQUERIDA`                   | resolver roles, cookie y tipos compartidos sin asumir paridad           |
+| `TYPE-SURFACE-05` | ORIGO               | familia base y excepción pública local                 | `PRESERVAR_EXTENSION_LOCAL`             | contrato común no debe absorber reglas de PDF o compras                 |
+| `TYPE-SURFACE-06` | PULSO               | guard distinto, cliente alterno y adapter mínimo `rpc` | `PRESERVAR_NECESIDAD_DE_ADAPTER_MINIMO` | confirmar frontera y consumidores antes de migrar o retirar             |
+| `TYPE-SURFACE-07` | NUMERA              | familia base con tipos y textos locales                | `MIGRACION_REQUERIDA`                   | normalizar identidades y contratos sin perder densidad financiera local |
+| `TYPE-SURFACE-08` | plantilla AppShell  | tipos históricos copiados                              | `FUENTE_NO_AUTORITATIVA`                | clasificar en `SHELL-AUD-010`; no propagar automáticamente              |
+| `TYPE-SURFACE-09` | `@vento/os-context` | paquete parcial sin adopción runtime                   | `TRANSICION_A_RECONCILIAR`              | definir compatibilidad, destino y consumidores antes de cambiarlo       |
+
+**Conciliación:** 9 superficies esperadas, 9 decisiones materializadas, 0 omitidas y 0 identificadores duplicados.
+
+---
+
+#### 17. Handoffs contractuales obligatorios
+
+| Materia                                           | Destino                                         |
+| ------------------------------------------------- | ----------------------------------------------- |
+| raíz física de contratos compartidos              | `SHELL-CON-001`                                 |
+| códigos y metadata de aplicaciones                | `SHELL-CON-002`                                 |
+| permisos, alias, legacy y retirados               | `SHELL-CON-003`; `AUTH-CAT-018`; `AUTH-CAT-019` |
+| roles base y operativos                           | `SHELL-CON-004`; `SHELL-CON-005`                |
+| scopes territoriales y funcionales                | `SHELL-CON-006`                                 |
+| contexto, sesión, dispositivo y simulación        | `SHELL-CON-007`; `SHELL-CTX-001`                |
+| errores, razones y diagnósticos                   | `SHELL-CON-008`; `SHELL-CTX-005`                |
+| identificadores de pantalla y navegación          | `SHELL-CON-011`                                 |
+| mecanismo de distribución                         | `SHELL-PKG-001` a `SHELL-PKG-008`               |
+| adapters de servidor y cliente                    | `SHELL-AUTH-002`                                |
+| scope por solicitud y versión aplicada            | `SHELL-AUTH-003`                                |
+| gates contra strings, casts y consumidores legacy | `SHELL-AUTH-004`                                |
+| migración multi-repositorio                       | `SHELL-AUTH-005`                                |
+| RPC y contexto autoritativos                      | `AUTH-DB-032` a `AUTH-DB-035`                   |
+| disposición de cada familia                       | `SHELL-AUD-010`                                 |
+| retiro condicionado a consumidores                | `SHELL-AUD-011`                                 |
+
+No se crea ninguna tarea nueva. Todos los destinos existen en el roadmap canónico.
+
+---
+
+#### 18. Hallazgos y asignación exacta
+
+| ID                | Hallazgo                                                                   | Estado                      | Riesgo                                                | Destino exacto                                                      |
+| ----------------- | -------------------------------------------------------------------------- | --------------------------- | ----------------------------------------------------- | ------------------------------------------------------------------- |
+| `H-SHELL-009-001` | `@vento/contracts` no existe físicamente                                   | `CONFIRMADO`                | contratos normativos sin artefacto consumible         | `SHELL-CON-001`; `AUTH-CAT-017`                                     |
+| `H-SHELL-009-002` | `@vento/os-context` existe como paquete privado parcial                    | `CONFIRMADO`                | adopción prematura como contrato completo             | `SHELL-AUTH-001`; `SHELL-CTX-001`                                   |
+| `H-SHELL-009-003` | no se confirmaron consumidores runtime de `@vento/os-context`              | `SIN_CONSUMIDOR_CONFIRMADO` | paquete transitorio sin adopción o retiro inseguro    | `SHELL-AUTH-003`; `SHELL-AUTH-005`; `SHELL-AUD-011`                 |
+| `H-SHELL-009-004` | los códigos de aplicación permanecen en strings y uniones locales          | `CONFIRMADO`                | catálogo divergente y destinos inválidos              | `SHELL-CON-002`; `SHELL-AUTH-004`                                   |
+| `H-SHELL-009-005` | `AppSwitcherItem` se redeclara dieciocho veces en runtimes                 | `CONFIRMADO`                | deriva de campos, estados y marca                     | `SHELL-CON-002`; `SHELL-UI-002`; `SHELL-AUTH-005`                   |
+| `H-SHELL-009-006` | `VentoEntity` no equivale al conjunto canónico de aplicaciones             | `CONFIRMADO`                | tipos aparentemente cerrados con cobertura incorrecta | `SHELL-CON-002`; `SHELL-UI-002`                                     |
+| `H-SHELL-009-007` | colores y labels de marca están embebidos en logos y catálogos locales     | `CONFIRMADO`                | identidad visual divergente                           | `SHELL-CON-002`; `SHELL-UI-002`                                     |
+| `H-SHELL-009-008` | `IconName` no está versionado ni unificado                                 | `CONFIRMADO`                | iconos omitidos o degradados silenciosamente          | `SHELL-UI-001`; `SHELL-AUD-010`                                     |
+| `H-SHELL-009-009` | `NavigationRow` omite cuatro campos funcionales del esquema                | `CONFIRMADO`                | pérdida de identidad y comportamiento de navegación   | `SHELL-CON-011`; `SHELL-UI-002`; `SHELL-AUTH-005`                   |
+| `H-SHELL-009-010` | `NavItem` usa `href` como destino e identidad y permiso como string        | `CONFIRMADO`                | keys inestables y permiso no validado                 | `SHELL-CON-003`; `SHELL-CON-011`; `SHELL-UI-002`                    |
+| `H-SHELL-009-011` | `NavGroup` usa label visible como identidad                                | `CONFIRMADO`                | renombrar texto altera agrupación                     | `SHELL-CON-011`; `SHELL-UI-002`                                     |
+| `H-SHELL-009-012` | `OperatingGate` mezcla estado contextual, bloqueo, texto y navegación      | `CONFIRMADO`                | UI convertida en fuente de decisión                   | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-CTX-005`                   |
+| `H-SHELL-009-013` | las dos APIs `PageHeaderProps` no son equivalentes                         | `CONFIRMADO`                | centralización que pierde responsive o acento         | `SHELL-UI-001`; `SHELL-AUD-010`                                     |
+| `H-SHELL-009-014` | props y datos de `VentoLogo` permanecen locales                            | `CONFIRMADO`                | fallback y accesibilidad inconsistentes               | `SHELL-CON-002`; `SHELL-UI-002`                                     |
+| `H-SHELL-009-015` | `SiteOption` y `EmployeeSiteRow` tienen nulabilidad y relación variables   | `CONFIRMADO`                | supuestos distintos sobre sede y join                 | `SHELL-CON-007`; `SHELL-CTX-003`; `SHELL-AUTH-005`                  |
+| `H-SHELL-009-016` | existen tres contratos de entrada para `requireAppAccess`                  | `CONFIRMADO`                | flags incompatibles y acceso divergente               | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-AUD-010`                 |
+| `H-SHELL-009-017` | el resultado de guard es inferido y no exportado                           | `CONFIRMADO`                | consumidores acoplados a forma accidental             | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`                  |
+| `H-SHELL-009-018` | `PermissionKey` no existe como tipo runtime canónico                       | `CONFIRMADO`                | permisos huérfanos, alias o legacy aceptados          | `SHELL-CON-003`; `AUTH-CAT-018`; `SHELL-AUTH-004`                   |
+| `H-SHELL-009-019` | evaluación booleana fusiona error técnico y denegación                     | `CONFIRMADO`                | diagnóstico y auditoría incompletos                   | `SHELL-CON-008`; `SHELL-AUTH-002`; `AUTH-DB-034`                    |
+| `H-SHELL-009-020` | `OperationalSession` repite discriminante y no estrecha campos             | `CONFIRMADO`                | combinaciones inválidas representables                | `SHELL-CON-007`; `SHELL-CTX-001`; `SHELL-AUTH-005`                  |
+| `H-SHELL-009-021` | `OperationalContextRow` se castea sin schema runtime                       | `CONFIRMADO`                | deriva RPC no detectada                               | `SHELL-CON-007`; `SHELL-CON-008`; `AUTH-DB-033`                     |
+| `H-SHELL-009-022` | `EffectiveContext` mantiene strings abiertas y cast de RPC                 | `CONFIRMADO`                | paquete compartido con validación insuficiente        | `SHELL-CTX-001`; `SHELL-AUTH-002`                                   |
+| `H-SHELL-009-023` | `ContextSimulationInput` no representa autorización ni versión             | `CONFIRMADO`                | simulación ambigua o no atribuible                    | `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-CON-007`; `SHELL-AUTH-002` |
+| `H-SHELL-009-024` | cuatro modelos de contexto coexisten sin equivalencia demostrada           | `CONFIRMADO`                | decisiones distintas para la misma sesión             | `SHELL-CTX-001`; `SHELL-AUTH-001`; `AUTH-DB-033`; `SHELL-AUTH-005`  |
+| `H-SHELL-009-025` | roles UI y servidor no comparten validación canónica                       | `CONFIRMADO`                | rol desconocido o mezcla base/operativo               | `SHELL-CON-004`; `SHELL-CON-005`; `SHELL-AUTH-004`                  |
+| `H-SHELL-009-026` | scopes y metadatos territoriales son strings locales                       | `CONFIRMADO`                | comparación de alcance inconsistente                  | `SHELL-CON-006`; `AUTH-CAT-018`; `SHELL-AUTH-001`                   |
+| `H-SHELL-009-027` | no se localizó `Database` generado ni clientes parametrizados              | `CONFIRMADO_EN_EL_CORTE`    | deriva de esquema no detectada por TypeScript         | `SHELL-CON-001`; `SHELL-AUTH-002`; `SHELL-AUTH-004`                 |
+| `H-SHELL-009-028` | inputs y outputs RPC se declaran manualmente y se castean                  | `CONFIRMADO`                | incompatibilidad silenciosa de backend                | `SHELL-AUTH-002`; `AUTH-DB-032` a `AUTH-DB-035`                     |
+| `H-SHELL-009-029` | `SignatureResult` es una unión útil pero local y no versionada             | `CONFIRMADO`                | duplicación de un contrato valioso                    | `SHELL-CON-007`; `SHELL-CON-008`; `SHELL-AUTH-002`                  |
+| `H-SHELL-009-030` | SSO, retorno y protocolo no usan contrato común de destino                 | `CONFIRMADO`                | redirecciones incompatibles o inseguras               | `SHELL-CON-002`; `SHELL-CON-008`; `SHELL-AUTH-002`                  |
+| `H-SHELL-009-031` | razones, errores y estados se representan con strings de niveles mezclados | `CONFIRMADO`                | mensajes, telemetría y decisiones no correlacionables | `SHELL-CON-008`; `SHELL-CTX-005`; `SHELL-AUTH-004`                  |
+| `H-SHELL-009-032` | runtime no transporta versión, hash ni diagnóstico contractual             | `CONFIRMADO`                | paridad y reproducción de decisiones no demostrables  | `AUTH-CAT-017`; `AUTH-CAT-018`; `SHELL-AUTH-003`; `SHELL-PKG-004`   |
+
+**Conciliación:** 32 hallazgos esperados, 32 materializados, 0 duplicados y 0 pendientes sin propietario.
+
+---
+
+#### 19. Decisiones vinculantes de esta auditoría
+
+1. `@vento/contracts` permanece como raíz canónica futura; no se crea un paquete paralelo.
+2. `@vento/os-context` se clasifica como implementación parcial transitoria, no como sustituto de `@vento/contracts`.
+3. Ninguna unión local de aplicaciones, roles, permisos, scopes o razones se eleva a contrato canónico por cantidad de copias.
+4. `AppCode`, `PermissionKey`, roles, scopes y códigos de error deberán derivarse de fuentes canónicas, no mantenerse manualmente.
+5. Los contratos de navegación deberán conservar identidades estables del esquema y separar label, destino, pantalla y permiso.
+6. Los tres inputs de guard deberán conservarse como variantes hasta diseñar una política discriminada que no pierda semántica.
+7. El resultado de autorización deberá separar permitido, denegado, error técnico y bloqueo contextual.
+8. `OperationalSession`, `OperationalContextRow`, `EffectiveContext` y `AccessContext` no se tratarán como alias equivalentes.
+9. El contexto canónico deberá representar carril, actor, sede, área, turno, check-in, dispositivo, simulación, fuente, frescura y versión.
+10. Base role, operational role, navigation role y simulation role serán identidades distintas.
+11. El código cliente no podrá usar `ROLE_OPTIONS` como validación de servidor.
+12. Los scopes deberán usar vocabulario cerrado y validación runtime.
+13. Los clientes Supabase compartidos deberán admitir tipado `Database` y adapters mínimos según la necesidad del consumidor.
+14. Los DTOs locales podrán conservarse cuando representen proyecciones de dominio, pero deberán derivarse o validarse contra el esquema autoritativo.
+15. Las respuestas RPC no se aceptarán únicamente mediante cast.
+16. `SignatureResult` se conserva como evidencia de una unión discriminada útil.
+17. Los códigos de razón deberán separarse de mensajes humanos y diagnósticos técnicos.
+18. La versión y hash del contrato aplicado deberán estar disponibles para decisión, auditoría y compatibilidad.
+19. No se retira ningún tipo, helper o paquete durante esta tarea.
+20. No se implementa ningún contrato ni se modifica código.
+21. La clasificación física definitiva permanece reservada a `SHELL-AUD-010`.
+22. `SHELL-PKG-001` permanece reservado hasta completar `SHELL-AUD-011`.
+
+---
+
+#### 20. Carryovers obligatorios
+
+| Carryover                                                     | Estado                       | Propietario                       | Condición de salida                                            |
+| ------------------------------------------------------------- | ---------------------------- | --------------------------------- | -------------------------------------------------------------- |
+| elegir qué identidades se comparten, generan o quedan locales | `PENDIENTE_DE_CLASIFICACION` | `SHELL-AUD-010`                   | matriz de disposición por las 34 identidades                   |
+| confirmar consumidores antes de retirar contratos o paquetes  | `PENDIENTE_DE_EVIDENCIA`     | `SHELL-AUD-011`                   | inventario reproducible de imports, carga dinámica y framework |
+| crear `@vento/contracts`                                      | `NO_IMPLEMENTADO`            | `SHELL-CON-001`                   | paquete, exports, schemas y versionado disponibles             |
+| centralizar códigos y tipos de autorización                   | `NO_IMPLEMENTADO`            | `SHELL-CON-002` a `SHELL-CON-008` | contratos consumibles y validados                              |
+| reconciliar `@vento/os-context`                               | `PARCIAL_TRANSITORIO`        | `SHELL-AUTH-001`; `SHELL-CTX-001` | SDK único y compatibilidad definida                            |
+| implementar adapters y validación runtime                     | `NO_IMPLEMENTADO`            | `SHELL-AUTH-002`                  | adapters server/client con parsers y errores estructurados     |
+| bloquear nuevos strings y casts legacy                        | `NO_IMPLEMENTADO`            | `SHELL-AUTH-004`                  | lint y gates multi-repositorio activos                         |
+| migrar consumidores                                           | `NO_IMPLEMENTADO`            | `SHELL-AUTH-005`                  | adopción por repositorio con rollback y paridad                |
+| alinear RPC y contexto autoritativo                           | `NO_IMPLEMENTADO`            | `AUTH-DB-032` a `AUTH-DB-035`     | firmas, decisión, frescura y evidencia implementadas           |
+
+Ningún carryover queda expresado como “después” sin tarea, propietario y condición de salida.
+
+---
+
+#### 21. Trazabilidad con requisitos vigentes
+
+La auditoría consume sin modificar requisitos existentes:
+
+| Requisito        | Cobertura aplicada                                                  |
+| ---------------- | ------------------------------------------------------------------- |
+| `TREQ-AUTH-001`  | autorización mediante permisos, contexto y alcance canónicos        |
+| `TREQ-AUTH-002`  | todo permiso consumido debe existir en el catálogo vigente          |
+| `TREQ-AUTH-004`  | paridad entre evaluadores para el mismo actor y contexto            |
+| `TREQ-AUTH-008`  | separación entre capacidad administrativa y operativa               |
+| `TREQ-AUTH-009`  | sede y área efectivas deterministas                                 |
+| `TREQ-AUTH-011`  | actor y dispositivo compartido con autoridad intersectada           |
+| `TREQ-AUTH-012`  | simulación separada de autoridad real                               |
+| `TREQ-AUTH-013`  | servidor, RPC y RLS revalidan la acción exacta                      |
+| `TREQ-AUTH-014`  | invalidación por cambio de contexto o sesión                        |
+| `TREQ-AUTH-015`  | evidencia de decisión, razones y versión contractual                |
+| `TREQ-SHELL-002` | clasificación y paridad de responsabilidades compartidas            |
+| `TREQ-SHELL-003` | catálogo único de aplicaciones y metadatos                          |
+| `TREQ-SHELL-004` | retiro solo con evidencia completa de consumidores                  |
+| `TREQ-SHELL-006` | compatibilidad de paquetes y consumidores                           |
+| `TREQ-SHELL-007` | rollback independiente y compatibilidad entre versiones             |
+| `TREQ-SHELL-008` | integridad del registro de pruebas y declaración de impacto         |
+| `TREQ-SHELL-009` | evidencia reproducible por repositorio, commit y ambiente           |
+| `TREQ-SHELL-028` | catálogo único entre launcher, template y runtimes                  |
+| `TREQ-SHELL-029` | plantilla separada de runtime y con procedencia explícita           |
+| `TREQ-SHELL-030` | visibilidad derivada de permisos y contexto                         |
+| `TREQ-SHELL-031` | selección de sede y simulación no conceden autoridad                |
+| `TREQ-SHELL-032` | reconciliación de primitivas compartidas antes de adopción o retiro |
+| `TREQ-SHELL-034` | destinos absolutos gobernados por catálogo activo                   |
+| `TREQ-SHELL-035` | integridad de nombres, estados y codificación                       |
+
+Esta tarea aporta inventario, comparación y handoffs. No cambia identificador, regla, riesgo, modalidad, responsable, paquete, repositorio, estado, artefacto, resultado, evidencia ni relación de ninguna fila.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las brechas de catálogo, contratos compartidos, permisos, contexto, scopes, simulación, dispositivos, errores, compatibilidad, versionado, evidencia y retiro seguro ya están cubiertas por los requisitos vigentes enumerados en la sección anterior. La tarea no introduce comportamiento ejecutable ni descubre una regla verificable sin cobertura previa.
+
+Se generan:
+
+- **0** altas `TREQ-*`;
+- **0** modificaciones;
+- **0** diferimientos;
+- **0** descartes;
+- **0** obsolescencias.
+
+No corresponde generar una copia del registro `04A`.
+
+---
+
+#### 22. Criterios de aceptación
+
+`SHELL-AUD-009` se considera materialmente completa porque:
+
+- los siete runtimes, la plantilla y el paquete parcial están representados una sola vez;
+- las treinta y cuatro identidades contractuales tienen estado, brecha y destino;
+- las identidades canónicas se separan de tipos locales y estructuras inferidas;
+- `@vento/contracts` y `@vento/os-context` están diferenciados física y semánticamente;
+- se documenta la ausencia de consumidores runtime confirmados del paquete parcial;
+- se concilian las dieciocho redeclaraciones runtime de `AppSwitcherItem`;
+- se comparan aplicación, marca, iconos, navegación, gate y componentes estructurales;
+- se materializan las tres variantes de entrada del guard;
+- se identifica el resultado de guard como contrato inferido;
+- se compara el contrato de permisos, su entrada string y su salida booleana;
+- los cuatro modelos de contexto se mantienen separados;
+- `OperationalSession` se evalúa como copia idéntica sin asumir autoridad canónica;
+- `OperationalContextRow` y `EffectiveContext` se registran con sus casts y strings abiertas;
+- roles base, operativos, de navegación y simulación quedan separados conceptualmente;
+- scopes, site type y area kind tienen destino canónico;
+- se documenta la ausencia de `Database` generado y generics en clientes;
+- los row types y contratos RPC manuales tienen handoff exacto;
+- `SignatureResult` se preserva como contrato local útil;
+- errores, razones, mensajes y diagnósticos se clasifican por nivel;
+- versión, hash y diagnóstico contractual tienen destino explícito;
+- las nueve superficies tienen decisión materializada;
+- los treinta y dos hallazgos tienen propietario y condición de resolución;
+- no se crea ninguna tarea ni requisito nuevo;
+- se declaran cero cambios `TREQ-*`;
+- no se modifica código, tipos, contratos, paquetes, Supabase, CI, despliegues ni continuidad;
+- `SHELL-AUD-010` permanece como única continuidad inmediata reservada.
+
+---
+
+#### 23. Resultado y continuidad
+
+La cadena comparativa resultante es:
+
+```text
+identidad empresarial
+→ contrato normativo
+→ tipo físico o forma inferida
+→ consumidor runtime
+→ validación compile-time
+→ validación runtime
+→ versión y hash
+→ compatibilidad y error
+→ disposición en SHELL-AUD-010
+→ migración mediante contratos, SDK y paquetes
+```
+
+La única continuidad inmediata reservada es:
+
+```text
+SHELL-AUD-010 — Clasificar compartir / generar / mantener local
+```
+
+El handoff `SHELL-PKG-001` permanece reservado exclusivamente para después de completar `SHELL-AUD-011`.
+
+
 ### [ ] SHELL-AUD-010 — Clasificar compartir / generar / mantener local
 ### [ ] SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados
 Arquitectura de paquetes
