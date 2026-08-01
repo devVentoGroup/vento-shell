@@ -3138,7 +3138,864 @@ SHELL-AUD-007 — Comparar componentes UI base
 El handoff `SHELL-PKG-001` se mantiene reservado exclusivamente para después de completar `SHELL-AUD-011`.
 
 
-### [ ] SHELL-AUD-007 — Comparar componentes UI base
+### ✅ SHELL-AUD-007 — Comparar componentes UI base
+
+**Estado:** APROBADA
+**Bloque:** H — Fundación compartida
+**Tipo:** auditoría documental comparativa de primitivas UI, tokens, componentes estructurales y políticas globales de interacción
+**Entrada de continuidad:** `SHELL-AUD-006 — Comparar AppShell y navegación`
+**Continuidad inmediata reservada:** `SHELL-AUD-008 — Comparar clientes Supabase`
+**Handoff posterior al segmento `SHELL-AUD-001..011`:** `SHELL-PKG-001 — Elegir mecanismo de distribución`
+**Fecha de corte:** 2026-08-01
+**Cambios en código, CSS, configuración, paquetes, CI, despliegues o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado de esta tarea
+
+Esta tarea compara los componentes UI base actualmente distribuidos entre la plantilla de `vento-shell`, el runtime del Hub y las seis aplicaciones web consumidoras. La comparación separa identidad física, API ejecutable, contrato de clases CSS, tematización legítima y deriva funcional.
+
+| Métrica                                             |  Resultado |
+| --------------------------------------------------- | ---------: |
+| Superficies UI comparadas                           |      **8** |
+| Familias físicas comparadas                         |      **5** |
+| Ocurrencias físicas materializadas                  |     **30** |
+| Blobs únicos entre las cinco familias               |     **21** |
+| Copias de `ui.tsx`                                  |      **7** |
+| Contratos ejecutables de `ui.tsx`                   |      **1** |
+| Copias de `table.tsx`                               |      **7** |
+| Contratos ejecutables de `table.tsx`                |      **1** |
+| Variantes semánticas de `PageHeader`                |      **2** |
+| Copias runtime de `VentoLogo`                       |      **6** |
+| Algoritmos de fallback de `VentoLogo`               |      **2** |
+| Superficies `globals.css`                           |      **8** |
+| Políticas globales adicionales localizadas en PULSO |      **2** |
+| Decisiones por superficie materializadas            | **8 de 8** |
+| Hallazgos con destino exacto                        |     **24** |
+| Cambios `TREQ-*`                                    |      **0** |
+
+Resultado central:
+
+```text
+MISMO NOMBRE DE ARCHIVO
+≠ MISMO CONTRATO UI COMPLETO
+
+ui.tsx Y table.tsx
+→ VARIOS BLOBS
+→ UNA SOLA API EJECUTABLE
+→ DERIVA PRINCIPALMENTE DE FORMATO
+
+globals.css, PageHeader Y VentoLogo
+→ DIFERENCIAS SEMÁNTICAS REALES
+→ TOKENS, RESPONSIVIDAD, FALLBACKS Y POLÍTICAS LOCALES
+
+PLANTILLA OFICIAL
+→ NO REPRESENTA EL ESTADO ACTUAL DE LOS CONSUMIDORES
+```
+
+La paridad integral de la fundación UI queda **NO DEMOSTRADA**. Existe una base reutilizable reconocible, pero no una fuente versionada única ni pruebas de compatibilidad que distingan núcleo compartido, tema por aplicación y extensiones de dominio.
+
+---
+
+#### 2. Fuentes y corte reproducible
+
+| Fuente                                              | Uso                                                    |
+| --------------------------------------------------- | ------------------------------------------------------ |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`        | alcance, continuidad, evidencia y entrega              |
+| `docs/plan-canonico/modular/delivery-contract.json` | contrato físico del artefacto                          |
+| `docs/plan-canonico/modular/active-sequence.json`   | segmento activo y handoff posterior                    |
+| `00_CABECERA_Y_ESTADO.md`                           | estado vigente de la tarea                             |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`        | propietario, dependencias y marcador actual            |
+| `SHELL-AUD-001`                                     | inventario de familias, ocurrencias y hashes           |
+| `SHELL-AUD-006`                                     | AppShell, navegación, launcher y extensiones delegadas |
+| `07_COMPONENTES_WEB_COMPARTIDOS.md`                 | tareas propietarias de la futura biblioteca UI         |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`         | versionado, CI, pinning y pruebas contractuales        |
+| `docs/APP-SHELL-ESTANDARES.md`                      | estándar histórico de copia y personalización          |
+| plantilla `templates/app-shell-standard`            | fuente física histórica                                |
+| código runtime de las siete superficies web         | comportamiento actual                                  |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`  | cobertura `TREQ-*` vigente                             |
+
+Corte documental canónico vigente: `d21b7221290fa043d1000349af9101d000c0735e`.
+
+El runtime de SHELL se inspeccionó en `73c429adf42124b8529d18cebf18c607ab61638c`. El commit documental posterior `d21b7221290fa043d1000349af9101d000c0735e` modifica únicamente fuentes documentales y artefactos derivados; no cambia las familias UI runtime comparadas.
+
+Commits runtime inspeccionados:
+
+| Superficie | Repositorio                  | Commit                                     |
+| ---------- | ---------------------------- | ------------------------------------------ |
+| SHELL      | `devVentoGroup/vento-shell`  | `73c429adf42124b8529d18cebf18c607ab61638c` |
+| VISO       | `devVentoGroup/vento-viso`   | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |
+| NEXO       | `devVentoGroup/vento-nexo`   | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |
+| FOGO       | `devVentoGroup/vento-fogo`   | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |
+| ORIGO      | `devVentoGroup/vento-origo`  | `b7a8303fa078ef087f522b6c99059ababfc27472` |
+| PULSO      | `devVentoGroup/vento-pulso`  | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| NUMERA     | `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |
+
+La plantilla se contabiliza como fuente adicional dentro de `vento-shell`, no como runtime independiente.
+
+---
+
+#### 3. Continuidad interpretada
+
+La secuencia vigente define:
+
+```text
+SHELL-AUD-001..011
+→ segmento activo completo
+
+SHELL-PKG-001
+→ handoff posterior al cierre de SHELL-AUD-011
+```
+
+Por tanto:
+
+```text
+SHELL-AUD-006 aprobada
+→ SHELL-AUD-007 actual
+→ SHELL-AUD-008 inmediata reservada
+→ ...
+→ SHELL-AUD-011
+→ SHELL-PKG-001
+```
+
+No existe salto de continuidad. Esta tarea no modifica `active-sequence.json`.
+
+---
+
+#### 4. Alcance exacto
+
+Se comparan:
+
+1. `src/app/globals.css` del runtime de SHELL y de las seis aplicaciones;
+2. `templates/app-shell-standard/src/app/globals.css`;
+3. `src/components/vento/standard/ui.tsx` y su copia de plantilla;
+4. `src/components/vento/standard/table.tsx` y su copia de plantilla;
+5. `src/components/vento/standard/page-header.tsx` donde existe;
+6. `src/components/vento/standard/vento-logo.tsx` donde existe;
+7. tokens, clases públicas, variantes, props, defaults y comportamiento responsive;
+8. estados visuales y políticas de interacción incorporadas globalmente;
+9. compatibilidad entre componente TypeScript y contrato CSS;
+10. diferencias legítimas de tema frente a diferencias que alteran la API o el comportamiento;
+11. adopción observable y condición de migración o retiro.
+
+Se excluyen:
+
+| Materia                                                   | Tarea propietaria                       |
+| --------------------------------------------------------- | --------------------------------------- |
+| comparación de clientes Supabase                          | `SHELL-AUD-008`                         |
+| tipos y contratos públicos definitivos                    | `SHELL-AUD-009`                         |
+| clasificación final compartir / generar / mantener local  | `SHELL-AUD-010`                         |
+| retiro de componentes o estilos sin consumidor confirmado | `SHELL-AUD-011`                         |
+| implementación de la biblioteca UI                        | `SHELL-UI-001`                          |
+| implementación del AppShell y launcher compartidos        | `SHELL-UI-002`; `SHELL-UI-003`          |
+| mecanismo físico de distribución                          | `SHELL-PKG-001` a `SHELL-PKG-008`       |
+| migración coordinada de consumidores                      | `SHELL-MIG-001` a `SHELL-MIG-008`       |
+| rediseño funcional de pantallas de negocio                | bloques propietarios de cada aplicación |
+
+Esta auditoría no elige todavía un framework, paquete, sistema de variantes ni estrategia de CSS final.
+
+---
+
+#### 5. Taxonomía de comparación
+
+| Estado                          | Criterio                                                               |
+| ------------------------------- | ---------------------------------------------------------------------- |
+| `PARIDAD_BYTE`                  | mismo blob Git                                                         |
+| `PARIDAD_SEMANTICA`             | misma API, defaults, clases y comportamiento observable                |
+| `DERIVA_DE_FORMATO`             | cambia BOM, fin de línea, espaciado o formato sin alterar ejecución    |
+| `TEMA_LOCAL_VALIDO`             | cambia valor visual por aplicación sin alterar el contrato público     |
+| `EXTENSION_LOCAL_VALIDA`        | comportamiento propio de dominio, separado y explícito                 |
+| `DIVERGENCIA_DE_API`            | cambia props, variantes, defaults o superficie pública                 |
+| `DIVERGENCIA_DE_COMPORTAMIENTO` | misma forma aparente, distinto efecto observable                       |
+| `ACOPLAMIENTO_CSS`              | el componente depende de clases o tokens no declarados como contrato   |
+| `MEZCLA_BASE_DOMINIO`           | un archivo común contiene estilos de negocio propios de una aplicación |
+| `FUENTE_HISTORICA_DESFASADA`    | plantilla o estándar que ya no representa a los runtimes               |
+| `CONTRATO_NO_DEMOSTRADO`        | no existe prueba o manifiesto suficiente para afirmar compatibilidad   |
+| `PENDIENTE_DE_EVIDENCIA`        | requiere inventario de consumidores o ejecución posterior              |
+
+Un hash distinto no se tratará automáticamente como diferencia funcional. Del mismo modo, una API TypeScript idéntica no demostrará compatibilidad si las clases CSS asociadas producen semánticas incompatibles.
+
+---
+
+#### 6. Inventario de familias
+
+| ID           | Familia                                         | Ocurrencias | Blobs | Clasificación de esta tarea                   | Destino principal                                |
+| ------------ | ----------------------------------------------- | ----------: | ----: | --------------------------------------------- | ------------------------------------------------ |
+| `UI-FAM-001` | `src/app/globals.css`                           |       **8** | **8** | `DIVERGENTE_CON_NUCLEO_RECONOCIBLE`           | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-008` |
+| `UI-FAM-002` | `src/components/vento/standard/ui.tsx`          |       **7** | **3** | `PARIDAD_SEMANTICA_CON_DERIVA_DE_FORMATO`     | `SHELL-AUD-010`; `SHELL-UI-001`                  |
+| `UI-FAM-003` | `src/components/vento/standard/table.tsx`       |       **7** | **3** | `PARIDAD_SEMANTICA_CON_DERIVA_DE_FORMATO`     | `SHELL-AUD-010`; `SHELL-UI-001`                  |
+| `UI-FAM-004` | `src/components/vento/standard/page-header.tsx` |       **2** | **2** | `DISTRIBUCION_PARCIAL_CON_DIVERGENCIA_DE_API` | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-UI-001` |
+| `UI-FAM-005` | `src/components/vento/standard/vento-logo.tsx`  |       **6** | **5** | `DISTRIBUCION_PARCIAL_CON_DERIVA_SEMANTICA`   | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-UI-002` |
+
+**Conciliación:** 5 familias esperadas, 5 materializadas, 30 ocurrencias, 21 blobs únicos, 0 familias omitidas y 0 identificadores duplicados.
+
+---
+
+#### 7. Matriz física de hashes
+
+##### 7.1. `globals.css`
+
+| Fuente        | Blob SHA                                   |
+| ------------- | ------------------------------------------ |
+| plantilla     | `a1bf4bea91e6a71188aa8c6f4c3dea1d838a372a` |
+| SHELL runtime | `ab981cbab29fba2bec954aa505a70235cabb3418` |
+| VISO          | `c8c2d74f60fe8f7e7ba8870944d0ab2959980a4c` |
+| NEXO          | `f920142e5a23b2dc88cd3b0c4658481bc0bcef6e` |
+| FOGO          | `017160673ca45cdff061bfb0aeff41b46847c32c` |
+| ORIGO         | `dbd3f044bd42124b5a2364b737d56f2a790476da` |
+| PULSO         | `27562fde94c9b41585f2312a4ca49b80dc27ccc1` |
+| NUMERA        | `83d60962927a9e7b097c8f1075a7467850378f5b` |
+
+##### 7.2. `ui.tsx`
+
+| Fuente                               | Blob SHA                                   | Grupo                 |
+| ------------------------------------ | ------------------------------------------ | --------------------- |
+| plantilla, NEXO, FOGO, ORIGO y PULSO | `073c2cf37cb3a12a68e9bfd844ab1e7a78e0be49` | `UI-BASE-A`           |
+| VISO                                 | `bf38c12d65dd7bcdad3750da6d75bda4392f329a` | `UI-BASE-A_FORMATO_2` |
+| NUMERA                               | `4e66b1768075114ac23c05c941b83e0ba78f6887` | `UI-BASE-A_FORMATO_3` |
+
+##### 7.3. `table.tsx`
+
+| Fuente                               | Blob SHA                                   | Grupo                    |
+| ------------------------------------ | ------------------------------------------ | ------------------------ |
+| plantilla, NEXO, FOGO, ORIGO y PULSO | `0754a74221ee5441e0c2624c177865354586fd4b` | `TABLE-BASE-A`           |
+| VISO                                 | `e9c5286da9d73c828ef9931dca730afd1b43fc57` | `TABLE-BASE-A_FORMATO_2` |
+| NUMERA                               | `3cdf3dd9e1df9c364f4e8b549a660038d6b4a15e` | `TABLE-BASE-A_FORMATO_3` |
+
+##### 7.4. `page-header.tsx`
+
+| Fuente | Blob SHA                                   | Variante                 |
+| ------ | ------------------------------------------ | ------------------------ |
+| VISO   | `d171b312fab0794470ff18965b88e6452695fb19` | `PAGE-HEADER-ACCENT`     |
+| NEXO   | `f7af0dc287f458ff26a91711442bedfb823a6542` | `PAGE-HEADER-RESPONSIVE` |
+
+##### 7.5. `vento-logo.tsx`
+
+| Fuente       | Blob SHA                                   | Familia de fallback |
+| ------------ | ------------------------------------------ | ------------------- |
+| VISO         | `9c05cd4f6467f1f956a8d57f23a68a0a46df012e` | `NEXO_CENTRIC`      |
+| NEXO y PULSO | `a9f31cee67e90bf5f494708aba7d1a0b9339b18f` | `NEXO_CENTRIC`      |
+| FOGO         | `eb36c210a098db84d80856e2def237fa0c625074` | `ORIGO_CENTRIC`     |
+| ORIGO        | `1d041cfa3678bc5372bbed4b60f0bf9a2171334c` | `ORIGO_CENTRIC`     |
+| NUMERA       | `83e22703ad5a28a5498a1232aaf6bafe3eaaf12c` | `ORIGO_CENTRIC`     |
+
+La matriz preserva identidad física y no confunde los cinco blobs de `VentoLogo` con cinco contratos necesariamente diferentes.
+
+---
+
+#### 8. Contrato ejecutable de `ui.tsx`
+
+Las siete ocurrencias exponen la misma API observable:
+
+| Componente | Contrato actual                                              |
+| ---------- | ------------------------------------------------------------ |
+| `Button`   | botón nativo con `variant`, `size`, `className` y props HTML |
+| `Card`     | contenedor `div` con clase base y `className`                |
+| `Input`    | `input` nativo con clase base y props HTML                   |
+| `Select`   | `select` nativo con clase base y props HTML                  |
+| `Badge`    | `span` con clase base y props HTML                           |
+
+Variantes de `Button`:
+
+```text
+primary
+secondary
+ghost
+brand
+```
+
+Tamaños:
+
+```text
+sm
+md
+lg
+```
+
+Defaults confirmados:
+
+```text
+variant = primary
+size = md
+```
+
+Conclusiones:
+
+1. los tres blobs implementan la misma composición de clases;
+2. las diferencias observadas son de formato, fin de línea o serialización;
+3. el archivo puede clasificarse como un único núcleo semántico;
+4. la compatibilidad visual depende de que cada `globals.css` defina de forma compatible `ui-btn`, sus variantes, tamaños y las demás clases primitivas;
+5. la API no expone actualmente estado de carga, iconos, ancho completo, intención destructiva, enlace polimórfico, descripción accesible ni composición mediante `asChild`;
+6. la ausencia de esas capacidades no es un defecto por sí sola, pero impide presentar el archivo actual como biblioteca UI completa.
+
+Decisión de esta tarea:
+
+```text
+ui.tsx
+→ NÚCLEO COMPARTIBLE CANDIDATO
+→ CONTRATO CSS TODAVÍA IMPLÍCITO
+→ NO CENTRALIZAR SIN PRUEBA DE TOKENS Y CLASES
+```
+
+---
+
+#### 9. Contrato ejecutable de `table.tsx`
+
+Las siete ocurrencias exponen la misma API observable:
+
+```text
+Table
+Thead
+Tbody
+Tr
+Th
+Td
+```
+
+Cada exportación es un wrapper del elemento HTML equivalente y agrega una clase `ui-table*`.
+
+| Dimensión                   | Estado actual                          |
+| --------------------------- | -------------------------------------- |
+| semántica HTML básica       | presente                               |
+| forwarding de props nativas | presente                               |
+| caption                     | no modelado como componente propio     |
+| ordenamiento                | no modelado                            |
+| selección de fila           | no modelada                            |
+| loading                     | no modelado                            |
+| error                       | no modelado                            |
+| estado vacío                | no modelado                            |
+| paginación                  | no modelada                            |
+| densidad                    | depende de CSS local                   |
+| responsive / overflow       | depende del consumidor y CSS           |
+| sticky header               | no forma parte del contrato TypeScript |
+| virtualización              | no aplica al wrapper actual            |
+
+Conclusiones:
+
+1. los tres blobs constituyen una sola API semántica;
+2. el núcleo actual es un set de wrappers, no un sistema de tabla de datos;
+3. la futura biblioteca deberá conservar la semántica HTML y decidir expresamente si las capacidades superiores permanecen en componentes separados;
+4. no se debe inflar este wrapper con lógica de dominio ni asumir que todas las tablas requieren el mismo modelo de interacción.
+
+---
+
+#### 10. Comparación de `PageHeader`
+
+`PageHeader` existe únicamente en VISO y NEXO.
+
+| Dimensión               | VISO                     | NEXO                              | Resultado            |
+| ----------------------- | ------------------------ | --------------------------------- | -------------------- |
+| `title`                 | requerido                | requerido                         | equivalente          |
+| `subtitle`              | opcional                 | opcional                          | equivalente          |
+| `actions`               | opcional                 | opcional                          | equivalente          |
+| `accent`                | opcional, default `true` | inexistente                       | divergente           |
+| título acentuado        | `ui-h1-accent`           | no                                | divergente           |
+| mobile layout           | fila principal           | columna y salto a fila desde `sm` | divergente           |
+| contenedor de acciones  | fila simple              | ancho completo y wrap en móvil    | divergente           |
+| presencia en plantilla  | no                       | no                                | ausencia común       |
+| presencia en otras apps | no localizada            | no localizada                     | distribución parcial |
+
+Interpretación:
+
+- VISO añade una decisión visual de énfasis mediante API pública.
+- NEXO prioriza robustez responsive para acciones múltiples.
+- Ninguna variante contiene lógica empresarial y ambas son candidatas a reconciliación.
+- La API final deberá combinar las capacidades válidas sin elegir una copia únicamente por antigüedad o cantidad de consumidores.
+
+Decisión:
+
+```text
+PageHeader
+→ COMPONENTE BASE CANDIDATO
+→ API PÚBLICA A RECONCILIAR
+→ RESPONSIVIDAD NEXO Y ÉNFASIS VISO DEBEN SER DECISIONES EXPLÍCITAS
+```
+
+---
+
+#### 11. Comparación de `VentoLogo`
+
+Las seis aplicaciones runtime contienen `VentoLogo`; la plantilla no lo contiene.
+
+Contrato común observado:
+
+| Prop       | Uso                                 |
+| ---------- | ----------------------------------- |
+| `entity`   | selecciona marca, color y etiqueta  |
+| `title`    | texto principal opcional            |
+| `subtitle` | texto secundario opcional           |
+| `showText` | permite representación solo gráfica |
+
+Elementos duplicados localmente:
+
+- unión de códigos de aplicación;
+- mapa de labels por aplicación;
+- mapa de color de marca;
+- SVG y nodos animados;
+- selección de fallback textual;
+- clases `ui-vento-logo-*`.
+
+Existen dos algoritmos de fallback:
+
+```text
+FAMILIA NEXO_CENTRIC
+si entity = nexo
+→ PRODUCT_LABELS.nexo
+si no
+→ VENTO_GROUP_LABEL
+```
+
+```text
+FAMILIA ORIGO_CENTRIC
+si entity = origo
+→ PRODUCT_LABELS.origo
+si no
+→ VENTO_GROUP_LABEL
+```
+
+Consecuencias:
+
+1. el fallback depende accidentalmente de la aplicación desde la que fue copiado;
+2. FOGO y NUMERA pueden mostrar el label general cuando el caller omite `subtitle`, aunque la entidad sea propia;
+3. VISO y PULSO mantienen la variante centrada en NEXO;
+4. ORIGO conserva el único caso donde la variante `ORIGO_CENTRIC` coincide naturalmente con su aplicación;
+5. los códigos, labels y colores no proceden de un contrato compartido;
+6. `showText=false` no materializa dentro del componente un contrato explícito común de nombre accesible o decoración silenciosa;
+7. el movimiento de nodos y líneas depende de reglas CSS locales.
+
+Decisión:
+
+```text
+VentoLogo
+→ COMPONENTE ESTRUCTURAL COMPARTIBLE
+→ DATOS DE MARCA DEBEN PROVENIR DE CONTRATO CENTRAL
+→ FALLBACKS APP-CENTRIC NO SON REGLA CANÓNICA
+→ ACCESIBILIDAD Y REDUCCIÓN DE MOVIMIENTO DEBEN SER PARTE DEL CONTRATO
+```
+
+---
+
+#### 12. Arquitectura actual de `globals.css`
+
+Las ocho superficies físicas no forman una sola familia semántica.
+
+| Superficie    | Rol actual                                                  | Clasificación                     |
+| ------------- | ----------------------------------------------------------- | --------------------------------- |
+| plantilla     | base histórica con directivas y tokens mínimos              | `FUENTE_HISTORICA_DESFASADA`      |
+| SHELL runtime | estilos propios del Hub                                     | `SUPERFICIE_PROPIETARIA_DISTINTA` |
+| VISO          | contrato UI amplio y extensiones administrativas            | `BASE_MAS_EXTENSION_LOCAL`        |
+| NEXO          | contrato UI amplio y extensiones operativas                 | `BASE_MAS_EXTENSION_LOCAL`        |
+| FOGO          | base compartida con tema de producción                      | `BASE_TEMATIZADA`                 |
+| ORIGO         | base compartida con tema de compras                         | `BASE_TEMATIZADA`                 |
+| PULSO         | base compartida con tema POS y políticas globales en layout | `BASE_TEMATIZADA_MAS_POLITICAS`   |
+| NUMERA        | base compartida con densidad y semántica financiera         | `BASE_MAS_EXTENSION_LOCAL`        |
+
+Diferencias de generación:
+
+- la plantilla conserva directivas históricas `@tailwind base`, `@tailwind components` y `@tailwind utilities`;
+- los runtimes consumidores usan la generación actual basada en `@import "tailwindcss"`;
+- el runtime de SHELL utiliza su propia composición de Hub y no expone la misma colección de primitivas `ui-*`;
+- los consumidores agregaron tokens, sombras, densidad, launcher, sidebar, logo y estilos de dominio que la plantilla no representa.
+
+La plantilla no puede considerarse fuente normativa del CSS actual sin una reconciliación explícita.
+
+---
+
+#### 13. Núcleo reconocible de tokens y clases
+
+Los seis consumidores runtime comparten una convención nominal suficiente para identificar un núcleo candidato:
+
+##### 13.1. Categorías de tokens
+
+| Categoría  | Ejemplos de identidad compartida                   |
+| ---------- | -------------------------------------------------- |
+| superficie | fondo, superficie principal, superficie secundaria |
+| texto      | texto principal, muted, contraste                  |
+| borde      | borde base y énfasis                               |
+| marca      | primary, brand, accent y variantes suaves          |
+| geometría  | radios de card, control y badge                    |
+| elevación  | sombras base y elevadas                            |
+| densidad   | alturas y paddings de controles                    |
+| layout     | anchos y comportamiento de sidebar/header          |
+
+##### 13.2. Clases primitivas compartidas
+
+```text
+ui-btn
+ui-btn--primary
+ui-btn--secondary
+ui-btn--ghost
+ui-btn--brand
+ui-btn--sm
+ui-btn--md
+ui-btn--lg
+ui-card
+ui-input
+ui-select
+ui-badge
+ui-empty
+ui-table
+ui-table-head
+ui-table-body
+ui-table-row
+ui-table-th
+ui-table-td
+```
+
+##### 13.3. Clases estructurales recurrentes
+
+```text
+ui-sidebar
+ui-sidebar-item
+ui-header
+ui-app-launcher
+ui-app-glyph
+ui-app-status
+ui-vento-logo
+```
+
+La coincidencia nominal permite extraer un contrato. No prueba todavía:
+
+- que todas las variables existan en todas las aplicaciones;
+- que sus valores respeten los mismos estados y contrastes;
+- que cada clase produzca la misma geometría;
+- que una actualización de clase sea compatible con todos los consumidores;
+- que estilos de dominio no dependan de detalles internos de la base.
+
+---
+
+#### 14. Tema legítimo frente a deriva funcional
+
+| Cambio                                                           | Clasificación                   |
+| ---------------------------------------------------------------- | ------------------------------- |
+| color de marca por aplicación                                    | `TEMA_LOCAL_VALIDO`             |
+| tipografía autorizada por producto                               | decisión contractual pendiente  |
+| densidad financiera de NUMERA                                    | `EXTENSION_LOCAL_CANDIDATA`     |
+| layouts táctiles u operativos de NEXO/PULSO                      | `EXTENSION_LOCAL_CANDIDATA`     |
+| textos, labels o app codes copiados desde otra aplicación        | `DERIVA_DE_CONFIGURACION`       |
+| ausencia de token requerido por un componente base               | `INCOMPATIBILIDAD_CONTRACTUAL`  |
+| redefinir una clase base con distinta semántica de interacción   | `DIVERGENCIA_DE_COMPORTAMIENTO` |
+| estilos de una pantalla empresarial dentro del núcleo compartido | `MEZCLA_BASE_DOMINIO`           |
+| política global de submit fuera del contrato del componente      | `POLITICA_LOCAL_NO_DECLARADA`   |
+
+Regla resultante:
+
+```text
+EL TEMA PUEDE CAMBIAR VALORES
+NO PUEDE CAMBIAR SILENCIOSAMENTE EL SIGNIFICADO DE LA API
+```
+
+---
+
+#### 15. Mezcla entre base y dominio
+
+Los `globals.css` más evolucionados contienen, junto al núcleo UI, clases propias de rutas o flujos empresariales.
+
+Ejemplos de categorías localizadas:
+
+- remisiones, scanner, conteo, ubicaciones y operación en NEXO;
+- paneles, estados y superficies administrativas en VISO;
+- densidad, cifras y presentación financiera en NUMERA;
+- launcher, sidebar y chrome dentro del mismo archivo que primitivas;
+- ajustes visuales particulares de páginas o formularios en aplicaciones consumidoras.
+
+Esta mezcla produce tres problemas de distribución:
+
+1. copiar todo el archivo arrastra estilos que no pertenecen a otras aplicaciones;
+2. extraer solo los componentes TypeScript rompe su contrato CSS implícito;
+3. actualizar una clase base puede alterar selectores de dominio sin una prueba contractual.
+
+La solución posterior deberá separar, como mínimo:
+
+```text
+TOKENS BASE
++
+PRIMITIVAS
++
+ESTRUCTURA APP SHELL
++
+TEMA DE APLICACIÓN
++
+EXTENSIONES DE DOMINIO LOCALES
+```
+
+Esta tarea no decide si esa separación se implementará mediante paquetes CSS, capas, módulos, presets o generación.
+
+---
+
+#### 16. Políticas globales adicionales de PULSO
+
+El layout de PULSO contiene dos scripts globales de interacción que no aparecen en `ui.tsx`.
+
+##### 16.1. Protección de rueda en inputs numéricos
+
+Flujo observado:
+
+```text
+wheel sobre input[type=number] enfocado
+→ blur del input
+→ preventDefault
+```
+
+Propósito observable: impedir cambios accidentales por rueda. Su alcance es todo el documento y no está expresado como prop, hook ni componente.
+
+##### 16.2. Protección de doble submit
+
+Flujo observado:
+
+```text
+submit válido
+→ marcar form como submitting
+→ deshabilitar botones submit
+→ establecer aria-disabled
+→ cambiar texto a Guardando... o pendingLabel
+→ restaurar durante pageshow
+```
+
+Propósito observable: impedir envíos repetidos y ofrecer feedback. Su alcance también es global y utiliza convenciones `data-*` no declaradas por la biblioteca base.
+
+Conclusiones:
+
+1. ambas reglas resuelven necesidades transversales plausibles;
+2. no se confirmó paridad en las demás aplicaciones;
+3. no deben elevarse a estándar únicamente porque existen en PULSO;
+4. tampoco deben eliminarse antes de identificar consumidores y casos de uso;
+5. su contrato, opt-out, accesibilidad, reanudación y convivencia con Server Actions deberán definirse en `SHELL-UI-001` y probarse mediante `SHELL-PKG-008`.
+
+---
+
+#### 17. Accesibilidad, foco y movimiento
+
+| Dimensión                            | Estado observado                          | Resultado                                       |
+| ------------------------------------ | ----------------------------------------- | ----------------------------------------------- |
+| elementos HTML nativos en primitivas | presente                                  | base favorable                                  |
+| forwarding de atributos ARIA nativos | presente mediante props                   | favorable                                       |
+| foco                                 | depende de clases CSS locales             | paridad no demostrada                           |
+| contraste                            | depende del tema por aplicación           | paridad no demostrada                           |
+| `PageHeader` responsive              | explícito solo en variante NEXO           | distribución parcial                            |
+| nombre accesible de logo icon-only   | no contractualizado dentro del componente | pendiente de decisión                           |
+| animaciones de logo                  | presentes                                 | comportamiento compartido físicamente duplicado |
+| `prefers-reduced-motion`             | localizado en VISO y NEXO                 | cobertura parcial                               |
+| formularios en estado pendiente      | política global solo confirmada en PULSO  | cobertura parcial                               |
+| errores y loading                    | no forman parte del núcleo actual         | delegados a consumidores                        |
+
+No se declara una certificación de accesibilidad ni un incumplimiento integral. El estado correcto es `CONTRATO_NO_DEMOSTRADO` porque la misma API puede recibir foco, contraste y movimiento diferentes según el CSS local.
+
+---
+
+#### 18. Plantilla frente a runtimes
+
+| Dimensión                         | Plantilla                      | Runtimes actuales                  |
+| --------------------------------- | ------------------------------ | ---------------------------------- |
+| Tailwind                          | directivas históricas          | importación actual en consumidores |
+| `ui.tsx`                          | núcleo base                    | mismo núcleo semántico             |
+| `table.tsx`                       | núcleo base                    | mismo núcleo semántico             |
+| `PageHeader`                      | ausente                        | VISO y NEXO                        |
+| `VentoLogo`                       | ausente                        | seis aplicaciones                  |
+| tokens                            | mínimos                        | ampliados y tematizados            |
+| launcher/sidebar/logo             | versión histórica o incompleta | contratos runtime más amplios      |
+| reducción de movimiento           | no demostrada                  | parcial                            |
+| políticas globales de formularios | ausentes                       | PULSO local                        |
+| estilos de dominio                | mínimos                        | extensos en varias apps            |
+
+Decisión:
+
+```text
+LA PLANTILLA ES EVIDENCIA DE ORIGEN
+NO ES LA FUENTE DE VERDAD ACTUAL
+```
+
+No deberá volver a copiarse como estándar vigente hasta que `SHELL-AUD-010`, `SHELL-PKG-001..008` y `SHELL-MIG-001..008` definan fuente, versión, compatibilidad y adopción.
+
+---
+
+#### 19. Decisión por superficie
+
+| ID            | Superficie    | Estado actual                                                   | Decisión de esta tarea                                                                                                   | Destino                                           |
+| ------------- | ------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------- |
+| `UI-SURF-001` | SHELL runtime | Hub con contrato visual propio                                  | mantener separado como superficie propietaria; comparar integración futura, no usar como fuente automática de primitivas | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-UI-002`   |
+| `UI-SURF-002` | plantilla     | origen histórico desfasado                                      | congelar como evidencia hasta decidir reemplazo o generación; no propagar nuevas copias                                  | `SHELL-AUD-010`; `SHELL-PKG-001`; `SHELL-MIG-004` |
+| `UI-SURF-003` | VISO          | núcleo común más extensiones administrativas                    | conservar extensiones válidas y separar dominio de base durante migración                                                | `SHELL-UI-001`; `SHELL-AUD-010`; `SHELL-MIG-005`  |
+| `UI-SURF-004` | NEXO          | núcleo común más extensiones operativas y responsive            | conservar capacidades operativas; no elevar clases de dominio al núcleo                                                  | `SHELL-UI-001`; `SHELL-AUD-010`; `SHELL-MIG-005`  |
+| `UI-SURF-005` | FOGO          | núcleo común tematizado y logo con fallback copiado             | mantener hasta migración; corregir procedencia mediante contrato compartido, no parche local en esta fase                | `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-MIG-005`   |
+| `UI-SURF-006` | ORIGO         | núcleo común tematizado                                         | mantener como consumidor; no usar como plantilla universal por coincidencia del fallback                                 | `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-MIG-005`   |
+| `UI-SURF-007` | PULSO         | núcleo común, logo compartido con NEXO y dos políticas globales | mantener políticas como extensiones explícitas hasta decisión contractual                                                | `SHELL-UI-001`; `SHELL-AUD-010`; `SHELL-MIG-005`  |
+| `UI-SURF-008` | NUMERA        | núcleo común más densidad financiera y fallback copiado         | preservar densidad como extensión local; migrar datos de marca a contrato común                                          | `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-MIG-005`   |
+
+**Conciliación:** 8 superficies esperadas, 8 decisiones materializadas, 0 faltantes y 0 duplicadas.
+
+---
+
+#### 20. Contrato mínimo que deberá preservar la solución posterior
+
+| Dimensión      | Requisito mínimo                                                  |
+| -------------- | ----------------------------------------------------------------- |
+| fuente         | una identidad de origen versionada y reproducible                 |
+| primitivas     | API pública tipada y estable                                      |
+| CSS            | contrato explícito de clases, tokens y capas                      |
+| tema           | valores por aplicación sin alterar semántica                      |
+| dominio        | extensiones locales fuera del núcleo compartido                   |
+| responsive     | comportamiento definido por componente y no por accidente local   |
+| accesibilidad  | foco, nombre, contraste, estados y movimiento verificables        |
+| interacción    | políticas globales declaradas, configurables y probadas           |
+| marca          | códigos, labels, logos y colores derivados de contrato compartido |
+| tablas         | separación entre wrappers semánticos y tabla de datos avanzada    |
+| errores        | estados y mensajes sin depender de convenciones ocultas           |
+| compatibilidad | política semántica de versiones y migración                       |
+| adopción       | inventario de consumidores y pinning por aplicación               |
+| pruebas        | matriz contractual entre paquete, CSS, tema y consumidores        |
+| rollback       | restauración por aplicación sin mezclar versiones incompatibles   |
+
+Esta tabla no implementa la solución; materializa las condiciones que deberán conservar las tareas posteriores.
+
+---
+
+#### 21. Hallazgos y destinos obligatorios
+
+| ID                | Hallazgo materializado                                                                                            | Estado                          | Destino exacto                                                     |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------- | ------------------------------------------------------------------ |
+| `H-SHELL-007-001` | existen ocho superficies `globals.css` y ocho blobs distintos                                                     | `CONFIRMADO`                    | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-008`                   |
+| `H-SHELL-007-002` | los seis consumidores comparten nombres de tokens y clases, pero no un manifiesto contractual                     | `CONTRATO_NO_DEMOSTRADO`        | `SHELL-AUD-009`; `SHELL-UI-001`; `SHELL-PKG-008`                   |
+| `H-SHELL-007-003` | el runtime de SHELL mantiene una superficie visual distinta del contrato de primitivas consumidor                 | `CONFIRMADO`                    | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-UI-002`                    |
+| `H-SHELL-007-004` | la plantilla usa una generación CSS histórica y no representa los runtimes actuales                               | `FUENTE_HISTORICA_DESFASADA`    | `SHELL-AUD-010`; `SHELL-PKG-001`; `SHELL-PKG-004`; `SHELL-MIG-004` |
+| `H-SHELL-007-005` | `ui.tsx` tiene tres blobs, pero una sola API ejecutable                                                           | `PARIDAD_SEMANTICA`             | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-006`                   |
+| `H-SHELL-007-006` | la API de primitivas depende de clases CSS no tipadas ni versionadas junto al componente                          | `ACOPLAMIENTO_CSS`              | `SHELL-AUD-009`; `SHELL-UI-001`; `SHELL-PKG-003`; `SHELL-PKG-008`  |
+| `H-SHELL-007-007` | el núcleo `Button/Card/Input/Select/Badge` no constituye todavía una biblioteca completa de estados y composición | `ESPECIFICADO`                  | `SHELL-UI-001`                                                     |
+| `H-SHELL-007-008` | `table.tsx` tiene tres blobs, pero una sola API ejecutable                                                        | `PARIDAD_SEMANTICA`             | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-006`                   |
+| `H-SHELL-007-009` | la tabla actual es un wrapper semántico y no un sistema de datos                                                  | `CONFIRMADO`                    | `SHELL-UI-001`                                                     |
+| `H-SHELL-007-010` | `PageHeader` existe solo en VISO y NEXO                                                                           | `DISTRIBUCION_PARCIAL`          | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-AUD-011`                   |
+| `H-SHELL-007-011` | VISO y NEXO exponen APIs distintas de acento y responsive                                                         | `DIVERGENCIA_DE_API`            | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-UI-001`                   |
+| `H-SHELL-007-012` | `VentoLogo` está duplicado en seis runtimes y ausente de la plantilla                                             | `CONFIRMADO`                    | `SHELL-AUD-010`; `SHELL-UI-002`; `SHELL-PKG-001`                   |
+| `H-SHELL-007-013` | códigos, labels y colores de aplicación se repiten dentro de `VentoLogo`                                          | `DERIVA_DE_CONFIGURACION`       | `SHELL-CON-002`; `SHELL-AUD-009`; `SHELL-UI-002`                   |
+| `H-SHELL-007-014` | existen dos algoritmos app-centric de fallback textual                                                            | `DIVERGENCIA_DE_COMPORTAMIENTO` | `SHELL-AUD-010`; `SHELL-UI-002`; `SHELL-PKG-008`                   |
+| `H-SHELL-007-015` | FOGO y NUMERA heredan el fallback centrado en ORIGO                                                               | `DERIVA_DE_CONFIGURACION`       | `SHELL-AUD-010`; `SHELL-UI-002`; `SHELL-MIG-005`                   |
+| `H-SHELL-007-016` | la representación icon-only del logo no tiene un contrato accesible común explícito                               | `CONTRATO_NO_DEMOSTRADO`        | `SHELL-AUD-009`; `SHELL-UI-001`; `SHELL-UI-002`                    |
+| `H-SHELL-007-017` | las animaciones del logo dependen de CSS local y la reducción de movimiento solo se localizó en VISO y NEXO       | `COBERTURA_PARCIAL`             | `SHELL-UI-001`; `SHELL-PKG-008`; `SHELL-MIG-006`                   |
+| `H-SHELL-007-018` | varios `globals.css` mezclan núcleo UI, AppShell y estilos de dominio                                             | `MEZCLA_BASE_DOMINIO`           | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-UI-002`; `SHELL-MIG-005`   |
+| `H-SHELL-007-019` | la tematización por aplicación no está separada físicamente del núcleo compartido                                 | `CONFIRMADO`                    | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-004`  |
+| `H-SHELL-007-020` | PULSO aplica una política global para impedir cambios accidentales por rueda en inputs numéricos                  | `EXTENSION_LOCAL_ACTIVA`        | `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-008`                   |
+| `H-SHELL-007-021` | PULSO aplica una política global de doble submit y feedback mediante `data-*`                                     | `EXTENSION_LOCAL_ACTIVA`        | `SHELL-AUD-009`; `SHELL-AUD-010`; `SHELL-UI-001`; `SHELL-PKG-008`  |
+| `H-SHELL-007-022` | las dos políticas PULSO no forman parte del contrato público de las primitivas                                    | `CONTRATO_NO_DEMOSTRADO`        | `SHELL-AUD-009`; `SHELL-UI-001`; `SHELL-PKG-004`; `SHELL-PKG-008`  |
+| `H-SHELL-007-023` | no existe versión, procedencia y pinning común para la familia UI                                                 | `CONFIRMADO`                    | `SHELL-PKG-003`; `SHELL-PKG-005`; `SHELL-PKG-007`                  |
+| `H-SHELL-007-024` | no se confirmó una suite que pruebe API TypeScript, clases CSS, tokens, tema y consumidores como una unidad       | `PENDIENTE_DE_EVIDENCIA`        | `SHELL-PKG-006`; `SHELL-PKG-008`; `SHELL-MIG-006`; `SHELL-MIG-007` |
+
+**Conciliación:** 24 hallazgos esperados, 24 materializados, 0 IDs duplicados y 0 hallazgos sin tarea responsable.
+
+---
+
+#### 22. Decisiones documentales resultantes
+
+1. `ui.tsx` y `table.tsx` se clasifican como núcleos semánticos comunes con deriva física de formato.
+2. Ninguno se distribuirá aisladamente de su contrato CSS.
+3. `PageHeader` se clasifica como componente parcial candidato a reconciliación, no como copia canónica existente.
+4. La responsividad de NEXO y el acento de VISO se conservarán como entradas de diseño, no como variantes rivales sin decisión.
+5. `VentoLogo` se clasifica como componente estructural compartible con datos de marca incorrectamente embebidos y duplicados.
+6. Los fallbacks centrados en NEXO u ORIGO no se convertirán en regla común.
+7. El tema por aplicación seguirá siendo permitido, pero deberá quedar separado de la semántica de la API.
+8. Los estilos de dominio permanecerán locales y no se incorporarán automáticamente al paquete base.
+9. El runtime de SHELL no se usará como fuente universal de primitivas por ser propietario del Hub.
+10. La plantilla histórica no se reutilizará como fuente normativa antes de su disposición final.
+11. Las políticas globales PULSO se conservarán como extensiones activas hasta que se defina su contrato o retiro.
+12. La futura solución deberá cubrir accesibilidad, foco, movimiento y estados sin depender de coincidencias locales.
+13. No se retira ninguna ocurrencia con consumidores posibles antes de `SHELL-AUD-011` y de una migración comprobada.
+14. No se crea un segundo sistema UI paralelo al definido por `SHELL-UI-001`.
+15. No se modifica código, CSS, paquetes, configuración, CI, despliegues ni Supabase.
+16. No se modifica `active-sequence.json`.
+17. `SHELL-AUD-008` permanece como única continuidad inmediata reservada.
+18. `SHELL-PKG-001` permanece como handoff exclusivo posterior a `SHELL-AUD-011`.
+
+---
+
+#### 23. Trazabilidad con requisitos vigentes
+
+La auditoría reutiliza, sin modificar, requisitos canónicos existentes relacionados con:
+
+- paridad y clasificación de responsabilidades compartidas;
+- evidencia antes de retirar artefactos o compatibilidad consumida;
+- separación entre fuente compartida, plantilla y runtime;
+- integridad de nombres, textos, estados y configuraciones propagadas;
+- adopción y compatibilidad comprobable entre paquete y consumidor.
+
+Identidades vigentes relacionadas:
+
+- `TREQ-SHELL-002`;
+- `TREQ-SHELL-004`;
+- `TREQ-SHELL-029`;
+- `TREQ-SHELL-035`.
+
+Esta tarea aporta evidencia comparativa, pero no cambia identificador, regla, prioridad, responsable, paquete, repositorio, estado, artefacto, evidencia ni relaciones de ninguna fila del registro canónico.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea compara implementaciones existentes y materializa divergencias ya cubiertas por requisitos vigentes de paridad, conservación de consumidores, separación entre fuente y runtime e integridad de artefactos compartidos. No introduce comportamiento ejecutable, no modifica un contrato canónico y no descubre una regla verificable sin cobertura previa.
+
+Se generan:
+
+- **0** altas `TREQ-*`;
+- **0** modificaciones;
+- **0** diferimientos;
+- **0** descartes;
+- **0** obsolescencias.
+
+No corresponde generar una copia del registro `04A`.
+
+---
+
+#### 24. Criterios de aceptación
+
+`SHELL-AUD-007` se considera materialmente completa porque:
+
+- las ocho superficies UI están representadas una sola vez;
+- las cinco familias y treinta ocurrencias están conciliadas;
+- los hashes físicos se preservan sin confundir diferencia de blob con diferencia funcional;
+- `ui.tsx` y `table.tsx` están comparados por API, defaults, clases y capacidades;
+- la deriva de formato queda separada de la deriva semántica;
+- las dos variantes de `PageHeader` están contrastadas por props y responsive;
+- las seis copias de `VentoLogo` están comparadas por API, datos, fallback, accesibilidad y movimiento;
+- las ocho superficies CSS están clasificadas por función y generación;
+- el núcleo nominal de tokens y clases está materializado sin declarar paridad no demostrada;
+- tema, estructura y dominio están separados conceptualmente;
+- las dos políticas globales PULSO están inventariadas y asignadas;
+- accesibilidad, foco, movimiento y estados tienen clasificación explícita;
+- plantilla, Hub y consumidores tienen decisión propia;
+- las ocho superficies tienen destino de migración o conservación;
+- los veinticuatro hallazgos tienen estado y tarea responsable;
+- no se crea ninguna tarea nueva ni queda un pendiente narrativo;
+- se declaran cero cambios `TREQ-*`;
+- no se modifica código, CSS, configuración, paquetes, CI, despliegues ni continuidad;
+- `SHELL-AUD-008` permanece como única tarea reservada.
+
+---
+
+#### 25. Resultado y continuidad
+
+La cadena comparativa resultante es:
+
+```text
+archivo y blob
+→ API TypeScript
+→ clases y tokens consumidos
+→ comportamiento visual e interacción
+→ tema o extensión de dominio
+→ consumidor runtime
+→ hallazgo de paridad
+→ contrato UI y estrategia de distribución
+→ migración y prueba contractual
+```
+
+La única continuidad inmediata reservada es:
+
+```text
+SHELL-AUD-008 — Comparar clientes Supabase
+```
+
+El handoff `SHELL-PKG-001` permanece reservado exclusivamente para después de completar `SHELL-AUD-011`.
+
+
 ### [ ] SHELL-AUD-008 — Comparar clientes Supabase
 ### [ ] SHELL-AUD-009 — Comparar tipos y contratos
 ### [ ] SHELL-AUD-010 — Clasificar compartir / generar / mantener local
