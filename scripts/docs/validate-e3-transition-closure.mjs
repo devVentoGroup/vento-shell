@@ -57,11 +57,14 @@ export function validateE3TransitionClosureSources({
   const active = JSON.parse(activeSequence);
   const e3StillActive = active.handoff_task_id === 'SHELL-AUD-001'
     && active.handoff_sequence_id === 'H-SHARED-AUDIT-001';
-  const hAuditActive = active.sequence_id === 'H-SHARED-AUDIT-001'
-    && active.previous_task_id === 'SUPA-TRANS-016'
-    && active.handoff_task_id === 'SHELL-PKG-001';
-  if (!e3StillActive && !hAuditActive) {
-    fail('active-sequence.json debe reservar H desde E3 o activar H-SHARED-AUDIT-001 después de SUPA-TRANS-016.');
+  const hSequenceActive = typeof active.sequence_id === 'string'
+    && active.sequence_id.startsWith('H-SHARED-')
+    && (
+      active.previous_task_id === 'SUPA-TRANS-016'
+      || /^SHELL-[A-Z]+-\d{3}$/u.test(active.previous_task_id ?? '')
+    );
+  if (!e3StillActive && !hSequenceActive) {
+    fail('active-sequence.json debe reservar H desde E3 o haber avanzado a una secuencia H-SHARED-* después de SUPA-TRANS-016.');
   }
 
   requireOrdered(supa016, [

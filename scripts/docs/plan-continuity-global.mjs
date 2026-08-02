@@ -1,5 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
+import {
+  readAndResolveContinuityRoute,
+  serializeActiveSequence,
+} from './continuity-route.mjs';
 
 const TASK_REGEX = /^###\s+(?<marker>\[[ x~]\]|[✅🟡❌])\s+(?<id>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b(?:\s+[—-]\s+(?<title>[^\n]+))?$/gmu;
 
@@ -29,7 +33,7 @@ function maskFencedCode(text) {
     .join('\n');
 }
 
-function expandSequenceSegments(segments) {
+export function expandSequenceSegments(segments) {
   if (!Array.isArray(segments) || segments.length === 0) {
     fail('active-sequence.json no contiene segmentos válidos.');
   }
@@ -70,8 +74,15 @@ function readActiveSequenceConfig(baseDir) {
   if (typeof config.block_code !== 'string') fail('active-sequence.json no define block_code.');
   if (typeof config.block_title !== 'string') fail('active-sequence.json no define block_title.');
   if (typeof config.previous_task_id !== 'string') fail('active-sequence.json no define previous_task_id.');
-  if (typeof config.handoff_task_id !== 'string') fail('active-sequence.json no define handoff_task_id.');
-  if (typeof config.handoff_sequence_id !== 'string') fail('active-sequence.json no define handoff_sequence_id.');
+  if (config.handoff_task_id !== null && typeof config.handoff_task_id !== 'string') {
+    fail('active-sequence.json contiene handoff_task_id inválido.');
+  }
+  if (config.handoff_sequence_id !== null && typeof config.handoff_sequence_id !== 'string') {
+    fail('active-sequence.json contiene handoff_sequence_id inválido.');
+  }
+  if ((config.handoff_task_id === null) !== (config.handoff_sequence_id === null)) {
+    fail('active-sequence.json debe declarar ambos campos de handoff o dejar ambos en null.');
+  }
 
   return { ...config, taskIds: expandSequenceSegments(config.segments) };
 }
@@ -215,6 +226,7 @@ export function resolveContinuity(taskMap, sequenceIds) {
 
 export function resolveHandoff(taskMap, activeConfig, sequenceIds) {
   const { handoff_task_id: handoffId, handoff_sequence_id: handoffSequenceId } = activeConfig;
+  if (handoffId === null && handoffSequenceId === null) return null;
   if (sequenceIds.includes(handoffId)) {
     fail(`la tarea de handoff ${handoffId} no puede pertenecer a la secuencia activa que cierra.`);
   }
@@ -528,6 +540,7 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
   const manifestPath = path.join(baseDir, 'manifest.json');
   const headerPath = path.join(baseDir, '00_CABECERA_Y_ESTADO.md');
   const registryPath = path.join(baseDir, REGISTRY_OUTPUT);
+  const activeSequencePath = path.join(baseDir, ACTIVE_SEQUENCE_CONFIG);
 
   if (!fs.existsSync(manifestPath)) fail(`no existe ${path.relative(root, manifestPath)}.`);
   if (!fs.existsSync(headerPath)) fail(`no existe ${path.relative(root, headerPath)}.`);
@@ -539,6 +552,23 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
 
   const taskMap = readGlobalTaskRegistry(baseDir, manifest);
   const stats = summarizeRegistry(taskMap);
+  const resolvedActiveConfig = readAndResolveContinuityRoute(baseDir, taskMap);
+  const nextActiveSequence = serializeActiveSequence(resolvedActiveConfig);
+  const currentActiveSequence = fs.existsSync(activeSequencePath)
+    ? fs.readFileSync(activeSequencePath, 'utf8').replace(/\r\n?/gu, '\n')
+    : '';
+  const activeSequenceChanged = currentActiveSequence !== nextActiveSequence;
+
+  if (checkOnly && activeSequenceChanged) {
+    fail(
+      `active-sequence.json está desactualizado; ejecute docs:plan:build. `
+      + `La ruta resolvió ${resolvedActiveConfig.sequence_id}.`,
+    );
+  }
+  if (!checkOnly && activeSequenceChanged) {
+    fs.writeFileSync(activeSequencePath, nextActiveSequence, 'utf8');
+  }
+
   const activeConfig = readActiveSequenceConfig(baseDir);
   const sequenceIds = buildExecutionSequence(activeConfig);
   const continuity = resolveContinuity(taskMap, sequenceIds);
@@ -566,7 +596,7 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
     }
   }
 
-  const action = headerChanged || registryChanged ? 'sincronizados' : 'vigentes';
+  const action = activeSequenceChanged || headerChanged || registryChanged ? 'sincronizados' : 'vigentes';
   console.log(
     `OK: continuidad y registro global ${action}; ${stats.total} tareas; ${stats.approved} aprobadas; ${stats.proposed} en propuesta; ${stats.notStarted} no iniciadas; ${stats.rejected} rechazadas.`
   );
@@ -574,5 +604,12 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
     `OK: secuencia activa; última ${continuity.lastApproved.id}; actual ${continuity.current?.id ?? 'NINGUNA'}; siguiente ${(continuity.next ?? continuity.handoff)?.id ?? 'NINGUNA'}.`
   );
 
-  return { changed: headerChanged || registryChanged, stats, taskMap, activeConfig, ...continuity };
+  return {
+    changed: activeSequenceChanged || headerChanged || registryChanged,
+    activeSequenceChanged,
+    stats,
+    taskMap,
+    activeConfig,
+    ...continuity,
+  };
 }

@@ -1108,7 +1108,185 @@ SHELL-PKG-003 — Definir tags y releases
 
 No se inicia, desarrolla ni modifica dentro de este artefacto.
 
-### [ ] SHELL-PKG-003 — Definir tags y releases
+### ✅ SHELL-PKG-003 — Definir tags y releases
+
+- **Estado:** APROBADA
+- **Fecha:** 2026-08-01
+- **Tarea anterior:** SHELL-PKG-002 — Definir versionado de paquetes compartidos
+- **Tarea siguiente:** SHELL-PKG-004 — Definir política de compatibilidad
+- **Tipo de tarea:** Documental
+- **Objetivo:** Establecer la identidad inmutable, la nomenclatura, el ciclo de vida y el contenido mínimo de los tags Git y de los releases asociados a las cuatro familias de paquetes compartidos, heredando sin alterar el versionado SemVer independiente ya aprobado.
+
+#### Decisiones o definiciones
+
+1. **Relación canónica entre paquete, versión, tag y release**
+   - Cada versión publicada de una familia de paquete tendrá exactamente un tag Git canónico y exactamente un release asociado.
+   - La relación será `una familia + una versión = un tag = un release`.
+   - No existirá un tag global que represente simultáneamente la versión de todas las familias.
+   - Un corte coordinado podrá publicar varias familias desde el mismo commit de origen, pero cada familia conservará su versión, tag y release independientes.
+   - Una familia sin cambios en un corte coordinado conservará su versión vigente y no recibirá un tag ni un release nuevos.
+
+2. **Naturaleza de los artefactos**
+   - Un **tag** será una referencia Git anotada, única e inmutable que identifica la versión exacta de una sola familia de paquete.
+   - Un **release** será el registro publicable asociado de manera unívoca al tag canónico y contendrá la evidencia y las notas de esa versión.
+   - Un borrador de release no constituirá una publicación ni otorgará identidad canónica a una versión.
+   - Los alias mutables de distribución de registros de paquetes, incluidos `latest`, `next` o equivalentes, no serán tags Git y quedan fuera del alcance de esta tarea.
+
+3. **Patrones canónicos de tags y títulos de release**
+
+| Familia de paquete    | Patrón de tag estable    | Ejemplo de tag prerelease    | Patrón de título de release    |
+| --------------------- | ------------------------ | ---------------------------- | ------------------------------ |
+| `@vento/os-context`   | `os-context-v{SEMVER}`   | `os-context-v0.2.0-rc.1`     | `@vento/os-context {SEMVER}`   |
+| `@vento/os-telemetry` | `os-telemetry-v{SEMVER}` | `os-telemetry-v0.2.0-beta.1` | `@vento/os-telemetry {SEMVER}` |
+| `@vento/os-flags`     | `os-flags-v{SEMVER}`     | `os-flags-v0.2.0-alpha.1`    | `@vento/os-flags {SEMVER}`     |
+| `@vento/os-errors`    | `os-errors-v{SEMVER}`    | `os-errors-v0.2.0-rc.1`      | `@vento/os-errors {SEMVER}`    |
+
+   - `{SEMVER}` será la versión exacta aprobada para la familia, sin prefijos adicionales dentro del número de versión.
+   - Un ejemplo estable válido será `os-context-v0.1.0`, con título `@vento/os-context 0.1.0`.
+   - Los sufijos `alpha.N`, `beta.N` y `rc.N` conservarán íntegramente la semántica, la secuencia y las restricciones aprobadas por el versionado de paquetes compartidos.
+   - Mayúsculas, espacios, barras, nombres abreviados alternativos y omisión del prefijo `v` no serán variantes válidas del tag canónico.
+
+4. **Identidad e inmutabilidad del tag**
+   - El tag deberá apuntar al commit de origen cuyo manifiesto de paquete declare la misma familia, la misma versión y las dependencias internas exactas documentadas para el corte.
+   - Un nombre de tag no podrá reutilizarse para otro commit, otra familia ni otro contenido.
+   - Un tag publicado no podrá moverse, recrearse ni corregirse sobre la misma versión.
+   - Toda corrección posterior exigirá una nueva versión SemVer, un nuevo tag y un nuevo release.
+   - La eliminación de un tag o release publicado no será un mecanismo ordinario de corrección.
+
+5. **Cortes coordinados de varias familias**
+   - Varias familias modificadas podrán compartir el mismo commit de origen y la misma fecha de publicación.
+   - Cada release del corte deberá declarar los tags compañeros publicados desde ese mismo commit.
+   - Las dependencias entre familias publicadas en el mismo corte deberán registrar las versiones finales exactas que fueron materializadas.
+   - La ausencia de cambios en una familia impedirá crear una versión artificial solo para igualar números con otras familias.
+   - El orden de publicación deberá respetar el grafo de dependencias internas y no permitirá que un release estable dependa de una prerelease.
+
+6. **Canales y estado del release**
+   - Un tag con sufijo `-alpha.N`, `-beta.N` o `-rc.N` tendrá un release marcado como prerelease.
+   - Un tag sin sufijo de prerelease tendrá un release estable y no podrá marcarse como prerelease.
+   - El ciclo documental del release será:
+     - `BORRADOR`: preparación no publicada; no constituye evidencia de liberación.
+     - `PRERELEASE_PUBLICADA`: tag inmutable y release público con sufijo y marca de prerelease coherentes.
+     - `ESTABLE_PUBLICADA`: tag inmutable y release público sin sufijo, autorizado por evidencia completa.
+     - `SUPERADA`: existe una versión posterior; el tag y el release anteriores permanecen inmutables y consultables, sin implicar por sí mismo una decisión de compatibilidad.
+   - Ningún estado posterior podrá degradar una versión estable publicada a prerelease ni alterar su identidad.
+
+7. **Contenido mínimo obligatorio del release**
+   - Familia de paquete.
+   - Versión SemVer exacta.
+   - Tag canónico exacto.
+   - Commit de origen.
+   - Canal y estado del release.
+   - Resumen del propósito del cambio.
+   - Cambios clasificados, cuando apliquen, en `Added`, `Changed`, `Deprecated`, `Removed`, `Fixed` y `Security`.
+   - Impacto sobre contratos públicos y tipos exportados.
+   - Dependencias internas con sus versiones finales y rangos declarados.
+   - Tags compañeros del mismo corte coordinado o `NO_APLICA`.
+   - Impacto y acciones requeridas para consumidores o `NO_APLICA`.
+   - Matriz de evidencia obligatoria con resultado y referencia verificable.
+   - Riesgos y limitaciones conocidos o `NO_APLICA`.
+   - Estrategia de recuperación basada en volver a una versión compatible anterior o publicar una versión correctiva, sin mutar el tag.
+   - Conformidad del responsable del release y del responsable de cada repositorio consumidor afectado.
+
+8. **Condiciones previas a la publicación**
+   - La versión del manifiesto, el nombre de la familia, el tag previsto y el título del release deberán ser coherentes entre sí.
+   - Las dependencias internas deberán resolver a versiones existentes o a versiones del mismo corte coordinado.
+   - La evidencia exigida para contratos, compilación, tipos, pruebas, integración y artefactos deberá estar completa y trazable según el canal.
+   - Un release estable permanecerá bloqueado mientras falte evidencia obligatoria o conformidad de un consumidor afectado.
+   - La publicación de un tag será el punto de no retorno para su identidad; cualquier defecto detectado después se resolverá mediante una nueva versión.
+
+9. **Reglas de consistencia y unicidad**
+   - Las cuatro familias tendrán exactamente un patrón de tag estable y un patrón de título de release.
+   - Un tag identificará una sola familia y una sola versión.
+   - Un release identificará un solo tag.
+   - El tag, el título y el manifiesto deberán expresar la misma versión, incluida la cadena completa de prerelease cuando exista.
+   - Los tags compañeros de un corte coordinado podrán compartir commit, pero no nombre ni identidad de paquete.
+
+10. **Requisitos de prueba**
+    - **Requisitos de prueba:** cero cambios TREQ.
+    - Esta tarea especializa la identidad y la evidencia de publicación ya gobernadas por `TREQ-SHELL-006`, `TREQ-SHELL-007`, `TREQ-SHELL-008` y `TREQ-SHELL-009`, sin crear un comportamiento verificable nuevo, modificar sus criterios ni retirar requisitos existentes.
+
+#### Alcance
+
+**Incluye:**
+- nomenclatura exacta de tags para las cuatro familias canónicas;
+- correspondencia unívoca entre versión, tag y release;
+- tratamiento de prereleases y releases estables;
+- reglas de inmutabilidad, unicidad y corrección;
+- coordinación de releases de varias familias desde un mismo commit;
+- ciclo documental del release;
+- contenido mínimo y evidencia requerida en las notas de release.
+
+**No incluye:**
+- creación física de tags o releases;
+- automatización de publicación;
+- workflows de integración o despliegue;
+- publicación en registros de paquetes;
+- definición de alias mutables de distribución;
+- separación física de los paquetes aún transitorios;
+- definición de compatibilidad entre versiones y consumidores.
+
+#### Dependencias o entradas
+
+- Versionado SemVer independiente aprobado para las cuatro familias de paquetes compartidos.
+- Inventario canónico de `@vento/os-context`, `@vento/os-telemetry`, `@vento/os-flags` y `@vento/os-errors`.
+- Reglas aprobadas para prereleases, rangos internos, cortes coordinados y evidencia previa a una versión estable.
+- Estado técnico actual, en el que la convención se define documentalmente sin materializar publicaciones.
+
+#### Entregables
+
+- Convención canónica de nombres de tags por familia.
+- Convención canónica de títulos de release.
+- Matriz completa de cuatro familias, sin faltantes ni duplicados.
+- Reglas de inmutabilidad, unicidad y correspondencia con el commit de origen.
+- Ciclo documental de releases estables y prereleases.
+- Contenido mínimo obligatorio de notas, evidencia y conformidades.
+- Reglas para cortes coordinados sin forzar versiones globales.
+
+#### Criterios de aceptación
+
+- Las cuatro familias canónicas están materializadas en la matriz y cada una tiene un único patrón de tag y de título.
+- Los patrones preservan el versionado SemVer independiente y admiten `alpha`, `beta` y `rc` sin reinterpretarlos.
+- No se introduce una versión global del repositorio para sustituir las versiones por familia.
+- La relación entre familia, versión, tag, release y commit de origen es explícita y no ambigua.
+- Los releases coordinados permiten compartir commit sin asignar versiones artificiales a familias sin cambios.
+- Los tags publicados son inmutables y las correcciones exigen una nueva versión.
+- El contenido mínimo del release permite reconstruir cambios, dependencias, evidencia, riesgos y conformidades.
+- El alcance permanece documental y no crea artefactos físicos de publicación.
+- Se declaran cero cambios TREQ con justificación explícita.
+
+#### Consecuencias
+
+- Cada familia podrá evolucionar y publicarse con trazabilidad propia.
+- Un mismo corte coordinado podrá reconstruirse mediante sus tags compañeros y el commit compartido.
+- Las notas de release funcionarán como evidencia de la versión publicada, no como sustituto de las pruebas ni de sus resultados verificables.
+- Los consumidores podrán identificar de forma inequívoca la familia y la versión asociadas a cada release.
+
+#### Riesgos y controles
+
+- **Riesgo:** crear tags globales o ambiguos. **Control:** prefijo obligatorio por familia y relación unívoca con la versión.
+- **Riesgo:** mover un tag para ocultar una corrección. **Control:** inmutabilidad y nueva versión obligatoria.
+- **Riesgo:** desalinear manifiesto, tag y release. **Control:** comprobación de identidad exacta antes de publicar.
+- **Riesgo:** omitir familias en un corte coordinado o versionar familias sin cambios. **Control:** declaración de tags compañeros y publicación exclusiva de familias modificadas.
+- **Riesgo:** publicar una versión estable sin evidencia completa. **Control:** bloqueo documental hasta completar evidencia y conformidades.
+
+#### Validación normativa
+
+- Recuento esperado de familias: `4`.
+- Recuento materializado de familias: `4`.
+- Faltantes: `0`.
+- Duplicados de identidad: `0`.
+- Cada patrón de tag incluye la identidad de la familia, el prefijo `v` y la versión SemVer completa.
+- Cada ejemplo de prerelease conserva uno de los canales aprobados y su ordinal.
+- Ninguna regla autoriza a modificar un tag publicado ni a crear versiones globales artificiales.
+- Ninguna decisión materializa tags, releases, workflows o publicaciones durante la fase documental.
+
+## Continuidad canónica del bloque
+
+- **ÚLTIMA TAREA APROBADA:** SHELL-PKG-002 — Definir versionado de paquetes compartidos
+- **TAREA ACTUAL APROBADA:** SHELL-PKG-003 — Definir tags y releases
+- **SIGUIENTE TAREA RESERVADA:** SHELL-PKG-004 — Definir política de compatibilidad
+
+
 ### [ ] SHELL-PKG-004 — Definir política de compatibilidad
 ### [ ] SHELL-PKG-005 — Definir política de deprecación
 ### [ ] SHELL-PKG-006 — Definir rollback por aplicación

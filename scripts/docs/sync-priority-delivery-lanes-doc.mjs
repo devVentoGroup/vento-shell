@@ -177,6 +177,9 @@ function taskNotation(artifact) {
       const last = `${prefix}-${String(to).padStart(3, '0')}`;
       return from === to ? `\`${first}\`` : `\`${first}\` a \`${last}\``;
     }),
+    ...(artifact.task_family_refs ?? []).map(
+      (prefix) => `\`${prefix}-*\` (familia canónica completa)`,
+    ),
   ].join('; ');
 }
 

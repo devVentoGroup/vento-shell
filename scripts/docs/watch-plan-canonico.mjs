@@ -35,6 +35,13 @@ const ignoredDirectories = new Set([
   "node_modules",
 ]);
 
+const synchronizedBuildOutputs = new Set([
+  "00_CABECERA_Y_ESTADO.md",
+  "active-sequence.json",
+  "90_ORDEN_DE_IMPLEMENTACION.md",
+  "bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md",
+]);
+
 let debounceTimer = null;
 let buildRunning = false;
 let buildPending = false;
@@ -163,12 +170,21 @@ async function rebuild(reason) {
 }
 
 function scheduleRebuild(filename) {
+  const relativePath = normalizeRelativePath(filename);
+
+  if (buildRunning && synchronizedBuildOutputs.has(relativePath)) {
+    console.log(
+      `[PLAN CANÓNICO] Cambio interno ignorado durante la compilación: ${relativePath}`
+    );
+    return;
+  }
+
   clearTimeout(debounceTimer);
   changeVersion += 1;
-  pendingChanges.add(normalizeRelativePath(filename));
+  pendingChanges.add(relativePath);
 
   console.log(
-    `[PLAN CANÓNICO] Cambio detectado: ${normalizeRelativePath(filename)}`
+    `[PLAN CANÓNICO] Cambio detectado: ${relativePath}`
   );
 
   debounceTimer = setTimeout(() => {

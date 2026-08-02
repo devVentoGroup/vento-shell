@@ -1,5 +1,7 @@
 {
   "schema_version": 1,
+  "generated_from": "continuity-route.json",
+  "route_id": "NORMAL-CANONICAL-FLOW-001",
   "sequence_id": "H-SHARED-PACKAGES-001",
   "block_code": "BLOQUE H",
   "block_title": "Fundación compartida",

@@ -1,5 +1,7 @@
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
+import path from 'node:path';
+import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import {
   validatePriorityDeliveryLaneData,
@@ -12,6 +14,24 @@ const canonicalData = JSON.parse(
   ),
 );
 const canonicalLane = canonicalData.lanes[0];
+const taskHeading =
+  /^###\s+(?:\[[ x~]\]|✅|🟡|❌)\s+(?<id>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b/gmu;
+function readCanonicalTaskIds(directory) {
+  const ids = new Set();
+  const pending = [directory];
+  while (pending.length > 0) {
+    const current = pending.pop();
+    for (const entry of fs.readdirSync(current, { withFileTypes: true })) {
+      const fullPath = path.join(current, entry.name);
+      if (entry.isDirectory()) pending.push(fullPath);
+      if (entry.isFile() && entry.name.endsWith('.md')) {
+        const source = fs.readFileSync(fullPath, 'utf8');
+        for (const match of source.matchAll(taskHeading)) ids.add(match.groups.id);
+      }
+    }
+  }
+  return ids;
+}
 const expandRanges = (ranges = []) =>
   ranges.flatMap(({ prefix, from, to }) =>
     Array.from(
@@ -33,6 +53,10 @@ const allArtifactCollections = [
   canonicalLane.deferred_but_preserved,
 ];
 const taskIds = new Set([
+  ...readCanonicalTaskIds(fileURLToPath(new URL(
+    '../../docs/plan-canonico/modular/bloques/',
+    import.meta.url,
+  ))),
   ...allArtifactCollections.flatMap((collection) =>
     collection.flatMap(artifactRefs)),
   ...canonicalLane.package_definition_tasks,
@@ -131,6 +155,39 @@ test('rechaza omitir una tarea de implementación obligatoria', () => {
   assert.throws(
     () => validatePriorityDeliveryLaneData({ data, taskIds, documents }),
     /R2_NEXO_DATABASE_PACKAGE omite tareas/,
+  );
+});
+
+test('incluye automáticamente una tarea nueva de una familia declarada', () => {
+  const expandedTaskIds = new Set(taskIds);
+  expandedTaskIds.add('SHELL-PKG-009');
+
+  assert.doesNotThrow(() => validatePriorityDeliveryLaneData({
+    data: validData(),
+    taskIds: expandedTaskIds,
+    documents,
+  }));
+});
+
+test('rechaza volver a congelar manualmente el rango de una familia adaptativa', () => {
+  const data = validData();
+  const distribution = group(
+    data,
+    'required_task_artifacts',
+    'H_SHARED_DISTRIBUTION',
+  );
+  delete distribution.task_family_refs;
+  distribution.task_ranges = [{ prefix: 'SHELL-PKG', from: 1, to: 8 }];
+  const expandedTaskIds = new Set(taskIds);
+  expandedTaskIds.add('SHELL-PKG-009');
+
+  assert.throws(
+    () => validatePriorityDeliveryLaneData({
+      data,
+      taskIds: expandedTaskIds,
+      documents,
+    }),
+    /H_SHARED_DISTRIBUTION omite tareas/,
   );
 });
 

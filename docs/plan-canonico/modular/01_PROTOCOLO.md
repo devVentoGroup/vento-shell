@@ -171,6 +171,7 @@
    del repositorio y revisar, como mínimo:
 
    - `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+   - `docs/plan-canonico/modular/continuity-route.json`;
    - `docs/plan-canonico/modular/active-sequence.json`;
    - el archivo modular propietario de la tarea;
    - las tareas aprobadas que constituyen su base;
@@ -227,14 +228,17 @@
    - no se editarán manualmente `00_CABECERA_Y_ESTADO.md` ni archivos bajo
      `.generated/` para forzar continuidad;
    - `manifest.json` controla el orden físico de compilación;
-   - `active-sequence.json` controla el orden documental de ejecución;
+   - `continuity-route.json` controla la ruta documental normal y sus etapas;
+   - `active-sequence.json` es una proyección derivada de esa ruta y no se
+     edita manualmente;
    - `04A` es la única fuente canónica del registro de pruebas;
    - el build deberá validar `04A` antes de compilar;
    - una tarea de pantallas deberá conservar la cobertura, nombres,
      aplicaciones, procesos, pasos, vocabularios, resúmenes y carryover que
      exigen sus validadores;
-   - una tarea nueva deberá existir una sola vez en el bloque propietario y en
-     `active-sequence.json` cuando forme parte de la continuidad;
+   - una tarea nueva deberá existir una sola vez en el bloque propietario; si
+     su prefijo pertenece a una etapa de `continuity-route.json`, el build la
+     incorporará automáticamente sin actualizar rangos manuales;
    - no se declarará `compilación correcta`, `pruebas aprobadas` o
      `validación final correcta` si los comandos reales no fueron ejecutados.
 
@@ -856,13 +860,17 @@ Reglas obligatorias:
    si la prioridad activa es remisiones NEXO se seguirá
    `NEXO-REMISSIONS-001`; en cualquier otro caso se seguirá
    `NORMAL_CANONICAL_FLOW`;
-3. el flujo normal se deriva del orden canónico y de `active-sequence.json`;
+3. el flujo normal se deriva de `continuity-route.json`; el build descubre las
+   tareas de cada familia, selecciona la primera etapa incompleta y regenera
+   `active-sequence.json`;
    el flujo prioritario se deriva exclusivamente de
    `ordered_execution_stages`, en orden ascendente y sin mezclar etapas;
 4. elegir el flujo prioritario no cambia la tarea documental actual, no
    reordena el plan y no elimina trabajo futuro;
-5. la tarea documental actual seguirá derivándose exclusivamente de
-   `active-sequence.json`;
+5. la tarea documental actual se publicará en `active-sequence.json`, siempre
+   como proyección de `continuity-route.json` y de los marcadores canónicos;
+   esta proyección solo reserva continuidad y jamás cambia marcadores, aprueba
+   tareas ni autoriza iniciar la siguiente;
 6. un artefacto producido para una aplicación podrá ser consumido por un
    paquete, pero la tarea transversal permanecerá no iniciada o en su estado
    real hasta completar su alcance y recibir aprobación explícita;

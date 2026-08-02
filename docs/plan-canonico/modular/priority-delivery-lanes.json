@@ -4,7 +4,7 @@
   "global_task_partial_approval_forbidden": true,
   "implementation_route_policy": {
     "default_route": "NORMAL_CANONICAL_FLOW",
-    "normal_route_source": "active-sequence.json",
+    "normal_route_source": "continuity-route.json",
     "priority_route_trigger": "La prioridad de implementación activa es remisiones NEXO.",
     "priority_route_id": "NEXO-REMISSIONS-001",
     "selection_rule": "Si la prioridad activa es remisiones NEXO se sigue el ordered_execution_stages del carril; para cualquier otra prioridad se sigue el flujo normal del plan.",
@@ -108,24 +108,12 @@
         },
         {
           "artifact_group_id": "H_SHARED_AUDIT",
-          "task_ranges": [
-            {
-              "prefix": "SHELL-AUD",
-              "from": 1,
-              "to": 11
-            }
-          ],
+          "task_family_refs": ["SHELL-AUD"],
           "required_scope": "auditoría completa de componentes compartidos y clasificación de propiedad"
         },
         {
           "artifact_group_id": "H_SHARED_DISTRIBUTION",
-          "task_ranges": [
-            {
-              "prefix": "SHELL-PKG",
-              "from": 1,
-              "to": 8
-            }
-          ],
+          "task_family_refs": ["SHELL-PKG"],
           "required_scope": "mecanismo de distribución, versionado, compatibilidad, deprecación, actualización y rollback definidos antes de crear paquetes compartidos"
         },
         {
@@ -417,13 +405,7 @@
       "implementation_artifacts": [
         {
           "artifact_group_id": "H_SHARED_CONTRACTS",
-          "task_ranges": [
-            {
-              "prefix": "SHELL-CON",
-              "from": 1,
-              "to": 24
-            }
-          ],
+          "task_family_refs": ["SHELL-CON"],
           "required_scope": "paquetes de contratos compartidos e integraciones implementados y versionados"
         },
         {
@@ -482,37 +464,13 @@
         },
         {
           "artifact_group_id": "H_SHARED_REMAINING",
-          "task_ranges": [
-            {
-              "prefix": "SHELL-NORM",
-              "from": 1,
-              "to": 9
-            },
-            {
-              "prefix": "SHELL-DB",
-              "from": 1,
-              "to": 5
-            },
-            {
-              "prefix": "SHELL-UI",
-              "from": 1,
-              "to": 20
-            },
-            {
-              "prefix": "SHELL-MIG",
-              "from": 1,
-              "to": 8
-            },
-            {
-              "prefix": "SHELL-NATIVE",
-              "from": 1,
-              "to": 3
-            },
-            {
-              "prefix": "SHELL-APP",
-              "from": 1,
-              "to": 21
-            }
+          "task_family_refs": [
+            "SHELL-NORM",
+            "SHELL-DB",
+            "SHELL-UI",
+            "SHELL-MIG",
+            "SHELL-NATIVE",
+            "SHELL-APP"
           ],
           "required_scope": "normalización compartida, acceso a datos, componentes web, migración reversible de consumidores, compatibilidad nativa y experiencia del Hub disponibles antes de consumidores finales"
         },

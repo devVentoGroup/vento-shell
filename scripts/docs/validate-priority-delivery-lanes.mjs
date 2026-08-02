@@ -217,25 +217,35 @@ function expandTaskRanges(taskRanges = []) {
   });
 }
 
-function artifactTaskRefs(artifact = {}) {
+function expandTaskFamilies(taskFamilies = [], taskIds = new Set()) {
+  return taskFamilies.flatMap((prefix) => {
+    const ids = [...taskIds]
+      .filter((id) => id.startsWith(`${prefix}-`))
+      .sort((left, right) => left.localeCompare(right, 'en'));
+    return ids;
+  });
+}
+
+function artifactTaskRefs(artifact = {}, taskIds = new Set()) {
   return [
     ...(artifact.task_refs ?? []),
     ...expandTaskRanges(artifact.task_ranges),
+    ...expandTaskFamilies(artifact.task_family_refs, taskIds),
   ];
 }
 
-function allTaskRefs(lane) {
+function allTaskRefs(lane, taskIds) {
   return [
-    ...(lane.required_task_artifacts ?? []).flatMap(artifactTaskRefs),
-    ...(lane.conditional_artifacts ?? []).flatMap(artifactTaskRefs),
+    ...(lane.required_task_artifacts ?? []).flatMap((item) => artifactTaskRefs(item, taskIds)),
+    ...(lane.conditional_artifacts ?? []).flatMap((item) => artifactTaskRefs(item, taskIds)),
     ...(lane.conditional_implementation_artifacts ?? []).flatMap(
-      artifactTaskRefs,
+      (item) => artifactTaskRefs(item, taskIds),
     ),
-    ...(lane.execution_prerequisite_artifacts ?? []).flatMap(artifactTaskRefs),
-    ...(lane.implementation_artifacts ?? []).flatMap(artifactTaskRefs),
-    ...(lane.post_package_artifacts ?? []).flatMap(artifactTaskRefs),
-    ...(lane.post_implementation_artifacts ?? []).flatMap(artifactTaskRefs),
-    ...(lane.deferred_but_preserved ?? []).flatMap(artifactTaskRefs),
+    ...(lane.execution_prerequisite_artifacts ?? []).flatMap((item) => artifactTaskRefs(item, taskIds)),
+    ...(lane.implementation_artifacts ?? []).flatMap((item) => artifactTaskRefs(item, taskIds)),
+    ...(lane.post_package_artifacts ?? []).flatMap((item) => artifactTaskRefs(item, taskIds)),
+    ...(lane.post_implementation_artifacts ?? []).flatMap((item) => artifactTaskRefs(item, taskIds)),
+    ...(lane.deferred_but_preserved ?? []).flatMap((item) => artifactTaskRefs(item, taskIds)),
     ...(lane.package_definition_tasks ?? []),
     lane.package_gate,
     ...(lane.execution_cycle ?? []),
@@ -253,6 +263,7 @@ function validateExactGroups({
   expected,
   errors,
   label,
+  taskIds,
 }) {
   const actualIds = groupIds(artifacts);
   if (!equalArray(actualIds, [...expected.keys()])) {
@@ -262,11 +273,19 @@ function validateExactGroups({
     const artifact = artifacts.find(
       ({ artifact_group_id: candidate }) => candidate === groupId,
     );
-    const actualTasks = artifact ? artifactTaskRefs(artifact) : [];
+    const actualTasks = artifact ? artifactTaskRefs(artifact, taskIds) : [];
     if (!equalArray(actualTasks, expectedTasks)) {
       errors.push(`${laneId}: ${groupId} omite tareas o altera su orden.`);
     }
   }
+}
+
+function adaptiveExpectedGroups(expected, taskIds, familyGroups) {
+  const result = new Map(expected);
+  for (const [groupId, families] of familyGroups) {
+    result.set(groupId, expandTaskFamilies(families, taskIds));
+  }
+  return result;
 }
 
 export function validatePriorityDeliveryLaneData({
@@ -289,8 +308,8 @@ export function validatePriorityDeliveryLaneData({
   if (routePolicy?.default_route !== 'NORMAL_CANONICAL_FLOW') {
     errors.push('la ruta por defecto debe ser NORMAL_CANONICAL_FLOW.');
   }
-  if (routePolicy?.normal_route_source !== 'active-sequence.json') {
-    errors.push('el flujo normal debe derivarse de active-sequence.json.');
+  if (routePolicy?.normal_route_source !== 'continuity-route.json') {
+    errors.push('el flujo normal debe derivarse de continuity-route.json.');
   }
   if (routePolicy?.priority_route_id !== 'NEXO-REMISSIONS-001') {
     errors.push('la ruta prioritaria debe ser NEXO-REMISSIONS-001.');
@@ -375,7 +394,15 @@ export function validatePriorityDeliveryLaneData({
     ];
     const taskOwners = new Map();
     for (const artifact of artifactCollections.flat()) {
-      for (const taskId of artifactTaskRefs(artifact)) {
+      for (const family of artifact.task_family_refs ?? []) {
+        const familyTasks = expandTaskFamilies([family], taskIds);
+        if (familyTasks.length === 0) {
+          errors.push(
+            `${lane.lane_id}: ${artifact.artifact_group_id} referencia una familia vacía: ${family}.`,
+          );
+        }
+      }
+      for (const taskId of artifactTaskRefs(artifact, taskIds)) {
         const previous = taskOwners.get(taskId);
         if (previous) {
           errors.push(
@@ -467,9 +494,13 @@ export function validatePriorityDeliveryLaneData({
       validateExactGroups({
         laneId: lane.lane_id,
         artifacts: lane.required_task_artifacts ?? [],
-        expected: EXPECTED_REQUIRED_GROUPS,
+        expected: adaptiveExpectedGroups(EXPECTED_REQUIRED_GROUPS, taskIds, new Map([
+          ['H_SHARED_AUDIT', ['SHELL-AUD']],
+          ['H_SHARED_DISTRIBUTION', ['SHELL-PKG']],
+        ])),
         errors,
         label: 'grupos obligatorios de diseño',
+        taskIds,
       });
       validateExactGroups({
         laneId: lane.lane_id,
@@ -477,13 +508,25 @@ export function validatePriorityDeliveryLaneData({
         expected: EXPECTED_EXECUTION_PREREQUISITES,
         errors,
         label: 'prerrequisitos de ejecución',
+        taskIds,
       });
       validateExactGroups({
         laneId: lane.lane_id,
         artifacts: lane.implementation_artifacts ?? [],
-        expected: EXPECTED_IMPLEMENTATION_GROUPS,
+        expected: adaptiveExpectedGroups(EXPECTED_IMPLEMENTATION_GROUPS, taskIds, new Map([
+          ['H_SHARED_CONTRACTS', ['SHELL-CON']],
+          ['H_SHARED_REMAINING', [
+            'SHELL-NORM',
+            'SHELL-DB',
+            'SHELL-UI',
+            'SHELL-MIG',
+            'SHELL-NATIVE',
+            'SHELL-APP',
+          ]],
+        ])),
         errors,
         label: 'grupos obligatorios de implementación',
+        taskIds,
       });
       if (!equalArray(
         conditionalDesignIds,
@@ -497,7 +540,7 @@ export function validatePriorityDeliveryLaneData({
         const artifact = (lane.conditional_artifacts ?? []).find(
           ({ artifact_group_id: candidate }) => candidate === groupId,
         );
-        if (!equalArray(artifact ? artifactTaskRefs(artifact) : [], expectedTasks)) {
+        if (!equalArray(artifact ? artifactTaskRefs(artifact, taskIds) : [], expectedTasks)) {
           errors.push(`${lane.lane_id}: ${groupId} omite tareas o altera su orden.`);
         }
       }
@@ -516,7 +559,7 @@ export function validatePriorityDeliveryLaneData({
         const artifact = (
           lane.conditional_implementation_artifacts ?? []
         ).find(({ artifact_group_id: candidate }) => candidate === groupId);
-        if (!equalArray(artifact ? artifactTaskRefs(artifact) : [], expectedTasks)) {
+        if (!equalArray(artifact ? artifactTaskRefs(artifact, taskIds) : [], expectedTasks)) {
           errors.push(`${lane.lane_id}: ${groupId} omite tareas o altera su orden.`);
         }
       }
@@ -526,6 +569,7 @@ export function validatePriorityDeliveryLaneData({
         expected: EXPECTED_POST_PACKAGE_GROUPS,
         errors,
         label: 'planes o gates E5 posteriores al paquete',
+        taskIds,
       });
       validateExactGroups({
         laneId: lane.lane_id,
@@ -533,10 +577,11 @@ export function validatePriorityDeliveryLaneData({
         expected: EXPECTED_POST_IMPLEMENTATION_GROUPS,
         errors,
         label: 'certificaciones posteriores a la implementación',
+        taskIds,
       });
 
       const deferred = new Set(
-        (lane.deferred_but_preserved ?? []).flatMap(artifactTaskRefs),
+        (lane.deferred_but_preserved ?? []).flatMap((item) => artifactTaskRefs(item, taskIds)),
       );
       for (const taskId of [
         'AUTH-DB-030',
@@ -630,7 +675,7 @@ export function validatePriorityDeliveryLaneData({
       (lane) => lane.status === 'DESIGNATED_NOT_READY',
     ).length,
     referencedTasks: new Set(
-      (data.lanes ?? []).flatMap((lane) => allTaskRefs(lane)),
+      (data.lanes ?? []).flatMap((lane) => allTaskRefs(lane, taskIds)),
     ).size,
   };
 }

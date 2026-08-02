@@ -67,6 +67,31 @@ test('acepta activar la auditoría H después de aprobar el handoff', () => {
   assert.equal(result.handoffTask, 'SHELL-AUD-001');
 });
 
+test('acepta avanzar de la auditoría H a paquetes compartidos', () => {
+  const sources = validSources();
+  sources.activeSequence = JSON.stringify({
+    sequence_id: 'H-SHARED-PACKAGES-001',
+    previous_task_id: 'SHELL-AUD-011',
+    handoff_task_id: 'SHELL-CON-001',
+    handoff_sequence_id: 'H-SHARED-CONTRACTS-001',
+  });
+  const result = validateE3TransitionClosureSources(sources);
+  assert.equal(result.handoffTask, 'SHELL-AUD-001');
+});
+
+test('rechaza una secuencia ajena que no demuestre avance desde E3 hacia H', () => {
+  const sources = validSources();
+  sources.activeSequence = JSON.stringify({
+    sequence_id: 'R-UNRELATED-001',
+    previous_task_id: 'OTHER-001',
+    handoff_task_id: 'OTHER-002',
+  });
+  assert.throws(
+    () => validateE3TransitionClosureSources(sources),
+    /debe reservar H desde E3 o haber avanzado/u,
+  );
+});
+
 test('rechaza omitir readiness, cutover o hypercare', () => {
   const sources = validSources();
   sources.supa016 = sources.supa016.replace('CUTOVER-OPS-001..010', '');

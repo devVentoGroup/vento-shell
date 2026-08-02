@@ -1,0 +1,80 @@
+{
+  "schema_version": 1,
+  "route_id": "NORMAL-CANONICAL-FLOW-001",
+  "entry_task_id": "DATA-NORM-TRANS-009",
+  "latest_treq_task_id": "SUPA-TRANS-006",
+  "stages": [
+    {
+      "sequence_id": "E3-SUPABASE-TRANSITION-CLOSURE-001",
+      "block_code": "BLOQUE E3",
+      "block_title": "Supabase",
+      "selectors": [{ "task_ids": ["SUPA-TRANS-016"] }]
+    },
+    {
+      "sequence_id": "H-SHARED-AUDIT-001",
+      "block_code": "BLOQUE H",
+      "block_title": "Fundación compartida",
+      "selectors": [{ "prefix": "SHELL-AUD" }]
+    },
+    {
+      "sequence_id": "H-SHARED-PACKAGES-001",
+      "block_code": "BLOQUE H",
+      "block_title": "Fundación compartida",
+      "selectors": [{ "prefix": "SHELL-PKG" }]
+    },
+    {
+      "sequence_id": "H-SHARED-CONTRACTS-001",
+      "block_code": "BLOQUE H",
+      "block_title": "Fundación compartida",
+      "selectors": [{ "prefix": "SHELL-CON" }]
+    },
+    {
+      "sequence_id": "H-SHARED-NORMALIZATION-001",
+      "block_code": "BLOQUE H",
+      "block_title": "Fundación compartida",
+      "selectors": [{ "prefix": "SHELL-NORM" }]
+    },
+    {
+      "sequence_id": "H-SHARED-DATA-ACCESS-001",
+      "block_code": "BLOQUE H",
+      "block_title": "Fundación compartida",
+      "selectors": [{ "prefix": "SHELL-DB" }]
+    },
+    {
+      "sequence_id": "H-SHARED-WEB-UI-001",
+      "block_code": "BLOQUE H",
+      "block_title": "Fundación compartida",
+      "selectors": [{ "prefix": "SHELL-UI" }]
+    },
+    {
+      "sequence_id": "H-SHARED-WEB-MIGRATION-001",
+      "block_code": "BLOQUE H",
+      "block_title": "Fundación compartida",
+      "selectors": [{ "prefix": "SHELL-MIG" }]
+    },
+    {
+      "sequence_id": "H-SHARED-NATIVE-001",
+      "block_code": "BLOQUE H",
+      "block_title": "Fundación compartida",
+      "selectors": [{ "prefix": "SHELL-NATIVE" }]
+    },
+    {
+      "sequence_id": "H-SHARED-AUTHORIZATION-001",
+      "block_code": "BLOQUE H",
+      "block_title": "Fundación compartida",
+      "selectors": [{ "prefix": "SHELL-AUTH" }]
+    },
+    {
+      "sequence_id": "H-SHARED-CONTEXT-001",
+      "block_code": "BLOQUE H",
+      "block_title": "Fundación compartida",
+      "selectors": [{ "prefix": "SHELL-CTX" }]
+    },
+    {
+      "sequence_id": "H2-SHELL-APP-001",
+      "block_code": "BLOQUE H2",
+      "block_title": "SHELL aplicación",
+      "selectors": [{ "prefix": "SHELL-APP" }]
+    }
+  ]
+}
