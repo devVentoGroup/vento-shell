@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **485** |
+| Tareas aprobadas | **487** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1109** |
+| Tareas no iniciadas | **1107** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **30.43% (485/1594)** |
+| Porcentaje de completamiento | **30.55% (487/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados** |
-| Tarea actual | **NINGUNA — SECUENCIA DOCUMENTAL COMPLETA** |
-| Estado de la tarea actual | **SECUENCIA DOCUMENTAL COMPLETA** |
-| Siguiente tarea | **SHELL-PKG-001 — Elegir mecanismo de distribución** |
+| Última tarea aprobada | **SHELL-PKG-002 — Definir versionado semántico** |
+| Tarea actual | **SHELL-PKG-003 — Definir tags y releases** |
+| Estado de la tarea actual | **NO INICIADA** |
+| Siguiente tarea | **SHELL-PKG-004 — Definir política de compatibilidad** |
 | Bloque actual | **BLOQUE H — Fundación compartida** |
-| Progreso del bloque | **BLOQUE H: 11 de 11 aprobadas; secuencia documental completa** |
+| Progreso del bloque | **BLOQUE H: 2 de 8 aprobadas; SHELL-PKG-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-AUD-011` — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados |
-| Tarea actual | NINGUNA — **SECUENCIA DOCUMENTAL COMPLETA** |
-| Siguiente tarea | `SHELL-PKG-001` — Elegir mecanismo de distribución |
+| Última aprobada | `SHELL-PKG-002` — Definir versionado semántico |
+| Tarea actual | `SHELL-PKG-003` — Definir tags y releases — **NO INICIADA** |
+| Siguiente tarea | `SHELL-PKG-004` — Definir política de compatibilidad |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE H | **11 DE 11 APROBADAS — SECUENCIA DOCUMENTAL COMPLETA** |
+| BLOQUE H | **2 DE 8 APROBADAS — ACTUAL SHELL-PKG-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,13 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados
+SHELL-PKG-002 — Definir versionado semántico
         ↓
-SECUENCIA DOCUMENTAL COMPLETA
+TAREA ACTUAL
+SHELL-PKG-003 — Definir tags y releases
         ↓
 SIGUIENTE TAREA RESERVADA
-SHELL-PKG-001 — Elegir mecanismo de distribución
+SHELL-PKG-004 — Definir política de compatibilidad
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 11 de 11 tareas aprobadas
+BLOQUE H — 2 de 8 tareas aprobadas
 ```

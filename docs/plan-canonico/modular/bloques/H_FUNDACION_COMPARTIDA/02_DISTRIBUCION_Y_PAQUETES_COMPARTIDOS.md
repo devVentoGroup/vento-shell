@@ -16,7 +16,7 @@ Esta sección organiza **distribucion y paquetes compartidos** dentro de **H FUN
 **Bloque:** H — Fundación compartida
 **Tipo:** decisión documental vinculante de arquitectura de distribución de paquetes compartidos
 **Entrada de continuidad:** `SHELL-AUD-011 — Clasificar y retirar rutas, componentes, funciones, scripts y endpoints sin consumidores confirmados`
-**Continuidad inmediata reservada:** `SHELL-PKG-002 — Elegir ownership por package`
+**Continuidad inmediata reservada:** `SHELL-PKG-002 — Definir versionado semántico`
 **Fecha de corte:** 2026-08-01
 **Repositorio propietario de la distribución:** `devVentoGroup/vento-shell`
 **Cambios en código, paquetes publicados, configuración de registry, CI, secretos, despliegues, consumidores o Supabase:** no autorizados ni realizados
@@ -513,13 +513,601 @@ fuente única en vento-shell
 La única continuidad inmediata reservada es:
 
 ```text
-SHELL-PKG-002 — Elegir ownership por package
+SHELL-PKG-002 — Definir versionado semántico
 ```
 
 No se inicia, desarrolla ni modifica dentro de esta tarea.
 
 
-### [ ] SHELL-PKG-002 — Definir versionado semántico
+### ✅ SHELL-PKG-002 — Definir versionado semántico
+
+**Estado:** APROBADA
+**Bloque:** H — Fundación compartida
+**Tipo:** definición documental vinculante de versionado semántico para paquetes compartidos
+**Entrada de continuidad:** `SHELL-PKG-001 — Elegir mecanismo de distribución`
+**Continuidad inmediata reservada:** `SHELL-PKG-003 — Definir tags y releases`
+**Fecha de corte:** 2026-08-01
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Estándar base:** Semantic Versioning 2.0.0
+**Cambios en código, packages, registry, tags, releases, CI, consumidores, secretos o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado material de esta tarea
+
+Los paquetes compartidos de VENTO utilizarán versionado semántico independiente por paquete:
+
+```text
+MAJOR.MINOR.PATCH
+```
+
+La versión comunica el impacto del cambio sobre el API público de cada paquete:
+
+```text
+MAJOR
+→ cambio incompatible
+
+MINOR
+→ funcionalidad pública nueva y compatible
+
+PATCH
+→ corrección compatible sin ampliar ni romper el API público
+```
+
+La política se aplica inicialmente a:
+
+1. `@vento/contracts`;
+2. `@vento/os-context`;
+3. `@vento/supabase`;
+4. `@vento/ui-web`.
+
+Cada paquete evoluciona de manera independiente. Compartir repositorio, commit, workflow o fecha de publicación no obliga a compartir número de versión.
+
+| Métrica                                     |            Resultado |
+| ------------------------------------------- | -------------------: |
+| Paquetes iniciales clasificados             |                **4** |
+| Esquemas de versión permitidos              | **1 — SemVer 2.0.0** |
+| Componentes obligatorios de versión estable |                **3** |
+| Niveles de incremento ordinario             |                **3** |
+| Familias de prerelease admitidas            |                **3** |
+| Versiones publicadas modificables           |                **0** |
+| Versiones sincronizadas obligatoriamente    |                **0** |
+| Decisiones vinculantes                      |               **24** |
+| Hallazgos con destino exacto                |               **12** |
+| Cambios `TREQ-*`                            |                **0** |
+
+---
+
+#### 2. Fuentes y corte reproducible
+
+| Fuente                                                            | Uso                                                                                  |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`                      | continuidad, trazabilidad, tareas existentes y requisitos de prueba                  |
+| `docs/plan-canonico/modular/delivery-contract.json`               | contrato físico del artefacto                                                        |
+| `docs/plan-canonico/modular/active-sequence.json`                 | segmento `SHELL-PKG-001..008`                                                        |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`                       | propietario y títulos canónicos del mini-bloque                                      |
+| `SHELL-PKG-001`                                                   | paquetes npm privados, registry compatible con npm, versiones exactas y lockfiles    |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`                      | familias, contratos y consumidores que originan los paquetes                         |
+| `03_CONTRATOS_COMPARTIDOS.md`                                     | propietario de `@vento/contracts`                                                    |
+| `03_AUTORIZACION_Y_CONTEXTO_COMPARTIDOS.md`                       | propietario de `@vento/os-context`                                                   |
+| `06_ACCESO_COMPARTIDO_A_DATOS.md`                                 | propietario de `@vento/supabase`                                                     |
+| `07_COMPONENTES_WEB_COMPARTIDOS.md`                               | propietario de `@vento/ui-web`                                                       |
+| `T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` | pruebas, build, releases, changelog, compatibilidad y PRs                            |
+| `package.json` de `vento-shell`                                   | workspace `packages/*` y versión privada del repositorio                             |
+| `packages/os-context/package.json`                                | evidencia de `@vento/os-context@0.1.0`, `private: true` y export directo desde `src` |
+| Semantic Versioning 2.0.0                                         | semántica normativa de `MAJOR.MINOR.PATCH`, prerelease e inmutabilidad               |
+| documentación oficial de npm                                      | uso de SemVer en packages publicados                                                 |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`                | compatibilidad, rollback, evidencia y trazabilidad vigentes                          |
+
+**Commit remoto inspeccionado:** `4424ab99b8b989d2a05580a437ca3eecb3fab3c9`.
+
+La versión raíz `vento-shell@0.1.0` y la versión local `@vento/os-context@0.1.0` no constituyen releases canónicos publicados. El paquete existente permanece privado y exporta código fuente; por tanto, su número actual es metadata transitoria del workspace y no establece precedente para la primera versión estable.
+
+---
+
+#### 3. Alcance exacto
+
+Esta tarea define:
+
+1. formato canónico de versión;
+2. unidad independiente de versionado;
+3. significado de `MAJOR`, `MINOR` y `PATCH`;
+4. tratamiento de prereleases;
+5. punto de inicio de la primera versión estable;
+6. clasificación de cambios por superficie pública;
+7. reglas para dependencias internas entre packages;
+8. reglas para tipos y artefactos generados;
+9. relación entre versión, commit, contenido e inmutabilidad;
+10. procedimiento determinista de decisión de incremento;
+11. casos que no producen release;
+12. evidencia mínima que deberá registrar la decisión.
+
+Esta tarea no define:
+
+| Materia                                      | Tarea propietaria                                                 |
+| -------------------------------------------- | ----------------------------------------------------------------- |
+| nombres, formato y movimiento de tags        | `SHELL-PKG-003`                                                   |
+| creación y publicación de releases           | `SHELL-PKG-003`; `SHELL-CI-003`                                   |
+| matriz concreta de compatibilidad soportada  | `SHELL-PKG-004`; `SHELL-CI-005`                                   |
+| ventanas y retiro de APIs deprecadas         | `SHELL-PKG-005`                                                   |
+| rollback operativo por aplicación            | `SHELL-PKG-006`                                                   |
+| PRs de actualización de consumidores         | `SHELL-PKG-007`; `SHELL-CI-006`                                   |
+| gates automáticos antes de actualizar        | `SHELL-PKG-008`; `SHELL-CI-001`                                   |
+| API pública concreta de cada package         | tareas `SHELL-CON-*`, `SHELL-AUTH-*`, `SHELL-DB-*` y `SHELL-UI-*` |
+| build, declarations y exports publicables    | `SHELL-CI-002` y tareas propietarias de cada package              |
+| proveedor, credenciales o publicación física | `SHELL-CI-003` después de la puerta aplicable                     |
+
+---
+
+#### 4. Unidad canónica de versionado
+
+La unidad de versión será cada package publicado:
+
+| Package             | Propietario técnico de contenido                         | Serie de versión |
+| ------------------- | -------------------------------------------------------- | ---------------- |
+| `@vento/contracts`  | `SHELL-CON-001` y tareas `SHELL-CON-*`                   | independiente    |
+| `@vento/os-context` | `SHELL-AUTH-001` y tareas `SHELL-AUTH-*` / `SHELL-CTX-*` | independiente    |
+| `@vento/supabase`   | `SHELL-DB-001` y tareas `SHELL-DB-*`                     | independiente    |
+| `@vento/ui-web`     | `SHELL-UI-001` y tareas `SHELL-UI-*`                     | independiente    |
+
+Reglas vinculantes:
+
+- no existe una versión global obligatoria para toda la fundación compartida;
+- no se incrementará un package sin cambio material solo para igualar otro;
+- un mismo commit puede publicar cero, uno o varios packages;
+- cuando cambien varios packages, cada uno recibe su propia clasificación;
+- la coordinación de publicación no convierte las versiones en lockstep;
+- la versión raíz privada de `vento-shell` no sustituye las versiones de packages.
+
+---
+
+#### 5. Formato canónico
+
+Una versión estable tendrá exactamente:
+
+```text
+X.Y.Z
+```
+
+Donde:
+
+- `X`, `Y` y `Z` son enteros no negativos;
+- no se permiten ceros iniciales;
+- una versión publicada no puede cambiar de contenido;
+- cualquier cambio en el artefacto publicado exige otra versión;
+- el orden se calcula por `MAJOR`, luego `MINOR`, luego `PATCH` y finalmente prerelease;
+- metadata de build no altera precedencia.
+
+Patrón estructural aplicable:
+
+```regex
+^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(?:-([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?(?:\+([0-9A-Za-z-]+(?:\.[0-9A-Za-z-]+)*))?$
+```
+
+VENTO no utilizará metadata `+build` como identidad canónica de release. Commit, workflow, checksum, registry y artefacto se conservarán en metadata de procedencia separada. Esto evita tratar dos artefactos con igual precedencia SemVer como releases funcionalmente distintas.
+
+---
+
+#### 6. API público que gobierna el incremento
+
+El API público de un package comprende todo lo que un consumidor soportado puede importar, instanciar, configurar, renderizar, recibir o interpretar:
+
+| Superficie     | Ejemplos                                                          |
+| -------------- | ----------------------------------------------------------------- |
+| exports        | entrypoints y subpaths declarados en `exports`                    |
+| tipos          | tipos, interfaces, unions, enums, generics y firmas exportadas    |
+| funciones      | parámetros, retorno, errores, side effects y semántica observable |
+| contratos      | schemas, códigos, catálogos, manifest, hashes y diagnósticos      |
+| autorización   | decisiones, razones, scopes, guards y contexto efectivo           |
+| acceso a datos | factories, adapters, tipos `Database`, RPC y errores normalizados |
+| UI             | props, eventos, DOM/semántica accesible, tokens y CSS requeridos  |
+| compatibilidad | peer dependencies, engines, módulos y entornos soportados         |
+
+Un archivo interno no es público por su ubicación. Un elemento es público cuando se exporta o su efecto observable forma parte del contrato soportado.
+
+La clasificación se realiza contra la última versión publicada estable del mismo package. Para prereleases se compara contra la base estable objetivo y contra la prerelease inmediatamente anterior.
+
+---
+
+#### 7. Reglas de incremento
+
+##### 7.1. `PATCH`
+
+Incrementa `Z` y conserva `X.Y` cuando el cambio es compatible y no amplía el API público:
+
+- corrección de comportamiento defectuoso que restaura el contrato documentado;
+- corrección de seguridad sin romper consumidores soportados;
+- mejora interna de rendimiento sin alterar resultado, orden, errores ni API;
+- actualización de dependencia interna que no cambia API ni compatibilidad;
+- corrección de build, declarations o packaging sin cambiar imports soportados;
+- ajuste de implementación privada no observable;
+- corrección de documentación incluida en el package cuando el artefacto publicado cambia, pero el API no.
+
+Ejemplo:
+
+```text
+1.4.2 → 1.4.3
+```
+
+##### 7.2. `MINOR`
+
+Incrementa `Y`, reinicia `Z` a cero y conserva `X` cuando se añade funcionalidad pública compatible:
+
+- nuevo export opcional y aditivo;
+- nueva función que no modifica las existentes;
+- nuevo parámetro o prop verdaderamente opcional con comportamiento por defecto compatible;
+- ampliación compatible de un schema abierto;
+- ampliación de plataformas o peer dependencies soportadas sin retirar soporte;
+- nueva capacidad que consumidores anteriores pueden ignorar;
+- marcación de una API pública como deprecada, sin retirarla ni cambiar su comportamiento soportado.
+
+Ejemplo:
+
+```text
+1.4.3 → 1.5.0
+```
+
+##### 7.3. `MAJOR`
+
+Incrementa `X` y reinicia `Y.Z` a cero cuando existe cualquier incompatibilidad para un consumidor soportado:
+
+- eliminar, renombrar o mover un export o subpath;
+- cambiar firma, tipo de retorno o semántica observable;
+- convertir parámetro, campo o prop opcional en obligatorio;
+- eliminar, renombrar o volver obligatorio un campo de schema;
+- estrechar un tipo o validación de forma que rechace entradas antes válidas;
+- agregar un miembro a una union o enum cerrado que obligue a actualizar exhaustividad;
+- cambiar códigos, razones o significado de decisiones de autorización;
+- cambiar estados, errores o contratos de RPC incompatiblemente;
+- retirar o renombrar token, clase o requisito CSS público;
+- cambiar DOM, accesibilidad o eventos cuando rompa el contrato soportado;
+- eliminar una plataforma, engine o versión de peer dependency antes soportada;
+- cambiar formato de módulo, entrypoint o estrategia de importación con migración requerida;
+- retirar una API deprecada.
+
+Ejemplo:
+
+```text
+1.5.0 → 2.0.0
+```
+
+La urgencia, severidad o tamaño del diff no determina el nivel. El nivel lo determina la compatibilidad del API público.
+
+---
+
+#### 8. Matriz materializada de cambios
+
+| ID                | Cambio                                                       | Nivel mínimo                 | Justificación                             |
+| ----------------- | ------------------------------------------------------------ | ---------------------------- | ----------------------------------------- |
+| `SEMVER-CASE-001` | corrección interna sin salida observable distinta            | `PATCH`                      | restaura o conserva contrato              |
+| `SEMVER-CASE-002` | corrección de seguridad compatible                           | `PATCH`                      | riesgo alto no implica ruptura            |
+| `SEMVER-CASE-003` | nuevo export independiente                                   | `MINOR`                      | capacidad aditiva                         |
+| `SEMVER-CASE-004` | nuevo parámetro opcional con default compatible              | `MINOR`                      | consumidores existentes siguen válidos    |
+| `SEMVER-CASE-005` | marcar API como deprecada                                    | `MINOR`                      | aviso público aditivo antes del retiro    |
+| `SEMVER-CASE-006` | eliminar API deprecada                                       | `MAJOR`                      | consumidor debe migrar                    |
+| `SEMVER-CASE-007` | renombrar o mover export                                     | `MAJOR`                      | rompe import existente                    |
+| `SEMVER-CASE-008` | agregar campo obligatorio                                    | `MAJOR`                      | entradas anteriores dejan de ser válidas  |
+| `SEMVER-CASE-009` | agregar campo opcional a objeto abierto                      | `MINOR`                      | extensión compatible                      |
+| `SEMVER-CASE-010` | agregar miembro a union cerrada                              | `MAJOR`                      | puede romper consumidores exhaustivos     |
+| `SEMVER-CASE-011` | ampliar peer range soportado                                 | `MINOR`                      | soporte público adicional                 |
+| `SEMVER-CASE-012` | retirar una versión antes soportada de peer/engine           | `MAJOR`                      | reduce compatibilidad declarada           |
+| `SEMVER-CASE-013` | actualizar dependencia privada sin efecto público            | `PATCH`                      | artefacto cambia sin romper API           |
+| `SEMVER-CASE-014` | cambiar dependencia y tipos públicos expuestos               | según impacto, hasta `MAJOR` | el contrato transitivo también es público |
+| `SEMVER-CASE-015` | cambiar token o requisito CSS público                        | `MAJOR`                      | rompe composición visual soportada        |
+| `SEMVER-CASE-016` | añadir componente o token sin alterar existentes             | `MINOR`                      | superficie aditiva                        |
+| `SEMVER-CASE-017` | regenerar tipos con output idéntico                          | `NO_RELEASE`                 | no existe cambio distribuible             |
+| `SEMVER-CASE-018` | regenerar tipos con adición compatible                       | `MINOR`                      | contrato generado aditivo                 |
+| `SEMVER-CASE-019` | regenerar tipos con eliminación o estrechamiento             | `MAJOR`                      | contrato generado incompatible            |
+| `SEMVER-CASE-020` | modificar solo documentación fuera del tarball               | `NO_RELEASE`                 | package publicado no cambia               |
+| `SEMVER-CASE-021` | modificar tests sin cambiar output del package               | `NO_RELEASE`                 | no existe cambio distribuible             |
+| `SEMVER-CASE-022` | cambiar package.json publicado sin impacto público adicional | `PATCH`                      | manifiesto del artefacto cambia           |
+
+**Conciliación:** 22 casos esperados, 22 materializados, 0 faltantes y 0 duplicados.
+
+---
+
+#### 9. Primera versión estable y prereleases
+
+##### 9.1. Versión estable inicial
+
+La primera versión estable publicable de cada package será:
+
+```text
+1.0.0
+```
+
+`1.0.0` declara que el API público inicial está definido y gobernado. Las versiones `0.x` existentes dentro del workspace se consideran metadata de desarrollo y no releases estables canónicos.
+
+No se publicará una versión estable inicial hasta que el package tenga:
+
+1. API pública documentada;
+2. exports y subpaths definitivos para esa serie mayor;
+3. build distribuible sin export directo desde `src`;
+4. declarations de TypeScript coherentes;
+5. `private: false` solo durante la preparación autorizada de publicación;
+6. pruebas propias aplicables;
+7. matriz de compatibilidad con consumidores;
+8. procedencia de commit y checksum;
+9. política de rollback aplicable;
+10. ausencia de placeholders o exports transitorios no declarados;
+11. instalación reproducible desde el registry candidato;
+12. puerta `E5-GATE-008::<package_id>` superada cuando corresponda.
+
+##### 9.2. Prereleases
+
+Antes de `1.0.0` estable podrán existir exclusivamente prereleases de la serie objetivo:
+
+```text
+1.0.0-alpha.N
+1.0.0-beta.N
+1.0.0-rc.N
+```
+
+Donde `N` es entero positivo sin ceros iniciales.
+
+Semántica interna:
+
+| Familia   | Uso                                                      |
+| --------- | -------------------------------------------------------- |
+| `alpha.N` | API y packaging todavía sujetos a cambios frecuentes     |
+| `beta.N`  | API candidata con integración de consumidores en curso   |
+| `rc.N`    | candidato de release sin cambios incompatibles previstos |
+
+Las reglas de tags, canales, promoción y publicación pertenecen a `SHELL-PKG-003`. Esta tarea solo define sintaxis, precedencia y significado de compatibilidad.
+
+Una prerelease tiene precedencia inferior a su versión estable asociada. No se promueve cambiando bytes bajo el mismo número: cada artefacto distinto recibe un identificador nuevo.
+
+---
+
+#### 10. Dependencias entre packages VENTO
+
+Los packages publicados usarán versiones exactas para dependencias internas `@vento/*`.
+
+Ejemplo:
+
+```json
+{
+  "dependencies": {
+    "@vento/contracts": "1.3.0"
+  }
+}
+```
+
+Reglas:
+
+1. no se usarán `^`, `~`, `*`, `latest`, URLs Git ni rangos flotantes entre packages VENTO publicados;
+2. actualizar una dependencia exacta modifica el artefacto dependiente y exige al menos `PATCH`;
+3. si el cambio de dependencia amplía el API público del dependiente, será al menos `MINOR`;
+4. si rompe su API público o compatibilidad, será `MAJOR`;
+5. no se incrementarán todos los dependientes solo porque un package fue publicado;
+6. se publicará un dependiente únicamente cuando cambie su manifiesto, output o contrato;
+7. los consumidores aplicación conservarán versión exacta y lockfile conforme a `SHELL-PKG-001`;
+8. peer dependencies externas podrán usar rangos explícitos soportados, gobernados por `SHELL-PKG-004`.
+
+---
+
+#### 11. Regla para cambios multi-package
+
+Cada cambio se clasifica por package afectado:
+
+```text
+identificar packages con bytes o manifiesto distintos
+→ comparar API pública por package
+→ clasificar NO_RELEASE / PATCH / MINOR / MAJOR
+→ propagar dependencias exactas cuando corresponda
+→ recalcular el impacto del dependiente
+→ registrar la versión propuesta por package
+```
+
+Ejemplo vinculante:
+
+| Package             | Cambio                                       | Resultado    |
+| ------------------- | -------------------------------------------- | ------------ |
+| `@vento/contracts`  | nuevo schema opcional compatible             | `MINOR`      |
+| `@vento/os-context` | actualiza dependencia exacta y no cambia API | `PATCH`      |
+| `@vento/supabase`   | no cambia                                    | `NO_RELEASE` |
+| `@vento/ui-web`     | no cambia                                    | `NO_RELEASE` |
+
+No existe obligación de publicar los cuatro packages juntos.
+
+---
+
+#### 12. Procedimiento determinista de clasificación
+
+Para cada package con cambio distribuible:
+
+1. identificar la última versión publicada de referencia;
+2. enumerar exports y comportamiento público antes y después;
+3. identificar consumidores soportados y peer ranges vigentes;
+4. clasificar cada cambio individual;
+5. elegir el nivel más alto encontrado;
+6. recalcular dependencias internas exactas;
+7. confirmar que el número resultante no fue publicado previamente;
+8. vincular versión propuesta con commit y artefacto construido;
+9. ejecutar pruebas y matriz de compatibilidad antes de publicar;
+10. registrar aprobación de la clasificación;
+11. delegar tag y release a `SHELL-PKG-003`;
+12. impedir publicación cuando exista discrepancia entre contenido, versión o evidencia.
+
+Regla de precedencia:
+
+```text
+MAJOR > MINOR > PATCH > NO_RELEASE
+```
+
+La existencia de varios cambios no suma niveles. Se aplica el mayor impacto contractual.
+
+---
+
+#### 13. Registro obligatorio de decisión de versión
+
+Toda propuesta de release deberá producir una instancia con:
+
+| Campo                    | Obligación                                 |
+| ------------------------ | ------------------------------------------ |
+| `package_name`           | nombre exacto `@vento/*`                   |
+| `current_version`        | última versión publicada de referencia     |
+| `proposed_version`       | versión SemVer calculada                   |
+| `change_class`           | `NO_RELEASE`, `PATCH`, `MINOR` o `MAJOR`   |
+| `public_api_before`      | manifest o snapshot de API anterior        |
+| `public_api_after`       | manifest o snapshot de API propuesta       |
+| `breaking_changes`       | lista explícita o `NONE`                   |
+| `dependency_changes`     | dependencias internas y externas afectadas |
+| `consumer_impact`        | consumidores y migración requerida         |
+| `source_commit`          | commit exacto                              |
+| `artifact_integrity`     | checksum del tarball construido            |
+| `compatibility_evidence` | matriz y pruebas aplicables                |
+| `decision_owner`         | tarea propietaria del package              |
+| `release_gate`           | resultado del gate correspondiente         |
+
+El registro es entrada obligatoria para `SHELL-PKG-003`, `SHELL-CI-003` y el changelog automatizado de `SHELL-CI-004`.
+
+---
+
+#### 14. Prácticas prohibidas
+
+Queda prohibido:
+
+- reutilizar una versión publicada con contenido distinto;
+- sobrescribir una versión para corregirla;
+- incrementar por fecha, cantidad de commits o tamaño del diff;
+- usar una versión global para forzar sincronización de packages independientes;
+- publicar cambios incompatibles como `PATCH` o `MINOR`;
+- usar `0.x` publicado como sustituto permanente de una política de compatibilidad;
+- ocultar una ruptura mediante prerelease o metadata de build;
+- omitir incremento cuando cambia el tarball o manifiesto publicado;
+- publicar un dependiente con referencia interna inexistente;
+- usar rangos flotantes para dependencias internas VENTO;
+- considerar una rama, commit o tag como sustituto del número de package;
+- declarar compatible un cambio sin revisar la superficie pública y los consumidores;
+- convertir una corrección urgente en excepción a SemVer;
+- deducir el incremento únicamente desde Conventional Commits o el texto del PR;
+- publicar antes de que la clasificación y evidencia coincidan.
+
+---
+
+#### 15. Decisiones por identidad
+
+| ID               | Decisión                                             | Estado                   | Destino                                |
+| ---------------- | ---------------------------------------------------- | ------------------------ | -------------------------------------- |
+| `PKG-SEMVER-001` | adoptar SemVer 2.0.0                                 | `DECIDIDO`               | todos los packages `@vento/*`          |
+| `PKG-SEMVER-002` | versionar cada package independientemente            | `DECIDIDO`               | manifests y release pipeline           |
+| `PKG-SEMVER-003` | usar `MAJOR.MINOR.PATCH` sin ceros iniciales         | `DECIDIDO`               | validador de versión                   |
+| `PKG-SEMVER-004` | clasificar por API público, no por tamaño o urgencia | `DECIDIDO`               | registro de decisión                   |
+| `PKG-SEMVER-005` | usar `PATCH` para corrección compatible              | `DECIDIDO`               | release classification                 |
+| `PKG-SEMVER-006` | usar `MINOR` para capacidad pública aditiva          | `DECIDIDO`               | release classification                 |
+| `PKG-SEMVER-007` | usar `MAJOR` para incompatibilidad                   | `DECIDIDO`               | release classification                 |
+| `PKG-SEMVER-008` | usar como primera estable `1.0.0`                    | `DECIDIDO`               | primer release estable de cada package |
+| `PKG-SEMVER-009` | tratar `0.1.0` actual como metadata transitoria      | `DECIDIDO`               | `@vento/os-context`                    |
+| `PKG-SEMVER-010` | admitir `alpha.N`, `beta.N` y `rc.N`                 | `DECIDIDO`               | prereleases previas a estable          |
+| `PKG-SEMVER-011` | no usar build metadata como identidad canónica       | `DECIDIDO`               | procedencia separada                   |
+| `PKG-SEMVER-012` | prohibir mutación de versión publicada               | `DECIDIDO`               | registry y release gate                |
+| `PKG-SEMVER-013` | usar versiones exactas entre packages VENTO          | `DECIDIDO`               | manifests publicados                   |
+| `PKG-SEMVER-014` | exigir al menos PATCH al cambiar dependencia exacta  | `DECIDIDO`               | package dependiente                    |
+| `PKG-SEMVER-015` | aplicar el mayor impacto de un conjunto de cambios   | `DECIDIDO`               | algoritmo de clasificación             |
+| `PKG-SEMVER-016` | no publicar cuando no cambia el artefacto            | `DECIDIDO`               | `NO_RELEASE`                           |
+| `PKG-SEMVER-017` | clasificar tipos y outputs generados por impacto     | `DECIDIDO`               | `@vento/contracts`; `@vento/supabase`  |
+| `PKG-SEMVER-018` | considerar CSS y accesibilidad parte del API UI      | `DECIDIDO`               | `@vento/ui-web`                        |
+| `PKG-SEMVER-019` | considerar razones y decisiones parte del API auth   | `DECIDIDO`               | `@vento/os-context`                    |
+| `PKG-SEMVER-020` | considerar reducción de peer support como ruptura    | `DECIDIDO`               | compatibilidad y release               |
+| `PKG-SEMVER-021` | registrar snapshots de API antes y después           | `DECIDIDO`               | `SHELL-CI-001`; `SHELL-CI-002`         |
+| `PKG-SEMVER-022` | vincular versión con commit y checksum               | `DECIDIDO`               | `SHELL-PKG-003`; `SHELL-CI-003`        |
+| `PKG-SEMVER-023` | dejar tags y promoción a la tarea siguiente          | `RESTRICCION_DE_ALCANCE` | `SHELL-PKG-003`                        |
+| `PKG-SEMVER-024` | no publicar ni modificar packages en esta fase       | `RESTRICCION_CANONICA`   | implementación posterior               |
+
+**Conciliación:** 24 decisiones esperadas, 24 materializadas, 24 identificadores únicos, 0 faltantes y 0 duplicados.
+
+---
+
+#### 16. Hallazgos y destinos exactos
+
+| ID                    | Hallazgo                                                                   | Estado                        | Destino                                                  |
+| --------------------- | -------------------------------------------------------------------------- | ----------------------------- | -------------------------------------------------------- |
+| `H-SHELL-PKG-002-001` | `vento-shell` tiene versión raíz privada `0.1.0`                           | `METADATA_NO_DISTRIBUIBLE`    | no usar como versión de packages                         |
+| `H-SHELL-PKG-002-002` | `@vento/os-context` declara `0.1.0` y `private: true`                      | `WORKSPACE_TRANSITORIO`       | `SHELL-AUTH-001`; `SHELL-CI-002`; primer release `1.0.0` |
+| `H-SHELL-PKG-002-003` | el package actual exporta directamente `src/index.ts`                      | `NO_PUBLICABLE_COMO_ESTABLE`  | `SHELL-AUTH-001`; `SHELL-CI-002`                         |
+| `H-SHELL-PKG-002-004` | no existe una release publicada de referencia                              | `PENDIENTE_DE_IMPLEMENTACION` | `SHELL-PKG-003`; `SHELL-CI-003`                          |
+| `H-SHELL-PKG-002-005` | cuatro familias requieren series independientes                            | `DECISION_CANONICA`           | tareas propietarias y manifests                          |
+| `H-SHELL-PKG-002-006` | contratos y tipos generados pueden romper consumidores sin cambiar runtime | `RIESGO_CONTRACTUAL`          | `SHELL-CI-001`; `SHELL-CI-005`; `SHELL-PKG-004`          |
+| `H-SHELL-PKG-002-007` | CSS, tokens, DOM y accesibilidad pueden ser API público                    | `RIESGO_UI`                   | `SHELL-UI-*`; `SHELL-CI-001`; `SHELL-PKG-004`            |
+| `H-SHELL-PKG-002-008` | decisiones y razones de autorización son contrato observable               | `RIESGO_DE_AUTORIZACION`      | `SHELL-AUTH-*`; `SHELL-CI-001`; `SHELL-PKG-004`          |
+| `H-SHELL-PKG-002-009` | dependencias internas exactas requieren propagación controlada             | `DECISION_CANONICA`           | `SHELL-PKG-007`; `SHELL-CI-006`                          |
+| `H-SHELL-PKG-002-010` | el incremento no puede depender solo del mensaje de commit                 | `DECISION_CANONICA`           | clasificador y revisión de API                           |
+| `H-SHELL-PKG-002-011` | prerelease no equivale a release estable                                   | `DECISION_CANONICA`           | `SHELL-PKG-003`                                          |
+| `H-SHELL-PKG-002-012` | la versión debe corresponder a bytes y procedencia inmutables              | `DECISION_CANONICA`           | `SHELL-PKG-003`; `SHELL-CI-003`; `SHELL-CI-004`          |
+
+**Conciliación:** 12 hallazgos, 12 destinos exactos y 0 pendientes sin propietario o condición de salida.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa la interpretación de versión de los packages ya protegidos por requisitos vigentes, sin introducir comportamiento runtime ni una nueva superficie ejecutable. La publicación y adopción de cada versión ya deben superar pruebas propias y matriz de consumidores por `TREQ-SHELL-006`; el rollback entre versiones permanece protegido por `TREQ-SHELL-007`; la declaración y evidencia por package/PR se conserva bajo `TREQ-SHELL-008`; y la procedencia verificable por repositorio y commit permanece bajo `TREQ-SHELL-009`. La futura automatización deberá consumir estas reglas en `SHELL-PKG-008` y `SHELL-CI-001..005`, sin crear en esta tarea una segunda obligación duplicada.
+
+| Operación sobre `TREQ-*` | Cantidad |
+| ------------------------ | -------: |
+| creados                  |    **0** |
+| modificados              |    **0** |
+| diferidos                |    **0** |
+| descartados              |    **0** |
+| obsoletos                |    **0** |
+
+No corresponde generar una copia de `04A`.
+
+---
+
+#### 18. Criterios de aceptación
+
+`SHELL-PKG-002` queda materialmente completa porque:
+
+- define SemVer 2.0.0 como único esquema canónico;
+- define una serie independiente para cada package;
+- materializa el significado de `PATCH`, `MINOR` y `MAJOR`;
+- clasifica 22 casos concretos sin omisiones;
+- identifica el API público por familia;
+- fija `1.0.0` como primera versión estable;
+- distingue metadata `0.1.0` de una release publicada;
+- define `alpha.N`, `beta.N` y `rc.N` sin invadir tags/releases;
+- prohíbe mutar una versión publicada;
+- prohíbe rangos flotantes entre packages VENTO;
+- define propagación de dependencias internas;
+- define cambios multi-package sin lockstep;
+- define `NO_RELEASE` cuando no cambia el artefacto;
+- incorpora tipos generados, autorización, CSS y accesibilidad a la clasificación;
+- exige snapshot de API, commit, checksum y evidencia;
+- materializa 24 decisiones y 12 hallazgos;
+- asigna cada pendiente a una tarea existente;
+- declara cero cambios `TREQ-*` con cobertura vigente explícita;
+- no publica, etiqueta ni modifica código, packages, CI, consumidores o Supabase.
+
+---
+
+#### 19. Resultado y continuidad
+
+La decisión resultante es:
+
+```text
+cambio en package
+→ identificar API público afectado
+→ clasificar todos los cambios
+→ elegir impacto máximo
+→ recalcular dependencias exactas
+→ proponer versión SemVer independiente
+→ vincular commit y artefacto
+→ ejecutar compatibilidad
+→ crear tag y release en la tarea propietaria
+```
+
+La única continuidad inmediata reservada es:
+
+```text
+SHELL-PKG-003 — Definir tags y releases
+```
+
+No se inicia, desarrolla ni modifica dentro de este artefacto.
+
 ### [ ] SHELL-PKG-003 — Definir tags y releases
 ### [ ] SHELL-PKG-004 — Definir política de compatibilidad
 ### [ ] SHELL-PKG-005 — Definir política de deprecación

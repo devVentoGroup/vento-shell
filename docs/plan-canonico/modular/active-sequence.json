@@ -1,17 +1,17 @@
 {
   "schema_version": 1,
-  "sequence_id": "H-SHARED-AUDIT-001",
+  "sequence_id": "H-SHARED-PACKAGES-001",
   "block_code": "BLOQUE H",
   "block_title": "Fundación compartida",
-  "previous_task_id": "SUPA-TRANS-016",
+  "previous_task_id": "SHELL-AUD-011",
   "latest_treq_task_id": "SUPA-TRANS-006",
-  "handoff_task_id": "SHELL-PKG-001",
-  "handoff_sequence_id": "H-SHARED-PACKAGES-001",
+  "handoff_task_id": "SHELL-CON-001",
+  "handoff_sequence_id": "H-SHARED-CONTRACTS-001",
   "segments": [
     {
-      "prefix": "SHELL-AUD",
+      "prefix": "SHELL-PKG",
       "from": 1,
-      "to": 11
+      "to": 8
     }
   ]
 }
