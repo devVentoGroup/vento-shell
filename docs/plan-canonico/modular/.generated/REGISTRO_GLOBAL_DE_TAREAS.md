@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **492** |
+| Aprobadas | **493** |
 | En propuesta | **0** |
-| No iniciadas | **1102** |
+| No iniciadas | **1101** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **30.87% (492/1594)** |
+| Porcentaje de completamiento | **30.93% (493/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-PKG-007` — Definir actualizaciones mediante PR | ✅ APROBADA |
-| Tarea actual | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-001` — Crear @vento/contracts | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas | ✅ APROBADA |
+| Tarea actual | `SHELL-CON-001` — Crear @vento/contracts | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CON-002` — Centralizar códigos de aplicaciones | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -705,7 +705,7 @@
 | ✅ APROBADA | `SHELL-PKG-005` | Definir política de deprecación | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-PKG-006` | Definir rollback por aplicación | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-PKG-007` | Definir actualizaciones mediante PR | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-PKG-008` | Evitar actualizaciones automáticas sin pruebas | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-PKG-008` | Evitar actualizaciones automáticas sin pruebas | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-001` | Crear @vento/contracts | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-002` | Centralizar códigos de aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-003` | Centralizar códigos de permisos | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |

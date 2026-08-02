@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **492** |
+| Tareas aprobadas | **493** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1102** |
+| Tareas no iniciadas | **1101** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **30.87% (492/1594)** |
+| Porcentaje de completamiento | **30.93% (493/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-PKG-007 — Definir actualizaciones mediante PR** |
-| Tarea actual | **SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas** |
+| Última tarea aprobada | **SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas** |
+| Tarea actual | **SHELL-CON-001 — Crear @vento/contracts** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CON-001 — Crear @vento/contracts** |
+| Siguiente tarea | **SHELL-CON-002 — Centralizar códigos de aplicaciones** |
 | Bloque actual | **BLOQUE H — Fundación compartida** |
-| Progreso del bloque | **BLOQUE H: 7 de 8 aprobadas; SHELL-PKG-008 pendiente** |
+| Progreso del bloque | **BLOQUE H: 0 de 24 aprobadas; SHELL-CON-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-PKG-007` — Definir actualizaciones mediante PR |
-| Tarea actual | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CON-001` — Crear @vento/contracts |
+| Última aprobada | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas |
+| Tarea actual | `SHELL-CON-001` — Crear @vento/contracts — **NO INICIADA** |
+| Siguiente tarea | `SHELL-CON-002` — Centralizar códigos de aplicaciones |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE H | **7 DE 8 APROBADAS — ACTUAL SHELL-PKG-008** |
+| BLOQUE H | **0 DE 24 APROBADAS — ACTUAL SHELL-CON-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-PKG-007 — Definir actualizaciones mediante PR
-        ↓
-TAREA ACTUAL
 SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-CON-001 — Crear @vento/contracts
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-CON-002 — Centralizar códigos de aplicaciones
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 7 de 8 tareas aprobadas
+BLOQUE H — 0 de 24 tareas aprobadas
 ```

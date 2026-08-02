@@ -3541,20 +3541,20 @@ release inmutable de un package compartido
 
 Ninguna publicación de package modificará directamente un consumidor. Un servicio automatizado podrá preparar una rama, actualizar los archivos autorizados, ejecutar comprobaciones y abrir o mantener un pull request; no podrá fusionarlo, desplegarlo, alterar controles de protección ni convertir una versión nueva en efectiva sin la decisión explícita del repositorio consumidor.
 
-| Métrica                                                        | Resultado |
-| -------------------------------------------------------------- | --------: |
-| Familias de packages gobernadas                                |     **4** |
-| Repositorios web consumidores gobernados                       |     **7** |
-| Relaciones package–consumidor materializadas                   |    **28** |
-| Clases de actualización definidas                              |     **7** |
-| Estados del ciclo de propuesta                                 |    **14** |
-| Operaciones automáticas directas sobre ramas principales       |     **0** |
-| Fusiones automáticas autorizadas                               |     **0** |
-| Despliegues automáticos autorizados por el actualizador        |     **0** |
-| Decisiones vinculantes                                         |    **36** |
-| Hallazgos con destino o condición de salida                    |    **12** |
-| Requisitos `TREQ-*` creados o modificados                      |     **0** |
-| Implementaciones de actualización ejecutadas en esta tarea     |     **0** |
+| Métrica                                                    | Resultado |
+| ---------------------------------------------------------- | --------: |
+| Familias de packages gobernadas                            |     **4** |
+| Repositorios web consumidores gobernados                   |     **7** |
+| Relaciones package–consumidor materializadas               |    **28** |
+| Clases de actualización definidas                          |     **7** |
+| Estados del ciclo de propuesta                             |    **14** |
+| Operaciones automáticas directas sobre ramas principales   |     **0** |
+| Fusiones automáticas autorizadas                           |     **0** |
+| Despliegues automáticos autorizados por el actualizador    |     **0** |
+| Decisiones vinculantes                                     |    **36** |
+| Hallazgos con destino o condición de salida                |    **12** |
+| Requisitos `TREQ-*` creados o modificados                  |     **0** |
+| Implementaciones de actualización ejecutadas en esta tarea |     **0** |
 
 ---
 
@@ -3562,23 +3562,23 @@ Ninguna publicación de package modificará directamente un consumidor. Un servi
 
 ##### 2.1. Fuentes vinculantes
 
-| Fuente                                                            | Uso                                                                                                  |
-| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------- |
-| `01_PROTOCOLO.md`                                                 | continuidad, alcance, trazabilidad, evidencia, fases y tratamiento de requisitos                     |
-| `delivery-contract.json`                                         | estructura física del artefacto documental                                                           |
-| `active-sequence.json`                                           | confirmación de `SHELL-PKG-007` como tarea actual                                                     |
-| `continuity-route.json`                                          | ruta normal del BLOQUE H                                                                              |
-| `00_CABECERA_Y_ESTADO.md`                                        | última tarea aprobada, tarea actual y siguiente reservada                                             |
-| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`                      | decisiones aprobadas `SHELL-PKG-001` a `SHELL-PKG-006`                                               |
-| `SHELL-PKG-001 — Elegir mecanismo de distribución`               | registry privado, versiones exactas, lockfile y actualizaciones revisables                           |
-| `SHELL-PKG-002 — Definir versionado semántico`                   | clasificación de cambios y versiones independientes                                                  |
-| `SHELL-PKG-003 — Definir tags y releases`                        | identidad inmutable entre package, versión, tag, release, commit y artefacto                          |
-| `SHELL-PKG-004 — Definir política de compatibilidad`             | cuatro packages, siete consumidores, 28 relaciones y adopción independiente                           |
-| `SHELL-PKG-005 — Definir política de deprecación`                | ventanas, migraciones, retiros y consumidores requeridos                                             |
-| `SHELL-PKG-006 — Definir rollback por aplicación`                | snapshot certificado, manifest y lockfile, rollback independiente y evidencia                         |
-| `01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md`                        | implementación posterior de actualización de consumidores mediante `SHELL-CI-006`                    |
-| `package.json` de `vento-shell`                                  | workspace actual y scripts documentales disponibles                                                  |
-| Registro Canónico de Requisitos de Prueba vigente                | cobertura de compatibilidad, rollback, merge, evidencia por PR, identidad y deprecación              |
+| Fuente                                               | Uso                                                                                     |
+| ---------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                    | continuidad, alcance, trazabilidad, evidencia, fases y tratamiento de requisitos        |
+| `delivery-contract.json`                             | estructura física del artefacto documental                                              |
+| `active-sequence.json`                               | confirmación de `SHELL-PKG-007` como tarea actual                                       |
+| `continuity-route.json`                              | ruta normal del BLOQUE H                                                                |
+| `00_CABECERA_Y_ESTADO.md`                            | última tarea aprobada, tarea actual y siguiente reservada                               |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`          | decisiones aprobadas `SHELL-PKG-001` a `SHELL-PKG-006`                                  |
+| `SHELL-PKG-001 — Elegir mecanismo de distribución`   | registry privado, versiones exactas, lockfile y actualizaciones revisables              |
+| `SHELL-PKG-002 — Definir versionado semántico`       | clasificación de cambios y versiones independientes                                     |
+| `SHELL-PKG-003 — Definir tags y releases`            | identidad inmutable entre package, versión, tag, release, commit y artefacto            |
+| `SHELL-PKG-004 — Definir política de compatibilidad` | cuatro packages, siete consumidores, 28 relaciones y adopción independiente             |
+| `SHELL-PKG-005 — Definir política de deprecación`    | ventanas, migraciones, retiros y consumidores requeridos                                |
+| `SHELL-PKG-006 — Definir rollback por aplicación`    | snapshot certificado, manifest y lockfile, rollback independiente y evidencia           |
+| `01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md`           | implementación posterior de actualización de consumidores mediante `SHELL-CI-006`       |
+| `package.json` de `vento-shell`                      | workspace actual y scripts documentales disponibles                                     |
+| Registro Canónico de Requisitos de Prueba vigente    | cobertura de compatibilidad, rollback, merge, evidencia por PR, identidad y deprecación |
 
 ##### 2.2. Estado técnico actual
 
@@ -3641,24 +3641,24 @@ La implementación del actualizador corresponde a `SHELL-CI-006`. Los controles 
 
 #### 4. Principios vinculantes
 
-| ID               | Principio                     | Obligación                                                                                                  |
-| ---------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------ |
-| `PR-PRINC-001`   | propuesta, no aplicación      | una versión nueva se propone al consumidor; no se vuelve efectiva por publicación                           |
-| `PR-PRINC-002`   | autonomía del consumidor      | cada repositorio decide, valida, fusiona y despliega su actualización                                        |
-| `PR-PRINC-003`   | cambio revisable              | toda adopción o retroceso queda representado por un pull request atribuible                                  |
-| `PR-PRINC-004`   | manifest y lockfile unidos    | ambos archivos cambian como una sola unidad de versión resuelta                                              |
-| `PR-PRINC-005`   | versiones exactas             | no se introducen tags flotantes, rangos abiertos, URLs Git ni resolución implícita                           |
-| `PR-PRINC-006`   | identidad inmutable           | la propuesta referencia una release, commit, tarball e integridad verificables                               |
-| `PR-PRINC-007`   | evidencia por consumidor      | el resultado de otro repositorio no certifica al consumidor actual                                           |
-| `PR-PRINC-008`   | revisión independiente        | el automatizador y el autor del cambio no constituyen por sí solos aprobación suficiente                     |
-| `PR-PRINC-009`   | cero auto-merge               | ningún actualizador fusiona la propuesta                                                                     |
-| `PR-PRINC-010`   | cero auto-deploy              | ningún actualizador despliega la aplicación                                                                  |
-| `PR-PRINC-011`   | rollback preparado            | toda propuesta conserva el snapshot anterior y una ruta restituible                                          |
-| `PR-PRINC-012`   | historial preservado          | cierres, reemplazos, rebases, invalidaciones y supersesiones conservan trazabilidad                           |
-| `PR-PRINC-013`   | privilegio mínimo             | credenciales del actualizador solo alcanzan repositorios y operaciones necesarias                            |
-| `PR-PRINC-014`   | separación de Supabase        | actualizar `@vento/supabase` no autoriza cambios de esquema, datos, funciones, políticas o configuración     |
-| `PR-PRINC-015`   | fail closed                   | evidencia ausente, inconsistente o invalidada impide declarar la propuesta lista                             |
-| `PR-PRINC-016`   | implementación posterior      | esta definición no demuestra que el flujo esté configurado, protegido o operativo                           |
+| ID             | Principio                  | Obligación                                                                                               |
+| -------------- | -------------------------- | -------------------------------------------------------------------------------------------------------- |
+| `PR-PRINC-001` | propuesta, no aplicación   | una versión nueva se propone al consumidor; no se vuelve efectiva por publicación                        |
+| `PR-PRINC-002` | autonomía del consumidor   | cada repositorio decide, valida, fusiona y despliega su actualización                                    |
+| `PR-PRINC-003` | cambio revisable           | toda adopción o retroceso queda representado por un pull request atribuible                              |
+| `PR-PRINC-004` | manifest y lockfile unidos | ambos archivos cambian como una sola unidad de versión resuelta                                          |
+| `PR-PRINC-005` | versiones exactas          | no se introducen tags flotantes, rangos abiertos, URLs Git ni resolución implícita                       |
+| `PR-PRINC-006` | identidad inmutable        | la propuesta referencia una release, commit, tarball e integridad verificables                           |
+| `PR-PRINC-007` | evidencia por consumidor   | el resultado de otro repositorio no certifica al consumidor actual                                       |
+| `PR-PRINC-008` | revisión independiente     | el automatizador y el autor del cambio no constituyen por sí solos aprobación suficiente                 |
+| `PR-PRINC-009` | cero auto-merge            | ningún actualizador fusiona la propuesta                                                                 |
+| `PR-PRINC-010` | cero auto-deploy           | ningún actualizador despliega la aplicación                                                              |
+| `PR-PRINC-011` | rollback preparado         | toda propuesta conserva el snapshot anterior y una ruta restituible                                      |
+| `PR-PRINC-012` | historial preservado       | cierres, reemplazos, rebases, invalidaciones y supersesiones conservan trazabilidad                      |
+| `PR-PRINC-013` | privilegio mínimo          | credenciales del actualizador solo alcanzan repositorios y operaciones necesarias                        |
+| `PR-PRINC-014` | separación de Supabase     | actualizar `@vento/supabase` no autoriza cambios de esquema, datos, funciones, políticas o configuración |
+| `PR-PRINC-015` | fail closed                | evidencia ausente, inconsistente o invalidada impide declarar la propuesta lista                         |
+| `PR-PRINC-016` | implementación posterior   | esta definición no demuestra que el flujo esté configurado, protegido o operativo                        |
 
 ---
 
@@ -3714,15 +3714,15 @@ La secuencia no se reutiliza después de cierre, supersesión, reversión o canc
 
 #### 6. Clases de actualización
 
-| Clase                     | Definición                                                                                 | Exigencia adicional principal                                             |
-| ------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
-| `INITIAL_ADOPTION`        | primera incorporación certificada de un package al consumidor                              | paridad contra la implementación anterior y plan de retiro                |
-| `PATCH_UPDATE`            | corrección compatible conforme a SemVer                                                    | regresión focal y verificación del defecto corregido                       |
-| `MINOR_UPDATE`            | capacidad pública nueva compatible                                                         | escenarios nuevos y ausencia de cambio incompatible                       |
-| `MAJOR_UPDATE`            | cambio incompatible o reducción de soporte                                                 | guía de migración, impacto completo y aprobación reforzada                |
-| `SECURITY_UPDATE`         | actualización motivada por vulnerabilidad o bypass                                         | evaluación de exposición, prioridad, mitigación y no regresión            |
-| `DEPRECATION_MIGRATION`   | migración requerida por superficie o línea de soporte deprecada                            | expediente `DEP-*`, inventario de uso residual y puerta de retiro         |
-| `ROLLBACK_UPDATE`         | restauración del snapshot certificado anterior                                             | expediente `RBK-*`, causa, objetivo restituible y validación posterior     |
+| Clase                   | Definición                                                      | Exigencia adicional principal                                          |
+| ----------------------- | --------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `INITIAL_ADOPTION`      | primera incorporación certificada de un package al consumidor   | paridad contra la implementación anterior y plan de retiro             |
+| `PATCH_UPDATE`          | corrección compatible conforme a SemVer                         | regresión focal y verificación del defecto corregido                   |
+| `MINOR_UPDATE`          | capacidad pública nueva compatible                              | escenarios nuevos y ausencia de cambio incompatible                    |
+| `MAJOR_UPDATE`          | cambio incompatible o reducción de soporte                      | guía de migración, impacto completo y aprobación reforzada             |
+| `SECURITY_UPDATE`       | actualización motivada por vulnerabilidad o bypass              | evaluación de exposición, prioridad, mitigación y no regresión         |
+| `DEPRECATION_MIGRATION` | migración requerida por superficie o línea de soporte deprecada | expediente `DEP-*`, inventario de uso residual y puerta de retiro      |
+| `ROLLBACK_UPDATE`       | restauración del snapshot certificado anterior                  | expediente `RBK-*`, causa, objetivo restituible y validación posterior |
 
 Una misma propuesta puede tener una clase primaria y calificadores secundarios. La clasificación más exigente gobierna aprobaciones, evidencia y bloqueo.
 
@@ -3732,22 +3732,22 @@ Una misma propuesta puede tener una clase primaria y calificadores secundarios. 
 
 ##### 7.1. Estados permitidos
 
-| Estado                  | Significado                                                                                                      |
-| ----------------------- | ---------------------------------------------------------------------------------------------------------------- |
-| `NOT_REQUESTED`         | no existe propuesta para la relación y versión objetivo                                                          |
-| `ELIGIBLE`              | release y relación reúnen insumos mínimos para generar una propuesta                                             |
-| `PR_OPEN`               | pull request creado con identidad, manifest y lockfile                                                           |
-| `VALIDATING`            | comprobaciones y evidencia en ejecución                                                                          |
-| `CHANGES_REQUESTED`     | revisión solicita correcciones o aclaraciones                                                                    |
-| `BLOCKED`               | existe una condición que impide continuar                                                                        |
-| `READY_FOR_REVIEW`      | contenido y evidencia completos para revisión humana                                                             |
-| `APPROVED_FOR_MERGE`    | aprobaciones requeridas vigentes y checks obligatorios correctos                                                 |
-| `MERGED`                | cambio incorporado a la rama destino del consumidor                                                              |
-| `ADOPTION_PENDING`      | merge realizado, despliegue o verificación del ambiente todavía pendiente                                       |
-| `ADOPTED`               | versión desplegada y validada en el ambiente autorizado                                                          |
-| `CLOSED_NO_CHANGE`      | propuesta cerrada sin modificar la rama destino                                                                  |
-| `SUPERSEDED`            | otra propuesta identificada sustituye el objetivo y conserva la relación histórica                               |
-| `REVERTED`              | la rama destino volvió mediante historia auditable a un snapshot soportado                                       |
+| Estado               | Significado                                                                        |
+| -------------------- | ---------------------------------------------------------------------------------- |
+| `NOT_REQUESTED`      | no existe propuesta para la relación y versión objetivo                            |
+| `ELIGIBLE`           | release y relación reúnen insumos mínimos para generar una propuesta               |
+| `PR_OPEN`            | pull request creado con identidad, manifest y lockfile                             |
+| `VALIDATING`         | comprobaciones y evidencia en ejecución                                            |
+| `CHANGES_REQUESTED`  | revisión solicita correcciones o aclaraciones                                      |
+| `BLOCKED`            | existe una condición que impide continuar                                          |
+| `READY_FOR_REVIEW`   | contenido y evidencia completos para revisión humana                               |
+| `APPROVED_FOR_MERGE` | aprobaciones requeridas vigentes y checks obligatorios correctos                   |
+| `MERGED`             | cambio incorporado a la rama destino del consumidor                                |
+| `ADOPTION_PENDING`   | merge realizado, despliegue o verificación del ambiente todavía pendiente          |
+| `ADOPTED`            | versión desplegada y validada en el ambiente autorizado                            |
+| `CLOSED_NO_CHANGE`   | propuesta cerrada sin modificar la rama destino                                    |
+| `SUPERSEDED`         | otra propuesta identificada sustituye el objetivo y conserva la relación histórica |
+| `REVERTED`           | la rama destino volvió mediante historia auditable a un snapshot soportado         |
 
 ##### 7.2. Transiciones ordinarias
 
@@ -3834,46 +3834,46 @@ Queda prohibido dentro de una propuesta de actualización:
 
 Cada expediente `PKG-PR-*` conservará como mínimo:
 
-| Campo                       | Obligación                                                                                   |
-| --------------------------- | -------------------------------------------------------------------------------------------- |
-| `update_id`                 | identificador estable del expediente                                                         |
-| `consumer_repository`       | repositorio consumidor exacto                                                                |
-| `consumer_owner`            | responsable técnico del consumidor                                                           |
-| `target_branch`             | rama destino autorizada                                                                      |
-| `base_commit`               | commit exacto usado como base                                                                |
-| `proposal_commit`           | commit exacto evaluado                                                                       |
-| `remote_pr_ref`             | número o referencia remota del pull request                                                  |
-| `update_class`              | clase primaria y calificadores                                                               |
-| `trigger`                   | release, seguridad, deprecación, incompatibilidad, rollback u otro disparador aprobado      |
-| `package_set_from`          | conjunto exacto instalado antes del cambio                                                   |
-| `package_set_to`            | conjunto exacto objetivo                                                                     |
-| `release_refs`              | tags, releases, commits e integridad de packages                                              |
-| `manifest_before_hash`      | identidad del manifest anterior                                                              |
-| `manifest_after_hash`       | identidad del manifest propuesto                                                             |
-| `lockfile_before_hash`      | identidad del lockfile anterior                                                              |
-| `lockfile_after_hash`       | identidad del lockfile propuesto                                                             |
-| `compatibility_ref`         | manifest y resultados de compatibilidad aplicables                                           |
-| `changelog_ref`             | cambios relevantes por package                                                               |
-| `deprecation_refs`          | expedientes `DEP-*` aplicables o `NONE`                                                       |
-| `security_ref`              | advisory, evaluación o `NONE`                                                                 |
-| `rollback_ref`              | snapshot certificado y expediente aplicable                                                  |
-| `treq_impact`               | requisitos creados, modificados, satisfechos, invalidados o cero cambios                     |
-| `supabase_impact`           | `NO_APLICA` con justificación o tarea propietaria desde `vento-shell`                         |
-| `data_impact`               | evaluación de datos, compatibilidad y migración                                               |
-| `configuration_impact`      | variables, secretos, flags o configuración afectados                                          |
-| `cache_impact`              | invalidación, reconstrucción o no aplicabilidad                                               |
-| `validation_results`        | resultados por package y consumidor ligados al commit                                        |
-| `evidence_refs`             | ejecuciones y artefactos reproducibles                                                        |
-| `required_reviewers`        | propietarios y revisores obligatorios                                                         |
-| `approvals`                 | aprobaciones vigentes ligadas al commit                                                       |
-| `bot_identity`              | identidad automatizada o `MANUAL`                                                             |
-| `opened_at`                 | apertura atribuible                                                                          |
-| `updated_at`                | última modificación atribuible                                                               |
-| `merged_at`                 | momento de merge o `NONE`                                                                     |
-| `deployment_ref`            | despliegue de adopción o `PENDING`                                                            |
-| `outcome`                   | estado final, impacto residual y seguimiento                                                  |
-| `supersedes`                | expediente anterior sustituido o `NONE`                                                       |
-| `superseded_by`             | expediente posterior o `NONE`                                                                 |
+| Campo                  | Obligación                                                                             |
+| ---------------------- | -------------------------------------------------------------------------------------- |
+| `update_id`            | identificador estable del expediente                                                   |
+| `consumer_repository`  | repositorio consumidor exacto                                                          |
+| `consumer_owner`       | responsable técnico del consumidor                                                     |
+| `target_branch`        | rama destino autorizada                                                                |
+| `base_commit`          | commit exacto usado como base                                                          |
+| `proposal_commit`      | commit exacto evaluado                                                                 |
+| `remote_pr_ref`        | número o referencia remota del pull request                                            |
+| `update_class`         | clase primaria y calificadores                                                         |
+| `trigger`              | release, seguridad, deprecación, incompatibilidad, rollback u otro disparador aprobado |
+| `package_set_from`     | conjunto exacto instalado antes del cambio                                             |
+| `package_set_to`       | conjunto exacto objetivo                                                               |
+| `release_refs`         | tags, releases, commits e integridad de packages                                       |
+| `manifest_before_hash` | identidad del manifest anterior                                                        |
+| `manifest_after_hash`  | identidad del manifest propuesto                                                       |
+| `lockfile_before_hash` | identidad del lockfile anterior                                                        |
+| `lockfile_after_hash`  | identidad del lockfile propuesto                                                       |
+| `compatibility_ref`    | manifest y resultados de compatibilidad aplicables                                     |
+| `changelog_ref`        | cambios relevantes por package                                                         |
+| `deprecation_refs`     | expedientes `DEP-*` aplicables o `NONE`                                                |
+| `security_ref`         | advisory, evaluación o `NONE`                                                          |
+| `rollback_ref`         | snapshot certificado y expediente aplicable                                            |
+| `treq_impact`          | requisitos creados, modificados, satisfechos, invalidados o cero cambios               |
+| `supabase_impact`      | `NO_APLICA` con justificación o tarea propietaria desde `vento-shell`                  |
+| `data_impact`          | evaluación de datos, compatibilidad y migración                                        |
+| `configuration_impact` | variables, secretos, flags o configuración afectados                                   |
+| `cache_impact`         | invalidación, reconstrucción o no aplicabilidad                                        |
+| `validation_results`   | resultados por package y consumidor ligados al commit                                  |
+| `evidence_refs`        | ejecuciones y artefactos reproducibles                                                 |
+| `required_reviewers`   | propietarios y revisores obligatorios                                                  |
+| `approvals`            | aprobaciones vigentes ligadas al commit                                                |
+| `bot_identity`         | identidad automatizada o `MANUAL`                                                      |
+| `opened_at`            | apertura atribuible                                                                    |
+| `updated_at`           | última modificación atribuible                                                         |
+| `merged_at`            | momento de merge o `NONE`                                                              |
+| `deployment_ref`       | despliegue de adopción o `PENDING`                                                     |
+| `outcome`              | estado final, impacto residual y seguimiento                                           |
+| `supersedes`           | expediente anterior sustituido o `NONE`                                                |
+| `superseded_by`        | expediente posterior o `NONE`                                                          |
 
 Una actualización no se considera trazable si manifest, lockfile, commit, evidencia y versión objetivo no corresponden entre sí.
 
@@ -3926,17 +3926,17 @@ Las identidades de publicación, lectura de registry, actualización de consumid
 
 #### 11. Autoridad y revisión
 
-| Actor                                      | Responsabilidad                                                                                                  |
-| ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
-| propietario técnico del package            | confirmar identidad, clasificación, changelog, soporte, riesgos y compatibilidad prometida                      |
-| responsable técnico del consumidor         | evaluar integración, ajustes locales, impacto operativo, rollback y adopción                                    |
-| responsable de compatibilidad               | confirmar que la combinación pertenece a la matriz evaluada                                                     |
-| responsable de release                      | preservar procedencia e integridad del artefacto                                                                |
-| responsable de seguridad                    | revisar actualizaciones de seguridad, exposición y mitigaciones cuando aplique                                  |
-| propietario de datos o Supabase             | decidir cualquier cambio de schema, datos, funciones, políticas o configuración exclusivamente desde shell     |
-| revisor independiente                       | verificar que autor, bot y propietario directo no constituyen la única aprobación                               |
-| responsable de despliegue del consumidor    | decidir y ejecutar la adopción en su ambiente bajo el paquete correspondiente                                   |
-| automatizador                               | preparar y mantener la propuesta sin aprobarla, fusionarla ni desplegarla                                       |
+| Actor                                    | Responsabilidad                                                                                            |
+| ---------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| propietario técnico del package          | confirmar identidad, clasificación, changelog, soporte, riesgos y compatibilidad prometida                 |
+| responsable técnico del consumidor       | evaluar integración, ajustes locales, impacto operativo, rollback y adopción                               |
+| responsable de compatibilidad            | confirmar que la combinación pertenece a la matriz evaluada                                                |
+| responsable de release                   | preservar procedencia e integridad del artefacto                                                           |
+| responsable de seguridad                 | revisar actualizaciones de seguridad, exposición y mitigaciones cuando aplique                             |
+| propietario de datos o Supabase          | decidir cualquier cambio de schema, datos, funciones, políticas o configuración exclusivamente desde shell |
+| revisor independiente                    | verificar que autor, bot y propietario directo no constituyen la única aprobación                          |
+| responsable de despliegue del consumidor | decidir y ejecutar la adopción en su ambiente bajo el paquete correspondiente                              |
+| automatizador                            | preparar y mantener la propuesta sin aprobarla, fusionarla ni desplegarla                                  |
 
 Reglas:
 
@@ -3953,22 +3953,22 @@ Reglas:
 
 Toda propuesta deberá demostrar, según aplicabilidad:
 
-| Familia de comprobación         | Resultado requerido                                                                                         |
-| ------------------------------- | ----------------------------------------------------------------------------------------------------------- |
-| identidad                       | package, versión, tag, release, commit e integridad coincidentes                                            |
-| instalación                     | manifest y lockfile coherentes e instalación bloqueada reproducible                                         |
-| package                         | pruebas, tipos, build y contratos propios del package                                                       |
-| consumidor                      | lint, tipos, build, pruebas e integración aplicables                                                        |
-| compatibilidad                  | combinación exacta evaluada contra la matriz vigente                                                        |
-| autorización y contexto         | denegación cerrada, scopes, razones, sesión, dispositivo y auditoría cuando aplique                         |
-| acceso a datos                  | clientes, RPC, RLS, tipos, errores y compatibilidad con schema cuando aplique                               |
-| interfaz                        | render, hidratación, navegación, accesibilidad, CSS y comportamiento cuando aplique                        |
-| deprecación                     | expediente, guía, uso residual y estado de cada consumidor cuando aplique                                  |
-| seguridad                       | exposición, corrección, regresión, bypasses y compatibilidad del fix cuando aplique                         |
-| rollback                        | snapshot anterior certificado y procedimiento restituible                                                   |
-| requisitos                      | declaración de `TREQ-*` afectados y evidencia correspondiente                                              |
-| datos y Supabase                | no aplicabilidad demostrada o tarea propietaria, migración, backup y rollback autorizados                  |
-| despliegue                      | identidad del artefacto, ambiente y verificación posterior cuando se materialice la adopción               |
+| Familia de comprobación | Resultado requerido                                                                          |
+| ----------------------- | -------------------------------------------------------------------------------------------- |
+| identidad               | package, versión, tag, release, commit e integridad coincidentes                             |
+| instalación             | manifest y lockfile coherentes e instalación bloqueada reproducible                          |
+| package                 | pruebas, tipos, build y contratos propios del package                                        |
+| consumidor              | lint, tipos, build, pruebas e integración aplicables                                         |
+| compatibilidad          | combinación exacta evaluada contra la matriz vigente                                         |
+| autorización y contexto | denegación cerrada, scopes, razones, sesión, dispositivo y auditoría cuando aplique          |
+| acceso a datos          | clientes, RPC, RLS, tipos, errores y compatibilidad con schema cuando aplique                |
+| interfaz                | render, hidratación, navegación, accesibilidad, CSS y comportamiento cuando aplique          |
+| deprecación             | expediente, guía, uso residual y estado de cada consumidor cuando aplique                    |
+| seguridad               | exposición, corrección, regresión, bypasses y compatibilidad del fix cuando aplique          |
+| rollback                | snapshot anterior certificado y procedimiento restituible                                    |
+| requisitos              | declaración de `TREQ-*` afectados y evidencia correspondiente                                |
+| datos y Supabase        | no aplicabilidad demostrada o tarea propietaria, migración, backup y rollback autorizados    |
+| despliegue              | identidad del artefacto, ambiente y verificación posterior cuando se materialice la adopción |
 
 `SHELL-PKG-008` definirá los gates que convierten estas obligaciones en bloqueos ejecutables. `SHELL-CI-006` implementará la creación y mantenimiento de las propuestas.
 
@@ -4056,36 +4056,36 @@ NO_APLICA_SIN_RELEASE_ESTABLE
 
 Este estado significa que la relación pertenece al contrato, pero todavía no existe una versión estable publicada y adoptada que permita abrir una actualización ordinaria certificable.
 
-| ID                 | Package             | Consumidor     | Aplicabilidad | Estado inicial                    | Implementación propietaria |
-| ------------------ | ------------------- | -------------- | ------------ | --------------------------------- | -------------------------- |
-| `PKG-PR-REL-001`   | `@vento/contracts`  | `vento-shell`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-002`   | `@vento/contracts`  | `vento-viso`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-003`   | `@vento/contracts`  | `vento-nexo`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-004`   | `@vento/contracts`  | `vento-fogo`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-005`   | `@vento/contracts`  | `vento-origo`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-006`   | `@vento/contracts`  | `vento-pulso`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-007`   | `@vento/contracts`  | `vento-numera` | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-008`   | `@vento/os-context` | `vento-shell`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-009`   | `@vento/os-context` | `vento-viso`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-010`   | `@vento/os-context` | `vento-nexo`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-011`   | `@vento/os-context` | `vento-fogo`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-012`   | `@vento/os-context` | `vento-origo`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-013`   | `@vento/os-context` | `vento-pulso`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-014`   | `@vento/os-context` | `vento-numera` | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-015`   | `@vento/supabase`   | `vento-shell`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-016`   | `@vento/supabase`   | `vento-viso`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-017`   | `@vento/supabase`   | `vento-nexo`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-018`   | `@vento/supabase`   | `vento-fogo`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-019`   | `@vento/supabase`   | `vento-origo`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-020`   | `@vento/supabase`   | `vento-pulso`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-021`   | `@vento/supabase`   | `vento-numera` | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-022`   | `@vento/ui-web`     | `vento-shell`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-023`   | `@vento/ui-web`     | `vento-viso`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-024`   | `@vento/ui-web`     | `vento-nexo`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-025`   | `@vento/ui-web`     | `vento-fogo`   | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-026`   | `@vento/ui-web`     | `vento-origo`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-027`   | `@vento/ui-web`     | `vento-pulso`  | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
-| `PKG-PR-REL-028`   | `@vento/ui-web`     | `vento-numera` | `APLICA`     | `NO_APLICA_SIN_RELEASE_ESTABLE`   | `SHELL-CI-006`             |
+| ID               | Package             | Consumidor     | Aplicabilidad | Estado inicial                  | Implementación propietaria |
+| ---------------- | ------------------- | -------------- | ------------- | ------------------------------- | -------------------------- |
+| `PKG-PR-REL-001` | `@vento/contracts`  | `vento-shell`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-002` | `@vento/contracts`  | `vento-viso`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-003` | `@vento/contracts`  | `vento-nexo`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-004` | `@vento/contracts`  | `vento-fogo`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-005` | `@vento/contracts`  | `vento-origo`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-006` | `@vento/contracts`  | `vento-pulso`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-007` | `@vento/contracts`  | `vento-numera` | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-008` | `@vento/os-context` | `vento-shell`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-009` | `@vento/os-context` | `vento-viso`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-010` | `@vento/os-context` | `vento-nexo`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-011` | `@vento/os-context` | `vento-fogo`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-012` | `@vento/os-context` | `vento-origo`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-013` | `@vento/os-context` | `vento-pulso`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-014` | `@vento/os-context` | `vento-numera` | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-015` | `@vento/supabase`   | `vento-shell`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-016` | `@vento/supabase`   | `vento-viso`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-017` | `@vento/supabase`   | `vento-nexo`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-018` | `@vento/supabase`   | `vento-fogo`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-019` | `@vento/supabase`   | `vento-origo`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-020` | `@vento/supabase`   | `vento-pulso`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-021` | `@vento/supabase`   | `vento-numera` | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-022` | `@vento/ui-web`     | `vento-shell`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-023` | `@vento/ui-web`     | `vento-viso`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-024` | `@vento/ui-web`     | `vento-nexo`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-025` | `@vento/ui-web`     | `vento-fogo`   | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-026` | `@vento/ui-web`     | `vento-origo`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-027` | `@vento/ui-web`     | `vento-pulso`  | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
+| `PKG-PR-REL-028` | `@vento/ui-web`     | `vento-numera` | `APLICA`      | `NO_APLICA_SIN_RELEASE_ESTABLE` | `SHELL-CI-006`             |
 
 **Conciliación:** 4 packages × 7 consumidores = 28 relaciones; 28 identificadores únicos; 28 aplicables; 28 sin release estable adoptada; 0 omitidas; 0 duplicadas.
 
@@ -4095,26 +4095,26 @@ PASS, ANIMA, TALENTO y clientes móviles permanecen fuera de esta matriz. Su inc
 
 #### 16. Bloqueos de una propuesta
 
-| ID             | Bloqueo                                                                                   | Estado      | Propietario de resolución                                              |
-| -------------- | ----------------------------------------------------------------------------------------- | ----------- | ---------------------------------------------------------------------- |
-| `PR-BLK-001`   | package o versión objetivo no existe como release canónica                                | `BLOCKED`   | `SHELL-CI-003`; propietario del package                                |
-| `PR-BLK-002`   | tag, release, commit, tarball o integridad no coinciden                                    | `BLOCKED`   | `SHELL-CI-003`; responsable de release                                 |
-| `PR-BLK-003`   | manifest y lockfile no cambian como unidad coherente                                      | `BLOCKED`   | repositorio consumidor                                                 |
-| `PR-BLK-004`   | la propuesta introduce rango flotante, tag, URL Git o fuente local                        | `BLOCKED`   | automatizador; responsable del consumidor                              |
-| `PR-BLK-005`   | falta combinación de compatibilidad para el consumidor y conjunto objetivo               | `BLOCKED`   | `SHELL-CI-005`; responsables de compatibilidad                         |
-| `PR-BLK-006`   | una comprobación obligatoria falla o carece de evidencia                                  | `BLOCKED`   | package, consumidor o tarea de prueba propietaria                      |
-| `PR-BLK-007`   | commit de base, propuesta o lockfile cambió después de la evidencia                       | `BLOCKED`   | automatizador; nueva ejecución                                         |
-| `PR-BLK-008`   | cambio `MAJOR` carece de guía, migración o aprobación reforzada                           | `BLOCKED`   | propietario del package y consumidor                                   |
-| `PR-BLK-009`   | deprecación carece de expediente, inventario o uso residual resuelto                      | `BLOCKED`   | `SHELL-PKG-005`; `SHELL-CI-004..006`                                   |
-| `PR-BLK-010`   | actualización de seguridad restaura un bypass o deja exposición sin tratamiento           | `BLOCKED`   | seguridad y propietario del package                                    |
-| `PR-BLK-011`   | impacto de datos o Supabase carece de tarea y rollback propietarios                       | `BLOCKED`   | tareas de arquitectura y transición desde `vento-shell`                |
-| `PR-BLK-012`   | no existe snapshot anterior certificado                                                   | `BLOCKED`   | `SHELL-PKG-006`; `SHELL-CI-014`                                        |
-| `PR-BLK-013`   | faltan revisores o aprobaciones aplicables                                                 | `BLOCKED`   | responsables del package y consumidor                                  |
-| `PR-BLK-014`   | la identidad automatizada excede permisos o intenta fusionar, desplegar o alterar gates    | `BLOCKED`   | gobierno de CI y seguridad                                              |
-| `PR-BLK-015`   | la propuesta contiene cambios ajenos que impiden atribuir compatibilidad y riesgo          | `BLOCKED`   | responsable del consumidor                                             |
-| `PR-BLK-016`   | el conjunto multi-package no es mínimo, cerrado o resoluble                               | `BLOCKED`   | propietario de releases y compatibilidad                               |
-| `PR-BLK-017`   | la versión objetivo fue sustituida silenciosamente después de revisión                    | `BLOCKED`   | cerrar o superseder con expediente nuevo                               |
-| `PR-BLK-018`   | la adopción requeriría despliegue simultáneo no probado de varios consumidores             | `BLOCKED`   | `SHELL-CI-015`; paquetes E5 afectados                                  |
+| ID           | Bloqueo                                                                                 | Estado    | Propietario de resolución                               |
+| ------------ | --------------------------------------------------------------------------------------- | --------- | ------------------------------------------------------- |
+| `PR-BLK-001` | package o versión objetivo no existe como release canónica                              | `BLOCKED` | `SHELL-CI-003`; propietario del package                 |
+| `PR-BLK-002` | tag, release, commit, tarball o integridad no coinciden                                 | `BLOCKED` | `SHELL-CI-003`; responsable de release                  |
+| `PR-BLK-003` | manifest y lockfile no cambian como unidad coherente                                    | `BLOCKED` | repositorio consumidor                                  |
+| `PR-BLK-004` | la propuesta introduce rango flotante, tag, URL Git o fuente local                      | `BLOCKED` | automatizador; responsable del consumidor               |
+| `PR-BLK-005` | falta combinación de compatibilidad para el consumidor y conjunto objetivo              | `BLOCKED` | `SHELL-CI-005`; responsables de compatibilidad          |
+| `PR-BLK-006` | una comprobación obligatoria falla o carece de evidencia                                | `BLOCKED` | package, consumidor o tarea de prueba propietaria       |
+| `PR-BLK-007` | commit de base, propuesta o lockfile cambió después de la evidencia                     | `BLOCKED` | automatizador; nueva ejecución                          |
+| `PR-BLK-008` | cambio `MAJOR` carece de guía, migración o aprobación reforzada                         | `BLOCKED` | propietario del package y consumidor                    |
+| `PR-BLK-009` | deprecación carece de expediente, inventario o uso residual resuelto                    | `BLOCKED` | `SHELL-PKG-005`; `SHELL-CI-004..006`                    |
+| `PR-BLK-010` | actualización de seguridad restaura un bypass o deja exposición sin tratamiento         | `BLOCKED` | seguridad y propietario del package                     |
+| `PR-BLK-011` | impacto de datos o Supabase carece de tarea y rollback propietarios                     | `BLOCKED` | tareas de arquitectura y transición desde `vento-shell` |
+| `PR-BLK-012` | no existe snapshot anterior certificado                                                 | `BLOCKED` | `SHELL-PKG-006`; `SHELL-CI-014`                         |
+| `PR-BLK-013` | faltan revisores o aprobaciones aplicables                                              | `BLOCKED` | responsables del package y consumidor                   |
+| `PR-BLK-014` | la identidad automatizada excede permisos o intenta fusionar, desplegar o alterar gates | `BLOCKED` | gobierno de CI y seguridad                              |
+| `PR-BLK-015` | la propuesta contiene cambios ajenos que impiden atribuir compatibilidad y riesgo       | `BLOCKED` | responsable del consumidor                              |
+| `PR-BLK-016` | el conjunto multi-package no es mínimo, cerrado o resoluble                             | `BLOCKED` | propietario de releases y compatibilidad                |
+| `PR-BLK-017` | la versión objetivo fue sustituida silenciosamente después de revisión                  | `BLOCKED` | cerrar o superseder con expediente nuevo                |
+| `PR-BLK-018` | la adopción requeriría despliegue simultáneo no probado de varios consumidores          | `BLOCKED` | `SHELL-CI-015`; paquetes E5 afectados                   |
 
 Un bloqueo conservará causa, evidencia, propietario, tarea responsable y condición de salida. No se convertirá en éxito por reintento, comentario, etiqueta o aprobación manual sin resolver la condición material.
 
@@ -4122,44 +4122,44 @@ Un bloqueo conservará causa, evidencia, propietario, tarea responsable y condic
 
 #### 17. Registro de decisiones vinculantes
 
-| ID             | Decisión                                                                                     | Estado                 | Materialización posterior                         |
-| -------------- | -------------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------------------- |
-| `PKG-PR-001`   | usar pull request como vehículo canónico de actualización                                    | `DECIDIDO`             | `SHELL-CI-006`                                    |
-| `PKG-PR-002`   | crear la propuesta en el repositorio consumidor                                              | `DECIDIDO`             | actualizador de consumidores                      |
-| `PKG-PR-003`   | limitar cada propuesta a un consumidor                                                       | `DECIDIDO`             | ramas y expedientes por repositorio               |
-| `PKG-PR-004`   | permitir adopción independiente por consumidor                                               | `DECIDIDO`             | pipeline y despliegue consumidor                  |
-| `PKG-PR-005`   | conservar cuatro familias de packages                                                       | `DECIDIDO`             | matriz y actualizador                             |
-| `PKG-PR-006`   | conservar siete consumidores web                                                            | `DECIDIDO`             | matriz y actualizador                             |
-| `PKG-PR-007`   | materializar 28 relaciones                                                                  | `DECIDIDO`             | `SHELL-CI-006`                                    |
-| `PKG-PR-008`   | usar versión exacta en cada propuesta                                                       | `DECIDIDO`             | manifest consumidor                              |
-| `PKG-PR-009`   | cambiar manifest y lockfile como unidad                                                     | `DECIDIDO`             | rama de propuesta                                |
-| `PKG-PR-010`   | prohibir actualización directa desde publicación                                           | `DECIDIDO`             | permisos y workflows                             |
-| `PKG-PR-011`   | permitir al bot abrir y mantener propuestas                                                | `DECIDIDO`             | identidad de actualización                       |
-| `PKG-PR-012`   | prohibir auto-merge                                                                        | `DECIDIDO`             | `SHELL-PKG-008`; reglas de rama                  |
-| `PKG-PR-013`   | prohibir auto-deploy                                                                       | `DECIDIDO`             | pipelines consumidores                           |
-| `PKG-PR-014`   | prohibir push directo a ramas protegidas                                                   | `DECIDIDO`             | `SHELL-PKG-008`; reglas de rama                  |
-| `PKG-PR-015`   | separar identidad de actualización, aprobación y despliegue                                | `DECIDIDO`             | secretos y permisos de CI                         |
-| `PKG-PR-016`   | ligar evidencia al commit de propuesta                                                     | `DECIDIDO`             | checks y artefactos                               |
-| `PKG-PR-017`   | invalidar evidencia cuando cambian entradas                                                | `DECIDIDO`             | gates de actualización                            |
-| `PKG-PR-018`   | invalidar aprobación técnica cuando cambia el commit                                       | `DECIDIDO`             | protección de rama                               |
-| `PKG-PR-019`   | preservar historial de cierres y supersesiones                                             | `DECIDIDO`             | expediente `PKG-PR-*`                            |
-| `PKG-PR-020`   | no sustituir silenciosamente una versión objetivo                                          | `DECIDIDO`             | expediente y nueva propuesta                      |
-| `PKG-PR-021`   | permitir conjunto mínimo cerrado multi-package                                             | `DECIDIDO`             | resolución del grafo                              |
-| `PKG-PR-022`   | prohibir lockstep artificial                                                               | `DECIDIDO`             | releases independientes                           |
-| `PKG-PR-023`   | clasificar siete tipos de actualización                                                    | `DECIDIDO`             | metadata y aprobaciones                           |
-| `PKG-PR-024`   | exigir revisión reforzada para `MAJOR`                                                     | `DECIDIDO`             | responsables aplicables                           |
-| `PKG-PR-025`   | exigir evaluación específica de seguridad                                                 | `DECIDIDO`             | seguridad y CI                                    |
-| `PKG-PR-026`   | vincular migraciones de deprecación con `DEP-*`                                            | `DECIDIDO`             | `SHELL-PKG-005`; `SHELL-CI-006`                   |
-| `PKG-PR-027`   | materializar rollback mediante historia revisable                                         | `DECIDIDO`             | `SHELL-PKG-006`; `SHELL-CI-014`                   |
-| `PKG-PR-028`   | separar actualización de `@vento/supabase` y migración de base de datos                    | `DECIDIDO`             | tareas Supabase desde `vento-shell`                |
-| `PKG-PR-029`   | exigir declaración de impacto `TREQ-*`                                                    | `DECIDIDO`             | expediente y CI                                   |
-| `PKG-PR-030`   | exigir declaración de datos, configuración y caché                                        | `DECIDIDO`             | expediente y paquetes E5                          |
-| `PKG-PR-031`   | bloquear propuestas con cambios no atribuibles                                            | `DECIDIDO`             | revisión del consumidor                           |
-| `PKG-PR-032`   | excluir móviles hasta contrato propietario                                                 | `DECIDIDO`             | tareas futuras aplicables                         |
-| `PKG-PR-033`   | asignar implementación del actualizador a `SHELL-CI-006`                                   | `DECIDIDO`             | BLOQUE T                                          |
-| `PKG-PR-034`   | asignar gates contra actualización sin pruebas a `SHELL-PKG-008`                           | `DECIDIDO`             | tarea siguiente reservada                         |
-| `PKG-PR-035`   | no implementar ni operar actualizaciones en esta fase                                      | `RESTRICCION_CANONICA` | fase documental                                   |
-| `PKG-PR-036`   | no modificar código, packages, consumidores, CI, datos, Supabase ni continuidad            | `RESTRICCION_CANONICA` | implementación posterior autorizada               |
+| ID           | Decisión                                                                        | Estado                 | Materialización posterior           |
+| ------------ | ------------------------------------------------------------------------------- | ---------------------- | ----------------------------------- |
+| `PKG-PR-001` | usar pull request como vehículo canónico de actualización                       | `DECIDIDO`             | `SHELL-CI-006`                      |
+| `PKG-PR-002` | crear la propuesta en el repositorio consumidor                                 | `DECIDIDO`             | actualizador de consumidores        |
+| `PKG-PR-003` | limitar cada propuesta a un consumidor                                          | `DECIDIDO`             | ramas y expedientes por repositorio |
+| `PKG-PR-004` | permitir adopción independiente por consumidor                                  | `DECIDIDO`             | pipeline y despliegue consumidor    |
+| `PKG-PR-005` | conservar cuatro familias de packages                                           | `DECIDIDO`             | matriz y actualizador               |
+| `PKG-PR-006` | conservar siete consumidores web                                                | `DECIDIDO`             | matriz y actualizador               |
+| `PKG-PR-007` | materializar 28 relaciones                                                      | `DECIDIDO`             | `SHELL-CI-006`                      |
+| `PKG-PR-008` | usar versión exacta en cada propuesta                                           | `DECIDIDO`             | manifest consumidor                 |
+| `PKG-PR-009` | cambiar manifest y lockfile como unidad                                         | `DECIDIDO`             | rama de propuesta                   |
+| `PKG-PR-010` | prohibir actualización directa desde publicación                                | `DECIDIDO`             | permisos y workflows                |
+| `PKG-PR-011` | permitir al bot abrir y mantener propuestas                                     | `DECIDIDO`             | identidad de actualización          |
+| `PKG-PR-012` | prohibir auto-merge                                                             | `DECIDIDO`             | `SHELL-PKG-008`; reglas de rama     |
+| `PKG-PR-013` | prohibir auto-deploy                                                            | `DECIDIDO`             | pipelines consumidores              |
+| `PKG-PR-014` | prohibir push directo a ramas protegidas                                        | `DECIDIDO`             | `SHELL-PKG-008`; reglas de rama     |
+| `PKG-PR-015` | separar identidad de actualización, aprobación y despliegue                     | `DECIDIDO`             | secretos y permisos de CI           |
+| `PKG-PR-016` | ligar evidencia al commit de propuesta                                          | `DECIDIDO`             | checks y artefactos                 |
+| `PKG-PR-017` | invalidar evidencia cuando cambian entradas                                     | `DECIDIDO`             | gates de actualización              |
+| `PKG-PR-018` | invalidar aprobación técnica cuando cambia el commit                            | `DECIDIDO`             | protección de rama                  |
+| `PKG-PR-019` | preservar historial de cierres y supersesiones                                  | `DECIDIDO`             | expediente `PKG-PR-*`               |
+| `PKG-PR-020` | no sustituir silenciosamente una versión objetivo                               | `DECIDIDO`             | expediente y nueva propuesta        |
+| `PKG-PR-021` | permitir conjunto mínimo cerrado multi-package                                  | `DECIDIDO`             | resolución del grafo                |
+| `PKG-PR-022` | prohibir lockstep artificial                                                    | `DECIDIDO`             | releases independientes             |
+| `PKG-PR-023` | clasificar siete tipos de actualización                                         | `DECIDIDO`             | metadata y aprobaciones             |
+| `PKG-PR-024` | exigir revisión reforzada para `MAJOR`                                          | `DECIDIDO`             | responsables aplicables             |
+| `PKG-PR-025` | exigir evaluación específica de seguridad                                       | `DECIDIDO`             | seguridad y CI                      |
+| `PKG-PR-026` | vincular migraciones de deprecación con `DEP-*`                                 | `DECIDIDO`             | `SHELL-PKG-005`; `SHELL-CI-006`     |
+| `PKG-PR-027` | materializar rollback mediante historia revisable                               | `DECIDIDO`             | `SHELL-PKG-006`; `SHELL-CI-014`     |
+| `PKG-PR-028` | separar actualización de `@vento/supabase` y migración de base de datos         | `DECIDIDO`             | tareas Supabase desde `vento-shell` |
+| `PKG-PR-029` | exigir declaración de impacto `TREQ-*`                                          | `DECIDIDO`             | expediente y CI                     |
+| `PKG-PR-030` | exigir declaración de datos, configuración y caché                              | `DECIDIDO`             | expediente y paquetes E5            |
+| `PKG-PR-031` | bloquear propuestas con cambios no atribuibles                                  | `DECIDIDO`             | revisión del consumidor             |
+| `PKG-PR-032` | excluir móviles hasta contrato propietario                                      | `DECIDIDO`             | tareas futuras aplicables           |
+| `PKG-PR-033` | asignar implementación del actualizador a `SHELL-CI-006`                        | `DECIDIDO`             | BLOQUE T                            |
+| `PKG-PR-034` | asignar gates contra actualización sin pruebas a `SHELL-PKG-008`                | `DECIDIDO`             | tarea siguiente reservada           |
+| `PKG-PR-035` | no implementar ni operar actualizaciones en esta fase                           | `RESTRICCION_CANONICA` | fase documental                     |
+| `PKG-PR-036` | no modificar código, packages, consumidores, CI, datos, Supabase ni continuidad | `RESTRICCION_CANONICA` | implementación posterior autorizada |
 
 **Conciliación:** 36 decisiones, 36 identificadores únicos, 0 faltantes y 0 duplicados.
 
@@ -4167,20 +4167,20 @@ Un bloqueo conservará causa, evidencia, propietario, tarea responsable y condic
 
 #### 18. Hallazgos y destinos exactos
 
-| ID                    | Hallazgo                                                                                     | Estado                         | Destino o condición de salida                                           |
-| --------------------- | -------------------------------------------------------------------------------------------- | ------------------------------ | ----------------------------------------------------------------------- |
-| `H-SHELL-PKG-007-001` | no existe una release estable compartida adoptada que origine una actualización ordinaria    | `NO_APLICA_SIN_ADOPCION`       | publicación y adopción controladas en `SHELL-CI-*` y `SHELL-MIG-*`      |
-| `H-SHELL-PKG-007-002` | las 28 relaciones siguen sin evidencia de versión instalada                                  | `PENDIENTE_DE_IMPLEMENTACION`  | `SHELL-CI-005`; `SHELL-CI-006`                                         |
-| `H-SHELL-PKG-007-003` | no se confirmó configuración dedicada de Dependabot en `vento-shell`                         | `NO_IMPLEMENTADO_CONFIRMADO`   | `SHELL-CI-006`                                                          |
-| `H-SHELL-PKG-007-004` | no se confirmó configuración dedicada de Renovate en `vento-shell`                           | `NO_IMPLEMENTADO_CONFIRMADO`   | `SHELL-CI-006`                                                          |
-| `H-SHELL-PKG-007-005` | no se confirmó un actualizador ejecutable para los siete consumidores                        | `PENDIENTE_DE_IMPLEMENTACION`  | `SHELL-CI-006`                                                          |
-| `H-SHELL-PKG-007-006` | la publicación directa sobre consumidores ya está prohibida por decisiones anteriores        | `COBERTURA_CANONICA_EXISTENTE` | conservar en permisos, workflow y gates                                |
-| `H-SHELL-PKG-007-007` | manifest y lockfile unidos ya son invariantes de compatibilidad y rollback                    | `COBERTURA_CANONICA_EXISTENTE` | materializar en cada propuesta                                          |
-| `H-SHELL-PKG-007-008` | la evidencia por package y PR ya está exigida por el registro de pruebas                     | `COBERTURA_CANONICA_EXISTENTE` | materializar en CI                                                      |
-| `H-SHELL-PKG-007-009` | no existe evidencia de auto-merge o auto-deploy autorizado                                   | `PROHIBIDO_POR_CONTRATO`       | `SHELL-PKG-008`; gobierno de CI                                         |
-| `H-SHELL-PKG-007-010` | `@vento/supabase` requiere separación explícita entre SDK y base de datos                     | `DECISION_CRITICA`             | tareas `SHELL-DB-*`, Supabase y paquetes E5                             |
-| `H-SHELL-PKG-007-011` | los nombres y mecanismos concretos de checks pertenecen a implementación                     | `RESERVADO`                    | `SHELL-PKG-008`; `SHELL-CI-001`; `SHELL-CI-005`; `SHELL-CI-006`        |
-| `H-SHELL-PKG-007-012` | la tarea actual no autoriza escritura remota ni avance de continuidad                         | `RESTRICCION_CANONICA`         | conservar hasta aprobación e incorporación canónica                    |
+| ID                    | Hallazgo                                                                                  | Estado                         | Destino o condición de salida                                      |
+| --------------------- | ----------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------ |
+| `H-SHELL-PKG-007-001` | no existe una release estable compartida adoptada que origine una actualización ordinaria | `NO_APLICA_SIN_ADOPCION`       | publicación y adopción controladas en `SHELL-CI-*` y `SHELL-MIG-*` |
+| `H-SHELL-PKG-007-002` | las 28 relaciones siguen sin evidencia de versión instalada                               | `PENDIENTE_DE_IMPLEMENTACION`  | `SHELL-CI-005`; `SHELL-CI-006`                                     |
+| `H-SHELL-PKG-007-003` | no se confirmó configuración dedicada de Dependabot en `vento-shell`                      | `NO_IMPLEMENTADO_CONFIRMADO`   | `SHELL-CI-006`                                                     |
+| `H-SHELL-PKG-007-004` | no se confirmó configuración dedicada de Renovate en `vento-shell`                        | `NO_IMPLEMENTADO_CONFIRMADO`   | `SHELL-CI-006`                                                     |
+| `H-SHELL-PKG-007-005` | no se confirmó un actualizador ejecutable para los siete consumidores                     | `PENDIENTE_DE_IMPLEMENTACION`  | `SHELL-CI-006`                                                     |
+| `H-SHELL-PKG-007-006` | la publicación directa sobre consumidores ya está prohibida por decisiones anteriores     | `COBERTURA_CANONICA_EXISTENTE` | conservar en permisos, workflow y gates                            |
+| `H-SHELL-PKG-007-007` | manifest y lockfile unidos ya son invariantes de compatibilidad y rollback                | `COBERTURA_CANONICA_EXISTENTE` | materializar en cada propuesta                                     |
+| `H-SHELL-PKG-007-008` | la evidencia por package y PR ya está exigida por el registro de pruebas                  | `COBERTURA_CANONICA_EXISTENTE` | materializar en CI                                                 |
+| `H-SHELL-PKG-007-009` | no existe evidencia de auto-merge o auto-deploy autorizado                                | `PROHIBIDO_POR_CONTRATO`       | `SHELL-PKG-008`; gobierno de CI                                    |
+| `H-SHELL-PKG-007-010` | `@vento/supabase` requiere separación explícita entre SDK y base de datos                 | `DECISION_CRITICA`             | tareas `SHELL-DB-*`, Supabase y paquetes E5                        |
+| `H-SHELL-PKG-007-011` | los nombres y mecanismos concretos de checks pertenecen a implementación                  | `RESERVADO`                    | `SHELL-PKG-008`; `SHELL-CI-001`; `SHELL-CI-005`; `SHELL-CI-006`    |
+| `H-SHELL-PKG-007-012` | la tarea actual no autoriza escritura remota ni avance de continuidad                     | `RESTRICCION_CANONICA`         | conservar hasta aprobación e incorporación canónica                |
 
 **Conciliación:** 12 hallazgos, 12 destinos o condiciones de salida y 0 pendientes narrativos sin propietario.
 
@@ -4264,5 +4264,665 @@ No corresponde producir una nueva copia del registro canónico de requisitos de 
 - **SIGUIENTE TAREA RESERVADA:** SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas
 
 
-### [ ] SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas
+### ✅ SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas
+
+**Estado:** APROBADA
+**Tarea anterior:** SHELL-PKG-007 — Definir actualizaciones mediante PR
+**Tarea siguiente:** SHELL-CON-001 — Definir contratos compartidos
+**Tipo de tarea:** Documental
+**Fase:** Definición documental vinculante; implementación física no autorizada
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Fecha de corte:** 2026-08-01
+**Corte remoto de referencia:** `d1c2b491cb2746966f02f4798b918c7acf05bb92`
+**Cambios en código, packages, consumidores, workflows, reglas de rama, despliegues, datos o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado material
+
+Se establece la barrera canónica, obligatoria y fail-closed que impide convertir una propuesta automática de actualización de package compartido en cambio fusionable, desplegable o adoptado mientras no existan pruebas aplicables, resultados correctos y evidencia vigente para la relación package–consumidor exacta.
+
+La regla vinculante es:
+
+```text
+release canónica e inmutable
+→ pull request atribuible en el consumidor
+→ manifest y lockfile coherentes
+→ instalación bloqueada reproducible
+→ pruebas propias del package
+→ pruebas del consumidor
+→ compatibilidad de la combinación exacta
+→ evidencia ligada al commit evaluado
+→ revisión humana independiente
+→ decisión de merge del consumidor
+```
+
+Una automatización podrá detectar una versión, preparar una rama y abrir un pull request en estado no adoptado. No podrá considerar la actualización aceptada, fusionarla, desplegarla ni escribir directamente en la rama protegida por haber creado correctamente el cambio o por haber obtenido resultados parciales.
+
+| Métrica                                                       | Resultado |
+| ------------------------------------------------------------- | --------: |
+| Familias de packages gobernadas                               |     **4** |
+| Repositorios web consumidores gobernados                      |     **7** |
+| Relaciones package–consumidor materializadas                  |    **28** |
+| Gates canónicos definidos                                     |    **16** |
+| Perfiles especializados de prueba                             |     **4** |
+| Estados de resultado de gate                                  |     **9** |
+| Fusiones automáticas autorizadas                              |     **0** |
+| Despliegues automáticos autorizados por el actualizador       |     **0** |
+| Bypasses manuales que convierten un fallo en resultado válido |     **0** |
+| Decisiones vinculantes                                        |    **40** |
+| Bloqueos materializados                                       |    **22** |
+| Hallazgos con destino o condición de salida                   |    **12** |
+| Requisitos `TREQ-*` creados o modificados                     |     **0** |
+| Implementaciones físicas ejecutadas                           |     **0** |
+
+---
+
+#### 2. Fuentes y línea base verificable
+
+##### 2.1. Fuentes vinculantes
+
+| Fuente                                                            | Uso                                                                                   |
+| ----------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `01_PROTOCOLO.md`                                                 | continuidad, alcance, evidencia, fases y tratamiento de requisitos                    |
+| `delivery-contract.json`                                          | estructura del artefacto documental                                                   |
+| `active-sequence.json`                                            | confirmación de `SHELL-PKG-008` como cierre del tramo activo                          |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`                       | decisiones aprobadas `SHELL-PKG-001` a `SHELL-PKG-007`                                |
+| `SHELL-PKG-001 — Elegir mecanismo de distribución`                | registry privado, versiones exactas, lockfile, `npm ci` y pruebas del consumidor      |
+| `SHELL-PKG-002 — Definir versionado semántico`                    | cuatro familias y evolución independiente                                             |
+| `SHELL-PKG-003 — Definir tags y releases`                         | identidad inmutable entre package, versión, tag, release, commit y artefacto          |
+| `SHELL-PKG-004 — Definir política de compatibilidad`              | cuatro packages, siete consumidores, 28 relaciones y compatibilidad previa a adopción |
+| `SHELL-PKG-005 — Definir política de deprecación`                 | expedientes, ventanas, migraciones, retiros y uso residual                            |
+| `SHELL-PKG-006 — Definir rollback por aplicación`                 | snapshot certificado, restauración de manifest y lockfile y evidencia posterior       |
+| `SHELL-PKG-007 — Definir actualizaciones mediante PR`             | expediente, ciclo de propuesta, invalidación, autoridad y prohibición de auto-merge   |
+| `T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` | tareas `SHELL-CI-001` a `SHELL-CI-006` para implementación posterior                  |
+| `package.json` de `vento-shell`                                   | scripts reproducibles y validadores documentales actuales                             |
+| Registro Canónico de Requisitos de Prueba vigente                 | cobertura de comandos, compatibilidad, rollback, evidencia por PR, identidad y retiro |
+
+##### 2.2. Estado técnico actual
+
+La línea base remota permite afirmar:
+
+1. `SHELL-PKG-007` está incorporada como tarea aprobada;
+2. `SHELL-PKG-008` es el único marcador pendiente del tramo `SHELL-PKG-*`;
+3. las cuatro familias canónicas son `@vento/contracts`, `@vento/os-context`, `@vento/supabase` y `@vento/ui-web`;
+4. los siete consumidores web son `vento-shell`, `vento-viso`, `vento-nexo`, `vento-fogo`, `vento-origo`, `vento-pulso` y `vento-numera`;
+5. las 28 relaciones permanecen en `NO_APLICA_SIN_RELEASE_ESTABLE`;
+6. no existe evidencia canónica de una release estable compartida adoptada por los consumidores;
+7. no se encontró configuración dedicada en las ubicaciones convencionales de Dependabot o Renovate de `vento-shell`;
+8. no se confirmó un actualizador ejecutable para los siete consumidores;
+9. `SHELL-CI-006` permanece como tarea de implementación del flujo de pull requests automáticos;
+10. el registro vigente conserva 6.326 requisitos, 39 del dominio `SHELL`, cero identificadores duplicados y cero relaciones no resolubles;
+11. la última tarea incorporada al registro es `SHELL-PKG-007`;
+12. la tarea actual es documental y no autoriza crear workflows, aplicaciones GitHub, tokens, reglas de protección ni cambios en consumidores.
+
+La ausencia de automatización materializada no reduce el resultado documental. Esta tarea define qué deberá bloquearla y qué evidencia deberá producir cuando se implemente.
+
+---
+
+#### 3. Alcance exacto
+
+##### 3.1. Incluido
+
+Esta tarea define:
+
+1. la condición universal de aceptación de una actualización automática;
+2. dieciséis gates canónicos;
+3. nueve estados de resultado y su semántica fail-closed;
+4. cuatro perfiles especializados por familia de package;
+5. la aplicabilidad de los gates para las 28 relaciones;
+6. la vinculación obligatoria entre evidencia, commit, manifest, lockfile, versión y consumidor;
+7. la invalidación de resultados cuando cambia una entrada;
+8. el tratamiento de fallos, cancelaciones, timeouts, resultados omitidos e intermitencia;
+9. la diferencia entre gate no aplicable y gate omitido;
+10. la frontera entre apertura automática, revisión, merge, despliegue y adopción;
+11. el tratamiento de cambios `MAJOR`, seguridad, deprecación, rollback y `@vento/supabase`;
+12. los bloqueos y condiciones de salida;
+13. la asignación de implementación a `SHELL-CI-001`, `SHELL-CI-002`, `SHELL-CI-003`, `SHELL-CI-004`, `SHELL-CI-005` y `SHELL-CI-006` según responsabilidad.
+
+##### 3.2. Excluido
+
+Esta tarea no:
+
+- crea o modifica workflows;
+- configura Dependabot, Renovate u otro actualizador;
+- crea aplicaciones GitHub, tokens o secretos;
+- configura nombres concretos de checks;
+- modifica reglas de protección de ramas;
+- publica packages, tags o releases;
+- abre, aprueba o fusiona pull requests reales;
+- modifica manifests o lockfiles de consumidores;
+- ejecuta pruebas de package o consumidor;
+- despliega aplicaciones;
+- incorpora PASS, ANIMA, TALENTO o clientes móviles a la matriz;
+- ejecuta cambios de schema, datos, RLS, RPC, Realtime, Storage, Edge Functions, secretos o configuración de Supabase;
+- modifica la continuidad canónica.
+
+---
+
+#### 4. Política fail-closed
+
+##### 4.1. Condición universal de aceptación
+
+Una propuesta podrá pasar a `READY_FOR_REVIEW` únicamente cuando:
+
+```text
+todos los gates REQUIRED = PASS
++ todos los gates CONDITIONAL = PASS o NOT_APPLICABLE justificado
++ evidencia vigente y ligada al proposal_commit
++ cero bloqueos abiertos
+```
+
+Podrá pasar a `APPROVED_FOR_MERGE` únicamente cuando, además:
+
+```text
+revisiones humanas requeridas vigentes
++ rama base actual o revalidada
++ commit evaluado sin cambios posteriores
++ controles de merge satisfechos
+```
+
+Ninguno de esos estados autoriza al actualizador a fusionar o desplegar.
+
+##### 4.2. Resultados permitidos de gate
+
+| Estado           | Significado                                                                                           |  ¿Permite continuar? |
+| ---------------- | ----------------------------------------------------------------------------------------------------- | -------------------: |
+| `PENDING`        | todavía no existe resultado                                                                           |                   no |
+| `RUNNING`        | comprobación en ejecución                                                                             |                   no |
+| `PASS`           | resultado correcto para las entradas exactas declaradas                                               |                   sí |
+| `FAIL`           | comprobación ejecutada con resultado incorrecto                                                       |                   no |
+| `BLOCKED`        | no pudo ejecutarse por una dependencia o condición material                                           |                   no |
+| `CANCELLED`      | ejecución interrumpida antes de producir resultado válido                                             |                   no |
+| `TIMED_OUT`      | ejecución excedió su límite sin resultado completo                                                    |                   no |
+| `STALE`          | resultado ligado a otro commit, base, manifest, lockfile, versión, configuración o matriz             |                   no |
+| `NOT_APPLICABLE` | gate condicional excluido mediante regla canónica, razón, propietario y evidencia de no aplicabilidad | sí, solo condicional |
+
+Reglas vinculantes:
+
+1. un gate `REQUIRED` solo se satisface con `PASS`;
+2. `NOT_APPLICABLE` nunca se usa para un gate universal;
+3. `SKIPPED`, `NEUTRAL`, ausencia de resultado o éxito parcial se normalizan como `BLOCKED` o `PENDING`;
+4. un comentario, etiqueta o aprobación manual no convierte `FAIL`, `BLOCKED`, `CANCELLED`, `TIMED_OUT` o `STALE` en `PASS`;
+5. un reintento no borra intentos previos;
+6. la decisión usa la última ejecución completa y aplicable del commit actual;
+7. resultados contradictorios o intermitentes mantienen la propuesta en `BLOCKED` hasta resolver la causa o estabilizar la prueba;
+8. una prueba deshabilitada no equivale a una prueba correcta.
+
+---
+
+#### 5. Catálogo canónico de gates
+
+| ID             | Gate                                       | Aplicabilidad | Resultado exigido         | Evidencia mínima                                                                               | Implementación propietaria principal |
+| -------------- | ------------------------------------------ | ------------- | ------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `PKG-GATE-001` | identidad de release                       | universal     | `PASS`                    | package, versión, tag, release, commit, tarball e integridad coincidentes                      | `SHELL-CI-001`; `SHELL-CI-003`       |
+| `PKG-GATE-002` | elegibilidad de versión                    | universal     | `PASS`                    | canal, SemVer, soporte, deprecaciones y conjunto objetivo autorizados                          | `SHELL-CI-003`; `SHELL-CI-005`       |
+| `PKG-GATE-003` | coherencia manifest–lockfile               | universal     | `PASS`                    | versión exacta declarada y resolución coherente sin rangos, Git URLs, fuentes locales ni drift | `SHELL-CI-006`                       |
+| `PKG-GATE-004` | instalación bloqueada reproducible         | universal     | `PASS`                    | instalación limpia usando el lockfile del commit de propuesta                                  | `SHELL-CI-006`; consumidor           |
+| `PKG-GATE-005` | pruebas propias del package                | universal     | `PASS`                    | pruebas, tipos y build aplicables ligados a la release exacta                                  | `SHELL-CI-001`; propietario package  |
+| `PKG-GATE-006` | lint o análisis estático del consumidor    | universal     | `PASS`                    | comando real y resultado completo del consumidor                                               | consumidor; `SHELL-CI-006`           |
+| `PKG-GATE-007` | typecheck del consumidor                   | universal     | `PASS`                    | resolución de tipos de la combinación exacta                                                   | consumidor; `SHELL-CI-006`           |
+| `PKG-GATE-008` | build o export del consumidor              | universal     | `PASS`                    | artefacto compilable con dependencias resueltas desde lockfile                                 | consumidor; `SHELL-CI-006`           |
+| `PKG-GATE-009` | pruebas automatizadas del consumidor       | universal     | `PASS`                    | suite aplicable, regresiones y escenarios afectados por el cambio                              | consumidor; `SHELL-CI-006`           |
+| `PKG-GATE-010` | matriz de compatibilidad                   | universal     | `PASS`                    | package, consumidor, runtime, framework, peers y conjunto exacto reconocidos como soportados   | `SHELL-CI-002`; `SHELL-CI-005`       |
+| `PKG-GATE-011` | perfil especializado de familia            | universal     | `PASS`                    | contrato especializado `GATE-PROFILE-*` de la familia                                          | `SHELL-CI-002`; `SHELL-CI-004`       |
+| `PKG-GATE-012` | requisitos de prueba afectados             | universal     | `PASS`                    | declaración `TREQ-*`, resultados aplicables y ausencia de requisitos omitidos                  | `SHELL-CI-006`; registro 04A         |
+| `PKG-GATE-013` | controles reforzados por riesgo            | condicional   | `PASS` o `NOT_APPLICABLE` | cambio `MAJOR`, seguridad, deprecación, rollback, datos, caché o configuración tratados        | tareas propietarias aplicables       |
+| `PKG-GATE-014` | vigencia y coherencia de evidencia         | universal     | `PASS`                    | misma base, proposal commit, manifest, lockfile, versiones, matriz y configuración             | `SHELL-CI-006`                       |
+| `PKG-GATE-015` | revisión y protección de merge             | universal     | `PASS`                    | revisores requeridos, aprobaciones vigentes, cero bypass y rama protegida                      | gobierno de repositorio consumidor   |
+| `PKG-GATE-016` | separación de merge, despliegue y adopción | universal     | `PASS`                    | el actualizador carece de facultad para fusionar, desplegar o declarar adopción                | gobierno de CI; consumidor           |
+
+**Conciliación:** 16 gates, 16 identificadores únicos, 15 universales, 1 condicional, 0 gates sin propietario.
+
+---
+
+#### 6. Perfiles especializados por familia
+
+##### 6.1. `GATE-PROFILE-CONTRACTS`
+
+Aplica a `@vento/contracts` y exige:
+
+1. build y pruebas propias del package;
+2. validación de schemas, catálogos, tipos derivados y diagnósticos compartidos;
+3. contract tests contra el consumidor;
+4. typecheck y build del consumidor;
+5. escenarios de compatibilidad hacia atrás y hacia adelante cuando el contrato lo admita;
+6. clasificación explícita de cambios incompatibles;
+7. rechazo de casts globales, tipos relajados o adaptadores sin propietario usados para ocultar incompatibilidad.
+
+##### 6.2. `GATE-PROFILE-OS-CONTEXT`
+
+Aplica a `@vento/os-context` y exige:
+
+1. build y pruebas propias del package;
+2. validación de contratos de sesión, contexto, permiso, recurso, territorio y razones estructuradas;
+3. typecheck, build e integración del consumidor;
+4. pruebas de fronteras servidor–cliente, cookies, redirects y SSR cuando apliquen;
+5. casos permitidos y denegados fail-closed;
+6. ausencia de ampliación de autoridad por valores del cliente, fallback o contexto incompleto;
+7. compatibilidad con versiones soportadas del consumidor y de sus dependencias internas exactas.
+
+##### 6.3. `GATE-PROFILE-SUPABASE`
+
+Aplica a `@vento/supabase` y exige:
+
+1. build y pruebas propias del package;
+2. validación de factories, tipos generados, wrappers RPC y errores de acceso;
+3. typecheck, build e integración del consumidor;
+4. contract tests de clientes, llamadas, parámetros, resultados y errores;
+5. coherencia con la versión de schema y tipos declarada como compatible;
+6. ausencia de acceso privilegiado, bypass de RLS o cambio de grants introducido por el SDK;
+7. `supabase_impact = NO_APLICA` justificado o referencia a la tarea propietaria en `vento-shell`;
+8. bloqueo si la actualización requiere una migración, backfill, función, trigger, política, publicación, bucket, Edge Function, secreto o configuración no materializados desde `vento-shell`.
+
+##### 6.4. `GATE-PROFILE-UI-WEB`
+
+Aplica a `@vento/ui-web` y exige:
+
+1. build y pruebas unitarias o de componentes del package;
+2. build e integración del consumidor;
+3. render, hidratación, navegación y contrato CSS aplicables;
+4. accesibilidad automatizada y revisión controlada cuando el cambio afecte interacción o percepción;
+5. regresión visual cuando cambien apariencia, estructura, layout, tokens, marca o estados;
+6. compatibilidad con runtime, framework y peers declarados;
+7. ausencia de dependencias locales, estilos globales no declarados o imports internos no públicos.
+
+**Conciliación:** 4 familias, 4 perfiles, 0 familias sin perfil y 0 perfiles compartidos de forma ambigua.
+
+---
+
+#### 7. Composición de la evidencia
+
+Cada evaluación conservará como mínimo:
+
+| Campo                  | Obligación                                                              |
+| ---------------------- | ----------------------------------------------------------------------- |
+| `update_id`            | expediente `PKG-PR-*`                                                   |
+| `relation_id`          | relación `PKG-PR-REL-*` exacta                                          |
+| `package_name`         | familia canónica                                                        |
+| `package_version`      | versión objetivo exacta                                                 |
+| `consumer_repository`  | consumidor exacto                                                       |
+| `target_branch`        | rama protegida destino                                                  |
+| `base_commit`          | base evaluada                                                           |
+| `proposal_commit`      | commit exacto de la propuesta                                           |
+| `manifest_hash`        | identidad del manifest propuesto                                        |
+| `lockfile_hash`        | identidad del lockfile propuesto                                        |
+| `resolved_package_set` | conjunto completo resuelto                                              |
+| `release_integrity`    | integridad del artefacto publicado                                      |
+| `compatibility_ref`    | matriz exacta aplicable                                                 |
+| `gate_profile`         | perfil especializado                                                    |
+| `gate_results`         | resultado individual de los 16 gates                                    |
+| `treq_impact`          | requisitos afectados o cero cambios                                     |
+| `risk_qualifiers`      | `MAJOR`, seguridad, deprecación, rollback, datos, configuración o caché |
+| `run_identity`         | ejecución atribuible                                                    |
+| `started_at`           | inicio                                                                  |
+| `completed_at`         | finalización                                                            |
+| `artifacts`            | logs, reportes, snapshots o referencias reproducibles                   |
+| `review_state`         | revisiones y aprobaciones vigentes                                      |
+| `invalidation_reason`  | causa de invalidez o `NONE`                                             |
+| `outcome`              | resultado global                                                        |
+
+Una evidencia es válida solo para la combinación exacta declarada. No certifica otra rama, commit, lockfile, consumidor, package, versión, matriz o configuración.
+
+---
+
+#### 8. Invalidación y reejecución
+
+Todos los gates vuelven a `PENDING` o `STALE` cuando cambia cualquiera de estos elementos:
+
+- `base_commit`;
+- `proposal_commit`;
+- manifest;
+- lockfile;
+- package o versión objetivo;
+- conjunto multi-package resuelto;
+- integridad del artefacto;
+- runtime, framework o peers relevantes;
+- configuración de build, tipos o pruebas;
+- código de compatibilidad del consumidor;
+- fixtures, snapshots o expectativas;
+- matriz de compatibilidad;
+- expediente de deprecación, seguridad o rollback;
+- requisitos `TREQ-*` declarados;
+- impacto de datos, Supabase, configuración o caché;
+- alcance o severidad del cambio.
+
+Reglas:
+
+1. el rebase invalida los resultados afectados y exige una nueva evaluación;
+2. añadir un commit después de aprobación invalida checks y aprobaciones técnicas ligadas al commit anterior;
+3. una versión nueva no sustituye silenciosamente la versión objetivo;
+4. una propuesta sucesora usa identidad propia y conserva el vínculo histórico;
+5. los artefactos de una ejecución fallida permanecen disponibles para diagnóstico;
+6. una reejecución correcta no elimina el registro de intentos previos;
+7. el resultado global se calcula únicamente con gates vigentes de la propuesta actual.
+
+---
+
+#### 9. Matriz completa de relaciones y gates
+
+Estado inicial común:
+
+```text
+NO_APLICA_SIN_RELEASE_ESTABLE
+```
+
+La relación pertenece al contrato, pero los gates no pueden producir certificación ordinaria hasta existir una release estable, una adopción anterior o una propuesta inicial con insumos completos.
+
+| ID               | Package             | Consumidor     | Perfil                    | Gates universales   | Gate de riesgo | Estado inicial                  | Estado documental | Implementación principal |
+| ---------------- | ------------------- | -------------- | ------------------------- | ------------------- | -------------- | ------------------------------- | ----------------- | ------------------------ |
+| `PKG-PR-REL-001` | `@vento/contracts`  | `vento-shell`  | `GATE-PROFILE-CONTRACTS`  | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-002` | `@vento/contracts`  | `vento-viso`   | `GATE-PROFILE-CONTRACTS`  | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-003` | `@vento/contracts`  | `vento-nexo`   | `GATE-PROFILE-CONTRACTS`  | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-004` | `@vento/contracts`  | `vento-fogo`   | `GATE-PROFILE-CONTRACTS`  | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-005` | `@vento/contracts`  | `vento-origo`  | `GATE-PROFILE-CONTRACTS`  | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-006` | `@vento/contracts`  | `vento-pulso`  | `GATE-PROFILE-CONTRACTS`  | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-007` | `@vento/contracts`  | `vento-numera` | `GATE-PROFILE-CONTRACTS`  | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-008` | `@vento/os-context` | `vento-shell`  | `GATE-PROFILE-OS-CONTEXT` | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-009` | `@vento/os-context` | `vento-viso`   | `GATE-PROFILE-OS-CONTEXT` | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-010` | `@vento/os-context` | `vento-nexo`   | `GATE-PROFILE-OS-CONTEXT` | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-011` | `@vento/os-context` | `vento-fogo`   | `GATE-PROFILE-OS-CONTEXT` | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-012` | `@vento/os-context` | `vento-origo`  | `GATE-PROFILE-OS-CONTEXT` | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-013` | `@vento/os-context` | `vento-pulso`  | `GATE-PROFILE-OS-CONTEXT` | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-014` | `@vento/os-context` | `vento-numera` | `GATE-PROFILE-OS-CONTEXT` | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-015` | `@vento/supabase`   | `vento-shell`  | `GATE-PROFILE-SUPABASE`   | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-016` | `@vento/supabase`   | `vento-viso`   | `GATE-PROFILE-SUPABASE`   | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-017` | `@vento/supabase`   | `vento-nexo`   | `GATE-PROFILE-SUPABASE`   | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-018` | `@vento/supabase`   | `vento-fogo`   | `GATE-PROFILE-SUPABASE`   | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-019` | `@vento/supabase`   | `vento-origo`  | `GATE-PROFILE-SUPABASE`   | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-020` | `@vento/supabase`   | `vento-pulso`  | `GATE-PROFILE-SUPABASE`   | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-021` | `@vento/supabase`   | `vento-numera` | `GATE-PROFILE-SUPABASE`   | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-022` | `@vento/ui-web`     | `vento-shell`  | `GATE-PROFILE-UI-WEB`     | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-023` | `@vento/ui-web`     | `vento-viso`   | `GATE-PROFILE-UI-WEB`     | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-024` | `@vento/ui-web`     | `vento-nexo`   | `GATE-PROFILE-UI-WEB`     | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-025` | `@vento/ui-web`     | `vento-fogo`   | `GATE-PROFILE-UI-WEB`     | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-026` | `@vento/ui-web`     | `vento-origo`  | `GATE-PROFILE-UI-WEB`     | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-027` | `@vento/ui-web`     | `vento-pulso`  | `GATE-PROFILE-UI-WEB`     | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+| `PKG-PR-REL-028` | `@vento/ui-web`     | `vento-numera` | `GATE-PROFILE-UI-WEB`     | `001..012,014..016` | `013`          | `NO_APLICA_SIN_RELEASE_ESTABLE` | `ESPECIFICADO`    | `SHELL-CI-006`           |
+
+**Conciliación:** 4 packages × 7 consumidores = 28 relaciones; 28 identificadores únicos; 28 perfiles asignados; 28 estados documentales `ESPECIFICADO`; 0 faltantes; 0 duplicadas.
+
+PASS, ANIMA, TALENTO y clientes móviles permanecen fuera de esta matriz. Su incorporación exige una tarea propietaria y un contrato específico de distribución, compatibilidad, actualización, pruebas y rollback.
+
+---
+
+#### 10. Comportamiento obligatorio del actualizador
+
+##### 10.1. Acciones permitidas antes de resultados correctos
+
+El actualizador podrá:
+
+1. identificar una release elegible;
+2. crear una rama desde una base autorizada;
+3. modificar manifest y lockfile como unidad;
+4. abrir un pull request en estado de propuesta;
+5. iniciar comprobaciones;
+6. publicar resultados y artefactos;
+7. actualizar la propuesta cuando cambie la base, invalidando la evidencia anterior;
+8. cerrar o superseder propuestas obsoletas conservando trazabilidad.
+
+##### 10.2. Acciones prohibidas
+
+El actualizador no podrá:
+
+- marcar `READY_FOR_REVIEW` con gates pendientes, fallidos, bloqueados, cancelados, vencidos o inválidos;
+- marcar `APPROVED_FOR_MERGE` sin aprobaciones y gates vigentes;
+- fusionar el pull request, incluso con todos los gates en `PASS`;
+- habilitar auto-merge;
+- escribir directamente en la rama protegida;
+- desplegar el consumidor;
+- declarar la versión como adoptada;
+- modificar reglas de rama, revisores o checks;
+- omitir pruebas por tratarse de `PATCH`, cambio de seguridad o actualización urgente;
+- considerar correctos resultados obtenidos en otro consumidor;
+- reutilizar evidencia de otro commit o lockfile;
+- desactivar pruebas, lint, tipos, seguridad o contratos para obtener un verde aparente;
+- ocultar, borrar o sustituir resultados fallidos;
+- reintentar indefinidamente una prueba intermitente para seleccionar solo una ejecución correcta;
+- aplicar cambios de datos o Supabase;
+- crear datos operativos para pruebas.
+
+##### 10.3. Cálculo del resultado global
+
+```text
+GLOBAL_PASS =
+  all(REQUIRED == PASS)
+  and all(CONDITIONAL in {PASS, NOT_APPLICABLE_VALIDATED})
+  and evidence_is_current
+  and blockers == 0
+```
+
+Cualquier otra combinación produce `GLOBAL_BLOCKED`.
+
+---
+
+#### 11. Casos especiales
+
+##### 11.1. Actualización `PATCH`
+
+La clasificación `PATCH` no reduce los gates universales. Deberá demostrar el defecto corregido y ausencia de regresión en package y consumidor.
+
+##### 11.2. Actualización `MAJOR`
+
+Además de los gates universales, exige `PKG-GATE-013 = PASS` con:
+
+- guía de migración;
+- inventario de cambios incompatibles;
+- matriz de compatibilidad objetivo;
+- pruebas del comportamiento anterior, nuevo y rechazado;
+- tratamiento de datos, configuración, caché y eventos;
+- rollback hacia una combinación soportada;
+- aprobación reforzada del package y del consumidor.
+
+##### 11.3. Actualización de seguridad
+
+La urgencia podrá cambiar prioridad y tiempos de revisión, pero no autoriza auto-merge ni omisión de gates. Deberá demostrar:
+
+- versiones afectadas;
+- exposición del consumidor;
+- corrección y mitigación;
+- ausencia del bypass;
+- compatibilidad del fix;
+- riesgo residual;
+- rollback o estrategia de corrección hacia adelante autorizada.
+
+Cuando una prueba indispensable no pueda ejecutarse durante un incidente, la propuesta permanece bloqueada. La respuesta operativa deberá usar un mecanismo de mitigación o rollback con autoridad y evidencia propias, no declarar verde una actualización sin pruebas.
+
+##### 11.4. Deprecación y retiro
+
+La actualización deberá vincular el expediente `DEP-*`, demostrar uso residual, conservar la ventana y completar los gates de cada relación afectada. Abrir o fusionar un pull request no autoriza por sí solo el retiro de una superficie o línea `MAJOR`.
+
+##### 11.5. Rollback
+
+El rollback también usa pull request, manifest y lockfile coherentes, instalación reproducible y gates aplicables. La causa de incidente no convierte el snapshot anterior en válido si perdió soporte o compatibilidad. Las rutas preautorizadas de emergencia conservarán autoridad, expediente y verificación posterior.
+
+##### 11.6. `@vento/supabase`
+
+El package SDK y el estado de la base de datos son objetos distintos. Si una actualización depende de cambios de schema, tipos generados, datos, funciones, triggers, RLS, Realtime, Storage, Edge Functions, secretos o configuración, la propuesta queda bloqueada hasta que la tarea propietaria sea materializada, versionada y documentada desde `vento-shell` y exista compatibilidad demostrable para el ambiente objetivo.
+
+##### 11.7. Pruebas intermitentes
+
+Una prueba con resultados contradictorios no podrá aceptarse mediante repetición selectiva. Deberá:
+
+1. conservar todos los intentos;
+2. quedar `BLOCKED`;
+3. identificar propietario;
+4. abrir o vincular la tarea de estabilización aplicable;
+5. demostrar una condición reproducible antes de volver a `PASS`.
+
+---
+
+#### 12. Bloqueos materializados
+
+| ID                 | Condición de bloqueo                                                                            | Estado    | Propietario de resolución                 |
+| ------------------ | ----------------------------------------------------------------------------------------------- | --------- | ----------------------------------------- |
+| `PKG-TEST-BLK-001` | release, tag, commit, tarball o integridad no coinciden                                         | `BLOCKED` | `SHELL-CI-001`; `SHELL-CI-003`            |
+| `PKG-TEST-BLK-002` | versión no elegible por canal, soporte, SemVer o deprecación                                    | `BLOCKED` | `SHELL-CI-003`; `SHELL-CI-005`            |
+| `PKG-TEST-BLK-003` | manifest y lockfile divergen o contienen resolución flotante                                    | `BLOCKED` | `SHELL-CI-006`; consumidor                |
+| `PKG-TEST-BLK-004` | instalación bloqueada no es reproducible                                                        | `BLOCKED` | consumidor; `SHELL-CI-006`                |
+| `PKG-TEST-BLK-005` | pruebas propias del package faltan o fallan                                                     | `BLOCKED` | propietario del package; `SHELL-CI-001`   |
+| `PKG-TEST-BLK-006` | lint o análisis estático del consumidor falta o falla                                           | `BLOCKED` | consumidor                                |
+| `PKG-TEST-BLK-007` | typecheck del consumidor falta o falla                                                          | `BLOCKED` | consumidor                                |
+| `PKG-TEST-BLK-008` | build o export del consumidor falta o falla                                                     | `BLOCKED` | consumidor                                |
+| `PKG-TEST-BLK-009` | pruebas automatizadas del consumidor faltan o fallan                                            | `BLOCKED` | consumidor; tarea de prueba propietaria   |
+| `PKG-TEST-BLK-010` | la combinación exacta no existe o falla en la matriz de compatibilidad                          | `BLOCKED` | `SHELL-CI-002`; `SHELL-CI-005`            |
+| `PKG-TEST-BLK-011` | perfil especializado incompleto                                                                 | `BLOCKED` | propietario del package; consumidor       |
+| `PKG-TEST-BLK-012` | faltan `TREQ-*` afectados o resultados reproducibles                                            | `BLOCKED` | `SHELL-CI-006`; propietario de requisitos |
+| `PKG-TEST-BLK-013` | gate requerido aparece omitido, neutral, cancelado o sin resultado                              | `BLOCKED` | workflow propietario                      |
+| `PKG-TEST-BLK-014` | ejecución excede tiempo o depende de infraestructura no disponible                              | `BLOCKED` | CI o servicio propietario                 |
+| `PKG-TEST-BLK-015` | evidencia corresponde a otro commit, base, manifest, lockfile o versión                         | `BLOCKED` | nueva ejecución completa                  |
+| `PKG-TEST-BLK-016` | resultados intermitentes o contradictorios                                                      | `BLOCKED` | propietario de la prueba                  |
+| `PKG-TEST-BLK-017` | cambio `MAJOR`, seguridad, deprecación o rollback carece de controles reforzados                | `BLOCKED` | responsables de riesgo aplicables         |
+| `PKG-TEST-BLK-018` | impacto de datos o Supabase carece de tarea propietaria, compatibilidad o rollback              | `BLOCKED` | tareas desde `vento-shell`                |
+| `PKG-TEST-BLK-019` | faltan revisores, aprobaciones o protección de rama                                             | `BLOCKED` | gobierno del consumidor                   |
+| `PKG-TEST-BLK-020` | el bot intenta aprobar, auto-fusionar, desplegar o escribir directamente                        | `BLOCKED` | gobierno de CI y seguridad                |
+| `PKG-TEST-BLK-021` | la propuesta desactiva controles o introduce un bypass para obtener resultado correcto aparente | `BLOCKED` | propietario del consumidor; seguridad     |
+| `PKG-TEST-BLK-022` | la propuesta mezcla cambios ajenos que impiden atribuir pruebas y riesgo                        | `BLOCKED` | responsable del consumidor                |
+
+Todo bloqueo conserva causa, entrada afectada, evidencia, propietario, tarea responsable y condición de salida. Ningún bloqueo se cierra por una etiqueta, comentario o excepción genérica.
+
+---
+
+#### 13. Registro de decisiones vinculantes
+
+| ID             | Decisión                                                                               | Estado                 | Materialización posterior           |
+| -------------- | -------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------- |
+| `PKG-TEST-001` | aplicar política fail-closed a toda actualización automática                           | `DECIDIDO`             | `SHELL-CI-006`; protección de ramas |
+| `PKG-TEST-002` | permitir apertura automática sin considerar adoptado el cambio                         | `DECIDIDO`             | actualizador de consumidores        |
+| `PKG-TEST-003` | exigir `PASS` para todo gate universal                                                 | `DECIDIDO`             | agregador de resultados             |
+| `PKG-TEST-004` | permitir `NOT_APPLICABLE` solo para gates condicionales justificados                   | `DECIDIDO`             | política de aplicabilidad           |
+| `PKG-TEST-005` | tratar ausencia, neutralidad y omisión como bloqueo                                    | `DECIDIDO`             | agregador de resultados             |
+| `PKG-TEST-006` | tratar cancelación y timeout como bloqueo                                              | `DECIDIDO`             | workflows propietarios              |
+| `PKG-TEST-007` | tratar evidencia vencida como bloqueo                                                  | `DECIDIDO`             | invalidación automática             |
+| `PKG-TEST-008` | conservar resultados fallidos e intentos previos                                       | `DECIDIDO`             | artefactos y expediente             |
+| `PKG-TEST-009` | impedir selección oportunista de un reintento correcto                                 | `DECIDIDO`             | política de pruebas intermitentes   |
+| `PKG-TEST-010` | exigir identidad canónica de release                                                   | `DECIDIDO`             | `SHELL-CI-001`; `SHELL-CI-003`      |
+| `PKG-TEST-011` | exigir versión exacta, manifest y lockfile coherentes                                  | `DECIDIDO`             | `SHELL-CI-006`                      |
+| `PKG-TEST-012` | exigir instalación limpia bloqueada                                                    | `DECIDIDO`             | consumidores                        |
+| `PKG-TEST-013` | exigir pruebas propias del package                                                     | `DECIDIDO`             | pipeline de package                 |
+| `PKG-TEST-014` | exigir lint o análisis estático del consumidor                                         | `DECIDIDO`             | pipeline consumidor                 |
+| `PKG-TEST-015` | exigir typecheck del consumidor                                                        | `DECIDIDO`             | pipeline consumidor                 |
+| `PKG-TEST-016` | exigir build o export del consumidor                                                   | `DECIDIDO`             | pipeline consumidor                 |
+| `PKG-TEST-017` | exigir pruebas automatizadas del consumidor                                            | `DECIDIDO`             | pipeline consumidor                 |
+| `PKG-TEST-018` | exigir matriz de compatibilidad de la combinación exacta                               | `DECIDIDO`             | `SHELL-CI-002`; `SHELL-CI-005`      |
+| `PKG-TEST-019` | asignar un perfil especializado a cada familia                                         | `DECIDIDO`             | pipelines de package y consumidor   |
+| `PKG-TEST-020` | exigir declaración y resultados de `TREQ-*`                                            | `DECIDIDO`             | expediente `PKG-PR-*`               |
+| `PKG-TEST-021` | ligar toda evidencia al commit de propuesta                                            | `DECIDIDO`             | checks y artefactos                 |
+| `PKG-TEST-022` | invalidar resultados cuando cambia una entrada material                                | `DECIDIDO`             | reejecución de gates                |
+| `PKG-TEST-023` | invalidar aprobación técnica después de nuevos commits                                 | `DECIDIDO`             | protección de rama                  |
+| `PKG-TEST-024` | conservar cuatro packages y siete consumidores                                         | `DECIDIDO`             | matriz de 28 relaciones             |
+| `PKG-TEST-025` | materializar los gates para las 28 relaciones                                          | `DECIDIDO`             | `SHELL-CI-006`                      |
+| `PKG-TEST-026` | prohibir auto-merge aun con todos los gates correctos                                  | `DECIDIDO`             | gobierno del consumidor             |
+| `PKG-TEST-027` | prohibir auto-deploy desde el actualizador                                             | `DECIDIDO`             | pipelines consumidores              |
+| `PKG-TEST-028` | prohibir push directo a ramas protegidas                                               | `DECIDIDO`             | protección de ramas                 |
+| `PKG-TEST-029` | separar identidades de publicación, actualización, aprobación y despliegue             | `DECIDIDO`             | secretos y permisos de CI           |
+| `PKG-TEST-030` | no reducir gates por actualización `PATCH`                                             | `DECIDIDO`             | perfiles de prueba                  |
+| `PKG-TEST-031` | no reducir gates por urgencia de seguridad                                             | `DECIDIDO`             | revisión de seguridad               |
+| `PKG-TEST-032` | exigir controles reforzados para `MAJOR`, seguridad, deprecación y rollback            | `DECIDIDO`             | `PKG-GATE-013`                      |
+| `PKG-TEST-033` | separar SDK `@vento/supabase` de cambios de base de datos                              | `DECIDIDO`             | tareas Supabase desde `vento-shell` |
+| `PKG-TEST-034` | bloquear impacto Supabase sin tarea propietaria y compatibilidad                       | `DECIDIDO`             | `GATE-PROFILE-SUPABASE`             |
+| `PKG-TEST-035` | excluir PASS, ANIMA, TALENTO y móviles sin contrato propietario                        | `DECIDIDO`             | tareas futuras aplicables           |
+| `PKG-TEST-036` | asignar release y pruebas propias a `SHELL-CI-001`                                     | `DECIDIDO`             | BLOQUE T                            |
+| `PKG-TEST-037` | asignar contract tests a `SHELL-CI-002`                                                | `DECIDIDO`             | BLOQUE T                            |
+| `PKG-TEST-038` | asignar breaking changes y visuales a `SHELL-CI-003` y `SHELL-CI-004`                  | `DECIDIDO`             | BLOQUE T                            |
+| `PKG-TEST-039` | asignar versionado y compatibilidad a `SHELL-CI-005`                                   | `DECIDIDO`             | BLOQUE T                            |
+| `PKG-TEST-040` | asignar creación y mantenimiento de PRs a `SHELL-CI-006`, sin implementar en esta fase | `RESTRICCION_CANONICA` | BLOQUE T                            |
+
+**Conciliación:** 40 decisiones, 40 identificadores únicos, 0 faltantes y 0 duplicados.
+
+---
+
+#### 14. Hallazgos y destinos exactos
+
+| ID                    | Hallazgo                                                                                  | Estado                         | Destino o condición de salida                                     |
+| --------------------- | ----------------------------------------------------------------------------------------- | ------------------------------ | ----------------------------------------------------------------- |
+| `H-SHELL-PKG-008-001` | las 28 relaciones no cuentan con release estable adoptada                                 | `NO_APLICA_SIN_ADOPCION`       | releases y adopciones controladas en `SHELL-CI-*` y `SHELL-MIG-*` |
+| `H-SHELL-PKG-008-002` | no se confirmó un actualizador ejecutable para los siete consumidores                     | `PENDIENTE_DE_IMPLEMENTACION`  | `SHELL-CI-006`                                                    |
+| `H-SHELL-PKG-008-003` | no se encontró configuración dedicada de Dependabot en la ubicación convencional          | `NO_IMPLEMENTADO_CONFIRMADO`   | `SHELL-CI-006`                                                    |
+| `H-SHELL-PKG-008-004` | no se encontró configuración dedicada de Renovate en las ubicaciones convencionales       | `NO_IMPLEMENTADO_CONFIRMADO`   | `SHELL-CI-006`                                                    |
+| `H-SHELL-PKG-008-005` | no existen nombres concretos de checks aprobados en la definición documental              | `RESERVADO_A_IMPLEMENTACION`   | `SHELL-CI-001` a `SHELL-CI-006`                                   |
+| `H-SHELL-PKG-008-006` | los comandos reproducibles y el bloqueo de merge ya están protegidos por `TREQ-SHELL-005` | `COBERTURA_CANONICA_EXISTENTE` | conservar en pipelines y reglas de rama                           |
+| `H-SHELL-PKG-008-007` | la matriz de compatibilidad previa a adopción está protegida por `TREQ-SHELL-006`         | `COBERTURA_CANONICA_EXISTENTE` | materializar en `SHELL-CI-002` y `SHELL-CI-005`                   |
+| `H-SHELL-PKG-008-008` | la declaración de requisitos y resultados por PR está protegida por `TREQ-SHELL-008`      | `COBERTURA_CANONICA_EXISTENTE` | materializar en expediente y CI                                   |
+| `H-SHELL-PKG-008-009` | rollback, deprecación y retiro ya tienen requisitos específicos                           | `COBERTURA_CANONICA_EXISTENTE` | `TREQ-SHELL-007`, `038` y `039`                                   |
+| `H-SHELL-PKG-008-010` | no existe evidencia de auto-merge o auto-deploy autorizado                                | `PROHIBIDO_POR_CONTRATO`       | preservar mediante permisos y protección de ramas                 |
+| `H-SHELL-PKG-008-011` | una actualización de `@vento/supabase` no demuestra compatibilidad de base de datos       | `DECISION_CRITICA`             | tareas `SHELL-DB-*`, Supabase y paquetes E5                       |
+| `H-SHELL-PKG-008-012` | esta tarea no autoriza escritura remota ni avance de continuidad                          | `RESTRICCION_CANONICA`         | conservar hasta incorporación canónica autorizada                 |
+
+**Conciliación:** 12 hallazgos, 12 destinos o condiciones de salida y 0 pendientes narrativos sin propietario.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la obligación material ya está protegida por requisitos vigentes. `TREQ-SHELL-005` exige comandos reproducibles y bloquea merge o despliegue cuando son inexistentes, rotos o fallan; `TREQ-SHELL-006` exige pruebas propias y matriz de compatibilidad contra cada consumidor antes de publicar o adoptar; `TREQ-SHELL-007` exige rollback independiente probado; `TREQ-SHELL-008` exige que cada package y PR declare los requisitos afectados y publique resultados reproducibles; `TREQ-SHELL-009` exige identidad verificable de repositorio, commit y ambiente; `TREQ-SHELL-036` y `TREQ-SHELL-037` protegen identidad y coherencia de releases; `TREQ-SHELL-038` y `TREQ-SHELL-039` exigen pruebas, consumidores y rollback para deprecación y retiro. Esta tarea materializa la política fail-closed y la aplicabilidad por relación sin introducir una regla de prueba independiente.
+
+| Operación sobre `TREQ-*` | Cantidad |
+| ------------------------ | -------: |
+| creados                  |    **0** |
+| modificados              |    **0** |
+| diferidos                |    **0** |
+| descartados              |    **0** |
+| obsoletos                |    **0** |
+
+No corresponde producir una nueva copia del registro canónico de requisitos de prueba.
+
+---
+
+#### 16. Entregables
+
+1. Política universal fail-closed para actualizaciones automáticas.
+2. Catálogo de dieciséis gates canónicos.
+3. Semántica de nueve estados de resultado.
+4. Cuatro perfiles especializados de prueba.
+5. Contrato de evidencia ligado a relación, commit, manifest, lockfile y versión.
+6. Reglas de invalidación y reejecución.
+7. Matriz completa de 28 relaciones con gates y perfil asignados.
+8. Frontera entre apertura automática, revisión, merge, despliegue y adopción.
+9. Tratamiento de `PATCH`, `MAJOR`, seguridad, deprecación, rollback, pruebas intermitentes y `@vento/supabase`.
+10. Veintidós bloqueos con propietario.
+11. Cuarenta decisiones vinculantes.
+12. Doce hallazgos con destino exacto.
+13. Declaración de cero cambios `TREQ-*` con cobertura vigente explícita.
+14. Handoff de implementación a `SHELL-CI-001` a `SHELL-CI-006`.
+
+---
+
+#### 17. Criterios de aceptación
+
+`SHELL-PKG-008` queda materialmente completa porque:
+
+- define una política fail-closed para toda actualización automática;
+- permite automatizar la propuesta sin automatizar adopción, merge o despliegue;
+- conserva exactamente cuatro packages y siete consumidores;
+- materializa exactamente 28 relaciones sin faltantes ni duplicados;
+- asigna un perfil especializado a cada relación;
+- define dieciséis gates y nueve estados de resultado;
+- exige `PASS` en todo gate universal;
+- restringe `NOT_APPLICABLE` a gates condicionales justificados;
+- trata ausencia, omisión, cancelación, timeout, fallo e invalidez como bloqueo;
+- liga la evidencia al commit, manifest, lockfile, versión y consumidor exactos;
+- invalida resultados cuando cambian las entradas;
+- impide seleccionar reintentos correctos de una prueba intermitente sin resolver su causa;
+- exige pruebas propias del package y del consumidor;
+- exige lint, typecheck, build o export, pruebas automatizadas y matriz de compatibilidad;
+- exige declaración y resultados de requisitos `TREQ-*`;
+- refuerza cambios `MAJOR`, seguridad, deprecación y rollback;
+- separa `@vento/supabase` de cualquier cambio de base de datos;
+- prohíbe auto-merge, auto-deploy, push directo y bypass manual;
+- asigna implementación a tareas `SHELL-CI-*` existentes;
+- declara cero cambios `TREQ-*` por cobertura vigente suficiente;
+- no modifica código, packages, consumidores, CI, datos, Supabase o continuidad.
+
+---
+
+#### 18. Continuidad canónica del bloque
+
+- **ÚLTIMA TAREA APROBADA:** SHELL-PKG-007 — Definir actualizaciones mediante PR
+- **TAREA ACTUAL APROBADA:** SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas
+- **SIGUIENTE TAREA RESERVADA:** SHELL-CON-001 — Definir contratos compartidos
+
+
 Paquetes candidatos
