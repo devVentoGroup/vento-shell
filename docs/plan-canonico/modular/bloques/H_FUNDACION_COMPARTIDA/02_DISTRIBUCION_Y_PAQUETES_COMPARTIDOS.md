@@ -2194,7 +2194,744 @@ No corresponde producir una nueva copia del registro `04A`.
 - **SIGUIENTE TAREA RESERVADA:** SHELL-PKG-005 — Definir política de deprecación
 
 
-### [ ] SHELL-PKG-005 — Definir política de deprecación
+### ✅ SHELL-PKG-005 — Definir política de deprecación
+
+**Estado:** APROBADA
+**Fecha:** 2026-08-01
+**Tarea anterior:** SHELL-PKG-004 — Definir política de compatibilidad
+**Tarea siguiente:** SHELL-PKG-006 — Definir rollback por aplicación
+**Tipo de tarea:** Documental
+**Fase:** Definición documental vinculante; implementación física no autorizada
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Ubicación canónica:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`
+**Corte remoto de `vento-shell`:** `477009f8c68cc9483f566eb6e8ba318739387071`
+
+---
+
+#### 1. Resultado material
+
+Se establece la política canónica de deprecación, mantenimiento, fin de soporte y retiro para las cuatro familias de paquetes compartidos de Vento OS:
+
+1. `@vento/contracts`;
+2. `@vento/os-context`;
+3. `@vento/supabase`;
+4. `@vento/ui-web`.
+
+La política distingue y gobierna dos objetos diferentes:
+
+```text
+superficie pública
+→ export, tipo, schema, código, función, prop, evento, token, contrato o comportamiento observable
+
+línea de soporte
+→ serie MAJOR de un package y sus combinaciones de compatibilidad certificadas
+```
+
+Deprecar no equivale a eliminar. Una superficie o línea de soporte deprecada conservará identidad, documentación, historial, artefactos publicados y una ruta de migración verificable hasta superar su puerta de retiro.
+
+| Métrica                                         |    Resultado |
+| ----------------------------------------------- | -----------: |
+| Familias de paquetes gobernadas                 |        **4** |
+| Repositorios web consumidores gobernados        |        **7** |
+| Relaciones package–consumidor materializadas    |       **28** |
+| Modelos de ciclo de vida definidos              |        **2** |
+| Estados de superficie pública                   |        **6** |
+| Estados de línea de soporte                     |        **5** |
+| Ventana ordinaria mínima de deprecación         |  **90 días** |
+| Mantenimiento mínimo de la línea MAJOR anterior | **180 días** |
+| Decisiones vinculantes                          |       **36** |
+| Hallazgos con destino exacto                    |       **12** |
+| Requisitos `TREQ-*` creados                     |        **2** |
+| Deprecaciones o retiros físicos ejecutados      |        **0** |
+
+---
+
+#### 2. Fuentes y línea base verificable
+
+##### 2.1. Fuentes vinculantes
+
+| Fuente                                                            | Uso                                                                                          |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`                      | continuidad, alcance, evidencia, requisitos de prueba y límites de fase                      |
+| `docs/plan-canonico/modular/delivery-contract.json`               | estructura física del artefacto documental                                                   |
+| `docs/plan-canonico/modular/active-sequence.json`                 | segmento documental `SHELL-PKG-001..008`                                                     |
+| `docs/plan-canonico/modular/continuity-route.json`                | ruta normal del BLOQUE H                                                                     |
+| `docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md`              | última tarea aprobada, tarea actual y siguiente reservada                                    |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`                       | decisiones aprobadas de distribución, SemVer, releases y compatibilidad                      |
+| `SHELL-PKG-001 — Elegir mecanismo de distribución`                | artefactos inmutables, versiones exactas, lockfile y adopción independiente                  |
+| `SHELL-PKG-002 — Definir versionado semántico`                    | clasificación `MINOR` de deprecación y `MAJOR` de retiro o reducción de soporte              |
+| `SHELL-PKG-003 — Definir tags y releases`                         | identidad inmutable, estado `DEPRECADA`, changelog y release notes                           |
+| `SHELL-PKG-004 — Definir política de compatibilidad`              | 28 relaciones, bandas soportadas, revalidación y reducción de soporte                        |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`                      | universo de siete consumidores web y riesgo de deriva                                        |
+| `T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` | pruebas, builds, releases, changelog, matriz de compatibilidad y PRs de consumidores         |
+| `package.json` de `vento-shell` y consumidores                    | línea base técnica declarada                                                                 |
+| `packages/os-context/package.json` y `README.md`                  | único package transitorio materializado, todavía privado y sin release estable               |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`                | cobertura vigente de retiro, compatibilidad, rollback, registro, procedencia e inmutabilidad |
+
+##### 2.2. Corte remoto actual
+
+| ID             | Repositorio                  | Commit de `main` usado como referencia     |
+| -------------- | ---------------------------- | ------------------------------------------ |
+| `DEP-REPO-001` | `devVentoGroup/vento-shell`  | `477009f8c68cc9483f566eb6e8ba318739387071` |
+| `DEP-REPO-002` | `devVentoGroup/vento-viso`   | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |
+| `DEP-REPO-003` | `devVentoGroup/vento-nexo`   | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |
+| `DEP-REPO-004` | `devVentoGroup/vento-fogo`   | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |
+| `DEP-REPO-005` | `devVentoGroup/vento-origo`  | `b7a8303fa078ef087f522b6c99059ababfc27472` |
+| `DEP-REPO-006` | `devVentoGroup/vento-pulso`  | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| `DEP-REPO-007` | `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |
+
+La línea base no demuestra packages `@vento/*` publicados ni adopción mediante registry en los siete consumidores. `@vento/os-context@0.1.0` continúa como workspace privado que exporta fuente TypeScript. Por tanto, esta tarea define la política futura, pero no declara deprecaciones actuales ni ventanas ya iniciadas.
+
+##### 2.3. Línea base del registro de pruebas
+
+El registro canónico vigente en el corte contiene:
+
+- 6.324 requisitos;
+- 37 requisitos del dominio `SHELL`;
+- rango `TREQ-SHELL-001` a `TREQ-SHELL-037`;
+- última tarea incorporada `SHELL-PKG-004`;
+- cero requisitos duplicados;
+- catorce columnas en cada fila.
+
+La cobertura existente protege el retiro genérico de código, las matrices de compatibilidad, el rollback, la trazabilidad del registro y la inmutabilidad de releases. No protege por sí sola la ventana temporal, el anuncio, el reemplazo, el inventario de consumidores y la puerta específica de retiro de una superficie pública deprecada.
+
+---
+
+#### 3. Alcance
+
+##### 3.1. Incluido
+
+Esta tarea define:
+
+1. los objetos que pueden deprecarse;
+2. los estados de una superficie pública y de una línea MAJOR;
+3. la ventana ordinaria mínima antes del retiro;
+4. el período mínimo de mantenimiento de la línea MAJOR anterior;
+5. el contenido obligatorio de un registro de deprecación;
+6. las señales documentales, de tipos, release y registry;
+7. la relación con SemVer, compatibilidad, changelog y releases;
+8. las obligaciones por cada una de las cuatro familias;
+9. la trazabilidad de los 28 vínculos package–consumidor;
+10. la puerta de retiro y fin de soporte;
+11. el tratamiento de prereleases y excepciones críticas;
+12. la conservación de artefactos e historia;
+13. los requisitos de prueba que protegerán el ciclo completo.
+
+##### 3.2. Excluido
+
+Esta tarea no:
+
+- depreca una API, package, versión o línea MAJOR concreta;
+- elimina exports, tipos, schemas, componentes, props, tokens o wrappers;
+- publica releases, tags, paquetes o mensajes de registry;
+- modifica manifests, lockfiles, código, CI, secrets o configuración;
+- ejecuta migraciones de consumidores;
+- define el procedimiento operativo de rollback por aplicación, reservado a `SHELL-PKG-006`;
+- crea PRs de actualización, reservados a `SHELL-PKG-007`;
+- implementa gates automáticos, reservados a `SHELL-PKG-008` y `SHELL-CI-*`;
+- modifica datos, migraciones o configuración de Supabase.
+
+---
+
+#### 4. Objetos y vocabulario canónico
+
+##### 4.1. Superficie pública deprecable
+
+Podrá deprecarse únicamente una identidad pública concreta y estable:
+
+| Categoría            | Ejemplos gobernados                                                        |
+| -------------------- | -------------------------------------------------------------------------- |
+| package completo     | nombre npm y línea MAJOR                                                   |
+| entrypoint o subpath | exports declarados en el manifest                                          |
+| tipo o contrato      | interfaces, unions, enums, generics, schemas, códigos y catálogos          |
+| comportamiento       | firmas, retornos, errores, decisiones, side effects y semántica observable |
+| acceso a datos       | factories, adapters, wrappers RPC, tipos `Database` y errores normalizados |
+| interfaz             | componentes, props, eventos, DOM, accesibilidad, tokens y requisitos CSS   |
+| compatibilidad       | peer dependencies, engines, frameworks, runtimes y bandas soportadas       |
+
+Una carpeta, archivo interno o implementación privada no se depreca por nombre: se refactoriza o retira conforme a su consumo real. Una superficie solo entra en esta política cuando forma parte del API público o del comportamiento soportado.
+
+##### 4.2. Identificador estable de deprecación
+
+Toda deprecación tendrá un identificador inmutable:
+
+```text
+DEP-<SLUG>-<SECUENCIA>
+```
+
+Slugs permitidos:
+
+```text
+CONTRACTS
+OS-CONTEXT
+SUPABASE
+UI-WEB
+```
+
+Ejemplos estructurales:
+
+```text
+DEP-CONTRACTS-001
+DEP-OS-CONTEXT-001
+DEP-SUPABASE-001
+DEP-UI-WEB-001
+```
+
+La secuencia identifica el expediente de deprecación y no se reutiliza después de cancelación, retiro o cierre.
+
+##### 4.3. Términos vinculantes
+
+| Término                | Significado                                                                                                    |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------- |
+| deprecación            | aviso vinculante de que una superficie o línea continúa disponible temporalmente, pero debe dejar de adoptarse |
+| reemplazo              | superficie, versión o patrón soportado al que deberá migrar el consumidor                                      |
+| ventana de deprecación | período mínimo durante el cual la superficie anterior permanece disponible y soportada para migración          |
+| mantenimiento          | período de correcciones compatibles y de seguridad, sin nuevas capacidades ordinarias                          |
+| fin de soporte         | término de correcciones ordinarias para una línea, sin borrar ni mutar sus artefactos                          |
+| retiro                 | eliminación de una superficie del API público en una versión nueva y compatible con las reglas de SemVer       |
+| despublicación         | eliminación del artefacto del registry; no equivale a retiro y queda prohibida como mecanismo ordinario        |
+| consumidor requerido   | repositorio incluido en la matriz de compatibilidad que usa o debe certificar la superficie                    |
+
+---
+
+#### 5. Ciclo de vida de superficies públicas
+
+##### 5.1. Estados permitidos
+
+| Estado                       | Definición                                                                                                  |
+| ---------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `ACTIVA`                     | superficie soportada, recomendada y disponible para adopción                                                |
+| `DEPRECADA`                  | superficie disponible, con reemplazo, aviso, ventana y migración publicados                                 |
+| `EN_MIGRACION`               | al menos un consumidor requerido tiene una migración abierta y trazable                                     |
+| `BLOQUEADA_POR_CONSUMIDORES` | la ventana mínima terminó, pero existe uso, evidencia incompleta o consumidor no migrado                    |
+| `ELEGIBLE_PARA_RETIRO`       | se cumplieron tiempo, releases, inventario, migración, pruebas y rollback                                   |
+| `RETIRADA`                   | la superficie ya no existe en el API público de una nueva versión MAJOR; permanece en artefactos históricos |
+
+##### 5.2. Transiciones permitidas
+
+```text
+ACTIVA → DEPRECADA
+DEPRECADA → EN_MIGRACION
+DEPRECADA → BLOQUEADA_POR_CONSUMIDORES
+EN_MIGRACION → BLOQUEADA_POR_CONSUMIDORES
+EN_MIGRACION → ELEGIBLE_PARA_RETIRO
+BLOQUEADA_POR_CONSUMIDORES → EN_MIGRACION
+BLOQUEADA_POR_CONSUMIDORES → ELEGIBLE_PARA_RETIRO
+ELEGIBLE_PARA_RETIRO → RETIRADA
+```
+
+Una superficie `RETIRADA` no vuelve a `ACTIVA` con el mismo identificador. Restaurarla exige una nueva decisión de API y una nueva versión compatible con SemVer.
+
+##### 5.3. Prohibiciones de estado
+
+Queda prohibido:
+
+- pasar de `ACTIVA` directamente a `RETIRADA` por flujo ordinario;
+- declarar `ELEGIBLE_PARA_RETIRO` solo porque transcurrió tiempo;
+- cerrar un expediente mientras un consumidor requerido siga usando la superficie;
+- ocultar una ruptura marcándola únicamente como deprecación;
+- reactivar silenciosamente una identidad retirada;
+- tratar una anotación `@deprecated` aislada como política completa;
+- usar ausencia de tráfico puntual como prueba suficiente de no consumo.
+
+---
+
+#### 6. Ciclo de vida de líneas MAJOR
+
+##### 6.1. Estados permitidos
+
+| Estado           | Definición                                                                                       |
+| ---------------- | ------------------------------------------------------------------------------------------------ |
+| `ACTIVA`         | línea MAJOR recomendada, con soporte funcional y de seguridad                                    |
+| `MANTENIMIENTO`  | línea MAJOR anterior, con correcciones compatibles y de seguridad durante la ventana aprobada    |
+| `DEPRECADA`      | línea no recomendada para nuevas adopciones y con fecha de fin de soporte publicada              |
+| `FIN_DE_SOPORTE` | no recibe correcciones ordinarias; los consumidores remanentes constituyen una brecha bloqueante |
+| `HISTORICA`      | línea preservada para reproducibilidad, auditoría y rollback controlado, sin adopciones nuevas   |
+
+##### 6.2. Regla de coexistencia
+
+Cuando se publique una nueva línea MAJOR estable `N`:
+
+1. `N` pasa a `ACTIVA`;
+2. `N-1` pasa a `MANTENIMIENTO` por un mínimo de 180 días calendario;
+3. líneas anteriores a `N-1` no reciben soporte ordinario salvo extensión aprobada o incidente crítico;
+4. ningún consumidor nuevo podrá adoptar una línea `DEPRECADA`, `FIN_DE_SOPORTE` o `HISTORICA`;
+5. un consumidor que permanezca en `FIN_DE_SOPORTE` bloqueará su siguiente release o despliegue hasta migrar o contar con una excepción explícita y temporal;
+6. los artefactos históricos permanecerán inmutables y localizables.
+
+El período de 180 días es mínimo. Puede ampliarse por dependencia operativa demostrada, pero no reducirse por conveniencia de release.
+
+##### 6.3. Alcance del mantenimiento
+
+Durante `MANTENIMIENTO` se permiten:
+
+- correcciones compatibles;
+- correcciones de seguridad;
+- ajustes de build o packaging que no rompan el API;
+- documentación y guías de migración;
+- observabilidad necesaria para el retiro.
+
+No se permiten nuevas capacidades ordinarias que prolonguen artificialmente la línea anterior. Una capacidad imprescindible para migración deberá justificarse y clasificarse según SemVer.
+
+---
+
+#### 7. Ventana ordinaria de deprecación
+
+##### 7.1. Condiciones acumulativas
+
+Una superficie pública estable solo podrá llegar a `ELEGIBLE_PARA_RETIRO` cuando se cumplan simultáneamente:
+
+1. la deprecación fue publicada en una release estable compatible;
+2. transcurrieron al menos 90 días calendario desde esa publicación;
+3. existió al menos una release estable posterior de la misma línea MAJOR que conservó la superficie deprecada;
+4. se publicó un reemplazo soportado o una decisión explícita de eliminación sin reemplazo;
+5. existe guía de migración completa;
+6. los consumidores requeridos fueron inventariados;
+7. cada relación package–consumidor está migrada, `NO_APLICA` con evidencia o amparada por una excepción temporal;
+8. no quedan imports, llamadas, contratos, tipos, CSS, datos, cachés o configuraciones residuales conocidos;
+9. la matriz de compatibilidad de la versión objetivo está completa;
+10. pruebas, build y validaciones del package y de los consumidores afectados son correctos;
+11. existe rollback operativo hacia una combinación soportada;
+12. el propietario del package y los responsables de consumidores afectados aprobaron el cierre.
+
+El retiro material se realizará exclusivamente en una nueva versión `MAJOR`, salvo que la identidad nunca haya pertenecido a una release estable.
+
+##### 7.2. Inicio de la ventana
+
+La ventana comienza únicamente cuando una release estable contiene todos estos elementos:
+
+- identificador `DEP-*`;
+- superficie exacta;
+- primera versión deprecada;
+- fecha de anuncio;
+- motivo;
+- reemplazo o `SIN_REEMPLAZO_JUSTIFICADO`;
+- versión mínima del reemplazo;
+- fecha más temprana de retiro;
+- versión MAJOR mínima de retiro;
+- consumidores conocidos;
+- guía de migración;
+- riesgos y rollback;
+- propietario y aprobadores.
+
+Un issue, comentario, mensaje de chat, PR no fusionado o anotación interna no inicia la ventana.
+
+##### 7.3. Suspensión y reinicio
+
+La ventana queda suspendida cuando:
+
+- el reemplazo no es compatible con un consumidor requerido;
+- la guía de migración es incompleta;
+- aparece un consumidor no inventariado;
+- se detecta pérdida de datos, autorización, accesibilidad o comportamiento;
+- no existe rollback viable;
+- la evidencia no corresponde a las versiones exactas.
+
+Corregir el bloqueo no reinicia automáticamente los 90 días, salvo que cambie de forma incompatible el reemplazo, el alcance o la migración. En ese caso deberá emitirse una nueva versión del expediente y recalcularse la fecha más temprana de retiro.
+
+---
+
+#### 8. Política por familia de package
+
+| ID            | Package             | Superficies gobernadas                                                                        | Señal mínima de deprecación                                                                | Riesgos específicos que deben probarse                                                   | Propietario documental principal                            |
+| ------------- | ------------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `DEP-FAM-001` | `@vento/contracts`  | schemas, tipos, códigos, catálogos, identificadores, estados, eventos y diagnósticos          | metadata contractual, `@deprecated` cuando aplique, changelog, release y guía de migración | serialización, exhaustividad, eventos, datos históricos y compatibilidad entre versiones | tareas `SHELL-CON-*`                                        |
+| `DEP-FAM-002` | `@vento/os-context` | funciones, tipos de contexto, decisiones, razones, scopes, guards y semántica de autorización | `@deprecated`, documentación, changelog, release y reemplazo seguro                        | denegación cerrada, sesiones, dispositivos, simulación, auditoría y autoridad efectiva   | tareas `SHELL-AUTH-*` y `SHELL-CTX-*`                       |
+| `DEP-FAM-003` | `@vento/supabase`   | factories, clientes, adapters, wrappers RPC, tipos generados y errores normalizados           | `@deprecated`, contrato de datos, changelog, release y plan de transición                  | RLS, RPC, migraciones, tipos, datos, transacciones, Realtime y rollback                  | tareas `SHELL-DB-*` y propietarias de arquitectura Supabase |
+| `DEP-FAM-004` | `@vento/ui-web`     | componentes, props, eventos, slots, DOM, accesibilidad, tokens, estilos y requisitos CSS      | `@deprecated`, documentación visual, changelog, release y alternativa                      | render, hidratación, teclado, lector de pantalla, estilos, layout y comportamiento       | tareas `SHELL-UI-*`                                         |
+
+**Conciliación:** cuatro familias esperadas, cuatro decisiones materializadas, cero faltantes y cero duplicados.
+
+##### 8.1. Reglas para contratos y tipos
+
+- eliminar o estrechar un schema estable requiere `MAJOR`;
+- un campo deprecado deberá permanecer aceptado durante la ventana cuando el contrato lo permita;
+- códigos, estados o identificadores históricos no se reutilizarán con otro significado;
+- unions y enums cerrados deberán considerar consumidores exhaustivos;
+- datos históricos conservarán interpretación y versión aun después del retiro del API de escritura.
+
+##### 8.2. Reglas para contexto y autorización
+
+- una razón, scope, guard o campo de contexto no podrá retirarse mientras un consumidor la use para autorizar, auditar o explicar decisiones;
+- el reemplazo deberá mantener denegación cerrada y no ampliar autoridad por fallback;
+- no se introducirá compatibilidad temporal que restaure bypasses prohibidos;
+- sesiones y dispositivos con versiones distintas deberán probarse durante la ventana.
+
+##### 8.3. Reglas para Supabase
+
+- deprecar un wrapper o tipo no autoriza retirar tablas, columnas, funciones, triggers, policies o eventos;
+- cualquier objeto de base de datos seguirá su tarea y migración propietaria;
+- la compatibilidad entre package, schema remoto y tipos generados deberá quedar fijada por versión;
+- no se retirará una interfaz mientras existan jobs, Edge Functions, RPC, Realtime o consumidores externos no migrados.
+
+##### 8.4. Reglas para UI
+
+- props, eventos, estructura accesible, tokens y CSS públicos forman parte de la superficie;
+- una prop deprecada deberá conservar comportamiento compatible durante la ventana;
+- el reemplazo deberá demostrar paridad funcional y accesibilidad igual o superior;
+- warnings de desarrollo deberán ser deduplicados, no incluir datos sensibles y no degradar producción;
+- un cambio visual incompatible no se ocultará como refactor interno.
+
+---
+
+#### 9. Matriz package–consumidor de deprecación
+
+La política conserva las 28 relaciones aprobadas en `SHELL-PKG-004`. En la línea base actual todas permanecen sin una deprecación ejecutable porque no existe una versión estable publicada y adoptada de los packages.
+
+| ID            | Package             | Consumidor     | Estado de deprecación actual    | Evidencia necesaria para cambiar de estado                          | Destino de materialización |
+| ------------- | ------------------- | -------------- | ------------------------------- | ------------------------------------------------------------------- | -------------------------- |
+| `DEP-REL-001` | `@vento/contracts`  | `vento-shell`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-002` | `@vento/contracts`  | `vento-viso`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-003` | `@vento/contracts`  | `vento-nexo`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-004` | `@vento/contracts`  | `vento-fogo`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-005` | `@vento/contracts`  | `vento-origo`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-006` | `@vento/contracts`  | `vento-pulso`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-007` | `@vento/contracts`  | `vento-numera` | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-008` | `@vento/os-context` | `vento-shell`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-009` | `@vento/os-context` | `vento-viso`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-010` | `@vento/os-context` | `vento-nexo`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-011` | `@vento/os-context` | `vento-fogo`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-012` | `@vento/os-context` | `vento-origo`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-013` | `@vento/os-context` | `vento-pulso`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-014` | `@vento/os-context` | `vento-numera` | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-015` | `@vento/supabase`   | `vento-shell`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-016` | `@vento/supabase`   | `vento-viso`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-017` | `@vento/supabase`   | `vento-nexo`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-018` | `@vento/supabase`   | `vento-fogo`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-019` | `@vento/supabase`   | `vento-origo`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-020` | `@vento/supabase`   | `vento-pulso`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-021` | `@vento/supabase`   | `vento-numera` | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-022` | `@vento/ui-web`     | `vento-shell`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-023` | `@vento/ui-web`     | `vento-viso`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-024` | `@vento/ui-web`     | `vento-nexo`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-025` | `@vento/ui-web`     | `vento-fogo`   | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-026` | `@vento/ui-web`     | `vento-origo`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-027` | `@vento/ui-web`     | `vento-pulso`  | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+| `DEP-REL-028` | `@vento/ui-web`     | `vento-numera` | `NO_APLICA_SIN_RELEASE_ESTABLE` | versión instalada, lockfile, inventario de uso y expediente `DEP-*` | `SHELL-CI-004..006`        |
+
+**Conciliación:** 28 relaciones esperadas, 28 materializadas, siete por familia, cuatro por consumidor, cero faltantes y cero duplicadas.
+
+El estado `NO_APLICA_SIN_RELEASE_ESTABLE` describe exclusivamente la línea base. No certifica ausencia futura de consumo ni permite omitir la relación cuando exista una versión publicada.
+
+---
+
+#### 10. Registro obligatorio de deprecación
+
+Cada expediente `DEP-*` deberá contener:
+
+| Campo                      | Obligación                                                                               |
+| -------------------------- | ---------------------------------------------------------------------------------------- |
+| `deprecation_id`           | identificador único e inmutable                                                          |
+| `package_name`             | una de las cuatro familias aprobadas                                                     |
+| `surface_kind`             | package, entrypoint, tipo, contrato, comportamiento, acceso a datos, UI o compatibilidad |
+| `surface_identity`         | export, símbolo, schema, código, prop, evento, token, banda o identidad exacta           |
+| `first_deprecated_version` | primera release estable que publica el aviso                                             |
+| `announcement_date`        | fecha verificable del inicio de ventana                                                  |
+| `reason`                   | causa técnica, funcional, de seguridad o de arquitectura                                 |
+| `replacement`              | identidad soportada o `SIN_REEMPLAZO_JUSTIFICADO`                                        |
+| `replacement_min_version`  | primera versión estable que contiene el reemplazo                                        |
+| `earliest_removal_date`    | fecha no anterior a 90 días desde el anuncio                                             |
+| `minimum_removal_major`    | primera línea MAJOR en la que podría retirarse                                           |
+| `affected_consumers`       | 28 relaciones evaluadas con estado individual                                            |
+| `migration_guide`          | pasos, equivalencias, riesgos, validaciones y ejemplos                                   |
+| `compatibility_evidence`   | matriz exacta antes, durante y después de migración                                      |
+| `rollback_reference`       | combinación soportada y procedimiento propietario                                        |
+| `owner`                    | propietario del package                                                                  |
+| `approvers`                | propietario y consumidores afectados                                                     |
+| `exception`                | `NONE` o expediente crítico aprobado                                                     |
+| `status`                   | estado permitido de superficie                                                           |
+| `closure_evidence`         | pruebas, inventario cero residual y aprobaciones de cierre                               |
+
+Los campos no podrán sustituirse por texto genérico. Fechas, versiones, consumidores, reemplazo y evidencia deberán ser resolubles.
+
+---
+
+#### 11. Señales obligatorias de deprecación
+
+##### 11.1. Señales acumulativas
+
+Cuando técnicamente apliquen, una deprecación estable deberá aparecer de forma coherente en:
+
+1. API o types mediante `@deprecated` y referencia al reemplazo;
+2. documentación pública del package;
+3. changelog bajo `Deprecated`;
+4. release notes de la primera versión deprecada;
+5. manifest o catálogo de deprecaciones;
+6. guía de migración;
+7. matriz de compatibilidad y consumidores;
+8. PRs de actualización o migración;
+9. mensaje de registry para versiones completas cuando se depreque una línea o artefacto;
+10. evidencia de pruebas y rollback.
+
+La ausencia de una señal técnicamente imposible deberá justificarse en el expediente. No se permitirá omitir release, changelog, guía, matriz o evidencia.
+
+##### 11.2. Warnings de runtime
+
+Un warning de runtime solo se admitirá cuando:
+
+- no exponga datos personales, secretos, tokens ni contexto sensible;
+- no altere retorno, orden, timing o control de autorización;
+- sea deduplicado y atribuible a una identidad `DEP-*`;
+- pueda limitarse a desarrollo, CI o ambiente controlado cuando producción no aporte evidencia segura;
+- no sustituya pruebas estáticas, inventario de consumidores ni telemetría aprobada.
+
+No se añadirá telemetría nueva ni captura de uso en esta fase documental.
+
+##### 11.3. Mensajes del registry
+
+Marcar una versión como deprecada en el registry:
+
+- no cambia sus bytes;
+- no mueve tags Git ni releases;
+- no modifica el lockfile del consumidor;
+- no retira automáticamente el package;
+- deberá indicar versión recomendada, motivo, expediente y fecha de soporte;
+- no se utilizará como sustituto de una release segura disponible.
+
+---
+
+#### 12. Relación con SemVer, releases y compatibilidad
+
+| Evento                                                                       | Clasificación mínima | Regla                                                                                          |
+| ---------------------------------------------------------------------------- | -------------------- | ---------------------------------------------------------------------------------------------- |
+| anunciar deprecación manteniendo API y comportamiento                        | `MINOR`              | capacidad documental y contractual aditiva                                                     |
+| corregir texto o enlace de una deprecación sin cambiar alcance               | `PATCH`              | corrección compatible                                                                          |
+| ampliar reemplazo compatible o guía sin retirar superficie                   | `MINOR` o `PATCH`    | según cambie o no el API publicado                                                             |
+| retirar export, tipo, campo, prop, evento, token o banda antes soportada     | `MAJOR`              | ruptura para consumidores soportados                                                           |
+| marcar una versión defectuosa como deprecada y publicar reemplazo compatible | nueva versión        | el artefacto defectuoso permanece inmutable                                                    |
+| reducir peer, engine o framework soportado                                   | `MAJOR`              | además activa deprecación de la banda y migración de consumidores                              |
+| cambiar únicamente una prerelease no estable                                 | prerelease nueva     | no inicia ventana ordinaria, pero exige release notes y no puede afectar consumidores estables |
+
+Una deprecación no autoriza incumplir `SHELL-PKG-004`. Mientras la superficie exista, deberá permanecer dentro de las combinaciones soportadas declaradas o quedar explícitamente restringida con evidencia.
+
+---
+
+#### 13. Puerta de retiro y fin de soporte
+
+##### 13.1. Gate por superficie
+
+Antes de retirar una superficie, la evidencia deberá demostrar:
+
+```text
+expediente DEP completo
++ ventana de 90 días cumplida
++ release estable intermedia publicada
++ nueva versión MAJOR clasificada
++ 28 relaciones evaluadas
++ cero consumidores requeridos sin resolución
++ cero imports o usos residuales conocidos
++ compatibilidad del reemplazo
++ pruebas de package y consumidores
++ migración y datos conciliados cuando apliquen
++ rollback probado
++ aprobaciones de cierre
+```
+
+El gate fallará si una sola relación requerida permanece `PENDIENTE_DE_EVIDENCIA`, `INCOMPATIBLE`, sin inventario o sin responsable.
+
+##### 13.2. Gate por línea MAJOR
+
+Antes de declarar `FIN_DE_SOPORTE`:
+
+- habrá transcurrido el mantenimiento mínimo de 180 días;
+- existirá una línea MAJOR activa y certificada;
+- cada consumidor tendrá una versión objetivo y plan de migración;
+- se publicará fecha, impacto, última versión soportada y alternativa;
+- no quedarán incidentes críticos sin una versión segura disponible;
+- la matriz registrará consumidores remanentes como bloqueos, no como omisiones;
+- cualquier excepción tendrá propietario, fecha de expiración y riesgo aceptado.
+
+##### 13.3. Conservación histórica
+
+El retiro o fin de soporte no permitirá:
+
+- sobrescribir versiones;
+- mover tags o releases;
+- reutilizar identificadores;
+- borrar changelog, guías o evidencia;
+- eliminar artefactos ordinariamente;
+- reescribir datos históricos;
+- ocultar consumidores que no migraron;
+- convertir una línea sin soporte en compatible por documentación.
+
+---
+
+#### 14. Prereleases y excepciones críticas
+
+##### 14.1. Prereleases
+
+Las superficies que solo existieron en `alpha`, `beta` o `rc` podrán cambiar o retirarse sin la ventana ordinaria de 90 días porque no constituyen API estable. Aun así:
+
+- cada artefacto distinto tendrá nueva versión prerelease;
+- release notes declararán la ruptura;
+- no se mutarán tags, releases ni bytes;
+- se evaluarán consumidores de prueba conocidos;
+- una estable no dependerá de una prerelease interna;
+- una identidad retirada antes de estable no se presentará como deprecación cumplida de una API estable.
+
+##### 14.2. Excepción crítica
+
+Una vulnerabilidad, incumplimiento legal, corrupción de datos o riesgo operativo crítico podrá exigir acortar la ventana, bloquear adopción o deshabilitar una superficie antes del plazo ordinario. La excepción deberá contener:
+
+1. severidad y alcance comprobados;
+2. razón por la que mantener la superficie es más riesgoso que retirarla;
+3. versión segura o mitigación disponible;
+4. consumidores afectados y responsable por cada uno;
+5. plan urgente de migración;
+6. pruebas de seguridad, compatibilidad y datos;
+7. rollback o estrategia de recuperación segura;
+8. aprobaciones del propietario técnico y autoridad empresarial aplicable;
+9. fecha de expiración de cualquier bypass temporal;
+10. informe posterior y cierre del expediente.
+
+La excepción no autoriza mutar artefactos ni borrar historia. Cuando la ruptura afecte una release estable, se conservará la clasificación `MAJOR` aunque el calendario sea abreviado.
+
+##### 14.3. Despublicación extraordinaria
+
+La despublicación solo podrá considerarse ante artefacto comprometido, malware, secreto publicado, obligación legal o imposibilidad de mantenerlo accesible con seguridad. Requerirá una decisión de incidente independiente, inventario de consumidores, versión de reemplazo, preservación de evidencia y plan de recuperación. No forma parte del flujo ordinario de deprecación.
+
+---
+
+#### 15. Decisiones vinculantes
+
+| ID            | Decisión                                                         | Estado                 | Destino de materialización                   |
+| ------------- | ---------------------------------------------------------------- | ---------------------- | -------------------------------------------- |
+| `PKG-DEP-001` | gobernar las cuatro familias aprobadas                           | `DECIDIDO`             | todos los packages compartidos               |
+| `PKG-DEP-002` | distinguir superficie pública y línea MAJOR                      | `DECIDIDO`             | manifest de deprecaciones                    |
+| `PKG-DEP-003` | usar identificadores `DEP-*` inmutables                          | `DECIDIDO`             | catálogo y changelog                         |
+| `PKG-DEP-004` | impedir reutilización de identificadores cerrados                | `DECIDIDO`             | validador documental                         |
+| `PKG-DEP-005` | separar deprecación de retiro                                    | `DECIDIDO`             | releases y migraciones                       |
+| `PKG-DEP-006` | exigir reemplazo o eliminación sin reemplazo justificada         | `DECIDIDO`             | expediente `DEP-*`                           |
+| `PKG-DEP-007` | iniciar ventana solo mediante release estable completa           | `DECIDIDO`             | `SHELL-CI-003`; `SHELL-CI-004`               |
+| `PKG-DEP-008` | fijar ventana ordinaria mínima de 90 días                        | `DECIDIDO`             | gate de retiro                               |
+| `PKG-DEP-009` | exigir una release estable intermedia que conserve la superficie | `DECIDIDO`             | pipeline de release                          |
+| `PKG-DEP-010` | retirar API estable únicamente en nueva línea MAJOR              | `DECIDIDO`             | clasificación SemVer                         |
+| `PKG-DEP-011` | evaluar las 28 relaciones antes del retiro                       | `DECIDIDO`             | `SHELL-CI-005`; `SHELL-CI-006`               |
+| `PKG-DEP-012` | bloquear retiro por consumidor sin evidencia                     | `DECIDIDO`             | `SHELL-PKG-008`                              |
+| `PKG-DEP-013` | exigir cero usos residuales conocidos                            | `DECIDIDO`             | análisis estático, pruebas y evidencia       |
+| `PKG-DEP-014` | exigir guía de migración y rollback                              | `DECIDIDO`             | `SHELL-PKG-006`; `SHELL-CI-004`              |
+| `PKG-DEP-015` | preservar la superficie durante la ventana                       | `DECIDIDO`             | package de la línea vigente                  |
+| `PKG-DEP-016` | mantener N-1 por mínimo 180 días tras publicar N                 | `DECIDIDO`             | política de soporte de líneas MAJOR          |
+| `PKG-DEP-017` | limitar mantenimiento a correcciones compatibles y seguridad     | `DECIDIDO`             | ramas y releases de mantenimiento            |
+| `PKG-DEP-018` | bloquear nuevas adopciones de líneas no soportadas               | `DECIDIDO`             | PRs y gate de consumidor                     |
+| `PKG-DEP-019` | conservar artefactos históricos inmutables                       | `DECIDIDO`             | registry, tags y releases                    |
+| `PKG-DEP-020` | prohibir despublicación como retiro ordinario                    | `DECIDIDO`             | registry y respuesta a incidentes            |
+| `PKG-DEP-021` | exigir `@deprecated` cuando la superficie TypeScript lo admita   | `DECIDIDO`             | packages y declarations                      |
+| `PKG-DEP-022` | exigir changelog, release notes y catálogo coherentes            | `DECIDIDO`             | `SHELL-CI-004`                               |
+| `PKG-DEP-023` | limitar warnings de runtime a usos seguros y deduplicados        | `DECIDIDO`             | implementación propietaria                   |
+| `PKG-DEP-024` | no usar warnings como sustituto de inventario o pruebas          | `DECIDIDO`             | gate de deprecación                          |
+| `PKG-DEP-025` | tratar reducción de soporte como ruptura MAJOR                   | `DECIDIDO`             | `SHELL-PKG-004`; clasificación SemVer        |
+| `PKG-DEP-026` | no confundir fin de soporte con eliminación de bytes             | `DECIDIDO`             | registry y documentación                     |
+| `PKG-DEP-027` | permitir cambios de prerelease sin ventana estable               | `DECIDIDO`             | `SHELL-CI-003`                               |
+| `PKG-DEP-028` | documentar rupturas de prerelease y consumidores de prueba       | `DECIDIDO`             | release notes                                |
+| `PKG-DEP-029` | permitir excepción crítica solo con expediente y aprobaciones    | `DECIDIDO`             | respuesta a incidentes y gate extraordinario |
+| `PKG-DEP-030` | conservar SemVer MAJOR aun cuando se abrevie el calendario       | `DECIDIDO`             | release de emergencia                        |
+| `PKG-DEP-031` | impedir que deprecación amplíe autoridad o restaure bypasses     | `DECIDIDO`             | `@vento/os-context`                          |
+| `PKG-DEP-032` | separar deprecación del wrapper y retiro de objetos Supabase     | `DECIDIDO`             | `@vento/supabase` y tareas E3                |
+| `PKG-DEP-033` | tratar accesibilidad, DOM, tokens y CSS como superficie UI       | `DECIDIDO`             | `@vento/ui-web`                              |
+| `PKG-DEP-034` | crear dos requisitos de prueba específicos                       | `DECIDIDO`             | `TREQ-SHELL-038`; `TREQ-SHELL-039`           |
+| `PKG-DEP-035` | no ejecutar deprecaciones, retiros ni publicaciones en esta fase | `RESTRICCION_CANONICA` | fase documental                              |
+| `PKG-DEP-036` | no modificar consumidores, CI, datos ni Supabase en esta tarea   | `RESTRICCION_CANONICA` | fase documental                              |
+
+**Conciliación:** 36 decisiones, 36 identificadores únicos, cero faltantes y cero duplicados.
+
+---
+
+#### 16. Hallazgos y destinos exactos
+
+| ID                    | Hallazgo                                                                             | Estado                        | Destino o condición de salida                                        |
+| --------------------- | ------------------------------------------------------------------------------------ | ----------------------------- | -------------------------------------------------------------------- |
+| `H-SHELL-PKG-005-001` | no existen releases estables confirmados de las cuatro familias                      | `NO_APLICA_EN_LINEA_BASE`     | primera publicación en `SHELL-CI-003`                                |
+| `H-SHELL-PKG-005-002` | no existen deprecaciones canónicas activas confirmadas                               | `NO_APLICA_EN_LINEA_BASE`     | primer expediente `DEP-*` futuro                                     |
+| `H-SHELL-PKG-005-003` | `@vento/os-context@0.1.0` es privado y transitorio                                   | `NO_ES_LINEA_ESTABLE`         | build y release estable en tareas propietarias y `SHELL-CI-002..003` |
+| `H-SHELL-PKG-005-004` | las 28 relaciones no tienen versión compartida publicada que deprecar                | `NO_APLICA_SIN_ADOPCION`      | `SHELL-CI-005`; adopción mediante `SHELL-CI-006`                     |
+| `H-SHELL-PKG-005-005` | el changelog automático por package aún no está implementado                         | `PENDIENTE_DE_IMPLEMENTACION` | `SHELL-CI-004`                                                       |
+| `H-SHELL-PKG-005-006` | la matriz ejecutable de compatibilidad aún no está implementada                      | `PENDIENTE_DE_IMPLEMENTACION` | `SHELL-CI-005`                                                       |
+| `H-SHELL-PKG-005-007` | no existe catálogo ejecutable de expedientes `DEP-*`                                 | `PENDIENTE_DE_IMPLEMENTACION` | `SHELL-CI-004`; `SHELL-PKG-008`                                      |
+| `H-SHELL-PKG-005-008` | no existe gate automático de ventana, consumidores y retiro                          | `PENDIENTE_DE_IMPLEMENTACION` | `SHELL-PKG-008`; `TREQ-SHELL-038..039`                               |
+| `H-SHELL-PKG-005-009` | el procedimiento operativo de rollback por aplicación pertenece a la tarea siguiente | `RESERVADO`                   | `SHELL-PKG-006`                                                      |
+| `H-SHELL-PKG-005-010` | la actualización de consumidores mediante PR todavía no está definida                | `PENDIENTE_DE_DEFINICION`     | `SHELL-PKG-007`; `SHELL-CI-006`                                      |
+| `H-SHELL-PKG-005-011` | los artefactos históricos deberán conservarse aunque una superficie se retire        | `DECISION_CANONICA`           | registry, Git, releases y `TREQ-SHELL-036`                           |
+| `H-SHELL-PKG-005-012` | la deprecación específica de un objeto Supabase no autoriza su retiro físico         | `RESTRICCION_CANONICA`        | tarea E3 y migración propietaria aplicable                           |
+
+**Conciliación:** 12 hallazgos, 12 destinos exactos, cero pendientes sin propietario y cero decisiones fuera del alcance.
+
+---
+
+#### 17. Requisitos de prueba incorporados
+
+Esta tarea crea dos requisitos nuevos y no modifica, difiere, descarta ni vuelve obsoleto ningún requisito histórico.
+
+| ID               | Cobertura incorporada                                                                                                                                                                               | Estado inicial | Implementación responsable                                                                       |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- | ------------------------------------------------------------------------------------------------ |
+| `TREQ-SHELL-038` | ciclo de deprecación con identidad, anuncio estable, reemplazo, ventana mínima, release intermedia, SemVer, changelog, migración, consumidores y evidencia antes de declarar elegibilidad de retiro | `IDENTIFICADO` | `SHELL-CI-001`; `SHELL-CI-004`; `SHELL-CI-005`; `SHELL-CI-006`; `SHELL-PKG-008`                  |
+| `TREQ-SHELL-039` | gate de retiro y fin de soporte con 28 relaciones resueltas, cero uso residual, compatibilidad, pruebas, rollback, conservación de artefactos y control de excepciones críticas                     | `IDENTIFICADO` | `SHELL-CI-001`; `SHELL-CI-003`; `SHELL-CI-005`; `SHELL-CI-006`; `SHELL-PKG-006`; `SHELL-PKG-008` |
+
+| Operación sobre `TREQ-*` | Cantidad |
+| ------------------------ | -------: |
+| creados                  |    **2** |
+| modificados              |    **0** |
+| diferidos                |    **0** |
+| descartados              |    **0** |
+| obsoletos                |    **0** |
+
+Los requisitos se incorporan después de `TREQ-SHELL-037`, conservando secuencia, relaciones resolubles y catorce columnas.
+
+---
+
+#### 18. Entregables
+
+1. Vocabulario canónico de deprecación, mantenimiento, fin de soporte, retiro y despublicación.
+2. Identificador estable `DEP-*` por expediente.
+3. Ciclo de vida de seis estados para superficies públicas.
+4. Ciclo de vida de cinco estados para líneas MAJOR.
+5. Ventana ordinaria mínima de 90 días con condiciones acumulativas.
+6. Mantenimiento mínimo de 180 días para la línea MAJOR anterior.
+7. Matriz de cuatro familias y superficies deprecables.
+8. Matriz completa de 28 relaciones package–consumidor.
+9. Contrato de veinte campos para cada expediente de deprecación.
+10. Señales obligatorias en API, documentación, changelog, release, registry y migración.
+11. Gate de retiro de superficie y gate de fin de soporte.
+12. Política de prereleases, excepción crítica y despublicación extraordinaria.
+13. 36 decisiones vinculantes.
+14. 12 hallazgos con destino exacto.
+15. Dos requisitos de prueba nuevos.
+
+---
+
+#### 19. Criterios de aceptación
+
+`SHELL-PKG-005` queda materialmente completa cuando:
+
+- gobierna exactamente las cuatro familias aprobadas;
+- conserva los siete consumidores y las 28 relaciones de `SHELL-PKG-004`;
+- no presenta como deprecado ningún package o consumidor sin release estable;
+- distingue superficie pública, línea MAJOR, deprecación, retiro, fin de soporte y despublicación;
+- define identificadores `DEP-*` únicos e inmutables;
+- define los dos ciclos de vida y sus transiciones;
+- fija una ventana ordinaria mínima de 90 días;
+- exige una release estable intermedia antes del retiro;
+- exige retiro de API estable únicamente mediante nueva versión MAJOR;
+- fija mantenimiento mínimo de 180 días para la línea MAJOR anterior;
+- materializa la política específica de contracts, contexto, Supabase y UI;
+- exige reemplazo, guía, changelog, release, matriz, pruebas y rollback;
+- bloquea el retiro mientras exista cualquier consumidor requerido sin resolución;
+- conserva versiones, tags, releases y artefactos históricos;
+- prohíbe la despublicación como mecanismo ordinario;
+- regula prereleases sin presentarlas como API estable;
+- regula excepciones críticas sin permitir mutación ni pérdida de historia;
+- crea `TREQ-SHELL-038` y `TREQ-SHELL-039` sin alterar requisitos históricos;
+- no ejecuta cambios físicos en packages, consumidores, CI, registry, datos o Supabase.
+
+---
+
+#### 20. Continuidad canónica del bloque
+
+- **ÚLTIMA TAREA APROBADA:** SHELL-PKG-004 — Definir política de compatibilidad
+- **TAREA ACTUAL APROBADA:** SHELL-PKG-005 — Definir política de deprecación
+- **SIGUIENTE TAREA RESERVADA:** SHELL-PKG-006 — Definir rollback por aplicación
+
+
 ### [ ] SHELL-PKG-006 — Definir rollback por aplicación
 ### [ ] SHELL-PKG-007 — Definir actualizaciones mediante PR
 ### [ ] SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas

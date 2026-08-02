@@ -83,12 +83,12 @@ Dominios iniciales:
 
 | Métrica                           |        Resultado |
 | --------------------------------- | ---------------: |
-| Requisitos vigentes               |         **6324** |
+| Requisitos vigentes               |         **6326** |
 | Dominios con requisitos           |           **19** |
-| Filas con catorce columnas        | **6324 de 6324** |
+| Filas con catorce columnas        | **6326 de 6326** |
 | Identificadores duplicados        |            **0** |
 | Relaciones `TREQ-*` no resolubles |            **0** |
-| Última tarea incorporada          | `SHELL-PKG-004` |
+| Última tarea incorporada          |  `SHELL-PKG-005` |
 | Fecha de normalización            |     `2026-08-01` |
 
 Distribución vigente:
@@ -98,7 +98,7 @@ Distribución vigente:
 | `AUTH`        | `TREQ-AUTH-001` a `TREQ-AUTH-018`               |       18 |
 | `GAP`         | `TREQ-GAP-001`                                  |        1 |
 | `PROC`        | `TREQ-PROC-001` a `TREQ-PROC-1560`              |     1560 |
-| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-037`             |       37 |
+| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-039`             |       39 |
 | `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-1770`      |     1770 |
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-025`             |       25 |
 | `AURA`        | `TREQ-AURA-001` a `TREQ-AURA-027`               |       27 |
@@ -1808,6 +1808,8 @@ Distribución vigente:
 
 | `TREQ-SHELL-036` | `SHELL` | Cada versión publicada de un paquete compartido deberá conservar una correspondencia unívoca e inmutable entre nombre del package, versión SemVer, manifest, tag Git anotado, release, commit de origen, canal, tarball e integridad. El tag, el release y los bytes publicados no podrán moverse, reasociarse ni sobrescribirse; toda corrección exigirá una versión, un tag y un release nuevos. | `SHELL-PKG-003` | Tag o release ambiguo, artefacto imposible de reproducir, corrección ocultada y consumidores resolviendo bytes distintos bajo una misma identidad / crítica | contractual + integración + regresión / automatizada | `SHELL-CI-002`; `SHELL-CI-003`; `SHELL-CI-004` | Fundación compartida y pipeline de releases versionados | `vento-shell`, GitHub y registry npm privado / CI de release y staging | `IDENTIFICADO` | Validador de identidad de release, manifest de procedencia y comprobación de inmutabilidad | Pendiente | Pendiente | `TREQ-SHELL-006`; `TREQ-SHELL-008`; `TREQ-SHELL-009` |
 | `TREQ-SHELL-037` | `SHELL` | Todo corte coordinado de paquetes compartidos deberá publicar únicamente las familias con cambio distribuible, conservar versiones, tags y releases independientes, respetar el orden de dependencias internas exactas y mantener coherencia entre el sufijo SemVer y el canal del release. Una familia sin cambios no recibirá una versión artificial y una release estable no dependerá de una prerelease interna. | `SHELL-PKG-003` | Versionado lockstep artificial, grafo de dependencias irresoluble, canal contradictorio, release estable sobre prerelease y publicación parcial incoherente / crítica | contractual + integración + regresión / automatizada | `SHELL-CI-001`; `SHELL-CI-003`; `SHELL-CI-005` | Fundación compartida y pipeline de cortes coordinados multi-package | `vento-shell`, GitHub, registry npm privado y consumidores controlados / CI de release y staging | `IDENTIFICADO` | Prueba de corte coordinado, resolución del grafo y validación de canal por tag | Pendiente | Pendiente | `TREQ-SHELL-006`; `TREQ-SHELL-036` |
+| `TREQ-SHELL-038` | `SHELL` | Toda deprecación de una superficie pública o línea MAJOR de un paquete compartido deberá conservar un expediente `DEP-*` único e inmutable, superficie exacta, reemplazo soportado o decisión explícita de eliminación, anuncio en una release estable, clasificación SemVer, changelog, guía de migración, fechas de inicio y elegibilidad, ventana ordinaria mínima de 90 días, release estable intermedia, mantenimiento de la línea MAJOR anterior cuando aplique, inventario de consumidores y evidencia atribuible. Una anotación aislada, un warning o el solo transcurso del tiempo no autorizarán el retiro. | `SHELL-PKG-005` | Retiro silencioso, migración imposible, ruptura no declarada, consumidores sin aviso y pérdida de trazabilidad histórica / crítica | contractual + integración + regresión / automatizada | `SHELL-CI-001`; `SHELL-CI-004`; `SHELL-CI-005`; `SHELL-CI-006`; `SHELL-PKG-008` | Fundación compartida, catálogo de deprecaciones y paquetes `@vento/contracts`, `@vento/os-context`, `@vento/supabase` y `@vento/ui-web` | `vento-shell`, registry npm privado y siete repositorios web consumidores / documentación, CI y staging | `IDENTIFICADO` | Catálogo `DEP-*`, manifest de deprecación, changelog, release notes, guía y matriz de consumidores | Pendiente | Pendiente | `TREQ-SHELL-006`; `TREQ-SHELL-036`; `TREQ-SHELL-037` |
+| `TREQ-SHELL-039` | `SHELL` | El retiro de una superficie pública o el fin de soporte de una línea MAJOR deberá permanecer bloqueado hasta resolver las 28 relaciones package–consumidor aplicables, demostrar ausencia de uso residual, completar compatibilidad, builds y pruebas del package y de cada consumidor afectado, disponer de rollback hacia una combinación soportada, publicar el cambio en una versión MAJOR cuando corresponda y conservar inmutables versiones, tags, releases y artefactos históricos. Toda excepción crítica deberá ser temporal, aprobada, trazable y no podrá mutar ni despublicar silenciosamente una identidad existente. | `SHELL-PKG-005` | Retiro con consumidores activos, despliegue irrecuperable, fin de soporte sin migración, pérdida de evidencia y despublicación destructiva / crítica | contractual + integración + seguridad + E2E + regresión / automatizada | `SHELL-CI-001`; `SHELL-CI-003`; `SHELL-CI-005`; `SHELL-CI-006`; `SHELL-PKG-006`; `SHELL-PKG-008` | Fundación compartida, gate de retiro y paquetes `@vento/contracts`, `@vento/os-context`, `@vento/supabase` y `@vento/ui-web` | `vento-shell`, GitHub, registry npm privado y siete repositorios web consumidores / CI, staging y despliegues controlados | `IDENTIFICADO` | Gate de retiro y fin de soporte, inventario de uso residual, matriz certificada y evidencia de rollback | Pendiente | Pendiente | `TREQ-SHELL-007`; `TREQ-SHELL-036`; `TREQ-SHELL-038` |
 
 #### SUPABASE
 
