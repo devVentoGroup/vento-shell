@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **493** |
+| Aprobadas | **495** |
 | En propuesta | **0** |
-| No iniciadas | **1101** |
+| No iniciadas | **1099** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **30.93% (493/1594)** |
+| Porcentaje de completamiento | **31.05% (495/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas | ✅ APROBADA |
-| Tarea actual | `TSVC-CAT-001` — Inventariar servicios transversales actuales y faltantes | ⬜ NO INICIADA |
-| Siguiente reservada | `TSVC-CAT-002` — Definir propietario técnico y gobierno de cada servicio | ⬜ NO INICIADA |
+| Última aprobada | `TSVC-CAT-002` — Definir propietario técnico y gobierno de cada servicio | ✅ APROBADA |
+| Tarea actual | `TSVC-CAT-003` — Definir aplicaciones productoras y consumidoras | ⬜ NO INICIADA |
+| Siguiente reservada | `TSVC-CAT-004` — Definir contrato, versión y compatibilidad | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -466,8 +466,8 @@
 | ✅ APROBADA | `DATA-NORM-TRANS-008` | Definir rollback y recuperación del valor anterior | `bloques/E3_SUPABASE/07_08_DATA_NORM_TRANS_008.md` |
 | ✅ APROBADA | `DATA-NORM-TRANS-009` | Definir evidencia de aprobación por dominio | `bloques/E3_SUPABASE/07_09_DATA_NORM_TRANS_009.md` |
 | ✅ APROBADA | `SUPA-TRANS-016` | Aprobar transición antes de iniciar BLOQUE R | `bloques/E3_SUPABASE/07_10_SUPA_TRANS_016.md` |
-| ⬜ NO INICIADA | `TSVC-CAT-001` | Inventariar servicios transversales actuales y faltantes | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
-| ⬜ NO INICIADA | `TSVC-CAT-002` | Definir propietario técnico y gobierno de cada servicio | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
+| ✅ APROBADA | `TSVC-CAT-001` | Inventariar servicios transversales actuales y faltantes | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
+| ✅ APROBADA | `TSVC-CAT-002` | Definir propietario técnico y gobierno de cada servicio | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-003` | Definir aplicaciones productoras y consumidoras | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-004` | Definir contrato, versión y compatibilidad | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-005` | Definir identidad técnica y credenciales mínimas | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |

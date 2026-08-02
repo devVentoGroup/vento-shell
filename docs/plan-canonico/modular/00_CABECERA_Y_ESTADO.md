@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **493** |
+| Tareas aprobadas | **495** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1101** |
+| Tareas no iniciadas | **1099** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **30.93% (493/1594)** |
+| Porcentaje de completamiento | **31.05% (495/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas** |
-| Tarea actual | **TSVC-CAT-001 — Inventariar servicios transversales actuales y faltantes** |
+| Última tarea aprobada | **TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio** |
+| Tarea actual | **TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio** |
+| Siguiente tarea | **TSVC-CAT-004 — Definir contrato, versión y compatibilidad** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 7: TRANSVERSE_SERVICE_CATALOG** |
-| Progreso del bloque | **CARRIL NEXO: 0 de 10 aprobadas; TSVC-CAT-001 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 2 de 10 aprobadas; TSVC-CAT-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas |
-| Tarea actual | `TSVC-CAT-001` — Inventariar servicios transversales actuales y faltantes — **NO INICIADA** |
-| Siguiente tarea | `TSVC-CAT-002` — Definir propietario técnico y gobierno de cada servicio |
+| Última aprobada | `TSVC-CAT-002` — Definir propietario técnico y gobierno de cada servicio |
+| Tarea actual | `TSVC-CAT-003` — Definir aplicaciones productoras y consumidoras — **NO INICIADA** |
+| Siguiente tarea | `TSVC-CAT-004` — Definir contrato, versión y compatibilidad |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 10 APROBADAS — ACTUAL TSVC-CAT-001** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 2 DE 10 APROBADAS — ACTUAL TSVC-CAT-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas
-        ↓
-TAREA ACTUAL
-TSVC-CAT-001 — Inventariar servicios transversales actuales y faltantes
-        ↓
-SIGUIENTE TAREA RESERVADA
 TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio
         ↓
+TAREA ACTUAL
+TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras
+        ↓
+SIGUIENTE TAREA RESERVADA
+TSVC-CAT-004 — Definir contrato, versión y compatibilidad
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 0 de 10 tareas aprobadas
+CARRIL NEXO — 2 de 10 tareas aprobadas
 ```
