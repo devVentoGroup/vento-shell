@@ -83,13 +83,13 @@ Dominios iniciales:
 
 | Métrica                           |        Resultado |
 | --------------------------------- | ---------------: |
-| Requisitos vigentes               |         **6322** |
+| Requisitos vigentes               |         **6324** |
 | Dominios con requisitos           |           **19** |
-| Filas con catorce columnas        | **6322 de 6322** |
+| Filas con catorce columnas        | **6324 de 6324** |
 | Identificadores duplicados        |            **0** |
 | Relaciones `TREQ-*` no resolubles |            **0** |
-| Última tarea incorporada          | `SHELL-PKG-002` |
-| Fecha de normalización            |     `2026-07-31` |
+| Última tarea incorporada          | `SHELL-PKG-003` |
+| Fecha de normalización            |     `2026-08-01` |
 
 Distribución vigente:
 
@@ -98,7 +98,7 @@ Distribución vigente:
 | `AUTH`        | `TREQ-AUTH-001` a `TREQ-AUTH-018`               |       18 |
 | `GAP`         | `TREQ-GAP-001`                                  |        1 |
 | `PROC`        | `TREQ-PROC-001` a `TREQ-PROC-1560`              |     1560 |
-| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-035`             |       35 |
+| `SHELL`       | `TREQ-SHELL-001` a `TREQ-SHELL-037`             |       37 |
 | `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-1770`      |     1770 |
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-025`             |       25 |
 | `AURA`        | `TREQ-AURA-001` a `TREQ-AURA-027`               |       27 |
@@ -1805,6 +1805,9 @@ Distribución vigente:
 | `TREQ-SHELL-033` | `SHELL` | El snapshot aprobado deberá conservar dos patrones estáticos y cero dinámicos. Query parameters como `returnTo`, `email` o `site_id`, estados de modal y tarjetas repetidas no crearán rutas o pantallas adicionales. | `AUTH-UI-008` / `SHELL-SURFACE-INVENTORY-001` | inventario inflado, patrones ambiguos y pruebas incompletas / alta | contractual + interfaz + regresión / automatizada | AUTH-UI-008; SHELL-CI-017 | Paquete E5 SHELL y navegación unificada | `vento-shell` / CI y staging pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Rutas `/` y `/login` observadas; patrones dinámicos no encontrados | TREQ-SHELL-012; TREQ-SHELL-013 |
 | `TREQ-SHELL-034` | `SHELL` | Todo enlace absoluto desde SHELL hacia una aplicación deberá corresponder a un dominio y aplicación activos del catálogo canónico, usar transporte seguro y conservar el destino solicitado sin aceptar sustitución por datos del cliente o configuración no gobernada. | `AUTH-UI-008` / `SHELL-SURFACE-INVENTORY-001` | redirección a dominio incorrecto, downgrade y navegación hacia aplicación no aprobada / crítica | seguridad + contractual + integración + regresión / automatizada | AUTH-UI-008; AUTH-UI-041; AUTH-UI-045; SHELL-CON-002 | Contratos compartidos y paquete E5 SHELL | SHELL y dominios de aplicaciones / CI y staging pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Cinco destinos absolutos runtime y siete destinos de template observados; reconciliación pendiente | TREQ-SHELL-003; TREQ-SHELL-018; TREQ-SHELL-028 |
 | `TREQ-SHELL-035` | `SHELL` | Textos, etiquetas y estados de las superficies template deberán conservar codificación UTF-8 válida, nombres aprobados y significado consistente. Caracteres corruptos o estados “próximamente” divergentes bloquearán la adopción del template. | `AUTH-UI-008` / `SHELL-SURFACE-INVENTORY-001` | interfaz ilegible, interpretación incorrecta y propagación de defectos por copia / media | interfaz + contractual + regresión visual / automatizada con revisión | AUTH-UI-008; SHELL-AUD-001; UX-QA-022 | Fundación AppShell compartida y paquetes E5 consumidores | `vento-shell` y repositorios web / CI y revisión visual pendientes | `IDENTIFICADO` | Pendiente | Pendiente | Caracteres de reemplazo observados en AppSwitcher template; corrección y prueba pendientes | TREQ-SHELL-002; TREQ-SHELL-028; TREQ-SHELL-029 |
+
+| `TREQ-SHELL-036` | `SHELL` | Cada versión publicada de un paquete compartido deberá conservar una correspondencia unívoca e inmutable entre nombre del package, versión SemVer, manifest, tag Git anotado, release, commit de origen, canal, tarball e integridad. El tag, el release y los bytes publicados no podrán moverse, reasociarse ni sobrescribirse; toda corrección exigirá una versión, un tag y un release nuevos. | `SHELL-PKG-003` | Tag o release ambiguo, artefacto imposible de reproducir, corrección ocultada y consumidores resolviendo bytes distintos bajo una misma identidad / crítica | contractual + integración + regresión / automatizada | `SHELL-CI-002`; `SHELL-CI-003`; `SHELL-CI-004` | Fundación compartida y pipeline de releases versionados | `vento-shell`, GitHub y registry npm privado / CI de release y staging | `IDENTIFICADO` | Validador de identidad de release, manifest de procedencia y comprobación de inmutabilidad | Pendiente | Pendiente | `TREQ-SHELL-006`; `TREQ-SHELL-008`; `TREQ-SHELL-009` |
+| `TREQ-SHELL-037` | `SHELL` | Todo corte coordinado de paquetes compartidos deberá publicar únicamente las familias con cambio distribuible, conservar versiones, tags y releases independientes, respetar el orden de dependencias internas exactas y mantener coherencia entre el sufijo SemVer y el canal del release. Una familia sin cambios no recibirá una versión artificial y una release estable no dependerá de una prerelease interna. | `SHELL-PKG-003` | Versionado lockstep artificial, grafo de dependencias irresoluble, canal contradictorio, release estable sobre prerelease y publicación parcial incoherente / crítica | contractual + integración + regresión / automatizada | `SHELL-CI-001`; `SHELL-CI-003`; `SHELL-CI-005` | Fundación compartida y pipeline de cortes coordinados multi-package | `vento-shell`, GitHub, registry npm privado y consumidores controlados / CI de release y staging | `IDENTIFICADO` | Prueba de corte coordinado, resolución del grafo y validación de canal por tag | Pendiente | Pendiente | `TREQ-SHELL-006`; `TREQ-SHELL-036` |
 
 #### SUPABASE
 
