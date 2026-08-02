@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **502** |
+| Tareas aprobadas | **503** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1092** |
+| Tareas no iniciadas | **1091** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **31.49% (502/1594)** |
+| Porcentaje de completamiento | **31.56% (503/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TSVC-CAT-009 — Definir retención, archivado y limpieza** |
-| Tarea actual | **TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy** |
+| Última tarea aprobada | **TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy** |
+| Tarea actual | **AUTH-UI-030 — Asignar permiso de lectura a cada vista** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-030 — Asignar permiso de lectura a cada vista** |
-| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 7: TRANSVERSE_SERVICE_CATALOG** |
-| Progreso del bloque | **CARRIL NEXO: 9 de 10 aprobadas; TSVC-CAT-010 pendiente** |
+| Siguiente tarea | **AUTH-UI-031 — Asignar permiso exacto a cada acción** |
+| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 8: AUTH_UI_CONTRACT** |
+| Progreso del bloque | **CARRIL NEXO: 0 de 10 aprobadas; AUTH-UI-030 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TSVC-CAT-009` — Definir retención, archivado y limpieza |
-| Tarea actual | `TSVC-CAT-010` — Definir adopción progresiva y retiro de soluciones legacy — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-030` — Asignar permiso de lectura a cada vista |
+| Última aprobada | `TSVC-CAT-010` — Definir adopción progresiva y retiro de soluciones legacy |
+| Tarea actual | `AUTH-UI-030` — Asignar permiso de lectura a cada vista — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-031` — Asignar permiso exacto a cada acción |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 9 DE 10 APROBADAS — ACTUAL TSVC-CAT-010** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 10 APROBADAS — ACTUAL AUTH-UI-030** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TSVC-CAT-009 — Definir retención, archivado y limpieza
-        ↓
-TAREA ACTUAL
 TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-UI-030 — Asignar permiso de lectura a cada vista
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-031 — Asignar permiso exacto a cada acción
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 9 de 10 tareas aprobadas
+CARRIL NEXO — 0 de 10 tareas aprobadas
 ```

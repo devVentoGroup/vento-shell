@@ -5433,4 +5433,1144 @@ TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy
 ```
 
 
-### [ ] TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy
+### ✅ TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `TSVC-CAT-009 — Definir retención, archivado y limpieza`
+
+**Tarea siguiente:** `AUTH-UI-030 — Asignar permiso de lectura a cada vista`
+
+**Tipo de tarea:** definición documental canónica y materialización matricial de adopción progresiva, coexistencia controlada, cutover, rollback, drenaje y retiro de soluciones legacy para servicios transversales
+
+**Fase:** definición documental vinculante; implementación física, activación de pilotos, cutover, retiro operativo y despliegue no autorizados
+
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+
+**Fecha de corte:** `2026-08-02`
+
+**Cambios en código, datos, configuración, migraciones, funciones, workers, colas, proveedores, dispositivos, despliegues o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado material
+
+Esta tarea materializa el registro canónico:
+
+```text
+TRANSVERSE-SERVICE-ADOPTION-AND-LEGACY-RETIREMENT-REGISTRY-001@1.0.0
+```
+
+El registro define, para cada una de las diez identidades `TSVC-SVC-001..010`:
+
+1. el estado objetivo de adopción;
+2. la unidad mínima de transición;
+3. los gates que deben superarse antes de shadow, piloto, coexistencia, cutover, drenaje, retiro y desmantelamiento;
+4. los patrones permitidos y prohibidos de coexistencia;
+5. la autoridad única sobre cada efecto empresarial, técnico o físico durante la transición;
+6. el mecanismo de rollback y sus límites;
+7. las condiciones que impiden retirar un activo, consumidor, productor, endpoint, schedule, dispositivo, credencial, buffer, archivo o evidencia;
+8. la decisión explícita para los siete activos técnicos actuales inventariados;
+9. la aplicación al carril prioritario `NEXO-REMISSIONS-001`;
+10. el cierre documental del mini-bloque `TSVC-CAT` y su entrega exclusiva a `AUTH-UI-030`.
+
+La regla central es:
+
+```text
+ADOPTAR POR UNIDADES PEQUEÑAS Y OBSERVABLES
++
+MANTENER UNA SOLA AUTORIDAD POR EFECTO
++
+COEXISTIR SOLO CON LÍMITES, EVIDENCIA Y FECHA DE SALIDA
++
+PODER VOLVER A UN ESTADO SEGURO SIN DUPLICAR EFECTOS
++
+DRENAR Y CONCILIAR ANTES DE RETIRAR
++
+DESMANTELAR SOLO CUANDO NO EXISTAN RESIDUALES ACTIVOS
+```
+
+La tarea no declara que alguno de los diez servicios transversales esté implementado, desplegado, adoptado, validado o disponible. Define la trayectoria obligatoria que deberán seguir las fases físicas y los paquetes propietarios antes de presentar una capacidad como canónica o una solución legacy como retirada.
+
+---
+
+#### 2. Alcance
+
+La tarea abarca exactamente estas diez identidades:
+
+1. `TSVC-SVC-001` — Orquestación genérica de trabajos asíncronos.
+2. `TSVC-SVC-002` — Entrega transaccional de eventos y outbox.
+3. `TSVC-SVC-003` — Impresión centralizada.
+4. `TSVC-SVC-004` — Notificaciones y alertas.
+5. `TSVC-SVC-005` — Generación de documentos.
+6. `TSVC-SVC-006` — Custodia de archivos y documentos originales.
+7. `TSVC-SVC-007` — Evidencia transaccional.
+8. `TSVC-SVC-008` — Integraciones externas y webhooks.
+9. `TSVC-SVC-009` — Programación y automatizaciones recurrentes.
+10. `TSVC-SVC-010` — Monitoreo y heartbeat de workers.
+
+La tarea conserva sin modificación:
+
+- las diez identidades y la clasificación `0 ACTUAL + 4 PARCIAL + 6 FALTANTE` de `TSVC-CAT-001`;
+- el propietario técnico institucional `Tecnología de Vento Group` y el repositorio canónico `vento-shell` definidos en `TSVC-CAT-002`;
+- las cien decisiones aplicación–servicio de `TSVC-CAT-003`;
+- los diez contratos `TSVC-SVC-001.CONTRACT@1.0.0` a `TSVC-SVC-010.CONTRACT@1.0.0` de `TSVC-CAT-004`;
+- las identidades técnicas, referencias de credencial y límites de mínimo privilegio de `TSVC-CAT-005`;
+- el modelo `AT_LEAST_ONCE_WITH_IDEMPOTENT_EFFECTS`, las claves, los receipts, los claims, el fencing, el resultado desconocido y la conciliación de `TSVC-CAT-006`;
+- las señales, métricas, alertas, auditoría y estados de salud de `TSVC-CAT-007`;
+- los estados de disponibilidad, modos degradados, circuit breaker, recuperación y conciliación de `TSVC-CAT-008`;
+- las clases, estados, grupos de material, holds, tombstones y gates de disposición de `TSVC-CAT-009`;
+- la autoridad de cada aplicación propietaria sobre su resultado empresarial;
+- la obligación de que toda modificación futura de Supabase perteneciente a VENTO se cree, versione, documente y ejecute desde `vento-shell` durante una fase autorizada.
+
+Quedan fuera del alcance:
+
+- crear o modificar código, SQL, migraciones, tipos, contratos físicos, configuración, feature flags, dashboards, workers, colas, cron, buckets, secretos, endpoints o dispositivos;
+- iniciar shadow, piloto, coexistencia, cutover, rollback, drenaje, retiro o desmantelamiento reales;
+- modificar datos, mover objetos, revocar credenciales, detener endpoints, deshabilitar schedules o eliminar activos;
+- afirmar equivalencia, compatibilidad, rendimiento, seguridad, disponibilidad o operación sin evidencia ejecutada;
+- seleccionar proveedores, herramientas, plataformas o tecnologías físicas;
+- alterar los siete activos actuales antes de la fase de implementación propietaria;
+- avanzar, desarrollar o modificar `AUTH-UI-030`.
+
+---
+
+#### 3. Decisiones aprobadas
+
+##### 3.1. Identidad del registro
+
+| Campo                       | Valor                                                            |
+| --------------------------- | ---------------------------------------------------------------- |
+| `registry_id`               | `TRANSVERSE-SERVICE-ADOPTION-AND-LEGACY-RETIREMENT-REGISTRY-001` |
+| `registry_version`          | `1.0.0`                                                          |
+| `registry_status`           | `DEFINED`                                                        |
+| `covered_services`          | `10`                                                             |
+| `current_assets_reconciled` | `7`                                                              |
+| `adoption_state_count`      | `13`                                                             |
+| `adoption_gate_count`       | `12`                                                             |
+| `rollout_dimension_count`   | `10`                                                             |
+| `technical_owner`           | Tecnología de Vento Group                                        |
+| `canonical_repository`      | `vento-shell`                                                    |
+| `governing_task`            | `TSVC-CAT-010`                                                   |
+
+`DEFINED` significa que el modelo de adopción, coexistencia, cutover, rollback, drenaje y retiro está documentalmente cerrado. No significa que exista una implementación objetivo, un piloto, una bandera, una cohorte, una migración, un cambio de tráfico, una revocación, un desmantelamiento o evidencia operativa.
+
+##### 3.2. Vocabulario canónico
+
+| Concepto            | Definición canónica                                                                                                                                                                 | No representa                                                         |
+| ------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `TARGET_CAPABILITY` | Servicio transversal objetivo gobernado por las definiciones `TSVC-CAT-001..010`.                                                                                                   | Código existente, pantalla, tabla o adaptador aislado.                |
+| `LEGACY_SOLUTION`   | Implementación, activo, flujo, endpoint, schedule, credencial o práctica actual que será conservada, adaptada, migrada o retirada bajo una transición explícita.                    | Elemento defectuoso por definición ni permiso para eliminarlo.        |
+| `TRANSITION_UNIT`   | Unidad mínima independiente que puede adoptar la capacidad objetivo con alcance, owner, contrato, rollback y evidencia propios.                                                     | Aplicación completa por defecto.                                      |
+| `SHADOW`            | Ejecución observacional o comparativa sin autoridad para producir efectos empresariales, externos o físicos.                                                                        | Doble escritura ni entrega real.                                      |
+| `PILOT`             | Uso real limitado a un alcance aprobado, reversible y medible.                                                                                                                      | Despliegue general ni aceptación definitiva.                          |
+| `COEXISTENCE`       | Operación simultánea temporal bajo fronteras explícitas, autoridad única y fecha de salida.                                                                                         | Duplicación indefinida de fuentes de verdad.                          |
+| `CUTOVER`           | Cambio gobernado de autoridad operativa desde la solución anterior hacia la capacidad objetivo para una unidad de transición.                                                       | Retiro automático de la solución anterior.                            |
+| `ROLLBACK`          | Retorno controlado a un estado seguro previamente validado, sin ocultar efectos ya producidos.                                                                                      | Restauración ciega de datos, credenciales o semánticas incompatibles. |
+| `DRAIN`             | Cierre controlado de trabajo, consumidores, productores, buffers, sesiones, conexiones y residuales anteriores.                                                                     | Eliminación de pendientes para acelerar el retiro.                    |
+| `RETIREMENT`        | Desactivación gobernada del uso ordinario de una solución, preservando historia, retención, evidencia y rollback cerrado.                                                           | Borrado físico inmediato.                                             |
+| `DECOMMISSIONING`   | Eliminación o inutilización final de superficies, credenciales, schedules, endpoints y recursos después del retiro demostrado.                                                      | Cambio de estado documental sin ejecución.                            |
+| `RESIDUAL`          | Elemento pendiente que impide declarar cierre: operación, consumidor, productor, resultado desconocido, buffer, evidencia, secreto, archivo, backup, hold, incidente o dependencia. | Observación menor sin owner.                                          |
+
+Reglas:
+
+1. un activo actual puede ser útil y aun así clasificarse como legacy respecto del servicio objetivo;
+2. legacy no significa automáticamente obsoleto, inseguro ni eliminable;
+3. una solución solo se retira cuando la capacidad objetivo y la transición demuestran que ya no existe una dependencia activa;
+4. el cutover cambia autoridad operativa; el retiro elimina el uso ordinario; el desmantelamiento elimina la capacidad técnica residual;
+5. cada etapa conserva evidencia propia y no se infiere de la siguiente;
+6. una solución puede permanecer como adaptador compatible sin convertirse en servicio transversal completo;
+7. una interfaz de usuario puede conservarse mientras cambia el backend, siempre que el contrato, la autoridad y la experiencia permanezcan controlados;
+8. una tabla, bucket o endpoint no se considera retirado mientras existan lectores, escritores, jobs, secretos, enlaces, backups o referencias activas.
+
+##### 3.3. Invariantes de transición
+
+1. No se autoriza una adopción big-bang para los diez servicios ni para una aplicación completa sin descomposición justificada.
+2. Cada efecto empresarial, externo o físico tiene una sola autoridad activa.
+3. No se permiten dos fuentes mutables competidoras para el mismo estado canónico.
+4. Shadow no puede imprimir, enviar, cobrar, notificar, crear documentos oficiales, alterar archivos, registrar evidencia, disparar schedules ni cambiar estados empresariales.
+5. Una comparación shadow usa datos minimizados y conserva el resultado de comparación sin convertir la salida sombra en verdad.
+6. La coexistencia tiene alcance, owner, inicio, condición de salida, capacidad máxima y fecha de revisión.
+7. Una convivencia sin condición de cierre se clasifica como `BLOCKED`, no como transición válida.
+8. El servicio objetivo no acepta una unidad que no supere contrato, identidad, confiabilidad, observabilidad, contingencia y retención.
+9. Un rollback no puede duplicar efectos ya confirmados ni reabrir operaciones terminales.
+10. Un cambio de tecnología no cambia por sí mismo la aplicación propietaria ni la fuente empresarial de verdad.
+11. Una migración de datos preserva identidad, versión, integridad, lineage, relaciones, retención, holds y tombstones.
+12. Una migración de contrato conserva versiones de origen y destino y no oculta adaptación incompatible.
+13. Una migración de credenciales no usa `SUPABASE_SERVICE_ROLE_KEY` como fallback general.
+14. Un proveedor, dispositivo o canal alterno no recibe autoridad empresarial por participar en la transición.
+15. No se desactiva una solución anterior mientras existan operaciones `RESULT_UNKNOWN`, `RECONCILIATION_REQUIRED`, `DEAD_LETTER`, `QUARANTINED` o `BLOCKED` sin resolución.
+16. No se elimina material para obtener una métrica artificial de residuales en cero.
+17. La ausencia de telemetría no se interpreta como ausencia de uso.
+18. El cero residual debe demostrarse mediante inventario, señales, consultas, owners y ventana de observación.
+19. Las relaciones condicionales permanecen inactivas hasta su decisión propietaria; el plan de adopción no las habilita.
+20. Toda transición física futura deberá poder detenerse antes de producir un daño irreversible.
+
+##### 3.4. Estados canónicos de adopción
+
+| Estado                | Significado                                                                                                       | Condición de salida                                                    |
+| --------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| `INVENTORIED`         | La solución actual, consumidores, productores, datos, credenciales y dependencias están identificados.            | Inventario completo y reconciliado.                                    |
+| `TARGET_DEFINED`      | El servicio objetivo, contrato, owner y límites están definidos.                                                  | Gates de readiness evaluables.                                         |
+| `READINESS_PENDING`   | Faltan implementación, evidencia o gates para iniciar comparación o piloto.                                       | Todos los bloqueos de entrada resueltos.                               |
+| `SHADOW_ACTIVE`       | El objetivo observa o compara sin producir efectos autoritativos.                                                 | Equivalencia y seguridad suficientes para piloto o decisión de ajuste. |
+| `PILOT_ACTIVE`        | Una unidad limitada usa el objetivo con efectos reales y rollback disponible.                                     | Criterios de éxito, estabilidad y ausencia de bloqueos cumplidos.      |
+| `COEXISTENCE_BOUNDED` | Solución anterior y objetivo operan en fronteras distintas o mediante adaptación temporal.                        | Unidad lista para cutover y salida de coexistencia.                    |
+| `CUTOVER_READY`       | Gates de corte, rollback, soporte, comunicación y evidencia están aprobados.                                      | Autoridad de cutover habilita el cambio.                               |
+| `CUTOVER_ACTIVE`      | La autoridad operativa de la unidad pasó al objetivo y permanece bajo observación reforzada.                      | Estabilidad, conciliación y rollback window satisfechos.               |
+| `DRAINING`            | La solución anterior no acepta trabajo nuevo y cierra residuales elegibles.                                       | Residuales técnicos y empresariales en cero demostrado.                |
+| `RETIREMENT_READY`    | Uso ordinario detenido, dependencias cerradas y evidencia de retiro preparada.                                    | Autoridad de retiro confirma cierre.                                   |
+| `RETIRED`             | La solución anterior no recibe tráfico ni trabajo ordinario y solo conserva material gobernado.                   | Gates de desmantelamiento satisfechos.                                 |
+| `DECOMMISSIONED`      | Endpoints, schedules, secretos, recursos y superficies residuales fueron inutilizados o eliminados con evidencia. | Estado terminal de la transición.                                      |
+| `BLOCKED`             | Existe un impedimento concreto que hace inseguro avanzar o cerrar.                                                | Owner, insumo y condición de salida resueltos.                         |
+
+Transición base:
+
+```text
+INVENTORIED
+→ TARGET_DEFINED
+→ READINESS_PENDING
+→ SHADOW_ACTIVE
+→ PILOT_ACTIVE
+→ COEXISTENCE_BOUNDED
+→ CUTOVER_READY
+→ CUTOVER_ACTIVE
+→ DRAINING
+→ RETIREMENT_READY
+→ RETIRED
+→ DECOMMISSIONED
+```
+
+Reglas:
+
+1. no todas las unidades requieren shadow si no existe una ejecución segura sin efectos, pero la omisión debe justificarse;
+2. no todas las unidades requieren coexistencia técnica simultánea, pero siempre requieren un plan de cutover y rollback;
+3. cualquier estado puede pasar a `BLOCKED`;
+4. volver a un estado anterior conserva eventos, efectos y evidencia ya producidos;
+5. `RETIRED` no se alcanza directamente desde `CUTOVER_ACTIVE`;
+6. `DECOMMISSIONED` exige retiro previo y gates terminales;
+7. una unidad en `READINESS_PENDING` no se presenta como implementada;
+8. una unidad en `SHADOW_ACTIVE` no se presenta como adoptada;
+9. una unidad en `PILOT_ACTIVE` no se presenta como generalizada;
+10. una unidad en `CUTOVER_ACTIVE` no se presenta como retirada.
+
+##### 3.5. Gates canónicos de adopción y retiro
+
+| ID                    | Gate                                  | Evidencia mínima                                                                                      | Bloquea                                   |
+| --------------------- | ------------------------------------- | ----------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `TSVC-ADOPT-GATE-001` | Gobierno y propiedad                  | owner técnico, owner empresarial, custodio, autoridad de cambio y escalamiento.                       | Shadow y etapas posteriores.              |
+| `TSVC-ADOPT-GATE-002` | Contrato, versión y compatibilidad    | contrato publicado, versiones soportadas, adaptadores, consumidores y errores incompatibles.          | Piloto y cutover.                         |
+| `TSVC-ADOPT-GATE-003` | Identidad, credenciales y seguridad   | principals, scopes, ambientes, rotación, revocación, secretos y prohibiciones.                        | Cualquier efecto real.                    |
+| `TSVC-ADOPT-GATE-004` | Datos, retención, holds y disposición | inventario de datos, lineage, política, backups, holds, tombstones y rollback de migración.           | Migración, retiro y desmantelamiento.     |
+| `TSVC-ADOPT-GATE-005` | Idempotencia y confiabilidad          | claves, deduplicación, claims, retries, fencing, resultado recuperable y conciliación.                | Doble ejecución, dual delivery y cutover. |
+| `TSVC-ADOPT-GATE-006` | Observabilidad y auditoría            | señales, métricas, alertas, health, trazas, auditoría, baseline y gap visibility.                     | Piloto, cutover y retiro.                 |
+| `TSVC-ADOPT-GATE-007` | Contingencia, recuperación y rollback | modos seguros, breakers, límites, runbook, rollback, datos reversibles y autoridad.                   | Piloto y cutover.                         |
+| `TSVC-ADOPT-GATE-008` | Productores y consumidores            | inventario completo, versión, estado, finalidad, autorización, adaptación y owner por relación.       | Cutover y retiro.                         |
+| `TSVC-ADOPT-GATE-009` | Equivalencia shadow y piloto          | comparación, diferencias, carga, seguridad, error, accesibilidad y resultado operativo.               | Generalización y cutover.                 |
+| `TSVC-ADOPT-GATE-010` | Readiness de cutover                  | ventana, cohortes, flags, comunicación, soporte, freeze, criterio de abortar y aprobadores.           | Cambio de autoridad.                      |
+| `TSVC-ADOPT-GATE-011` | Drenaje y residuales                  | cero intake anterior, pendientes clasificados, unknowns conciliados, buffers y consumidores cerrados. | Retiro.                                   |
+| `TSVC-ADOPT-GATE-012` | Evidencia de retiro y cierre          | endpoints inactivos, schedules detenidos, secretos revocados, datos gobernados y observación sin uso. | Desmantelamiento y cierre.                |
+
+Reglas:
+
+1. cada gate tiene estado `NOT_EVALUATED`, `PASS`, `FAIL`, `BLOCKED` o `NO_APLICA_JUSTIFICADO`;
+2. `NO_APLICA_JUSTIFICADO` exige owner, razón, evidencia y revisión;
+3. un gate aprobado puede reabrirse si cambia contrato, versión, dependencia, seguridad, alcance o evidencia;
+4. un gate no se satisface por una declaración narrativa sin artefacto verificable;
+5. los gates se evalúan por unidad de transición, no una vez para todo el servicio;
+6. un piloto exitoso en una sede no certifica todas las sedes, dispositivos, proveedores o cohortes;
+7. un rollback probado con datos sintéticos no certifica recuperación productiva completa;
+8. el gate terminal exige evidencia negativa de ausencia de uso, no solo ausencia de tickets.
+
+##### 3.6. Dimensiones de rollout
+
+| ID                 | Dimensión                       | Regla de segmentación                                                                                                     |
+| ------------------ | ------------------------------- | ------------------------------------------------------------------------------------------------------------------------- |
+| `TSVC-ROL-DIM-001` | Servicio                        | Cada identidad `TSVC-SVC-*` progresa de forma independiente.                                                              |
+| `TSVC-ROL-DIM-002` | Relación productora–consumidora | Cada relación y versión se activa, observa y retira separadamente.                                                        |
+| `TSVC-ROL-DIM-003` | Operación o caso de uso         | Submit, entrega, impresión, notificación, generación, ingestión, evidencia, integración, schedule y health no se mezclan. |
+| `TSVC-ROL-DIM-004` | Aplicación                      | `shell`, `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura` y `pass` conservan decisiones propias.       |
+| `TSVC-ROL-DIM-005` | Sede y área                     | El rollout puede limitarse a una sede o área sin generalizar por inferencia.                                              |
+| `TSVC-ROL-DIM-006` | Dispositivo o estación          | Impresoras, tablets, móviles, workers y estaciones se enrolan y certifican por perfil.                                    |
+| `TSVC-ROL-DIM-007` | Proveedor, canal o adaptador    | Cada integración, canal y mapping conserva contrato, credencial y evidencia propios.                                      |
+| `TSVC-ROL-DIM-008` | Cohorte                         | Usuarios, roles o flujos piloto se seleccionan por finalidad y riesgo, no por conveniencia informal.                      |
+| `TSVC-ROL-DIM-009` | Ambiente                        | Desarrollo, pruebas, staging, piloto y producción permanecen separados.                                                   |
+| `TSVC-ROL-DIM-010` | Versión contractual             | Versiones mayores, adaptadores y ventanas de deprecación se adoptan y retiran explícitamente.                             |
+
+Una unidad de transición se expresa como una combinación mínima de estas dimensiones. La ausencia de una dimensión aplicable no se sustituye por “global”.
+
+##### 3.7. Registro mínimo de una transición
+
+Toda materialización futura deberá conservar, cuando aplique:
+
+```text
+transition_id
+transition_version
+service_id
+contract_id
+contract_version
+legacy_asset_id
+target_component_id
+producer_application
+consumer_application
+business_owner_application
+operation_type
+environment
+site_scope
+area_scope
+device_scope
+provider_scope
+cohort_scope
+current_state
+target_state
+adoption_pattern
+authoritative_writer
+feature_gate_reference
+gate_results
+baseline_reference
+shadow_comparison_reference
+pilot_reference
+cutover_reference
+rollback_reference
+drain_reference
+retirement_reference
+retention_policy_reference
+hold_status
+open_residual_count
+unknown_result_count
+dead_letter_count
+quarantine_count
+active_consumer_count
+active_producer_count
+active_credential_count
+activation_authority
+retirement_authority
+started_at
+review_at
+closed_at
+```
+
+Reglas:
+
+1. `transition_id` no se reutiliza;
+2. `legacy_asset_id` identifica un activo concreto y no una categoría ambigua;
+3. `authoritative_writer` es único por estado o efecto;
+4. `feature_gate_reference` identifica configuración versionada y auditable, no una condición dispersa en código;
+5. los conteos de residuales se respaldan con inventario y evidencia;
+6. una transición no se cierra con `open_residual_count` distinto de cero;
+7. `rollback_reference` existe antes del primer efecto real;
+8. `retention_policy_reference` gobierna datos y evidencia durante la transición;
+9. el registro no contiene secretos ni payloads completos;
+10. cada cambio de estado conserva actor o principal, autoridad, momento, causa y evidencia.
+
+##### 3.8. Patrones permitidos de adopción y coexistencia
+
+| Patrón                          | Uso permitido                                                                                          | Restricción principal                                         |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| `SHADOW_READ_OBSERVE`           | El objetivo lee una proyección o evento y calcula estado sin emitir efectos.                           | No escribe ni entrega.                                        |
+| `SHADOW_VALIDATE`               | El objetivo valida contrato, mapping, layout, documento o política y compara con la solución actual.   | El resultado sombra no es autoritativo.                       |
+| `SINGLE_WRITER_DUAL_READ`       | Una sola solución escribe y ambas pueden leer para comparación controlada.                             | La lectura secundaria no muta ni corrige.                     |
+| `VERSIONED_ADAPTER_COEXISTENCE` | Un adaptador traduce entre versiones durante una ventana definida.                                     | No inventa campos ni oculta pérdida semántica.                |
+| `BOUNDED_DUAL_DELIVERY`         | Dos entregas técnicas ocurren solo cuando el efecto es idempotente, no físico y el contrato lo admite. | Prohibida para efectos no deduplicables o ambiguos.           |
+| `SITE_WAVE`                     | Una sede adopta antes que otras con rollback aislado.                                                  | La evidencia no se generaliza a perfiles distintos.           |
+| `COHORT_WAVE`                   | Una cohorte limitada adopta bajo métricas y soporte reforzados.                                        | No altera autorización ni segmenta de forma informal.         |
+| `PROVIDER_OR_CHANNEL_SWAP`      | Se cambia una dependencia por otra compatible bajo reconciliación.                                     | Se confirma el posible efecto del primario antes del alterno. |
+
+Patrones prohibidos:
+
+- doble escritura mutable sin autoridad única;
+- dual delivery de pagos, impresión física, evidencia o acciones irreversibles sin deduplicación extremo a extremo;
+- shadow con side effects;
+- copiar tablas para convertirlas en una segunda fuente de verdad;
+- sincronización bidireccional basada en `last write wins`;
+- coexistencia sin fecha de salida;
+- flag global no auditable para múltiples servicios y operaciones;
+- activación por porcentaje sin poder identificar sujetos, versión, resultado y rollback;
+- rollback que restaure secretos revocados o endpoints incompatibles;
+- retiro por antigüedad de código sin demostrar ausencia de consumidores.
+
+##### 3.9. Fases obligatorias de adopción progresiva
+
+###### 3.9.1. Inventario y baseline
+
+Antes de construir o activar el objetivo se debe identificar:
+
+- productores y consumidoras reales;
+- operaciones y contratos;
+- datos, estados, archivos, evidencia y material local;
+- endpoints, schedules, workers, dispositivos, proveedores y canales;
+- credenciales, variables y secretos por ambiente;
+- métricas, logs, alertas y gaps;
+- volumen, concurrencia, latencia, backlog, errores y estacionalidad;
+- procedimientos manuales y contingencias actuales;
+- owners y custodios;
+- obligaciones de retención, hold, backup y disposición.
+
+El baseline registra incertidumbres. No transforma ausencia de observación en cero uso.
+
+###### 3.9.2. Implementación objetivo aislada
+
+La futura implementación deberá:
+
+1. residir en el repositorio propietario correspondiente;
+2. crear toda modificación Supabase desde `vento-shell`;
+3. publicar contratos y tipos compatibles antes de consumidores;
+4. implementar identidad mínima sin credenciales amplias por defecto;
+5. incluir idempotencia, observabilidad, contingencia, retención y rollback desde el inicio;
+6. operar inicialmente sin tráfico real;
+7. conservar pruebas de contrato y migración;
+8. permitir activación por unidad de transición.
+
+###### 3.9.3. Shadow y comparación
+
+La comparación deberá evaluar, según aplique:
+
+- aceptación o rechazo contractual;
+- mapping y campos;
+- orden y causalidad;
+- decisiones de routing;
+- layout o documento generado sin emisión oficial;
+- destinatarios sin envío;
+- hashes, metadatos y clasificación sin mover originales;
+- schedules sin disparar operaciones;
+- health sin automatismos de negocio;
+- latencia, capacidad, errores y costo;
+- diferencias y falsos equivalentes.
+
+Toda diferencia tiene owner, severidad, causa y disposición. No se oculta para alcanzar un porcentaje de coincidencia.
+
+###### 3.9.4. Piloto controlado
+
+El piloto declara:
+
+- unidad exacta;
+- duración y revisión;
+- criterios de entrada, éxito, pausa y salida;
+- máximo de operaciones o volumen;
+- soporte y responsables;
+- señales y dashboards;
+- rollback y ventana;
+- datos y dispositivos permitidos;
+- comunicación a usuarios y custodios;
+- incidentes que obligan a detener.
+
+Un piloto que supera su alcance o duración sin nueva aprobación se clasifica como transición bloqueada.
+
+###### 3.9.5. Coexistencia acotada
+
+La coexistencia debe mantener:
+
+1. una sola autoridad por efecto;
+2. contratos y versiones identificados;
+3. fronteras de lectura y escritura;
+4. adaptadores con owner y fecha de retiro;
+5. métricas separadas por solución;
+6. conciliación de diferencias;
+7. retención y evidencia de ambos lados;
+8. rollback sin pérdida ni duplicidad;
+9. prohibición de nuevos consumidores de la solución anterior, salvo excepción justificada;
+10. reducción progresiva del alcance legacy.
+
+###### 3.9.6. Cutover
+
+El cutover exige:
+
+- gates `001..010` en `PASS` o `NO_APLICA_JUSTIFICADO`;
+- freeze o control de cambios aplicable;
+- snapshot, backup o mecanismo reversible según riesgo;
+- migración y reconciliación verificadas;
+- feature gate o control equivalente versionado;
+- owner técnico y owner empresarial disponibles;
+- soporte, comunicación y observación reforzada;
+- criterio de abortar antes del cambio;
+- criterio de rollback después del cambio;
+- protección contra doble intake;
+- una sola autoridad activa al concluir.
+
+El cambio de autoridad se registra antes de aceptar nuevo trabajo en el objetivo.
+
+###### 3.9.7. Estabilización y drenaje
+
+Después del cutover:
+
+1. la solución anterior deja de aceptar trabajo nuevo;
+2. las operaciones en curso se completan, cancelan o concilian de forma explícita;
+3. los buffers locales y colas se inventarían y drenan;
+4. los resultados desconocidos se consultan;
+5. dead-letter y cuarentena se resuelven o mantienen con owner;
+6. los consumidores y productores se verifican durante una ventana representativa;
+7. los dashboards comparan baseline, objetivo y errores;
+8. los datos migrados se reconcilian por identidad, conteo, hash y semántica;
+9. las credenciales legacy permanecen solo si son necesarias para el drenaje y con alcance reducido;
+10. no se incorporan nuevos casos de uso a la solución anterior.
+
+###### 3.9.8. Retiro y desmantelamiento
+
+El retiro y desmantelamiento se ejecutan únicamente después de los gates `011` y `012`.
+
+El cierre incluye:
+
+- deshabilitar intake y escritura;
+- retirar routing y flags hacia legacy;
+- detener schedules y workers;
+- bloquear endpoints o canales de entrada;
+- revocar secretos, tokens y certificados;
+- retirar accesos, grants y roles no necesarios;
+- preservar datos, archivos, evidencia, auditoría, holds y backups según política;
+- eliminar o archivar recursos físicos únicamente mediante su tarea propietaria;
+- actualizar inventarios y runbooks;
+- observar ausencia de uso durante una ventana representativa;
+- registrar residuales aceptados con owner y condición de salida;
+- impedir reactivación accidental.
+
+##### 3.10. Autoridad única y control de escritura
+
+1. Cada operación declara un `authoritative_writer`.
+2. En shadow, la solución anterior conserva autoridad.
+3. En piloto, la autoridad se asigna por unidad de transición, no por resultado posterior.
+4. En coexistencia, dos soluciones pueden operar solo sobre particiones mutuamente exclusivas o bajo un patrón compatible explícito.
+5. En cutover, el cambio de autoridad es atómico o usa una secuencia que impide doble intake.
+6. Los consumidores no eligen arbitrariamente cuál resultado aceptar.
+7. Una proyección de lectura no puede corregir la fuente propietaria.
+8. Un adaptador no se convierte en escritor autoritativo.
+9. La conciliación registra diferencias y aplica decisiones del owner empresarial.
+10. Ninguna métrica, alerta, heartbeat, receipt o ACK cambia por sí misma la autoridad.
+
+##### 3.11. Feature gates, cohortes y configuración
+
+Toda activación progresiva futura deberá:
+
+1. usar una configuración versionada y auditable;
+2. identificar servicio, operación, contrato, ambiente y alcance;
+3. diferenciar habilitación de lectura, shadow, escritura, entrega y automatismo;
+4. tener valor seguro predeterminado;
+5. permitir desactivación sin borrar evidencia;
+6. impedir que una aplicación cliente fuerce la activación;
+7. conservar actor o principal que cambió la configuración;
+8. exponer estado efectivo y fuente de configuración;
+9. evitar combinaciones imposibles o no probadas;
+10. retirarse después de estabilizar la transición para no convertirse en deuda permanente.
+
+Una bandera no sustituye contrato, autorización, migración, observabilidad ni rollback.
+
+##### 3.12. Contrato de rollback
+
+Todo rollback futuro deberá declarar:
+
+```text
+rollback_id
+transition_id
+trigger_conditions
+decision_authority
+safe_target_state
+maximum_decision_window
+data_reversal_strategy
+contract_compatibility
+credential_strategy
+traffic_strategy
+pending_work_strategy
+external_effect_strategy
+physical_effect_strategy
+observability_requirements
+communication_plan
+reconciliation_plan
+closure_criteria
+```
+
+Reglas:
+
+1. el rollback se prepara antes del primer efecto real;
+2. no se ejecuta automáticamente cuando puede duplicar o contradecir un efecto externo o físico;
+3. datos creados por el objetivo no se eliminan para aparentar retorno limpio;
+4. si el formato anterior no puede representar datos nuevos, el rollback se bloquea o usa una estrategia de compatibilidad explícita;
+5. una credencial revocada no se reactiva sin autoridad y análisis de seguridad;
+6. un endpoint retirado no se habilita si su contrato o identidad ya no son seguros;
+7. operaciones aceptadas por el objetivo conservan su idempotencia y owner durante el retorno;
+8. el tráfico nuevo se detiene o redirige antes de mover autoridad;
+9. resultados desconocidos se concilian antes de reenviar;
+10. el rollback termina en un estado seguro, no necesariamente idéntico al estado inicial;
+11. todo rollback genera auditoría, incidente y revisión posterior;
+12. una transición que no pueda volver a un estado seguro antes de un efecto irreversible debe reducir su alcance o permanecer bloqueada.
+
+##### 3.13. Migración de datos, archivos y evidencia
+
+1. Toda migración conserva identidad estable, versión de origen, versión destino, integridad y lineage.
+2. Los conteos se reconcilian por clase y estado, no solo por total global.
+3. Los hashes se usan dentro de su ámbito y no fusionan recursos legítimamente distintos.
+4. Las relaciones, owners, permisos, fechas, zonas, estados y referencias se verifican semánticamente.
+5. Los datos no representables se clasifican, no se truncan silenciosamente.
+6. Los originales permanecen protegidos hasta demostrar objeto, metadata, clasificación y acceso en destino.
+7. La evidencia conserva actor, hecho, dispositivo, momento e integridad.
+8. Los holds se propagan y bloquean disposición incompatible.
+9. Los backups permiten recuperación sin revivir datos dispuestos de forma indebida.
+10. Las migraciones son idempotentes y reanudables.
+11. Los fallos dejan un estado detectable y conciliable.
+12. El corte no se declara completo mientras existan huérfanos, duplicados, referencias rotas o diferencias sin owner.
+
+##### 3.14. Drenaje y cero residual
+
+El gate de drenaje exige demostrar, cuando aplique:
+
+```text
+active_intake = 0
+active_producers = 0
+active_consumers = 0
+pending_operations = 0
+in_flight_operations = 0
+result_unknown = 0
+dead_letter_without_owner = 0
+quarantine_without_owner = 0
+local_pending_without_reconciliation = 0
+active_legacy_schedules = 0
+active_legacy_workers = 0
+active_legacy_credentials = 0
+unmapped_legacy_data = 0
+unresolved_external_effects = 0
+unresolved_physical_effects = 0
+```
+
+Reglas:
+
+1. los valores se demuestran por fuente y ventana, no se escriben manualmente para cerrar;
+2. un residual con owner puede permanecer durante `DRAINING`, pero impide `RETIREMENT_READY` salvo excepción aprobada que no implique uso ordinario;
+3. un elemento en hold no se elimina y se registra fuera del uso activo, bajo custodia gobernada;
+4. datos archivados no cuentan como consumo activo si no existe lectura operativa ordinaria;
+5. una credencial deshabilitada pero no revocada permanece residual;
+6. un schedule sin ejecuciones recientes sigue activo si puede dispararse;
+7. un endpoint sin tráfico sigue activo si acepta solicitudes;
+8. un consumidor desconocido bloquea retiro hasta identificarlo o demostrar su ausencia;
+9. el cero residual se revalida después de una ventana representativa;
+10. el retiro no puede depender de conocimiento tácito de una sola persona.
+
+##### 3.15. Criterios de retiro
+
+Una solución puede pasar a `RETIRED` únicamente cuando:
+
+1. el objetivo está operativo y dentro de los criterios de aceptación para la unidad;
+2. la autoridad activa pertenece al objetivo;
+3. no existe intake legacy;
+4. productores y consumidores legacy están migrados, deshabilitados o excluidos con evidencia;
+5. las versiones legacy no reciben tráfico;
+6. las operaciones y buffers están drenados;
+7. resultados desconocidos y efectos ambiguos están conciliados;
+8. dead-letter y cuarentena tienen resolución o custodia explícita fuera del uso ordinario;
+9. datos, originales, evidencia, auditoría, backups, holds y tombstones cumplen `TSVC-CAT-009`;
+10. credenciales, schedules, workers, dispositivos y proveedores tienen decisión terminal;
+11. el rollback window está cerrado o la reversión posterior se gobierna como una nueva transición;
+12. soporte, runbooks e inventarios reflejan el nuevo estado;
+13. la autoridad técnica y la empresarial confirman el cierre aplicable;
+14. la observación posterior no detecta uso residual.
+
+##### 3.16. Criterios de desmantelamiento
+
+Una solución puede pasar a `DECOMMISSIONED` únicamente cuando:
+
+- está `RETIRED`;
+- no existe dependencia de rollback activa;
+- endpoints y entradas están bloqueados o eliminados;
+- schedules y workers están detenidos;
+- secretos y certificados están revocados;
+- grants, roles y accesos residuales están retirados;
+- paquetes, variables y configuración no se consumen;
+- datos y evidencia tienen disposición gobernada;
+- recursos externos tienen confirmación suficiente;
+- monitoreo detectaría una reactivación accidental;
+- la eliminación física tiene tarea y evidencia propietarias;
+- el cierre está auditado.
+
+Desmantelar no autoriza borrar historia canónica, evidencia de transición ni tombstones necesarios.
+
+##### 3.17. Matriz canónica por servicio
+
+| Servicio       | Estado actual heredado | Unidad inicial de adopción                                   | Patrón principal                                             | Autoridad durante transición                                                              | Condición de cutover                                                                             | Condición de retiro legacy                                                                       | Estado material           |
+| -------------- | ---------------------- | ------------------------------------------------------------ | ------------------------------------------------------------ | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------ | ------------------------- |
+| `TSVC-SVC-001` | `FALTANTE`             | tipo de trabajo, productora y ambiente                       | `SITE_WAVE` o `COHORT_WAVE` con cola objetivo aislada        | la aplicación propietaria conserva el resultado; un solo claimer autoritativo por trabajo | submit, claim, lease, fencing, retry, receipt, resultado y rollback validados                    | colas y ejecutores locales sin intake, pendientes ni claims; residuales conciliados              | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-002` | `FALTANTE`             | productora, evento, versión y consumidora                    | `SHADOW_VALIDATE` seguido de `VERSIONED_ADAPTER_COEXISTENCE` | una sola publicación autoritativa por `event_id`                                          | registro transaccional, replay, orden, ACK, consumidores y observabilidad validados              | entregas ad hoc sin productores ni consumidoras; eventos pendientes y replay cerrados            | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-003` | `PARCIAL`              | operación, sede, dispositivo, layout y tipo de documento     | `SHADOW_VALIDATE` sin impresión, luego `SITE_WAVE`           | una sola cola autoriza la copia física; NEXO conserva el proceso propietario              | cola durable, routing, dispositivo, receipt, resultado físico, contingencia y rollback validados | cola local sin pendientes ni unknowns; dispositivos y rutas migrados; evidencia preservada       | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-004` | `PARCIAL`              | caso de uso, plantilla, destinatario, canal y proveedor      | `COHORT_WAVE` o `PROVIDER_OR_CHANNEL_SWAP`                   | una sola intención comunicativa y entrega autoritativa por canal                          | cola, destinatario, preferencia, proveedor, retry, expiración y auditoría validados              | despachos directos sin tráfico; tokens y credenciales con ciclo objetivo; residuales cerrados    | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-005` | `FALTANTE`             | tipo documental, plantilla, versión y aplicación propietaria | `SHADOW_VALIDATE` y `COHORT_WAVE`                            | un solo generador oficial por tipo y versión                                              | snapshot, plantilla, hash, custodia, supersesión y rollback validados                            | generadores embebidos sin referencias activas; outputs y archivos gobernados                     | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-006` | `PARCIAL`              | tipo de original, proceso, aplicación y conjunto de objetos  | `SINGLE_WRITER_DUAL_READ` y migración por lote gobernado     | la aplicación propietaria conserva expediente; un solo backend autoritativo de custodia   | objeto, metadata, hash, acceso, lineage, retención, hold y rollback conciliados                  | flujos anteriores sin escrituras ni originales pendientes; réplicas y backups gobernados         | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-007` | `FALTANTE`             | tipo de evidencia, proceso, evento y aplicación              | `SHADOW_VALIDATE` y `COHORT_WAVE`                            | una sola evidencia autoritativa por hecho y secuencia                                     | integridad, actor, dispositivo, tiempo, lineage, acceso y auditoría validados                    | representaciones locales sin evidencia obligatoria pendiente ni relaciones rotas                 | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-008` | `PARCIAL`              | proveedor, dirección, operación, mapping y versión           | `VERSIONED_ADAPTER_COEXISTENCE` o `PROVIDER_OR_CHANNEL_SWAP` | el adaptador específico conserva frontera; el dominio conserva estado empresarial         | firma, persistencia, mapping, idempotencia, ACK, unknown, conciliación y rollback validados      | endpoints anteriores sin tráfico, eventos ni unknowns; secretos revocados y proveedores cerrados | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-009` | `FALTANTE`             | schedule, versión, ocurrencia y operación destino            | migración schedule por schedule con autoridad única          | un solo scheduler puede disparar cada ocurrencia lógica                                   | reloj, zona, misfire, overlap, idempotencia, observabilidad y rollback validados                 | cron y schedules anteriores detenidos; ocurrencias y trabajos hijos terminales                   | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-010` | `FALTANTE`             | worker, servicio, ambiente y señal                           | `SHADOW_READ_OBSERVE` y adopción por worker pool             | health no modifica estados empresariales ni activa decisiones no aprobadas                | liveness, readiness, heartbeat, lag, gaps, alertas y pipeline validados                          | diagnósticos locales sin dependencias operativas; historia e incidentes preservados              | `DEFINED_NOT_IMPLEMENTED` |
+
+##### 3.18. Perfil específico de `TSVC-SVC-001`
+
+La orquestación genérica adopta estas decisiones:
+
+1. el servicio objetivo se implementa antes de migrar trabajo real;
+2. la migración ocurre por `operation_type`, aplicación productora, ambiente y criticidad;
+3. shadow puede validar contrato, clave, prioridad y decisión de routing, pero no reclamar ni ejecutar;
+4. cada trabajo tiene una sola cola y un solo claimer con autoridad vigente;
+5. coexistencia solo permite particiones mutuamente exclusivas;
+6. mover una operación conserva `idempotency_key`, correlación y owner;
+7. no se copian pendientes creando otra operación;
+8. el rollback detiene intake objetivo antes de devolver autoridad;
+9. el drenaje clasifica en curso, retry, blocked, unknown, dead-letter y canceladas;
+10. un mecanismo local se retira solo con cero intake, pendientes, claims, schedules, credenciales y consumidores.
+
+##### 3.19. Perfil específico de `TSVC-SVC-002`
+
+La entrega transaccional adopta estas decisiones:
+
+1. la adopción ocurre productor por productor y evento por evento;
+2. shadow puede comparar el evento que se habría registrado, pero no entregarlo;
+3. la publicación real tiene un único `event_id` y una única frontera transaccional;
+4. no se publica por el outbox y por una vía directa el mismo hecho salvo patrón de transición explícito y deduplicable;
+5. cada consumidora declara versiones y estado de migración;
+6. un adaptador conserva versión de origen y destino;
+7. el cutover confirma atomicidad, replay, orden, error y backpressure;
+8. el rollback no recrea eventos ya confirmados;
+9. el drenaje se realiza por consumidor y partición;
+10. la entrega ad hoc se retira solo cuando todos los consumidores y eventos residuales están cerrados.
+
+##### 3.20. Perfil específico de `TSVC-SVC-003`
+
+La impresión centralizada adopta estas decisiones:
+
+1. la adopción ocurre por sede, dispositivo, operación, layout y tipo documental;
+2. shadow puede generar y comparar ZPL o preview, pero no enviar bytes al dispositivo;
+3. un piloto físico usa una cola autoritativa y dispositivos enrolados;
+4. no se imprime simultáneamente por la cola local y la objetivo;
+5. los layouts compatibles pueden conservarse y versionarse;
+6. el routing deja de depender de la última impresora usada o de una selección informal;
+7. el cutover verifica receipt, resultado físico, reimpresión, contingencia y soporte local;
+8. un rollback preserva trabajos aceptados por la cola objetivo y evita copias dobles;
+9. la cola `localStorage` se drena y se congela antes del retiro;
+10. no se retira mientras existan pendientes, unknowns, dispositivos sin migrar o evidencia física sin conciliar.
+
+##### 3.21. Perfil específico de `TSVC-SVC-004`
+
+Las notificaciones y alertas adoptan estas decisiones:
+
+1. el registro de tokens puede conservarse como activo de direccionamiento si supera contrato, seguridad, retención y ownership;
+2. la adopción ocurre por caso de uso, plantilla, canal, proveedor y destinatarios;
+3. shadow resuelve destinatarios y renderiza contenido protegido sin enviar;
+4. un piloto tiene expiración, rate limit, retries, supresión y observabilidad;
+5. el fallback de canal no se activa por defecto durante coexistencia;
+6. una intención comunicativa conserva identidad aunque use entregas técnicas distintas;
+7. los despachos directos quedan congelados para nuevos casos después del cutover;
+8. los tokens inválidos y credenciales se migran o retiran bajo ciclo gobernado;
+9. el rollback no reenvía mensajes ya entregados;
+10. las vías directas se retiran al demostrar cero tráfico, cero mensajes pendientes y cobertura del servicio objetivo.
+
+##### 3.22. Perfil específico de `TSVC-SVC-005`
+
+La generación documental adopta estas decisiones:
+
+1. la unidad es un tipo documental y su versión de plantilla;
+2. shadow genera un artefacto no oficial para comparación;
+3. nunca existen dos generadores oficiales para el mismo tipo y versión;
+4. la comparación cubre contenido, orden, formato, códigos, hash y accesibilidad;
+5. el piloto congela snapshot y parámetros;
+6. el output objetivo se vincula con custodia y evidencia cuando aplique;
+7. los documentos anteriores conservan su versión y no se regeneran por migración;
+8. el rollback conserva outputs ya emitidos y evita versiones contradictorias;
+9. los generadores embebidos dejan de aceptar nuevas solicitudes antes del drenaje;
+10. el retiro exige cero referencias activas, outputs parciales y plantillas sin gobernar.
+
+##### 3.23. Perfil específico de `TSVC-SVC-006`
+
+La custodia de originales adopta estas decisiones:
+
+1. ANIMA y cualquier otra aplicación conservan propiedad del proceso y expediente;
+2. la experiencia de carga puede permanecer mientras cambia la frontera de custodia;
+3. cada migración combina objeto, metadata, hash, clasificación, referencia y acceso;
+4. no se declara migrado un objeto por copiar bytes solamente;
+5. `SINGLE_WRITER_DUAL_READ` permite verificar el destino sin dos escrituras autoritativas;
+6. originales, versiones, derivados, material local, backups y holds se inventarían;
+7. el cutover bloquea nuevas escrituras al backend anterior;
+8. el rollback no borra objetos ya aceptados por el objetivo;
+9. los huérfanos y diferencias se concilian antes del retiro;
+10. no se elimina ningún original antes de integridad, retención, hold y evidencia de disposición.
+
+##### 3.24. Perfil específico de `TSVC-SVC-007`
+
+La evidencia transaccional adopta estas decisiones:
+
+1. la adopción ocurre por tipo de evidencia y proceso;
+2. un archivo existente no se considera evidencia objetivo sin actor, hecho, momento, integridad y lineage;
+3. shadow valida estructura y relación causal sin crear evidencia autoritativa;
+4. un piloto conserva dispositivo, secuencia y estado de sincronización;
+5. una corrección es aditiva;
+6. el cutover impide nuevas capturas en representaciones locales no gobernadas;
+7. los soportes anteriores se vinculan, migran, archivan o clasifican explícitamente;
+8. el rollback no sobrescribe evidencia creada por el objetivo;
+9. la ausencia de evidencia permanece visible;
+10. el retiro exige cero evidencia pendiente, huérfana o no reconciliada.
+
+##### 3.25. Perfil específico de `TSVC-SVC-008`
+
+Las integraciones externas y webhooks adoptan estas decisiones:
+
+1. los adaptadores específicos de proveedor se conservan cuando expresan el contrato real del tercero;
+2. el servicio objetivo gobierna recepción, salida, identidad, persistencia, deduplicación, mapping, observabilidad y conciliación;
+3. no se convierte un webhook específico en contrato empresarial compartido;
+4. la transición ocurre por proveedor, dirección y operación;
+5. shadow puede validar firma y mapping sobre material controlado sin producir comandos internos;
+6. un endpoint objetivo no responde éxito hasta cumplir la persistencia contractual;
+7. el cutover cambia routing del proveedor una sola vez y conserva rollback compatible;
+8. timeouts y ACK ambiguos se concilian antes de reenviar o cambiar de endpoint;
+9. el retiro del endpoint anterior exige bloquear ingreso, drenar eventos, conciliar resultados y revocar secretos;
+10. ninguna fase usa una credencial amplia como sustituto de identidad mínima.
+
+##### 3.26. Perfil específico de `TSVC-SVC-009`
+
+La programación y automatizaciones recurrentes adoptan estas decisiones:
+
+1. la migración ocurre schedule por schedule;
+2. definición y ocurrencia lógica permanecen separadas;
+3. shadow calcula ocurrencias sin disparar trabajo;
+4. solo un scheduler tiene autoridad sobre cada `logical_fire_at_utc`;
+5. la coexistencia usa particiones o ventanas exclusivas, no dos triggers activos;
+6. schedules se congelan antes del cutover;
+7. el rollback clasifica ocurrencias ya disparadas y no las repite;
+8. el drenaje incluye jobs hijos, misfires, overlaps y ejecuciones manuales vinculadas;
+9. la credencial del scheduler anterior se revoca después de cerrar ocurrencias;
+10. el cron anterior se retira solo cuando no puede disparar y no existen trabajos dependientes.
+
+##### 3.27. Perfil específico de `TSVC-SVC-010`
+
+El monitoreo y heartbeat de workers adopta estas decisiones:
+
+1. la adopción ocurre por servicio, worker pool y ambiente;
+2. shadow puede observar y comparar estados sin activar automatismos;
+3. señales duplicadas no producen dos incidentes ni dos decisiones automáticas;
+4. health nunca cambia estados empresariales;
+5. el piloto verifica liveness, readiness, heartbeat age, lag, capacidad, gaps y pipeline;
+6. la coexistencia conserva fuentes distinguidas;
+7. el cutover actualiza consumidores de health y alertas;
+8. el rollback no fabrica señales faltantes;
+9. los diagnósticos locales permanecen hasta que la cobertura objetivo y la historia estén disponibles;
+10. el retiro exige que soporte, incidentes y runbooks no dependan de la fuente anterior.
+
+##### 3.28. Reconciliación de los siete activos técnicos actuales
+
+| Activo actual                             | Servicio       | Clasificación de transición                    | Decisión canónica                                                                                                                       | Gate terminal                                                                            |
+| ----------------------------------------- | -------------- | ---------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| Cola local de impresión NEXO en navegador | `TSVC-SVC-003` | `LEGACY_OPERATIONAL_ASSET_BOUNDED`             | Conservar temporalmente; congelar intake, inventariar y drenar pendientes; retirar después del cutover por sede y dispositivo.          | Cero pendientes, unknowns, dispositivos legacy y rutas activas.                          |
+| API de layouts de impresión NEXO          | `TSVC-SVC-003` | `RETAIN_OR_ADAPT_IF_COMPATIBLE`                | Evaluar contrato, autorización, versión y consumidores; conservar o adaptar sin asumir que sea cola de impresión.                       | Versiones y consumidores identificados; ausencia de API anterior activa si se sustituye. |
+| Persistencia `printing_label_templates`   | `TSVC-SVC-003` | `DATA_ASSET_TO_RETAIN_OR_MIGRATE`              | Preservar IDs, owner, app, versiones, historia y referencias; migrar solo con reconciliación.                                           | Conteo, integridad, referencias, RLS, retención y rollback validados.                    |
+| Registro de tokens push de empleados      | `TSVC-SVC-004` | `ADDRESSING_ASSET_TO_RETAIN_OR_ADAPT`          | Conservar como direccionamiento si cumple el contrato; migrar ciclo de token, revocación, ambiente, seguridad y retención.              | Cero despachos directos dependientes y credenciales anteriores cerradas.                 |
+| Flujo de carga documental de ANIMA        | `TSVC-SVC-006` | `PROCESS_EXPERIENCE_RETAIN_BACKEND_TRANSITION` | Conservar experiencia y ownership; migrar progresivamente custodia, metadata, hash, acceso, retención y conciliación.                   | Cero originales, metadata o buffers pendientes en la frontera anterior.                  |
+| Webhook de pagos                          | `TSVC-SVC-008` | `PROVIDER_ADAPTER_BOUNDED_COEXISTENCE`         | Conservar como adaptador de proveedor hasta validar la frontera objetivo; luego bloquear ingreso, drenar, conciliar y revocar secretos. | Cero eventos, unknowns, tráfico, dependencias y credenciales activas.                    |
+| Webhook de RevenueCat                     | `TSVC-SVC-008` | `PROVIDER_ADAPTER_BOUNDED_COEXISTENCE`         | Conservar semántica y mapping del proveedor; migrar persistencia, deduplicación, observabilidad y conciliación antes del retiro.        | Cero tráfico, eventos, mappings sin migrar y secretos activos.                           |
+
+Reglas adicionales:
+
+1. ningún activo se elimina por aparecer como `PARCIAL`;
+2. conservar no significa declarar el activo como servicio transversal completo;
+3. adaptar exige contrato, owner, versión y pruebas;
+4. migrar datos exige integridad y rollback;
+5. retirar exige cero uso y evidencia de cierre;
+6. un activo puede dividirse entre componentes retenidos y componentes retirados;
+7. la tabla `printing_label_templates` no se retira junto con la cola local por asociación nominal;
+8. los adaptadores de proveedor no se eliminan si el proveedor todavía requiere su contrato específico.
+
+##### 3.29. Aplicación al carril `NEXO-REMISSIONS-001`
+
+| Servicio       | Clasificación NEXO | Unidad de adopción                               | Control de coexistencia                                  | Condición de cutover                                                            | Condición de retiro anterior                                    |
+| -------------- | ------------------ | ------------------------------------------------ | -------------------------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------- |
+| `TSVC-SVC-001` | `OBLIGATORIA`      | tipo de trabajo de remisión, sede y ambiente     | una sola cola autoritativa por operación                 | idempotencia, claim, retry, receipt, backlog, rollback y contingencia validados | cero trabajos, claims, local buffers y productores anteriores   |
+| `TSVC-SVC-002` | `OBLIGATORIA`      | evento de remisión, productora y consumidora     | shadow sin entrega; una sola publicación real            | atomicidad, `event_id`, orden, replay y consumidoras validados                  | cero eventos pendientes, consumidoras directas y replay abierto |
+| `TSVC-SVC-003` | `CONDICIONAL`      | operación imprimible, sede, dispositivo y layout | shadow sin impresión; una cola física autoritativa       | routing, dispositivo, receipt, resultado físico y reimpresión validados         | cero pendientes locales, unknowns y dispositivos no migrados    |
+| `TSVC-SVC-004` | `OBLIGATORIA`      | alerta, destinataria, canal y vigencia           | una intención comunicativa; entregas identificadas       | destinatarios, plantilla, canal, retry, expiración y auditoría validados        | cero despachos directos y mensajes pendientes                   |
+| `TSVC-SVC-005` | `OBLIGATORIA`      | documento de remisión y versión                  | un generador oficial por versión                         | snapshot, plantilla, integridad, custodia y rollback validados                  | cero generadores anteriores y outputs parciales activos         |
+| `TSVC-SVC-006` | `OBLIGATORIA`      | original o soporte, tipo y proceso               | un backend autoritativo de custodia; lectura comparativa | objeto, metadata, hash, acceso, lineage, retención y hold validados             | cero originales o buffers sin reconciliar                       |
+| `TSVC-SVC-007` | `OBLIGATORIA`      | evidencia por transición y tipo                  | una evidencia autoritativa por hecho y secuencia         | actor, dispositivo, momento, integridad, lineage y acceso validados             | cero evidencia local, huérfana o incompleta                     |
+| `TSVC-SVC-008` | `CONDICIONAL`      | proveedor, dirección y operación                 | un endpoint autoritativo; replay deduplicado             | firma, persistencia, mapping, ACK, unknown y conciliación validados             | cero tráfico, eventos, unknowns y secretos anteriores           |
+| `TSVC-SVC-009` | `CONDICIONAL`      | schedule y ocurrencia lógica                     | un scheduler por ocurrencia                              | reloj, misfire, overlap, idempotencia y rollback validados                      | cero schedules, ocurrencias y jobs hijos anteriores             |
+| `TSVC-SVC-010` | `OBLIGATORIA`      | worker pool, servicio y ambiente                 | health observado sin automatismos duplicados             | heartbeat, readiness, lag, gaps, alertas y pipeline validados                   | cero dependencias operativas de diagnósticos anteriores         |
+
+Reglas específicas del carril:
+
+1. NEXO conserva la fuente de verdad de remisiones, líneas, cantidades, estados, custodia, diferencias y cierre.
+2. Ningún job, evento, impresión, archivo, evidencia, webhook o heartbeat sustituye una transición empresarial de remisión.
+3. El rollout se segmenta por operación, sede, dispositivo, proveedor, cohorte, ambiente y versión.
+4. Un buffer offline se importa y concilia de forma determinista; no se copia como una segunda intención.
+5. Shadow de impresión nunca produce salida física.
+6. Shadow de outbox nunca entrega a consumidoras.
+7. No se usa `last write wins` para cantidad, versión, custodia, estado o aceptación.
+8. El cutover exige evidencia de contrato, identidad, confiabilidad, observabilidad, contingencia, retención y rollback.
+9. La reconexión revalida actor, dispositivo, sede, área, versión, estado, autoridad, deadline y dependencias.
+10. La solución anterior permanece disponible solo dentro de la frontera de coexistencia aprobada.
+11. El rollback no reabre remisiones terminales ni duplica impresiones, documentos, evidencia, movimientos o entregas.
+12. El retiro exige cero trabajos, caches, buffers, dispositivos, secretos, proveedores, consumidores, productores y gaps de evidencia activos.
+
+Reconciliación NEXO:
+
+| Clasificación | Cantidad |
+| ------------- | -------: |
+| Obligatorias  |        7 |
+| Condicionales |        3 |
+| Total         |       10 |
+
+##### 3.30. Autoridad y segregación de decisiones
+
+| Decisión                              | Autoridad mínima                                                               |
+| ------------------------------------- | ------------------------------------------------------------------------------ |
+| Definir unidad y patrón de transición | Propietario técnico y aplicación propietaria del resultado.                    |
+| Aprobar shadow                        | Propietario técnico, seguridad y owner de datos cuando aplique.                |
+| Aprobar piloto                        | Owner técnico, owner empresarial y responsable operativo del alcance.          |
+| Cambiar una feature gate sensible     | Principal autorizado bajo segregación y auditoría.                             |
+| Ejecutar cutover                      | Autoridad técnica y empresarial declaradas en el plan de corte.                |
+| Ejecutar rollback                     | Autoridad definida en el contrato de rollback, según impacto.                  |
+| Declarar cero residual                | Owner técnico con evidencia; owner empresarial confirma residuales de negocio. |
+| Retirar una solución                  | Owner técnico y owner empresarial cuando exista impacto material.              |
+| Revocar credenciales                  | Custodio de identidad y seguridad conforme a la política.                      |
+| Disponer datos o evidencia            | Autoridad de retención, owner empresarial y custodio aplicables.               |
+| Desmantelar infraestructura           | Propietario técnico después del retiro demostrado.                             |
+
+Ningún proveedor, worker, scheduler, alerta, dispositivo, script o migración aprueba por sí mismo una transición.
+
+##### 3.31. Handoff y cierre del mini-bloque
+
+`TSVC-CAT-010` cierra la definición documental del catálogo de servicios transversales `TSVC-CAT-001..010`.
+
+El resultado entregado al siguiente carril contiene:
+
+- diez servicios con identidad y owner;
+- productoras y consumidoras materializadas;
+- contratos `1.0.0` y compatibilidad;
+- identidades técnicas y credenciales mínimas;
+- idempotencia, retries y deduplicación;
+- observabilidad, alertas y auditoría;
+- contingencia y degradación;
+- retención, archivo y disposición;
+- adopción progresiva, rollback y retiro legacy;
+- siete activos actuales con decisión explícita;
+- diez decisiones específicas para remisiones NEXO.
+
+El handoff no afirma implementación ni habilita automáticamente una pantalla, permiso, ruta, servicio, migración o despliegue. La siguiente tarea consume el catálogo cerrado dentro de su propio alcance.
+
+##### 3.32. Reconciliación cuantitativa
+
+| Control                                 | Resultado |
+| --------------------------------------- | --------: |
+| Servicios esperados                     |        10 |
+| Servicios materializados                |        10 |
+| Identificadores de servicio únicos      |        10 |
+| Servicios faltantes                     |         0 |
+| Servicios duplicados                    |         0 |
+| Estados canónicos de adopción           |        13 |
+| Gates canónicos                         |        12 |
+| Dimensiones de rollout                  |        10 |
+| Patrones permitidos de coexistencia     |         8 |
+| Servicios con unidad inicial explícita  |        10 |
+| Servicios con autoridad explícita       |        10 |
+| Servicios con cutover explícito         |        10 |
+| Servicios con retiro explícito          |        10 |
+| Activos técnicos actuales reconciliados |         7 |
+| Decisiones NEXO materializadas          |        10 |
+| Capacidades NEXO obligatorias           |         7 |
+| Capacidades NEXO condicionales          |         3 |
+| Servicios implementados por esta tarea  |         0 |
+| Pilotos iniciados por esta tarea        |         0 |
+| Cutovers ejecutados por esta tarea      |         0 |
+| Soluciones retiradas por esta tarea     |         0 |
+| Cambios físicos de Supabase             |         0 |
+
+---
+
+#### 4. Artefactos y entregables
+
+1. `TRANSVERSE-SERVICE-ADOPTION-AND-LEGACY-RETIREMENT-REGISTRY-001@1.0.0`.
+2. Vocabulario cerrado de capacidad objetivo, solución legacy, unidad de transición, shadow, piloto, coexistencia, cutover, rollback, drenaje, retiro, desmantelamiento y residual.
+3. Veinte invariantes obligatorias de transición.
+4. Catálogo de trece estados de adopción.
+5. Catálogo de doce gates de adopción y retiro.
+6. Catálogo de diez dimensiones de rollout.
+7. Registro mínimo de transición.
+8. Catálogo de ocho patrones permitidos y lista de patrones prohibidos.
+9. Fases completas de inventario, implementación aislada, shadow, piloto, coexistencia, cutover, estabilización, drenaje, retiro y desmantelamiento.
+10. Contrato de autoridad única y control de escritura.
+11. Reglas de feature gates, cohortes y configuración.
+12. Contrato de rollback.
+13. Reglas de migración de datos, archivos y evidencia.
+14. Gate cuantitativo de drenaje y cero residual.
+15. Criterios de retiro y desmantelamiento.
+16. Matriz materializada para `TSVC-SVC-001..010`.
+17. Perfil específico de adopción y retiro para cada servicio.
+18. Reconciliación de siete activos técnicos actuales.
+19. Aplicación completa al carril `NEXO-REMISSIONS-001`.
+20. Matriz de autoridad y segregación.
+21. Reconciliación cuantitativa sin faltantes ni duplicados.
+22. Cierre documental de `TSVC-CAT-001..010` y handoff exclusivo a `AUTH-UI-030`.
+
+---
+
+#### 5. Requisitos de prueba
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa para los diez servicios transversales la estrategia documental de adopción progresiva, coexistencia, cutover, rollback, drenaje, retiro y desmantelamiento ya exigida por requisitos canónicos vigentes. No crea un comportamiento empresarial adicional ni modifica alcance, estado, responsable, modalidad o relación de requisitos existentes.
+
+La cobertura vigente incluye, entre otros:
+
+- `TREQ-SHELL-006` a `TREQ-SHELL-010`, para compatibilidad, transición, tipos, configuración, secretos, rotación y retiro;
+- `TREQ-SUPABASE-001`, `TREQ-SUPABASE-003`, `TREQ-SUPABASE-006`, `TREQ-SUPABASE-007` y `TREQ-SUPABASE-008`, para clasificación, migraciones, tipos, Edge Functions, Storage, rollback y limpieza;
+- `TREQ-PROC-021`, `TREQ-PROC-027`, `TREQ-PROC-086`, `TREQ-PROC-094`, `TREQ-PROC-108`, `TREQ-PROC-111`, `TREQ-PROC-112`, `TREQ-PROC-114` a `TREQ-PROC-116`, `TREQ-PROC-193`, `TREQ-PROC-198`, `TREQ-PROC-204`, `TREQ-PROC-206`, `TREQ-PROC-327`, `TREQ-PROC-328`, `TREQ-PROC-367`, `TREQ-PROC-382`, `TREQ-PROC-442`, `TREQ-PROC-456`, `TREQ-PROC-460` y `TREQ-PROC-464`, para estados objetivo e intermedios, consumidores, piloto, coexistencia, readiness, autorización, rollback, cutover, retiro y evidencia;
+- `TREQ-PROC-355` a `TREQ-PROC-389` y `TREQ-PROC-497`, para auditoría, retención, holds, backups, proveedores, material local y disposición;
+- `TREQ-CONT-003` a `TREQ-CONT-006`, para contingencia, recuperación y conciliación;
+- `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-004`, `TREQ-INTEGRATION-019` y `TREQ-INTEGRATION-023`, para idempotencia, estados, resultado recuperable, async, dependencias y efectos ambiguos.
+
+La tarea genera:
+
+```text
+CREADOS = 0
+MODIFICADOS = 0
+DIFERIDOS = 0
+DESCARTADOS_U_OBSOLETOS = 0
+```
+
+El registro canónico `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` permanece sin cambios.
+
+---
+
+#### 6. Criterios de aceptación
+
+1. `TSVC-CAT-009` figura aprobada y `TSVC-CAT-010` corresponde al único marcador pendiente del archivo propietario.
+2. El registro cubre exactamente `TSVC-SVC-001..010`.
+3. No existen servicios faltantes ni duplicados.
+4. Se conservan owners, productoras, consumidoras, contratos, identidades, confiabilidad, observabilidad, contingencia y retención heredados.
+5. Se materializan exactamente trece estados de adopción.
+6. Se materializan exactamente doce gates.
+7. Se materializan exactamente diez dimensiones de rollout.
+8. Se definen ocho patrones permitidos y se prohíben doble escritura, shadow con efectos y coexistencia indefinida.
+9. Toda unidad de transición declara alcance, owner, contrato, autoridad, gates, rollback y evidencia.
+10. Shadow nunca produce efectos empresariales, externos o físicos.
+11. Existe una sola autoridad activa por efecto.
+12. No se admiten dos fuentes mutables competidoras.
+13. Piloto y coexistencia tienen alcance y condición de salida explícitos.
+14. Un piloto no se generaliza a sedes, dispositivos, proveedores, cohortes o versiones no probados.
+15. El cutover no equivale a retiro.
+16. El retiro no equivale a desmantelamiento.
+17. El rollback se prepara antes del primer efecto real.
+18. El rollback no duplica efectos ni reactiva silenciosamente credenciales, endpoints o contratos inseguros.
+19. La migración conserva identidad, integridad, lineage, retención, holds y referencias.
+20. Los datos no representables se bloquean o transforman mediante contrato, nunca se truncan silenciosamente.
+21. El drenaje distingue pendientes, inflight, unknowns, dead-letter, cuarentena, buffers, schedules, workers y credenciales.
+22. El cero residual se demuestra mediante evidencia y ventana de observación.
+23. Un endpoint sin tráfico no se considera retirado si todavía acepta solicitudes.
+24. Un schedule sin ejecuciones recientes no se considera retirado si puede dispararse.
+25. Una credencial deshabilitada pero no revocada permanece residual.
+26. No se retira una solución con consumidor o productor desconocido.
+27. Retención, archivo, backup, hold, evidencia y tombstones sobreviven según su política.
+28. La matriz principal contiene diez decisiones de servicio con unidad, patrón, autoridad, cutover y retiro.
+29. Los diez perfiles específicos materializan la transición sin afirmar implementación.
+30. Los siete activos actuales tienen decisión explícita de conservar, adaptar, migrar o retirar.
+31. La cola local de impresión no se retira con trabajos pendientes o resultado físico desconocido.
+32. Los layouts y su persistencia no se eliminan automáticamente junto con la cola.
+33. El registro de tokens se trata como direccionamiento, no como servicio de entrega completo.
+34. La experiencia de carga de ANIMA puede conservarse mientras cambia la custodia.
+35. Los webhooks de pagos y RevenueCat permanecen adaptadores específicos durante una coexistencia acotada.
+36. Un webhook anterior se retira solo después de bloquear ingreso, drenar, conciliar y revocar credenciales.
+37. NEXO conserva siete capacidades obligatorias y tres condicionales.
+38. NEXO permanece como fuente de verdad de remisiones, líneas, cantidades, estados, custodia, diferencias y cierre.
+39. Jobs, eventos, impresiones, archivos, evidencia, webhooks y heartbeats no sustituyen transiciones de remisión.
+40. No se usa `last write wins`.
+41. Shadow de impresión no imprime y shadow de outbox no entrega.
+42. El cutover NEXO exige contrato, identidad, confiabilidad, observabilidad, contingencia, retención y rollback.
+43. El retiro NEXO exige cero jobs, caches, buffers, dispositivos, secretos, proveedores, consumidores y gaps activos.
+44. Se declaran cero cambios `TREQ-*` con cobertura vigente concreta.
+45. No se genera una nueva copia del registro `04A`.
+46. No se modifican código, SQL, datos, Storage, Supabase, migraciones, workers, colas, configuración, proveedores, dispositivos ni despliegues.
+47. No se afirma shadow, piloto, cutover, rollback, retiro, desmantelamiento, validación remota, operación productiva ni prueba física.
+48. El mini-bloque `TSVC-CAT-001..010` queda documentalmente cerrado.
+49. `AUTH-UI-030` permanece exclusivamente reservada.
+
+---
+
+#### 7. Dependencias y entradas
+
+##### 7.1. Fuentes canónicas
+
+- `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+- `docs/plan-canonico/modular/delivery-contract.json`;
+- `docs/plan-canonico/modular/active-sequence.json`;
+- `docs/plan-canonico/modular/execution-route.json`;
+- `docs/plan-canonico/modular/continuity-route.json`;
+- `docs/plan-canonico/modular/priority-route-progress.json`;
+- `docs/plan-canonico/modular/priority-delivery-lanes.json`;
+- `docs/plan-canonico/modular/90_ORDEN_DE_IMPLEMENTACION.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/00_INTRO.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/01_PRINCIPIO_DE_PROPIEDAD.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/07_SALIDA_OBLIGATORIA.md`;
+- versión canónica vigente de `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`;
+- `package.json` y `scripts/docs/validate-task-delivery.mjs`.
+
+##### 7.2. Tareas y decisiones heredadas
+
+- `TSVC-CAT-001` — inventario de diez identidades, cuatro servicios parciales, seis faltantes y siete activos actuales;
+- `TSVC-CAT-002` — owner técnico, repositorio y gobierno;
+- `TSVC-CAT-003` — productoras, consumidoras, cien decisiones y aplicabilidad NEXO;
+- `TSVC-CAT-004` — contrato, versión, compatibilidad, adaptadores, deprecación y coexistencia;
+- `TSVC-CAT-005` — identidad técnica, credenciales mínimas, rotación, revocación y patrones legacy;
+- `TSVC-CAT-006` — idempotencia, retries, deduplicación, claims, resultado desconocido y conciliación;
+- `TSVC-CAT-007` — métricas, logs, trazas, alertas, auditoría y health;
+- `TSVC-CAT-008` — contingencia, degradación, buffers, procedimientos manuales, recuperación y drenaje;
+- `TSVC-CAT-009` — retención, archivo, holds, tombstones, disposición y limpieza;
+- carril prioritario `NEXO-REMISSIONS-001`.
+
+##### 7.3. Evidencia técnica actual inspeccionada
+
+- `vento-nexo/src/app/printing/jobs/page.tsx`;
+- `vento-nexo/src/app/api/printing/layouts/route.ts`;
+- `vento-shell/supabase/migrations/20260416150000_nexo_printing_layouts.sql`;
+- `vento-shell/supabase/functions/register-push-token/index.ts`;
+- `vento-anima/src/components/documents/use-document-upload.ts`;
+- `vento-shell/supabase/functions/payments-webhook/index.ts`;
+- `vento-shell/supabase/functions/club-revenuecat-webhook/index.ts`.
+
+La existencia de estos archivos acredita que los activos fueron localizados en el estado técnico inspeccionado. No acredita despliegue vigente, uso productivo, adopción, compatibilidad completa, operación remota, seguridad suficiente ni elegibilidad de retiro.
+
+---
+
+#### 8. Declaraciones expresamente no realizadas
+
+Esta tarea no declara:
+
+- servicio transversal implementado;
+- contrato publicado físicamente;
+- identidad o credencial aprovisionada;
+- feature gate configurada;
+- shadow activo;
+- piloto iniciado o completado;
+- cohorte activada;
+- coexistencia operativa;
+- cutover ejecutado;
+- rollback probado;
+- migración de datos ejecutada;
+- cola o worker desplegados;
+- endpoint reconfigurado;
+- schedule detenido;
+- credencial revocada;
+- activo legacy retirado;
+- recurso desmantelado;
+- ausencia de consumidores residuales;
+- cero pendientes demostrado;
+- validación remota, productiva, operativa, legal, física o de dispositivo;
+- cambios en GitHub, Supabase, proveedores o infraestructura.
+
+---
+
+#### 9. Continuidad canónica del bloque
+
+```text
+ÚLTIMA TAREA APROBADA
+TSVC-CAT-009 — Definir retención, archivado y limpieza
+        ↓
+TAREA ACTUAL APROBADA
+TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-030 — Asignar permiso de lectura a cada vista
+```
+
+

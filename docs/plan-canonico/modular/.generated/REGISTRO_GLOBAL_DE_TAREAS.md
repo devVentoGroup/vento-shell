@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **502** |
+| Aprobadas | **503** |
 | En propuesta | **0** |
-| No iniciadas | **1092** |
+| No iniciadas | **1091** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **31.49% (502/1594)** |
+| Porcentaje de completamiento | **31.56% (503/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TSVC-CAT-009` — Definir retención, archivado y limpieza | ✅ APROBADA |
-| Tarea actual | `TSVC-CAT-010` — Definir adopción progresiva y retiro de soluciones legacy | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-UI-030` — Asignar permiso de lectura a cada vista | ⬜ NO INICIADA |
+| Última aprobada | `TSVC-CAT-010` — Definir adopción progresiva y retiro de soluciones legacy | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-030` — Asignar permiso de lectura a cada vista | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-UI-031` — Asignar permiso exacto a cada acción | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -475,7 +475,7 @@
 | ✅ APROBADA | `TSVC-CAT-007` | Definir observabilidad, métricas, alertas y auditoría | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ✅ APROBADA | `TSVC-CAT-008` | Definir contingencia y degradación controlada | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ✅ APROBADA | `TSVC-CAT-009` | Definir retención, archivado y limpieza | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
-| ⬜ NO INICIADA | `TSVC-CAT-010` | Definir adopción progresiva y retiro de soluciones legacy | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
+| ✅ APROBADA | `TSVC-CAT-010` | Definir adopción progresiva y retiro de soluciones legacy | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-001` | Inventariar colas, cron, jobs y automatizaciones existentes | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-002` | Definir contrato canónico de trabajo asíncrono | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-003` | Definir clave de idempotencia por trabajo | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
