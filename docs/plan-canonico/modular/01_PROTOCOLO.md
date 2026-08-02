@@ -43,6 +43,11 @@
 
    `<ID-DE-TAREA>_APROBADA_PARA_REEMPLAZAR.md`
 
+   Para una instancia de carril `<task_id>::<package_id>`, el nombre físico
+   reemplazará `::` por `__`:
+
+   `<task_id>__<package_id>_APROBADA_PARA_REEMPLAZAR.md`
+
    Ejemplo:
 
    `PROC-SCREEN-018_APROBADA_PARA_REEMPLAZAR.md`
@@ -172,6 +177,9 @@
 
    - `docs/plan-canonico/modular/01_PROTOCOLO.md`;
    - `docs/plan-canonico/modular/continuity-route.json`;
+   - `docs/plan-canonico/modular/execution-route.json`;
+   - `docs/plan-canonico/modular/priority-route-progress.json` cuando la ruta
+     seleccionada sea prioritaria;
    - `docs/plan-canonico/modular/active-sequence.json`;
    - el archivo modular propietario de la tarea;
    - las tareas aprobadas que constituyen su base;
@@ -228,7 +236,8 @@
    - no se editarán manualmente `00_CABECERA_Y_ESTADO.md` ni archivos bajo
      `.generated/` para forzar continuidad;
    - `manifest.json` controla el orden físico de compilación;
-   - `continuity-route.json` controla la ruta documental normal y sus etapas;
+   - `continuity-route.json` controla la ruta normal completa, el orden de sus
+     etapas y la ubicación única de todas las tareas canónicas;
    - `active-sequence.json` es una proyección derivada de esa ruta y no se
      edita manualmente;
    - `04A` es la única fuente canónica del registro de pruebas;
@@ -239,6 +248,9 @@
    - una tarea nueva deberá existir una sola vez en el bloque propietario; si
      su prefijo pertenece a una etapa de `continuity-route.json`, el build la
      incorporará automáticamente sin actualizar rangos manuales;
+   - si una familia nueva no tiene etapa propietaria, el build fallará por
+     cobertura incompleta en vez de colocarla por inferencia en una fase
+     incorrecta;
    - no se declarará `compilación correcta`, `pruebas aprobadas` o
      `validación final correcta` si los comandos reales no fueron ejecutados.
 
@@ -856,7 +868,9 @@ supabase_repository = vento-shell
 Reglas obligatorias:
 
 1. la fuente estructurada será `priority-delivery-lanes.json`;
-2. antes de iniciar trabajo de implementación deberá declararse una sola ruta:
+2. `execution-route.json` registrará exactamente una ruta seleccionada y
+   `priority-route-progress.json` conservará controles e instancias por
+   `package_id`; antes de iniciar trabajo deberá declararse una sola ruta:
    si la prioridad activa es remisiones NEXO se seguirá
    `NEXO-REMISSIONS-001`; en cualquier otro caso se seguirá
    `NORMAL_CANONICAL_FLOW`;
@@ -865,10 +879,11 @@ Reglas obligatorias:
    `active-sequence.json`;
    el flujo prioritario se deriva exclusivamente de
    `ordered_execution_stages`, en orden ascendente y sin mezclar etapas;
-4. elegir el flujo prioritario no cambia la tarea documental actual, no
-   reordena el plan y no elimina trabajo futuro;
-5. la tarea documental actual se publicará en `active-sequence.json`, siempre
-   como proyección de `continuity-route.json` y de los marcadores canónicos;
+4. elegir el flujo prioritario cambia la continuidad de trabajo visible, pero
+   no cambia el orden físico del plan ni elimina trabajo futuro;
+5. la tarea actual se publicará en `active-sequence.json`, siempre como
+   proyección de `execution-route.json`, la ruta seleccionada, los marcadores
+   canónicos y, cuando aplique, los estados `task_id::package_id`;
    esta proyección solo reserva continuidad y jamás cambia marcadores, aprueba
    tareas ni autoriza iniciar la siguiente;
 6. un artefacto producido para una aplicación podrá ser consumido por un
@@ -878,6 +893,10 @@ Reglas obligatorias:
    tarea global;
 8. cada gate y cada paso de entrega se registrará como
    `<task_id>::<package_id>` sin crear un nuevo identificador de tarea;
+   su estado se actualizará exclusivamente en `priority-route-progress.json`
+   después de la aprobación explícita del usuario y nunca modificará por
+   inferencia el marcador global de `<task_id>`;
+   los controles virtuales `route_id::stage_id` seguirán la misma regla;
 9. `E5-GATE-008::<package_id>` deberá verificar solo el paquete indicado y no
    se interpretará como cierre completo de E5;
 10. `SHELL-CI-020::<package_id>` a `SHELL-CI-024::<package_id>` conservarán
@@ -903,6 +922,16 @@ Reglas obligatorias:
     desde la fuente estructurada y el compilador rechazará cualquier deriva;
 19. una condición se evaluará de forma explícita antes de E5; el silencio no
     equivale a “no aplica”.
+20. al certificar la última etapa de un carril, la continuidad volverá
+    automáticamente a `NORMAL-CANONICAL-FLOW-001` y escogerá la primera tarea
+    canónica todavía pendiente según `90_ORDEN_DE_IMPLEMENTACION.md`;
+21. una tarea global adelantada y aprobada legítimamente por el carril se
+    omitirá en esa proyección posterior; las tareas de instancia no aprobarán
+    ni ocultarán su tarea global y seguirán pendientes hasta cerrar su alcance
+    canónico completo;
+22. `continuity-route.json` deberá cubrir exactamente una vez el inventario
+    completo de tareas. Una omisión o asignación duplicada hará fallar el
+    build.
 
 La ejecución de un carril nunca sustituye la aprobación del plan completo. Su
 propósito es validar una capacidad vertical reutilizable y devolver evidencia,

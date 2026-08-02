@@ -5,6 +5,7 @@
   "implementation_route_policy": {
     "default_route": "NORMAL_CANONICAL_FLOW",
     "normal_route_source": "continuity-route.json",
+    "route_selection_source": "execution-route.json",
     "priority_route_trigger": "La prioridad de implementación activa es remisiones NEXO.",
     "priority_route_id": "NEXO-REMISSIONS-001",
     "selection_rule": "Si la prioridad activa es remisiones NEXO se sigue el ordered_execution_stages del carril; para cualquier otra prioridad se sigue el flujo normal del plan.",

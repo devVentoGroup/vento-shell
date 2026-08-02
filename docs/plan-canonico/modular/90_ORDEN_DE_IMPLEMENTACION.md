@@ -246,14 +246,14 @@ relacionados, únicamente cuando ese paquete:
 12. demuestre compatibilidad, pruebas, rollout, rollback, piloto, conciliación
     y soporte sin crear contratos competidores.
 
-Existen dos estados independientes:
+Existe una sola continuidad de trabajo visible, derivada de la ruta elegida:
 
 ```text
-SECUENCIA DOCUMENTAL CANÓNICA
-→ continúa en el orden aprobado y solo avanza por aprobación explícita
+RUTA NORMAL
+→ continúa por continuity-route.json
 
-EJECUCIÓN DE UN PAQUETE PRIORITARIO
-→ avanza por su package_id y no modifica la tarea documental actual
+RUTA PRIORITARIA
+→ avanza por ordered_execution_stages y registra instancias por package_id
 ```
 
 #### Decisión obligatoria de ruta
@@ -266,13 +266,22 @@ SÍ
 → no volver al flujo normal entre etapas salvo suspensión documentada
 
 NO
+→ seleccionar NORMAL-CANONICAL-FLOW-001 en execution-route.json
 → seguir el flujo normal del plan y la tarea derivada de active-sequence.json
 → no ejecutar tareas del carril por inferencia
 ```
 
-La prioridad se refiere al trabajo que se implementará, no a una modificación
-de la continuidad documental. Aunque se elija `NEXO-REMISSIONS-001`,
-`active-sequence.json` continúa gobernando la tarea documental actual.
+La selección se registra en `execution-route.json`. `active-sequence.json` se
+regenera como proyección de esa selección y publica una sola tarea actual. La
+ruta prioritaria no reordena físicamente el documento ni elimina el trabajo
+restante; después de certificar el paquete vuelve al flujo normal declarado.
+
+La ruta normal contiene el inventario canónico completo, agrupado por las
+fases de implementación descritas en este documento. Al cerrar el carril
+prioritario, el compilador filtra las tareas ya aprobadas y continúa por la
+primera pendiente real; no repite trabajo global cerrado ni considera cerradas
+las tareas que solo tengan una instancia de paquete aprobada. Las condiciones
+y decisiones de continuidad se conservan en su etapa propietaria.
 
 <!-- NEXO-REMISSIONS-ORDER:START -->
 #### Orden ejecutable de NEXO-REMISSIONS-001

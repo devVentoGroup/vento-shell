@@ -4,8 +4,19 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import test from 'node:test';
 import {
-  validatePriorityDeliveryLaneData,
+  validatePriorityDeliveryLaneData as validatePriorityDeliveryLaneDataRaw,
 } from './validate-priority-delivery-lanes.mjs';
+
+const normalExecutionRouteSource = JSON.stringify({
+  selected_route_id: 'NORMAL-CANONICAL-FLOW-001',
+  normal_route_id: 'NORMAL-CANONICAL-FLOW-001',
+  selected_explicitly: true,
+});
+const validatePriorityDeliveryLaneData = (args) =>
+  validatePriorityDeliveryLaneDataRaw({
+    executionRouteSource: normalExecutionRouteSource,
+    ...args,
+  });
 
 const canonicalData = JSON.parse(
   fs.readFileSync(
@@ -66,9 +77,9 @@ const taskIds = new Set([
 ]);
 const documents = {
   order:
-    '<!-- PRIORITY-DELIVERY-LANES:START --> NEXO-REMISSIONS-001 canonical_sequence_unchanged = true ¿LA PRIORIDAD DE IMPLEMENTACIÓN ACTIVA ES REMISIONES NEXO? Orden ejecutable de NEXO-REMISSIONS-001 desde la etapa 1 hasta la 44 NEXO_INVENTORY_CLASSIFICATION CONDITIONAL_IMPLEMENTATION_SCOPE Ninguna tarea de implementación, migración o cambio físico comienza antes CI_FOUNDATION R2_NEXO_DATABASE_PACKAGE E5_READINESS_PLAN U_AUTHORIZATION_CERTIFICATION SHELL-CI-024::NEXO-REMISSIONS-001',
+    '<!-- PRIORITY-DELIVERY-LANES:START --> NEXO-REMISSIONS-001 canonical_sequence_unchanged = true ¿LA PRIORIDAD DE IMPLEMENTACIÓN ACTIVA ES REMISIONES NEXO? execution-route.json Orden ejecutable de NEXO-REMISSIONS-001 desde la etapa 1 hasta la 44 NEXO_INVENTORY_CLASSIFICATION CONDITIONAL_IMPLEMENTATION_SCOPE Ninguna tarea de implementación, migración o cambio físico comienza antes CI_FOUNDATION R2_NEXO_DATABASE_PACKAGE E5_READINESS_PLAN U_AUTHORIZATION_CERTIFICATION SHELL-CI-024::NEXO-REMISSIONS-001',
   protocol:
-    '<!-- PRIORITY-PACKAGE-PROTOCOL:START --> global_task_partial_approval_forbidden E5-GATE-008::<package_id> NORMAL_CANONICAL_FLOW ordered_execution_stages deberá completar todo BLOQUE H',
+    '<!-- PRIORITY-PACKAGE-PROTOCOL:START --> global_task_partial_approval_forbidden E5-GATE-008::<package_id> NORMAL_CANONICAL_FLOW execution-route.json ordered_execution_stages deberá completar todo BLOQUE H',
   principles:
     'Aplicación incremental sin aprobación parcial NEXO-REMISSIONS-001',
   gate: 'Instancia de puerta por paquete E5-GATE-008::<package_id>',
@@ -249,4 +260,29 @@ test('rechaza una ruta ambigua o un carril usado como secuencia documental', () 
     }),
     /NORMAL_CANONICAL_FLOW|no puede reemplazar active-sequence/,
   );
+});
+
+test('exige que active-sequence proyecte el carril seleccionado explícitamente', () => {
+  const prioritySelector = JSON.stringify({
+    selected_route_id: 'NEXO-REMISSIONS-001',
+    normal_route_id: 'NORMAL-CANONICAL-FLOW-001',
+    selected_explicitly: true,
+  });
+  assert.throws(
+    () => validatePriorityDeliveryLaneDataRaw({
+      data: validData(),
+      taskIds,
+      documents,
+      executionRouteSource: prioritySelector,
+      activeSequenceSource: '{"route_id":"NORMAL-CANONICAL-FLOW-001"}',
+    }),
+    /no proyecta el carril seleccionado/,
+  );
+  assert.doesNotThrow(() => validatePriorityDeliveryLaneDataRaw({
+    data: validData(),
+    taskIds,
+    documents,
+    executionRouteSource: prioritySelector,
+    activeSequenceSource: '{"route_id": "NEXO-REMISSIONS-001"}',
+  }));
 });

@@ -29,11 +29,11 @@
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
 | Última tarea aprobada | **SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas** |
-| Tarea actual | **SHELL-CON-001 — Crear @vento/contracts** |
+| Tarea actual | **TSVC-CAT-001 — Inventariar servicios transversales actuales y faltantes** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-CON-002 — Centralizar códigos de aplicaciones** |
-| Bloque actual | **BLOQUE H — Fundación compartida** |
-| Progreso del bloque | **BLOQUE H: 0 de 24 aprobadas; SHELL-CON-001 pendiente** |
+| Siguiente tarea | **TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio** |
+| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 7: TRANSVERSE_SERVICE_CATALOG** |
+| Progreso del bloque | **CARRIL NEXO: 0 de 10 aprobadas; TSVC-CAT-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
@@ -41,8 +41,8 @@
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
 | Última aprobada | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas |
-| Tarea actual | `SHELL-CON-001` — Crear @vento/contracts — **NO INICIADA** |
-| Siguiente tarea | `SHELL-CON-002` — Centralizar códigos de aplicaciones |
+| Tarea actual | `TSVC-CAT-001` — Inventariar servicios transversales actuales y faltantes — **NO INICIADA** |
+| Siguiente tarea | `TSVC-CAT-002` — Definir propietario técnico y gobierno de cada servicio |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE H | **0 DE 24 APROBADAS — ACTUAL SHELL-CON-001** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 10 APROBADAS — ACTUAL TSVC-CAT-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -91,11 +91,11 @@
 SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas
         ↓
 TAREA ACTUAL
-SHELL-CON-001 — Crear @vento/contracts
+TSVC-CAT-001 — Inventariar servicios transversales actuales y faltantes
         ↓
 SIGUIENTE TAREA RESERVADA
-SHELL-CON-002 — Centralizar códigos de aplicaciones
+TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio
         ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 0 de 24 tareas aprobadas
+CARRIL NEXO — 0 de 10 tareas aprobadas
 ```

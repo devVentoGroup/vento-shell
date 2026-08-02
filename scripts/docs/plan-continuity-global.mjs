@@ -1,9 +1,9 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import {
-  readAndResolveContinuityRoute,
   serializeActiveSequence,
 } from './continuity-route.mjs';
+import { readAndResolveExecutionRoute } from './execution-route.mjs';
 
 const TASK_REGEX = /^###\s+(?<marker>\[[ x~]\]|[✅🟡❌])\s+(?<id>[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3})\b(?:\s+[—-]\s+(?<title>[^\n]+))?$/gmu;
 
@@ -69,7 +69,9 @@ function readActiveSequenceConfig(baseDir) {
   }
 
   const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
-  if (config.schema_version !== 1) fail('active-sequence.json utiliza una versión no soportada.');
+  if (![1, 2].includes(config.schema_version)) {
+    fail('active-sequence.json utiliza una versión no soportada.');
+  }
   if (typeof config.sequence_id !== 'string') fail('active-sequence.json no define sequence_id.');
   if (typeof config.block_code !== 'string') fail('active-sequence.json no define block_code.');
   if (typeof config.block_title !== 'string') fail('active-sequence.json no define block_title.');
@@ -84,7 +86,13 @@ function readActiveSequenceConfig(baseDir) {
     fail('active-sequence.json debe declarar ambos campos de handoff o dejar ambos en null.');
   }
 
-  return { ...config, taskIds: expandSequenceSegments(config.segments) };
+  const taskIds = Array.isArray(config.task_ids)
+    ? config.task_ids
+    : expandSequenceSegments(config.segments);
+  if (taskIds.length === 0 || taskIds.some((id) => typeof id !== 'string')) {
+    fail('active-sequence.json no contiene tareas activas válidas.');
+  }
+  return { ...config, taskIds };
 }
 
 function buildExecutionSequence(activeConfig) {
@@ -365,17 +373,14 @@ function updateProgressSection(section, taskMap, continuity, activeConfig) {
   const rows = `${buildCtxProgressRows(taskMap).join('\n')}\n`;
   updated = updated.slice(0, firstCtxRow) + rows + updated.slice(implementationRow);
 
-  const activePattern = new RegExp(
-    `^\\|\\s*${escapeRegex(activeConfig.block_code)}\\s*\\|[^\\n]*\\|\\n?`,
-    'm'
-  );
+  const activePattern = /^\|\s*(?:CONTINUIDAD ACTIVA|BLOQUE E3|BLOQUE H2?|CARRIL [^|]+)\s*\|[^\n]*\|\n?/gmu;
   updated = updated.replace(activePattern, '');
 
   const approved = continuity.sequence.slice(1).filter((task) => task.state === 'APROBADA').length;
   const activeStatus = continuity.isComplete
     ? `${approved} DE ${continuity.sequence.length - 1} APROBADAS — SECUENCIA DOCUMENTAL COMPLETA`
     : `${approved} DE ${continuity.sequence.length - 1} APROBADAS — ACTUAL ${continuity.current.id}`;
-  const activeRow = `| ${activeConfig.block_code} | **${activeStatus}** |`;
+  const activeRow = `| CONTINUIDAD ACTIVA | **${activeConfig.block_code}: ${activeStatus}** |`;
   const implementationPattern = /^\|\s*Implementación física\s*\|[^\n]*\|$/m;
   if (!implementationPattern.test(updated)) fail('no se encontró la fila Implementación física.');
   return updated.replace(implementationPattern, `${activeRow}\n$&`);
@@ -552,7 +557,7 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
 
   const taskMap = readGlobalTaskRegistry(baseDir, manifest);
   const stats = summarizeRegistry(taskMap);
-  const resolvedActiveConfig = readAndResolveContinuityRoute(baseDir, taskMap);
+  const resolvedActiveConfig = readAndResolveExecutionRoute(baseDir, taskMap);
   const nextActiveSequence = serializeActiveSequence(resolvedActiveConfig);
   const currentActiveSequence = fs.existsSync(activeSequencePath)
     ? fs.readFileSync(activeSequencePath, 'utf8').replace(/\r\n?/gu, '\n')
@@ -570,9 +575,16 @@ export function syncPlanContinuity({ root = process.cwd(), checkOnly = false } =
   }
 
   const activeConfig = readActiveSequenceConfig(baseDir);
+  const continuityTaskMap = new Map(taskMap);
+  for (const task of activeConfig.virtual_tasks ?? []) {
+    if (!task?.id || continuityTaskMap.has(task.id)) {
+      fail(`active-sequence.json contiene una tarea virtual inválida o duplicada: ${task?.id ?? 'VACÍA'}.`);
+    }
+    continuityTaskMap.set(task.id, task);
+  }
   const sequenceIds = buildExecutionSequence(activeConfig);
-  const continuity = resolveContinuity(taskMap, sequenceIds);
-  continuity.handoff = resolveHandoff(taskMap, activeConfig, sequenceIds);
+  const continuity = resolveContinuity(continuityTaskMap, sequenceIds);
+  continuity.handoff = resolveHandoff(continuityTaskMap, activeConfig, sequenceIds);
 
   const currentHeader = fs.readFileSync(headerPath, 'utf8');
   const nextHeader = updateHeader(currentHeader, manifest, taskMap, stats, continuity, activeConfig);

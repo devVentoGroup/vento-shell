@@ -1,80 +1,339 @@
 {
   "schema_version": 1,
   "route_id": "NORMAL-CANONICAL-FLOW-001",
-  "entry_task_id": "DATA-NORM-TRANS-009",
+  "entry_task_id": "AUTH-AUD-001",
   "latest_treq_task_id": "SUPA-TRANS-006",
+  "coverage_policy": "ALL_CANONICAL_TASKS_EXACTLY_ONCE",
+  "projection_policy": "PENDING_TASKS_ONLY",
+  "ordering_source": "90_ORDEN_DE_IMPLEMENTACION.md",
   "stages": [
     {
-      "sequence_id": "E3-SUPABASE-TRANSITION-CLOSURE-001",
+      "sequence_id": "PHASE-01-CANONICAL-DEFINITION",
+      "block_code": "FASE 1",
+      "block_title": "Definición canónica",
+      "selectors": [
+        { "prefix": "AUTH-AUD" },
+        { "prefix": "AUTH-MOD", "from": 1, "to": 20 },
+        { "prefix": "AUTH-CAT" },
+        { "prefix": "AUTH-RBAC" },
+        { "prefix": "AUTH-CTX", "from": 1, "to": 27 },
+        { "task_ids": ["AUTH-MOD-021"] },
+        { "prefix": "AUTH-CTX", "from": 28, "to": 30 }
+      ]
+    },
+    {
+      "sequence_id": "PHASE-02-E1-DISCOVERY",
+      "block_code": "BLOQUE E1",
+      "block_title": "Descubrimiento operativo y cierre de brechas",
+      "selectors": [
+        { "prefix": "OPS-AUD" },
+        { "prefix": "OPS-ADM" },
+        { "prefix": "OPS-GOV" },
+        { "prefix": "OPS-ACT" },
+        { "prefix": "OPS-PLAN" },
+        { "prefix": "CAP-MAP" },
+        { "prefix": "CODE-AUD", "from": 1, "to": 7 },
+        { "prefix": "QA-GOV" },
+        { "prefix": "CODE-AUD", "from": 8, "to": 20 },
+        { "prefix": "CAP-SCOPE" },
+        { "prefix": "CAP-COVER" },
+        { "prefix": "GAP-CTRL" },
+        { "prefix": "E1-GATE" }
+      ]
+    },
+    {
+      "sequence_id": "PHASE-02-E1-EXTERNAL-GOVERNANCE-CONDITIONAL",
+      "block_code": "BLOQUE E1",
+      "block_title": "Expediente condicional de gobierno externo",
+      "selectors": [{ "prefix": "EXT-GOV" }],
+      "activation_state": "DEFERRED",
+      "activation_rule": "ACTIVATE_WHEN_REQUIRED_EXTERNAL_FILE_EXISTS"
+    },
+    {
+      "sequence_id": "PHASE-02-E2-PROCESSES-AND-UX",
+      "block_code": "BLOQUE E2",
+      "block_title": "Procesos TO-BE, actores, pantallas y experiencia",
+      "selectors": [
+        { "prefix": "PROC-CAT" },
+        { "prefix": "PROC-ACTOR" },
+        { "task_ids": ["UX-STATION-001"] },
+        { "prefix": "OPS-CAN" },
+        { "prefix": "OPS-LOG" },
+        { "prefix": "OPS-B2B" },
+        { "prefix": "CAP-TAL" },
+        { "prefix": "UX-BASE" },
+        { "prefix": "NFR-REQ", "from": 1, "to": 11 },
+        { "prefix": "UX-STATION", "from": 2, "to": 7 },
+        { "prefix": "UX-STATION", "from": 10, "to": 12 },
+        { "task_ids": ["UX-STATION-008", "UX-STATION-009"] },
+        { "prefix": "UX-ADMIN" },
+        { "prefix": "PROC-SCREEN" },
+        { "prefix": "PROC-COVER" },
+        { "task_ids": ["NFR-REQ-012"] },
+        { "prefix": "AUTH-UI", "from": 1, "to": 29 }
+      ]
+    },
+    {
+      "sequence_id": "PHASE-02-X-INTEGRATION-CONTRACTS",
+      "block_code": "BLOQUE X",
+      "block_title": "Contratos de integración y transiciones",
+      "selectors": [
+        { "prefix": "INT-APP" },
+        { "prefix": "INT-EXT" },
+        { "prefix": "INT-WORK" },
+        { "prefix": "INT-PROC" },
+        { "prefix": "INT-PROD" },
+        { "prefix": "INT-POS" },
+        { "prefix": "INT-SALES" },
+        { "prefix": "INT-MKT" }
+      ],
+      "execution_mode": "DESIGN_NOW_IMPLEMENT_PER_APPROVED_PACKAGE"
+    },
+    {
+      "sequence_id": "PHASE-02-E3-SUPABASE-DESIGN",
       "block_code": "BLOQUE E3",
-      "block_title": "Supabase",
-      "selectors": [{ "task_ids": ["SUPA-TRANS-016"] }]
+      "block_title": "Supabase, normalización y transición",
+      "selectors": [
+        { "prefix": "SUPA-AUD" },
+        { "prefix": "DATA-NORM-AUD" },
+        { "prefix": "SUPA-ARC", "from": 1, "to": 24 },
+        { "prefix": "DATA-NORM-ARC" },
+        { "task_ids": ["SUPA-ARC-025"] },
+        { "prefix": "SUPA-TRANS", "from": 1, "to": 15 },
+        { "prefix": "DATA-NORM-TRANS" },
+        { "task_ids": ["SUPA-TRANS-016"] }
+      ]
     },
     {
-      "sequence_id": "H-SHARED-AUDIT-001",
+      "sequence_id": "PHASE-02-E4-TRANSVERSE-SERVICES",
+      "block_code": "BLOQUE E4",
+      "block_title": "Servicios transversales",
+      "selectors": [
+        { "prefix": "TSVC-CAT" },
+        { "prefix": "QUEUE-ARC" },
+        { "prefix": "PRINT-ARC" },
+        { "prefix": "NOTIFY-ARC" },
+        { "prefix": "EVID-ARC" }
+      ]
+    },
+    {
+      "sequence_id": "PHASE-02-VISO-SCHEDULE-DELTA",
+      "block_code": "BLOQUE G",
+      "block_title": "Reconciliación de programación laboral VISO",
+      "selectors": [
+        { "prefix": "VISO-SCH" },
+        { "task_ids": ["CODE-AUD-021", "AUTH-UI-061"] }
+      ],
+      "activation_state": "DEFERRED",
+      "activation_rule": "ACTIVATE_ONLY_FOR_VISO_SCHEDULE_PACKAGE"
+    },
+    {
+      "sequence_id": "PHASE-02-E5-IMPLEMENTATION-PLANNING",
+      "block_code": "BLOQUE E5",
+      "block_title": "Paquetes, readiness, cutover e hypercare",
+      "selectors": [
+        { "prefix": "DELIV-PKG" },
+        { "prefix": "READY-GATE" },
+        { "prefix": "CUTOVER-OPS" },
+        { "prefix": "HYPERCARE-OPS" },
+        { "prefix": "E5-GATE" }
+      ],
+      "execution_mode": "GLOBAL_STANDARD_AND_PACKAGE_INSTANCES"
+    },
+    {
+      "sequence_id": "PHASE-03-H-SHARED-FOUNDATION",
       "block_code": "BLOQUE H",
-      "block_title": "Fundación compartida",
-      "selectors": [{ "prefix": "SHELL-AUD" }]
+      "block_title": "Fundación compartida de VENTO-SHELL",
+      "selectors": [
+        { "prefix": "SHELL-AUD" },
+        { "prefix": "SHELL-PKG" },
+        { "prefix": "SHELL-CON" },
+        { "prefix": "SHELL-NORM" },
+        { "prefix": "SHELL-DB" },
+        { "prefix": "SHELL-UI" },
+        { "prefix": "SHELL-MIG" },
+        { "prefix": "SHELL-NATIVE" },
+        { "prefix": "SHELL-AUTH" },
+        { "prefix": "SHELL-CTX" },
+        { "prefix": "AUTH-UI", "from": 30, "to": 39 }
+      ]
     },
     {
-      "sequence_id": "H-SHARED-PACKAGES-001",
-      "block_code": "BLOQUE H",
-      "block_title": "Fundación compartida",
-      "selectors": [{ "prefix": "SHELL-PKG" }]
+      "sequence_id": "PHASE-03-T-CI-FOUNDATION",
+      "block_code": "BLOQUE T",
+      "block_title": "CI, pruebas, despliegue y rollback base",
+      "selectors": [{ "prefix": "SHELL-CI", "from": 1, "to": 24 }],
+      "execution_mode": "TASKS_020_TO_024_REPEAT_PER_PACKAGE"
     },
     {
-      "sequence_id": "H-SHARED-CONTRACTS-001",
-      "block_code": "BLOQUE H",
-      "block_title": "Fundación compartida",
-      "selectors": [{ "prefix": "SHELL-CON" }]
+      "sequence_id": "PHASE-03-J-SERVER-ACTIONS",
+      "block_code": "BLOQUE J",
+      "block_title": "Protección de acciones de servidor",
+      "selectors": [{ "prefix": "AUTH-SRV" }]
     },
     {
-      "sequence_id": "H-SHARED-NORMALIZATION-001",
-      "block_code": "BLOQUE H",
-      "block_title": "Fundación compartida",
-      "selectors": [{ "prefix": "SHELL-NORM" }]
+      "sequence_id": "PHASE-03-R-DATABASE-IMPLEMENTATION",
+      "block_code": "BLOQUE R",
+      "block_title": "Fundación física, migraciones por dominio y normalización",
+      "selectors": [
+        {
+          "task_ids": [
+            "AUTH-DB-015", "AUTH-DB-027", "AUTH-DB-028", "AUTH-DB-029",
+            "AUTH-DB-001", "AUTH-DB-002", "AUTH-DB-003", "AUTH-DB-004", "AUTH-DB-005",
+            "AUTH-DB-016", "AUTH-DB-018", "AUTH-DB-017", "AUTH-DB-019",
+            "AUTH-DB-033", "AUTH-DB-035", "AUTH-DB-034", "AUTH-DB-032",
+            "AUTH-DB-012", "AUTH-DB-013", "AUTH-DB-014", "AUTH-DB-020",
+            "AUTH-DB-006", "AUTH-DB-007", "AUTH-DB-008", "AUTH-DB-009", "AUTH-DB-010",
+            "AUTH-DB-021", "AUTH-DB-011", "AUTH-DB-022", "AUTH-DB-023", "AUTH-DB-024",
+            "AUTH-DB-025", "AUTH-DB-026"
+          ]
+        },
+        { "prefix": "DATA-NORM-DB" },
+        { "prefix": "INT-DB" }
+      ],
+      "execution_mode": "EXECUTE_ONLY_INSIDE_APPROVED_PACKAGES"
     },
     {
-      "sequence_id": "H-SHARED-DATA-ACCESS-001",
-      "block_code": "BLOQUE H",
-      "block_title": "Fundación compartida",
-      "selectors": [{ "prefix": "SHELL-DB" }]
+      "sequence_id": "PHASE-03-S-BLOCKING-EXPERIENCE",
+      "block_code": "BLOQUE S",
+      "block_title": "Mensajes y experiencia de bloqueo",
+      "selectors": [{ "prefix": "AUTH-ERR" }]
     },
     {
-      "sequence_id": "H-SHARED-WEB-UI-001",
-      "block_code": "BLOQUE H",
-      "block_title": "Fundación compartida",
-      "selectors": [{ "prefix": "SHELL-UI" }]
+      "sequence_id": "PHASE-04-F-ANIMA",
+      "block_code": "BLOQUE F",
+      "block_title": "ANIMA",
+      "selectors": [{ "prefix": "ANIMA-AUTH" }, { "prefix": "ANIMA-UX" }]
     },
     {
-      "sequence_id": "H-SHARED-WEB-MIGRATION-001",
-      "block_code": "BLOQUE H",
-      "block_title": "Fundación compartida",
-      "selectors": [{ "prefix": "SHELL-MIG" }]
+      "sequence_id": "PHASE-04-G-VISO-CORE",
+      "block_code": "BLOQUES G Y G2",
+      "block_title": "VISO administrador del modelo y núcleo operativo",
+      "selectors": [{ "prefix": "VISO-AUTH" }, { "prefix": "VISO-CORE" }]
     },
     {
-      "sequence_id": "H-SHARED-NATIVE-001",
-      "block_code": "BLOQUE H",
-      "block_title": "Fundación compartida",
-      "selectors": [{ "prefix": "SHELL-NATIVE" }]
-    },
-    {
-      "sequence_id": "H-SHARED-AUTHORIZATION-001",
-      "block_code": "BLOQUE H",
-      "block_title": "Fundación compartida",
-      "selectors": [{ "prefix": "SHELL-AUTH" }]
-    },
-    {
-      "sequence_id": "H-SHARED-CONTEXT-001",
-      "block_code": "BLOQUE H",
-      "block_title": "Fundación compartida",
-      "selectors": [{ "prefix": "SHELL-CTX" }]
-    },
-    {
-      "sequence_id": "H2-SHELL-APP-001",
+      "sequence_id": "PHASE-04-H2-SHELL-APPLICATION",
       "block_code": "BLOQUE H2",
-      "block_title": "SHELL aplicación",
+      "block_title": "SHELL como aplicación",
       "selectors": [{ "prefix": "SHELL-APP" }]
+    },
+    {
+      "sequence_id": "PHASE-04-I-UI-IMPLEMENTATION",
+      "block_code": "BLOQUE I",
+      "block_title": "Protección y estados de interfaz",
+      "selectors": [{ "prefix": "AUTH-UI", "from": 40, "to": 51 }]
+    },
+    {
+      "sequence_id": "PHASE-04-PQ-DEVICE-AND-SIMULATION",
+      "block_code": "BLOQUES P Y Q",
+      "block_title": "Dispositivos compartidos y simulación estricta",
+      "selectors": [{ "prefix": "AUTH-DEV" }, { "prefix": "AUTH-SIM" }]
+    },
+    {
+      "sequence_id": "PHASE-04-Z-TECHNOLOGY",
+      "block_code": "BLOQUE Z",
+      "block_title": "Tecnología y soporte",
+      "selectors": [
+        { "prefix": "TI-DOM" }, { "prefix": "TI-AUTH" },
+        { "prefix": "TI-UX" }, { "prefix": "TI-INT" }
+      ]
+    },
+    {
+      "sequence_id": "PHASE-04-AA-INFORMATION-GOVERNANCE",
+      "block_code": "BLOQUE AA",
+      "block_title": "Gobierno de información",
+      "selectors": [
+        { "prefix": "INFO-DOM" }, { "prefix": "INFO-AUTH" },
+        { "prefix": "INFO-UX" }, { "prefix": "INFO-INT" }
+      ]
+    },
+    {
+      "sequence_id": "PHASE-04-AB-DATA-AND-ANALYTICS",
+      "block_code": "BLOQUE AB",
+      "block_title": "Analítica, indicadores y datos maestros",
+      "selectors": [
+        { "prefix": "DATA-DOM" }, { "prefix": "DATA-AUTH" },
+        { "prefix": "DATA-UX" }, { "prefix": "DATA-INT" }
+      ]
+    },
+    {
+      "sequence_id": "PHASE-04-AC-CONTINUITY",
+      "block_code": "BLOQUE AC",
+      "block_title": "Continuidad operativa y recuperación",
+      "selectors": [
+        { "prefix": "CONT-DOM" }, { "prefix": "CONT-AUTH" },
+        { "prefix": "CONT-UX" }, { "prefix": "CONT-INT" }
+      ]
+    },
+    {
+      "sequence_id": "PHASE-05-NEXO",
+      "block_code": "BLOQUE K",
+      "block_title": "NEXO",
+      "selectors": [
+        { "prefix": "NEXO-DOM" }, { "prefix": "NEXO-AUTH" },
+        { "prefix": "NEXO-UX" }, { "prefix": "AUTH-UI", "from": 52, "to": 60 }
+      ],
+      "execution_mode": "CONTINUE_AFTER_NEXO_REMISSIONS_PRIORITY_PACKAGE"
+    },
+    {
+      "sequence_id": "PHASE-06-FOGO-ORIGO",
+      "block_code": "BLOQUES L Y M",
+      "block_title": "FOGO y ORIGO",
+      "selectors": [
+        { "prefix": "OPS-REC" }, { "prefix": "OPS-PRD" }, { "prefix": "OPS-TRZ" },
+        { "prefix": "FOGO-AUTH" }, { "prefix": "FOGO-UX" },
+        { "prefix": "ORIGO-AUTH" }, { "prefix": "ORIGO-UX" }
+      ]
+    },
+    {
+      "sequence_id": "PHASE-07-PULSO",
+      "block_code": "BLOQUE N",
+      "block_title": "PULSO",
+      "selectors": [{ "prefix": "OPS-POS" }, { "prefix": "PULSO-AUTH" }, { "prefix": "PULSO-UX" }]
+    },
+    {
+      "sequence_id": "PHASE-08-NUMERA",
+      "block_code": "BLOQUE O",
+      "block_title": "NUMERA",
+      "selectors": [
+        { "prefix": "NUMERA-AUD" }, { "prefix": "OPS-CST" },
+        { "prefix": "NUMERA-DOM" }, { "prefix": "NUMERA-AUTH" }, { "prefix": "NUMERA-UX" }
+      ]
+    },
+    {
+      "sequence_id": "PHASE-09-VISO-COMPLETE",
+      "block_code": "BLOQUE G3",
+      "block_title": "VISO completo",
+      "selectors": [{ "prefix": "VISO-UX" }]
+    },
+    {
+      "sequence_id": "PHASE-10-PASS",
+      "block_code": "BLOQUE V",
+      "block_title": "PASS",
+      "selectors": [{ "prefix": "PASS-UX" }, { "prefix": "PASS-INT" }, { "prefix": "PASS-QA" }]
+    },
+    {
+      "sequence_id": "PHASE-12-AURA",
+      "block_code": "BLOQUE W",
+      "block_title": "AURA — decisión y aplicación diferida",
+      "selectors": [
+        { "prefix": "AURA-AUD" }, { "prefix": "WEB-FRM" },
+        { "prefix": "AURA-DOM" }, { "prefix": "AURA-AUTH" },
+        { "prefix": "AURA-UX" }, { "prefix": "AURA-INT" }
+      ],
+      "execution_mode": "AUDIT_AND_DECIDE_BEFORE_IMPLEMENTATION"
+    },
+    {
+      "sequence_id": "PHASE-13-U-INTEGRAL-CERTIFICATION",
+      "block_code": "BLOQUE U",
+      "block_title": "Pruebas integrales y certificación transversal",
+      "selectors": [{ "prefix": "AUTH-QA" }, { "prefix": "UX-QA" }]
+    },
+    {
+      "sequence_id": "PHASE-13-R3-LEGACY-RETIREMENT",
+      "block_code": "BLOQUE R3",
+      "block_title": "Retiro legacy y certificación final",
+      "selectors": [{ "task_ids": ["AUTH-DB-030", "AUTH-DB-031"] }]
     }
   ]
 }

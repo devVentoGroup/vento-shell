@@ -21,8 +21,8 @@
 | Relación | Tarea | Estado |
 | --- | --- | --- |
 | Última aprobada | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas | ✅ APROBADA |
-| Tarea actual | `SHELL-CON-001` — Crear @vento/contracts | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-CON-002` — Centralizar códigos de aplicaciones | ⬜ NO INICIADA |
+| Tarea actual | `TSVC-CAT-001` — Inventariar servicios transversales actuales y faltantes | ⬜ NO INICIADA |
+| Siguiente reservada | `TSVC-CAT-002` — Definir propietario técnico y gobierno de cada servicio | ⬜ NO INICIADA |
 
 ## Registro completo
 

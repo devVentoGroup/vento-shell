@@ -293,6 +293,7 @@ export function validatePriorityDeliveryLaneData({
   taskIds,
   documents,
   activeSequenceSource = '',
+  executionRouteSource = '',
 }) {
   const errors = [];
 
@@ -310,6 +311,9 @@ export function validatePriorityDeliveryLaneData({
   }
   if (routePolicy?.normal_route_source !== 'continuity-route.json') {
     errors.push('el flujo normal debe derivarse de continuity-route.json.');
+  }
+  if (routePolicy?.route_selection_source !== 'execution-route.json') {
+    errors.push('la selección de ruta debe derivarse de execution-route.json.');
   }
   if (routePolicy?.priority_route_id !== 'NEXO-REMISSIONS-001') {
     errors.push('la ruta prioritaria debe ser NEXO-REMISSIONS-001.');
@@ -598,7 +602,7 @@ export function validatePriorityDeliveryLaneData({
       }
     }
 
-    const unknownTasks = [...new Set(allTaskRefs(lane))]
+    const unknownTasks = [...new Set(allTaskRefs(lane, taskIds))]
       .filter((taskId) => !taskIds.has(taskId));
     if (unknownTasks.length) {
       errors.push(`${lane.lane_id}: tareas inexistentes: ${unknownTasks.join(', ')}.`);
@@ -621,6 +625,7 @@ export function validatePriorityDeliveryLaneData({
       'E5_READINESS_PLAN',
       'U_AUTHORIZATION_CERTIFICATION',
       'SHELL-CI-024::NEXO-REMISSIONS-001',
+      'execution-route.json',
     ],
     protocol: [
       '<!-- PRIORITY-PACKAGE-PROTOCOL:START -->',
@@ -629,6 +634,7 @@ export function validatePriorityDeliveryLaneData({
       'NORMAL_CANONICAL_FLOW',
       'ordered_execution_stages',
       'deberá completar todo BLOQUE H',
+      'execution-route.json',
     ],
     principles: [
       'Aplicación incremental sin aprobación parcial',
@@ -659,9 +665,25 @@ export function validatePriorityDeliveryLaneData({
     }
   }
 
-  for (const laneId of laneIds) {
-    if (activeSequenceSource.includes(laneId)) {
-      errors.push(`${laneId}: un carril no puede reemplazar active-sequence.json.`);
+  let executionRoute;
+  try {
+    executionRoute = JSON.parse(executionRouteSource);
+  } catch {
+    errors.push('execution-route.json no contiene JSON válido.');
+  }
+  if (executionRoute) {
+    const selected = executionRoute.selected_route_id;
+    const validRoutes = new Set([
+      executionRoute.normal_route_id,
+      ...laneIds,
+    ]);
+    if (executionRoute.selected_explicitly !== true || !validRoutes.has(selected)) {
+      errors.push('execution-route.json no contiene una selección explícita reconocida.');
+    }
+    const projectsSelectedLane = activeSequenceSource.includes(`\"route_id\": \"${selected}\"`)
+      || activeSequenceSource.includes(`\"resumed_after_priority_route_id\": \"${selected}\"`);
+    if (laneIds.has(selected) && !projectsSelectedLane) {
+      errors.push(`${selected}: active-sequence.json no proyecta el carril seleccionado.`);
     }
   }
 
@@ -710,6 +732,7 @@ export function validatePriorityDeliveryLanes({ root = process.cwd() } = {}) {
     data: JSON.parse(read('priority-delivery-lanes.json')),
     taskIds: readTaskIds(path.join(modularRoot, 'bloques')),
     activeSequenceSource: read('active-sequence.json'),
+    executionRouteSource: read('execution-route.json'),
     documents: {
       order: read('90_ORDEN_DE_IMPLEMENTACION.md'),
       protocol: read('01_PROTOCOLO.md'),

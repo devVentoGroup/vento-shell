@@ -141,6 +141,9 @@ function maskFencedCode(source) {
 
 function expandActiveSequence(config) {
   const ids = [config.previous_task_id];
+  if (Array.isArray(config.task_ids)) {
+    return [...ids, ...config.task_ids];
+  }
   for (const segment of config.segments ?? []) {
     for (let number = segment.from; number <= segment.to; number += 1) {
       ids.push(`${segment.prefix}-${String(number).padStart(3, '0')}`);

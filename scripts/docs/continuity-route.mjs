@@ -19,9 +19,18 @@ function parseTaskId(id) {
 
 function resolveSelector(selector, taskMap) {
   if (typeof selector?.prefix === 'string') {
+    const from = selector.from ?? 1;
+    const to = selector.to ?? Number.MAX_SAFE_INTEGER;
+    if (!Number.isInteger(from) || !Number.isInteger(to) || from < 1 || to < from) {
+      fail(`continuity-route.json contiene un rango inválido para ${selector.prefix}.`);
+    }
     const tasks = [...taskMap.values()]
       .filter((task) => task.id.startsWith(`${selector.prefix}-`))
       .filter((task) => parseTaskId(task.id).prefix === selector.prefix)
+      .filter((task) => {
+        const { number } = parseTaskId(task.id);
+        return number >= from && number <= to;
+      })
       .sort((left, right) => parseTaskId(left.id).number - parseTaskId(right.id).number);
     if (tasks.length === 0) {
       fail(`continuity-route.json no encontró tareas para el prefijo ${selector.prefix}.`);
@@ -50,6 +59,9 @@ function resolveStage(stage, taskMap) {
   }
   if (!Array.isArray(stage.selectors) || stage.selectors.length === 0) {
     fail(`${stage.sequence_id}: debe declarar al menos un selector.`);
+  }
+  if (stage.activation_state && !['ACTIVE', 'DEFERRED'].includes(stage.activation_state)) {
+    fail(`${stage.sequence_id}: activation_state debe ser ACTIVE o DEFERRED.`);
   }
 
   const tasks = stage.selectors.flatMap((selector) => resolveSelector(selector, taskMap));
@@ -97,17 +109,45 @@ export function resolveContinuityRoute(route, taskMap) {
   if (new Set(routedTaskIds).size !== routedTaskIds.length) {
     fail('continuity-route.json asigna una tarea a más de una etapa.');
   }
+  if (route.coverage_policy === 'ALL_CANONICAL_TASKS_EXACTLY_ONCE') {
+    const routed = new Set(routedTaskIds);
+    const missing = [...taskMap.keys()].filter((id) => !routed.has(id));
+    const unknown = routedTaskIds.filter((id) => !taskMap.has(id));
+    if (missing.length || unknown.length) {
+      fail(
+        'continuity-route.json no cubre exactamente el inventario canónico; '
+        + `faltan ${missing.join(', ') || 'NINGUNA'}; `
+        + `desconocidas ${unknown.join(', ') || 'NINGUNA'}.`,
+      );
+    }
+  }
 
+  const isActionable = (stage) => stage.activation_state !== 'DEFERRED';
   let activeIndex = stages.findIndex(
-    (stage) => stage.tasks.some((task) => task.state !== 'APROBADA'),
+    (stage) => isActionable(stage) && stage.tasks.some((task) => task.state !== 'APROBADA'),
   );
-  if (activeIndex < 0) activeIndex = stages.length - 1;
+  if (activeIndex < 0) {
+    activeIndex = stages.findLastIndex(isActionable);
+    if (activeIndex < 0) fail('continuity-route.json no contiene ninguna etapa activa.');
+  }
 
   const active = stages[activeIndex];
-  const previousTaskId = activeIndex === 0
+  const firstPendingIndex = active.tasks.findIndex((task) => task.state !== 'APROBADA');
+  const pendingOnly = route.projection_policy === 'PENDING_TASKS_ONLY';
+  const projectedTasks = pendingOnly && firstPendingIndex >= 0
+    ? active.tasks.filter((task) => task.state !== 'APROBADA')
+    : active.tasks;
+  const approvedBeforePending = firstPendingIndex > 0
+    ? active.tasks.slice(0, firstPendingIndex).filter((task) => task.state === 'APROBADA').at(-1)
+    : null;
+  const previousTaskId = approvedBeforePending?.id ?? (activeIndex === 0
     ? route.entry_task_id
-    : stages[activeIndex - 1].tasks.at(-1).id;
-  const handoff = stages[activeIndex + 1] ?? null;
+    : stages[activeIndex - 1].tasks.at(-1).id);
+  const handoff = stages
+    .slice(activeIndex + 1)
+    .find((stage) => isActionable(stage)
+      && stage.tasks.some((task) => task.state !== 'APROBADA')) ?? null;
+  const handoffTask = handoff?.tasks.find((task) => task.state !== 'APROBADA') ?? null;
 
   return {
     schema_version: 1,
@@ -118,9 +158,19 @@ export function resolveContinuityRoute(route, taskMap) {
     block_title: active.block_title,
     previous_task_id: previousTaskId,
     latest_treq_task_id: route.latest_treq_task_id,
-    handoff_task_id: handoff?.tasks[0].id ?? null,
+    handoff_task_id: handoffTask?.id ?? null,
     handoff_sequence_id: handoff?.sequence_id ?? null,
-    segments: tasksToSegments(active.tasks),
+    segments: tasksToSegments(projectedTasks),
+    route_progress: {
+      covered_tasks: routedTaskIds.length,
+      pending_tasks: routedTaskIds.filter((id) => taskMap.get(id).state !== 'APROBADA').length,
+      deferred_pending_tasks: stages
+        .filter((stage) => !isActionable(stage))
+        .flatMap((stage) => stage.tasks)
+        .filter((task) => task.state !== 'APROBADA').length,
+      total_stages: stages.length,
+      active_stage: activeIndex + 1,
+    },
   };
 }
 

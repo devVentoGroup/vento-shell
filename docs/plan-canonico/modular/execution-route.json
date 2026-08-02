@@ -1,0 +1,9 @@
+{
+  "schema_version": 1,
+  "selected_route_id": "NEXO-REMISSIONS-001",
+  "normal_route_id": "NORMAL-CANONICAL-FLOW-001",
+  "priority_entry_task_id": "SHELL-PKG-008",
+  "return_policy": "RETURN_TO_NORMAL_AFTER_PRIORITY_CERTIFICATION",
+  "selection_basis": "Prioridad empresarial explícita: completar remisiones NEXO como primer paquete vertical.",
+  "selected_explicitly": true
+}

@@ -1,0 +1,20 @@
+{
+  "schema_version": 1,
+  "route_id": "NEXO-REMISSIONS-001",
+  "conditional_scopes": {
+    "CONDITIONAL_DESIGN_ARTIFACTS": {
+      "decision_state": "NO INICIADA",
+      "applicable_groups": [],
+      "not_applicable_groups": []
+    },
+    "CONDITIONAL_IMPLEMENTATION_SCOPE": {
+      "decision_state": "NO INICIADA",
+      "applicable_groups": [],
+      "not_applicable_groups": []
+    }
+  },
+  "stage_controls": {
+    "CONDITIONAL_IMPLEMENTATION_EXECUTION": "NO INICIADA"
+  },
+  "instance_states": {}
+}

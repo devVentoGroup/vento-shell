@@ -113,7 +113,7 @@ test('calcula el porcentaje de completamiento con dos decimales', () => {
 
 test('deriva la etapa activa y el handoff sin rangos configurados manualmente', () => {
   const taskMap = new Map([
-    ['PRE-001', task('PRE-001', 'APROBADA')],
+    ['PRE-TEST-001', task('PRE-TEST-001', 'APROBADA')],
     ['TEST-A-001', task('TEST-A-001', 'APROBADA')],
     ['TEST-A-002', task('TEST-A-002', 'APROBADA')],
     ['TEST-B-001', task('TEST-B-001', 'NO INICIADA')],
@@ -122,8 +122,8 @@ test('deriva la etapa activa y el handoff sin rangos configurados manualmente', 
   const route = {
     schema_version: 1,
     route_id: 'TEST-ROUTE-001',
-    entry_task_id: 'PRE-001',
-    latest_treq_task_id: 'PRE-001',
+    entry_task_id: 'PRE-TEST-001',
+    latest_treq_task_id: 'PRE-TEST-001',
     stages: [
       {
         sequence_id: 'TEST-A-SEQUENCE-001',
@@ -150,7 +150,7 @@ test('deriva la etapa activa y el handoff sin rangos configurados manualmente', 
 
 test('incorpora una tarea nueva al prefijo y reabre automáticamente su etapa', () => {
   const taskMap = new Map([
-    ['PRE-001', task('PRE-001', 'APROBADA')],
+    ['PRE-TEST-001', task('PRE-TEST-001', 'APROBADA')],
     ['TEST-A-001', task('TEST-A-001', 'APROBADA')],
     ['TEST-A-002', task('TEST-A-002', 'APROBADA')],
     ['TEST-A-003', task('TEST-A-003', 'NO INICIADA')],
@@ -159,8 +159,8 @@ test('incorpora una tarea nueva al prefijo y reabre automáticamente su etapa', 
   const active = resolveContinuityRoute({
     schema_version: 1,
     route_id: 'TEST-ROUTE-001',
-    entry_task_id: 'PRE-001',
-    latest_treq_task_id: 'PRE-001',
+    entry_task_id: 'PRE-TEST-001',
+    latest_treq_task_id: 'PRE-TEST-001',
     stages: [
       {
         sequence_id: 'TEST-A-SEQUENCE-001',
@@ -184,6 +184,100 @@ test('incorpora una tarea nueva al prefijo y reabre automáticamente su etapa', 
     'TEST-A-002',
     'TEST-A-003',
   ]);
+});
+
+test('proyecta solo pendientes y conserva el orden después de adelantos aprobados', () => {
+  const taskMap = new Map([
+    ['PRE-TEST-001', task('PRE-TEST-001', 'APROBADA')],
+    ['TEST-A-001', task('TEST-A-001', 'APROBADA')],
+    ['TEST-A-002', task('TEST-A-002', 'NO INICIADA')],
+    ['TEST-A-003', task('TEST-A-003', 'APROBADA')],
+    ['TEST-A-004', task('TEST-A-004', 'NO INICIADA')],
+  ]);
+
+  const active = resolveContinuityRoute({
+    schema_version: 1,
+    route_id: 'TEST-ROUTE-001',
+    entry_task_id: 'PRE-TEST-001',
+    latest_treq_task_id: 'PRE-TEST-001',
+    coverage_policy: 'ALL_CANONICAL_TASKS_EXACTLY_ONCE',
+    projection_policy: 'PENDING_TASKS_ONLY',
+    stages: [{
+      sequence_id: 'TEST-A-SEQUENCE-001',
+      block_code: 'BLOQUE A',
+      block_title: 'A',
+      selectors: [
+        { task_ids: ['PRE-TEST-001'] },
+        { prefix: 'TEST-A', from: 1, to: 4 },
+      ],
+    }],
+  }, taskMap);
+
+  assert.equal(active.previous_task_id, 'TEST-A-001');
+  assert.deepEqual(expandSequenceSegments(active.segments), ['TEST-A-002', 'TEST-A-004']);
+  assert.deepEqual(active.route_progress, {
+    covered_tasks: 5,
+    pending_tasks: 2,
+    deferred_pending_tasks: 0,
+    total_stages: 1,
+    active_stage: 1,
+  });
+});
+
+test('conserva etapas condicionales diferidas sin bloquear el handoff normal', () => {
+  const taskMap = new Map([
+    ['PRE-TEST-001', task('PRE-TEST-001', 'APROBADA')],
+    ['OPTIONAL-TEST-001', task('OPTIONAL-TEST-001', 'NO INICIADA')],
+    ['MAIN-TEST-001', task('MAIN-TEST-001', 'NO INICIADA')],
+  ]);
+  const active = resolveContinuityRoute({
+    schema_version: 1,
+    route_id: 'TEST-ROUTE-001',
+    entry_task_id: 'PRE-TEST-001',
+    latest_treq_task_id: 'PRE-TEST-001',
+    coverage_policy: 'ALL_CANONICAL_TASKS_EXACTLY_ONCE',
+    projection_policy: 'PENDING_TASKS_ONLY',
+    stages: [
+      {
+        sequence_id: 'OPTIONAL-SEQUENCE-001',
+        block_code: 'OPCIONAL',
+        block_title: 'Condicional',
+        activation_state: 'DEFERRED',
+        selectors: [{ prefix: 'OPTIONAL-TEST' }],
+      },
+      {
+        sequence_id: 'MAIN-SEQUENCE-001',
+        block_code: 'PRINCIPAL',
+        block_title: 'Principal',
+        selectors: [{ task_ids: ['PRE-TEST-001', 'MAIN-TEST-001'] }],
+      },
+    ],
+  }, taskMap);
+
+  assert.equal(active.sequence_id, 'MAIN-SEQUENCE-001');
+  assert.deepEqual(expandSequenceSegments(active.segments), ['MAIN-TEST-001']);
+  assert.equal(active.route_progress.deferred_pending_tasks, 1);
+});
+
+test('rechaza una ruta total cuando aparece una tarea canónica sin ubicar', () => {
+  const taskMap = new Map([
+    ['PRE-TEST-001', task('PRE-TEST-001', 'APROBADA')],
+    ['TEST-A-001', task('TEST-A-001', 'NO INICIADA')],
+  ]);
+
+  assert.throws(() => resolveContinuityRoute({
+    schema_version: 1,
+    route_id: 'TEST-ROUTE-001',
+    entry_task_id: 'PRE-TEST-001',
+    latest_treq_task_id: 'PRE-TEST-001',
+    coverage_policy: 'ALL_CANONICAL_TASKS_EXACTLY_ONCE',
+    stages: [{
+      sequence_id: 'TEST-A-SEQUENCE-001',
+      block_code: 'BLOQUE A',
+      block_title: 'A',
+      selectors: [{ task_ids: ['PRE-TEST-001'] }],
+    }],
+  }, taskMap), /faltan TEST-A-001/);
 });
 
 test('acepta una ruta terminal sin handoff', () => {

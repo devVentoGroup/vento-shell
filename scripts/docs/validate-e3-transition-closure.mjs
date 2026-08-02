@@ -63,8 +63,17 @@ export function validateE3TransitionClosureSources({
       active.previous_task_id === 'SUPA-TRANS-016'
       || /^SHELL-[A-Z]+-\d{3}$/u.test(active.previous_task_id ?? '')
     );
-  if (!e3StillActive && !hSequenceActive) {
-    fail('active-sequence.json debe reservar H desde E3 o haber avanzado a una secuencia H-SHARED-* después de SUPA-TRANS-016.');
+  const priorityLaneActive = active.generated_from === 'execution-route.json'
+    && active.route_id === 'NEXO-REMISSIONS-001'
+    && /^PRIORITY-NEXO-REMISSIONS-001-STAGE-\d{3}$/u.test(active.sequence_id ?? '')
+    && (
+      active.previous_task_id === 'SHELL-PKG-008'
+      || /^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+-\d{3}(?:::[A-Z0-9-]+)?$/u.test(
+        active.previous_task_id ?? '',
+      )
+    );
+  if (!e3StillActive && !hSequenceActive && !priorityLaneActive) {
+    fail('active-sequence.json debe reservar H desde E3, haber avanzado por H-SHARED-* o proyectar el carril NEXO aprobado después de sus prerrequisitos E3/H.');
   }
 
   requireOrdered(supa016, [

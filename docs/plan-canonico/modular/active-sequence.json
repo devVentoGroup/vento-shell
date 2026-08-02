@@ -1,19 +1,42 @@
 {
-  "schema_version": 1,
-  "generated_from": "continuity-route.json",
-  "route_id": "NORMAL-CANONICAL-FLOW-001",
-  "sequence_id": "H-SHARED-CONTRACTS-001",
-  "block_code": "BLOQUE H",
-  "block_title": "Fundación compartida",
+  "schema_version": 2,
+  "generated_from": "execution-route.json",
+  "route_id": "NEXO-REMISSIONS-001",
+  "sequence_id": "PRIORITY-NEXO-REMISSIONS-001-STAGE-007",
+  "block_code": "CARRIL NEXO",
+  "block_title": "Remisiones NEXO como primer paquete vertical — etapa 7: TRANSVERSE_SERVICE_CATALOG",
   "previous_task_id": "SHELL-PKG-008",
   "latest_treq_task_id": "SUPA-TRANS-006",
-  "handoff_task_id": "SHELL-NORM-001",
-  "handoff_sequence_id": "H-SHARED-NORMALIZATION-001",
-  "segments": [
-    {
-      "prefix": "SHELL-CON",
-      "from": 1,
-      "to": 24
-    }
-  ]
+  "handoff_task_id": "AUTH-UI-030",
+  "handoff_sequence_id": "PRIORITY-NEXO-REMISSIONS-001-STAGE-008",
+  "task_ids": [
+    "TSVC-CAT-001",
+    "TSVC-CAT-002",
+    "TSVC-CAT-003",
+    "TSVC-CAT-004",
+    "TSVC-CAT-005",
+    "TSVC-CAT-006",
+    "TSVC-CAT-007",
+    "TSVC-CAT-008",
+    "TSVC-CAT-009",
+    "TSVC-CAT-010"
+  ],
+  "virtual_tasks": [],
+  "priority_stage": {
+    "order": 7,
+    "stage_id": "TRANSVERSE_SERVICE_CATALOG",
+    "total_stages": 44
+  },
+  "return_policy": "RETURN_TO_NORMAL_AFTER_PRIORITY_CERTIFICATION",
+  "priority_route_complete": false,
+  "post_priority_route": {
+    "route_id": "NORMAL-CANONICAL-FLOW-001",
+    "sequence_id": "PHASE-02-X-INTEGRATION-CONTRACTS",
+    "first_pending_task_id": "INT-EXT-001",
+    "covered_tasks": 1594,
+    "pending_tasks": 1101,
+    "deferred_pending_tasks": 11,
+    "total_stages": 32,
+    "active_stage": 5
+  }
 }
