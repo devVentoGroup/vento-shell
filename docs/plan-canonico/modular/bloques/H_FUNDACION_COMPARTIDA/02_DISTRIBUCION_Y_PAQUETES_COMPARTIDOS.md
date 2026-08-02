@@ -1601,7 +1601,599 @@ Los requisitos se incorporan al dominio `SHELL` después de `TREQ-SHELL-035`, pr
 - **TAREA ACTUAL APROBADA:** SHELL-PKG-003 — Definir tags y releases
 - **SIGUIENTE TAREA RESERVADA:** SHELL-PKG-004 — Definir política de compatibilidad
 
-### [ ] SHELL-PKG-004 — Definir política de compatibilidad
+### ✅ SHELL-PKG-004 — Definir política de compatibilidad
+
+**Estado:** APROBADA
+**Fecha:** 2026-08-01
+**Tarea anterior:** SHELL-PKG-003 — Definir tags y releases
+**Tarea siguiente:** SHELL-PKG-005 — Definir política de deprecación
+**Tipo de tarea:** Documental
+**Fase:** Definición documental vinculante; implementación física no autorizada
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Ubicación canónica:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`
+**Corte remoto de `vento-shell`:** `6870a1fc171a0da58b636f477eb7bdacba4a8f4c`
+
+---
+
+#### 1. Resultado material
+
+Se establece la política canónica de compatibilidad para las cuatro familias de paquetes compartidos aprobadas y los siete repositorios web que integran la fundación compartida de Vento OS.
+
+La unidad de compatibilidad será una combinación verificable e intransferible:
+
+```text
+package_name
++ package_version exacta
++ artefacto e integridad
++ repositorio consumidor
++ commit consumidor
++ manifest consumidor
++ lockfile consumidor
++ versiones resueltas del toolchain
++ ambiente de prueba
++ evidencia ejecutada
+```
+
+Una banda declarada en `peerDependencies`, `engines` o documentación delimita combinaciones candidatas. Solo una ejecución reproducible contra un consumidor exacto permite declarar una combinación `COMPATIBLE`.
+
+La política aplica inicialmente a:
+
+1. `@vento/contracts`;
+2. `@vento/os-context`;
+3. `@vento/supabase`;
+4. `@vento/ui-web`.
+
+Y a estos repositorios web:
+
+1. `vento-shell`;
+2. `vento-viso`;
+3. `vento-nexo`;
+4. `vento-fogo`;
+5. `vento-origo`;
+6. `vento-pulso`;
+7. `vento-numera`.
+
+| Métrica                                      | Resultado |
+| -------------------------------------------- | --------: |
+| Familias de paquetes                         |     **4** |
+| Repositorios web alcanzados                  |     **7** |
+| Relaciones package–consumidor materializadas |    **28** |
+| Ejes obligatorios de compatibilidad          |    **12** |
+| Estados permitidos                           |     **6** |
+| Bandas candidatas iniciales                  |     **4** |
+| Decisiones vinculantes                       |    **32** |
+| Hallazgos con destino exacto                 |    **12** |
+| Combinaciones declaradas compatibles hoy     |     **0** |
+| Requisitos `TREQ-*` creados o modificados    |     **0** |
+
+#### 2. Fuentes y corte reproducible
+
+##### 2.1. Fuentes vinculantes
+
+| Fuente                                                            | Uso                                                                                    |
+| ----------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`                      | continuidad, evidencia, fases y requisitos de prueba                                   |
+| `docs/plan-canonico/modular/delivery-contract.json`               | estructura física del artefacto documental                                             |
+| `docs/plan-canonico/modular/active-sequence.json`                 | segmento vigente `SHELL-PKG-001..008`                                                  |
+| `docs/plan-canonico/modular/continuity-route.json`                | ruta documental normal del BLOQUE H                                                    |
+| `docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md`              | última tarea aprobada, tarea actual y siguiente reservada                              |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`                       | propietario, tareas `SHELL-PKG-001..004` y decisiones heredadas                        |
+| `SHELL-PKG-001 — Elegir mecanismo de distribución`                | versiones exactas, lockfile, `npm ci`, adopción independiente y pruebas del consumidor |
+| `SHELL-PKG-002 — Definir versionado semántico`                    | cuatro familias, SemVer independiente e impacto de ampliar o reducir soporte           |
+| `SHELL-PKG-003 — Definir tags y releases`                         | identidad de release, cortes coordinados y bloqueo de estable sin compatibilidad       |
+| `01_AUDITORIA_DE_COMPONENTES_COMPARTIDOS.md`                      | universo de siete repositorios web y deriva entre copias                               |
+| `T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` | implementación futura de pruebas, build, releases, changelog, matriz y PRs             |
+| `package.json` de los siete repositorios                          | línea base declarada de Next, React, Supabase, TypeScript y Tailwind                   |
+| `packages/os-context/package.json`                                | único package transitorio materializado y su peer de Supabase                          |
+| `packages/os-context/README.md`                                   | responsabilidad actual del contexto compartido y exclusión de PASS                     |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`                | cobertura vigente `TREQ-SHELL-006..009` y `TREQ-SHELL-036..037`                        |
+
+##### 2.2. Commits remotos inspeccionados
+
+| ID              | Repositorio                  | Commit de `main` verificado                |
+| --------------- | ---------------------------- | ------------------------------------------ |
+| `COMP-REPO-001` | `devVentoGroup/vento-shell`  | `6870a1fc171a0da58b636f477eb7bdacba4a8f4c` |
+| `COMP-REPO-002` | `devVentoGroup/vento-viso`   | `47322403f3c64e83ae0c4a2f68c05d47093e5bb4` |
+| `COMP-REPO-003` | `devVentoGroup/vento-nexo`   | `142c4d696221e3ce3fda4ed3b62f3d1fe5b58799` |
+| `COMP-REPO-004` | `devVentoGroup/vento-fogo`   | `b6b9ed00e5267cabaac1a5a1090d93d5f60e86f2` |
+| `COMP-REPO-005` | `devVentoGroup/vento-origo`  | `b7a8303fa078ef087f522b6c99059ababfc27472` |
+| `COMP-REPO-006` | `devVentoGroup/vento-pulso`  | `71e0184486b5fe11e0a42435baf4024807a80efd` |
+| `COMP-REPO-007` | `devVentoGroup/vento-numera` | `1b48a5da425d92e19ed89cf175b1dccc4cd960e1` |
+
+Cada SHA fue comparado contra `main` y resultó idéntico en el corte. La matriz de esta tarea no usa nombres de rama sin commit ni sustituye un commit inspeccionado por una referencia histórica.
+
+##### 2.3. Estado vigente del registro de pruebas
+
+La copia integral inspeccionada de `04A` coincide byte por byte con el blob vigente del remoto:
+
+```text
+Git blob SHA-1: 9fb66d61bff5cd86acd4a8b41f0dc933a80a5fa7
+SHA-256: 48f4ddc8feffe94b291b7ba929fd775d68a19f51eaa272315d2465f8604c341d
+```
+
+El registro contiene 6.324 requisitos, 37 requisitos del dominio `SHELL`, catorce columnas en las 6.324 filas y tiene como última tarea incorporada `SHELL-PKG-003`.
+
+#### 3. Alcance
+
+##### 3.1. Incluido
+
+Esta tarea define:
+
+1. la unidad exacta de compatibilidad;
+2. las dimensiones que deben evaluarse;
+3. los estados permitidos y sus transiciones;
+4. la línea base técnica declarada por cada consumidor;
+5. las bandas candidatas iniciales por package;
+6. la matriz package–consumidor de 28 relaciones;
+7. los requisitos de evidencia para declarar compatibilidad;
+8. las reglas de adopción independiente por repositorio;
+9. la invalidación y revalidación de evidencia;
+10. la relación entre compatibilidad, SemVer, release y lockfile;
+11. el contrato mínimo del manifest de compatibilidad;
+12. los bloqueos que impiden publicar o adoptar una versión.
+
+##### 3.2. Excluido
+
+Esta tarea no:
+
+- implementa packages, builds, tests, workflows o matrices ejecutables;
+- publica versiones, tags, releases o artefactos;
+- modifica `package.json`, `package-lock.json`, código, configuración o secretos;
+- declara compatible una combinación que no fue ejecutada;
+- define períodos de soporte, ventanas de retiro o avisos de deprecación, reservados a `SHELL-PKG-005`;
+- define el procedimiento operativo de rollback por aplicación, reservado a `SHELL-PKG-006`;
+- crea actualizaciones mediante pull request, reservadas a `SHELL-PKG-007`;
+- materializa gates automáticos, reservados a `SHELL-PKG-008`;
+- implementa la matriz automatizada, reservada a `SHELL-CI-005`;
+- cambia migraciones, datos, RLS, funciones, tipos generados o configuración de Supabase.
+
+#### 4. Unidad y semántica de compatibilidad
+
+##### 4.1. Unidad canónica
+
+Una declaración de compatibilidad deberá referirse exactamente a:
+
+```text
+<package>@<version>
+× <consumer_repository>@<consumer_commit>
+× <consumer_lockfile_hash>
+× <resolved_environment>
+```
+
+No será válido declarar solamente:
+
+- “compatible con VENTO”;
+- “compatible con Next 16” sin rango y evidencia;
+- “compatible con todos los consumidores” sin enumerarlos;
+- “compatible con main” sin commit;
+- “compatible por compilar en vento-shell”;
+- “compatible por compartir tipos”;
+- “compatible porque el rango de peer dependency lo permite”.
+
+##### 4.2. Banda declarada y combinación verificada
+
+| Concepto                 | Significado                                                                           | Autoridad                                 |
+| ------------------------ | ------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `BANDA_CANDIDATA`        | rango que el package pretende soportar y que deberá probarse                          | manifest y política de package            |
+| `COMBINACION_VERIFICADA` | package, consumidor, commit, lockfile y ambiente que superaron la evidencia exigida   | matriz ejecutada y evidencia reproducible |
+| `BANDA_SOPORTADA`        | conjunto de combinaciones verificadas que permite publicar una declaración de soporte | `SHELL-CI-005` y release aplicable        |
+
+Una banda candidata no se convierte en soportada por inferencia. La primera banda soportada de cada package solo existirá cuando `SHELL-CI-005` ejecute y conserve la matriz correspondiente.
+
+##### 4.3. Independencia por consumidor
+
+Cada repositorio puede adoptar una versión compatible en una oleada independiente. La compatibilidad de un repositorio no obliga a actualizar los demás ni demuestra su compatibilidad.
+
+La publicación podrá avanzar cuando todas las combinaciones declaradas obligatorias para ese release estén en estado permitido. La adopción de cada consumidor seguirá requiriendo su propio commit, lockfile, pruebas y aprobación.
+
+#### 5. Línea base técnica declarada por consumidor
+
+| ID              | Repositorio    | Next      | React / React DOM   | Supabase JS | Supabase SSR | TypeScript | Tailwind | `engines.node` | Packages `@vento/*` publicados |
+| --------------- | -------------- | --------- | ------------------- | ----------- | ------------ | ---------- | -------- | -------------- | ------------------------------ |
+| `COMP-BASE-001` | `vento-shell`  | `16.1.1`  | `19.2.3` / `19.2.3` | `^2.90.1`   | `^0.8.0`     | `^5`       | `^4`     | no declarado   | ninguno                        |
+| `COMP-BASE-002` | `vento-viso`   | `^16.1.6` | `19.2.3` / `19.2.3` | `^2.90.1`   | `^0.8.0`     | `^5`       | `^4`     | no declarado   | ninguno                        |
+| `COMP-BASE-003` | `vento-nexo`   | `^16.2.3` | `19.2.3` / `19.2.3` | `^2.90.1`   | `^0.8.0`     | `^5`       | `^4`     | no declarado   | ninguno                        |
+| `COMP-BASE-004` | `vento-fogo`   | `^16.2.4` | `19.2.3` / `19.2.3` | `^2.90.1`   | `^0.8.0`     | `^5`       | `^4`     | no declarado   | ninguno                        |
+| `COMP-BASE-005` | `vento-origo`  | `^16.2.1` | `19.2.3` / `19.2.3` | `^2.90.1`   | `^0.8.0`     | `^5`       | `^4`     | no declarado   | ninguno                        |
+| `COMP-BASE-006` | `vento-pulso`  | `16.1.1`  | `19.2.3` / `19.2.3` | `^2.90.1`   | `^0.8.0`     | `^5`       | `^4`     | no declarado   | ninguno                        |
+| `COMP-BASE-007` | `vento-numera` | `^16.2.1` | `19.2.3` / `19.2.3` | `^2.90.1`   | `^0.8.0`     | `^5`       | `^4`     | no declarado   | ninguno                        |
+
+**Conciliación:** siete repositorios esperados, siete materializados, siete commits verificados, cero duplicados y cero adopciones publicadas de `@vento/*` confirmadas.
+
+Esta tabla registra especificaciones declaradas en los manifests. No sustituye las versiones efectivamente resueltas por cada lockfile. La matriz ejecutable deberá registrar ambas.
+
+#### 6. Perfiles de compatibilidad por package
+
+Las bandas siguientes son bandas candidatas iniciales. No constituyen soporte verificado hasta superar la matriz ejecutable.
+
+| ID             | Package             | Banda candidata inicial                                                                                                   | Ejes obligatorios                                                     | Dependencias que no deberá introducir                            | Estado actual            |
+| -------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------ |
+| `COMP-PKG-001` | `@vento/contracts`  | TypeScript `>=5 <6`; módulo ESM y declarations consumibles                                                                | exports, schemas, tipos, catálogos, códigos y serialización           | Next, React, Supabase, Tailwind o APIs de navegador              | `PENDIENTE_DE_EVIDENCIA` |
+| `COMP-PKG-002` | `@vento/os-context` | TypeScript `>=5 <6`; `@supabase/supabase-js >=2.90.0 <3`                                                                  | contexto efectivo, autorización, browser/server, razones y errores    | React, UI, Tailwind o acoplamiento a una aplicación              | `PENDIENTE_DE_EVIDENCIA` |
+| `COMP-PKG-003` | `@vento/supabase`   | TypeScript `>=5 <6`; Supabase JS `>=2.90.1 <3`; Supabase SSR `>=0.8.0 <0.9`; adaptador Next `>=16.1.1 <17` cuando aplique | tipos `Database`, cliente browser/server, cookies, RPC, errores y SSR | componentes UI o reglas de negocio de una aplicación             | `PENDIENTE_DE_EVIDENCIA` |
+| `COMP-PKG-004` | `@vento/ui-web`     | TypeScript `>=5 <6`; Next `>=16.1.1 <17`; React y React DOM `>=19.2.3 <20`; Tailwind `>=4 <5`                             | SSR, hydration, props, eventos, DOM, accesibilidad, tokens y CSS      | acceso directo a datos, permisos efectivos o procesos de dominio | `PENDIENTE_DE_EVIDENCIA` |
+
+Reglas:
+
+1. React y React DOM deberán conservar una pareja compatible y resolverse de manera coherente en cada consumidor.
+2. Una banda de Next no autoriza usar APIs privadas o experimentales no cubiertas por las pruebas.
+3. Un adapter específico de framework deberá exponerse mediante un subpath explícito; el core del package no heredará innecesariamente ese peer.
+4. Las dependencias internas `@vento/*` continuarán siendo exactas.
+5. Los peers externos tendrán límite superior de major, o de minor cuando se trate de una dependencia `0.x`.
+6. El rango actual `@supabase/supabase-js >=2.90.0` de `@vento/os-context` deberá recibir límite superior antes de una release estable.
+7. Ninguna banda podrá certificarse mientras los repositorios consumidores no declaren y prueben un runtime Node reproducible.
+
+#### 7. Ejes obligatorios de compatibilidad
+
+| ID              | Eje                        | Evidencia mínima                                                                                                |
+| --------------- | -------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| `COMP-AXIS-001` | instalación reproducible   | instalación limpia con manifest y lockfile coherentes, sin regeneración silenciosa                              |
+| `COMP-AXIS-002` | identidad del artefacto    | package, versión, tag, checksum, commit y contenido publicable coincidentes                                     |
+| `COMP-AXIS-003` | exports y módulos          | imports públicos, subpaths, ESM, tree-shaking y ausencia de imports internos no soportados                      |
+| `COMP-AXIS-004` | TypeScript                 | declarations consumibles, typecheck del package y del consumidor, sin `skipLibCheck` usado para ocultar ruptura |
+| `COMP-AXIS-005` | runtime y Node             | `engines`, runtime real, APIs de plataforma y configuración del ambiente compatibles                            |
+| `COMP-AXIS-006` | Next y SSR                 | build, server components, client boundaries, cookies, middleware o proxy y ejecución SSR aplicables             |
+| `COMP-AXIS-007` | React e hidratación        | render server/client, hydration, hooks, contextos y pareja React/React DOM coherentes                           |
+| `COMP-AXIS-008` | Supabase                   | clientes browser/server, sesión, cookies, tipos generados, RPC y errores normalizados                           |
+| `COMP-AXIS-009` | contratos y comportamiento | schemas, catálogos, códigos, serialización, errores y semántica observable                                      |
+| `COMP-AXIS-010` | contexto y autorización    | identidad real, contexto operativo, simulación, dispositivo compartido, razones y denegaciones                  |
+| `COMP-AXIS-011` | UI, CSS y accesibilidad    | props, eventos, DOM, foco, teclado, lectores, tokens, estilos y composición visual                              |
+| `COMP-AXIS-012` | consumidor                 | lint, typecheck, build, pruebas contractuales, integración, regresión y smoke/E2E aplicables                    |
+
+Un eje podrá marcarse `NO_APLICA` únicamente con justificación por package y consumidor. La ausencia de una prueba implementada produce `PENDIENTE_DE_EVIDENCIA`, no `COMPATIBLE`.
+
+#### 8. Estados y transiciones
+
+##### 8.1. Estados permitidos
+
+| Estado                         | Significado                                                                                               |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------- |
+| `NO_APLICA`                    | el package o eje no forma parte del contrato del consumidor y existe justificación verificable            |
+| `PENDIENTE_DE_EVIDENCIA`       | la relación es aplicable, pero falta package, build, adopción, prueba o evidencia atribuible              |
+| `COMPATIBLE`                   | todos los ejes obligatorios superaron la matriz para la combinación exacta                                |
+| `COMPATIBLE_CON_RESTRICCIONES` | la combinación superó los ejes autorizados y conserva restricciones explícitas, verificables y no ocultas |
+| `INCOMPATIBLE`                 | existe una ruptura reproducible entre package y consumidor                                                |
+| `BLOQUEADA`                    | no puede evaluarse por una precondición incumplida o un riesgo que impide ejecutar la matriz              |
+
+##### 8.2. Transiciones permitidas
+
+```text
+PENDIENTE_DE_EVIDENCIA → COMPATIBLE
+PENDIENTE_DE_EVIDENCIA → COMPATIBLE_CON_RESTRICCIONES
+PENDIENTE_DE_EVIDENCIA → INCOMPATIBLE
+PENDIENTE_DE_EVIDENCIA → BLOQUEADA
+BLOQUEADA → PENDIENTE_DE_EVIDENCIA
+INCOMPATIBLE → PENDIENTE_DE_EVIDENCIA
+COMPATIBLE → PENDIENTE_DE_EVIDENCIA
+COMPATIBLE_CON_RESTRICCIONES → PENDIENTE_DE_EVIDENCIA
+NO_APLICA → PENDIENTE_DE_EVIDENCIA
+```
+
+Toda modificación de package, consumidor, lockfile, runtime o banda invalida la evidencia anterior y devuelve la combinación a `PENDIENTE_DE_EVIDENCIA` hasta revalidación.
+
+##### 8.3. Restricciones permitidas
+
+Una combinación solo podrá quedar `COMPATIBLE_CON_RESTRICCIONES` cuando se documenten:
+
+- subpaths autorizados;
+- capacidades excluidas;
+- ambiente permitido;
+- flags o configuración requeridos;
+- limitación temporal con tarea propietaria;
+- riesgo aceptado y condición de salida;
+- pruebas que sí fueron ejecutadas;
+- bloqueo de producción cuando corresponda.
+
+No se usarán restricciones para ocultar fallos, omitir consumidores obligatorios o mantener indefinidamente una incompatibilidad.
+
+#### 9. Matriz package–consumidor vigente
+
+Las 28 relaciones son aplicables por diseño, pero ninguna puede declararse compatible en el corte porque no existen releases publicadas ni adopciones verificadas de las cuatro familias.
+
+| ID                | Package             | Consumidor     | Aplicabilidad | Evidencia actual                                    | Estado                   |
+| ----------------- | ------------------- | -------------- | ------------- | --------------------------------------------------- | ------------------------ |
+| `PKG-COMP-MX-001` | `@vento/contracts`  | `vento-shell`  | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-002` | `@vento/contracts`  | `vento-viso`   | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-003` | `@vento/contracts`  | `vento-nexo`   | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-004` | `@vento/contracts`  | `vento-fogo`   | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-005` | `@vento/contracts`  | `vento-origo`  | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-006` | `@vento/contracts`  | `vento-pulso`  | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-007` | `@vento/contracts`  | `vento-numera` | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-008` | `@vento/os-context` | `vento-shell`  | `APLICA`      | workspace privado sin release ni adopción publicada | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-009` | `@vento/os-context` | `vento-viso`   | `APLICA`      | no existe dependencia publicada ni matriz ejecutada | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-010` | `@vento/os-context` | `vento-nexo`   | `APLICA`      | no existe dependencia publicada ni matriz ejecutada | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-011` | `@vento/os-context` | `vento-fogo`   | `APLICA`      | no existe dependencia publicada ni matriz ejecutada | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-012` | `@vento/os-context` | `vento-origo`  | `APLICA`      | no existe dependencia publicada ni matriz ejecutada | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-013` | `@vento/os-context` | `vento-pulso`  | `APLICA`      | no existe dependencia publicada ni matriz ejecutada | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-014` | `@vento/os-context` | `vento-numera` | `APLICA`      | no existe dependencia publicada ni matriz ejecutada | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-015` | `@vento/supabase`   | `vento-shell`  | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-016` | `@vento/supabase`   | `vento-viso`   | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-017` | `@vento/supabase`   | `vento-nexo`   | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-018` | `@vento/supabase`   | `vento-fogo`   | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-019` | `@vento/supabase`   | `vento-origo`  | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-020` | `@vento/supabase`   | `vento-pulso`  | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-021` | `@vento/supabase`   | `vento-numera` | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-022` | `@vento/ui-web`     | `vento-shell`  | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-023` | `@vento/ui-web`     | `vento-viso`   | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-024` | `@vento/ui-web`     | `vento-nexo`   | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-025` | `@vento/ui-web`     | `vento-fogo`   | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-026` | `@vento/ui-web`     | `vento-origo`  | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-027` | `@vento/ui-web`     | `vento-pulso`  | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+| `PKG-COMP-MX-028` | `@vento/ui-web`     | `vento-numera` | `APLICA`      | package y adopción no materializados                | `PENDIENTE_DE_EVIDENCIA` |
+
+**Conciliación:** 4 packages × 7 consumidores = 28 relaciones; 28 identificadores únicos; 28 aplicables; 28 pendientes de evidencia; 0 compatibles; 0 incompatibles declaradas; 0 faltantes.
+
+PASS, ANIMA, TALENTO y las superficies móviles no pertenecen a esta matriz web. Su incorporación futura requerirá una tarea propietaria y un contrato de compatibilidad específico; no se infiere desde la matriz web.
+
+#### 10. Política de publicación y adopción
+
+##### 10.1. Publicación del package
+
+Antes de publicar una versión estable deberán existir:
+
+1. build reproducible del package;
+2. identidad de release conforme a `SHELL-PKG-003`;
+3. manifest de compatibilidad completo;
+4. banda candidata declarada sin rangos flotantes ilimitados;
+5. pruebas propias del package;
+6. matriz de consumidores obligatorios;
+7. cero relaciones obligatorias en `INCOMPATIBLE` o `BLOQUEADA`;
+8. cero relaciones obligatorias en `PENDIENTE_DE_EVIDENCIA`;
+9. restricciones explícitas y aprobadas para cualquier `COMPATIBLE_CON_RESTRICCIONES`;
+10. referencia de rollback disponible conforme a la tarea propietaria;
+11. requisitos de prueba aplicables con evidencia atribuible;
+12. aprobación del propietario técnico del package.
+
+Una prerelease podrá limitar su matriz a consumidores piloto declarados, pero no podrá presentarse como compatible con consumidores no ejecutados ni habilitar adopción productiva estable.
+
+##### 10.2. Adopción por consumidor
+
+Cada consumidor deberá:
+
+1. instalar una versión exacta del package;
+2. actualizar manifest y lockfile juntos;
+3. ejecutar instalación bloqueada;
+4. registrar versiones resueltas de peers y toolchain;
+5. ejecutar los ejes aplicables;
+6. conservar evidencia asociada al commit consumidor;
+7. declarar restricciones o incompatibilidades encontradas;
+8. evitar `overrides`, aliases o copias locales que oculten el resultado;
+9. impedir merge y despliegue cuando falte evidencia obligatoria;
+10. adoptar mediante un cambio revisable propio, sin actualización simultánea obligatoria de los demás repositorios.
+
+##### 10.3. Prohibiciones
+
+Queda prohibido:
+
+- declarar compatibilidad por similitud de versiones;
+- reutilizar evidencia de otro consumidor;
+- reutilizar evidencia de otra versión del package;
+- certificar un rango completo probando un solo extremo sin estrategia explícita;
+- probar con un lockfile y desplegar con otro;
+- omitir un consumidor obligatorio porque no tiene pruebas implementadas;
+- usar `skipLibCheck`, casts globales, mocks permisivos o flags ocultos para producir un falso verde;
+- convertir una incompatibilidad en `NO_APLICA` sin cambiar el contrato aprobado;
+- ampliar automáticamente una banda porque una dependencia externa publicó una nueva versión;
+- permitir que una release estable dependa de una prerelease interna;
+- actualizar directamente los consumidores desde el pipeline de publicación.
+
+#### 11. Reglas de bandas y cambios de framework
+
+##### 11.1. Clasificación SemVer
+
+| Cambio de compatibilidad                                                                             | Nivel mínimo del package |
+| ---------------------------------------------------------------------------------------------------- | ------------------------ |
+| ampliar una banda soportada sin retirar combinaciones existentes                                     | `MINOR`                  |
+| añadir un consumidor soportado                                                                       | `MINOR`                  |
+| corregir una incompatibilidad dentro de una banda ya prometida sin cambiar API                       | `PATCH`                  |
+| reducir una banda soportada                                                                          | `MAJOR`                  |
+| retirar un consumidor previamente soportado                                                          | `MAJOR`                  |
+| exigir una versión mayor nueva de Next, React, Supabase, TypeScript o Tailwind y retirar la anterior | `MAJOR`                  |
+| cambiar solo evidencia sin cambiar artefacto ni manifest                                             | `NO_RELEASE`             |
+
+La clasificación respeta `SHELL-PKG-002`. La severidad del defecto o la urgencia no rebajan el nivel requerido.
+
+##### 11.2. Revalidación por dependencias externas
+
+Una combinación vuelve a `PENDIENTE_DE_EVIDENCIA` cuando cambia cualquiera de estos insumos:
+
+- versión del package;
+- commit o lockfile del consumidor;
+- versión resuelta de Next;
+- versión resuelta de React o React DOM;
+- versión resuelta de Supabase JS o Supabase SSR;
+- versión de TypeScript;
+- runtime Node;
+- formato de módulos o configuración de build;
+- Tailwind, PostCSS o contrato CSS cuando aplique;
+- tipos generados de Supabase;
+- catálogo, schema, permiso, razón o contrato consumido;
+- ambiente o configuración relevante;
+- prueba o fixture que define el resultado esperado.
+
+El tiempo por sí solo no invalida una evidencia. La evidencia se invalida cuando cambia una entrada o cuando un defecto reproducible demuestra que la declaración era incorrecta.
+
+##### 11.3. Extremos de una banda
+
+La matriz ejecutable deberá definir una estrategia de extremos:
+
+- mínimo soportado;
+- máximo probado dentro de la banda;
+- versión efectiva de cada consumidor;
+- combinación de peers relevante;
+- escenarios de SSR y navegador cuando apliquen.
+
+No se prometerá soporte para una banda más amplia que la efectivamente cubierta por la estrategia de prueba.
+
+#### 12. Manifest de compatibilidad
+
+Cada release deberá producir un registro consumible con al menos:
+
+| Campo                    | Obligación                                                            |
+| ------------------------ | --------------------------------------------------------------------- |
+| `package_name`           | nombre exacto del package                                             |
+| `package_version`        | versión SemVer exacta                                                 |
+| `package_tag`            | tag canónico de `SHELL-PKG-003`                                       |
+| `source_commit`          | commit de origen del artefacto                                        |
+| `artifact_integrity`     | checksum o integridad del tarball                                     |
+| `candidate_bands`        | rangos que se pretende soportar                                       |
+| `supported_bands`        | rangos respaldados por evidencia o `NONE`                             |
+| `consumer_repository`    | repositorio exacto                                                    |
+| `consumer_commit`        | commit probado                                                        |
+| `consumer_manifest_hash` | identidad del manifest probado                                        |
+| `consumer_lockfile_hash` | identidad del lockfile probado                                        |
+| `resolved_versions`      | Next, React, React DOM, Supabase, TypeScript, Node y otras aplicables |
+| `applicable_axes`        | ejes evaluados y justificaciones `NO_APLICA`                          |
+| `compatibility_state`    | uno de los seis estados permitidos                                    |
+| `restrictions`           | restricciones o `NONE`                                                |
+| `test_results`           | resultados por eje                                                    |
+| `evidence_refs`          | ejecuciones y artefactos reproducibles                                |
+| `environment`            | CI, staging u otro ambiente controlado                                |
+| `evaluated_at`           | fecha y hora de la evaluación                                         |
+| `decision_owner`         | propietario técnico y aprobadores requeridos                          |
+| `invalidated_by`         | entrada que invalidó evidencia previa o `NONE`                        |
+
+El manifest será inmutable para una versión y ejecución determinadas. Una revalidación genera una instancia nueva y conserva el historial anterior.
+
+#### 13. Bloqueos de compatibilidad
+
+Una publicación o adopción queda bloqueada cuando:
+
+1. falta el package o su artefacto reproducible;
+2. el package exporta directamente fuente transitoria no preparada para distribución;
+3. falta `engines.node` o no se conoce el runtime realmente usado;
+4. existe un peer sin límite superior que permite majors no evaluados;
+5. package, tag, manifest, commit o checksum no coinciden;
+6. el consumidor no tiene lockfile coherente;
+7. el lockfile cambió después de la ejecución;
+8. falta un eje obligatorio;
+9. un consumidor obligatorio está `INCOMPATIBLE`, `BLOQUEADA` o `PENDIENTE_DE_EVIDENCIA`;
+10. una restricción contradice el uso productivo previsto;
+11. una estable depende de una prerelease interna;
+12. el build o typecheck solo pasa ocultando errores de librerías;
+13. no existe evidencia atribuible al commit y ambiente declarados;
+14. el cambio reduce soporte sin incremento `MAJOR`;
+15. se intenta presentar una banda candidata como banda soportada.
+
+#### 14. Decisiones vinculantes
+
+| ID             | Decisión                                                              | Estado                 | Destino de materialización               |
+| -------------- | --------------------------------------------------------------------- | ---------------------- | ---------------------------------------- |
+| `PKG-COMP-001` | gobernar exactamente cuatro familias aprobadas                        | `DECIDIDO`             | `SHELL-CI-005`                           |
+| `PKG-COMP-002` | evaluar exactamente siete repositorios web                            | `DECIDIDO`             | `SHELL-CI-005`; paquetes E5 consumidores |
+| `PKG-COMP-003` | usar package, versión, consumidor, commit y lockfile como unidad      | `DECIDIDO`             | manifest de compatibilidad               |
+| `PKG-COMP-004` | diferenciar banda candidata, combinación verificada y banda soportada | `DECIDIDO`             | `SHELL-CI-005`                           |
+| `PKG-COMP-005` | prohibir inferir compatibilidad desde un peer range                   | `DECIDIDO`             | gates de release y adopción              |
+| `PKG-COMP-006` | exigir versiones exactas para packages VENTO                          | `DECIDIDO`             | manifests consumidores                   |
+| `PKG-COMP-007` | conservar manifest y lockfile juntos                                  | `DECIDIDO`             | PR de consumidor                         |
+| `PKG-COMP-008` | permitir adopción independiente por repositorio                       | `DECIDIDO`             | `SHELL-PKG-006`; `SHELL-PKG-007`         |
+| `PKG-COMP-009` | materializar 28 relaciones package–consumidor                         | `DECIDIDO`             | matriz ejecutable                        |
+| `PKG-COMP-010` | mantener las 28 relaciones pendientes hasta evidencia real            | `DECIDIDO`             | estado inicial de `SHELL-CI-005`         |
+| `PKG-COMP-011` | evaluar doce ejes de compatibilidad                                   | `DECIDIDO`             | pruebas de package y consumidor          |
+| `PKG-COMP-012` | exigir typecheck del consumidor sin ocultar errores                   | `DECIDIDO`             | CI consumidor                            |
+| `PKG-COMP-013` | exigir build y SSR cuando aplique                                     | `DECIDIDO`             | CI consumidor                            |
+| `PKG-COMP-014` | exigir pruebas de contexto y autorización para os-context             | `DECIDIDO`             | `SHELL-CI-001`; `AUTH-QA-027`            |
+| `PKG-COMP-015` | exigir clientes browser/server y RPC para supabase                    | `DECIDIDO`             | `SHELL-DB-*`; `SHELL-CI-001`             |
+| `PKG-COMP-016` | exigir DOM, hydration, CSS y accesibilidad para ui-web                | `DECIDIDO`             | `SHELL-UI-*`; pruebas de consumidor      |
+| `PKG-COMP-017` | mantener contracts libre de dependencias de framework                 | `DECIDIDO`             | `SHELL-CON-*`                            |
+| `PKG-COMP-018` | limitar peers externos por major o minor `0.x`                        | `DECIDIDO`             | manifests de packages                    |
+| `PKG-COMP-019` | exigir límite `<3` para Supabase JS en os-context                     | `DECIDIDO`             | `SHELL-AUTH-001`; `SHELL-CI-002`         |
+| `PKG-COMP-020` | exigir runtime Node declarado antes de estable                        | `DECIDIDO`             | repositorios y matriz CI                 |
+| `PKG-COMP-021` | tratar la línea base actual como evidencia, no promesa permanente     | `DECIDIDO`             | manifest de compatibilidad               |
+| `PKG-COMP-022` | usar seis estados canónicos                                           | `DECIDIDO`             | matriz y validadores                     |
+| `PKG-COMP-023` | devolver a pendiente toda combinación cuyas entradas cambien          | `DECIDIDO`             | invalidación automática                  |
+| `PKG-COMP-024` | impedir estable con relaciones obligatorias sin evidencia             | `DECIDIDO`             | `SHELL-PKG-008`; `SHELL-CI-003`          |
+| `PKG-COMP-025` | permitir prerelease solo con pilotos explícitos                       | `DECIDIDO`             | release prerelease                       |
+| `PKG-COMP-026` | clasificar ampliación de soporte como MINOR                           | `DECIDIDO`             | `SHELL-PKG-002`; changelog               |
+| `PKG-COMP-027` | clasificar reducción de soporte como MAJOR                            | `DECIDIDO`             | `SHELL-PKG-002`; deprecación             |
+| `PKG-COMP-028` | conservar historial de evaluaciones e invalidaciones                  | `DECIDIDO`             | evidencia CI                             |
+| `PKG-COMP-029` | excluir móviles hasta contrato propietario                            | `DECIDIDO`             | tareas futuras de ANIMA, PASS y TALENTO  |
+| `PKG-COMP-030` | no confundir lint o build aislado con matriz completa                 | `DECIDIDO`             | `SHELL-CI-005`                           |
+| `PKG-COMP-031` | no implementar ni publicar en esta fase                               | `RESTRICCION_CANONICA` | implementación posterior                 |
+| `PKG-COMP-032` | no modificar código, consumidores, CI, datos ni Supabase              | `RESTRICCION_CANONICA` | fase documental                          |
+
+**Conciliación:** treinta y dos decisiones, treinta y dos identificadores únicos, cero faltantes y cero duplicados.
+
+#### 15. Hallazgos y destinos exactos
+
+| ID                    | Hallazgo                                                                                  | Estado                        | Destino o condición de salida                                       |
+| --------------------- | ----------------------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------- |
+| `H-SHELL-PKG-004-001` | los siete repositorios usan Next 16, pero con especificaciones entre `16.1.1` y `^16.2.4` | `BANDA_NO_CERTIFICADA`        | `SHELL-CI-005` debe ejecutar mínimos, máximos y versiones efectivas |
+| `H-SHELL-PKG-004-002` | React y React DOM están declarados en `19.2.3` en los siete repositorios                  | `LINEA_BASE_COMUN`            | conservar pareja coherente y validar hydration por consumidor       |
+| `H-SHELL-PKG-004-003` | Supabase JS `^2.90.1` y Supabase SSR `^0.8.0` están declarados en los siete repositorios  | `LINEA_BASE_COMUN`            | `SHELL-CI-005` y `SHELL-DB-*` deben validar versiones resueltas     |
+| `H-SHELL-PKG-004-004` | TypeScript `^5` y Tailwind `^4` están declarados en los siete repositorios                | `LINEA_BASE_COMUN`            | matriz de types y UI por consumidor                                 |
+| `H-SHELL-PKG-004-005` | ningún repositorio declara `engines.node`                                                 | `BLOQUEO_DE_ESTABLE`          | declarar runtime y probarlo antes de primera estable                |
+| `H-SHELL-PKG-004-006` | ningún consumidor declara dependencia publicada `@vento/*`                                | `PENDIENTE_DE_IMPLEMENTACION` | `SHELL-MIG-001..008`; `SHELL-CI-006`                                |
+| `H-SHELL-PKG-004-007` | solo `@vento/os-context@0.1.0` existe como workspace privado y exporta `src/index.ts`     | `NO_PUBLICABLE_COMO_ESTABLE`  | `SHELL-AUTH-001`; `SHELL-CI-002`                                    |
+| `H-SHELL-PKG-004-008` | el peer `@supabase/supabase-js >=2.90.0` de os-context no tiene límite superior           | `BLOQUEO_DE_ESTABLE`          | limitar a `<3` y validar antes de publicar                          |
+| `H-SHELL-PKG-004-009` | no existe matriz ejecutable confirmada para las cuatro familias                           | `PENDIENTE_DE_IMPLEMENTACION` | `SHELL-CI-005`                                                      |
+| `H-SHELL-PKG-004-010` | los manifests no demuestran versiones exactas resueltas por lockfile                      | `PENDIENTE_DE_EVIDENCIA`      | capturar lockfile hash y resolved versions en CI                    |
+| `H-SHELL-PKG-004-011` | `eslint-config-next` permanece en `16.1.1` mientras Next varía por repositorio            | `RIESGO_DE_TOOLCHAIN`         | validar lint/build y alinear por política de cada consumidor        |
+| `H-SHELL-PKG-004-012` | PASS, ANIMA y TALENTO no pertenecen al contrato web evaluado                              | `FUERA_DE_ALCANCE_ACTUAL`     | contrato móvil específico antes de incorporarlos                    |
+
+**Conciliación:** doce hallazgos, doce destinos o condiciones de salida y cero pendientes narrativos sin propietario.
+
+#### 16. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `TREQ-SHELL-006` ya exige que toda versión de contrato, SDK o package supere pruebas propias y una matriz contra cada consumidor antes de publicarse o adoptarse; además exige adopción independiente y detección de incompatibilidades de tipos, comportamiento, catálogo, contexto y autorización. `TREQ-SHELL-007` protege rollback entre versiones distintas; `TREQ-SHELL-008` exige declarar requisitos y evidencia reproducible por package y PR; `TREQ-SHELL-009` exige identificar ambiente, repositorio y commit; `TREQ-SHELL-036` protege la identidad inmutable del release; y `TREQ-SHELL-037` protege cortes coordinados y dependencias internas. Esta tarea especializa cómo materializar esa cobertura sin crear una obligación nueva o duplicada.
+
+| Operación sobre `TREQ-*` | Cantidad |
+| ------------------------ | -------: |
+| creados                  |    **0** |
+| modificados              |    **0** |
+| diferidos                |    **0** |
+| descartados              |    **0** |
+| obsoletos                |    **0** |
+
+No corresponde producir una nueva copia del registro `04A`.
+
+#### 17. Entregables
+
+1. Unidad canónica de compatibilidad.
+2. Línea base técnica de siete repositorios.
+3. Cuatro perfiles de package con bandas candidatas.
+4. Doce ejes obligatorios de evaluación.
+5. Seis estados y transiciones permitidas.
+6. Matriz completa de 28 relaciones package–consumidor.
+7. Política de publicación y adopción.
+8. Reglas SemVer para cambios de soporte.
+9. Contrato del manifest de compatibilidad.
+10. Quince bloqueos verificables.
+11. Treinta y dos decisiones vinculantes.
+12. Doce hallazgos con destino exacto.
+13. Declaración de cero cambios `TREQ-*` con cobertura existente explícita.
+
+#### 18. Criterios de aceptación
+
+`SHELL-PKG-004` queda materialmente completa cuando:
+
+- aparecen exactamente las cuatro familias aprobadas;
+- aparecen exactamente los siete repositorios web del inventario compartido;
+- existen 28 relaciones package–consumidor sin faltantes ni duplicados;
+- ninguna relación sin ejecución se declara compatible;
+- la línea base conserva los valores de los manifests inspeccionados;
+- se distingue entre banda candidata, combinación verificada y banda soportada;
+- se definen doce ejes aplicables a instalación, tipos, runtime, framework, Supabase, contexto, UI y consumidor;
+- se definen seis estados y transiciones explícitas;
+- cada publicación estable exige matriz completa y evidencia atribuible;
+- cada adopción conserva versión exacta, commit y lockfile;
+- la política permite despliegue independiente por repositorio;
+- los cambios de soporte se clasifican conforme a SemVer;
+- los peers externos quedan acotados y el runtime Node se vuelve precondición de estable;
+- PASS, ANIMA y TALENTO no se incorporan por inferencia;
+- la implementación ejecutable queda asignada a `SHELL-CI-005` y tareas consumidoras;
+- se declaran cero cambios `TREQ-*` por cobertura directa de `TREQ-SHELL-006..009` y `TREQ-SHELL-036..037`;
+- no se publican packages, tags, releases ni cambios de código, CI, consumidores, datos o Supabase.
+
+#### 19. Continuidad canónica del bloque
+
+- **ÚLTIMA TAREA APROBADA:** SHELL-PKG-003 — Definir tags y releases
+- **TAREA ACTUAL APROBADA:** SHELL-PKG-004 — Definir política de compatibilidad
+- **SIGUIENTE TAREA RESERVADA:** SHELL-PKG-005 — Definir política de deprecación
+
+
 ### [ ] SHELL-PKG-005 — Definir política de deprecación
 ### [ ] SHELL-PKG-006 — Definir rollback por aplicación
 ### [ ] SHELL-PKG-007 — Definir actualizaciones mediante PR

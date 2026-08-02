@@ -88,7 +88,7 @@ Dominios iniciales:
 | Filas con catorce columnas        | **6324 de 6324** |
 | Identificadores duplicados        |            **0** |
 | Relaciones `TREQ-*` no resolubles |            **0** |
-| Última tarea incorporada          | `SHELL-PKG-003` |
+| Última tarea incorporada          | `SHELL-PKG-004` |
 | Fecha de normalización            |     `2026-08-01` |
 
 Distribución vigente:
