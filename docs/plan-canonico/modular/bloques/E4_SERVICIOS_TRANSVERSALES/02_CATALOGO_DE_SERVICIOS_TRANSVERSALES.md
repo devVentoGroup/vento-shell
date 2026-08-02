@@ -4,7 +4,7 @@
 
 **Estado:** APROBADA
 **Tarea anterior:** `SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas`
-**Tarea siguiente:** `TSVC-CAT-002 — Definir un owner por servicio`
+**Tarea siguiente:** `TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio`
 **Tipo de tarea:** inventario documental canónico de servicios transversales
 **Fase:** definición documental vinculante; implementación física no autorizada
 **Repositorio propietario:** `devVentoGroup/vento-shell`
@@ -55,15 +55,16 @@ La verificación documental y técnica considera:
 
 Quedan fuera del alcance de esta tarea:
 
-- asignar el owner definitivo de cada servicio, responsabilidad de `TSVC-CAT-002`;
-- definir entradas y salidas, responsabilidad de `TSVC-CAT-003`;
-- definir contratos y eventos, responsabilidad de `TSVC-CAT-004`;
-- determinar todos los sistemas interesados, responsabilidad de `TSVC-CAT-005`;
-- seleccionar proveedores externos, responsabilidad de `TSVC-CAT-006`;
-- cerrar límites de seguridad, responsabilidad de `TSVC-CAT-007`;
-- definir idempotencia y reintentos, responsabilidad de `TSVC-CAT-008`;
-- definir telemetría y auditoría, responsabilidad de `TSVC-CAT-009`;
-- definir contingencias y fallback, responsabilidad de `TSVC-CAT-010`;
+- definir propietario técnico y gobierno, responsabilidad de `TSVC-CAT-002`;
+- definir aplicaciones productoras y consumidoras, responsabilidad de `TSVC-CAT-003`;
+- definir contrato, versión y compatibilidad, responsabilidad de `TSVC-CAT-004`;
+- definir identidad técnica, credenciales mínimas y mínimo privilegio, responsabilidad de `TSVC-CAT-005`;
+- definir idempotencia, reintentos y deduplicación, responsabilidad de `TSVC-CAT-006`;
+- definir observabilidad, métricas, alertas y auditoría, responsabilidad de `TSVC-CAT-007`;
+- definir contingencia y degradación controlada, responsabilidad de `TSVC-CAT-008`;
+- definir retención, archivado y limpieza, responsabilidad de `TSVC-CAT-009`;
+- definir adopción progresiva y retiro de soluciones legacy, responsabilidad de `TSVC-CAT-010`;
+- seleccionar proveedores, productos o tecnologías físicas, decisión reservada a las fases de implementación propietarias;
 - crear tablas, funciones, workers, migraciones, despliegues o configuración física;
 - declarar validación operativa, remota, productiva o de dispositivo sin evidencia verificable.
 
@@ -85,18 +86,18 @@ La presencia de código fuente no equivale por sí sola a estado `ACTUAL`. Para 
 
 ##### 3.2. Inventario canónico de servicios transversales
 
-| ID estable     | Servicio transversal                         | Límite de capacidad                                                                                                       | Activos actuales localizados                                                                                                                   | Estado     | Estado material | Evidencia                                                                                          | Brecha explícita                                                                                                                                                                               | Disposición                                                                                                                                                  |
-| -------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | --------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| `TSVC-SVC-001` | Orquestación genérica de trabajos asíncronos | Registrar, reclamar, ejecutar y cerrar trabajos desacoplados de cualquier dominio consumidor.                             | No se localizó una implementación transversal verificable con cola genérica, claim, intentos y worker compartido.                              | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Falta la base reutilizable que permita ejecutar trabajos persistentes sin que cada aplicación construya su propia cola local.                                                                  | Conservar como identidad obligatoria; completar definiciones en `TSVC-CAT-002..010` e implementar solamente en la fase física asignada.                      |
-| `TSVC-SVC-002` | Entrega transaccional de eventos y outbox    | Persistir eventos empresariales y entregarlos a consumidores sin perder atomicidad con la transacción de origen.          | No se localizaron `outbox_events`, `claim_outbox_events` ni `process-outbox-events` como servicio canónico vigente.                            | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Falta el outbox compartido, su reclamación, entrega, seguimiento y operación.                                                                                                                  | Mantener separado de webhooks entrantes y de Realtime; completar su definición en las tareas posteriores del bloque.                                         |
-| `TSVC-SVC-003` | Impresión centralizada                       | Recibir trabajos de impresión, seleccionar dispositivo o cola, entregar, reintentar y conservar prueba de resultado.      | NEXO dispone de cola local en navegador, impresión directa con BrowserPrint, API de layouts y persistencia de plantillas ZPL en `vento-shell`. | `PARCIAL`  | `IMPLEMENTADO`  | `PENDIENTE_DE_EVIDENCIA`: existe código, pero no se acreditó operación transversal completa.       | La cola depende de `localStorage` y de ejecución directa en la aplicación; no se localizó `print_jobs`, `claim_print_jobs`, `process-print-jobs`, heartbeat ni prueba centralizada de entrega. | Reutilizar plantillas y experiencia vigente donde sea compatible; sustituir la orquestación local por el servicio transversal cuando sea implementado.       |
-| `TSVC-SVC-004` | Notificaciones y alertas                     | Transformar eventos o condiciones en notificaciones dirigidas, renderizadas, entregadas y auditadas por canal.            | Existe registro autenticado de tokens push de empleados mediante Edge Function y persistencia de metadatos de dispositivo.                     | `PARCIAL`  | `IMPLEMENTADO`  | `PENDIENTE_DE_EVIDENCIA`: se verificó el activo de registro, no una cadena completa de entrega.    | No se localizaron `notification_jobs`, `claim_notification_jobs`, `process-notification-jobs`, renderizado central, entrega por canales, historial ni reintentos compartidos.                  | Conservar el registro de tokens como activo consumidor; definir y construir por separado el servicio de notificación.                                        |
-| `TSVC-SVC-005` | Generación de documentos                     | Producir documentos derivados de datos canónicos mediante trabajos persistentes, versionados y trazables.                 | No se localizó una implementación transversal verificable de `generated_document_jobs` ni un worker compartido de generación.                  | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Faltan la cola de generación, el contrato de plantilla, el control de versión, el resultado y su vinculación con custodia y evidencia.                                                         | Mantener como servicio distinto de la mera carga de archivos y completar su diseño sin crear documentos desde aplicaciones consumidoras.                     |
-| `TSVC-SVC-006` | Custodia de archivos y documentos originales | Almacenar, identificar y recuperar originales aportados por personas o sistemas con metadatos y control de acceso.        | ANIMA dispone de carga al bucket `documents` y registro de metadatos en `app.documents`; existen flujos de carga por aplicación.               | `PARCIAL`  | `IMPLEMENTADO`  | `PENDIENTE_DE_EVIDENCIA`: existe flujo de carga, sin validación transversal ni operativa completa. | La custodia permanece orientada por aplicación; no se localizó `file_jobs`, `claim_file_jobs`, `process-file-jobs` ni un contrato compartido de archivo, original y ciclo de vida.             | Reutilizar los activos de Storage y metadatos solamente después de decidir su compatibilidad; consolidar la capacidad transversal en las tareas posteriores. |
-| `TSVC-SVC-007` | Evidencia transaccional                      | Conservar comprobantes inmutables o controlados que demuestren una acción empresarial, técnica o de entrega.              | No se localizó un servicio transversal verificable que distinga y gobierne evidencia transaccional frente a archivos generales.                | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Faltan identidad, vinculación con entidad y evento, integridad, retención, acceso y trazabilidad compartida.                                                                                   | Mantener separada de documentos originales y documentos generados; completar su definición en `TSVC-CAT-002..010`.                                           |
-| `TSVC-SVC-008` | Integraciones externas y webhooks            | Recibir o emitir comunicaciones con proveedores externos bajo una frontera reutilizable, auditable y aislada del dominio. | Existen Edge Functions específicas para webhooks de pagos y RevenueCat; el webhook de pagos declara carácter temporal o de fallback.           | `PARCIAL`  | `IMPLEMENTADO`  | `PENDIENTE_DE_EVIDENCIA`: existe código de integración, sin validación transversal completa.       | Las integraciones son específicas por proveedor y dominio; no se localizó una capacidad compartida de recepción, deduplicación, despacho, auditoría y salida mediante outbox.                  | Preservar adaptadores de dominio vigentes mientras se define la frontera transversal; no confundirlos con el servicio compartido completo.                   |
-| `TSVC-SVC-009` | Programación y automatizaciones recurrentes  | Disparar trabajos recurrentes o programados con identidad, calendario, control de concurrencia y registro de resultado.   | No se localizó una implementación transversal verificable de programación y automatización recurrente.                                         | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Falta un mecanismo gobernado que programe trabajos sin acoplar cron, temporizadores o automatizaciones a cada aplicación.                                                                      | Conservar como identidad obligatoria y vincularla a la orquestación genérica antes de cualquier implementación física.                                       |
-| `TSVC-SVC-010` | Monitoreo y heartbeat de workers             | Registrar disponibilidad, actividad, retraso, error y salud de los workers que procesan colas transversales.              | No se localizó un servicio transversal verificable de heartbeat y monitoreo de workers.                                                        | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Faltan registro de worker, heartbeat, detección de atraso, exposición de salud y evidencia de operación.                                                                                       | Mantener como capacidad transversal obligatoria; su telemetría detallada corresponde a `TSVC-CAT-009`.                                                       |
+| ID estable     | Servicio transversal                         | Límite de capacidad                                                                                                       | Activos actuales localizados                                                                                                                   | Estado     | Estado material | Evidencia                                                                                          | Brecha explícita                                                                                                                                                                               | Disposición                                                                                                                                                                                                             |
+| -------------- | -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | ---------- | --------------- | -------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TSVC-SVC-001` | Orquestación genérica de trabajos asíncronos | Registrar, reclamar, ejecutar y cerrar trabajos desacoplados de cualquier dominio consumidor.                             | No se localizó una implementación transversal verificable con cola genérica, claim, intentos y worker compartido.                              | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Falta la base reutilizable que permita ejecutar trabajos persistentes sin que cada aplicación construya su propia cola local.                                                                  | Conservar como identidad obligatoria; completar definiciones en `TSVC-CAT-002..010` e implementar solamente en la fase física asignada.                                                                                 |
+| `TSVC-SVC-002` | Entrega transaccional de eventos y outbox    | Persistir eventos empresariales y entregarlos a consumidores sin perder atomicidad con la transacción de origen.          | No se localizaron `outbox_events`, `claim_outbox_events` ni `process-outbox-events` como servicio canónico vigente.                            | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Falta el outbox compartido, su reclamación, entrega, seguimiento y operación.                                                                                                                  | Mantener separado de webhooks entrantes y de Realtime; completar su definición en las tareas posteriores del bloque.                                                                                                    |
+| `TSVC-SVC-003` | Impresión centralizada                       | Recibir trabajos de impresión, seleccionar dispositivo o cola, entregar, reintentar y conservar prueba de resultado.      | NEXO dispone de cola local en navegador, impresión directa con BrowserPrint, API de layouts y persistencia de plantillas ZPL en `vento-shell`. | `PARCIAL`  | `IMPLEMENTADO`  | `PENDIENTE_DE_EVIDENCIA`: existe código, pero no se acreditó operación transversal completa.       | La cola depende de `localStorage` y de ejecución directa en la aplicación; no se localizó `print_jobs`, `claim_print_jobs`, `process-print-jobs`, heartbeat ni prueba centralizada de entrega. | Reutilizar plantillas y experiencia vigente donde sea compatible; sustituir la orquestación local por el servicio transversal cuando sea implementado.                                                                  |
+| `TSVC-SVC-004` | Notificaciones y alertas                     | Transformar eventos o condiciones en notificaciones dirigidas, renderizadas, entregadas y auditadas por canal.            | Existe registro autenticado de tokens push de empleados mediante Edge Function y persistencia de metadatos de dispositivo.                     | `PARCIAL`  | `IMPLEMENTADO`  | `PENDIENTE_DE_EVIDENCIA`: se verificó el activo de registro, no una cadena completa de entrega.    | No se localizaron `notification_jobs`, `claim_notification_jobs`, `process-notification-jobs`, renderizado central, entrega por canales, historial ni reintentos compartidos.                  | Conservar el registro de tokens como activo consumidor; definir y construir por separado el servicio de notificación.                                                                                                   |
+| `TSVC-SVC-005` | Generación de documentos                     | Producir documentos derivados de datos canónicos mediante trabajos persistentes, versionados y trazables.                 | No se localizó una implementación transversal verificable de `generated_document_jobs` ni un worker compartido de generación.                  | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Faltan la cola de generación, el contrato de plantilla, el control de versión, el resultado y su vinculación con custodia y evidencia.                                                         | Mantener como servicio distinto de la mera carga de archivos y completar su diseño sin crear documentos desde aplicaciones consumidoras.                                                                                |
+| `TSVC-SVC-006` | Custodia de archivos y documentos originales | Almacenar, identificar y recuperar originales aportados por personas o sistemas con metadatos y control de acceso.        | ANIMA dispone de carga al bucket `documents` y registro de metadatos en `app.documents`; existen flujos de carga por aplicación.               | `PARCIAL`  | `IMPLEMENTADO`  | `PENDIENTE_DE_EVIDENCIA`: existe flujo de carga, sin validación transversal ni operativa completa. | La custodia permanece orientada por aplicación; no se localizó `file_jobs`, `claim_file_jobs`, `process-file-jobs` ni un contrato compartido de archivo, original y ciclo de vida.             | Reutilizar los activos de Storage y metadatos solamente después de decidir su compatibilidad; consolidar la capacidad transversal en las tareas posteriores.                                                            |
+| `TSVC-SVC-007` | Evidencia transaccional                      | Conservar comprobantes inmutables o controlados que demuestren una acción empresarial, técnica o de entrega.              | No se localizó un servicio transversal verificable que distinga y gobierne evidencia transaccional frente a archivos generales.                | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Faltan identidad, vinculación con entidad y evento, integridad, retención, acceso y trazabilidad compartida.                                                                                   | Mantener separada de documentos originales y documentos generados; completar su definición en `TSVC-CAT-002..010`.                                                                                                      |
+| `TSVC-SVC-008` | Integraciones externas y webhooks            | Recibir o emitir comunicaciones con proveedores externos bajo una frontera reutilizable, auditable y aislada del dominio. | Existen Edge Functions específicas para webhooks de pagos y RevenueCat; el webhook de pagos declara carácter temporal o de fallback.           | `PARCIAL`  | `IMPLEMENTADO`  | `PENDIENTE_DE_EVIDENCIA`: existe código de integración, sin validación transversal completa.       | Las integraciones son específicas por proveedor y dominio; no se localizó una capacidad compartida de recepción, deduplicación, despacho, auditoría y salida mediante outbox.                  | Preservar adaptadores de dominio vigentes mientras se define la frontera transversal; no confundirlos con el servicio compartido completo.                                                                              |
+| `TSVC-SVC-009` | Programación y automatizaciones recurrentes  | Disparar trabajos recurrentes o programados con identidad, calendario, control de concurrencia y registro de resultado.   | No se localizó una implementación transversal verificable de programación y automatización recurrente.                                         | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Falta un mecanismo gobernado que programe trabajos sin acoplar cron, temporizadores o automatizaciones a cada aplicación.                                                                      | Conservar como identidad obligatoria y vincularla a la orquestación genérica antes de cualquier implementación física.                                                                                                  |
+| `TSVC-SVC-010` | Monitoreo y heartbeat de workers             | Registrar disponibilidad, actividad, retraso, error y salud de los workers que procesan colas transversales.              | No se localizó un servicio transversal verificable de heartbeat y monitoreo de workers.                                                        | `FALTANTE` | `ESPECIFICADO`  | `NO_APLICA`: no existe implementación transversal que validar.                                     | Faltan registro de worker, heartbeat, detección de atraso, exposición de salud y evidencia de operación.                                                                                       | Mantener como capacidad transversal obligatoria; su observabilidad y telemetría corresponden a `TSVC-CAT-007`, su contingencia a `TSVC-CAT-008`, su retención a `TSVC-CAT-009` y su adopción y retiro a `TSVC-CAT-010`. |
 
 ##### 3.3. Registro de activos técnicos actuales
 
@@ -155,17 +156,17 @@ La distribución aprobada es:
 
 ##### 3.6. Handoff obligatorio a las tareas posteriores
 
-| Tarea reservada o posterior | Insumo que recibe de `TSVC-CAT-001`                                                               |
-| --------------------------- | ------------------------------------------------------------------------------------------------- |
-| `TSVC-CAT-002`              | Las diez identidades estables para asignar exactamente un owner por servicio.                     |
-| `TSVC-CAT-003`              | Los diez límites de capacidad para definir entradas y salidas sin mezclar procesos empresariales. |
-| `TSVC-CAT-004`              | Las brechas de frontera compartida para definir contratos y eventos.                              |
-| `TSVC-CAT-005`              | El inventario de servicios y activos actuales para identificar sistemas interesados.              |
-| `TSVC-CAT-006`              | Las capacidades que pueden requerir proveedores externos, sin prejuzgar su selección.             |
-| `TSVC-CAT-007`              | Los activos y fronteras que requieren límites de seguridad.                                       |
-| `TSVC-CAT-008`              | Las capacidades asíncronas, colas e integraciones que requieren idempotencia y reintentos.        |
-| `TSVC-CAT-009`              | Los diez servicios y sus estados para definir telemetría, auditoría y heartbeat.                  |
-| `TSVC-CAT-010`              | Las capacidades cuya degradación requiere contingencia o fallback.                                |
+| Tarea reservada o posterior | Insumo que recibe de `TSVC-CAT-001`                                                                                                               |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TSVC-CAT-002`              | Las diez identidades estables para asignar exactamente un propietario técnico y un gobierno por servicio.                                         |
+| `TSVC-CAT-003`              | Las diez identidades, sus límites de capacidad y los activos actuales para materializar productoras, consumidoras y condiciones por servicio.     |
+| `TSVC-CAT-004`              | Los límites, brechas y fronteras compartidas para materializar contratos, versiones y compatibilidad.                                             |
+| `TSVC-CAT-005`              | Los activos, servicios y fronteras técnicas que requieren principals, credenciales mínimas y mínimo privilegio.                                   |
+| `TSVC-CAT-006`              | Las capacidades asíncronas, colas, dispositivos e integraciones que requieren idempotencia, reintentos y deduplicación.                           |
+| `TSVC-CAT-007`              | Los diez servicios, estados y patrones actuales para definir observabilidad, métricas, alertas, auditoría y heartbeat.                            |
+| `TSVC-CAT-008`              | Las capacidades, dependencias y activos parciales cuya degradación requiere contingencia, fallback, recuperación y conciliación.                  |
+| `TSVC-CAT-009`              | Las operaciones, resultados, señales, documentos, archivos y evidencias que requieren retención, archivado y limpieza.                            |
+| `TSVC-CAT-010`              | Los cuatro servicios parciales, seis faltantes y siete activos actuales que requieren adopción progresiva, coexistencia, drenaje y retiro legacy. |
 
 ---
 
@@ -258,7 +259,7 @@ TAREA ACTUAL APROBADA
 TSVC-CAT-001 — Inventariar servicios transversales actuales y faltantes
         ↓
 SIGUIENTE TAREA RESERVADA
-TSVC-CAT-002 — Definir un owner por servicio
+TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio
 ```
 
 
@@ -1195,7 +1196,7 @@ Reglas:
 2. `contract_id` es estable y no cambia por tecnología, repositorio, proveedor o transporte.
 3. `contract_version` identifica la semántica exacta del intercambio.
 4. `operation_id` identifica una operación concreta y no se reutiliza.
-5. `producer_application` debe pertenecer a la matriz aprobada en `TSVC-CAT-003`.
+5. `producer_application` debe pertenecer a la matriz aprobada en `TSVC-CAT-003`; para `TSVC-SVC-010` conserva el valor `NO_APLICA_PRODUCTORA` y el emisor técnico se identifica mediante la identidad de servicio o worker definida por `TSVC-CAT-005`.
 6. `business_owner_application` conserva la autoridad sobre el resultado empresarial.
 7. `consumer_application` deberá estar declarada para el servicio o habilitada por una variante contractual aprobada.
 8. las referencias de esquema apuntarán a definiciones versionadas; no se aceptarán payloads libres sin identidad contractual.
@@ -1204,18 +1205,18 @@ Reglas:
 
 ##### 3.4. Registro canónico de contratos por servicio
 
-| Servicio       | `contract_id`           | Versión inicial | Solicitud o entrada canónica  | Resultado canónico            | Error canónico              | Productora autorizada                                                                        | Frontera incompatible principal                                                                                                  | Estado    |
-| -------------- | ----------------------- | --------------- | ----------------------------- | ----------------------------- | --------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------- |
-| `TSVC-SVC-001` | `TSVC-SVC-001.CONTRACT` | `1.0.0`         | `WORK_SUBMISSION`             | `WORK_OUTCOME`                | `WORK_ERROR`                | Aplicación que solicita un resultado asíncrono y figura como productora en `TSVC-CAT-003`    | Cambiar estados terminales, semántica de ejecución, autoridad del resultado o garantía de aceptación                             | `DEFINED` |
-| `TSVC-SVC-002` | `TSVC-SVC-002.CONTRACT` | `1.0.0`         | `OUTBOX_EVENT_RECORD`         | `DELIVERY_OUTCOME`            | `DELIVERY_ERROR`            | Aplicación propietaria de la transacción y del evento empresarial                            | Cambiar atomicidad, identidad del evento, versión empresarial, garantía de entrega o significado del resultado                   | `DEFINED` |
-| `TSVC-SVC-003` | `TSVC-SVC-003.CONTRACT` | `1.0.0`         | `PRINT_REQUEST`               | `PRINT_OUTCOME`               | `PRINT_ERROR`               | Aplicación propietaria del documento, etiqueta, comanda o comprobante                        | Cambiar campos obligatorios de plantilla, routing contractual, identidad del documento o significado de impresión confirmada     | `DEFINED` |
-| `TSVC-SVC-004` | `TSVC-SVC-004.CONTRACT` | `1.0.0`         | `NOTIFICATION_REQUEST`        | `NOTIFICATION_OUTCOME`        | `NOTIFICATION_ERROR`        | Aplicación propietaria del evento o condición que origina la comunicación                    | Cambiar resolución de destinatarios, prioridad obligatoria, semántica de entrega o contenido empresarial                         | `DEFINED` |
-| `TSVC-SVC-005` | `TSVC-SVC-005.CONTRACT` | `1.0.0`         | `DOCUMENT_GENERATION_REQUEST` | `GENERATED_DOCUMENT_RESULT`   | `DOCUMENT_GENERATION_ERROR` | Aplicación propietaria del tipo documental y de la plantilla aprobada                        | Cambiar significado del documento, campos autoritativos, formato comprometido, identidad de plantilla o integridad del resultado | `DEFINED` |
-| `TSVC-SVC-006` | `TSVC-SVC-006.CONTRACT` | `1.0.0`         | `FILE_INGEST_REQUEST`         | `FILE_RECORD_RESULT`          | `FILE_INGEST_ERROR`         | Aplicación propietaria del proceso que recibe o exige el original                            | Cambiar identidad del original, integridad, vínculo con recurso, clasificación o semántica de sustitución                        | `DEFINED` |
-| `TSVC-SVC-007` | `TSVC-SVC-007.CONTRACT` | `1.0.0`         | `EVIDENCE_CAPTURE_REQUEST`    | `EVIDENCE_RECORD_RESULT`      | `EVIDENCE_CAPTURE_ERROR`    | Aplicación propietaria de la acción o hecho que debe demostrarse                             | Cambiar inmutabilidad, lineage, vínculo causal, fuerza probatoria técnica o relación con acción y recurso                        | `DEFINED` |
-| `TSVC-SVC-008` | `TSVC-SVC-008.CONTRACT` | `1.0.0`         | `INTEGRATION_MESSAGE`         | `INTEGRATION_DELIVERY_RESULT` | `INTEGRATION_ERROR`         | Aplicación o dominio propietario del proceso integrado                                       | Cambiar dirección, identidad externa, mapping empresarial, validación de origen, ACK o semántica de confirmación                 | `DEFINED` |
-| `TSVC-SVC-009` | `TSVC-SVC-009.CONTRACT` | `1.0.0`         | `SCHEDULE_DEFINITION`         | `SCHEDULED_EXECUTION_RESULT`  | `SCHEDULE_ERROR`            | Aplicación propietaria de la acción programada                                               | Cambiar calendario, zona horaria, vigencia, misfire, concurrencia contractual o autoridad de activación                          | `DEFINED` |
-| `TSVC-SVC-010` | `TSVC-SVC-010.CONTRACT` | `1.0.0`         | `WORKER_HEALTH_SIGNAL`        | `WORKER_HEALTH_STATE`         | `WORKER_HEALTH_ERROR`       | Servicio o worker observado; la aplicación empresarial solo referencia el resultado afectado | Cambiar identidad del worker, significado de liveness/readiness, estado de salud o interpretación de obsolescencia               | `DEFINED` |
+| Servicio       | `contract_id`           | Versión inicial | Solicitud o entrada canónica  | Resultado canónico            | Error canónico              | Productora autorizada                                                                                                                       | Frontera incompatible principal                                                                                                  | Estado    |
+| -------------- | ----------------------- | --------------- | ----------------------------- | ----------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| `TSVC-SVC-001` | `TSVC-SVC-001.CONTRACT` | `1.0.0`         | `WORK_SUBMISSION`             | `WORK_OUTCOME`                | `WORK_ERROR`                | Aplicación que solicita un resultado asíncrono y figura como productora en `TSVC-CAT-003`                                                   | Cambiar estados terminales, semántica de ejecución, autoridad del resultado o garantía de aceptación                             | `DEFINED` |
+| `TSVC-SVC-002` | `TSVC-SVC-002.CONTRACT` | `1.0.0`         | `OUTBOX_EVENT_RECORD`         | `DELIVERY_OUTCOME`            | `DELIVERY_ERROR`            | Aplicación propietaria de la transacción y del evento empresarial                                                                           | Cambiar atomicidad, identidad del evento, versión empresarial, garantía de entrega o significado del resultado                   | `DEFINED` |
+| `TSVC-SVC-003` | `TSVC-SVC-003.CONTRACT` | `1.0.0`         | `PRINT_REQUEST`               | `PRINT_OUTCOME`               | `PRINT_ERROR`               | Aplicación propietaria del documento, etiqueta, comanda o comprobante                                                                       | Cambiar campos obligatorios de plantilla, routing contractual, identidad del documento o significado de impresión confirmada     | `DEFINED` |
+| `TSVC-SVC-004` | `TSVC-SVC-004.CONTRACT` | `1.0.0`         | `NOTIFICATION_REQUEST`        | `NOTIFICATION_OUTCOME`        | `NOTIFICATION_ERROR`        | Aplicación propietaria del evento o condición que origina la comunicación                                                                   | Cambiar resolución de destinatarios, prioridad obligatoria, semántica de entrega o contenido empresarial                         | `DEFINED` |
+| `TSVC-SVC-005` | `TSVC-SVC-005.CONTRACT` | `1.0.0`         | `DOCUMENT_GENERATION_REQUEST` | `GENERATED_DOCUMENT_RESULT`   | `DOCUMENT_GENERATION_ERROR` | Aplicación propietaria del tipo documental y de la plantilla aprobada                                                                       | Cambiar significado del documento, campos autoritativos, formato comprometido, identidad de plantilla o integridad del resultado | `DEFINED` |
+| `TSVC-SVC-006` | `TSVC-SVC-006.CONTRACT` | `1.0.0`         | `FILE_INGEST_REQUEST`         | `FILE_RECORD_RESULT`          | `FILE_INGEST_ERROR`         | Aplicación propietaria del proceso que recibe o exige el original                                                                           | Cambiar identidad del original, integridad, vínculo con recurso, clasificación o semántica de sustitución                        | `DEFINED` |
+| `TSVC-SVC-007` | `TSVC-SVC-007.CONTRACT` | `1.0.0`         | `EVIDENCE_CAPTURE_REQUEST`    | `EVIDENCE_RECORD_RESULT`      | `EVIDENCE_CAPTURE_ERROR`    | Aplicación propietaria de la acción o hecho que debe demostrarse                                                                            | Cambiar inmutabilidad, lineage, vínculo causal, fuerza probatoria técnica o relación con acción y recurso                        | `DEFINED` |
+| `TSVC-SVC-008` | `TSVC-SVC-008.CONTRACT` | `1.0.0`         | `INTEGRATION_MESSAGE`         | `INTEGRATION_DELIVERY_RESULT` | `INTEGRATION_ERROR`         | Aplicación o dominio propietario del proceso integrado                                                                                      | Cambiar dirección, identidad externa, mapping empresarial, validación de origen, ACK o semántica de confirmación                 | `DEFINED` |
+| `TSVC-SVC-009` | `TSVC-SVC-009.CONTRACT` | `1.0.0`         | `SCHEDULE_DEFINITION`         | `SCHEDULED_EXECUTION_RESULT`  | `SCHEDULE_ERROR`            | Aplicación propietaria de la acción programada                                                                                              | Cambiar calendario, zona horaria, vigencia, misfire, concurrencia contractual o autoridad de activación                          | `DEFINED` |
+| `TSVC-SVC-010` | `TSVC-SVC-010.CONTRACT` | `1.0.0`         | `WORKER_HEALTH_SIGNAL`        | `WORKER_HEALTH_STATE`         | `WORKER_HEALTH_ERROR`       | `NO_APLICA_PRODUCTORA`; la señal proviene del servicio o worker observado y la aplicación empresarial solo referencia el resultado afectado | Cambiar identidad del worker, significado de liveness/readiness, estado de salud o interpretación de obsolescencia               | `DEFINED` |
 
 ##### 3.5. Regla de versión semántica
 
@@ -1378,18 +1379,18 @@ Reglas:
 
 ##### 3.13. Aplicación al carril prioritario NEXO
 
-| Servicio       | Decisión NEXO | Contrato exigido                                                           | Estado actual             |
-| -------------- | ------------- | -------------------------------------------------------------------------- | ------------------------- |
-| `TSVC-SVC-001` | `APLICA`      | `TSVC-SVC-001.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
-| `TSVC-SVC-002` | `APLICA`      | `TSVC-SVC-002.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
-| `TSVC-SVC-003` | `APLICA`      | `TSVC-SVC-003.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
-| `TSVC-SVC-004` | `APLICA`      | `TSVC-SVC-004.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
-| `TSVC-SVC-005` | `APLICA`      | `TSVC-SVC-005.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
-| `TSVC-SVC-006` | `APLICA`      | `TSVC-SVC-006.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
-| `TSVC-SVC-007` | `APLICA`      | `TSVC-SVC-007.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
-| `TSVC-SVC-008` | `CONDICIONAL` | `TSVC-SVC-008.CONTRACT@1.0.0` cuando exista integración externa en alcance | `DEFINED_NOT_IMPLEMENTED` |
-| `TSVC-SVC-009` | `APLICA`      | `TSVC-SVC-009.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
-| `TSVC-SVC-010` | `APLICA`      | `TSVC-SVC-010.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
+| Servicio       | Decisión NEXO | Contrato exigido                                                                                          | Estado actual             |
+| -------------- | ------------- | --------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `TSVC-SVC-001` | `OBLIGATORIA` | `TSVC-SVC-001.CONTRACT@1.0.0`                                                                             | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-002` | `OBLIGATORIA` | `TSVC-SVC-002.CONTRACT@1.0.0`                                                                             | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-003` | `CONDICIONAL` | `TSVC-SVC-003.CONTRACT@1.0.0` cuando el paquete incluya impresión de remisiones, comprobantes o etiquetas | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-004` | `OBLIGATORIA` | `TSVC-SVC-004.CONTRACT@1.0.0`                                                                             | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-005` | `OBLIGATORIA` | `TSVC-SVC-005.CONTRACT@1.0.0`                                                                             | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-006` | `OBLIGATORIA` | `TSVC-SVC-006.CONTRACT@1.0.0`                                                                             | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-007` | `OBLIGATORIA` | `TSVC-SVC-007.CONTRACT@1.0.0`                                                                             | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-008` | `CONDICIONAL` | `TSVC-SVC-008.CONTRACT@1.0.0` cuando exista integración externa en alcance                                | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-009` | `CONDICIONAL` | `TSVC-SVC-009.CONTRACT@1.0.0` cuando exista schedule, expiración o conciliación recurrente aprobada       | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-010` | `OBLIGATORIA` | `TSVC-SVC-010.CONTRACT@1.0.0`                                                                             | `DEFINED_NOT_IMPLEMENTED` |
 
 La existencia del contrato documental no habilita el paquete NEXO. La implementación, pruebas, readiness y adopción permanecen sujetas a las etapas y condiciones del carril prioritario.
 
@@ -1405,6 +1406,8 @@ La existencia del contrato documental no habilita el paquete NEXO. La implementa
 | Contratos duplicados                   |         0 |
 | Contratos en estado `DEFINED`          |        10 |
 | Contratos afirmados como implementados |         0 |
+| Capacidades NEXO obligatorias          |         7 |
+| Capacidades NEXO condicionales         |         3 |
 | Decisiones NEXO reconciliadas          |        10 |
 
 ##### 3.15. Handoff obligatorio
@@ -1462,7 +1465,7 @@ DESCARTADOS_U_OBSOLETOS = 0
 1. Existen exactamente diez contratos para `TSVC-SVC-001..010`.
 2. Cada contrato utiliza un `contract_id` único y una versión inicial explícita.
 3. Cada contrato declara solicitud, resultado y error canónicos.
-4. Cada servicio conserva su productora según `TSVC-CAT-003`.
+4. Cada servicio conserva su productora según `TSVC-CAT-003`; `TSVC-SVC-010` conserva expresamente `NO_APLICA_PRODUCTORA`.
 5. Ningún contrato transfiere propiedad empresarial al servicio transversal.
 6. Los cambios mayores, menores y de parche están diferenciados sin ambigüedad.
 7. Las versiones publicadas son inmutables.
@@ -1471,7 +1474,7 @@ DESCARTADOS_U_OBSOLETOS = 0
 10. Todo adaptador conserva versión de origen, destino y mapping.
 11. La matriz de cien celdas de `TSVC-CAT-003` permanece sin cambios.
 12. Las diez decisiones NEXO quedan vinculadas a un contrato `1.0.0`.
-13. `TSVC-SVC-008` conserva aplicabilidad condicional para NEXO.
+13. `TSVC-SVC-003`, `TSVC-SVC-008` y `TSVC-SVC-009` conservan aplicabilidad condicional para NEXO; las siete identidades restantes conservan aplicabilidad obligatoria.
 14. Ningún contrato se presenta como implementado o validado.
 15. No se definen anticipadamente credenciales, reintentos, observabilidad, contingencia, retención o adopción legacy.
 16. No se realizan cambios de código, Supabase, migraciones, despliegues ni datos.
@@ -2693,7 +2696,7 @@ La tarea conserva sin modificación:
 - las diez aplicaciones canónicas y las cien decisiones aplicación–servicio de `TSVC-CAT-003`;
 - los diez contratos `1.0.0` de `TSVC-CAT-004`;
 - las identidades y credenciales mínimas de `TSVC-CAT-005`;
-- la semántica `AT_LEAST_ONCE_WITH_IDEMPOTENT_EFFECT` de `TSVC-CAT-006`;
+- la semántica `AT_LEAST_ONCE_WITH_IDEMPOTENT_EFFECTS` de `TSVC-CAT-006`;
 - los seis perfiles de reintento, ocho resultados de deduplicación y catorce clases de error aprobados;
 - la autoridad de la aplicación propietaria sobre el resultado empresarial;
 - la separación entre acuse técnico, señal de observabilidad y hecho empresarial confirmado;
@@ -3548,7 +3551,7 @@ Toda materialización futura deberá distinguir cuatro capas:
 
 Reglas:
 
-1. un servicio puede estar `DEGRADED_SAFE` mientras algunas operaciones están `BLOCKED` o `QUEUED`;
+1. un servicio puede estar `DEGRADED_SAFE` mientras algunas operaciones están `BLOCKED`, `RESERVED` o `RETRY_SCHEDULED`;
 2. una operación `SUCCEEDED` no demuestra que el servicio completo esté sano;
 3. un servicio `AVAILABLE` no confirma el resultado empresarial de cada operación;
 4. `RESULT_UNKNOWN` pertenece a la operación y obliga a conciliación aunque la dependencia vuelva a estar disponible;
@@ -5906,7 +5909,7 @@ Después del cutover:
 
 ###### 3.9.8. Retiro y desmantelamiento
 
-El retiro y desmantelamiento se ejecutan únicamente después de los gates `011` y `012`.
+El retiro se ejecuta únicamente después de aprobar `TSVC-ADOPT-GATE-011`; `TSVC-ADOPT-GATE-012` verifica la evidencia de retiro y habilita el desmantelamiento y cierre.
 
 El cierre incluye:
 
@@ -6430,7 +6433,7 @@ El registro canónico `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` permane
 
 #### 6. Criterios de aceptación
 
-1. `TSVC-CAT-009` figura aprobada y `TSVC-CAT-010` corresponde al único marcador pendiente del archivo propietario.
+1. `TSVC-CAT-009` figura aprobada y `TSVC-CAT-010` es la tarea actual aprobada que cierra el mini-bloque `TSVC-CAT-001..010`.
 2. El registro cubre exactamente `TSVC-SVC-001..010`.
 3. No existen servicios faltantes ni duplicados.
 4. Se conservan owners, productoras, consumidoras, contratos, identidades, confiabilidad, observabilidad, contingencia y retención heredados.
