@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **497** |
+| Aprobadas | **498** |
 | En propuesta | **0** |
-| No iniciadas | **1097** |
+| No iniciadas | **1096** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **31.18% (497/1594)** |
+| Porcentaje de completamiento | **31.24% (498/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TSVC-CAT-004` — Definir contrato, versión y compatibilidad | ✅ APROBADA |
-| Tarea actual | `TSVC-CAT-005` — Definir identidad técnica y credenciales mínimas | ⬜ NO INICIADA |
-| Siguiente reservada | `TSVC-CAT-006` — Definir idempotencia, reintentos y deduplicación | ⬜ NO INICIADA |
+| Última aprobada | `TSVC-CAT-005` — Definir identidad técnica y credenciales mínimas | ✅ APROBADA |
+| Tarea actual | `TSVC-CAT-006` — Definir idempotencia, reintentos y deduplicación | ⬜ NO INICIADA |
+| Siguiente reservada | `TSVC-CAT-007` — Definir observabilidad, métricas, alertas y auditoría | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -470,7 +470,7 @@
 | ✅ APROBADA | `TSVC-CAT-002` | Definir propietario técnico y gobierno de cada servicio | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ✅ APROBADA | `TSVC-CAT-003` | Definir aplicaciones productoras y consumidoras | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ✅ APROBADA | `TSVC-CAT-004` | Definir contrato, versión y compatibilidad | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
-| ⬜ NO INICIADA | `TSVC-CAT-005` | Definir identidad técnica y credenciales mínimas | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
+| ✅ APROBADA | `TSVC-CAT-005` | Definir identidad técnica y credenciales mínimas | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-006` | Definir idempotencia, reintentos y deduplicación | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-007` | Definir observabilidad, métricas, alertas y auditoría | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-008` | Definir contingencia y degradación controlada | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |

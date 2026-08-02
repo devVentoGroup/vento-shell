@@ -1512,7 +1512,516 @@ TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas
 ```
 
 
-### [ ] TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas
+### ✅ TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `TSVC-CAT-004 — Definir contrato, versión y compatibilidad`
+
+**Tarea siguiente:** `TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación`
+
+**Tipo de tarea:** definición documental canónica de identidades técnicas, credenciales mínimas y mínimo privilegio para servicios transversales
+
+**Fase:** definición documental vinculante; aprovisionamiento, rotación, implementación física y despliegue no autorizados
+
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+
+**Fecha de corte:** `2026-08-02`
+
+**Cambios en código, secretos, credenciales, migraciones, funciones, workers, colas, despliegues, datos o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado material
+
+Esta tarea materializa el registro canónico:
+
+```text
+TRANSVERSE-SERVICE-TECHNICAL-IDENTITY-REGISTRY-001@1.0.0
+```
+
+El registro define, para cada una de las diez identidades `TSVC-SVC-001..010`:
+
+1. un principal técnico estable por servicio y ambiente;
+2. las identidades adicionales de worker, dispositivo, proveedor, scheduler u observador cuando aplican;
+3. el tipo mínimo de credencial permitido;
+4. el alcance mínimo de recursos y acciones;
+5. la separación entre actor humano, aplicación llamadora, aplicación propietaria, servicio y runtime;
+6. las credenciales y exposiciones expresamente prohibidas;
+7. el estado objetivo de aprovisionamiento sin afirmar que la identidad física exista;
+8. el tratamiento de los patrones legacy localizados en el código actual;
+9. las reglas de emisión, almacenamiento, rotación, revocación, recuperación y retiro;
+10. el handoff obligatorio hacia idempotencia, observabilidad, contingencia, retención y adopción progresiva.
+
+El resultado completa la dimensión de identidad y credenciales de los contratos `TSVC-SVC-001.CONTRACT` a `TSVC-SVC-010.CONTRACT`, todos definidos en versión inicial `1.0.0` por `TSVC-CAT-004`.
+
+---
+
+#### 2. Alcance
+
+La tarea abarca exactamente estas diez identidades:
+
+1. `TSVC-SVC-001` — Orquestación genérica de trabajos asíncronos.
+2. `TSVC-SVC-002` — Entrega transaccional de eventos y outbox.
+3. `TSVC-SVC-003` — Impresión centralizada.
+4. `TSVC-SVC-004` — Notificaciones y alertas.
+5. `TSVC-SVC-005` — Generación de documentos.
+6. `TSVC-SVC-006` — Custodia de archivos y documentos originales.
+7. `TSVC-SVC-007` — Evidencia transaccional.
+8. `TSVC-SVC-008` — Integraciones externas y webhooks.
+9. `TSVC-SVC-009` — Programación y automatizaciones recurrentes.
+10. `TSVC-SVC-010` — Monitoreo y heartbeat de workers.
+
+La tarea conserva sin modificación:
+
+- el propietario técnico institucional `Tecnología de Vento Group`;
+- el repositorio canónico `vento-shell`;
+- la separación entre la aplicación `shell` y el repositorio `vento-shell`;
+- las diez aplicaciones canónicas;
+- la matriz de cien decisiones aplicación–servicio de `TSVC-CAT-003`;
+- las productoras, consumidoras y condiciones aprobadas;
+- los diez contratos `1.0.0` y sus fronteras de compatibilidad;
+- la autoridad empresarial de la aplicación propietaria del resultado;
+- la obligación de que toda modificación de Supabase perteneciente a VENTO se materialice desde `vento-shell` durante una fase autorizada.
+
+Quedan fuera del alcance:
+
+- crear cuentas técnicas, roles de base de datos, claves, certificados, tokens, secretos o credenciales reales;
+- registrar valores secretos en repositorios, tablas, documentación o archivos de configuración;
+- modificar `SUPABASE_SERVICE_ROLE_KEY`, secretos de proveedores o claves de cron existentes;
+- ejecutar rotaciones, revocaciones, migraciones, despliegues o cambios remotos;
+- definir idempotencia, reintentos, backoff y deduplicación, responsabilidad de `TSVC-CAT-006`;
+- definir métricas, alertas, trazas y auditoría operativa, responsabilidad de `TSVC-CAT-007`;
+- definir contingencia y degradación controlada, responsabilidad de `TSVC-CAT-008`;
+- definir retención, archivado y limpieza, responsabilidad de `TSVC-CAT-009`;
+- definir adopción progresiva y retiro de soluciones legacy, responsabilidad de `TSVC-CAT-010`;
+- declarar identidades aprovisionadas, activas, rotadas o validadas sin evidencia física.
+
+---
+
+#### 3. Decisiones aprobadas
+
+##### 3.1. Identidad del registro
+
+| Campo                    | Valor                                                |
+| ------------------------ | ---------------------------------------------------- |
+| `registry_id`            | `TRANSVERSE-SERVICE-TECHNICAL-IDENTITY-REGISTRY-001` |
+| `registry_version`       | `1.0.0`                                              |
+| `registry_status`        | `DEFINED`                                            |
+| `covered_services`       | `10`                                                 |
+| `runtime_principal_rule` | `svc:<service-id-en-minusculas>:<environment>`       |
+| `technical_owner`        | Tecnología de Vento Group                            |
+| `canonical_repository`   | `vento-shell`                                        |
+| `governing_task`         | `TSVC-CAT-005`                                       |
+
+`DEFINED` significa que las identidades, clases de credencial y límites de privilegio están documentados. No significa que existan principals, roles, certificados, secretos o políticas físicas.
+
+##### 3.2. Separación obligatoria de identidades
+
+Toda ejecución deberá distinguir, cuando aplique:
+
+```text
+ACTOR HUMANO O EXTERNO
+        +
+APLICACIÓN LLAMADORA
+        +
+APLICACIÓN PROPIETARIA DEL RESULTADO
+        +
+IDENTIDAD DEL SERVICIO
+        +
+IDENTIDAD DEL RUNTIME O WORKER
+        +
+IDENTIDAD DE DISPOSITIVO O PROVEEDOR
+```
+
+Reglas:
+
+1. la identidad del servicio no reemplaza al actor ni a la aplicación llamadora;
+2. la aplicación llamadora no adquiere la identidad técnica del servicio;
+3. un worker no actúa como usuario humano ni hereda sus permisos completos;
+4. una credencial demuestra posesión o habilita autenticación; no constituye por sí sola autorización empresarial;
+5. la aplicación propietaria conserva la decisión sobre el resultado empresarial;
+6. el servicio solo ejecuta las operaciones técnicas permitidas por su contrato y su alcance;
+7. un proveedor externo, impresora, scheduler o agente observador usa identidad separada y no recibe acceso general al ecosistema;
+8. una identidad técnica nunca puede utilizarse para ocultar el actor, la aplicación, la causa o el recurso de origen.
+
+##### 3.3. Clases canónicas de identidad técnica
+
+| Clase                      | Uso permitido                                                                         | No representa                                                    |
+| -------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `SERVICE_RUNTIME_IDENTITY` | Ejecutar la frontera técnica de un servicio transversal.                              | Actor humano, aplicación propietaria o autorización empresarial. |
+| `WORKER_IDENTITY`          | Reclamar y procesar unidades de trabajo de un servicio concreto.                      | Acceso administrativo general ni capacidad sobre otras colas.    |
+| `CALLER_IDENTITY`          | Identificar la aplicación y, cuando corresponda, el actor que solicita una operación. | Identidad del servicio receptor.                                 |
+| `DEVICE_IDENTITY`          | Identificar un dispositivo enrolado y su alcance físico aprobado.                     | Usuario, sede completa o permiso empresarial.                    |
+| `PROVIDER_IDENTITY`        | Identificar una integración externa o contraparte técnica concreta.                   | Propietario del proceso interno.                                 |
+| `SCHEDULER_IDENTITY`       | Disparar una ejecución programada aprobada.                                           | Decidir la regla empresarial ni ejecutar cualquier job.          |
+| `OBSERVER_IDENTITY`        | Leer salud, latencia, métricas o heartbeat autorizados.                               | Leer payloads empresariales ni mutar estado.                     |
+| `BREAK_GLASS_IDENTITY`     | Recuperación excepcional, temporal y autorizada.                                      | Credencial de operación ordinaria.                               |
+
+##### 3.4. Tipos canónicos de credencial mínima
+
+| Tipo                               | Uso permitido                                                              | Restricción obligatoria                                                               |
+| ---------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `DELEGATED_USER_TOKEN`             | Conservar actor y aplicación en una invocación iniciada por usuario.       | No puede convertirse en credencial persistente del worker.                            |
+| `WORKLOAD_IDENTITY_TOKEN`          | Autenticar runtime o worker mediante identidad de carga de trabajo.        | Debe ser corto, acotado a servicio, ambiente y audiencia.                             |
+| `SIGNED_INVOCATION_TOKEN`          | Autorizar una invocación máquina a máquina concreta.                       | Audiencia, emisor, expiración y propósito obligatorios.                               |
+| `DEVICE_ENROLLMENT_CREDENTIAL`     | Enrolar y autenticar un dispositivo específico.                            | Un dispositivo, ambiente, sede y capacidades máximas aprobadas.                       |
+| `PROVIDER_CREDENTIAL_REFERENCE`    | Referenciar secreto, certificado, OAuth o firma de un proveedor.           | Separado por proveedor, ambiente y finalidad; nunca contiene el valor en el contrato. |
+| `OBJECT_SCOPED_CAPABILITY`         | Habilitar acceso temporal a un objeto o prefijo autorizado.                | Expiración corta, operación y recurso exactos; no es credencial general de Storage.   |
+| `SIGNING_KEY_REFERENCE`            | Referenciar material de firma o sello protegido.                           | La clave privada nunca sale del custodio técnico autorizado.                          |
+| `READ_ONLY_OBSERVER_TOKEN`         | Leer únicamente señales de salud y operación autorizadas.                  | Prohíbe payload empresarial, secretos y mutaciones.                                   |
+| `ROTATING_SHARED_SECRET_REFERENCE` | Compatibilidad excepcional cuando no exista identidad de carga de trabajo. | Debe ser rotatorio, acotado, versionado y sustituible; no es opción preferida.        |
+
+La preferencia obligatoria es `WORKLOAD_IDENTITY_TOKEN` o `SIGNED_INVOCATION_TOKEN`. Un secreto persistente solo se admite cuando el proveedor o plataforma no soporte una alternativa más estrecha y deberá quedar registrado como excepción controlada.
+
+##### 3.5. Registro canónico por servicio
+
+| Servicio       | Principal técnico objetivo       | Identidades adicionales                                                  | Credencial mínima objetivo                                                                                   | Alcance permitido                                                                                                                               | Prohibiciones principales                                                                                                                         | Estado objetivo           |
+| -------------- | -------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `TSVC-SVC-001` | `svc:tsvc-svc-001:<environment>` | `worker:tsvc-svc-001:<environment>`; `CALLER_IDENTITY` por operación     | `WORKLOAD_IDENTITY_TOKEN`; `DELEGATED_USER_TOKEN` cuando exista actor                                        | crear trabajos bajo contrato autorizado; reclamar, renovar lease y cerrar únicamente trabajos del servicio; leer referencias mínimas de origen  | `service_role` como credencial ordinaria; acceso a colas ajenas; usar el token del usuario como credencial persistente del worker                 | `DEFINED_NOT_PROVISIONED` |
+| `TSVC-SVC-002` | `svc:tsvc-svc-002:<environment>` | `worker:tsvc-svc-002:<environment>`; identidad de aplicación emisora     | `WORKLOAD_IDENTITY_TOKEN`; identidad transaccional del emisor dentro de su frontera autorizada               | registrar outbox en la misma frontera transaccional; reclamar, entregar y actualizar únicamente eventos autorizados                             | escritura directa del consumidor en el outbox; credencial global compartida; emisión sin aplicación y evento de origen                            | `DEFINED_NOT_PROVISIONED` |
+| `TSVC-SVC-003` | `svc:tsvc-svc-003:<environment>` | `worker:tsvc-svc-003:<environment>`; `device:printer:<device-id>`        | `WORKLOAD_IDENTITY_TOKEN`; `DEVICE_ENROLLMENT_CREDENTIAL`                                                    | crear y procesar trabajos de impresión autorizados; entregar únicamente al dispositivo, sede, cola y capacidades enroladas                      | secretos administrativos en navegador; `service_role` en cliente; una credencial común para todas las impresoras; dispositivo sin enrolamiento    | `DEFINED_NOT_PROVISIONED` |
+| `TSVC-SVC-004` | `svc:tsvc-svc-004:<environment>` | `worker:tsvc-svc-004:<environment>`; `provider:<channel>:<environment>`  | `WORKLOAD_IDENTITY_TOKEN`; `PROVIDER_CREDENTIAL_REFERENCE`; `DELEGATED_USER_TOKEN` cuando aplique            | resolver destinatarios autorizados, renderizar y entregar por canales aprobados; usar solo credencial del proveedor y ambiente correspondientes | tratar push token como autorización; compartir credenciales entre canales; exponer secreto de proveedor o credencial privilegiada al cliente      | `DEFINED_NOT_PROVISIONED` |
+| `TSVC-SVC-005` | `svc:tsvc-svc-005:<environment>` | `worker:tsvc-svc-005:<environment>`; identidad de aplicación propietaria | `WORKLOAD_IDENTITY_TOKEN`; `OBJECT_SCOPED_CAPABILITY` para resultado                                         | leer la proyección y plantilla aprobadas; generar bajo versión contractual; escribir únicamente el resultado autorizado                         | acceso general a tablas o buckets; modificar datos fuente; elegir plantillas no autorizadas; credencial persistente dentro del documento generado | `DEFINED_NOT_PROVISIONED` |
+| `TSVC-SVC-006` | `svc:tsvc-svc-006:<environment>` | `CALLER_IDENTITY`; identidad de aplicación propietaria                   | `DELEGATED_USER_TOKEN`; `OBJECT_SCOPED_CAPABILITY`; `WORKLOAD_IDENTITY_TOKEN` para procesamiento servidor    | cargar, leer o transformar únicamente objetos, prefijos y metadatos autorizados para la finalidad declarada                                     | bucket-wide key en cliente; URL permanente; reutilizar capacidad para otro objeto; elevar acceso por conocer la ruta                              | `DEFINED_NOT_PROVISIONED` |
+| `TSVC-SVC-007` | `svc:tsvc-svc-007:<environment>` | `worker:tsvc-svc-007:<environment>`; verificador autorizado              | `WORKLOAD_IDENTITY_TOKEN`; `SIGNING_KEY_REFERENCE` cuando exista firma o sello                               | anexar evidencia bajo contrato, verificar integridad y leer referencias mínimas autorizadas                                                     | actualizar o borrar evidencia por credencial ordinaria; exponer clave privada; usar evidencia como sustituto de autorización empresarial          | `DEFINED_NOT_PROVISIONED` |
+| `TSVC-SVC-008` | `svc:tsvc-svc-008:<environment>` | `provider:<provider-code>:<environment>`; adaptador de salida autorizado | `PROVIDER_CREDENTIAL_REFERENCE`; `WORKLOAD_IDENTITY_TOKEN`; `SIGNED_INVOCATION_TOKEN`                        | verificar ingreso del proveedor; transformar bajo mapping aprobado; invocar únicamente operaciones y recursos del proveedor autorizado          | secreto único para proveedores distintos; acceso directo del proveedor a fuentes internas; `service_role` como credencial general del adaptador   | `DEFINED_NOT_PROVISIONED` |
+| `TSVC-SVC-009` | `svc:tsvc-svc-009:<environment>` | `scheduler:tsvc-svc-009:<environment>`; worker del servicio destino      | `SIGNED_INVOCATION_TOKEN`; `WORKLOAD_IDENTITY_TOKEN`; `ROTATING_SHARED_SECRET_REFERENCE` solo como excepción | activar únicamente schedule, ambiente, servicio, operación y ventana aprobados; registrar la identidad de la regla                              | clave cron global; secreto sin rotación; scheduler con permiso para ejecutar cualquier función; omitir la regla causal                            | `DEFINED_NOT_PROVISIONED` |
+| `TSVC-SVC-010` | `svc:tsvc-svc-010:<environment>` | `observer:tsvc-svc-010:<environment>`; identidades observadas            | `READ_ONLY_OBSERVER_TOKEN`; `WORKLOAD_IDENTITY_TOKEN` para el colector                                       | leer y registrar heartbeat, lag, disponibilidad y estado técnico mínimos; emitir señal de salud autorizada                                      | leer payloads empresariales o secretos; mutar trabajos; repetir efectos; ejecutar compensaciones; usar credenciales de los servicios observados   | `DEFINED_NOT_PROVISIONED` |
+
+##### 3.6. Contrato mínimo de identidad por operación
+
+Toda materialización futura deberá poder vincular, cuando aplique:
+
+```text
+service_id
+contract_id
+contract_version
+operation_id
+operation_type
+environment
+caller_application
+business_owner_application
+principal_type
+principal_id
+credential_reference
+credential_version
+audience
+allowed_actions
+resource_scope
+tenant_scope
+site_scope
+device_scope
+provider_scope
+actor_id
+correlation_id
+causation_id
+request_id
+issued_at
+expires_at
+```
+
+Reglas:
+
+1. `credential_reference` identifica material protegido; nunca contiene el secreto.
+2. `principal_id` y `credential_reference` son identidades distintas.
+3. `caller_application` debe corresponder a una relación aprobada en `TSVC-CAT-003`.
+4. `service_id`, `contract_id` y `contract_version` deben corresponder al contrato de `TSVC-CAT-004`.
+5. `allowed_actions` usa una lista cerrada y mínima; no se permite `*`.
+6. los scopes no aplicables se omiten o declaran `NO_APLICA`; no se rellenan con acceso global.
+7. la expiración es obligatoria para tokens, capacidades y credenciales temporales.
+8. las credenciales persistentes deben referenciar versión, custodio, fecha de rotación y estado sin exponer su valor.
+9. actor, aplicación, servicio, dispositivo, proveedor y ambiente no pueden inferirse solamente del nombre de una clave.
+10. la ausencia de actor humano no elimina la aplicación, regla, evento o proveedor causal.
+
+##### 3.7. Mínimo privilegio
+
+Toda credencial deberá limitar simultáneamente:
+
+```text
+QUIÉN
++ QUÉ SERVICIO
++ QUÉ OPERACIÓN
++ QUÉ RECURSO
++ QUÉ AMBIENTE
++ QUÉ TERRITORIO
++ QUÉ DURACIÓN
+```
+
+Reglas obligatorias:
+
+1. un principal técnico pertenece a un solo servicio salvo excepción aprobada y demostrable;
+2. las credenciales se separan por ambiente;
+3. las credenciales de proveedor se separan por proveedor y finalidad;
+4. las credenciales de dispositivo se separan por dispositivo;
+5. un worker solo puede reclamar y actualizar las unidades de trabajo de su servicio;
+6. una credencial de lectura no puede mutar estado;
+7. un observador no puede acceder al payload empresarial completo;
+8. la operación sensible requiere tanto autenticación técnica como autorización empresarial vigente;
+9. conocer un identificador, ruta, topic, queue, bucket o función no concede acceso;
+10. la credencial ordinaria no debe poder crear otras credenciales, alterar políticas, desactivar auditoría ni cambiar su propio alcance.
+
+##### 3.8. Regla sobre credenciales amplias
+
+`SUPABASE_SERVICE_ROLE_KEY` no se adopta como credencial ordinaria de ninguno de los diez servicios.
+
+Su uso actual en funciones servidoras se clasifica como:
+
+```text
+LEGACY_BROAD_CREDENTIAL
+```
+
+Reglas:
+
+1. su presencia actual no demuestra que el servicio transversal esté implementado;
+2. no podrá copiarse a clientes, navegadores, aplicaciones móviles, dispositivos, eventos, documentos ni logs;
+3. no podrá compartirse entre servicios como identidad técnica común;
+4. cualquier permanencia temporal deberá estar acotada a runtime servidor, ambiente y transición aprobada;
+5. la implementación futura deberá preferir roles, funciones, grants, RLS, claims, workload identity o endpoints internos de alcance menor;
+6. una excepción deberá declarar operación, recursos, motivo, owner, vencimiento, monitoreo, rotación y tarea de retiro;
+7. una excepción no convierte la clave amplia en modelo objetivo.
+
+Las claves publicables o anónimas identifican el proyecto o cliente permitido, pero no sustituyen la identidad del actor, la aplicación, el servicio ni la autorización.
+
+##### 3.9. Custodia y exposición
+
+1. ningún valor secreto se almacena en este registro ni en documentación canónica;
+2. el repositorio solo conserva nombres de variables, referencias, esquemas y contratos no secretos;
+3. los valores se mantienen en un custodio de secretos o mecanismo servidor autorizado;
+4. logs, errores, traces, eventos y evidencia deberán aplicar redacción antes de persistir;
+5. las credenciales no se transportan en query strings, nombres de archivo, etiquetas, QR, payload empresarial o metadata visible;
+6. una URL firmada es una capacidad temporal y debe tratarse como sensible hasta expirar;
+7. push tokens, device tokens y direcciones de destino son datos de direccionamiento sensibles, no autorización suficiente;
+8. claves privadas, refresh tokens y secretos de proveedor nunca se devuelven al cliente;
+9. las referencias de credencial deberán poder rotarse sin cambiar `service_id`, `contract_id` ni identidad empresarial;
+10. backups y exportaciones deben excluir valores secretos o conservarlos bajo cifrado y acceso específico.
+
+##### 3.10. Ciclo de vida
+
+| Estado                    | Significado                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| `DEFINED_NOT_PROVISIONED` | Identidad y alcance documentados; no existe evidencia de aprovisionamiento.     |
+| `PROVISIONED_INACTIVE`    | Principal o referencia creados, todavía no habilitados para operación.          |
+| `ACTIVE`                  | Credencial vigente y habilitada dentro del alcance aprobado.                    |
+| `ROTATING`                | Conviven versiones controladas durante una ventana de transición.               |
+| `SUSPENDED`               | Uso detenido temporalmente sin destruir evidencia ni identidad.                 |
+| `COMPROMISED`             | Existe sospecha o confirmación de exposición; el uso ordinario queda prohibido. |
+| `REVOKED`                 | Credencial invalidada y no reutilizable.                                        |
+| `RETIRED`                 | Identidad técnica retirada del servicio, preservando historia y referencias.    |
+
+En esta tarea las diez filas permanecen en `DEFINED_NOT_PROVISIONED`.
+
+##### 3.11. Rotación y revocación
+
+Toda implementación futura deberá:
+
+1. versionar referencias de credencial sin exponer valores;
+2. permitir coexistencia controlada de versión anterior y nueva cuando el proveedor o despliegue lo requiera;
+3. validar la nueva credencial antes de revocar la anterior;
+4. fijar una ventana máxima de solapamiento;
+5. revocar inmediatamente ante compromiso confirmado cuando la seguridad prevalezca sobre continuidad;
+6. registrar causa, owner, ambiente, servicios, consumidores afectados y resultado;
+7. impedir reutilización de una credencial revocada;
+8. conservar identidad histórica sin conservar el valor secreto en evidencia ordinaria;
+9. coordinar rollback mediante reactivación autorizada o emisión de otra versión, nunca mediante publicación del secreto anterior;
+10. separar rotación técnica de cambios incompatibles del contrato `TSVC-CAT-004`.
+
+##### 3.12. Identidad de emergencia
+
+`BREAK_GLASS_IDENTITY` solo se permite cuando:
+
+- existe incidente o recuperación documentada;
+- una autoridad designada aprueba la activación;
+- el alcance, ambiente y duración están limitados;
+- la identidad ordinaria no puede resolver el incidente;
+- toda acción queda auditada;
+- la credencial se revoca o suspende al terminar;
+- se realiza revisión posterior y se corrige la causa.
+
+No se permite mantener una credencial de emergencia activa para operación diaria.
+
+##### 3.13. Reconciliación con activos técnicos actuales
+
+| Activo o patrón observado                                                       | Servicio relacionado      | Clasificación                                | Decisión canónica                                                                                                                  |
+| ------------------------------------------------------------------------------- | ------------------------- | -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Cola de impresión local y ejecución desde navegador                             | `TSVC-SVC-003`            | `LOCAL_WITHOUT_CANONICAL_DEVICE_IDENTITY`    | Conservar como evidencia funcional; la solución objetivo exige identidad de servicio, worker y dispositivo enrolado.               |
+| Registro autenticado de tokens push con operación servidora privilegiada        | `TSVC-SVC-004`            | `PARTIAL_WITH_LEGACY_BROAD_CREDENTIAL`       | Conservar actor y registro de destino; sustituir la credencial amplia por alcance técnico menor durante implementación autorizada. |
+| Flujos documentales iniciados por usuario                                       | `TSVC-SVC-006`            | `PARTIAL_DELEGATED_FLOW`                     | Conservar identidad delegada; limitar acceso a objeto, finalidad, recurso y expiración.                                            |
+| Webhooks con secreto de proveedor y operación servidora privilegiada            | `TSVC-SVC-008`            | `PROVIDER_AUTH_WITH_LEGACY_BROAD_CREDENTIAL` | Conservar verificación de proveedor; separar secreto por proveedor y reemplazar acceso general por privilegios mínimos.            |
+| Jobs protegidos por clave compartida de cron y operación servidora privilegiada | `TSVC-SVC-009`            | `SHARED_SECRET_LEGACY_PATTERN`               | Registrar scheduler y regla exactos; preferir identidad de carga o token firmado y retirar la clave global en la fase asignada.    |
+| Procesamiento servidor con `SUPABASE_SERVICE_ROLE_KEY`                          | Servicios que lo consuman | `LEGACY_BROAD_CREDENTIAL`                    | No se adopta como identidad transversal común; cada permanencia exige excepción y retiro controlado.                               |
+
+La reconciliación describe evidencia actual. No declara que existan principals mínimos aprovisionados ni que los activos hayan sido migrados.
+
+##### 3.14. Aplicación al carril `NEXO-REMISSIONS-001`
+
+Para el paquete prioritario de remisiones NEXO:
+
+1. `nexo` se identifica como aplicación llamadora o propietaria según la matriz de `TSVC-CAT-003`; no se autentica como `vento-shell`.
+2. el backend autoritativo utiliza identidades servidoras; el navegador no recibe credenciales administrativas.
+3. cada trabajo asíncrono conserva `nexo`, actor, sede, área, recurso, contrato, correlación y causa.
+4. la impresión exige identidad del servicio y del dispositivo enrolado.
+5. los archivos o evidencias usan capacidades temporales acotadas al objeto.
+6. las notificaciones usan credenciales separadas por canal y ambiente.
+7. los schedules usan identidad propia y no una clave global reutilizada por múltiples jobs.
+8. el observador de workers conserva privilegio de solo lectura.
+9. las tres capacidades condicionales de la matriz no se activan únicamente por existir credenciales.
+10. la definición documental no habilita el paquete, no crea secretos y no acredita operación.
+
+##### 3.15. Reconciliación cuantitativa
+
+| Control                                         | Resultado |
+| ----------------------------------------------- | --------: |
+| Identidades de servicio esperadas               |        10 |
+| Identidades de servicio materializadas          |        10 |
+| Principals técnicos objetivo únicos             |        10 |
+| Servicios con worker dedicado o condicionado    |         8 |
+| Servicios con identidad especial de dispositivo |         1 |
+| Servicios con identidad especial de proveedor   |         2 |
+| Servicios con identidad especial de scheduler   |         1 |
+| Servicios con identidad especial de observador  |         1 |
+| Servicios en `DEFINED_NOT_PROVISIONED`          |        10 |
+| Credenciales reales creadas                     |         0 |
+| Valores secretos documentados                   |         0 |
+| Identidades faltantes                           |         0 |
+| Identidades duplicadas                          |         0 |
+
+Los conteos de identidades adicionales no son excluyentes: un servicio puede requerir runtime, worker y proveedor o dispositivo al mismo tiempo.
+
+##### 3.16. Handoff obligatorio
+
+| Tarea posterior | Insumo recibido de `TSVC-CAT-005`                                                                                                                                             |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TSVC-CAT-006`  | Principal por servicio, caller, worker, dispositivo, proveedor y scheduler que deberán participar en idempotencia, claim, reintentos y deduplicación sin compartir autoridad. |
+| `TSVC-CAT-007`  | Identidades técnicas que deberán producir métricas, logs, traces y auditoría, con redacción de secretos y separación de payloads.                                             |
+| `TSVC-CAT-008`  | Estados de credencial, identidad de emergencia, revocación y alcance mínimo requeridos durante contingencia y degradación.                                                    |
+| `TSVC-CAT-009`  | Referencias de credencial, estados e historia que deberán cumplir retención sin preservar valores secretos innecesarios.                                                      |
+| `TSVC-CAT-010`  | Patrones legacy, excepciones y principals objetivo que deberán migrarse y retirarse progresivamente.                                                                          |
+
+---
+
+#### 4. Artefactos y entregables
+
+1. `TRANSVERSE-SERVICE-TECHNICAL-IDENTITY-REGISTRY-001@1.0.0`.
+2. Catálogo cerrado de ocho clases de identidad técnica.
+3. Catálogo cerrado de nueve tipos de credencial mínima.
+4. Matriz materializada para `TSVC-SVC-001..010` con principal, credenciales, scope, prohibiciones y estado.
+5. Contrato mínimo de identidad por operación.
+6. Política canónica de mínimo privilegio, custodia, exposición, rotación y revocación.
+7. Clasificación explícita de `SUPABASE_SERVICE_ROLE_KEY` como credencial amplia legacy, no como identidad objetivo.
+8. Reconciliación de seis patrones técnicos actuales sin afirmar migración o validación operativa.
+9. Aplicación específica al carril `NEXO-REMISSIONS-001`.
+10. Handoff cerrado a `TSVC-CAT-006..010`.
+
+---
+
+#### 5. Requisitos de prueba
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa identidades técnicas, credenciales mínimas, separación de responsabilidades y mínimo privilegio para los diez contratos ya gobernados. No crea un dominio de comportamiento nuevo ni modifica los requisitos funcionales, de integración, autorización o seguridad vigentes. Las invariantes quedan cubiertas por los requisitos canónicos ya relacionados por `TSVC-CAT-004`, incluidos `TREQ-PROC-018`, `TREQ-PROC-019`, `TREQ-PROC-023`, `TREQ-PROC-024`, `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-004` y `TREQ-INTEGRATION-024` a `TREQ-INTEGRATION-053`, además de los requisitos vigentes de seguridad y secretos de la arquitectura Supabase.
+
+La tarea genera:
+
+- requisitos creados: `0`;
+- requisitos modificados: `0`;
+- requisitos diferidos: `0`;
+- requisitos descartados u obsoletos: `0`.
+
+Por tanto, no corresponde generar una nueva copia del registro `04A`.
+
+---
+
+#### 6. Criterios de aceptación
+
+1. `TSVC-CAT-004` figura aprobada y sus diez contratos conservan versión `1.0.0` y estado `DEFINED`.
+2. Las diez identidades `TSVC-SVC-001..010` aparecen exactamente una vez en el registro principal.
+3. Cada servicio tiene un principal técnico objetivo único por ambiente.
+4. Cada servicio declara identidades adicionales únicamente cuando aplican.
+5. Cada servicio declara credencial mínima, alcance, prohibiciones y estado.
+6. Actor, aplicación llamadora, aplicación propietaria, servicio, worker, dispositivo y proveedor permanecen separados.
+7. Ninguna credencial equivale por sí sola a autorización empresarial.
+8. No existen comodines de acciones, recursos o ambientes en el modelo objetivo.
+9. `SUPABASE_SERVICE_ROLE_KEY` no se adopta como credencial ordinaria ni compartida de los servicios.
+10. No se exponen valores secretos, claves privadas, tokens, certificados ni credenciales reales.
+11. Push tokens, URLs firmadas y credenciales de dispositivo conservan su clasificación y límites específicos.
+12. Se define rotación, revocación, compromiso, suspensión y retiro sin ejecutar operaciones físicas.
+13. La identidad de emergencia queda separada, temporal y auditable.
+14. Los activos actuales se clasifican como evidencia legacy o parcial, no como cumplimiento objetivo.
+15. Las diez identidades permanecen `DEFINED_NOT_PROVISIONED`.
+16. El carril NEXO conserva aplicaciones, contratos, actor, dispositivo y scopes sin credenciales administrativas en cliente.
+17. Se declaran cero cambios `TREQ-*` con justificación concreta.
+18. No se modifican código, configuración, secretos, Supabase, migraciones, funciones, workers, colas, datos ni despliegues.
+19. La continuidad reserva exclusivamente `TSVC-CAT-006`.
+
+---
+
+#### 7. Dependencias y entradas
+
+##### 7.1. Fuentes canónicas
+
+- `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+- `docs/plan-canonico/modular/delivery-contract.json`;
+- `docs/plan-canonico/modular/execution-route.json`;
+- `docs/plan-canonico/modular/priority-route-progress.json`;
+- `docs/plan-canonico/modular/active-sequence.json`;
+- `docs/plan-canonico/modular/continuity-route.json`;
+- `docs/plan-canonico/modular/priority-delivery-lanes.json`;
+- `docs/plan-canonico/modular/bloques/C_CATALOGO/01_APLICACIONES_Y_CONVENCION.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/00_INTRO.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/01_PRINCIPIO_DE_PROPIEDAD.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`;
+- `docs/plan-canonico/modular/bloques/E3_SUPABASE/06_01_SUPA_TRANS_001.md`;
+- `docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04_04_VALIDACION_TECNICA_SEGURIDAD_RESILIENCIA_Y_BACKLOG.md`;
+- `docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`;
+- `package.json` y scripts documentales aplicables;
+- código vigente de Edge Functions y activos parciales consumidos para clasificar patrones actuales, sin alterar su implementación.
+
+##### 7.2. Dependencias aprobadas inmediatas
+
+- `TSVC-CAT-001 — Inventariar servicios transversales actuales y faltantes`.
+- `TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio`.
+- `TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras`.
+- `TSVC-CAT-004 — Definir contrato, versión y compatibilidad`.
+
+##### 7.3. Restricción de evidencia
+
+Este registro no demuestra:
+
+- principal aprovisionado;
+- rol o grant implementado;
+- secreto creado o rotado;
+- certificado emitido;
+- credencial activa;
+- política RLS aplicada;
+- worker desplegado;
+- proveedor autenticado en producción;
+- dispositivo enrolado;
+- validación remota, operativa o de dispositivo;
+- retiro de credenciales legacy.
+
+Todas esas afirmaciones requieren implementación y evidencia de las tareas y paquetes propietarios.
+
+---
+
+#### 8. Continuidad canónica del bloque
+
+```text
+ÚLTIMA TAREA APROBADA
+TSVC-CAT-004 — Definir contrato, versión y compatibilidad
+        ↓
+TAREA ACTUAL APROBADA
+TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas
+        ↓
+SIGUIENTE TAREA RESERVADA
+TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
+```
+
+
 ### [ ] TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
 ### [ ] TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría
 ### [ ] TSVC-CAT-008 — Definir contingencia y degradación controlada
