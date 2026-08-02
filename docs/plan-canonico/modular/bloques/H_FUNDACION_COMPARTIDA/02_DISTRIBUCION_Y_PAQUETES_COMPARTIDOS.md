@@ -1280,14 +1280,415 @@ No se inicia, desarrolla ni modifica dentro de este artefacto.
 - Ninguna regla autoriza a modificar un tag publicado ni a crear versiones globales artificiales.
 - Ninguna decisión materializa tags, releases, workflows o publicaciones durante la fase documental.
 
-## Continuidad canónica del bloque
+#### Continuidad canónica del bloque
 
 - **ÚLTIMA TAREA APROBADA:** SHELL-PKG-002 — Definir versionado de paquetes compartidos
 - **TAREA ACTUAL APROBADA:** SHELL-PKG-003 — Definir tags y releases
 - **SIGUIENTE TAREA RESERVADA:** SHELL-PKG-004 — Definir política de compatibilidad
 
 
-### [ ] SHELL-PKG-004 — Definir política de compatibilidad
+### ✅ SHELL-PKG-004 — Definir política de compatibilidad
+
+- **Estado:** APROBADA
+- **Fecha:** 2026-08-01
+- **Tarea anterior:** SHELL-PKG-003 — Definir tags y releases
+- **Tarea siguiente:** SHELL-PKG-005 — Definir política de deprecación
+- **Tipo de tarea:** Documental
+- **Fase:** Definición documental vinculante; implementación física no autorizada
+- **Ubicación canónica:** `docs/plan-canonico/modular/bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`
+- **Rama prevista:** `main`
+
+---
+
+#### 1. Objetivo
+
+Establecer la política canónica que determina cuándo una versión exacta de un paquete compartido VENTO puede declararse compatible con un repositorio consumidor, un lockfile, una versión efectiva de Next.js, React, React DOM, Supabase SSR y Supabase JavaScript, sin confundir una declaración de dependencias, un build aislado o una coincidencia de versiones con compatibilidad certificada.
+
+La política materializa:
+
+1. las dimensiones obligatorias de compatibilidad;
+2. las bandas documentales elegibles del corte actual;
+3. la matriz completa de cuatro familias de paquetes por siete repositorios cubiertos;
+4. los estados permitidos de cada combinación;
+5. la evidencia mínima para certificar una combinación;
+6. las condiciones que invalidan o exigen recertificar una compatibilidad;
+7. los límites entre esta tarea y deprecación, rollback, actualización mediante PR y gates automáticos.
+
+#### 2. Alcance
+
+##### 2.1. Incluido
+
+Esta tarea gobierna las cuatro familias iniciales aprobadas:
+
+1. `@vento/contracts`;
+2. `@vento/os-context`;
+3. `@vento/supabase`;
+4. `@vento/ui-web`.
+
+La cobertura de consumidores comprende siete repositorios:
+
+1. `devVentoGroup/vento-shell`, como productor y consumidor de integración;
+2. `devVentoGroup/vento-viso`;
+3. `devVentoGroup/vento-nexo`;
+4. `devVentoGroup/vento-fogo`;
+5. `devVentoGroup/vento-origo`;
+6. `devVentoGroup/vento-pulso`;
+7. `devVentoGroup/vento-numera`.
+
+La política cubre:
+
+- versión exacta del paquete compartido;
+- identidad del tag y release asociados;
+- versión efectiva resuelta por `package-lock.json`;
+- Next.js;
+- React y React DOM;
+- `@supabase/ssr`;
+- `@supabase/supabase-js`;
+- dependencias exactas entre paquetes VENTO;
+- repositorio y commit consumidor;
+- build, typecheck, lint y pruebas aplicables;
+- pruebas contractuales, integración y comportamiento del consumidor;
+- evidencia atribuible a una combinación concreta.
+
+##### 2.2. Excluido
+
+Esta tarea no:
+
+- publica paquetes, tags o releases;
+- modifica `package.json` o `package-lock.json` de ningún repositorio;
+- crea workflows, secrets, registries, ramas o pull requests;
+- define plazos de deprecación, materia reservada a `SHELL-PKG-005`;
+- define ni ejecuta rollback por aplicación, materia reservada a `SHELL-PKG-006`;
+- automatiza actualizaciones mediante PR, materia reservada a `SHELL-PKG-007`;
+- crea gates que impidan actualizaciones sin pruebas, materia reservada a `SHELL-PKG-008`;
+- implementa la matriz ejecutable de CI, materia reservada a `SHELL-CI-005`;
+- migra consumidores, materia reservada a `SHELL-MIG-001..008`;
+- modifica código, datos, migraciones, configuración o recursos de Supabase.
+
+#### 3. Dependencias y entradas
+
+| Entrada                                                           | Uso vinculante                                                                                                   |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `SHELL-PKG-001 — Elegir mecanismo de distribución`                | paquetes npm privados, versiones exactas, lockfile, `npm ci`, adopción gradual y pruebas del consumidor          |
+| `SHELL-PKG-002 — Definir versionado de paquetes compartidos`      | SemVer independiente, primera versión estable `1.0.0`, dependencias internas exactas y clasificación de rupturas |
+| `SHELL-PKG-003 — Definir tags y releases`                         | relación unívoca entre familia, versión, tag, release, commit y evidencia                                        |
+| inventario `SHELL-AUD-001..011`                                   | familias, consumidores, fronteras y ausencia de adopción remota confirmada                                       |
+| `package.json` de los siete repositorios cubiertos                | declaraciones actuales de Next, React y Supabase                                                                 |
+| `package-lock.json` de cada repositorio                           | versión efectiva que deberá usarse como verdad de resolución al certificar                                       |
+| `packages/os-context/package.json`                                | estado transitorio `@vento/os-context@0.1.0`, `private: true` y peer actual de Supabase                          |
+| `packages/os-context/README.md`                                   | responsabilidad del paquete y exclusión explícita de PASS                                                        |
+| `T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` | destino de la matriz ejecutable, pruebas, builds, releases y PR de consumidores                                  |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`                | cobertura vigente de compatibilidad, rollback, evidencia y procedencia                                           |
+
+#### 4. Inventario materializado
+
+##### 4.1. Línea base verificable de repositorios
+
+Las versiones siguientes son declaraciones de manifiesto. No equivalen por sí solas a la versión efectiva del lockfile ni a una certificación de compatibilidad.
+
+| ID             | Repositorio                  | Rol                                   | Next.js declarado | React    | React DOM | `@supabase/ssr` | `@supabase/supabase-js` | Estado de paquetes VENTO compartidos                                                     |
+| -------------- | ---------------------------- | ------------------------------------- | ----------------- | -------- | --------- | --------------- | ----------------------- | ---------------------------------------------------------------------------------------- |
+| `COMP-REP-001` | `devVentoGroup/vento-shell`  | productor y consumidor de integración | `16.1.1`          | `19.2.3` | `19.2.3`  | `^0.8.0`        | `^2.90.1`               | existe workspace transitorio `@vento/os-context@0.1.0`; no hay release estable publicada |
+| `COMP-REP-002` | `devVentoGroup/vento-viso`   | consumidor runtime                    | `^16.1.6`         | `19.2.3` | `19.2.3`  | `^0.8.0`        | `^2.90.1`               | adopción de paquetes publicados no confirmada                                            |
+| `COMP-REP-003` | `devVentoGroup/vento-nexo`   | consumidor runtime                    | `^16.2.3`         | `19.2.3` | `19.2.3`  | `^0.8.0`        | `^2.90.1`               | adopción de paquetes publicados no confirmada                                            |
+| `COMP-REP-004` | `devVentoGroup/vento-fogo`   | consumidor runtime                    | `^16.2.4`         | `19.2.3` | `19.2.3`  | `^0.8.0`        | `^2.90.1`               | adopción de paquetes publicados no confirmada                                            |
+| `COMP-REP-005` | `devVentoGroup/vento-origo`  | consumidor runtime                    | `^16.2.1`         | `19.2.3` | `19.2.3`  | `^0.8.0`        | `^2.90.1`               | adopción de paquetes publicados no confirmada                                            |
+| `COMP-REP-006` | `devVentoGroup/vento-pulso`  | consumidor runtime                    | `16.1.1`          | `19.2.3` | `19.2.3`  | `^0.8.0`        | `^2.90.1`               | adopción de paquetes publicados no confirmada                                            |
+| `COMP-REP-007` | `devVentoGroup/vento-numera` | consumidor runtime                    | `^16.2.1`         | `19.2.3` | `19.2.3`  | `^0.8.0`        | `^2.90.1`               | adopción de paquetes publicados no confirmada                                            |
+
+**Conciliación del inventario:** siete repositorios esperados, siete materializados, seis consumidores runtime separados, un productor y consumidor de integración, cero faltantes y cero duplicados.
+
+##### 4.2. Bandas documentales elegibles del corte actual
+
+Una banda elegible limita las combinaciones que pueden someterse a certificación. No declara compatibles automáticamente todas sus versiones.
+
+| ID              | Dimensión           | Banda elegible inicial          | Semilla verificable actual                                      | Regla                                                                    |
+| --------------- | ------------------- | ------------------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `COMP-BAND-001` | Next.js, línea 16.1 | `>=16.1.1 <16.2.0`              | `16.1.1`; declaración `^16.1.6`                                 | cada versión efectiva debe quedar identificada desde lockfile y probarse |
+| `COMP-BAND-002` | Next.js, línea 16.2 | `>=16.2.1 <16.3.0`              | declaraciones desde `^16.2.1` hasta `^16.2.4`                   | una línea posterior no hereda soporte automáticamente                    |
+| `COMP-BAND-003` | React               | `>=19.2.3 <19.3.0`              | `19.2.3` en siete de siete repositorios                         | React y React DOM deben permanecer alineados                             |
+| `COMP-BAND-004` | React DOM           | `>=19.2.3 <19.3.0`              | `19.2.3` en siete de siete repositorios                         | no se certifican versiones cruzadas de React y React DOM                 |
+| `COMP-BAND-005` | Supabase SSR        | `>=0.8.0 <0.9.0`                | `^0.8.0` en siete de siete repositorios                         | solo aplica a exports o integraciones SSR                                |
+| `COMP-BAND-006` | Supabase JavaScript | `>=2.90.0 <2.91.0`              | consumidores desde `^2.90.1`; peer transitorio desde `>=2.90.0` | el peer publicable no podrá exceder la banda realmente probada           |
+| `COMP-BAND-007` | TypeScript          | serie `5.x`                     | `^5` en siete de siete repositorios                             | dimensión de compilación y tipos, no sustituto de pruebas runtime        |
+| `COMP-BAND-008` | Tailwind CSS        | serie `4.x`                     | `^4` en siete de siete repositorios                             | aplica a `@vento/ui-web` y a su contrato CSS                             |
+| `COMP-BAND-009` | Supabase CLI        | serie `2.109.x` en el productor | `^2.109.0` en `vento-shell`                                     | herramienta de generación y operación; no es peer runtime del consumidor |
+
+##### 4.3. Contrato de compatibilidad por familia
+
+| ID             | Familia             | Next.js                                                                     | React / React DOM                    | Supabase                                                                                  | Compatibilidad interna                    | Regla de certificación                                                                                                                              |
+| -------------- | ------------------- | --------------------------------------------------------------------------- | ------------------------------------ | ----------------------------------------------------------------------------------------- | ----------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `COMP-FAM-001` | `@vento/contracts`  | `NO_APLICA` como peer                                                       | `NO_APLICA` como peer                | `NO_APLICA` como peer, salvo tipos externos explícitos                                    | dependencias VENTO exactas cuando existan | debe compilar y conservar API, schemas, catálogos, diagnósticos y tipos en cada consumidor objetivo                                                 |
+| `COMP-FAM-002` | `@vento/os-context` | no será peer del núcleo                                                     | no será peer del núcleo              | `@supabase/supabase-js >=2.90.0 <2.91.0` para la primera banda certificable               | dependencias VENTO exactas                | debe probar decisiones, razones, permisos, contexto efectivo y errores en cada consumidor; cualquier adapter de framework tendrá evidencia separada |
+| `COMP-FAM-003` | `@vento/supabase`   | solo aplica a adapters SSR explícitos dentro de las bandas Next 16.1 y 16.2 | `NO_APLICA` al núcleo                | `@supabase/supabase-js >=2.90.0 <2.91.0`; `@supabase/ssr >=0.8.0 <0.9.0` para exports SSR | dependencias VENTO exactas                | debe probar factories, tipos generados, wrappers RPC, errores, SSR y compatibilidad con contratos de base de datos                                  |
+| `COMP-FAM-004` | `@vento/ui-web`     | `>=16.1.1 <16.3.0` mientras existan pruebas separadas para 16.1 y 16.2      | React y React DOM `>=19.2.3 <19.3.0` | no será dependencia directa salvo contrato aprobado por una tarea propietaria             | dependencias VENTO exactas                | debe probar render, hidratación, navegación, estilos, tokens, accesibilidad, responsive y comportamiento en cada línea Next soportada               |
+
+El peer actual `@supabase/supabase-js >=2.90.0` de `@vento/os-context@0.1.0` es metadata de un workspace transitorio. Antes de una primera release estable deberá limitarse a una banda respaldada por evidencia o ampliarse únicamente después de probar la banda adicional.
+
+##### 4.4. Matriz materializada de combinaciones paquete–repositorio
+
+| ID            | Paquete             | Repositorio    | Estado actual                                    | Condición de salida                                                             |
+| ------------- | ------------------- | -------------- | ------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `COMP-MX-001` | `@vento/contracts`  | `vento-shell`  | `PENDIENTE_DE_EVIDENCIA`                         | package estable, lockfile, API snapshot, typecheck, build y pruebas atribuibles |
+| `COMP-MX-002` | `@vento/contracts`  | `vento-viso`   | `PENDIENTE_DE_EVIDENCIA`                         | adopción exacta mediante cambio revisado y pruebas del consumidor               |
+| `COMP-MX-003` | `@vento/contracts`  | `vento-nexo`   | `PENDIENTE_DE_EVIDENCIA`                         | adopción exacta mediante cambio revisado y pruebas del consumidor               |
+| `COMP-MX-004` | `@vento/contracts`  | `vento-fogo`   | `PENDIENTE_DE_EVIDENCIA`                         | adopción exacta mediante cambio revisado y pruebas del consumidor               |
+| `COMP-MX-005` | `@vento/contracts`  | `vento-origo`  | `PENDIENTE_DE_EVIDENCIA`                         | adopción exacta mediante cambio revisado y pruebas del consumidor               |
+| `COMP-MX-006` | `@vento/contracts`  | `vento-pulso`  | `PENDIENTE_DE_EVIDENCIA`                         | adopción exacta mediante cambio revisado y pruebas del consumidor               |
+| `COMP-MX-007` | `@vento/contracts`  | `vento-numera` | `PENDIENTE_DE_EVIDENCIA`                         | adopción exacta mediante cambio revisado y pruebas del consumidor               |
+| `COMP-MX-008` | `@vento/os-context` | `vento-shell`  | `PENDIENTE_DE_EVIDENCIA — WORKSPACE_TRANSITORIO` | release estable, output construido, peer acotado y pruebas integrales           |
+| `COMP-MX-009` | `@vento/os-context` | `vento-viso`   | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas de contexto y autorización                   |
+| `COMP-MX-010` | `@vento/os-context` | `vento-nexo`   | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas de contexto y autorización                   |
+| `COMP-MX-011` | `@vento/os-context` | `vento-fogo`   | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas de contexto y autorización                   |
+| `COMP-MX-012` | `@vento/os-context` | `vento-origo`  | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas de contexto y autorización                   |
+| `COMP-MX-013` | `@vento/os-context` | `vento-pulso`  | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas de contexto y autorización                   |
+| `COMP-MX-014` | `@vento/os-context` | `vento-numera` | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas de contexto y autorización                   |
+| `COMP-MX-015` | `@vento/supabase`   | `vento-shell`  | `PENDIENTE_DE_EVIDENCIA — NO_IMPLEMENTADO`       | package estable, tipos, factories, SSR y pruebas de integración                 |
+| `COMP-MX-016` | `@vento/supabase`   | `vento-viso`   | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile, build y pruebas Supabase del consumidor               |
+| `COMP-MX-017` | `@vento/supabase`   | `vento-nexo`   | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile, build y pruebas Supabase del consumidor               |
+| `COMP-MX-018` | `@vento/supabase`   | `vento-fogo`   | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile, build y pruebas Supabase del consumidor               |
+| `COMP-MX-019` | `@vento/supabase`   | `vento-origo`  | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile, build y pruebas Supabase del consumidor               |
+| `COMP-MX-020` | `@vento/supabase`   | `vento-pulso`  | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile, build y pruebas Supabase del consumidor               |
+| `COMP-MX-021` | `@vento/supabase`   | `vento-numera` | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile, build y pruebas Supabase del consumidor               |
+| `COMP-MX-022` | `@vento/ui-web`     | `vento-shell`  | `PENDIENTE_DE_EVIDENCIA — NO_IMPLEMENTADO`       | package estable y pruebas Next 16.1, React, CSS y accesibilidad                 |
+| `COMP-MX-023` | `@vento/ui-web`     | `vento-viso`   | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas UI del consumidor                            |
+| `COMP-MX-024` | `@vento/ui-web`     | `vento-nexo`   | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas UI del consumidor                            |
+| `COMP-MX-025` | `@vento/ui-web`     | `vento-fogo`   | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas UI del consumidor                            |
+| `COMP-MX-026` | `@vento/ui-web`     | `vento-origo`  | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas UI del consumidor                            |
+| `COMP-MX-027` | `@vento/ui-web`     | `vento-pulso`  | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas UI del consumidor                            |
+| `COMP-MX-028` | `@vento/ui-web`     | `vento-numera` | `PENDIENTE_DE_EVIDENCIA — NO_ADOPTADO`           | versión exacta, lockfile y pruebas UI del consumidor                            |
+
+**Conciliación de matriz:** cuatro familias por siete repositorios producen veintiocho combinaciones; veintiocho están materializadas, veintiocho carecen todavía de certificación operativa, una posee workspace transitorio, veintisiete no poseen adopción física confirmada, cero faltantes y cero duplicados.
+
+##### 4.5. Exclusiones explícitas del corte
+
+| Identidad                                                     | Decisión                  | Motivo                                                                   | Destino si cambia                                                                    |
+| ------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `vento-pass` respecto de `@vento/os-context`                  | `NO_APLICA`               | el contrato vigente del paquete declara que PASS no lo consume           | una tarea propietaria deberá cambiar expresamente esa frontera antes de incorporarlo |
+| `vento-anima`, `vento-vital`, `vento-talento` y `Vento-Group` | fuera de la matriz actual | no pertenecen al conjunto de siete repositorios aprobado para esta tarea | `SHELL-MIG-001` deberá incorporarlos solo si el inventario canónico confirma consumo |
+| versiones Next posteriores a `16.2.x`                         | `NO_CERTIFICADAS`         | no existe evidencia del corte actual                                     | `SHELL-CI-005` deberá añadir una línea y evidencia antes de declararlas compatibles  |
+| React o React DOM distintos de `19.2.x`                       | `NO_CERTIFICADOS`         | no existe evidencia del corte actual                                     | nueva matriz y pruebas de package y consumidores                                     |
+| Supabase SSR fuera de `0.8.x`                                 | `NO_CERTIFICADO`          | no existe evidencia del corte actual                                     | nueva matriz y pruebas SSR                                                           |
+| Supabase JavaScript fuera de `2.90.x`                         | `NO_CERTIFICADO`          | no existe evidencia del corte actual                                     | nueva matriz y pruebas de contratos, runtime y consumidores                          |
+
+#### 5. Decisiones
+
+##### 5.1. Unidad canónica de compatibilidad
+
+La unidad mínima certificable será:
+
+```text
+package_name + package_version exacta
++ tag y release inmutables
++ consumer_repository + consumer_commit
++ package-lock.json exacto
++ versiones efectivas de framework y peers
++ evidencia de pruebas atribuible
+```
+
+No será válida una declaración genérica como “compatible con Next 16”, “compatible con React 19” o “compatible con Supabase 2”.
+
+##### 5.2. Estados permitidos
+
+| Estado                         | Significado                                                                                                  |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------ |
+| `PENDIENTE_DE_EVIDENCIA`       | la combinación está inventariada, pero no existe evidencia suficiente para certificarla                      |
+| `ELEGIBLE_PARA_CERTIFICACION`  | versiones efectivas dentro de bandas documentales y precondiciones completas; pruebas aún no concluidas      |
+| `COMPATIBLE_CERTIFICADO`       | todas las pruebas obligatorias de package y consumidor pasaron para la combinación exacta                    |
+| `COMPATIBLE_CON_RESTRICCIONES` | evidencia aprobada con limitaciones explícitas de export, adapter, feature o entorno; no puede generalizarse |
+| `INCOMPATIBLE_CONFIRMADO`      | una prueba verificable demuestra ruptura o comportamiento no soportado                                       |
+| `FUERA_DE_BANDA`               | una versión efectiva está por fuera de las bandas aprobadas y no puede presentarse como soportada            |
+| `NO_APLICA`                    | la dimensión o el consumidor no pertenece al contrato de esa familia                                         |
+
+Un estado solo podrá cambiar cuando exista evidencia atribuible. La ausencia de fallos reportados no constituye evidencia de compatibilidad.
+
+##### 5.3. Reglas vinculantes
+
+| ID             | Decisión                                                                                                                                      |
+| -------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PKG-COMP-001` | la compatibilidad se certifica por versión exacta de package y por repositorio consumidor, no por nombre de familia solamente                 |
+| `PKG-COMP-002` | `peerDependencies` expresa elegibilidad de instalación, pero no prueba compatibilidad                                                         |
+| `PKG-COMP-003` | la versión efectiva del lockfile prevalece sobre el rango textual del manifiesto al construir la evidencia                                    |
+| `PKG-COMP-004` | una versión exacta del package será la única admitida en consumidores productivos                                                             |
+| `PKG-COMP-005` | una nueva versión de Next, React, React DOM, Supabase SSR o Supabase JavaScript no hereda soporte automáticamente                             |
+| `PKG-COMP-006` | una ampliación o reducción de peer range requiere clasificación SemVer y recertificación de las combinaciones afectadas                       |
+| `PKG-COMP-007` | un `PATCH` del package exige regresión de package y consumidores afectados; no queda exento por ser compatible en SemVer                      |
+| `PKG-COMP-008` | un `MINOR` exige regresión y pruebas de capacidades añadidas en cada consumidor que las adopte                                                |
+| `PKG-COMP-009` | un `MAJOR` crea una línea de compatibilidad distinta y no invalida ni reescribe la evidencia histórica de la línea anterior                   |
+| `PKG-COMP-010` | un prerelease solo podrá certificarse como prerelease y no reemplazará la banda estable de producción                                         |
+| `PKG-COMP-011` | los paquetes VENTO dependerán entre sí mediante versiones exactas y deberán certificar el grafo resuelto completo                             |
+| `PKG-COMP-012` | `@vento/contracts` permanecerá independiente de frameworks salvo que una API propietaria introduzca un peer explícito                         |
+| `PKG-COMP-013` | el núcleo de `@vento/os-context` no dependerá de Next ni React; cualquier adapter tendrá export y evidencia separados                         |
+| `PKG-COMP-014` | `@vento/supabase` separará compatibilidad del núcleo JavaScript y de sus exports SSR                                                          |
+| `PKG-COMP-015` | `@vento/ui-web` deberá certificar por separado las líneas Next 16.1 y 16.2 dentro de la banda inicial                                         |
+| `PKG-COMP-016` | React y React DOM deberán probarse como par alineado; una combinación cruzada será `FUERA_DE_BANDA`                                           |
+| `PKG-COMP-017` | una prueba de package aislada no sustituye build, typecheck, lint y pruebas del consumidor                                                    |
+| `PKG-COMP-018` | una prueba de un consumidor no autoriza a marcar compatibles los otros seis                                                                   |
+| `PKG-COMP-019` | un build exitoso sin verificar comportamiento contractual, SSR, hidratación, autorización, datos o UI aplicables no completa la certificación |
+| `PKG-COMP-020` | toda certificación conservará package, versión, consumer, commit, lockfile, entorno y evidencia como una sola unidad auditable                |
+| `PKG-COMP-021` | una regresión confirmada cambia únicamente las combinaciones afectadas y no permite editar evidencia histórica                                |
+| `PKG-COMP-022` | la política de deprecación no se infiere desde esta matriz y será definida exclusivamente por `SHELL-PKG-005`                                 |
+| `PKG-COMP-023` | el rollback por aplicación no se ejecuta ni se define en esta tarea y permanece reservado a `SHELL-PKG-006`                                   |
+| `PKG-COMP-024` | ninguna compatibilidad autorizada modifica consumidores sin un cambio revisable y pruebas previas                                             |
+
+**Conciliación de decisiones:** veinticuatro decisiones esperadas, veinticuatro materializadas, veinticuatro identificadores únicos, cero faltantes y cero duplicados.
+
+##### 5.4. Evidencia mínima por certificación
+
+Cada instancia futura deberá contener:
+
+| Campo                           | Obligación                                                     |
+| ------------------------------- | -------------------------------------------------------------- |
+| `package_name`                  | nombre exacto `@vento/*`                                       |
+| `package_version`               | versión exacta e inmutable                                     |
+| `package_tag`                   | tag canónico asociado                                          |
+| `package_release`               | release canónico asociado                                      |
+| `package_source_commit`         | commit productor                                               |
+| `package_artifact_integrity`    | integridad del artefacto publicado                             |
+| `consumer_repository`           | repositorio exacto                                             |
+| `consumer_commit`               | commit que contiene la adopción                                |
+| `consumer_lockfile_integrity`   | identidad íntegra del lockfile probado                         |
+| `resolved_package_version`      | versión resuelta, igual a la solicitada                        |
+| `resolved_next_version`         | versión efectiva o `NO_APLICA`                                 |
+| `resolved_react_version`        | versión efectiva o `NO_APLICA`                                 |
+| `resolved_react_dom_version`    | versión efectiva o `NO_APLICA`                                 |
+| `resolved_supabase_ssr_version` | versión efectiva o `NO_APLICA`                                 |
+| `resolved_supabase_js_version`  | versión efectiva o `NO_APLICA`                                 |
+| `resolved_internal_vento_graph` | versiones exactas de dependencias VENTO                        |
+| `build_result`                  | resultado atribuible al commit consumidor                      |
+| `typecheck_result`              | resultado atribuible al commit consumidor                      |
+| `lint_result`                   | resultado atribuible al commit consumidor                      |
+| `package_test_result`           | pruebas propias de la familia                                  |
+| `consumer_test_result`          | pruebas contractuales, integración y comportamiento aplicables |
+| `compatibility_status`          | uno de los estados permitidos                                  |
+| `restrictions`                  | limitaciones explícitas o `NONE`                               |
+| `evidence_owner`                | tarea o workflow responsable                                   |
+
+#### 6. Evidencia y cobertura
+
+##### 6.1. Cobertura cuantitativa
+
+| Métrica                                          |  Resultado |
+| ------------------------------------------------ | ---------: |
+| Familias de paquetes                             |      **4** |
+| Repositorios cubiertos                           |      **7** |
+| Consumidores runtime separados                   |      **6** |
+| Productor y consumidor de integración            |      **1** |
+| Combinaciones paquete–repositorio                |     **28** |
+| Combinaciones materializadas                     |     **28** |
+| Combinaciones certificadas actualmente           |      **0** |
+| Workspaces transitorios identificados            |      **1** |
+| Combinaciones sin adopción física confirmada     |     **27** |
+| Líneas Next elegibles                            |      **2** |
+| Repositorios con React `19.2.3`                  | **7 de 7** |
+| Repositorios con React DOM `19.2.3`              | **7 de 7** |
+| Repositorios con `@supabase/ssr ^0.8.0`          | **7 de 7** |
+| Repositorios con `@supabase/supabase-js ^2.90.1` | **7 de 7** |
+| Declaraciones Next en línea 16.1                 | **3 de 7** |
+| Declaraciones Next en línea 16.2                 | **4 de 7** |
+| Cambios físicos realizados                       |      **0** |
+| Cambios `TREQ-*`                                 |      **0** |
+
+##### 6.2. Pruebas exigibles por familia
+
+| Familia             | Pruebas mínimas de package                                                   | Pruebas mínimas por consumidor                                                                                 |
+| ------------------- | ---------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `@vento/contracts`  | API snapshot, schemas, catálogos, serialización, diagnósticos y tipos        | typecheck, build, compatibilidad de imports y contratos consumidos                                             |
+| `@vento/os-context` | decisiones, precedencia, permisos, razones, errores y tipos                  | sesión, contexto efectivo, autorización, SSR aplicable y comportamiento operativo                              |
+| `@vento/supabase`   | factories, tipos, RPC, errores, SSR y contratos de datos                     | build, autenticación, lectura, escritura autorizada, SSR y errores esperados sin alterar datos productivos     |
+| `@vento/ui-web`     | render, hidratación, navegación, estilos, tokens, accesibilidad y responsive | build por línea Next, interacción, foco, teclado, contraste, motion-reduction y extensiones locales declaradas |
+
+##### 6.3. Hallazgos y destinos exactos
+
+| ID                    | Hallazgo                                                                                           | Estado                                            | Destino                                                                                                |
+| --------------------- | -------------------------------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `H-SHELL-PKG-004-001` | los siete repositorios comparten React y React DOM `19.2.3`                                        | `ALINEACION_DE_MANIFIESTO`                        | semilla de la matriz, no certificación automática                                                      |
+| `H-SHELL-PKG-004-002` | los siete repositorios declaran las mismas líneas de Supabase SSR y JavaScript                     | `ALINEACION_DE_MANIFIESTO`                        | certificar versiones efectivas desde lockfiles en `SHELL-CI-005`                                       |
+| `H-SHELL-PKG-004-003` | Next se divide entre líneas declaradas 16.1 y 16.2                                                 | `MATRIZ_MULTILINEA_OBLIGATORIA`                   | pruebas separadas de `@vento/ui-web` y adapters SSR                                                    |
+| `H-SHELL-PKG-004-004` | cinco repositorios usan rangos Next con caret y dos usan versión exacta                            | `RESOLUCION_EFECTIVA_NO_DEDUCIBLE_DEL_MANIFIESTO` | lockfile obligatorio en cada evidencia                                                                 |
+| `H-SHELL-PKG-004-005` | `eslint-config-next` permanece declarado en `16.1.1` aunque cuatro repositorios declaran Next 16.2 | `PENDIENTE_DE_EVIDENCIA`                          | comprobar lint y compatibilidad del toolchain en `SHELL-CI-005` antes de certificar esas combinaciones |
+| `H-SHELL-PKG-004-006` | `@vento/os-context@0.1.0` es privado y exporta fuente TypeScript                                   | `NO_PUBLICABLE_COMO_ESTABLE`                      | build y contrato final en tareas propietarias y `SHELL-CI-002`                                         |
+| `H-SHELL-PKG-004-007` | el peer actual `@supabase/supabase-js >=2.90.0` no tiene límite superior                           | `BANDA_NO_ACOTADA`                                | acotar antes de `1.0.0` o demostrar con matriz toda ampliación                                         |
+| `H-SHELL-PKG-004-008` | no existen releases estables publicadas de las cuatro familias                                     | `PENDIENTE_DE_IMPLEMENTACION`                     | `SHELL-CI-003` después de gates aplicables                                                             |
+| `H-SHELL-PKG-004-009` | no existe adopción publicada confirmada en los seis consumidores runtime                           | `PENDIENTE_DE_IMPLEMENTACION`                     | `SHELL-PKG-007`; `SHELL-MIG-001..008`                                                                  |
+| `H-SHELL-PKG-004-010` | PASS está excluido expresamente de `@vento/os-context`                                             | `FRONTERA_CONFIRMADA`                             | conservar mientras una tarea propietaria no la modifique                                               |
+| `H-SHELL-PKG-004-011` | no se declara una versión `engines.node` uniforme en los manifiestos inspeccionados                | `PENDIENTE_DE_EVIDENCIA`                          | capturar y certificar entorno de ejecución en `SHELL-CI-005`                                           |
+| `H-SHELL-PKG-004-012` | la coincidencia de manifiestos no demuestra paridad funcional                                      | `RIESGO_CONTRACTUAL`                              | pruebas por package y consumidor en `SHELL-CI-001` y `SHELL-CI-005`                                    |
+
+**Conciliación de hallazgos:** doce hallazgos, doce estados, doce destinos concretos y cero pendientes narrativos sin propietario.
+
+#### 7. Requisitos de prueba
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la tarea materializa la política y la matriz documental que especializan obligaciones ya existentes de prueba, compatibilidad, rollback, evidencia por consumidor y procedencia. No introduce una nueva superficie runtime, un nuevo contrato ejecutable ni una operación física. La futura implementación deberá consumir los requisitos vigentes asociados a `TREQ-SHELL-006`, `TREQ-SHELL-007`, `TREQ-SHELL-008` y `TREQ-SHELL-009`, sin duplicarlos.
+
+| Operación sobre `TREQ-*` | Cantidad |
+| ------------------------ | -------: |
+| creados                  |    **0** |
+| modificados              |    **0** |
+| diferidos                |    **0** |
+| descartados              |    **0** |
+| obsoletos                |    **0** |
+
+No corresponde generar una copia de `04A`.
+
+#### 8. Entregables
+
+1. Política de compatibilidad por combinación exacta de package y consumidor.
+2. Inventario de siete repositorios con Next, React, React DOM y Supabase declarados.
+3. Bandas documentales elegibles para Next 16.1, Next 16.2, React 19.2, Supabase SSR 0.8 y Supabase JavaScript 2.90.
+4. Contrato de compatibilidad para las cuatro familias de paquetes.
+5. Matriz completa de veintiocho combinaciones paquete–repositorio.
+6. Estados canónicos y transición basada en evidencia.
+7. Registro mínimo exigible para cada certificación futura.
+8. Reglas de recertificación ante cambios de package, framework, peer, lockfile o consumidor.
+9. Hallazgos actuales con destino documental concreto.
+10. Declaración de cero cambios `TREQ-*`.
+
+#### 9. Criterios de aceptación
+
+`SHELL-PKG-004` queda materialmente completa cuando:
+
+- las cuatro familias canónicas aparecen una sola vez en el contrato de familia;
+- los siete repositorios aparecen una sola vez en la línea base;
+- las veintiocho combinaciones paquete–repositorio están materializadas;
+- no existen combinaciones faltantes ni duplicadas;
+- las bandas Next 16.1 y 16.2 están separadas;
+- React y React DOM se tratan como par alineado;
+- Supabase SSR y Supabase JavaScript se tratan como dimensiones distintas;
+- el lockfile se define como fuente de la versión efectiva;
+- `peerDependencies` no se presenta como prueba suficiente;
+- cada certificación exige evidencia de package y consumidor;
+- la matriz actual declara cero combinaciones certificadas sin inventar resultados;
+- el workspace `@vento/os-context@0.1.0` se conserva como transitorio y no como release estable;
+- PASS permanece fuera del contrato de `@vento/os-context`;
+- deprecación, rollback, actualización mediante PR y gates automáticos permanecen en sus tareas propietarias;
+- no se modifican paquetes, consumidores, CI, datos ni Supabase;
+- se declaran cero cambios `TREQ-*` con justificación explícita.
+
+#### 10. Riesgos y bloqueos
+
+| Riesgo o bloqueo                                                            | Estado                                   | Control o condición de salida                        |
+| --------------------------------------------------------------------------- | ---------------------------------------- | ---------------------------------------------------- |
+| tratar un rango del manifiesto como versión efectiva                        | `BLOQUEADO_POR_POLITICA`                 | usar la resolución exacta del lockfile               |
+| declarar compatible una familia por un solo consumidor                      | `BLOQUEADO_POR_POLITICA`                 | certificar cada combinación por separado             |
+| ampliar automáticamente soporte a nuevos minors o majors                    | `BLOQUEADO_POR_POLITICA`                 | crear nueva línea y evidencia en la matriz           |
+| publicar `@vento/os-context` con peer sin límite superior                   | `PENDIENTE_DE_CORRECCION_PREVIA_A_1.0.0` | acotar el peer o demostrar la banda completa         |
+| certificar Next 16.2 sin comprobar el toolchain `eslint-config-next` actual | `PENDIENTE_DE_EVIDENCIA`                 | lint y build atribuibles por repositorio             |
+| certificar paquetes que todavía no existen o no están publicados            | `PENDIENTE_DE_IMPLEMENTACION`            | build independiente y release estable aprobada       |
+| certificar consumidores que aún no adoptaron la versión                     | `PENDIENTE_DE_IMPLEMENTACION`            | cambio revisado, lockfile y pruebas del consumidor   |
+| asumir entorno Node uniforme sin `engines` verificable                      | `PENDIENTE_DE_EVIDENCIA`                 | declarar y probar el entorno en la matriz ejecutable |
+| confundir compatibilidad con política de deprecación                        | `FUERA_DE_ALCANCE`                       | resolver exclusivamente en `SHELL-PKG-005`           |
+| ejecutar rollback desde esta tarea                                          | `FUERA_DE_ALCANCE`                       | resolver exclusivamente en `SHELL-PKG-006`           |
+
+#### 11. Continuidad
+
+- **ÚLTIMA TAREA APROBADA:** SHELL-PKG-003 — Definir tags y releases
+- **TAREA ACTUAL APROBADA:** SHELL-PKG-004 — Definir política de compatibilidad
+- **SIGUIENTE TAREA RESERVADA:** SHELL-PKG-005 — Definir política de deprecación
+
+
 ### [ ] SHELL-PKG-005 — Definir política de deprecación
 ### [ ] SHELL-PKG-006 — Definir rollback por aplicación
 ### [ ] SHELL-PKG-007 — Definir actualizaciones mediante PR

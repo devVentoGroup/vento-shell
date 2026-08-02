@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **488** |
+| Aprobadas | **489** |
 | En propuesta | **0** |
-| No iniciadas | **1106** |
+| No iniciadas | **1105** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **30.61% (488/1594)** |
+| Porcentaje de completamiento | **30.68% (489/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-PKG-003` — Definir tags y releases | ✅ APROBADA |
-| Tarea actual | `SHELL-PKG-004` — Definir política de compatibilidad | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-PKG-005` — Definir política de deprecación | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-PKG-004` — Definir política de compatibilidad | ✅ APROBADA |
+| Tarea actual | `SHELL-PKG-005` — Definir política de deprecación | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-PKG-006` — Definir rollback por aplicación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -701,7 +701,7 @@
 | ✅ APROBADA | `SHELL-PKG-001` | Elegir mecanismo de distribución | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-PKG-002` | Definir versionado semántico | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-PKG-003` | Definir tags y releases | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-PKG-004` | Definir política de compatibilidad | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-PKG-004` | Definir política de compatibilidad | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-PKG-005` | Definir política de deprecación | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-PKG-006` | Definir rollback por aplicación | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-PKG-007` | Definir actualizaciones mediante PR | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
