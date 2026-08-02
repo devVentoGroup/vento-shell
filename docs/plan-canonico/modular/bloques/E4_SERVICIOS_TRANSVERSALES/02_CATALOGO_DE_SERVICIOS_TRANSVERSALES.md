@@ -151,7 +151,7 @@ La distribución aprobada es:
    - `process-print-jobs`;
    - `process-notification-jobs`;
    - `process-file-jobs`.
-9. Esta tarea no asigna owner, proveedor, contrato, seguridad, política de reintento, telemetría o contingencia; cada dimensión conserva su tarea propietaria posterior.
+9. Esta tarea no define propietario técnico y gobierno, aplicaciones productoras y consumidoras, contrato y compatibilidad, identidad técnica y credenciales, idempotencia, reintentos y deduplicación, observabilidad, contingencia, retención ni adopción y retiro; esas dimensiones pertenecen a `TSVC-CAT-002..010`. La selección de proveedores, productos o tecnologías físicas permanece reservada a las fases de implementación propietarias.
 10. Toda modificación física de Supabase derivada de este inventario deberá crearse, versionarse, documentarse y ejecutarse desde `vento-shell` en la fase autorizada.
 
 ##### 3.6. Handoff obligatorio a las tareas posteriores
@@ -206,7 +206,7 @@ Justificación: la tarea materializa un inventario documental de capacidades y b
 6. Las colas canónicas y sus workers se mantienen como faltantes cuando no existe implementación transversal verificable.
 7. Impresión, notificaciones, generación documental, custodia de originales y evidencia transaccional permanecen como capacidades distintas.
 8. Los webhooks específicos de proveedor se registran como adaptadores actuales y no como sustitutos de outbox o integraciones compartidas completas.
-9. No se asigna owner antes de `TSVC-CAT-002` ni se anticipan contratos, seguridad, reintentos, telemetría o contingencia.
+9. No se anticipan las decisiones propietarias de `TSVC-CAT-002..010` sobre gobierno, productoras y consumidoras, contrato y compatibilidad, identidad y credenciales, idempotencia, reintentos y deduplicación, observabilidad, contingencia, retención ni adopción y retiro.
 10. No se ejecuta implementación física, DDL, DML, backfill, despliegue ni modificación de Supabase durante esta tarea documental.
 11. El resultado conserva la línea prioritaria `NEXO-REMISSIONS-001` y reserva exclusivamente `TSVC-CAT-002`.
 12. Se declaran cero cambios `TREQ-*` con justificación concreta.
@@ -1367,9 +1367,9 @@ Reglas:
 ##### 3.12. Relación con aplicaciones productoras y consumidoras
 
 1. Las cien decisiones aplicación–servicio de `TSVC-CAT-003` permanecen vigentes.
-2. Una celda `NO_APLICA` no puede producir ni consumir el contrato.
-3. Una celda `CONSUMIDORA` solo puede recibir solicitudes, resultados o proyecciones admitidas por su finalidad.
-4. Una celda `PRODUCTORA_CONSUMIDORA` puede originar operaciones y consumir resultados sin adquirir propiedad del servicio.
+2. Una celda `—` no autoriza producción ni consumo; `NA-P` declara que ninguna aplicación actúa como productora de `TSVC-SVC-010`.
+3. Una celda `C` autoriza consumo directo; una celda `C?` solo autoriza consumo después de cumplir la condición de activación de `TSVC-CAT-003`.
+4. Una celda `P` autoriza producción directa; `P?` la condiciona; `P/C` autoriza producción y consumo directos; y `P?/C?` condiciona ambas relaciones. Ninguna de estas marcas transfiere propiedad técnica del servicio.
 5. La aplicación productora deberá declarar la aplicación propietaria del resultado cuando no coincidan.
 6. El servicio no podrá aceptar códigos de aplicación fuera del catálogo canónico.
 7. Proveedores, dispositivos, repositorios, tablas y plataformas no sustituyen códigos de aplicación.
