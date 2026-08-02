@@ -2022,7 +2022,610 @@ TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
 ```
 
 
-### [ ] TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
+### ✅ TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas`
+
+**Tarea siguiente:** `TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría`
+
+**Tipo de tarea:** definición documental canónica de idempotencia, deduplicación, reintentos, backoff, resultado desconocido y recuperación para servicios transversales
+
+**Fase:** definición documental vinculante; implementación física, aprovisionamiento y despliegue no autorizados
+
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+
+**Fecha de corte:** `2026-08-02`
+
+**Cambios en código, migraciones, funciones, workers, colas, proveedores, dispositivos, despliegues, datos o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado material
+
+Esta tarea materializa el registro canónico:
+
+```text
+TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0
+```
+
+El registro define, para cada una de las diez identidades `TSVC-SVC-001..010`:
+
+1. la intención idempotente y su ámbito de unicidad;
+2. la clave de deduplicación de transporte o entrega;
+3. la huella canónica del contenido que permite distinguir repetición válida de conflicto;
+4. el comportamiento ante solicitudes nuevas, duplicadas, concurrentes, tardías o incompatibles;
+5. el perfil de reintento, presupuesto de intentos, backoff, jitter y deadline;
+6. la clasificación entre error reintentable, error terminal, bloqueo y resultado desconocido;
+7. la recuperación del resultado previo sin repetir el efecto empresarial, técnico o físico;
+8. la relación entre principal llamador, identidad del servicio, worker, dispositivo, proveedor y scheduler;
+9. la transición hacia conciliación, cuarentena o dead-letter cuando la ejecución no puede cerrarse automáticamente;
+10. el handoff obligatorio hacia observabilidad, contingencia, retención y adopción progresiva.
+
+La garantía base es:
+
+```text
+ENTREGA AL MENOS UNA VEZ
++
+EFECTOS IDEMPOTENTES
++
+DEDUPLICACIÓN EXPLÍCITA
++
+RESULTADO RECUPERABLE
+```
+
+No se declara garantía de ejecución exactamente una vez. La no duplicidad observable se obtiene mediante claves estables, reserva atómica de intención, control de concurrencia, recuperación del resultado previo y conciliación de efectos ambiguos.
+
+---
+
+#### 2. Alcance
+
+La tarea abarca exactamente estas diez identidades:
+
+1. `TSVC-SVC-001` — Orquestación genérica de trabajos asíncronos.
+2. `TSVC-SVC-002` — Entrega transaccional de eventos y outbox.
+3. `TSVC-SVC-003` — Impresión centralizada.
+4. `TSVC-SVC-004` — Notificaciones y alertas.
+5. `TSVC-SVC-005` — Generación de documentos.
+6. `TSVC-SVC-006` — Custodia de archivos y documentos originales.
+7. `TSVC-SVC-007` — Evidencia transaccional.
+8. `TSVC-SVC-008` — Integraciones externas y webhooks.
+9. `TSVC-SVC-009` — Programación y automatizaciones recurrentes.
+10. `TSVC-SVC-010` — Monitoreo y heartbeat de workers.
+
+La tarea conserva sin modificación:
+
+- las diez identidades y su clasificación material aprobadas en `TSVC-CAT-001`;
+- el propietario técnico institucional definido en `TSVC-CAT-002`;
+- la matriz de cien decisiones aplicación–servicio aprobada en `TSVC-CAT-003`;
+- los diez contratos `TSVC-SVC-001.CONTRACT` a `TSVC-SVC-010.CONTRACT`, todos en versión inicial `1.0.0`;
+- las identidades técnicas, clases de credencial y límites de mínimo privilegio de `TSVC-CAT-005`;
+- la autoridad empresarial de la aplicación propietaria del resultado;
+- la separación entre solicitud, acuse técnico, ejecución, resultado empresarial y evidencia física;
+- la obligación de materializar cualquier modificación futura de Supabase perteneciente a VENTO desde `vento-shell` y únicamente durante una fase autorizada.
+
+Quedan fuera del alcance:
+
+- crear tablas, índices, constraints, funciones, triggers, colas, topics, buckets, workers, endpoints, adaptadores, secrets o credenciales;
+- ejecutar DDL, DML, migraciones, backfills, despliegues, conciliaciones productivas o pruebas con proveedores y dispositivos;
+- seleccionar una tecnología física de mensajería o scheduler;
+- definir métricas, umbrales, alertas, trazas y auditoría operativa, responsabilidad de `TSVC-CAT-007`;
+- definir operación degradada, fallback y recuperación empresarial, responsabilidad de `TSVC-CAT-008`;
+- definir retención, archivado y limpieza de intentos, resultados y dead-letter, responsabilidad de `TSVC-CAT-009`;
+- definir adopción, coexistencia y retiro de activos legacy, responsabilidad de `TSVC-CAT-010`;
+- afirmar que los mecanismos documentados están implementados, desplegados o validados operativamente.
+
+---
+
+#### 3. Decisiones aprobadas
+
+##### 3.1. Identidad del registro
+
+| Campo                  | Valor                                         |
+| ---------------------- | --------------------------------------------- |
+| `registry_id`          | `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001` |
+| `registry_version`     | `1.0.0`                                       |
+| `registry_status`      | `DEFINED`                                     |
+| `covered_services`     | `10`                                          |
+| `base_delivery_model`  | `AT_LEAST_ONCE_WITH_IDEMPOTENT_EFFECTS`       |
+| `exactly_once_claim`   | `PROHIBITED_WITHOUT_END_TO_END_EVIDENCE`      |
+| `technical_owner`      | Tecnología de Vento Group                     |
+| `canonical_repository` | `vento-shell`                                 |
+| `governing_task`       | `TSVC-CAT-006`                                |
+
+`DEFINED` significa que las reglas documentales están cerradas para las diez identidades. No significa que exista persistencia, constraint, worker, política de proveedor, dispositivo o evidencia de ejecución.
+
+##### 3.2. Vocabulario canónico
+
+| Término                | Definición canónica                                                                                                                                                 |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `operation_id`         | Identificador único de una operación registrada. No se reutiliza para otra operación.                                                                               |
+| `idempotency_key`      | Identificador estable de una misma intención empresarial o técnica. Se crea antes del primer envío y permanece en todos sus reintentos y handoffs técnicos.         |
+| `deduplication_key`    | Identificador estable de un mensaje, evento, entrega, archivo, evidencia, ocurrencia o señal usado para detectar repetición del mismo elemento transportado.        |
+| `payload_fingerprint`  | Huella `SHA-256` del contenido canónico normalizado que determina si dos usos de la misma clave representan exactamente la misma intención.                         |
+| `attempt_id`           | Identificador único de una ejecución concreta. Cada intento recibe uno nuevo.                                                                                       |
+| `attempt_no`           | Número ordinal del intento; comienza en `1`.                                                                                                                        |
+| `retry_count`          | Cantidad de reintentos ya iniciados; equivale a `attempt_no - 1`.                                                                                                   |
+| `result_ref`           | Referencia estable al resultado autoritativo previamente producido o conciliado.                                                                                    |
+| `receipt_id`           | Acuse consultable de que la intención fue recibida o reservada; no prueba el efecto empresarial ni físico.                                                          |
+| `correlation_id`       | Identificador que agrupa operaciones relacionadas dentro de una misma coordinación.                                                                                 |
+| `causation_id`         | Identificador de la solicitud, evento u operación que causó directamente la operación actual.                                                                       |
+| `lease_token`          | Identificador temporal de reclamación de trabajo. No reemplaza la identidad del worker ni concede autoridad empresarial.                                            |
+| `fencing_token`        | Valor monotónico o versión equivalente que impide que un worker con lease vencido cierre o sobrescriba trabajo reclamado posteriormente por otro worker.            |
+| `RESULT_UNKNOWN`       | Estado en el que la solicitud pudo haber producido efecto, pero no existe todavía confirmación suficiente para declararla exitosa, fallida o segura para repetir.   |
+| `IDEMPOTENCY_CONFLICT` | Resultado terminal al reutilizar una clave con una huella, contrato, propietario, recurso o intención incompatible.                                                 |
+| `DEAD_LETTER`          | Estado de aislamiento de una unidad no procesable automáticamente después de agotar política o detectar mensaje venenoso, sin convertirlo en resultado empresarial. |
+
+Reglas obligatorias:
+
+1. `operation_id`, `idempotency_key`, `attempt_id`, `correlation_id` y `causation_id` cumplen funciones distintas y no pueden reemplazarse entre sí.
+2. La clave idempotente se genera en el límite que conoce la intención, no dentro de un worker después de comenzar el efecto.
+3. Un reintento de la misma intención conserva `idempotency_key`, `payload_fingerprint`, contrato, propietario y recurso.
+4. Una intención nueva utiliza una clave nueva, aunque se origine desde la misma pantalla, usuario, cron, documento o proveedor.
+5. La huella excluye campos volátiles que no cambian la intención, como `attempt_id`, `attempt_no`, tiempos de recepción, tokens de autenticación y metadata técnica de transporte.
+6. La huella incluye todos los campos cuyo cambio pueda alterar destinatario, recurso, cantidad, versión, plantilla, proveedor, dispositivo, finalidad, resultado o efecto.
+7. El algoritmo de normalización y su versión deberán estar identificados cuando se implemente; una modificación incompatible del algoritmo exige transición versionada.
+8. No se acepta una clave vacía, derivada únicamente de un timestamp no estable, generada de nuevo en cada reintento ni compartida entre intenciones distintas.
+
+##### 3.3. Sobre mínimo de confiabilidad
+
+Toda materialización futura deberá poder conservar, cuando aplique:
+
+```text
+service_id
+contract_id
+contract_version
+operation_id
+operation_type
+idempotency_key
+idempotency_scope
+payload_fingerprint
+fingerprint_version
+deduplication_key
+correlation_id
+causation_id
+attempt_id
+attempt_no
+retry_count
+max_attempts
+retry_profile
+first_requested_at
+last_attempt_at
+next_retry_at
+deadline_at
+producer_application
+business_owner_application
+caller_identity
+service_principal_id
+worker_identity
+device_identity
+provider_identity
+scheduler_identity
+lease_token
+fencing_token
+row_version
+operation_status
+receipt_id
+result_ref
+error_code
+retryable
+reconciliation_status
+```
+
+Reglas:
+
+1. los campos no aplicables permanecen ausentes o `NO_APLICA`; no se inventan identidades;
+2. el actor y la aplicación originadora permanecen trazables durante todos los intentos;
+3. el worker usa la identidad técnica de `TSVC-CAT-005` y no conserva como credencial persistente el token del actor;
+4. `result_ref` apunta al resultado autoritativo y no a un log, spinner, acuse o respuesta transitoria;
+5. un cambio de contrato, propietario, recurso o payload material no puede ocultarse bajo la misma clave;
+6. `next_retry_at` solo existe cuando el error es reintentable, queda presupuesto y no venció el deadline;
+7. el sobre permite reconstruir la secuencia sin copiar secretos ni payloads sensibles completos a logs o dead-letter.
+
+##### 3.4. Reserva idempotente y recuperación del resultado
+
+La aceptación de una intención deberá comportarse conceptualmente así:
+
+```text
+RECIBIR INTENCIÓN
+      ↓
+VALIDAR CONTRATO, IDENTIDAD, AUTORIDAD Y ÁMBITO
+      ↓
+CALCULAR HUELLA CANÓNICA
+      ↓
+RESERVAR CLAVE DE FORMA ATÓMICA
+      ↓
+┌────────────────────────────────────────────────────┐
+│ NUEVA CLAVE        → crear receipt y continuar     │
+│ MISMA HUELLA       → devolver estado/resultado     │
+│ HUELLA DIFERENTE   → IDEMPOTENCY_CONFLICT          │
+└────────────────────────────────────────────────────┘
+```
+
+Reglas obligatorias:
+
+1. La comprobación y reserva de la clave forman una sola operación atómica o un mecanismo equivalente que impida dos ganadores.
+2. Dos solicitudes concurrentes con la misma clave y huella resuelven a una sola intención registrada.
+3. La solicitud duplicada no crea otro trabajo, evento, impresión, notificación, documento, archivo, evidencia, integración, ocurrencia o señal.
+4. Si la intención sigue activa, la repetición devuelve el mismo `receipt_id`, estado y referencia de consulta.
+5. Si terminó correctamente, la repetición devuelve o referencia el mismo resultado autoritativo.
+6. Si terminó con error no reintentable, la repetición devuelve el mismo error terminal y no reinicia la operación.
+7. Si el resultado permanece desconocido, la repetición entra en consulta o conciliación; no crea automáticamente otra intención.
+8. Reutilizar la misma clave con huella incompatible produce `IDEMPOTENCY_CONFLICT`, queda registrado y no se corrige reemplazando silenciosamente el payload previo.
+9. Una operación terminal no se reabre mediante un nuevo intento; una acción empresarial realmente nueva debe usar otra clave y vincularse con la anterior cuando corresponda.
+10. La caducidad de una clave no autoriza su reutilización con otro significado. Las políticas de conservación se definirán en `TSVC-CAT-009` preservando la identidad histórica necesaria.
+
+##### 3.5. Resultados cerrados de deduplicación
+
+| Resultado                   | Significado                                                                                    | Respuesta obligatoria                                                                                               |
+| --------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `NEW_INTENTION`             | No existe una intención previa dentro del ámbito de unicidad.                                  | Reservar una sola vez, crear `receipt_id` y continuar.                                                              |
+| `DUPLICATE_IN_PROGRESS`     | Existe la misma clave y huella en estado no terminal.                                          | Devolver el mismo receipt, estado y próxima condición de consulta; no encolar otra unidad.                          |
+| `DUPLICATE_SUCCEEDED`       | La misma intención ya produjo resultado válido.                                                | Devolver `result_ref` o una proyección equivalente; no repetir el efecto.                                           |
+| `DUPLICATE_FAILED_TERMINAL` | La misma intención terminó con error no reintentable o presupuesto agotado.                    | Devolver el error y estado previos; una nueva intención exige nueva clave.                                          |
+| `IDEMPOTENCY_CONFLICT`      | La clave fue reutilizada con huella, contrato, recurso, propietario o finalidad incompatibles. | Rechazar, conservar evidencia del conflicto y no ejecutar.                                                          |
+| `RESULT_UNKNOWN`            | El efecto pudo ocurrir, pero no existe confirmación autoritativa suficiente.                   | Consultar proveedor, dispositivo, registro o fuente de verdad; no repetir ciegamente.                               |
+| `STALE_OR_OUT_OF_ORDER`     | El mensaje o señal es anterior a una versión ya aceptada o rompe orden causal obligatorio.     | Bloquear, ignorar de forma registrada o enviar a conciliación según contrato; nunca sobrescribir una versión nueva. |
+| `POISON_OR_UNPROCESSABLE`   | El elemento no puede procesarse de forma segura con el contrato vigente.                       | Aislar en cuarentena o dead-letter sin marcar resultado empresarial.                                                |
+
+##### 3.6. Perfiles canónicos de reintento
+
+| Perfil                     | Uso objetivo                                                                                            | Máximo de intentos | Secuencia base de espera después del primer fallo | Disposición al agotar                              |
+| -------------------------- | ------------------------------------------------------------------------------------------------------- | -----------------: | ------------------------------------------------- | -------------------------------------------------- |
+| `RR0_NO_RETRY`             | Validación, autorización, conflicto, contrato incompatible, rechazo empresarial o señal obsoleta.       |                  1 | no aplica                                         | error terminal                                     |
+| `RR1_SHORT_TRANSIENT`      | Fallo técnico breve, lock transitorio, runtime reiniciado o dependencia interna momentánea.             |                  4 | `5 s`, `30 s`, `2 min`                            | dead-letter o terminal según contrato              |
+| `RR2_DURABLE_DELIVERY`     | Outbox, notificación, integración o entrega durable que tolera espera.                                  |                  7 | `15 s`, `1 min`, `5 min`, `15 min`, `1 h`, `6 h`  | dead-letter y conciliación                         |
+| `RR3_DEVICE_OR_OFFLINE`    | Dispositivo, periférico, carga de archivo o captura local con conectividad intermitente.                |                  6 | `10 s`, `1 min`, `5 min`, `30 min`, `2 h`         | bloqueo o conciliación; no repetición física ciega |
+| `RR4_SCHEDULED_OCCURRENCE` | Ejecución de una ocurrencia lógica de schedule.                                                         |                  4 | `30 s`, `2 min`, `10 min`                         | ocurrencia fallida o conciliación                  |
+| `RR5_COALESCING_SIGNAL`    | Heartbeat o señal de salud donde una señal más reciente sustituye la necesidad de reenviar una antigua. |                  1 | no aplica                                         | señal vencida u omitida de forma registrada        |
+
+Reglas obligatorias:
+
+1. `max_attempts` incluye el primer intento; `max_retries = max_attempts - 1`.
+2. Todo backoff aplica jitter acotado y determinista o aleatorio seguro para evitar reintentos sincronizados.
+3. Un proveedor que responda `Retry-After` o equivalente puede ampliar la espera, pero no el deadline ni el presupuesto sin una decisión versionada.
+4. La espera nunca se reduce a un loop inmediato.
+5. El tiempo offline o de dispositivo no disponible no consume intentos mientras no se haya iniciado una nueva llamada o ejecución.
+6. Un error de validación, autorización, contrato, conflicto idempotente, recurso inexistente definitivo o rechazo empresarial no se convierte en transitorio por repetición.
+7. La pérdida de lease permite otro claim de la misma intención, pero no crea una intención nueva ni autoriza al worker vencido a cerrar.
+8. El reintento conserva payload y huella. Corregir el contenido es una nueva intención o una operación de corrección explícita.
+9. El deadline prevalece sobre el presupuesto de intentos.
+10. Una operación cancelada, vencida o revocada no puede producir efectos tardíos ordinarios; cualquier resultado tardío entra en conciliación.
+11. La aplicación propietaria puede definir un perfil más restrictivo por operación. Ampliar intentos, deadline o clases reintentables exige contrato versionado y evidencia de seguridad.
+
+##### 3.7. Clasificación canónica de errores
+
+| Clase                             | Reintentable | Tratamiento                                                                            |
+| --------------------------------- | ------------ | -------------------------------------------------------------------------------------- |
+| `VALIDATION_ERROR`                | no           | corregir mediante nueva intención; no repetir el mismo payload inválido                |
+| `AUTHENTICATION_OR_AUTHORIZATION` | no           | bloquear; renovar identidad o autoridad no convierte el intento anterior en ejecutable |
+| `CONTRACT_OR_VERSION_ERROR`       | no           | rechazar; adaptar o publicar compatibilidad mediante contrato versionado               |
+| `IDEMPOTENCY_CONFLICT`            | no           | conservar conflicto; no sobrescribir ni aceptar el segundo contenido                   |
+| `BUSINESS_REJECTION`              | no           | devolver decisión propietaria; una nueva solicitud requiere nueva intención            |
+| `TRANSIENT_INTERNAL`              | sí           | aplicar perfil asignado y conservar la misma clave                                     |
+| `THROTTLED`                       | sí           | respetar `Retry-After`, rate limit, deadline y presupuesto                             |
+| `DEPENDENCY_UNAVAILABLE`          | sí           | backoff, circuit breaker cuando aplique y no ampliar autoridad                         |
+| `LEASE_LOST`                      | sí           | abandonar el intento; otro worker puede reclamar con fencing vigente                   |
+| `OFFLINE_OR_DEVICE_UNREACHABLE`   | diferido     | esperar conectividad o disponibilidad; no consumir intentos sin ejecución              |
+| `AMBIGUOUS_EXTERNAL_EFFECT`       | no directo   | `RESULT_UNKNOWN`; consultar y conciliar antes de decidir reintento                     |
+| `AMBIGUOUS_PHYSICAL_EFFECT`       | no directo   | `RESULT_UNKNOWN`; inspección o confirmación física antes de repetir                    |
+| `DEADLINE_EXCEEDED`               | no           | cerrar como vencido o enviar a conciliación según contrato                             |
+| `POISON_MESSAGE`                  | no           | aislar; no reiterar automáticamente un elemento determinísticamente no procesable      |
+
+##### 3.8. Registro canónico por servicio
+
+| Servicio       | Intención y ámbito de unicidad                                                                                                   | Clave de deduplicación                                 | Perfil base                | Decisión ante repetición o ambigüedad                                                                                                                                                     | Estado material |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ | -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `TSVC-SVC-001` | `service_id + producer_application + operation_type + business_reference + idempotency_key`                                      | `operation_id`                                         | `RR2_DURABLE_DELIVERY`     | La misma intención devuelve el mismo trabajo, receipt y resultado. Dos claims concurrentes usan lease y fencing; agotamiento termina en dead-letter o error terminal sin duplicar efecto. | `ESPECIFICADO`  |
+| `TSVC-SVC-002` | `producer_application + event_id`; `event_id` es inmutable y pertenece a un solo hecho empresarial                               | `event_id`                                             | `RR2_DURABLE_DELIVERY`     | Registrar y entregar al menos una vez; productores no recrean el evento y consumidores deduplican por `event_id`. Una versión de agregado tardía no sobrescribe una posterior.            | `ESPECIFICADO`  |
+| `TSVC-SVC-003` | `business_owner_application + document_or_command_reference + version + print_purpose + authorized_copy_identity`                | `print_job_id` y receipt del adaptador                 | `RR3_DEVICE_OR_OFFLINE`    | Antes de aceptación del periférico puede reintentarse. Después de aceptación ambigua queda `RESULT_UNKNOWN`; una reimpresión intencional usa nueva clave, motivo, autoridad y vínculo.    | `ESPECIFICADO`  |
+| `TSVC-SVC-004` | `business_owner_application + notification_reference + template_version + recipient + channel + purpose`                         | `notification_job_id`; ID del proveedor cuando exista  | `RR2_DURABLE_DELIVERY`     | El duplicado devuelve el mismo estado. Un fallback de canal permanece bajo la misma intención, pero cada entrega por canal tiene identidad propia; un acuse incierto exige consulta.      | `ESPECIFICADO`  |
+| `TSVC-SVC-005` | `business_owner_application + source_reference + source_version + template_id + template_version + output_purpose`               | `document_generation_job_id`                           | `RR1_SHORT_TRANSIENT`      | La misma fuente, plantilla y finalidad recuperan el mismo documento o resultado. Cambiar fuente, plantilla o finalidad crea una intención nueva y no reescribe el artefacto previo.       | `ESPECIFICADO`  |
+| `TSVC-SVC-006` | `business_owner_application + resource_reference + ingest_purpose + content_hash + source_identity`                              | `file_operation_id` y `content_hash` dentro del ámbito | `RR3_DEVICE_OR_OFFLINE`    | Repetir la misma carga recupera el mismo registro. El hash no deduplica globalmente archivos válidos de recursos distintos. Misma clave con otro contenido produce conflicto.             | `ESPECIFICADO`  |
+| `TSVC-SVC-007` | `business_owner_application + business_event_reference + evidence_type + capture_sequence + content_hash`                        | `evidence_operation_id` y hash dentro del hecho        | `RR3_DEVICE_OR_OFFLINE`    | La evidencia idéntica del mismo hecho devuelve la referencia existente. Una corrección crea nueva evidencia vinculada; nunca sobrescribe la original ni duplica el hecho probado.         | `ESPECIFICADO`  |
+| `TSVC-SVC-008` | Entrante: `provider_identity + provider_event_id`; saliente: `owner + business_reference + provider + contract_version + key`    | ID externo y `integration_operation_id`                | `RR2_DURABLE_DELIVERY`     | Replays entrantes devuelven el mismo acuse sin segundo efecto. Timeout posterior al envío queda `RESULT_UNKNOWN` y exige consulta o conciliación con proveedor antes de reenviar.         | `ESPECIFICADO`  |
+| `TSVC-SVC-009` | Definición: `owner + schedule_id + schedule_version`; ocurrencia: `owner + schedule_id + logical_fire_at_utc + contract_version` | `schedule_occurrence_id`                               | `RR4_SCHEDULED_OCCURRENCE` | Una ocurrencia lógica se ejecuta una sola vez de forma observable. Misfire y reintento conservan la misma clave; ejecución manual usa nueva clave vinculada a la ocurrencia original.     | `ESPECIFICADO`  |
+| `TSVC-SVC-010` | `worker_identity + boot_id + heartbeat_sequence`; el estado agregado usa versión monotónica del worker                           | `worker_identity + boot_id + sequence`                 | `RR5_COALESCING_SIGNAL`    | Señales repetidas o antiguas no crean efectos empresariales ni degradan un estado más nuevo. La ausencia se evalúa por ventana; no se reenvía un heartbeat vencido.                       | `ESPECIFICADO`  |
+
+##### 3.9. Reglas específicas de claves y huellas
+
+1. `TSVC-SVC-001`: la aplicación llamadora crea la clave antes de someter el trabajo; el worker no puede sustituirla por su `attempt_id`.
+2. `TSVC-SVC-002`: `event_id` identifica el hecho publicado y es simultáneamente la frontera principal de deduplicación; cada consumidora conserva su propio estado de consumo.
+3. `TSVC-SVC-003`: la identidad de copia autorizada distingue original, copia controlada, reimpresión y prueba técnica. Pulsar nuevamente no crea automáticamente una copia distinta.
+4. `TSVC-SVC-004`: destinatario, canal, plantilla, versión y finalidad forman parte de la huella; cambiar destinatario o contenido material requiere otra intención.
+5. `TSVC-SVC-005`: una generación determinista puede reutilizar el resultado; una generación no determinista debe congelar snapshot, plantilla y parámetros antes de calcular la huella.
+6. `TSVC-SVC-006`: `content_hash` confirma identidad de bytes, pero no sustituye recurso, clasificación, versión, procedencia ni finalidad.
+7. `TSVC-SVC-007`: una evidencia idéntica puede estar legítimamente vinculada a hechos diferentes; la deduplicación se limita al hecho, tipo y secuencia declarados.
+8. `TSVC-SVC-008`: el identificador del proveedor prevalece para replay entrante; cuando el proveedor no lo suministre, el adaptador deberá construir una clave determinista a partir del contrato y campos estables aprobados.
+9. `TSVC-SVC-009`: `logical_fire_at_utc` representa la ocurrencia prevista, no la hora real en que un worker logró ejecutarla.
+10. `TSVC-SVC-010`: `boot_id` separa reinicios del worker y `heartbeat_sequence` debe ser monotónico dentro de ese arranque.
+
+##### 3.10. Ciclo de vida de la operación reintentable
+
+```text
+RECEIVED
+   ↓
+RESERVED
+   ↓
+CLAIMED
+   ↓
+EXECUTING
+   ├──────────────→ SUCCEEDED
+   ├─ error transitorio → RETRY_SCHEDULED → CLAIMED
+   ├─ efecto ambiguo ───→ RESULT_UNKNOWN → RECONCILING
+   │                                           ├→ SUCCEEDED
+   │                                           ├→ RETRY_SCHEDULED
+   │                                           └→ FAILED_TERMINAL
+   ├─ error no reintentable ──────────────────→ FAILED_TERMINAL
+   └─ presupuesto agotado ────────────────────→ DEAD_LETTER
+```
+
+Estados adicionales permitidos:
+
+| Estado             | Regla                                                                                                                                                          |
+| ------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BLOCKED`          | Existe una condición concreta que impide ejecutar, como autoridad expirada, dependencia causal o dispositivo no disponible; no consume intentos sin ejecución. |
+| `CANCEL_REQUESTED` | La propietaria solicitó cancelar; no implica que el worker ya se detuvo.                                                                                       |
+| `CANCELLED`        | Se confirmó que no habrá efecto ordinario posterior; un resultado tardío entra en conciliación.                                                                |
+| `EXPIRED`          | El deadline venció; no se inician nuevos intentos.                                                                                                             |
+| `QUARANTINED`      | Existe conflicto, orden inválido, contrato desconocido o mensaje venenoso que requiere revisión controlada.                                                    |
+| `DEAD_LETTER`      | Se agotó el tratamiento automático sin declarar resultado empresarial.                                                                                         |
+
+Reglas:
+
+1. Solo un estado terminal puede cerrar la unidad de trabajo.
+2. `RETRY_SCHEDULED` exige `next_retry_at`, clase de error y presupuesto restante.
+3. `RESULT_UNKNOWN` no es equivalente a fallo y prohíbe una nueva intención automática.
+4. `DEAD_LETTER` no equivale a cancelación, rechazo empresarial ni éxito parcial.
+5. La recuperación manual o automática conserva la misma intención y agrega un nuevo intento; no reescribe intentos previos.
+6. Los efectos parciales se concilian por componente y no se ocultan bajo un único estado exitoso.
+
+##### 3.11. Claim, lease, concurrencia y fencing
+
+Toda implementación futura de trabajo reclamable deberá cumplir:
+
+1. un claim selecciona y reserva de forma atómica una unidad elegible;
+2. el claim identifica servicio, worker, lease, vencimiento y fencing vigente;
+3. dos workers no pueden poseer simultáneamente autoridad válida para cerrar la misma versión de trabajo;
+4. renovar lease no incrementa `attempt_no` mientras continúe la misma ejecución;
+5. perder lease obliga al worker a detener cierre y mutaciones posteriores;
+6. un worker tardío no puede sobrescribir el resultado de otro claim con fencing más reciente;
+7. la reaparición de una unidad por lease vencido conserva la misma clave idempotente;
+8. el efecto empresarial externo debe incluir clave o referencia que permita deduplicar aunque el worker pierda la respuesta;
+9. el orden obligatorio se controla por recurso, agregado, versión, dependencia u ocurrencia, no por hora de llegada aislada;
+10. la prioridad puede cambiar orden entre unidades independientes, pero nunca romper causalidad ni dependencia;
+11. no se usa `last write wins` para resolver estados, cantidades, versiones, custodia, pagos, documentos, evidencia o efectos empresariales;
+12. un conflicto concurrente se rechaza o concilia explícitamente.
+
+##### 3.12. Identidad y autorización durante reintentos
+
+1. Cada intento registra `caller_identity`, `service_principal_id`, `worker_identity` y las identidades adicionales aplicables de `TSVC-CAT-005`.
+2. La identidad del worker no sustituye actor, aplicación originadora, recurso, alcance ni autoridad empresarial.
+3. Un token delegado de usuario no se conserva como credencial persistente del worker.
+4. Antes de un efecto sensible, el reintento revalida contrato, recurso, estado, deadline, cancelación y autoridad vigente cuando corresponda.
+5. Un cambio de actor, permiso, sede, área, dispositivo, proveedor o política puede convertir la unidad en `BLOCKED` o terminal; no habilita ejecución bajo el contexto anterior.
+6. Una rotación de credencial no cambia la clave idempotente ni el significado de la intención.
+7. Un reintento nunca utiliza `SUPABASE_SERVICE_ROLE_KEY` como justificación de autoridad empresarial ni como identidad transversal compartida.
+8. La recuperación de emergencia conserva la intención, agrega identidad y autorización de emergencia y no borra los intentos ordinarios.
+
+##### 3.13. Conciliación de efectos ambiguos
+
+Se exige conciliación antes de repetir cuando exista posibilidad material de que el efecto ocurrió y se perdió la respuesta, incluyendo:
+
+- proveedor externo que recibió la solicitud, pero no devolvió respuesta concluyente;
+- impresora o periférico que pudo aceptar el trabajo;
+- upload cuyo objeto pudo persistirse sin que se confirmara el registro asociado;
+- generación de documento que pudo crear artefacto antes de fallar la respuesta;
+- webhook aceptado cuyo procesamiento interno no tiene resultado confirmado;
+- schedule que pudo iniciar trabajo antes de perder lease;
+- worker que cerró el efecto externo, pero no logró persistir el resultado local.
+
+La conciliación deberá:
+
+1. consultar por clave, identificador externo, receipt, hash, versión o referencia autoritativa;
+2. distinguir no ejecutado, ejecutado, parcialmente ejecutado, ejecutado con resultado incompatible y no determinable;
+3. recuperar el resultado existente cuando sea compatible;
+4. completar únicamente componentes faltantes de forma idempotente;
+5. bloquear repetición destructiva o física cuando no pueda demostrarse seguridad;
+6. registrar la decisión y preservar los intentos anteriores;
+7. escalar a la aplicación propietaria cuando el resultado empresarial no pueda inferirse desde el servicio técnico.
+
+##### 3.14. Reconciliación con activos técnicos actuales
+
+| Activo o patrón observado                    | Servicio relacionado | Clasificación de confiabilidad                      | Decisión canónica                                                                                                                                     |
+| -------------------------------------------- | -------------------- | --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cola de impresión local en navegador         | `TSVC-SVC-003`       | `PARTIAL_WITHOUT_TRANSVERSE_IDEMPOTENCY`            | Conservar como evidencia funcional; no acredita reserva atómica, lease, recuperación de resultado ni protección extremo a extremo contra copias.      |
+| Registro autenticado de tokens push          | `TSVC-SVC-004`       | `ADDRESSING_ASSET_NOT_DELIVERY_RELIABILITY`         | Conservar como activo de direccionamiento; no demuestra cola, deduplicación, reintento, receipt ni resultado de entrega.                              |
+| Flujo de carga documental por aplicación     | `TSVC-SVC-006`       | `PARTIAL_APPLICATION_SCOPED_INGEST`                 | Conservar carga y metadatos compatibles; la adopción futura deberá añadir ámbito, hash, receipt, conflicto y recuperación sin deduplicar globalmente. |
+| Webhooks específicos de pagos y RevenueCat   | `TSVC-SVC-008`       | `PROVIDER_SPECIFIC_PARTIAL_RELIABILITY`             | Conservar identificadores y verificaciones existentes cuando sean compatibles; no asumir que constituyen el servicio transversal completo.            |
+| Procesamiento servidor con credencial amplia | servicios aplicables | `LEGACY_BROAD_CREDENTIAL_WITHOUT_RELIABILITY_PROOF` | No se acepta como sustituto de clave idempotente, claim, lease, fencing, deduplicación, resultado recuperable ni autorización empresarial.            |
+
+La reconciliación describe el estado documental conocido. No declara que los activos hayan sido migrados, endurecidos o probados con fallos.
+
+##### 3.15. Aplicación al carril `NEXO-REMISSIONS-001`
+
+Para el paquete prioritario de remisiones NEXO:
+
+1. NEXO conserva la fuente de verdad del proceso y de sus cantidades; el servicio transversal no crea estados empresariales paralelos.
+2. Cada comando asíncrono conserva aplicación, proceso, instancia, remisión, línea, versión, actor, sede, área, recurso, correlación y clave idempotente.
+3. Repetir creación, preparación, impresión, evidencia o entrega técnica no duplica reservas, movimientos, documentos, etiquetas ni cierres.
+4. Un trabajo de impresión conserva propósito, versión e identidad de copia. La reimpresión requiere nueva intención, motivo y autoridad.
+5. Cargas y evidencias offline conservan clave, hash, actor, dispositivo, tiempo del hecho y referencia de remisión durante reinicio y reconexión.
+6. La sincronización revalida contexto, versión, estado y autoridad antes de aplicar efectos pendientes.
+7. Un receipt técnico, mensaje encolado, objeto cargado o comando enviado no marca la remisión como preparada, despachada, recibida ni completada.
+8. Un timeout posterior a envío queda `RESULT_UNKNOWN`; se consulta y concilia antes de repetir.
+9. Las operaciones de líneas distintas pueden progresar de forma independiente cuando no rompan causalidad, reserva, lote, LPN, custodia o cierre de remisión.
+10. Un conflicto de versión o cantidad no se resuelve mediante sobrescritura; se bloquea y devuelve a la aplicación propietaria.
+11. Las capacidades condicionales de la matriz de `TSVC-CAT-003` no se habilitan por la sola existencia de este registro.
+12. La definición no implementa el paquete ni modifica Supabase, NEXO, dispositivos o impresoras.
+
+##### 3.16. Reconciliación cuantitativa
+
+| Control                                                  | Resultado |
+| -------------------------------------------------------- | --------: |
+| Identidades de servicio esperadas                        |        10 |
+| Identidades de servicio materializadas                   |        10 |
+| Identificadores de servicio únicos                       |        10 |
+| Identidades faltantes                                    |         0 |
+| Identidades duplicadas                                   |         0 |
+| Contratos `1.0.0` preservados                            |        10 |
+| Perfiles canónicos de reintento                          |         6 |
+| Resultados cerrados de deduplicación                     |         8 |
+| Clases canónicas de error                                |        14 |
+| Servicios con decisión idempotente explícita             |        10 |
+| Servicios con perfil de reintento explícito              |        10 |
+| Servicios con tratamiento de resultado ambiguo explícito |        10 |
+| Implementaciones físicas creadas                         |         0 |
+| Migraciones o cambios Supabase                           |         0 |
+
+##### 3.17. Handoff obligatorio
+
+| Tarea posterior | Insumo recibido de `TSVC-CAT-006`                                                                                                                                                       |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TSVC-CAT-007`  | Campos, estados y eventos que deberán producir métricas y auditoría: intentos, duplicados, conflictos, backoff, leases, resultado desconocido, conciliación, dead-letter y agotamiento. |
+| `TSVC-CAT-008`  | Estados `BLOCKED`, `RESULT_UNKNOWN`, `DEAD_LETTER`, deadlines y reglas que deberán integrarse con contingencia, fallback y degradación controlada.                                      |
+| `TSVC-CAT-009`  | Intentos, claves, huellas, receipts, resultados, conflictos, conciliaciones y dead-letter que requerirán políticas de retención sin permitir reutilización semántica de identidades.    |
+| `TSVC-CAT-010`  | Clasificaciones de activos parciales y patrones legacy que deberán adoptar claves, deduplicación, claims, resultados recuperables y retiro progresivo.                                  |
+
+---
+
+#### 4. Artefactos y entregables
+
+1. `TRANSVERSE-SERVICE-RELIABILITY-REGISTRY-001@1.0.0`.
+2. Vocabulario cerrado de identidad de operación, intención, deduplicación, intento, receipt, resultado y conflicto.
+3. Sobre mínimo de confiabilidad aplicable a los diez contratos transversales.
+4. Regla atómica de reserva y recuperación del resultado previo.
+5. Catálogo cerrado de ocho resultados de deduplicación.
+6. Catálogo cerrado de seis perfiles de reintento con presupuesto y backoff explícitos.
+7. Catálogo cerrado de catorce clases de error y tratamiento.
+8. Matriz materializada de diez servicios con ámbito, clave, perfil, repetición, ambigüedad y estado.
+9. Ciclo de vida de ejecución, resultado desconocido, conciliación, cuarentena y dead-letter.
+10. Reglas de claim, lease, fencing, concurrencia, orden y deadlines.
+11. Aplicación de identidad técnica y autorización durante reintentos.
+12. Reconciliación de cinco patrones técnicos actuales sin afirmar cumplimiento.
+13. Aplicación específica al carril `NEXO-REMISSIONS-001`.
+14. Handoff cerrado hacia `TSVC-CAT-007..010`.
+
+---
+
+#### 5. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa para los diez servicios transversales mecanismos ya exigidos por requisitos canónicos vigentes sobre intención idempotente, replay, deduplicación, entrega al menos una vez, outbox, resultado desconocido, reintentos, backoff, orden, conflictos, efectos físicos, integraciones externas, recuperación y trazabilidad. No introduce un comportamiento empresarial adicional ni modifica el alcance, estado, responsable, modalidad o relación de requisitos existentes.
+
+La cobertura vigente incluye, entre otros:
+
+- `TREQ-PROC-041`, `TREQ-PROC-075`, `TREQ-PROC-085`, `TREQ-PROC-089` y `TREQ-PROC-090`;
+- `TREQ-PROC-186`, `TREQ-PROC-278`, `TREQ-PROC-279`, `TREQ-PROC-284` y `TREQ-PROC-285`;
+- `TREQ-PROC-299` a `TREQ-PROC-301` y `TREQ-PROC-309` a `TREQ-PROC-314`;
+- `TREQ-PROC-363`, `TREQ-PROC-364` y `TREQ-PROC-379`;
+- `TREQ-INTEGRATION-003` y `TREQ-INTEGRATION-004`.
+
+La tarea genera:
+
+```text
+CREADOS = 0
+MODIFICADOS = 0
+DIFERIDOS = 0
+DESCARTADOS_U_OBSOLETOS = 0
+```
+
+Por tanto, el registro canónico `04A` permanece sin cambios y no corresponde generar una nueva copia.
+
+---
+
+#### 6. Criterios de aceptación
+
+1. `TSVC-CAT-005` figura aprobada y `TSVC-CAT-006` corresponde a la continuidad vigente.
+2. Existen exactamente diez filas para `TSVC-SVC-001..010`.
+3. Cada servicio conserva su nombre, contrato, versión, propietaria, productoras y consumidoras aprobadas.
+4. Cada servicio declara una intención y ámbito de unicidad explícitos.
+5. Cada servicio declara una clave de deduplicación explícita.
+6. Cada servicio declara un perfil base de reintento.
+7. Cada servicio declara el comportamiento ante repetición y efecto ambiguo.
+8. `idempotency_key`, `operation_id`, `attempt_id`, `deduplication_key`, `correlation_id` y `causation_id` permanecen diferenciados.
+9. La clave se crea antes del primer envío y se conserva durante la misma intención.
+10. La misma clave y huella recuperan el mismo receipt, estado o resultado sin repetir el efecto.
+11. La misma clave con contenido incompatible produce `IDEMPOTENCY_CONFLICT`.
+12. Una intención nueva utiliza una clave nueva y no reabre una operación terminal.
+13. La comprobación y reserva de clave se define como atómica.
+14. No se afirma ejecución exactamente una vez.
+15. Los seis perfiles distinguen intentos, backoff, jitter, deadline y disposición al agotar.
+16. Los errores no reintentables no se convierten en transitorios por repetición.
+17. `RESULT_UNKNOWN` prohíbe repetición ciega y exige consulta o conciliación.
+18. Claim, lease y fencing impiden que un worker vencido cierre una versión posterior.
+19. Orden causal, versión y dependencias prevalecen sobre prioridad y hora de llegada.
+20. No se utiliza `last write wins` para efectos empresariales o físicos.
+21. La identidad técnica no sustituye actor, aplicación, autoridad ni recurso.
+22. La impresión diferencia intento, aceptación del periférico, resultado físico y reimpresión intencional.
+23. Outbox y consumidores deduplican por `event_id` y controlan orden por agregado y versión.
+24. Archivos y evidencia usan hash dentro de un ámbito empresarial; no existe deduplicación global indiscriminada.
+25. Webhooks e integraciones distinguen replay entrante, envío saliente y resultado externo ambiguo.
+26. Schedules distinguen definición, ocurrencia lógica, misfire, reintento y ejecución manual.
+27. Heartbeats aplican secuencia monotónica y no reintentan señales obsoletas.
+28. El carril NEXO conserva propiedad de estados, cantidades, custodia y cierre.
+29. Se declaran cero cambios `TREQ-*` con justificación concreta.
+30. No se generan cambios en código, datos, Supabase, proveedores, dispositivos o despliegues.
+31. `TSVC-CAT-007` permanece exclusivamente reservada.
+
+---
+
+#### 7. Dependencias y entradas
+
+La tarea consume y preserva:
+
+- `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+- `docs/plan-canonico/modular/delivery-contract.json`;
+- `docs/plan-canonico/modular/active-sequence.json`;
+- `docs/plan-canonico/modular/execution-route.json`;
+- `docs/plan-canonico/modular/priority-route-progress.json`;
+- `docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/00_INTRO.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/01_PRINCIPIO_DE_PROPIEDAD.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`;
+- `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md`;
+- `TSVC-CAT-001` a `TSVC-CAT-005`;
+- `PROC-CAT-015` a `PROC-CAT-018`;
+- `INT-APP-001` a `INT-APP-010`;
+- el registro canónico vigente `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`;
+- `package.json` y los validadores documentales aplicables.
+
+Ninguna decisión aprobada por estas fuentes se modifica.
+
+La tarea no afirma:
+
+- existencia de tablas, constraints, claims, leases, fencing o dead-letter físicos;
+- disponibilidad de workers, schedulers, dispositivos o proveedores;
+- adopción por aplicaciones consumidoras;
+- cumplimiento de backoff o deadlines en runtime;
+- deduplicación efectiva extremo a extremo;
+- conciliación productiva;
+- validación remota, operativa o física.
+
+Todas esas afirmaciones requieren implementación y evidencia de las tareas y paquetes propietarios.
+
+---
+
+#### 8. Continuidad canónica del bloque
+
+```text
+ÚLTIMA TAREA APROBADA
+TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas
+        ↓
+TAREA ACTUAL APROBADA
+TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
+        ↓
+SIGUIENTE TAREA RESERVADA
+TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría
+```
+
+
 ### [ ] TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría
 ### [ ] TSVC-CAT-008 — Definir contingencia y degradación controlada
 ### [ ] TSVC-CAT-009 — Definir retención, archivado y limpieza
