@@ -2932,7 +2932,583 @@ Los requisitos se incorporan después de `TREQ-SHELL-037`, conservando secuencia
 - **SIGUIENTE TAREA RESERVADA:** SHELL-PKG-006 — Definir rollback por aplicación
 
 
-### [ ] SHELL-PKG-006 — Definir rollback por aplicación
+### ✅ SHELL-PKG-006 — Definir rollback por aplicación
+
+**Estado:** APROBADA
+**Tarea anterior:** `SHELL-PKG-005 — Definir política de deprecación`
+**Tarea siguiente:** `SHELL-PKG-007 — Definir actualizaciones mediante PR`
+**Tipo de tarea:** decisión documental vinculante de arquitectura operativa para rollback independiente de paquetes compartidos por aplicación
+
+---
+
+#### 1. Resultado material de esta tarea
+
+Se adopta un contrato canónico de rollback por aplicación para las cuatro familias de paquetes compartidos y los siete consumidores web aprobados:
+
+```text
+ROLLBACK POR CONSUMIDOR
+→ hacia un snapshot previo conocido y certificado
+→ restaurando conjuntamente código, manifest y lockfile del consumidor
+→ conservando la identidad inmutable de los packages publicados
+→ sin exigir rollback simultáneo de las demás aplicaciones
+→ sin revertir por inferencia datos, migraciones o configuración remota
+→ con pruebas y evidencia antes de cerrar la recuperación
+```
+
+La unidad ordinaria de rollback no es el package publicado ni el conjunto completo de aplicaciones. Es el **snapshot verificable de una aplicación consumidora**, compuesto por el commit del consumidor, sus versiones exactas de packages, manifest, lockfile, configuración compatible y referencia del artefacto desplegado.
+
+| Métrica                                             |         Resultado |
+| --------------------------------------------------- | ----------------: |
+| Familias de packages gobernadas                     |             **4** |
+| Aplicaciones consumidoras gobernadas                |             **7** |
+| Relaciones package–aplicación materializadas        |            **28** |
+| Estados operativos definidos                        |             **8** |
+| Capas de recuperación diferenciadas                 |             **7** |
+| Decisiones vinculantes                              |            **36** |
+| Hallazgos con destino explícito                     |            **12** |
+| Releases estables compartidas adoptadas en el corte | **0 confirmadas** |
+| Relaciones con rollback ejecutable en el corte      |             **0** |
+| Cambios `TREQ-*`                                    |             **0** |
+
+La ausencia actual de releases estables adoptadas impide ejecutar un rollback real de package, pero no impide definir completamente el contrato que cada adopción deberá satisfacer antes de desplegarse.
+
+---
+
+#### 2. Fuentes, dependencias y corte verificable
+
+| Fuente                                                            | Uso en esta tarea                                                                  |
+| ----------------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `docs/plan-canonico/modular/01_PROTOCOLO.md`                      | continuidad, evidencia, aprobación y límites de la fase documental                 |
+| `docs/plan-canonico/modular/delivery-contract.json`               | estructura física del artefacto documental                                         |
+| `docs/plan-canonico/modular/active-sequence.json`                 | secuencia activa `SHELL-PKG-001..008` y handoff posterior                          |
+| `docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md`              | confirmación de `SHELL-PKG-006` como tarea actual                                  |
+| `02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md`                       | archivo propietario y decisiones `SHELL-PKG-001..005`                              |
+| `SHELL-PKG-001`                                                   | distribución inmutable, versiones exactas, lockfile y rollback por consumidor      |
+| `SHELL-PKG-002`                                                   | SemVer independiente y clasificación de cambios                                    |
+| `SHELL-PKG-003`                                                   | tags, releases, procedencia, artefactos y versión restituible                      |
+| `SHELL-PKG-004`                                                   | cuatro packages, siete consumidores, 28 relaciones y compatibilidad certificada    |
+| `SHELL-PKG-005`                                                   | deprecación, mantenimiento, retiro y obligación de rollback soportado              |
+| `T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` | implementación posterior de pruebas, builds, releases y matriz                     |
+| `T_CALIDAD_Y_DESPLIEGUE/02_PRUEBAS_DE_CONSUMIDORES_Y_ROLLBACK.md` | implementación posterior de pruebas por consumidor y rollback por repositorio      |
+| `package.json` de `vento-shell`                                   | scripts documentales y workspace actual                                            |
+| `packages/os-context/package.json` y `README.md`                  | package transitorio existente, todavía privado y no publicado como release estable |
+| `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`                | cobertura vigente de rollback, compatibilidad, evidencia, deprecación y retiro     |
+
+**Commit documental remoto inspeccionado de `vento-shell`:** `477009f8c68cc9483f566eb6e8ba318739387071`.
+
+La línea base aprobada conserva estas identidades:
+
+| Tipo             | Identidades                                                                                           |
+| ---------------- | ----------------------------------------------------------------------------------------------------- |
+| Packages         | `@vento/contracts`; `@vento/os-context`; `@vento/supabase`; `@vento/ui-web`                           |
+| Consumidores web | `vento-shell`; `vento-viso`; `vento-nexo`; `vento-fogo`; `vento-origo`; `vento-pulso`; `vento-numera` |
+
+No existe evidencia canónica de una release estable publicada y adoptada de estas familias. `@vento/os-context@0.1.0` permanece como metadata transitoria de workspace privado y no constituye una versión estable restituible.
+
+---
+
+#### 3. Alcance exacto
+
+Esta tarea decide:
+
+1. la unidad de rollback por aplicación;
+2. la composición mínima del snapshot restituible;
+3. las capas que pueden requerir recuperación;
+4. los estados y transiciones del rollback;
+5. las precondiciones para declarar una adopción `ROLLBACK_READY`;
+6. los disparadores que exigen abortar, revertir o ejecutar rollback;
+7. el procedimiento canónico posterior al despliegue;
+8. la regla de independencia entre aplicaciones;
+9. el tratamiento de cortes coordinados entre packages;
+10. las restricciones especiales de cada familia;
+11. las 28 decisiones package–aplicación;
+12. el expediente y la evidencia obligatoria;
+13. los bloqueos que obligan a usar corrección hacia adelante;
+14. la relación con deprecación, compatibilidad y retiro.
+
+Esta tarea no:
+
+- publica, despublica ni modifica packages, tags, releases o artefactos;
+- cambia `package.json`, lockfiles, código, exports, builds o configuración;
+- crea ramas, commits, pull requests, workflows, credenciales o secretos;
+- ejecuta rollback en ningún consumidor;
+- declara compatible una combinación no probada;
+- crea o modifica migraciones, datos, RLS, funciones, triggers, Storage, Realtime o configuración de Supabase;
+- revierte automáticamente datos o migraciones por retroceder una dependencia npm;
+- define la automatización de PRs, reservada a `SHELL-PKG-007` y `SHELL-CI-006`;
+- define los gates automáticos, reservados a `SHELL-PKG-008` y `SHELL-CI-*`;
+- sustituye los planes de rollback de datos, infraestructura o despliegue propios de cada paquete E5.
+
+---
+
+#### 4. Definiciones canónicas
+
+| Término                         | Definición vinculante                                                                                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| snapshot desplegado             | identidad verificable de código, manifest, lockfile, packages, configuración compatible y artefacto de una aplicación en un ambiente                    |
+| snapshot conocido y certificado | snapshot anterior con instalación reproducible, compatibilidad y validaciones satisfactorias atribuibles al mismo ambiente o a uno equivalente aprobado |
+| actualización                   | transición de una aplicación desde un snapshot anterior hacia otro que cambia uno o más packages compartidos                                            |
+| abortar                         | detener una actualización antes de que el nuevo snapshot sea fusionado o desplegado                                                                     |
+| revertir                        | crear una nueva modificación auditable que deshace una actualización fusionada, sin reescribir historia                                                 |
+| rollback                        | restaurar en un ambiente un snapshot anterior conocido y certificado después de haber desplegado el nuevo snapshot                                      |
+| corrección hacia adelante       | desplegar una corrección nueva cuando volver al snapshot anterior es inseguro, incompatible o destructivo                                               |
+| conjunto cerrado de rollback    | conjunto mínimo de packages cuyas versiones deben retroceder juntas para mantener resoluble el grafo exacto de dependencias internas                    |
+| ventana de observación          | período definido por el paquete E5 o proceso de despliegue durante el cual se valida el snapshot restituido antes de cerrar el rollback                 |
+| evidencia de cierre             | resultados atribuibles que demuestran instalación, build, pruebas, comportamiento, ambiente, versión y ausencia de regresión bloqueante                 |
+
+El término rollback no autoriza reescribir tags, releases, versiones publicadas, commits compartidos ni artefactos inmutables.
+
+---
+
+#### 5. Invariantes obligatorios
+
+1. Cada aplicación podrá adoptar y retroceder packages en una versión diferente a las demás aplicaciones.
+2. El rollback restaurará una combinación completa y previamente certificada; no mezclará versiones por intuición.
+3. El manifest y el lockfile del consumidor se restaurarán como una unidad coherente.
+4. Las versiones publicadas permanecerán inmutables y disponibles conforme a la política de soporte aplicable.
+5. El rollback se materializará mediante historia auditable del repositorio consumidor, nunca editando manualmente dependencias instaladas.
+6. Un tag flotante, alias o canal no será suficiente para identificar el objetivo de rollback.
+7. La versión exacta de cada package y la integridad resuelta deberán quedar registradas.
+8. La restauración de una dependencia no implicará restauración automática de datos, migraciones, configuración remota, cachés o secretos.
+9. Ningún rollback podrá reinstalar un bypass prohibido, una vulnerabilidad conocida o una semántica de autorización rechazada.
+10. Una aplicación restituida deberá seguir siendo compatible con contratos, datos y servicios que permanezcan en versiones distintas.
+11. Si esa compatibilidad no puede demostrarse, el rollback quedará bloqueado y se exigirá corrección hacia adelante o transición coordinada.
+12. El cierre requerirá pruebas posteriores al despliegue y evidencia atribuible al ambiente real.
+13. Un fallo previo al despliegue se resolverá abortando o revirtiendo la actualización; no se registrará falsamente como rollback productivo.
+14. La ausencia de una versión previa certificada impedirá declarar una adopción lista para rollback.
+15. La recuperación de una aplicación no obligará a desplegar simultáneamente los otros seis consumidores.
+
+---
+
+#### 6. Capas de recuperación
+
+| ID            | Capa                           | Unidad que debe restaurarse                           | Regla                                                                                    |
+| ------------- | ------------------------------ | ----------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `RBK-LYR-001` | dependencia compartida         | versiones exactas del conjunto cerrado de packages    | restaurar únicamente packages necesarios, respetando dependencias internas exactas       |
+| `RBK-LYR-002` | código consumidor              | commit anterior certificado de la aplicación          | incluir adapters, imports y cambios acoplados a la actualización                         |
+| `RBK-LYR-003` | resolución de dependencias     | manifest y lockfile coherentes                        | no regenerar el lockfile para simular el snapshot anterior                               |
+| `RBK-LYR-004` | configuración                  | versión o identidad de configuración compatible       | no restaurar secretos vencidos ni configuración insegura                                 |
+| `RBK-LYR-005` | caché y artefactos derivados   | estrategia de invalidación o reconstrucción declarada | no asumir que un rollback de código limpia cachés incompatibles                          |
+| `RBK-LYR-006` | contratos y servicios externos | banda compatible demostrada                           | impedir rollback si productores, RPC o eventos ya no aceptan la versión previa           |
+| `RBK-LYR-007` | datos y migraciones            | plan propietario separado de datos                    | ningún retroceso npm ejecutará DDL, DML, backfill o restauración de datos por inferencia |
+
+Un rollback puede abarcar varias capas, pero cada capa deberá conservar propietario, acción, validación y evidencia independientes.
+
+---
+
+#### 7. Estados y transiciones
+
+##### 7.1. Estados permitidos
+
+| Estado                           | Significado                                                                                   |
+| -------------------------------- | --------------------------------------------------------------------------------------------- |
+| `NO_APLICA_SIN_ADOPCION`         | la relación existe, pero no hay release estable adoptada que pueda retrocederse               |
+| `ROLLBACK_BLOCKED`               | falta un snapshot, evidencia, compatibilidad o condición de seguridad necesaria               |
+| `ROLLBACK_READY`                 | existe snapshot previo certificado y el procedimiento está probado para la combinación exacta |
+| `ROLLBACK_REQUESTED`             | un disparador posterior al despliegue fue aceptado y se autorizó iniciar recuperación         |
+| `ROLLBACK_IN_PROGRESS`           | la aplicación está siendo restaurada mediante su proceso normal y auditable                   |
+| `ROLLED_BACK_PENDING_VALIDATION` | el snapshot previo fue desplegado, pero aún no supera las comprobaciones de cierre            |
+| `ROLLBACK_VALIDATED`             | la aplicación restituida superó validaciones y quedó estable con evidencia atribuible         |
+| `FORWARD_FIX_REQUIRED`           | el rollback es inseguro o imposible y existe un expediente de corrección hacia adelante       |
+
+##### 7.2. Transiciones permitidas
+
+```text
+NO_APLICA_SIN_ADOPCION
+→ ROLLBACK_BLOCKED
+→ ROLLBACK_READY
+
+ROLLBACK_READY
+→ ROLLBACK_REQUESTED
+→ ROLLBACK_IN_PROGRESS
+→ ROLLED_BACK_PENDING_VALIDATION
+→ ROLLBACK_VALIDATED
+
+ROLLBACK_READY | ROLLBACK_REQUESTED | ROLLBACK_IN_PROGRESS
+→ ROLLBACK_BLOCKED
+→ FORWARD_FIX_REQUIRED
+
+ROLLED_BACK_PENDING_VALIDATION
+→ ROLLBACK_VALIDATED
+   o
+→ ROLLBACK_IN_PROGRESS
+   o
+→ FORWARD_FIX_REQUIRED
+```
+
+No se permitirá declarar `ROLLBACK_VALIDATED` directamente desde `ROLLBACK_READY` ni cerrar un rollback solo porque el despliegue terminó.
+
+---
+
+#### 8. Precondiciones de `ROLLBACK_READY`
+
+Una relación package–aplicación solo podrá quedar `ROLLBACK_READY` cuando existan conjuntamente:
+
+1. snapshot previo identificado por repositorio, commit y ambiente;
+2. manifest y lockfile del snapshot previo;
+3. versiones exactas e integridad de cada package compartido;
+4. artefactos publicados todavía instalables e inmutables;
+5. referencia de release y procedencia de cada package;
+6. matriz de compatibilidad válida para la aplicación y sus dependencias externas;
+7. instalación reproducible del snapshot previo;
+8. pruebas propias del package y pruebas del consumidor aplicables;
+9. build del consumidor cuando corresponda;
+10. comprobaciones específicas de la familia de package;
+11. estrategia declarada para configuración, caché y artefactos derivados;
+12. evaluación explícita de migraciones y datos;
+13. confirmación de que el snapshot previo no reinstala una vulnerabilidad o bypass prohibido;
+14. responsable técnico y autoridad de ejecución identificados;
+15. evidencia de un ensayo de rollback anterior al release o cutover productivo;
+16. criterio de cierre y ventana de observación definidos por el paquete E5 propietario.
+
+La compatibilidad histórica inferida, un lockfile aislado o la mera disponibilidad de una versión anterior no satisfacen estas precondiciones.
+
+---
+
+#### 9. Disparadores y respuesta obligatoria
+
+| ID            | Momento                                | Disparador                                                                      | Respuesta inicial                                                                             |
+| ------------- | -------------------------------------- | ------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `RBK-TRG-001` | antes de merge                         | instalación, typecheck, pruebas o build fallidos                                | abortar la actualización                                                                      |
+| `RBK-TRG-002` | después de merge y antes de despliegue | evidencia incompleta o gate bloqueante                                          | revertir la propuesta sin desplegar                                                           |
+| `RBK-TRG-003` | después de despliegue                  | aplicación no inicia, no construye artefactos válidos o pierde rutas esenciales | evaluar rollback inmediato                                                                    |
+| `RBK-TRG-004` | después de despliegue                  | incompatibilidad de tipos, contratos, eventos o RPC                             | bloquear expansión y evaluar conjunto cerrado                                                 |
+| `RBK-TRG-005` | después de despliegue                  | regresión de contexto, sesión, permisos o denegación cerrada                    | detener expansión y recuperar solo si el snapshot previo es seguro                            |
+| `RBK-TRG-006` | después de despliegue                  | pérdida funcional, navegación, render, hidratación o accesibilidad              | evaluar rollback de la aplicación afectada                                                    |
+| `RBK-TRG-007` | después de despliegue                  | error de acceso a datos, RLS, RPC, transacción, Realtime o tipos generados      | separar rollback del SDK y plan de datos antes de actuar                                      |
+| `RBK-TRG-008` | después de despliegue                  | corrupción, pérdida o transformación irreversible de datos                      | bloquear rollback automático y activar plan propietario de datos                              |
+| `RBK-TRG-009` | cualquier momento                      | versión anterior contiene vulnerabilidad o bypass conocido                      | prohibir restauración y exigir corrección hacia adelante                                      |
+| `RBK-TRG-010` | durante rollback                       | snapshot previo no instala, no despliega o no supera validaciones               | mantener incidente abierto y pasar a corrección hacia adelante o segundo snapshot certificado |
+
+Los criterios cuantitativos de salud, tiempo y operación pertenecerán al paquete E5 y al proceso de despliegue de cada aplicación; esta tarea no inventa umbrales globales no aprobados.
+
+---
+
+#### 10. Procedimiento canónico posterior al despliegue
+
+1. **Detectar y registrar:** identificar ambiente, aplicación, snapshot desplegado, síntoma, hora y evidencia inicial.
+2. **Detener expansión:** impedir que la misma actualización avance a otros ambientes o consumidores mientras se clasifica el incidente.
+3. **Clasificar la capa:** determinar si el fallo pertenece a dependencia, código, lockfile, configuración, caché, contrato externo o datos.
+4. **Seleccionar objetivo:** elegir el último snapshot conocido y certificado compatible con el estado actual de contratos, servicios y datos.
+5. **Verificar seguridad:** impedir restaurar vulnerabilidades, bypasses, permisos excesivos o semánticas expresamente retiradas.
+6. **Determinar conjunto cerrado:** incluir todos los packages internos que deban retroceder juntos para resolver el grafo exacto.
+7. **Autorizar:** obtener decisión del responsable técnico del consumidor y conformidad del propietario del package; toda acción sobre Supabase conservará autoridad separada en `vento-shell`.
+8. **Materializar en historia:** restaurar el snapshot mediante una modificación auditable del repositorio consumidor, sin reescribir versiones ni artefactos publicados.
+9. **Instalar reproduciblemente:** resolver exactamente el manifest y lockfile certificados del objetivo.
+10. **Ejecutar validaciones previas:** comprobar instalación, tipos, pruebas, build y ejes específicos antes de promover el artefacto.
+11. **Desplegar por el proceso normal:** utilizar el pipeline del consumidor y conservar identidad del artefacto y ambiente.
+12. **Aplicar acciones separadas:** invalidar o reconstruir cachés y ajustar configuración únicamente cuando exista una acción aprobada y trazable.
+13. **Validar después del despliegue:** ejecutar comprobaciones funcionales, contractuales, de autorización, datos, UI y operación aplicables.
+14. **Observar:** mantener la relación en `ROLLED_BACK_PENDING_VALIDATION` hasta satisfacer el criterio de cierre.
+15. **Cerrar o escalar:** declarar `ROLLBACK_VALIDATED` con evidencia, o `FORWARD_FIX_REQUIRED` con bloqueo, propietario y condición de salida.
+16. **Prevenir recurrencia:** vincular la causa a pruebas, compatibilidad, release, deprecación o gate que deba corregirse antes de reintentar.
+
+---
+
+#### 11. Reglas específicas por familia
+
+| ID            | Package             | Riesgo dominante de rollback                                                                 | Condiciones adicionales                                                                                                                                                                 |
+| ------------- | ------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RBK-FAM-001` | `@vento/contracts`  | consumidores y productores usando versiones distintas de schemas, eventos, códigos o estados | el snapshot previo deberá seguir interpretando datos y mensajes vigentes; si el productor ya emite únicamente el contrato nuevo, se requerirá puente compatible o corrección coordinada |
+| `RBK-FAM-002` | `@vento/os-context` | restauración de decisiones de autorización, sesión o contexto obsoletas                      | deberá conservar denegación cerrada, auditoría, autoridad efectiva y ausencia de bypasses; una versión insegura nunca será objetivo válido                                              |
+| `RBK-FAM-003` | `@vento/supabase`   | confundir rollback del cliente o wrapper con rollback del esquema y los datos                | la dependencia podrá retroceder solo si el esquema actual sigue siendo compatible; toda migración o cambio Supabase pertenecerá a `vento-shell` y tendrá plan separado                  |
+| `RBK-FAM-004` | `@vento/ui-web`     | regresiones de render, hidratación, navegación, accesibilidad, tokens o contrato CSS         | el snapshot previo deberá validarse con el runtime del consumidor y conservar comportamiento, layout, interacción y accesibilidad esperados                                             |
+
+##### 11.1. Supabase y datos
+
+El rollback de `@vento/supabase`:
+
+- puede restaurar factories, clients, adapters, wrappers, tipos o errores normalizados del consumidor;
+- no ejecuta por sí mismo migraciones inversas;
+- no elimina columnas, tablas, funciones, triggers, políticas, buckets, eventos ni datos;
+- no revierte backfills ni transformaciones;
+- exige compatibilidad hacia atrás del esquema mientras coexistan aplicaciones en versiones distintas;
+- queda bloqueado cuando el snapshot previo no puede operar de forma segura contra el esquema vigente;
+- requerirá corrección hacia adelante cuando una migración irreversible ya haya sido aplicada y no exista restauración segura.
+
+Toda modificación Supabase perteneciente a VENTO se creará, versionará, documentará y ejecutará desde `vento-shell`, bajo su tarea propietaria y autorización aplicable.
+
+---
+
+#### 12. Cortes coordinados y conjunto cerrado
+
+Los packages conservan versiones independientes. Sin embargo, una aplicación podrá necesitar retroceder más de uno cuando el release adoptado contenga dependencias internas exactas.
+
+Reglas:
+
+1. se construirá el grafo de packages realmente instalados por la aplicación;
+2. se identificará la primera arista incompatible con el snapshot objetivo;
+3. se calculará el conjunto mínimo cerrado que resuelva todas las dependencias internas;
+4. no se retrocederán packages sin cambio o sin relación causal solo para igualar números de versión;
+5. el conjunto seleccionado deberá corresponder a una combinación previamente certificada;
+6. una aplicación podrá retroceder ese conjunto sin obligar a las otras seis aplicaciones;
+7. si un contrato externo común impide la independencia, la relación quedará `ROLLBACK_BLOCKED` y se documentará la transición coordinada necesaria;
+8. nunca se convertirá una prerelease en objetivo productivo por falta de una estable compatible.
+
+---
+
+#### 13. Matriz package–aplicación de rollback
+
+La matriz conserva las 28 relaciones aprobadas. Todas comienzan en `NO_APLICA_SIN_ADOPCION` porque no existe una release estable compartida adoptada y certificada en el corte.
+
+| ID            | Package             | Aplicación     | Unidad de rollback                                               | Validación específica mínima                                  | Estado inicial           |
+| ------------- | ------------------- | -------------- | ---------------------------------------------------------------- | ------------------------------------------------------------- | ------------------------ |
+| `RBK-REL-001` | `@vento/contracts`  | `vento-shell`  | snapshot previo certificado de `vento-shell` y conjunto cerrado  | schemas, tipos, códigos, eventos y compatibilidad histórica   | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-002` | `@vento/contracts`  | `vento-viso`   | snapshot previo certificado de `vento-viso` y conjunto cerrado   | schemas, tipos, códigos, eventos y compatibilidad histórica   | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-003` | `@vento/contracts`  | `vento-nexo`   | snapshot previo certificado de `vento-nexo` y conjunto cerrado   | schemas, tipos, códigos, eventos y compatibilidad histórica   | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-004` | `@vento/contracts`  | `vento-fogo`   | snapshot previo certificado de `vento-fogo` y conjunto cerrado   | schemas, tipos, códigos, eventos y compatibilidad histórica   | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-005` | `@vento/contracts`  | `vento-origo`  | snapshot previo certificado de `vento-origo` y conjunto cerrado  | schemas, tipos, códigos, eventos y compatibilidad histórica   | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-006` | `@vento/contracts`  | `vento-pulso`  | snapshot previo certificado de `vento-pulso` y conjunto cerrado  | schemas, tipos, códigos, eventos y compatibilidad histórica   | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-007` | `@vento/contracts`  | `vento-numera` | snapshot previo certificado de `vento-numera` y conjunto cerrado | schemas, tipos, códigos, eventos y compatibilidad histórica   | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-008` | `@vento/os-context` | `vento-shell`  | snapshot previo certificado de `vento-shell` y conjunto cerrado  | contexto, sesión, autorización, denegación y auditoría        | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-009` | `@vento/os-context` | `vento-viso`   | snapshot previo certificado de `vento-viso` y conjunto cerrado   | contexto, sesión, autorización, denegación y auditoría        | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-010` | `@vento/os-context` | `vento-nexo`   | snapshot previo certificado de `vento-nexo` y conjunto cerrado   | contexto, sesión, autorización, denegación y auditoría        | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-011` | `@vento/os-context` | `vento-fogo`   | snapshot previo certificado de `vento-fogo` y conjunto cerrado   | contexto, sesión, autorización, denegación y auditoría        | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-012` | `@vento/os-context` | `vento-origo`  | snapshot previo certificado de `vento-origo` y conjunto cerrado  | contexto, sesión, autorización, denegación y auditoría        | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-013` | `@vento/os-context` | `vento-pulso`  | snapshot previo certificado de `vento-pulso` y conjunto cerrado  | contexto, sesión, autorización, denegación y auditoría        | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-014` | `@vento/os-context` | `vento-numera` | snapshot previo certificado de `vento-numera` y conjunto cerrado | contexto, sesión, autorización, denegación y auditoría        | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-015` | `@vento/supabase`   | `vento-shell`  | snapshot previo certificado de `vento-shell`; datos separados    | clients, RPC, RLS, tipos, transacciones y esquema vigente     | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-016` | `@vento/supabase`   | `vento-viso`   | snapshot previo certificado de `vento-viso`; datos separados     | clients, RPC, RLS, tipos, transacciones y esquema vigente     | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-017` | `@vento/supabase`   | `vento-nexo`   | snapshot previo certificado de `vento-nexo`; datos separados     | clients, RPC, RLS, tipos, transacciones y esquema vigente     | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-018` | `@vento/supabase`   | `vento-fogo`   | snapshot previo certificado de `vento-fogo`; datos separados     | clients, RPC, RLS, tipos, transacciones y esquema vigente     | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-019` | `@vento/supabase`   | `vento-origo`  | snapshot previo certificado de `vento-origo`; datos separados    | clients, RPC, RLS, tipos, transacciones y esquema vigente     | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-020` | `@vento/supabase`   | `vento-pulso`  | snapshot previo certificado de `vento-pulso`; datos separados    | clients, RPC, RLS, tipos, transacciones y esquema vigente     | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-021` | `@vento/supabase`   | `vento-numera` | snapshot previo certificado de `vento-numera`; datos separados   | clients, RPC, RLS, tipos, transacciones y esquema vigente     | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-022` | `@vento/ui-web`     | `vento-shell`  | snapshot previo certificado de `vento-shell` y conjunto cerrado  | render, hidratación, navegación, accesibilidad y contrato CSS | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-023` | `@vento/ui-web`     | `vento-viso`   | snapshot previo certificado de `vento-viso` y conjunto cerrado   | render, hidratación, navegación, accesibilidad y contrato CSS | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-024` | `@vento/ui-web`     | `vento-nexo`   | snapshot previo certificado de `vento-nexo` y conjunto cerrado   | render, hidratación, navegación, accesibilidad y contrato CSS | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-025` | `@vento/ui-web`     | `vento-fogo`   | snapshot previo certificado de `vento-fogo` y conjunto cerrado   | render, hidratación, navegación, accesibilidad y contrato CSS | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-026` | `@vento/ui-web`     | `vento-origo`  | snapshot previo certificado de `vento-origo` y conjunto cerrado  | render, hidratación, navegación, accesibilidad y contrato CSS | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-027` | `@vento/ui-web`     | `vento-pulso`  | snapshot previo certificado de `vento-pulso` y conjunto cerrado  | render, hidratación, navegación, accesibilidad y contrato CSS | `NO_APLICA_SIN_ADOPCION` |
+| `RBK-REL-028` | `@vento/ui-web`     | `vento-numera` | snapshot previo certificado de `vento-numera` y conjunto cerrado | render, hidratación, navegación, accesibilidad y contrato CSS | `NO_APLICA_SIN_ADOPCION` |
+
+**Conciliación:** 4 packages × 7 aplicaciones = 28 relaciones; 28 identificadores únicos; siete relaciones por package; cuatro relaciones por aplicación; cero faltantes y cero duplicados.
+
+PASS, ANIMA, TALENTO y otras superficies móviles no se incorporan por inferencia. Su rollback requerirá contratos propietarios y tareas aplicables a sus runtimes.
+
+---
+
+#### 14. Expediente canónico de rollback
+
+Cada ejecución o ensayo conservará un expediente inmutable `RBK-*` con, como mínimo:
+
+| Campo                   | Contenido obligatorio                                                                 |
+| ----------------------- | ------------------------------------------------------------------------------------- |
+| `rollback_id`           | identificador único del expediente                                                    |
+| `status`                | uno de los ocho estados permitidos                                                    |
+| `application`           | repositorio consumidor exacto                                                         |
+| `environment`           | ambiente afectado y superficie desplegada                                             |
+| `trigger`               | disparador, síntoma y evidencia inicial                                               |
+| `package_set_from`      | packages y versiones exactas del snapshot fallido                                     |
+| `package_set_to`        | conjunto cerrado y versiones exactas del objetivo                                     |
+| `consumer_commit_from`  | commit desplegado antes del rollback                                                  |
+| `consumer_commit_to`    | commit del snapshot conocido y certificado                                            |
+| `manifest_ref`          | manifest restituido                                                                   |
+| `lockfile_hash`         | hash del lockfile objetivo                                                            |
+| `release_refs`          | tags, releases, commits e integridad de packages                                      |
+| `compatibility_ref`     | matriz aplicable al objetivo y al ambiente                                            |
+| `deployment_ref`        | identidad del artefacto y ejecución de despliegue                                     |
+| `configuration_impact`  | configuración restaurada, preservada o bloqueada                                      |
+| `cache_impact`          | invalidación, reconstrucción o no aplicabilidad                                       |
+| `data_migration_impact` | `NO_APLICA` con evidencia o referencia al plan propietario                            |
+| `security_assessment`   | confirmación de que no se restaura vulnerabilidad o bypass conocido                   |
+| `authorities`           | responsable técnico del consumidor, propietario del package y aprobaciones aplicables |
+| `validation_results`    | instalación, tipos, pruebas, build y verificaciones posteriores                       |
+| `started_at`            | inicio atribuible de la recuperación                                                  |
+| `finished_at`           | cierre o escalamiento atribuible                                                      |
+| `outcome`               | resultado, impacto residual y condición de salida                                     |
+| `follow_up`             | pruebas, gates, compatibilidad o correcciones exigidas antes de reintentar            |
+
+El expediente no podrá marcarse cerrado si faltan identidad del objetivo, evidencia posterior o decisión sobre datos y seguridad.
+
+---
+
+#### 15. Autoridad y responsabilidades
+
+| Rol                                  | Responsabilidad                                                                                         |
+| ------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| responsable técnico de la aplicación | clasificar impacto, seleccionar snapshot, autorizar ejecución y validar recuperación del consumidor     |
+| propietario del package              | confirmar identidad, soporte, dependencias, riesgos y conjunto cerrado aplicable                        |
+| responsable de release               | preservar procedencia, artefactos, versiones y evidencia de publicación                                 |
+| responsables de compatibilidad       | confirmar que el objetivo pertenece a una combinación probada                                           |
+| propietario de datos o Supabase      | decidir cualquier acción sobre esquema, datos, funciones, políticas o configuración desde `vento-shell` |
+| paquete E5 de la aplicación          | definir operación, ambiente, ventana de observación, responsables locales y criterio de cierre          |
+
+Un rollback de emergencia no elimina estas responsabilidades. Podrá abreviar la secuencia de aprobación solo cuando exista una autoridad de incidente previamente definida, pero deberá conservar la misma evidencia y revisión posterior.
+
+---
+
+#### 16. Bloqueos y corrección hacia adelante
+
+| ID            | Bloqueo                                                                       | Estado                 | Propietario de resolución                              |
+| ------------- | ----------------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------ |
+| `RBK-BLK-001` | no existe snapshot previo certificado                                         | `ROLLBACK_BLOCKED`     | `SHELL-CI-014`; paquete E5 consumidor                  |
+| `RBK-BLK-002` | falta manifest o lockfile verificable                                         | `ROLLBACK_BLOCKED`     | repositorio consumidor; `SHELL-PKG-007..008`           |
+| `RBK-BLK-003` | la versión anterior no está disponible o su integridad no coincide            | `ROLLBACK_BLOCKED`     | `SHELL-CI-003`; propietario del package                |
+| `RBK-BLK-004` | el grafo interno no resuelve con la versión objetivo                          | `ROLLBACK_BLOCKED`     | `SHELL-CI-005`; propietario del conjunto cerrado       |
+| `RBK-BLK-005` | el contrato o servicio vigente ya no acepta el snapshot previo                | `FORWARD_FIX_REQUIRED` | propietario contractual y consumidores afectados       |
+| `RBK-BLK-006` | el esquema o los datos vigentes no son compatibles                            | `FORWARD_FIX_REQUIRED` | tareas `SHELL-DB-*`, Supabase y paquete E5 aplicable   |
+| `RBK-BLK-007` | la versión previa restaura una vulnerabilidad o bypass                        | `FORWARD_FIX_REQUIRED` | propietario del package y seguridad                    |
+| `RBK-BLK-008` | no existe evidencia de pruebas del objetivo                                   | `ROLLBACK_BLOCKED`     | `SHELL-CI-001`; `SHELL-CI-005`; pruebas del consumidor |
+| `RBK-BLK-009` | configuración o secreto previo es inválido, vencido o inseguro                | `FORWARD_FIX_REQUIRED` | propietario de configuración del ambiente              |
+| `RBK-BLK-010` | caché o artefacto derivado no puede reconciliarse sin pérdida                 | `ROLLBACK_BLOCKED`     | paquete E5 y propietario del servicio afectado         |
+| `RBK-BLK-011` | la restauración exige despliegue simultáneo no probado de varios consumidores | `ROLLBACK_BLOCKED`     | `SHELL-CI-015`; propietarios afectados                 |
+| `RBK-BLK-012` | no existe autoridad o ambiente claramente identificado                        | `ROLLBACK_BLOCKED`     | paquete E5 consumidor; trazabilidad de ambiente        |
+
+Toda corrección hacia adelante deberá registrar el bloqueo exacto, riesgo de no restaurar, propietario, artefacto correctivo, pruebas, criterio de salida y relación con el expediente original.
+
+---
+
+#### 17. Relación con deprecación, retiro y soporte
+
+1. Una superficie deprecada no podrá retirarse si alguno de sus consumidores carece de rollback hacia una combinación soportada.
+2. Una línea en `MANTENIMIENTO` podrá ser objetivo de rollback mientras permanezca soportada, instalable, compatible y segura.
+3. Una línea en `FIN_DE_SOPORTE` no será objetivo ordinario de nuevas adopciones; su uso de emergencia exigirá excepción trazable y no podrá restaurar riesgos conocidos.
+4. Una línea `HISTORICA` preserva reproducibilidad y auditoría, pero no se presume operativamente restituible.
+5. El gate de retiro evaluará las 28 relaciones y bloqueará el cierre si alguna requerida no está migrada, no aplica con evidencia o dispone de rollback válido.
+6. La ventana temporal de deprecación no sustituye la preparación de rollback.
+7. El retiro de una identidad no autoriza despublicar ni mutar artefactos históricos.
+
+---
+
+#### 18. Registro de decisiones vinculantes
+
+| ID            | Decisión                                                                       | Estado                 | Materialización posterior           |
+| ------------- | ------------------------------------------------------------------------------ | ---------------------- | ----------------------------------- |
+| `PKG-RBK-001` | definir la aplicación como unidad ordinaria de rollback                        | `DECIDIDO`             | `SHELL-CI-014`                      |
+| `PKG-RBK-002` | permitir rollback independiente por consumidor                                 | `DECIDIDO`             | `SHELL-CI-014..015`                 |
+| `PKG-RBK-003` | usar snapshot previo conocido y certificado                                    | `DECIDIDO`             | evidencia de release y consumidor   |
+| `PKG-RBK-004` | restaurar manifest y lockfile como unidad                                      | `DECIDIDO`             | PR y pipeline consumidor            |
+| `PKG-RBK-005` | conservar versions exactas e integridad                                        | `DECIDIDO`             | registry, lockfile y manifest       |
+| `PKG-RBK-006` | prohibir mutar tags, releases o bytes publicados                               | `DECIDIDO`             | `SHELL-CI-003`                      |
+| `PKG-RBK-007` | distinguir abortar, revertir y rollback                                        | `DECIDIDO`             | automatización y expediente         |
+| `PKG-RBK-008` | exigir historia auditable del consumidor                                       | `DECIDIDO`             | `SHELL-PKG-007`; `SHELL-CI-006`     |
+| `PKG-RBK-009` | separar dependencia, código, lockfile, configuración, caché, contratos y datos | `DECIDIDO`             | paquetes E5 y CI                    |
+| `PKG-RBK-010` | no inferir rollback de datos desde rollback npm                                | `DECIDIDO`             | tareas `SHELL-DB-*` y Supabase      |
+| `PKG-RBK-011` | gobernar las cuatro familias aprobadas                                         | `DECIDIDO`             | packages propietarios               |
+| `PKG-RBK-012` | gobernar los siete consumidores web aprobados                                  | `DECIDIDO`             | matriz de consumidores              |
+| `PKG-RBK-013` | materializar 28 relaciones explícitas                                          | `DECIDIDO`             | `SHELL-CI-005`; `SHELL-CI-014`      |
+| `PKG-RBK-014` | iniciar todas las relaciones sin adopción como no aplicables                   | `DECIDIDO`             | línea base actual                   |
+| `PKG-RBK-015` | definir ocho estados operativos                                                | `DECIDIDO`             | expediente `RBK-*`                  |
+| `PKG-RBK-016` | prohibir cierre sin validación posterior                                       | `DECIDIDO`             | pipeline y evidencia                |
+| `PKG-RBK-017` | exigir ensayo antes de release o cutover                                       | `DECIDIDO`             | `SHELL-CI-014`; paquetes E5         |
+| `PKG-RBK-018` | calcular conjunto cerrado de dependencias internas                             | `DECIDIDO`             | matriz y grafo de packages          |
+| `PKG-RBK-019` | no usar versionado lockstep artificial                                         | `DECIDIDO`             | releases independientes             |
+| `PKG-RBK-020` | bloquear snapshot incompatible con contratos vigentes                          | `DECIDIDO`             | matriz contractual                  |
+| `PKG-RBK-021` | bloquear snapshot incompatible con esquema o datos                             | `DECIDIDO`             | arquitectura Supabase               |
+| `PKG-RBK-022` | prohibir restaurar vulnerabilidades o bypasses                                 | `DECIDIDO`             | evaluación de seguridad             |
+| `PKG-RBK-023` | exigir denegación cerrada en os-context                                        | `DECIDIDO`             | pruebas de autorización             |
+| `PKG-RBK-024` | exigir compatibilidad histórica en contracts                                   | `DECIDIDO`             | pruebas de contratos y eventos      |
+| `PKG-RBK-025` | separar rollback del SDK Supabase y rollback de base de datos                  | `DECIDIDO`             | `vento-shell` y tareas propietarias |
+| `PKG-RBK-026` | validar render, hidratación, navegación y accesibilidad en ui-web              | `DECIDIDO`             | pruebas de consumidores             |
+| `PKG-RBK-027` | detener expansión al detectar un incidente                                     | `DECIDIDO`             | pipeline de despliegue              |
+| `PKG-RBK-028` | conservar expediente inmutable `RBK-*`                                         | `DECIDIDO`             | `SHELL-CI-014`; evidencia           |
+| `PKG-RBK-029` | exigir identidad de ambiente y artefacto                                       | `DECIDIDO`             | trazabilidad de despliegue          |
+| `PKG-RBK-030` | asignar autoridad al consumidor y conformidad al package                       | `DECIDIDO`             | gobierno de release                 |
+| `PKG-RBK-031` | reservar toda acción Supabase a `vento-shell`                                  | `RESTRICCION_CANONICA` | tareas Supabase propietarias        |
+| `PKG-RBK-032` | permitir corrección hacia adelante solo con bloqueo explícito                  | `DECIDIDO`             | expediente y paquete E5             |
+| `PKG-RBK-033` | vincular causa a pruebas y gates preventivos                                   | `DECIDIDO`             | `SHELL-PKG-008`; `SHELL-CI-*`       |
+| `PKG-RBK-034` | excluir móviles sin contrato propietario                                       | `DECIDIDO`             | tareas futuras aplicables           |
+| `PKG-RBK-035` | no implementar ni ejecutar rollback en esta fase                               | `RESTRICCION_CANONICA` | fase documental                     |
+| `PKG-RBK-036` | no modificar código, packages, consumidores, CI, datos o Supabase              | `RESTRICCION_CANONICA` | implementación posterior autorizada |
+
+**Conciliación:** 36 decisiones, 36 identificadores únicos, cero faltantes y cero duplicados.
+
+---
+
+#### 19. Hallazgos y destinos exactos
+
+| ID                    | Hallazgo                                                                               | Estado                         | Destino o condición de salida                                             |
+| --------------------- | -------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------- |
+| `H-SHELL-PKG-006-001` | no existe una release estable compartida adoptada que permita ejecutar rollback real   | `NO_APLICA_SIN_ADOPCION`       | publicación y adopción controladas en tareas `SHELL-CI-*` y `SHELL-MIG-*` |
+| `H-SHELL-PKG-006-002` | el package local `@vento/os-context@0.1.0` no es una release estable restituible       | `BLOQUEO_DE_EJECUCION`         | build, publicación y procedencia canónica antes de adopción               |
+| `H-SHELL-PKG-006-003` | las 28 relaciones carecen todavía de snapshot previo certificado                       | `PENDIENTE_DE_IMPLEMENTACION`  | `SHELL-CI-005`; `SHELL-CI-014`                                            |
+| `H-SHELL-PKG-006-004` | el rollback independiente ya está exigido por `TREQ-SHELL-007`                         | `COBERTURA_CANONICA_EXISTENTE` | materializar evidencia en implementación                                  |
+| `H-SHELL-PKG-006-005` | la compatibilidad por consumidor está protegida por `TREQ-SHELL-006`                   | `COBERTURA_CANONICA_EXISTENTE` | matriz ejecutable `SHELL-CI-005`                                          |
+| `H-SHELL-PKG-006-006` | la identidad inmutable del release está protegida por `TREQ-SHELL-036`                 | `COBERTURA_CANONICA_EXISTENTE` | pipeline `SHELL-CI-003`                                                   |
+| `H-SHELL-PKG-006-007` | los cortes coordinados están protegidos por `TREQ-SHELL-037`                           | `COBERTURA_CANONICA_EXISTENTE` | grafo y matriz en CI                                                      |
+| `H-SHELL-PKG-006-008` | el retiro exige rollback soportado por `TREQ-SHELL-039`                                | `COBERTURA_CANONICA_EXISTENTE` | gate de retiro `SHELL-PKG-008`                                            |
+| `H-SHELL-PKG-006-009` | retroceder `@vento/supabase` no equivale a revertir base de datos                      | `DECISION_CRITICA`             | planes propietarios `SHELL-DB-*`, Supabase y paquetes E5                  |
+| `H-SHELL-PKG-006-010` | no existe todavía automatización de rollback por repositorio                           | `PENDIENTE_DE_IMPLEMENTACION`  | `SHELL-CI-014`                                                            |
+| `H-SHELL-PKG-006-011` | no existe todavía evidencia de despliegues independientes obligatoriamente preservados | `PENDIENTE_DE_IMPLEMENTACION`  | `SHELL-CI-015`                                                            |
+| `H-SHELL-PKG-006-012` | las actualizaciones por PR y sus gates aún no están materializadas                     | `PENDIENTE_DE_IMPLEMENTACION`  | `SHELL-PKG-007..008`; `SHELL-CI-006`                                      |
+
+**Conciliación:** doce hallazgos, doce destinos o condiciones de salida y cero pendientes narrativos sin propietario.
+
+---
+
+#### 20. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `TREQ-SHELL-007` ya exige que cada aplicación y package demuestre rollback independiente de código, contrato, caché, migración y configuración sin restaurar bypasses ni perder datos o auditoría, con prueba previa al release y compatibilidad entre versiones distintas. `TREQ-SHELL-006` cubre las pruebas propias y la matriz contra cada consumidor; `TREQ-SHELL-008` exige declaración y resultados reproducibles por package y PR; `TREQ-SHELL-009` exige identidad verificable de ambiente, repositorio y commit; `TREQ-SHELL-036` protege la inmutabilidad del release; `TREQ-SHELL-037` protege cortes coordinados; y `TREQ-SHELL-039` bloquea el retiro sin rollback hacia una combinación soportada. Esta tarea materializa el procedimiento y las 28 decisiones bajo esas obligaciones sin crear una segunda exigencia duplicada.
+
+| Operación sobre `TREQ-*` | Cantidad |
+| ------------------------ | -------: |
+| creados                  |    **0** |
+| modificados              |    **0** |
+| diferidos                |    **0** |
+| descartados              |    **0** |
+| obsoletos                |    **0** |
+
+No corresponde producir una nueva copia del registro `04A`.
+
+---
+
+#### 21. Entregables
+
+1. Unidad canónica de rollback por aplicación.
+2. Definición de snapshot conocido y certificado.
+3. Siete capas de recuperación separadas.
+4. Ocho estados con transiciones permitidas.
+5. Dieciséis precondiciones de readiness.
+6. Diez disparadores con respuesta inicial.
+7. Procedimiento operativo de dieciséis pasos.
+8. Cuatro perfiles de riesgo y validación por familia.
+9. Reglas para Supabase, datos y migraciones.
+10. Regla de conjunto cerrado para cortes coordinados.
+11. Matriz completa de 28 relaciones package–aplicación.
+12. Contrato del expediente `RBK-*`.
+13. Matriz de doce bloqueos y corrección hacia adelante.
+14. Treinta y seis decisiones vinculantes.
+15. Doce hallazgos con destino exacto.
+16. Declaración de cero cambios `TREQ-*` con cobertura explícita.
+
+---
+
+#### 22. Criterios de aceptación
+
+`SHELL-PKG-006` queda materialmente completa cuando:
+
+- aparecen exactamente las cuatro familias aprobadas;
+- aparecen exactamente los siete consumidores web aprobados;
+- existen 28 relaciones package–aplicación sin faltantes ni duplicados;
+- cada relación tiene unidad, validación específica y estado inicial;
+- el rollback se define por snapshot del consumidor y no por mutación del package;
+- manifest y lockfile se restauran como unidad coherente;
+- se distingue entre abortar, revertir, rollback y corrección hacia adelante;
+- existen estados y transiciones que impiden cerrar sin validación posterior;
+- se definen precondiciones verificables para `ROLLBACK_READY`;
+- se separan package, código, configuración, caché, contratos y datos;
+- `@vento/supabase` no autoriza migraciones o restauraciones implícitas;
+- se prohíbe restaurar vulnerabilidades, bypasses o autorización insegura;
+- los cortes coordinados usan un conjunto mínimo cerrado y versiones independientes;
+- cada aplicación puede retroceder sin obligar a las demás, salvo bloqueo contractual demostrado;
+- se define un expediente `RBK-*` con identidad, autoridad, evidencia y resultado;
+- cada bloqueo conserva propietario y condición de salida;
+- la relación con deprecación y retiro queda explícita;
+- se declaran cero cambios `TREQ-*` por cobertura directa de requisitos vigentes;
+- no se publican packages ni se modifican código, CI, consumidores, datos o Supabase.
+
+---
+
+#### 23. Continuidad canónica del bloque
+
+- **ÚLTIMA TAREA APROBADA:** SHELL-PKG-005 — Definir política de deprecación
+- **TAREA ACTUAL APROBADA:** SHELL-PKG-006 — Definir rollback por aplicación
+- **SIGUIENTE TAREA RESERVADA:** SHELL-PKG-007 — Definir actualizaciones mediante PR
+
+
 ### [ ] SHELL-PKG-007 — Definir actualizaciones mediante PR
 ### [ ] SHELL-PKG-008 — Evitar actualizaciones automáticas sin pruebas
 Paquetes candidatos
