@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **491** |
+| Aprobadas | **492** |
 | En propuesta | **0** |
-| No iniciadas | **1103** |
+| No iniciadas | **1102** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **30.80% (491/1594)** |
+| Porcentaje de completamiento | **30.87% (492/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `SHELL-PKG-006` — Definir rollback por aplicación | ✅ APROBADA |
-| Tarea actual | `SHELL-PKG-007` — Definir actualizaciones mediante PR | ⬜ NO INICIADA |
-| Siguiente reservada | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas | ⬜ NO INICIADA |
+| Última aprobada | `SHELL-PKG-007` — Definir actualizaciones mediante PR | ✅ APROBADA |
+| Tarea actual | `SHELL-PKG-008` — Evitar actualizaciones automáticas sin pruebas | ⬜ NO INICIADA |
+| Siguiente reservada | `SHELL-CON-001` — Crear @vento/contracts | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -704,7 +704,7 @@
 | ✅ APROBADA | `SHELL-PKG-004` | Definir política de compatibilidad | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-PKG-005` | Definir política de deprecación | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ✅ APROBADA | `SHELL-PKG-006` | Definir rollback por aplicación | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
-| ⬜ NO INICIADA | `SHELL-PKG-007` | Definir actualizaciones mediante PR | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
+| ✅ APROBADA | `SHELL-PKG-007` | Definir actualizaciones mediante PR | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-PKG-008` | Evitar actualizaciones automáticas sin pruebas | `bloques/H_FUNDACION_COMPARTIDA/02_DISTRIBUCION_Y_PAQUETES_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-001` | Crear @vento/contracts | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
 | ⬜ NO INICIADA | `SHELL-CON-002` | Centralizar códigos de aplicaciones | `bloques/H_FUNDACION_COMPARTIDA/03_CONTRATOS_COMPARTIDOS.md` |
