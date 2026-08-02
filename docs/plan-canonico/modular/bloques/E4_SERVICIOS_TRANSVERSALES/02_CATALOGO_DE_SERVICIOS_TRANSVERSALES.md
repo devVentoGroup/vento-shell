@@ -3416,6 +3416,983 @@ TSVC-CAT-008 — Definir contingencia y degradación controlada
 ```
 
 
-### [ ] TSVC-CAT-008 — Definir contingencia y degradación controlada
+### ✅ TSVC-CAT-008 — Definir contingencia y degradación controlada
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría`
+
+**Tarea siguiente:** `TSVC-CAT-009 — Definir retención, archivado y limpieza`
+
+**Tipo de tarea:** definición documental canónica y materialización matricial de contingencia, degradación segura, fallback, recuperación y conciliación para servicios transversales
+
+**Fase:** definición documental vinculante; implementación física, activación operativa, configuración y despliegue no autorizados
+
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+
+**Fecha de corte:** `2026-08-02`
+
+**Cambios en código, configuración, migraciones, funciones, workers, colas, proveedores, dispositivos, despliegues, datos o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado material
+
+Esta tarea materializa el registro canónico:
+
+```text
+TRANSVERSE-SERVICE-CONTINGENCY-REGISTRY-001@1.0.0
+```
+
+El registro define, para cada una de las diez identidades `TSVC-SVC-001..010`:
+
+1. los dominios de fallo que pueden afectar la capacidad;
+2. las clases de activación de contingencia;
+3. el estado de disponibilidad y el modo operativo seguro aplicable;
+4. los controles de contención, backpressure, circuit breaker, aislamiento y suspensión;
+5. los fallbacks técnicos y manuales permitidos y prohibidos;
+6. el resultado mínimo que puede preservarse durante degradación;
+7. la conducta obligatoria ante `BLOCKED`, `RESULT_UNKNOWN`, `DEAD_LETTER`, deadline vencido, dependencia degradada o visibilidad insuficiente;
+8. las condiciones de recuperación, drenaje y conciliación antes de restaurar operación normal;
+9. las autoridades técnicas, empresariales, locales y de seguridad que participan sin transferirse propiedad;
+10. el handoff obligatorio hacia retención, archivado, limpieza, adopción progresiva y retiro legacy.
+
+La regla central es:
+
+```text
+DEGRADAR SOLO LO NECESARIO
++
+PRESERVAR AUTORIDAD, INTEGRIDAD E IDEMPOTENCIA
++
+NO FABRICAR ÉXITO
++
+RECONCILIAR ANTES DE CERRAR
+```
+
+Una contingencia mantiene o reduce una capacidad técnica dentro de límites previamente aprobados. No convierte un acuse, una cola, una captura local, un canal alterno ni una intervención manual en resultado empresarial confirmado.
+
+---
+
+#### 2. Alcance
+
+La tarea abarca exactamente estas diez identidades:
+
+1. `TSVC-SVC-001` — Orquestación genérica de trabajos asíncronos.
+2. `TSVC-SVC-002` — Entrega transaccional de eventos y outbox.
+3. `TSVC-SVC-003` — Impresión centralizada.
+4. `TSVC-SVC-004` — Notificaciones y alertas.
+5. `TSVC-SVC-005` — Generación de documentos.
+6. `TSVC-SVC-006` — Custodia de archivos y documentos originales.
+7. `TSVC-SVC-007` — Evidencia transaccional.
+8. `TSVC-SVC-008` — Integraciones externas y webhooks.
+9. `TSVC-SVC-009` — Programación y automatizaciones recurrentes.
+10. `TSVC-SVC-010` — Monitoreo y heartbeat de workers.
+
+La tarea conserva sin modificación:
+
+- el propietario técnico institucional `Tecnología de Vento Group`;
+- el repositorio canónico `vento-shell`;
+- las diez aplicaciones y las cien decisiones aplicación–servicio de `TSVC-CAT-003`;
+- los diez contratos `TSVC-SVC-001.CONTRACT` a `TSVC-SVC-010.CONTRACT`, todos en versión inicial `1.0.0`;
+- las identidades técnicas y credenciales mínimas de `TSVC-CAT-005`;
+- el modelo `AT_LEAST_ONCE_WITH_IDEMPOTENT_EFFECTS` de `TSVC-CAT-006`;
+- los seis perfiles de reintento, ocho resultados de deduplicación, catorce clases de error y estados de operación aprobados;
+- las siete clases de señal, veinte métricas, diez alertas, dieciséis clases de auditoría y ocho estados de salud de `TSVC-CAT-007`;
+- la autoridad de la aplicación propietaria sobre el resultado empresarial;
+- la obligación de que toda modificación futura de Supabase perteneciente a VENTO se cree, versione, documente y ejecute desde `vento-shell` durante una fase autorizada.
+
+Quedan fuera del alcance:
+
+- implementar circuit breakers, colas, buffers, réplicas, proveedores alternos, almacenamiento local o controles de backpressure;
+- crear tablas, índices, funciones, triggers, jobs, cron, workers, endpoints, buckets, roles, secretos o credenciales;
+- ejecutar DDL, DML, migraciones, backfills, despliegues, failover, reconciliaciones productivas o simulacros;
+- seleccionar proveedores, productos o tecnologías físicas;
+- fijar umbrales numéricos universales sin SLO, baseline, capacidad, criticidad y ambiente aprobados;
+- ampliar deadlines, permisos, territorio, vigencia, segregación o alcance de credenciales;
+- definir periodos de retención, archivo o limpieza, responsabilidad de `TSVC-CAT-009`;
+- definir adopción progresiva, coexistencia o retiro de soluciones legacy, responsabilidad de `TSVC-CAT-010`;
+- reemplazar los planes empresariales de continuidad y recuperación de los dominios propietarios;
+- declarar una contingencia implementada, ejercitada, operativa o validada sin evidencia física.
+
+---
+
+#### 3. Decisiones aprobadas
+
+##### 3.1. Identidad del registro
+
+| Campo                         | Valor                                         |
+| ----------------------------- | --------------------------------------------- |
+| `registry_id`                 | `TRANSVERSE-SERVICE-CONTINGENCY-REGISTRY-001` |
+| `registry_version`            | `1.0.0`                                       |
+| `registry_status`             | `DEFINED`                                     |
+| `covered_services`            | `10`                                          |
+| `availability_state_model`    | `SIX_STATE_SAFE_AVAILABILITY`                 |
+| `operating_mode_model`        | `TEN_CONTROLLED_OPERATING_MODES`              |
+| `contingency_lifecycle_model` | `NINE_STATE_CONTINGENCY_LIFECYCLE`            |
+| `technical_owner`             | Tecnología de Vento Group                     |
+| `canonical_repository`        | `vento-shell`                                 |
+| `governing_task`              | `TSVC-CAT-008`                                |
+
+`DEFINED` significa que las decisiones documentales están cerradas para las diez identidades. No significa que exista infraestructura redundante, almacenamiento local, proveedor alterno, procedimiento manual operativo, configuración de alertas, runbook ejecutable ni evidencia de recuperación.
+
+##### 3.2. Separación de estados y responsabilidades
+
+Toda materialización futura deberá distinguir cuatro capas:
+
+| Capa                       | Pregunta que responde                                                                   | Fuente propietaria                     |
+| -------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------- |
+| `ESTADO_DE_OPERACION`      | ¿Qué ocurrió con una intención concreta?                                                | `TSVC-CAT-006`                         |
+| `ESTADO_DE_DISPONIBILIDAD` | ¿Puede el servicio producir ahora un resultado mínimo seguro?                           | `TSVC-CAT-008`                         |
+| `MODO_OPERATIVO`           | ¿Mediante qué capacidad limitada o alternativa está operando el servicio?               | `TSVC-CAT-008`                         |
+| `CICLO_DE_CONTINGENCIA`    | ¿En qué etapa de detección, contención, recuperación o conciliación está la afectación? | `TSVC-CAT-008` y gestión de incidentes |
+
+Reglas:
+
+1. un servicio puede estar `DEGRADED_SAFE` mientras algunas operaciones están `BLOCKED` o `QUEUED`;
+2. una operación `SUCCEEDED` no demuestra que el servicio completo esté sano;
+3. un servicio `AVAILABLE` no confirma el resultado empresarial de cada operación;
+4. `RESULT_UNKNOWN` pertenece a la operación y obliga a conciliación aunque la dependencia vuelva a estar disponible;
+5. la restauración técnica no equivale a recuperación empresarial ni a cierre de conciliación;
+6. el servicio transversal conserva ejecución técnica; la aplicación propietaria conserva la decisión empresarial;
+7. el custodio local atiende dispositivo, energía, papel, conectividad o soporte físico sin adquirir autoridad sobre el contrato;
+8. la autoridad de seguridad puede suspender identidad, credencial o capacidad insegura sin declarar resultado empresarial;
+9. una contingencia no cambia el owner del dato, documento, evidencia, evento, proceso o recurso;
+10. ninguna capa puede inferirse únicamente desde una alerta, un código HTTP, una conexión activa o un heartbeat.
+
+##### 3.3. Estados canónicos de disponibilidad
+
+| Estado                    | Significado                                                                                                                                    |
+| ------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AVAILABLE`               | El servicio puede producir el resultado técnico ordinario dentro del contrato y controles aprobados.                                           |
+| `DEGRADED_SAFE`           | El servicio conserva un resultado mínimo explícito bajo capacidad, canal, alcance o modalidad reducidos sin omitir controles obligatorios.     |
+| `UNAVAILABLE`             | No existe una forma segura de aceptar o completar la capacidad solicitada.                                                                     |
+| `UNKNOWN`                 | La evidencia disponible no permite determinar salud, resultado o capacidad; no se asume disponibilidad.                                        |
+| `RECOVERING`              | La dependencia o servicio se está restaurando de forma controlada y todavía no ha cumplido todos los criterios de salida.                      |
+| `RECONCILIATION_REQUIRED` | La ejecución técnica fue restaurada, pero existen operaciones, efectos, colas, evidencias o resultados que deben conciliarse antes del cierre. |
+
+Reglas:
+
+1. `DEGRADED_SAFE` exige un resultado mínimo definido, límites, owner, señales y criterio de retorno;
+2. un estado desconocido no se redondea a disponible ni a detenido;
+3. `RECOVERING` no habilita automáticamente la capacidad completa;
+4. `RECONCILIATION_REQUIRED` permanece hasta resolver o asignar cada residual con dueño y condición de salida;
+5. la interfaz y los consumidores deberán distinguir los seis estados y no reducirlos a online u offline;
+6. la métrica de disponibilidad conservará tiempo, volumen y alcance por estado;
+7. una dependencia externa puede estar indisponible mientras el servicio permanece degradado de forma segura;
+8. una pérdida de integridad, autoridad o auditoría obligatoria puede exigir `UNAVAILABLE` aunque otros componentes estén activos.
+
+##### 3.4. Modos operativos controlados
+
+| Modo                            | Uso permitido                                                                                                         | Condición mínima                                                                                      |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `NORMAL`                        | Operación ordinaria bajo contrato, capacidad y dependencias aprobadas.                                                | Todos los gates obligatorios vigentes.                                                                |
+| `DEGRADED_CAPACITY_LIMITED`     | Reducir concurrencia, throughput, consumidores, prioridades o alcance para proteger integridad y trabajo crítico.     | Límites versionados, backpressure y señal visible.                                                    |
+| `DEGRADED_QUEUE_ONLY`           | Aceptar únicamente trabajo que pueda reservarse duraderamente y devolver receipt consultable sin prometer efecto.     | Persistencia, idempotencia, capacidad y deadline válidos.                                             |
+| `DEGRADED_READ_ONLY`            | Permitir consulta de datos confirmados o caché con frescura explícita, sin mutaciones que exijan estado actual.       | Fuente, versión, antigüedad, finalidad y comportamiento obsoleto declarados.                          |
+| `DEGRADED_LOCAL_BUFFER`         | Capturar temporalmente una intención o evidencia en almacenamiento local protegido para sincronización posterior.     | Política por operación, dispositivo enrolado, cifrado, límites, identidad, expiración y conciliación. |
+| `DEGRADED_ALTERNATE_DEPENDENCY` | Usar proveedor, worker pool, canal, dispositivo o endpoint alterno compatible.                                        | Contrato, versión, credencial, idempotencia, autoridad y resultado equivalentes o más restrictivos.   |
+| `DEGRADED_MANUAL_HANDOFF`       | Ejecutar un procedimiento manual controlado que preserve folio, datos mínimos, autoridad, custodia y reconciliación.  | Procedimiento aprobado, responsable, formato versionado, límites y retorno definidos.                 |
+| `SUSPENDED_UNSAFE`              | Bloquear intake o ejecución cuando continuar pueda producir pérdida, doble efecto, acceso indebido o evidencia falsa. | Causa explícita, alcance, comunicación, owner y condición de reactivación.                            |
+| `RECOVERING`                    | Reintroducir capacidad mediante probes, canarios, límites y drenaje gradual.                                          | Dependencias verificadas, observabilidad suficiente y rollback disponible.                            |
+| `RECONCILIATION_REQUIRED`       | Mantener operación limitada mientras se resuelven efectos ambiguos, huérfanos, conflictos o backlog residual.         | Inventario de residuales, owner, prioridad, evidencia y criterio de cierre.                           |
+
+Una misma contingencia puede usar más de un modo por operación, sede, dispositivo, consumidor o dependencia, pero cada combinación debe estar declarada. No se aprueba un modo global indiscriminado para toda una aplicación.
+
+##### 3.5. Jerarquía de degradación segura
+
+La selección deberá recorrer, en orden, la alternativa menos riesgosa que preserve el resultado mínimo:
+
+1. mantener consulta de estado y resultados ya confirmados;
+2. limitar capacidad, concurrencia, prioridad o alcance;
+3. detener llamadas a la dependencia afectada mediante circuit breaker;
+4. aceptar en cola durable únicamente cuando la reserva sea segura;
+5. capturar localmente solo las operaciones expresamente habilitadas;
+6. usar una dependencia alterna compatible y previamente gobernada;
+7. aplicar procedimiento manual controlado cuando el dominio lo permita;
+8. suspender la capacidad cuando ninguna alternativa conserve autoridad, integridad, evidencia y conciliación.
+
+Reglas:
+
+- no se elige un fallback más permisivo para evitar un bloqueo correcto;
+- no se usa una copia obsoleta para una mutación que exige estado actual;
+- no se cambia de proveedor, dispositivo o canal después de un efecto ambiguo sin conciliar primero;
+- no se amplían permisos, deadlines o capacidad por estar en contingencia;
+- no se acepta trabajo ilimitado en una cola o buffer;
+- no se elimina silenciosamente trabajo para recuperar capacidad;
+- no se convierte una operación manual en fuente de verdad permanente;
+- no se restaura operación completa por la sola desaparición de una alerta.
+
+##### 3.6. Clases canónicas de activación
+
+| ID             | Clase                                    | Condición semántica                                                                                   |
+| -------------- | ---------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `TSVC-TRG-001` | `DEPENDENCY_UNAVAILABLE`                 | Una dependencia requerida no responde o rechaza sistemáticamente dentro del contrato.                 |
+| `TSVC-TRG-002` | `DEPENDENCY_DEGRADED`                    | La dependencia responde con latencia, error, capacidad o precisión insuficientes.                     |
+| `TSVC-TRG-003` | `WORKER_STALE_OR_UNREADY`                | Heartbeat, readiness, lease o capacidad del worker pierden frescura o validez.                        |
+| `TSVC-TRG-004` | `BACKLOG_OR_CAPACITY_SATURATION`         | Profundidad, edad o drenaje esperado exceden la envolvente aprobada.                                  |
+| `TSVC-TRG-005` | `RETRY_STORM_OR_AMPLIFICATION`           | Reintentos crecen sin recuperación proporcional o amplifican la falla.                                |
+| `TSVC-TRG-006` | `DEADLINE_OR_EXPIRATION_RISK`            | Una operación se aproxima o supera deadline, vigencia o ventana empresarial.                          |
+| `TSVC-TRG-007` | `RESULT_UNKNOWN_PERSISTENT`              | Un efecto posible permanece sin confirmación suficiente.                                              |
+| `TSVC-TRG-008` | `DEAD_LETTER_OR_QUARANTINE_GROWTH`       | Aumentan unidades aisladas sin resolución automática segura.                                          |
+| `TSVC-TRG-009` | `CREDENTIAL_OR_IDENTITY_COMPROMISE`      | Una credencial, principal, dispositivo o firma está comprometida, revocada o no verificable.          |
+| `TSVC-TRG-010` | `INTEGRITY_OR_STORAGE_FAILURE`           | Hash, original, evidencia, metadato, transacción o persistencia no pueden conservarse con integridad. |
+| `TSVC-TRG-011` | `NETWORK_DEVICE_OR_SITE_DISRUPTION`      | Red, energía, dispositivo, periférico o sede pierden capacidad requerida.                             |
+| `TSVC-TRG-012` | `OBSERVABILITY_OR_AUDIT_VISIBILITY_LOSS` | La propia captura de señales o auditoría pierde frescura, completitud o disponibilidad.               |
+
+La activación real requiere una condición versionada derivada de SLO, baseline, criticidad, capacidad, ambiente y ventana. Esta tarea no asigna umbrales universales.
+
+##### 3.7. Clases canónicas de acción
+
+| ID             | Acción                          | Finalidad                                                                                 |
+| -------------- | ------------------------------- | ----------------------------------------------------------------------------------------- |
+| `TSVC-ACT-001` | `CIRCUIT_OPEN`                  | Detener llamadas que agravan una dependencia fallida.                                     |
+| `TSVC-ACT-002` | `BACKPRESSURE`                  | Reducir o rechazar intake de forma visible antes de perder trabajo.                       |
+| `TSVC-ACT-003` | `RATE_OR_CONCURRENCY_LIMIT`     | Proteger capacidad crítica y evitar saturación.                                           |
+| `TSVC-ACT-004` | `BULKHEAD_ISOLATION`            | Aislar servicio, consumidor, proveedor, dispositivo, sede o clase de trabajo afectada.    |
+| `TSVC-ACT-005` | `DURABLE_QUEUE_ACCEPTANCE`      | Reservar una intención con receipt sin afirmar ejecución.                                 |
+| `TSVC-ACT-006` | `PROTECTED_LOCAL_BUFFER`        | Conservar temporalmente una captura autorizada y reconciliable.                           |
+| `TSVC-ACT-007` | `READ_ONLY_PROJECTION`          | Mantener consulta de información confirmada o con frescura visible.                       |
+| `TSVC-ACT-008` | `ALTERNATE_DEPENDENCY`          | Reencaminar hacia una dependencia compatible ya aprobada.                                 |
+| `TSVC-ACT-009` | `MANUAL_CONTROLLED_HANDOFF`     | Continuar mediante procedimiento manual trazable y temporal.                              |
+| `TSVC-ACT-010` | `SUSPEND_INTAKE_OR_EXECUTION`   | Evitar efectos inseguros cuando no existe alternativa válida.                             |
+| `TSVC-ACT-011` | `CONTROLLED_DRAIN_AND_PROBE`    | Restaurar gradualmente, validar salud y drenar backlog sin tormenta.                      |
+| `TSVC-ACT-012` | `RECONCILE_AND_CLOSE_RESIDUALS` | Resolver resultados ambiguos, huérfanos, conflictos y efectos parciales antes del cierre. |
+
+##### 3.8. Circuit breaker, bulkhead y backpressure
+
+El circuit breaker utiliza estados conceptuales cerrados:
+
+| Estado      | Regla                                                                                |
+| ----------- | ------------------------------------------------------------------------------------ |
+| `CLOSED`    | Las llamadas se permiten dentro del contrato y capacidad aprobados.                  |
+| `OPEN`      | Las llamadas ordinarias se bloquean y se aplica el modo degradado definido.          |
+| `HALF_OPEN` | Solo probes o canarios limitados verifican recuperación sin liberar todo el tráfico. |
+
+Reglas:
+
+1. abrir el circuito no marca operaciones pendientes como fallidas ni exitosas;
+2. cerrar el circuito exige evidencia suficiente y no solo ausencia de errores recientes;
+3. `HALF_OPEN` limita volumen, operación, ambiente y dependencia;
+4. una respuesta ambigua anterior se concilia antes de reenviar mediante la dependencia restaurada;
+5. el breaker se particiona por dominio de fallo cuando sea posible para no detener capacidades independientes;
+6. un proveedor, dispositivo o consumidor afectado no arrastra automáticamente a todos los demás;
+7. el bulkhead conserva colas, workers, credenciales, capacidad y métricas separables por partición aprobada;
+8. el backpressure se activa antes del límite de pérdida y devuelve estado, causa, receipt o rechazo controlado según contrato;
+9. el trabajo ya aceptado no se descarta para liberar espacio;
+10. los límites concretos se derivan de capacidad, almacenamiento, SLO, criticidad y carga observada;
+11. prioridad nunca rompe causalidad, autorización, orden, deadline ni segregación;
+12. el drenaje protege operaciones foreground críticas y evita que el backlog histórico monopolice recursos.
+
+##### 3.9. Ciclo de vida de la contingencia
+
+Toda contingencia conserva un ciclo de vida independiente del estado de la operación y del resultado empresarial:
+
+| Estado de contingencia | Significado                                                                                                                      |
+| ---------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `DETECTED`             | Una señal o hecho verificable indica posible pérdida de capacidad, integridad, seguridad o visibilidad.                          |
+| `ASSESSED`             | Se determinan servicio, dependencia, alcance, criticidad, operaciones afectadas y nivel de certeza.                              |
+| `CONTAINED`            | Se detiene la propagación mediante aislamiento, breaker, límites, suspensión o protección equivalente.                           |
+| `DEGRADED_ACTIVE`      | Opera un modo degradado aprobado, con alcance, owner, vigencia, límites y comunicación explícitos.                               |
+| `RECOVERY_READY`       | La dependencia o capacidad candidata cumple precondiciones para una recuperación controlada.                                     |
+| `RECOVERING`           | Se ejecutan probes, reapertura gradual, drenaje, revalidación y restauración por etapas.                                         |
+| `RECONCILING`          | Se resuelven resultados desconocidos, duplicados, huérfanos, conflictos, efectos parciales y soportes manuales.                  |
+| `RESTORED`             | La capacidad normal fue restablecida y los criterios técnicos y empresariales de salida quedaron demostrados.                    |
+| `BLOCKED`              | No existe una salida segura o falta una autoridad, dependencia, evidencia o decisión concreta; la operación permanece contenida. |
+
+Reglas:
+
+1. `DETECTED` no activa automáticamente una alternativa; primero se evalúan alcance y seguridad;
+2. `CONTAINED` puede implicar indisponibilidad deliberada cuando continuar sería más riesgoso;
+3. `DEGRADED_ACTIVE` exige un modo de operación específico, no la frase genérica “funcionamiento parcial”;
+4. `RECOVERY_READY` exige evidencia de dependencia, credencial, versión, integridad, capacidad y observabilidad suficientes;
+5. `RECOVERING` no equivale a disponibilidad plena;
+6. `RECONCILING` puede continuar después de recuperar técnicamente el servicio;
+7. `RESTORED` exige resolver o asignar todos los residuales con owner y condición de cierre;
+8. `BLOCKED` identifica la causa, la tarea o autoridad responsable y la condición de salida;
+9. toda transición registra actor o principal, momento, causa, evidencia y versión de política;
+10. una contingencia cerrada no borra el incidente, las operaciones afectadas ni las decisiones adoptadas.
+
+##### 3.10. Registro mínimo de contingencia
+
+Toda materialización futura deberá conservar, cuando aplique:
+
+```text
+contingency_id
+contingency_policy_id
+contingency_policy_version
+service_id
+contract_id
+contract_version
+environment
+trigger_class
+trigger_signal_reference
+detected_at
+assessed_at
+activated_at
+expires_at
+current_state
+availability_state
+operating_mode
+scope_type
+scope_reference
+business_owner_application
+technical_owner
+incident_reference
+affected_operation_types
+affected_operation_count
+blocked_capabilities
+preserved_capabilities
+fallback_action_ids
+alternate_dependency_reference
+manual_procedure_reference
+activation_authority
+activation_principal
+communication_reference
+recovery_owner
+recovery_started_at
+reconciliation_required
+reconciliation_reference
+restored_at
+closure_authority
+residual_risk_reference
+```
+
+Reglas:
+
+1. `contingency_id` identifica un episodio y no se reutiliza;
+2. toda activación referencia una política versionada;
+3. el alcance puede limitarse por servicio, operación, contrato, consumidor, proveedor, dispositivo, sede, área o ambiente;
+4. capacidades bloqueadas y preservadas se declaran por separado;
+5. la dependencia alterna no se registra como propietaria del proceso;
+6. el procedimiento manual se referencia por identidad y versión, no se improvisa dentro del incidente;
+7. una activación sin vencimiento requiere revisión periódica explícita y no puede convertirse en estado permanente por omisión;
+8. la recuperación técnica y la conciliación empresarial conservan owners distintos cuando corresponda;
+9. el registro no almacena secretos, payloads completos ni datos personales innecesarios;
+10. toda excepción de seguridad o autoridad permanece prohibida salvo que exista un mecanismo de emergencia aprobado por `TSVC-CAT-005`.
+
+##### 3.11. Autoridad de activación, cambio y cierre
+
+| Decisión                                              | Autoridad mínima                                                                                                      |
+| ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Limitar capacidad o abrir circuit breaker técnico     | Propietario técnico, conforme a política versionada y criticidad.                                                     |
+| Suspender una capacidad insegura                      | Propietario técnico; aplicación propietaria informada cuando exista impacto empresarial.                              |
+| Activar captura local o cola durable                  | Política aprobada, owner técnico y aplicación propietaria del resultado.                                              |
+| Cambiar a dependencia, proveedor, dispositivo o canal | Propietario técnico y owner empresarial cuando cambie alcance, resultado, destinatario, costo, evidencia o condición. |
+| Activar procedimiento manual controlado               | Responsable operativo autorizado y aplicación propietaria, bajo procedimiento vigente.                                |
+| Ejecutar intervención de emergencia                   | Autoridad de emergencia definida, identidad temporal y auditoría completa.                                            |
+| Reanudar intake o ejecución                           | Owner técnico después de probes, capacidad, integridad, identidad y observabilidad suficientes.                       |
+| Declarar recuperación empresarial                     | Aplicación propietaria después de conciliación, residuales y evidencia.                                               |
+| Cerrar contingencia                                   | Owner técnico y owner empresarial cuando ambos hayan tenido responsabilidades materiales.                             |
+
+Reglas:
+
+1. ningún worker, scheduler, proveedor, dispositivo o alerta activa por sí mismo una decisión empresarial;
+2. una política automática puede ejecutar acciones técnicas preaprobadas dentro de límites cerrados;
+3. una política automática no puede ampliar permisos, aprobar gastos, sustituir productos, aceptar entregas, cerrar pagos ni compensar resultados;
+4. un operador local puede atender energía, papel, conectividad o sustitución física autorizada sin alterar contratos, contenido o estados propietarios;
+5. una intervención manual identifica actor humano real y no se atribuye únicamente al principal técnico;
+6. la ausencia del responsable nominal no elimina la responsabilidad institucional ni autoriza bypass;
+7. toda activación material genera auditoría correlacionada con el incidente y las operaciones afectadas;
+8. el cierre no se delega a una alerta que dejó de cumplirse.
+
+##### 3.12. Identidad, credenciales y autorización durante contingencia
+
+1. La degradación no amplía rol, permiso, territorio, sede, área, recurso, finalidad, dispositivo, proveedor ni vigencia.
+2. Un principal revocado, comprometido, expirado o no verificable no se reutiliza por continuidad.
+3. La identidad de emergencia permanece separada de la ordinaria, tiene alcance y duración mínimos y se retira al finalizar.
+4. `SUPABASE_SERVICE_ROLE_KEY` no se adopta como fallback general ni como identidad compartida entre servicios.
+5. Un procedimiento manual no autoriza credenciales compartidas, firmas genéricas, PIN reutilizado, actor ficticio ni acceso anónimo a una acción sensible.
+6. Una operación capturada offline conserva actor, aplicación, dispositivo, contexto, recurso, versión observada, autoridad y momento del hecho.
+7. Al reconectar se revalida autorización, versión, estado, cancelación, revocación, deadline y dependencias antes del efecto.
+8. Si la autoridad expiró, la operación queda `BLOCKED`, `REJECTED` o `RECONCILIATION_REQUIRED` según contrato; no se ejecuta retroactivamente bajo el permiso anterior.
+9. Una dependencia alterna usa credencial, audience, ambiente y scope propios; no hereda secretos de la dependencia primaria.
+10. El observador de salud conserva solo lectura durante contingencia y no puede mutar trabajos, reintentar, conciliar o compensar.
+11. Toda exportación de diagnóstico o acceso extraordinario permanece auditada y minimizada.
+12. La recuperación de una credencial no cambia la intención, la clave idempotente ni la aplicación propietaria del resultado.
+
+##### 3.13. Relación con deadlines, reintentos y resultado desconocido
+
+1. El modo degradado no reinicia `attempt_no`, presupuesto de reintento, deadline ni vigencia empresarial.
+2. Abrir un circuit breaker evita nuevos intentos hacia la dependencia, pero conserva la operación y su próxima condición de evaluación.
+3. El tiempo de espera sin llamada real no consume intento, aunque sí consume deadline cuando el contrato así lo define.
+4. `RESULT_UNKNOWN` prevalece sobre una repetición automática cuando el efecto pudo ocurrir.
+5. Un cambio de proveedor, dispositivo o canal después de un efecto ambiguo requiere primero conciliación o una decisión empresarial explícita que tolere el posible doble efecto.
+6. `DEAD_LETTER` y `QUARANTINED` no se drenan automáticamente al restaurar el servicio.
+7. Una operación vencida no se reactiva por recuperar conectividad; se clasifica y concilia según la política propietaria.
+8. Un retry storm activa contención, backpressure y circuit breaker antes de ampliar capacidad o intentos.
+9. La política de contingencia puede reducir el presupuesto de reintentos; ampliarlo exige decisión versionada, seguridad y evidencia.
+10. La recuperación conserva la misma `idempotency_key` para la misma intención y crea nuevos `attempt_id` solo cuando existe ejecución real.
+11. Los resultados tardíos se comparan con cancelación, fencing, versión y estado autoritativo antes de aplicarse.
+12. Una nueva intención empresarial posterior a la contingencia usa otra clave y referencia la operación anterior cuando corresponda.
+
+##### 3.14. Captura local y operación offline
+
+La captura local solo es admisible cuando la operación tiene una clase offline aprobada y el dispositivo satisface los controles correspondientes.
+
+Reglas:
+
+1. `DEGRADED_LOCAL_BUFFER` no significa ejecución empresarial local salvo que exista una política `OF4_LEASED_EXECUTION` específica y vigente;
+2. toda intención se identifica antes de persistir y conserva clave idempotente estable;
+3. el buffer local es durable, cifrado o protegido según sensibilidad y separado por actor, aplicación, área y dispositivo;
+4. cada elemento conserva esquema, versión, dependencias, prioridad, deadline, tamaño, sensibilidad y estado humano;
+5. el usuario distingue `LOCAL_CAPTURED`, `QUEUED`, `SYNCING`, `SERVER_RECEIVED`, `CONFIRMED`, `RESULT_UNKNOWN`, `CONFLICT`, `REJECTED` y `RECONCILIATION_REQUIRED`;
+6. ninguna captura local se presenta como resultado confirmado;
+7. los límites de operaciones, bytes, archivos, antigüedad y backlog se aplican antes de llenar almacenamiento;
+8. al acercarse al límite se activa backpressure, priorización, rechazo controlado o procedimiento manual; nunca eliminación silenciosa;
+9. cierre, reinicio, actualización o cambio de actor no descartan ni transfieren pendientes sin política compatible;
+10. una actualización incompatible pone la cola en cuarentena o migración segura; no prueba payloads antiguos por ensayo y error;
+11. la reconexión estabiliza red, reloj, sesión, dispositivo, contexto, versiones y revocaciones antes de drenar;
+12. el drenaje respeta causalidad y protege acciones foreground críticas;
+13. conflictos de versión, cantidad, custodia, estado o autoridad no se resuelven mediante `last write wins`;
+14. archivos, fotografías, firmas y mediciones mantienen estados locales y remotos independientes;
+15. la certificación futura deberá probar pérdida antes, durante y después del envío, reconexión inestable, almacenamiento lleno, reloj incorrecto, reinicio, concurrencia y evidencia parcial.
+
+##### 3.15. Contingencia manual controlada
+
+Un procedimiento manual solo puede sostener operación mínima cuando declare:
+
+```text
+manual_procedure_id
+manual_procedure_version
+service_id
+business_process_reference
+activation_condition
+activation_authority
+responsible_role
+substitute_role
+allowed_operations
+forbidden_operations
+folio_or_numbering_rule
+minimum_fields
+identity_and_signature_rule
+custody_rule
+duplicate_control
+time_rule
+capacity_limit
+communication_rule
+digitization_rule
+reconciliation_rule
+closure_rule
+```
+
+Reglas:
+
+1. papel, chat, memoria, hoja libre o mensaje no se convierten por sí mismos en procedimiento aprobado;
+2. el soporte manual conserva folio, actor, momento, origen, recurso, cantidad, estado, evidencia y destino cuando apliquen;
+3. no se capturan secretos ni datos excesivos;
+4. la numeración o identidad permite detectar repetición y relacionar la digitalización posterior;
+5. la contingencia manual no modifica la fuente de verdad ni habilita operaciones prohibidas;
+6. no se permite cierre empresarial cuando falta evidencia obligatoria, autoridad, custodia o aceptación requerida;
+7. la digitalización no copia ciegamente; valida duplicados, versión, contexto, estado, autoridad y efectos ya ocurridos;
+8. las diferencias se registran y concilian sin sobrescribir el soporte original;
+9. el procedimiento tiene capacidad máxima, vigencia, responsable y condición de suspensión;
+10. al restaurar el servicio se detiene la creación de nuevos soportes antes de iniciar el cierre y conciliación;
+11. los soportes manuales quedan vinculados a la operación digital resultante o a una disposición documentada;
+12. la permanencia prolongada exige revisión y no convierte el procedimiento en operación ordinaria.
+
+##### 3.16. Dependencia alterna y failover
+
+Una dependencia alterna solo puede activarse cuando exista compatibilidad aprobada y evidencia suficiente.
+
+Reglas:
+
+1. la dependencia alterna tiene identidad, contrato, versión, credencial, capacidad, costo, territorio y limitaciones propios;
+2. el failover no cambia semántica empresarial, unidad, destinatario, plantilla, clasificación, integridad ni autorización;
+3. una traducción usa adaptador versionado y no inventa campos autoritativos;
+4. se verifica si la dependencia primaria pudo producir efecto antes de enviar a la alterna;
+5. el mismo `idempotency_key` identifica la intención, pero cada entrega técnica conserva identidad propia;
+6. una alterna con menor garantía solo puede usarse si el contrato lo admite y el usuario o responsable recibe el estado correcto;
+7. un proveedor alterno no obtiene acceso directo a fuentes internas ni credenciales del proveedor primario;
+8. el retorno a la dependencia primaria es controlado y evita oscilación mediante estabilidad, probes y ventana de observación;
+9. no se distribuye tráfico simultáneo entre primario y alterno cuando exista riesgo de doble efecto no deduplicable;
+10. una alterna no probada permanece `BLOQUEADA` y no se activa por urgencia;
+11. si ninguna dependencia cumple, la capacidad pasa a `SUSPENDED_UNSAFE` o procedimiento manual aprobado;
+12. toda activación y retorno quedan auditados y correlacionados.
+
+##### 3.17. Recuperación, drenaje y retorno a operación normal
+
+La recuperación aplica la siguiente secuencia mínima:
+
+```text
+CONTENER
+→ VERIFICAR DEPENDENCIA, IDENTIDAD, INTEGRIDAD Y RELOJ
+→ ACTIVAR PROBES LIMITADOS
+→ HABILITAR CAPACIDAD MÍNIMA
+→ DRENAR TRABAJO ELEGIBLE POR CAUSALIDAD Y PRIORIDAD
+→ CONCILIAR RESULTADOS DESCONOCIDOS Y SOPORTES MANUALES
+→ RESTAURAR CAPACIDAD ORDINARIA
+→ CERRAR RESIDUALES Y REVISAR
+```
+
+Reglas:
+
+1. la dependencia recuperada no recibe todo el backlog inmediatamente;
+2. los probes no ejecutan efectos empresariales irreversibles salvo que sean operaciones sintéticas aisladas y aprobadas;
+3. el drenaje aplica límites de concurrencia, rate, consumidor, proveedor, dispositivo y sede;
+4. las operaciones vencidas, canceladas, revocadas, incompatibles, en dead-letter o cuarentena se clasifican antes de ejecutar;
+5. los resultados desconocidos se consultan antes de reenviar;
+6. el trabajo manual se digitaliza y concilia antes de cerrar su procedimiento;
+7. las operaciones nuevas críticas conservan capacidad durante el drenaje histórico;
+8. la reapertura por etapas permite volver a contención sin perder trazabilidad;
+9. `AVAILABLE` exige salud técnica, observabilidad suficiente, capacidad y contrato, pero el cierre empresarial sigue en la aplicación propietaria;
+10. la recuperación técnica se registra separada de la recuperación empresarial;
+11. los gaps de telemetría, auditoría o evidencia se preservan como gaps y no se completan con datos inventados;
+12. la revisión posterior identifica causa, barreras fallidas, duración, alcance, decisiones, residuales, acción preventiva y evidencia de eficacia.
+
+##### 3.18. Pérdida del pipeline de observabilidad o auditoría
+
+La pérdida de visibilidad se trata como degradación propia y no como evidencia de salud.
+
+Reglas:
+
+1. una falla de métricas o trazas no detiene automáticamente operaciones que conservan contrato, integridad, autoridad y auditoría suficiente;
+2. una acción sensible cuya auditoría obligatoria no pueda persistirse debe fallar de forma cerrada o usar un buffer local duradero expresamente aprobado;
+3. los logs de consola o memoria no sustituyen auditoría durable;
+4. el servicio expone `UNKNOWN` o `DEGRADED` cuando no puede demostrar estado, frescura o cobertura;
+5. no se fabrican heartbeats, timestamps, spans, eventos o métricas retrospectivas para rellenar el vacío;
+6. la señal local preserva el momento del hecho y el momento de exportación posterior;
+7. el buffer de observabilidad tiene límites, backpressure, cifrado, prioridad y disposición definidos;
+8. las señales de seguridad, integridad, intervención manual y resultado desconocido no se descartan por muestreo ordinario;
+9. la recuperación del pipeline verifica agentes, collectors, exportación, recepción, reglas, dashboards y canal extremo a extremo;
+10. un canal de alerta alterno no modifica la condición ni el estado empresarial;
+11. los periodos sin visibilidad permanecen explícitos en reportes y SLI;
+12. si la pérdida impide controlar una operación crítica, esa capacidad pasa a `SUSPENDED_UNSAFE` hasta recuperar controles suficientes.
+
+##### 3.19. Matriz canónica de contingencia por servicio
+
+| Servicio       | Fallo o degradación dominante                                                       | Modo mínimo preservable                                                                                    | Acción de contención principal                                                                                      | Criterio que obliga a suspender                                                                                              | Recuperación y conciliación obligatorias                                                                                   | Estado material |
+| -------------- | ----------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `TSVC-SVC-001` | workers no disponibles, backlog, leases vencidos, saturación o dependencia caída    | `DEGRADED_QUEUE_ONLY` o `DEGRADED_CAPACITY_LIMITED` si la reserva durable y el deadline permanecen seguros | breaker por dependencia, backpressure, bulkhead, límites de intake y aceptación con receipt                         | no existe reserva durable, se agotó capacidad, expiró autoridad o no puede garantizarse idempotencia                         | probes, reclaims con fencing, drenaje causal, clasificación de vencidos, dead-letter y resultados desconocidos             | `ESPECIFICADO`  |
+| `TSVC-SVC-002` | entrega a consumidor caída, outbox atrasado, contrato incompatible o replay         | `DEGRADED_QUEUE_ONLY` con evento persistido atómicamente y consumo diferido                                | pausar consumidor, aislar partición y preservar `event_id`, orden y versión                                         | no puede persistirse el evento requerido con la transacción o existe riesgo de marcar entrega inexistente                    | reanudar por consumidor, replay idempotente, conservar orden, resolver ACK ambiguo y verificar cero eventos huérfanos      | `ESPECIFICADO`  |
+| `TSVC-SVC-003` | impresora, adaptador, red, papel, layout o receipt físico incierto                  | cola durable; dispositivo alterno compatible; procedimiento manual aprobado                                | detener reintento físico ciego, aislar dispositivo y mantener estado `RESULT_UNKNOWN` cuando aplique                | no existe dispositivo compatible, falta evidencia obligatoria, layout no válido o no puede distinguirse una copia previa     | verificar dispositivo, consultar spool o inspección, reimprimir solo con nueva intención autorizada y conciliar copias     | `ESPECIFICADO`  |
+| `TSVC-SVC-004` | proveedor, canal, destino, rate limit o renderizado degradado                       | cola diferida o canal alterno aprobado con misma finalidad, contenido y vigencia                           | circuit breaker por canal o proveedor, rate limit, supresión temporal gobernada y backpressure                      | mensaje vencido, destinatario no autorizado, ausencia de canal compatible o comunicación obligatoria no entregable           | consultar proveedor, reanudar por canal, evitar duplicados, expirar mensajes inválidos y conciliar entregas ambiguas       | `ESPECIFICADO`  |
+| `TSVC-SVC-005` | renderer, plantilla, fuente, Storage o capacidad de generación no disponibles       | cola durable; consulta de documentos confirmados; renderer alterno compatible                              | detener generación nueva, proteger snapshot y plantilla, aislar outputs parciales                                   | fuente o plantilla no pueden congelarse, integridad no verificable o resultado obligatorio no puede producirse               | regenerar idempotentemente, comparar hash y versión, cuarentenar parciales y vincular supersesión o resultado recuperado   | `ESPECIFICADO`  |
+| `TSVC-SVC-006` | Storage, metadata, hash, clasificación, upload o acceso degradados                  | `DEGRADED_READ_ONLY` o `DEGRADED_LOCAL_BUFFER` protegido para ingestiones autorizadas                      | suspender confirmación, aislar objeto o metadata, bloquear exposición y aplicar límites de buffer                   | no puede protegerse contenido sensible, falta capacidad durable, integridad no verificable o vínculo propietario desconocido | reconciliar objeto y metadata, verificar hash, resolver huérfanos, confirmar custodia o cuarentenar sin perder el original | `ESPECIFICADO`  |
+| `TSVC-SVC-007` | evidencia obligatoria, hash, firma, lineage, dispositivo o almacenamiento fallan    | captura local protegida cuando esté aprobada; consulta de evidencia confirmada                             | impedir cierre empresarial dependiente, conservar original y aislar evidencia incompleta o conflictiva              | no puede identificarse actor, hecho, momento, integridad o custodia; la evidencia es requisito duro del proceso              | subir y verificar, reconciliar con el hecho, conservar correcciones vinculadas y no sustituir el original                  | `ESPECIFICADO`  |
+| `TSVC-SVC-008` | proveedor externo, firma, mapping, red, timeout, rate limit o ACK ambiguo           | recepción durable con ACK controlado; cola saliente; proveedor alterno compatible                          | breaker por proveedor y operación, no emitir éxito falso, aislar mapping incompatible y preservar payload protegido | no puede verificarse origen, persistirse recepción, garantizarse mapping o evitar doble efecto externo                       | consultar proveedor, deduplicar replay, reenviar solo cuando sea seguro, conciliar estado externo e interno                | `ESPECIFICADO`  |
+| `TSVC-SVC-009` | scheduler, reloj, regla, misfire, solapamiento, worker o dependencia no disponibles | pausa controlada, ocurrencia pendiente o coalescing según política                                         | detener nuevos triggers inseguros, conservar ocurrencia lógica y evitar catch-up storm                              | regla, versión, autoridad, reloj o deadline no son válidos; la ocurrencia no admite ejecución tardía                         | clasificar misfires, ejecutar solo ocurrencias elegibles, vincular ejecución manual y conciliar solapamientos              | `ESPECIFICADO`  |
+| `TSVC-SVC-010` | heartbeat, collector, reloj, canal, almacenamiento o visibilidad degradados         | health local mínimo o estado `UNKNOWN`; observación de solo lectura                                        | declarar visibilidad degradada, impedir conclusiones de salud y suspender automatismos basados en señal incierta    | una operación crítica requiere health o auditoría que no puede demostrarse                                                   | recuperar pipeline extremo a extremo, preservar gaps, revalidar workers y no reconstruir señales inexistentes              | `ESPECIFICADO`  |
+
+##### 3.20. Perfil específico de `TSVC-SVC-001`
+
+La orquestación genérica aplica estas decisiones:
+
+1. puede aceptar una intención durante degradación únicamente si la reserva es durable, atómica, idempotente y cabe dentro de límites;
+2. el receipt confirma reserva, no inicio ni resultado;
+3. si no existe persistencia durable, el intake se rechaza de forma controlada y no se mantiene solo en memoria;
+4. el backlog se particiona por criticidad, contrato, productor o dependencia cuando sea necesario para evitar propagación;
+5. el circuit breaker detiene llamadas a la dependencia fallida sin perder el trabajo aceptado;
+6. un worker stale pierde capacidad de claim y no puede cerrar con fencing vencido;
+7. la capacidad limitada prioriza trabajo independiente y vigente sin romper causalidad;
+8. `DEAD_LETTER`, `QUARANTINED`, `RESULT_UNKNOWN`, cancelados y vencidos no se mezclan con el drenaje ordinario;
+9. la recuperación usa probes, claims limitados, observación de error y throughput antes de ampliar concurrencia;
+10. el servicio no inventa compensaciones ni cambia el estado empresarial para reducir backlog.
+
+##### 3.21. Perfil específico de `TSVC-SVC-002`
+
+La entrega transaccional aplica estas decisiones:
+
+1. cuando el evento es obligatorio, la transacción no puede declararse completa si no existe registro outbox durable en la misma frontera atómica;
+2. la caída de una consumidora no elimina, recrea ni cambia `event_id`;
+3. la entrega puede pausarse por consumidora, partición, versión o dependencia sin detener productoras independientes cuando la capacidad lo permita;
+4. el replay conserva evento, versión, correlación, causalidad y productor originales;
+5. un ACK ambiguo se concilia antes de crear otra entrega lógica;
+6. el consumidor deduplica por `event_id` y conserva su propio estado de consumo;
+7. el orden por agregado y versión se mantiene durante backlog y recuperación;
+8. un evento incompatible se aísla y no se transforma silenciosamente;
+9. restaurar el consumidor inicia drenaje limitado y no una tormenta de replay;
+10. el servicio no marca entregado un evento por haberlo enviado al transporte.
+
+##### 3.22. Perfil específico de `TSVC-SVC-003`
+
+La impresión centralizada aplica estas decisiones:
+
+1. el trabajo puede permanecer en cola durable cuando la impresora o adaptador están indisponibles;
+2. un dispositivo alterno solo se usa si está enrolado, es compatible con layout, medio, resolución, área, seguridad y finalidad;
+3. receipt del adaptador, escritura de socket o envío de bytes no demuestran impresión física;
+4. si el dispositivo pudo aceptar el trabajo y se perdió la respuesta, el estado es `RESULT_UNKNOWN`;
+5. no se reimprime automáticamente una operación desconocida;
+6. la inspección física, spool, contador, receipt o confirmación autorizada determinan la conciliación posible;
+7. una reimpresión deliberada crea otra identidad de copia, motivo, actor y autoridad, vinculada al original;
+8. el procedimiento manual exige formato, numeración, contenido, custodia y conciliación aprobados;
+9. falta de papel, tapa abierta, atasco, corte, contenido en blanco, desconexión o buffer divergente conservan estados distinguibles;
+10. una aplicación propietaria no cierra un proceso que exige documento físico hasta recibir la evidencia contractual correspondiente.
+
+##### 3.23. Perfil específico de `TSVC-SVC-004`
+
+Las notificaciones y alertas aplican estas decisiones:
+
+1. el mensaje puede diferirse en cola mientras destinatario, finalidad, contenido, preferencia y vigencia permanezcan válidos;
+2. el fallback de canal conserva la misma intención comunicativa y usa una entrega técnica distinta por canal;
+3. cambiar de canal exige que el destinatario, consentimiento, sensibilidad, plantilla, costo y expectativa permitan la alternativa;
+4. un mensaje vencido o materialmente obsoleto no se envía al recuperar el proveedor;
+5. rate limit y throttling activan backoff, circuit breaker y priorización sin ampliar intentos indefinidamente;
+6. una entrega ambigua se consulta o concilia antes de usar otro canal cuando exista riesgo de comunicación duplicada o contradictoria;
+7. una notificación enviada no equivale a lectura, aceptación, autorización, evidencia ni cierre empresarial;
+8. supresión y silencio requieren razón, alcance, vigencia y auditoría;
+9. las comunicaciones críticas sin canal válido escalan a la aplicación propietaria y pueden activar procedimiento manual aprobado;
+10. la recuperación drena por vigencia, prioridad y capacidad, no únicamente por antigüedad.
+
+##### 3.24. Perfil específico de `TSVC-SVC-005`
+
+La generación de documentos aplica estas decisiones:
+
+1. la solicitud se conserva con snapshot, plantilla, versión, formato, finalidad e idempotencia;
+2. durante degradación puede mantenerse consulta de documentos confirmados sin habilitar generación nueva;
+3. un renderer alterno requiere compatibilidad demostrada y no puede alterar contenido, paginación material, firma, códigos o semántica;
+4. un output parcial o sin hash verificado se aísla y no se publica como documento final;
+5. si el artefacto pudo crearse, se consulta por operación, referencia y hash antes de regenerar;
+6. cambiar fuente, plantilla, versión o finalidad crea una intención nueva;
+7. el servicio no usa datos cacheados vencidos cuando el documento exige estado actual;
+8. la recuperación compara resultado existente, hash, formato y versión antes de reutilizar o superseder;
+9. documento generado no significa aprobado, firmado, emitido legalmente, custodiado ni entregado;
+10. la falta de Storage o custodia impide declarar completo el flujo cuando el contrato exige persistencia posterior.
+
+##### 3.25. Perfil específico de `TSVC-SVC-006`
+
+La custodia de archivos y documentos originales aplica estas decisiones:
+
+1. `DEGRADED_READ_ONLY` puede permitir consulta de objetos confirmados dentro de autorización y frescura aplicables;
+2. una ingestión local solo se admite en dispositivo y almacenamiento aprobados, con protección, hash, metadata mínima, límite y expiración;
+3. el servicio no confirma custodia hasta verificar objeto, metadata, vínculo, clasificación, hash y acceso;
+4. un objeto sin metadata o una metadata sin objeto se clasifican como residuales y se concilian;
+5. no se usan rutas, nombres o URLs como única identidad del original;
+6. una URL firmada o capacidad temporal no se registra en canales abiertos ni se prolonga por contingencia;
+7. una falla de integridad, clasificación o autorización bloquea acceso y puede activar cuarentena;
+8. el mismo hash no deduplica globalmente originales válidos pertenecientes a recursos distintos;
+9. la recuperación reanuda uploads elegibles, verifica partes, evita duplicados y conserva el momento y actor de origen;
+10. no se eliminan objetos huérfanos durante el incidente sin una decisión de disposición gobernada por `TSVC-CAT-009`.
+
+##### 3.26. Perfil específico de `TSVC-SVC-007`
+
+La evidencia transaccional aplica estas decisiones:
+
+1. cuando la evidencia es obligatoria, su indisponibilidad impide el cierre empresarial dependiente;
+2. una captura local autorizada conserva hecho, actor, aplicación, dispositivo, momento, tipo, secuencia, hash y referencia del recurso;
+3. el momento del hecho no se sustituye por la hora de sincronización;
+4. una firma, fotografía, medición o comprobante parcial no se presenta como evidencia confirmada;
+5. no se sustituye ni sobrescribe evidencia previa para resolver un error;
+6. una corrección crea otra evidencia vinculada y conserva el original;
+7. la pérdida de dispositivo o Storage activa protección, bloqueo o procedimiento manual aprobado según sensibilidad;
+8. la recuperación verifica integridad, lineage, autoridad y relación causal antes de incorporar;
+9. la evidencia no autoriza retroactivamente una acción ni transforma una operación inválida en válida;
+10. una ausencia de evidencia permanece visible y no se completa con inferencia o reconstrucción no demostrada.
+
+##### 3.27. Perfil específico de `TSVC-SVC-008`
+
+Las integraciones externas y webhooks aplican estas decisiones:
+
+1. un webhook entrante recibe ACK exitoso solo después de validar origen suficiente y persistir durablemente la recepción o el resultado exigido por contrato;
+2. si no puede persistirse de forma segura, se devuelve una respuesta reintentable y no un éxito falso;
+3. los replays conservan identificador externo, payload protegido, mapping y resultado previo;
+4. una firma inválida, proveedor desconocido o mapping incompatible se bloquean antes del efecto interno;
+5. las salidas usan circuit breaker, cola durable, rate limit y deadline por proveedor y operación;
+6. un timeout después del envío produce `RESULT_UNKNOWN` y exige consulta o conciliación;
+7. un proveedor alterno solo se usa con contrato y mapping compatibles y después de evaluar el posible efecto del primario;
+8. el proveedor nunca escribe directamente en fuentes internas ni decide estados empresariales;
+9. la recuperación separa recepción, transformación, comando interno, ACK técnico y resultado empresarial;
+10. un `2xx`, ACK o estado del proveedor no cierra por sí solo el proceso propietario.
+
+##### 3.28. Perfil específico de `TSVC-SVC-009`
+
+La programación y automatizaciones recurrentes aplican estas decisiones:
+
+1. la definición de schedule y cada ocurrencia lógica permanecen separadas;
+2. una caída conserva `logical_fire_at_utc`, versión, vigencia, owner y clave idempotente de la ocurrencia;
+3. la política declara por operación si el misfire se omite, ejecuta una vez, reprograma, coalesce o requiere decisión;
+4. no se ejecutan automáticamente todas las ocurrencias perdidas al recuperar;
+5. la prioridad no crea una catch-up storm ni desplaza indefinidamente trabajo foreground crítico;
+6. solapamientos se bloquean, permiten o serializan según contrato y no por comportamiento accidental del scheduler;
+7. una ocurrencia vencida, revocada o sin autoridad no se ejecuta tardíamente;
+8. una ejecución manual usa otra intención vinculada y no falsifica el `logical_fire_at_utc` original;
+9. el reloj, zona horaria y versión se verifican antes de reanudar;
+10. el scheduler dispara trabajo; no aprueba la acción empresarial ni confirma su resultado.
+
+##### 3.29. Perfil específico de `TSVC-SVC-010`
+
+El monitoreo y heartbeat de workers aplica estas decisiones:
+
+1. cuando la señal pierde frescura, el estado pasa a `STALE` o `UNKNOWN`, nunca a `READY` por defecto;
+2. la ausencia de heartbeat no prueba que el worker esté detenido ni que una operación no haya producido efecto;
+3. no se crean heartbeats retrospectivos ni se cambia el momento real del evento al recuperar el pipeline;
+4. una señal más reciente puede sustituir la necesidad de reenviar una antigua, pero el gap permanece observable;
+5. liveness, readiness, capacidad, trabajo activo, leases y backlog se evalúan por separado;
+6. automatismos que dependan de health incierto se suspenden o limitan según criticidad;
+7. las acciones críticas con auditoría obligatoria usan un mecanismo durable alterno o fallan cerradas;
+8. el observer conserva solo lectura y no usa credenciales de los servicios observados;
+9. la recuperación verifica captura, exportación, recepción, reglas, dashboards y canal de alerta extremo a extremo;
+10. salud del worker no demuestra éxito del proceso, disponibilidad de todas sus dependencias ni ausencia de trabajo residual.
+
+##### 3.30. Reconciliación con activos técnicos actuales
+
+| Activo o patrón observado                                                 | Servicio relacionado   | Clasificación de contingencia                          | Decisión canónica                                                                                                                                         |
+| ------------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Cola de impresión local de NEXO basada en almacenamiento del navegador    | `TSVC-SVC-003`         | `LOCAL_BUFFER_WITHOUT_TRANSVERSE_RECOVERY_PROOF`       | Conservar como evidencia funcional; no acredita durabilidad suficiente, límites, cifrado, actor, reconciliación, failover ni recuperación controlada.     |
+| API y persistencia de layouts de impresión                                | `TSVC-SVC-003`         | `PARTIAL_CONFIGURATION_ASSET`                          | Puede aportar plantillas y configuración; no constituye contingencia de cola, dispositivo, receipt, resultado físico o reimpresión.                       |
+| Registro de tokens push de empleados                                      | `TSVC-SVC-004`         | `ADDRESSING_ASSET_WITHOUT_DELIVERY_FALLBACK`           | Conservar direccionamiento compatible; no habilita canal alterno, cola durable, entrega, expiración, conciliación ni comunicación manual.                 |
+| Carga documental de ANIMA hacia Storage y metadata                        | `TSVC-SVC-006`         | `APPLICATION_SCOPED_INGEST_WITHOUT_COMMON_CONTINGENCY` | Conservar flujo compatible; la solución objetivo deberá gobernar buffer, hash, límites, objeto huérfano, recuperación y confirmación transversal.         |
+| Webhook de pagos identificado como temporal o fallback                    | `TSVC-SVC-008`         | `PROVIDER_SPECIFIC_FALLBACK_NOT_CANONICAL_CONTINGENCY` | Conservar solo mientras su contrato propietario lo autorice; “fallback” nominal no demuestra persistencia, idempotencia, conciliación ni seguridad común. |
+| Webhook de RevenueCat específico de proveedor                             | `TSVC-SVC-008`         | `PROVIDER_SPECIFIC_ADAPTER_WITHOUT_SHARED_FAILOVER`    | Mantener como adaptador; no se generaliza como dependencia alterna ni como capacidad transversal de contingencia.                                         |
+| Logs locales o de runtime y ausencia de heartbeat transversal verificable | `TSVC-SVC-010` y otros | `LOCAL_DIAGNOSTICS_WITH_VISIBILITY_GAPS`               | No se infiere salud por ausencia de errores; la pérdida de visibilidad deberá producir estado degradado o desconocido y recuperación extremo a extremo.   |
+
+La reconciliación registra el estado técnico conocido sin afirmar migración, hardening, operación productiva, ejecución de simulacros, failover probado ni suficiencia de los activos actuales.
+
+##### 3.31. Aplicación al carril `NEXO-REMISSIONS-001`
+
+| Servicio       | Decisión de contingencia para remisiones NEXO                                                                                                          | Límite obligatorio                                                                                       |
+| -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------- |
+| `TSVC-SVC-001` | Aceptar trabajo diferido solo con reserva durable, receipt, límites, deadline, idempotencia y capacidad de drenaje.                                    | Una cola local o memoria sin garantía no permite afirmar que la remisión seguirá procesándose.           |
+| `TSVC-SVC-002` | Persistir eventos de remisión con la transacción propietaria y pausar consumidores afectados sin perder `event_id`, versión ni orden.                  | Un evento no entregado no se recrea ni se marca como consumido para liberar backlog.                     |
+| `TSVC-SVC-003` | Mantener trabajos de etiquetas, comprobantes o remisiones en cola; usar impresora alterna solo si está enrolada y es compatible.                       | Receipt técnico no confirma impresión; resultado ambiguo bloquea reimpresión ciega y exige conciliación. |
+| `TSVC-SVC-004` | Diferir alertas y comunicaciones; usar canal alterno únicamente si mantiene destinatario, finalidad, autorización, vigencia y contenido.               | La notificación no cambia estado de solicitud, producción, despacho, tránsito, recepción o cierre.       |
+| `TSVC-SVC-005` | Conservar snapshot y versión del documento de remisión; regenerar solo de forma idempotente y verificable.                                             | Un output parcial o no custodiado no se presenta como documento final.                                   |
+| `TSVC-SVC-006` | Permitir captura local protegida de soportes únicamente cuando el perfil offline lo autorice; confirmar custodia después de objeto y metadata válidos. | No se pierde el original ni se confirma por existir una ruta, nombre o preview local.                    |
+| `TSVC-SVC-007` | Capturar evidencia de carga, despacho, transporte, recepción y diferencias con actor, dispositivo, momento, hash y vínculo.                            | Una remisión no se cierra cuando falta evidencia obligatoria o permanece local sin confirmación.         |
+| `TSVC-SVC-008` | Poner en cola o suspender integraciones externas; conciliar timeouts y ACK ambiguos antes de reenviar.                                                 | El estado de un tercero no sustituye cantidades, custodia, aceptación ni resultado propietario de NEXO.  |
+| `TSVC-SVC-009` | Clasificar expiraciones, conciliaciones y tareas recurrentes por ocurrencia lógica; evitar ejecución masiva después de una caída.                      | Una ocurrencia vencida o no autorizada no se ejecuta por recuperar el scheduler.                         |
+| `TSVC-SVC-010` | Mostrar worker, dispositivo y pipeline como `DEGRADED`, `STALE` o `UNKNOWN` cuando falte evidencia suficiente.                                         | Salud técnica no marca remisión preparada, cargada, despachada, recibida ni completada.                  |
+
+Reglas adicionales del carril:
+
+1. NEXO conserva la fuente de verdad de remisión, líneas, cantidades, estados, custodias, diferencias y cierres.
+2. La contingencia mantiene separadas cantidad solicitada, aceptada, producida, preparada, cargada, despachada, recibida, faltante, sobrante, dañada, rechazada y retornada.
+3. Un receipt, mensaje, impresión, upload o heartbeat nunca sustituye la transición empresarial correspondiente.
+4. Red intermitente no habilita autoaceptación, actor genérico, firma reutilizada ni cierre por conductor o despachador en nombre del receptor.
+5. La captura offline conserva sede, área, origen, destino, LPN, LOC, lote, unidad, cantidad, condición, temperatura, actor y momento cuando apliquen.
+6. La reconexión revalida versión, estado, autorización, custodia, reservas y dependencias antes de aplicar pendientes.
+7. La conciliación detecta duplicados, líneas fuera de orden, entregas ya registradas, soportes manuales, retornos y resultados desconocidos.
+8. Los bloqueos permanecen visibles y no se resuelven sobrescribiendo cantidades o estados.
+9. La degradación puede limitar una capacidad sin inutilizar otras independientes, siempre que se mantengan controles y comunicación correctos.
+10. Ninguna decisión documental de esta tarea habilita físicamente remisiones, workers, impresión, almacenamiento, notificaciones, integraciones o schedules.
+
+##### 3.32. Reconciliación cuantitativa
+
+| Control                                                 | Resultado |
+| ------------------------------------------------------- | --------: |
+| Servicios esperados                                     |        10 |
+| Servicios materializados                                |        10 |
+| Identificadores de servicio únicos                      |        10 |
+| Servicios faltantes                                     |         0 |
+| Servicios duplicados                                    |         0 |
+| Estados canónicos de disponibilidad                     |         6 |
+| Modos canónicos de operación                            |        10 |
+| Clases canónicas de activación                          |        12 |
+| Clases canónicas de acción                              |        12 |
+| Estados del ciclo de contingencia                       |         9 |
+| Estados de circuit breaker                              |         3 |
+| Servicios con decisión explícita de suspensión segura   |        10 |
+| Servicios con recuperación y conciliación explícitas    |        10 |
+| Decisiones del carril NEXO                              |        10 |
+| Activos o patrones actuales reconciliados               |         7 |
+| Implementaciones físicas creadas                        |         0 |
+| Cambios de Supabase                                     |         0 |
+| Proveedores, dispositivos o canales alternos activados  |         0 |
+| Simulacros o pruebas operativas ejecutados por la tarea |         0 |
+
+##### 3.33. Handoff obligatorio
+
+| Tarea posterior | Insumo recibido de `TSVC-CAT-008`                                                                                                                                                               |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TSVC-CAT-009`  | Estados, registros, buffers, operaciones, soportes manuales, resultados desconocidos, dead-letter, cuarentena, auditoría y gaps que requieren retención, archivo, hold, disposición y limpieza. |
+| `TSVC-CAT-010`  | Activos parciales, modos degradados objetivo, dependencias alternas, procedimientos manuales y criterios de recuperación que deberán adoptarse y retirar soluciones legacy sin corte inseguro.  |
+
+`TSVC-CAT-009` deberá preservar la identidad histórica necesaria para idempotencia, conciliación, auditoría y evidencia sin conservar indefinidamente payloads, buffers o datos sensibles.
+
+`TSVC-CAT-010` deberá definir coexistencia, piloto, feature gates, migración, rollback, drenaje y retiro sin tratar un activo parcial como fallback canónico por su sola existencia.
+
+---
+
+#### 4. Artefactos y entregables
+
+1. `TRANSVERSE-SERVICE-CONTINGENCY-REGISTRY-001@1.0.0`.
+2. Separación normativa entre estado de operación, disponibilidad, modo operativo y ciclo de contingencia.
+3. Catálogo cerrado de seis estados de disponibilidad.
+4. Catálogo cerrado de diez modos de operación normal, degradada, suspendida, recuperación y conciliación.
+5. Jerarquía obligatoria de degradación segura.
+6. Catálogo de doce clases de activación y doce acciones de contingencia.
+7. Contrato de circuit breaker, bulkhead, backpressure y drenaje controlado.
+8. Ciclo de nueve estados de contingencia y registro mínimo versionado.
+9. Matriz de autoridad para activación, cambio, recuperación y cierre.
+10. Reglas de identidad, credenciales y autorización durante contingencia.
+11. Reglas para deadlines, reintentos, resultado desconocido, dead-letter y cuarentena.
+12. Contrato de captura local, operación offline y reconexión.
+13. Contrato de contingencia manual controlada.
+14. Reglas para dependencia alterna y failover compatible.
+15. Secuencia de recuperación, drenaje, conciliación y retorno a operación normal.
+16. Tratamiento del fallo del propio pipeline de observabilidad y auditoría.
+17. Matriz materializada de diez servicios con modo, contención, suspensión, recuperación y estado.
+18. Perfil específico de contingencia para cada una de las diez identidades.
+19. Reconciliación de siete activos o patrones técnicos actuales sin afirmar cumplimiento objetivo.
+20. Aplicación específica a las diez identidades del carril `NEXO-REMISSIONS-001`.
+21. Handoff cerrado hacia `TSVC-CAT-009` y `TSVC-CAT-010`.
+
+---
+
+#### 5. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa para las diez identidades transversales las invariantes de contingencia, degradación segura, operación offline, backpressure, suspensión, recuperación, failover, conciliación, procedimientos manuales y visibilidad degradada que ya están protegidas por requisitos canónicos vigentes. No crea una capacidad empresarial nueva ni modifica el alcance, estado, responsable, modalidad o relación de esos requisitos.
+
+La cobertura vigente incluye, entre otros:
+
+- `TREQ-PROC-061`;
+- `TREQ-PROC-230` a `TREQ-PROC-246`;
+- `TREQ-PROC-295` a `TREQ-PROC-324`;
+- `TREQ-PROC-431`, `TREQ-PROC-439` y `TREQ-PROC-444` a `TREQ-PROC-460`;
+- `TREQ-PROC-488` a `TREQ-PROC-493`;
+- `TREQ-PROC-549`;
+- `TREQ-CONT-003` a `TREQ-CONT-006`;
+- `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-004` y `TREQ-INTEGRATION-023`.
+
+La tarea genera:
+
+```text
+CREADOS = 0
+MODIFICADOS = 0
+DIFERIDOS = 0
+DESCARTADOS_U_OBSOLETOS = 0
+```
+
+El registro canónico `04A` permanece sin cambios y no corresponde generar una copia adicional.
+
+---
+
+#### 6. Criterios de aceptación
+
+1. `TSVC-CAT-007` figura aprobada y `TSVC-CAT-008` corresponde a la continuidad vigente.
+2. Las diez identidades `TSVC-SVC-001..010` aparecen exactamente una vez en la matriz principal.
+3. Cada servicio conserva nombre, contrato `1.0.0`, owner técnico, aplicación propietaria y relaciones ya aprobadas.
+4. Estado de operación, disponibilidad, modo operativo y contingencia permanecen separados.
+5. Se definen exactamente seis estados de disponibilidad sin reducirlos a online u offline.
+6. Se definen exactamente diez modos de operación con controles y límites explícitos.
+7. `DEGRADED_SAFE` nunca se presenta como disponibilidad plena ni resultado empresarial confirmado.
+8. `UNKNOWN` obliga a declarar falta de evidencia y no se interpreta como salud.
+9. La jerarquía de degradación prioriza consulta segura, límites, breaker, cola durable, captura autorizada, dependencia compatible, procedimiento manual y suspensión.
+10. Se materializan doce clases de activación y doce acciones de contingencia.
+11. Los umbrales concretos permanecen vinculados a baseline, SLO, capacidad, criticidad, ambiente y política versionada.
+12. Circuit breaker distingue `CLOSED`, `OPEN` y `HALF_OPEN` y no marca resultados por sí mismo.
+13. Bulkhead y backpressure aíslan fallos y evitan pérdida silenciosa o aceptación ilimitada.
+14. El ciclo de contingencia contiene nueve estados y conserva transición, autoridad, evidencia y residuales.
+15. Toda activación mantiene alcance, owner, vigencia, capacidad preservada, capacidad bloqueada y condición de salida.
+16. La contingencia no amplía permisos, territorio, dispositivo, credencial, deadline ni autoridad empresarial.
+17. La identidad de emergencia permanece excepcional, temporal y auditable.
+18. La operación offline conserva clave idempotente, actor, dispositivo, contexto, esquema, dependencias, deadline, sensibilidad y estado humano.
+19. Una captura local nunca se presenta como resultado autoritativo antes de confirmación.
+20. Los límites de almacenamiento y backlog aplican backpressure antes de pérdida.
+21. La contingencia manual exige procedimiento, numeración, datos mínimos, custodia, control de duplicados, digitalización, conciliación y cierre.
+22. Papel, chat, memoria o soporte libre no constituyen procedimiento aprobado por sí mismos.
+23. El failover exige contrato, versión, identidad, credencial, capacidad y compatibilidad demostrados.
+24. Un efecto ambiguo se concilia antes de enviar a otra dependencia o repetir físicamente.
+25. La recuperación usa probes, reapertura gradual, drenaje limitado, revalidación y conciliación.
+26. Vencidos, cancelados, revocados, incompatibles, dead-letter y cuarentena no se ejecutan automáticamente al recuperar.
+27. El fallo del pipeline de observabilidad produce visibilidad degradada y no salud aparente.
+28. No se reconstruyen retrospectivamente señales, auditoría o timestamps inexistentes.
+29. Cada uno de los diez servicios declara fallo dominante, modo preservable, contención, criterio de suspensión y recuperación.
+30. Los siete activos actuales se clasifican como parciales o específicos y no como contingencia transversal completa.
+31. El carril NEXO conserva estados, cantidades, custodia, evidencia y autoridad propietarias durante degradación.
+32. Receipts, eventos, impresiones, uploads, alertas y heartbeats no sustituyen transiciones de remisión.
+33. Se declaran cero cambios `TREQ-*` con justificación y cobertura vigente concreta.
+34. No se crean código, migraciones, funciones, workers, colas, configuración, dashboards, canales, credenciales, datos ni cambios de Supabase.
+35. No se afirma implementación, despliegue, simulacro, failover, validación remota, operación productiva ni prueba física.
+36. La continuidad reserva exclusivamente `TSVC-CAT-009`.
+
+---
+
+#### 7. Dependencias y entradas
+
+##### 7.1. Fuentes canónicas
+
+- `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+- `docs/plan-canonico/modular/delivery-contract.json`;
+- `docs/plan-canonico/modular/active-sequence.json`;
+- `docs/plan-canonico/modular/execution-route.json`;
+- `docs/plan-canonico/modular/priority-route-progress.json`;
+- `docs/plan-canonico/modular/00_CABECERA_Y_ESTADO.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/00_INTRO.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/01_PRINCIPIO_DE_PROPIEDAD.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/07_SALIDA_OBLIGATORIA.md`;
+- `docs/plan-canonico/modular/bloques/E2_PROCESOS_Y_EXPERIENCIA/07_01_DISPONIBILIDAD_ESCALA_RENDIMIENTO_Y_OFFLINE.md`;
+- versión canónica vigente de `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`;
+- `package.json` y `scripts/docs/validate-task-delivery.mjs`.
+
+##### 7.2. Tareas y decisiones heredadas
+
+- `TSVC-CAT-001` — diez identidades, estados y activos actuales;
+- `TSVC-CAT-002` — propietario técnico y gobierno;
+- `TSVC-CAT-003` — aplicaciones productoras, consumidoras y carril NEXO;
+- `TSVC-CAT-004` — contratos, versión y compatibilidad;
+- `TSVC-CAT-005` — identidades técnicas, credenciales y mínimo privilegio;
+- `TSVC-CAT-006` — idempotencia, reintentos, deduplicación, deadlines y resultado desconocido;
+- `TSVC-CAT-007` — observabilidad, métricas, alertas, auditoría y health;
+- `NFR-REQ-001` — criticidad, disponibilidad y modos mínimos;
+- `NFR-REQ-004` — operación offline, reconexión y contingencia manual;
+- `NFR-REQ-008` — hardware, red, energía, periféricos y sustitución;
+- `NFR-REQ-009` — observabilidad, soporte, alertas y recuperación;
+- carril prioritario `NEXO-REMISSIONS-001`.
+
+Ninguna decisión aprobada por estas fuentes se modifica.
+
+##### 7.3. Restricción de evidencia
+
+Este registro documental no demuestra:
+
+- circuit breaker implementado;
+- bulkhead o backpressure configurados;
+- buffer local cifrado;
+- cola durable desplegada;
+- proveedor, canal, dispositivo o dependencia alternos disponibles;
+- procedimiento manual publicado y entrenado;
+- identidad de emergencia aprovisionada;
+- failover ejecutado;
+- worker o scheduler recuperado;
+- drenaje de backlog probado;
+- conciliación productiva;
+- simulacro realizado;
+- validación remota, operativa o física.
+
+Todas esas afirmaciones requieren implementación y evidencia de las tareas y paquetes propietarios.
+
+---
+
+#### 8. Declaraciones expresamente no realizadas
+
+Esta tarea no declara:
+
+- disponibilidad productiva de los servicios;
+- cumplimiento de RTO, RPO, MTPD, MBCO o SLO;
+- tolerancia efectiva a caída de red, energía, Storage, Auth, base de datos, proveedor o dispositivo;
+- capacidad offline uniforme por aplicación;
+- persistencia local segura ya existente;
+- impresora, canal o proveedor alternos homologados;
+- procedimientos manuales vigentes en sedes;
+- operación con credenciales amplias autorizada;
+- recuperación sin pérdida o sin duplicados demostrada;
+- cero downtime;
+- exactly-once;
+- cierre de incidentes o problemas actuales;
+- cambios de código, datos, Supabase, configuración, infraestructura o despliegue.
+
+---
+
+#### 9. Continuidad canónica del bloque
+
+```text
+ÚLTIMA TAREA APROBADA
+TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría
+        ↓
+TAREA ACTUAL APROBADA
+TSVC-CAT-008 — Definir contingencia y degradación controlada
+        ↓
+SIGUIENTE TAREA RESERVADA
+TSVC-CAT-009 — Definir retención, archivado y limpieza
+```
+
+
 ### [ ] TSVC-CAT-009 — Definir retención, archivado y limpieza
 ### [ ] TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy

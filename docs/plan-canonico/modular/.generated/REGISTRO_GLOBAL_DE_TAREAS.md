@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **500** |
+| Aprobadas | **501** |
 | En propuesta | **0** |
-| No iniciadas | **1094** |
+| No iniciadas | **1093** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **31.37% (500/1594)** |
+| Porcentaje de completamiento | **31.43% (501/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TSVC-CAT-007` — Definir observabilidad, métricas, alertas y auditoría | ✅ APROBADA |
-| Tarea actual | `TSVC-CAT-008` — Definir contingencia y degradación controlada | ⬜ NO INICIADA |
-| Siguiente reservada | `TSVC-CAT-009` — Definir retención, archivado y limpieza | ⬜ NO INICIADA |
+| Última aprobada | `TSVC-CAT-008` — Definir contingencia y degradación controlada | ✅ APROBADA |
+| Tarea actual | `TSVC-CAT-009` — Definir retención, archivado y limpieza | ⬜ NO INICIADA |
+| Siguiente reservada | `TSVC-CAT-010` — Definir adopción progresiva y retiro de soluciones legacy | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -473,7 +473,7 @@
 | ✅ APROBADA | `TSVC-CAT-005` | Definir identidad técnica y credenciales mínimas | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ✅ APROBADA | `TSVC-CAT-006` | Definir idempotencia, reintentos y deduplicación | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ✅ APROBADA | `TSVC-CAT-007` | Definir observabilidad, métricas, alertas y auditoría | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
-| ⬜ NO INICIADA | `TSVC-CAT-008` | Definir contingencia y degradación controlada | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
+| ✅ APROBADA | `TSVC-CAT-008` | Definir contingencia y degradación controlada | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-009` | Definir retención, archivado y limpieza | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-010` | Definir adopción progresiva y retiro de soluciones legacy | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-001` | Inventariar colas, cron, jobs y automatizaciones existentes | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
