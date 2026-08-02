@@ -607,7 +607,437 @@ TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras
 ```
 
 
-### [ ] TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras
+### ✅ TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras
+
+**Estado:** APROBADA
+**Tarea anterior:** `TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio`
+**Tarea siguiente:** `TSVC-CAT-004 — Definir contrato, versión y compatibilidad`
+**Tipo de tarea:** definición documental canónica y matriz materializada de aplicaciones productoras y consumidoras de servicios transversales
+**Fase:** definición documental vinculante; implementación física no autorizada
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Fecha de corte:** 2026-08-02
+**Cambios en código, migraciones, funciones, workers, colas, despliegues, datos o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado material
+
+Materializar, para cada una de las diez identidades `TSVC-SVC-001..010`, las aplicaciones VENTO que pueden producir solicitudes, trabajos, eventos o señales hacia el servicio y las aplicaciones que pueden consumir sus resultados, estados, documentos, archivos, evidencias, notificaciones o alertas.
+
+La matriz distingue entre:
+
+- relación directa aprobada;
+- relación condicional que exige activación verificable;
+- ausencia de relación;
+- ausencia deliberada de aplicación productora cuando la señal nace de infraestructura técnica.
+
+La definición no convierte a una aplicación productora o consumidora en propietaria técnica del servicio. La propiedad técnica de las diez identidades continúa en Tecnología de Vento Group y en el repositorio `vento-shell`, según `TSVC-CAT-002`.
+
+---
+
+#### 2. Alcance y vocabulario contractual
+
+##### 2.1. Aplicaciones canónicas admitidas
+
+La matriz utiliza exclusivamente los diez códigos aprobados del catálogo de aplicaciones:
+
+```text
+shell
+anima
+viso
+nexo
+fogo
+origo
+pulso
+numera
+aura
+pass
+```
+
+No son aplicaciones y no podrán ocupar las columnas de productora o consumidora:
+
+- `vento-shell`;
+- un paquete `@vento/*`;
+- Supabase;
+- una tabla, función, trigger, worker, cron, cola o Edge Function;
+- un adaptador;
+- una impresora o dispositivo;
+- un proveedor externo;
+- el valor de proceso `shared`;
+- una sede, área, canal o repositorio.
+
+##### 2.2. Definiciones
+
+| Concepto                  | Definición canónica                                                                                                                                       |
+| ------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PRODUCTORA`              | Aplicación propietaria del resultado empresarial que crea una solicitud, trabajo, evento, documento, evidencia o mandato técnico válido para el servicio. |
+| `CONSUMIDORA`             | Aplicación nombrada que recibe un resultado, estado, proyección, evidencia, documento, alerta o evento del servicio para una finalidad aprobada.          |
+| `PRODUCTORA_CONDICIONAL`  | Aplicación que solo podrá producir cuando un proceso, paquete o contrato aprobado active expresamente la relación.                                        |
+| `CONSUMIDORA_CONDICIONAL` | Aplicación que solo podrá consumir cuando exista finalidad, proyección, autorización y contrato expresos.                                                 |
+| `NO_APLICA_PRODUCTORA`    | El servicio recibe señales técnicas de workers, adaptadores o infraestructura; ninguna aplicación se declara productora del heartbeat.                    |
+
+Una aplicación productora no adquiere autoridad técnica sobre el servicio. Una consumidora no adquiere autoridad sobre la fuente de verdad ni puede conservar una copia mutable competidora.
+
+##### 2.3. Leyenda de matrices
+
+| Código  | Significado                              |
+| ------- | ---------------------------------------- |
+| `P`     | productora directa aprobada              |
+| `C`     | consumidora directa aprobada             |
+| `P/C`   | productora y consumidora directas        |
+| `P?`    | productora condicional                   |
+| `C?`    | consumidora condicional                  |
+| `P?/C?` | productora y consumidora condicionales   |
+| `—`     | relación no aprobada                     |
+| `NA-P`  | ninguna aplicación actúa como productora |
+
+Una marca condicional no habilita operación por sí sola.
+
+---
+
+#### 3. Decisiones aprobadas
+
+##### 3.1. Regla de productora única por instancia
+
+Cada instancia de servicio deberá resolver exactamente una aplicación productora cuando la capacidad requiera un mandato empresarial.
+
+La productora se determina por la aplicación propietaria del resultado empresarial, no por:
+
+- ubicación del código;
+- repositorio que ejecuta el worker;
+- tabla que persiste el trabajo;
+- aplicación que muestra el resultado;
+- dispositivo que lo materializa;
+- proveedor que entrega el canal;
+- aplicación que reintenta o consulta el estado.
+
+No se admiten productoras múltiples para la misma instancia. Cuando varias aplicaciones intervienen, una conserva la propiedad del resultado y las demás se registran como consumidoras, colaboradoras o fuentes mediante contratos separados.
+
+Excepción cerrada:
+
+```text
+TSVC-SVC-010
+→ aplicación productora: NO_APLICA_PRODUCTORA
+→ emisor técnico: worker, adaptador o infraestructura observada
+→ aplicación contextual: owner del workload afectado
+```
+
+##### 3.2. Regla de consumidoras nombradas
+
+Una instancia podrá tener cero o más consumidoras, siempre que cada una quede identificada por código canónico y tenga:
+
+- finalidad aprobada;
+- proyección mínima;
+- autorización aplicable;
+- versión contractual;
+- correlación con el recurso o proceso;
+- tratamiento de indisponibilidad;
+- evidencia de entrega o consumo cuando corresponda.
+
+Quedan prohibidos:
+
+- comodines como `all`, `*`, `any_app` o equivalentes;
+- consumo inferido por acceso a la misma base de datos;
+- publicación indiscriminada a todas las aplicaciones;
+- alta automática de consumidores por detectar un endpoint, token o suscripción;
+- lectura directa de almacenamiento o tablas privadas del servicio;
+- duplicación local de la lógica transversal.
+
+##### 3.3. Matriz canónica por servicio y aplicación
+
+| ID             | Servicio                                     | `shell` | `anima` | `viso`  | `nexo`  | `fogo`  | `origo` | `pulso` | `numera` | `aura`  | `pass`  |
+| -------------- | -------------------------------------------- | ------- | ------- | ------- | ------- | ------- | ------- | ------- | -------- | ------- | ------- |
+| `TSVC-SVC-001` | Orquestación genérica de trabajos asíncronos | `C?`    | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`    | `P?/C?` | `P/C`   |
+| `TSVC-SVC-002` | Entrega transaccional de eventos y outbox    | `C?`    | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`    | `P?/C?` | `P/C`   |
+| `TSVC-SVC-003` | Impresión centralizada                       | `—`     | `P?/C?` | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`    | `P?/C?` | `P?/C?` |
+| `TSVC-SVC-004` | Notificaciones y alertas                     | `C?`    | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`    | `P?/C?` | `P/C`   |
+| `TSVC-SVC-005` | Generación de documentos                     | `C?`    | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`    | `P?/C?` | `P/C`   |
+| `TSVC-SVC-006` | Custodia de archivos y documentos originales | `C?`    | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P?/C?` | `P/C`    | `P?/C?` | `P/C`   |
+| `TSVC-SVC-007` | Evidencia transaccional                      | `C?`    | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`    | `P?/C?` | `P/C`   |
+| `TSVC-SVC-008` | Integraciones externas y webhooks            | `C?`    | `P?/C?` | `P?/C?` | `P?/C?` | `P?/C?` | `P/C`   | `P/C`   | `P/C`    | `P?/C?` | `P/C`   |
+| `TSVC-SVC-009` | Programación y automatizaciones recurrentes  | `C?`    | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`   | `P/C`    | `P?/C?` | `P/C`   |
+| `TSVC-SVC-010` | Monitoreo y heartbeat de workers             | `C?`    | `C?`    | `C?`    | `C?`    | `C?`    | `C?`    | `C?`    | `C?`     | `C?`    | `C?`    |
+
+La tabla define relaciones objetivo permitidas. No afirma que cada combinación esté implementada, desplegada o activa.
+
+##### 3.4. Productoras y consumidoras materializadas por servicio
+
+| ID             | Productoras directas                                                | Productoras condicionales               | Consumidoras directas                                               | Consumidoras condicionales                                                           | Exclusión explícita                                                                                 |
+| -------------- | ------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------- |
+| `TSVC-SVC-001` | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `aura`                                  | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `shell`, `aura`                                                                      | `shell` no produce trabajos empresariales por actuar como hub.                                      |
+| `TSVC-SVC-002` | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `aura`                                  | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `shell`, `aura`                                                                      | Un proveedor, adaptador o worker no reemplaza la aplicación emisora.                                |
+| `TSVC-SVC-003` | `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`                  | `anima`, `aura`, `pass`                 | `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`                  | `anima`, `aura`, `pass`                                                              | `shell` no genera ni recibe documentos imprimibles por defecto.                                     |
+| `TSVC-SVC-004` | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `aura`                                  | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `shell`, `aura`                                                                      | El canal técnico no decide destinatarios ni prioridad empresarial.                                  |
+| `TSVC-SVC-005` | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `aura`                                  | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `shell`, `aura`                                                                      | `shell` solo podrá consumir estado o metadata expresamente autorizados.                             |
+| `TSVC-SVC-006` | `anima`, `viso`, `nexo`, `fogo`, `origo`, `numera`, `pass`          | `pulso`, `aura`                         | `anima`, `viso`, `nexo`, `fogo`, `origo`, `numera`, `pass`          | `shell`, `pulso`, `aura`                                                             | El bucket o Storage no es productor, consumidor ni owner empresarial.                               |
+| `TSVC-SVC-007` | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `aura`                                  | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `shell`, `aura`                                                                      | La evidencia no autoriza ni corrige por sí misma la operación.                                      |
+| `TSVC-SVC-008` | `origo`, `pulso`, `numera`, `pass`                                  | `anima`, `viso`, `nexo`, `fogo`, `aura` | `origo`, `pulso`, `numera`, `pass`                                  | `shell`, `anima`, `viso`, `nexo`, `fogo`, `aura`                                     | El proveedor externo no es aplicación productora ni consumidora.                                    |
+| `TSVC-SVC-009` | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `aura`                                  | `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `pass` | `shell`, `aura`                                                                      | El cron o scheduler no adquiere propiedad del mandato empresarial.                                  |
+| `TSVC-SVC-010` | Ninguna                                                             | Ninguna                                 | Ninguna por defecto                                                 | `shell`, `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura`, `pass` | La señal la produce infraestructura técnica; toda visualización o alerta exige relación contextual. |
+
+##### 3.5. Condición única de activación
+
+Toda relación marcada con `?` permanece inactiva hasta que exista una decisión aprobada que cumpla conjuntamente:
+
+1. proceso `VPROC-*` o paquete exacto;
+2. aplicación propietaria del resultado;
+3. capacidad transversal requerida;
+4. aplicación productora o consumidora nombrada;
+5. finalidad y datos mínimos;
+6. evento, comando, documento o señal contractual;
+7. autorización y territorio aplicables;
+8. versión compatible;
+9. evidencia de implementación y validación;
+10. tratamiento de error, indisponibilidad y retiro.
+
+La ausencia de cualquiera de estos elementos mantiene la relación en estado condicional. El silencio no equivale a activación ni a `NO_APLICA`.
+
+##### 3.6. Tratamiento de `shell`
+
+La aplicación `shell`:
+
+- no se convierte en productora general por compartir repositorio con la infraestructura;
+- no es owner de procesos de las demás aplicaciones;
+- podrá consumir estados globales de degradación, navegación, disponibilidad o trabajo pendiente únicamente cuando el contrato lo declare;
+- no recibirá payloads empresariales completos cuando baste una proyección mínima;
+- no podrá utilizar su función de hub para suscribirse indiscriminadamente a eventos, documentos, archivos o evidencias.
+
+Separación obligatoria:
+
+```text
+shell
+→ aplicación y hub contextual
+
+vento-shell
+→ repositorio técnico transversal
+```
+
+##### 3.7. Tratamiento de `aura`
+
+`aura` conserva su código canónico, pero su roadmap permanece diferido.
+
+Por tanto:
+
+- todas sus relaciones se clasifican como condicionales;
+- ninguna relación habilita pantalla, proceso, endpoint, worker, suscripción o despliegue;
+- la activación exige paquete aprobado, cobertura funcional, autorización, contrato, readiness y pruebas;
+- una relación de diseño no demuestra capacidad operativa.
+
+##### 3.8. Relación con propiedad de procesos
+
+Cuando un proceso empresarial usa un servicio transversal:
+
+```text
+APLICACION PROPIETARIA DEL VPROC
+→ productora de la instancia de servicio
+
+APLICACIONES CONSUMIDORAS DECLARADAS DEL VPROC
+→ candidatas a consumidoras del resultado técnico
+
+SERVICIO TRANSVERSAL
+→ ejecutor técnico sin propiedad empresarial
+```
+
+La lista de consumidoras del proceso no se copia automáticamente al servicio. Cada consumidora del servicio deberá necesitar el resultado técnico concreto y cumplir minimización, autorización y finalidad.
+
+El valor `shared` usado en el catálogo de procesos no es una aplicación. Para una instancia asociada a un proceso compartido deberá identificarse la aplicación que posee el resultado concreto antes de crear el trabajo.
+
+##### 3.9. Decisión específica para el carril `NEXO-REMISSIONS-001`
+
+La etapa prioritaria de remisiones NEXO deberá evaluar las diez identidades así:
+
+| ID             | Clasificación para remisiones NEXO | Productora             | Consumidoras previstas                                                 | Condición o evidencia requerida                                                 |
+| -------------- | ---------------------------------- | ---------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `TSVC-SVC-001` | `OBLIGATORIA`                      | `nexo`                 | `nexo`; otras solo por contrato                                        | trabajos diferidos persistentes y correlacionados con la remisión               |
+| `TSVC-SVC-002` | `OBLIGATORIA`                      | `nexo`                 | aplicaciones nombradas por los eventos de remisión                     | evento confirmado después del commit y entrega trazable                         |
+| `TSVC-SVC-003` | `CONDICIONAL`                      | `nexo`                 | `nexo`                                                                 | se activa únicamente si el paquete imprime remisiones, comprobantes o etiquetas |
+| `TSVC-SVC-004` | `OBLIGATORIA`                      | `nexo`                 | destinatarias nombradas; `shell` o `viso` solo si el contrato lo exige | alerta o notificación derivada de evento y responsabilidad aprobados            |
+| `TSVC-SVC-005` | `OBLIGATORIA`                      | `nexo`                 | `nexo`; consumidoras expresas                                          | documento de remisión versionado y reproducible                                 |
+| `TSVC-SVC-006` | `OBLIGATORIA`                      | `nexo`                 | `nexo`; consumidoras expresas                                          | original, comprobante o soporte vinculado a la remisión                         |
+| `TSVC-SVC-007` | `OBLIGATORIA`                      | `nexo`                 | `nexo`; consumidoras expresas                                          | evidencia correlacionada por transición y actor                                 |
+| `TSVC-SVC-008` | `CONDICIONAL`                      | `nexo`                 | contraparte interna nombrada; proveedor no se registra como aplicación | se activa si el paquete cruza una frontera externa o recibe webhook             |
+| `TSVC-SVC-009` | `CONDICIONAL`                      | `nexo`                 | `nexo`                                                                 | se activa si existe conciliación, expiración o recuperación recurrente aprobada |
+| `TSVC-SVC-010` | `OBLIGATORIA`                      | `NO_APLICA_PRODUCTORA` | `nexo`; `shell` o `viso` solo por proyección aprobada                  | heartbeat y estado técnico de workers que soportan el paquete                   |
+
+Reconciliación del carril:
+
+| Clasificación  | Cantidad |
+| -------------- | -------: |
+| Obligatorias   |        7 |
+| Condicionales  |        3 |
+| No aplicables  |        0 |
+| Total evaluado |       10 |
+
+##### 3.10. Estados de relación y evidencia
+
+Cada relación futura deberá mantener uno de estos estados:
+
+| Estado         | Significado                                                                       |
+| -------------- | --------------------------------------------------------------------------------- |
+| `ESPECIFICADA` | relación aprobada documentalmente, sin afirmar implementación                     |
+| `IMPLEMENTADA` | productor o consumidor físico disponible bajo contrato versionado                 |
+| `VALIDADA`     | comportamiento ejecutado con evidencia reproducible                               |
+| `BLOQUEADA`    | falta un insumo obligatorio y se identifica su tarea propietaria                  |
+| `NO_APLICA`    | exclusión explícita con fundamento y evidencia                                    |
+| `RETIRADA`     | relación desactivada con compatibilidad, drenaje y evidencia de ausencia residual |
+
+La matriz de esta tarea deja las relaciones directas y condicionales en estado `ESPECIFICADA`. No declara ninguna relación `IMPLEMENTADA` o `VALIDADA`.
+
+##### 3.11. Reconciliación cuantitativa
+
+| Control                                                   | Resultado |
+| --------------------------------------------------------- | --------: |
+| Servicios esperados desde `TSVC-CAT-002`                  |        10 |
+| Servicios materializados                                  |        10 |
+| Aplicaciones canónicas evaluadas por servicio             |        10 |
+| Celdas evaluadas en la matriz                             |       100 |
+| Servicios con productoras directas o condicionales        |         9 |
+| Servicios con `NO_APLICA_PRODUCTORA`                      |         1 |
+| Servicios con consumidoras directas o condicionales       |        10 |
+| Identidades de servicio faltantes                         |         0 |
+| Identidades de servicio duplicadas en la matriz principal |         0 |
+| Códigos de aplicación fuera del catálogo                  |         0 |
+| Comodines de productor o consumidor                       |         0 |
+
+##### 3.12. Handoff obligatorio
+
+| Tarea posterior | Insumo recibido de `TSVC-CAT-003`                                                                                                    |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `TSVC-CAT-004`  | Matriz de productoras, consumidoras y condiciones que deberá expresarse mediante contratos versionados y compatibilidad verificable. |
+| `TSVC-CAT-005`  | Aplicaciones que podrán obtener identidad técnica o invocar el servicio sin compartir secretos ni credenciales privilegiadas.        |
+| `TSVC-CAT-006`  | Productora única, consumidoras nombradas y correlación necesarias para idempotencia, reintentos y deduplicación.                     |
+| `TSVC-CAT-007`  | Aplicaciones y relaciones que deberán emitir métricas, alertas y evidencia de consumo sin exponer payloads excesivos.                |
+| `TSVC-CAT-008`  | Productora y consumidoras que deberán participar en degradación, fallback, recuperación y conciliación.                              |
+| `TSVC-CAT-009`  | Autoridad de datos y aplicaciones afectadas por retención, archivado y limpieza.                                                     |
+| `TSVC-CAT-010`  | Relaciones actuales, condicionales y retirables que deberán migrarse sin consumidores residuales.                                    |
+
+##### 3.13. Requisitos canónicos vigentes consumidos
+
+La tarea no crea reglas de prueba nuevas. Sus invariantes ya están protegidas por:
+
+- `TREQ-PROC-018` y `TREQ-PROC-019`, para propiedad empresarial única y autoridad de la aplicación propietaria;
+- `TREQ-PROC-023` a `TREQ-PROC-027`, para listas válidas de consumidoras, finalidad, proyección mínima, evolución y retiro;
+- `TREQ-INTEGRATION-003`, para idempotencia, correlación, estado durable y resultado recuperable;
+- `TREQ-INTEGRATION-004`, para trazabilidad de causa, intento, entrega, error y efecto final.
+
+La matriz materializada se convierte en insumo de esos requisitos sin cambiar sus identificadores, estados, responsables ni relaciones.
+
+---
+
+#### 4. Entregables obligatorios
+
+1. Vocabulario contractual de productora, consumidora y relación condicional.
+2. Matriz explícita de diez servicios por diez aplicaciones.
+3. Listas materializadas de productoras y consumidoras por servicio.
+4. Regla de una productora única por instancia.
+5. Prohibición de consumidores implícitos, comodines y copias mutables competidoras.
+6. Condición cerrada de activación para todas las relaciones condicionales.
+7. Tratamiento separado de `shell`, `vento-shell`, `aura` y procesos `shared`.
+8. Clasificación completa de los diez servicios para `NEXO-REMISSIONS-001`.
+9. Estados futuros de especificación, implementación, validación, bloqueo, exclusión y retiro.
+10. Reconciliación de cien celdas y handoff hacia `TSVC-CAT-004..010`.
+
+---
+
+#### 5. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa relaciones documentales de producción y consumo sin crear todavía contratos ejecutables, payloads, permisos, persistencia, suscripciones, colas, workers, adaptadores ni despliegues. Las invariantes aplicables ya están protegidas por los requisitos canónicos vigentes enumerados en la sección 3.13. Esta tarea no modifica sus reglas, identificadores, estados ni relaciones; materializa el catálogo que deberán consumir.
+
+| Tipo de cambio                     | Cantidad |
+| ---------------------------------- | -------: |
+| Requisitos creados                 |        0 |
+| Requisitos modificados             |        0 |
+| Requisitos diferidos               |        0 |
+| Requisitos descartados u obsoletos |        0 |
+
+---
+
+#### 6. Criterios de aceptación
+
+1. La matriz principal contiene exactamente diez servicios y diez aplicaciones, para cien decisiones explícitas.
+2. Las diez identidades `TSVC-SVC-001..010` se conservan sin renombrar, omitir ni duplicar.
+3. Solo se utilizan códigos del catálogo canónico de aplicaciones.
+4. Cada servicio salvo `TSVC-SVC-010` tiene al menos una productora directa o condicional.
+5. `TSVC-SVC-010` declara expresamente `NO_APLICA_PRODUCTORA` y no atribuye el heartbeat a una aplicación.
+6. Cada servicio tiene consumidoras directas, condicionales o ambas.
+7. No existen comodines, consumidores implícitos ni referencias a repositorios, proveedores, infraestructura o `shared` como aplicaciones.
+8. La relación condicional exige proceso o paquete, owner, finalidad, contrato, autorización, versión y evidencia.
+9. `shell` no se convierte en productora general por compartir repositorio con la infraestructura transversal.
+10. `aura` permanece condicional y no se presenta como desplegada ni operativa.
+11. Las relaciones directas y condicionales quedan en estado `ESPECIFICADA`, no `IMPLEMENTADA` ni `VALIDADA`.
+12. El carril NEXO clasifica las diez identidades: siete obligatorias y tres condicionales.
+13. La tarea no implementa código, contratos físicos, DDL, DML, migraciones, workers, colas, cron, credenciales, despliegues ni cambios remotos.
+14. Se declaran cero cambios `TREQ-*` porque las invariantes ya están cubiertas por requisitos canónicos vigentes.
+15. La continuidad reserva exclusivamente `TSVC-CAT-004`.
+
+---
+
+#### 7. Dependencias y entradas
+
+##### 7.1. Fuentes canónicas
+
+- `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+- `docs/plan-canonico/modular/delivery-contract.json`;
+- `docs/plan-canonico/modular/execution-route.json`;
+- `docs/plan-canonico/modular/priority-route-progress.json`;
+- `docs/plan-canonico/modular/active-sequence.json`;
+- `docs/plan-canonico/modular/continuity-route.json`;
+- `docs/plan-canonico/modular/priority-delivery-lanes.json`;
+- `docs/plan-canonico/modular/bloques/C_CATALOGO/01_APLICACIONES_Y_CONVENCION.md`;
+- `docs/plan-canonico/modular/bloques/E2_PROCESOS_Y_EXPERIENCIA/01_02_PROPOSITO_PROPIEDAD_CONSUMIDORES_Y_ACTORES.md`;
+- `docs/plan-canonico/modular/bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/00_INTRO.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/01_PRINCIPIO_DE_PROPIEDAD.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/07_SALIDA_OBLIGATORIA.md`;
+- `docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`;
+- `package.json` y scripts documentales aplicables.
+
+##### 7.2. Dependencias aprobadas inmediatas
+
+- `TSVC-CAT-001 — Inventariar servicios transversales actuales y faltantes`.
+- `TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio`.
+
+Las dependencias aportan las diez identidades, el estado de cobertura, el propietario técnico institucional, el repositorio canónico y la separación entre autoridad técnica y resultado empresarial.
+
+##### 7.3. Restricción de evidencia
+
+La matriz define relaciones objetivo permitidas. No demuestra que exista:
+
+- productor físico;
+- consumidor desplegado;
+- contrato publicado;
+- autorización implementada;
+- suscripción activa;
+- entrega exitosa;
+- evidencia de uso real;
+- compatibilidad entre versiones;
+- operación productiva.
+
+Esas afirmaciones requerirán implementación y validación en las tareas y paquetes propietarios.
+
+---
+
+#### 8. Continuidad canónica del bloque
+
+```text
+ÚLTIMA TAREA APROBADA
+TSVC-CAT-002 — Definir propietario técnico y gobierno de cada servicio
+        ↓
+TAREA ACTUAL APROBADA
+TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras
+        ↓
+SIGUIENTE TAREA RESERVADA
+TSVC-CAT-004 — Definir contrato, versión y compatibilidad
+```
+
+
 ### [ ] TSVC-CAT-004 — Definir contrato, versión y compatibilidad
 ### [ ] TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas
 ### [ ] TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
