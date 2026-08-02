@@ -2626,7 +2626,796 @@ TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría
 ```
 
 
-### [ ] TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría
+### ✅ TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación`
+
+**Tarea siguiente:** `TSVC-CAT-008 — Definir contingencia y degradación controlada`
+
+**Tipo de tarea:** definición documental canónica de observabilidad, métricas, alertas y auditoría para servicios transversales
+
+**Fase:** definición documental vinculante; instrumentación, configuración, despliegue y operación física no autorizados
+
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+
+**Fecha de corte:** `2026-08-02`
+
+**Cambios en código, configuración, dashboards, alertas, migraciones, funciones, workers, colas, despliegues, datos o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado material
+
+Esta tarea materializa el registro canónico:
+
+```text
+TRANSVERSE-SERVICE-OBSERVABILITY-REGISTRY-001@1.0.0
+```
+
+El registro define, para cada una de las diez identidades `TSVC-SVC-001..010`:
+
+1. las señales técnicas y operativas obligatorias;
+2. las métricas comunes y específicas;
+3. los eventos de auditoría mínimos;
+4. las clases de alerta y su ciclo de vida;
+5. la correlación entre contrato, operación, intento, resultado y efecto empresarial;
+6. la separación entre métrica, log, traza, auditoría, alerta, señal de salud y resultado empresarial;
+7. la minimización, redacción y protección de información sensible;
+8. el tratamiento de fallos del propio pipeline de observabilidad;
+9. la relación con idempotencia, reintentos, deduplicación, claims, leases, fencing y conciliación definidos en `TSVC-CAT-006`;
+10. el handoff obligatorio hacia contingencia, retención y adopción progresiva.
+
+El resultado completa la dimensión de observabilidad de los contratos `TSVC-SVC-001.CONTRACT` a `TSVC-SVC-010.CONTRACT`, todos definidos en versión inicial `1.0.0`, sin afirmar instrumentación, dashboards, alertas activas, retención física ni monitoreo productivo.
+
+---
+
+#### 2. Alcance
+
+La tarea abarca exactamente estas diez identidades:
+
+1. `TSVC-SVC-001` — Orquestación genérica de trabajos asíncronos.
+2. `TSVC-SVC-002` — Entrega transaccional de eventos y outbox.
+3. `TSVC-SVC-003` — Impresión centralizada.
+4. `TSVC-SVC-004` — Notificaciones y alertas.
+5. `TSVC-SVC-005` — Generación de documentos.
+6. `TSVC-SVC-006` — Custodia de archivos y documentos originales.
+7. `TSVC-SVC-007` — Evidencia transaccional.
+8. `TSVC-SVC-008` — Integraciones externas y webhooks.
+9. `TSVC-SVC-009` — Programación y automatizaciones recurrentes.
+10. `TSVC-SVC-010` — Monitoreo y heartbeat de workers.
+
+La tarea conserva sin modificación:
+
+- el propietario técnico institucional `Tecnología de Vento Group`;
+- el repositorio canónico `vento-shell`;
+- las diez aplicaciones canónicas y las cien decisiones aplicación–servicio de `TSVC-CAT-003`;
+- los diez contratos `1.0.0` de `TSVC-CAT-004`;
+- las identidades y credenciales mínimas de `TSVC-CAT-005`;
+- la semántica `AT_LEAST_ONCE_WITH_IDEMPOTENT_EFFECT` de `TSVC-CAT-006`;
+- los seis perfiles de reintento, ocho resultados de deduplicación y catorce clases de error aprobados;
+- la autoridad de la aplicación propietaria sobre el resultado empresarial;
+- la separación entre acuse técnico, señal de observabilidad y hecho empresarial confirmado;
+- la obligación de materializar futuras modificaciones de Supabase desde `vento-shell` durante una fase autorizada.
+
+Quedan fuera del alcance:
+
+- instalar SDK de telemetría, agentes, colectores o exportadores;
+- crear tablas, vistas, índices, funciones, triggers, buckets, colas o migraciones;
+- configurar dashboards, consultas, paneles, canales de alerta o guardias;
+- fijar umbrales numéricos sin baseline, SLO, capacidad y ambiente aprobados;
+- instrumentar aplicaciones, Edge Functions, workers, dispositivos, proveedores o impresoras;
+- crear retención, archivo, disposición o limpieza, responsabilidad de `TSVC-CAT-009`;
+- definir operación degradada, fallback y recuperación, responsabilidad de `TSVC-CAT-008`;
+- retirar patrones legacy o adoptar progresivamente la solución objetivo, responsabilidad de `TSVC-CAT-010`;
+- declarar monitoreo productivo, trazas distribuidas, alertas activas o auditoría completa sin evidencia física.
+
+---
+
+#### 3. Decisiones aprobadas
+
+##### 3.1. Identidad del registro
+
+| Campo                    | Valor                                           |
+| ------------------------ | ----------------------------------------------- |
+| `registry_id`            | `TRANSVERSE-SERVICE-OBSERVABILITY-REGISTRY-001` |
+| `registry_version`       | `1.0.0`                                         |
+| `registry_status`        | `DEFINED`                                       |
+| `covered_services`       | `10`                                            |
+| `signal_model`           | `SEVEN_SIGNAL_CLASSES_WITH_BUSINESS_SEPARATION` |
+| `metric_catalog_version` | `1.0.0`                                         |
+| `alert_catalog_version`  | `1.0.0`                                         |
+| `audit_catalog_version`  | `1.0.0`                                         |
+| `technical_owner`        | Tecnología de Vento Group                       |
+| `canonical_repository`   | `vento-shell`                                   |
+| `governing_task`         | `TSVC-CAT-007`                                  |
+
+`DEFINED` significa que las señales, métricas, alertas y eventos auditables están documentados y gobernados. No significa que existan instrumentación, almacenamiento, consultas, dashboards, notificaciones, on-call, retención ni evidencia operativa.
+
+##### 3.2. Separación obligatoria de señales
+
+Toda materialización futura deberá distinguir:
+
+```text
+RESULTADO EMPRESARIAL PROPIETARIO
+        ↕ correlación, no sustitución
+OPERACIÓN DEL SERVICIO TRANSVERSAL
+        ├── MÉTRICAS
+        ├── LOGS
+        ├── TRAZAS
+        ├── AUDITORÍA
+        ├── ALERTAS
+        └── SEÑALES DE SALUD
+```
+
+Reglas:
+
+1. una métrica resume comportamiento; no prueba por sí sola un hecho individual;
+2. un log describe diagnóstico técnico; no sustituye auditoría ni evidencia;
+3. una traza conecta etapas y dependencias; no concede autorización ni confirma el efecto empresarial;
+4. una auditoría registra una acción material y su contexto; no debe copiar payloads completos;
+5. una alerta deriva de una condición observable; no crea ni modifica el estado empresarial;
+6. una señal de salud describe disponibilidad técnica; no implica que todos los procesos estén completos;
+7. el resultado empresarial permanece gobernado por la aplicación propietaria;
+8. un `200 OK`, mensaje encolado, span exitoso, contador incrementado o alerta resuelta no equivale a pago, entrega, impresión física, custodia, aceptación, documento válido ni cierre de proceso;
+9. todas las señales deberán conservar correlación con el contrato y la operación sin convertir el sistema de observabilidad en fuente de verdad empresarial;
+10. ninguna ausencia de telemetría podrá interpretarse automáticamente como ausencia de error o éxito operativo.
+
+##### 3.3. Clases canónicas de señal
+
+| Clase                       | Propósito                                                               | Persistencia conceptual                              | No representa                              |
+| --------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------ |
+| `METRIC`                    | Medir volumen, latencia, estado agregado, backlog, errores y capacidad. | Serie temporal o agregado equivalente.               | Evidencia individual completa.             |
+| `LOG_EVENT`                 | Diagnosticar una ejecución o condición técnica concreta.                | Registro estructurado con nivel y contexto.          | Auditoría canónica ni payload empresarial. |
+| `TRACE_SPAN`                | Reconstruir causalidad y duración entre etapas y dependencias.          | Traza distribuida correlacionada.                    | Resultado empresarial ni permiso.          |
+| `AUDIT_EVENT`               | Registrar una acción material, decisión o cambio gobernado.             | Registro no destructivo y consultable por finalidad. | Log libre ni copia de contenido sensible.  |
+| `ALERT_EVENT`               | Notificar una condición que exige atención o seguimiento.               | Incidente o señal con ciclo de vida.                 | Cambio automático del proceso empresarial. |
+| `HEALTH_SIGNAL`             | Exponer liveness, readiness, heartbeat y capacidad de procesamiento.    | Estado técnico con frescura explícita.               | Garantía de completitud end-to-end.        |
+| `BUSINESS_RESULT_REFERENCE` | Referenciar el resultado propietario relacionado.                       | Identificador o referencia mínima.                   | Copia mutable del resultado de dominio.    |
+
+##### 3.4. Sobre común de observabilidad
+
+Toda señal deberá incorporar, cuando aplique:
+
+```text
+service_id
+contract_id
+contract_version
+operation_id
+operation_type
+producer_application
+business_owner_application
+consumer_application
+principal_id
+worker_id
+device_id
+provider_id
+schedule_id
+correlation_id
+causation_id
+trace_id
+span_id
+parent_span_id
+idempotency_key_ref
+request_fingerprint_ref
+attempt_no
+retry_profile_id
+dedup_result
+claim_id
+lease_expires_at
+fencing_token
+deadline_at
+status
+error_class
+signal_class
+signal_name
+severity
+occurred_at
+recorded_at
+duration_ms
+result_reference
+audit_class
+schema_version
+environment
+```
+
+Reglas:
+
+1. `idempotency_key_ref` y `request_fingerprint_ref` son referencias o valores protegidos; no exponen material sensible innecesario;
+2. `trace_id`, `span_id` y `parent_span_id` conservan continuidad técnica sin reemplazar `correlation_id` ni `causation_id`;
+3. `attempt_no` identifica el intento real y no altera `operation_id`;
+4. `status` usa estados del contrato o del ciclo técnico aprobado; no inventa estados empresariales;
+5. `result_reference` apunta al resultado propietario sin copiarlo íntegramente;
+6. `principal_id`, `worker_id`, `device_id`, `provider_id` y `schedule_id` se incluyen solo cuando aplican;
+7. `environment` es obligatorio para evitar mezclar desarrollo, pruebas, staging y producción;
+8. `occurred_at` conserva el momento del hecho observado y `recorded_at` el momento de registro;
+9. toda señal deberá declarar una versión de esquema;
+10. campos ausentes no se completarán con valores inventados.
+
+##### 3.5. Convención de nombres y cardinalidad
+
+Las métricas futuras utilizarán una convención estable equivalente a:
+
+```text
+vento_tsvc_<service_id_normalizado>_<metric_name>
+```
+
+Reglas de cardinalidad:
+
+1. no se usarán como etiquetas libres `operation_id`, `trace_id`, `span_id`, payload, correo, teléfono, documento, URL completa, mensaje de error completo ni identificadores de alta cardinalidad;
+2. los identificadores individuales permanecerán en logs, trazas o auditoría según finalidad;
+3. las etiquetas permitidas deberán pertenecer a catálogos cerrados y versionados;
+4. `service_id`, `contract_version`, `operation_type`, `status`, `error_class`, `retry_profile_id`, `dedup_result`, `environment` y clases equivalentes podrán usarse cuando su cardinalidad permanezca acotada;
+5. `site_id`, `area_id`, `device_id`, `provider_id` o `consumer_application` solo se expondrán cuando la finalidad, sensibilidad y escala lo permitan;
+6. ninguna métrica deberá contener secretos, tokens, firmas, payloads ni datos personales;
+7. los cambios de nombre o significado de una métrica requieren nueva versión del catálogo;
+8. un dashboard no podrá recombinar métricas con semántica incompatible como si fueran equivalentes.
+
+##### 3.6. Catálogo común de métricas
+
+| ID             | Métrica canónica                | Tipo       | Unidad       | Semántica                                                                         |
+| -------------- | ------------------------------- | ---------- | ------------ | --------------------------------------------------------------------------------- |
+| `TSVC-MET-001` | `operations_accepted_total`     | contador   | operaciones  | Operaciones aceptadas por contrato.                                               |
+| `TSVC-MET-002` | `operations_completed_total`    | contador   | operaciones  | Operaciones con resultado técnico terminal satisfactorio.                         |
+| `TSVC-MET-003` | `operations_failed_total`       | contador   | operaciones  | Operaciones con resultado técnico terminal fallido.                               |
+| `TSVC-MET-004` | `operations_deduplicated_total` | contador   | operaciones  | Repeticiones resueltas mediante resultado previo o supresión segura.              |
+| `TSVC-MET-005` | `attempts_total`                | contador   | intentos     | Intentos ejecutados, incluidos reintentos.                                        |
+| `TSVC-MET-006` | `retries_scheduled_total`       | contador   | reintentos   | Reintentos programados por política.                                              |
+| `TSVC-MET-007` | `result_unknown_total`          | contador   | operaciones  | Operaciones cuyo resultado permanece desconocido y exige consulta o conciliación. |
+| `TSVC-MET-008` | `dead_letter_total`             | contador   | operaciones  | Operaciones enviadas a dead-letter tras agotar tratamiento automático.            |
+| `TSVC-MET-009` | `quarantine_total`              | contador   | operaciones  | Operaciones aisladas por integridad, contrato, seguridad o conflicto.             |
+| `TSVC-MET-010` | `backlog_depth`                 | gauge      | operaciones  | Trabajo pendiente elegible o bloqueado según dimensión declarada.                 |
+| `TSVC-MET-011` | `oldest_backlog_age_seconds`    | gauge      | segundos     | Antigüedad del trabajo pendiente más antiguo.                                     |
+| `TSVC-MET-012` | `in_flight_operations`          | gauge      | operaciones  | Operaciones reclamadas o activas dentro de lease vigente.                         |
+| `TSVC-MET-013` | `operation_duration_ms`         | histograma | milisegundos | Duración técnica end-to-end de la operación.                                      |
+| `TSVC-MET-014` | `dependency_duration_ms`        | histograma | milisegundos | Duración de una dependencia externa, dispositivo o servicio.                      |
+| `TSVC-MET-015` | `lease_expired_total`           | contador   | leases       | Leases vencidos antes del cierre válido.                                          |
+| `TSVC-MET-016` | `claim_conflict_total`          | contador   | conflictos   | Claims rechazados por concurrencia, fencing o versión.                            |
+| `TSVC-MET-017` | `contract_rejected_total`       | contador   | solicitudes  | Solicitudes rechazadas por contrato o versión incompatible.                       |
+| `TSVC-MET-018` | `authentication_rejected_total` | contador   | solicitudes  | Solicitudes rechazadas por identidad o autenticación técnica.                     |
+| `TSVC-MET-019` | `worker_heartbeat_age_seconds`  | gauge      | segundos     | Antigüedad del último heartbeat aceptado.                                         |
+| `TSVC-MET-020` | `worker_state`                  | gauge enum | estado       | Estado cerrado de salud del worker según codificación versionada.                 |
+
+Reglas:
+
+1. las métricas de contador son monotónicas dentro de su ventana y reinicio declarado;
+2. los gauges exponen el instante y la frescura de lectura;
+3. las latencias se evalúan mediante distribución y percentiles, no únicamente promedio;
+4. `operations_completed_total` describe finalización técnica, no resultado empresarial confirmado;
+5. los conteos de reintentos no se suman como nuevas operaciones;
+6. deduplicación, dead-letter, cuarentena y resultado desconocido permanecen separados;
+7. cada métrica deberá declarar fuente, ambiente, ventana, dimensiones y versión;
+8. los objetivos y umbrales se definirán con baseline y SLO aprobados, no dentro de esta tarea.
+
+##### 3.7. Logs estructurados
+
+Todo log futuro deberá:
+
+1. utilizar nivel cerrado `DEBUG`, `INFO`, `WARN` o `ERROR` según ambiente y finalidad;
+2. incluir `service_id`, `operation_id`, `attempt_no`, correlación, contrato, ambiente y clase de error cuando apliquen;
+3. evitar concatenaciones libres que impidan consulta estructurada;
+4. redaccionar secretos, credenciales, tokens, firmas, PIN, payloads completos y datos personales innecesarios;
+5. conservar una referencia protegida cuando sea necesario recuperar contenido desde su fuente autorizada;
+6. diferenciar error de validación, autenticación, dependencia, concurrencia, integridad, deadline, reintento agotado y fallo interno;
+7. registrar la causa técnica sin afirmar un resultado empresarial no confirmado;
+8. no utilizar `console.log` o `console.error` aislado como sustituto del contrato de observabilidad objetivo;
+9. conservar stack o diagnóstico únicamente donde la sensibilidad y el ambiente lo permitan;
+10. aplicar muestreo solo cuando no elimine auditoría, errores críticos, integridad, seguridad ni señales necesarias para conciliación.
+
+##### 3.8. Trazas distribuidas
+
+Toda operación que cruce aplicación, servicio, worker, dispositivo o proveedor deberá:
+
+1. iniciar o continuar una traza con `trace_id` estable;
+2. crear spans por frontera material, no por cada línea de código;
+3. conservar `correlation_id` y `causation_id` además de la jerarquía de spans;
+4. registrar contrato, versión, operación, intento, dependencia y resultado técnico;
+5. representar el tiempo de cola separado del tiempo de ejecución;
+6. distinguir la espera por proveedor, dispositivo, Storage, base de datos y consumidor;
+7. marcar retry, deduplicación, claim, lease, fencing, deadline y conciliación como atributos cerrados;
+8. no incorporar payloads completos ni información sensible en nombres o atributos;
+9. conservar enlaces entre reintentos cuando cada intento requiera span independiente;
+10. no presentar un span exitoso como prueba de cierre empresarial.
+
+##### 3.9. Catálogo canónico de auditoría
+
+| ID             | Clase                    | Cuándo se registra                                                                           |
+| -------------- | ------------------------ | -------------------------------------------------------------------------------------------- |
+| `TSVC-AUD-001` | `OPERATION_ACCEPTED`     | El servicio acepta una operación válida.                                                     |
+| `TSVC-AUD-002` | `OPERATION_REJECTED`     | La operación se rechaza por contrato, identidad, autorización técnica, deadline o conflicto. |
+| `TSVC-AUD-003` | `ATTEMPT_STARTED`        | Inicia un intento real de procesamiento.                                                     |
+| `TSVC-AUD-004` | `CLAIM_ACQUIRED`         | Un worker obtiene el claim con lease y fencing.                                              |
+| `TSVC-AUD-005` | `CLAIM_RENEWED`          | Se renueva un lease vigente dentro de política.                                              |
+| `TSVC-AUD-006` | `CLAIM_RELEASED`         | El claim se libera, expira o se pierde de forma explícita.                                   |
+| `TSVC-AUD-007` | `RESULT_RECORDED`        | Se registra un resultado técnico terminal o una referencia de resultado.                     |
+| `TSVC-AUD-008` | `RETRY_SCHEDULED`        | Se programa un reintento con política, causa y deadline.                                     |
+| `TSVC-AUD-009` | `DEDUP_REPLAYED`         | Se devuelve o reconcilia un resultado previo para la misma intención.                        |
+| `TSVC-AUD-010` | `CONFLICT_REJECTED`      | La misma clave aparece con huella incompatible, versión obsoleta o fencing inválido.         |
+| `TSVC-AUD-011` | `DEAD_LETTERED`          | La operación se transfiere a dead-letter con causa y estado.                                 |
+| `TSVC-AUD-012` | `QUARANTINED`            | La operación se aísla por seguridad, integridad, contrato o contenido.                       |
+| `TSVC-AUD-013` | `RECONCILIATION_DECIDED` | Se registra una decisión de conciliación y su autoridad.                                     |
+| `TSVC-AUD-014` | `MANUAL_OVERRIDE`        | Una intervención excepcional modifica el tratamiento técnico permitido.                      |
+| `TSVC-AUD-015` | `CONFIGURATION_CHANGED`  | Cambia una política versionada de retry, alertas, routing, contrato o instrumentación.       |
+| `TSVC-AUD-016` | `ALERT_STATE_CHANGED`    | Una alerta se reconoce, suprime, resuelve o cierra con actor y razón.                        |
+
+Reglas:
+
+1. la auditoría es no destructiva y conserva la entrada original;
+2. una corrección crea un nuevo evento vinculado;
+3. toda intervención manual identifica actor, principal, finalidad, autoridad, antes, después y motivo;
+4. los eventos auditables no contienen secretos ni payloads completos;
+5. la consulta, exportación o administración privilegiada de auditoría deberá ser también auditable;
+6. auditoría técnica y auditoría empresarial permanecen separadas pero correlacionadas;
+7. el servicio registra su acción técnica; la aplicación propietaria registra su decisión o efecto empresarial;
+8. un evento de auditoría no concede autorización retroactiva;
+9. los eventos de configuración conservan versión anterior y nueva;
+10. retención, legal hold, archivo y disposición se definen en sus tareas propietarias.
+
+##### 3.10. Catálogo canónico de alertas
+
+| ID             | Clase                            | Condición semántica                                                                   | Fuente mínima                                  | Acción esperada                                                      |
+| -------------- | -------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------------------- | -------------------------------------------------------------------- |
+| `TSVC-ALT-001` | `CONTRACT_VIOLATION`             | Aumentan rechazos por contrato, versión o esquema incompatibles.                      | `TSVC-MET-017`, logs y trazas.                 | Identificar productora, versión y cambio incompatible.               |
+| `TSVC-ALT-002` | `AUTHENTICATION_ANOMALY`         | Existe patrón anómalo de autenticación técnica rechazada o identidad inesperada.      | `TSVC-MET-018` y auditoría.                    | Revisar principal, ambiente, credencial y posible compromiso.        |
+| `TSVC-ALT-003` | `INTEGRITY_FAILURE`              | Hash, firma, original, evidencia, fencing o resultado presentan inconsistencia.       | Logs, auditoría y métricas específicas.        | Bloquear propagación y activar investigación.                        |
+| `TSVC-ALT-004` | `DEADLINE_BREACH`                | Una operación supera su deadline o clase temporal aprobada.                           | Duración, deadline y estado.                   | Clasificar resultado, evitar retry ciego y escalar según criticidad. |
+| `TSVC-ALT-005` | `BACKLOG_SATURATION`             | Backlog, edad o tiempo de drenaje exceden la envolvente aprobada.                     | `TSVC-MET-010`, `011`, throughput y capacidad. | Aplicar backpressure o capacidad según contrato.                     |
+| `TSVC-ALT-006` | `RETRY_STORM`                    | Los reintentos crecen sin recuperación proporcional.                                  | `TSVC-MET-005`, `006`, errores y dependencia.  | Detener amplificación y revisar dependencia o política.              |
+| `TSVC-ALT-007` | `DEPENDENCY_DEGRADATION`         | Un proveedor, dispositivo, Storage, base o consumidor presenta degradación sostenida. | `TSVC-MET-014`, errores y health.              | Aislar dependencia y evaluar contingencia.                           |
+| `TSVC-ALT-008` | `RESULT_UNKNOWN_PERSISTENT`      | Permanecen resultados desconocidos sin conciliación dentro de la ventana aprobada.    | `TSVC-MET-007` y auditoría.                    | Consultar fuente autoritativa y conciliar.                           |
+| `TSVC-ALT-009` | `WORKER_STALE`                   | Heartbeat, lease o actividad del worker pierden frescura.                             | `TSVC-MET-019`, `020`, leases e inflight.      | Impedir nuevos claims inseguros y evaluar reemplazo.                 |
+| `TSVC-ALT-010` | `OBSERVABILITY_PIPELINE_FAILURE` | La propia captura, exportación o consulta de señales falla o pierde frescura.         | Señales internas del pipeline y canario.       | Declarar visibilidad degradada y no asumir salud.                    |
+
+Los umbrales concretos deberán provenir de:
+
+- SLO y criticidad aprobados;
+- baseline medido y reproducible;
+- capacidad y escenarios de carga;
+- ambiente;
+- contrato del proveedor o dispositivo;
+- ventana temporal y estacionalidad;
+- política versionada y owner explícito.
+
+No se aprueban valores numéricos universales dentro de esta tarea.
+
+##### 3.11. Severidad y ciclo de vida de alertas
+
+| Severidad | Uso                                                                                               |
+| --------- | ------------------------------------------------------------------------------------------------- |
+| `SEV-1`   | Riesgo crítico de seguridad, integridad, pérdida, doble efecto o interrupción de proceso crítico. |
+| `SEV-2`   | Degradación alta, backlog material, resultados desconocidos o dependencia principal afectada.     |
+| `SEV-3`   | Condición anómala con capacidad de crecimiento o impacto acotado.                                 |
+| `SEV-4`   | Información operativa que requiere seguimiento sin interrupción inmediata.                        |
+
+| Estado                   | Significado                                                      |
+| ------------------------ | ---------------------------------------------------------------- |
+| `OPEN`                   | Condición activa y no reconocida.                                |
+| `ACKNOWLEDGED`           | Responsable identificado y atención iniciada.                    |
+| `SUPPRESSED_WITH_REASON` | Supresión temporal, justificada, con alcance y vencimiento.      |
+| `RESOLVED`               | La condición dejó de cumplirse y existe evidencia técnica.       |
+| `CLOSED_FALSE_POSITIVE`  | Se demostró que la alerta no representaba la condición prevista. |
+
+Reglas:
+
+1. toda alerta tiene owner, severidad, ambiente, fuente, ventana y condición de cierre;
+2. reconocer no equivale a resolver;
+3. suprimir exige razón, actor, vigencia y revisión;
+4. una alerta resuelta no cierra automáticamente incidentes, conciliaciones ni procesos empresariales;
+5. los cambios de estado generan `TSVC-AUD-016`;
+6. una alerta sin señal suficiente deberá declararse incierta, no completarse mediante inferencia;
+7. la deduplicación de alertas usa una identidad propia y no modifica la idempotencia de la operación observada;
+8. múltiples síntomas de una misma causa pueden correlacionarse sin perder sus fuentes originales.
+
+##### 3.12. Responsabilidad de señales y atención
+
+| Responsabilidad                                | Owner                                                              |
+| ---------------------------------------------- | ------------------------------------------------------------------ |
+| Definir semántica común de señales y catálogos | Tecnología de Vento Group                                          |
+| Emitir señal técnica correcta                  | Servicio, worker, dispositivo o adaptador que ejecuta la operación |
+| Conservar resultado empresarial                | Aplicación propietaria del proceso o recurso                       |
+| Definir SLO y criticidad empresarial           | Owner empresarial con Tecnología de Vento Group                    |
+| Configurar instrumentación y exportación       | Tecnología de Vento Group durante fase autorizada                  |
+| Atender alerta técnica                         | Owner técnico del servicio y guardia asignada                      |
+| Atender efecto empresarial                     | Aplicación propietaria y responsable operativo                     |
+| Conciliar resultado desconocido                | Owner del resultado con soporte del servicio transversal           |
+| Gobernar acceso a telemetría y auditoría       | Tecnología de Vento Group y owner de información aplicable         |
+| Aprobar supresión o override sensible          | Autoridad definida por criticidad y segregación                    |
+
+##### 3.13. Registro canónico por servicio
+
+| Servicio       | Métricas y señales obligatorias                                                                                                                                               | Alertas principales                                                                                | Auditoría mínima                                                                                                      | Frontera empresarial                                                              | Estado                     |
+| -------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | -------------------------- |
+| `TSVC-SVC-001` | aceptadas, completadas, fallidas, intentos, retries, backlog, edad, inflight, claim, lease, duración, dead-letter y resultado desconocido                                     | backlog, retry storm, deadline, worker stale y pipeline failure                                    | submit, claim, renovación, intento, retry, resultado, cancelación técnica, dead-letter y conciliación                 | El servicio ejecuta trabajo; la productora conserva la autoridad del resultado.   | `DEFINED_NOT_INSTRUMENTED` |
+| `TSVC-SVC-002` | eventos pendientes, edad del outbox, claim, entrega, duplicados, latencia por consumidor, errores, replay y dead-letter                                                       | outbox estancado, backlog, consumidor degradado, incompatibilidad y retry storm                    | registro transaccional, claim, intento de entrega, acuse, dedup, replay, error y conciliación                         | Publicar no sustituye el hecho ni la aplicación propietaria del evento.           | `DEFINED_NOT_INSTRUMENTED` |
+| `TSVC-SVC-003` | trabajos pendientes, routing, receipt del adaptador, aceptación de dispositivo, resultado físico conocido o desconocido, copias suprimidas, duración y health del dispositivo | impresora o adaptador degradado, backlog, resultado desconocido, duplicidad e integridad de layout | solicitud, routing, layout y versión, dispositivo, intento, receipt, resultado, reimpresión autorizada y conciliación | Receipt o envío no prueban impresión física ni aceptación empresarial.            | `DEFINED_NOT_INSTRUMENTED` |
+| `TSVC-SVC-004` | cola por canal, resolución de destinatario, resultado de proveedor, rate limit, bounce, retries, dedup, duración y supresión                                                  | proveedor degradado, rate limit, backlog, retry storm y destino inválido                           | solicitud, destinatario resuelto por referencia, canal, plantilla, intento, resultado y supresión                     | Notificación enviada no prueba lectura, aceptación ni cierre.                     | `DEFINED_NOT_INSTRUMENTED` |
+| `TSVC-SVC-005` | generación iniciada, duración, plantilla y versión, resultado, tamaño, hash, retries, duplicados y errores                                                                    | render fallido, plantilla incompatible, hash inconsistente, backlog y deadline                     | solicitud, plantilla, versión, fuente, intento, salida, hash, error y supersesión                                     | Documento generado no equivale a aprobación, firma ni custodia definitiva.        | `DEFINED_NOT_INSTRUMENTED` |
+| `TSVC-SVC-006` | ingestión, hash, clasificación, validación, Storage, duplicados, acceso, recuperación, cuarentena y duración                                                                  | integridad, objeto huérfano, clasificación inválida, acceso anómalo y dependencia degradada        | ingestión, actor, original, hash, vínculo, acceso, sustitución, cuarentena y recuperación                             | Custodia no prueba conformidad, aceptación ni valor probatorio.                   | `DEFINED_NOT_INSTRUMENTED` |
+| `TSVC-SVC-007` | captura, integridad, lineage, vínculo causal, resultado, duplicados, acceso, correcciones y disponibilidad                                                                    | evidencia faltante, integridad o lineage roto, acceso anómalo y pipeline failure                   | captura, origen, hash, relación, consulta sensible, corrección, supersesión y exportación                             | Evidencia técnica no sustituye la decisión empresarial ni la identidad del actor. | `DEFINED_NOT_INSTRUMENTED` |
+| `TSVC-SVC-008` | firma u origen, replay, mapping, latencia, timeout, rate limit, ACK, provider errors, retries, resultado desconocido y conciliación                                           | firma inválida, replay, proveedor degradado, backlog, deadline y resultado desconocido             | recepción o envío, proveedor, contrato, mapping, intento, ACK, dedup, error y conciliación                            | Estado del proveedor o `200 OK` no cierra el proceso propietario.                 | `DEFINED_NOT_INSTRUMENTED` |
+| `TSVC-SVC-009` | ejecuciones debidas, iniciadas, completadas, fallidas, omitidas, misfire, drift, overlap, retries y duración                                                                  | ejecución omitida, solapamiento, regla incompatible, fallo repetido y worker stale                 | schedule y versión, trigger, scheduler, ventana, intento, resultado, cancelación y cambio de configuración            | El scheduler dispara; no decide la regla empresarial ni su aprobación.            | `DEFINED_NOT_INSTRUMENTED` |
+| `TSVC-SVC-010` | heartbeat age, liveness, readiness, worker state, inflight, leases, lag, reinicios, capacidad y cobertura                                                                     | heartbeat ausente, worker stale, capacidad insuficiente, reloj inválido y pipeline failure         | registro de worker, inicio, heartbeat, transición de salud, suspensión, reemplazo y retiro                            | Salud del worker no demuestra éxito del proceso ni de su dependencia.             | `DEFINED_NOT_INSTRUMENTED` |
+
+##### 3.14. Perfil específico de `TSVC-SVC-001`
+
+La orquestación genérica deberá permitir responder:
+
+- cuántos trabajos fueron aceptados, reclamados, completados, fallidos o deduplicados;
+- cuánto tiempo permanecieron en cola y cuánto duró cada intento;
+- qué worker obtuvo el claim y con qué fencing token;
+- cuántos leases expiraron;
+- qué reintentos se programaron y bajo qué perfil;
+- qué trabajos agotaron política o quedaron con resultado desconocido;
+- qué backlog existe por prioridad, contrato y ambiente sin introducir cardinalidad libre;
+- si el throughput permite drenar el backlog dentro de la envolvente aprobada.
+
+No podrá contar un reintento como trabajo nuevo ni presentar un claim como resultado.
+
+##### 3.15. Perfil específico de `TSVC-SVC-002`
+
+La entrega transaccional deberá permitir reconstruir:
+
+```text
+HECHO CONFIRMADO
+  → REGISTRO OUTBOX
+  → CLAIM
+  → INTENTO DE ENTREGA
+  → ACK O ERROR
+  → REINTENTO, DEAD-LETTER O CONCILIACIÓN
+```
+
+La observabilidad conservará `event_id`, definición, versión, productor, consumidor, agregado, versión de agregado, correlación, causalidad, intento y resultado de entrega. El payload completo no se replica en métricas, logs ni trazas.
+
+##### 3.16. Perfil específico de `TSVC-SVC-003`
+
+La impresión deberá distinguir:
+
+1. intención de impresión;
+2. trabajo aceptado;
+3. routing y layout versionado;
+4. receipt del adaptador;
+5. aceptación del dispositivo;
+6. resultado físico conocido, fallido o desconocido;
+7. reimpresión autorizada;
+8. conciliación.
+
+La observabilidad deberá detectar backlog, dispositivo sin heartbeat, layout incompatible, timeout, duplicidad y resultado físico desconocido sin generar copias adicionales por reintento ciego.
+
+##### 3.17. Perfil específico de `TSVC-SVC-004`
+
+Las notificaciones deberán medir por canal y proveedor:
+
+- solicitudes aceptadas;
+- destinos válidos o rechazados;
+- renderizado y versión de plantilla;
+- entrega al proveedor;
+- resultado devuelto;
+- rate limit;
+- retries y deduplicación;
+- latencia y backlog;
+- supresión y preferencias aplicables.
+
+La identidad del destinatario se conserva mediante referencia mínima. El contenido completo no se utiliza como etiqueta ni mensaje de log.
+
+##### 3.18. Perfil específico de `TSVC-SVC-005`
+
+La generación documental deberá correlacionar datos fuente, plantilla, versión, operación, intento, output, hash, tamaño, formato y resultado. Un documento regenerado deberá distinguir nueva versión, reproducción idéntica, supersesión o corrección. El servicio no declara firma, aprobación o custodia si esas acciones no fueron confirmadas por sus contratos propietarios.
+
+##### 3.19. Perfil específico de `TSVC-SVC-006`
+
+La custodia deberá observar:
+
+- ingestión y origen;
+- hash e identidad del original;
+- clasificación y vínculo con recurso;
+- validación y cuarentena;
+- ubicación técnica protegida;
+- accesos, recuperaciones y sustituciones;
+- errores de integridad, referencia o Storage;
+- duplicados idénticos y conflictos de contenido.
+
+Una URL firmada, ruta o nombre de archivo no se registra en telemetría abierta cuando exponga capacidad o información sensible.
+
+##### 3.20. Perfil específico de `TSVC-SVC-007`
+
+La evidencia transaccional deberá conservar integridad, lineage, hecho relacionado, actor o principal, momento, dispositivo, versión y fuerza probatoria técnica definida. La observabilidad detectará evidencia obligatoria ausente, vínculo roto, hash incompatible, acceso extraordinario y corrección. Un archivo existente no se interpretará automáticamente como evidencia suficiente.
+
+##### 3.21. Perfil específico de `TSVC-SVC-008`
+
+Toda integración deberá separar:
+
+```text
+RECEPCIÓN TÉCNICA
+VALIDACIÓN DE ORIGEN Y FIRMA
+DEDUPLICACIÓN O REPLAY
+TRANSFORMACIÓN VERSIONADA
+COMANDO O EVENTO INTERNO
+ACK TÉCNICO
+RESULTADO EMPRESARIAL
+CONCILIACIÓN
+```
+
+La observabilidad medirá firma inválida, replay, latencia, timeout, rate limit, errores de mapping, dependencia, resultado desconocido y conciliación. Los payloads de proveedor permanecerán en fuentes protegidas; logs y trazas usan referencias y campos permitidos.
+
+##### 3.22. Perfil específico de `TSVC-SVC-009`
+
+La programación deberá medir ejecución debida, disparo real, drift, misfire, solapamiento, omisión válida, cancelación, intento, resultado y duración. Cada señal conserva schedule, versión, zona horaria, vigencia y scheduler. Un trigger ejecutado no demuestra que la acción empresarial haya sido autorizada o completada.
+
+##### 3.23. Perfil específico de `TSVC-SVC-010`
+
+El monitoreo de workers deberá exponer:
+
+- identidad del worker y servicio;
+- versión y ambiente;
+- liveness y readiness separados;
+- último heartbeat y su edad;
+- capacidad declarada y trabajo activo;
+- leases y claims vigentes;
+- lag o backlog relacionado;
+- reinicios, suspensión, reemplazo y retiro;
+- reloj y frescura de señal.
+
+Estados mínimos de salud:
+
+| Estado     | Significado                                           |
+| ---------- | ----------------------------------------------------- |
+| `STARTING` | Worker registrado, todavía no listo.                  |
+| `READY`    | Puede aceptar trabajo dentro de su alcance.           |
+| `BUSY`     | Ejecuta trabajo y mantiene heartbeat vigente.         |
+| `DEGRADED` | Opera con capacidad o dependencia reducida.           |
+| `DRAINING` | No acepta trabajo nuevo y termina trabajo vigente.    |
+| `STALE`    | Heartbeat fuera de la ventana aprobada.               |
+| `STOPPED`  | Detenido de forma conocida.                           |
+| `UNKNOWN`  | No existe evidencia suficiente para determinar salud. |
+
+`UNKNOWN` no se convierte automáticamente en `STOPPED` ni `READY`.
+
+##### 3.24. Fallo del propio pipeline de observabilidad
+
+La observabilidad deberá tratarse como una dependencia falible.
+
+Reglas:
+
+1. el fallo de exportación no podrá bloquear silenciosamente una operación empresarial cuando el contrato permita continuar;
+2. las acciones sensibles que requieran auditoría obligatoria deberán fallar de forma cerrada o usar un mecanismo local duradero aprobado;
+3. una señal perdida o retrasada deberá producir estado de visibilidad degradada;
+4. el sistema no asumirá salud por ausencia de alertas;
+5. la cola o buffer de telemetría deberá tener límites y backpressure;
+6. un fallo de métricas no elimina logs o auditoría obligatoria;
+7. un fallo de trazas no autoriza eliminar correlación e idempotencia del contrato principal;
+8. el pipeline deberá tener health, frescura, backlog, errores y canarios propios;
+9. la recuperación no duplicará eventos de auditoría ni reescribirá timestamps del hecho;
+10. la contingencia concreta se define en `TSVC-CAT-008`.
+
+##### 3.25. Seguridad, privacidad y acceso
+
+1. secretos, claves, tokens, cookies, PIN, firmas privadas y credenciales nunca se registran;
+2. payloads completos, documentos, fotografías, diagnósticos, datos bancarios y datos personales sensibles se sustituyen por referencias protegidas;
+3. los mensajes de error se normalizan antes de exponerlos como etiqueta o dimensión;
+4. acceso a logs, trazas, métricas, alertas y auditoría se autoriza por finalidad, ambiente, servicio, sensibilidad y acción;
+5. observar no concede capacidad de mutar, reintentar, cancelar, conciliar ni cambiar configuración;
+6. exportar o compartir telemetría sensible es una acción auditable;
+7. el observador definido en `TSVC-CAT-005` conserva privilegio de solo lectura;
+8. una herramienta externa de observabilidad no se convierte en propietaria del dato empresarial;
+9. la eliminación o retención del proveedor no sustituye la política canónica;
+10. las señales de seguridad críticas no se muestrean de forma que impida investigación.
+
+##### 3.26. Reconciliación con activos técnicos actuales
+
+| Activo o patrón observado                                                                                            | Servicio relacionado     | Clasificación                                        | Decisión canónica                                                                                                                      |
+| -------------------------------------------------------------------------------------------------------------------- | ------------------------ | ---------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------- |
+| Cola de impresión local y ejecución desde navegador registrada por `TSVC-CAT-001`                                    | `TSVC-SVC-003`           | `LOCAL_DIAGNOSTICS_WITHOUT_TRANSVERSE_OBSERVABILITY` | Conservar como evidencia funcional; no acredita métricas, trazas, alertas, heartbeat ni auditoría centralizada.                        |
+| Registro autenticado de tokens push con timestamps de permiso y `last_seen`                                          | `TSVC-SVC-004`           | `PARTIAL_DEVICE_METADATA`                            | Puede aportar direccionamiento y frescura del destino; no constituye observabilidad de entrega end-to-end.                             |
+| Flujo documental de ANIMA registrado por `TSVC-CAT-001`                                                              | `TSVC-SVC-006`           | `APPLICATION_LOCAL_FLOW`                             | Conservar metadatos actuales; la observabilidad transversal exige contrato, hash, acceso, integridad, correlación y auditoría comunes. |
+| Webhook de pagos con verificación de firma, deduplicación, persistencia de evento y errores mediante `console.error` | `TSVC-SVC-008`           | `PROVIDER_SPECIFIC_PARTIAL_DIAGNOSTICS`              | Conservar controles vigentes; estructurar señales comunes, redacción, métricas, trazas, alertas y conciliación en la fase autorizada.  |
+| Webhook de RevenueCat registrado por `TSVC-CAT-001`                                                                  | `TSVC-SVC-008`           | `PROVIDER_SPECIFIC_PARTIAL_ADAPTER`                  | No se considera servicio transversal observable completo por existir un adaptador específico.                                          |
+| Ausencia de un servicio transversal verificado de heartbeat de workers                                               | `TSVC-SVC-010`           | `MISSING_CANONICAL_IMPLEMENTATION`                   | Mantener `DEFINED_NOT_INSTRUMENTED`; no declarar salud de workers sin implementación y evidencia.                                      |
+| Uso aislado de logs de runtime o errores locales                                                                     | servicios que los emitan | `UNSTRUCTURED_OR_LOCAL_DIAGNOSTICS`                  | No sustituye métricas, trazas, alertas ni auditoría canónica.                                                                          |
+
+La reconciliación describe activos observados y decisiones ya inventariadas. No afirma cobertura completa, despliegue, retención, consulta central ni operación productiva.
+
+##### 3.27. Aplicación al carril `NEXO-REMISSIONS-001`
+
+Para el paquete prioritario de remisiones NEXO:
+
+1. cada trabajo conserva aplicación `nexo`, actor o principal, sede, área, recurso, contrato, operación, correlación, causa e idempotencia;
+2. solicitud, aceptación, producción, preparación, carga, despacho, recepción y conciliación permanecen resultados empresariales de sus propietarias, no métricas del servicio;
+3. la cola asíncrona mide backlog, edad, intentos, leases, deduplicación, dead-letter y resultado desconocido;
+4. la impresión distingue intención, routing, receipt, aceptación del dispositivo y resultado físico;
+5. el heartbeat identifica worker, dispositivo, versión, ambiente, readiness y frescura;
+6. una alerta de worker o impresora no cambia el estado de la remisión;
+7. una reimpresión requiere identidad, autorización, causa y auditoría propias;
+8. los handoffs y firmas conservan evidencia y actor real fuera del payload de telemetría abierta;
+9. la recuperación de red o worker no duplica remisiones, movimientos, impresiones ni aceptaciones;
+10. ninguna capacidad se declara operativa por quedar documentada en este registro.
+
+##### 3.28. Reconciliación cuantitativa
+
+| Control                                 | Resultado |
+| --------------------------------------- | --------: |
+| Servicios esperados                     |        10 |
+| Servicios materializados                |        10 |
+| Identificadores de servicio únicos      |        10 |
+| Servicios faltantes                     |         0 |
+| Servicios duplicados                    |         0 |
+| Clases canónicas de señal               |         7 |
+| Métricas comunes definidas              |        20 |
+| Clases canónicas de alerta              |        10 |
+| Estados de alerta                       |         5 |
+| Clases canónicas de auditoría           |        16 |
+| Estados de salud de worker              |         8 |
+| Servicios en `DEFINED_NOT_INSTRUMENTED` |        10 |
+| Servicios instrumentados por esta tarea |         0 |
+| Dashboards configurados por esta tarea  |         0 |
+| Alertas activadas por esta tarea        |         0 |
+| Cambios físicos de Supabase             |         0 |
+
+##### 3.29. Handoff obligatorio
+
+| Tarea posterior | Insumo recibido de `TSVC-CAT-007`                                                                                                                                                                          |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TSVC-CAT-008`  | Señales de salud, dependencia, backlog, deadline, retry storm, resultado desconocido, worker stale y fallo de observabilidad que deberán activar contingencia o degradación controlada sin inventar éxito. |
+| `TSVC-CAT-009`  | Clases de métricas, logs, trazas, auditoría, alertas y referencias empresariales que deberán recibir política de retención, archivo, hold, disposición y limpieza.                                         |
+| `TSVC-CAT-010`  | Patrones actuales locales o específicos, estado `DEFINED_NOT_INSTRUMENTED`, catálogos objetivo y criterios de adopción que deberán migrarse y retirarse progresivamente.                                   |
+
+---
+
+#### 4. Artefactos y entregables
+
+1. `TRANSVERSE-SERVICE-OBSERVABILITY-REGISTRY-001@1.0.0`.
+2. Catálogo cerrado de siete clases de señal.
+3. Sobre común de observabilidad con identidad, correlación, intento, retry, deduplicación, claim, lease, fencing, deadline y resultado.
+4. Catálogo común de veinte métricas con tipo, unidad y semántica.
+5. Convención de nombres y política de cardinalidad.
+6. Contrato de logs estructurados y trazas distribuidas.
+7. Catálogo cerrado de dieciséis clases de auditoría.
+8. Catálogo cerrado de diez clases de alerta, cuatro severidades y cinco estados.
+9. Matriz materializada para `TSVC-SVC-001..010`.
+10. Perfil explícito de observabilidad para cada uno de los diez servicios.
+11. Contrato de health y heartbeat para workers.
+12. Política de fallo del propio pipeline de observabilidad.
+13. Política de seguridad, privacidad, redacción y acceso.
+14. Reconciliación de siete activos o patrones actuales sin afirmar cumplimiento objetivo.
+15. Aplicación específica al carril `NEXO-REMISSIONS-001`.
+16. Handoff cerrado a `TSVC-CAT-008..010`.
+
+---
+
+#### 5. Requisitos de prueba
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa la dimensión de observabilidad, métricas, alertas y auditoría de los diez servicios ya gobernados. No crea un comportamiento empresarial nuevo ni modifica contratos funcionales, de integración, autorización, concurrencia o continuidad vigentes. Las invariantes están cubiertas por requisitos canónicos existentes sobre perfiles de auditoría, eventos no destructivos, correlación, trazabilidad, métricas, capacidad, backlog, reintentos, resultado desconocido, idempotencia, deduplicación, salud, privacidad y reconstrucción end-to-end, incluidos `TREQ-PROC-095` a `TREQ-PROC-110`, `TREQ-PROC-251` a `TREQ-PROC-269`, `TREQ-PROC-271` a `TREQ-PROC-294`, `TREQ-PROC-355` a `TREQ-PROC-368`, `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-019` y `TREQ-INTEGRATION-023`.
+
+La tarea genera:
+
+```text
+CREADOS = 0
+MODIFICADOS = 0
+DIFERIDOS = 0
+DESCARTADOS_U_OBSOLETOS = 0
+```
+
+Por tanto, no corresponde generar una nueva copia del registro `04A`.
+
+---
+
+#### 6. Criterios de aceptación
+
+1. `TSVC-CAT-006` figura aprobada y conserva diez servicios, seis perfiles de reintento, ocho resultados de deduplicación y catorce clases de error.
+2. Las diez identidades `TSVC-SVC-001..010` aparecen exactamente una vez en el registro principal.
+3. Se materializan siete clases de señal sin mezclar resultado empresarial, métrica, log, traza, auditoría, alerta y health.
+4. Toda señal puede correlacionarse con servicio, contrato, operación, intento, aplicación y resultado propietario.
+5. El sobre incorpora idempotencia, retry, deduplicación, claim, lease, fencing, deadline y error sin exponer secretos.
+6. Se definen veinte métricas comunes con tipo, unidad y semántica explícitos.
+7. Reintentos no se cuentan como nuevas operaciones.
+8. Finalización técnica no se presenta como resultado empresarial.
+9. Se definen cardinalidad, dimensiones permitidas y prohibiciones de etiquetas libres.
+10. Logs y trazas aplican estructura, correlación, redacción y minimización.
+11. Se materializan dieciséis clases de auditoría no destructiva.
+12. Intervenciones manuales, cambios de configuración y estados de alerta son auditables.
+13. Se materializan diez clases de alerta, cuatro severidades y cinco estados.
+14. No se inventan umbrales numéricos sin baseline, SLO y capacidad aprobados.
+15. Cada alerta conserva owner, fuente, ambiente, ventana, severidad y condición de cierre.
+16. El pipeline de observabilidad se trata como dependencia falible y observable.
+17. Los ocho estados de salud distinguen startup, readiness, actividad, degradación, drenaje, stale, stop y desconocido.
+18. `UNKNOWN` no se interpreta como salud ni detención confirmada.
+19. La matriz cubre los diez servicios sin faltantes ni duplicados.
+20. Los activos actuales se clasifican como locales, parciales, específicos o faltantes, no como cumplimiento objetivo.
+21. El carril NEXO conserva separación entre señales técnicas, evidencia, impresión, remisión y resultado empresarial.
+22. Datos personales, documentos, payloads, credenciales y secretos no se incorporan a telemetría abierta.
+23. Se declaran cero cambios `TREQ-*` con justificación concreta.
+24. No se modifican código, configuración, dashboards, alertas, Supabase, migraciones, funciones, workers, colas, datos ni despliegues.
+25. La continuidad reserva exclusivamente `TSVC-CAT-008`.
+
+---
+
+#### 7. Dependencias y entradas
+
+##### 7.1. Fuentes canónicas
+
+- `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+- `docs/plan-canonico/modular/delivery-contract.json`;
+- `docs/plan-canonico/modular/active-sequence.json`;
+- `docs/plan-canonico/modular/execution-route.json`;
+- `docs/plan-canonico/modular/priority-route-progress.json`;
+- `docs/plan-canonico/modular/continuity-route.json`;
+- `docs/plan-canonico/modular/priority-delivery-lanes.json`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md`;
+- versión canónica vigente de `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`;
+- `package.json` y `scripts/docs/validate-task-delivery.mjs`.
+
+##### 7.2. Tareas y decisiones heredadas
+
+- `TSVC-CAT-001` — diez identidades y clasificación actual;
+- `TSVC-CAT-002` — owner técnico y gobierno;
+- `TSVC-CAT-003` — productoras, consumidoras y aplicabilidad;
+- `TSVC-CAT-004` — contratos, versión y compatibilidad;
+- `TSVC-CAT-005` — identidades técnicas y credenciales mínimas;
+- `TSVC-CAT-006` — idempotencia, reintentos y deduplicación;
+- `PROC-CAT-017` — eventos empresariales, correlación, causalidad y outbox;
+- `PROC-CAT-018` — auditoría por proceso;
+- `PROC-CAT-019` — KPI, drivers, guardrails y semántica de métricas;
+- `NFR-REQ-002` — volumen, concurrencia, backlog y capacidad;
+- `NFR-REQ-003` — tiempos, percentiles, deadlines y resultado desconocido;
+- `NFR-REQ-004` — operación offline, reconexión e idempotencia;
+- `NFR-REQ-006` — trazabilidad, auditoría, retención y reconstrucción;
+- carril prioritario `NEXO-REMISSIONS-001`.
+
+##### 7.3. Activos técnicos observados
+
+- `supabase/functions/register-push-token/index.ts`;
+- `supabase/functions/payments-webhook/index.ts`;
+- adaptador de RevenueCat inventariado en `TSVC-CAT-001`;
+- flujo documental de ANIMA inventariado en `TSVC-CAT-001`;
+- cola local y activos de impresión NEXO inventariados en `TSVC-CAT-001`;
+- patrones de identidad y credenciales reconciliados en `TSVC-CAT-005`;
+- patrones de idempotencia y webhook reconciliados en `TSVC-CAT-006`.
+
+Ninguna decisión aprobada por estas fuentes se modifica.
+
+---
+
+#### 8. Declaraciones expresamente no realizadas
+
+Esta tarea no declara:
+
+- SDK de observabilidad instalado;
+- OpenTelemetry, Sentry, Prometheus u otro proveedor seleccionado;
+- métricas exportadas;
+- logs centralizados;
+- trazas distribuidas activas;
+- dashboard disponible;
+- alerta configurada;
+- canal de guardia activo;
+- on-call operativo;
+- heartbeat desplegado;
+- worker monitoreado en producción;
+- retención aplicada;
+- auditoría física completa;
+- migración ejecutada;
+- política RLS aplicada;
+- validación remota, operativa o de dispositivo.
+
+Todas esas afirmaciones requieren implementación y evidencia de las tareas y paquetes propietarios.
+
+---
+
+#### 9. Continuidad canónica del bloque
+
+```text
+ÚLTIMA TAREA APROBADA
+TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
+        ↓
+TAREA ACTUAL APROBADA
+TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría
+        ↓
+SIGUIENTE TAREA RESERVADA
+TSVC-CAT-008 — Definir contingencia y degradación controlada
+```
+
+
 ### [ ] TSVC-CAT-008 — Definir contingencia y degradación controlada
 ### [ ] TSVC-CAT-009 — Definir retención, archivado y limpieza
 ### [ ] TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy

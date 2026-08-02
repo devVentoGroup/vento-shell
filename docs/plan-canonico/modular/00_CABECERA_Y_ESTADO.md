@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **499** |
+| Tareas aprobadas | **500** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1095** |
+| Tareas no iniciadas | **1094** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **31.30% (499/1594)** |
+| Porcentaje de completamiento | **31.37% (500/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación** |
-| Tarea actual | **TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría** |
+| Última tarea aprobada | **TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría** |
+| Tarea actual | **TSVC-CAT-008 — Definir contingencia y degradación controlada** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TSVC-CAT-008 — Definir contingencia y degradación controlada** |
+| Siguiente tarea | **TSVC-CAT-009 — Definir retención, archivado y limpieza** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 7: TRANSVERSE_SERVICE_CATALOG** |
-| Progreso del bloque | **CARRIL NEXO: 6 de 10 aprobadas; TSVC-CAT-007 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 7 de 10 aprobadas; TSVC-CAT-008 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TSVC-CAT-006` — Definir idempotencia, reintentos y deduplicación |
-| Tarea actual | `TSVC-CAT-007` — Definir observabilidad, métricas, alertas y auditoría — **NO INICIADA** |
-| Siguiente tarea | `TSVC-CAT-008` — Definir contingencia y degradación controlada |
+| Última aprobada | `TSVC-CAT-007` — Definir observabilidad, métricas, alertas y auditoría |
+| Tarea actual | `TSVC-CAT-008` — Definir contingencia y degradación controlada — **NO INICIADA** |
+| Siguiente tarea | `TSVC-CAT-009` — Definir retención, archivado y limpieza |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 6 DE 10 APROBADAS — ACTUAL TSVC-CAT-007** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 7 DE 10 APROBADAS — ACTUAL TSVC-CAT-008** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
-        ↓
-TAREA ACTUAL
 TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 TSVC-CAT-008 — Definir contingencia y degradación controlada
         ↓
+SIGUIENTE TAREA RESERVADA
+TSVC-CAT-009 — Definir retención, archivado y limpieza
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 6 de 10 tareas aprobadas
+CARRIL NEXO — 7 de 10 tareas aprobadas
 ```
