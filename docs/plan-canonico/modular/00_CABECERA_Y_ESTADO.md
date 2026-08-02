@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **489** |
+| Tareas aprobadas | **490** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1105** |
+| Tareas no iniciadas | **1104** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **30.68% (489/1594)** |
+| Porcentaje de completamiento | **30.74% (490/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **SHELL-PKG-004 — Definir política de compatibilidad** |
-| Tarea actual | **SHELL-PKG-005 — Definir política de deprecación** |
+| Última tarea aprobada | **SHELL-PKG-005 — Definir política de deprecación** |
+| Tarea actual | **SHELL-PKG-006 — Definir rollback por aplicación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **SHELL-PKG-006 — Definir rollback por aplicación** |
+| Siguiente tarea | **SHELL-PKG-007 — Definir actualizaciones mediante PR** |
 | Bloque actual | **BLOQUE H — Fundación compartida** |
-| Progreso del bloque | **BLOQUE H: 4 de 8 aprobadas; SHELL-PKG-005 pendiente** |
+| Progreso del bloque | **BLOQUE H: 5 de 8 aprobadas; SHELL-PKG-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `SHELL-PKG-004` — Definir política de compatibilidad |
-| Tarea actual | `SHELL-PKG-005` — Definir política de deprecación — **NO INICIADA** |
-| Siguiente tarea | `SHELL-PKG-006` — Definir rollback por aplicación |
+| Última aprobada | `SHELL-PKG-005` — Definir política de deprecación |
+| Tarea actual | `SHELL-PKG-006` — Definir rollback por aplicación — **NO INICIADA** |
+| Siguiente tarea | `SHELL-PKG-007` — Definir actualizaciones mediante PR |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| BLOQUE H | **4 DE 8 APROBADAS — ACTUAL SHELL-PKG-005** |
+| BLOQUE H | **5 DE 8 APROBADAS — ACTUAL SHELL-PKG-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-SHELL-PKG-004 — Definir política de compatibilidad
-        ↓
-TAREA ACTUAL
 SHELL-PKG-005 — Definir política de deprecación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 SHELL-PKG-006 — Definir rollback por aplicación
         ↓
+SIGUIENTE TAREA RESERVADA
+SHELL-PKG-007 — Definir actualizaciones mediante PR
+        ↓
 CONTINUIDAD DEL BLOQUE
-BLOQUE H — 4 de 8 tareas aprobadas
+BLOQUE H — 5 de 8 tareas aprobadas
 ```
