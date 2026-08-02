@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **503** |
+| Aprobadas | **504** |
 | En propuesta | **0** |
-| No iniciadas | **1091** |
+| No iniciadas | **1090** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **31.56% (503/1594)** |
+| Porcentaje de completamiento | **31.62% (504/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TSVC-CAT-010` — Definir adopción progresiva y retiro de soluciones legacy | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-030` — Asignar permiso de lectura a cada vista | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-UI-031` — Asignar permiso exacto a cada acción | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-030` — Asignar permiso de lectura a cada vista | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-031` — Asignar permiso exacto a cada acción | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-UI-032` — Definir si requiere turno | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -836,7 +836,7 @@
 | ✅ APROBADA | `AUTH-UI-027` | Identificar vistas legacy | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
 | ✅ APROBADA | `AUTH-UI-028` | Identificar vistas candidatas a retiro | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
 | ✅ APROBADA | `AUTH-UI-029` | Identificar vistas técnicas que no deben ser permisos | `bloques/I_NAVEGACION_Y_PANTALLAS/04_DEPURACION_DE_VISTAS_Y_RUTAS_TECNICAS.md` |
-| ⬜ NO INICIADA | `AUTH-UI-030` | Asignar permiso de lectura a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
+| ✅ APROBADA | `AUTH-UI-030` | Asignar permiso de lectura a cada vista | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-031` | Asignar permiso exacto a cada acción | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-032` | Definir si requiere turno | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-033` | Definir si requiere check-in | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
