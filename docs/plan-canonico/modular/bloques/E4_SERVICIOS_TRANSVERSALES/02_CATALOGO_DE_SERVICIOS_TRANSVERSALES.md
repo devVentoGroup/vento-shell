@@ -1038,7 +1038,480 @@ TSVC-CAT-004 — Definir contrato, versión y compatibilidad
 ```
 
 
-### [ ] TSVC-CAT-004 — Definir contrato, versión y compatibilidad
+### ✅ TSVC-CAT-004 — Definir contrato, versión y compatibilidad
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras`
+
+**Tarea siguiente:** `TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas`
+
+**Tipo de tarea:** definición documental canónica de contratos, versionado y compatibilidad de servicios transversales
+
+**Fase:** definición documental vinculante; implementación física no autorizada
+
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+
+**Fecha de corte:** `2026-08-02`
+
+**Cambios en código, migraciones, funciones, workers, colas, despliegues, datos o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado material
+
+Esta tarea materializa el registro canónico:
+
+```text
+TRANSVERSE-SERVICE-CONTRACT-REGISTRY-001@1.0.0
+```
+
+El registro define, para cada una de las diez identidades `TSVC-SVC-001..010`:
+
+1. una identidad contractual estable;
+2. una versión inicial explícita;
+3. la unidad de operación intercambiada;
+4. el contrato mínimo de solicitud, resultado y error;
+5. la relación con la aplicación productora, la aplicación propietaria del resultado y las consumidoras autorizadas;
+6. las reglas de compatibilidad directa, adaptación, incompatibilidad, deprecación y retiro;
+7. las condiciones que obligan a incrementar versión mayor, menor o de parche;
+8. la obligación de conservar la versión de origen durante traducciones y coexistencia;
+9. la situación documental vigente del contrato sin afirmar implementación, despliegue ni validación operativa.
+
+El resultado convierte la matriz de aplicaciones de `TSVC-CAT-003` en intercambios contractuales gobernados, sin modificar sus cien decisiones aplicación–servicio ni transferir propiedad empresarial al servicio transversal.
+
+---
+
+#### 2. Alcance
+
+La tarea abarca exactamente estas diez identidades:
+
+1. `TSVC-SVC-001` — Orquestación genérica de trabajos asíncronos.
+2. `TSVC-SVC-002` — Entrega transaccional de eventos y outbox.
+3. `TSVC-SVC-003` — Impresión centralizada.
+4. `TSVC-SVC-004` — Notificaciones y alertas.
+5. `TSVC-SVC-005` — Generación de documentos.
+6. `TSVC-SVC-006` — Custodia de archivos y documentos originales.
+7. `TSVC-SVC-007` — Evidencia transaccional.
+8. `TSVC-SVC-008` — Integraciones externas y webhooks.
+9. `TSVC-SVC-009` — Programación y automatizaciones recurrentes.
+10. `TSVC-SVC-010` — Monitoreo y heartbeat de workers.
+
+La tarea conserva:
+
+- el propietario técnico institucional definido en `TSVC-CAT-002`;
+- el repositorio canónico `vento-shell`;
+- las diez aplicaciones canónicas;
+- las diez decisiones productoras;
+- las cien celdas aplicación–servicio de `TSVC-CAT-003`;
+- la separación entre aplicación productora, propietaria del resultado, consumidora y servicio técnico;
+- las reglas canónicas de eventos, correlación, causalidad, propiedad y consumo ya aprobadas.
+
+Quedan fuera del alcance:
+
+- definir identidad de ejecución, cuentas técnicas, credenciales, secretos o rotación, responsabilidad de `TSVC-CAT-005`;
+- definir idempotencia, reintentos, backoff y deduplicación, responsabilidad de `TSVC-CAT-006`;
+- definir métricas, alertas, trazas y auditoría operativa, responsabilidad de `TSVC-CAT-007`;
+- definir contingencia y degradación controlada, responsabilidad de `TSVC-CAT-008`;
+- definir retención, archivado y limpieza, responsabilidad de `TSVC-CAT-009`;
+- definir adopción progresiva y retiro de soluciones legacy, responsabilidad de `TSVC-CAT-010`;
+- crear tablas, colas, funciones, workers, endpoints, paquetes, migraciones o despliegues;
+- declarar contratos implementados, publicados, probados o disponibles sin evidencia física.
+
+---
+
+#### 3. Decisiones aprobadas
+
+##### 3.1. Identidad del registro
+
+| Campo                    | Valor                                      |
+| ------------------------ | ------------------------------------------ |
+| `registry_id`            | `TRANSVERSE-SERVICE-CONTRACT-REGISTRY-001` |
+| `registry_version`       | `1.0.0`                                    |
+| `registry_status`        | `DEFINED`                                  |
+| `covered_services`       | `10`                                       |
+| `contract_identity_rule` | `<service_id>.CONTRACT`                    |
+| `versioning_model`       | `SEMANTIC_VERSIONING_STRICT`               |
+| `governing_task`         | `TSVC-CAT-004`                             |
+| `technical_owner`        | Tecnología de Vento Group                  |
+| `canonical_repository`   | `vento-shell`                              |
+
+`DEFINED` significa que el contrato documental está completo y aprobado. No significa que exista implementación física, publicación, despliegue, adopción o evidencia operativa.
+
+##### 3.2. Unidad contractual
+
+Cada intercambio con un servicio transversal deberá resolver una unidad contractual completa:
+
+```text
+APLICACIÓN PRODUCTORA
+        ↓
+SOLICITUD VERSIONADA
+        ↓
+SERVICIO TRANSVERSAL
+        ↓
+RESULTADO O ERROR VERSIONADO
+        ↓
+APLICACIÓN PROPIETARIA DEL RESULTADO
++ CONSUMIDORAS AUTORIZADAS
+```
+
+El contrato técnico no reemplaza:
+
+- el proceso empresarial;
+- la autorización de la acción originadora;
+- la fuente de verdad del dominio;
+- la semántica del evento o documento;
+- la decisión de compensación empresarial;
+- la responsabilidad de la aplicación propietaria.
+
+##### 3.3. Campos mínimos comunes
+
+Toda materialización futura de los contratos deberá soportar, cuando aplique:
+
+```text
+service_id
+contract_id
+contract_version
+operation_id
+operation_type
+producer_application
+business_owner_application
+consumer_application
+request_id
+correlation_id
+causation_id
+source_reference
+request_schema_ref
+result_schema_ref
+error_schema_ref
+created_at
+expires_at
+contract_status
+```
+
+Reglas:
+
+1. `service_id` conserva la identidad `TSVC-SVC-*`.
+2. `contract_id` es estable y no cambia por tecnología, repositorio, proveedor o transporte.
+3. `contract_version` identifica la semántica exacta del intercambio.
+4. `operation_id` identifica una operación concreta y no se reutiliza.
+5. `producer_application` debe pertenecer a la matriz aprobada en `TSVC-CAT-003`.
+6. `business_owner_application` conserva la autoridad sobre el resultado empresarial.
+7. `consumer_application` deberá estar declarada para el servicio o habilitada por una variante contractual aprobada.
+8. las referencias de esquema apuntarán a definiciones versionadas; no se aceptarán payloads libres sin identidad contractual.
+9. `correlation_id` y `causation_id` conservarán continuidad entre solicitud, efectos y resultado.
+10. los campos de identidad técnica, seguridad, idempotencia, telemetría, retención y contingencia se incorporarán mediante las tareas propietarias posteriores sin alterar silenciosamente este contrato base.
+
+##### 3.4. Registro canónico de contratos por servicio
+
+| Servicio       | `contract_id`           | Versión inicial | Solicitud o entrada canónica  | Resultado canónico            | Error canónico              | Productora autorizada                                                                        | Frontera incompatible principal                                                                                                  | Estado    |
+| -------------- | ----------------------- | --------------- | ----------------------------- | ----------------------------- | --------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | --------- |
+| `TSVC-SVC-001` | `TSVC-SVC-001.CONTRACT` | `1.0.0`         | `WORK_SUBMISSION`             | `WORK_OUTCOME`                | `WORK_ERROR`                | Aplicación que solicita un resultado asíncrono y figura como productora en `TSVC-CAT-003`    | Cambiar estados terminales, semántica de ejecución, autoridad del resultado o garantía de aceptación                             | `DEFINED` |
+| `TSVC-SVC-002` | `TSVC-SVC-002.CONTRACT` | `1.0.0`         | `OUTBOX_EVENT_RECORD`         | `DELIVERY_OUTCOME`            | `DELIVERY_ERROR`            | Aplicación propietaria de la transacción y del evento empresarial                            | Cambiar atomicidad, identidad del evento, versión empresarial, garantía de entrega o significado del resultado                   | `DEFINED` |
+| `TSVC-SVC-003` | `TSVC-SVC-003.CONTRACT` | `1.0.0`         | `PRINT_REQUEST`               | `PRINT_OUTCOME`               | `PRINT_ERROR`               | Aplicación propietaria del documento, etiqueta, comanda o comprobante                        | Cambiar campos obligatorios de plantilla, routing contractual, identidad del documento o significado de impresión confirmada     | `DEFINED` |
+| `TSVC-SVC-004` | `TSVC-SVC-004.CONTRACT` | `1.0.0`         | `NOTIFICATION_REQUEST`        | `NOTIFICATION_OUTCOME`        | `NOTIFICATION_ERROR`        | Aplicación propietaria del evento o condición que origina la comunicación                    | Cambiar resolución de destinatarios, prioridad obligatoria, semántica de entrega o contenido empresarial                         | `DEFINED` |
+| `TSVC-SVC-005` | `TSVC-SVC-005.CONTRACT` | `1.0.0`         | `DOCUMENT_GENERATION_REQUEST` | `GENERATED_DOCUMENT_RESULT`   | `DOCUMENT_GENERATION_ERROR` | Aplicación propietaria del tipo documental y de la plantilla aprobada                        | Cambiar significado del documento, campos autoritativos, formato comprometido, identidad de plantilla o integridad del resultado | `DEFINED` |
+| `TSVC-SVC-006` | `TSVC-SVC-006.CONTRACT` | `1.0.0`         | `FILE_INGEST_REQUEST`         | `FILE_RECORD_RESULT`          | `FILE_INGEST_ERROR`         | Aplicación propietaria del proceso que recibe o exige el original                            | Cambiar identidad del original, integridad, vínculo con recurso, clasificación o semántica de sustitución                        | `DEFINED` |
+| `TSVC-SVC-007` | `TSVC-SVC-007.CONTRACT` | `1.0.0`         | `EVIDENCE_CAPTURE_REQUEST`    | `EVIDENCE_RECORD_RESULT`      | `EVIDENCE_CAPTURE_ERROR`    | Aplicación propietaria de la acción o hecho que debe demostrarse                             | Cambiar inmutabilidad, lineage, vínculo causal, fuerza probatoria técnica o relación con acción y recurso                        | `DEFINED` |
+| `TSVC-SVC-008` | `TSVC-SVC-008.CONTRACT` | `1.0.0`         | `INTEGRATION_MESSAGE`         | `INTEGRATION_DELIVERY_RESULT` | `INTEGRATION_ERROR`         | Aplicación o dominio propietario del proceso integrado                                       | Cambiar dirección, identidad externa, mapping empresarial, validación de origen, ACK o semántica de confirmación                 | `DEFINED` |
+| `TSVC-SVC-009` | `TSVC-SVC-009.CONTRACT` | `1.0.0`         | `SCHEDULE_DEFINITION`         | `SCHEDULED_EXECUTION_RESULT`  | `SCHEDULE_ERROR`            | Aplicación propietaria de la acción programada                                               | Cambiar calendario, zona horaria, vigencia, misfire, concurrencia contractual o autoridad de activación                          | `DEFINED` |
+| `TSVC-SVC-010` | `TSVC-SVC-010.CONTRACT` | `1.0.0`         | `WORKER_HEALTH_SIGNAL`        | `WORKER_HEALTH_STATE`         | `WORKER_HEALTH_ERROR`       | Servicio o worker observado; la aplicación empresarial solo referencia el resultado afectado | Cambiar identidad del worker, significado de liveness/readiness, estado de salud o interpretación de obsolescencia               | `DEFINED` |
+
+##### 3.5. Regla de versión semántica
+
+Toda versión utiliza:
+
+```text
+MAJOR.MINOR.PATCH
+```
+
+| Cambio                  | Incremento | Regla                                                                                                                    |
+| ----------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------ |
+| incompatible            | `MAJOR`    | modifica significado, obligatoriedad, tipo, identidad, estado, error, autoridad, garantía o comportamiento observable    |
+| aditivo compatible      | `MINOR`    | agrega campos opcionales, operaciones opcionales o capacidades que consumidores compatibles pueden ignorar con seguridad |
+| corrección no semántica | `PATCH`    | corrige documentación, validación o defecto sin cambiar el contrato observable ni exigir modificación del consumidor     |
+
+Reglas obligatorias:
+
+1. una versión publicada es inmutable;
+2. no se reescribe `1.0.0` para incorporar un cambio posterior;
+3. un cambio incompatible crea una nueva versión mayor;
+4. una versión menor no puede cambiar el significado de un campo existente;
+5. una versión de parche no puede cambiar estructura, resultado, error ni comportamiento esperado;
+6. el `contract_id` permanece estable entre versiones del mismo servicio;
+7. la versión deberá viajar en cada solicitud, resultado y error;
+8. ninguna aplicación podrá asumir la versión más reciente por ausencia del campo;
+9. los productores y consumidores deberán declarar versiones soportadas antes de la implementación;
+10. una traducción conservará la versión de origen, la versión de destino y la identidad del adaptador aplicado.
+
+##### 3.6. Cambios que obligan a versión mayor
+
+Constituyen ruptura contractual, como mínimo:
+
+- cambiar un campo requerido a otro nombre;
+- eliminar un campo requerido u opcional previamente consumible;
+- convertir un campo opcional en obligatorio;
+- cambiar tipo, unidad, formato, cardinalidad o zona horaria;
+- cambiar el significado de un valor, estado, error o resultado;
+- cambiar identidad, ownership o fuente de verdad;
+- cambiar una garantía de entrega, aceptación, confirmación o atomicidad;
+- cambiar la forma de correlacionar solicitud, efecto y resultado;
+- introducir un valor nuevo en un enum cuando los consumidores no estén obligados a tolerar valores desconocidos;
+- cambiar un valor predeterminado cuando altera el resultado empresarial o técnico observable;
+- exigir una identidad o credencial incompatible con consumidores existentes;
+- cambiar la semántica de expiración, cancelación, sustitución, repetición o retiro;
+- reinterpretar un error recuperable como terminal o viceversa.
+
+##### 3.7. Cambios compatibles
+
+Un cambio podrá clasificarse como compatible únicamente cuando se demuestre que:
+
+1. conserva el mismo significado de todos los campos existentes;
+2. no cambia las reglas empresariales ni la autoridad del resultado;
+3. no exige que una productora o consumidora existente envíe información adicional;
+4. no elimina ni restringe un resultado previamente válido;
+5. los campos nuevos son opcionales y tienen ausencia semánticamente segura;
+6. los consumidores pueden ignorar extensiones desconocidas sin perder integridad;
+7. no cambia la exposición de información sensible;
+8. no modifica garantías de entrega, orden, confirmación o error;
+9. las pruebas de contrato de productores y consumidores continúan aprobando;
+10. la matriz de `TSVC-CAT-003` permanece válida.
+
+##### 3.8. Estados de compatibilidad
+
+| Estado                    | Significado                                                                            |
+| ------------------------- | -------------------------------------------------------------------------------------- |
+| `COMPATIBLE_DIRECT`       | productora y consumidora comparten una versión admitida sin traducción                 |
+| `COMPATIBLE_WITH_ADAPTER` | existe un adaptador versionado, probado y aprobado que traduce sin pérdida semántica   |
+| `DEPRECATED_SUPPORTED`    | la versión está deprecada, pero permanece soportada durante una ventana explícita      |
+| `INCOMPATIBLE`            | no existe intersección de versiones ni adaptación válida                               |
+| `UNSUPPORTED`             | la versión no está publicada, fue retirada o nunca estuvo autorizada para esa relación |
+
+No se admiten estados ambiguos como compatible parcialmente, probablemente compatible o compatible con observaciones sin una clasificación cerrada y evidencia contractual.
+
+##### 3.9. Negociación y selección de versión
+
+La selección futura deberá aplicar este orden:
+
+```text
+VERSIONES SOPORTADAS POR PRODUCTORA
+∩
+VERSIONES SOPORTADAS POR SERVICIO
+∩
+VERSIONES SOPORTADAS POR CONSUMIDORA
+        ↓
+MAYOR VERSIÓN COMPATIBLE APROBADA
+```
+
+Reglas:
+
+1. la intersección se resuelve antes de aceptar la operación;
+2. no se ejecuta una solicitud con versión desconocida;
+3. no se actualiza automáticamente entre versiones mayores;
+4. una consumidora no podrá aceptar una versión que no haya declarado y probado;
+5. una productora no enviará campos o comportamientos pertenecientes a otra versión;
+6. si no existe intersección válida, la operación se rechaza como `INCOMPATIBLE` o `UNSUPPORTED`;
+7. el rechazo contractual ocurre antes de producir efectos empresariales;
+8. la negociación no concede autorización ni sustituye las credenciales definidas por `TSVC-CAT-005`.
+
+##### 3.10. Adaptadores de compatibilidad
+
+Un adaptador solo podrá utilizarse cuando declare:
+
+```text
+adapter_id
+source_contract_id
+source_version
+target_contract_id
+target_version
+mapping_version
+loss_policy
+owner
+status
+```
+
+Reglas:
+
+1. la traducción debe ser determinista;
+2. la versión de origen no se sobrescribe;
+3. no se inventan campos autoritativos ausentes;
+4. toda pérdida deberá bloquear la operación, salvo que el campo sea opcional y su ausencia esté admitida por ambos contratos;
+5. un adaptador no cambia propiedad empresarial;
+6. un adaptador específico de proveedor no se convierte en contrato canónico;
+7. las versiones mayores coexistentes permanecen separadas hasta completar una transición aprobada;
+8. la adopción y retiro del adaptador se gobiernan en `TSVC-CAT-010`.
+
+##### 3.11. Deprecación, coexistencia y retiro
+
+Una versión podrá pasar por:
+
+```text
+DEFINED
+IMPLEMENTED
+DEPRECATED
+RETIRED
+```
+
+Reglas:
+
+1. esta tarea deja las diez versiones en `DEFINED`;
+2. `IMPLEMENTED` exige código, publicación y pruebas verificables;
+3. `DEPRECATED` exige versión sucesora, inventario de consumidores, ventana y plan de migración;
+4. `RETIRED` exige cero productores y consumidores activos, evidencia de migración y rollback cerrado;
+5. la deprecación no modifica el contrato publicado;
+6. podrán coexistir versiones mayores durante una transición explícita;
+7. no se retira una versión por fecha únicamente si persisten consumidores;
+8. los detalles de adopción y retiro legacy corresponden a `TSVC-CAT-010`.
+
+##### 3.12. Relación con aplicaciones productoras y consumidoras
+
+1. Las cien decisiones aplicación–servicio de `TSVC-CAT-003` permanecen vigentes.
+2. Una celda `NO_APLICA` no puede producir ni consumir el contrato.
+3. Una celda `CONSUMIDORA` solo puede recibir solicitudes, resultados o proyecciones admitidas por su finalidad.
+4. Una celda `PRODUCTORA_CONSUMIDORA` puede originar operaciones y consumir resultados sin adquirir propiedad del servicio.
+5. La aplicación productora deberá declarar la aplicación propietaria del resultado cuando no coincidan.
+6. El servicio no podrá aceptar códigos de aplicación fuera del catálogo canónico.
+7. Proveedores, dispositivos, repositorios, tablas y plataformas no sustituyen códigos de aplicación.
+8. Los sistemas externos participan mediante `TSVC-SVC-008` y adaptadores, no como aplicaciones VENTO.
+9. La identidad `shell` representa la aplicación hub; `vento-shell` representa el repositorio técnico.
+10. Una aplicación diferida puede conservar contrato objetivo, pero no se presenta como implementada o disponible.
+
+##### 3.13. Aplicación al carril prioritario NEXO
+
+| Servicio       | Decisión NEXO | Contrato exigido                                                           | Estado actual             |
+| -------------- | ------------- | -------------------------------------------------------------------------- | ------------------------- |
+| `TSVC-SVC-001` | `APLICA`      | `TSVC-SVC-001.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-002` | `APLICA`      | `TSVC-SVC-002.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-003` | `APLICA`      | `TSVC-SVC-003.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-004` | `APLICA`      | `TSVC-SVC-004.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-005` | `APLICA`      | `TSVC-SVC-005.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-006` | `APLICA`      | `TSVC-SVC-006.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-007` | `APLICA`      | `TSVC-SVC-007.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-008` | `CONDICIONAL` | `TSVC-SVC-008.CONTRACT@1.0.0` cuando exista integración externa en alcance | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-009` | `APLICA`      | `TSVC-SVC-009.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-010` | `APLICA`      | `TSVC-SVC-010.CONTRACT@1.0.0`                                              | `DEFINED_NOT_IMPLEMENTED` |
+
+La existencia del contrato documental no habilita el paquete NEXO. La implementación, pruebas, readiness y adopción permanecen sujetas a las etapas y condiciones del carril prioritario.
+
+##### 3.14. Reconciliación cuantitativa
+
+| Control                                | Resultado |
+| -------------------------------------- | --------: |
+| Servicios esperados                    |        10 |
+| Contratos materializados               |        10 |
+| Identificadores contractuales únicos   |        10 |
+| Versiones iniciales declaradas         |        10 |
+| Servicios faltantes                    |         0 |
+| Contratos duplicados                   |         0 |
+| Contratos en estado `DEFINED`          |        10 |
+| Contratos afirmados como implementados |         0 |
+| Decisiones NEXO reconciliadas          |        10 |
+
+##### 3.15. Handoff obligatorio
+
+| Tarea posterior | Insumo recibido de `TSVC-CAT-004`                                                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
+| `TSVC-CAT-005`  | Los diez contratos y sus campos mínimos para definir identidad técnica, cuentas, credenciales y secretos sin alterar identidad ni versión. |
+| `TSVC-CAT-006`  | Las operaciones, resultados y errores versionados para definir idempotencia, reintentos, backoff y deduplicación por contrato.             |
+| `TSVC-CAT-007`  | Las identidades contractuales y estados para asociar métricas, trazas, alertas y auditoría sin mezclar versiones.                          |
+| `TSVC-CAT-008`  | Los resultados y errores canónicos para definir degradación, contingencia y recuperación por servicio.                                     |
+| `TSVC-CAT-009`  | Las identidades de solicitud, resultado y evidencia para definir retención, archivado y limpieza.                                          |
+| `TSVC-CAT-010`  | Las versiones, estados de compatibilidad y coexistencia para gobernar adopción y retiro legacy.                                            |
+
+---
+
+#### 4. Artefactos y entregables
+
+1. `TRANSVERSE-SERVICE-CONTRACT-REGISTRY-001@1.0.0`.
+2. Diez identidades contractuales estables derivadas de `TSVC-SVC-001..010`.
+3. Diez versiones iniciales `1.0.0` en estado `DEFINED`.
+4. Matriz materializada de solicitud, resultado, error, productora y frontera incompatible por servicio.
+5. Reglas completas de versionado semántico estricto.
+6. Vocabulario cerrado de compatibilidad.
+7. Reglas de negociación, adaptación, deprecación, coexistencia y retiro.
+8. Reconciliación específica del carril NEXO para los diez servicios.
+9. Handoff hacia `TSVC-CAT-005..010` sin anticipar sus decisiones propietarias.
+
+---
+
+#### 5. Requisitos de prueba
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+Justificación:
+
+- `TSVC-CAT-004` materializa contratos documentales para identidades, propietarias y consumidoras ya protegidas por `TREQ-PROC-018` a `TREQ-PROC-027`;
+- la identidad, versión, correlación, causalidad y compatibilidad de eventos ya están protegidas por `TREQ-PROC-087` a `TREQ-PROC-094`, `TREQ-INTEGRATION-003` a `TREQ-INTEGRATION-004` y `TREQ-INTEGRATION-024` a `TREQ-INTEGRATION-053`;
+- la tarea no introduce una nueva capacidad empresarial, criterio de implementación o evidencia operativa distinta de esas invariantes;
+- los contratos quedan en estado `DEFINED`, por lo que no se declara satisfecha ninguna prueba de implementación, integración, despliegue o dispositivo;
+- no se modifica, difiere, descarta ni vuelve obsoleto ningún requisito existente.
+
+Cambios `TREQ-*`:
+
+```text
+CREADOS = 0
+MODIFICADOS = 0
+DIFERIDOS = 0
+DESCARTADOS_U_OBSOLETOS = 0
+```
+
+---
+
+#### 6. Criterios de aceptación
+
+1. Existen exactamente diez contratos para `TSVC-SVC-001..010`.
+2. Cada contrato utiliza un `contract_id` único y una versión inicial explícita.
+3. Cada contrato declara solicitud, resultado y error canónicos.
+4. Cada servicio conserva su productora según `TSVC-CAT-003`.
+5. Ningún contrato transfiere propiedad empresarial al servicio transversal.
+6. Los cambios mayores, menores y de parche están diferenciados sin ambigüedad.
+7. Las versiones publicadas son inmutables.
+8. La compatibilidad utiliza únicamente estados cerrados.
+9. Una versión incompatible no se ejecuta ni se adapta silenciosamente.
+10. Todo adaptador conserva versión de origen, destino y mapping.
+11. La matriz de cien celdas de `TSVC-CAT-003` permanece sin cambios.
+12. Las diez decisiones NEXO quedan vinculadas a un contrato `1.0.0`.
+13. `TSVC-SVC-008` conserva aplicabilidad condicional para NEXO.
+14. Ningún contrato se presenta como implementado o validado.
+15. No se definen anticipadamente credenciales, reintentos, observabilidad, contingencia, retención o adopción legacy.
+16. No se realizan cambios de código, Supabase, migraciones, despliegues ni datos.
+17. Se declaran cero cambios `TREQ-*` con justificación concreta.
+18. `TSVC-CAT-005` permanece exclusivamente reservada.
+
+---
+
+#### 7. Dependencias y entradas
+
+La tarea consume y preserva:
+
+- `TSVC-CAT-001` — inventario de diez servicios y clasificación actual;
+- `TSVC-CAT-002` — propietario técnico institucional y gobierno;
+- `TSVC-CAT-003` — productoras, consumidoras, cien celdas y aplicabilidad NEXO;
+- catálogo canónico de aplicaciones `shell`, `anima`, `viso`, `nexo`, `fogo`, `origo`, `pulso`, `numera`, `aura` y `pass`;
+- `PROC-CAT-005` — propietarias de procesos;
+- `PROC-CAT-006` — consumidoras directas y condicionales;
+- `PROC-CAT-017` e `INT-APP-001..010` — identidad de eventos, sobre común, versión, correlación, causalidad y compatibilidad;
+- principios de propiedad de BLOQUE E4;
+- carril prioritario `NEXO-REMISSIONS-001`.
+
+Ninguna decisión aprobada por estas fuentes se modifica.
+
+---
+
+#### 8. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras
+        ↓
+TAREA ACTUAL APROBADA
+TSVC-CAT-004 — Definir contrato, versión y compatibilidad
+        ↓
+SIGUIENTE TAREA RESERVADA
+TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas
+```
+
+
 ### [ ] TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas
 ### [ ] TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
 ### [ ] TSVC-CAT-007 — Definir observabilidad, métricas, alertas y auditoría

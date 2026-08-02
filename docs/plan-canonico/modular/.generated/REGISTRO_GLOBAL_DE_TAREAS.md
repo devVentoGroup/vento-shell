@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **496** |
+| Aprobadas | **497** |
 | En propuesta | **0** |
-| No iniciadas | **1098** |
+| No iniciadas | **1097** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **31.12% (496/1594)** |
+| Porcentaje de completamiento | **31.18% (497/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TSVC-CAT-003` — Definir aplicaciones productoras y consumidoras | ✅ APROBADA |
-| Tarea actual | `TSVC-CAT-004` — Definir contrato, versión y compatibilidad | ⬜ NO INICIADA |
-| Siguiente reservada | `TSVC-CAT-005` — Definir identidad técnica y credenciales mínimas | ⬜ NO INICIADA |
+| Última aprobada | `TSVC-CAT-004` — Definir contrato, versión y compatibilidad | ✅ APROBADA |
+| Tarea actual | `TSVC-CAT-005` — Definir identidad técnica y credenciales mínimas | ⬜ NO INICIADA |
+| Siguiente reservada | `TSVC-CAT-006` — Definir idempotencia, reintentos y deduplicación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -469,7 +469,7 @@
 | ✅ APROBADA | `TSVC-CAT-001` | Inventariar servicios transversales actuales y faltantes | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ✅ APROBADA | `TSVC-CAT-002` | Definir propietario técnico y gobierno de cada servicio | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ✅ APROBADA | `TSVC-CAT-003` | Definir aplicaciones productoras y consumidoras | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
-| ⬜ NO INICIADA | `TSVC-CAT-004` | Definir contrato, versión y compatibilidad | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
+| ✅ APROBADA | `TSVC-CAT-004` | Definir contrato, versión y compatibilidad | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-005` | Definir identidad técnica y credenciales mínimas | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-006` | Definir idempotencia, reintentos y deduplicación | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |
 | ⬜ NO INICIADA | `TSVC-CAT-007` | Definir observabilidad, métricas, alertas y auditoría | `bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md` |

@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **496** |
+| Tareas aprobadas | **497** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1098** |
+| Tareas no iniciadas | **1097** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **31.12% (496/1594)** |
+| Porcentaje de completamiento | **31.18% (497/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras** |
-| Tarea actual | **TSVC-CAT-004 — Definir contrato, versión y compatibilidad** |
+| Última tarea aprobada | **TSVC-CAT-004 — Definir contrato, versión y compatibilidad** |
+| Tarea actual | **TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas** |
+| Siguiente tarea | **TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 7: TRANSVERSE_SERVICE_CATALOG** |
-| Progreso del bloque | **CARRIL NEXO: 3 de 10 aprobadas; TSVC-CAT-004 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 4 de 10 aprobadas; TSVC-CAT-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TSVC-CAT-003` — Definir aplicaciones productoras y consumidoras |
-| Tarea actual | `TSVC-CAT-004` — Definir contrato, versión y compatibilidad — **NO INICIADA** |
-| Siguiente tarea | `TSVC-CAT-005` — Definir identidad técnica y credenciales mínimas |
+| Última aprobada | `TSVC-CAT-004` — Definir contrato, versión y compatibilidad |
+| Tarea actual | `TSVC-CAT-005` — Definir identidad técnica y credenciales mínimas — **NO INICIADA** |
+| Siguiente tarea | `TSVC-CAT-006` — Definir idempotencia, reintentos y deduplicación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 3 DE 10 APROBADAS — ACTUAL TSVC-CAT-004** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 4 DE 10 APROBADAS — ACTUAL TSVC-CAT-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TSVC-CAT-003 — Definir aplicaciones productoras y consumidoras
-        ↓
-TAREA ACTUAL
 TSVC-CAT-004 — Definir contrato, versión y compatibilidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 TSVC-CAT-005 — Definir identidad técnica y credenciales mínimas
         ↓
+SIGUIENTE TAREA RESERVADA
+TSVC-CAT-006 — Definir idempotencia, reintentos y deduplicación
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 3 de 10 tareas aprobadas
+CARRIL NEXO — 4 de 10 tareas aprobadas
 ```
