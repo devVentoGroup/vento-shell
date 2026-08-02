@@ -4394,5 +4394,1043 @@ TSVC-CAT-009 — Definir retención, archivado y limpieza
 ```
 
 
-### [ ] TSVC-CAT-009 — Definir retención, archivado y limpieza
+### ✅ TSVC-CAT-009 — Definir retención, archivado y limpieza
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `TSVC-CAT-008 — Definir contingencia y degradación controlada`
+
+**Tarea siguiente:** `TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy`
+
+**Tipo de tarea:** definición documental canónica de retención, archivado, hold, disposición y limpieza para servicios transversales
+
+**Fase:** definición documental vinculante; implementación física, configuración, migración, ejecución de disposición y despliegue no autorizados
+
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+
+**Fecha de corte:** `2026-08-02`
+
+**Cambios en código, datos, Storage, migraciones, funciones, workers, colas, políticas físicas, proveedores, dispositivos, despliegues o Supabase:** no autorizados ni realizados
+
+---
+
+#### 1. Resultado material
+
+Esta tarea materializa el registro canónico:
+
+```text
+TRANSVERSE-SERVICE-RETENTION-REGISTRY-001@1.0.0
+```
+
+El registro define, para cada una de las diez identidades `TSVC-SVC-001..010`:
+
+1. las clases de retención aplicables;
+2. los materiales técnicos, empresariales y probatorios que deben gobernarse;
+3. los eventos que inician, suspenden, recalculan o cierran el ciclo de conservación;
+4. las condiciones de archivo, anonimización, eliminación, supersesión y hold;
+5. la información mínima que debe sobrevivir a la disposición para impedir replay, duplicidad, pérdida de lineage o reutilización semántica;
+6. los bloqueos que impiden limpiar una unidad con resultado desconocido, conciliación pendiente, incidente, investigación, diferencia, obligación o dependencia abierta;
+7. la relación entre fuente de verdad, archivo, backup, telemetría, buffer local, dead-letter, payload de proveedor y evidencia;
+8. el tratamiento de objetos temporales, datos locales, señales operativas y réplicas residuales;
+9. la decisión materializada de retención, archivo y limpieza para los diez servicios;
+10. el handoff hacia adopción progresiva y retiro de soluciones legacy.
+
+La regla base es:
+
+```text
+CONSERVAR LO NECESARIO
++
+MINIMIZAR LO NO NECESARIO
++
+BLOQUEAR DISPOSICIÓN INSEGURA
++
+DEMOSTRAR LA DISPOSICIÓN EJECUTADA
++
+PRESERVAR IDENTIDAD HISTÓRICA SIN RECONSTRUIR CONTENIDO RETIRADO
+```
+
+La tarea no fija plazos universales. Cada periodo futuro deberá derivarse de finalidad, sensibilidad, obligación legal o contractual, riesgo, estado empresarial, ventana de replay, necesidad de conciliación, baseline operativo, propietario y evidencia aprobada.
+
+---
+
+#### 2. Alcance
+
+La tarea abarca exactamente estas diez identidades:
+
+1. `TSVC-SVC-001` — Orquestación genérica de trabajos asíncronos.
+2. `TSVC-SVC-002` — Entrega transaccional de eventos y outbox.
+3. `TSVC-SVC-003` — Impresión centralizada.
+4. `TSVC-SVC-004` — Notificaciones y alertas.
+5. `TSVC-SVC-005` — Generación de documentos.
+6. `TSVC-SVC-006` — Custodia de archivos y documentos originales.
+7. `TSVC-SVC-007` — Evidencia transaccional.
+8. `TSVC-SVC-008` — Integraciones externas y webhooks.
+9. `TSVC-SVC-009` — Programación y automatizaciones recurrentes.
+10. `TSVC-SVC-010` — Monitoreo y heartbeat de workers.
+
+La tarea conserva sin modificación:
+
+- las diez identidades y su clasificación material de `TSVC-CAT-001`;
+- el propietario técnico institucional y el repositorio canónico definidos en `TSVC-CAT-002`;
+- las cien decisiones aplicación–servicio de `TSVC-CAT-003`;
+- los diez contratos `1.0.0` de `TSVC-CAT-004`;
+- las identidades técnicas, referencias de credencial y mínimo privilegio de `TSVC-CAT-005`;
+- la semántica de idempotencia, deduplicación, intentos, receipts, dead-letter y resultado desconocido de `TSVC-CAT-006`;
+- las siete clases de señal, veinte métricas, dieciséis eventos de auditoría y diez clases de alerta de `TSVC-CAT-007`;
+- los seis estados de disponibilidad, diez modos operativos y reglas de reconciliación de `TSVC-CAT-008`;
+- la autoridad de la aplicación propietaria sobre el resultado empresarial;
+- la separación entre fuente de verdad, servicio técnico, observabilidad, evidencia, backup y archivo;
+- la obligación de materializar futuras modificaciones de Supabase desde `vento-shell` durante una fase autorizada.
+
+Quedan fuera del alcance:
+
+- inventar plazos legales, fiscales, laborales, contractuales, probatorios u operativos sin fuente aprobada;
+- crear políticas físicas, jobs de limpieza, lifecycle rules, buckets, tablas, índices, funciones, triggers, particiones, archivos fríos o mecanismos de hold;
+- ejecutar eliminación, anonimización, destrucción de claves, compactación, exportación, migración de formato o purga;
+- cambiar datos actuales, payloads, documentos, evidencias, auditorías, telemetría, dead-letter o backups;
+- seleccionar proveedor, tier de almacenamiento, tecnología de archivo o motor de lifecycle;
+- resolver adopción, coexistencia y retiro de activos legacy, responsabilidad de `TSVC-CAT-010`;
+- declarar retención aplicada, archivo operativo, hold activo, disposición ejecutada o evidencia productiva sin implementación verificable.
+
+---
+
+#### 3. Decisiones aprobadas
+
+##### 3.1. Identidad del registro
+
+| Campo                      | Valor                                       |
+| -------------------------- | ------------------------------------------- |
+| `registry_id`              | `TRANSVERSE-SERVICE-RETENTION-REGISTRY-001` |
+| `registry_version`         | `1.0.0`                                     |
+| `registry_status`          | `DEFINED`                                   |
+| `covered_services`         | `10`                                        |
+| `retention_class_count`    | `9`                                         |
+| `lifecycle_state_count`    | `8`                                         |
+| `material_group_count`     | `17`                                        |
+| `disposition_action_count` | `12`                                        |
+| `technical_owner`          | Tecnología de Vento Group                   |
+| `canonical_repository`     | `vento-shell`                               |
+| `governing_task`           | `TSVC-CAT-009`                              |
+
+`DEFINED` significa que el gobierno documental de conservación y disposición está cerrado para las diez identidades. No significa que existan periodos configurados, archivos físicos, jobs, reglas de Storage, holds, borrado verificable, anonimización ni evidencia de ejecución.
+
+##### 3.2. Separación obligatoria de conceptos
+
+| Concepto                        | Definición canónica                                                                                                 | No representa                                                                   |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `RETENTION_POLICY`              | Regla versionada que define finalidad, alcance, evento inicial, condición de conservación, disposición y evidencia. | Un número aislado de días.                                                      |
+| `ACTIVE_RECORD`                 | Registro vigente en la fuente o servicio propietario para operación autorizada.                                     | Archivo histórico ni backup.                                                    |
+| `ARCHIVE`                       | Conservación separada de operación ordinaria, protegida, consultable bajo finalidad y acceso específicos.           | Fuente mutable competidora ni backup.                                           |
+| `BACKUP`                        | Medio de recuperación técnica sujeto a ciclo propio, cifrado y restauración controlada.                             | Archivo histórico, consulta ordinaria o mecanismo para revivir datos retirados. |
+| `LEGAL_HOLD`                    | Suspensión gobernada de disposición por obligación, investigación, litigio, seguridad o causa aprobada.             | Permiso adicional de acceso ni retención ordinaria indefinida.                  |
+| `ANONYMIZATION`                 | Transformación irreversible que impide volver a identificar al titular con medios razonables.                       | Ocultamiento visual, cifrado reversible o alias temporal.                       |
+| `IRREVERSIBLE_PSEUDONYMIZATION` | Separación irreversible o destrucción del vínculo que impide reconstruir identidad desde el conjunto conservado.    | Seudónimo reversible con tabla de enlace vigente.                               |
+| `PHYSICAL_DELETION`             | Retiro verificable del contenido de sistemas activos y medios gobernados, sujeto a residuos técnicos declarados.    | Marcar una fila como inactiva.                                                  |
+| `TOMBSTONE`                     | Registro mínimo de disposición que demuestra identidad histórica sin permitir reconstruir el contenido retirado.    | Réplica reducida del contenido original.                                        |
+| `SUPERSESSION`                  | Sustitución lógica mediante una nueva versión vinculada, conservando la anterior según política.                    | Sobrescritura destructiva.                                                      |
+| `CLEANUP`                       | Ejecución controlada de compactación, retiro temporal, anonimización o eliminación conforme a política y gates.     | Purga masiva por edad sin contexto.                                             |
+| `EXPIRY`                        | Momento en que una unidad se vuelve elegible para evaluación de disposición.                                        | Autorización automática para eliminar.                                          |
+
+Reglas:
+
+1. vencimiento, archivo, anonimización, eliminación y destrucción de clave son acciones distintas;
+2. archivar no retira automáticamente la versión activa;
+3. un backup no satisface obligaciones de archivo ni de auditoría consultable;
+4. la existencia de un backup no bloquea por sí sola toda disposición, pero obliga a gobernar restauración y envejecimiento;
+5. una marca lógica no demuestra retiro físico;
+6. el hold prevalece sobre una disposición ordinaria mientras esté vigente;
+7. liberar un hold no reinicia artificialmente el tiempo ya transcurrido;
+8. la política del proveedor no sustituye la política VENTO;
+9. el archivo no adquiere propiedad empresarial ni se convierte en fuente de verdad mutable;
+10. una operación de limpieza debe ser auditable y reversible solo cuando la acción elegida lo permita.
+
+##### 3.3. Principios canónicos de retención
+
+1. Toda unidad conservada debe tener finalidad actual y propietario.
+2. Ningún servicio retendrá contenido indefinidamente por defecto.
+3. Los plazos se determinan por clase, evento inicial, finalidad, sensibilidad, obligación, estado y hold; no por aplicación completa.
+4. La retención se asigna al nivel útil: operación, evento, intento, receipt, documento, original, evidencia, señal, alerta, payload, buffer o agregado.
+5. Un registro puede contener componentes con políticas distintas; el componente más sensible no obliga a conservar indefinidamente todo el payload.
+6. Los identificadores históricos mínimos pueden sobrevivir más que el contenido para impedir replay, duplicidad o reutilización semántica.
+7. Una referencia conservada no debe permitir reconstruir contenido retirado salvo que la política autorice conservarlo.
+8. Ninguna unidad con resultado `RESULT_UNKNOWN` puede eliminarse antes de resolver la conciliación.
+9. Ninguna unidad con estado `RECONCILIATION_REQUIRED`, `DEAD_LETTER`, `QUARANTINED`, disputa, incidente, investigación, diferencia o hold abierto puede pasar a disposición terminal sin decisión explícita.
+10. Los efectos parciales y dependencias hijas se cierran antes de retirar la evidencia necesaria para explicarlos.
+11. La corrección, compensación o supersesión crea una nueva unidad vinculada y no reescribe silenciosamente la anterior.
+12. Los datos sensibles se minimizan antes de persistir y no se justifican por una futura necesidad hipotética.
+13. Las acciones de disposición conservan actor o principal, política, versión, causa, alcance, momento y evidencia.
+14. Un cambio de política no altera retroactivamente la historia sin una transición aprobada.
+15. La restauración desde backup no puede reactivar en producción contenido cuya disposición ya fue confirmada.
+16. Los sistemas externos, locales y temporales forman parte del alcance de disposición cuando hayan recibido el contenido.
+17. El servicio transversal conserva responsabilidad técnica; el owner empresarial aprueba finalidad, periodo y efecto sobre el recurso.
+18. La retención no amplía permisos, audiencia, territorio ni finalidad.
+19. La consulta de archivo, la aplicación de hold y la ejecución de disposición son acciones sensibles y auditables.
+20. La ausencia de evidencia de eliminación se clasifica como disposición no demostrada, no como éxito.
+
+##### 3.4. Clases canónicas de retención
+
+Se adopta sin modificación la taxonomía aprobada por `NFR-REQ-006`:
+
+| Clase                             | Finalidad principal                                                                                      | Condición de salida conceptual                                                                                      |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `RET-01_TRANSIENT`                | Buffers, locks, archivos temporales, material de render y datos necesarios solo durante una ejecución.   | Resultado conocido, ventana técnica cerrada, ausencia de dependencia y evidencia mínima preservada.                 |
+| `RET-02_SHORT_OPERATIONAL`        | Diagnóstico operativo, detalle de intentos, receipts técnicos, colas recientes y soporte de corto plazo. | Resultado terminal, conciliación cerrada, ventana de replay cumplida y ausencia de incidente o hold.                |
+| `RET-03_SECURITY_AUDIT`           | Acceso, identidad, cambios sensibles, eventos de seguridad y trazabilidad técnica.                       | Periodo aprobado cumplido, investigación cerrada, hold liberado y evidencia mínima de disposición.                  |
+| `RET-04_BUSINESS_EVIDENCE`        | Evidencia que demuestra una acción, aceptación, entrega, custodia, decisión o resultado empresarial.     | Obligación y controversia cerradas, periodo aprobado cumplido y autoridad de disposición confirmada.                |
+| `RET-05_REGULATED_OR_CONTRACTUAL` | Registros sujetos a obligación legal, fiscal, laboral, contractual o sectorial.                          | Regla aplicable cumplida, ausencia de hold y disposición autorizada por la autoridad correspondiente.               |
+| `RET-06_ANALYTICAL_AGGREGATE`     | Agregados minimizados o anonimizados para capacidad, calidad, tendencia y mejora.                        | Finalidad agotada, agregado innecesario o política de anonimización y disposición ejecutada.                        |
+| `RET-07_BACKUP_RECOVERY`          | Recuperación técnica ante pérdida, corrupción o desastre.                                                | Ciclo de backup cerrado, manifiesto de exclusiones aplicado y restauración capaz de respetar disposiciones previas. |
+| `RET-08_LEGAL_HOLD`               | Suspensión temporal de disposición por causa aprobada.                                                   | Liberación formal, reevaluación desde el periodo original y decisión de conservación o disposición.                 |
+| `RET-09_LOCAL_PENDING`            | Borradores, outbox, evidencia y operaciones pendientes en dispositivo o estación.                        | Receipt remoto, resultado autoritativo, dependencias cerradas, conciliación y limpieza del contexto local.          |
+
+Reglas:
+
+1. una unidad puede cambiar de clase por evento aprobado, pero el cambio queda versionado y auditado;
+2. `RET-08_LEGAL_HOLD` se superpone a la clase ordinaria y no la elimina;
+3. `RET-09_LOCAL_PENDING` no autoriza permanencia después de confirmación y cierre;
+4. `RET-06_ANALYTICAL_AGGREGATE` exige minimización o anonimización suficiente;
+5. `RET-07_BACKUP_RECOVERY` nunca se usa para consulta ordinaria;
+6. `RET-01_TRANSIENT` no puede contener el único ejemplar de evidencia obligatoria;
+7. `RET-02_SHORT_OPERATIONAL` no conserva payloads completos cuando basten referencias, códigos y contexto mínimo;
+8. la asignación de clase se hace por material, no por servicio completo.
+
+##### 3.5. Estados del ciclo de retención
+
+| Estado             | Significado                                                                                     |
+| ------------------ | ----------------------------------------------------------------------------------------------- |
+| `ACTIVE`           | Material vigente y conservado para su finalidad autorizada.                                     |
+| `PENDING_REVIEW`   | La condición de salida se aproxima o se cumple y requiere evaluación de gates.                  |
+| `ARCHIVED`         | Material trasladado a conservación protegida fuera de operación ordinaria.                      |
+| `LEGAL_HOLD`       | Disposición suspendida por una causa aprobada.                                                  |
+| `DELETION_PENDING` | Gates aprobados y acción terminal programada, aún sin evidencia de finalización.                |
+| `DELETED`          | Contenido retirado conforme a política y evidencia; puede permanecer tombstone mínimo.          |
+| `ANONYMIZED`       | Contenido transformado irreversiblemente para retirar identidad o sensibilidad aplicable.       |
+| `OBSOLETE`         | Material sustituido por una versión posterior, conservado o dispuesto según su propia política. |
+
+Transiciones permitidas:
+
+```text
+ACTIVE
+  ├→ PENDING_REVIEW
+  ├→ ARCHIVED
+  ├→ LEGAL_HOLD
+  └→ OBSOLETE
+
+PENDING_REVIEW
+  ├→ ACTIVE
+  ├→ ARCHIVED
+  ├→ LEGAL_HOLD
+  ├→ DELETION_PENDING
+  └→ ANONYMIZED
+
+ARCHIVED
+  ├→ LEGAL_HOLD
+  ├→ PENDING_REVIEW
+  ├→ DELETION_PENDING
+  ├→ ANONYMIZED
+  └→ OBSOLETE
+
+LEGAL_HOLD
+  └→ PENDING_REVIEW
+
+DELETION_PENDING
+  ├→ DELETED
+  ├→ PENDING_REVIEW
+  └→ LEGAL_HOLD
+```
+
+Reglas:
+
+1. no existe transición directa automática de `ACTIVE` a `DELETED`;
+2. `DELETION_PENDING` no equivale a eliminación ejecutada;
+3. una falla durante disposición devuelve la unidad a revisión o hold, no la marca como `DELETED`;
+4. `ANONYMIZED` requiere prueba de irreversibilidad proporcional;
+5. `OBSOLETE` no implica eliminación y conserva vínculo con la versión sucesora;
+6. `LEGAL_HOLD` exige causa, autoridad, alcance, revisión y condición de liberación;
+7. `DELETED` conserva únicamente el tombstone permitido;
+8. los estados se registran por unidad gobernada y no mediante una bandera global del servicio.
+
+##### 3.6. Grupos de material gobernado
+
+| ID                 | Grupo                                  | Ejemplos                                                                      | Regla principal                                                                                   |
+| ------------------ | -------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `TSVC-RET-MAT-001` | Sobre de operación                     | servicio, contrato, operación, propietaria, correlación, causa y estado.      | Preservar identidad histórica suficiente para trazabilidad y resultado.                           |
+| `TSVC-RET-MAT-002` | Anclas de idempotencia y deduplicación | clave idempotente, clave de deduplicación, huella y versión de normalización. | Conservar lo necesario para impedir replay y conflicto semántico, sin payload innecesario.        |
+| `TSVC-RET-MAT-003` | Intentos, claims, leases y fencing     | intento, worker, lease, fencing, inicio, cierre y causa.                      | Compactar detalle cuando cierre operación, preservando secuencia material y anomalías.            |
+| `TSVC-RET-MAT-004` | Receipts y referencias de resultado    | receipt, ACK, resultado técnico, referencia empresarial y timestamps.         | Conservar hasta resultado y conciliación; después aplicar clase de evidencia o detalle operativo. |
+| `TSVC-RET-MAT-005` | Dead-letter y cuarentena               | elemento aislado, causa, owner, acción siguiente y evidencia.                 | No eliminar mientras exista resolución pendiente, hijo abierto, incidente o investigación.        |
+| `TSVC-RET-MAT-006` | Auditoría técnica                      | aceptación, rechazo, override, configuración, conciliación y disposición.     | No destructiva; política propia y acceso restringido.                                             |
+| `TSVC-RET-MAT-007` | Logs estructurados                     | diagnóstico, error normalizado, ambiente y referencias.                       | Minimizar, muestrear con reglas y retirar payloads o secretos.                                    |
+| `TSVC-RET-MAT-008` | Trazas                                 | spans, enlaces entre intentos, latencias y dependencias.                      | Conservar según utilidad diagnóstica y seguridad; no como evidencia empresarial única.            |
+| `TSVC-RET-MAT-009` | Métricas                               | contadores, gauges, histogramas y series.                                     | Conservar agregados suficientes; reducir resolución conforme a política sin alterar semántica.    |
+| `TSVC-RET-MAT-010` | Alertas, incidentes y problemas        | condición, severidad, estados, comunicación y revisión.                       | Conservar hasta cierre técnico, empresarial y acciones posteriores aplicables.                    |
+| `TSVC-RET-MAT-011` | Folios y buffers de contingencia       | folio manual, buffer local, journal duradero y registros de reconciliación.   | No limpiar antes de reincorporación, conciliación y cierre demostrado.                            |
+| `TSVC-RET-MAT-012` | Originales documentales                | archivo aportado, hash, clasificación, procedencia y vínculo.                 | Política del dominio, legal o contractual; no hay eliminación técnica autónoma.                   |
+| `TSVC-RET-MAT-013` | Documentos generados                   | plantilla, versión, fuente, output, integridad y supersesión.                 | Conservar por finalidad empresarial; material temporal de render se separa del documento final.   |
+| `TSVC-RET-MAT-014` | Evidencia transaccional                | firma, fotografía, lectura, comprobante, hash, lineage y relación causal.     | Protección reforzada, supersesión no destructiva y hold cuando corresponda.                       |
+| `TSVC-RET-MAT-015` | Payloads y respuestas de proveedor     | mensaje entrante, respuesta saliente, firma, ID externo y mapping.            | Minimizar contenido; conservar identificadores, integridad, mapping y resultado necesarios.       |
+| `TSVC-RET-MAT-016` | Referencias de credencial              | principal, referencia, versión, estado, rotación y revocación.                | Nunca conservar valores secretos dentro del registro ordinario.                                   |
+| `TSVC-RET-MAT-017` | Heartbeat y salud de workers           | señal sin procesar, transición de estado, incidente, capacidad y frescura.    | Compactar señales sin procesar; conservar transiciones e intervalos materiales para diagnóstico.  |
+
+Los diecisiete grupos pueden coexistir en una misma operación, pero cada uno mantiene finalidad, clase, sensibilidad, evento inicial y disposición independientes.
+
+##### 3.7. Sobre mínimo de política de retención
+
+Toda política materializada deberá poder expresar, cuando aplique:
+
+```text
+retention_policy_id
+retention_policy_version
+service_id
+contract_id
+contract_version
+material_group_id
+record_type
+business_owner_application
+technical_owner
+source_system
+source_reference
+sensitivity_class
+retention_class
+purpose
+legal_or_contractual_basis
+start_event
+start_at
+review_event
+review_at
+retention_condition
+minimum_period_ref
+maximum_period_ref
+disposition_action
+hold_status
+hold_reference
+open_dependency_count
+reconciliation_status
+incident_reference
+provider_reference
+local_replica_status
+backup_scope
+archive_location_ref
+tombstone_required
+approval_authority
+policy_status
+created_at
+updated_at
+```
+
+Reglas:
+
+1. `minimum_period_ref` y `maximum_period_ref` referencian una fuente aprobada; no contienen cifras inventadas por el servicio;
+2. `start_event` identifica el hecho que inicia el periodo, como resultado terminal, cierre contractual, supersesión, revocación o liberación de hold;
+3. `retention_condition` puede impedir disposición aunque el tiempo se haya cumplido;
+4. `open_dependency_count` no sustituye la comprobación material de dependencias;
+5. `local_replica_status` cubre dispositivo, estación, caché, buffer y material temporal;
+6. `provider_reference` permite verificar disposición fuera de VENTO;
+7. `archive_location_ref` es una referencia protegida, no una dirección abierta;
+8. `tombstone_required` se activa cuando identidad histórica, replay, lineage o evidencia de disposición deban sobrevivir;
+9. el owner técnico ejecuta la política y el owner empresarial conserva autoridad sobre finalidad y resultado;
+10. toda modificación crea una nueva versión y conserva la versión anterior.
+
+##### 3.8. Eventos que gobiernan el ciclo
+
+| ID                 | Evento                       | Efecto permitido                                                                                |
+| ------------------ | ---------------------------- | ----------------------------------------------------------------------------------------------- |
+| `TSVC-RET-EVT-001` | `OPERATION_TERMINAL`         | Iniciar evaluación del detalle operacional cuando no exista resultado desconocido.              |
+| `TSVC-RET-EVT-002` | `RECONCILIATION_CLOSED`      | Habilitar revisión de receipts, intentos, buffers y payloads asociados.                         |
+| `TSVC-RET-EVT-003` | `BUSINESS_OBLIGATION_CLOSED` | Iniciar el periodo de evidencia o documento cuando la fuente canónica así lo determine.         |
+| `TSVC-RET-EVT-004` | `SUPERSEDED`                 | Marcar versión anterior como obsoleta sin sobrescribirla.                                       |
+| `TSVC-RET-EVT-005` | `CREDENTIAL_REVOKED`         | Retirar valor operativo y conservar referencia, estado y auditoría permitidos.                  |
+| `TSVC-RET-EVT-006` | `PROVIDER_RESULT_FINAL`      | Evaluar reducción de payload externo y conservación de ID, mapping, resultado e integridad.     |
+| `TSVC-RET-EVT-007` | `INCIDENT_CLOSED`            | Habilitar revisión del material diagnóstico cuando acciones posteriores estén resueltas.        |
+| `TSVC-RET-EVT-008` | `HOLD_APPLIED`               | Suspender disposición dentro del alcance indicado.                                              |
+| `TSVC-RET-EVT-009` | `HOLD_RELEASED`              | Recalcular elegibilidad usando el periodo original y el tiempo ya transcurrido.                 |
+| `TSVC-RET-EVT-010` | `LOCAL_SYNC_CONFIRMED`       | Evaluar limpieza local si receipt, autoridad, hash, dependencias y conciliación están cerrados. |
+| `TSVC-RET-EVT-011` | `WORKER_RETIRED`             | Compactar señales ordinarias y conservar transición, incidente y evidencia de retiro.           |
+| `TSVC-RET-EVT-012` | `POLICY_VERSION_CHANGED`     | Aplicar transición gobernada sin alterar silenciosamente unidades históricas.                   |
+
+Ningún evento ejecuta por sí solo una disposición terminal. Siempre conduce a evaluación de gates, autoridad y evidencia.
+
+##### 3.9. Acciones canónicas de disposición
+
+| ID                 | Acción                        | Uso permitido                                                                                |
+| ------------------ | ----------------------------- | -------------------------------------------------------------------------------------------- |
+| `TSVC-RET-ACT-001` | `KEEP_ACTIVE`                 | Mantener material vigente por finalidad y condición abierta.                                 |
+| `TSVC-RET-ACT-002` | `MOVE_TO_PROTECTED_ARCHIVE`   | Mover material a archivo protegido con consulta restringida.                                 |
+| `TSVC-RET-ACT-003` | `COMPACT_OPERATIONAL_DETAIL`  | Reducir granularidad conservando contadores, secuencia material, errores y referencias.      |
+| `TSVC-RET-ACT-004` | `ANONYMIZE`                   | Retirar identidad de forma irreversible conservando utilidad permitida.                      |
+| `TSVC-RET-ACT-005` | `IRREVERSIBLY_PSEUDONYMIZE`   | Destruir el vínculo que permitiría reidentificación.                                         |
+| `TSVC-RET-ACT-006` | `DESTROY_ENCRYPTION_KEY`      | Volver irrecuperable contenido cifrado cuando la arquitectura y la política lo permitan.     |
+| `TSVC-RET-ACT-007` | `PHYSICALLY_DELETE`           | Retirar contenido de sistemas y medios gobernados con evidencia.                             |
+| `TSVC-RET-ACT-008` | `APPLY_HOLD`                  | Suspender disposición para un alcance y causa aprobados.                                     |
+| `TSVC-RET-ACT-009` | `RELEASE_HOLD`                | Liberar hold y devolver las unidades a revisión.                                             |
+| `TSVC-RET-ACT-010` | `SECURE_EXPORT`               | Producir una exportación controlada con finalidad, owner, alcance, protección y vencimiento. |
+| `TSVC-RET-ACT-011` | `MIGRATE_FORMAT`              | Convertir a un formato gobernado preservando integridad, lineage y verificabilidad.          |
+| `TSVC-RET-ACT-012` | `SUPERSEDE_WITHOUT_OVERWRITE` | Vincular versión sucesora y conservar o disponer la anterior conforme a su política.         |
+
+Reglas:
+
+1. una acción no puede ejecutarse fuera de su clase y finalidad;
+2. `COMPACT_OPERATIONAL_DETAIL` no elimina auditoría obligatoria ni evidencia empresarial;
+3. anonimización y seudonimización irreversible requieren prueba de irreversibilidad proporcional;
+4. destrucción de clave solo se admite cuando no elimina material que deba permanecer recuperable;
+5. exportar crea una nueva unidad gobernada con política propia;
+6. migrar formato conserva integridad, versión de origen, versión destino y resultado de verificación;
+7. supersesión no altera el original;
+8. toda acción produce un evento de auditoría y, cuando corresponda, un tombstone.
+
+##### 3.10. Gate obligatorio de disposición
+
+Antes de una acción terminal se comprobará conceptualmente:
+
+```text
+¿LA UNIDAD ES ELEGIBLE SEGÚN POLÍTICA VERSIONADA?
+        ↓
+¿NO EXISTE HOLD LEGAL, CONTRACTUAL, DE SEGURIDAD O INVESTIGACIÓN?
+        ↓
+¿NO EXISTE RESULT_UNKNOWN, RECONCILIACIÓN, DEAD-LETTER, CUARENTENA O INCIDENTE ABIERTO?
+        ↓
+¿NO EXISTE OBLIGACIÓN, DIFERENCIA, DISPUTA, HIJO O DEPENDENCIA PENDIENTE?
+        ↓
+¿SE IDENTIFICARON SISTEMAS ACTIVOS, ARCHIVO, BACKUP, PROVEEDOR Y MATERIAL LOCAL?
+        ↓
+¿LA AUTORIDAD Y SEGREGACIÓN SON VÁLIDAS?
+        ↓
+¿LA ACCIÓN CONSERVA TOMBSTONE Y EVIDENCIA MÍNIMA CUANDO CORRESPONDE?
+        ↓
+EJECUTAR Y VERIFICAR
+```
+
+Si cualquier comprobación falla:
+
+- la unidad permanece `ACTIVE`, `PENDING_REVIEW` o `LEGAL_HOLD`;
+- se registra la causa concreta;
+- se identifica owner y condición de salida;
+- no se marca como dispuesta;
+- no se reduce evidencia para ocultar el bloqueo.
+
+##### 3.11. Hold legal, contractual, de seguridad o investigación
+
+Todo hold deberá conservar:
+
+```text
+hold_id
+hold_type
+reason
+source
+business_authority
+technical_owner
+scope
+record_selectors
+start_at
+release_condition
+review_at
+status
+exceptions
+access_policy
+audit_reference
+```
+
+Reglas:
+
+1. el hold se aplica al alcance mínimo suficiente;
+2. la causa no se sustituye por texto libre sin referencia o autoridad;
+3. el hold prevalece sobre eliminación, anonimización y compactación incompatible;
+4. el hold no concede acceso adicional;
+5. la revisión periódica no implica liberación automática;
+6. una liberación identifica autoridad, momento, alcance y evidencia;
+7. después de liberar, la elegibilidad se calcula desde el evento original aplicable;
+8. un hold no se usa para conservar indefinidamente material por comodidad operativa;
+9. la existencia del hold y sus cambios son auditables;
+10. los proveedores y medios externos dentro del alcance deben recibir una instrucción compatible y verificable.
+
+##### 3.12. Tombstone mínimo de disposición
+
+Cuando la política lo exija, el tombstone conservará únicamente:
+
+```text
+tombstone_id
+record_type
+record_identity_ref
+service_id
+business_owner_application
+contract_id
+contract_version
+original_created_at
+final_state
+disposition_policy_id
+disposition_policy_version
+disposition_action
+disposition_reason
+disposed_at
+disposed_by
+hold_or_exception_ref
+minimal_integrity_attestation
+related_resource_state
+evidence_reference
+```
+
+Reglas:
+
+1. el tombstone no contiene payload, documento, fotografía, secreto, token, contenido sensible ni dato suficiente para reconstruir el material;
+2. `minimal_integrity_attestation` puede conservar una atestación o huella protegida cuando sea necesaria para lineage, disputa o replay;
+3. la huella no se usa para deduplicar globalmente recursos distintos;
+4. el tombstone no revive una operación ni concede acceso al material retirado;
+5. el tombstone permanece sujeto a una política propia;
+6. la disposición del tombstone requiere comprobar que ya no sea necesario para identidad histórica, obligación o defensa contra replay;
+7. una consulta de tombstone se autoriza y audita según finalidad;
+8. no se crea tombstone cuando aumente el riesgo sin aportar finalidad legítima.
+
+##### 3.13. Idempotencia, deduplicación y reutilización semántica
+
+1. Vencer una clave idempotente no autoriza reutilizarla con otra intención.
+2. La política conservará suficiente identidad para reconocer una intención ya ejecutada dentro de la ventana de riesgo aplicable.
+3. Cuando el contenido se retire, el tombstone podrá conservar `service_id`, ámbito, referencia protegida de clave, huella, versión y resultado terminal mínimo.
+4. El servicio no conservará indefinidamente payloads completos para demostrar idempotencia si bastan referencias y atestaciones.
+5. Un `IDEMPOTENCY_CONFLICT` abierto bloquea disposición del material necesario para investigarlo.
+6. Un replay externo mantiene identificación de proveedor y evento durante la ventana necesaria para impedir segundo efecto.
+7. La compactación de intentos preserva intento ganador, anomalías, resultado, conflictos, total y secuencia material.
+8. Una operación nueva usa otra identidad y se vincula a la anterior cuando sea corrección, reemisión, supersesión o acción posterior.
+9. El borrado de un receipt no puede dejar una operación sin resultado consultable mientras exista riesgo de repetición.
+10. La política de retención no modifica las garantías contractuales de `TSVC-CAT-006`.
+
+##### 3.14. Dead-letter, cuarentena y resultados desconocidos
+
+1. `DEAD_LETTER` no equivale a resultado empresarial terminal y no habilita eliminación automática.
+2. Toda unidad dead-letter conserva owner, causa, política agotada, intento final, acción siguiente, revisión y evidencia.
+3. `QUARANTINED` conserva el material mínimo para seguridad, integridad, contrato o análisis de contenido bajo acceso restringido.
+4. `RESULT_UNKNOWN` mantiene receipts, referencias externas, intentos, timestamps, hashes y contexto necesarios para consultar y conciliar.
+5. `RECONCILIATION_REQUIRED` bloquea la limpieza de buffers, payloads, evidencia y referencias causales.
+6. Resolver una unidad puede producir `SUCCEEDED`, `FAILED_TERMINAL`, `CANCELLED`, `SUPERSEDED` o una acción empresarial nueva; la historia anterior permanece vinculada.
+7. La intervención manual es auditable y no sobrescribe intentos previos.
+8. Una unidad venenosa no se reintenta para agotar tiempo de retención.
+9. El contenido sensible en dead-letter se minimiza o protege; dead-letter no es archivo ordinario.
+10. La salida de dead-letter exige confirmar dependencias, resultado y ausencia de efecto duplicado.
+
+##### 3.15. Observabilidad, logs, trazas, métricas y alertas
+
+1. Las métricas conservan agregados y resolución suficientes para SLO, capacidad y tendencia, con reducción progresiva cuando la política lo permita.
+2. Los logs se conservan por finalidad diagnóstica, seguridad y auditoría; no contienen payloads ni secretos innecesarios.
+3. Las trazas se retienen según necesidad diagnóstica y muestreo gobernado; errores críticos e integridad no se eliminan por un muestreo que impida investigación.
+4. Los eventos `AUDIT_EVENT` tienen política separada de `LOG_EVENT`.
+5. Las alertas se conservan hasta cierre, revisión y acciones posteriores aplicables.
+6. Resolver una alerta no elimina el incidente ni la conciliación relacionada.
+7. La compactación de heartbeat conserva transiciones de estado, intervalos de degradación, incidentes y evidencia de retiro del worker.
+8. La ausencia de señal no se convierte en salud cuando el pipeline de observabilidad estuvo degradado.
+9. El material sintético de pruebas se identifica y no contamina series productivas.
+10. La retención del proveedor de observabilidad no sustituye la política VENTO ni la evidencia requerida.
+11. Consultas, exportaciones, cambios de política y eliminación de telemetría sensible son auditables.
+12. La reducción de resolución no cambia unidad, significado, dimensiones ni versión de una métrica.
+
+##### 3.16. Auditoría y evidencia
+
+1. La auditoría técnica es no destructiva dentro de su periodo y conserva actor o principal, causa, antes, después, recurso, versión y resultado.
+2. La evidencia empresarial conserva vínculo con proceso, evento, identidad, dispositivo, tiempo e integridad según su owner.
+3. La corrección crea un evento o elemento vinculado; no altera el original.
+4. La supersesión identifica sucesor y razón.
+5. Una evidencia en disputa, hold, investigación o proceso abierto no se dispone.
+6. La retención de evidencia no implica acceso general; cada consulta conserva finalidad y autoridad.
+7. El archivo de auditoría y evidencia debe ser protegido contra modificación no autorizada.
+8. La indisponibilidad del pipeline ordinario no justifica perder auditoría obligatoria; se usa mecanismo duradero aprobado o se falla de forma cerrada cuando corresponda.
+9. La disposición de evidencia genera evidencia de disposición, sin reconstruir el contenido retirado.
+10. Un archivo existente no se presume evidencia suficiente si faltan integridad, causalidad, propietario o contexto.
+
+##### 3.17. Backups y recuperación
+
+1. Los backups heredan sensibilidad y acceso del material protegido.
+2. Permanecen cifrados y se usan solo para recuperación autorizada.
+3. Un backup no es un archivo consultable de negocio.
+4. Cada conjunto tiene ciclo, owner, ambiente, alcance, versión, prueba de restauración y disposición.
+5. La restauración aplica manifiestos de unidades retiradas, anonimización y holds antes de reactivar servicios.
+6. El contenido dispuesto no se reincorpora a producción por restauración ordinaria.
+7. Los snapshots temporales, material de certificación y exportaciones de recuperación también tienen política.
+8. La eliminación de una unidad activa puede completarse a través del ciclo de backup definido, siempre que no exista acceso ordinario y la restauración respete el manifiesto.
+9. Un hold aplicable se propaga a los backups dentro del alcance.
+10. La destrucción de clave se coordina con recuperabilidad, hold y evidencia.
+11. La prueba de restauración no utiliza datos sensibles fuera del ambiente y finalidad autorizados.
+12. La política declara residuos técnicos conocidos y condición de salida, sin afirmar eliminación instantánea donde la plataforma no la garantice.
+
+##### 3.18. Proveedores externos y sistemas fuera de VENTO
+
+Todo intercambio externo deberá conservar, cuando aplique:
+
+- proveedor e identidad técnica;
+- finalidad y base aplicable;
+- campos o material enviados;
+- ambiente y destino;
+- contrato y mapping;
+- periodo del proveedor;
+- método de disposición;
+- evidencia o atestación de disposición;
+- incidentes, hold y residuos conocidos;
+- IDs externos, firma o integridad necesarias para replay y conciliación.
+
+Reglas:
+
+1. el periodo predeterminado del proveedor no se adopta por silencio;
+2. retirar el material dentro de VENTO no completa la disposición si el proveedor conserva una réplica fuera de política;
+3. el payload se minimiza, tokeniza o seudonimiza cuando el contrato lo permita;
+4. la solicitud de disposición externa conserva estado y evidencia;
+5. una integración con resultado desconocido mantiene material suficiente para consulta y conciliación;
+6. las credenciales del proveedor no se incluyen en archivos, telemetría o evidencia ordinaria;
+7. un proveedor retirado conserva el historial mínimo de mapping, resultado, incidentes y disposición;
+8. la obligación contractual puede exigir archivo o hold más fuerte que el detalle operativo ordinario.
+
+##### 3.19. Operación local, offline y dispositivos compartidos
+
+1. Todo dispositivo inventaría almacenamiento persistente, caché, outbox, borradores, archivos temporales, miniaturas, diagnósticos, service workers y evidencia pendiente.
+2. El material local se separa por actor, aplicación, área, sede, recurso y versión cuando corresponda.
+3. Cambio de actor, contexto, revocación, pérdida de dispositivo, retiro o instrucción remota activan limpieza o cuarentena conforme a política.
+4. Una operación pendiente no se elimina por cerrar sesión, aplicación o dispositivo.
+5. La limpieza local exige receipt remoto, resultado autoritativo, hash o integridad, dependencias cerradas y conciliación.
+6. Un borrador puede retirarse por decisión explícita y auditable sin fingir que fue enviado.
+7. El cambio de actor en dispositivo compartido retira sesión, caché, material visible y preferencias sin perder pendientes autorizados.
+8. El almacenamiento lleno aplica backpressure, prioridad o contingencia; no elimina silenciosamente material pendiente.
+9. Una actualización incompatible preserva o exporta de forma segura el material pendiente antes de retirar su esquema.
+10. El material local confirmado se elimina conforme a política y no se conserva como fuente competidora.
+11. La hora local no modifica el periodo canónico sin referencia temporal verificable.
+12. El dispositivo retirado conserva evidencia de limpieza o estado de pérdida y revocación.
+
+##### 3.20. Registro canónico por servicio
+
+| Servicio       | Clases principales                                                                                          | Material que debe preservarse                                                                                                        | Material elegible para reducción o retiro                                                                          | Bloqueos principales                                                                                                  | Estado material           |
+| -------------- | ----------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------- | ------------------------- |
+| `TSVC-SVC-001` | `RET-02_SHORT_OPERATIONAL`, `RET-03_SECURITY_AUDIT`, `RET-09_LOCAL_PENDING`                                 | operación, clave protegida, resultado, receipt, intento ganador, conflictos, dead-letter, conciliación y auditoría                   | leases vencidos, locks, detalle ordinario de intentos, buffers y diagnósticos después de cierre seguro             | trabajo activo, resultado desconocido, dead-letter, hijo pendiente, incidente, hold o replay posible                  | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-002` | `RET-02_SHORT_OPERATIONAL`, `RET-03_SECURITY_AUDIT`, `RET-04_BUSINESS_EVIDENCE`                             | `event_id`, versión, productor, consumidor, ACK, estado de entrega, agregado, correlación y tombstone anti-replay                    | payload completo, intentos repetidos y detalle de transporte después de consumidores terminales y ventana aprobada | consumidor pendiente, orden causal abierto, replay, incompatibilidad, dead-letter, conciliación o hold                | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-003` | `RET-01_TRANSIENT`, `RET-02_SHORT_OPERATIONAL`, `RET-04_BUSINESS_EVIDENCE`, `RET-09_LOCAL_PENDING`          | intención, identidad de ejemplar autorizado, layout, routing, dispositivo, receipt, resultado físico, reemisión y conciliación       | spool, render temporal, buffer local y diagnóstico después de conocer resultado físico y preservar evidencia       | resultado físico desconocido, dispositivo aislado, disputa, reemisión pendiente, incidente o hold                     | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-004` | `RET-01_TRANSIENT`, `RET-02_SHORT_OPERATIONAL`, `RET-03_SECURITY_AUDIT`                                     | solicitud, plantilla y versión, referencia de destinatario, canal, proveedor, receipt, estado, supresión y auditoría                 | contenido renderizado, respuesta cruda de proveedor, tokens inválidos y detalle de intentos tras cierre            | resultado externo incierto, preferencia o disputa abierta, incidente, investigación o hold                            | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-005` | `RET-01_TRANSIENT`, `RET-04_BUSINESS_EVIDENCE`, `RET-05_REGULATED_OR_CONTRACTUAL`                           | fuente, snapshot, plantilla, versión, output, integridad, supersesión y autoridad del documento                                      | material temporal de render, caché y diagnósticos después de custodia e integridad confirmadas                     | documento vigente, obligación abierta, firma o aprobación pendiente, disputa, hold o salida sin custodia              | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-006` | `RET-04_BUSINESS_EVIDENCE`, `RET-05_REGULATED_OR_CONTRACTUAL`, `RET-08_LEGAL_HOLD`, `RET-09_LOCAL_PENDING`  | original, procedencia, hash, clasificación, vínculo, lineage, acceso, sustitución, hold y tombstone                                  | derivados temporales, previews, caché y material local después de ingestión y conciliación                         | política de dominio, obligación, expediente abierto, investigación, hold, réplica externa o disposición no demostrada | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-007` | `RET-03_SECURITY_AUDIT`, `RET-04_BUSINESS_EVIDENCE`, `RET-05_REGULATED_OR_CONTRACTUAL`, `RET-08_LEGAL_HOLD` | evidencia, hash, actor, dispositivo, momento, hecho, lineage, corrección, supersesión, acceso y disposición                          | derivados temporales y diagnósticos que no sean parte de la fuerza probatoria                                      | proceso o disputa abierta, integridad no verificada, investigación, hold, obligación o relación causal incompleta     | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-008` | `RET-02_SHORT_OPERATIONAL`, `RET-03_SECURITY_AUDIT`, `RET-04_BUSINESS_EVIDENCE`                             | ID externo, firma o atestación, mapping, contrato, ACK, resultado, replay, conciliación, proveedor y auditoría                       | payload crudo, encabezados innecesarios, respuestas transitorias y detalle de intentos tras resultado final        | resultado desconocido, provider dispute, replay, incidente, investigación, conciliación o hold                        | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-009` | `RET-02_SHORT_OPERATIONAL`, `RET-03_SECURITY_AUDIT`, `RET-04_BUSINESS_EVIDENCE`                             | schedule, versión, zona, ocurrencia lógica, trigger, misfire, resultado, cambios, suspensión, supersesión y tombstone anti-duplicado | locks, heartbeats del scheduler y detalle ordinario tras cerrar ocurrencia y preservar resultado                   | ocurrencia activa, overlap, resultado desconocido, acción hija pendiente, incidente o hold                            | `DEFINED_NOT_IMPLEMENTED` |
+| `TSVC-SVC-010` | `RET-01_TRANSIENT`, `RET-02_SHORT_OPERATIONAL`, `RET-03_SECURITY_AUDIT`, `RET-06_ANALYTICAL_AGGREGATE`      | identidad del worker, boot, transiciones de salud, periodos degradados, incidentes, reemplazo, retiro y agregados                    | heartbeats brutos, muestras redundantes y detalle de alta frecuencia después de compactación verificada            | incidente, investigación, pipeline degradado, intervalo no reconstruible, hold o worker no reconciliado               | `DEFINED_NOT_IMPLEMENTED` |
+
+La matriz asigna clases principales, no plazos físicos. Cada material se vinculará a una política versionada y a una fuente aprobada antes de implementación.
+
+##### 3.21. Perfil de `TSVC-SVC-001`
+
+La orquestación conservará:
+
+- identidad de operación e intención;
+- aplicación productora y propietaria;
+- contrato y versión;
+- receipt, estado y resultado;
+- clave idempotente protegida y huella mínima;
+- intento ganador y anomalías materiales;
+- claims o fencing relevantes para conflicto;
+- dead-letter, cuarentena y conciliación;
+- cancelación, expiración y overrides;
+- auditoría de disposición.
+
+La limpieza podrá compactar intentos ordinarios, leases, locks y diagnósticos después de demostrar estado terminal, ausencia de hijos, ausencia de efecto ambiguo y cierre de incidentes. No podrá eliminar una unidad para ocultar backlog, presupuesto agotado o resultado desconocido.
+
+##### 3.22. Perfil de `TSVC-SVC-002`
+
+El outbox conservará un registro suficiente para reconstruir:
+
+```text
+HECHO CONFIRMADO
+→ EVENTO VERSIONADO
+→ CONSUMIDORES NOMBRADOS
+→ INTENTOS DE ENTREGA
+→ ACK, ERROR O DEAD-LETTER
+→ RESULTADO DE CADA CONSUMIDOR
+```
+
+Reglas específicas:
+
+1. `event_id` nunca se reutiliza después de disposición;
+2. el payload completo puede reducirse cuando todos los consumidores estén terminales y no exista obligación de evidencia;
+3. la versión, productor, agregado, correlación, causalidad, consumidores y tombstone permanecen según política;
+4. un consumidor pendiente bloquea la disposición de la información necesaria para reentrega;
+5. los estados por consumidor no se fusionan en un único éxito global;
+6. un evento supersedido no se reescribe;
+7. un replay detectado conserva evidencia suficiente para demostrar supresión segura.
+
+##### 3.23. Perfil de `TSVC-SVC-003`
+
+La impresión separará:
+
+- solicitud;
+- ejemplar autorizado;
+- layout y versión;
+- routing;
+- spool o render temporal;
+- receipt del adaptador;
+- aceptación del dispositivo;
+- resultado físico;
+- reemisión autorizada;
+- conciliación.
+
+El spool y el render son `RET-01_TRANSIENT`. Solo podrán retirarse cuando el resultado físico sea conocido o la operación haya sido conciliada, la evidencia exigida permanezca y no exista reemisión pendiente. Un timeout no habilita retiro si impide determinar si el dispositivo produjo el efecto.
+
+##### 3.24. Perfil de `TSVC-SVC-004`
+
+Las notificaciones conservarán identidad de solicitud, owner, plantilla, versión, referencia de destinatario, canal, proveedor, receipt, estado, supresión y resultado. El contenido renderizado y la respuesta cruda del proveedor se minimizarán antes que el registro de entrega cuando no sean necesarios.
+
+Los tokens de destino inválidos, revocados o retirados no se conservarán como valores operativos. Permanecerán únicamente la referencia mínima, causa, estado, momento y auditoría necesaria. Una entrega al proveedor no prueba lectura ni aceptación del destinatario.
+
+##### 3.25. Perfil de `TSVC-SVC-005`
+
+La generación documental distinguirá:
+
+- fuente y snapshot;
+- plantilla y versión;
+- parámetros;
+- ejecución temporal;
+- output final;
+- hash o atestación de integridad;
+- custodia;
+- supersesión;
+- firma o aprobación propietaria cuando aplique.
+
+El material de render, caché y diagnóstico se retira después de confirmar output, integridad, custodia y ausencia de resultado desconocido. El documento final usa la política de su owner empresarial; el servicio generador no decide su periodo legal o contractual.
+
+##### 3.26. Perfil de `TSVC-SVC-006`
+
+La custodia de originales aplicará la política más específica del dominio, expediente, obligación, sensibilidad y hold. Ningún original se elimina por una regla técnica global.
+
+La disposición deberá verificar:
+
+- objeto activo;
+- versiones;
+- derivados;
+- índices;
+- metadatos;
+- material local;
+- archivo;
+- backups;
+- proveedor externo;
+- réplicas residuales conocidas.
+
+El tombstone conservará identidad, procedencia, integridad mínima, política y evidencia sin mantener contenido. La sustitución de un original crea lineage y no oculta el elemento anterior.
+
+##### 3.27. Perfil de `TSVC-SVC-007`
+
+La evidencia transaccional usa conservación reforzada. Debe permitir demostrar qué acción, recurso, actor, dispositivo, momento, versión y resultado estaban relacionados.
+
+Reglas específicas:
+
+1. correcciones y supersesiones son aditivas;
+2. acceso extraordinario y exportación son auditables;
+3. integridad o lineage roto bloquean disposición;
+4. una evidencia en disputa o hold permanece protegida;
+5. un archivo huérfano no se conserva indefinidamente como evidencia aparente: se clasifica, vincula, cuarentena o dispone mediante decisión;
+6. el servicio no declara por sí mismo valor legal o empresarial;
+7. la disposición conserva atestación mínima y autoridad.
+
+##### 3.28. Perfil de `TSVC-SVC-008`
+
+Las integraciones externas conservarán el mínimo suficiente para verificar origen, mapping, replay, ACK, resultado y conciliación.
+
+El payload crudo se separa de:
+
+- identificador externo;
+- firma o atestación;
+- contrato y versión;
+- mapping;
+- campos normalizados permitidos;
+- resultado técnico;
+- referencia empresarial;
+- evidencia de disposición del proveedor.
+
+Un webhook con `200 OK` no habilita disposición si el procesamiento interno sigue incierto. Un envío con timeout mantiene material para consulta y evita repetición ciega. La política del proveedor se registra y se reconcilia con VENTO.
+
+##### 3.29. Perfil de `TSVC-SVC-009`
+
+La programación conservará:
+
+- schedule y versión;
+- owner y mandato;
+- zona horaria y vigencia;
+- ocurrencia lógica;
+- trigger real;
+- misfire, overlap u omisión;
+- operación hija;
+- resultado;
+- suspensión, supersesión y retiro.
+
+Los locks y heartbeats del scheduler son transitorios. La ocurrencia lógica conserva tombstone o identidad suficiente para impedir doble ejecución. Retirar una definición no elimina la historia de ocurrencias ni cancela implícitamente trabajo ya iniciado.
+
+##### 3.30. Perfil de `TSVC-SVC-010`
+
+El monitoreo de workers compactará heartbeats brutos una vez preservadas:
+
+- identidad del worker y servicio;
+- boot y versión;
+- transiciones de estado;
+- intervalos `DEGRADED`, `STALE`, `DRAINING`, `STOPPED` o `UNKNOWN`;
+- capacidad e inflight relevantes;
+- incidentes y alertas;
+- reemplazo y retiro;
+- estado del pipeline de observabilidad.
+
+La compactación no puede fabricar continuidad cuando faltaron señales. Un intervalo con pipeline degradado permanece distinguido de un worker saludable. Los agregados analíticos no sustituyen la auditoría de cambios o incidentes.
+
+##### 3.31. Reconciliación con activos técnicos actuales
+
+| Activo o patrón observado                                           | Servicio relacionado | Clasificación de retención actual                      | Decisión canónica                                                                                                                       |
+| ------------------------------------------------------------------- | -------------------- | ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------- |
+| Cola local de impresión NEXO basada en almacenamiento del navegador | `TSVC-SVC-003`       | `LOCAL_PENDING_WITHOUT_CANONICAL_LIFECYCLE`            | Inventariar pendientes, resultado, actor y dispositivo; no retirar material hasta conciliación y migración controlada.                  |
+| API de layouts de impresión                                         | `TSVC-SVC-003`       | `VERSIONED_CONFIGURATION_REQUIRES_GOVERNANCE`          | Conservar versiones activas y usadas por trabajos; superseder sin sobrescritura y retirar solo después de ausencia de consumidores.     |
+| Persistencia de layouts de impresión NEXO                           | `TSVC-SVC-003`       | `PARTIAL_CONFIGURATION_HISTORY`                        | Preservar identidad, versión, vigencia y referencias de uso; definir disposición física durante adopción.                               |
+| Registro de tokens push de empleados                                | `TSVC-SVC-004`       | `SENSITIVE_ADDRESSING_WITH_PARTIAL_LIFECYCLE`          | Revocar y retirar valores inválidos o fuera de finalidad; conservar referencia mínima, estado y auditoría, no el token indefinidamente. |
+| Flujo documental de ANIMA                                           | `TSVC-SVC-006`       | `APPLICATION_SCOPED_CUSTODY_WITHOUT_TRANSVERSE_POLICY` | Aplicar política de expediente y dominio; reconciliar objetos, metadatos, versiones, material local, backups y disposición.             |
+| Webhook de pagos                                                    | `TSVC-SVC-008`       | `PROVIDER_PAYLOAD_WITH_DOMAIN_SPECIFIC_RETENTION`      | Minimizar payload; conservar ID, firma, mapping, resultado, conciliación y evidencia exigida por el proceso propietario.                |
+| Webhook de RevenueCat                                               | `TSVC-SVC-008`       | `PROVIDER_PAYLOAD_WITH_DOMAIN_SPECIFIC_RETENTION`      | Conservar replay, mapping, estado y resultado necesarios; no adoptar la política del proveedor como regla VENTO.                        |
+
+La reconciliación no afirma que estos activos hayan sido migrados, limpiados, archivados o sometidos a una política física. Su transición corresponde a `TSVC-CAT-010` y a los paquetes de implementación autorizados.
+
+##### 3.32. Aplicación al carril `NEXO-REMISSIONS-001`
+
+| Servicio       | Aplicabilidad NEXO | Decisión de retención para remisiones                                                                                               | Condición previa a disposición                                                                             |
+| -------------- | ------------------ | ----------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `TSVC-SVC-001` | `OBLIGATORIA`      | Conservar operación, remisión, línea, idempotencia, resultado, intentos materiales, dead-letter y conciliación.                     | Remisión y trabajo terminales, sin hijo, resultado desconocido, incidente, diferencia ni hold.             |
+| `TSVC-SVC-002` | `OBLIGATORIA`      | Conservar eventos, versiones, consumidoras, ACK, causalidad y tombstone anti-replay.                                                | Todas las consumidoras terminales y orden causal conciliado.                                               |
+| `TSVC-SVC-003` | `CONDICIONAL`      | Conservar intención, ejemplar autorizado, layout, dispositivo, receipt, resultado físico y reemisión.                               | Resultado físico conocido o conciliado y evidencia necesaria preservada.                                   |
+| `TSVC-SVC-004` | `OBLIGATORIA`      | Conservar solicitud, destinataria por referencia, plantilla, canal, resultado y supresión; minimizar contenido y token.             | Entrega técnica terminal, efecto empresarial no dependiente y ausencia de incidente o hold.                |
+| `TSVC-SVC-005` | `OBLIGATORIA`      | Conservar fuente, versión, plantilla, documento, integridad, custodia y supersesión.                                                | Documento custodiado, obligación cerrada y política propietaria satisfecha.                                |
+| `TSVC-SVC-006` | `OBLIGATORIA`      | Conservar originales, fotografías, firmas, soportes, hash, lineage y acceso conforme al proceso de remisión.                        | Remisión, disputa, devolución, custodia, investigación y hold cerrados; todas las ubicaciones verificadas. |
+| `TSVC-SVC-007` | `OBLIGATORIA`      | Conservar evidencia por transición, actor, dispositivo, cantidades, condición, temperatura, recepción y diferencia.                 | Resultado empresarial y diferencias conciliados, sin investigación, obligación o hold.                     |
+| `TSVC-SVC-008` | `CONDICIONAL`      | Conservar IDs externos, mapping, ACK, resultado y conciliación si interviene proveedor o frontera externa; minimizar payload crudo. | Resultado externo final, conciliación y disposición del proveedor verificadas.                             |
+| `TSVC-SVC-009` | `CONDICIONAL`      | Conservar schedule, ocurrencia lógica, conciliación o vencimiento recurrente, operación hija y resultado.                           | Ocurrencia y trabajos hijos terminales, sin overlap, misfire abierto ni resultado desconocido.             |
+| `TSVC-SVC-010` | `OBLIGATORIA`      | Compactar heartbeats y conservar transiciones, periodos degradados, incidentes y retiro de workers del paquete.                     | Intervalos reconstruibles, incidentes cerrados y pipeline de observabilidad verificado.                    |
+
+Reglas específicas del carril:
+
+1. el número y versión de remisión, sus líneas y cantidades por etapa no se eliminan mientras exista obligación, custodia, diferencia, devolución, reclamo o conciliación;
+2. preparación, carga, despacho, recepción, aceptación, faltante, sobrante, daño y retorno conservan actores, momentos, cantidades y evidencia aplicables;
+3. la corrección crea un evento o versión vinculada;
+4. un buffer offline se retira solo después de receipt remoto, integridad, estado autoritativo, dependencias y conciliación;
+5. el spool de impresión se trata como transitorio, pero no se retira con resultado físico desconocido;
+6. una firma o fotografía conserva la política de evidencia, no la política breve de logs;
+7. una métrica de remisiones no se convierte en fuente de verdad ni sustituye líneas y eventos;
+8. un resultado técnico exitoso no habilita disposición del registro empresarial;
+9. no se fijan plazos numéricos sin fuente aprobada;
+10. ninguna capacidad se declara implementada por quedar definida en este registro.
+
+Reconciliación NEXO:
+
+| Clasificación | Cantidad |
+| ------------- | -------: |
+| Obligatorias  |        7 |
+| Condicionales |        3 |
+| Total         |       10 |
+
+##### 3.33. Reconciliación cuantitativa
+
+| Control                                                | Resultado |
+| ------------------------------------------------------ | --------: |
+| Servicios esperados                                    |        10 |
+| Servicios materializados                               |        10 |
+| Identificadores de servicio únicos                     |        10 |
+| Servicios faltantes                                    |         0 |
+| Servicios duplicados                                   |         0 |
+| Clases canónicas de retención                          |         9 |
+| Estados del ciclo de retención                         |         8 |
+| Grupos de material gobernado                           |        17 |
+| Eventos de ciclo definidos                             |        12 |
+| Acciones canónicas de disposición                      |        12 |
+| Servicios con decisión explícita de conservación       |        10 |
+| Servicios con decisión explícita de reducción o retiro |        10 |
+| Servicios con bloqueos explícitos                      |        10 |
+| Servicios en `DEFINED_NOT_IMPLEMENTED`                 |        10 |
+| Activos técnicos actuales reconciliados                |         7 |
+| Decisiones NEXO materializadas                         |        10 |
+| Plazos numéricos inventados                            |         0 |
+| Políticas físicas creadas                              |         0 |
+| Acciones de disposición ejecutadas                     |         0 |
+| Cambios físicos de Supabase                            |         0 |
+
+##### 3.34. Handoff obligatorio
+
+| Tarea posterior | Insumo recibido de `TSVC-CAT-009`                                                                                                                                                                     |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TSVC-CAT-010`  | Las nueve clases, ocho estados, diecisiete grupos, doce acciones, diez decisiones de servicio, siete activos actuales y gates que deberán gobernar adopción, coexistencia, migración y retiro legacy. |
+
+`TSVC-CAT-010` deberá preservar las políticas aquí definidas durante cualquier transición. No podrá retirar un activo legacy antes de reconciliar pendientes, consumidores, archivos, evidencia, material local, proveedor, backup y tombstones aplicables.
+
+---
+
+#### 4. Artefactos y entregables
+
+1. `TRANSVERSE-SERVICE-RETENTION-REGISTRY-001@1.0.0`.
+2. Separación contractual entre política, registro activo, archivo, backup, hold, anonimización, eliminación, tombstone, supersesión y limpieza.
+3. Catálogo de nueve clases canónicas de retención.
+4. Catálogo de ocho estados del ciclo de retención.
+5. Catálogo de diecisiete grupos de material gobernado.
+6. Sobre mínimo de política de retención.
+7. Catálogo de doce eventos que gobiernan el ciclo.
+8. Catálogo de doce acciones de disposición.
+9. Gate obligatorio de disposición y contrato de hold.
+10. Contrato mínimo de tombstone.
+11. Reglas de idempotencia, dead-letter, cuarentena y resultado desconocido.
+12. Reglas para observabilidad, auditoría, evidencia, backups, proveedores y operación local.
+13. Matriz materializada para `TSVC-SVC-001..010`.
+14. Perfil específico de cada uno de los diez servicios.
+15. Reconciliación de siete activos actuales.
+16. Aplicación completa al carril `NEXO-REMISSIONS-001`.
+17. Reconciliación cuantitativa sin faltantes ni duplicados.
+18. Handoff cerrado hacia `TSVC-CAT-010`.
+
+---
+
+#### 5. Requisitos de prueba
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa para los diez servicios transversales la política documental de retención, archivo, hold, tombstone, disposición y limpieza ya exigida por requisitos canónicos vigentes. No introduce un comportamiento empresarial adicional ni modifica alcance, estado, responsable, modalidad o relación de requisitos existentes.
+
+La cobertura vigente incluye, entre otros:
+
+- `TREQ-PROC-355` a `TREQ-PROC-389`, para trazabilidad, auditoría, retención, hold, eventos no destructivos, eliminación, backups, proveedores, material local y evidencia;
+- `TREQ-PROC-497`, para volumen, cardinalidad, muestreo, almacenamiento, transferencia, retención y costo de telemetría;
+- `TREQ-CONT-003` a `TREQ-CONT-006`, para contingencia, reconciliación, recuperación y evidencia;
+- `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-004`, `TREQ-INTEGRATION-019` y `TREQ-INTEGRATION-023`, para idempotencia, trazabilidad, estados, resultado recuperable, operación asincrónica y dependencias.
+
+La tarea genera:
+
+```text
+CREADOS = 0
+MODIFICADOS = 0
+DIFERIDOS = 0
+DESCARTADOS_U_OBSOLETOS = 0
+```
+
+El registro canónico `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` permanece sin cambios.
+
+---
+
+#### 6. Criterios de aceptación
+
+1. `TSVC-CAT-008` figura aprobada y `TSVC-CAT-009` corresponde a la continuidad vigente.
+2. El registro cubre exactamente `TSVC-SVC-001..010`.
+3. No existen servicios faltantes ni duplicados.
+4. Se conservan los diez contratos, owners, productoras, consumidoras, identidades, perfiles de confiabilidad, señales y modos de contingencia heredados.
+5. Se materializan nueve clases de retención sin inventar una taxonomía competidora.
+6. Se materializan ocho estados del ciclo y no existe eliminación directa automática desde `ACTIVE`.
+7. Se materializan diecisiete grupos de material con finalidad y regla principal.
+8. Se definen doce eventos y doce acciones de disposición.
+9. Archivo, backup, hold, anonimización, eliminación, supersesión y tombstone permanecen diferenciados.
+10. Vencimiento no equivale a autorización de eliminación.
+11. No se inventan plazos numéricos sin fuente legal, contractual, empresarial u operativa aprobada.
+12. `RESULT_UNKNOWN`, `RECONCILIATION_REQUIRED`, dead-letter, cuarentena, incidente, investigación, disputa, obligación, dependencia y hold bloquean disposición incompatible.
+13. La caducidad de una clave no autoriza reutilización semántica.
+14. El tombstone mínimo no permite reconstruir contenido retirado.
+15. El detalle operacional puede compactarse sin eliminar auditoría, resultado, anomalías o evidencia necesaria.
+16. Logs, trazas, métricas, alertas y auditoría mantienen políticas separadas.
+17. Los valores secretos no se retienen dentro del registro ordinario.
+18. El backup no se presenta como archivo ni fuente de verdad.
+19. La restauración respeta unidades previamente dispuestas.
+20. La política del proveedor no sustituye la política VENTO.
+21. La disposición externa permanece abierta hasta obtener estado y evidencia suficientes.
+22. El material local no se retira antes de receipt, estado autoritativo y conciliación.
+23. Las diez filas de servicio declaran clases, material preservado, material reducible, bloqueos y estado.
+24. Los diez servicios permanecen `DEFINED_NOT_IMPLEMENTED`.
+25. Los siete activos actuales se clasifican sin afirmar migración ni cumplimiento.
+26. NEXO conserva siete capacidades obligatorias y tres condicionales.
+27. El carril NEXO no pierde cantidades, custodia, firmas, evidencia, diferencias, retornos ni historia por limpieza técnica.
+28. Se declaran cero cambios `TREQ-*` con justificación concreta.
+29. No se crea una nueva versión del registro `04A`.
+30. No se modifican código, datos, Storage, Supabase, migraciones, workers, colas, proveedores, dispositivos, configuración ni despliegues.
+31. `TSVC-CAT-010` permanece exclusivamente reservada.
+
+---
+
+#### 7. Dependencias y entradas
+
+##### 7.1. Fuentes canónicas
+
+- `docs/plan-canonico/modular/01_PROTOCOLO.md`;
+- `docs/plan-canonico/modular/delivery-contract.json`;
+- `docs/plan-canonico/modular/active-sequence.json`;
+- `docs/plan-canonico/modular/execution-route.json`;
+- `docs/plan-canonico/modular/continuity-route.json`;
+- `docs/plan-canonico/modular/priority-route-progress.json`;
+- `docs/plan-canonico/modular/priority-delivery-lanes.json`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/00_INTRO.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/01_PRINCIPIO_DE_PROPIEDAD.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/02_CATALOGO_DE_SERVICIOS_TRANSVERSALES.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`;
+- `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/07_SALIDA_OBLIGATORIA.md`;
+- `docs/plan-canonico/modular/bloques/E2_PROCESOS_Y_EXPERIENCIA/07_02_PRIVACIDAD_TRAZABILIDAD_Y_ACCESIBILIDAD.md`;
+- versión canónica vigente de `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`;
+- `package.json` y `scripts/docs/validate-task-delivery.mjs`.
+
+##### 7.2. Tareas y decisiones heredadas
+
+- `TSVC-CAT-001` — diez identidades, cuatro servicios parciales, seis faltantes y siete activos actuales;
+- `TSVC-CAT-002` — owner técnico, repositorio y gobierno;
+- `TSVC-CAT-003` — productoras, consumidoras y aplicabilidad NEXO;
+- `TSVC-CAT-004` — contrato, versión y compatibilidad;
+- `TSVC-CAT-005` — identidad técnica, referencia de credencial y mínimo privilegio;
+- `TSVC-CAT-006` — idempotencia, replay, intentos, receipts, dead-letter y resultado desconocido;
+- `TSVC-CAT-007` — métricas, logs, trazas, auditoría, alertas y health;
+- `TSVC-CAT-008` — contingencia, degradación, buffers, folios, recuperación y conciliación;
+- `NFR-REQ-006` — privacidad, trazabilidad, auditoría, retención y reconstrucción;
+- carril prioritario `NEXO-REMISSIONS-001`.
+
+##### 7.3. Restricción de evidencia
+
+Esta definición no demuestra:
+
+- política física creada;
+- periodo legal o contractual validado;
+- lifecycle configurado;
+- archivo protegido disponible;
+- backup alineado con manifiestos de disposición;
+- hold aplicado;
+- job de limpieza desplegado;
+- anonimización irreversible ejecutada;
+- eliminación física verificada;
+- evidencia obtenida de proveedor;
+- material local retirado;
+- activo legacy migrado;
+- validación remota, operativa, legal o de dispositivo.
+
+Todas esas afirmaciones requieren implementación, autoridad y evidencia de las tareas y paquetes propietarios.
+
+---
+
+#### 8. Declaraciones expresamente no realizadas
+
+Esta tarea no declara:
+
+- plazos universales de conservación;
+- interpretación legal, fiscal, laboral o contractual definitiva;
+- selección de proveedor o tier de archivo;
+- tablas de retención implementadas;
+- Storage lifecycle activo;
+- particiones o índices creados;
+- cron o scheduler de limpieza disponible;
+- eliminación productiva ejecutada;
+- anonimización ejecutada;
+- destrucción de claves ejecutada;
+- archivos históricos migrados;
+- backups depurados;
+- holds reales creados o liberados;
+- proveedores externos notificados;
+- evidencia de disposición remota;
+- activos actuales retirados;
+- cumplimiento operativo o productivo.
+
+---
+
+#### 9. Continuidad canónica del bloque
+
+```text
+ÚLTIMA TAREA APROBADA
+TSVC-CAT-008 — Definir contingencia y degradación controlada
+        ↓
+TAREA ACTUAL APROBADA
+TSVC-CAT-009 — Definir retención, archivado y limpieza
+        ↓
+SIGUIENTE TAREA RESERVADA
+TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy
+```
+
+
 ### [ ] TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy

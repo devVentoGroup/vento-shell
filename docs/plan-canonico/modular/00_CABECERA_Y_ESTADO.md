@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **501** |
+| Tareas aprobadas | **502** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1093** |
+| Tareas no iniciadas | **1092** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **31.43% (501/1594)** |
+| Porcentaje de completamiento | **31.49% (502/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TSVC-CAT-008 — Definir contingencia y degradación controlada** |
-| Tarea actual | **TSVC-CAT-009 — Definir retención, archivado y limpieza** |
+| Última tarea aprobada | **TSVC-CAT-009 — Definir retención, archivado y limpieza** |
+| Tarea actual | **TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy** |
+| Siguiente tarea | **AUTH-UI-030 — Asignar permiso de lectura a cada vista** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 7: TRANSVERSE_SERVICE_CATALOG** |
-| Progreso del bloque | **CARRIL NEXO: 8 de 10 aprobadas; TSVC-CAT-009 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 9 de 10 aprobadas; TSVC-CAT-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TSVC-CAT-008` — Definir contingencia y degradación controlada |
-| Tarea actual | `TSVC-CAT-009` — Definir retención, archivado y limpieza — **NO INICIADA** |
-| Siguiente tarea | `TSVC-CAT-010` — Definir adopción progresiva y retiro de soluciones legacy |
+| Última aprobada | `TSVC-CAT-009` — Definir retención, archivado y limpieza |
+| Tarea actual | `TSVC-CAT-010` — Definir adopción progresiva y retiro de soluciones legacy — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-030` — Asignar permiso de lectura a cada vista |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 8 DE 10 APROBADAS — ACTUAL TSVC-CAT-009** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 9 DE 10 APROBADAS — ACTUAL TSVC-CAT-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TSVC-CAT-008 — Definir contingencia y degradación controlada
-        ↓
-TAREA ACTUAL
 TSVC-CAT-009 — Definir retención, archivado y limpieza
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 TSVC-CAT-010 — Definir adopción progresiva y retiro de soluciones legacy
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-030 — Asignar permiso de lectura a cada vista
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 8 de 10 tareas aprobadas
+CARRIL NEXO — 9 de 10 tareas aprobadas
 ```
