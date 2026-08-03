@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **511** |
+| Aprobadas | **512** |
 | En propuesta | **0** |
-| No iniciadas | **1083** |
+| No iniciadas | **1082** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **32.06% (511/1594)** |
+| Porcentaje de completamiento | **32.12% (512/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-037` — Definir si admite simulación | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-038` — Definir campos sensibles visibles | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-UI-039` — Definir masking según permiso | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-038` — Definir campos sensibles visibles | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-039` — Definir masking según permiso | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DEV-001` — Inventariar dispositivos compartidos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -844,7 +844,7 @@
 | ✅ APROBADA | `AUTH-UI-035` | Definir si requiere área | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ✅ APROBADA | `AUTH-UI-036` | Definir si admite dispositivo compartido | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ✅ APROBADA | `AUTH-UI-037` | Definir si admite simulación | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
-| ⬜ NO INICIADA | `AUTH-UI-038` | Definir campos sensibles visibles | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
+| ✅ APROBADA | `AUTH-UI-038` | Definir campos sensibles visibles | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-039` | Definir masking según permiso | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-040` | Ocultar enlaces no autorizados | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-041` | Bloquear acceso directo por URL | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
