@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **509** |
+| Aprobadas | **510** |
 | En propuesta | **0** |
-| No iniciadas | **1085** |
+| No iniciadas | **1084** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **31.93% (509/1594)** |
+| Porcentaje de completamiento | **31.99% (510/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-035` — Definir si requiere área | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-036` — Definir si admite dispositivo compartido | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-UI-037` — Definir si admite simulación | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-036` — Definir si admite dispositivo compartido | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-037` — Definir si admite simulación | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-UI-038` — Definir campos sensibles visibles | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -842,7 +842,7 @@
 | ✅ APROBADA | `AUTH-UI-033` | Definir si requiere check-in | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ✅ APROBADA | `AUTH-UI-034` | Definir si requiere sede | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ✅ APROBADA | `AUTH-UI-035` | Definir si requiere área | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
-| ⬜ NO INICIADA | `AUTH-UI-036` | Definir si admite dispositivo compartido | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
+| ✅ APROBADA | `AUTH-UI-036` | Definir si admite dispositivo compartido | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-037` | Definir si admite simulación | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-038` | Definir campos sensibles visibles | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-039` | Definir masking según permiso | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |

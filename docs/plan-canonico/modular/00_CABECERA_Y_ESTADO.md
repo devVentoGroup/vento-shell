@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **509** |
+| Tareas aprobadas | **510** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1085** |
+| Tareas no iniciadas | **1084** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **31.93% (509/1594)** |
+| Porcentaje de completamiento | **31.99% (510/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-035 — Definir si requiere área** |
-| Tarea actual | **AUTH-UI-036 — Definir si admite dispositivo compartido** |
+| Última tarea aprobada | **AUTH-UI-036 — Definir si admite dispositivo compartido** |
+| Tarea actual | **AUTH-UI-037 — Definir si admite simulación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-037 — Definir si admite simulación** |
+| Siguiente tarea | **AUTH-UI-038 — Definir campos sensibles visibles** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 8: AUTH_UI_CONTRACT** |
-| Progreso del bloque | **CARRIL NEXO: 6 de 10 aprobadas; AUTH-UI-036 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 7 de 10 aprobadas; AUTH-UI-037 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-035` — Definir si requiere área |
-| Tarea actual | `AUTH-UI-036` — Definir si admite dispositivo compartido — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-037` — Definir si admite simulación |
+| Última aprobada | `AUTH-UI-036` — Definir si admite dispositivo compartido |
+| Tarea actual | `AUTH-UI-037` — Definir si admite simulación — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-038` — Definir campos sensibles visibles |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 6 DE 10 APROBADAS — ACTUAL AUTH-UI-036** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 7 DE 10 APROBADAS — ACTUAL AUTH-UI-037** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-035 — Definir si requiere área
-        ↓
-TAREA ACTUAL
 AUTH-UI-036 — Definir si admite dispositivo compartido
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-UI-037 — Definir si admite simulación
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-038 — Definir campos sensibles visibles
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 6 de 10 tareas aprobadas
+CARRIL NEXO — 7 de 10 tareas aprobadas
 ```
