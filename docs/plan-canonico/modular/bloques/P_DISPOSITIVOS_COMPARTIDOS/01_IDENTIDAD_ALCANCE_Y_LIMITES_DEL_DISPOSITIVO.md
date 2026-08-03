@@ -1761,6 +1761,748 @@ Se incorporan `TREQ-AUTH-030` a `TREQ-AUTH-038` en el Registro Canónico de Requ
 `AUTH-DEV-004 — Asignar área fija o permitida`
 
 
-### [ ] AUTH-DEV-004 — Asignar área fija o permitida
+### ✅ AUTH-DEV-004 — Asignar área fija o permitida
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-DEV-003 — Asignar sede fija` — APROBADA
+**Tarea siguiente:** `AUTH-DEV-005 — Asignar aplicaciones permitidas` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de política de área fija o permitida y matriz materializada para instancias, observaciones y plantillas de dispositivo compartido
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md`
+**Artefactos producidos:** `SHARED-DEVICE-AREA-POLICY-CONTRACT-001` y `SHARED-DEVICE-AREA-BINDING-REGISTER-001`
+**Inventario consumido:** `SHARED-DEVICE-INVENTORY-001`, `SHARED-DEVICE-IDENTITY-CONTRACT-001` y `SHARED-DEVICE-FIXED-SITE-CONTRACT-001` — 19 claves
+**Cambios en código, Supabase, migraciones, RLS, RPC, configuración, datos, aplicaciones o dispositivos:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Definir para cada dispositivo compartido una política de área explícita, subordinada a su sede fija y resuelta en servidor, distinguiendo entre:
+
+- un área operativa fija;
+- un conjunto cerrado de áreas operativas permitidas;
+- un área base de custodia para terminales móviles;
+- un área fija con comportamiento distinto entre carril operativo y administrativo;
+- un área exclusivamente física o propietaria;
+- una referencia observada que todavía no constituye asignación;
+- una política de plantilla que todavía no constituye instancia.
+
+La política de área limita dónde puede participar el dispositivo. No crea el área activa del trabajador, no amplía el alcance del permiso y no convierte una selección visual en autoridad.
+
+```text
+ÁREA DEL DISPOSITIVO
+≠
+ÁREA DEL ACTOR
+≠
+ÁREA DEL RECURSO
+≠
+ÁREA SELECCIONADA
+≠
+UBICACIÓN MOMENTÁNEA
+```
+
+---
+
+#### 2. Resultado material
+
+Se aprueban:
+
+1. `SHARED-DEVICE-AREA-POLICY-CONTRACT-001`, que define modos, cardinalidad, resolución, vigencia, cambio, conflicto, auditoría e intersección con actor y recurso;
+2. `SHARED-DEVICE-AREA-BINDING-REGISTER-001`, que materializa una decisión única para las 19 claves heredadas.
+
+Resultado de cobertura:
+
+| Resultado                                               | Cantidad |
+| ------------------------------------------------------- | -------: |
+| Claves heredadas evaluadas                              |       19 |
+| Instancias con área registral candidata                 |        2 |
+| Observaciones sin asignación autoritativa               |        2 |
+| Plantillas con política de área definida                |       14 |
+| Plantillas retiradas sin nuevas asignaciones            |        1 |
+| Plantillas de área operativa fija                       |        9 |
+| Plantillas de conjunto explícito permitido              |        2 |
+| Plantillas con área base de custodia                    |        1 |
+| Plantillas mixtas de área fija                          |        1 |
+| Plantillas con área exclusivamente física o propietaria |        1 |
+| Asignaciones o expansiones creadas por inferencia       |        0 |
+
+Distribución contractual:
+
+```text
+19 claves
+= 2 REGISTERED_UNVERIFIED
++ 2 OBSERVED_ONLY
++ 14 POLICY_DEFINED
++ 1 NO_APLICA
+```
+
+---
+
+#### 3. Base normativa y técnica
+
+La tarea conserva las decisiones aprobadas en:
+
+- `AUTH-MOD-007`, `AUTH-MOD-008`, `AUTH-MOD-011` y `AUTH-MOD-018`;
+- `AUTH-CAT-013` y `AUTH-CAT-014`;
+- `AUTH-RBAC-023`;
+- `AUTH-CTX-013`, `AUTH-CTX-014`, `AUTH-CTX-015`, `AUTH-CTX-018`, `AUTH-CTX-020` y `AUTH-CTX-024`;
+- `UX-STATION-001`, `UX-STATION-003`, `UX-STATION-004` y `UX-STATION-009`;
+- `AUTH-DEV-001`, `AUTH-DEV-002` y `AUTH-DEV-003`.
+
+Se reconoce el estado técnico existente:
+
+- `public.shared_operational_devices.area_id` es nullable y permite representar una sola referencia registral;
+- el trigger actual comprueba que `area_id` pertenezca a `site_id`;
+- la tabla no representa conjuntos de áreas permitidas;
+- la tabla no conserva versiones, vigencia, estado, fuente o evidencia del vínculo de área;
+- `current_shared_operational_device_v1()` expone `area_id` sin demostrar política, vigencia o verificación;
+- las sesiones y eventos contienen `area_id`, pero la estructura mostrada no prueba que ese valor pertenezca a la política vigente del dispositivo;
+- la semántica de `area_id = null` no materializa por sí sola un contrato seguro;
+- las dos instancias auditadas ya contienen referencias registrales de Caja y Bodega, sin evidencia suficiente para declararlas físicamente verificadas.
+
+La coherencia registral área–sede es necesaria, pero no suficiente para conformidad operativa.
+
+---
+
+#### 4. Principio de subordinación territorial
+
+Toda política de área vigente deberá pertenecer al vínculo de sede fija vigente del mismo dispositivo.
+
+```text
+DEVICE_ID
+→ SITE_BINDING_ID VIGENTE
+→ AREA_POLICY_BINDING_ID VIGENTE
+→ ÁREA FIJA O CONJUNTO EXPLÍCITO
+```
+
+Reglas:
+
+1. ninguna área podrá pertenecer a otra sede;
+2. un cambio de sede invalida la política de área anterior;
+3. la sede no permite automáticamente todas sus áreas;
+4. un tipo, nombre, prefijo o jerarquía de área no crea membresía implícita;
+5. `null` no significa todas las áreas ni toda la sede;
+6. una política ausente, múltiple o ambigua bloquea acciones empresariales dependientes de área.
+
+---
+
+#### 5. Modos canónicos de área
+
+| Modo                      | Cardinalidad | Semántica                                                                                                                                   |
+| ------------------------- | -----------: | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `OPERATIONAL_FIXED_EXACT` |            1 | El dispositivo está fijado a un `area_id` operativo exacto y toda acción operativa exige compatibilidad con esa área.                       |
+| `OPERATIONAL_ALLOWED_SET` |         1..N | El dispositivo puede participar únicamente en un conjunto cerrado de `area_id` exactos; cada acción resuelve una sola área efectiva.        |
+| `HOME_AREA_EXACT`         |            1 | La terminal móvil conserva un área base de propiedad o custodia; ruta, vehículo, origen, destino y ubicación se resuelven separadamente.    |
+| `MIXED_FIXED_EXACT`       |            1 | El carril operativo exige coincidencia exacta con el área fija; el carril administrativo conserva exclusivamente el alcance real del actor. |
+| `PHYSICAL_OWNERSHIP_ONLY` |            1 | El área identifica ubicación física, custodia o propiedad; no concede ni limita por sí sola cobertura administrativa.                       |
+| `NO_APLICA`               |            0 | No existe instancia administrada susceptible de recibir un vínculo de área.                                                                 |
+
+No se admite un modo equivalente a `SITE_WIDE`, `ALL_AREAS`, wildcard o área desconocida permisiva.
+
+---
+
+#### 6. Contratos conceptuales
+
+```ts
+type SharedDeviceAreaPolicyBinding = {
+  area_policy_binding_id: string;
+  device_id: string;
+  site_binding_id: string;
+  policy_mode:
+    | "OPERATIONAL_FIXED_EXACT"
+    | "OPERATIONAL_ALLOWED_SET"
+    | "HOME_AREA_EXACT"
+    | "MIXED_FIXED_EXACT"
+    | "PHYSICAL_OWNERSHIP_ONLY";
+  binding_state:
+    | "PENDING_VERIFICATION"
+    | "CURRENT"
+    | "CONFLICTED"
+    | "SUSPENDED"
+    | "SUPERSEDED"
+    | "REVOKED";
+  effective_from: string;
+  effective_until: string | null;
+  source: string;
+  reason_code: string;
+  evidence_reference: string | null;
+  assigned_by: string;
+  verified_by: string | null;
+  verified_at: string | null;
+};
+```
+
+```ts
+type SharedDeviceAreaPolicyMember = {
+  area_policy_member_id: string;
+  area_policy_binding_id: string;
+  area_id: string;
+  member_role: "FIXED" | "ALLOWED" | "HOME" | "PHYSICAL";
+  member_state: "PENDING_VERIFICATION" | "CURRENT" | "REMOVED";
+  effective_from: string;
+  effective_until: string | null;
+};
+```
+
+```ts
+type SharedDeviceTemplateAreaPolicy = {
+  template_code: string;
+  template_version: string;
+  policy_mode:
+    | "OPERATIONAL_FIXED_EXACT"
+    | "OPERATIONAL_ALLOWED_SET"
+    | "HOME_AREA_EXACT"
+    | "MIXED_FIXED_EXACT"
+    | "PHYSICAL_OWNERSHIP_ONLY"
+    | "NO_APLICA";
+  assignment_requirement:
+    | "REQUIRED_AT_INSTANCE_CREATION"
+    | "PROHIBITED_FOR_NEW_INSTANCE";
+  minimum_members: number;
+  maximum_members: number | null;
+  functional_constraint: string;
+};
+```
+
+Estas formas son contractuales. La arquitectura física podrá normalizarlas sin perder identidad, cardinalidad, historia, pertenencia a sede, evidencia ni efecto restrictivo.
+
+---
+
+#### 7. Cardinalidad y unicidad
+
+Para una instancia administrada:
+
+- existirá como máximo una política vigente;
+- `OPERATIONAL_FIXED_EXACT`, `HOME_AREA_EXACT`, `MIXED_FIXED_EXACT` y `PHYSICAL_OWNERSHIP_ONLY` tendrán exactamente un miembro vigente;
+- `OPERATIONAL_ALLOWED_SET` tendrá uno o más miembros vigentes y sin duplicados;
+- ningún `area_id` aparecerá dos veces dentro del mismo conjunto;
+- una política histórica no se reactivará cambiando fechas;
+- los periodos vigentes no se superpondrán;
+- una reducción o ampliación del conjunto producirá una versión nueva;
+- una plantilla y una observación no reciben miembros concretos mientras no exista una instancia administrada.
+
+---
+
+#### 8. Resolución autoritativa
+
+La resolución seguirá esta cadena:
+
+```text
+PRINCIPAL TÉCNICO VÁLIDO
+→ DEVICE_ID EXACTO
+→ VÍNCULO DE SEDE VIGENTE
+→ POLÍTICA DE ÁREA VIGENTE ÚNICA
+→ MIEMBROS EXPLÍCITOS Y VIGENTES
+→ ÁREAS ACTIVAS DE LA MISMA SEDE
+```
+
+No podrán crear, ampliar ni sustituir la política:
+
+- el código o la etiqueta del dispositivo;
+- el código, nombre o tipo del área;
+- la plantilla por sí sola;
+- la aplicación abierta;
+- el rol de navegación;
+- el trabajador anterior;
+- la sede seleccionada;
+- un valor enviado por el cliente;
+- una observación física;
+- GPS, IP, red, hostname o ubicación momentánea;
+- la primera área de la sede;
+- el padre o los hijos de un área;
+- `area_id` de una sesión sin validación completa.
+
+Cero políticas o más de una política autoritativa producen fail closed.
+
+---
+
+#### 9. Área operativa fija
+
+En `OPERATIONAL_FIXED_EXACT`:
+
+```text
+actor_effective_area_id
+=
+device_fixed_area_id
+=
+resource_area_id compatible
+```
+
+Reglas:
+
+- el dispositivo no crea el área del actor;
+- el actor de otra área no adquiere autoridad por usar el dispositivo;
+- un recurso de otra área no se vuelve compatible por estar visible;
+- el área fija puede denegar, pero nunca producir `ALLOW` por sí sola;
+- la sesión del actor deberá cerrarse si la política deja de estar vigente;
+- un área física distinta de la registral deberá producir conflicto hasta reconciliación.
+
+Este modo se aplica a terminales especializadas de caja, barra, cocina, servicio, mostrador, producción y bodega.
+
+---
+
+#### 10. Conjunto explícito de áreas permitidas
+
+`OPERATIONAL_ALLOWED_SET` define un techo cerrado, no una suma de autoridades.
+
+Para cada acción:
+
+```text
+actor_effective_area_id ∈ device_allowed_area_ids
+AND
+resource_area_id compatible con actor_effective_area_id
+```
+
+Reglas:
+
+1. cada acción se evalúa contra una sola área efectiva;
+2. pertenecer al conjunto no permite actuar simultáneamente como varias áreas;
+3. la unión del conjunto no se transfiere al trabajador;
+4. no existe herencia automática por tipo, padre, hijo, etiqueta o sede;
+5. una selección frontend solo podrá solicitar un área candidata;
+6. el servidor deberá comprobar actor, turno, check-in, recurso y membresía;
+7. retirar un miembro invalida sesiones, contexto y decisiones relacionadas con esa área;
+8. añadir un miembro no concede permisos ni aplicaciones y exige verificación.
+
+Este modo se aplica a `integrated_satellite` y `operations_management_terminal`.
+
+---
+
+#### 11. Área base de terminal móvil
+
+`logistics_vehicle_terminal` utilizará `HOME_AREA_EXACT`.
+
+El área base:
+
+- pertenece a la sede base definida en `AUTH-DEV-003`;
+- identifica administración, despacho, custodia o devolución del equipo;
+- permanece estable durante rutas ordinarias;
+- no se reemplaza por vehículo, ruta, origen, destino o geolocalización;
+- no concede acceso a todas las áreas visitadas;
+- no obliga a reinterpretar cada acción logística como si ocurriera dentro del área base;
+- se combina con los contratos específicos del recurso, del actor y del paso logístico.
+
+El movimiento fuera del área base no reescribe el vínculo. Un cambio permanente de custodia sí exige una nueva versión y verificación.
+
+---
+
+#### 12. Terminal mixta de recepción
+
+`procurement_reception` utilizará `MIXED_FIXED_EXACT` con el área receptora exacta de su sede.
+
+En modo operativo:
+
+- actor, dispositivo y recepción deberán ser compatibles con el área fija;
+- la recepción no prestará área al trabajador;
+- el recurso deberá corresponder al flujo y territorio autorizados.
+
+En modo administrativo:
+
+- el actor conserva únicamente su cobertura base real;
+- el área física no amplía ni reduce automáticamente esa cobertura;
+- una capacidad administrativa no se convierte en recepción operativa;
+- el cambio de modo exige nueva evaluación de actor, aplicación, permiso, recurso y contexto.
+
+---
+
+#### 13. Terminal administrativa
+
+`management_terminal` utilizará `PHYSICAL_OWNERSHIP_ONLY`.
+
+El área:
+
+- identifica ubicación, propiedad o custodia física;
+- no crea cobertura administrativa;
+- no convierte un actor local en actor organizacional;
+- no permite consultar o modificar recursos fuera del alcance real del actor;
+- no se utiliza como fallback del territorio del recurso;
+- puede participar como evidencia de seguridad o restricción adicional cuando un permiso lo declare expresamente.
+
+---
+
+#### 14. Intersección con actor y recurso
+
+Para acciones operativas:
+
+```text
+ÁREA OPERATIVA DEL ACTOR
+∩
+ÁREA FIJA O CONJUNTO PERMITIDO DEL DISPOSITIVO
+∩
+ÁREA O TERRITORIO DEL RECURSO
+=
+ÁREA EVALUABLE
+```
+
+Nunca:
+
+```text
+ÁREA DEL ACTOR
+∪
+ÁREAS DEL DISPOSITIVO
+```
+
+La política del dispositivo es un límite adicional. No sustituye turno, check-in, rol operativo, asignación laboral, permiso, sensibilidad ni reglas del recurso.
+
+---
+
+#### 15. Plantillas e instanciación
+
+Una plantilla declara una política y una restricción funcional; la instancia recibe miembros concretos.
+
+```text
+PLANTILLA
+→ MODO + CARDINALIDAD + RESTRICCIÓN FUNCIONAL
+
+INSTANCIA
+→ AREA_ID O CONJUNTO EXACTO
+```
+
+Reglas:
+
+- la plantilla no tendrá `area_id` concretos;
+- dos instancias de una plantilla pueden usar áreas distintas dentro de sus sedes fijas;
+- la creación sin miembros válidos quedará bloqueada;
+- un conjunto permitido se define por IDs exactos, no por texto o tipo;
+- cambiar de plantilla no modifica silenciosamente la política;
+- la instancia puede ser más restrictiva que su plantilla, nunca más amplia;
+- la plantilla retirada no admite nuevas políticas.
+
+---
+
+#### 16. Observaciones físicas
+
+Las referencias `SERVICIO` de Vento Café y Saudo son evidencia observada, no asignaciones autoritativas.
+
+Para convertir una observación en política de área se deberá completar:
+
+1. reconciliación de identidad;
+2. decisión de vincular o crear una instancia;
+3. enrolamiento y deduplicación;
+4. vínculo de sede fijo vigente;
+5. identificación del activo o estación cuando corresponda;
+6. selección autorizada del modo;
+7. selección de `area_id` exactos y pertenecientes a la sede;
+8. verificación física y registral;
+9. registro de fuente, evidencia y actor administrativo.
+
+Hasta entonces permanecen `OBSERVED_ONLY` y no reciben área por inferencia.
+
+---
+
+#### 17. Cambios de área y de conjunto
+
+Un cambio no será una edición silenciosa de `area_id` ni una mutación del arreglo vigente.
+
+Flujo obligatorio:
+
+```text
+SOLICITUD AUTORIZADA
+→ SUSPENDER ACCIONES EMPRESARIALES AFECTADAS
+→ TERMINAR SESIONES DE ACTOR
+→ INVALIDAR CONTEXTO, CACHÉS Y DECISIONES
+→ CERRAR POLÍTICA ANTERIOR
+→ CREAR NUEVA POLÍTICA PENDING_VERIFICATION
+→ VERIFICAR SEDE, ÁREAS, ACTIVO O ESTACIÓN
+→ REVALIDAR PLANTILLA, APPS Y PAQUETE MÁXIMO
+→ ACTIVAR NUEVA POLÍTICA
+```
+
+Se conservarán política y miembros anteriores, motivo, actor administrativo, fechas, evidencia y resultado de invalidación.
+
+Una modificación de sede ejecutada conforme a `AUTH-DEV-003` obliga a cerrar la política de área anterior y crear otra bajo la nueva sede.
+
+---
+
+#### 18. Conflictos
+
+Constituyen conflicto, como mínimo:
+
+- dos políticas vigentes para el mismo dispositivo;
+- cardinalidad incompatible con el modo;
+- miembro duplicado;
+- área inexistente, inactiva o no asignable;
+- área perteneciente a otra sede;
+- vínculo de sede reemplazado mientras la política de área permanece vigente;
+- área fija incompatible con activo o estación verificados;
+- conjunto ampliado sin decisión autorizada;
+- sesión o evento que declara un área fuera de la política;
+- cliente que intenta enviar un área no permitida;
+- plantilla incompatible con la política materializada;
+- área reparentada o reclasificada sin revisión de compatibilidad.
+
+Resultado:
+
+```text
+binding_state = CONFLICTED
+→ bloquear acciones empresariales
+→ conservar operaciones técnicas mínimas
+→ terminar sesiones incompatibles
+→ invalidar contexto y decisiones
+→ conservar evidencia
+→ exigir reconciliación autorizada
+```
+
+No se elegirá la primera área, la más reciente, la del último actor ni la enviada por el cliente.
+
+---
+
+#### 19. Matriz completa de las 19 claves
+
+| `inventory_key`                                              | Clase                     | Decisión de área                                | Área fija, referencia o restricción                                  | Modo                           | Estado                  | Regla y bloqueo                                                                                                                                                                              | Destino exacto                             |
+| ------------------------------------------------------------ | ------------------------- | ----------------------------------------------- | -------------------------------------------------------------------- | ------------------------------ | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `configured_device:CAJA_VENTO_CAFE_01`                       | `CONFIGURED_INSTANCE`     | `CONSERVAR_AREA_REGISTRAL_COMO_CANDIDATA`       | VENTO_CAFE / Caja                                                    | `OPERATIONAL_FIXED_EXACT`      | `REGISTERED_UNVERIFIED` | La fila técnica contiene una referencia de Caja coherente con la sede registral. No queda verificada hasta correlacionar identidad, endpoint, activo o estación, ubicación y área vigente.   | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-015` |
+| `configured_device:KIOSCO_BODEGA_CP`                         | `CONFIGURED_INSTANCE`     | `CONSERVAR_AREA_REGISTRAL_COMO_CANDIDATA`       | CENTRO_PROD / Bodega                                                 | `OPERATIONAL_FIXED_EXACT`      | `REGISTERED_UNVERIFIED` | La fila técnica contiene una referencia de Bodega coherente con la sede registral. No queda verificada hasta correlacionar identidad, endpoint, activo o estación, ubicación y área vigente. | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014` |
+| `physical_observation:VENTO_CAFE/SERVICIO/tablet_compartida` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_AREA_ID_POR_OBSERVACION`            | Vento Café / Servicio, referencia observada                          | `NO_APLICA_HASTA_ENROLAMIENTO` | `OBSERVED_ONLY`         | La observación no demuestra instancia, cantidad de equipos, activo, estación ni área autoritativa exacta.                                                                                    | `AUTH-DEV-014; AUTH-DEV-015`               |
+| `physical_observation:SAUDO/SERVICIO/dispositivo_compartido` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_AREA_ID_POR_OBSERVACION`            | Saudo / Servicio, referencia observada                               | `NO_APLICA_HASTA_ENROLAMIENTO` | `OBSERVED_ONLY`         | La observación no demuestra tipo, cantidad, identidad técnica, activo, estación ni área autoritativa exacta.                                                                                 | `AUTH-DEV-014; AUTH-DEV-015`               |
+| `target_template:pos_satellite`                              | `TARGET_TEMPLATE`         | `EXIGIR_AREA_FIJA_EXACTA_AL_CREAR_INSTANCIA`    | Área exacta de caja aprobada dentro de la sede fija                  | `OPERATIONAL_FIXED_EXACT`      | `POLICY_DEFINED`        | Una instancia tendrá un solo `area_id` de caja. El código, nombre o plantilla no seleccionan el área.                                                                                        | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:bar_satellite`                              | `TARGET_TEMPLATE`         | `EXIGIR_AREA_FIJA_EXACTA_AL_CREAR_INSTANCIA`    | Área exacta de barra aprobada dentro de la sede fija                 | `OPERATIONAL_FIXED_EXACT`      | `POLICY_DEFINED`        | La instancia queda limitada al área de barra concreta; no hereda otras áreas de la sede.                                                                                                     | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:kitchen_satellite`                          | `TARGET_TEMPLATE`         | `EXIGIR_AREA_FIJA_EXACTA_AL_CREAR_INSTANCIA`    | Área exacta de cocina satélite aprobada dentro de la sede fija       | `OPERATIONAL_FIXED_EXACT`      | `POLICY_DEFINED`        | La instancia queda limitada a una cocina concreta; no se selecciona por coincidencia textual.                                                                                                | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:service_satellite`                          | `TARGET_TEMPLATE`         | `EXIGIR_AREA_FIJA_EXACTA_AL_CREAR_INSTANCIA`    | Área exacta de servicio aprobada dentro de la sede fija              | `OPERATIONAL_FIXED_EXACT`      | `POLICY_DEFINED`        | La instancia requiere un área de servicio exacta y no se deriva de las observaciones físicas existentes.                                                                                     | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:counter_satellite`                          | `TARGET_TEMPLATE`         | `EXIGIR_AREA_FIJA_EXACTA_AL_CREAR_INSTANCIA`    | Área exacta de mostrador aprobada dentro de la sede fija             | `OPERATIONAL_FIXED_EXACT`      | `POLICY_DEFINED`        | La instancia queda limitada al mostrador concreto y no obtiene cobertura de salón, caja o servicio por proximidad.                                                                           | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:integrated_satellite`                       | `TARGET_TEMPLATE`         | `EXIGIR_CONJUNTO_EXPLICITO_AL_CREAR_INSTANCIA`  | Uno o más `area_id` exactos, sin wildcard y dentro de la sede fija   | `OPERATIONAL_ALLOWED_SET`      | `POLICY_DEFINED`        | La integración de funciones exige un conjunto cerrado. Cada acción usa una sola área efectiva y no suma automáticamente perfiles, aplicaciones o permisos.                                   | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:production_kitchen`                         | `TARGET_TEMPLATE`         | `EXIGIR_AREA_FIJA_EXACTA_AL_CREAR_INSTANCIA`    | Área exacta de Cocina Caliente dentro de la sede fija                | `OPERATIONAL_FIXED_EXACT`      | `POLICY_DEFINED`        | La instancia se fija al área de producción correspondiente y no hereda otras áreas del centro.                                                                                               | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:production_bakery`                          | `TARGET_TEMPLATE`         | `EXIGIR_AREA_FIJA_EXACTA_AL_CREAR_INSTANCIA`    | Área exacta de Galletería y Panadería dentro de la sede fija         | `OPERATIONAL_FIXED_EXACT`      | `POLICY_DEFINED`        | La instancia se fija al área aprobada y no se fusiona con Cocina Caliente o Repostería.                                                                                                      | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:production_pastry`                          | `TARGET_TEMPLATE`         | `EXIGIR_AREA_FIJA_EXACTA_AL_CREAR_INSTANCIA`    | Área exacta de Repostería dentro de la sede fija                     | `OPERATIONAL_FIXED_EXACT`      | `POLICY_DEFINED`        | La instancia se fija al área aprobada y no hereda otras áreas de producción.                                                                                                                 | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:warehouse_kiosk`                            | `TARGET_TEMPLATE`         | `EXIGIR_AREA_FIJA_EXACTA_AL_CREAR_INSTANCIA`    | Área exacta de bodega o almacén aprobada dentro de la sede fija      | `OPERATIONAL_FIXED_EXACT`      | `POLICY_DEFINED`        | Cada kiosco pertenece a una sola área concreta; `null` no significa toda la sede.                                                                                                            | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:logistics_vehicle_terminal`                 | `TARGET_TEMPLATE`         | `EXIGIR_AREA_BASE_EXACTA_AL_CREAR_INSTANCIA`    | Área propietaria o de custodia exacta dentro de la sede base         | `HOME_AREA_EXACT`              | `POLICY_DEFINED`        | Ruta, vehículo, origen, destino y ubicación no reescriben el área base ni conceden acceso a áreas visitadas.                                                                                 | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:procurement_reception`                      | `TARGET_TEMPLATE`         | `EXIGIR_AREA_RECEPTORA_FIJA_AL_CREAR_INSTANCIA` | Área exacta de recepción dentro de la sede fija                      | `MIXED_FIXED_EXACT`            | `POLICY_DEFINED`        | El carril operativo exige coincidencia exacta; el carril administrativo conserva el alcance real del actor.                                                                                  | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:operations_management_terminal`             | `TARGET_TEMPLATE`         | `EXIGIR_CONJUNTO_EXPLICITO_AL_CREAR_INSTANCIA`  | Uno o más `area_id` operativos exactos dentro de la sede fija        | `OPERATIONAL_ALLOWED_SET`      | `POLICY_DEFINED`        | La terminal puede limitarse a varias áreas explícitas, pero no adquiere toda la sede y cada acción conserva una sola área efectiva.                                                          | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `target_template:management_terminal`                        | `TARGET_TEMPLATE`         | `EXIGIR_AREA_FISICA_EXACTA_AL_CREAR_INSTANCIA`  | Área física, propietaria o de custodia exacta dentro de la sede fija | `PHYSICAL_OWNERSHIP_ONLY`      | `POLICY_DEFINED`        | El área sirve para ubicación y seguridad; no concede cobertura administrativa ni restringe por sí sola un alcance organizacional legítimo.                                                   | `AUTH-DEV-005; AUTH-DEV-006`               |
+| `retired_legacy_template:production_center`                  | `RETIRED_LEGACY_TEMPLATE` | `PROHIBIR_NUEVAS_ASIGNACIONES`                  | No aplica                                                            | `NO_APLICA`                    | `NO_APLICA`             | La plantilla retirada no admite nuevas instancias ni políticas de área. Las instancias legacy conservan historia hasta transición explícita.                                                 | `AUTH-CTX-028; paquetes E5 y BLOQUE R`     |
+
+La matriz no crea instancias, áreas, conjuntos ni vínculos físicos. Materializa la política que deberá aplicar la implementación posterior.
+
+---
+
+#### 20. Reconciliación con la infraestructura existente
+
+| Elemento actual                          | Decisión contractual                                                                                                    | Estado                             |
+| ---------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `shared_operational_devices.area_id`     | Continúa como candidato registral para políticas de un miembro en las dos instancias existentes.                        | `IMPLEMENTADO` parcial             |
+| `area_id` nullable                       | No podrá interpretarse como todas las áreas. En modos operativos, ausencia de política válida implica bloqueo.          | `BLOQUEADO` para conformidad final |
+| Trigger área–sede                        | Se conserva como control mínimo, pero deberá complementarse con vigencia, estado, área activa, cardinalidad y política. | `IMPLEMENTADO` parcial             |
+| Columna única `area_id`                  | No puede representar `OPERATIONAL_ALLOWED_SET` ni historia versionada.                                                  | `BLOQUEADO` para conformidad final |
+| `current_shared_operational_device_v1()` | Expone una referencia registral, pero no demuestra vínculo vigente, modo, miembros ni evidencia.                        | `BLOQUEADO` para conformidad final |
+| Sesiones y eventos con `area_id`         | Deberán validarse contra actor, recurso y política vigente antes de considerarse contexto autoritativo.                 | `IMPLEMENTADO` parcial             |
+| Historial y evidencia                    | No existe un contrato físico versionado demostrado para cambios de área o conjunto.                                     | `PENDIENTE_DE_IMPLEMENTACION`      |
+| Verificación física                      | No existe evidencia suficiente para elevar Caja o Bodega a vínculo `CURRENT` verificado.                                | `PENDIENTE_DE_EVIDENCIA`           |
+
+Destinos existentes:
+
+- `AUTH-CTX-025`: productor SQL canónico;
+- `AUTH-CTX-027`: eliminación de lógica autoritativa local;
+- `AUTH-CTX-028`: compatibilidad legacy y transición del campo único;
+- `AUTH-CTX-029`: invalidación ante cambios;
+- BLOQUE E3: modelo físico, cardinalidades y transición;
+- BLOQUE E5: paquete implementable y rollback;
+- BLOQUE R: migraciones, backfill, constraints, RLS y RPC;
+- `AUTH-DEV-014` a `AUTH-DEV-016`: validación física, operativa y por aplicación.
+
+---
+
+#### 21. Auditoría mínima
+
+Todo vínculo, conjunto y cambio deberá conservar:
+
+- `area_policy_binding_id`;
+- `area_policy_member_id`;
+- `device_id` y `device_code`;
+- `site_binding_id`;
+- modo y cardinalidad;
+- áreas anteriores y nuevas;
+- estado anterior y nuevo;
+- actor administrativo;
+- motivo estructurado;
+- fuente y evidencia;
+- fechas efectivas y de verificación;
+- activo o estación relacionados;
+- sesiones, contextos y decisiones invalidados;
+- resultado de revalidar plantilla, aplicaciones y paquete máximo.
+
+Eventos conceptuales mínimos:
+
+```text
+device_area_policy_created
+device_area_policy_verified
+device_area_policy_suspended
+device_area_policy_conflicted
+device_area_policy_superseded
+device_area_policy_revoked
+device_area_member_added
+device_area_member_removed
+```
+
+Los eventos no sustituyen el estado autoritativo de la política.
+
+---
+
+#### 22. Fail closed
+
+```text
+sin política vigente única
+→ ninguna acción empresarial dependiente de área
+```
+
+```text
+cardinalidad inválida o área de otra sede
+→ ninguna acción empresarial
+```
+
+```text
+actor operativo fuera del área fija o conjunto
+→ DENY
+```
+
+```text
+recurso incompatible con el área efectiva
+→ DENY
+```
+
+```text
+plantilla u observación sin instancia
+→ no existe política concreta de área
+```
+
+Queda prohibido usar como fallback:
+
+- todas las áreas de la sede;
+- primera área activa;
+- área del último actor;
+- área del turno para reescribir el dispositivo;
+- área seleccionada en pantalla;
+- área del recurso para ampliar el conjunto;
+- padre, hijos o tipo de área;
+- Caja, Bodega, Servicio o cualquier otro nombre por coincidencia textual;
+- `area_id = null`;
+- ubicación física no verificada.
+
+---
+
+#### 23. Límites de esta tarea
+
+AUTH-DEV-004 no define:
+
+- aplicaciones permitidas;
+- paquetes máximos de permisos;
+- política de actor;
+- PIN, firma o reautenticación;
+- duración de sesión;
+- interfaz administrativa;
+- migración, backfill o datos físicos;
+- constraints, RLS, RPC o funciones definitivas;
+- catálogo físico de áreas;
+- creación, activación o reclasificación de áreas;
+- geocercas;
+- ubicación en tiempo real;
+- ejecución física de traslados;
+- verificación de las dos instancias;
+- incorporación de las observaciones de Vento Café o Saudo.
+
+---
+
+#### 24. Carryover obligatorio
+
+Las tareas posteriores deberán conservar:
+
+- `AUTH-DEV-005`: las aplicaciones permitidas deberán respetar el modo y las áreas de la política vigente;
+- `AUTH-DEV-006`: el paquete máximo nunca podrá ampliar áreas ni sustituir el contexto del actor;
+- `AUTH-DEV-008`: la sesión de actor deberá resolver una sola área efectiva compatible;
+- `AUTH-DEV-009`: el dispositivo no heredará autoridad del trabajador anterior ni de la navegación;
+- `AUTH-DEV-011`: revocación y suspensión deberán cerrar políticas y sesiones;
+- `AUTH-CTX-025`: el contexto SQL deberá resolver política y miembros en servidor;
+- `AUTH-CTX-027`: se retirará cualquier inferencia local de área;
+- `AUTH-CTX-028`: se diseñará la transición desde `area_id` único;
+- `AUTH-CTX-029`: cambios de sede, área o conjunto invalidarán contexto y cachés;
+- `AUTH-DEV-014` a `AUTH-DEV-016`: se verificará configuración real, membresía y comportamiento por aplicación;
+- los paquetes E5 y el BLOQUE R materializarán estructura, transición, pruebas y rollback.
+
+---
+
+#### 25. Invariantes
+
+1. La política de área está subordinada a una sede fija vigente.
+2. El dispositivo no crea sede ni área del actor.
+3. `null` no equivale a toda la sede.
+4. No existen wildcards de área.
+5. Un tipo o jerarquía no crea membresía.
+6. Los miembros son IDs canónicos explícitos.
+7. Todas las áreas pertenecen a la sede fija.
+8. Los modos de un miembro tienen exactamente un miembro.
+9. El conjunto permitido tiene al menos un miembro y no contiene duplicados.
+10. Cada acción operativa resuelve una sola área efectiva.
+11. El conjunto permitido es un techo, no una suma de roles o permisos.
+12. El dispositivo puede denegar, nunca conceder por sí solo.
+13. La selección frontend no autoriza.
+14. La observación física no crea un vínculo.
+15. La plantilla no recibe IDs concretos.
+16. Un cambio produce una versión nueva e invalidación.
+17. Un cambio de sede cierra la política de área anterior.
+18. Un área inactiva, cruzada o incompatible falla cerrado.
+19. Área, aplicaciones y permisos son dimensiones separadas.
+20. Las 19 claves conservan una decisión explícita y única.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-AUTH-039` a `TREQ-AUTH-048` en el Registro Canónico de Requisitos de Prueba.
+
+| ID              | Regla protegida                                                                                                                                                                                                                                                                 | Tipo                                                     | Prioridad | Momento de implementación                                     | Destino                                                               |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | --------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `TREQ-AUTH-039` | Toda instancia administrada deberá tener exactamente una política de área vigente subordinada a su vínculo de sede. La ausencia, multiplicidad o ambigüedad bloqueará acciones empresariales dependientes de área y `null` nunca significará toda la sede.                      | contractual + base de datos + seguridad + regresión      | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030` |
+| `TREQ-AUTH-040` | Todo miembro deberá ser un `area_id` canónico, activo, explícito, perteneciente a la sede fija y resuelto en servidor; nombre, tipo, jerarquía, plantilla, cliente, sesión u observación no podrán crear o ampliar membresía.                                                   | seguridad + contractual + integración + regresión        | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-025`; `AUTH-CTX-028`; `AUTH-QA-030`  |
+| `TREQ-AUTH-041` | La cardinalidad deberá corresponder al modo: exactamente un miembro para área fija, base, mixta o física; uno o más miembros únicos para conjunto permitido; y cero miembros cuando no exista una instancia administrada.                                                       | contractual + base de datos + estática + regresión       | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-028`; `AUTH-QA-030`                  |
+| `TREQ-AUTH-042` | Toda acción operativa deberá intersectar área efectiva del actor, área fija o conjunto permitido del dispositivo y territorio del recurso; el dispositivo nunca podrá crear, reemplazar, trasladar o ampliar el área del trabajador.                                            | seguridad + autorización + integración + E2E + regresión | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-008`; `AUTH-CTX-020`; `AUTH-QA-030`  |
+| `TREQ-AUTH-043` | Un conjunto permitido será una lista cerrada de IDs exactos y cada acción resolverá una sola área efectiva; quedan prohibidos toda la sede, wildcards, herencia por padre, hijo o tipo, y la unión del conjunto como autoridad del actor.                                       | seguridad + autorización + integración + regresión       | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-008`; `AUTH-CTX-025`; `AUTH-QA-030`  |
+| `TREQ-AUTH-044` | Todo cambio de área o conjunto deberá crear una versión nueva, cerrar la anterior, terminar sesiones incompatibles, invalidar contexto y cachés, conservar auditoría y revalidar plantilla, aplicaciones y paquete máximo; queda prohibida la edición silenciosa.               | seguridad + migración + integración + E2E + regresión    | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-011`; `AUTH-CTX-029`; `AUTH-QA-030`  |
+| `TREQ-AUTH-045` | Un cambio de sede, área inexistente o inactiva, pertenencia cross-site, cardinalidad inválida, reparentamiento incompatible o sesión fuera de política deberá suspender o conflictuar el vínculo y bloquear acciones empresariales hasta reconciliación.                        | base de datos + seguridad + autorización + regresión     | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-015`; `AUTH-CTX-028`; `AUTH-QA-030`  |
+| `TREQ-AUTH-046` | Una plantilla definirá modo, cardinalidad y restricción funcional sin recibir IDs concretos, y una observación conservará solo su referencia hasta identidad, sede, enrolamiento y verificación; ninguna podrá producir una política por inferencia.                            | contractual + seguridad + estática + regresión           | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014`; `AUTH-DEV-015`; `AUTH-QA-030`  |
+| `TREQ-AUTH-047` | `integrated_satellite` y `operations_management_terminal` usarán conjuntos explícitos; `logistics_vehicle_terminal` conservará área base; `procurement_reception` separará modo operativo y administrativo; y `management_terminal` no heredará cobertura desde su área física. | seguridad + autorización + integración + E2E + regresión | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-005`; `AUTH-DEV-006`; `AUTH-QA-030`  |
+| `TREQ-AUTH-048` | La matriz de área deberá cubrir exactamente las 19 claves heredadas: 2 instancias `REGISTERED_UNVERIFIED`, 2 observaciones `OBSERVED_ONLY`, 14 plantillas `POLICY_DEFINED` y 1 plantilla retirada `NO_APLICA`, sin faltantes, duplicados ni asignaciones inferidas.             | contractual + estática + regresión                       | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030` |
+
+---
+
+#### 26. Criterios de aceptación
+
+- [x] Se definió una política de área subordinada a la sede fija.
+- [x] Se distinguieron cinco modos aplicables y `NO_APLICA`.
+- [x] Se definieron cardinalidades exactas para vínculos y conjuntos.
+- [x] Se prohibieron `null`, wildcards, toda la sede y herencia por jerarquía como autorización.
+- [x] Se definió resolución server-side con IDs canónicos.
+- [x] Se definió intersección restrictiva con actor y recurso.
+- [x] Se definió una sola área efectiva por acción en conjuntos permitidos.
+- [x] Se definió área base para `logistics_vehicle_terminal`.
+- [x] Se separaron los carriles de `procurement_reception`.
+- [x] Se preservó el carácter físico de `management_terminal`.
+- [x] Se materializaron políticas específicas para las catorce plantillas.
+- [x] Se preservaron Caja y Bodega como referencias registrales candidatas.
+- [x] Ninguna de las dos instancias se declaró físicamente verificada.
+- [x] Las dos observaciones permanecieron sin `area_id` autoritativo.
+- [x] La plantilla retirada no admite nuevas políticas.
+- [x] Se definió cambio versionado con invalidación y revalidación.
+- [x] Se definió fail closed ante política ausente, múltiple, cross-site o incompatible.
+- [x] Se cubrieron 19 claves sin faltantes ni duplicados.
+- [x] La distribución es 2 `REGISTERED_UNVERIFIED`, 2 `OBSERVED_ONLY`, 14 `POLICY_DEFINED` y 1 `NO_APLICA`.
+- [x] Se generaron `TREQ-AUTH-039` a `TREQ-AUTH-048`.
+- [x] No se modificó código, Supabase, migraciones, configuración, datos ni dispositivos.
+- [x] `AUTH-DEV-005` permanece únicamente reservada.
+
+---
+
+#### 27. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DEV-003 — Asignar sede fija`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DEV-004 — Asignar área fija o permitida`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DEV-005 — Asignar aplicaciones permitidas`
+
+
 ### [ ] AUTH-DEV-005 — Asignar aplicaciones permitidas
 ### [ ] AUTH-DEV-006 — Asignar permisos máximos del dispositivo

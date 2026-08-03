@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **516** |
+| Aprobadas | **517** |
 | En propuesta | **0** |
-| No iniciadas | **1078** |
+| No iniciadas | **1077** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **32.37% (516/1594)** |
+| Porcentaje de completamiento | **32.43% (517/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DEV-003` — Asignar sede fija | ✅ APROBADA |
-| Tarea actual | `AUTH-DEV-004` — Asignar área fija o permitida | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DEV-005` — Asignar aplicaciones permitidas | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DEV-004` — Asignar área fija o permitida | ✅ APROBADA |
+| Tarea actual | `AUTH-DEV-005` — Asignar aplicaciones permitidas | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DEV-006` — Asignar permisos máximos del dispositivo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1184,7 +1184,7 @@
 | ✅ APROBADA | `AUTH-DEV-001` | Inventariar dispositivos compartidos | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ✅ APROBADA | `AUTH-DEV-002` | Definir identidad del dispositivo | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ✅ APROBADA | `AUTH-DEV-003` | Asignar sede fija | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
-| ⬜ NO INICIADA | `AUTH-DEV-004` | Asignar área fija o permitida | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
+| ✅ APROBADA | `AUTH-DEV-004` | Asignar área fija o permitida | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-005` | Asignar aplicaciones permitidas | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-006` | Asignar permisos máximos del dispositivo | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-007` | Exigir firma o PIN del trabajador | `bloques/P_DISPOSITIVOS_COMPARTIDOS/02_IDENTIFICACION_DEL_TRABAJADOR_Y_AUDITORIA.md` |
