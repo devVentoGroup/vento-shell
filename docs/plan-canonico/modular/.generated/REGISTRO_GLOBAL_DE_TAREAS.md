@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **512** |
+| Aprobadas | **513** |
 | En propuesta | **0** |
-| No iniciadas | **1082** |
+| No iniciadas | **1081** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **32.12% (512/1594)** |
+| Porcentaje de completamiento | **32.18% (513/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-038` — Definir campos sensibles visibles | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-039` — Definir masking según permiso | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DEV-001` — Inventariar dispositivos compartidos | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-039` — Definir masking según permiso | ✅ APROBADA |
+| Tarea actual | `AUTH-DEV-001` — Inventariar dispositivos compartidos | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DEV-002` — Definir identidad del dispositivo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -845,7 +845,7 @@
 | ✅ APROBADA | `AUTH-UI-036` | Definir si admite dispositivo compartido | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ✅ APROBADA | `AUTH-UI-037` | Definir si admite simulación | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ✅ APROBADA | `AUTH-UI-038` | Definir campos sensibles visibles | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
-| ⬜ NO INICIADA | `AUTH-UI-039` | Definir masking según permiso | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
+| ✅ APROBADA | `AUTH-UI-039` | Definir masking según permiso | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-040` | Ocultar enlaces no autorizados | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-041` | Bloquear acceso directo por URL | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-042` | Bloquear acciones aunque el botón sea visible | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |

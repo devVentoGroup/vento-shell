@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **512** |
+| Tareas aprobadas | **513** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1082** |
+| Tareas no iniciadas | **1081** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **32.12% (512/1594)** |
+| Porcentaje de completamiento | **32.18% (513/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-038 — Definir campos sensibles visibles** |
-| Tarea actual | **AUTH-UI-039 — Definir masking según permiso** |
+| Última tarea aprobada | **AUTH-UI-039 — Definir masking según permiso** |
+| Tarea actual | **AUTH-DEV-001 — Inventariar dispositivos compartidos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DEV-001 — Inventariar dispositivos compartidos** |
-| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 8: AUTH_UI_CONTRACT** |
-| Progreso del bloque | **CARRIL NEXO: 9 de 10 aprobadas; AUTH-UI-039 pendiente** |
+| Siguiente tarea | **AUTH-DEV-002 — Definir identidad del dispositivo** |
+| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 9: SHARED_DEVICE_CONTRACT** |
+| Progreso del bloque | **CARRIL NEXO: 0 de 6 aprobadas; AUTH-DEV-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-038` — Definir campos sensibles visibles |
-| Tarea actual | `AUTH-UI-039` — Definir masking según permiso — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DEV-001` — Inventariar dispositivos compartidos |
+| Última aprobada | `AUTH-UI-039` — Definir masking según permiso |
+| Tarea actual | `AUTH-DEV-001` — Inventariar dispositivos compartidos — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DEV-002` — Definir identidad del dispositivo |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 9 DE 10 APROBADAS — ACTUAL AUTH-UI-039** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 6 APROBADAS — ACTUAL AUTH-DEV-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-038 — Definir campos sensibles visibles
-        ↓
-TAREA ACTUAL
 AUTH-UI-039 — Definir masking según permiso
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DEV-001 — Inventariar dispositivos compartidos
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DEV-002 — Definir identidad del dispositivo
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 9 de 10 tareas aprobadas
+CARRIL NEXO — 0 de 6 tareas aprobadas
 ```
