@@ -2791,6 +2791,13 @@ Reglas:
 
 La aplicación predeterminada exacta de futuras instancias se decide durante su configuración material. Esta tarea no infiere defaults desde el nombre de la plantilla.
 
+Las dos instancias configuradas conservan únicamente candidatos registrales no verificados:
+
+- `CAJA_VENTO_CAFE_01` → `pulso`;
+- `KIOSCO_BODEGA_CP` → `nexo`.
+
+Estos valores coinciden con sus asociaciones activas registrales, pero no demuestran launcher, despliegue, cliente compatible ni comportamiento físico verificados.
+
 ---
 
 #### 9. Aplicación permitida y autorización del actor
@@ -2928,6 +2935,16 @@ nexo
 
 Ruta, vehículo, origen, destino y geolocalización no habilitan otras aplicaciones.
 
+La política territorial heredada se interpreta así:
+
+```text
+HOME_AREA_EXACT
+≠
+ÁREA OPERATIVA OBLIGATORIA PARA CADA ACCIÓN LOGÍSTICA
+```
+
+El área base identifica custodia, administración y pertenencia estable del terminal. Cada acción logística resolverá por separado vehículo, ruta, origen, destino, recurso y territorio aplicable; no se exigirá artificialmente una única área operativa cuando el contrato del permiso o del recurso no la requiera.
+
 ##### 12.5 Gerencia operativa
 
 `operations_management_terminal` admite:
@@ -2985,9 +3002,16 @@ nexo
 pulso
 ```
 
+Aplicación predeterminada registral candidata:
+
+```text
+pulso
+```
+
 Decisión:
 
-- conservarlo como conjunto candidato de instancia;
+- conservar el conjunto como candidato de instancia;
+- conservar `pulso` como default registral candidato no verificado;
 - reconocer que coincide exactamente con el máximo de `pos_satellite`;
 - no declarar despliegue, launcher, versión de plantilla ni operación física verificados;
 - no añadir aplicaciones;
@@ -3001,9 +3025,16 @@ Conjunto registral observado:
 nexo
 ```
 
+Aplicación predeterminada registral candidata:
+
+```text
+nexo
+```
+
 Decisión:
 
-- conservarlo como reducción candidata de instancia;
+- conservar el conjunto como reducción candidata de instancia;
+- conservar `nexo` como default registral candidato no verificado;
 - reconocer que `nexo` pertenece al máximo de `warehouse_kiosk`;
 - no añadir `shell` ni `origo` por pertenecer a la plantilla;
 - no declarar que ORIGO esté desplegado o habilitado;
@@ -3078,27 +3109,27 @@ No se elegirá la primera app, la predeterminada legacy, la última visitada, la
 
 #### 17. Matriz completa de las 19 claves
 
-| `inventory_key`                                              | Clase                     | Decisión de aplicaciones                             | Conjunto exacto o referencia                 | Estado                  | Regla y bloqueo                                                                                                                                 | Destino exacto                             |
-| ------------------------------------------------------------ | ------------------------- | ---------------------------------------------------- | -------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
-| `configured_device:CAJA_VENTO_CAFE_01`                       | `CONFIGURED_INSTANCE`     | `CONSERVAR_CONJUNTO_REGISTRAL_COMO_CANDIDATO`        | `shell`, `nexo`, `pulso`                     | `REGISTERED_UNVERIFIED` | Coincide con `pos_satellite`, pero faltan versión fijada, launcher, despliegue e identidad física verificada.                                   | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-015` |
-| `configured_device:KIOSCO_BODEGA_CP`                         | `CONFIGURED_INSTANCE`     | `CONSERVAR_REDUCCION_REGISTRAL_COMO_CANDIDATA`       | `nexo`                                       | `REGISTERED_UNVERIFIED` | Es subconjunto válido de `warehouse_kiosk`; no se añaden `shell` u `origo` y falta verificar plantilla, launcher y despliegue real.             | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014` |
-| `physical_observation:VENTO_CAFE/SERVICIO/tablet_compartida` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_APPS_POR_OBSERVACION`                    | Referencia de servicio; sin app autoritativa | `OBSERVED_ONLY`         | El uso observado no demuestra instancia, plantilla, cliente instalado conforme ni conjunto administrado.                                        | `AUTH-DEV-014; AUTH-DEV-015`               |
-| `physical_observation:SAUDO/SERVICIO/dispositivo_compartido` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_APPS_POR_OBSERVACION`                    | Referencia de servicio; sin app autoritativa | `OBSERVED_ONLY`         | El tipo, cantidad, identidad técnica y aplicaciones reales no están demostrados.                                                                | `AUTH-DEV-014; AUTH-DEV-015`               |
-| `target_template:pos_satellite`                              | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | Cada instancia puede reducir el conjunto, nunca ampliarlo.                                                                                      | `AUTH-DEV-006`                             |
-| `target_template:bar_satellite`                              | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | La disponibilidad de PULSO o NEXO no crea permisos de caja, barra o inventario.                                                                 | `AUTH-DEV-006`                             |
-| `target_template:kitchen_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | La plantilla no hereda capacidades de otras áreas satélite.                                                                                     | `AUTH-DEV-006`                             |
-| `target_template:service_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | El conjunto no se deriva de las observaciones físicas existentes.                                                                               | `AUTH-DEV-006`                             |
-| `target_template:counter_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | El mostrador no recibe otras apps por proximidad con caja o servicio.                                                                           | `AUTH-DEV-006`                             |
-| `target_template:integrated_satellite`                       | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | La operación integrada no suma aplicaciones, roles o permisos de otras plantillas.                                                              | `AUTH-DEV-006`                             |
-| `target_template:production_kitchen`                         | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `fogo`, `nexo`                      | `POLICY_DEFINED`        | La app compartida no elimina el límite del área exacta de Cocina Caliente.                                                                      | `AUTH-DEV-006`                             |
-| `target_template:production_bakery`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `fogo`, `nexo`                      | `POLICY_DEFINED`        | La app compartida no permite operar Cocina Caliente o Repostería.                                                                               | `AUTH-DEV-006`                             |
-| `target_template:production_pastry`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `fogo`, `nexo`                      | `POLICY_DEFINED`        | La app compartida no permite operar otras áreas de producción.                                                                                  | `AUTH-DEV-006`                             |
-| `target_template:warehouse_kiosk`                            | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `origo`                     | `POLICY_DEFINED`        | ORIGO solo podrá habilitarse en una instancia desplegada y no concede recepción o aprobación.                                                   | `AUTH-DEV-006`                             |
-| `target_template:logistics_vehicle_terminal`                 | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`                              | `POLICY_DEFINED`        | Vehículo, ruta y sedes visitadas no habilitan otras aplicaciones.                                                                               | `AUTH-DEV-006`                             |
-| `target_template:procurement_reception`                      | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO_CON_MODOS_EXCLUYENTES` | `shell`, `nexo`, `origo`                     | `POLICY_DEFINED`        | Los modos operativo y administrativo usan el mismo techo de superficie, pero recalculan actor, permisos, territorio, recurso y reautenticación. | `AUTH-DEV-006`                             |
-| `target_template:operations_management_terminal`             | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO_OPERACIONAL`           | `shell`, `fogo`, `nexo`, `origo`, `pulso`    | `POLICY_DEFINED`        | La amplitud de superficies no crea autoridad administrativa ni ejecución física de otros oficios.                                               | `AUTH-DEV-006`                             |
-| `target_template:management_terminal`                        | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO_ADMINISTRATIVO`        | `shell`, `numera`, `viso`                    | `POLICY_DEFINED`        | El actor conserva exclusivamente sus permisos base y cobertura real; ninguna app adicional se infiere por jerarquía.                            | `AUTH-DEV-006`                             |
-| `retired_legacy_template:production_center`                  | `RETIRED_LEGACY_TEMPLATE` | `PROHIBIR_NUEVAS_ASOCIACIONES`                       | Sin aplicaciones para nuevas instancias      | `NO_APLICA`             | La plantilla retirada conserva historia, pero no recibe nuevas apps ni instancias; la transición usa las tres plantillas especializadas.        | `AUTH-CTX-028; paquetes E5 y BLOQUE R`     |
+| `inventory_key`                                              | Clase                     | Decisión de aplicaciones                             | Conjunto exacto o referencia                 | Estado                  | Regla y bloqueo                                                                                                                                                                          | Destino exacto                             |
+| ------------------------------------------------------------ | ------------------------- | ---------------------------------------------------- | -------------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `configured_device:CAJA_VENTO_CAFE_01`                       | `CONFIGURED_INSTANCE`     | `CONSERVAR_CONJUNTO_REGISTRAL_COMO_CANDIDATO`        | `shell`, `nexo`, `pulso`                     | `REGISTERED_UNVERIFIED` | Coincide con `pos_satellite`; `pulso` se conserva como default registral candidato, pero faltan versión fijada, launcher, despliegue e identidad física verificada.                      | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-015` |
+| `configured_device:KIOSCO_BODEGA_CP`                         | `CONFIGURED_INSTANCE`     | `CONSERVAR_REDUCCION_REGISTRAL_COMO_CANDIDATA`       | `nexo`                                       | `REGISTERED_UNVERIFIED` | Es subconjunto válido de `warehouse_kiosk`; `nexo` se conserva como default registral candidato, no se añaden `shell` u `origo` y falta verificar plantilla, launcher y despliegue real. | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014` |
+| `physical_observation:VENTO_CAFE/SERVICIO/tablet_compartida` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_APPS_POR_OBSERVACION`                    | Referencia de servicio; sin app autoritativa | `OBSERVED_ONLY`         | El uso observado no demuestra instancia, plantilla, cliente instalado conforme ni conjunto administrado.                                                                                 | `AUTH-DEV-014; AUTH-DEV-015`               |
+| `physical_observation:SAUDO/SERVICIO/dispositivo_compartido` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_APPS_POR_OBSERVACION`                    | Referencia de servicio; sin app autoritativa | `OBSERVED_ONLY`         | El tipo, cantidad, identidad técnica y aplicaciones reales no están demostrados.                                                                                                         | `AUTH-DEV-014; AUTH-DEV-015`               |
+| `target_template:pos_satellite`                              | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | Cada instancia puede reducir el conjunto, nunca ampliarlo.                                                                                                                               | `AUTH-DEV-006`                             |
+| `target_template:bar_satellite`                              | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | La disponibilidad de PULSO o NEXO no crea permisos de caja, barra o inventario.                                                                                                          | `AUTH-DEV-006`                             |
+| `target_template:kitchen_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | La plantilla no hereda capacidades de otras áreas satélite.                                                                                                                              | `AUTH-DEV-006`                             |
+| `target_template:service_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | El conjunto no se deriva de las observaciones físicas existentes.                                                                                                                        | `AUTH-DEV-006`                             |
+| `target_template:counter_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | El mostrador no recibe otras apps por proximidad con caja o servicio.                                                                                                                    | `AUTH-DEV-006`                             |
+| `target_template:integrated_satellite`                       | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | La operación integrada no suma aplicaciones, roles o permisos de otras plantillas.                                                                                                       | `AUTH-DEV-006`                             |
+| `target_template:production_kitchen`                         | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `fogo`, `nexo`                      | `POLICY_DEFINED`        | La app compartida no elimina el límite del área exacta de Cocina Caliente.                                                                                                               | `AUTH-DEV-006`                             |
+| `target_template:production_bakery`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `fogo`, `nexo`                      | `POLICY_DEFINED`        | La app compartida no permite operar Cocina Caliente o Repostería.                                                                                                                        | `AUTH-DEV-006`                             |
+| `target_template:production_pastry`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `fogo`, `nexo`                      | `POLICY_DEFINED`        | La app compartida no permite operar otras áreas de producción.                                                                                                                           | `AUTH-DEV-006`                             |
+| `target_template:warehouse_kiosk`                            | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `origo`                     | `POLICY_DEFINED`        | ORIGO solo podrá habilitarse en una instancia desplegada y no concede recepción o aprobación.                                                                                            | `AUTH-DEV-006`                             |
+| `target_template:logistics_vehicle_terminal`                 | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`                              | `POLICY_DEFINED`        | Vehículo, ruta y sedes visitadas no habilitan otras aplicaciones.                                                                                                                        | `AUTH-DEV-006`                             |
+| `target_template:procurement_reception`                      | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO_CON_MODOS_EXCLUYENTES` | `shell`, `nexo`, `origo`                     | `POLICY_DEFINED`        | Los modos operativo y administrativo usan el mismo techo de superficie, pero recalculan actor, permisos, territorio, recurso y reautenticación.                                          | `AUTH-DEV-006`                             |
+| `target_template:operations_management_terminal`             | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO_OPERACIONAL`           | `shell`, `fogo`, `nexo`, `origo`, `pulso`    | `POLICY_DEFINED`        | La amplitud de superficies no crea autoridad administrativa ni ejecución física de otros oficios.                                                                                        | `AUTH-DEV-006`                             |
+| `target_template:management_terminal`                        | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO_ADMINISTRATIVO`        | `shell`, `numera`, `viso`                    | `POLICY_DEFINED`        | El actor conserva exclusivamente sus permisos base y cobertura real; ninguna app adicional se infiere por jerarquía.                                                                     | `AUTH-DEV-006`                             |
+| `retired_legacy_template:production_center`                  | `RETIRED_LEGACY_TEMPLATE` | `PROHIBIR_NUEVAS_ASOCIACIONES`                       | Sin aplicaciones para nuevas instancias      | `NO_APLICA`             | La plantilla retirada conserva historia, pero no recibe nuevas apps ni instancias; la transición usa las tres plantillas especializadas.                                                 | `AUTH-CTX-028; paquetes E5 y BLOQUE R`     |
 
 La matriz conserva las 19 claves y no crea dispositivos, plantillas físicas, clientes instalados ni asociaciones desplegadas.
 
@@ -3289,18 +3320,18 @@ El paquete máximo no podrá incorporar una aplicación ausente en `SHARED-DEVIC
 
 Se incorporan `TREQ-AUTH-049` a `TREQ-AUTH-058` en el Registro Canónico de Requisitos de Prueba.
 
-| ID              | Regla protegida                                                                                                                                                                                                                                                                                             | Tipo                                                     | Prioridad | Momento de implementación                                     | Destino                                                                              |
-| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | --------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
-| `TREQ-AUTH-049` | Las aplicaciones efectivas de una instancia deberán ser la intersección entre el máximo de su versión de plantilla, las asociaciones explícitas activas de la instancia, el catálogo canónico activo y los clientes desplegados compatibles; una instancia solo podrá reducir y nunca ampliar su plantilla. | contractual + base de datos + seguridad + regresión      | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-025`; `AUTH-CTX-028`; `AUTH-QA-030`                 |
-| `TREQ-AUTH-050` | Toda asociación deberá usar un `app_code` canónico exacto; wildcards, prefijos, rutas, repositorios, nombres visibles, aplicaciones instaladas, valores `null` o listas enviadas por cliente no podrán crear ni ampliar el conjunto efectivo.                                                               | seguridad + contractual + integración + regresión        | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-025`; `AUTH-CTX-027`; `AUTH-QA-030`                 |
-| `TREQ-AUTH-051` | Una aplicación permitida solo habilitará superficie. Toda entrada y acción deberá exigir por separado actor humano efectivo, `<app>.access`, permiso interno exacto, contexto territorial, recurso y ausencia de denegaciones; el dispositivo nunca concederá autoridad.                                    | seguridad + autorización + integración + E2E + regresión | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-006`; `AUTH-CTX-025`; `AUTH-QA-030`                 |
-| `TREQ-AUTH-052` | Una aplicación inexistente, inactiva, no desplegada, incompatible o fuera del conjunto efectivo deberá ocultarse, no lanzarse y denegarse en rutas, server actions, RPC y RLS; la instalación o una ruta directa no constituirán autorización.                                                              | seguridad + interfaz + integración + E2E + regresión     | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030`                |
-| `TREQ-AUTH-053` | Toda instancia activa deberá tener exactamente una aplicación predeterminada dentro de su conjunto efectivo; múltiples defaults, ausencia obligatoria o divergencia entre `default_app_code` e `is_default` producirán conflicto y bloquearán el lanzamiento empresarial.                                   | contractual + base de datos + seguridad + regresión      | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-028`; `AUTH-DEV-014`; `AUTH-QA-030`                 |
-| `TREQ-AUTH-054` | Cambiar entre aplicaciones deberá recalcular acceso, limpiar estado y recursos incompatibles e invalidar reautenticaciones fuertes de otra aplicación, acción o recurso; cambiar de actor limpiará todas las aplicaciones y ningún estado sensible será transferible.                                       | seguridad + sesión + interfaz + E2E + regresión          | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-008` a `AUTH-DEV-010`; `AUTH-QA-030`                |
-| `TREQ-AUTH-055` | Todo cambio de conjunto deberá crear versión o reducción auditada, cerrar vínculos anteriores, invalidar contexto, cachés y reautenticaciones, verificar despliegue y default, y revalidar el paquete máximo; queda prohibida la edición silenciosa o local.                                                | seguridad + migración + integración + E2E + regresión    | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-006`; `AUTH-DEV-011`; `AUTH-CTX-029`; `AUTH-QA-030` |
-| `TREQ-AUTH-056` | `procurement_reception` deberá conservar `shell`, `nexo` y `origo` con modos excluyentes; `operations_management_terminal` conservará sus cinco apps como superficie operativa; y `management_terminal` solo admitirá `shell`, `numera` y `viso` sin heredar cobertura administrativa.                      | seguridad + autorización + integración + regresión       | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-006`; `AUTH-DEV-008`; `AUTH-QA-030`                 |
-| `TREQ-AUTH-057` | Una plantilla definirá apps máximas sin crear asociaciones de instancia; una observación no recibirá apps antes de identidad y enrolamiento; y `production_center` no admitirá nuevas asociaciones.                                                                                                         | contractual + seguridad + estática + regresión           | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-028`; `AUTH-DEV-014`; `AUTH-DEV-015`; `AUTH-QA-030` |
-| `TREQ-AUTH-058` | La matriz deberá cubrir exactamente las 19 claves, los siete códigos y las 43 asociaciones máximas: 2 instancias `REGISTERED_UNVERIFIED`, 2 observaciones `OBSERVED_ONLY`, 14 plantillas `POLICY_DEFINED` y 1 retirada `NO_APLICA`, sin faltantes, duplicados ni apps inferidas.                            | contractual + estática + regresión                       | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030`                |
+| ID              | Regla protegida                                                                                                                                                                                                                                                                                                              | Tipo                                                     | Prioridad | Momento de implementación                                     | Destino                                                                              |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | --------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `TREQ-AUTH-049` | Las aplicaciones efectivas de una instancia deberán resultar de la intersección entre el máximo de su versión de plantilla, las asociaciones explícitas activas de la instancia, el catálogo canónico activo y los clientes desplegados compatibles. La instancia solo podrá reducir y nunca ampliar su plantilla.           | contractual + base de datos + seguridad + regresión      | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-025`; `AUTH-CTX-028`; `AUTH-QA-030`                 |
+| `TREQ-AUTH-050` | Toda asociación deberá usar un `app_code` canónico exacto. Wildcards, prefijos, rutas, repositorios, nombres visibles, aplicaciones instaladas, valores `null` o listas enviadas por el cliente no podrán crear, sustituir ni ampliar el conjunto efectivo.                                                                  | seguridad + contractual + integración + regresión        | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-025`; `AUTH-CTX-027`; `AUTH-QA-030`                 |
+| `TREQ-AUTH-051` | Una aplicación permitida solo habilitará superficie. Toda entrada y acción deberá exigir por separado actor humano efectivo, `<app>.access`, permiso interno exacto, contexto territorial, recurso resuelto y ausencia de denegaciones; el dispositivo nunca concederá autoridad.                                            | seguridad + autorización + integración + E2E + regresión | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-006`; `AUTH-CTX-025`; `AUTH-QA-030`                 |
+| `TREQ-AUTH-052` | Una aplicación inexistente, inactiva, no desplegada, incompatible o fuera del conjunto efectivo deberá ocultarse, no lanzarse y denegarse también en rutas directas, server actions, RPC y RLS. La instalación, una URL o una ruta existente no constituirán autorización.                                                   | seguridad + interfaz + integración + E2E + regresión     | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030`                |
+| `TREQ-AUTH-053` | Toda instancia activa deberá tener exactamente una aplicación predeterminada dentro de su conjunto efectivo. Múltiples defaults, ausencia de default requerido o divergencia entre `default_app_code` e `is_default` producirán conflicto y bloquearán el lanzamiento empresarial.                                           | contractual + base de datos + seguridad + regresión      | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-028`; `AUTH-DEV-014`; `AUTH-QA-030`                 |
+| `TREQ-AUTH-054` | Cambiar entre aplicaciones deberá recalcular acceso, limpiar estado y recursos incompatibles e invalidar reautenticaciones fuertes vinculadas a otra aplicación, acción o recurso. Cambiar de actor limpiará todas las aplicaciones y ningún estado sensible será transferible.                                              | seguridad + sesión + interfaz + E2E + regresión          | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-008` a `AUTH-DEV-010`; `AUTH-QA-030`                |
+| `TREQ-AUTH-055` | Todo cambio del conjunto de aplicaciones deberá crear una versión de plantilla o reducción de instancia auditada, cerrar vínculos anteriores, invalidar contexto, cachés y reautenticaciones, verificar despliegue y default, y revalidar el paquete máximo. Queda prohibida la edición silenciosa o local.                  | seguridad + migración + integración + E2E + regresión    | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-006`; `AUTH-DEV-011`; `AUTH-CTX-029`; `AUTH-QA-030` |
+| `TREQ-AUTH-056` | `procurement_reception` deberá conservar `shell`, `nexo` y `origo` con modos excluyentes; `operations_management_terminal` conservará sus cinco aplicaciones como superficie operativa; y `management_terminal` solo admitirá `shell`, `numera` y `viso` sin heredar cobertura administrativa.                               | seguridad + autorización + integración + regresión       | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-006`; `AUTH-DEV-008`; `AUTH-QA-030`                 |
+| `TREQ-AUTH-057` | Una plantilla definirá aplicaciones máximas sin crear asociaciones concretas de instancia; una observación física no recibirá aplicaciones antes de identidad, enrolamiento, sede y área; y `production_center` no admitirá nuevas asociaciones.                                                                             | contractual + seguridad + estática + regresión           | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-028`; `AUTH-DEV-014`; `AUTH-DEV-015`; `AUTH-QA-030` |
+| `TREQ-AUTH-058` | La matriz de aplicaciones deberá cubrir exactamente las 19 claves, los siete códigos canónicos y las 43 asociaciones máximas: 2 instancias `REGISTERED_UNVERIFIED`, 2 observaciones `OBSERVED_ONLY`, 14 plantillas `POLICY_DEFINED` y 1 plantilla retirada `NO_APLICA`, sin faltantes, duplicados ni aplicaciones inferidas. | contractual + estática + regresión                       | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030`                |
 
 ---
 
@@ -3315,6 +3346,7 @@ Se incorporan `TREQ-AUTH-049` a `TREQ-AUTH-058` en el Registro Canónico de Requ
 - [x] Se definió que una aplicación permitida no concede `<app>.access` ni permisos internos.
 - [x] Se protegieron launcher, rutas directas, server actions, RPC y RLS.
 - [x] Se definió una aplicación predeterminada coherente y única por instancia activa.
+- [x] Se preservaron `pulso` y `nexo` como defaults registrales candidatos no verificados de las dos instancias actuales.
 - [x] Se definió aislamiento al cambiar de aplicación y de actor.
 - [x] Se definió cambio versionado con invalidación, auditoría y revalidación.
 - [x] Se conservaron `shell`, `nexo` y `pulso` para `CAJA_VENTO_CAFE_01` como conjunto registral candidato.
@@ -3322,6 +3354,7 @@ Se incorporan `TREQ-AUTH-049` a `TREQ-AUTH-058` en el Registro Canónico de Requ
 - [x] No se añadieron `shell` u `origo` al kiosco por inferencia desde la plantilla.
 - [x] Las dos observaciones permanecieron sin aplicaciones autoritativas.
 - [x] Las catorce plantillas recibieron conjuntos exactos.
+- [x] Se aclaró que `HOME_AREA_EXACT` en logística móvil identifica área base y no impone un área operativa a toda acción logística.
 - [x] La plantilla retirada no admite nuevas asociaciones.
 - [x] Se materializaron decisiones para las 19 claves sin faltantes ni duplicados.
 - [x] Se generaron `TREQ-AUTH-049` a `TREQ-AUTH-058`.
@@ -3342,4 +3375,1044 @@ Se incorporan `TREQ-AUTH-049` a `TREQ-AUTH-058` en el Registro Canónico de Requ
 `AUTH-DEV-006 — Asignar permisos máximos del dispositivo`
 
 
-### [ ] AUTH-DEV-006 — Asignar permisos máximos del dispositivo
+### ✅ AUTH-DEV-006 — Asignar permisos máximos del dispositivo
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-DEV-005 — Asignar aplicaciones permitidas` — APROBADA
+**Tarea siguiente:** `AUTH-SIM-001 — Definir quién puede simular` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de techo restrictivo de permisos, paquetes exactos versionados y matriz materializada para dispositivos compartidos
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md`
+**Artefactos producidos:** `SHARED-DEVICE-MAX-PERMISSION-CONTRACT-001` y `SHARED-DEVICE-PERMISSION-PACKAGE-REGISTER-001`
+**Inventarios y contratos consumidos:** `SHARED-DEVICE-INVENTORY-001`, `SHARED-DEVICE-IDENTITY-CONTRACT-001`, `SHARED-DEVICE-FIXED-SITE-CONTRACT-001`, `SHARED-DEVICE-AREA-POLICY-CONTRACT-001` y `SHARED-DEVICE-APPLICATION-POLICY-CONTRACT-001` — 19 claves
+**Cambios en código, Supabase, migraciones, RLS, RPC, configuración, datos, aplicaciones, permisos desplegados o dispositivos:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Asignar a cada plantilla e instancia de dispositivo compartido un techo máximo, explícito, cerrado y versionado de claves de permiso que puede conservar durante una evaluación de autorización, sin convertir el dispositivo, la plantilla, el paquete, la aplicación o la identidad técnica en una fuente de autoridad empresarial.
+
+La tarea mantiene separadas:
+
+- la clasificación global de compatibilidad compartida del catálogo;
+- la membresía exacta de una clave en un paquete documental;
+- los paquetes máximos fijados a una versión de plantilla;
+- las reducciones explícitas de una instancia;
+- las aplicaciones efectivas de la instancia;
+- el permiso efectivo del actor humano;
+- los carriles base y operativo;
+- las denegaciones aplicables;
+- la sede, el área, el recurso y los prerrequisitos;
+- la reautenticación fuerte personal;
+- la decisión final de autorización.
+
+```text
+CLAVE INCLUIDA EN EL TECHO DEL DISPOSITIVO
+≠
+PERMISO CONCEDIDO AL ACTOR
+≠
+ACCIÓN AUTORIZADA
+```
+
+El techo del dispositivo solo puede conservar una clave que el actor ya posee y cuyo contexto es válido, exigir controles adicionales o bloquearla. Nunca puede crear un `ALLOW`.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban:
+
+1. `SHARED-DEVICE-MAX-PERMISSION-CONTRACT-001`, que define identidad, cardinalidad, resolución, clasificación, intersección, reducción, versionado, cambio, auditoría y comportamiento fail closed del techo de permisos;
+2. `SHARED-DEVICE-PERMISSION-PACKAGE-REGISTER-001`, que conserva los nueve paquetes exactos heredados y materializa una decisión para las 19 claves del inventario.
+
+Cobertura materializada:
+| Resultado                                      | Cantidad |
+| ---------------------------------------------- | -------: |
+| Claves heredadas evaluadas                     |       19 |
+| Instancias con techo registral candidato       |        2 |
+| Observaciones sin paquete autoritativo         |        2 |
+| Plantillas objetivo con techo exacto           |       14 |
+| Plantillas retiradas sin nuevos paquetes       |        1 |
+| Paquetes exactos versionados                   |        9 |
+| Membresías internas de los nueve paquetes      |      177 |
+| Claves únicas incluidas en al menos un paquete |       83 |
+| Claves únicas STANDARD incluidas               |       52 |
+| Claves únicas STRONG incluidas                 |       31 |
+| Claves NOT_ALLOWED excluidas universalmente    |       20 |
+| Asociaciones máximas plantilla–permiso         |      266 |
+| Asociaciones STANDARD por plantilla            |      229 |
+| Asociaciones STRONG por plantilla              |       37 |
+| Permisos concedidos por el dispositivo         |        0 |
+| Wildcards permitidos                           |        0 |
+
+El snapshot heredado contiene 112 permisos: 52 `STANDARD`, 40 `STRONG` y 20 `NOT_ALLOWED`. Los paquetes utilizan las 52 claves `STANDARD` y 31 claves `STRONG`; nueve claves compatibles con `STRONG` permanecen fuera de todas las plantillas por no haber sido seleccionadas en los paquetes aprobados.
+
+---
+
+#### 3. Base normativa y decisiones heredadas
+
+La tarea conserva sin modificaciones sustantivas:
+
+- `AUTH-MOD-011 — Definir dispositivo compartido`;
+- `AUTH-CAT-014 — Definir permisos que admiten dispositivo compartido`;
+- `AUTH-RBAC-023 — Definir capacidades permitidas por dispositivo compartido`;
+- `AUTH-CTX-014 — Incluir contexto de dispositivo compartido`;
+- `AUTH-DEV-001 — Inventariar dispositivos compartidos`;
+- `AUTH-DEV-002 — Definir identidad del dispositivo`;
+- `AUTH-DEV-003 — Asignar sede fija`;
+- `AUTH-DEV-004 — Asignar área fija o permitida`;
+- `AUTH-DEV-005 — Asignar aplicaciones permitidas`.
+
+Los nueve códigos de paquete, sus claves, clasificaciones y asignaciones por plantilla se preservan exactamente como fueron aprobados en `AUTH-RBAC-023`. Esta tarea no crea permisos nuevos, no cambia su modalidad, no reclasifica sensibilidad y no añade aplicaciones.
+
+---
+
+#### 4. Principio restrictivo y decisión final
+
+El techo efectivo de una instancia se resolverá así:
+
+```text
+TECHO EFECTIVO DEL DISPOSITIVO
+=
+CLAVES EXACTAS DE LOS PAQUETES DE LA VERSIÓN DE PLANTILLA
+∩
+CLAVES NO RETIRADAS POR LA REDUCCIÓN VIGENTE DE LA INSTANCIA
+∩
+CLAVES CUYA APLICACIÓN ESTÁ EN EL CONJUNTO EFECTIVO
+∩
+CLAVES CANÓNICAS ACTIVAS Y COMPATIBLES CON DISPOSITIVO COMPARTIDO
+```
+
+La acción empresarial se resolverá de forma independiente:
+
+```text
+PERMISO EFECTIVO DEL ACTOR
+∩
+TECHO EFECTIVO DEL DISPOSITIVO
+∩
+APLICACIÓN EFECTIVA
+∩
+MODO DE SESIÓN COMPATIBLE
+∩
+SEDE Y ÁREA COMPATIBLES
+∩
+RECURSO Y PRERREQUISITOS VÁLIDOS
+∩
+REAUTENTICACIÓN FUERTE CUANDO APLIQUE
+∩
+AUSENCIA DE DENEGACIONES
+=
+ACCIÓN POSIBLE
+```
+
+Reglas:
+
+1. una clave fuera del techo efectivo produce `DENY` aunque el actor la posea;
+2. una clave dentro del techo no produce `ALLOW` si el actor no la posee;
+3. la identidad técnica nunca actúa como trabajador;
+4. un paquete no es rol, permiso, wildcard ni concesión;
+5. una instancia puede retirar claves, nunca añadirlas;
+6. la lista enviada por el cliente no es autoritativa;
+7. un error de resolución produce techo vacío y bloqueo;
+8. la decisión se recalcula en servidor para la clave y el recurso exactos.
+
+---
+
+#### 5. Identidades y contrato conceptual
+
+La política deberá distinguir como mínimo:
+
+```ts
+type SharedDevicePermissionPackage = {
+  package_code: string;
+  package_version: string;
+  catalog_snapshot_reference: string;
+  state: "ACTIVE" | "SUSPENDED" | "RETIRED";
+  effective_from: string;
+  effective_until: string | null;
+};
+```
+
+```ts
+type SharedDevicePermissionPackageMember = {
+  package_code: string;
+  package_version: string;
+  permission_key: string;
+  shared_device_compatibility: "STANDARD" | "STRONG";
+};
+```
+
+```ts
+type SharedDeviceTemplatePermissionBinding = {
+  template_code: string;
+  template_version: string;
+  package_code: string;
+  package_version: string;
+  binding_state: "ACTIVE" | "SUSPENDED" | "SUPERSEDED" | "RETIRED";
+};
+```
+
+```ts
+type SharedDeviceInstancePermissionReduction = {
+  reduction_id: string;
+  device_id: string;
+  template_code: string;
+  template_version: string;
+  excluded_permission_keys: string[];
+  state: "PENDING_VERIFICATION" | "ACTIVE" | "SUSPENDED" | "CONFLICTED" | "SUPERSEDED" | "REVOKED";
+  effective_from: string;
+  effective_until: string | null;
+  reason_code: string;
+  created_by: string;
+};
+```
+
+Estas formas son contractuales. El diseño físico posterior podrá normalizarlas, pero no perderá identidad, versión, clasificación, vigencia, fuente, actor administrativo, motivo, evidencia ni historial.
+
+---
+
+#### 6. Snapshot del catálogo y métricas derivadas
+
+El conjunto se fija al snapshot de 112 permisos utilizado por `AUTH-RBAC-023`, sin inventar un número de versión de catálogo no documentado.
+
+| Clasificación global | Catálogo | Incluidas en al menos un paquete | Ausentes de todos los paquetes |
+| -------------------- | -------: | -------------------------------: | -----------------------------: |
+| `STANDARD`           |       52 |                               52 |                              0 |
+| `STRONG`             |       40 |                               31 |                              9 |
+| `NOT_ALLOWED`        |       20 |                                0 |                             20 |
+| **Total**            |      112 |                               83 |                             29 |
+
+La compatibilidad global solo indica si una clave podría evaluarse desde un dispositivo compartido. No obliga a incluirla en un paquete. La ausencia de una clave en todos los paquetes es una decisión restrictiva válida.
+
+---
+
+#### 7. Registro exacto de paquetes
+
+Resumen:
+
+| Paquete                           | Aplicaciones propietarias        | Claves | STANDARD | STRONG |
+| --------------------------------- | -------------------------------- | -----: | -------: | -----: |
+| `DEVICE-SHELL-CORE-v1`            | `shell`                          |      1 |        1 |      0 |
+| `DEVICE-SATELLITE-REQUESTER-v1`   | `nexo`, `pulso`                  |     11 |       10 |      1 |
+| `DEVICE-INTEGRATED-SATELLITE-v1`  | `nexo`, `pulso`                  |     12 |       11 |      1 |
+| `DEVICE-PRODUCTION-CORE-v1`       | `fogo`, `nexo`                   |     16 |       16 |      0 |
+| `DEVICE-WAREHOUSE-CORE-v1`        | `nexo`, `origo`                  |     35 |       35 |      0 |
+| `DEVICE-LOGISTICS-CORE-v1`        | `nexo`                           |     14 |       14 |      0 |
+| `DEVICE-PROCUREMENT-RECEPTION-v1` | `nexo`, `origo`                  |     17 |       16 |      1 |
+| `DEVICE-OPERATIONS-MANAGEMENT-v1` | `fogo`, `nexo`, `origo`, `pulso` |     48 |       41 |      7 |
+| `DEVICE-ADMIN-MANAGEMENT-v1`      | `numera`, `viso`                 |     23 |        0 |     23 |
+
+##### DEVICE-SHELL-CORE-v1
+
+**Total:** 1 claves exactas — `1` STANDARD, `0` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto | Compatibilidad compartida |
+| -------------- | ------------------------- |
+| `shell.access` | `STANDARD`                |
+
+##### DEVICE-SATELLITE-REQUESTER-v1
+
+**Total:** 11 claves exactas — `10` STANDARD, `1` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                       | Compatibilidad compartida |
+| ------------------------------------ | ------------------------- |
+| `nexo.access`                        | `STANDARD`                |
+| `nexo.catalog.products.view`         | `STANDARD`                |
+| `nexo.catalog.presentations.view`    | `STANDARD`                |
+| `nexo.catalog.request_policies.view` | `STANDARD`                |
+| `nexo.catalog.categories.view`       | `STANDARD`                |
+| `nexo.catalog.units.view`            | `STANDARD`                |
+| `nexo.inventory.remissions.view`     | `STANDARD`                |
+| `nexo.inventory.remissions.update`   | `STRONG`                  |
+| `nexo.inventory.remissions.request`  | `STANDARD`                |
+| `nexo.logistics.supply_routes.view`  | `STANDARD`                |
+| `pulso.access`                       | `STANDARD`                |
+
+##### DEVICE-INTEGRATED-SATELLITE-v1
+
+**Total:** 12 claves exactas — `11` STANDARD, `1` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                       | Compatibilidad compartida |
+| ------------------------------------ | ------------------------- |
+| `nexo.access`                        | `STANDARD`                |
+| `nexo.catalog.products.view`         | `STANDARD`                |
+| `nexo.catalog.presentations.view`    | `STANDARD`                |
+| `nexo.catalog.request_policies.view` | `STANDARD`                |
+| `nexo.catalog.categories.view`       | `STANDARD`                |
+| `nexo.catalog.units.view`            | `STANDARD`                |
+| `nexo.inventory.remissions.view`     | `STANDARD`                |
+| `nexo.inventory.remissions.update`   | `STRONG`                  |
+| `nexo.inventory.remissions.request`  | `STANDARD`                |
+| `nexo.inventory.remissions.receive`  | `STANDARD`                |
+| `nexo.logistics.supply_routes.view`  | `STANDARD`                |
+| `pulso.access`                       | `STANDARD`                |
+
+##### DEVICE-PRODUCTION-CORE-v1
+
+**Total:** 16 claves exactas — `16` STANDARD, `0` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                           | Compatibilidad compartida |
+| ---------------------------------------- | ------------------------- |
+| `fogo.access`                            | `STANDARD`                |
+| `fogo.production.batches.view`           | `STANDARD`                |
+| `fogo.production.batches.create`         | `STANDARD`                |
+| `fogo.production.orders.view`            | `STANDARD`                |
+| `fogo.production.recipe_book.view`       | `STANDARD`                |
+| `nexo.access`                            | `STANDARD`                |
+| `nexo.catalog.products.view`             | `STANDARD`                |
+| `nexo.catalog.presentations.view`        | `STANDARD`                |
+| `nexo.catalog.categories.view`           | `STANDARD`                |
+| `nexo.catalog.units.view`                | `STANDARD`                |
+| `nexo.inventory.locations.view`          | `STANDARD`                |
+| `nexo.inventory.lpns.view`               | `STANDARD`                |
+| `nexo.inventory.stock.view`              | `STANDARD`                |
+| `nexo.inventory.production_batches.view` | `STANDARD`                |
+| `nexo.inventory.withdrawals.view`        | `STANDARD`                |
+| `nexo.inventory.withdrawals.register`    | `STANDARD`                |
+
+##### DEVICE-WAREHOUSE-CORE-v1
+
+**Total:** 35 claves exactas — `35` STANDARD, `0` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                               | Compatibilidad compartida |
+| -------------------------------------------- | ------------------------- |
+| `nexo.access`                                | `STANDARD`                |
+| `nexo.catalog.products.view`                 | `STANDARD`                |
+| `nexo.catalog.presentations.view`            | `STANDARD`                |
+| `nexo.catalog.request_policies.view`         | `STANDARD`                |
+| `nexo.catalog.categories.view`               | `STANDARD`                |
+| `nexo.catalog.units.view`                    | `STANDARD`                |
+| `nexo.inventory.adjustments.view`            | `STANDARD`                |
+| `nexo.inventory.entries.view`                | `STANDARD`                |
+| `nexo.inventory.entries.register`            | `STANDARD`                |
+| `nexo.inventory.locations.view`              | `STANDARD`                |
+| `nexo.inventory.location_assignments.assign` | `STANDARD`                |
+| `nexo.inventory.lpns.view`                   | `STANDARD`                |
+| `nexo.inventory.movements.view`              | `STANDARD`                |
+| `nexo.inventory.stock.view`                  | `STANDARD`                |
+| `nexo.inventory.production_batches.view`     | `STANDARD`                |
+| `nexo.inventory.transfers.view`              | `STANDARD`                |
+| `nexo.inventory.transfers.create`            | `STANDARD`                |
+| `nexo.inventory.withdrawals.view`            | `STANDARD`                |
+| `nexo.inventory.withdrawals.register`        | `STANDARD`                |
+| `nexo.inventory.zones.view`                  | `STANDARD`                |
+| `nexo.inventory.storage_positions.view`      | `STANDARD`                |
+| `nexo.inventory.warehouse_operations.view`   | `STANDARD`                |
+| `nexo.inventory.stock_validations.perform`   | `STANDARD`                |
+| `nexo.inventory.stock_counts.view`           | `STANDARD`                |
+| `nexo.inventory.stock_counts.perform`        | `STANDARD`                |
+| `nexo.inventory.initial_counts.view`         | `STANDARD`                |
+| `nexo.inventory.remissions.view`             | `STANDARD`                |
+| `nexo.inventory.remissions.prepare`          | `STANDARD`                |
+| `nexo.inventory.remissions.receive`          | `STANDARD`                |
+| `nexo.logistics.supply_routes.view`          | `STANDARD`                |
+| `nexo.printing.jobs.view`                    | `STANDARD`                |
+| `origo.access`                               | `STANDARD`                |
+| `origo.procurement.purchase_orders.view`     | `STANDARD`                |
+| `origo.procurement.receipts.view`            | `STANDARD`                |
+| `origo.procurement.suppliers.view`           | `STANDARD`                |
+
+##### DEVICE-LOGISTICS-CORE-v1
+
+**Total:** 14 claves exactas — `14` STANDARD, `0` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                           | Compatibilidad compartida |
+| ---------------------------------------- | ------------------------- |
+| `nexo.access`                            | `STANDARD`                |
+| `nexo.catalog.products.view`             | `STANDARD`                |
+| `nexo.catalog.presentations.view`        | `STANDARD`                |
+| `nexo.catalog.units.view`                | `STANDARD`                |
+| `nexo.inventory.lpns.view`               | `STANDARD`                |
+| `nexo.inventory.movements.view`          | `STANDARD`                |
+| `nexo.inventory.remissions.view`         | `STANDARD`                |
+| `nexo.inventory.remissions.dispatch`     | `STANDARD`                |
+| `nexo.logistics.operations_board.view`   | `STANDARD`                |
+| `nexo.logistics.operations.view`         | `STANDARD`                |
+| `nexo.logistics.driver_operations.view`  | `STANDARD`                |
+| `nexo.logistics.fulfillment.view`        | `STANDARD`                |
+| `nexo.logistics.fulfillment_routes.view` | `STANDARD`                |
+| `nexo.logistics.supply_routes.view`      | `STANDARD`                |
+
+##### DEVICE-PROCUREMENT-RECEPTION-v1
+
+**Total:** 17 claves exactas — `16` STANDARD, `1` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                               | Compatibilidad compartida |
+| -------------------------------------------- | ------------------------- |
+| `nexo.access`                                | `STANDARD`                |
+| `nexo.catalog.products.view`                 | `STANDARD`                |
+| `nexo.catalog.presentations.view`            | `STANDARD`                |
+| `nexo.catalog.units.view`                    | `STANDARD`                |
+| `nexo.inventory.entries.view`                | `STANDARD`                |
+| `nexo.inventory.entries.register`            | `STANDARD`                |
+| `nexo.inventory.locations.view`              | `STANDARD`                |
+| `nexo.inventory.location_assignments.assign` | `STANDARD`                |
+| `nexo.inventory.lpns.view`                   | `STANDARD`                |
+| `nexo.inventory.movements.view`              | `STANDARD`                |
+| `nexo.inventory.stock.view`                  | `STANDARD`                |
+| `nexo.inventory.warehouse_operations.view`   | `STANDARD`                |
+| `origo.access`                               | `STANDARD`                |
+| `origo.procurement.purchase_orders.view`     | `STANDARD`                |
+| `origo.procurement.receipts.view`            | `STANDARD`                |
+| `origo.procurement.suppliers.view`           | `STANDARD`                |
+| `origo.catalog.product_reviews.view`         | `STRONG`                  |
+
+##### DEVICE-OPERATIONS-MANAGEMENT-v1
+
+**Total:** 48 claves exactas — `41` STANDARD, `7` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                             | Compatibilidad compartida |
+| ------------------------------------------ | ------------------------- |
+| `fogo.access`                              | `STANDARD`                |
+| `fogo.production.batches.view`             | `STANDARD`                |
+| `fogo.production.orders.view`              | `STANDARD`                |
+| `fogo.production.recipe_book.view`         | `STANDARD`                |
+| `nexo.access`                              | `STANDARD`                |
+| `nexo.catalog.products.view`               | `STANDARD`                |
+| `nexo.catalog.presentations.view`          | `STANDARD`                |
+| `nexo.catalog.request_policies.view`       | `STANDARD`                |
+| `nexo.catalog.categories.view`             | `STANDARD`                |
+| `nexo.catalog.units.view`                  | `STANDARD`                |
+| `nexo.assets.items.view`                   | `STANDARD`                |
+| `nexo.assets.groups.view`                  | `STANDARD`                |
+| `nexo.assets.counts.view`                  | `STANDARD`                |
+| `nexo.inventory.adjustments.view`          | `STANDARD`                |
+| `nexo.inventory.adjustments.register`      | `STRONG`                  |
+| `nexo.inventory.entries.view`              | `STANDARD`                |
+| `nexo.inventory.entries.override`          | `STRONG`                  |
+| `nexo.inventory.locations.view`            | `STANDARD`                |
+| `nexo.inventory.lpns.view`                 | `STANDARD`                |
+| `nexo.inventory.movements.view`            | `STANDARD`                |
+| `nexo.inventory.stock.view`                | `STANDARD`                |
+| `nexo.inventory.production_batches.view`   | `STANDARD`                |
+| `nexo.inventory.transfers.view`            | `STANDARD`                |
+| `nexo.inventory.withdrawals.view`          | `STANDARD`                |
+| `nexo.inventory.zones.view`                | `STANDARD`                |
+| `nexo.inventory.storage_positions.view`    | `STANDARD`                |
+| `nexo.inventory.warehouse_operations.view` | `STANDARD`                |
+| `nexo.inventory.stock_counts.view`         | `STANDARD`                |
+| `nexo.inventory.initial_counts.view`       | `STANDARD`                |
+| `nexo.inventory.remissions.view`           | `STANDARD`                |
+| `nexo.inventory.remissions.update`         | `STRONG`                  |
+| `nexo.inventory.remissions.request`        | `STANDARD`                |
+| `nexo.inventory.remissions.cancel`         | `STRONG`                  |
+| `nexo.logistics.operations_board.view`     | `STANDARD`                |
+| `nexo.logistics.operations.view`           | `STANDARD`                |
+| `nexo.logistics.driver_operations.view`    | `STANDARD`                |
+| `nexo.logistics.fulfillment.view`          | `STANDARD`                |
+| `nexo.logistics.fulfillment_routes.view`   | `STANDARD`                |
+| `nexo.logistics.supply_routes.view`        | `STANDARD`                |
+| `nexo.finance.internal_variances.approve`  | `STRONG`                  |
+| `nexo.finance.internal_variances.resolve`  | `STRONG`                  |
+| `nexo.printing.jobs.view`                  | `STANDARD`                |
+| `origo.access`                             | `STANDARD`                |
+| `origo.procurement.purchase_orders.view`   | `STANDARD`                |
+| `origo.procurement.receipts.view`          | `STANDARD`                |
+| `origo.procurement.suppliers.view`         | `STANDARD`                |
+| `pulso.access`                             | `STANDARD`                |
+| `pulso.delivery.deliveries.override`       | `STRONG`                  |
+
+##### DEVICE-ADMIN-MANAGEMENT-v1
+
+**Total:** 23 claves exactas — `0` STANDARD, `23` STRONG, `0` NOT_ALLOWED.
+
+| Permiso exacto                                | Compatibilidad compartida |
+| --------------------------------------------- | ------------------------- |
+| `numera.access`                               | `STRONG`                  |
+| `numera.finance.cost_centers.view`            | `STRONG`                  |
+| `numera.finance.expenses.view`                | `STRONG`                  |
+| `numera.analytics.break_even.view`            | `STRONG`                  |
+| `numera.analytics.profitability.view`         | `STRONG`                  |
+| `numera.analytics.financial_reports.view`     | `STRONG`                  |
+| `viso.access`                                 | `STRONG`                  |
+| `viso.platform.app_updates.view`              | `STRONG`                  |
+| `viso.organization.businesses.view`           | `STRONG`                  |
+| `viso.workforce.employees.view`               | `STRONG`                  |
+| `viso.workforce.staff_calendar.view`          | `STRONG`                  |
+| `viso.workforce.schedules.view`               | `STRONG`                  |
+| `viso.workforce.vacancies.view`               | `STRONG`                  |
+| `viso.authorization.context_simulations.view` | `STRONG`                  |
+| `viso.authorization.audit_logs.view`          | `STRONG`                  |
+| `viso.catalog.commercial_categories.view`     | `STRONG`                  |
+| `viso.content.content_blocks.view`            | `STRONG`                  |
+| `viso.content.menu.view`                      | `STRONG`                  |
+| `viso.content.website_content.view`           | `STRONG`                  |
+| `viso.finance.accounting.view`                | `STRONG`                  |
+| `viso.delivery.rates.view`                    | `STRONG`                  |
+| `viso.loyalty.products.view`                  | `STRONG`                  |
+| `viso.loyalty.customers.view`                 | `STRONG`                  |
+
+Los nueve paquetes contienen 177 membresías internas y 83 claves únicas. Las repeticiones entre paquetes son deliberadas; no crean alias ni una jerarquía implícita.
+
+---
+
+#### 8. Asignación exacta por plantilla
+
+| Plantilla                        | Apps máximas                              | Paquetes máximos                                           | Modo            | Política de área        | Claves | STANDARD | STRONG |
+| -------------------------------- | ----------------------------------------- | ---------------------------------------------------------- | --------------- | ----------------------- | -----: | -------: | -----: |
+| `pos_satellite`                  | `shell`, `nexo`, `pulso`                  | `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`   | OPERATIONAL     | OPERATIONAL_FIXED_EXACT |     12 |       11 |      1 |
+| `bar_satellite`                  | `shell`, `nexo`, `pulso`                  | `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`   | OPERATIONAL     | OPERATIONAL_FIXED_EXACT |     12 |       11 |      1 |
+| `kitchen_satellite`              | `shell`, `nexo`, `pulso`                  | `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`   | OPERATIONAL     | OPERATIONAL_FIXED_EXACT |     12 |       11 |      1 |
+| `service_satellite`              | `shell`, `nexo`, `pulso`                  | `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`   | OPERATIONAL     | OPERATIONAL_FIXED_EXACT |     12 |       11 |      1 |
+| `counter_satellite`              | `shell`, `nexo`, `pulso`                  | `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`   | OPERATIONAL     | OPERATIONAL_FIXED_EXACT |     12 |       11 |      1 |
+| `integrated_satellite`           | `shell`, `nexo`, `pulso`                  | `DEVICE-SHELL-CORE-v1` + `DEVICE-INTEGRATED-SATELLITE-v1`  | OPERATIONAL     | OPERATIONAL_ALLOWED_SET |     13 |       12 |      1 |
+| `production_kitchen`             | `shell`, `fogo`, `nexo`                   | `DEVICE-SHELL-CORE-v1` + `DEVICE-PRODUCTION-CORE-v1`       | OPERATIONAL     | OPERATIONAL_FIXED_EXACT |     17 |       17 |      0 |
+| `production_bakery`              | `shell`, `fogo`, `nexo`                   | `DEVICE-SHELL-CORE-v1` + `DEVICE-PRODUCTION-CORE-v1`       | OPERATIONAL     | OPERATIONAL_FIXED_EXACT |     17 |       17 |      0 |
+| `production_pastry`              | `shell`, `fogo`, `nexo`                   | `DEVICE-SHELL-CORE-v1` + `DEVICE-PRODUCTION-CORE-v1`       | OPERATIONAL     | OPERATIONAL_FIXED_EXACT |     17 |       17 |      0 |
+| `warehouse_kiosk`                | `shell`, `nexo`, `origo`                  | `DEVICE-SHELL-CORE-v1` + `DEVICE-WAREHOUSE-CORE-v1`        | OPERATIONAL     | OPERATIONAL_FIXED_EXACT |     36 |       36 |      0 |
+| `logistics_vehicle_terminal`     | `shell`, `nexo`                           | `DEVICE-SHELL-CORE-v1` + `DEVICE-LOGISTICS-CORE-v1`        | OPERATIONAL     | HOME_AREA_EXACT         |     15 |       15 |      0 |
+| `procurement_reception`          | `shell`, `nexo`, `origo`                  | `DEVICE-SHELL-CORE-v1` + `DEVICE-PROCUREMENT-RECEPTION-v1` | MIXED_EXCLUSIVE | MIXED_FIXED_EXACT       |     18 |       17 |      1 |
+| `operations_management_terminal` | `shell`, `fogo`, `nexo`, `origo`, `pulso` | `DEVICE-SHELL-CORE-v1` + `DEVICE-OPERATIONS-MANAGEMENT-v1` | OPERATIONAL     | OPERATIONAL_ALLOWED_SET |     49 |       42 |      7 |
+| `management_terminal`            | `shell`, `numera`, `viso`                 | `DEVICE-SHELL-CORE-v1` + `DEVICE-ADMIN-MANAGEMENT-v1`      | ADMINISTRATIVE  | PHYSICAL_OWNERSHIP_ONLY |     24 |        1 |     23 |
+
+La suma de las asociaciones máximas por plantilla es 266: 229 `STANDARD` y 37 `STRONG`. Esa cifra cuenta una clave cada vez que forma parte del techo de una plantilla; no representa permisos únicos del catálogo ni concesiones al actor.
+
+---
+
+#### 9. Coherencia obligatoria entre aplicación y permiso
+
+Para cada clave:
+
+```text
+permission_app_code
+=
+prefijo canónico de la permission_key
+```
+
+Deberá cumplirse:
+
+```text
+permission_app_code ∈ effective_device_apps
+```
+
+Además, toda aplicación efectiva deberá conservar su clave exacta de entrada:
+
+```text
+shell  → shell.access
+nexo   → nexo.access
+pulso  → pulso.access
+fogo   → fogo.access
+origo  → origo.access
+numera → numera.access
+viso   → viso.access
+```
+
+Reglas:
+
+- una clave interna de una aplicación ausente queda fuera del techo efectivo;
+- una aplicación sin su `<app>.access` dentro del techo queda en conflicto y no se lanza;
+- `<app>.access` dentro del techo no concede entrada al actor;
+- una app visible no concede sus claves internas;
+- una ruta directa no evita la comprobación;
+- una reducción de apps obliga a retirar todas las claves de las apps retiradas;
+- una reducción de claves que retire `<app>.access` obliga a retirar o suspender la app correspondiente.
+
+---
+
+#### 10. Reducción de instancia
+
+La instancia se materializa como subconjunto:
+
+```text
+INSTANCE_PERMISSION_CEILING
+⊆
+TEMPLATE_PERMISSION_CEILING
+```
+
+La reducción puede obedecer a:
+
+- función local más estrecha;
+- aplicación no desplegada o deshabilitada;
+- ausencia de soporte de reautenticación fuerte;
+- transición controlada;
+- mantenimiento;
+- riesgo de seguridad;
+- incompatibilidad temporal de recurso o hardware;
+- decisión administrativa aprobada.
+
+La reducción deberá enumerar claves exactas o derivarse determinísticamente de una reducción de aplicaciones ya aprobada. No se permite añadir claves mediante configuración local, `navigation_role`, nombre de rol, metadata libre o caché.
+
+---
+
+#### 11. Tratamiento de `STANDARD`, `STRONG` y `NOT_ALLOWED`
+
+##### 11.1 `STANDARD`
+
+`STANDARD` significa que la clave puede evaluarse con una sesión ordinaria de actor, pero sigue exigiendo:
+
+- actor humano vigente;
+- permiso efectivo del actor;
+- aplicación efectiva;
+- modo de sesión compatible;
+- turno y check-in cuando su contrato los requiera;
+- sede, área y recurso válidos;
+- ausencia de denegaciones;
+- conectividad cuando la acción no admita contingencia.
+
+##### 11.2 `STRONG`
+
+`STRONG` conserva todos los requisitos anteriores y añade reautenticación fuerte personal, vinculada a actor, aplicación, permiso, acción y recurso.
+
+- el PIN ligero no satisface `STRONG`;
+- la reautenticación no pertenece al dispositivo;
+- no se transfiere a otra aplicación, actor o recurso;
+- si la instancia no soporta el mecanismo, la clave se deniega;
+- una reducción puede retirar una clave `STRONG`, pero nunca degradarla a `STANDARD`.
+
+##### 11.3 `NOT_ALLOWED`
+
+Las siguientes 20 claves quedan excluidas universalmente:
+
+- `anima.access`
+- `anima.workforce.employee_documents.view`
+- `anima.workforce.employee_documents.upload`
+- `anima.workforce.employee_documents.delete`
+- `anima.workforce.employee_photos.upload`
+- `anima.workforce.team_members.view`
+- `anima.workforce.staff_invitations.create`
+- `anima.attendance.shifts.create`
+- `anima.attendance.shifts.update`
+- `anima.attendance.shifts.cancel`
+- `aura.access`
+- `fogo.production.recipes.view`
+- `nexo.catalog.products.create`
+- `nexo.assets.items.create`
+- `nexo.inventory.location_catalog.update`
+- `nexo.finance.internal_invoices.generate`
+- `nexo.finance.internal_invoices.issue`
+- `nexo.finance.internal_invoices.cancel`
+- `nexo.printing.templates.update`
+- `pass.access`
+
+No se admite una excepción de instancia que convierta `NOT_ALLOWED` en `STANDARD` o `STRONG`.
+
+---
+
+#### 12. Intersección con actor, carriles y denegaciones
+
+La evaluación conserva la precedencia aprobada:
+
+```text
+STRUCTURAL_DENY
+>
+ACTOR_WIDE_DENY
+>
+LANE_DENY
+>
+ALLOW COMPLETO DEL ACTOR
+>
+DEFAULT_DENY
+```
+
+El techo del dispositivo se aplica como límite adicional después de resolver la clave solicitada y antes de confirmar la acción. No elimina denegaciones, no completa un permiso `BASE_AND_OPERATIONAL`, no crea turno, no crea check-in y no transforma un `BASE_ONLY` en capacidad operativa.
+
+Una clave puede estar en el paquete y aun así resultar:
+
+- fuera del carril efectivo del actor;
+- fuera del alcance territorial;
+- incompatible con el recurso;
+- bloqueada por segregación de funciones;
+- pendiente de reautenticación fuerte;
+- denegada explícitamente;
+- inactiva o retirada del catálogo.
+
+---
+
+#### 13. Decisión sobre las dos instancias actuales
+
+##### 13.1 `CAJA_VENTO_CAFE_01`
+
+- plantilla candidata: `pos_satellite`;
+- aplicaciones candidatas: `shell`, `nexo`, `pulso`;
+- techo candidato: `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`;
+- total: 12 claves —11 `STANDARD`, 1 `STRONG`;
+- clave `STRONG`: `nexo.inventory.remissions.update`;
+- estado: `REGISTERED_UNVERIFIED`.
+
+No se declara implementado el paquete porque falta demostrar versión fijada, membresía exacta, evaluación server-side, sesión de actor, soporte de reautenticación fuerte, identidad física y comportamiento real.
+
+##### 13.2 `KIOSCO_BODEGA_CP`
+
+- plantilla candidata: `warehouse_kiosk`;
+- techo máximo de plantilla: 36 claves —36 `STANDARD`;
+- aplicaciones registrales candidatas de instancia: únicamente `nexo`;
+- reducción determinística candidata: retirar `shell.access` y las cuatro claves `origo.*`;
+- techo efectivo candidato: 31 claves exactas de NEXO —31 `STANDARD`;
+- estado: `REGISTERED_UNVERIFIED`.
+
+No se añaden `shell`, `origo` ni sus claves por pertenecer a la plantilla. `navigation_role = bodeguero` no demuestra membresía exacta, permiso del actor ni conformidad operativa.
+
+---
+
+#### 14. Observaciones físicas
+
+Las observaciones de Vento Café y Saudo no reciben paquetes por inferencia.
+
+Para asignar un techo se requerirá, como mínimo:
+
+1. identidad y enrolamiento del dispositivo;
+2. deduplicación;
+3. vínculo de sede vigente;
+4. política de área vigente;
+5. versión de plantilla fijada;
+6. conjunto de aplicaciones efectivo;
+7. paquetes exactos de la plantilla;
+8. reducción explícita de instancia cuando aplique;
+9. soporte de controles exigidos;
+10. verificación y evidencia.
+
+Hasta entonces permanecen `OBSERVED_ONLY` con cero claves autoritativas.
+
+---
+
+#### 15. Plantilla retirada
+
+`production_center` permanece retirada:
+
+- no recibe versiones nuevas de paquetes;
+- no admite nuevas instancias;
+- no se reactiva por conservar filas legacy;
+- su historia se conserva hasta la transición;
+- cualquier instancia futura utiliza `production_kitchen`, `production_bakery` o `production_pastry`.
+
+---
+
+#### 16. Evolución del catálogo
+
+Cuando se cree, divida, reemplace, retire o reclasifique una clave:
+
+```text
+NUEVA VERSIÓN DEL CATÁLOGO
+→ CLAVE NUEVA DENEGADA EN TODOS LOS PAQUETES
+→ ANALIZAR COMPATIBILIDAD COMPARTIDA
+→ REVISAR APLICACIÓN, MODALIDAD, CONTEXTO Y RECURSO
+→ ACTUALIZAR SOLO LOS PAQUETES AFECTADOS
+→ CREAR NUEVA VERSIÓN DE PLANTILLA
+→ DESPLEGAR EXPLÍCITAMENTE A INSTANCIAS
+→ VALIDAR Y CONSERVAR ROLLBACK
+```
+
+Reglas:
+
+- no se incorpora una clave por compartir prefijo;
+- no se sustituye una clave retirada por otra más amplia;
+- un alias legacy no crea membresía;
+- una nueva versión no se propaga silenciosamente;
+- una instancia permanece fijada a su versión hasta migración autorizada;
+- las claves históricas conservan trazabilidad aunque dejen de autorizar.
+
+---
+
+#### 17. Cambio de paquete o reducción
+
+Flujo obligatorio:
+
+```text
+SOLICITUD AUTORIZADA
+→ VALIDAR CATÁLOGO, APPS, PLANTILLA Y CLASIFICACIONES
+→ CALCULAR DIFERENCIA EXACTA DE CLAVES
+→ EVALUAR IMPACTO SOBRE ACTORES, RECURSOS Y STRONG
+→ SUSPENDER ACCIONES AFECTADAS
+→ TERMINAR SESIONES INCOMPATIBLES
+→ INVALIDAR CONTEXTO, CACHÉS Y REAUTENTICACIONES
+→ CERRAR VERSIÓN ANTERIOR
+→ CREAR NUEVA VERSIÓN O REDUCCIÓN PENDING_VERIFICATION
+→ VERIFICAR EN SERVIDOR Y DISPOSITIVO
+→ ACTIVAR O EJECUTAR ROLLBACK
+```
+
+Se conservarán versión anterior y nueva, claves añadidas o retiradas, actor administrativo, motivo, evidencia, fechas, sesiones invalidadas, resultado de validación y referencia de rollback.
+
+---
+
+#### 18. Conflictos y comportamiento fail closed
+
+Constituyen conflicto:
+
+- una clave de instancia ausente en los paquetes de su plantilla;
+- una clave cuyo `app_code` no está en las aplicaciones efectivas;
+- una aplicación efectiva sin su `<app>.access` en el techo;
+- duplicado de membresía con clasificación divergente;
+- paquete o versión no resoluble;
+- clave inexistente, inactiva o retirada tratada como vigente;
+- clave `NOT_ALLOWED` incluida;
+- clave `STRONG` degradada a `STANDARD`;
+- reducción que amplía la plantilla;
+- dos reducciones vigentes incompatibles;
+- cambio de aplicación sin recomputar el techo;
+- cambio de plantilla, sede o área sin revalidación;
+- uso de `navigation_role`, rol del actor, ruta o caché como fuente de membresía;
+- cliente que declara una lista diferente.
+
+Resultado:
+
+```text
+permission_ceiling_state = CONFLICTED
+→ techo efectivo vacío para acciones afectadas
+→ bloquear acción empresarial
+→ limpiar estado y cachés incompatibles
+→ terminar reautenticaciones afectadas
+→ registrar evidencia
+→ exigir reconciliación autorizada
+```
+
+Nunca se elegirá la clave más reciente, la del rol, la visible, la instalada, la del último actor ni la enviada por el cliente.
+
+---
+
+#### 19. Matriz completa de las 19 claves
+
+La columna `Claves / STANDARD / STRONG` expresa el techo de la fila. En plantillas cuenta el máximo; en instancias, el candidato efectivo después de la reducción de aplicaciones vigente.
+
+| `inventory_key`                                              | Clase                     | Decisión                                  | Paquete o reducción                                                                                  | Claves / STANDARD / STRONG | Estado                  | Regla y bloqueo                                                                                                                                                                                    | Destino exacto                                            |
+| ------------------------------------------------------------ | ------------------------- | ----------------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------- | ----------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
+| `configured_device:CAJA_VENTO_CAFE_01`                       | `CONFIGURED_INSTANCE`     | `CONSERVAR_TECHO_REGISTRAL_CANDIDATO`     | `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`                                             | 12 / 11 / 1                | `REGISTERED_UNVERIFIED` | Las tres apps registrales coinciden con `pos_satellite`. El techo candidato contiene 12 claves, pero no existe evidencia de vínculo versionado, soporte STRONG ni evaluación server-side conforme. | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-015`                |
+| `configured_device:KIOSCO_BODEGA_CP`                         | `CONFIGURED_INSTANCE`     | `CONSERVAR_REDUCCION_REGISTRAL_CANDIDATA` | Plantilla: `DEVICE-SHELL-CORE-v1` + `DEVICE-WAREHOUSE-CORE-v1`; instancia: 31 claves exactas de NEXO | 31 / 31 / 0                | `REGISTERED_UNVERIFIED` | La plantilla admite 36 claves, pero la instancia solo conserva la app `nexo`; `shell.access` y las cuatro claves ORIGO quedan fuera. Falta vínculo exacto y validación de runtime.                 | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014`                |
+| `physical_observation:VENTO_CAFE/SERVICIO/tablet_compartida` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_PAQUETE_POR_OBSERVACION`      | Sin paquete autoritativo                                                                             | 0 / 0 / 0                  | `OBSERVED_ONLY`         | La observación no demuestra instancia, plantilla, aplicaciones efectivas, actor ni permisos materializados.                                                                                        | `AUTH-DEV-014; AUTH-DEV-015`                              |
+| `physical_observation:SAUDO/SERVICIO/dispositivo_compartido` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_PAQUETE_POR_OBSERVACION`      | Sin paquete autoritativo                                                                             | 0 / 0 / 0                  | `OBSERVED_ONLY`         | La observación no demuestra tipo, cantidad, identidad técnica, aplicaciones efectivas ni paquete de claves.                                                                                        | `AUTH-DEV-014; AUTH-DEV-015`                              |
+| `target_template:pos_satellite`                              | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`                                             | 12 / 11 / 1                | `POLICY_DEFINED`        | El paquete admite abastecimiento satélite y PULSO dentro del rol, sede y área exactos; una app o clave visible no concede autoridad.                                                               | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:bar_satellite`                              | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`                                             | 12 / 11 / 1                | `POLICY_DEFINED`        | El paquete admite abastecimiento satélite y PULSO dentro del rol, sede y área exactos; una app o clave visible no concede autoridad.                                                               | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:kitchen_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`                                             | 12 / 11 / 1                | `POLICY_DEFINED`        | El paquete admite abastecimiento satélite y PULSO dentro del rol, sede y área exactos; una app o clave visible no concede autoridad.                                                               | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:service_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`                                             | 12 / 11 / 1                | `POLICY_DEFINED`        | El paquete admite abastecimiento satélite y PULSO dentro del rol, sede y área exactos; una app o clave visible no concede autoridad.                                                               | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:counter_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-SATELLITE-REQUESTER-v1`                                             | 12 / 11 / 1                | `POLICY_DEFINED`        | El paquete admite abastecimiento satélite y PULSO dentro del rol, sede y área exactos; una app o clave visible no concede autoridad.                                                               | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:integrated_satellite`                       | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-INTEGRATED-SATELLITE-v1`                                            | 13 / 12 / 1                | `POLICY_DEFINED`        | El paquete integrado añade recepción ordinaria, pero no suma automáticamente permisos de todos los oficios satélite.                                                                               | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:production_kitchen`                         | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-PRODUCTION-CORE-v1`                                                 | 17 / 17 / 0                | `POLICY_DEFINED`        | El mismo núcleo productivo queda restringido al área exacta de Cocina Caliente.                                                                                                                    | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:production_bakery`                          | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-PRODUCTION-CORE-v1`                                                 | 17 / 17 / 0                | `POLICY_DEFINED`        | El mismo núcleo productivo queda restringido al área exacta de Galletería y Panadería.                                                                                                             | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:production_pastry`                          | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-PRODUCTION-CORE-v1`                                                 | 17 / 17 / 0                | `POLICY_DEFINED`        | El mismo núcleo productivo queda restringido al área exacta de Repostería.                                                                                                                         | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:warehouse_kiosk`                            | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-WAREHOUSE-CORE-v1`                                                  | 36 / 36 / 0                | `POLICY_DEFINED`        | Las 36 claves son un techo; una instancia puede reducirlo y no obtiene ajustes, overrides o cancelaciones no enumerados.                                                                           | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:logistics_vehicle_terminal`                 | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-LOGISTICS-CORE-v1`                                                  | 15 / 15 / 0                | `POLICY_DEFINED`        | El paquete se limita a la operación logística asignada y no concede preparación, recepción de destino ni inventario general.                                                                       | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:procurement_reception`                      | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-PROCUREMENT-RECEPTION-v1`                                           | 18 / 17 / 1                | `POLICY_DEFINED`        | Los modos operativo y administrativo son excluyentes; ambos conservan el mismo techo y recalculan el carril del actor.                                                                             | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:operations_management_terminal`             | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-OPERATIONS-MANAGEMENT-v1`                                           | 49 / 42 / 7                | `POLICY_DEFINED`        | Las 49 claves no convierten coordinación en ejecución física de otros oficios; 7 requieren STRONG.                                                                                                 | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `target_template:management_terminal`                        | `TARGET_TEMPLATE`         | `FIJAR_TECHO_MAXIMO_EXACTO`               | `DEVICE-SHELL-CORE-v1` + `DEVICE-ADMIN-MANAGEMENT-v1`                                                | 24 / 1 / 23                | `POLICY_DEFINED`        | Las 23 claves NUMERA/VISO requieren STRONG; `shell.access` permanece STANDARD y el área física no crea cobertura.                                                                                  | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014 a AUTH-DEV-016` |
+| `retired_legacy_template:production_center`                  | `RETIRED_LEGACY_TEMPLATE` | `PROHIBIR_NUEVOS_PAQUETES`                | No aplica                                                                                            | 0 / 0 / 0                  | `NO_APLICA`             | La plantilla retirada conserva historia, pero no admite nuevas claves ni instancias; la transición utiliza las tres plantillas productivas especializadas.                                         | `AUTH-CTX-028; paquetes E5 y BLOQUE R`                    |
+
+La matriz no crea dispositivos, identidades, aplicaciones, permisos del actor, tablas ni asociaciones desplegadas. Materializa el límite que deberá aplicar la implementación posterior.
+
+---
+
+#### 20. Reconciliación con la infraestructura existente
+
+| Elemento actual                                     | Decisión contractual                                                                                                      | Estado                              |
+| --------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `shared_operational_device_templates`               | Representa plantillas configurables, pero no fija versión de plantilla, snapshot de catálogo ni paquetes exactos.         | `IMPLEMENTADO` parcial              |
+| `shared_operational_device_template_apps`           | Representa apps máximas legacy; no sustituye membresía de permisos ni coherencia app–clave.                               | `IMPLEMENTADO` parcial              |
+| `shared_operational_device_apps`                    | Representa reducción de aplicaciones por instancia; deberá producir reducción determinística de claves de apps retiradas. | `IMPLEMENTADO` parcial              |
+| `navigation_role` de plantilla e instancia          | Permanece como pista de navegación. No es paquete, rol efectivo ni fuente de membresía.                                   | `BLOQUEADO` como autoridad          |
+| Tablas versionadas de paquetes y miembros exactos   | No fueron identificadas en las migraciones revisadas de dispositivos compartidos.                                         | `PENDIENTE_DE_IMPLEMENTACION`       |
+| Vínculo plantilla–paquete y reducción por instancia | No existe como contrato físico versionado demostrado.                                                                     | `PENDIENTE_DE_IMPLEMENTACION`       |
+| Clasificación `STANDARD` / `STRONG` por miembro     | Está definida documentalmente; falta materialización consumible y validación uniforme.                                    | `PENDIENTE_DE_IMPLEMENTACION`       |
+| `current_shared_device_can_access_app(text)`        | Solo comprueba app técnica; no resuelve paquete, actor, permiso, clasificación, territorio, recurso ni denegaciones.      | `BLOQUEADO` como autorización final |
+| Configuración de las dos instancias                 | Existen candidatos registrales, pero no evidencia de paquete exacto, reducción, versión, STRONG ni enforcement real.      | `PENDIENTE_DE_EVIDENCIA`            |
+
+Destinos existentes:
+
+- `AUTH-CTX-025`: resolución SQL canónica;
+- `AUTH-CTX-027`: eliminación de inferencias locales;
+- `AUTH-CTX-028`: compatibilidad y transición legacy;
+- `AUTH-CTX-029`: invalidación por cambios;
+- BLOQUE E3: arquitectura física y transición;
+- BLOQUE E5: paquete implementable, cutover y rollback;
+- BLOQUE R: migraciones, constraints, RLS, RPC y backfill;
+- `AUTH-DEV-014` a `AUTH-DEV-016`: verificación de configuración, dispositivos y aplicaciones reales.
+
+---
+
+#### 21. Auditoría mínima
+
+Todo paquete, vínculo, reducción y decisión deberá conservar:
+
+- `package_code` y versión;
+- referencia de snapshot de catálogo;
+- `permission_key` exacta;
+- clasificación `STANDARD` o `STRONG`;
+- plantilla y versión;
+- dispositivo e identidad técnica;
+- reducción aplicada;
+- aplicación efectiva;
+- actor y sesión de actor;
+- carril o carriles evaluados;
+- sede, área y recurso;
+- denegaciones y prerrequisitos;
+- evidencia de reautenticación cuando aplique;
+- resultado y razones estructuradas;
+- actor administrativo, motivo y fechas;
+- correlación con invalidación y rollback.
+
+Eventos conceptuales mínimos:
+
+```text
+device_permission_package_created
+device_permission_package_versioned
+device_permission_package_suspended
+device_permission_package_retired
+device_template_permission_binding_created
+device_instance_permission_reduction_created
+device_instance_permission_reduction_activated
+device_instance_permission_reduction_conflicted
+device_permission_ceiling_resolved
+device_permission_ceiling_denied
+device_permission_ceiling_invalidated
+device_permission_package_rollback_applied
+```
+
+Los nombres físicos podrán versionarse sin perder la semántica anterior.
+
+---
+
+#### 22. Razones mínimas de bloqueo
+
+| Razón conceptual                                   | Significado                                                                        |
+| -------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| `shared_device_permission_not_listed`              | La clave no pertenece al techo efectivo.                                           |
+| `shared_device_permission_app_mismatch`            | La aplicación propietaria de la clave no está en el conjunto efectivo.             |
+| `shared_device_app_access_key_missing`             | Una app efectiva no conserva su `<app>.access` en el techo.                        |
+| `shared_device_permission_not_allowed`             | La clave está clasificada `NOT_ALLOWED`.                                           |
+| `shared_device_permission_strong_required`         | La clave exige reautenticación fuerte válida.                                      |
+| `shared_device_permission_strong_not_supported`    | La instancia no soporta el mecanismo STRONG exigido.                               |
+| `shared_device_permission_package_version_invalid` | No se resuelve una versión vigente y única del paquete.                            |
+| `shared_device_permission_reduction_invalid`       | La reducción contiene duplicados, amplía la plantilla o contradice apps efectivas. |
+| `shared_device_permission_catalog_stale`           | El paquete referencia una clave retirada, inexistente o de snapshot incompatible.  |
+| `shared_device_permission_context_mismatch`        | Actor, carril, sede, área, recurso o prerrequisito son incompatibles.              |
+| `shared_device_permission_explicit_deny`           | Una denegación aplicable prevalece sobre el allow del actor.                       |
+| `shared_device_permission_client_tampering`        | El cliente intentó declarar o ampliar claves.                                      |
+
+---
+
+#### 23. Límites de esta tarea
+
+AUTH-DEV-006 no:
+
+- concede permisos a trabajadores;
+- modifica matrices base u operativas;
+- crea excepciones o denegaciones;
+- define PIN, passkey, MFA o proveedor de reautenticación;
+- define duración de sesión;
+- implementa tablas, constraints, triggers, RPC, RLS o funciones;
+- crea migraciones o backfills;
+- modifica las dos instancias actuales;
+- instala aplicaciones o clientes;
+- enrola observaciones;
+- ejecuta pruebas físicas u operativas;
+- modifica el catálogo de 112 permisos;
+- inicia tareas de simulación.
+
+---
+
+#### 24. Cierre del mini-bloque y carryover
+
+Con esta tarea queda documentalmente completo el mini-bloque `AUTH-DEV-001` a `AUTH-DEV-006`:
+
+- inventario de 19 claves;
+- identidad separada y verificable;
+- sede fija;
+- área fija o conjunto permitido;
+- aplicaciones máximas y reducciones de instancia;
+- permisos máximos exactos y clasificación.
+
+Las tareas posteriores deberán conservar:
+
+- `AUTH-DEV-007` a `AUTH-DEV-013`: identificación, sesión, cambio de actor, revocación, expiración y auditoría no podrán ampliar el techo;
+- `AUTH-DEV-014` a `AUTH-DEV-016`: validarán paquetes, apps, STRONG y comportamiento real por dispositivo;
+- `AUTH-CTX-025`: resolverá en servidor versiones, miembros, reducción y decisión;
+- `AUTH-CTX-027`: retirará cualquier inferencia desde `navigation_role`, rol, ruta o cliente;
+- `AUTH-CTX-028`: diseñará transición desde las estructuras legacy;
+- `AUTH-CTX-029`: invalidará contexto ante cambios;
+- los paquetes E5 y el BLOQUE R materializarán estructura, transición, pruebas y rollback;
+- `AUTH-SIM-001` permanecerá reservada hasta aprobación expresa de esta tarea.
+
+---
+
+#### 25. Invariantes
+
+1. El dispositivo es un filtro restrictivo, nunca una fuente de permisos.
+2. Toda membresía usa una clave exacta.
+3. No existen wildcards, prefijos ni alias de paquete.
+4. La plantilla define el techo máximo.
+5. La instancia solo puede reducir.
+6. Toda clave pertenece a una aplicación efectiva.
+7. Toda app efectiva conserva su `<app>.access` en el techo.
+8. Una clave listada no concede permiso al actor.
+9. Una app permitida no concede sus claves internas.
+10. `navigation_role` no crea membresía ni autoridad.
+11. `STANDARD` conserva actor y contexto obligatorios.
+12. `STRONG` no se degrada a `STANDARD`.
+13. El PIN ligero no satisface `STRONG`.
+14. `NOT_ALLOWED` permanece excluido universalmente.
+15. Los nueve permisos STRONG no seleccionados permanecen denegados en todas las plantillas.
+16. Una clave nueva inicia denegada.
+17. Una clave retirada conserva historia y no se sustituye por una más amplia.
+18. Las denegaciones del actor prevalecen.
+19. Los permisos `BASE_AND_OPERATIONAL` conservan ambos componentes.
+20. El techo no crea turno, check-in, sede, área ni recurso.
+21. La identidad técnica no actúa como trabajador.
+22. La decisión se recalcula en servidor por acción y recurso.
+23. Los cambios son versionados, auditados e invalidan estado afectado.
+24. Las observaciones no reciben paquetes por inferencia.
+25. La plantilla retirada no recibe nuevas claves.
+26. Las 19 claves conservan decisión explícita y única.
+27. Los nueve paquetes conservan 177 membresías y 83 claves únicas.
+28. Las 14 plantillas conservan 266 asociaciones: 229 STANDARD y 37 STRONG.
+29. Las 20 claves NOT_ALLOWED permanecen ausentes.
+30. No se inicia la simulación dentro de esta tarea.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-AUTH-059` a `TREQ-AUTH-068` en el Registro Canónico de Requisitos de Prueba.
+
+| ID              | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                              | Tipo                                                       | Prioridad | Momento de implementación                                     | Destino                                                                               |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | --------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| `TREQ-AUTH-059` | El techo efectivo de permisos de una instancia deberá ser la intersección entre los paquetes exactos de su versión de plantilla, las reducciones explícitas vigentes de la instancia, sus aplicaciones efectivas y el catálogo canónico activo. La instancia solo podrá reducir y nunca ampliar el techo de la plantilla.                                                                                                    | contractual + base de datos + seguridad + regresión        | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-025`; `AUTH-CTX-028`; `AUTH-QA-030`                  |
+| `TREQ-AUTH-060` | Toda membresía de paquete deberá usar una `permission_key` canónica exacta, única y vinculada a una versión explícita de paquete y al snapshot de catálogo aprobado. Wildcards, prefijos, nombres de rol, `navigation_role`, aplicaciones, rutas, pantallas o listas del cliente no podrán crear membresía.                                                                                                                  | seguridad + contractual + integración + regresión          | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-025`; `AUTH-CTX-027`; `AUTH-QA-030`                  |
+| `TREQ-AUTH-061` | Toda clave del techo deberá pertenecer a una aplicación efectiva del dispositivo y cada aplicación efectiva deberá conservar su clave exacta `<app>.access` dentro del techo. Una aplicación permitida sin clave aplicable, o una clave de una aplicación ausente, deberá bloquear lanzamiento y acción sin producir autorización implícita.                                                                                 | seguridad + autorización + integración + E2E + regresión   | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-CTX-025`; `AUTH-QA-030` |
+| `TREQ-AUTH-062` | Toda acción desde un dispositivo compartido deberá intersectar permiso efectivo del actor, techo exacto del dispositivo, aplicación efectiva, modo de sesión, sede, área, recurso, prerrequisitos y ausencia de denegaciones. La identidad técnica, la plantilla o el paquete nunca podrán actuar como trabajador ni conceder un carril.                                                                                     | seguridad + autorización + integración + E2E + regresión   | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-008` a `AUTH-DEV-010`; `AUTH-CTX-025`; `AUTH-QA-030` |
+| `TREQ-AUTH-063` | Las claves `STANDARD` deberán seguir exigiendo actor y contexto; las claves `STRONG` deberán exigir reautenticación fuerte personal y soporte real del dispositivo sin degradación a PIN ligero; y las claves `NOT_ALLOWED` deberán permanecer excluidas de toda plantilla e instancia.                                                                                                                                      | seguridad + autenticación + autorización + E2E + regresión | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-007` a `AUTH-DEV-010`; `AUTH-QA-030`                 |
+| `TREQ-AUTH-064` | Toda clave creada, dividida, reemplazada o reclasificada en una versión posterior del catálogo deberá iniciar denegada en todos los paquetes hasta revisión, nueva versión de paquete y despliegue explícito. Las claves retiradas conservarán historia y no podrán resolverse mediante alias o sustituciones más amplias.                                                                                                   | contractual + migración + seguridad + regresión            | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; revisión de catálogo; `AUTH-CTX-028`; `AUTH-QA-030`            |
+| `TREQ-AUTH-065` | Todo cambio de paquete, clasificación o reducción de instancia deberá crear una versión auditada, cerrar la anterior, invalidar sesiones, contexto, cachés y reautenticaciones afectadas, revalidar aplicaciones, sede, área y soporte STRONG, y permitir rollback a una versión aprobada. Queda prohibida la edición silenciosa o local.                                                                                    | seguridad + migración + integración + E2E + regresión      | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-011`; `AUTH-CTX-029`; `AUTH-QA-030`                  |
+| `TREQ-AUTH-066` | `CAJA_VENTO_CAFE_01` deberá conservar como techo candidato 12 claves —11 STANDARD y 1 STRONG— de `pos_satellite`; `KIOSCO_BODEGA_CP` deberá conservar una reducción candidata de 31 claves exactas de NEXO, excluyendo `shell.access` y cuatro claves ORIGO mientras sus aplicaciones efectivas sigan reducidas a `nexo`. Ninguna instancia se considerará verificada por `navigation_role` o datos registrales.             | contractual + seguridad + integración + regresión          | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014`; `AUTH-DEV-015`; `AUTH-QA-030`                  |
+| `TREQ-AUTH-067` | `procurement_reception` deberá conservar 18 claves con modos excluyentes; `operations_management_terminal`, 49 claves sin convertir coordinación en ejecución de otros oficios; `management_terminal`, 24 claves con 23 STRONG y sin bypass por rol; y las tres plantillas productivas, 17 claves cada una restringidas a su área exacta.                                                                                    | seguridad + autorización + integración + regresión         | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-008`; `AUTH-CTX-025`; `AUTH-QA-030`                  |
+| `TREQ-AUTH-068` | La matriz de permisos máximos deberá cubrir exactamente las 19 claves heredadas, nueve paquetes versionados, 83 claves únicas incluidas y 266 asociaciones plantilla–permiso —229 STANDARD y 37 STRONG—; las 20 claves `NOT_ALLOWED` deberán estar ausentes y la distribución permanecerá en 2 instancias `REGISTERED_UNVERIFIED`, 2 observaciones `OBSERVED_ONLY`, 14 plantillas `POLICY_DEFINED` y 1 retirada `NO_APLICA`. | contractual + estática + regresión                         | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030`                 |
+
+---
+
+#### 26. Criterios de aceptación
+
+- [x] Se definió el techo efectivo como intersección restrictiva.
+- [x] Se preservaron los nueve paquetes exactos heredados de `AUTH-RBAC-023`.
+- [x] Se enumeraron las 177 membresías sin wildcards ni duplicados internos.
+- [x] Se reconciliaron 83 claves únicas: 52 STANDARD y 31 STRONG.
+- [x] Se conservaron fuera de todos los paquetes nueve claves STRONG no seleccionadas y veinte NOT_ALLOWED.
+- [x] Se materializaron 266 asociaciones por plantilla: 229 STANDARD y 37 STRONG.
+- [x] Se definió coherencia obligatoria entre app efectiva, `<app>.access` y claves internas.
+- [x] Se definió reducción de instancia sin ampliación.
+- [x] Se definió comportamiento de STANDARD, STRONG y NOT_ALLOWED.
+- [x] Se preservó la precedencia de denegaciones y la independencia de carriles.
+- [x] Se conservó para Caja un techo candidato de 12 claves.
+- [x] Se conservó para Kiosco una reducción candidata de 31 claves NEXO.
+- [x] Ninguna instancia se declaró implementada o validada.
+- [x] Las dos observaciones permanecieron sin paquete autoritativo.
+- [x] La plantilla retirada no admite nuevos paquetes.
+- [x] Se definió evolución de catálogo con default deny.
+- [x] Se definió cambio versionado, invalidación, auditoría y rollback.
+- [x] Se materializaron decisiones para las 19 claves sin faltantes ni duplicados.
+- [x] Se generaron `TREQ-AUTH-059` a `TREQ-AUTH-068`.
+- [x] No se modificó código, Supabase, migraciones, configuración, datos, aplicaciones, permisos ni dispositivos.
+- [x] `AUTH-SIM-001` permanece únicamente reservada.
+
+---
+
+#### 27. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DEV-005 — Asignar aplicaciones permitidas`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DEV-006 — Asignar permisos máximos del dispositivo`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SIM-001 — Definir quién puede simular`
+

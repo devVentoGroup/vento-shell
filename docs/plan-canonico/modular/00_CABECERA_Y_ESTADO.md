@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **518** |
+| Tareas aprobadas | **519** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1076** |
+| Tareas no iniciadas | **1075** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **32.50% (518/1594)** |
+| Porcentaje de completamiento | **32.56% (519/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DEV-005 — Asignar aplicaciones permitidas** |
-| Tarea actual | **AUTH-DEV-006 — Asignar permisos máximos del dispositivo** |
+| Última tarea aprobada | **AUTH-DEV-006 — Asignar permisos máximos del dispositivo** |
+| Tarea actual | **AUTH-SIM-001 — Definir quién puede simular** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-SIM-001 — Definir quién puede simular** |
-| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 9: SHARED_DEVICE_CONTRACT** |
-| Progreso del bloque | **CARRIL NEXO: 5 de 6 aprobadas; AUTH-DEV-006 pendiente** |
+| Siguiente tarea | **AUTH-SIM-002 — Definir roles simulables** |
+| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 10: SIMULATION_CONTRACT** |
+| Progreso del bloque | **CARRIL NEXO: 0 de 6 aprobadas; AUTH-SIM-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DEV-005` — Asignar aplicaciones permitidas |
-| Tarea actual | `AUTH-DEV-006` — Asignar permisos máximos del dispositivo — **NO INICIADA** |
-| Siguiente tarea | `AUTH-SIM-001` — Definir quién puede simular |
+| Última aprobada | `AUTH-DEV-006` — Asignar permisos máximos del dispositivo |
+| Tarea actual | `AUTH-SIM-001` — Definir quién puede simular — **NO INICIADA** |
+| Siguiente tarea | `AUTH-SIM-002` — Definir roles simulables |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 5 DE 6 APROBADAS — ACTUAL AUTH-DEV-006** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 6 APROBADAS — ACTUAL AUTH-SIM-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DEV-005 — Asignar aplicaciones permitidas
-        ↓
-TAREA ACTUAL
 AUTH-DEV-006 — Asignar permisos máximos del dispositivo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-SIM-001 — Definir quién puede simular
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-SIM-002 — Definir roles simulables
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 5 de 6 tareas aprobadas
+CARRIL NEXO — 0 de 6 tareas aprobadas
 ```

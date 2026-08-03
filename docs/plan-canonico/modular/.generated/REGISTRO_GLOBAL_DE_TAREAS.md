@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **518** |
+| Aprobadas | **519** |
 | En propuesta | **0** |
-| No iniciadas | **1076** |
+| No iniciadas | **1075** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **32.50% (518/1594)** |
+| Porcentaje de completamiento | **32.56% (519/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DEV-005` — Asignar aplicaciones permitidas | ✅ APROBADA |
-| Tarea actual | `AUTH-DEV-006` — Asignar permisos máximos del dispositivo | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-SIM-001` — Definir quién puede simular | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DEV-006` — Asignar permisos máximos del dispositivo | ✅ APROBADA |
+| Tarea actual | `AUTH-SIM-001` — Definir quién puede simular | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-SIM-002` — Definir roles simulables | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1186,7 +1186,7 @@
 | ✅ APROBADA | `AUTH-DEV-003` | Asignar sede fija | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ✅ APROBADA | `AUTH-DEV-004` | Asignar área fija o permitida | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ✅ APROBADA | `AUTH-DEV-005` | Asignar aplicaciones permitidas | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
-| ⬜ NO INICIADA | `AUTH-DEV-006` | Asignar permisos máximos del dispositivo | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
+| ✅ APROBADA | `AUTH-DEV-006` | Asignar permisos máximos del dispositivo | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-007` | Exigir firma o PIN del trabajador | `bloques/P_DISPOSITIVOS_COMPARTIDOS/02_IDENTIFICACION_DEL_TRABAJADOR_Y_AUDITORIA.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-008` | Combinar límite del dispositivo y trabajador | `bloques/P_DISPOSITIVOS_COMPARTIDOS/02_IDENTIFICACION_DEL_TRABAJADOR_Y_AUDITORIA.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-009` | Evitar heredar permisos administrativos | `bloques/P_DISPOSITIVOS_COMPARTIDOS/02_IDENTIFICACION_DEL_TRABAJADOR_Y_AUDITORIA.md` |
