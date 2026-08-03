@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **505** |
+| Tareas aprobadas | **507** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1089** |
+| Tareas no iniciadas | **1087** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **31.68% (505/1594)** |
+| Porcentaje de completamiento | **31.81% (507/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-031 — Asignar permiso exacto a cada acción** |
-| Tarea actual | **AUTH-UI-032 — Definir si requiere turno** |
+| Última tarea aprobada | **AUTH-UI-033 — Definir si requiere check-in** |
+| Tarea actual | **AUTH-UI-034 — Definir si requiere sede** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-033 — Definir si requiere check-in** |
+| Siguiente tarea | **AUTH-UI-035 — Definir si requiere área** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 8: AUTH_UI_CONTRACT** |
-| Progreso del bloque | **CARRIL NEXO: 2 de 10 aprobadas; AUTH-UI-032 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 4 de 10 aprobadas; AUTH-UI-034 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-031` — Asignar permiso exacto a cada acción |
-| Tarea actual | `AUTH-UI-032` — Definir si requiere turno — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-033` — Definir si requiere check-in |
+| Última aprobada | `AUTH-UI-033` — Definir si requiere check-in |
+| Tarea actual | `AUTH-UI-034` — Definir si requiere sede — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-035` — Definir si requiere área |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 2 DE 10 APROBADAS — ACTUAL AUTH-UI-032** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 4 DE 10 APROBADAS — ACTUAL AUTH-UI-034** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-031 — Asignar permiso exacto a cada acción
-        ↓
-TAREA ACTUAL
-AUTH-UI-032 — Definir si requiere turno
-        ↓
-SIGUIENTE TAREA RESERVADA
 AUTH-UI-033 — Definir si requiere check-in
         ↓
+TAREA ACTUAL
+AUTH-UI-034 — Definir si requiere sede
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-035 — Definir si requiere área
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 2 de 10 tareas aprobadas
+CARRIL NEXO — 4 de 10 tareas aprobadas
 ```
