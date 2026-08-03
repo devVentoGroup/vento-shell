@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **514** |
+| Tareas aprobadas | **515** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1080** |
+| Tareas no iniciadas | **1079** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **32.25% (514/1594)** |
+| Porcentaje de completamiento | **32.31% (515/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DEV-001 — Inventariar dispositivos compartidos** |
-| Tarea actual | **AUTH-DEV-002 — Definir identidad del dispositivo** |
+| Última tarea aprobada | **AUTH-DEV-002 — Definir identidad del dispositivo** |
+| Tarea actual | **AUTH-DEV-003 — Asignar sede fija** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DEV-003 — Asignar sede fija** |
+| Siguiente tarea | **AUTH-DEV-004 — Asignar área fija o permitida** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 9: SHARED_DEVICE_CONTRACT** |
-| Progreso del bloque | **CARRIL NEXO: 1 de 6 aprobadas; AUTH-DEV-002 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 2 de 6 aprobadas; AUTH-DEV-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DEV-001` — Inventariar dispositivos compartidos |
-| Tarea actual | `AUTH-DEV-002` — Definir identidad del dispositivo — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DEV-003` — Asignar sede fija |
+| Última aprobada | `AUTH-DEV-002` — Definir identidad del dispositivo |
+| Tarea actual | `AUTH-DEV-003` — Asignar sede fija — **NO INICIADA** |
+| Siguiente tarea | `AUTH-DEV-004` — Asignar área fija o permitida |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 1 DE 6 APROBADAS — ACTUAL AUTH-DEV-002** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 2 DE 6 APROBADAS — ACTUAL AUTH-DEV-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DEV-001 — Inventariar dispositivos compartidos
-        ↓
-TAREA ACTUAL
 AUTH-DEV-002 — Definir identidad del dispositivo
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DEV-003 — Asignar sede fija
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-DEV-004 — Asignar área fija o permitida
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 1 de 6 tareas aprobadas
+CARRIL NEXO — 2 de 6 tareas aprobadas
 ```
