@@ -147,7 +147,10 @@ try {
   console.log(
     `OK: BLOQUE I; ${blockIStats.rows} filas AS-IS; ${blockIStats.renderedViews} vistas renderizadas; `
     + `${blockIStats.aliases} aliases; ${blockIStats.redirects} redirects; `
-    + `${blockIStats.passSurfaces} superficies PASS.`
+    + `${blockIStats.passSurfaces} superficies PASS; AUTH-UI-030: `
+    + `${blockIStats.readAssignments.ASSIGNED} asignadas, `
+    + `${blockIStats.readAssignments.BLOCKED} bloqueadas y `
+    + `${blockIStats.readAssignments.NOT_APPLICABLE} no aplicables.`
   );
 } catch (error) {
   fail(`Matrices BLOQUE I inválidas:\n- ${error instanceof Error ? error.message : String(error)}`);
