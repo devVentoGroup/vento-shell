@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **519** |
+| Aprobadas | **520** |
 | En propuesta | **0** |
-| No iniciadas | **1075** |
+| No iniciadas | **1074** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **32.56% (519/1594)** |
+| Porcentaje de completamiento | **32.62% (520/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DEV-006` — Asignar permisos máximos del dispositivo | ✅ APROBADA |
-| Tarea actual | `AUTH-SIM-001` — Definir quién puede simular | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-SIM-002` — Definir roles simulables | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-SIM-001` — Definir quién puede simular | ✅ APROBADA |
+| Tarea actual | `AUTH-SIM-002` — Definir roles simulables | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-SIM-003` — Definir sede simulada | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1197,7 +1197,7 @@
 | ⬜ NO INICIADA | `AUTH-DEV-014` | Probar tablets de NEXO | `bloques/P_DISPOSITIVOS_COMPARTIDOS/03_SESION_REVOCACION_Y_PRUEBAS.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-015` | Probar terminales de PULSO | `bloques/P_DISPOSITIVOS_COMPARTIDOS/03_SESION_REVOCACION_Y_PRUEBAS.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-016` | Probar pantallas de FOGO | `bloques/P_DISPOSITIVOS_COMPARTIDOS/03_SESION_REVOCACION_Y_PRUEBAS.md` |
-| ⬜ NO INICIADA | `AUTH-SIM-001` | Definir quién puede simular | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
+| ✅ APROBADA | `AUTH-SIM-001` | Definir quién puede simular | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
 | ⬜ NO INICIADA | `AUTH-SIM-002` | Definir roles simulables | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
 | ⬜ NO INICIADA | `AUTH-SIM-003` | Definir sede simulada | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
 | ⬜ NO INICIADA | `AUTH-SIM-004` | Definir área simulada | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
