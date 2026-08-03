@@ -1034,7 +1034,733 @@ Se incorporan `TREQ-AUTH-019` a `TREQ-AUTH-029` en el Registro Canónico de Requ
 `AUTH-DEV-003 — Asignar sede fija`
 
 
-### [ ] AUTH-DEV-003 — Asignar sede fija
+### ✅ AUTH-DEV-003 — Asignar sede fija
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-DEV-002 — Definir identidad del dispositivo` — APROBADA
+**Tarea siguiente:** `AUTH-DEV-004 — Asignar área fija o permitida` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de vínculo de sede fija y matriz materializada para instancias, observaciones y plantillas de dispositivo compartido
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md`
+**Artefactos producidos:** `SHARED-DEVICE-FIXED-SITE-CONTRACT-001` y `SHARED-DEVICE-FIXED-SITE-BINDING-REGISTER-001`
+**Inventario consumido:** `SHARED-DEVICE-INVENTORY-001` y `SHARED-DEVICE-IDENTITY-CONTRACT-001` — 19 claves
+**Cambios en código, Supabase, migraciones, RLS, RPC, configuración, datos, aplicaciones o dispositivos:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Definir la sede fija de cada dispositivo compartido como una restricción empresarial explícita, estable, versionable y resuelta en servidor, sin confundirla con:
+
+- la ubicación momentánea del equipo;
+- la sede seleccionada en la interfaz;
+- la sede laboral asignada al trabajador;
+- la sede del turno;
+- la sede del check-in;
+- la sede del recurso;
+- el origen o destino de una operación;
+- la geolocalización;
+- una ruta logística;
+- el área fija o permitida;
+- una plantilla;
+- una observación física;
+- autorización efectiva.
+
+La sede fija identifica dónde pertenece o desde qué sede está administrado el dispositivo. Puede restringir una acción, pero nunca concede autoridad ni modifica el contexto del actor.
+
+```text
+SEDE FIJA DEL DISPOSITIVO
+≠
+SEDE DEL ACTOR
+≠
+SEDE DEL RECURSO
+≠
+SEDE SELECCIONADA
+≠
+UBICACIÓN ACTUAL
+```
+
+---
+
+#### 2. Resultado material
+
+Se aprueban:
+
+1. `SHARED-DEVICE-FIXED-SITE-CONTRACT-001`, que define cardinalidad, resolución, vigencia, cambio, conflicto, auditoría y efecto restrictivo del vínculo;
+2. `SHARED-DEVICE-FIXED-SITE-BINDING-REGISTER-001`, que materializa una decisión para las 19 claves heredadas.
+
+Resultado de cobertura:
+
+| Resultado                                         | Cantidad |
+| ------------------------------------------------- | -------: |
+| Claves heredadas evaluadas                        |       19 |
+| Instancias con sede registral candidata           |        2 |
+| Observaciones sin asignación autoritativa         |        2 |
+| Plantillas con política de sede definida          |       14 |
+| Plantillas retiradas sin nuevas asignaciones      |        1 |
+| Asignaciones creadas por inferencia               |        0 |
+| Dispositivos con varias sedes vigentes permitidas |        0 |
+
+Distribución contractual:
+
+```text
+19 claves
+= 2 REGISTERED_UNVERIFIED
++ 2 OBSERVED_ONLY
++ 14 POLICY_DEFINED
++ 1 NO_APLICA
+```
+
+---
+
+#### 3. Base normativa y técnica
+
+La tarea conserva las decisiones aprobadas en:
+
+- `AUTH-MOD-007`, `AUTH-MOD-008`, `AUTH-MOD-011` y `AUTH-MOD-018`;
+- `AUTH-CAT-013` y `AUTH-CAT-014`;
+- `AUTH-RBAC-023`;
+- `AUTH-CTX-013`, `AUTH-CTX-014`, `AUTH-CTX-015`, `AUTH-CTX-018`, `AUTH-CTX-020` y `AUTH-CTX-024`;
+- `UX-STATION-001`, `UX-STATION-003`, `UX-STATION-004` y `UX-STATION-009`;
+- `AUTH-DEV-001` y `AUTH-DEV-002`.
+
+Se reconoce el estado técnico existente:
+
+- `public.shared_operational_devices.site_id` es obligatorio en la tabla actual;
+- `public.shared_operational_devices.area_id` se valida contra la sede de la fila;
+- `current_shared_operational_device_v1()` expone `site_id`;
+- las dos instancias auditadas ya contienen una sede registral;
+- no existe un vínculo de sede versionado con vigencia, origen, evidencia y estado propios;
+- el cambio directo de `site_id` no conserva por sí solo una cadena de asignaciones;
+- los resolvedores legacy pueden usar la sede del dispositivo como contexto sin completar todavía toda la intersección con actor, recurso y decisión canónica.
+
+La existencia del `site_id` actual demuestra configuración registral, no verificación física ni conformidad operativa.
+
+---
+
+#### 4. Principio de sede fija
+
+Toda instancia administrada y habilitada para acciones empresariales deberá tener exactamente una sede fija vigente.
+
+```text
+DISPOSITIVO ADMINISTRADO
+→ 1 SITE_ID VIGENTE
+```
+
+No se permiten como estado operativo ordinario:
+
+```text
+0 sedes vigentes
+2 o más sedes vigentes
+sede desconocida
+sede ambigua
+sede inferida
+sede inactiva tratada como activa
+```
+
+El vínculo es una restricción del dispositivo. No representa un permiso, una asignación laboral ni cobertura administrativa.
+
+---
+
+#### 5. Modos de efecto territorial
+
+| Modo                      | Semántica                                                                                                                                                |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `OPERATIONAL_EXACT`       | Toda acción operativa exige compatibilidad exacta entre sede del actor, sede fija del dispositivo y territorio requerido por el recurso.                 |
+| `HOME_SITE_EXACT`         | La instancia móvil conserva una sede base o propietaria fija; rutas, vehículos, origen, destino y geolocalización se resuelven separadamente.            |
+| `MIXED_EXACT`             | El modo operativo exige coincidencia exacta; el modo administrativo conserva el alcance base del actor y no hereda cobertura desde el dispositivo.       |
+| `PHYSICAL_OWNERSHIP_ONLY` | La sede identifica ubicación o custodia administrativa del terminal; no reduce ni amplía por sí sola la cobertura base del actor ni concede capacidades. |
+
+Estos modos no autorizan acciones. Determinan cómo participa la sede fija como límite adicional.
+
+---
+
+#### 6. Contrato conceptual
+
+```ts
+type SharedDeviceFixedSiteBinding = {
+  site_binding_id: string;
+  device_id: string;
+  site_id: string;
+  effect_mode:
+    | "OPERATIONAL_EXACT"
+    | "HOME_SITE_EXACT"
+    | "MIXED_EXACT"
+    | "PHYSICAL_OWNERSHIP_ONLY";
+  binding_state:
+    | "PENDING_VERIFICATION"
+    | "CURRENT"
+    | "CONFLICTED"
+    | "SUSPENDED"
+    | "SUPERSEDED"
+    | "REVOKED";
+  effective_from: string;
+  effective_until: string | null;
+  source: string;
+  reason_code: string;
+  evidence_reference: string | null;
+  assigned_by: string;
+  verified_by: string | null;
+  verified_at: string | null;
+};
+```
+
+```ts
+type SharedDeviceTemplateSitePolicy = {
+  template_code: string;
+  template_version: string;
+  site_assignment_requirement: "REQUIRED_AT_INSTANCE_CREATION" | "PROHIBITED_FOR_NEW_INSTANCE";
+  effect_mode:
+    | "OPERATIONAL_EXACT"
+    | "HOME_SITE_EXACT"
+    | "MIXED_EXACT"
+    | "PHYSICAL_OWNERSHIP_ONLY"
+    | "NO_APLICA";
+};
+```
+
+Estas formas son contractuales. La arquitectura física podrá normalizarlas sin perder cardinalidad, historia, vigencia, evidencia ni efecto territorial.
+
+---
+
+#### 7. Identidad del vínculo
+
+`site_binding_id` identifica una versión concreta de la relación entre dispositivo y sede.
+
+Reglas:
+
+1. será distinto de `device_id`, `site_id`, `area_id`, `station_instance_id` y `asset_id`;
+2. un vínculo histórico no se reactivará modificando sus fechas;
+3. un traslado creará otro vínculo;
+4. el vínculo anterior terminará como `SUPERSEDED` o `REVOKED`;
+5. los periodos vigentes no podrán superponerse;
+6. una misma sede podrá tener múltiples dispositivos;
+7. un dispositivo tendrá como máximo un vínculo `CURRENT`;
+8. el vínculo no se deducirá del código o etiqueta del dispositivo.
+
+---
+
+#### 8. Resolución autoritativa
+
+La resolución seguirá esta cadena:
+
+```text
+PRINCIPAL TÉCNICO VÁLIDO
+→ DEVICE_ID EXACTO
+→ VÍNCULO DE SEDE VIGENTE ÚNICO
+→ SITE_ID CANÓNICO
+→ ESTADO DE SEDE
+```
+
+No podrán crear o sustituir el vínculo:
+
+- `device_code`;
+- nombre o descripción;
+- plantilla;
+- aplicación abierta;
+- `navigation_role`;
+- área;
+- trabajador actual o anterior;
+- turno o check-in;
+- sede seleccionada;
+- query string o body;
+- local storage o cookie;
+- IP, red o SSID;
+- GPS o geocerca;
+- hostname, serial o user agent;
+- último evento;
+- ruta logística;
+- origen o destino de una remisión;
+- observación física no reconciliada.
+
+Una señal de ubicación puede detectar conflicto. No puede reescribir la sede fija.
+
+---
+
+#### 9. Validación de la sede
+
+Para que un vínculo pueda ser `CURRENT`, la sede deberá:
+
+1. existir en el catálogo canónico;
+2. tener identidad única y resoluble;
+3. estar activa;
+4. admitir el uso empresarial correspondiente;
+5. no ser un punto de check-in, entorno técnico, demo o referencia no operativa presentada como sede ordinaria;
+6. ser compatible con la política de la plantilla;
+7. tener evidencia y decisión administrativa de asignación;
+8. no participar simultáneamente en otro vínculo vigente del mismo dispositivo.
+
+Una sede inactiva o retirada podrá conservarse en historia. No podrá sostener acciones nuevas.
+
+---
+
+#### 10. Intersección con actor y recurso
+
+La sede fija nunca concede autoridad.
+
+Para una acción operativa:
+
+```text
+SEDE OPERATIVA DEL ACTOR
+∩
+SEDE FIJA DEL DISPOSITIVO
+∩
+SEDE O TERRITORIO DEL RECURSO
+=
+TERRITORIO EVALUABLE
+```
+
+Nunca:
+
+```text
+SEDE DEL ACTOR
+∪
+SEDE DEL DISPOSITIVO
+```
+
+Reglas:
+
+- el dispositivo no crea turno;
+- el dispositivo no cambia el turno;
+- el dispositivo no convierte su sede en asignación del empleado;
+- el actor de otra sede no adquiere autoridad por usar el terminal;
+- el recurso de otra sede no se vuelve compatible por estar visible;
+- una acción multiterritorial deberá validar todos los extremos que su contrato exija;
+- la sede fija puede denegar, pero no producir `ALLOW` por sí sola.
+
+---
+
+#### 11. Carril operativo
+
+En `OPERATIONAL_EXACT` deberá cumplirse como mínimo:
+
+```text
+actor_effective = EMPLOYEE
+AND active_shift.site_id = device_fixed_site_id
+AND operational_site.site_id = device_fixed_site_id
+AND resource_site compatible
+AND permiso y demás prerrequisitos satisfechos
+```
+
+Una sesión de actor válida sin coincidencia de sede no habilita la acción.
+
+El dispositivo permanece disponible para operaciones técnicas separadas, pero las acciones empresariales fallan cerrado.
+
+---
+
+#### 12. Carril base y terminal administrativa
+
+En `PHYSICAL_OWNERSHIP_ONLY`:
+
+- la sede identifica dónde está administrado o custodiado el terminal;
+- no crea `administrative_coverage`;
+- no convierte un actor territorial en actor organizacional;
+- no limita automáticamente un permiso global legítimo del actor;
+- no permite acceso a recursos fuera del alcance real del actor;
+- no reemplaza el territorio del recurso;
+- cualquier restricción adicional deberá proceder del permiso, recurso, plantilla o política exactos.
+
+`management_terminal` utilizará este modo.
+
+---
+
+#### 13. Terminal mixta de recepción
+
+`procurement_reception` utilizará `MIXED_EXACT`.
+
+En modo operativo:
+
+- la sede del actor deberá coincidir con la sede receptora fija;
+- el recurso recibido deberá corresponder a la sede o flujo autorizado;
+- la terminal no prestará su sede al trabajador.
+
+En modo administrativo:
+
+- el actor conservará exclusivamente su cobertura base real;
+- la sede fija no crea permisos;
+- el dispositivo no convierte una capacidad de consulta en capacidad de recepción o aprobación;
+- el cambio de modo exige nueva evaluación de aplicación, permiso, actor, recurso y contexto.
+
+---
+
+#### 14. Terminal logística móvil
+
+`logistics_vehicle_terminal` utilizará `HOME_SITE_EXACT`.
+
+La sede base o propietaria:
+
+- permanece fija durante rutas y desplazamientos ordinarios;
+- no se reemplaza por GPS;
+- no se reemplaza por la sede de origen o destino;
+- no se reemplaza por el vehículo;
+- no convierte una operación de tránsito en autoridad sobre todas las sedes visitadas;
+- sirve como relación de administración, custodia y límite contractual del dispositivo.
+
+Vehículo, ruta, entrega, remisión, origen, destino y ubicación actual se resolverán como recursos o contextos separados.
+
+---
+
+#### 15. Plantillas y asignación de instancia
+
+Una plantilla declara la política. La instancia recibe el `site_id`.
+
+```text
+PLANTILLA
+→ REQUIRED_AT_INSTANCE_CREATION
+
+INSTANCIA
+→ SITE_ID EXACTO
+```
+
+Reglas:
+
+- una plantilla no tendrá un `site_id` concreto como identidad propia;
+- dos instancias de la misma plantilla pueden pertenecer a sedes distintas;
+- la instancia deberá cumplir el modo definido por su plantilla;
+- cambiar de plantilla no cambia silenciosamente la sede;
+- una plantilla retirada no admite nuevas vinculaciones;
+- la creación de una instancia sin sede válida permanecerá bloqueada;
+- el frontend no elegirá una sede fuera de las opciones administrativamente autorizadas.
+
+---
+
+#### 16. Observaciones físicas
+
+Las referencias Vento Café y Saudo de las dos observaciones son evidencia territorial, no asignaciones autoritativas.
+
+Para convertir una observación en vínculo de sede se deberá completar primero:
+
+1. reconciliación de identidad;
+2. decisión de vincular o crear una instancia;
+3. enrolamiento técnico;
+4. deduplicación;
+5. identificación del activo o estación cuando corresponda;
+6. selección autorizada del `site_id` exacto;
+7. verificación de la ubicación y custodia;
+8. registro del vínculo y evidencia.
+
+Hasta entonces permanecerán `OBSERVED_ONLY`.
+
+---
+
+#### 17. Traslado entre sedes
+
+Un traslado no será una edición silenciosa del `site_id`.
+
+Flujo obligatorio:
+
+```text
+SOLICITUD AUTORIZADA
+→ SUSPENDER ACCIONES EMPRESARIALES
+→ TERMINAR SESIONES DE ACTOR
+→ INVALIDAR CONTEXTO, CACHÉS Y DECISIONES
+→ CERRAR VÍNCULO ANTERIOR
+→ CREAR VÍNCULO NUEVO PENDING_VERIFICATION
+→ REUBICAR Y VERIFICAR ACTIVO O ESTACIÓN
+→ REVALIDAR PLANTILLA, ÁREA, APPS Y PAQUETE
+→ ACTIVAR NUEVO VÍNCULO
+```
+
+Se conservarán:
+
+- dispositivo lógico;
+- código;
+- vínculos anteriores;
+- actor administrativo;
+- motivo;
+- fechas;
+- sede anterior y nueva;
+- evidencia;
+- eventos de suspensión, verificación y activación.
+
+Si el traslado cambia la función lógica o crea otra instancia simultánea, no se considerará un simple traslado.
+
+---
+
+#### 18. Conflicto y movimiento no autorizado
+
+Constituyen conflicto:
+
+- dos vínculos vigentes para el mismo dispositivo;
+- sede no existente o inactiva tratada como vigente;
+- ubicación verificada incompatible con el vínculo sin traslado autorizado;
+- activo o estación registrados en otra sede incompatible;
+- endpoint activo simultáneamente desde ubicaciones incompatibles;
+- plantilla incompatible con la sede;
+- reaparición en la sede anterior después de un traslado;
+- cliente que intenta declarar otra sede.
+
+Resultado:
+
+```text
+binding_state = CONFLICTED
+→ bloquear acciones empresariales
+→ conservar operaciones técnicas mínimas
+→ invalidar contexto y decisiones
+→ registrar evidencia
+→ exigir reconciliación autorizada
+```
+
+No se elegirá la sede más reciente, la del turno, la del último actor, la observada por GPS ni la enviada por el cliente.
+
+---
+
+#### 19. Matriz completa de las 19 claves
+
+| `inventory_key`                                              | Clase                     | Decisión de sede                                | Sede fija o referencia           | Modo                           | Estado                  | Regla y bloqueo                                                                                                                                                                            | Destino exacto                             |
+| ------------------------------------------------------------ | ------------------------- | ----------------------------------------------- | -------------------------------- | ------------------------------ | ----------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------ |
+| `configured_device:CAJA_VENTO_CAFE_01`                       | `CONFIGURED_INSTANCE`     | `CONSERVAR_SEDE_REGISTRAL_COMO_CANDIDATA`       | VENTO_CAFE                       | `OPERATIONAL_EXACT`            | `REGISTERED_UNVERIFIED` | La fila técnica ya referencia VENTO_CAFE. La sede será fija para la instancia, pero no quedará verificada hasta correlacionar identidad, endpoint, activo o estación y ubicación vigente.  | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-015` |
+| `configured_device:KIOSCO_BODEGA_CP`                         | `CONFIGURED_INSTANCE`     | `CONSERVAR_SEDE_REGISTRAL_COMO_CANDIDATA`       | CENTRO_PROD                      | `OPERATIONAL_EXACT`            | `REGISTERED_UNVERIFIED` | La fila técnica ya referencia CENTRO_PROD. La sede será fija para la instancia, pero no quedará verificada hasta correlacionar identidad, endpoint, activo o estación y ubicación vigente. | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014` |
+| `physical_observation:VENTO_CAFE/SERVICIO/tablet_compartida` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_SITE_ID_POR_OBSERVACION`            | Vento Café, referencia observada | `NO_APLICA_HASTA_ENROLAMIENTO` | `OBSERVED_ONLY`         | La referencia territorial describe dónde fue observada; no demuestra una instancia, un activo único ni una vinculación técnica.                                                            | `AUTH-DEV-014; AUTH-DEV-015`               |
+| `physical_observation:SAUDO/SERVICIO/dispositivo_compartido` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_SITE_ID_POR_OBSERVACION`            | Saudo, referencia observada      | `NO_APLICA_HASTA_ENROLAMIENTO` | `OBSERVED_ONLY`         | La referencia territorial describe dónde fue observada; no demuestra tipo, cantidad, instancia, activo ni principal técnico.                                                               | `AUTH-DEV-014; AUTH-DEV-015`               |
+| `target_template:pos_satellite`                              | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FIJA_AL_CREAR_INSTANCIA`           | Sin site_id en plantilla         | `OPERATIONAL_EXACT`            | `POLICY_DEFINED`        | Cada instancia de caja satélite deberá fijarse a una sede exacta; el texto del código o la plantilla no seleccionan la sede.                                                               | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:bar_satellite`                              | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FIJA_AL_CREAR_INSTANCIA`           | Sin site_id en plantilla         | `OPERATIONAL_EXACT`            | `POLICY_DEFINED`        | Cada instancia de barra deberá fijarse a una sede exacta antes de habilitar acciones empresariales.                                                                                        | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:kitchen_satellite`                          | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FIJA_AL_CREAR_INSTANCIA`           | Sin site_id en plantilla         | `OPERATIONAL_EXACT`            | `POLICY_DEFINED`        | Cada instancia de cocina satélite deberá fijarse a una sede exacta; el área se definirá separadamente.                                                                                     | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:service_satellite`                          | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FIJA_AL_CREAR_INSTANCIA`           | Sin site_id en plantilla         | `OPERATIONAL_EXACT`            | `POLICY_DEFINED`        | Cada instancia de servicio deberá fijarse a una sede exacta sin convertir una observación física en asignación.                                                                            | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:counter_satellite`                          | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FIJA_AL_CREAR_INSTANCIA`           | Sin site_id en plantilla         | `OPERATIONAL_EXACT`            | `POLICY_DEFINED`        | Cada instancia de mostrador deberá fijarse a una sede exacta antes de resolver actor o recurso.                                                                                            | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:integrated_satellite`                       | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FIJA_AL_CREAR_INSTANCIA`           | Sin site_id en plantilla         | `OPERATIONAL_EXACT`            | `POLICY_DEFINED`        | La integración de funciones no convierte la sede en múltiple; cada instancia conserva una sola sede exacta.                                                                                | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:production_kitchen`                         | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FIJA_AL_CREAR_INSTANCIA`           | Sin site_id en plantilla         | `OPERATIONAL_EXACT`            | `POLICY_DEFINED`        | La instancia deberá fijarse a la sede canónica de producción correspondiente; el área exacta de Cocina Caliente se resolverá después.                                                      | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:production_bakery`                          | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FIJA_AL_CREAR_INSTANCIA`           | Sin site_id en plantilla         | `OPERATIONAL_EXACT`            | `POLICY_DEFINED`        | La instancia deberá fijarse a la sede canónica de producción correspondiente; el área exacta de Galletería y Panadería se resolverá después.                                               | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:production_pastry`                          | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FIJA_AL_CREAR_INSTANCIA`           | Sin site_id en plantilla         | `OPERATIONAL_EXACT`            | `POLICY_DEFINED`        | La instancia deberá fijarse a la sede canónica de producción correspondiente; el área exacta de Repostería se resolverá después.                                                           | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:warehouse_kiosk`                            | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FIJA_AL_CREAR_INSTANCIA`           | Sin site_id en plantilla         | `OPERATIONAL_EXACT`            | `POLICY_DEFINED`        | Cada kiosco de bodega deberá pertenecer a una sola sede exacta; la política de actor y el área no se infieren desde la sede.                                                               | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:logistics_vehicle_terminal`                 | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_BASE_FIJA_AL_CREAR_INSTANCIA`      | Sin site_id en plantilla         | `HOME_SITE_EXACT`              | `POLICY_DEFINED`        | La terminal móvil conservará una sede base o propietaria fija; vehículo, ruta, geolocalización, origen y destino son dimensiones separadas.                                                | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:procurement_reception`                      | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_RECEPTORA_FIJA_AL_CREAR_INSTANCIA` | Sin site_id en plantilla         | `MIXED_EXACT`                  | `POLICY_DEFINED`        | La instancia deberá fijarse a una sede receptora exacta. El modo administrativo no hereda cobertura desde esa sede y el modo operativo exige compatibilidad.                               | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:operations_management_terminal`             | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FIJA_AL_CREAR_INSTANCIA`           | Sin site_id en plantilla         | `OPERATIONAL_EXACT`            | `POLICY_DEFINED`        | La terminal de gerencia operativa deberá fijarse a la sede operativa exacta que limita su uso; no concede autoridad por sí misma.                                                          | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `target_template:management_terminal`                        | `TARGET_TEMPLATE`         | `EXIGIR_SEDE_FISICA_FIJA_AL_CREAR_INSTANCIA`    | Sin site_id en plantilla         | `PHYSICAL_OWNERSHIP_ONLY`      | `POLICY_DEFINED`        | La terminal administrativa tendrá sede física o propietaria exacta, pero esa sede no sustituye ni amplía la cobertura administrativa del actor.                                            | `AUTH-DEV-004 a AUTH-DEV-006`              |
+| `retired_legacy_template:production_center`                  | `RETIRED_LEGACY_TEMPLATE` | `PROHIBIR_NUEVAS_ASIGNACIONES`                  | No aplica                        | `NO_APLICA`                    | `NO_APLICA`             | La plantilla retirada no admite nuevas instancias ni nuevos vínculos de sede. Una instancia legacy conservará historia hasta migración explícita.                                          | `AUTH-CTX-028; paquetes E5 y BLOQUE R`     |
+
+La matriz no crea instancias ni modifica sedes existentes. Materializa el contrato que deberá aplicar la implementación posterior.
+
+---
+
+#### 20. Reconciliación con la infraestructura existente
+
+| Elemento actual                           | Decisión contractual                                                                                              | Estado                             |
+| ----------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ---------------------------------- |
+| `shared_operational_devices.site_id`      | Continúa como candidato registral a sede fija de las dos instancias existentes.                                   | `IMPLEMENTADO` parcial             |
+| Restricción `site_id NOT NULL`            | Es compatible con la cardinalidad objetivo para instancias, pero no sustituye vínculo versionado ni verificación. | `IMPLEMENTADO` parcial             |
+| Trigger de coherencia área-sede           | Se conserva; `AUTH-DEV-004` definirá la política completa de área bajo la sede fija.                              | `IMPLEMENTADO` parcial             |
+| `current_shared_operational_device_v1()`  | Expone la sede registral, pero no demuestra vigencia, historia, fuente, evidencia ni intersección completa.       | `BLOQUEADO` para conformidad final |
+| Resolvedores legacy                       | No podrán usar la sede del dispositivo como autoridad ni reemplazar el sitio del actor.                           | `BLOQUEADO` para conformidad final |
+| Historial de asignación                   | No existe como contrato físico versionado demostrado.                                                             | `PENDIENTE_DE_IMPLEMENTACION`      |
+| Verificación física de las dos instancias | No existe evidencia suficiente para elevar las sedes registrales a `CURRENT` verificado.                          | `PENDIENTE_DE_EVIDENCIA`           |
+
+Destinos existentes:
+
+- `AUTH-CTX-025`: productor SQL canónico;
+- `AUTH-CTX-027`: eliminación de lógica local;
+- `AUTH-CTX-028`: compatibilidad legacy;
+- `AUTH-CTX-029`: invalidación;
+- BLOQUE E3: modelo físico y transición;
+- BLOQUE E5: paquete implementable;
+- BLOQUE R: migraciones, backfill, constraints, RLS, RPC y rollback;
+- `AUTH-DEV-014` a `AUTH-DEV-016`: validación en dispositivos y aplicaciones.
+
+---
+
+#### 21. Auditoría mínima
+
+Todo vínculo y cambio deberá conservar:
+
+- `site_binding_id`;
+- `device_id` y `device_code`;
+- sede anterior y nueva;
+- estado anterior y nuevo;
+- modo territorial;
+- actor administrativo;
+- principal técnico cuando participe;
+- motivo estructurado;
+- fuente;
+- evidencia;
+- fecha efectiva;
+- fecha de verificación;
+- correlación con traslado, activo, estación o enrolamiento;
+- sesiones y contextos invalidados.
+
+Eventos conceptuales mínimos:
+
+```text
+device_site_binding_created
+device_site_binding_verified
+device_site_binding_suspended
+device_site_binding_conflicted
+device_site_binding_superseded
+device_site_binding_revoked
+```
+
+La existencia del evento no sustituye el estado autoritativo del vínculo.
+
+---
+
+#### 22. Fail closed
+
+```text
+sin vínculo vigente único
+→ ninguna acción empresarial
+```
+
+```text
+sede ausente o inactiva
+→ ninguna acción empresarial
+```
+
+```text
+actor operativo en otra sede
+→ DENY
+```
+
+```text
+recurso incompatible
+→ DENY
+```
+
+```text
+plantilla u observación sin instancia
+→ no existe site_id de dispositivo
+```
+
+Queda prohibido usar como fallback:
+
+- sede principal de la organización;
+- primera sede;
+- sede del último actor;
+- sede del turno para reescribir el dispositivo;
+- sede seleccionada en pantalla;
+- `VENTO_CAFE`, `CENTRO_PROD` o cualquier otro código por coincidencia textual;
+- sede de la plantilla;
+- sede del área sin vínculo válido;
+- sede de origen o destino;
+- ubicación GPS.
+
+---
+
+#### 23. Límites de esta tarea
+
+AUTH-DEV-003 no define:
+
+- área fija o conjunto de áreas permitidas;
+- semántica definitiva de `area_id = null`;
+- aplicaciones permitidas;
+- paquetes máximos de permisos;
+- política de actor;
+- PIN o firma;
+- duración de sesión;
+- revocación completa del dispositivo;
+- interfaz administrativa;
+- migración o backfill;
+- constraints, RLS, RPC o funciones;
+- geocercas;
+- seguimiento GPS;
+- vínculo con vehículo o ruta;
+- ejecución física del traslado;
+- validación operativa de las instancias actuales.
+
+Cada responsabilidad permanece en su tarea canónica existente.
+
+---
+
+#### 24. Handoff exacto a AUTH-DEV-004
+
+`AUTH-DEV-004` deberá consumir los 19 registros y definir, sin alterar la sede aprobada:
+
+1. qué plantillas exigen un área exacta;
+2. cuáles admiten un conjunto explícito de áreas;
+3. cuáles operan legítimamente a nivel de sede sin área;
+4. cómo se representa `area_id = null` sin convertirlo en wildcard;
+5. cómo se valida que toda área pertenece a la sede fija;
+6. cómo se tratan terminales móviles, administrativas y mixtas;
+7. qué área registral candidata corresponde a las dos instancias actuales;
+8. cómo se conservan observaciones sin identidad ni área autoritativa;
+9. cómo se versiona un cambio de área sin cambiar silenciosamente la sede;
+10. qué incompatibilidades bloquean la operación.
+
+No podrá asignarse un área de otra sede ni utilizar el área para inferir o reemplazar el vínculo de sede.
+
+---
+
+#### 25. Invariantes
+
+1. Toda instancia empresarial activa tiene exactamente una sede fija vigente.
+2. La sede se resuelve por `site_id`, no por texto ni señal de ubicación.
+3. El vínculo tiene identidad, vigencia, estado, origen y evidencia propios.
+4. La sede fija no concede permisos.
+5. La sede fija no crea cobertura administrativa.
+6. La sede fija no crea turno ni check-in.
+7. La sede fija no reemplaza la sede del actor.
+8. La sede fija no reemplaza la sede del recurso.
+9. El carril operativo exige intersección exacta.
+10. `management_terminal` conserva alcance real del actor.
+11. `procurement_reception` separa modo operativo y administrativo.
+12. `logistics_vehicle_terminal` conserva sede base fija durante la ruta.
+13. Plantillas no reciben `site_id` concreto.
+14. Observaciones no reciben asignación por inferencia.
+15. Un traslado crea un vínculo nuevo y cierra el anterior.
+16. Una sede inactiva bloquea acciones nuevas.
+17. Conflictos fallan cerrado.
+18. El historial no se elimina ni se reutiliza.
+19. Las 19 claves conservan decisión explícita y única.
+20. Área, apps y permisos permanecen fuera de esta tarea.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-AUTH-030` a `TREQ-AUTH-038` en el Registro Canónico de Requisitos de Prueba.
+
+| ID              | Regla protegida                                                                                                                                                                                                                                                                                 | Tipo                                                     | Prioridad | Momento de implementación                                     | Destino                                                               |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | --------- | ------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `TREQ-AUTH-030` | Toda instancia administrada de dispositivo compartido deberá tener exactamente un vínculo de sede fija vigente. La ausencia, multiplicidad o ambigüedad del vínculo bloqueará acciones empresariales y nunca se interpretará como cobertura global.                                             | contractual + base de datos + seguridad + regresión      | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030` |
+| `TREQ-AUTH-031` | La sede fija deberá resolverse en servidor mediante un `site_id` canónico y un vínculo vigente; código del dispositivo, etiqueta, plantilla, área, aplicación, IP, GPS, ruta, último actor, turno, selección del cliente u observación física no podrán crear ni sustituir la asignación.       | seguridad + contractual + integración + regresión        | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030` |
+| `TREQ-AUTH-032` | Para acciones operativas, la sede del actor y del recurso deberá ser compatible con la sede fija del dispositivo por intersección restrictiva; el dispositivo nunca podrá conceder, reemplazar o trasladar el turno, la asignación o la cobertura del actor.                                    | seguridad + autorización + integración + E2E + regresión | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030` |
+| `TREQ-AUTH-033` | Una plantilla deberá exigir política de sede al crear una instancia sin recibir un `site_id` propio, y una observación física conservará solo su referencia territorial hasta identidad y enrolamiento autorizados; ninguna de las dos podrá convertirse en asignación concreta por inferencia. | contractual + seguridad + estática + regresión           | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030` |
+| `TREQ-AUTH-034` | Todo traslado de un dispositivo a otra sede deberá crear una nueva versión de vínculo, cerrar la anterior, invalidar sesiones, contexto y cachés, exigir verificación en destino y conservar actor administrativo, motivo, fechas y evidencia; queda prohibida la actualización silenciosa.     | seguridad + migración + integración + E2E + regresión    | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030` |
+| `TREQ-AUTH-035` | Una sede inexistente, inactiva, no asignable, revocada o incompatible con el vínculo deberá conservarse como evidencia histórica pero bloquear toda acción empresarial hasta corrección autorizada; `null` y error de resolución no significarán todas las sedes.                               | base de datos + seguridad + autorización + regresión     | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030` |
+| `TREQ-AUTH-036` | Una `logistics_vehicle_terminal` deberá conservar una sede base o propietaria fija; vehículo, ruta, geolocalización, origen y destino permanecerán separados y no podrán reescribir el vínculo de sede ni conceder acceso cross-site.                                                           | contractual + seguridad + integración + E2E + regresión  | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030` |
+| `TREQ-AUTH-037` | En `procurement_reception` y `management_terminal`, la sede fija deberá conservar su función física o receptora sin crear cobertura administrativa. El modo operativo exigirá compatibilidad exacta y el modo administrativo conservará exclusivamente el alcance real del actor.               | seguridad + autorización + integración + regresión       | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030` |
+| `TREQ-AUTH-038` | La matriz de sede fija deberá cubrir exactamente las 19 claves heredadas: 2 instancias `REGISTERED_UNVERIFIED`, 2 observaciones `OBSERVED_ONLY`, 14 plantillas `POLICY_DEFINED` y 1 plantilla retirada `NO_APLICA`, sin faltantes, duplicados ni asignaciones inferidas.                        | contractual + estática + regresión                       | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030` |
+
+---
+
+#### 26. Criterios de aceptación
+
+- [x] Se definió exactamente un vínculo de sede vigente por instancia.
+- [x] Se separaron sede fija, actor, recurso, selección visual, ubicación y observación.
+- [x] Se definieron cuatro modos de efecto territorial.
+- [x] Se definió contrato versionado con vigencia, estado, fuente y evidencia.
+- [x] Se prohibió inferir la sede desde señales técnicas, territoriales o del cliente.
+- [x] Se definió la intersección restrictiva para acciones operativas.
+- [x] Se conservó la cobertura base real en terminales administrativas.
+- [x] Se separaron los modos de `procurement_reception`.
+- [x] Se definió sede base fija para `logistics_vehicle_terminal`.
+- [x] Se definió traslado versionado con invalidación y reverificación.
+- [x] Se definió fail closed ante vínculo ausente, múltiple, inactivo o conflictivo.
+- [x] Se preservaron `VENTO_CAFE` y `CENTRO_PROD` como sedes registrales candidatas de las dos instancias existentes.
+- [x] Ninguna de las dos instancias se declaró físicamente verificada.
+- [x] Las dos observaciones permanecieron sin `site_id` autoritativo.
+- [x] Las catorce plantillas recibieron una política explícita sin convertirse en instancias.
+- [x] La plantilla retirada no admite nuevas asignaciones.
+- [x] Se cubrieron 19 claves sin faltantes ni duplicados.
+- [x] La distribución es 2 `REGISTERED_UNVERIFIED`, 2 `OBSERVED_ONLY`, 14 `POLICY_DEFINED` y 1 `NO_APLICA`.
+- [x] Se generaron `TREQ-AUTH-030` a `TREQ-AUTH-038`.
+- [x] No se modificó código, Supabase, migraciones, configuración, datos ni dispositivos.
+- [x] `AUTH-DEV-004` permanece únicamente reservada.
+
+---
+
+#### 27. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DEV-002 — Definir identidad del dispositivo`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DEV-003 — Asignar sede fija`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DEV-004 — Asignar área fija o permitida`
+
+
 ### [ ] AUTH-DEV-004 — Asignar área fija o permitida
 ### [ ] AUTH-DEV-005 — Asignar aplicaciones permitidas
 ### [ ] AUTH-DEV-006 — Asignar permisos máximos del dispositivo

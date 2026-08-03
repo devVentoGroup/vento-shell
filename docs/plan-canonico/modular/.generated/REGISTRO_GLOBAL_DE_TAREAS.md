@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **515** |
+| Aprobadas | **516** |
 | En propuesta | **0** |
-| No iniciadas | **1079** |
+| No iniciadas | **1078** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **32.31% (515/1594)** |
+| Porcentaje de completamiento | **32.37% (516/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-DEV-002` — Definir identidad del dispositivo | ✅ APROBADA |
-| Tarea actual | `AUTH-DEV-003` — Asignar sede fija | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DEV-004` — Asignar área fija o permitida | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DEV-003` — Asignar sede fija | ✅ APROBADA |
+| Tarea actual | `AUTH-DEV-004` — Asignar área fija o permitida | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DEV-005` — Asignar aplicaciones permitidas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1183,7 +1183,7 @@
 | ⬜ NO INICIADA | `OPS-CST-001` | Definir el caso de centro de costo y transferencias internas de Producción y Distribución | `bloques/O_NUMERA/03_TAREA_DERIVADA_OPS_AUD_001.md` |
 | ✅ APROBADA | `AUTH-DEV-001` | Inventariar dispositivos compartidos | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ✅ APROBADA | `AUTH-DEV-002` | Definir identidad del dispositivo | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
-| ⬜ NO INICIADA | `AUTH-DEV-003` | Asignar sede fija | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
+| ✅ APROBADA | `AUTH-DEV-003` | Asignar sede fija | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-004` | Asignar área fija o permitida | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-005` | Asignar aplicaciones permitidas | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-006` | Asignar permisos máximos del dispositivo | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
