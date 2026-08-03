@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **513** |
+| Aprobadas | **514** |
 | En propuesta | **0** |
-| No iniciadas | **1081** |
+| No iniciadas | **1080** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **32.18% (513/1594)** |
+| Porcentaje de completamiento | **32.25% (514/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-039` — Definir masking según permiso | ✅ APROBADA |
-| Tarea actual | `AUTH-DEV-001` — Inventariar dispositivos compartidos | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-DEV-002` — Definir identidad del dispositivo | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-DEV-001` — Inventariar dispositivos compartidos | ✅ APROBADA |
+| Tarea actual | `AUTH-DEV-002` — Definir identidad del dispositivo | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-DEV-003` — Asignar sede fija | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1181,7 +1181,7 @@
 | ⬜ NO INICIADA | `NUMERA-UX-027` | Diseñar extensión o integración contable y fiscal sin duplicar hechos operativos | `bloques/O_NUMERA/05_EXPERIENCIA_FINANCIERA_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `NUMERA-UX-028` | Diseñar visor económico dinámico de una sola pantalla, simple, comparativo y con divulgación progresiva | `bloques/O_NUMERA/05_EXPERIENCIA_FINANCIERA_Y_ANALITICA.md` |
 | ⬜ NO INICIADA | `OPS-CST-001` | Definir el caso de centro de costo y transferencias internas de Producción y Distribución | `bloques/O_NUMERA/03_TAREA_DERIVADA_OPS_AUD_001.md` |
-| ⬜ NO INICIADA | `AUTH-DEV-001` | Inventariar dispositivos compartidos | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
+| ✅ APROBADA | `AUTH-DEV-001` | Inventariar dispositivos compartidos | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-002` | Definir identidad del dispositivo | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-003` | Asignar sede fija | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
 | ⬜ NO INICIADA | `AUTH-DEV-004` | Asignar área fija o permitida | `bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md` |
