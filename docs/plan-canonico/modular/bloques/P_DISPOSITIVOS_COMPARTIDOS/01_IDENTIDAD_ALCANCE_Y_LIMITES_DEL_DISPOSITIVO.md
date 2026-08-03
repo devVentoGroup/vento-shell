@@ -2504,5 +2504,842 @@ Se incorporan `TREQ-AUTH-039` a `TREQ-AUTH-048` en el Registro Canónico de Requ
 `AUTH-DEV-005 — Asignar aplicaciones permitidas`
 
 
-### [ ] AUTH-DEV-005 — Asignar aplicaciones permitidas
+### ✅ AUTH-DEV-005 — Asignar aplicaciones permitidas
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-DEV-004 — Asignar área fija o permitida` — APROBADA
+**Tarea siguiente:** `AUTH-DEV-006 — Asignar permisos máximos del dispositivo` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de aplicaciones máximas por plantilla, aplicaciones efectivas por instancia y matriz materializada para dispositivos compartidos
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/P_DISPOSITIVOS_COMPARTIDOS/01_IDENTIDAD_ALCANCE_Y_LIMITES_DEL_DISPOSITIVO.md`
+**Artefactos producidos:** `SHARED-DEVICE-APPLICATION-POLICY-CONTRACT-001` y `SHARED-DEVICE-APPLICATION-BINDING-REGISTER-001`
+**Inventarios y contratos consumidos:** `SHARED-DEVICE-INVENTORY-001`, `SHARED-DEVICE-IDENTITY-CONTRACT-001`, `SHARED-DEVICE-FIXED-SITE-CONTRACT-001` y `SHARED-DEVICE-AREA-POLICY-CONTRACT-001` — 19 claves
+**Cambios en código, Supabase, migraciones, RLS, RPC, configuración, datos, aplicaciones o dispositivos:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Asignar a cada clase e instancia de dispositivo compartido un conjunto explícito, cerrado y versionable de aplicaciones que puede presentar o lanzar, sin confundir disponibilidad de superficie con autoridad empresarial.
+
+La tarea deberá mantener separadas:
+
+- la aplicación máxima admitida por la plantilla;
+- la aplicación habilitada en una instancia concreta;
+- la aplicación instalada o desplegada físicamente;
+- la aplicación seleccionada en el launcher;
+- la aplicación actual de una sesión;
+- el permiso exacto `<app>.access` del actor;
+- las capacidades internas de la aplicación;
+- la sede y el área del dispositivo;
+- el rol, turno, check-in y cobertura del trabajador;
+- el recurso real de la acción.
+
+```text
+APLICACIÓN PERMITIDA EN EL DISPOSITIVO
+≠
+APLICACIÓN AUTORIZADA PARA EL ACTOR
+≠
+PERMISO INTERNO AUTORIZADO
+≠
+APLICACIÓN INSTALADA
+≠
+RUTA ABIERTA
+```
+
+La presencia de una aplicación en el dispositivo constituye únicamente un límite de superficie. Puede conservar o reducir una capacidad que el actor ya posee, pero nunca crearla.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban:
+
+1. `SHARED-DEVICE-APPLICATION-POLICY-CONTRACT-001`, que define la relación plantilla–instancia–aplicación, la resolución efectiva, el launcher, los cambios, la auditoría y el comportamiento fail closed;
+2. `SHARED-DEVICE-APPLICATION-BINDING-REGISTER-001`, que materializa una decisión explícita para las 19 claves heredadas.
+
+Cobertura materializada:
+
+| Resultado                                                  | Cantidad |
+| ---------------------------------------------------------- | -------: |
+| Claves heredadas evaluadas                                 |       19 |
+| Instancias configuradas con conjunto registral candidato   |        2 |
+| Observaciones sin aplicaciones autoritativas               |        2 |
+| Plantillas objetivo con conjunto máximo exacto             |       14 |
+| Plantillas retiradas sin nuevas asociaciones               |        1 |
+| Códigos de aplicación únicos utilizados                    |        7 |
+| Asociaciones máximas plantilla–aplicación                  |       43 |
+| Aplicaciones añadidas por una instancia sobre su plantilla |        0 |
+| Wildcards o aplicaciones implícitas permitidas             |        0 |
+
+Distribución de asociaciones máximas:
+
+| `app_code` | Plantillas que lo admiten |
+| ---------- | ------------------------: |
+| `shell`    |                        14 |
+| `nexo`     |                        13 |
+| `pulso`    |                         7 |
+| `fogo`     |                         4 |
+| `origo`    |                         3 |
+| `numera`   |                         1 |
+| `viso`     |                         1 |
+| **Total**  |                    **43** |
+
+---
+
+#### 3. Base normativa y decisiones heredadas
+
+La tarea conserva sin modificaciones sustantivas:
+
+- `AUTH-MOD-011 — Definir dispositivo compartido`;
+- `AUTH-CAT-014 — Definir permisos que admiten dispositivo compartido`;
+- `AUTH-RBAC-023 — Definir capacidades permitidas por dispositivo compartido`;
+- `AUTH-CTX-014 — Incluir contexto de dispositivo compartido`;
+- `AUTH-DEV-001 — Inventariar dispositivos compartidos`;
+- `AUTH-DEV-002 — Definir identidad del dispositivo`;
+- `AUTH-DEV-003 — Asignar sede fija`;
+- `AUTH-DEV-004 — Asignar área fija o permitida`.
+
+Se preserva exactamente la matriz de aplicaciones máximas aprobada en `AUTH-RBAC-023`:
+
+| Plantilla                        | Aplicaciones máximas                      |
+| -------------------------------- | ----------------------------------------- |
+| `pos_satellite`                  | `shell`, `nexo`, `pulso`                  |
+| `bar_satellite`                  | `shell`, `nexo`, `pulso`                  |
+| `kitchen_satellite`              | `shell`, `nexo`, `pulso`                  |
+| `service_satellite`              | `shell`, `nexo`, `pulso`                  |
+| `counter_satellite`              | `shell`, `nexo`, `pulso`                  |
+| `integrated_satellite`           | `shell`, `nexo`, `pulso`                  |
+| `production_kitchen`             | `shell`, `fogo`, `nexo`                   |
+| `production_bakery`              | `shell`, `fogo`, `nexo`                   |
+| `production_pastry`              | `shell`, `fogo`, `nexo`                   |
+| `warehouse_kiosk`                | `shell`, `nexo`, `origo`                  |
+| `logistics_vehicle_terminal`     | `shell`, `nexo`                           |
+| `procurement_reception`          | `shell`, `nexo`, `origo`                  |
+| `operations_management_terminal` | `shell`, `fogo`, `nexo`, `origo`, `pulso` |
+| `management_terminal`            | `shell`, `numera`, `viso`                 |
+
+No se añade ninguna aplicación que no aparezca en esa matriz.
+
+---
+
+#### 4. Principio restrictivo
+
+La resolución efectiva seguirá esta fórmula:
+
+```text
+APPS EFECTIVAS DEL DISPOSITIVO
+=
+APPS MÁXIMAS DE LA VERSIÓN DE PLANTILLA
+∩
+APPS HABILITADAS EXPLÍCITAMENTE EN LA INSTANCIA
+∩
+APPS CANÓNICAS ACTIVAS
+∩
+APPS DESPLEGADAS Y COMPATIBLES CON EL CLIENTE
+```
+
+Reglas:
+
+1. la plantilla define el techo;
+2. la instancia puede conservar o retirar miembros del techo;
+3. la instancia nunca puede añadir una aplicación ausente en su plantilla;
+4. una aplicación instalada no crea una asociación;
+5. una aplicación visible no crea `app.access`;
+6. una ruta, deep link, pestaña, caché o estado local no crea disponibilidad;
+7. una aplicación globalmente inactiva o incompatible queda fuera del conjunto efectivo aunque permanezca en una versión histórica;
+8. una asociación ausente no significa todas las aplicaciones;
+9. un error de resolución produce conjunto vacío y bloqueo;
+10. la evaluación se realiza en servidor y no acepta como autoridad la lista enviada por el cliente.
+
+La operación solo podrá continuar cuando la aplicación de la acción pertenezca al conjunto efectivo y el actor satisfaga de forma independiente todos los contratos de autorización.
+
+---
+
+#### 5. Identidades y contrato conceptual
+
+La política deberá separar como mínimo:
+
+```ts
+type SharedDeviceTemplateAppPolicy = {
+  template_code: string;
+  template_version: string;
+  app_code: string;
+  policy_state: "ACTIVE" | "SUSPENDED" | "RETIRED";
+  effective_from: string;
+  effective_until: string | null;
+};
+```
+
+```ts
+type SharedDeviceInstanceAppBinding = {
+  device_app_binding_id: string;
+  device_id: string;
+  template_code: string;
+  template_version: string;
+  app_code: string;
+  binding_state:
+    | "PENDING_DEPLOYMENT"
+    | "ACTIVE"
+    | "DISABLED"
+    | "SUSPENDED"
+    | "CONFLICTED"
+    | "SUPERSEDED"
+    | "REVOKED";
+  is_default: boolean;
+  source: "TEMPLATE_MATERIALIZATION" | "INSTANCE_REDUCTION" | "MIGRATION";
+  effective_from: string;
+  effective_until: string | null;
+  created_by: string;
+  reason_code: string;
+};
+```
+
+Estas formas son contractuales. El diseño físico posterior podrá normalizarlas, pero deberá conservar identidad, versión, cardinalidad, vigencia, fuente, actor administrativo, motivo e historial.
+
+---
+
+#### 6. Aplicaciones canónicas exactas
+
+El contrato utiliza únicamente códigos canónicos exactos:
+
+```text
+shell
+nexo
+pulso
+fogo
+origo
+numera
+viso
+```
+
+Queda prohibido representar membresía mediante:
+
+- `*`;
+- prefijos;
+- familias de aplicaciones;
+- repositorios;
+- rutas;
+- URLs;
+- nombres visibles;
+- etiquetas;
+- ambientes;
+- aplicaciones instaladas;
+- valores `null`;
+- texto como `all`, `default`, `operational_apps` o `management_apps`.
+
+Una aplicación nueva deberá existir primero en el catálogo canónico, recibir contratos de autorización, cobertura, readiness y despliegue, y después incorporarse mediante una versión nueva de la plantilla correspondiente.
+
+---
+
+#### 7. Plantilla, instancia y despliegue
+
+##### 7.1 Plantilla
+
+La plantilla declara el conjunto máximo reutilizable. No crea filas de una instancia ni demuestra que la aplicación esté desplegada.
+
+##### 7.2 Instancia
+
+La instancia materializa un subconjunto exacto de su plantilla.
+
+```text
+INSTANCE_APPS ⊆ TEMPLATE_MAX_APPS
+```
+
+Una instancia puede deshabilitar una aplicación por:
+
+- función local más estrecha;
+- aplicación todavía no desplegada;
+- incompatibilidad técnica;
+- mantenimiento;
+- riesgo de seguridad;
+- transición controlada;
+- reducción administrativa aprobada.
+
+La deshabilitación no modifica la plantilla ni las demás instancias.
+
+##### 7.3 Despliegue
+
+El despliegue es una condición técnica adicional. Una asociación activa sin cliente compatible deberá quedar `PENDING_DEPLOYMENT` o `SUSPENDED`, no presentarse como operativa.
+
+```text
+ASOCIACIÓN DOCUMENTADA
++
+CLIENTE AUSENTE O INCOMPATIBLE
+=
+NO LANZABLE
+```
+
+La instalación manual de un cliente fuera del conjunto efectivo no lo vuelve utilizable.
+
+---
+
+#### 8. Launcher y aplicación predeterminada
+
+Toda instancia activa deberá declarar exactamente una aplicación predeterminada o launcher dentro de su conjunto efectivo.
+
+Reglas:
+
+1. `default_app_code` deberá pertenecer al conjunto efectivo;
+2. existirá como máximo una asociación activa con `is_default = true`;
+3. la columna de dispositivo y la asociación marcada como predeterminada no podrán divergir;
+4. una divergencia se clasificará `CONFLICTED` y bloqueará el lanzamiento empresarial;
+5. retirar la aplicación predeterminada exige designar y verificar otra antes de reactivar la instancia;
+6. la aplicación predeterminada no recibe permisos adicionales;
+7. abrir automáticamente una app no evita la evaluación de actor, aplicación, permiso y recurso;
+8. el launcher no mostrará aplicaciones fuera del conjunto efectivo.
+
+La aplicación predeterminada exacta de futuras instancias se decide durante su configuración material. Esta tarea no infiere defaults desde el nombre de la plantilla.
+
+---
+
+#### 9. Aplicación permitida y autorización del actor
+
+Para entrar o actuar en una aplicación deberá cumplirse:
+
+```text
+APP EN CONJUNTO EFECTIVO DEL DISPOSITIVO
+∩
+APP ACTIVA Y DESPLEGADA
+∩
+ACTOR HUMANO EFECTIVO
+∩
+PERMISO EXACTO <app>.access DEL ACTOR
+∩
+PERMISO INTERNO EXACTO DE LA ACCIÓN
+∩
+SEDE Y ÁREA COMPATIBLES
+∩
+RECURSO RESUELTO
+∩
+SIN DENEGACIÓN
+=
+ACCIÓN POSIBLE
+```
+
+Consecuencias:
+
+- permitir `nexo` no concede `nexo.access`;
+- poseer `nexo.access` no habilita NEXO en un dispositivo cuya plantilla no lo admite;
+- permitir PULSO no concede acciones comerciales internas;
+- permitir VISO no crea cobertura organizacional;
+- permitir NUMERA no concede acceso financiero;
+- permitir ORIGO no concede recepción, compra o aprobación;
+- permitir FOGO no concede recetas, producción o ajustes;
+- permitir SHELL no concede las aplicaciones enlazadas desde el launcher.
+
+Una función como `current_shared_device_can_access_app()` solo puede representar elegibilidad de superficie del dispositivo. No constituye una decisión empresarial completa.
+
+---
+
+#### 10. Navegación directa y llamadas fuera de interfaz
+
+El contrato deberá proteger de forma equivalente:
+
+- launcher;
+- rutas directas;
+- deep links;
+- pestañas abiertas antes de un cambio;
+- favoritos;
+- historial del navegador;
+- service workers;
+- cachés locales;
+- API routes;
+- server actions;
+- RPC;
+- RLS;
+- suscripciones y jobs.
+
+Una aplicación no permitida deberá fallar cerrada aunque la ruta exista o el cliente esté instalado.
+
+La ausencia de una aplicación en el launcher no sustituye la protección de servidor. Las capacidades internas continúan verificándose por clave exacta y recurso.
+
+---
+
+#### 11. Cambio entre aplicaciones
+
+Cambiar de aplicación dentro del mismo dispositivo no crea una sesión nueva de actor cuando la sesión existente sigue válida y ambas aplicaciones están permitidas. Sin embargo, deberá:
+
+- recalcular la aplicación efectiva;
+- comprobar `<app>.access` del actor;
+- limpiar datos visibles de la aplicación anterior;
+- cerrar formularios y operaciones no confirmadas;
+- invalidar decisiones cacheadas incompatibles;
+- impedir que un recurso seleccionado se transfiera como autoridad;
+- eliminar reautenticación fuerte vinculada a otra aplicación, acción o recurso;
+- registrar la transición cuando afecte datos sensibles o una operación en curso.
+
+```text
+STRONG REAUTH DE UNA APP
+≠
+STRONG REAUTH TRANSFERIBLE A OTRA APP
+```
+
+Un cambio de actor siempre prevalece y obliga a limpiar todas las aplicaciones, incluso si la siguiente persona abre la misma app.
+
+---
+
+#### 12. Aplicaciones y modos de sesión
+
+##### 12.1 Plantillas satélite
+
+`pos_satellite`, `bar_satellite`, `kitchen_satellite`, `service_satellite`, `counter_satellite` e `integrated_satellite` admiten:
+
+```text
+shell
+nexo
+pulso
+```
+
+El conjunto no convierte una plantilla especializada en suma de caja, barra, cocina, servicio y mostrador. El rol, área, permiso y recurso continúan restringiendo cada acción.
+
+##### 12.2 Producción
+
+`production_kitchen`, `production_bakery` y `production_pastry` admiten:
+
+```text
+shell
+fogo
+nexo
+```
+
+Compartir aplicaciones no permite cruzar áreas de producción. La política de área exacta de `AUTH-DEV-004` continúa vigente.
+
+##### 12.3 Bodega y recepción
+
+`warehouse_kiosk` admite:
+
+```text
+shell
+nexo
+origo
+```
+
+`procurement_reception` admite el mismo conjunto, pero separa los modos operativo y administrativo. Cambiar de modo no añade aplicaciones ni conserva reautenticación de la sesión anterior.
+
+##### 12.4 Logística móvil
+
+`logistics_vehicle_terminal` admite únicamente:
+
+```text
+shell
+nexo
+```
+
+Ruta, vehículo, origen, destino y geolocalización no habilitan otras aplicaciones.
+
+##### 12.5 Gerencia operativa
+
+`operations_management_terminal` admite:
+
+```text
+shell
+fogo
+nexo
+origo
+pulso
+```
+
+El conjunto es operativo. No convierte la terminal en estación administrativa ni concede autoridad base por tener varias superficies.
+
+##### 12.6 Administración
+
+`management_terminal` admite únicamente:
+
+```text
+shell
+numera
+viso
+```
+
+La sede y el área físicas no amplían la cobertura administrativa del actor. ANIMA, PASS, AURA y cualquier aplicación fuera del conjunto exacto permanecen excluidas.
+
+---
+
+#### 13. Observaciones físicas
+
+Las observaciones de Vento Café y Saudo no reciben aplicaciones autoritativas.
+
+El hecho de que hayan sido descritas como tablets de servicio no prueba:
+
+- que sean una instancia administrada;
+- que usen PULSO, NEXO o SHELL;
+- que exista una sola unidad física;
+- que la cuenta observada sea técnica y conforme;
+- que exista vínculo con una plantilla;
+- que las aplicaciones instaladas sean legítimas.
+
+Para materializar aplicaciones se deberá completar identidad, enrolamiento, deduplicación, sede, área, plantilla y decisión administrativa de instancia. Hasta entonces permanecen `OBSERVED_ONLY`.
+
+---
+
+#### 14. Instancias configuradas actuales
+
+##### 14.1 `CAJA_VENTO_CAFE_01`
+
+Conjunto registral observado:
+
+```text
+shell
+nexo
+pulso
+```
+
+Decisión:
+
+- conservarlo como conjunto candidato de instancia;
+- reconocer que coincide exactamente con el máximo de `pos_satellite`;
+- no declarar despliegue, launcher, versión de plantilla ni operación física verificados;
+- no añadir aplicaciones;
+- mantener estado `REGISTERED_UNVERIFIED` hasta comprobar identidad, endpoint, estación, plantilla fijada, app predeterminada y clientes reales.
+
+##### 14.2 `KIOSCO_BODEGA_CP`
+
+Conjunto registral observado:
+
+```text
+nexo
+```
+
+Decisión:
+
+- conservarlo como reducción candidata de instancia;
+- reconocer que `nexo` pertenece al máximo de `warehouse_kiosk`;
+- no añadir `shell` ni `origo` por pertenecer a la plantilla;
+- no declarar que ORIGO esté desplegado o habilitado;
+- mantener estado `REGISTERED_UNVERIFIED` hasta comprobar plantilla, launcher, versión, instalación y comportamiento real.
+
+La diferencia entre el máximo de plantilla y la instancia no constituye automáticamente un error. Una reducción explícita y válida es admisible.
+
+---
+
+#### 15. Cambio de conjunto de aplicaciones
+
+Un cambio no será una mutación silenciosa de filas activas.
+
+Flujo obligatorio:
+
+```text
+SOLICITUD AUTORIZADA
+→ VALIDAR APP CANÓNICA Y PLANTILLA
+→ VERIFICAR SEDE, ÁREA, MODO Y DESPLIEGUE
+→ SUSPENDER SUPERFICIES AFECTADAS
+→ TERMINAR O LIMPIAR ESTADOS INCOMPATIBLES
+→ INVALIDAR CONTEXTO, CACHÉS Y REAUTENTICACIONES
+→ CERRAR VÍNCULOS ANTERIORES
+→ CREAR NUEVA VERSIÓN O REDUCCIÓN DE INSTANCIA
+→ VERIFICAR LAUNCHER Y APP PREDETERMINADA
+→ ACTIVAR Y AUDITAR
+```
+
+Reglas:
+
+- añadir una app al máximo exige una versión nueva de plantilla;
+- retirar una app de una instancia puede realizarse mediante una reducción versionada;
+- retirar globalmente una app por seguridad puede suspenderla de inmediato sin perder el historial;
+- una versión nueva no se aplica silenciosamente a las instancias existentes;
+- el rollback restaura una versión previamente aprobada, no una lista local no auditada;
+- todo cambio deberá revalidar el paquete máximo de `AUTH-DEV-006`.
+
+---
+
+#### 16. Conflictos y comportamiento fail closed
+
+Constituyen conflicto, como mínimo:
+
+- una app de instancia ausente en la plantilla fijada;
+- una app inexistente o inactiva tratada como disponible;
+- una app habilitada sin cliente compatible;
+- varias apps predeterminadas;
+- `default_app_code` fuera del conjunto efectivo;
+- divergencia entre `default_app_code` e `is_default`;
+- dos vínculos vigentes incompatibles para dispositivo y app;
+- plantilla o versión no resoluble;
+- una aplicación enviada por cliente que no coincide con el contexto resuelto;
+- rutas o cachés que conservan una app retirada;
+- una observación convertida en asignación sin instancia;
+- una app añadida localmente sobre el máximo de plantilla.
+
+Resultado:
+
+```text
+application_binding_state = CONFLICTED
+→ bloquear lanzamiento empresarial
+→ conservar operaciones técnicas mínimas
+→ limpiar estado visible y cachés
+→ terminar reautenticaciones incompatibles
+→ registrar evidencia
+→ exigir reconciliación autorizada
+```
+
+No se elegirá la primera app, la predeterminada legacy, la última visitada, la instalada, la enviada por el cliente ni la derivada del rol.
+
+---
+
+#### 17. Matriz completa de las 19 claves
+
+| `inventory_key`                                              | Clase                     | Decisión de aplicaciones                             | Conjunto exacto o referencia                 | Estado                  | Regla y bloqueo                                                                                                                                 | Destino exacto                             |
+| ------------------------------------------------------------ | ------------------------- | ---------------------------------------------------- | -------------------------------------------- | ----------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `configured_device:CAJA_VENTO_CAFE_01`                       | `CONFIGURED_INSTANCE`     | `CONSERVAR_CONJUNTO_REGISTRAL_COMO_CANDIDATO`        | `shell`, `nexo`, `pulso`                     | `REGISTERED_UNVERIFIED` | Coincide con `pos_satellite`, pero faltan versión fijada, launcher, despliegue e identidad física verificada.                                   | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-015` |
+| `configured_device:KIOSCO_BODEGA_CP`                         | `CONFIGURED_INSTANCE`     | `CONSERVAR_REDUCCION_REGISTRAL_COMO_CANDIDATA`       | `nexo`                                       | `REGISTERED_UNVERIFIED` | Es subconjunto válido de `warehouse_kiosk`; no se añaden `shell` u `origo` y falta verificar plantilla, launcher y despliegue real.             | `AUTH-CTX-025; AUTH-CTX-028; AUTH-DEV-014` |
+| `physical_observation:VENTO_CAFE/SERVICIO/tablet_compartida` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_APPS_POR_OBSERVACION`                    | Referencia de servicio; sin app autoritativa | `OBSERVED_ONLY`         | El uso observado no demuestra instancia, plantilla, cliente instalado conforme ni conjunto administrado.                                        | `AUTH-DEV-014; AUTH-DEV-015`               |
+| `physical_observation:SAUDO/SERVICIO/dispositivo_compartido` | `PHYSICAL_OBSERVATION`    | `NO_ASIGNAR_APPS_POR_OBSERVACION`                    | Referencia de servicio; sin app autoritativa | `OBSERVED_ONLY`         | El tipo, cantidad, identidad técnica y aplicaciones reales no están demostrados.                                                                | `AUTH-DEV-014; AUTH-DEV-015`               |
+| `target_template:pos_satellite`                              | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | Cada instancia puede reducir el conjunto, nunca ampliarlo.                                                                                      | `AUTH-DEV-006`                             |
+| `target_template:bar_satellite`                              | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | La disponibilidad de PULSO o NEXO no crea permisos de caja, barra o inventario.                                                                 | `AUTH-DEV-006`                             |
+| `target_template:kitchen_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | La plantilla no hereda capacidades de otras áreas satélite.                                                                                     | `AUTH-DEV-006`                             |
+| `target_template:service_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | El conjunto no se deriva de las observaciones físicas existentes.                                                                               | `AUTH-DEV-006`                             |
+| `target_template:counter_satellite`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | El mostrador no recibe otras apps por proximidad con caja o servicio.                                                                           | `AUTH-DEV-006`                             |
+| `target_template:integrated_satellite`                       | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `pulso`                     | `POLICY_DEFINED`        | La operación integrada no suma aplicaciones, roles o permisos de otras plantillas.                                                              | `AUTH-DEV-006`                             |
+| `target_template:production_kitchen`                         | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `fogo`, `nexo`                      | `POLICY_DEFINED`        | La app compartida no elimina el límite del área exacta de Cocina Caliente.                                                                      | `AUTH-DEV-006`                             |
+| `target_template:production_bakery`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `fogo`, `nexo`                      | `POLICY_DEFINED`        | La app compartida no permite operar Cocina Caliente o Repostería.                                                                               | `AUTH-DEV-006`                             |
+| `target_template:production_pastry`                          | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `fogo`, `nexo`                      | `POLICY_DEFINED`        | La app compartida no permite operar otras áreas de producción.                                                                                  | `AUTH-DEV-006`                             |
+| `target_template:warehouse_kiosk`                            | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`, `origo`                     | `POLICY_DEFINED`        | ORIGO solo podrá habilitarse en una instancia desplegada y no concede recepción o aprobación.                                                   | `AUTH-DEV-006`                             |
+| `target_template:logistics_vehicle_terminal`                 | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO`                       | `shell`, `nexo`                              | `POLICY_DEFINED`        | Vehículo, ruta y sedes visitadas no habilitan otras aplicaciones.                                                                               | `AUTH-DEV-006`                             |
+| `target_template:procurement_reception`                      | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO_CON_MODOS_EXCLUYENTES` | `shell`, `nexo`, `origo`                     | `POLICY_DEFINED`        | Los modos operativo y administrativo usan el mismo techo de superficie, pero recalculan actor, permisos, territorio, recurso y reautenticación. | `AUTH-DEV-006`                             |
+| `target_template:operations_management_terminal`             | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO_OPERACIONAL`           | `shell`, `fogo`, `nexo`, `origo`, `pulso`    | `POLICY_DEFINED`        | La amplitud de superficies no crea autoridad administrativa ni ejecución física de otros oficios.                                               | `AUTH-DEV-006`                             |
+| `target_template:management_terminal`                        | `TARGET_TEMPLATE`         | `FIJAR_CONJUNTO_MAXIMO_EXACTO_ADMINISTRATIVO`        | `shell`, `numera`, `viso`                    | `POLICY_DEFINED`        | El actor conserva exclusivamente sus permisos base y cobertura real; ninguna app adicional se infiere por jerarquía.                            | `AUTH-DEV-006`                             |
+| `retired_legacy_template:production_center`                  | `RETIRED_LEGACY_TEMPLATE` | `PROHIBIR_NUEVAS_ASOCIACIONES`                       | Sin aplicaciones para nuevas instancias      | `NO_APLICA`             | La plantilla retirada conserva historia, pero no recibe nuevas apps ni instancias; la transición usa las tres plantillas especializadas.        | `AUTH-CTX-028; paquetes E5 y BLOQUE R`     |
+
+La matriz conserva las 19 claves y no crea dispositivos, plantillas físicas, clientes instalados ni asociaciones desplegadas.
+
+---
+
+#### 18. Reconciliación con la infraestructura existente
+
+| Elemento actual                                  | Decisión contractual                                                                                                               | Estado                              |
+| ------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `shared_operational_device_apps`                 | Puede representar asociaciones de instancia y reducción, pero deberá conservar versión, vigencia, fuente, motivo e historial.      | `IMPLEMENTADO` parcial              |
+| Restricción única `(device_id, app_code)`        | Evita duplicado simultáneo básico, pero no sustituye ciclo de vida ni versiones históricas.                                        | `IMPLEMENTADO` parcial              |
+| `is_active`                                      | No distingue despliegue pendiente, suspensión, conflicto, sustitución y revocación.                                                | `BLOQUEADO` para conformidad final  |
+| Índice de una app predeterminada por dispositivo | Es compatible con la cardinalidad objetivo, pero debe reconciliarse con `default_app_code`.                                        | `IMPLEMENTADO` parcial              |
+| `shared_operational_devices.default_app_code`    | No podrá operar como fuente paralela divergente de la asociación predeterminada.                                                   | `BLOQUEADO` para conformidad final  |
+| `current_shared_device_can_access_app(text)`     | Comprueba una relación técnica de dispositivo, pero no actor, permiso, plantilla, versión, despliegue, sede, área ni recurso.      | `BLOQUEADO` como autorización final |
+| Tablas de plantilla y aplicaciones documentadas  | Deberán materializar las 43 asociaciones máximas y fijar versiones sin ampliar instancias silenciosamente.                         | `PENDIENTE_DE_IMPLEMENTACION`       |
+| Configuración de las dos instancias actuales     | Conserva tres y una asociaciones registrales respectivamente; falta verificar launcher, clientes, versión y comportamiento físico. | `PENDIENTE_DE_EVIDENCIA`            |
+
+Destinos existentes:
+
+- `AUTH-CTX-025`: resolución SQL canónica;
+- `AUTH-CTX-027`: eliminación de inferencias locales;
+- `AUTH-CTX-028`: compatibilidad y transición legacy;
+- `AUTH-CTX-029`: invalidación por cambios;
+- BLOQUE E3: arquitectura física y transición;
+- BLOQUE E5: paquete implementable y rollback;
+- BLOQUE R: migraciones, constraints, RLS, RPC y backfill;
+- `AUTH-DEV-014` a `AUTH-DEV-016`: verificación de configuración, dispositivos y aplicaciones reales.
+
+---
+
+#### 19. Auditoría mínima
+
+Todo vínculo y cambio deberá conservar:
+
+- `device_app_binding_id`;
+- `device_id` y `device_code`;
+- plantilla y versión;
+- `app_code` exacto;
+- estado anterior y nuevo;
+- condición de predeterminada;
+- actor administrativo;
+- motivo estructurado;
+- fuente;
+- evidencia de despliegue cuando corresponda;
+- fechas de vigencia;
+- correlación con cambio de plantilla, sede, área o paquete;
+- sesiones, contextos, cachés y reautenticaciones invalidados.
+
+Eventos conceptuales mínimos:
+
+```text
+device_app_binding_created
+device_app_binding_deployment_verified
+device_app_binding_activated
+device_app_binding_disabled
+device_app_binding_suspended
+device_app_binding_conflicted
+device_app_binding_superseded
+device_app_binding_revoked
+device_default_app_changed
+device_app_switch_blocked
+```
+
+Los nombres físicos podrán versionarse. No se perderán dispositivo, app, plantilla, versión, actor administrativo, motivo, timestamp, correlación ni estados anterior y nuevo.
+
+---
+
+#### 20. Comportamiento fail closed
+
+```text
+app fuera del conjunto efectivo
+→ no mostrar, no lanzar y denegar en servidor
+```
+
+```text
+app permitida sin <app>.access del actor
+→ DENY
+```
+
+```text
+app permitida y actor sin permiso interno
+→ DENY
+```
+
+```text
+app inactiva o no desplegada
+→ NO LANZABLE
+```
+
+```text
+launcher o default inconsistente
+→ CONFLICTED
+```
+
+```text
+plantilla u observación sin instancia
+→ no existe conjunto efectivo de dispositivo
+```
+
+Queda prohibido utilizar como fallback:
+
+- todas las aplicaciones de la organización;
+- todas las aplicaciones instaladas;
+- primera aplicación activa;
+- aplicación del último actor;
+- aplicación de la ruta solicitada;
+- aplicación enviada por cliente;
+- aplicación deducida del rol;
+- aplicación deducida de sede o área;
+- `default_app_code` sin asociación efectiva;
+- lista cacheada anterior a un cambio.
+
+---
+
+#### 21. Límites de esta tarea
+
+AUTH-DEV-005 no define:
+
+- las claves máximas de permiso por dispositivo;
+- paquetes de capacidades definitivos de `AUTH-DEV-006`;
+- PIN, firma, passkey o MFA;
+- duración de sesión;
+- proveedor de reautenticación fuerte;
+- interfaz final del launcher;
+- contratos funcionales internos de las aplicaciones;
+- despliegue físico de clientes;
+- creación o retiro de aplicaciones del catálogo;
+- tablas, constraints, triggers, funciones, RPC o RLS definitivos;
+- migraciones o backfill;
+- modificación de las dos instancias actuales;
+- enrolamiento de las observaciones;
+- prueba física de rutas, dispositivos o apps.
+
+---
+
+#### 22. Handoff exacto a AUTH-DEV-006
+
+`AUTH-DEV-006` deberá consumir la matriz completa y definir, sin añadir aplicaciones:
+
+1. el paquete máximo de claves exactas por plantilla;
+2. la coherencia entre cada `app_code` permitido y sus claves `<app>.access` e internas;
+3. que una clave cuyo prefijo corresponda a una app no permitida quede excluida;
+4. que una app permitida sin clave máxima aplicable no produzca autorización;
+5. el tratamiento de claves `STANDARD`, `STRONG` y `NOT_ALLOWED`;
+6. la reducción de permisos por instancia sin ampliar la plantilla;
+7. la intersección con el actor, las denegaciones, la sede, el área y el recurso;
+8. el comportamiento de las dos instancias actuales;
+9. la cobertura exacta de las 19 claves;
+10. la invalidación y auditoría ante cambios de paquete.
+
+El paquete máximo no podrá incorporar una aplicación ausente en `SHARED-DEVICE-APPLICATION-POLICY-CONTRACT-001`.
+
+---
+
+#### 23. Invariantes
+
+1. La plantilla define aplicaciones máximas.
+2. La instancia solo puede reducir.
+3. No existen wildcards de aplicación.
+4. `null` no significa todas las aplicaciones.
+5. La app se identifica por código canónico exacto.
+6. Una app instalada no queda permitida automáticamente.
+7. Una app visible no concede `<app>.access`.
+8. `<app>.access` no habilita una app ausente en el dispositivo.
+9. Una app permitida no concede permisos internos.
+10. La resolución efectiva ocurre en servidor.
+11. La lista del cliente no es autoritativa.
+12. Las rutas directas no evitan el filtro.
+13. El launcher muestra solo el conjunto efectivo.
+14. La app predeterminada pertenece al conjunto efectivo.
+15. Existe como máximo una app predeterminada activa.
+16. La reautenticación fuerte no se transfiere entre aplicaciones.
+17. Cambiar de actor limpia todas las aplicaciones.
+18. Los cambios son versionados y auditados.
+19. Una app globalmente inactiva falla cerrado.
+20. Las observaciones no reciben apps por inferencia.
+21. La plantilla retirada no recibe nuevas asociaciones.
+22. Las 43 asociaciones máximas se preservan exactamente.
+23. Las 19 claves conservan una decisión única.
+24. Aplicaciones y permisos máximos permanecen como dimensiones separadas.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-AUTH-049` a `TREQ-AUTH-058` en el Registro Canónico de Requisitos de Prueba.
+
+| ID              | Regla protegida                                                                                                                                                                                                                                                                                             | Tipo                                                     | Prioridad | Momento de implementación                                     | Destino                                                                              |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------- | --------- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `TREQ-AUTH-049` | Las aplicaciones efectivas de una instancia deberán ser la intersección entre el máximo de su versión de plantilla, las asociaciones explícitas activas de la instancia, el catálogo canónico activo y los clientes desplegados compatibles; una instancia solo podrá reducir y nunca ampliar su plantilla. | contractual + base de datos + seguridad + regresión      | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-025`; `AUTH-CTX-028`; `AUTH-QA-030`                 |
+| `TREQ-AUTH-050` | Toda asociación deberá usar un `app_code` canónico exacto; wildcards, prefijos, rutas, repositorios, nombres visibles, aplicaciones instaladas, valores `null` o listas enviadas por cliente no podrán crear ni ampliar el conjunto efectivo.                                                               | seguridad + contractual + integración + regresión        | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-025`; `AUTH-CTX-027`; `AUTH-QA-030`                 |
+| `TREQ-AUTH-051` | Una aplicación permitida solo habilitará superficie. Toda entrada y acción deberá exigir por separado actor humano efectivo, `<app>.access`, permiso interno exacto, contexto territorial, recurso y ausencia de denegaciones; el dispositivo nunca concederá autoridad.                                    | seguridad + autorización + integración + E2E + regresión | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-006`; `AUTH-CTX-025`; `AUTH-QA-030`                 |
+| `TREQ-AUTH-052` | Una aplicación inexistente, inactiva, no desplegada, incompatible o fuera del conjunto efectivo deberá ocultarse, no lanzarse y denegarse en rutas, server actions, RPC y RLS; la instalación o una ruta directa no constituirán autorización.                                                              | seguridad + interfaz + integración + E2E + regresión     | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030`                |
+| `TREQ-AUTH-053` | Toda instancia activa deberá tener exactamente una aplicación predeterminada dentro de su conjunto efectivo; múltiples defaults, ausencia obligatoria o divergencia entre `default_app_code` e `is_default` producirán conflicto y bloquearán el lanzamiento empresarial.                                   | contractual + base de datos + seguridad + regresión      | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-028`; `AUTH-DEV-014`; `AUTH-QA-030`                 |
+| `TREQ-AUTH-054` | Cambiar entre aplicaciones deberá recalcular acceso, limpiar estado y recursos incompatibles e invalidar reautenticaciones fuertes de otra aplicación, acción o recurso; cambiar de actor limpiará todas las aplicaciones y ningún estado sensible será transferible.                                       | seguridad + sesión + interfaz + E2E + regresión          | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-008` a `AUTH-DEV-010`; `AUTH-QA-030`                |
+| `TREQ-AUTH-055` | Todo cambio de conjunto deberá crear versión o reducción auditada, cerrar vínculos anteriores, invalidar contexto, cachés y reautenticaciones, verificar despliegue y default, y revalidar el paquete máximo; queda prohibida la edición silenciosa o local.                                                | seguridad + migración + integración + E2E + regresión    | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-006`; `AUTH-DEV-011`; `AUTH-CTX-029`; `AUTH-QA-030` |
+| `TREQ-AUTH-056` | `procurement_reception` deberá conservar `shell`, `nexo` y `origo` con modos excluyentes; `operations_management_terminal` conservará sus cinco apps como superficie operativa; y `management_terminal` solo admitirá `shell`, `numera` y `viso` sin heredar cobertura administrativa.                      | seguridad + autorización + integración + regresión       | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-006`; `AUTH-DEV-008`; `AUTH-QA-030`                 |
+| `TREQ-AUTH-057` | Una plantilla definirá apps máximas sin crear asociaciones de instancia; una observación no recibirá apps antes de identidad y enrolamiento; y `production_center` no admitirá nuevas asociaciones.                                                                                                         | contractual + seguridad + estática + regresión           | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-CTX-028`; `AUTH-DEV-014`; `AUTH-DEV-015`; `AUTH-QA-030` |
+| `TREQ-AUTH-058` | La matriz deberá cubrir exactamente las 19 claves, los siete códigos y las 43 asociaciones máximas: 2 instancias `REGISTERED_UNVERIFIED`, 2 observaciones `OBSERVED_ONLY`, 14 plantillas `POLICY_DEFINED` y 1 retirada `NO_APLICA`, sin faltantes, duplicados ni apps inferidas.                            | contractual + estática + regresión                       | crítica   | Paquete que materialice el contrato de dispositivo compartido | `NEXO-REMISSIONS-001`; `AUTH-DEV-014` a `AUTH-DEV-016`; `AUTH-QA-030`                |
+
+---
+
+#### 24. Criterios de aceptación
+
+- [x] Se distinguieron plantilla, instancia, despliegue, launcher, selección, permiso y acción interna.
+- [x] Se preservaron exactamente siete códigos canónicos de aplicación.
+- [x] Se preservaron las 43 asociaciones máximas de las catorce plantillas.
+- [x] Se definió la intersección restrictiva para calcular aplicaciones efectivas.
+- [x] Se prohibió que una instancia amplíe su plantilla.
+- [x] Se prohibieron wildcards, `null`, rutas, instalación y listas del cliente como autoridad.
+- [x] Se definió que una aplicación permitida no concede `<app>.access` ni permisos internos.
+- [x] Se protegieron launcher, rutas directas, server actions, RPC y RLS.
+- [x] Se definió una aplicación predeterminada coherente y única por instancia activa.
+- [x] Se definió aislamiento al cambiar de aplicación y de actor.
+- [x] Se definió cambio versionado con invalidación, auditoría y revalidación.
+- [x] Se conservaron `shell`, `nexo` y `pulso` para `CAJA_VENTO_CAFE_01` como conjunto registral candidato.
+- [x] Se conservó únicamente `nexo` para `KIOSCO_BODEGA_CP` como reducción registral candidata.
+- [x] No se añadieron `shell` u `origo` al kiosco por inferencia desde la plantilla.
+- [x] Las dos observaciones permanecieron sin aplicaciones autoritativas.
+- [x] Las catorce plantillas recibieron conjuntos exactos.
+- [x] La plantilla retirada no admite nuevas asociaciones.
+- [x] Se materializaron decisiones para las 19 claves sin faltantes ni duplicados.
+- [x] Se generaron `TREQ-AUTH-049` a `TREQ-AUTH-058`.
+- [x] No se modificó código, Supabase, migraciones, configuración, datos, aplicaciones ni dispositivos.
+- [x] `AUTH-DEV-006` permanece únicamente reservada.
+
+---
+
+#### 25. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-DEV-004 — Asignar área fija o permitida`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-DEV-005 — Asignar aplicaciones permitidas`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-DEV-006 — Asignar permisos máximos del dispositivo`
+
+
 ### [ ] AUTH-DEV-006 — Asignar permisos máximos del dispositivo

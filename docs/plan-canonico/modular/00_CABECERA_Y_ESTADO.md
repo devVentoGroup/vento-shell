@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **517** |
+| Tareas aprobadas | **518** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1077** |
+| Tareas no iniciadas | **1076** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **32.43% (517/1594)** |
+| Porcentaje de completamiento | **32.50% (518/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-DEV-004 — Asignar área fija o permitida** |
-| Tarea actual | **AUTH-DEV-005 — Asignar aplicaciones permitidas** |
+| Última tarea aprobada | **AUTH-DEV-005 — Asignar aplicaciones permitidas** |
+| Tarea actual | **AUTH-DEV-006 — Asignar permisos máximos del dispositivo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-DEV-006 — Asignar permisos máximos del dispositivo** |
+| Siguiente tarea | **AUTH-SIM-001 — Definir quién puede simular** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 9: SHARED_DEVICE_CONTRACT** |
-| Progreso del bloque | **CARRIL NEXO: 4 de 6 aprobadas; AUTH-DEV-005 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 5 de 6 aprobadas; AUTH-DEV-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-DEV-004` — Asignar área fija o permitida |
-| Tarea actual | `AUTH-DEV-005` — Asignar aplicaciones permitidas — **NO INICIADA** |
-| Siguiente tarea | `AUTH-DEV-006` — Asignar permisos máximos del dispositivo |
+| Última aprobada | `AUTH-DEV-005` — Asignar aplicaciones permitidas |
+| Tarea actual | `AUTH-DEV-006` — Asignar permisos máximos del dispositivo — **NO INICIADA** |
+| Siguiente tarea | `AUTH-SIM-001` — Definir quién puede simular |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 4 DE 6 APROBADAS — ACTUAL AUTH-DEV-005** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 5 DE 6 APROBADAS — ACTUAL AUTH-DEV-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-DEV-004 — Asignar área fija o permitida
-        ↓
-TAREA ACTUAL
 AUTH-DEV-005 — Asignar aplicaciones permitidas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-DEV-006 — Asignar permisos máximos del dispositivo
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-SIM-001 — Definir quién puede simular
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 4 de 6 tareas aprobadas
+CARRIL NEXO — 5 de 6 tareas aprobadas
 ```
