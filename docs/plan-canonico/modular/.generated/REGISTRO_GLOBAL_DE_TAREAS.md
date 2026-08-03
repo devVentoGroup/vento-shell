@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **510** |
+| Aprobadas | **511** |
 | En propuesta | **0** |
-| No iniciadas | **1084** |
+| No iniciadas | **1083** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **31.99% (510/1594)** |
+| Porcentaje de completamiento | **32.06% (511/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-036` — Definir si admite dispositivo compartido | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-037` — Definir si admite simulación | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-UI-038` — Definir campos sensibles visibles | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-037` — Definir si admite simulación | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-038` — Definir campos sensibles visibles | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-UI-039` — Definir masking según permiso | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -843,7 +843,7 @@
 | ✅ APROBADA | `AUTH-UI-034` | Definir si requiere sede | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ✅ APROBADA | `AUTH-UI-035` | Definir si requiere área | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ✅ APROBADA | `AUTH-UI-036` | Definir si admite dispositivo compartido | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
-| ⬜ NO INICIADA | `AUTH-UI-037` | Definir si admite simulación | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
+| ✅ APROBADA | `AUTH-UI-037` | Definir si admite simulación | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-038` | Definir campos sensibles visibles | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-039` | Definir masking según permiso | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-040` | Ocultar enlaces no autorizados | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
