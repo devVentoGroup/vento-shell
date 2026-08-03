@@ -22,6 +22,7 @@
     "docs:screen-matrices:check": "node scripts/docs/validate-screen-contract-matrices.mjs",
     "docs:block-i:reconcile": "node scripts/docs/reconcile-block-i-surface-matrices.mjs && node scripts/docs/reconcile-block-i-treq-registry.mjs",
     "docs:block-i:check": "node scripts/docs/validate-block-i-surface-matrices.mjs",
+    "docs:auth-ui-031:check": "node scripts/docs/build-auth-ui-031-proposal.mjs --check",
     "docs:delivery-lanes:check": "node scripts/docs/validate-priority-delivery-lanes.mjs",
     "docs:delivery-lanes:sync": "node scripts/docs/sync-priority-delivery-lanes-doc.mjs",
     "docs:int-app:check": "node scripts/docs/validate-event-application-block.mjs",
