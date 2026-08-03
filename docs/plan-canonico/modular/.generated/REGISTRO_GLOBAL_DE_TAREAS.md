@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **521** |
+| Aprobadas | **522** |
 | En propuesta | **0** |
-| No iniciadas | **1073** |
+| No iniciadas | **1072** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **32.69% (521/1594)** |
+| Porcentaje de completamiento | **32.75% (522/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-SIM-002` — Definir roles simulables | ✅ APROBADA |
-| Tarea actual | `AUTH-SIM-003` — Definir sede simulada | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-SIM-004` — Definir área simulada | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-SIM-003` — Definir sede simulada | ✅ APROBADA |
+| Tarea actual | `AUTH-SIM-004` — Definir área simulada | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-SIM-005` — Definir turno simulado | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1199,7 +1199,7 @@
 | ⬜ NO INICIADA | `AUTH-DEV-016` | Probar pantallas de FOGO | `bloques/P_DISPOSITIVOS_COMPARTIDOS/03_SESION_REVOCACION_Y_PRUEBAS.md` |
 | ✅ APROBADA | `AUTH-SIM-001` | Definir quién puede simular | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
 | ✅ APROBADA | `AUTH-SIM-002` | Definir roles simulables | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
-| ⬜ NO INICIADA | `AUTH-SIM-003` | Definir sede simulada | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
+| ✅ APROBADA | `AUTH-SIM-003` | Definir sede simulada | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
 | ⬜ NO INICIADA | `AUTH-SIM-004` | Definir área simulada | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
 | ⬜ NO INICIADA | `AUTH-SIM-005` | Definir turno simulado | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
 | ⬜ NO INICIADA | `AUTH-SIM-006` | No mezclar permisos reales y simulados | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |

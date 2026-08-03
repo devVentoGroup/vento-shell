@@ -1670,7 +1670,807 @@ Se incorporan `TREQ-AUTH-079` a `TREQ-AUTH-088` en el Registro Canónico de Requ
 `AUTH-SIM-003 — Definir sede simulada`
 
 
-### [ ] AUTH-SIM-003 — Definir sede simulada
+### ✅ AUTH-SIM-003 — Definir sede simulada
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-SIM-002 — Definir roles simulables` — APROBADA
+**Tarea siguiente:** `AUTH-SIM-004 — Definir área simulada` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de elegibilidad territorial de la sede simulada y registro materializado de sedes ordinarias, aisladas, físicas no organizacionales y ausencia territorial legítima
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md`
+**Artefactos producidos:** `SIMULATED-SITE-ELIGIBILITY-CONTRACT-001`, `SIMULATED-SITE-REGISTER-001` y `SIMULATED-SITE-PHYSICAL-RECONCILIATION-001`
+**Decisiones y contratos consumidos:** `AUTH-MOD-007`, `AUTH-MOD-012` a `AUTH-MOD-015`, `AUTH-SIM-001`, `AUTH-SIM-002`, catálogo territorial vigente y estado físico observado de `public.sites` y `public.site_operational_roles`
+**Cambios en código, Supabase, migraciones, RLS, RPC, configuración, datos, sedes, áreas, asignaciones, turnos, sesiones, dispositivos o permisos:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Definir exactamente qué territorio puede utilizarse como sede objetivo de una simulación de contexto de autorización, sin confundir:
+
+- sede simulada con sede real del solicitante;
+- sede asignada con sede primaria;
+- sede seleccionada con autorización;
+- sede administrativa con sede operativa;
+- sede organizacional con punto físico de check-in;
+- sede exacta con tipo de sede;
+- alcance global ordinario con acceso a una sede aislada;
+- ausencia territorial legítima con un wildcard;
+- compatibilidad rol–sede con permiso para ejecutar;
+- representación hipotética con acceso a datos reales.
+
+```text
+SEDE SIMULADA EXACTA
+≠
+SEDE SELECCIONADA EN INTERFAZ
+≠
+SEDE PRIMARIA
+≠
+SEDE REAL DEL SIMULADOR
+≠
+PUNTO FÍSICO DE CHECK-IN
+≠
+AUTORIDAD EJECUTABLE
+```
+
+La sede simulada es un componente territorial hipotético de una evaluación explicativa. Nunca sustituye el territorio real desde el cual se autoriza al solicitante.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban:
+
+1. `SIMULATED-SITE-ELIGIBILITY-CONTRACT-001`, que define identidad territorial tipada, modos de objetivo, alcance real, aislamiento, compatibilidad rol–sede, ausencia territorial, precedencia, razones y comportamiento fail closed;
+2. `SIMULATED-SITE-REGISTER-001`, que materializa una decisión para cada identidad física vigente del catálogo `public.sites`;
+3. `SIMULATED-SITE-PHYSICAL-RECONCILIATION-001`, que documenta las habilitaciones operativas observadas sin convertirlas en permisos ni alterar el estado desplegado.
+
+Cobertura materializada:
+
+| Resultado                                                                 | Cantidad |
+| ------------------------------------------------------------------------- | -------: |
+| Identidades físicas de sede con decisión explícita                        |        7 |
+| Sedes ordinarias simulables bajo contrato completo                        |        5 |
+| Sedes aisladas simulables solo mediante cobertura explícita independiente |        1 |
+| Puntos físicos no admitidos como sede organizacional simulada             |        1 |
+| Tipos físicos de sede observados                                          |        5 |
+| Clases `site_kind` observadas                                             |        3 |
+| Habilitaciones operativas activas rol–sede observadas                     |       16 |
+| Roles operativos canónicos cubiertos por esas habilitaciones              |       12 |
+| Modos territoriales contractuales                                         |        2 |
+| Fallbacks, wildcards o inclusiones implícitas aprobados                   |        0 |
+| Sedes capaces de autorizar al solicitante por ser seleccionadas           |        0 |
+
+---
+
+#### 3. Base normativa heredada
+
+La tarea conserva íntegramente que:
+
+- el solicitante debe superar `AUTH-SIM-001` desde su actor y sesión reales;
+- el rol objetivo debe superar `AUTH-SIM-002` mediante identidad tipada y versión compatible;
+- sede asignada, primaria, seleccionada, administrativa, operativa y del recurso son conceptos distintos;
+- `public.sites` es el catálogo físico de referencia, pero cada registro debe clasificarse antes de utilizarse como territorio laboral;
+- la sede del recurso y el contrato del permiso gobiernan la evaluación territorial de una acción;
+- `null` no significa todas las sedes;
+- múltiples sedes autorizadas no equivalen a alcance organizacional irrestricto;
+- un tipo de sede no sustituye una sede exacta;
+- una sede aislada no se incorpora a alcances ordinarios globales, por tipo o por rol;
+- la simulación no es impersonación y no modifica la sesión real;
+- el resultado solo puede ser `would_allow`, `would_deny` o `indeterminate`;
+- ninguna selección simulada ejecuta acciones ni amplía la lectura de datos reales;
+- toda ambigüedad o incompatibilidad falla cerrado.
+
+---
+
+#### 4. Identidades territoriales separadas
+
+| Identidad                    | Función                                                                   | Autoridad                                                |
+| ---------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `simulator_real_site_scope`  | Conjunto real de sedes que el simulador puede inspeccionar                | Limita la solicitud; no se modifica                      |
+| `simulated_site_id`          | Sede exacta hipotética evaluada                                           | No autoriza acciones reales                              |
+| `simulated_site_code`        | Código canónico de la sede exacta                                         | Identificación, no permiso                               |
+| `simulated_site_type`        | Clasificación funcional derivada de la sede                               | No es wildcard ni objetivo suficiente                    |
+| `simulated_site_kind`        | Clase física derivada del registro                                        | Determina si puede actuar como territorio organizacional |
+| `simulated_resource_site_id` | Sede resuelta del recurso hipotético                                      | Debe ser coherente con la sede del escenario             |
+| `simulated_geofence_site_id` | Punto físico hipotético de marcación cuando una tarea posterior lo admita | No sustituye `simulated_site_id`                         |
+| `real_active_site_id`        | Sede real activa del actor, cuando exista                                 | Permanece inalterada                                     |
+| `real_selected_site_id`      | Preferencia real de interfaz                                              | No participa como evidencia de autorización              |
+
+```text
+simulated_site_id
+≠
+real_active_site_id
+≠
+real_selected_site_id
+≠
+simulated_geofence_site_id
+```
+
+---
+
+#### 5. Modos territoriales contractuales
+
+```ts
+type SimulatedSiteTarget =
+  | {
+      mode: "EXACT_SITE";
+      simulated_site_id: string;
+      simulated_site_code: string;
+      simulated_site_type: string;
+      simulated_site_kind: string;
+      site_catalog_version: string;
+    }
+  | {
+      mode: "NO_SITE_NON_TERRITORIAL";
+      simulated_site_id: null;
+      simulated_site_code: null;
+      simulated_site_type: null;
+      simulated_site_kind: null;
+      site_catalog_version: string;
+    };
+```
+
+Reglas:
+
+1. `EXACT_SITE` exige una identidad única y activa;
+2. `NO_SITE_NON_TERRITORIAL` es una declaración positiva de ausencia territorial, no un valor desconocido;
+3. `null`, cadena vacía, primer resultado o única sede visible no podrán transformarse en `EXACT_SITE`;
+4. un `site_type` no constituye un tercer modo;
+5. una consulta comparativa por tipo deberá expandirse en servidor a una lista finita de sedes exactas autorizadas y evaluarlas por separado;
+6. cada modo conserva la versión del catálogo utilizada.
+
+---
+
+#### 6. Contrato conceptual
+
+```ts
+type SimulatedSiteEligibilityInput = {
+  simulation_request_id: string;
+  simulator_actor_id: string;
+  real_session_id: string;
+  simulated_role_kind: "BASE" | "OPERATIONAL";
+  simulated_role_code: string;
+  role_catalog_version: string;
+  role_matrix_version: string;
+  site_target: SimulatedSiteTarget;
+  target_permission_key: string | null;
+  target_action: string | null;
+  target_resource_reference: string | null;
+  strong_reauth_evidence_id: string | null;
+};
+```
+
+```ts
+type SimulatedSiteEligibilityResult = {
+  accepted: boolean;
+  decision:
+    | "SIMULABLE_CONDITIONAL"
+    | "ISOLATED_EXPLICIT_ONLY"
+    | "NOT_SIMULABLE_AS_SITE"
+    | "NO_SITE_ACCEPTED"
+    | "DENY";
+  exact_site_resolved: boolean;
+  within_simulator_real_scope: boolean;
+  role_site_compatible: boolean | null;
+  isolated_scope_required: boolean;
+  strong_reauth_required: boolean;
+  simulated_decision:
+    | "would_allow"
+    | "would_deny"
+    | "indeterminate"
+    | null;
+  reason_codes: string[];
+  evaluated_site_catalog_version: string;
+  evaluated_role_matrix_version: string;
+  policy_version: string;
+  evaluated_at: string;
+};
+```
+
+La implementación física podrá normalizar estas formas sin perder identidad exacta, tipo, clase, versión, alcance real, aislamiento, compatibilidad, razones ni separación respecto del contexto real.
+
+---
+
+#### 7. Fórmula de elegibilidad territorial
+
+```text
+SOLICITANTE ELEGIBLE SEGÚN AUTH-SIM-001
+∩
+ROL OBJETIVO VÁLIDO SEGÚN AUTH-SIM-002
+∩
+MODO TERRITORIAL EXPLÍCITO
+∩
+SEDE EXACTA ACTIVA O AUSENCIA NO TERRITORIAL VÁLIDA
+∩
+SEDE SOLICITADA ⊆ ALCANCE REAL DE INSPECCIÓN
+∩
+COMPATIBILIDAD ROL–SEDE CUANDO EL ROL ES OPERATIVO
+∩
+AISLAMIENTO Y REAUTENTICACIÓN CUANDO APLIQUEN
+∩
+AUSENCIA DE DENEGACIONES
+=
+OBJETIVO TERRITORIAL ACEPTADO
+```
+
+Aceptar el objetivo territorial no produce por sí solo `would_allow`. Área, turno, check-in, permiso, acción y recurso deberán satisfacer sus contratos cuando sean obligatorios.
+
+---
+
+#### 8. Registro materializado de sedes físicas vigentes
+
+| `site_code`                  | Nombre observado                             | `site_type`         | `site_kind`    | Visibilidad operativa | Decisión                 | Regla                                                                                                 |
+| ---------------------------- | -------------------------------------------- | ------------------- | -------------- | --------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------- |
+| `CENTRO_PROD`                | Centro de Producción                         | `centro_produccion` | `operations`   | `visible`             | `SIMULABLE_CONDITIONAL`  | Sede ordinaria exacta. Exige alcance real y compatibilidad del rol objetivo.                          |
+| `MOLKA_PRINCIPAL`            | Molka                                        | `satelite`          | `operations`   | `visible`             | `SIMULABLE_CONDITIONAL`  | Sede satélite exacta. No representa todas las sedes del tipo.                                         |
+| `SAUDO`                      | Saudo                                        | `satelite`          | `operations`   | `visible`             | `SIMULABLE_CONDITIONAL`  | Sede satélite exacta. Exige alcance real y contexto coherente.                                        |
+| `VENTO_CAFE`                 | Vento Café                                   | `satelite`          | `operations`   | `visible`             | `SIMULABLE_CONDITIONAL`  | Sede satélite exacta. No hereda autoridad por ser seleccionada.                                       |
+| `VENTO_GROUP`                | Vento Group                                  | `administrativa`    | `operations`   | `visible`             | `SIMULABLE_CONDITIONAL`  | Sede administrativa exacta; una función operativa solo procede si existe habilitación explícita.      |
+| `APP-REVIEW`                 | App Review                                   | `revision`          | `review`       | `hidden`              | `ISOLATED_EXPLICIT_ONLY` | Sede aislada. Requiere cobertura independiente y no pertenece al alcance ordinario global o por tipo. |
+| `pickup_camioneta_principal` | Pickup Estacionamiento - Camioneta Principal | `punto_checkin`     | `vehicle_yard` | `hidden`              | `NOT_SIMULABLE_AS_SITE`  | Punto físico de check-in o patio vehicular; no es sede organizacional para `simulated_site_id`.       |
+
+Totales del registro:
+
+```text
+5 SIMULABLE_CONDITIONAL
+1 ISOLATED_EXPLICIT_ONLY
+1 NOT_SIMULABLE_AS_SITE
+= 7 decisiones exactas
+```
+
+La presencia física y el estado activo de un registro no bastan para clasificarlo como sede organizacional simulable.
+
+---
+
+#### 9. Compatibilidad materializada de roles operativos por sede
+
+La evaluación operativa deberá utilizar habilitaciones exactas y activas. El estado observado materializa:
+
+| Rol operativo                | Sedes exactas habilitadas observadas | Asociaciones activas |
+| ---------------------------- | ------------------------------------ | -------------------: |
+| `cajero_satelite`            | `VENTO_CAFE`, `SAUDO`                |                    2 |
+| `barista_satelite`           | `VENTO_CAFE`, `SAUDO`                |                    2 |
+| `cocinero_satelite`          | `VENTO_CAFE`, `SAUDO`                |                    2 |
+| `servicio_salon`             | `VENTO_CAFE`, `SAUDO`                |                    2 |
+| `mostrador_satelite`         | `VENTO_CAFE`                         |                    1 |
+| `operador_integral_satelite` | `MOLKA_PRINCIPAL`                    |                    1 |
+| `produccion_cocina`          | `CENTRO_PROD`                        |                    1 |
+| `produccion_panaderia`       | `CENTRO_PROD`                        |                    1 |
+| `produccion_reposteria`      | `CENTRO_PROD`                        |                    1 |
+| `bodeguero`                  | `CENTRO_PROD`                        |                    1 |
+| `conductor_logistica`        | `CENTRO_PROD`                        |                    1 |
+| `gerencia_operativa`         | `VENTO_GROUP`                        |                    1 |
+
+```text
+12 roles operativos canónicos
+16 asociaciones activas observadas
+0 asociaciones inferidas
+```
+
+Reglas:
+
+1. una asociación activa permite considerar compatible el par rol–sede;
+2. no concede el permiso objetivo;
+3. no crea área, turno ni check-in;
+4. la ausencia de asociación produce `simulation_role_not_allowed_at_site`;
+5. `site_type` o semejanza funcional no sustituyen una asociación exacta;
+6. la sede puede reducir la elegibilidad del rol, nunca ampliarla;
+7. cambios posteriores deberán evaluarse con una versión nueva del catálogo y matriz.
+
+---
+
+#### 10. Roles base y sede simulada
+
+Los roles base no dependen de `site_operational_roles`, pero la sede sigue siendo relevante cuando el permiso, recurso o alcance sea territorial.
+
+Reglas:
+
+- `propietario` o `gerente_general` no reciben acceso a una sede por su nombre;
+- `gerente` y `supervisor` solo pueden evaluarse sobre sedes compatibles con el escenario y el alcance autorizado del simulador;
+- roles funcionales pueden tener permisos globales específicos, territoriales o no territoriales según la matriz exacta;
+- seleccionar una sede no convierte un permiso local en global ni un permiso global en acceso a datos aislados;
+- una vista de matriz sin acción concreta podrá mostrar que el resultado territorial permanece pendiente;
+- una acción territorial sin sede exacta no puede producir `would_allow`.
+
+---
+
+#### 11. Alcance real del simulador
+
+La sede objetivo deberá cumplir:
+
+```text
+REQUESTED_SIMULATED_SITE
+⊆
+SIMULATOR_REAL_AUTHORIZED_INSPECTION_SCOPE
+```
+
+La comprobación utilizará permisos y asignaciones reales, no valores simulados.
+
+| Alcance real           | Sedes simulables                                                                       |
+| ---------------------- | -------------------------------------------------------------------------------------- |
+| `OWN`                  | Solo contexto propio y sedes que el contrato propio permita inspeccionar.              |
+| Sede exacta            | Únicamente la sede autorizada.                                                         |
+| Multisede explícito    | Conjunto finito de sedes exactas autorizadas.                                          |
+| Tipo de sede           | Conjunto finito de sedes actuales del tipo, filtrado por exclusiones y cobertura real. |
+| Global ordinario       | Sedes organizacionales ordinarias cubiertas por el permiso exacto; excluye aisladas.   |
+| Sede aislada explícita | Solo la sede aislada identificada y autorizada.                                        |
+
+No existen los fallbacks:
+
+```text
+sin alcance resuelto → todas las sedes
+una sede visible → sede autorizada
+rol global → APP-REVIEW
+site_type = satelite → todo satélite futuro
+```
+
+---
+
+#### 12. Contexto administrativo y contexto operativo
+
+##### 12.1 Contexto administrativo simulado
+
+Podrá utilizar una sede exacta para evaluar permisos, navegación o recursos administrativos territoriales. La sede no requiere turno ni check-in cuando la acción sea administrativa, pero sí permiso, alcance y recurso compatibles.
+
+##### 12.2 Contexto operativo simulado
+
+Exige como mínimo:
+
+```text
+rol operativo tipado
++
+sede exacta habilitada
++
+área válida cuando corresponda
++
+turno hipotético válido
++
+check-in hipotético cuando la política lo exija
++
+permiso operativo
++
+recurso territorial coherente
+```
+
+La sede por sí sola no reconstruye los demás componentes.
+
+##### 12.3 Sede administrativa y operativa simultáneas
+
+Una simulación puede comparar contextos administrativos y operativos, pero deberá mantenerlos separados. La sede de un carril no se transfiere automáticamente al otro.
+
+---
+
+#### 13. Ausencia territorial legítima
+
+`NO_SITE_NON_TERRITORIAL` solo podrá utilizarse cuando el contrato del permiso, acción y recurso no requiera sede.
+
+Casos conceptuales admisibles:
+
+- vista de matriz de un rol sin acción territorial concreta;
+- entrada no territorial a una aplicación;
+- recurso organizacional exacto cuyo contrato no use sede;
+- explicación de una denegación anterior a la resolución territorial.
+
+Casos no admisibles:
+
+- inventario;
+- remisiones;
+- producción;
+- venta o caja;
+- turno;
+- check-in;
+- trabajador administrado por sede;
+- recurso con sede resoluble;
+- rol operativo al evaluar una acción.
+
+```text
+site_target.mode = NO_SITE_NON_TERRITORIAL
++
+acción que requiere sede
+=
+indeterminate o would_deny
+```
+
+Nunca `would_allow`.
+
+---
+
+#### 14. Tipos de sede y comparaciones múltiples
+
+Los tipos observados son:
+
+```text
+administrativa
+centro_produccion
+satelite
+punto_checkin
+revision
+```
+
+Reglas:
+
+1. el tipo es una clasificación derivada del registro exacto;
+2. no es una identidad de sede;
+3. no autoriza una sede futura;
+4. una comparación por tipo se expande a sedes exactas actuales y autorizadas;
+5. cada sede produce un resultado independiente;
+6. las sedes aisladas no se incorporan a un tipo ordinario por semejanza;
+7. `punto_checkin` no se convierte en sede organizacional;
+8. el resultado no podrá resumirse como positivo si una sede individual permanece indeterminada o denegada sin mostrar su decisión.
+
+---
+
+#### 15. Sede aislada `APP-REVIEW`
+
+`APP-REVIEW` conserva aislamiento absoluto respecto de la organización productiva ordinaria.
+
+Para aceptarla como objetivo deberán coexistir:
+
+- permiso efectivo de simulación;
+- cobertura real explícita sobre `APP-REVIEW`;
+- justificación específica;
+- sesión personal real;
+- rol objetivo válido;
+- propósito de revisión compatible;
+- reautenticación fuerte cuando la política lo exija;
+- minimización y enmascaramiento;
+- ausencia de denegaciones.
+
+No la incluyen:
+
+- rol `propietario`;
+- rol `gerente_general`;
+- permiso global ordinario;
+- alcance multisede productivo;
+- tipo `revision` sin sede exacta;
+- acceso a otra sede;
+- actor de revisión como sustituto del simulador real.
+
+La simulación no podrá utilizar `APP-REVIEW` para revelar datos productivos ni utilizar datos productivos para poblar el escenario aislado.
+
+---
+
+#### 16. Punto físico `pickup_camioneta_principal`
+
+El registro `pickup_camioneta_principal` representa un punto físico de check-in o patio vehicular, no una sede organizacional simulable.
+
+```text
+site_type = punto_checkin
+OR
+site_kind = vehicle_yard
+→ NOT_SIMULABLE_AS_SITE
+```
+
+Reglas:
+
+- no puede poblar `simulated_site_id`;
+- no puede aportar cobertura administrativa;
+- no puede habilitar un rol operativo;
+- no puede sustituir la sede del turno;
+- no puede convertirse en sede de recurso;
+- podrá utilizarse únicamente como punto físico o recurso tipado si una tarea posterior define ese campo;
+- su presencia en `public.sites` no cambia esta clasificación.
+
+---
+
+#### 17. Sede ausente, inactiva, ambigua o incompatible
+
+| Condición                                        | Resultado                      |
+| ------------------------------------------------ | ------------------------------ |
+| ID o código ausente en `EXACT_SITE`              | `DENY`                         |
+| ID y código resuelven sedes distintas            | `DENY`                         |
+| Sede inexistente                                 | `DENY`                         |
+| Sede inactiva o retirada                         | `DENY`                         |
+| Versión de catálogo incompatible                 | `DENY`                         |
+| `site_type` enviado como si fuera sede exacta    | `DENY`                         |
+| Sede fuera del alcance real                      | `DENY`                         |
+| Sede aislada sin cobertura específica            | `DENY`                         |
+| Rol operativo sin habilitación exacta            | `DENY`                         |
+| Acción territorial con `NO_SITE_NON_TERRITORIAL` | `indeterminate` o `would_deny` |
+| Área obligatoria todavía no definida             | `indeterminate`                |
+| Recurso con sede contradictoria                  | `would_deny`                   |
+
+La interfaz podrá solicitar corrección del escenario, pero no seleccionar un fallback silencioso.
+
+---
+
+#### 18. Datos reales y minimización
+
+La sede simulada no concede acceso a datos de esa sede.
+
+La vista podrá utilizar:
+
+- metadatos territoriales no sensibles ya visibles para el simulador;
+- estructuras vacías;
+- datos sintéticos;
+- datos anonimizados;
+- datos reales que el simulador pueda consultar mediante sus permisos reales.
+
+No podrá revelar por la sola selección de la sede:
+
+- inventario;
+- costos o márgenes;
+- ventas;
+- documentos laborales;
+- clientes;
+- producción;
+- auditorías sensibles;
+- credenciales;
+- información de otra sede;
+- datos de `APP-REVIEW` o productivos fuera del aislamiento correspondiente.
+
+Cuando el simulador no pueda conocer un detalle, el resultado deberá minimizarlo sin alterar la decisión hipotética.
+
+---
+
+#### 19. Prohibición de mutaciones
+
+Seleccionar, cambiar o comparar una sede simulada no podrá:
+
+- crear, activar, desactivar o modificar `public.sites`;
+- modificar `employee_sites`;
+- modificar `employee_settings.selected_site_id`;
+- cambiar la sede primaria;
+- cambiar la sede administrativa real;
+- cambiar la sede operativa real;
+- crear o modificar turnos y check-ins;
+- modificar `site_operational_roles`;
+- asignar áreas;
+- cambiar dispositivos;
+- alterar RLS, permisos o sesiones;
+- crear recursos empresariales;
+- ejecutar acciones como el rol o sede simulados.
+
+```text
+CAMBIO DE SEDE SIMULADA
+=
+NUEVA EVALUACIÓN HIPOTÉTICA
+≠
+MUTACIÓN TERRITORIAL REAL
+```
+
+---
+
+#### 20. Precedencia de decisión
+
+```text
+SOLICITANTE_REAL_INVÁLIDO
+>
+SIMULACIÓN_ANIDADA
+>
+ROL_OBJETIVO_INVÁLIDO
+>
+VERSIÓN_TERRITORIAL_INCOMPATIBLE
+>
+SEDE_AUSENTE_O_INACTIVA
+>
+CLASE_NO_ORGANIZACIONAL
+>
+AISLAMIENTO_NO_AUTORIZADO
+>
+ALCANCE_REAL_INSUFICIENTE
+>
+ROL_NO_HABILITADO_EN_SEDE
+>
+REAUTENTICACIÓN_FALTANTE
+>
+OBJETIVO_TERRITORIAL_ACEPTADO
+>
+CONTEXTO_DE_ACCIÓN_INCOMPLETO
+>
+DEFAULT_DENY
+```
+
+Una sede válida nunca neutraliza una denegación anterior.
+
+---
+
+#### 21. Razones mínimas estructuradas
+
+| Razón                                      | Significado                                                    |
+| ------------------------------------------ | -------------------------------------------------------------- |
+| `simulation_site_reference_incomplete`     | Falta un componente obligatorio de la referencia exacta.       |
+| `simulation_site_not_found`                | La sede no existe en la versión autoritativa.                  |
+| `simulation_site_inactive`                 | La sede está inactiva o retirada.                              |
+| `simulation_site_ambiguous`                | ID, código o fuentes resuelven resultados incompatibles.       |
+| `simulation_site_catalog_version_mismatch` | La versión solicitada no coincide con la evaluada.             |
+| `simulation_site_not_in_real_scope`        | El simulador no puede inspeccionar esa sede.                   |
+| `simulation_site_isolated_scope_missing`   | Falta cobertura explícita para la sede aislada.                |
+| `simulation_site_strong_reauth_required`   | Falta reautenticación fuerte aplicable.                        |
+| `simulation_site_kind_not_organizational`  | El registro es un punto físico o clase no admitida como sede.  |
+| `simulation_role_not_allowed_at_site`      | El rol operativo no está habilitado en la sede exacta.         |
+| `simulation_site_required`                 | La acción o recurso requiere sede y no existe una exacta.      |
+| `simulation_nonterritorial_mode_invalid`   | Se utilizó ausencia territorial para un escenario territorial. |
+| `simulation_site_type_not_exact_target`    | Se envió un tipo como si fuera una sede exacta.                |
+| `simulation_site_resource_mismatch`        | La sede del recurso contradice la sede del escenario.          |
+| `simulation_site_context_incomplete`       | Falta área u otro componente posterior obligatorio.            |
+
+Los mensajes visibles respetarán minimización y no revelarán la existencia o configuración de sedes fuera del alcance real del actor.
+
+---
+
+#### 22. Auditoría mínima
+
+Todo intento permitido o denegado deberá conservar:
+
+- `simulation_request_id`;
+- actor, usuario, empleado y sesión reales;
+- rol real del simulador;
+- rol objetivo tipado y sus versiones;
+- modo territorial;
+- `simulated_site_id` y código exactos cuando existan;
+- tipo, clase y visibilidad territorial resueltos;
+- versión del catálogo de sedes;
+- alcance real utilizado;
+- fuente de compatibilidad rol–sede;
+- aislamiento evaluado;
+- reautenticación exigida y evidencia referenciada;
+- permiso, acción y recurso hipotéticos;
+- sede del recurso hipotético;
+- resultado territorial y resultado de la acción;
+- razones estructuradas;
+- versiones de políticas;
+- fecha, duración y correlación.
+
+No almacenará secretos, tokens, credenciales, códigos de reautenticación ni payloads empresariales completos.
+
+---
+
+#### 23. Reconciliación con el estado físico observado
+
+| Elemento                                                  | Resultado                       | Estado documental                          |
+| --------------------------------------------------------- | ------------------------------- | ------------------------------------------ |
+| Filas activas en `public.sites`                           | 7                               | `OBSERVADO`                                |
+| Sedes ordinarias organizacionales                         | 5                               | `SIMULABLE_CONDITIONAL`                    |
+| Sede aislada de revisión                                  | 1                               | `ISOLATED_EXPLICIT_ONLY`                   |
+| Punto físico no organizacional                            | 1                               | `NOT_SIMULABLE_AS_SITE`                    |
+| Filas activas en `site_operational_roles` observadas      | 16                              | Fuente física de compatibilidad actual     |
+| Roles operativos canónicos cubiertos                      | 12 de 12                        | Sin faltantes en la distribución observada |
+| Tabla o servicio autoritativo de simulación               | No materializado por esta tarea | `PENDIENTE_DE_IMPLEMENTACION`              |
+| Versionado físico específico del catálogo para simulación | No materializado por esta tarea | `PENDIENTE_DE_IMPLEMENTACION`              |
+
+La observación física no modifica el catálogo. Una implementación futura deberá persistir o derivar versiones reproducibles antes de ejecutar evaluaciones.
+
+---
+
+#### 24. Límites de esta tarea
+
+AUTH-SIM-003 no define:
+
+- el área exacta simulada;
+- compatibilidad área–rol;
+- estado completo del turno;
+- estado completo del check-in;
+- formato definitivo del recurso hipotético;
+- permisos o acciones simulables;
+- duración de la sesión;
+- interfaz final;
+- tablas, constraints, RLS, RPC o servicios;
+- migraciones o backfills;
+- cambios de catálogo;
+- nuevos sitios;
+- datos de ejemplo productivos;
+- ejecución de simulaciones;
+- pruebas operativas.
+
+Estas responsabilidades permanecen en sus tareas canónicas.
+
+---
+
+#### 25. Handoff exacto a AUTH-SIM-004
+
+`AUTH-SIM-004` deberá definir el área simulada conservando:
+
+1. que el área pertenece a una sede exacta aceptada;
+2. que una sede no determina automáticamente un área;
+3. que `null` no significa todas las áreas;
+4. que un rol operativo debe ser compatible con sede y área;
+5. que área administrativa y operativa permanecen separadas;
+6. que el área del recurso deberá resolverse cuando el contrato lo exija;
+7. que una sede sin áreas no permite inventarlas;
+8. que un área inactiva, ambigua o de otra sede falla cerrado;
+9. que la selección no modifica asignaciones ni contexto real;
+10. que el resultado permanece explicativo y no ejecutable.
+
+Esta tarea no anticipa decisiones por área.
+
+---
+
+#### 26. Invariantes
+
+1. Toda sede simulada exacta usa identidad y versión autoritativas.
+2. El código visual no sustituye el ID exacto.
+3. La sede seleccionada no autoriza.
+4. La sede primaria no autoriza.
+5. La sede real del simulador permanece inalterada.
+6. La sede simulada nunca autoriza al solicitante.
+7. El alcance real limita la sede solicitada.
+8. Multisede no equivale a global.
+9. Global ordinario no incluye sedes aisladas.
+10. Un tipo de sede no es una sede exacta.
+11. Un tipo no incorpora sedes futuras automáticamente.
+12. `null` no significa todas las sedes.
+13. `NO_SITE_NON_TERRITORIAL` exige un contrato realmente no territorial.
+14. Una acción territorial sin sede no produce `would_allow`.
+15. Un rol operativo exige habilitación exacta en la sede.
+16. La sede reduce compatibilidad; nunca añade autoridad.
+17. `APP-REVIEW` exige cobertura independiente.
+18. `pickup_camioneta_principal` no es sede organizacional simulable.
+19. Un punto de check-in no sustituye la sede del turno.
+20. Una sede válida no crea área.
+21. Una sede válida no crea turno ni check-in.
+22. La sede del recurso debe ser coherente con el escenario.
+23. Datos reales siguen gobernados por permisos reales.
+24. La selección no modifica `employee_sites` ni preferencias.
+25. La selección no modifica RLS ni permisos.
+26. No existe simulación anidada.
+27. Toda ambigüedad falla cerrado.
+28. Toda evaluación ocurre en servidor.
+29. Todo intento queda auditado con minimización.
+30. La tarea siguiente permanece limitada a definir área simulada.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-AUTH-089` a `TREQ-AUTH-098` en el Registro Canónico de Requisitos de Prueba.
+
+| ID              | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                                               | Tipo                                                              | Prioridad | Momento de implementación                         | Destino                                                        |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | --------- | ------------------------------------------------- | -------------------------------------------------------------- |
+| `TREQ-AUTH-089` | Toda sede simulada deberá resolverse mediante una referencia exacta y tipada con `simulated_site_id`, `simulated_site_code`, `simulated_site_type`, `simulated_site_kind` y versión de catálogo; una etiqueta, alias, sede seleccionada, sede primaria o valor enviado por cliente no podrá constituir el objetivo autoritativo.                                                                                              | seguridad + contractual + integración + regresión                 | crítica   | Paquete que materialice el contrato de simulación | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`                   |
+| `TREQ-AUTH-090` | El registro territorial deberá cubrir exactamente las siete identidades físicas vigentes: cinco sedes ordinarias `SIMULABLE_CONDITIONAL`, `APP-REVIEW` como `ISOLATED_EXPLICIT_ONLY` y `pickup_camioneta_principal` como `NOT_SIMULABLE_AS_SITE`, sin faltantes, duplicados ni reclasificaciones implícitas.                                                                                                                  | contractual + base de datos + estática + regresión                | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-003`; `AUTH-DB-013`; `AUTH-QA-019`                   |
+| `TREQ-AUTH-091` | Una sede exacta solo podrá aceptarse cuando exista en la versión autoritativa, esté activa, sea inequívoca y su clase permita utilizarla como territorio organizacional simulado; una sede ausente, inactiva, retirada, ambigua o con versión incompatible deberá fallar cerrado.                                                                                                                                             | seguridad + base de datos + contractual + regresión               | crítica   | Paquete que materialice el contrato de simulación | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`                   |
+| `TREQ-AUTH-092` | La sede solicitada deberá pertenecer al alcance real autorizado del simulador para inspección. Alcance `OWN`, multisede, global ordinario o por tipo no podrá atravesar sedes aisladas, incorporar sedes futuras ni convertir `null` en todas las sedes.                                                                                                                                                                      | seguridad + autorización + contexto + E2E + regresión             | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SRV-015`; `AUTH-QA-019`                                  |
+| `TREQ-AUTH-093` | Para un rol operativo, la sede simulada deberá conservar una habilitación exacta y activa en `site_operational_roles`; la sede podrá reducir la elegibilidad del rol, pero nunca añadir roles, permisos, aplicaciones, áreas, turnos, check-ins ni autoridad ausentes.                                                                                                                                                        | autorización + contexto + base de datos + integración + regresión | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-004` a `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019` |
+| `TREQ-AUTH-094` | `APP-REVIEW` solo podrá simularse mediante cobertura real explícita para esa sede aislada, justificación, minimización y reautenticación fuerte cuando corresponda; ningún rol, permiso global ordinario, tipo de sede o acceso a otra sede podrá incluirla por herencia.                                                                                                                                                     | seguridad + autenticación + autorización + E2E + regresión        | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-008`; `AUTH-SRV-015`; `AUTH-QA-019`                  |
+| `TREQ-AUTH-095` | `pickup_camioneta_principal` y cualquier registro clasificado como punto de check-in, geocerca, patio vehicular o espacio físico no organizacional no podrán poblar `simulated_site_id`; `AUTH-SIM-005` deberá tratarlos, cuando apliquen, mediante un campo de punto físico expresamente tipado y separado de la sede del turno.                                                                                             | contractual + contexto + integración + regresión                  | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-003`; `AUTH-SIM-005`; `AUTH-SRV-015`; `AUTH-QA-019`  |
+| `TREQ-AUTH-096` | El modo `NO_SITE_NON_TERRITORIAL` solo será válido para una evaluación cuyo permiso, acción y recurso sean realmente no territoriales. Si el contrato exige sede, la ausencia territorial producirá `indeterminate` o `would_deny`, nunca `would_allow` ni un fallback a sede primaria, seleccionada o única.                                                                                                                 | contractual + contexto + autorización + E2E + regresión           | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-004` a `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019` |
+| `TREQ-AUTH-097` | Seleccionar, cambiar o comparar una sede simulada no podrá modificar `employee_sites`, `employee_settings`, turno, check-in, sede operativa, sede administrativa, dispositivo, recurso, RLS, permisos, datos ni contexto real; tampoco concederá lectura de datos fuera del alcance real del simulador.                                                                                                                       | seguridad + autorización + RLS + integración + E2E + regresión    | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019`                  |
+| `TREQ-AUTH-098` | Toda evaluación territorial simulada deberá registrar actor y sesión reales, rol tipado, sede exacta o ausencia territorial explícita, tipo y clase de sede, versiones, alcance real, compatibilidad rol–sede, aislamiento, reautenticación, resultado y razones estructuradas; el registro deberá reconciliar siete sedes y dieciséis habilitaciones operativas activas observadas sin convertirlas en autoridad ejecutable. | contractual + auditoría + integración + estática + regresión      | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-003`; `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`   |
+
+---
+
+#### 27. Criterios de aceptación
+
+- [x] Se distinguió la sede simulada de todas las sedes reales del actor.
+- [x] Se definieron dos modos territoriales explícitos.
+- [x] Se exigió identidad exacta, tipo, clase y versión.
+- [x] Se materializaron siete decisiones de sede física.
+- [x] Se clasificaron cinco sedes ordinarias simulables.
+- [x] Se clasificó `APP-REVIEW` como aislada y explícita.
+- [x] Se bloqueó `pickup_camioneta_principal` como sede organizacional.
+- [x] Se materializaron doce decisiones de compatibilidad de rol operativo.
+- [x] Se reconciliaron dieciséis asociaciones activas rol–sede.
+- [x] Se definió el alcance real como límite superior.
+- [x] Se prohibieron wildcards, fallbacks e inclusión futura implícita.
+- [x] Se definió ausencia territorial legítima.
+- [x] Se separaron contexto administrativo y operativo.
+- [x] Se preservó el aislamiento de `APP-REVIEW`.
+- [x] Se preservó la minimización de datos.
+- [x] Se prohibieron todas las mutaciones territoriales reales.
+- [x] Se definieron precedencia y razones estructuradas.
+- [x] Se definió auditoría mínima.
+- [x] Se generaron `TREQ-AUTH-089` a `TREQ-AUTH-098`.
+- [x] No se modificó código, Supabase, migraciones, RLS, RPC, configuración, datos, sedes, áreas, asignaciones, turnos, sesiones, dispositivos ni permisos.
+- [x] `AUTH-SIM-004` permanece únicamente reservada.
+
+---
+
+#### 28. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SIM-002 — Definir roles simulables`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SIM-003 — Definir sede simulada`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SIM-004 — Definir área simulada`
+
+
 ### [ ] AUTH-SIM-004 — Definir área simulada
 ### [ ] AUTH-SIM-005 — Definir turno simulado
 ### [ ] AUTH-SIM-006 — No mezclar permisos reales y simulados
