@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **507** |
+| Aprobadas | **508** |
 | En propuesta | **0** |
-| No iniciadas | **1087** |
+| No iniciadas | **1086** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **31.81% (507/1594)** |
+| Porcentaje de completamiento | **31.87% (508/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-033` — Definir si requiere check-in | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-034` — Definir si requiere sede | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-UI-035` — Definir si requiere área | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-034` — Definir si requiere sede | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-035` — Definir si requiere área | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-UI-036` — Definir si admite dispositivo compartido | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -840,7 +840,7 @@
 | ✅ APROBADA | `AUTH-UI-031` | Asignar permiso exacto a cada acción | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ✅ APROBADA | `AUTH-UI-032` | Definir si requiere turno | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ✅ APROBADA | `AUTH-UI-033` | Definir si requiere check-in | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
-| ⬜ NO INICIADA | `AUTH-UI-034` | Definir si requiere sede | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
+| ✅ APROBADA | `AUTH-UI-034` | Definir si requiere sede | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-035` | Definir si requiere área | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-036` | Definir si admite dispositivo compartido | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-UI-037` | Definir si admite simulación | `bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md` |
