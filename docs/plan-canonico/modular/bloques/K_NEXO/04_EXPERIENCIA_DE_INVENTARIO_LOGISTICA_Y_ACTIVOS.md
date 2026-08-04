@@ -1232,7 +1232,805 @@ Esta tarea no:
 `NEXO-UX-003 — Diseñar inicio para solicitante`
 
 
-### [ ] NEXO-UX-003 — Diseñar inicio para solicitante
+### ✅ NEXO-UX-003 — Diseñar inicio para solicitante
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-002 — Separar operación, supervisión y configuración` — APROBADA
+**Tarea siguiente:** `NEXO-UX-004 — Diseñar inicio para bodeguero` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo de la proyección de inicio para el solicitante, arquitectura de información, priorización, estados, autorización, decisiones por iniciador, etapa y ruta, y handoff de implementación
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Artefactos producidos:** `NEXO-REQUESTER-HOME-CONTRACT-001`, `NEXO-REQUESTER-HOME-INFORMATION-ARCHITECTURE-001`, `NEXO-REQUESTER-INITIATOR-DECISION-MATRIX-001`, `NEXO-REQUESTER-STAGE-PROJECTION-MATRIX-001`, `NEXO-REQUESTER-ROUTE-DISPOSITION-001`, `NEXO-REQUESTER-HOME-STATE-CONTRACT-001` y `NEXO-REQUESTER-HOME-HANDOFF-001`
+**Decisiones consumidas:** `NEXO-UX-LANE-CONTRACT-001`; `NEXO-ASIS-STAGE-LANE-MATRIX-001`; `NEXO-ROUTE-LANE-DISPOSITION-001`; `NEXO-LANE-NAVIGATION-HANDOFF-001`; `VPROC-0028`; actores, iniciadores y continuadores aprobados para abastecimiento interno; inventario canónico `NEXO-ROUTE-001` a `NEXO-ROUTE-064`; requisitos `TREQ-*` vigentes; código actual de `vento-nexo`
+**Cambios físicos autorizados:** ninguno; no modifica código, rutas, permisos, datos, remisiones, stock, movimientos, Supabase, migraciones, RLS, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar de forma completa la proyección de inicio de NEXO para el actor que
+solicita abastecimiento interno, de modo que pueda:
+
+- iniciar una solicitud autorizada;
+- identificar qué solicitudes propias requieren una acción suya;
+- seguir el avance de sus solicitudes sin asumir funciones de bodega,
+  transporte, recepción, supervisión o configuración;
+- comprender el siguiente paso, el responsable actual y cualquier bloqueo;
+- acceder únicamente a las superficies compatibles con su participación,
+  contexto y autorización vigentes.
+
+La regla canónica de esta tarea es:
+
+```text
+ACTOR SOLICITANTE RESUELTO
++
+AUTORIZACIÓN Y TERRITORIO VIGENTES
++
+SOLICITUDES PROPIAS O PARTICIPADAS COMO SOLICITANTE
++
+ESTADO Y ETAPA CANÓNICOS DE VPROC-0028
++
+PRÓXIMA ACCIÓN ATRIBUIDA
+→
+INICIO OPERATIVO DEL SOLICITANTE
+```
+
+La proyección visual no concede autoridad. Una etiqueta de rol, una ruta
+visible, una tarjeta, un conteo o la condición de creador no autorizan por sí
+solos lectura, edición, aprobación, preparación, traslado, recepción, cierre ni
+resolución de diferencias.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban siete artefactos documentales consumibles:
+
+1. `NEXO-REQUESTER-HOME-CONTRACT-001`, que define audiencia, propósito,
+   límites, autoridad, alcance territorial y reglas de composición del inicio;
+2. `NEXO-REQUESTER-HOME-INFORMATION-ARCHITECTURE-001`, que materializa la
+   jerarquía, secciones, contenido mínimo, acciones y orden de lectura;
+3. `NEXO-REQUESTER-INITIATOR-DECISION-MATRIX-001`, que resuelve explícitamente
+   las cinco identidades de iniciación aprobadas para `VPROC-0028`;
+4. `NEXO-REQUESTER-STAGE-PROJECTION-MATRIX-001`, que decide la proyección del
+   solicitante para las nueve etapas canónicas del proceso;
+5. `NEXO-REQUESTER-ROUTE-DISPOSITION-001`, que decide las catorce rutas
+   relacionadas con el inicio y el abastecimiento interno sin inventar URLs;
+6. `NEXO-REQUESTER-HOME-STATE-CONTRACT-001`, que define estados de carga,
+   vacío, datos parciales, autorización y fallos;
+7. `NEXO-REQUESTER-HOME-HANDOFF-001`, que separa lo especificado de lo todavía
+   no implementado y asigna cada continuación a una tarea exacta.
+
+Cobertura materializada:
+
+| Elemento                                                 | Total esperado | Total materializado | Faltantes | Duplicados |
+| -------------------------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Identidades de iniciación de `VPROC-0028`                |              5 |                   5 |         0 |          0 |
+| Etapas canónicas de `VPROC-0028`                         |              9 |                   9 |         0 |          0 |
+| Rutas relevantes para inicio y abastecimiento interno    |             14 |                  14 |         0 |          0 |
+| Estados de interfaz definidos                            |              8 |                   8 |         0 |          0 |
+| Secciones obligatorias de la arquitectura de información |              7 |                   7 |         0 |          0 |
+| Acciones primarias del solicitante                       |              1 |                   1 |         0 |          0 |
+| Carriles autorizados dentro de esta proyección           |              1 |                   1 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados                |              6 |                   6 |         0 |          0 |
+
+Esta tarea diseña una proyección documental `ESPECIFICADA`. No declara la
+superficie `IMPLEMENTADA`, `VALIDADA` ni disponible en producción.
+
+---
+
+#### 3. Alcance funcional
+
+##### 3.1. Incluido
+
+La tarea incluye:
+
+- inicio de NEXO proyectado para el actor solicitante;
+- creación autorizada de una solicitud propia;
+- seguimiento de solicitudes propias;
+- identificación de solicitudes que requieren información o acción del
+  solicitante;
+- resumen de avance, etapa, responsable actual y siguiente paso;
+- visibilidad de novedades relacionadas con la solicitud propia;
+- acceso al detalle y edición solo cuando la etapa y autorización lo permitan;
+- estados vacíos, fallos, revocación, datos parciales y recuperación;
+- reglas responsive y de accesibilidad del inicio;
+- decisión explícita por iniciador, etapa y ruta relevante;
+- separación entre diseño objetivo y soporte físico actual.
+
+##### 3.2. Excluido
+
+No pertenece a esta tarea:
+
+- inicio del bodeguero, conductor, receptor o supervisor;
+- preparación, picking, reserva, fulfillment o despacho;
+- custodia, transporte o confirmación de entrega;
+- recepción física, conteo recibido o aceptación de diferencias;
+- aprobación, autorización, conciliación o cierre de control;
+- modificación de políticas, productos, rutas de abastecimiento o parámetros;
+- administración de catálogos;
+- diseño detallado del formulario completo de solicitud;
+- diseño detallado del flujo de preparación, tránsito o recepción;
+- implementación de rutas o componentes;
+- definición de permisos nuevos;
+- cambios de datos o Supabase;
+- validación operativa con usuarios o dispositivos.
+
+El solicitante puede observar el avance de esas etapas cuando participe en la
+solicitud, pero no recibe sus acciones operativas por esta proyección.
+
+---
+
+#### 4. `NEXO-REQUESTER-HOME-CONTRACT-001`
+
+##### 4.1. Audiencia canónica
+
+La audiencia primaria es `AREA_SOLICITANTE` dentro de `VPROC-0028`.
+
+Las identidades alternativas de iniciación aprobadas no crean homes distintos.
+Cuando una persona autorizada inicia una solicitud en nombre de una unidad
+operativa, consume la misma proyección de solicitante exclusivamente para esa
+participación. Si también posee capacidades de bodega, conducción, recepción o
+supervisión, esas capacidades se presentan en proyecciones separadas.
+
+```text
+MISMA PERSONA
+≠
+MISMA FUNCIÓN EN TODA LA INTERFAZ
+```
+
+##### 4.2. Carril único
+
+La proyección pertenece únicamente al carril `OPERACION` y limita su operación
+a crear y seguir solicitudes propias.
+
+No se incorporan dentro de esta proyección:
+
+- controles de `SUPERVISION`;
+- edición de `CONFIGURACION`;
+- herramientas técnicas transversales;
+- indicadores globales de desempeño;
+- colas de otros actores;
+- accesos implícitos derivados de jerarquía.
+
+##### 4.3. Alcance de datos
+
+El inicio solo puede materializar información cuya autorización resuelva una de
+estas relaciones:
+
+```text
+SOLICITUD_CREADA_POR_ACTOR_SOLICITANTE
+SOLICITUD_INICIADA_EN_NOMBRE_DE_UNIDAD_AUTORIZADA
+SOLICITUD_CON_PARTICIPACION_SOLICITANTE_EXPLICITA
+SOLICITUD_CON_ACCION_ATRIBUIDA_AL_SOLICITANTE
+```
+
+No se admite como alcance suficiente:
+
+- pertenecer a la misma empresa;
+- pertenecer a la misma sede sin relación con la solicitud;
+- compartir área nominal;
+- conocer el identificador o URL;
+- haber creado una solicitud histórica bajo otro actor o contexto;
+- poseer una etiqueta de rol genérica;
+- recibir un enlace reenviado.
+
+##### 4.4. Contexto obligatorio
+
+Antes de mostrar datos o habilitar la acción primaria, la proyección deberá
+resolver como mínimo:
+
+| Componente              | Regla                                                                                   |
+| ----------------------- | --------------------------------------------------------------------------------------- |
+| principal técnico       | identidad autenticada vigente                                                           |
+| actor efectivo          | actor empresarial vigente y atribuible                                                  |
+| función                 | participación como solicitante                                                          |
+| sede                    | sede desde la que puede solicitar                                                       |
+| área                    | área solicitante exacta o unidad autorizada                                             |
+| permiso                 | capacidad concreta para crear, leer o editar la solicitud                               |
+| territorio              | cobertura aplicable a origen, destino y unidad solicitante                              |
+| turno o check-in        | solo cuando el contrato de la acción lo exija                                           |
+| dispositivo             | contexto de dispositivo cuando la política lo exija                                     |
+| versión de autorización | referencia necesaria para detectar revocación o cambio mientras la vista permanece viva |
+
+La ausencia de un componente obligatorio produce fallo cerrado. El usuario no
+elige manualmente un contexto que el servicio de autorización no haya resuelto.
+
+##### 4.5. Regla de propiedad funcional
+
+El inicio no convierte al solicitante en propietario del proceso completo.
+Crear una solicitud no concede:
+
+- validarla operativamente;
+- aprobarla;
+- reservar inventario;
+- preparar líneas;
+- firmar despacho;
+- asumir custodia;
+- confirmar recepción;
+- resolver diferencias;
+- conciliar movimientos;
+- cerrar la remisión.
+
+Cada acción posterior conserva actor, permiso, territorio, etapa y segregación
+independientes.
+
+---
+
+#### 5. `NEXO-REQUESTER-HOME-INFORMATION-ARCHITECTURE-001`
+
+##### 5.1. Orden obligatorio de la página
+
+La proyección se compone en este orden:
+
+| Orden | Sección                        | Propósito                                                                                     | Acción permitida                                      |
+| ----: | ------------------------------ | --------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+|     1 | Contexto activo                | identificar actor, sede y área con los que se consulta o solicita                             | cambiar solo mediante el selector canónico autorizado |
+|     2 | Acción primaria                | iniciar una nueva solicitud                                                                   | `NUEVA_SOLICITUD`                                     |
+|     3 | Requiere mi acción             | mostrar solicitudes propias con información, corrección o decisión atribuida al solicitante   | abrir la acción exacta autorizada                     |
+|     4 | En curso                       | seguir solicitudes propias que avanzan bajo responsabilidad de otros actores                  | abrir detalle de solo lectura o acción permitida      |
+|     5 | Con novedad                    | destacar bloqueos o diferencias que afectan una solicitud propia                              | abrir detalle; responder solo si existe atribución    |
+|     6 | Cerradas recientes             | permitir confirmar resultado e historial reciente sin convertir el inicio en archivo completo | abrir detalle de solo lectura                         |
+|     7 | Ayuda contextual y continuidad | explicar siguiente paso, responsable actual y canal de soporte cuando exista un bloqueo       | abrir ayuda o canal canónico                          |
+
+Las siete secciones tienen identidad estable. Una sección puede estar vacía,
+pero no puede sustituirse por contenido de supervisión o configuración.
+
+##### 5.2. Encabezado de contexto
+
+El encabezado deberá mostrar de forma breve:
+
+- nombre visible del actor efectivo;
+- sede activa;
+- área o unidad solicitante;
+- condición del contexto cuando falte un requisito;
+- fecha y hora de actualización de la proyección cuando los datos no sean en
+  tiempo real.
+
+El encabezado no presenta el rol como prueba de autoridad. Si el usuario puede
+operar en más de una unidad, la selección usa el selector canónico de contexto
+y vuelve a resolver autorización y datos antes de mostrar otra proyección.
+
+##### 5.3. Acción primaria
+
+La única acción primaria del inicio es:
+
+```text
+NUEVA SOLICITUD
+```
+
+Reglas:
+
+1. solo se muestra habilitada cuando el servicio de autorización confirma la
+   capacidad de iniciar para el contexto activo;
+2. abre el flujo de solicitud asociado a `NEXO-ROUTE-031` sin crear una URL no
+   inventariada;
+3. el formulario y sus reglas detalladas pertenecen a `NEXO-UX-009`;
+4. la acción no promete disponibilidad ni aprobación;
+5. una denegación muestra razón comprensible y no ofrece un bypass;
+6. un doble envío no debe representarse como dos solicitudes confirmadas;
+7. la pérdida de conectividad no presenta éxito sin receipt verificable.
+
+##### 5.4. Resumen operativo
+
+El inicio podrá mostrar cuatro conteos derivados, siempre restringidos al
+alcance autorizado:
+
+| Conteo               | Definición                                                                                   |
+| -------------------- | -------------------------------------------------------------------------------------------- |
+| `REQUIERE_MI_ACCION` | solicitudes propias con una acción exacta atribuida al solicitante                           |
+| `EN_CURSO`           | solicitudes propias no cerradas cuya siguiente acción pertenece a otro actor                 |
+| `CON_NOVEDAD`        | solicitudes propias con diferencia, bloqueo, rechazo, devolución o información faltante      |
+| `CERRADAS_RECIENTES` | solicitudes propias cerradas dentro de la ventana de consulta definida por la implementación |
+
+Los conteos son navegación resumida, no métricas de desempeño, SLA, ranking ni
+control de otros trabajadores.
+
+##### 5.5. Tarjeta o fila mínima
+
+Cada solicitud visible deberá materializar como mínimo:
+
+| Campo visual         | Regla                                                                        |
+| -------------------- | ---------------------------------------------------------------------------- |
+| identificador humano | código estable y diferenciable                                               |
+| origen y destino     | sedes o unidades pertinentes, minimizadas al alcance                         |
+| resumen de líneas    | cantidad de líneas y descripción breve sin exponer datos innecesarios        |
+| etapa actual         | etiqueta comprensible derivada de una etapa canónica                         |
+| estado operativo     | estado vigente; no inferido desde color o texto libre                        |
+| siguiente paso       | acción o hecho esperado                                                      |
+| responsable actual   | función o equipo, no necesariamente datos personales                         |
+| última actualización | fecha y hora del último hecho confirmado                                     |
+| novedad              | tipo y severidad cuando exista                                               |
+| acción disponible    | una acción exacta o acceso al detalle; nunca un menú genérico de capacidades |
+
+##### 5.6. Jerarquía y priorización
+
+El orden de atención es:
+
+```text
+1. ACCION_ATRIBUIDA_AL_SOLICITANTE
+2. NOVEDAD_QUE_REQUIERE_INFORMACION_DEL_SOLICITANTE
+3. SOLICITUD_EN_CURSO
+4. SOLICITUD_CERRADA_RECIENTE
+```
+
+Dentro de `REQUIERE_MI_ACCION` se ordena por vencimiento confirmado y, cuando
+no exista, por antigüedad de la atribución. Dentro de `CON_NOVEDAD` se ordena
+por severidad canónica y antigüedad. No se inventan prioridades, fechas límite
+ni severidades desde la interfaz.
+
+##### 5.7. Filtros permitidos
+
+La proyección puede filtrar únicamente dentro del conjunto ya autorizado por:
+
+- estado o etapa;
+- sede de origen o destino visible;
+- rango de fecha;
+- código de solicitud;
+- presencia de acción atribuida;
+- presencia de novedad.
+
+Un filtro no amplía cobertura ni convierte una búsqueda por identificador en
+acceso a una solicitud ajena.
+
+---
+
+#### 6. `NEXO-REQUESTER-INITIATOR-DECISION-MATRIX-001`
+
+La tarea conserva las cinco identidades de iniciación aprobadas para
+`VPROC-0028` y decide su relación con el inicio.
+
+| Identidad de iniciación          | Tipo    | Proyección del inicio                            | Alcance visible                                                 | Decisión materializada                                                                                        | Estado         |
+| -------------------------------- | ------- | ------------------------------------------------ | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- | -------------- |
+| `AREA_SOLICITANTE`               | humana  | `SOLICITANTE_PRIMARIO`                           | solicitudes de la unidad y participación solicitante autorizada | consume el inicio completo de solicitante                                                                     | `ESPECIFICADO` |
+| `RESPONSABLE_PRODUCTIVO`         | humana  | `SOLICITANTE_ALTERNATIVO`                        | solicitudes iniciadas para su unidad productiva autorizada      | consume la misma proyección sin obtener funciones de preparación o aprobación                                 | `ESPECIFICADO` |
+| `CAJA_MOSTRADOR_O_SERVICIO`      | humana  | `SOLICITANTE_ALTERNATIVO`                        | solicitudes iniciadas para la unidad de servicio autorizada     | consume la misma proyección; la actividad comercial no amplía inventario ni territorio                        | `ESPECIFICADO` |
+| `GERENCIA_O_SUPERVISION_DE_SEDE` | humana  | `SOLICITANTE_ALTERNATIVO_CON_CARRILES_SEPARADOS` | solicitudes propias iniciadas como solicitante                  | usa esta proyección solo para solicitudes propias; sus controles supervisores permanecen fuera de este inicio | `ESPECIFICADO` |
+| `UMBRAL_O_ALERTA`                | técnica | `NO_APLICA_INTERFAZ_DIRECTA`                     | ninguna sesión humana derivada del disparador                   | puede originar una señal o candidato mediante contrato posterior; no recibe home ni autoridad humana          | `NO_APLICA`    |
+
+Reconciliación:
+
+```text
+EXPECTED_INITIATOR_IDENTITIES = 5
+MATERIALIZED_INITIATOR_IDENTITIES = 5
+UNIQUE_INITIATOR_IDENTITIES = 5
+MISSING_INITIATOR_IDENTITIES = 0
+DUPLICATE_INITIATOR_IDENTITIES = 0
+```
+
+---
+
+#### 7. Estados de proyección del solicitante
+
+La interfaz utiliza ocho agrupaciones derivadas. No sustituyen los estados del
+dominio ni se persisten como una segunda máquina de estados.
+
+| Agrupación UI        | Regla de inclusión                                                    | Acción del solicitante                                               |
+| -------------------- | --------------------------------------------------------------------- | -------------------------------------------------------------------- |
+| `BORRADOR_EDITABLE`  | solicitud propia todavía editable según etapa, versión y autorización | continuar o editar mediante la acción exacta                         |
+| `REQUIERE_MI_ACCION` | existe una acción vigente y atribuida expresamente al solicitante     | ejecutar esa acción autorizada                                       |
+| `EN_VALIDACION`      | la solicitud espera revisión, validación o decisión de otro actor     | seguimiento de solo lectura                                          |
+| `EN_PREPARACION`     | reserva, fulfillment o preparación bajo responsabilidad de bodega     | seguimiento de solo lectura                                          |
+| `EN_TRANSITO`        | custodia o traslado confirmados                                       | seguimiento de solo lectura                                          |
+| `EN_RECEPCION`       | recepción, aceptación o conciliación en destino                       | seguimiento de solo lectura                                          |
+| `CON_NOVEDAD`        | diferencia, bloqueo, rechazo, devolución o solicitud de información   | responder solo si la acción está atribuida; de lo contrario, lectura |
+| `CERRADA`            | proceso terminado con resultado final observable                      | consulta de solo lectura                                             |
+
+Reglas de derivación:
+
+- una solicitud puede aparecer en una única agrupación principal;
+- `CON_NOVEDAD` prevalece sobre una agrupación ordinaria mientras la novedad
+  esté abierta;
+- `REQUIERE_MI_ACCION` prevalece cuando existe una acción explícita vigente;
+- el estado del dominio sigue siendo la fuente autoritativa;
+- una agrupación UI nunca habilita una transición por sí sola.
+
+---
+
+#### 8. `NEXO-REQUESTER-STAGE-PROJECTION-MATRIX-001`
+
+Se materializa una decisión para cada una de las nueve etapas canónicas de
+`VPROC-0028`.
+
+| Etapa            | Nombre canónico                                                 | Visibilidad en inicio | Agrupación UI ordinaria                                | Acción del solicitante                                                    | Funciones excluidas                                                              | Decisión materializada                                                                                 | Estado         |
+| ---------------- | --------------------------------------------------------------- | --------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | -------------- |
+| `VPROC-0028-E01` | Crear solicitud interna                                         | completa              | `BORRADOR_EDITABLE` o `REQUIERE_MI_ACCION`             | crear, completar, corregir o enviar cuando esté autorizado                | validar políticas, reservar, preparar o aprobar                                  | es la única etapa de creación propia; toda edición revalida versión, contexto y permiso                | `ESPECIFICADO` |
+| `VPROC-0028-E02` | Aplicar ruta, producto y política de solicitud                  | resumen y detalle     | `EN_VALIDACION` o `REQUIERE_MI_ACCION`                 | corregir información solo cuando el resultado vigente le atribuya acción  | configurar rutas, productos, mínimos, restricciones o políticas                  | muestra reglas aplicadas y razones de validación sin exponer controles de configuración                | `ESPECIFICADO` |
+| `VPROC-0028-E03` | Crear origen y fulfillment por línea                            | resumen y detalle     | `EN_VALIDACION`                                        | seguimiento de solo lectura                                               | asignar origen, crear fulfillment, decidir faltantes o priorizar abastecimiento  | muestra la resolución por línea necesaria para comprender el avance, sin conceder decisión supervisora | `ESPECIFICADO` |
+| `VPROC-0028-E04` | Elegir LOC, posición y cantidad de picking                      | resumen               | `EN_PREPARACION`                                       | seguimiento de solo lectura                                               | consultar stock sensible, elegir LOC o posición, reservar o confirmar picking    | expone avance agregado y responsable funcional, no herramientas ni detalle operativo de bodega         | `ESPECIFICADO` |
+| `VPROC-0028-E05` | Preparar, dejar listo o registrar faltante                      | resumen y detalle     | `EN_PREPARACION`, `CON_NOVEDAD` o `REQUIERE_MI_ACCION` | responder únicamente cuando una aclaración o decisión le sea atribuida    | preparar, sustituir sin aprobación, declarar listo o cerrar faltante             | diferencia avance ordinario, faltante y acción atribuida sin convertir al solicitante en preparador    | `ESPECIFICADO` |
+| `VPROC-0028-E06` | Cargar, sellar y despachar                                      | resumen y detalle     | `EN_PREPARACION` o `EN_TRANSITO`                       | seguimiento de solo lectura                                               | cargar, sellar, firmar despacho, transferir custodia o confirmar salida          | cambia la proyección solo desde hechos confirmados; no anticipa despacho ni ofrece controles de salida | `ESPECIFICADO` |
+| `VPROC-0028-E07` | Transportar y confirmar tránsito                                | resumen y detalle     | `EN_TRANSITO`                                          | seguimiento de solo lectura                                               | asumir custodia, registrar hitos, entregar o resolver incidentes                 | muestra último hito confirmado y responsable funcional sin controles de conductor                      | `ESPECIFICADO` |
+| `VPROC-0028-E08` | Recibir parcial o totalmente                                    | resumen y detalle     | `EN_RECEPCION` o `CON_NOVEDAD`                         | consultar cantidades y condición recibidas; responder solo si se atribuye | recibir, contar, aceptar, rechazar o conciliar diferencias                       | el solicitante no se convierte en receptor; la recepción parcial no se presenta como cierre            | `ESPECIFICADO` |
+| `VPROC-0028-E09` | Resolver faltante, sobrante, daño, rechazo, devolución o cierre | destacada o histórica | `CON_NOVEDAD`, `REQUIERE_MI_ACCION` o `CERRADA`        | explicar, corregir o aportar evidencia solo cuando esté atribuido         | investigar globalmente, decidir disposición, aprobar resolución o cerrar el caso | separa informar de resolver y solo presenta cierre cuando existe un hecho canónico confirmado          | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_PROCESS_STAGES = 9
+MATERIALIZED_PROCESS_STAGES = 9
+UNIQUE_PROCESS_STAGES = 9
+MISSING_PROCESS_STAGES = 0
+DUPLICATE_PROCESS_STAGES = 0
+```
+
+---
+
+#### 9. `NEXO-REQUESTER-ROUTE-DISPOSITION-001`
+
+La matriz decide todas las rutas vinculadas por el inventario al inicio y a
+`VPROC-0028`. No crea rutas nuevas ni altera su identidad.
+
+| Ruta             | Patrón actual                             | Disposición para el inicio del solicitante         | Navegación visible | Acción o uso permitido                                             | Decisión materializada                                                                         | Estado             |
+| ---------------- | ----------------------------------------- | -------------------------------------------------- | ------------------ | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------- | ------------------ |
+| `NEXO-ROUTE-001` | `/`                                       | `PROYECTAR_INICIO_SOLICITANTE`                     | sí                 | acceder al resumen propio y a `NUEVA_SOLICITUD`                    | conserva la ruta raíz y separa esta proyección de supervisión y configuración                  | `ESPECIFICADO`     |
+| `NEXO-ROUTE-031` | `/inventory/remissions`                   | `DESTINO_OPERATIVO_PRIMARIO`                       | sí                 | crear y listar solicitudes propias autorizadas                     | la bandeja se filtra por actor y función; no mezcla preparación, conducción ni control         | `ESPECIFICADO`     |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`              | `DETALLE_PROPIO_CON_ACCIONES_POR_ETAPA`            | sí                 | consultar una solicitud propia y ejecutar solo acciones atribuidas | lectura compartida no implica autoridad; cada acción se resuelve de forma independiente        | `ESPECIFICADO`     |
+| `NEXO-ROUTE-033` | `/inventory/remissions/[id]/edit`         | `EDICION_CONDICIONAL`                              | condicional        | editar solicitud propia únicamente en etapa editable               | falla cerrado si cambió versión, etapa, actor, territorio o permiso                            | `ESPECIFICADO`     |
+| `NEXO-ROUTE-034` | `/inventory/remissions/conductor`         | `EXCLUIR_DEL_INICIO`                               | no                 | ninguna                                                            | pertenece al inicio del conductor                                                              | `FUERA_DE_ALCANCE` |
+| `NEXO-ROUTE-035` | `/inventory/remissions/fulfillment`       | `EXCLUIR_DEL_INICIO`                               | no                 | ninguna                                                            | pertenece a asignación y disponibilidad operativa de bodega                                    | `FUERA_DE_ALCANCE` |
+| `NEXO-ROUTE-036` | `/inventory/remissions/prepare`           | `EXCLUIR_DEL_INICIO`                               | no                 | ninguna                                                            | pertenece a picking y preparación                                                              | `FUERA_DE_ALCANCE` |
+| `NEXO-ROUTE-037` | `/inventory/remissions/receive`           | `EXCLUIR_DEL_INICIO`                               | no                 | ninguna                                                            | pertenece al receptor; el solicitante observa resultado desde el detalle                       | `FUERA_DE_ALCANCE` |
+| `NEXO-ROUTE-038` | `/inventory/remissions/transit`           | `EXCLUIR_CONTROLES_Y_PROYECTAR_RESUMEN_EN_DETALLE` | no                 | seguimiento de hitos desde `NEXO-ROUTE-032`                        | no expone custodia ni monitoreo supervisor dentro del inicio                                   | `ESPECIFICADO`     |
+| `NEXO-ROUTE-041` | `/inventory/settings/fulfillment-routes`  | `EXCLUIR_DEL_INICIO`                               | no                 | ninguna                                                            | el solicitante consume el resultado de las reglas, no su configuración                         | `FUERA_DE_ALCANCE` |
+| `NEXO-ROUTE-045` | `/inventory/settings/remissions`          | `EXCLUIR_DEL_INICIO`                               | no                 | ninguna                                                            | los parámetros generales no pertenecen a operación del solicitante                             | `FUERA_DE_ALCANCE` |
+| `NEXO-ROUTE-046` | `/inventory/settings/remissions/products` | `EXCLUIR_DEL_INICIO`                               | no                 | ninguna                                                            | elegibilidad y comportamiento de productos se aplican como reglas, no como controles editables | `FUERA_DE_ALCANCE` |
+| `NEXO-ROUTE-047` | `/inventory/settings/request-policies`    | `EXCLUIR_Y_MOSTRAR_RESULTADO_DE_POLITICA`          | no                 | leer mensajes de validación derivados                              | mínimos y restricciones se explican durante la solicitud sin abrir configuración               | `ESPECIFICADO`     |
+| `NEXO-ROUTE-050` | `/inventory/settings/supply-routes`       | `EXCLUIR_DEL_INICIO`                               | no                 | ninguna                                                            | las rutas de abastecimiento son configuración reutilizable                                     | `FUERA_DE_ALCANCE` |
+
+Reconciliación:
+
+```text
+EXPECTED_RELEVANT_ROUTES = 14
+MATERIALIZED_RELEVANT_ROUTES = 14
+UNIQUE_RELEVANT_ROUTES = 14
+MISSING_RELEVANT_ROUTES = 0
+DUPLICATE_RELEVANT_ROUTES = 0
+NEW_ROUTE_IDENTITIES = 0
+```
+
+---
+
+#### 10. Contrato de datos de la proyección
+
+El inicio consume una proyección de lectura y comandos autorizados. No crea un
+nuevo sistema de registro.
+
+##### 10.1. Contexto
+
+```text
+requester_context
+- principal_id
+- actor_id
+- actor_function = REQUESTER
+- site_id
+- area_id o requesting_unit_id
+- authorization_version
+- context_version
+- resolved_at
+```
+
+##### 10.2. Capacidades resueltas
+
+```text
+requester_capabilities
+- can_create_request
+- can_read_own_requests
+- can_edit_own_request
+- can_respond_to_assigned_action
+- denial_reasons[]
+```
+
+Las capacidades se reciben del servicio canónico de autorización. La interfaz
+no las infiere desde nombres de rol, texto del menú ni datos locales.
+
+##### 10.3. Resumen
+
+```text
+requester_summary
+- requires_my_action_count
+- in_progress_count
+- issue_count
+- recently_closed_count
+- calculated_at
+- freshness_status
+```
+
+##### 10.4. Elemento de lista
+
+```text
+requester_request_item
+- remission_id
+- human_code
+- requester_actor_id
+- requesting_unit_id
+- origin_site_ref
+- destination_site_ref
+- line_count
+- canonical_stage_id
+- canonical_status_code
+- requester_ui_group
+- next_action_code
+- next_action_owner_function
+- action_assignment_id
+- is_editable
+- issue_code
+- issue_severity
+- last_confirmed_event_at
+- detail_route_id = NEXO-ROUTE-032
+- version
+```
+
+Los nombres anteriores son un contrato lógico de proyección. Esta tarea no
+ordena columnas, tablas, vistas, RPC ni endpoints físicos.
+
+##### 10.5. Reglas de consistencia
+
+- los conteos y listas usan el mismo corte lógico o declaran su diferencia de
+  frescura;
+- una solicitud visible debe resolver a un detalle visible bajo el mismo
+  contexto;
+- una acción visible debe corresponder a una atribución vigente;
+- la edición usa control de versión y vuelve a validar etapa y permiso;
+- la revocación retira acciones y datos no permitidos sin esperar una nueva
+  sesión;
+- una respuesta parcial no se presenta como conjunto completo;
+- un resultado desconocido no se presenta como éxito ni como cierre.
+
+---
+
+#### 11. `NEXO-REQUESTER-HOME-STATE-CONTRACT-001`
+
+Se definen ocho estados completos de interfaz:
+
+| Estado                 | Condición                                                             | Presentación obligatoria                                                    | Acciones habilitadas                                |
+| ---------------------- | --------------------------------------------------------------------- | --------------------------------------------------------------------------- | --------------------------------------------------- |
+| `LOADING`              | contexto o proyección en resolución                                   | esqueleto estable sin datos ficticios                                       | ninguna                                             |
+| `READY_WITH_ACTIONS`   | existen solicitudes y al menos una acción atribuida                   | acción primaria, sección prioritaria y listas propias                       | acciones exactas autorizadas                        |
+| `READY_NO_ACTIONS`     | existen solicitudes pero ninguna acción atribuida                     | seguimiento en curso y creación cuando esté autorizada                      | crear o abrir detalle                               |
+| `EMPTY_NO_HISTORY`     | no existen solicitudes visibles en el alcance actual                  | explicación breve y acción primaria cuando esté autorizada                  | crear solicitud                                     |
+| `PARTIAL_DATA`         | una fuente o sección no pudo resolverse completamente                 | datos confirmados, secciones afectadas identificadas y frescura visible     | solo acciones cuya precondición esté confirmada     |
+| `AUTH_CONTEXT_MISSING` | falta actor, sede, área, permiso u otro componente obligatorio        | razón estructurada y mecanismo canónico para resolver contexto              | ninguna acción empresarial                          |
+| `ACCESS_REVOKED`       | la autorización cambió o fue retirada mientras la vista estaba activa | retiro inmediato de datos y acciones; mensaje comprensible                  | volver a resolver contexto o salir                  |
+| `SERVICE_UNAVAILABLE`  | no se puede obtener una respuesta confiable                           | error recuperable, última actualización si existe y ausencia de éxito falso | reintentar lectura; ninguna escritura no confirmada |
+
+##### 11.1. Estado vacío
+
+`EMPTY_NO_HISTORY` no se interpreta como error ni como permiso concedido. La
+acción primaria solo aparece habilitada cuando `can_create_request=true`.
+
+##### 11.2. Datos parciales
+
+En `PARTIAL_DATA`:
+
+- no se completa un conteo con cero inventado;
+- no se oculta una sección fallida como si estuviera vacía;
+- no se conserva una acción cuya atribución no pudo revalidarse;
+- se permite lectura confirmada si no amplía el riesgo;
+- se identifica el momento del último dato confirmado.
+
+##### 11.3. Conectividad y reintento
+
+La interfaz no almacena una creación como confirmada sin receipt autoritativo.
+Cuando el resultado de una escritura sea desconocido, deberá recuperar el
+resultado por identidad o idempotencia antes de permitir otro intento. El
+diseño detallado de operación offline pertenece a las tareas que materialicen
+el flujo y la arquitectura de colas.
+
+---
+
+#### 12. Contenido y lenguaje operacional
+
+##### 12.1. Etiquetas principales
+
+Se utilizan conceptos comprensibles para el solicitante:
+
+- `Nueva solicitud`;
+- `Requiere tu acción`;
+- `En validación`;
+- `En preparación`;
+- `En tránsito`;
+- `En recepción`;
+- `Con novedad`;
+- `Cerrada`;
+- `Siguiente paso`;
+- `Responsable actual`;
+- `Última actualización`.
+
+No se exponen como lenguaje principal:
+
+- nombres de tablas;
+- claves internas de estado;
+- nombres de componentes;
+- códigos de permisos;
+- RLS, RPC o detalles técnicos;
+- mensajes crudos de base de datos;
+- trazas o identificadores sensibles.
+
+##### 12.2. Mensajes de política
+
+Cuando una regla impida solicitar o editar, el mensaje debe indicar:
+
+1. qué condición no se cumple;
+2. qué dato o contexto se utilizó;
+3. qué acción ordinaria puede resolverla;
+4. si la situación requiere otra función o un canal de soporte.
+
+No se utilizan mensajes que sugieran cambiar de rol, manipular una URL,
+solicitar un bypass o pedir a otro actor que use su sesión.
+
+---
+
+#### 13. Responsive, accesibilidad y estaciones
+
+##### 13.1. Prioridad por tamaño
+
+| Superficie          | Regla                                                                                                  |
+| ------------------- | ------------------------------------------------------------------------------------------------------ |
+| móvil               | acción primaria y `Requiere mi acción` antes del primer desplazamiento largo                           |
+| tablet              | resumen y lista principal visibles sin convertir la pantalla en tablero supervisor                     |
+| escritorio          | dos columnas como máximo para listas y detalle resumido; no mostrar configuración por espacio sobrante |
+| estación compartida | contexto del actor visible, cambio de actor controlado y retiro de datos al cerrar o expirar sesión    |
+
+##### 13.2. Accesibilidad
+
+- toda acción debe ser alcanzable por teclado;
+- el foco sigue un orden coherente con las siete secciones;
+- estado, severidad y bloqueo no dependen solo del color;
+- los conteos tienen etiqueta textual;
+- los cambios de estado importantes se anuncian de forma accesible;
+- el CTA principal mantiene nombre y propósito estables;
+- los errores se asocian con la sección o acción afectada;
+- las tarjetas conservan alternativa tabular o semántica equivalente;
+- no se ocultan acciones críticas únicamente detrás de hover o gesto.
+
+---
+
+#### 14. Seguridad, privacidad y segregación
+
+1. La consulta se filtra en servidor o frontera autoritativa antes de llegar a
+   la proyección.
+2. La interfaz no obtiene solicitudes globales para filtrarlas localmente.
+3. Cada detalle y acción vuelve a validar identidad, actor, territorio, etapa,
+   versión y permiso.
+4. Los datos personales de otros actores se minimizan a función o equipo cuando
+   el nombre no sea necesario.
+5. Los precios internos, costos, existencias sensibles, notas de control y
+   diagnósticos no aparecen por defecto.
+6. La persona que posee varias funciones no recibe una pantalla mezclada; usa
+   la proyección correspondiente a la función activa.
+7. Crear una solicitud no permite aprobarla, prepararla, transportarla,
+   recibirla ni cerrarla.
+8. Una acción excepcional se presenta separada del camino ordinario y conserva
+   razón, evidencia, vigencia y autoridad.
+9. Una URL directa no omite las mismas comprobaciones aplicadas desde el menú.
+10. La pérdida de autorización elimina acciones visibles y bloquea nuevas
+    mutaciones.
+
+---
+
+#### 15. Estado técnico actual y brecha de implementación
+
+El código inspeccionado de `vento-nexo` conserva un inicio agregado y las
+superficies físicas de remisiones para bandeja, detalle, edición, conductor,
+fulfillment, preparación, recepción y tránsito. Esa existencia técnica no
+materializa por sí sola la proyección exclusiva del solicitante ni demuestra
+que las acciones estén separadas conforme a este contrato.
+
+Por tanto:
+
+| Elemento                                     | Estado                   | Evidencia permitida                                                            | Condición de salida                                              |
+| -------------------------------------------- | ------------------------ | ------------------------------------------------------------------------------ | ---------------------------------------------------------------- |
+| contrato de inicio del solicitante           | `ESPECIFICADO`           | esta tarea                                                                     | implementación posterior conforme al contrato                    |
+| arquitectura de información                  | `ESPECIFICADO`           | siete secciones y reglas materializadas                                        | prototipo e implementación                                       |
+| decisión por iniciador                       | `ESPECIFICADO`           | cinco identidades reconciliadas                                                | consumo por autorización y contexto                              |
+| proyección de nueve etapas                   | `ESPECIFICADO`           | matriz alineada con `VPROC-0028-E01` a `VPROC-0028-E09`                        | conexión con estados, cantidades y acciones reales               |
+| disposición de catorce rutas                 | `ESPECIFICADO`           | matriz completa sobre identidades ya inventariadas                             | implementación y guards de navegación                            |
+| inicio actual agregado                       | `IMPLEMENTADO_PARCIAL`   | superficie raíz con agrupaciones de operación, verificación y configuración    | separar proyecciones por actor y carril                          |
+| superficies actuales de remisiones           | `IMPLEMENTADO_PARCIAL`   | bandeja, detalle, edición y subrutas operativas presentes en `vento-nexo`      | reconciliar cada superficie con actor, etapa, acción y autoridad |
+| inicio exclusivo del solicitante             | `NO_IMPLEMENTADO`        | no existe evidencia de las siete secciones ni de la jerarquía aprobada         | implementación conforme a `NEXO-REQUESTER-HOME-CONTRACT-001`     |
+| flujo integral de remisión validado          | `PENDIENTE_DE_EVIDENCIA` | las superficies existentes no prueban cobertura ni corrección de todo el ciclo | `NEXO-UX-009` a `NEXO-UX-013`, implementación, pruebas y piloto  |
+| validación operativa con solicitantes reales | `PENDIENTE_DE_EVIDENCIA` | no ejecutada en esta tarea                                                     | prototipo, piloto y certificación reservados en el roadmap       |
+
+No se interpreta el diseño como disponibilidad productiva.
+
+---
+
+#### 16. Requisitos de prueba derivados
+
+Esta tarea crea **seis requisitos de prueba** y no modifica, difiere, descarta
+ni declara obsoleto ningún requisito histórico:
+
+| Identificador   | Regla protegida resumida                                                                                                                | Estado inicial |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `TREQ-NEXO-050` | El inicio del solicitante se proyecta desde actor efectivo, autorización, territorio y participación propia resueltos en servidor.      | `IDENTIFICADO` |
+| `TREQ-NEXO-051` | La arquitectura conserva siete secciones, una sola acción primaria y prioridad por acción propia, riesgo temporal y resultado reciente. | `IDENTIFICADO` |
+| `TREQ-NEXO-052` | Las nueve etapas de `VPROC-0028` separan creación y seguimiento de preparación, transporte, recepción, supervisión y cierre.            | `IDENTIFICADO` |
+| `TREQ-NEXO-053` | Las catorce rutas relevantes mantienen disposición por actor, etapa y carril, con acceso directo denegado cuando falte autoridad.       | `IDENTIFICADO` |
+| `TREQ-NEXO-054` | En dispositivo compartido, toda mutación exige sesión humana activa y atribución conjunta de dispositivo, actor y contexto.             | `IDENTIFICADO` |
+| `TREQ-NEXO-055` | Los ocho estados de interfaz fallan cerrados y no presentan datos parciales, fallos, reintentos o conectividad incierta como éxito.     | `IDENTIFICADO` |
+
+Los seis requisitos permanecen pendientes de implementación, automatización y
+evidencia. Su detalle completo se conserva en el Registro Canónico de
+Requisitos de Prueba.
+
+Requisitos vigentes consumidos sin modificación:
+
+- `TREQ-NEXO-006`;
+- `TREQ-PROC-136`;
+- `TREQ-PROC-138`;
+- `TREQ-UX-160`;
+- `TREQ-UX-161`;
+- `TREQ-UX-163`.
+
+---
+
+#### 17. Criterios de aceptación
+
+La tarea se considera documentalmente completa cuando se confirme que:
+
+- existe un único contrato de inicio para el solicitante;
+- la audiencia primaria es `AREA_SOLICITANTE`;
+- las cinco identidades de iniciación tienen decisión explícita;
+- las nueve etapas de `VPROC-0028` tienen proyección explícita;
+- las catorce rutas relevantes tienen disposición explícita;
+- no se inventaron rutas ni identidades de proceso;
+- el carril de la proyección es exclusivamente `OPERACION`;
+- la única acción primaria es `NUEVA_SOLICITUD`;
+- el inicio solo crea y sigue solicitudes propias;
+- preparación, conducción, recepción, supervisión y configuración están
+  excluidas;
+- la creación no concede autoridad sobre etapas posteriores;
+- la arquitectura materializa siete secciones obligatorias;
+- existen ocho estados completos de interfaz;
+- el contexto y la autorización fallan cerrados;
+- una persona con múltiples funciones no recibe controles mezclados;
+- los conteos no amplían alcance ni se presentan como métricas de desempeño;
+- los datos parciales y resultados desconocidos no se presentan como éxito;
+- el diseño distingue `ESPECIFICADO` de `IMPLEMENTADO` y `VALIDADO`;
+- todas las brechas tienen tarea o condición de salida;
+- se crean exactamente seis requisitos `TREQ-NEXO-050` a `TREQ-NEXO-055`, sin modificar requisitos históricos;
+- `NEXO-UX-004` permanece únicamente reservada.
+
+---
+
+#### 18. `NEXO-REQUESTER-HOME-HANDOFF-001`
+
+| Destino                        | Handoff aprobado                                                                                                         |
+| ------------------------------ | ------------------------------------------------------------------------------------------------------------------------ |
+| `NEXO-UX-004`                  | diseñar el inicio del bodeguero sin reutilizar el inicio del solicitante como cola de preparación                        |
+| `NEXO-UX-005`                  | diseñar custodia y acciones del conductor en una proyección independiente                                                |
+| `NEXO-UX-006`                  | diseñar recepción y diferencias desde la función del receptor                                                            |
+| `NEXO-UX-007`                  | diseñar control global, autorizaciones, retrasos y cierres fuera del inicio del solicitante                              |
+| `NEXO-UX-008`                  | organizar navegación por tareas y proyecciones sin mezclar carriles                                                      |
+| `NEXO-UX-009`                  | definir el formulario, reglas, envío y edición de la solicitud                                                           |
+| `NEXO-UX-010`                  | diseñar fulfillment, reserva y preparación                                                                               |
+| `NEXO-UX-011`                  | diseñar documento, firma y despacho                                                                                      |
+| `NEXO-UX-012`                  | diseñar carga, transporte, custodia y entrega                                                                            |
+| `NEXO-UX-013`                  | diseñar recepción, diferencias y cierre                                                                                  |
+| paquete de implementación NEXO | construir componentes, proyección de datos, guards, comandos, pruebas y observabilidad cuando la continuidad lo autorice |
+| certificación posterior        | validar con solicitantes reales, contextos territoriales, dispositivos, conectividad y segregación                       |
+
+Ningún destino anterior se inicia mediante esta tarea.
+
+---
+
+#### 19. Continuidad canónica
+
+**ÚLTIMA TAREA APROBADA**
+
+`NEXO-UX-002 — Separar operación, supervisión y configuración`
+
+**TAREA ACTUAL APROBADA**
+
+`NEXO-UX-003 — Diseñar inicio para solicitante`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`NEXO-UX-004 — Diseñar inicio para bodeguero`
+
+
 ### [ ] NEXO-UX-004 — Diseñar inicio para bodeguero
 ### [ ] NEXO-UX-005 — Diseñar inicio para conductor
 ### [ ] NEXO-UX-006 — Diseñar inicio para receptor
