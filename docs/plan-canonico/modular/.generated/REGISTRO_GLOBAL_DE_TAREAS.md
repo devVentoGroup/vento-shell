@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **549** |
+| Aprobadas | **550** |
 | En propuesta | **0** |
-| No iniciadas | **1045** |
+| No iniciadas | **1044** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **34.44% (549/1594)** |
+| Porcentaje de completamiento | **34.50% (550/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NEXO-UX-003` — Diseñar inicio para solicitante | ✅ APROBADA |
-| Tarea actual | `NEXO-UX-004` — Diseñar inicio para bodeguero | ⬜ NO INICIADA |
-| Siguiente reservada | `NEXO-UX-005` — Diseñar inicio para conductor | ⬜ NO INICIADA |
+| Última aprobada | `NEXO-UX-004` — Diseñar inicio para bodeguero | ✅ APROBADA |
+| Tarea actual | `NEXO-UX-005` — Diseñar inicio para conductor | ⬜ NO INICIADA |
+| Siguiente reservada | `NEXO-UX-006` — Diseñar inicio para receptor | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -959,7 +959,7 @@
 | ✅ APROBADA | `NEXO-UX-001` | Inventariar procesos reales de inventario y logística | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-002` | Separar operación, supervisión y configuración | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-003` | Diseñar inicio para solicitante | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
-| ⬜ NO INICIADA | `NEXO-UX-004` | Diseñar inicio para bodeguero | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
+| ✅ APROBADA | `NEXO-UX-004` | Diseñar inicio para bodeguero | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-005` | Diseñar inicio para conductor | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-006` | Diseñar inicio para receptor | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-007` | Diseñar inicio para supervisor | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |

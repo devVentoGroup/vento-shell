@@ -2031,7 +2031,648 @@ Ningún destino anterior se inicia mediante esta tarea.
 `NEXO-UX-004 — Diseñar inicio para bodeguero`
 
 
-### [ ] NEXO-UX-004 — Diseñar inicio para bodeguero
+### ✅ NEXO-UX-004 — Diseñar inicio para bodeguero
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-003 — Diseñar inicio para solicitante` — APROBADA
+**Tarea siguiente:** `NEXO-UX-005 — Diseñar inicio para conductor` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo del inicio operativo del bodeguero, colas de trabajo, prioridad, arquitectura de información, estados, autorización, decisiones por proceso, etapa y ruta, y handoff de implementación
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Artefactos producidos:** `NEXO-WAREHOUSE-HOME-CONTRACT-001`, `NEXO-WAREHOUSE-HOME-INFORMATION-ARCHITECTURE-001`, `NEXO-WAREHOUSE-WORK-QUEUE-CATALOG-001`, `NEXO-WAREHOUSE-STAGE-PROJECTION-MATRIX-001`, `NEXO-WAREHOUSE-ROUTE-DISPOSITION-001`, `NEXO-WAREHOUSE-HOME-STATE-CONTRACT-001` y `NEXO-WAREHOUSE-HOME-HANDOFF-001`
+**Decisiones consumidas:** `NEXO-REAL-PROCESS-INVENTORY-001`; `NEXO-UX-LANE-CONTRACT-001`; `NEXO-ASIS-STAGE-LANE-MATRIX-001`; `NEXO-ROUTE-LANE-DISPOSITION-001`; `NEXO-REQUESTER-HOME-CONTRACT-001`; `AUTH-RBAC-017`; `PROC-BUSINESS-PURPOSE-REGISTRY-001`; `PROC-PROCESS-INITIATOR-MATRIX-001`; `PROC-PROCESS-CONTINUATOR-MATRIX-001`; `PROC-PROCESS-RACI-MATRIX-001`; `VPROC-0023` a `VPROC-0028`; inventario `NEXO-ROUTE-001` a `NEXO-ROUTE-064`; requisitos `TREQ-*` vigentes; código actual de `vento-nexo`
+**Cambios físicos autorizados:** ninguno; no modifica código, rutas, permisos, datos, stock, movimientos, remisiones, Supabase, migraciones, RLS, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar el inicio operativo de NEXO para la función `BODEGA_Y_ABASTECIMIENTO`
+y el rol operativo `bodeguero`, de modo que la persona pueda continuar el
+trabajo físico realmente atribuible a su turno y a la bodega activa sin recibir
+un tablero global, un menú técnico ni controles de supervisión o configuración.
+
+La regla canónica es:
+
+```text
+ACTOR HUMANO EFECTIVO
++
+ROL OPERATIVO bodeguero
++
+TURNO Y CHECK-IN VIGENTES CUANDO APLIQUEN
++
+SEDE Y ÁREA warehouse AUTORIZADAS
++
+TAREAS ASIGNADAS, CUSTODIA O HANDOFF VÁLIDOS
++
+PERMISO EXACTO Y RECURSO RESUELTOS EN SERVIDOR
++
+PRIORIDAD OPERATIVA AUTORITATIVA
+→
+INICIO DEL BODEGUERO
+```
+
+El inicio no concede autoridad por mostrar una tarjeta, conteo, ruta, stock,
+LOC, remisión o etiqueta. Cada lectura y mutación conserva actor, permiso,
+territorio, etapa, versión y segregación de funciones.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban siete artefactos documentales consumibles:
+
+1. `NEXO-WAREHOUSE-HOME-CONTRACT-001`, que define audiencia, autoridad,
+   contexto, límites y regla de composición;
+2. `NEXO-WAREHOUSE-HOME-INFORMATION-ARCHITECTURE-001`, que fija ocho secciones,
+   una única acción primaria y la jerarquía de lectura;
+3. `NEXO-WAREHOUSE-WORK-QUEUE-CATALOG-001`, que materializa diez clases de cola
+   operativa con entrada, salida, bloqueo y propiedad;
+4. `NEXO-WAREHOUSE-STAGE-PROJECTION-MATRIX-001`, que decide las cuarenta etapas
+   de `VPROC-0023` a `VPROC-0028` para esta proyección;
+5. `NEXO-WAREHOUSE-ROUTE-DISPOSITION-001`, que decide treinta rutas existentes
+   relacionadas con el inicio del bodeguero sin inventar URLs;
+6. `NEXO-WAREHOUSE-HOME-STATE-CONTRACT-001`, que define diez estados completos
+   de interfaz, conectividad, conflicto y revocación;
+7. `NEXO-WAREHOUSE-HOME-HANDOFF-001`, que separa el diseño aprobado de los
+   flujos, implementación, pruebas y certificación posteriores.
+
+Cobertura materializada:
+
+| Elemento                                  | Total esperado | Total materializado | Faltantes | Duplicados |
+| ----------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Procesos canónicos reconciliados          |              6 |                   6 |         0 |          0 |
+| Etapas canónicas decididas                |             40 |                  40 |         0 |          0 |
+| Clases de cola operativa                  |             10 |                  10 |         0 |          0 |
+| Rutas relevantes decididas                |             30 |                  30 |         0 |          0 |
+| Secciones obligatorias                    |              8 |                   8 |         0 |          0 |
+| Acciones primarias                        |              1 |                   1 |         0 |          0 |
+| Estados de interfaz                       |             10 |                  10 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados |              6 |                   6 |         0 |          0 |
+
+La tarea deja el diseño en estado `ESPECIFICADO`. No declara el home
+`IMPLEMENTADO`, `VALIDADO` ni disponible en producción.
+
+---
+
+#### 3. Alcance funcional
+
+##### 3.1. Incluido
+
+- continuación de tareas asignadas de recepción, ubicación, preparación,
+  handoff, recepción interna, conteo, traslado, retiro y condición;
+- referencia de stock, LOC, posición, lote, LPN y movimientos solo dentro del
+  contexto necesario para ejecutar una tarea;
+- priorización autoritativa y estable del siguiente trabajo;
+- captura de faltantes, diferencias, daños, bloqueos y evidencia sin asumir la
+  decisión supervisora;
+- funcionamiento en dispositivo personal o compartido con sesión humana;
+- estados de carga, vacío, datos parciales, error, revocación, conectividad y
+  conflicto de concurrencia;
+- decisión explícita por proceso, etapa, clase de cola y ruta relevante.
+
+##### 3.2. Excluido
+
+- crear solicitudes por cuenta de áreas solicitantes;
+- crear o reasignar fulfillment;
+- iniciar o confirmar tránsito como conductor;
+- autoaceptar una entrega preparada por el mismo actor en el mismo extremo;
+- abrir, congelar, aprobar o cerrar sesiones de conteo;
+- aprobar diferencias o publicar ajustes;
+- decidir liberación, merma, pérdida, rechazo o disposición;
+- crear productos, LOC, zonas, posiciones, políticas, rutas, plantillas o
+  configuración logística;
+- consultar costos, márgenes, información financiera o inventario global;
+- operar otras sedes o áreas por conocer una URL o identificador;
+- implementar componentes, permisos, datos o migraciones.
+
+---
+
+#### 4. `NEXO-WAREHOUSE-HOME-CONTRACT-001`
+
+##### 4.1. Audiencia y función
+
+La audiencia primaria es `BODEGA_Y_ABASTECIMIENTO`, proyectada mediante el rol
+operativo `bodeguero` dentro de una sede autorizada y un área activa de tipo
+`warehouse`.
+
+El nombre del cargo, `employees.role`, `navigation_role`, el tipo de sede o la
+presencia en un centro de producción no sustituyen la resolución de la función.
+Una persona con capacidades administrativas o supervisoras consume esas
+capacidades en una proyección separada.
+
+##### 4.2. Carril único
+
+El home pertenece exclusivamente al carril `OPERACION`.
+
+Puede consumir referencias de solo lectura necesarias para una tarea, pero no
+incorpora:
+
+- decisiones de `SUPERVISION`;
+- edición de `CONFIGURACION`;
+- monitoreo global;
+- métricas de desempeño individual;
+- utilidades técnicas sin tarea propietaria;
+- accesos implícitos derivados del tipo de sede.
+
+##### 4.3. Contexto obligatorio
+
+| Componente         | Regla                                                             |
+| ------------------ | ----------------------------------------------------------------- |
+| principal técnico  | identidad autenticada vigente                                     |
+| actor efectivo     | persona empresarial atribuible a cada lectura y mutación          |
+| función            | `BODEGA_Y_ABASTECIMIENTO` mediante `bodeguero` vigente            |
+| turno              | publicado y vigente cuando el permiso lo exija                    |
+| check-in           | activo cuando la acción o el dispositivo lo exijan                |
+| sede               | sede explícitamente autorizada                                    |
+| área               | área activa de tipo `warehouse`                                   |
+| permiso            | capacidad atómica exacta para la acción                           |
+| territorio         | intersección entre sede, área, LOC, recurso y extremo del proceso |
+| relación operativa | asignación, custodia, origen, destino, sesión o handoff válido    |
+| dispositivo        | identidad y política del dispositivo cuando aplique               |
+| versión            | versión de tarea, recurso y autorización para detectar deriva     |
+
+La ausencia o conflicto de cualquier componente requerido falla cerrado.
+
+##### 4.4. Alcance de datos
+
+El home solo materializa trabajo cuando existe al menos una relación válida:
+
+```text
+TAREA_ASIGNADA_AL_ACTOR_O_AREA
+RECURSO_BAJO_CUSTODIA_DE_BODEGA_ACTIVA
+ORIGEN_DE_REMISION_IGUAL_A_BODEGA_AUTORIZADA
+DESTINO_RECEPTOR_IGUAL_A_BODEGA_AUTORIZADA
+SESION_DE_CONTEO_ASIGNADA
+MOVIMIENTO_DENTRO_DEL_TERRITORIO_AUTORIZADO
+INSTRUCCION_DE_CONDICION_AUTORIZADA
+HANDOFF_PENDIENTE_CON_PARTICIPACION_EXPLICITA
+```
+
+No son relaciones válidas por sí solas: pertenecer a la empresa, compartir
+sede, conocer el ID, recibir un enlace, poseer un rol visual o haber participado
+en otro turno.
+
+##### 4.5. Segregaciones obligatorias
+
+1. Preparar no concede iniciar tránsito.
+2. Entregar a transporte no concede confirmar recepción.
+3. Contar no concede ver el saldo teórico antes de la etapa autorizada.
+4. Contar o investigar no concede aprobar ni publicar el ajuste.
+5. Reportar daño no concede decidir cuarentena, liberación o disposición.
+6. Recibir una entrada no concede corregirla o reversarla.
+7. Consultar stock no concede moverlo.
+8. Ver una asignación no concede reasignarla.
+9. Usar un dispositivo compartido no convierte al dispositivo en actor.
+10. Una misma persona con varias funciones no recibe controles mezclados.
+
+---
+
+#### 5. `NEXO-WAREHOUSE-HOME-INFORMATION-ARCHITECTURE-001`
+
+##### 5.1. Orden obligatorio
+
+| Orden | Sección                   | Propósito                                                                      | Acción permitida                                                     |
+| ----- | ------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------------- |
+| 1     | Contexto operativo activo | Actor humano, turno, sede, área warehouse, dispositivo y última actualización. | Cambiar contexto únicamente mediante resolución canónica autorizada. |
+| 2     | Siguiente tarea           | Una sola tarea prioritaria resuelta en servidor.                               | CONTINUAR_SIGUIENTE_TAREA                                            |
+| 3     | Recibir y ubicar          | Entradas, recepciones internas y existencias sin ubicación completa.           | Abrir únicamente la tarea exacta.                                    |
+| 4     | Preparar y entregar       | Preparación, faltantes, carga lista y handoff a transporte.                    | Continuar la etapa atribuida.                                        |
+| 5     | Mover y retirar           | Traslados internos y retiros autorizados.                                      | Ejecutar el movimiento contextual.                                   |
+| 6     | Contar y reportar         | Conteos asignados y captura de condición o incidente.                          | Capturar observación o evidencia.                                    |
+| 7     | Bloqueos y aclaraciones   | Trabajo detenido, conflicto de asignación, diferencia o autorización revocada. | Ver causa y acción permitida; nunca resolver autoridad ajena.        |
+| 8     | Referencias y utilidades  | Stock contextual, LOC, movimiento relacionado, lote, impresión y escaneo.      | Consultar o invocar desde una tarea; sin configuración.              |
+
+La sección `Siguiente tarea` contiene la única acción primaria del home:
+
+```text
+CONTINUAR_SIGUIENTE_TAREA
+```
+
+No existe un botón primario genérico para crear entradas, ajustar stock,
+configurar ubicaciones o abrir todas las remisiones.
+
+##### 5.2. Tarjeta de tarea mínima
+
+Cada tarea visible deberá mostrar únicamente datos necesarios para actuar:
+
+- tipo de trabajo;
+- recurso o documento identificable;
+- sede, área, LOC o extremo aplicable;
+- etapa y estado canónicos;
+- fecha requerida, ventana o antigüedad relevante;
+- cantidad pendiente y unidad cuando exista;
+- siguiente acción autorizada;
+- bloqueo concreto y actor responsable cuando no pueda continuar;
+- versión o marca de actualización suficiente para detectar conflicto.
+
+No se muestra como éxito una cantidad desconocida, estimada o no conciliada.
+
+##### 5.3. Regla de prioridad
+
+La siguiente tarea se resuelve en servidor y aplica, en orden:
+
+1. tarea ya reclamada y todavía vigente por el mismo actor;
+2. condición física autorizada con riesgo de seguridad, inocuidad o pérdida;
+3. handoff físico presente que requiere recepción o transferencia de custodia;
+4. preparación o entrega con ventana comprometida próxima a vencer;
+5. existencia recibida cuya falta de ubicación bloquea disponibilidad;
+6. conteo asignado con fecha o ventana vigente;
+7. traslado o retiro autorizado con necesidad operativa vigente;
+8. trabajo ordinario por fecha requerida, creación y clave estable.
+
+Los desempates usan datos autoritativos y una clave estable. El cliente no puede
+reordenar la cola enviando prioridad, rol, sede o estado.
+
+##### 5.4. Reclamo y concurrencia
+
+Antes de mutar, la tarea deberá confirmar:
+
+```text
+ACTOR_ACTUAL
++
+TAREA_TODAVIA_ASIGNABLE
++
+VERSION_ESPERADA
++
+ESTADO_Y_ETAPA_COMPATIBLES
++
+RECURSO_EN_TERRITORIO
++
+COMANDO_IDEMPOTENTE
+```
+
+Si otra persona tomó, cambió o cerró la tarea, el home no conserva una acción
+obsoleta. Muestra el estado `TAREA_RECLAMADA_O_CAMBIADA` y recarga la fuente
+autoritativa.
+
+---
+
+#### 6. `NEXO-WAREHOUSE-WORK-QUEUE-CATALOG-001`
+
+| Identificador           | Clase de trabajo      | Entrada mínima                                                                          | Procesos                                               |
+| ----------------------- | --------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| `WHQ-ENTRADA`           | Entrada por recibir   | Recepción física con fuente empresarial válida o excepción expresamente autorizada.     | `VPROC-0024`                                           |
+| `WHQ-UBICACION`         | Ubicación pendiente   | Existencia recibida que aún requiere LOC o posición compatible.                         | `VPROC-0023`; `VPROC-0024`                             |
+| `WHQ-PREPARACION`       | Preparación asignada  | Líneas de abastecimiento asignadas al origen de la bodega activa.                       | `VPROC-0028`                                           |
+| `WHQ-HANDOFF`           | Entrega a transporte  | Carga lista que requiere sellado, evidencia y transferencia de custodia.                | `VPROC-0028`                                           |
+| `WHQ-RECEPCION_INTERNA` | Recepción interna     | Remisión cuyo destino autorizado es la bodega activa.                                   | `VPROC-0028`                                           |
+| `WHQ-CONTEO`            | Conteo asignado       | Sesión con alcance congelado y captura física pendiente.                                | `VPROC-0026`                                           |
+| `WHQ-TRASLADO`          | Traslado interno      | Movimiento ordinario entre LOC o posiciones autorizadas.                                | `VPROC-0025`                                           |
+| `WHQ-RETIRO`            | Retiro autorizado     | Salida por consumo, uso interno o destino operativo válido.                             | `VPROC-0025`                                           |
+| `WHQ-CONDICION`         | Condición o incidente | Reporte, aislamiento o ejecución física condicionada por una decisión autorizada.       | `VPROC-0027`                                           |
+| `WHQ-BLOQUEO`           | Bloqueo o aclaración  | Tarea operativa detenida por stock, política, contexto, diferencia o handoff pendiente. | `VPROC-0024`; `VPROC-0025`; `VPROC-0027`; `VPROC-0028` |
+
+Cada clase deberá declarar en implementación:
+
+- consulta autoritativa de elegibilidad;
+- responsable o ámbito de asignación;
+- estado de entrada;
+- comando permitido;
+- estado de salida;
+- bloqueo estructurado;
+- estrategia de idempotencia;
+- evento o evidencia resultante;
+- destino exacto cuando requiera otro actor.
+
+Una fila de cola no crea un proceso empresarial nuevo. Es una proyección de
+trabajo sobre `VPROC-0023` a `VPROC-0028`.
+
+---
+
+#### 7. `NEXO-WAREHOUSE-STAGE-PROJECTION-MATRIX-001`
+
+##### 7.1. Reconciliación
+
+```text
+EXPECTED_STAGE_IDS = 40
+MATERIALIZED_STAGE_IDS = 40
+UNIQUE_STAGE_IDS = 40
+MISSING_STAGE_IDS = 0
+DUPLICATE_STAGE_IDS = 0
+```
+
+##### 7.2. Decisión por etapa
+
+| Etapa            | Proceso      | Trabajo canónico                                                | Tratamiento en el home           | Cola                         | Estado         | Decisión materializada                                                                                                                                          |
+| ---------------- | ------------ | --------------------------------------------------------------- | -------------------------------- | ---------------------------- | -------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `VPROC-0023-E01` | `VPROC-0023` | Crear o editar LOC                                              | `CONFIGURACION_EXCLUIDA`         | —                            | `ESPECIFICADO` | No se presenta en el inicio; el bodeguero consume la estructura publicada y no edita el maestro.                                                                |
+| `VPROC-0023-E02` | `VPROC-0023` | Crear zonas, niveles y posiciones                               | `CONFIGURACION_EXCLUIDA`         | —                            | `ESPECIFICADO` | No se presenta en el inicio; la estructura física reutilizable pertenece a configuración.                                                                       |
+| `VPROC-0023-E03` | `VPROC-0023` | Definir productos permitidos por ubicación                      | `CONFIGURACION_EXCLUIDA`         | —                            | `ESPECIFICADO` | No se presenta en el inicio; la elegibilidad se resuelve como política publicada.                                                                               |
+| `VPROC-0023-E04` | `VPROC-0023` | Consultar stock por sede, LOC o posición                        | `REFERENCIA_CONTEXTUAL`          | —                            | `ESPECIFICADO` | Solo se muestra el saldo necesario para ejecutar una tarea autorizada dentro de la bodega activa; no abre un tablero global.                                    |
+| `VPROC-0023-E05` | `VPROC-0023` | Abrir una ubicación mediante tablero, kiosco o código           | `ACCION_OPERATIVA`               | `WHQ-UBICACION`              | `ESPECIFICADO` | Puede abrir la LOC o zona resuelta para continuar trabajo físico, sin alterar configuración.                                                                    |
+| `VPROC-0024-E01` | `VPROC-0024` | Registrar una entrada de emergencia                             | `EXCEPCION_CONDICIONAL`          | `WHQ-ENTRADA`                | `ESPECIFICADO` | Solo aparece con permiso excepcional exacto, causa obligatoria y ausencia demostrada del flujo ordinario; nunca es acceso predeterminado.                       |
+| `VPROC-0024-E02` | `VPROC-0024` | Registrar una entrada correlacionada con orden de compra        | `ACCION_OPERATIVA`               | `WHQ-ENTRADA`                | `ESPECIFICADO` | Se presenta como recepción pendiente desde una fuente empresarial válida, no como formulario libre.                                                             |
+| `VPROC-0024-E03` | `VPROC-0024` | Capturar producto, cantidad, unidad y costo                     | `ACCION_DENTRO_DE_TAREA`         | `WHQ-ENTRADA`                | `ESPECIFICADO` | Se captura dentro de la recepción autorizada; el costo protegido no se expone cuando no sea necesario para la verificación física.                              |
+| `VPROC-0024-E04` | `VPROC-0024` | Asignar LOC de almacenamiento                                   | `ACCION_OPERATIVA`               | `WHQ-UBICACION`              | `ESPECIFICADO` | Se presenta cuando una existencia recibida conserva ubicación pendiente y existen destinos compatibles.                                                         |
+| `VPROC-0024-E05` | `VPROC-0024` | Asignar posición interna                                        | `ACCION_OPERATIVA`               | `WHQ-UBICACION`              | `ESPECIFICADO` | Se presenta después de resolver LOC, compatibilidad y posición autorizadas.                                                                                     |
+| `VPROC-0024-E06` | `VPROC-0024` | Publicar, corregir o reversar la entrada                        | `SEPARACION_EXPLICITA`           | `WHQ-ENTRADA`                | `ESPECIFICADO` | El bodeguero puede publicar el ingreso ordinario autorizado; corregir o reversar requiere una decisión supervisora separada y no aparece como acción ordinaria. |
+| `VPROC-0025-E01` | `VPROC-0025` | Identificar sede, LOC, posición y producto                      | `ACCION_DENTRO_DE_TAREA`         | `WHQ-TRASLADO`; `WHQ-RETIRO` | `ESPECIFICADO` | El contexto se resuelve desde la tarea, el escaneo o la ubicación autorizada; no se acepta un alcance arbitrario enviado por cliente.                           |
+| `VPROC-0025-E02` | `VPROC-0025` | Elegir presentación o unidad de medida                          | `ACCION_DENTRO_DE_TAREA`         | `WHQ-TRASLADO`; `WHQ-RETIRO` | `ESPECIFICADO` | Solo ofrece presentaciones publicadas y compatibles con el producto y la tarea.                                                                                 |
+| `VPROC-0025-E03` | `VPROC-0025` | Verificar disponibilidad y alcance                              | `VALIDACION_CONTEXTUAL`          | `WHQ-TRASLADO`; `WHQ-RETIRO` | `ESPECIFICADO` | Habilita o bloquea la mutación con una respuesta autoritativa; no se convierte en indicador global.                                                             |
+| `VPROC-0025-E04` | `VPROC-0025` | Consumir stock general                                          | `ACCION_OPERATIVA`               | `WHQ-RETIRO`                 | `ESPECIFICADO` | Se presenta únicamente para un retiro autorizado con motivo, destino y cantidad identificables.                                                                 |
+| `VPROC-0025-E05` | `VPROC-0025` | Consumir desde posición o kiosco                                | `ACCION_OPERATIVA`               | `WHQ-RETIRO`                 | `ESPECIFICADO` | Conserva la posición exacta, el actor humano y la confirmación idempotente de la salida.                                                                        |
+| `VPROC-0025-E06` | `VPROC-0025` | Transferir entre LOC conservando historial                      | `ACCION_OPERATIVA`               | `WHQ-TRASLADO`               | `ESPECIFICADO` | Solo permite traslados ordinarios dentro del alcance autorizado; los movimientos entre sedes usan remisiones.                                                   |
+| `VPROC-0026-E01` | `VPROC-0026` | Abrir sesión de conteo                                          | `SUPERVISION_EXCLUIDA`           | —                            | `ESPECIFICADO` | El inicio muestra sesiones asignadas, pero no concede crear o abrir el control formal.                                                                          |
+| `VPROC-0026-E02` | `VPROC-0026` | Congelar alcance y stock de apertura                            | `SISTEMA_O_SUPERVISION`          | —                            | `ESPECIFICADO` | No se presenta como acción; el bodeguero consume el alcance congelado y no puede modificarlo.                                                                   |
+| `VPROC-0026-E03` | `VPROC-0026` | Registrar observación por producto                              | `ACCION_OPERATIVA`               | `WHQ-CONTEO`                 | `ESPECIFICADO` | Se presenta para sesiones asignadas y preserva conteo ciego cuando corresponda.                                                                                 |
+| `VPROC-0026-E04` | `VPROC-0026` | Registrar múltiples presentaciones o posiciones                 | `ACCION_DENTRO_DE_TAREA`         | `WHQ-CONTEO`                 | `ESPECIFICADO` | Permite capturas desagregadas sin revelar stock teórico antes de la etapa autorizada.                                                                           |
+| `VPROC-0026-E05` | `VPROC-0026` | Calcular diferencia                                             | `SUPERVISION_O_SISTEMA`          | —                            | `ESPECIFICADO` | No se presenta durante la captura; la diferencia solo se muestra después del envío y según autoridad.                                                           |
+| `VPROC-0026-E06` | `VPROC-0026` | Aplicar reconciliación o ajuste autorizado                      | `SUPERVISION_EXCLUIDA`           | —                            | `ESPECIFICADO` | El bodeguero no aprueba ni publica ajustes por esta proyección; observa el resultado cuando afecte su tarea.                                                    |
+| `VPROC-0026-E07` | `VPROC-0026` | Cerrar sesión y conservar historial                             | `SUPERVISION_EXCLUIDA`           | —                            | `ESPECIFICADO` | El envío de observaciones no equivale a cerrar la sesión ni aprobar la diferencia.                                                                              |
+| `VPROC-0027-E01` | `VPROC-0027` | Detectar alerta, daño, pérdida, merma o vencimiento             | `CAPTURA_OPERATIVA_SEPARADA`     | `WHQ-CONDICION`              | `ESPECIFICADO` | Puede reportar la novedad y aportar evidencia; no clasifica prioridad ni decide disposición.                                                                    |
+| `VPROC-0027-E02` | `VPROC-0027` | Identificar producto, existencia, lote, LOC y condición         | `ACCION_DENTRO_DE_TAREA`         | `WHQ-CONDICION`              | `ESPECIFICADO` | Debe identificar el objeto físico y su ubicación antes de cualquier acción.                                                                                     |
+| `VPROC-0027-E03` | `VPROC-0027` | Poner en cuarentena o bloquear                                  | `EJECUCION_CONDICIONAL`          | `WHQ-CONDICION`              | `ESPECIFICADO` | Solo ejecuta el aislamiento físico cuando exista instrucción autorizada; no impone ni levanta unilateralmente el bloqueo.                                       |
+| `VPROC-0027-E04` | `VPROC-0027` | Evaluar condición, temperatura y aptitud                        | `SUPERVISION_CALIDAD_EXCLUIDA`   | —                            | `ESPECIFICADO` | El bodeguero aporta lecturas y evidencia, pero la evaluación pertenece a control o calidad.                                                                     |
+| `VPROC-0027-E05` | `VPROC-0027` | Decidir liberación, merma, pérdida, rechazo o disposición       | `SUPERVISION_CALIDAD_EXCLUIDA`   | —                            | `ESPECIFICADO` | La decisión no aparece en el home operativo.                                                                                                                    |
+| `VPROC-0027-E06` | `VPROC-0027` | Ejecutar movimiento físico y efecto de stock                    | `ACCION_CONDICIONADA_A_DECISION` | `WHQ-CONDICION`              | `ESPECIFICADO` | Puede ejecutar la instrucción autorizada y registrar evidencia sin modificar su decisión.                                                                       |
+| `VPROC-0027-E07` | `VPROC-0027` | Conservar evidencia y cerrar caso                               | `SUPERVISION_EXCLUIDA`           | —                            | `ESPECIFICADO` | El bodeguero adjunta evidencia de ejecución; el cierre permanece separado.                                                                                      |
+| `VPROC-0028-E01` | `VPROC-0028` | Crear solicitud interna                                         | `OTRO_ACTOR_EXCLUIDO`            | —                            | `ESPECIFICADO` | Pertenece al solicitante y no se reutiliza como acción del bodeguero.                                                                                           |
+| `VPROC-0028-E02` | `VPROC-0028` | Aplicar ruta, producto y política de solicitud                  | `CONFIGURACION_RESUELTA`         | —                            | `ESPECIFICADO` | La resolución vigente se consume en servidor; no se muestra como configuración.                                                                                 |
+| `VPROC-0028-E03` | `VPROC-0028` | Crear origen y fulfillment por línea                            | `SUPERVISION_RESUELTA`           | `WHQ-PREPARACION`            | `ESPECIFICADO` | El bodeguero ve únicamente líneas ya asignadas a su origen; no crea ni reasigna fuentes.                                                                        |
+| `VPROC-0028-E04` | `VPROC-0028` | Elegir LOC, posición y cantidad de picking                      | `ACCION_OPERATIVA`               | `WHQ-PREPARACION`            | `ESPECIFICADO` | Se presenta dentro de la preparación asignada con stock y ubicación contextual.                                                                                 |
+| `VPROC-0028-E05` | `VPROC-0028` | Preparar, dejar listo o registrar faltante                      | `ACCION_OPERATIVA`               | `WHQ-PREPARACION`            | `ESPECIFICADO` | Registra cantidad preparada, faltante y evidencia sin sobrescribir lo solicitado.                                                                               |
+| `VPROC-0028-E06` | `VPROC-0028` | Cargar, sellar y despachar                                      | `HANDOFF_OPERATIVO_CONDICIONAL`  | `WHQ-HANDOFF`                | `ESPECIFICADO` | Permite dejar lista la carga y registrar entrega de custodia al actor autorizado; no inicia tránsito ni sustituye firma o documento.                            |
+| `VPROC-0028-E07` | `VPROC-0028` | Transportar y confirmar tránsito                                | `OTRO_ACTOR_EXCLUIDO`            | —                            | `ESPECIFICADO` | Pertenece al conductor o responsable de ruta; el bodeguero solo observa el handoff propio.                                                                      |
+| `VPROC-0028-E08` | `VPROC-0028` | Recibir parcial o totalmente                                    | `ACCION_OPERATIVA_CONDICIONAL`   | `WHQ-RECEPCION_INTERNA`      | `ESPECIFICADO` | Solo aparece cuando la bodega activa es destino autorizado y se preserva segregación frente a quien preparó el mismo extremo.                                   |
+| `VPROC-0028-E09` | `VPROC-0028` | Resolver faltante, sobrante, daño, rechazo, devolución o cierre | `CAPTURA_SEPARADA_DE_DECISION`   | `WHQ-BLOQUEO`                | `ESPECIFICADO` | Puede registrar cantidades y evidencia de la diferencia; la resolución y el cierre pertenecen a supervisión.                                                    |
+
+---
+
+#### 8. `NEXO-WAREHOUSE-ROUTE-DISPOSITION-001`
+
+##### 8.1. Reconciliación
+
+Las treinta rutas siguientes ya existen en el inventario canónico de sesenta y
+cuatro rutas. Esta tarea no crea rutas nuevas.
+
+```text
+EXPECTED_RELEVANT_ROUTE_IDS = 30
+MATERIALIZED_RELEVANT_ROUTE_IDS = 30
+UNIQUE_RELEVANT_ROUTE_IDS = 30
+MISSING_RELEVANT_ROUTE_IDS = 0
+DUPLICATE_RELEVANT_ROUTE_IDS = 0
+```
+
+##### 8.2. Decisión por ruta
+
+| Ruta             | Patrón existente                           | Disposición para bodeguero     | Estado         | Decisión materializada                                                                                        |
+| ---------------- | ------------------------------------------ | ------------------------------ | -------------- | ------------------------------------------------------------------------------------------------------------- |
+| `NEXO-ROUTE-001` | `/`                                        | `PROYECTAR_HOME_BODEGUERO`     | `ESPECIFICADO` | Inicio por colas operativas del actor y la bodega activa; no conserva el tablero agregado actual.             |
+| `NEXO-ROUTE-002` | `/inventory/adjust`                        | `EXCLUIR_SUPERVISION`          | `ESPECIFICADO` | No aparece como acción del bodeguero; un ajuste autorizado se tramita por su flujo separado.                  |
+| `NEXO-ROUTE-017` | `/inventory/count-initial`                 | `PROYECTAR_COLA_ASIGNADA`      | `ESPECIFICADO` | Solo muestra sesiones asignadas o participadas; no habilita abrir, administrar o cerrar sesiones.             |
+| `NEXO-ROUTE-018` | `/inventory/count-initial/session/[id]`    | `DIVIDIR_CAPTURA_Y_DECISION`   | `ESPECIFICADO` | Permite captura operativa de la sesión asignada y excluye diferencia, aprobación y cierre no autorizados.     |
+| `NEXO-ROUTE-019` | `/inventory/entries`                       | `CONTEXTUALIZAR_POR_FUENTE`    | `ESPECIFICADO` | Se abre desde una recepción o fuente válida; la entrada de emergencia queda oculta salvo permiso excepcional. |
+| `NEXO-ROUTE-020` | `/inventory/locations`                     | `REFERENCIA_ACOTADA`           | `ESPECIFICADO` | Consulta la estructura de la bodega activa sin controles de edición.                                          |
+| `NEXO-ROUTE-021` | `/inventory/locations/[id]`                | `REFERENCIA_ACOTADA`           | `ESPECIFICADO` | Muestra detalle y stock de una LOC autorizada; configuración y control global quedan excluidos.               |
+| `NEXO-ROUTE-022` | `/inventory/locations/[id]/board`          | `ACCION_OPERATIVA`             | `ESPECIFICADO` | Abre trabajo contextual sobre una LOC y sus tareas disponibles.                                               |
+| `NEXO-ROUTE-023` | `/inventory/locations/[id]/kiosk-withdraw` | `ACCION_OPERATIVA`             | `ESPECIFICADO` | Ejecuta retiro desde posición con sesión humana activa y alcance exacto.                                      |
+| `NEXO-ROUTE-025` | `/inventory/locations/open`                | `ENTRADA_CONTEXTUAL`           | `ESPECIFICADO` | Resuelve LOC o código y redirige a una tarea autorizada; no concede permisos.                                 |
+| `NEXO-ROUTE-026` | `/inventory/locations/zone`                | `ACCION_OPERATIVA`             | `ESPECIFICADO` | Opera una zona autorizada sin modificar su estructura.                                                        |
+| `NEXO-ROUTE-028` | `/inventory/lpns`                          | `REFERENCIA_ACOTADA`           | `ESPECIFICADO` | Consulta LPN bajo custodia cuando exista; el ciclo de vida completo permanece reservado.                      |
+| `NEXO-ROUTE-029` | `/inventory/movements`                     | `REFERENCIA_CONTEXTUAL`        | `ESPECIFICADO` | Muestra movimientos relacionados con la tarea o recurso; no expone el ledger global como home.                |
+| `NEXO-ROUTE-030` | `/inventory/production-batches`            | `REFERENCIA_CONTEXTUAL`        | `ESPECIFICADO` | Muestra el lote productivo asociado a una entrada sin operar FOGO.                                            |
+| `NEXO-ROUTE-031` | `/inventory/remissions`                    | `DIVIDIR_BANDEJA_BODEGA`       | `ESPECIFICADO` | Proyecta solo preparación, handoff, recepción y bloqueos atribuibles a la bodega activa.                      |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`               | `DIVIDIR_ACCIONES_POR_ETAPA`   | `ESPECIFICADO` | El detalle es común como lectura, pero solo muestra comandos del actor y etapa actuales.                      |
+| `NEXO-ROUTE-034` | `/inventory/remissions/conductor`          | `EXCLUIR_OTRO_ACTOR`           | `ESPECIFICADO` | No aparece en el inicio del bodeguero.                                                                        |
+| `NEXO-ROUTE-035` | `/inventory/remissions/fulfillment`        | `REFERENCIA_ASIGNADA`          | `ESPECIFICADO` | Muestra asignaciones ya resueltas; el bodeguero no crea ni reasigna fulfillment.                              |
+| `NEXO-ROUTE-036` | `/inventory/remissions/prepare`            | `ACCION_OPERATIVA`             | `ESPECIFICADO` | Concentra picking y preparación de solicitudes asignadas al origen autorizado.                                |
+| `NEXO-ROUTE-037` | `/inventory/remissions/receive`            | `ACCION_OPERATIVA_CONDICIONAL` | `ESPECIFICADO` | Solo se abre cuando la bodega activa es destino y el actor puede aceptar físicamente.                         |
+| `NEXO-ROUTE-038` | `/inventory/remissions/transit`            | `REFERENCIA_DE_HANDOFF`        | `ESPECIFICADO` | Muestra custodia transferida o entrega pendiente; no habilita iniciar ni confirmar tránsito.                  |
+| `NEXO-ROUTE-052` | `/inventory/stock`                         | `REFERENCIA_CONTEXTUAL`        | `ESPECIFICADO` | Muestra stock de la bodega activa necesario para una tarea; no actúa como tablero supervisor.                 |
+| `NEXO-ROUTE-053` | `/inventory/stock/assign-location`         | `ACCION_OPERATIVA`             | `ESPECIFICADO` | Ejecuta putaway sobre existencia recibida y destino compatible.                                               |
+| `NEXO-ROUTE-054` | `/inventory/transfers`                     | `ACCION_OPERATIVA`             | `ESPECIFICADO` | Ejecuta traslados ordinarios dentro del alcance autorizado.                                                   |
+| `NEXO-ROUTE-055` | `/inventory/warehouse`                     | `HEREDAR_HOME`                 | `ESPECIFICADO` | Alias técnico que hereda la proyección del inicio del bodeguero y no constituye otra superficie.              |
+| `NEXO-ROUTE-056` | `/inventory/withdraw`                      | `ACCION_OPERATIVA`             | `ESPECIFICADO` | Ejecuta retiro trazable con origen, destino, unidad, motivo y disponibilidad verificados.                     |
+| `NEXO-ROUTE-057` | `/kiosk/[slug]`                            | `HEREDAR_TAREA`                | `ESPECIFICADO` | Resuelve una superficie contextual y conserva sesión humana, actor y tarea.                                   |
+| `NEXO-ROUTE-058` | `/l/[code]`                                | `HEREDAR_TAREA`                | `ESPECIFICADO` | El deep link de LOC revalida contexto y abre únicamente la acción permitida.                                  |
+| `NEXO-ROUTE-062` | `/printing/jobs`                           | `REFERENCIA_DE_TRABAJO_PROPIO` | `ESPECIFICADO` | Muestra trabajos de impresión originados por la operación propia; no monitorea la cola global.                |
+| `NEXO-ROUTE-064` | `/scanner`                                 | `HEREDAR_TAREA`                | `ESPECIFICADO` | El escáner es utilidad de la tarea invocante y no una navegación autónoma.                                    |
+
+Las otras treinta y cuatro rutas conservan la disposición aprobada en
+`NEXO-ROUTE-LANE-DISPOSITION-001` y no se convierten en accesos del home por
+omisión.
+
+---
+
+#### 9. Reglas de acciones y referencias
+
+##### 9.1. Acciones operativas
+
+Una acción aparece solo cuando la misma respuesta autoritativa entrega:
+
+- tarea o recurso;
+- comando permitido;
+- estado y etapa esperados;
+- alcance territorial;
+- versión;
+- requisitos de turno o check-in;
+- condición de idempotencia.
+
+La interfaz no reconstruye autoridad desde nombres de roles, estados locales o
+rutas visibles.
+
+##### 9.2. Referencias de solo lectura
+
+Stock, LOC, posiciones, movimientos, lotes, LPN, políticas publicadas e
+impresión se muestran solo cuando apoyan una tarea. No se convierten en:
+
+- inventario multisede;
+- investigación supervisora;
+- editor de catálogo;
+- configuración de abastecimiento;
+- monitor global de impresión;
+- acceso financiero.
+
+##### 9.3. Excepciones
+
+Entrada de emergencia, retiro excepcional, corrección, reversión, cuarentena,
+disposición y diferencias no comparten el camino ordinario. Toda excepción
+exige causa estructurada, autoridad exacta, evidencia, vigencia y trazabilidad.
+
+---
+
+#### 10. Dispositivos compartidos, escaneo e impresión
+
+En dispositivo compartido:
+
+1. el dispositivo conserva identidad técnica propia;
+2. cada mutación exige sesión humana activa;
+3. la tarea se atribuye al actor humano, dispositivo, turno, sede y área;
+4. el escaneo solo resuelve un recurso y no concede autoridad;
+5. la expiración de sesión bloquea nuevas mutaciones;
+6. cambiar de persona invalida la tarea reclamada y vuelve a resolver la cola;
+7. una impresión conserva origen, plantilla publicada, recurso y actor;
+8. un reintento de impresión no duplica movimientos empresariales.
+
+El home no ofrece diseñador, setup o monitor global de impresión al bodeguero.
+
+---
+
+#### 11. `NEXO-WAREHOUSE-HOME-STATE-CONTRACT-001`
+
+| Estado                       | Comportamiento obligatorio                                                                  |
+| ---------------------------- | ------------------------------------------------------------------------------------------- |
+| `RESOLVIENDO_CONTEXTO`       | Todavía no se muestran colas ni conteos.                                                    |
+| `CARGANDO_TRABAJO`           | Se conserva el contexto visible y no se habilitan mutaciones.                               |
+| `TRABAJO_DISPONIBLE`         | Se presenta una tarea prioritaria y sus colas acotadas.                                     |
+| `SIN_TRABAJO_ASIGNADO`       | Se confirma que no existen tareas accionables dentro del alcance consultado.                |
+| `DATOS_PARCIALES`            | Se identifica qué cola o referencia falta y no se totaliza como si fuera completa.          |
+| `ERROR_RECUPERABLE`          | Se permite reintentar una lectura sin duplicar comandos.                                    |
+| `SIN_AUTORIZACION`           | Se ocultan datos y acciones; se conserva un mensaje de bloqueo sin filtrar información.     |
+| `CONTEXTO_REVOCADO`          | Se invalida la cola y cualquier tarea abierta antes de una nueva mutación.                  |
+| `CONECTIVIDAD_INCIERTA`      | No se confirma éxito ni se habilita una nueva mutación sin reconciliar el resultado previo. |
+| `TAREA_RECLAMADA_O_CAMBIADA` | Se informa conflicto de propiedad, versión o estado y se recarga la fuente autoritativa.    |
+
+Reglas transversales:
+
+- ninguna mutación se confirma solo porque el cliente haya enviado una petición;
+- al reconectar se consulta primero el resultado previo mediante clave
+  idempotente;
+- una cola parcial no publica totales definitivos;
+- una autorización revocada elimina comandos visibles y bloquea la mutación;
+- el modo offline no permite movimientos, recepciones, conteos enviados,
+  handoffs ni efectos de stock sin un contrato posterior explícito;
+- el orden local nunca sustituye la prioridad autoritativa.
+
+---
+
+#### 12. Accesibilidad y adaptación física
+
+El diseño deberá:
+
+- permitir operación completa por teclado cuando la superficie lo admita;
+- conservar foco visible y orden de lectura coherente;
+- no depender únicamente de color para prioridad, bloqueo o estado;
+- usar objetivos táctiles suficientes en tablet y kiosco;
+- mantener cantidad, unidad, origen y destino juntos;
+- confirmar acciones irreversibles o de transferencia de custodia;
+- reducir escritura libre mediante motivos y opciones estructuradas;
+- tolerar orientación vertical y horizontal sin ocultar la siguiente acción;
+- mostrar el código o identidad legible además del código escaneable;
+- distinguir claramente lectura, captura y confirmación.
+
+---
+
+#### 13. Estado técnico actual y brecha
+
+El código inspeccionado de `vento-nexo` contiene un inicio agregado que:
+
+- determina un modo operativo principalmente por tipo de sede y exclusión de
+  roles de gerencia, no por una proyección exclusiva de `bodeguero`;
+- en centro de producción prioriza preparación y entrada, pero omite del modo
+  enfocado las colas de ubicación, conteo, traslado, retiro, condición y
+  handoff;
+- consulta hasta ocho solicitudes legacy por sede y usa estado general de la
+  solicitud como aproximación de trabajo inmediato;
+- enlaza preparación, entradas, stock, movimientos, ubicaciones y configuración
+  mediante tarjetas de acceso, en vez de proyectar una cola material por tarea;
+- mantiene accesos de configuración o rutas de abastecimiento próximos al
+  trabajo operativo;
+- no materializa las diez clases de cola ni las cuarenta decisiones de etapa de
+  esta tarea.
+
+La evidencia desplegada consumida desde `NEXO-UX-001` confirma uso material de
+stock, movimientos, entradas, traslados, conteos y solicitudes, pero también
+registra fulfillments bloqueados, cero picks y ausencia de adopción del modelo
+nuevo de envíos y recibos. Esos datos justifican la separación entre cola
+especificada y soporte físico actual; no prueban que el home objetivo exista.
+
+| Elemento                        | Estado                   | Condición de salida                                   |
+| ------------------------------- | ------------------------ | ----------------------------------------------------- |
+| contrato del home del bodeguero | `ESPECIFICADO`           | implementación conforme a esta tarea                  |
+| catálogo de diez colas          | `ESPECIFICADO`           | consultas y comandos ejecutables por clase            |
+| proyección de cuarenta etapas   | `ESPECIFICADO`           | binding con estados, actores, datos y permisos reales |
+| disposición de treinta rutas    | `ESPECIFICADO`           | navegación, guards y proyecciones implementados       |
+| inicio agregado actual          | `IMPLEMENTADO_PARCIAL`   | separar actor, carril, cola y autoridad               |
+| home exclusivo del bodeguero    | `NO_IMPLEMENTADO`        | construir proyección y componentes                    |
+| validación operativa en bodega  | `PENDIENTE_DE_EVIDENCIA` | prototipo, piloto y certificación física              |
+
+---
+
+#### 14. Requisitos de prueba derivados
+
+Esta tarea crea seis requisitos y no modifica, difiere, descarta ni declara
+obsoleto ningún requisito histórico:
+
+| Identificador   | Regla protegida resumida                                                                                                                  | Estado inicial |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `TREQ-NEXO-056` | El home se resuelve desde actor efectivo, rol `bodeguero`, turno, área warehouse, permiso, territorio y relación operativa autoritativos. | `IDENTIFICADO` |
+| `TREQ-NEXO-057` | La arquitectura conserva ocho secciones, una única acción primaria y diez colas priorizadas en servidor.                                  | `IDENTIFICADO` |
+| `TREQ-NEXO-058` | Las cuarenta etapas separan trabajo de bodega, referencia contextual, otros actores, supervisión y configuración.                         | `IDENTIFICADO` |
+| `TREQ-NEXO-059` | Las treinta rutas relevantes conservan disposición por actor, etapa y tarea, y el acceso directo falla cerrado.                           | `IDENTIFICADO` |
+| `TREQ-NEXO-060` | Reclamo, concurrencia, dispositivo compartido, escaneo, handoff e idempotencia conservan atribución y evitan duplicidad.                  | `IDENTIFICADO` |
+| `TREQ-NEXO-061` | Los diez estados de interfaz no presentan datos parciales, conectividad incierta, conflicto o revocación como éxito.                      | `IDENTIFICADO` |
+
+Los seis requisitos permanecen pendientes de implementación, automatización y
+evidencia.
+
+---
+
+#### 15. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando se confirme que:
+
+- la audiencia primaria es `BODEGA_Y_ABASTECIMIENTO` mediante `bodeguero`;
+- el home pertenece solo al carril `OPERACION`;
+- existen ocho secciones y una sola acción primaria;
+- existen diez clases de cola con identidad única;
+- las cuarenta etapas tienen una decisión explícita;
+- las treinta rutas relevantes tienen disposición explícita;
+- no se inventaron URLs, procesos, actores ni permisos;
+- entrada ordinaria nace de una fuente válida y la emergencia es excepcional;
+- preparar no concede tránsito y recibir no permite autoaceptación incompatible;
+- contar no concede ajustar ni cerrar;
+- reportar condición no concede decidir disposición;
+- configuración, supervisión y finanzas permanecen excluidas;
+- stock y movimientos solo se presentan como referencia contextual;
+- la prioridad se resuelve en servidor con desempate estable;
+- los conflictos de versión o propiedad bloquean la mutación obsoleta;
+- los diez estados de interfaz fallan cerrados;
+- el dispositivo compartido exige sesión humana;
+- se distinguen `ESPECIFICADO`, `IMPLEMENTADO_PARCIAL`, `NO_IMPLEMENTADO` y
+  `PENDIENTE_DE_EVIDENCIA`;
+- se crean exactamente `TREQ-NEXO-056` a `TREQ-NEXO-061`;
+- `NEXO-UX-005` permanece únicamente reservada.
+
+---
+
+#### 16. `NEXO-WAREHOUSE-HOME-HANDOFF-001`
+
+| Destino                        | Handoff aprobado                                                                                                             |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------- |
+| `NEXO-UX-005`                  | diseñar el inicio del conductor sin reutilizar colas, custodia o comandos del bodeguero                                      |
+| `NEXO-UX-006`                  | diseñar la recepción de sede y diferencias desde la función receptora independiente                                          |
+| `NEXO-UX-007`                  | diseñar control global, autorizaciones, diferencias, ajustes y cierres fuera del home operativo                              |
+| `NEXO-UX-008`                  | organizar navegación por tareas, colas y proyecciones, no por rutas técnicas                                                 |
+| `NEXO-UX-010`                  | definir asignación, reserva, picking, faltante y preparación por línea                                                       |
+| `NEXO-UX-011`                  | definir documento, sellado, firma, despacho y transferencia de custodia                                                      |
+| `NEXO-UX-013`                  | definir recepción, cantidades, diferencias y cierre sin autoaceptación                                                       |
+| `NEXO-UX-014` a `NEXO-UX-019`  | diseñar entradas, ubicaciones, movimientos, retiros, conteos y ajustes respetando las separaciones aprobadas                 |
+| `NEXO-UX-020` a `NEXO-UX-025`  | cerrar escaneo, cantidades, errores, tablet, conectividad y piloto operativo                                                 |
+| paquete de implementación NEXO | construir proyecciones, consultas, comandos, componentes, guards, pruebas y observabilidad cuando la continuidad lo autorice |
+| certificación posterior        | validar con bodegueros reales, tablets, kioscos, impresoras, escáneres, red intermitente y operación física                  |
+
+Ningún destino anterior se inicia mediante esta tarea.
+
+---
+
+#### 17. Continuidad canónica
+
+**ÚLTIMA TAREA APROBADA**
+
+`NEXO-UX-003 — Diseñar inicio para solicitante`
+
+**TAREA ACTUAL APROBADA**
+
+`NEXO-UX-004 — Diseñar inicio para bodeguero`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`NEXO-UX-005 — Diseñar inicio para conductor`
+
+
 ### [ ] NEXO-UX-005 — Diseñar inicio para conductor
 ### [ ] NEXO-UX-006 — Diseñar inicio para receptor
 ### [ ] NEXO-UX-007 — Diseñar inicio para supervisor
