@@ -2749,5 +2749,1297 @@ reconciliación física.
 `AUTH-ERR-019 — Diferenciar error técnico y denegación`
 
 
-### [ ] AUTH-ERR-019 — Diferenciar error técnico y denegación
+### ✅ AUTH-ERR-019 — Diferenciar error técnico y denegación
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-018 — Permiso no registrado` — APROBADA
+**Tarea siguiente:** `AUTH-ERR-020 — Compartir mensajes desde vento-shell` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, causal, funcional, transaccional, de seguridad, experiencia, observabilidad y reconciliación física de la frontera entre una denegación de autorización válida y un fallo técnico que impide producir una decisión canónica completa
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable cómo Vento OS distingue entre:
+
+1. una evaluación completada correctamente cuyo resultado final es `DENY`; y
+2. un fallo técnico que impide construir, validar, emitir o utilizar una
+   `AuthorizationDecision@1.0.0` completa.
+
+La regla raíz queda:
+
+```text
+EVALUACION COMPLETA Y CONTRACTUALMENTE VALIDA
++
+FINAL_DECISION.OUTCOME = DENY
+→
+DENEGACION DE AUTORIZACION
+→
+DECISION_ID VALIDO
+→
+RAZONES CANONICAS
+```
+
+```text
+FUENTE, RESOLVER, TRANSPORTE, RPC, SERIALIZADOR
+O DEPENDENCIA TECNICA OBLIGATORIA NO CONCLUYENTE
++
+NO ES POSIBLE CONSTRUIR EL CONTRATO COMPLETO
+→
+FALLO TECNICO
+→
+SIN AuthorizationDecision PARCIAL
+→
+SIN DECISION_ID PUBLICADO
+→
+AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+```
+
+En ambos casos la acción empresarial queda bloqueada. Sin embargo, solo el
+primer caso constituye una denegación de autorización.
+
+```text
+BLOQUEAR EJECUCION
+≠
+AFIRMAR DENEGACION
+```
+
+```text
+NO PUDO VERIFICARSE
+≠
+NO ESTA AUTORIZADO
+```
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `AUTHORIZATION-TECHNICAL-UNAVAILABILITY-CONTRACT-001`, que congela la
+   identidad pública, forma discriminada, respuesta, recuperación,
+   transacción, privacidad y observabilidad del fallo técnico;
+2. `AUTHORIZATION-RESULT-STATE-DECISION-MATRIX-001`, que decide veinticuatro
+   escenarios y separa decisión válida, configuración inválida, permiso no
+   registrado e indisponibilidad técnica;
+3. `AUTHORIZATION-TECHNICAL-CHANNEL-RESPONSE-MATRIX-001`, que materializa diez
+   canales con semántica equivalente;
+4. `AUTHORIZATION-TECHNICAL-APPLICATION-COVERAGE-REGISTER-001`, que decide el
+   alcance para las diez aplicaciones canónicas;
+5. `AUTHORIZATION-TECHNICAL-PHYSICAL-RECONCILIATION-001`, que registra el
+   snapshot desplegado de solo lectura y catorce brechas con destino canónico.
+
+Cobertura materializada:
+
+| Elemento                                        |                   Cantidad |
+| ----------------------------------------------- | -------------------------: |
+| Código público canónico                         |                          1 |
+| Estado público canónico                         |                          1 |
+| Categoría pública                               | 1, `TECHNICAL_UNAVAILABLE` |
+| Estado HTTP no navegacional                     |                   1, `503` |
+| Variantes raíz del resultado de evaluación      |                          2 |
+| Estados de fuente tipados                       |                          4 |
+| Familias privadas de fallo técnico              |                          8 |
+| Escenarios con decisión explícita               |                         24 |
+| Canales con respuesta explícita                 |                         10 |
+| Aplicaciones canónicas reconciliadas            |                         10 |
+| Funciones físicas relevantes inspeccionadas     |                          8 |
+| Funciones con estado técnico discriminado       |                          0 |
+| Funciones con handler de excepción contractual  |                          0 |
+| Funciones ejecutables por `authenticated`       |                          8 |
+| Funciones ejecutables por `anon` y `PUBLIC`     |                          2 |
+| Repositorios con consumo booleano inspeccionado |                          6 |
+| Guards server-side inspeccionados               |                          5 |
+| Middleware de SHELL inspeccionado               |                          1 |
+| Brechas físicas registradas                     |                         14 |
+| Requisitos de prueba derivados                  |                         10 |
+
+Las cifras físicas son un snapshot agregado de solo lectura. No certifican
+implementación ni paridad entre ambientes.
+
+---
+
+#### 3. Identidad canónica del fallo técnico
+
+La identidad pública única es:
+
+```text
+reason_code = AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+```
+
+| Propiedad                            | Valor                                  |
+| ------------------------------------ | -------------------------------------- |
+| Dominio                              | `AUTHORIZATION_PLATFORM`               |
+| Estado público                       | `AUTHORIZATION_EVALUATION_UNAVAILABLE` |
+| Categoría pública                    | `TECHNICAL_UNAVAILABLE`                |
+| Resultado de evaluación              | `TECHNICAL_FAILURE`                    |
+| Decisión de autorización emitida     | `false`                                |
+| Estado HTTP no navegacional          | `503 Service Unavailable`              |
+| Ejecutable                           | `false`                                |
+| Sesión                               | preservada                             |
+| Efectos empresariales                | `0`                                    |
+| Recuperación primaria                | `RETRY_LATER` cuando sea seguro        |
+| Recuperación alternativa             | `CONTACT_SUPPORT`                      |
+| Reproducción automática de la acción | prohibida                              |
+
+Quedan prohibidos como identidad pública alternativa:
+
+- `DENY`;
+- `FORBIDDEN`;
+- `NO_PERMISSION`;
+- `AUTH_ERROR` sin clasificación;
+- `PERMISSION_NOT_FOUND`;
+- `CONFIGURATION_INCONSISTENT`;
+- `LOGIN_REQUIRED`;
+- un booleano `false`;
+- el código bruto de PostgreSQL o Supabase;
+- el texto de una excepción;
+- el nombre de una tabla, función o proveedor.
+
+---
+
+#### 4. Distinción contractual fundamental
+
+Una denegación válida requiere un objeto completo:
+
+```text
+AuthorizationDecision@1.0.0
++
+decision_id
++
+decided_at
++
+context_fingerprint
++
+permission_contract
++
+resource
++
+lane decisions
++
+blocked_reasons
++
+final_decision.outcome = DENY
++
+audit
+```
+
+Un fallo técnico no podrá rellenar esos campos con valores sintéticos.
+
+```text
+FALLO TECNICO
+→
+NO AuthorizationDecision PARCIAL
+```
+
+```text
+FALLO TECNICO
+→
+NO final_decision.outcome = DENY FABRICADO
+```
+
+```text
+FALLO TECNICO
+→
+BLOQUEO DE EJECUCION SIN JUICIO AUTORIZATIVO
+```
+
+La ausencia de decisión positiva no es suficiente para afirmar una decisión
+negativa.
+
+---
+
+#### 5. Unión discriminada del resultado
+
+La frontera canónica deberá representar el resultado mediante una unión
+cerrada equivalente a:
+
+```ts
+type AuthorizationEvaluationResult =
+  | {
+      status: "DECIDED";
+      decision: AuthorizationDecision;
+    }
+  | {
+      status: "TECHNICAL_FAILURE";
+      failure: AuthorizationTechnicalFailure;
+    };
+```
+
+Invariantes:
+
+1. `DECIDED` siempre contiene una decisión completa;
+2. `TECHNICAL_FAILURE` nunca contiene una decisión;
+3. no existe una variante híbrida;
+4. no existe `decision: null` dentro de `DECIDED`;
+5. no existe `failure: null` dentro de `TECHNICAL_FAILURE`;
+6. una variante desconocida falla cerrada;
+7. ningún consumidor reduce la unión a booleano antes de tratar la variante;
+8. `FinalDecision` conserva exclusivamente `ALLOW | DENY`.
+
+Esta tarea no agrega un tercer outcome a `AuthorizationDecision`.
+
+---
+
+#### 6. Contrato del fallo técnico
+
+`AUTHORIZATION-TECHNICAL-UNAVAILABILITY-CONTRACT-001` tendrá una forma lógica
+equivalente a:
+
+```ts
+type AuthorizationTechnicalFailure = {
+  contract: "AUTHORIZATION-TECHNICAL-UNAVAILABILITY-CONTRACT-001";
+  contract_version: "1.0.0";
+  reason_code: "AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE";
+  state: "AUTHORIZATION_EVALUATION_UNAVAILABLE";
+  category: "TECHNICAL_UNAVAILABLE";
+  result_status: "TECHNICAL_FAILURE";
+  decision_produced: false;
+  executable: false;
+  retryable: boolean;
+  retry_after_seconds: number | null;
+  session_preserved: true;
+  effects_committed: false;
+  recovery_action: "RETRY_LATER" | "CONTACT_SUPPORT";
+  evaluation_attempt_id: string;
+  correlation_id: string;
+  support_code: string;
+  occurred_at: string;
+};
+```
+
+La forma pública no incluye:
+
+- `decision_id`;
+- `permission_key`;
+- stack trace;
+- SQLSTATE;
+- nombre de proveedor;
+- hostname;
+- credenciales;
+- payload empresarial;
+- actor, rol o recurso completos.
+
+---
+
+#### 7. Identificadores y atribución
+
+El fallo técnico utilizará:
+
+```text
+evaluation_attempt_id
+```
+
+para identificar el intento de evaluación.
+
+Reglas:
+
+- es generado en servidor;
+- es único por intento externo;
+- permanece estable durante reintentos internos del mismo intento;
+- no es un `decision_id`;
+- no es token de capacidad;
+- no se reutiliza para una nueva solicitud del usuario;
+- se vincula con `correlation_id` y `support_code`;
+- no concede acceso ni confirma denegación.
+
+Un `decision_id` candidato generado internamente antes del fallo se descarta y
+no se publica, persiste ni reutiliza como decisión válida.
+
+---
+
+#### 8. Estados de fuente obligatorios
+
+Toda fuente autoritativa utilizada por el evaluador deberá producir uno de
+estos estados:
+
+```ts
+type AuthorizationSourceStatus =
+  | "CONCLUSIVE"
+  | "NOT_APPLICABLE"
+  | "INVALID"
+  | "UNAVAILABLE";
+```
+
+Semántica:
+
+| Estado           | Significado                                                            | Enrutamiento                                     |
+| ---------------- | ---------------------------------------------------------------------- | ------------------------------------------------ |
+| `CONCLUSIVE`     | la fuente respondió completa, vigente y verificable                    | continuar o producir resultado causal específico |
+| `NOT_APPLICABLE` | el contrato no exige la fuente para esta solicitud                     | no consultar o ignorar sin fabricar datos        |
+| `INVALID`        | la fuente respondió de forma concluyente con contradicción contractual | `AUTH-ERR-017` o razón estructural propietaria   |
+| `UNAVAILABLE`    | no existe evidencia suficiente para afirmar el contenido de la fuente  | `AUTH-ERR-019` cuando la fuente es obligatoria   |
+
+Queda prohibido representar los cuatro estados mediante:
+
+```text
+true
+false
+null
+[]
+```
+
+sin procedencia adicional.
+
+---
+
+#### 9. Condición exacta de aplicabilidad
+
+`AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE` aplica si y solo si:
+
+1. la superficie exige una evaluación de autorización;
+2. el contrato de invocación permite identificar la operación;
+3. al menos una fuente, resolver, transporte, serializer o dependencia
+   obligatoria queda `UNAVAILABLE`;
+4. esa indisponibilidad impide construir o validar el resultado completo;
+5. no existe una decisión completa emitida antes del fallo;
+6. no se produjo un efecto empresarial;
+7. no existe una causa concluyente propietaria anterior que permita cerrar la
+   solicitud sin la fuente fallida;
+8. el intento se registra de forma técnica y minimizada;
+9. la sesión se conserva;
+10. la acción no se reproduce automáticamente.
+
+Forma lógica:
+
+```text
+PROTECTED_OPERATION = TRUE
+AND
+MANDATORY_AUTH_SOURCE_STATUS = UNAVAILABLE
+AND
+FULL_DECISION_CONSTRUCTIBLE = FALSE
+AND
+BUSINESS_EFFECTS_COMMITTED = FALSE
+→
+AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+```
+
+---
+
+#### 10. Qué constituye indisponibilidad técnica
+
+Pertenecen a `UNAVAILABLE`, cuando impiden una conclusión confiable:
+
+- timeout;
+- error DNS o de red;
+- conexión rechazada o agotamiento de pool;
+- RPC no ejecutable o respuesta de transporte fallida;
+- proveedor temporalmente no disponible;
+- respuesta truncada, parcial o no verificable;
+- lectura que no puede demostrar freshness o fingerprint requerido;
+- error de serialización o deserialización;
+- fallo del validador de invariantes que impide producir el contrato;
+- versión o hash que no pudieron leerse;
+- fuente obligatoria que no responde dentro del presupuesto aprobado;
+- persistencia obligatoria de evidencia no disponible antes de ejecutar;
+- dependencia técnica cuyo estado no puede determinarse.
+
+La clasificación se realiza con códigos privados normalizados, no con el texto
+libre de una excepción.
+
+---
+
+#### 11. Qué no constituye indisponibilidad técnica
+
+No utiliza `AUTH-ERR-019`:
+
+- sesión ausente o expirada de forma concluyente;
+- identidad inactiva;
+- aplicación registrada sin acceso;
+- permiso exacto registrado pero no concedido;
+- explicit deny;
+- default deny;
+- scope mismatch;
+- ausencia ordinaria de turno, check-in, sede, área o rol;
+- dispositivo coherente que restringe la solicitud;
+- simulación que intenta producir efectos;
+- configuración leída de forma concluyente y contradictoria;
+- clave exacta concluyentemente ausente;
+- recurso existente en estado incompatible;
+- campo no autorizado;
+- dependencia de permiso denegada;
+- concurrencia o idempotencia fallidas de forma concluyente.
+
+Todos esos hechos pueden bloquear ejecución, pero tienen un propietario causal
+distinto.
+
+---
+
+#### 12. Frontera con AUTH-ERR-017
+
+La diferencia queda:
+
+```text
+FUENTE LEIDA COMPLETA
++
+CONTRADICCION DEMOSTRADA
+→
+INVALID
+→
+AUTH-ERR-017
+```
+
+```text
+FUENTE NO LEIDA O NO VERIFICABLE
++
+NO PUEDE DEMOSTRARSE SU CONTENIDO
+→
+UNAVAILABLE
+→
+AUTH-ERR-019
+```
+
+Ejemplos:
+
+| Caso                                                               | Clasificación |
+| ------------------------------------------------------------------ | ------------- |
+| schema completo con enum desconocido                               | `INVALID`     |
+| versión completa y concluyentemente incompatible                   | `INVALID`     |
+| dos filas autoritativas contradictorias                            | `INVALID`     |
+| metadata contractual obligatoria ausente en una respuesta completa | `INVALID`     |
+| timeout antes de leer metadata                                     | `UNAVAILABLE` |
+| respuesta truncada antes de validar versión                        | `UNAVAILABLE` |
+| hash no pudo consultarse                                           | `UNAVAILABLE` |
+| snapshot mezclado demostrado                                       | `INVALID`     |
+| freshness no demostrable por falla de fuente                       | `UNAVAILABLE` |
+
+No se elegirá silenciosamente entre `017` y `019`.
+
+---
+
+#### 13. Frontera con AUTH-ERR-018
+
+La diferencia queda:
+
+```text
+CATALOGO CONCLUYENTE
++
+VERSION PUBLICADA COMPATIBLE
++
+BUSQUEDA EXACTA
++
+MATCH_COUNT = 0
+→
+AUTH-ERR-018
+```
+
+```text
+CATALOGO NO RESPONDE
+O NO PUEDE VERIFICARSE
+→
+AUTH-ERR-019
+```
+
+Queda prohibido:
+
+- convertir un error RPC en `match_count = 0`;
+- convertir una tabla no visible por RLS en permiso ausente;
+- convertir una respuesta vacía sin versión en ausencia concluyente;
+- convertir una excepción del parser en permiso no registrado;
+- usar caché sin fingerprint para declarar la ausencia.
+
+---
+
+#### 14. Frontera con una denegación válida
+
+Existe una denegación válida cuando:
+
+1. el contrato de entrada es válido;
+2. el contexto fue resuelto suficientemente;
+3. la aplicación y el permiso fueron identificados;
+4. el recurso y las fuentes obligatorias fueron resueltos;
+5. los datasets requeridos fueron cargados o declarados no aplicables;
+6. los carriles aplicables tienen outcomes contractuales;
+7. las restricciones finales fueron evaluadas;
+8. las razones se consolidaron;
+9. los invariantes se validaron;
+10. la decisión completa fue serializada.
+
+Resultado:
+
+```text
+status = DECIDED
+final_decision.outcome = DENY
+```
+
+Un consumidor deberá poder diferenciar ese resultado de:
+
+```text
+status = TECHNICAL_FAILURE
+```
+
+sin analizar texto humano.
+
+---
+
+#### 15. Fuentes obligatorias y no aplicables
+
+La indisponibilidad solo bloquea cuando afecta una fuente necesaria para la
+solicitud actual.
+
+```text
+SOURCE = NOT_APPLICABLE
+→
+NO FALLO TECNICO
+```
+
+```text
+SOURCE = MANDATORY
++
+SOURCE = UNAVAILABLE
+→
+NO DECISION
+```
+
+Ejemplos:
+
+- el carril base no consulta turno cuando no participa;
+- un permiso `N` no exige check-in;
+- un contrato `NON_RESOURCE` no consulta un resolver empresarial;
+- una fuente de simulación no participa en una evaluación real;
+- una integración no aplicable no se registra como fallida.
+
+El silencio no equivale a `NOT_APPLICABLE`; la no aplicabilidad debe derivarse
+del contrato.
+
+---
+
+#### 16. Modalidad y composición por carriles
+
+Una fuente obligatoria indisponible para un carril aplicable impide producir
+una `LaneDecision` completa para ese carril.
+
+Por tanto:
+
+| Modalidad              | Regla ante fuente obligatoria indisponible                                                                  |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------- |
+| `BASE_ONLY`            | no emitir decisión                                                                                          |
+| `OPERATIONAL_ONLY`     | no emitir decisión                                                                                          |
+| `BASE_OR_OPERATIONAL`  | no emitir decisión si la fuente pertenece a un carril aplicable o puede ocultar una restricción transversal |
+| `BASE_AND_OPERATIONAL` | no emitir decisión                                                                                          |
+
+En `BASE_OR_OPERATIONAL` solo se preserva una decisión ya completa cuando el
+fallo posterior afecta exclusivamente una dependencia no autoritativa y
+opcional, como telemetría no obligatoria. No se representa un carril aplicable
+`UNAVAILABLE` como `DENY`, `NOT_APPLICABLE` ni `ALLOW`.
+
+Queda prohibido:
+
+- prestar un resultado del otro carril para rellenar el carril fallido;
+- asumir que una fuente caída no contiene un deny;
+- omitir un carril aplicable para completar el contrato;
+- convertir indisponibilidad en default deny;
+- emitir `ALLOW` con evidencia obligatoria incompleta.
+
+---
+
+#### 17. Momento del fallo y frontera transaccional
+
+AUTH-ERR-019 aplica únicamente cuando puede afirmarse:
+
+```text
+effects_committed = false
+```
+
+La secuencia mínima para una mutación será:
+
+```text
+CONSTRUIR SOLICITUD
+→ EVALUAR AUTORIZACION
+→ OBTENER RESULTADO DECIDED
+→ VERIFICAR ALLOW
+→ REVALIDAR CONTEXTO Y RECURSO
+→ EJECUTAR EFECTO
+```
+
+Si un fallo ocurre después de iniciar efectos empresariales y no puede
+probarse atomicidad o rollback completo:
+
+- no se afirmará `effects_committed = false`;
+- no se utilizará AUTH-ERR-019 como resultado final de la operación;
+- se activará el contrato de incidente y reconciliación propietario del
+  proceso;
+- se conservará evidencia de estado incierto;
+- no se reintentará automáticamente la mutación.
+
+Esta tarea no sustituye los incidentes funcionales de cada dominio.
+
+---
+
+#### 18. Persistencia y auditoría obligatoria
+
+Cuando el contrato de una operación exige persistir la decisión antes del
+efecto, una falla de persistencia produce:
+
+```text
+TECHNICAL_FAILURE
++
+NO EJECUCION
+```
+
+Aunque exista un candidato completo en memoria:
+
+- no se considera decisión emitida;
+- no se expone el `decision_id` candidato;
+- no se marca la idempotency key como éxito;
+- no se ejecuta el dominio;
+- se registra el intento técnico cuando sea posible;
+- una solicitud nueva deberá reevaluar todo.
+
+Si la persistencia o telemetría es explícitamente opcional, su falla no cambia
+una decisión completa ya emitida, pero genera observabilidad técnica separada.
+
+---
+
+#### 19. Reintentos internos
+
+Los reintentos internos solo se permiten cuando:
+
+- la lectura es idempotente;
+- existe un presupuesto máximo;
+- existe backoff;
+- la fuente clasifica el fallo como transitorio;
+- el mismo `evaluation_attempt_id` se conserva;
+- no se inició ningún efecto empresarial;
+- cada intento mantiene trazabilidad;
+- el límite no oculta una latencia excesiva.
+
+Queda prohibido:
+
+- bucle ilimitado;
+- reintentar un error contractual;
+- reintentar un explicit deny;
+- cambiar de fuente semántica como fallback;
+- usar datos stale para “rescatar” la evaluación;
+- transformar agotamiento de reintentos en `DENY`.
+
+---
+
+#### 20. Reintento visible y recuperación
+
+Después de emitir el envelope público:
+
+- no se reproduce automáticamente la acción;
+- no se conserva una mutación pendiente para ejecutarla sin nueva intención;
+- el usuario podrá iniciar una solicitud nueva cuando `retryable = true`;
+- el cliente respetará `retry_after_seconds` cuando exista;
+- cada solicitud nueva obtiene nuevo `evaluation_attempt_id`;
+- la autorización se resuelve desde fuentes frescas;
+- la sesión permanece;
+- una clave de idempotencia fallida no se marca como completada.
+
+`retryable = false` se utiliza cuando el fallo requiere soporte o despliegue,
+no cuando el usuario carece de autorización.
+
+---
+
+#### 21. Familias privadas de fallo técnico
+
+La auditoría podrá utilizar estas familias privadas sin crear códigos públicos
+alternativos:
+
+| Familia privada                          | Condición                                                  |
+| ---------------------------------------- | ---------------------------------------------------------- |
+| `NETWORK_OR_DNS_FAILURE`                 | no se alcanzó la dependencia                               |
+| `TIMEOUT_BUDGET_EXHAUSTED`               | no hubo respuesta confiable dentro del presupuesto         |
+| `CONNECTION_OR_POOL_UNAVAILABLE`         | no fue posible adquirir conexión                           |
+| `RPC_OR_PROVIDER_FAILURE`                | la frontera técnica devolvió error no contractual          |
+| `PARTIAL_OR_UNVERIFIABLE_RESPONSE`       | respuesta incompleta, truncada o sin evidencia suficiente  |
+| `SOURCE_FRESHNESS_UNPROVABLE`            | no pudo validarse versión, hash, snapshot o vigencia       |
+| `SERIALIZATION_OR_INVARIANT_FAILURE`     | no pudo producirse el contrato completo                    |
+| `MANDATORY_EVIDENCE_PERSISTENCE_FAILURE` | la operación exige evidencia durable y no pudo persistirse |
+
+La causa privada no se expone a un consumidor ordinario.
+
+---
+
+#### 22. Envelope público
+
+Respuesta mínima:
+
+```json
+{
+  "ok": false,
+  "result_status": "TECHNICAL_FAILURE",
+  "reason_code": "AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE",
+  "state": "AUTHORIZATION_EVALUATION_UNAVAILABLE",
+  "category": "TECHNICAL_UNAVAILABLE",
+  "message_code": "AUTHORIZATION_CHECK_UNAVAILABLE",
+  "decision_produced": false,
+  "executable": false,
+  "retryable": true,
+  "retry_after_seconds": 30,
+  "session_preserved": true,
+  "effects_committed": false,
+  "recovery_action": "RETRY_LATER",
+  "evaluation_attempt_id": "opaque-attempt-id",
+  "support_code": "opaque-support-code",
+  "correlation_id": "opaque-correlation-id"
+}
+```
+
+Estado HTTP:
+
+```text
+503 Service Unavailable
+```
+
+Cuando no existe un tiempo fiable, `retry_after_seconds` será `null`. El
+cliente no inventará un valor ni reintentará en bucle.
+
+---
+
+#### 23. Copy y experiencia
+
+Copy aprobado en español:
+
+| Elemento                                | Texto exacto                                                                                                                                          |
+| --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Título                                  | `No pudimos verificar el acceso`                                                                                                                      |
+| Mensaje                                 | `Ocurrió un problema técnico al verificar tu acceso. No se realizó ningún cambio. Intenta nuevamente en unos minutos o informa el código de soporte.` |
+| Acción primaria cuando sea reintentable | `Intentar de nuevo`                                                                                                                                   |
+| Acción de soporte                       | `Copiar código de soporte`                                                                                                                            |
+| Acción secundaria                       | `Volver`                                                                                                                                              |
+| Confirmación de efectos                 | `No se realizó ningún cambio.`                                                                                                                        |
+| Código visible                          | `AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE`                                                                                                           |
+
+Reglas:
+
+1. no afirmar “no tienes permiso”;
+2. no afirmar “tu rol no puede hacerlo”;
+3. no redirigir a login por la causa técnica;
+4. no cerrar sesión;
+5. no borrar cookies;
+6. no mostrar stack trace;
+7. no mostrar la clave de permiso;
+8. no mostrar proveedor, SQL o infraestructura;
+9. anunciar accesiblemente título, mensaje, estado y recuperación;
+10. no presentar el fallo como sanción o configuración del trabajador.
+
+---
+
+#### 24. Privacidad y minimización
+
+La respuesta pública no revelará:
+
+- nombre de función o tabla;
+- hostname, región o proyecto;
+- clave solicitada;
+- catálogo completo;
+- rol, grant o deny consultado;
+- actor o recurso completo;
+- SQLSTATE;
+- detalles de red;
+- stack trace;
+- secretos, cookies o tokens;
+- payload empresarial;
+- versión interna completa cuando facilite enumeración.
+
+El `support_code` permite correlación. Una interfaz de diagnóstico autorizada
+podrá consultar evidencia ampliada mediante un permiso independiente.
+
+---
+
+#### 25. Auditoría técnica separada
+
+Cada fallo deberá permitir registrar, cuando la plataforma de evidencia esté
+disponible:
+
+```text
+evaluation_attempt_id
+correlation_id
+support_code
+request_source
+consumer_id
+app_code
+permission_key privada
+operation_kind
+failure_stage
+private_failure_family
+sanitized_provider_code
+source_status = UNAVAILABLE
+retry_count
+retry_budget
+duration_ms
+source_versions conocidas
+source_fingerprints conocidos
+session_preserved = true
+effects_committed = false
+occurred_at
+```
+
+No registra una `AuthorizationDecision` inexistente.
+
+Un fallo de la propia plataforma de auditoría se reporta por un canal de
+emergencia minimizado y no justifica ejecutar la acción sin evidencia cuando
+la persistencia es obligatoria.
+
+---
+
+#### 26. Métricas y observabilidad
+
+Se separan dos familias métricas:
+
+```text
+authorization_decisions_total{outcome="DENY", reason_category=...}
+```
+
+```text
+authorization_evaluation_failures_total{failure_family=..., stage=...}
+```
+
+Reglas:
+
+- un fallo técnico no incrementa denegaciones;
+- una denegación no incrementa indisponibilidad;
+- la tasa de `DENY` no se usa como disponibilidad del evaluador;
+- la tasa de 503 no se interpreta como conducta del actor;
+- las alertas técnicas usan agregados y no PII;
+- el diagnóstico conserva etapa, latencia, fuente y presupuesto;
+- una recuperación posterior no reescribe el evento histórico;
+- la telemetría opcional no es autoridad de ejecución.
+
+---
+
+#### 27. Códigos HTTP y caché
+
+| Resultado           |                                   HTTP | Cacheable                      | Sesión                           |
+| ------------------- | -------------------------------------: | ------------------------------ | -------------------------------- |
+| `DECIDED + ALLOW`   |                        según operación | según contrato de la operación | preservada                       |
+| `DECIDED + DENY`    | código de la razón pública propietaria | no por defecto                 | preservada salvo razón de sesión |
+| `TECHNICAL_FAILURE` |                                  `503` | no                             | preservada                       |
+
+El `503` podrá incluir `Retry-After` únicamente cuando exista una política
+calculada y segura.
+
+Queda prohibido:
+
+- usar `401` para una dependencia caída;
+- usar `403` para un timeout;
+- usar `404` para ocultar indisponibilidad;
+- cachear el 503 como denegación;
+- limpiar sesión por un 503;
+- convertir un error de transporte en pantalla de no acceso.
+
+---
+
+#### 28. RLS y Data API
+
+RLS puede devolver cero filas por múltiples causas y no transporta por sí sola
+la clasificación de la decisión.
+
+```text
+ZERO ROWS
+≠
+DENY DEMOSTRADO
+```
+
+```text
+ZERO ROWS
+≠
+TECHNICAL FAILURE DEMOSTRADO
+```
+
+La capa de servicio deberá:
+
+1. resolver o evaluar mediante una frontera autoritativa;
+2. distinguir error de transporte de resultado de policy;
+3. no usar ausencia de filas como única explicación pública;
+4. no ampliar acceso si falla el preflight;
+5. no revelar existencia de datos protegidos;
+6. mantener equivalencia certificada entre predicados optimizados y el núcleo.
+
+Una policy sigue fallando cerrada, pero el consumidor no puede inventar la
+causa sin evidencia.
+
+---
+
+#### 29. Realtime, offline y procesos asíncronos
+
+Realtime:
+
+- no abre una suscripción si la evaluación técnica no concluye;
+- no conserva una suscripción con fingerprint inválido;
+- no presenta cierre técnico como deny del actor;
+- requiere una suscripción nueva después de recuperar.
+
+Offline:
+
+- una cola no ejecuta con autorización desconocida;
+- no convierte un 503 en denegación permanente;
+- no reproduce una mutación automáticamente después de recuperar;
+- exige intención nueva o confirmación explícita según el proceso.
+
+Jobs, colas, webhooks e integraciones:
+
+- pueden aplicar reintentos internos limitados;
+- reevaluarán autorización en cada intento ejecutable;
+- no confirmarán éxito ante fallo técnico;
+- después de agotar presupuesto quedarán bloqueados o en dead-letter;
+- un replay posterior será explícito, auditable y reautorizado.
+
+---
+
+#### 30. `AUTHORIZATION-RESULT-STATE-DECISION-MATRIX-001`
+
+|    # | Escenario                                                                      | Resultado                                   | Propietario o acción                                                       |
+| ---: | ------------------------------------------------------------------------------ | ------------------------------------------- | -------------------------------------------------------------------------- |
+|    1 | superficie pública sin autorización                                            | continuar                                   | no aplica                                                                  |
+|    2 | envelope ausente o mal formado                                                 | error contractual                           | `AUTH-CTX-026`                                                             |
+|    3 | sesión concluyentemente ausente                                                | `DECIDED + DENY` o bloqueo previo           | `AUTH-ERR-001`                                                             |
+|    4 | identidad concluyentemente inactiva                                            | `DECIDED + DENY`                            | `AUTH-ERR-002`                                                             |
+|    5 | aplicación registrada y evaluación completa sin acceso                         | `DECIDED + DENY`                            | `AUTH-ERR-003`                                                             |
+|    6 | permiso registrado sin allow suficiente                                        | `DECIDED + DENY`                            | default deny o razón de carril                                             |
+|    7 | explicit deny coincidente                                                      | `DECIDED + DENY`                            | razón de deny aplicable                                                    |
+|    8 | ausencia ordinaria de turno, check-in, sede, área o rol                        | `DECIDED + DENY` cuando el permiso lo exige | `AUTH-ERR-005` a `AUTH-ERR-014`                                            |
+|    9 | dispositivo coherente restringe la solicitud                                   | `DECIDED + DENY`                            | `AUTH-ERR-015`                                                             |
+|   10 | simulación intenta ejecutar                                                    | `DECIDED + DENY`                            | `AUTH-ERR-016`                                                             |
+|   11 | configuración completa pero contradictoria                                     | `DECIDED + DENY`                            | `AUTH-ERR-017`                                                             |
+|   12 | catálogo completo y clave exacta ausente                                       | `DECIDED + DENY`                            | `AUTH-ERR-018`                                                             |
+|   13 | DNS, red o conexión impiden consultar fuente obligatoria                       | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
+|   14 | RPC devuelve error técnico                                                     | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
+|   15 | presupuesto de timeout agotado                                                 | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
+|   16 | respuesta parcial o no verificable                                             | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
+|   17 | no puede demostrarse versión, hash o freshness                                 | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
+|   18 | resolver de recurso obligatorio no responde                                    | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
+|   19 | serializer o validador impide producir contrato completo                       | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
+|   20 | RLS devuelve cero filas sin preflight concluyente                              | bloquear sin atribuir causa                 | reevaluar por frontera autoritativa; si no está disponible, `AUTH-ERR-019` |
+|   21 | `BASE_AND_OPERATIONAL` con un carril denegado y otro técnicamente indisponible | `TECHNICAL_FAILURE`                         | no fabricar `DENY` completo                                                |
+|   22 | `BASE_OR_OPERATIONAL` con fuente obligatoria de un carril indisponible         | `TECHNICAL_FAILURE`                         | no omitir carril aplicable ni posible deny transversal                     |
+|   23 | decisión completa ya emitida y falla telemetría opcional                       | conservar decisión                          | incidente de observabilidad separado                                       |
+|   24 | falla persistencia obligatoria antes del efecto                                | `TECHNICAL_FAILURE` y cero efectos          | nueva solicitud después de recuperar                                       |
+
+La matriz no permite `ALLOW`, `DENY` ni `NOT_APPLICABLE` sintéticos para una
+fuente obligatoria indisponible.
+
+---
+
+#### 31. Precedencia causal
+
+Orden mínimo:
+
+```text
+1. naturaleza publica o protegida de la superficie
+2. validez del contrato de invocacion
+3. disponibilidad de fuentes obligatorias para construir la evaluacion
+4. autenticacion e identidad concluyentes
+5. aplicacion y permiso exactos
+6. integridad contractual y de catalogo
+7. contexto, recurso y datasets
+8. carriles, denies, allows y prerrequisitos
+9. restricciones finales
+10. decision completa o fallo tecnico discriminado
+11. efecto empresarial
+```
+
+Reglas:
+
+- una indisponibilidad impide afirmar hechos posteriores no observados;
+- una causa concluyente anterior no se degrada a fallo técnico;
+- una denegación completa no se reescribe por un fallo opcional posterior;
+- `AUTH-ERR-017` exige contradicción concluyente;
+- `AUTH-ERR-018` exige cero coincidencias concluyentes;
+- `AUTH-ERR-019` exige imposibilidad de concluir una fuente obligatoria;
+- una decisión parcial no se serializa como válida;
+- ningún efecto precede una variante `DECIDED + ALLOW` completa.
+
+---
+
+#### 32. `AUTHORIZATION-TECHNICAL-CHANNEL-RESPONSE-MATRIX-001`
+
+| Canal                                 | Detección mínima                                         | Respuesta                                    | Recuperación                    | Efectos |
+| ------------------------------------- | -------------------------------------------------------- | -------------------------------------------- | ------------------------------- | ------: |
+| Launcher y navegación                 | adapter server-side distingue sesión, deny y dependencia | estado técnico; no login ni no-access        | retry explícito o volver        |       0 |
+| RSC y render server-side              | frontera tipada antes de datos protegidos                | componente seguro y `503` semántico          | solicitud nueva                 |       0 |
+| Server Actions                        | evaluación antes de transacción                          | resultado tipado sin lanzar texto al cliente | retry explícito                 |       0 |
+| Route Handlers y API                  | handler central trata la unión discriminada              | envelope JSON y `503`                        | respetar backoff                |       0 |
+| RPC y PostgREST                       | adapter separa error RPC de decisión                     | error/envelope controlado; no booleano       | nueva invocación                |       0 |
+| RLS y Data API                        | preflight o servicio autoritativo                        | cero filas no recibe causa inventada         | evaluación concluyente nueva    |       0 |
+| Edge Functions                        | evaluador común antes de efectos o secret key            | envelope equivalente                         | retry limitado o soporte        |       0 |
+| Realtime                              | autorización de canal y fingerprint vigentes             | no suscribir o cerrar técnicamente           | suscripción nueva               |       0 |
+| Cliente offline y caché               | versión, fingerprint y estado discriminado               | operación no ejecutable; no deny permanente  | intención nueva                 |       0 |
+| Jobs, colas, webhooks e integraciones | worker distingue resultado y transporte                  | retry interno limitado o dead-letter         | replay explícito y reautorizado |       0 |
+
+Todos los canales conservan el mismo código público y no convierten el fallo en
+login, permiso ausente, lista vacía, `false` o excepción sin contrato.
+
+---
+
+#### 33. `AUTHORIZATION-TECHNICAL-APPLICATION-COVERAGE-REGISTER-001`
+
+| Aplicación | Decisión ante fallo técnico                                                                                               |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------- |
+| SHELL      | launcher, sesión y contratos compartidos preservan sesión; falta de configuración o excepción no se presentan como login  |
+| ANIMA      | turnos, asistencia, documentos y equipo distinguen estado no cargado de permiso denegado; no vacían el mapa como decisión |
+| AURA       | su condición diferida no es indisponibilidad; una dependencia técnica real se clasifica sin fabricar capacidades          |
+| FOGO       | recetas, producción y lotes bloquean antes de efectos y no muestran “sin permiso” por error RPC                           |
+| NEXO       | inventario, conteos y remisiones separan deny, permiso no registrado y servicio no disponible                             |
+| NUMERA     | costos, finanzas y exportaciones no devuelven datos parciales ni convierten dependencia caída en acceso denegado          |
+| ORIGO      | órdenes, proveedores y recepciones bloquean antes de persistir y conservan intención sin replay automático                |
+| PASS       | autorización de cliente permanece separada; solo capacidades internas modeladas usan este contrato técnico compartido     |
+| PULSO      | venta, pago, caja, impresión e integración bloquean antes de cualquier transacción o comando físico                       |
+| VISO       | administración y diagnóstico muestran estado técnico separado; role override no convierte un error en deny concluyente    |
+
+Reconciliación:
+
+```text
+aplicaciones esperadas = 10
+aplicaciones materializadas = 10
+faltantes = 0
+duplicados = 0
+aplicaciones autorizadas con fuente obligatoria indisponible = 0
+```
+
+---
+
+#### 34. Snapshot físico de solo lectura
+
+El estado desplegado inspeccionado muestra:
+
+| Elemento                                                      |          Resultado observado |
+| ------------------------------------------------------------- | ---------------------------: |
+| funciones relevantes de contexto y permiso                    |                            8 |
+| funciones con resultado booleano directo o incluido           |                            8 |
+| funciones con handler de excepción contractual                |                            0 |
+| funciones que emiten estado técnico explícito                 |                            0 |
+| funciones que emiten `PERMISSION_NOT_FOUND` explícito         |                            0 |
+| funciones ejecutables por `authenticated`                     |                            8 |
+| funciones ejecutables por `anon` y `PUBLIC`                   |                            2 |
+| funciones `SECURITY DEFINER`                                  |                            7 |
+| helpers de aplicaciones que convierten error RPC en `false`   |                            5 |
+| repositorio adicional que convierte error de lote en ausencia |                     1, ANIMA |
+| guards server-side inspeccionados                             |                            5 |
+| guards que fusionan error y resultado negativo                |                            5 |
+| middleware de SHELL inspeccionado                             |                            1 |
+| middleware que dirige falta de configuración a login          |                            1 |
+| middleware que limpia cookies ante excepción de Auth          |                            1 |
+| unión compartida `DECIDED                                     | TECHNICAL_FAILURE` observada | 0 |
+
+Comportamientos observados:
+
+- `has_permission`, `has_role_permission` y evaluadores operativos devuelven
+  booleanos sin procedencia;
+- `get_operational_context` y `get_effective_context_v1` publican
+  `can_operate` y arreglos de razones, pero no una disponibilidad técnica
+  discriminada;
+- ninguna de las ocho funciones inspeccionadas tiene handler contractual de
+  excepción o estado `UNAVAILABLE`;
+- NEXO, FOGO, ORIGO, PULSO y VISO convierten un error RPC en `false`;
+- ANIMA convierte cada error en `false` y un fallo general en un mapa vacío;
+- los guards consultados fusionan error y resultado negativo como no acceso o
+  no permiso;
+- varios guards exponen la clave normalizada en parámetros de navegación;
+- SHELL trata falta de configuración como login y puede borrar cookies ante
+  una excepción de Auth.
+
+---
+
+#### 35. `AUTHORIZATION-TECHNICAL-PHYSICAL-RECONCILIATION-001`
+
+|    # | Brecha física                                                                                                           | Estado                               | Riesgo                                                              | Destino exacto                                                                               |
+| ---: | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | ------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
+|    1 | cinco evaluadores `has_*` retornan un booleano sin variante técnica                                                     | `BLOQUEADO`                          | error, deny, ausencia y contexto inválido son indistinguibles       | `AUTH-CTX-026`; `AUTH-DB-034`; `SHELL-AUTH-001`; `SHELL-AUTH-002`                            |
+|    2 | los resolvers de contexto exponen `can_operate` y razones sin estado de fuente                                          | `BLOQUEADO`                          | un fallo de resolución puede parecer contexto negativo válido       | `AUTH-CTX-025`; `AUTH-DB-033`; `SHELL-CTX-001`; `SHELL-CTX-002`                              |
+|    3 | ocho funciones carecen de handler contractual y de estado técnico discriminado                                          | `PENDIENTE_DE_IMPLEMENTACION`        | excepción sin envelope, decisión parcial o causa perdida            | `AUTH-DB-033`; `AUTH-DB-034`; `AUTH-DB-027`                                                  |
+|    4 | dos funciones relevantes continúan ejecutables por `anon` y `PUBLIC`                                                    | `PENDIENTE_DE_REVISION_DE_SEGURIDAD` | superficie no gobernada y enumeración de comportamiento             | `AUTH-DB-004`; `AUTH-DB-034`; `SHELL-AUTH-004`                                               |
+|    5 | helpers de NEXO, FOGO, ORIGO, PULSO y VISO convierten error RPC y deny en `false`                                       | `BLOQUEADO`                          | mensaje equivocado, métrica falsa y recuperación incorrecta         | `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                                         |
+|    6 | ANIMA reduce errores individuales y globales a permisos falsos o mapa vacío                                             | `BLOQUEADO`                          | interfaz oculta indisponibilidad como falta de acceso               | `SHELL-AUTH-001`; `SHELL-AUTH-005`; `SHELL-CI-016`                                           |
+|    7 | cinco guards server-side fusionan error y resultado negativo                                                            | `BLOQUEADO`                          | redirección de no acceso ante dependencia caída                     | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-005`                                         |
+|    8 | varios guards incluyen la clave de permiso en parámetros de navegación                                                  | `PENDIENTE_DE_CORRECCION`            | enumeración y exposición innecesaria de capacidades                 | `AUTH-CTX-024`; `SHELL-AUTH-004`; `SHELL-AUTH-005`                                           |
+|    9 | SHELL redirige falta de configuración técnica a login                                                                   | `BLOQUEADO`                          | login loop y falsa pérdida de sesión                                | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `AUTH-ERR-020`                                           |
+|   10 | SHELL limpia cookies ante una excepción de Auth no clasificada                                                          | `BLOQUEADO`                          | sesión válida destruida por indisponibilidad temporal               | `SHELL-AUTH-002`; `SHELL-AUTH-004`; `SHELL-CI-019`                                           |
+|   11 | RLS y Data API no disponen de una explicación autoritativa diferenciada por sí solas                                    | `PENDIENTE_DE_IMPLEMENTACION`        | cero filas tratado como deny, ausencia o éxito vacío                | `AUTH-DB-021`; `AUTH-DB-027`; `AUTH-DB-034`                                                  |
+|   12 | no existe una unión compartida `DECIDED                                                                                 | TECHNICAL_FAILURE`                   | `PENDIENTE_DE_IMPLEMENTACION`                                       | cada consumidor inventa fallback y semántica                                                 | `AUTH-CTX-026`; `AUTH-ERR-020`; `SHELL-AUTH-001`; `SHELL-AUTH-002` |
+|   13 | denegaciones y fallos técnicos no tienen streams métricos y auditorías claramente separados                             | `PENDIENTE_DE_IMPLEMENTACION`        | tasa de deny contaminada, alertas equivocadas y atribución al actor | `AUTH-CTX-024`; `AUTH-DB-032`; `AUTH-DB-034`; `SHELL-CI-019`                                 |
+|   14 | no existe certificación multicanal de timeout, RPC error, 503, retry, sesión, cero efectos y ausencia de decisión falsa | `PENDIENTE_DE_EVIDENCIA`             | regresión silenciosa y adopción parcial                             | `AUTH-CTX-030`; `AUTH-DB-027`; `AUTH-QA-019`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+
+Ninguna brecha autoriza cambios físicos durante esta tarea documental.
+
+---
+
+#### 36. Invalidación, caché y respuestas tardías
+
+Una evaluación técnica queda invalidada cuando cambia:
+
+- solicitud o consumidor;
+- contexto o fingerprint;
+- catálogo, schema o hash;
+- datasets o resolvers;
+- recurso o versión;
+- disponibilidad de dependencias;
+- versión del evaluador;
+- política de retry.
+
+Reglas:
+
+1. un fallo técnico no se cachea como deny;
+2. una denegación no se reutiliza como disponibilidad técnica;
+3. una respuesta tardía después del 503 se descarta;
+4. una recuperación de la fuente exige nueva evaluación;
+5. una operación offline no ejecuta por haber vuelto la conectividad;
+6. una decisión previa no autoriza otra solicitud;
+7. `Retry-After` no reserva autoridad;
+8. ningún cache hit omite validación de fingerprint;
+9. una versión desconocida no usa “latest” como fallback;
+10. un contexto parcial no se convierte en contrato válido.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+| ID              | Regla protegida                                                             | Tipo                                       | Prioridad | Momento de implementación               | Destino                                                                      |
+| --------------- | --------------------------------------------------------------------------- | ------------------------------------------ | --------- | --------------------------------------- | ---------------------------------------------------------------------------- |
+| `TREQ-AUTH-309` | resultado discriminado y prohibición de decisión técnica falsa              | contractual + integración + regresión      | crítica   | implementación del evaluador y SDK      | `AUTH-DB-034`; `SHELL-AUTH-001`; `SHELL-AUTH-002`                            |
+| `TREQ-AUTH-310` | estados de fuente y fronteras exactas entre `017`, `018`, `019` y deny      | contractual + disponibilidad + regresión   | crítica   | implementación de resolvers y evaluador | `AUTH-DB-033`; `AUTH-DB-034`; `AUTH-CTX-030`                                 |
+| `TREQ-AUTH-311` | cero efectos, ausencia de decisión parcial y frontera post-efecto           | integración + seguridad + transaccional    | crítica   | paquetes que ejecuten mutaciones        | `AUTH-DB-032`; `AUTH-DB-034`; `SHELL-CI-018`                                 |
+| `TREQ-AUTH-312` | retry limitado, backoff, idempotencia y solicitud nueva                     | concurrencia + idempotencia + regresión    | crítica   | caché, offline y procesos asíncronos    | `AUTH-CTX-029`; `AUTH-DB-035`; `SHELL-CI-019`                                |
+| `TREQ-AUTH-313` | equivalencia en diez canales y tratamiento de RLS cero filas                | integración + RLS + RPC + E2E              | crítica   | adopción multicanal                     | `AUTH-DB-021`; `AUTH-DB-027`; `SHELL-AUTH-005`                               |
+| `TREQ-AUTH-314` | equivalencia en diez aplicaciones sin login, cookie clear ni fallback local | aplicación + integración + E2E             | crítica   | migración de consumidores               | `SHELL-AUTH-005`; `SHELL-CI-016`; `SHELL-CI-018`                             |
+| `TREQ-AUTH-315` | copy, privacidad, sesión y soporte opaco                                    | experiencia + privacidad + accesibilidad   | alta      | componentes compartidos                 | `AUTH-ERR-020`; `SHELL-AUTH-004`; `SHELL-CI-016`                             |
+| `TREQ-AUTH-316` | auditoría y métricas separadas de decision_id                               | auditoría + observabilidad + regresión     | crítica   | persistencia y telemetría               | `AUTH-CTX-024`; `AUTH-DB-032`; `SHELL-CI-019`                                |
+| `TREQ-AUTH-317` | persistencia obligatoria y dependencia técnica antes de ejecutar            | integración + transaccional + idempotencia | crítica   | vínculo decisión–ejecución              | `AUTH-DB-032`; `AUTH-DB-034`; `SHELL-CI-018`                                 |
+| `TREQ-AUTH-318` | cierre de catorce brechas y certificación transversal                       | seguridad + integración + E2E + regresión  | crítica   | paquete E5 y certificación              | `AUTH-DB-027`; `AUTH-QA-019`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+
+Los requisitos quedan incorporados en el registro canónico completo. Esta tarea
+no implementa las pruebas.
+
+---
+
+#### 38. Estados y evidencia
+
+| Elemento                             | Estado                             |
+| ------------------------------------ | ---------------------------------- |
+| contrato de indisponibilidad técnica | `ESPECIFICADO`                     |
+| unión discriminada                   | `ESPECIFICADO`                     |
+| matriz de estados y escenarios       | `ESPECIFICADO`                     |
+| matriz de canales                    | `ESPECIFICADO`                     |
+| cobertura de aplicaciones            | `ESPECIFICADO`                     |
+| snapshot físico de solo lectura      | `PENDIENTE_DE_EVIDENCIA_OPERATIVA` |
+| evaluador canónico físico            | `PENDIENTE_DE_IMPLEMENTACION`      |
+| SDK compartido                       | `PENDIENTE_DE_IMPLEMENTACION`      |
+| envelope `503`                       | `PENDIENTE_DE_IMPLEMENTACION`      |
+| telemetría separada                  | `PENDIENTE_DE_IMPLEMENTACION`      |
+| manejo de RLS y Data API             | `PENDIENTE_DE_IMPLEMENTACION`      |
+| pruebas automatizadas                | `PENDIENTE_DE_IMPLEMENTACION`      |
+| pruebas E2E y operativas             | `PENDIENTE_DE_EVIDENCIA`           |
+
+La inspección del estado actual demuestra la brecha, no la conformidad futura.
+
+---
+
+#### 39. Fuera del alcance
+
+AUTH-ERR-019 no:
+
+- implementa el evaluador;
+- modifica `FinalDecision`;
+- crea una tercera decisión de autorización;
+- modifica funciones SQL;
+- crea RPC, RLS, triggers, tablas o migraciones;
+- modifica Supabase;
+- cambia helpers o guards;
+- cambia middleware;
+- cambia cookies o sesiones;
+- implementa telemetría;
+- ejecuta reintentos reales;
+- simula caídas productivas;
+- crea datos operativos de prueba;
+- despliega componentes;
+- escribe en repositorios remotos;
+- certifica comportamiento operativo;
+- inicia `AUTH-ERR-020`.
+
+La implementación corresponde exclusivamente a los destinos exactos de la
+reconciliación física.
+
+---
+
+#### 40. Criterios de aceptación
+
+- [x] Se definió una denegación como `AuthorizationDecision` completa con outcome `DENY`.
+- [x] Se definió un fallo técnico como ausencia de decisión completa.
+- [x] Se prohibió fabricar un `DENY` por indisponibilidad.
+- [x] Se preservó `FinalDecision = ALLOW | DENY`.
+- [x] Se definió la unión `DECIDED | TECHNICAL_FAILURE`.
+- [x] Se definió `AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE`.
+- [x] Se definió `AUTHORIZATION_EVALUATION_UNAVAILABLE`.
+- [x] Se definió `TECHNICAL_UNAVAILABLE`.
+- [x] Se definió `503 Service Unavailable`.
+- [x] Se definió `evaluation_attempt_id` separado de `decision_id`.
+- [x] Se prohibió publicar una decisión candidata descartada.
+- [x] Se definieron cuatro estados de fuente.
+- [x] Se separó `INVALID` de `UNAVAILABLE`.
+- [x] Se separó `AUTH-ERR-017` de `AUTH-ERR-019`.
+- [x] Se separó `AUTH-ERR-018` de `AUTH-ERR-019`.
+- [x] Se separaron default deny y explicit deny del fallo técnico.
+- [x] Se prohibió usar cero filas como explicación suficiente.
+- [x] Se definió no aplicabilidad contractual.
+- [x] Se definió el efecto de la indisponibilidad sobre las cuatro modalidades.
+- [x] Se prohibió omitir un carril aplicable.
+- [x] Se definió la frontera transaccional antes de efectos.
+- [x] Se excluyeron fallos posteriores con estado incierto.
+- [x] Se definió persistencia obligatoria antes de ejecutar.
+- [x] Se definieron reintentos internos limitados.
+- [x] Se prohibió replay automático después del envelope.
+- [x] Se definieron ocho familias privadas.
+- [x] Se definió envelope público con `decision_produced=false`.
+- [x] Se definieron copy, acciones y accesibilidad.
+- [x] Se preservó sesión y se prohibió borrar cookies.
+- [x] Se definieron privacidad y minimización.
+- [x] Se separaron auditoría técnica y auditoría de decisión.
+- [x] Se separaron métricas de failure y deny.
+- [x] Se definieron HTTP, caché y `Retry-After`.
+- [x] Se definió la frontera de RLS y Data API.
+- [x] Se definieron Realtime, offline y procesos asíncronos.
+- [x] Se decidieron veinticuatro escenarios.
+- [x] Se definieron diez canales equivalentes.
+- [x] Se reconciliaron diez aplicaciones.
+- [x] Se registró el snapshot físico sin presentarlo como conformidad.
+- [x] Se registraron catorce brechas con destino exacto.
+- [x] Se derivaron `TREQ-AUTH-309` a `TREQ-AUTH-318`.
+- [x] No se modificó código, Supabase, migraciones, configuración, datos ni aplicaciones.
+- [x] `AUTH-ERR-020` permanece únicamente reservada.
+
+---
+
+#### 41. Riesgos controlados
+
+| Riesgo                                                  | Control                                      |
+| ------------------------------------------------------- | -------------------------------------------- |
+| error RPC tratado como deny                             | unión discriminada                           |
+| timeout tratado como falta de permiso                   | estado `UNAVAILABLE`                         |
+| contradicción tratada como caída                        | estado `INVALID`                             |
+| permiso ausente tratado como red caída                  | lectura concluyente exigida                  |
+| decisión parcial serializada                            | contrato completo o failure                  |
+| `decision_id` técnico reutilizado                       | `evaluation_attempt_id` separado             |
+| `BASE_OR_OPERATIONAL` autoriza con evidencia incompleta | fuentes obligatorias de ambos carriles       |
+| RLS cero filas recibe causa inventada                   | preflight autoritativo                       |
+| falla técnica cierra sesión                             | sesión preservada                            |
+| excepción Auth borra cookies                            | prohibición contractual                      |
+| retry duplica mutación                                  | nueva intención e idempotencia no completada |
+| telemetría contamina deny rate                          | streams métricos separados                   |
+| error posterior oculta estado incierto                  | frontera transaccional                       |
+| detalle técnico filtra arquitectura                     | soporte opaco y causa privada                |
+| canal local cambia semántica                            | matriz de diez canales                       |
+| aplicación inventa fallback                             | cobertura de diez aplicaciones               |
+
+---
+
+#### 42. Cierre de tarea y continuidad
+
+**ÚLTIMA TAREA APROBADA**
+
+`AUTH-ERR-018 — Permiso no registrado`
+
+**TAREA ACTUAL APROBADA**
+
+`AUTH-ERR-019 — Diferenciar error técnico y denegación`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`AUTH-ERR-020 — Compartir mensajes desde vento-shell`
+
+
 ### [ ] AUTH-ERR-020 — Compartir mensajes desde vento-shell
