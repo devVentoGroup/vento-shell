@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **537** |
+| Tareas aprobadas | **538** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1057** |
+| Tareas no iniciadas | **1056** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **33.69% (537/1594)** |
+| Porcentaje de completamiento | **33.75% (538/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-ERR-012 — Rol operativo faltante** |
-| Tarea actual | **AUTH-ERR-013 — Rol operativo inválido para la sede** |
+| Última tarea aprobada | **AUTH-ERR-013 — Rol operativo inválido para la sede** |
+| Tarea actual | **AUTH-ERR-014 — Rol operativo inválido para el área** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-ERR-014 — Rol operativo inválido para el área** |
+| Siguiente tarea | **AUTH-ERR-015 — Dispositivo no autorizado** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 11: AUTHORIZATION_ERRORS** |
-| Progreso del bloque | **CARRIL NEXO: 12 de 20 aprobadas; AUTH-ERR-013 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 13 de 20 aprobadas; AUTH-ERR-014 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-ERR-012` — Rol operativo faltante |
-| Tarea actual | `AUTH-ERR-013` — Rol operativo inválido para la sede — **NO INICIADA** |
-| Siguiente tarea | `AUTH-ERR-014` — Rol operativo inválido para el área |
+| Última aprobada | `AUTH-ERR-013` — Rol operativo inválido para la sede |
+| Tarea actual | `AUTH-ERR-014` — Rol operativo inválido para el área — **NO INICIADA** |
+| Siguiente tarea | `AUTH-ERR-015` — Dispositivo no autorizado |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 12 DE 20 APROBADAS — ACTUAL AUTH-ERR-013** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 13 DE 20 APROBADAS — ACTUAL AUTH-ERR-014** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-ERR-012 — Rol operativo faltante
-        ↓
-TAREA ACTUAL
 AUTH-ERR-013 — Rol operativo inválido para la sede
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-ERR-014 — Rol operativo inválido para el área
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-ERR-015 — Dispositivo no autorizado
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 12 de 20 tareas aprobadas
+CARRIL NEXO — 13 de 20 tareas aprobadas
 ```

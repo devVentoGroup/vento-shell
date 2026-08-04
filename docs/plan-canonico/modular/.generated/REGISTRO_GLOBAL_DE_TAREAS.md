@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **537** |
+| Aprobadas | **538** |
 | En propuesta | **0** |
-| No iniciadas | **1057** |
+| No iniciadas | **1056** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **33.69% (537/1594)** |
+| Porcentaje de completamiento | **33.75% (538/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-ERR-012` — Rol operativo faltante | ✅ APROBADA |
-| Tarea actual | `AUTH-ERR-013` — Rol operativo inválido para la sede | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-ERR-014` — Rol operativo inválido para el área | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-ERR-013` — Rol operativo inválido para la sede | ✅ APROBADA |
+| Tarea actual | `AUTH-ERR-014` — Rol operativo inválido para el área | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-ERR-015` — Dispositivo no autorizado | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1276,7 +1276,7 @@
 | ✅ APROBADA | `AUTH-ERR-010` | Fuera de turno | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ✅ APROBADA | `AUTH-ERR-011` | Check-in requerido | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ✅ APROBADA | `AUTH-ERR-012` | Rol operativo faltante | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
-| ⬜ NO INICIADA | `AUTH-ERR-013` | Rol operativo inválido para la sede | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
+| ✅ APROBADA | `AUTH-ERR-013` | Rol operativo inválido para la sede | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-014` | Rol operativo inválido para el área | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-015` | Dispositivo no autorizado | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-016` | Acción no permitida en simulación | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
