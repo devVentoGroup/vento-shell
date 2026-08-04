@@ -2818,9 +2818,10 @@ No responde:
 
 La ausencia de publicación pertenece a `AUTH-ERR-009`. La publicación fuera de
 ventana pertenece a `AUTH-ERR-010`. La ausencia limpia y concluyente de
-check-in para un carril `T+C` pertenece a `AUTH-ERR-011`. Un historial abierto,
-duplicado, cruzado o contradictorio que evidencie cierre incompleto pertenece a
-`AUTH-ERR-012` o a la razón técnica o de configuración que corresponda.
+check-in para un carril `T+C` pertenece a `AUTH-ERR-011`. Un historial abierto, duplicado, cruzado o contradictorio que evidencie un cierre
+incompleto pertenece a `AUTH-ERR-017` cuando la contradicción es concluyente o
+a `AUTH-ERR-019` cuando la fuente no puede verificarse. `AUTH-ERR-012` queda
+reservada exclusivamente para rol operativo faltante.
 
 ---
 
@@ -2920,25 +2921,25 @@ conflicto estructural ni indisponibilidad técnica.
 
 #### 5. Condiciones que no pertenecen a esta razón
 
-| Condición                                              | Resultado propietario                                    |
-| ------------------------------------------------------ | -------------------------------------------------------- |
-| la capacidad no tiene carril operativo                 | continuar por su carril aplicable; no usar esta razón    |
-| carril operativo `T`                                   | continuar sin check-in si los demás controles se cumplen |
-| `BASE_ONLY`                                            | no evaluar check-in                                      |
-| `BASE_OR_OPERATIONAL` con carril base válido           | el carril base puede autorizar sin check-in              |
-| no existe turno publicado                              | `AUTH-ERR-009`                                           |
-| el turno publicado aún no inicia o ya terminó          | `AUTH-ERR-010`                                           |
-| dos turnos vigentes o turno inválido                   | `AUTH-ERR-017`                                           |
-| check-in de otro actor, sede o turno                   | conflicto estructural; no convertir en ausencia limpia   |
-| dos o más sesiones abiertas                            | conflicto o check-out incompleto; no escoger una         |
-| sesión residual de jornada anterior                    | `AUTH-ERR-012` o razón técnica según el hecho            |
-| no se puede consultar la fuente                        | `AUTH-ERR-019`                                           |
-| check-out normal ya registrado y nueva operación `T+C` | esta razón; la sesión anterior está cerrada              |
-| falta rol operativo                                    | `AUTH-ERR-013`                                           |
-| dispositivo no confiable                               | `AUTH-ERR-014`                                           |
-| dispositivo compartido obligatorio                     | `AUTH-ERR-015`                                           |
-| simulación no permitida                                | `AUTH-ERR-016`                                           |
-| permiso denegado                                       | razón de permiso correspondiente                         |
+| Condición                                                | Resultado propietario                                                              |
+| -------------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| la capacidad no tiene carril operativo                   | continuar por su carril aplicable; no usar esta razón                              |
+| carril operativo `T`                                     | continuar sin check-in si los demás controles se cumplen                           |
+| `BASE_ONLY`                                              | no evaluar check-in                                                                |
+| `BASE_OR_OPERATIONAL` con carril base válido             | el carril base puede autorizar sin check-in                                        |
+| no existe turno publicado                                | `AUTH-ERR-009`                                                                     |
+| el turno publicado aún no inicia o ya terminó            | `AUTH-ERR-010`                                                                     |
+| dos turnos vigentes o turno inválido                     | `AUTH-ERR-017`                                                                     |
+| check-in de otro actor, sede o turno                     | conflicto estructural; no convertir en ausencia limpia                             |
+| dos o más sesiones abiertas                              | conflicto o check-out incompleto; no escoger una                                   |
+| sesión residual de jornada anterior                      | `AUTH-ERR-017` si el conflicto es concluyente; `AUTH-ERR-019` si no es verificable |
+| no se puede consultar la fuente                          | `AUTH-ERR-019`                                                                     |
+| check-out normal ya registrado y nueva operación `T+C`   | esta razón; la sesión anterior está cerrada                                        |
+| falta rol operativo                                      | `AUTH-ERR-012`                                                                     |
+| dispositivo no autorizado o incompatible                 | `AUTH-ERR-015`                                                                     |
+| dispositivo compartido obligatorio, pero no identificado | `ACTOR_IDENTIFICATION_REQUIRED`; estado interactivo auxiliar                       |
+| simulación no permitida                                  | `AUTH-ERR-016`                                                                     |
+| permiso denegado                                         | razón de permiso correspondiente                                                   |
 
 Una causa posterior no deberá ocultar una causa estructural anterior ya
 concluyente.
@@ -3022,8 +3023,9 @@ fuente autoritativa y conservar versión, frescura e identidad de contexto.
 | `UNAVAILABLE`          | la fuente no pudo resolverse                               | `AUTH-ERR-019`                                         |
 
 `CLOSED` no significa check-out incompleto. Un cierre correcto termina la
-sesión. `AUTH-ERR-012` se reserva para ausencia de cierre esperado,
-solapamiento, sesión residual o contradicción material.
+sesión. Ausencia de cierre esperado, solapamiento, sesión residual o
+contradicción material pertenecen a `AUTH-ERR-017` cuando son concluyentes y a
+`AUTH-ERR-019` cuando la fuente no es verificable.
 
 ---
 
@@ -3156,15 +3158,16 @@ AUTENTICACIÓN
 → DECISIÓN
 ```
 
-| Hecho                                             | Primera razón concluyente      |
-| ------------------------------------------------- | ------------------------------ |
-| no hay publicación aplicable                      | `AUTH-ERR-009`                 |
-| publicación antes del inicio o desde el fin       | `AUTH-ERR-010`                 |
-| turno vigente, carril `T`, sin check-in           | ninguna; continuar             |
-| turno vigente, carril `T+C`, ausencia concluyente | `AUTH_CHECKIN_REQUIRED`        |
-| turno vigente, check-in residual o contradictorio | `AUTH-ERR-012` o razón técnica |
-| turno y check-in válidos, rol insuficiente        | `AUTH-ERR-013`                 |
-| contexto válido, fuente indisponible              | `AUTH-ERR-019`                 |
+| Hecho                                                              | Primera razón concluyente                                             |
+| ------------------------------------------------------------------ | --------------------------------------------------------------------- |
+| no hay publicación aplicable                                       | `AUTH-ERR-009`                                                        |
+| publicación antes del inicio o desde el fin                        | `AUTH-ERR-010`                                                        |
+| turno vigente, carril `T`, sin check-in                            | ninguna; continuar                                                    |
+| turno vigente, carril `T+C`, ausencia concluyente                  | `AUTH_CHECKIN_REQUIRED`                                               |
+| turno vigente, check-in residual o contradictorio                  | `AUTH-ERR-017` si es concluyente; `AUTH-ERR-019` si no es verificable |
+| turno y check-in válidos, rol ausente                              | `AUTH-ERR-012`                                                        |
+| turno y check-in válidos, rol no habilitado para la sede o el área | `AUTH-ERR-013` o `AUTH-ERR-014`                                       |
+| contexto válido, fuente indisponible                               | `AUTH-ERR-019`                                                        |
 
 La evaluación de check-in nunca selecciona el turno. Consume el turno ya
 resuelto por la etapa anterior.
@@ -3198,15 +3201,15 @@ Reglas:
 
 #### 15. Relación con check-out
 
-| Situación                                       | Resultado                                                    |
-| ----------------------------------------------- | ------------------------------------------------------------ |
-| check-in abierto compatible                     | continuar                                                    |
-| check-out normal posterior                      | sesión cerrada; una nueva operación `T+C` produce esta razón |
-| check-out pendiente pero sesión todavía abierta | analizar contrato de cierre y `AUTH-ERR-012`                 |
-| sesión abierta de jornada anterior              | `AUTH-ERR-012` o configuración inválida                      |
-| varios check-in sin cierre                      | `AUTH-ERR-012` o inconsistencia técnica                      |
-| check-out sin entrada relacionada               | inconsistencia; no esta razón                                |
-| turno ya finalizado con sesión abierta          | `AUTH-ERR-010` precede; además se audita cierre incompleto   |
+| Situación                                       | Resultado                                                                                     |
+| ----------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| check-in abierto compatible                     | continuar                                                                                     |
+| check-out normal posterior                      | sesión cerrada; una nueva operación `T+C` produce esta razón                                  |
+| check-out pendiente pero sesión todavía abierta | `AUTH-ERR-017` si la secuencia es contradictoria; de lo contrario conservar la sesión abierta |
+| sesión abierta de jornada anterior              | `AUTH-ERR-017` si es residual concluyente; `AUTH-ERR-019` si no puede verificarse             |
+| varios check-in sin cierre                      | `AUTH-ERR-017`; nunca escoger una sesión por orden físico                                     |
+| check-out sin entrada relacionada               | inconsistencia; no esta razón                                                                 |
+| turno ya finalizado con sesión abierta          | `AUTH-ERR-010` precede; además se audita cierre incompleto                                    |
 
 `AUTH-ERR-011` no corrige, cierra ni reconstruye asistencia. Solo deniega una
 operación que requiere presencia confirmada y no la posee de forma limpia.
@@ -3266,32 +3269,32 @@ no podrán alterar la decisión.
 
 #### 18. `CHECKIN-STATE-DECISION-MATRIX-001`
 
-|    # | Escenario                                                          | Resultado                                       |
-| ---: | ------------------------------------------------------------------ | ----------------------------------------------- |
-|    1 | `BASE_ONLY`, sin check-in                                          | continuar                                       |
-|    2 | `OPERATIONAL_ONLY/T`, turno vigente, sin check-in                  | continuar                                       |
-|    3 | `OPERATIONAL_ONLY/T+C`, turno vigente, sin eventos                 | esta razón                                      |
-|    4 | `T+C`, sesión compatible cerrada normalmente                       | esta razón                                      |
-|    5 | `T+C`, solicitud local pendiente                                   | esta razón; cero efectos                        |
-|    6 | `T+C`, importación no confirmada                                   | esta razón                                      |
-|    7 | `T+C`, exactamente una sesión compatible abierta                   | continuar                                       |
-|    8 | `BASE_OR_OPERATIONAL`, base válida, operativo sin check-in         | autorizar solo por base                         |
-|    9 | `BASE_OR_OPERATIONAL`, base inválida, operativo `T+C` sin check-in | esta razón                                      |
-|   10 | `BASE_AND_OPERATIONAL`, base válida, sin check-in                  | esta razón                                      |
-|   11 | sin publicación                                                    | `AUTH-ERR-009`                                  |
-|   12 | publicación fuera de ventana                                       | `AUTH-ERR-010`                                  |
-|   13 | dos turnos vigentes                                                | `AUTH-ERR-017`                                  |
-|   14 | sesión abierta de otro actor                                       | conflicto; no esta razón                        |
-|   15 | sesión abierta de otra sede                                        | conflicto; no esta razón                        |
-|   16 | sesión abierta de otro turno                                       | conflicto; no esta razón                        |
-|   17 | dos sesiones abiertas compatibles                                  | `AUTH-ERR-012` o inconsistencia                 |
-|   18 | sesión residual de jornada anterior                                | `AUTH-ERR-012`                                  |
-|   19 | check-out sin entrada correlacionable                              | inconsistencia                                  |
-|   20 | fuente de asistencia indisponible                                  | `AUTH-ERR-019`                                  |
-|   21 | turno finaliza después del check-in                                | `AUTH-ERR-010`; el check-in no extiende ventana |
-|   22 | cambio de sede o turno                                             | invalidar y resolver de nuevo                   |
-|   23 | dispositivo compartido conserva sesión del actor anterior          | denegar por conflicto; nunca reutilizar         |
-|   24 | operación repetida después de check-in confirmado                  | nueva decisión; no replay de la anterior        |
+|    # | Escenario                                                          | Resultado                                                                                |
+| ---: | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+|    1 | `BASE_ONLY`, sin check-in                                          | continuar                                                                                |
+|    2 | `OPERATIONAL_ONLY/T`, turno vigente, sin check-in                  | continuar                                                                                |
+|    3 | `OPERATIONAL_ONLY/T+C`, turno vigente, sin eventos                 | esta razón                                                                               |
+|    4 | `T+C`, sesión compatible cerrada normalmente                       | esta razón                                                                               |
+|    5 | `T+C`, solicitud local pendiente                                   | esta razón; cero efectos                                                                 |
+|    6 | `T+C`, importación no confirmada                                   | esta razón                                                                               |
+|    7 | `T+C`, exactamente una sesión compatible abierta                   | continuar                                                                                |
+|    8 | `BASE_OR_OPERATIONAL`, base válida, operativo sin check-in         | autorizar solo por base                                                                  |
+|    9 | `BASE_OR_OPERATIONAL`, base inválida, operativo `T+C` sin check-in | esta razón                                                                               |
+|   10 | `BASE_AND_OPERATIONAL`, base válida, sin check-in                  | esta razón                                                                               |
+|   11 | sin publicación                                                    | `AUTH-ERR-009`                                                                           |
+|   12 | publicación fuera de ventana                                       | `AUTH-ERR-010`                                                                           |
+|   13 | dos turnos vigentes                                                | `AUTH-ERR-017`                                                                           |
+|   14 | sesión abierta de otro actor                                       | conflicto; no esta razón                                                                 |
+|   15 | sesión abierta de otra sede                                        | conflicto; no esta razón                                                                 |
+|   16 | sesión abierta de otro turno                                       | conflicto; no esta razón                                                                 |
+|   17 | dos sesiones abiertas compatibles                                  | `AUTH-ERR-017`                                                                           |
+|   18 | sesión residual de jornada anterior                                | `AUTH-ERR-017` si la residualidad es concluyente; `AUTH-ERR-019` si no puede verificarse |
+|   19 | check-out sin entrada correlacionable                              | inconsistencia                                                                           |
+|   20 | fuente de asistencia indisponible                                  | `AUTH-ERR-019`                                                                           |
+|   21 | turno finaliza después del check-in                                | `AUTH-ERR-010`; el check-in no extiende ventana                                          |
+|   22 | cambio de sede o turno                                             | invalidar y resolver de nuevo                                                            |
+|   23 | dispositivo compartido conserva sesión del actor anterior          | denegar por conflicto; nunca reutilizar                                                  |
+|   24 | operación repetida después de check-in confirmado                  | nueva decisión; no replay de la anterior                                                 |
 
 La matriz contiene exactamente veinticuatro decisiones y no deja escenarios
 sin propietario.
@@ -3619,8 +3622,8 @@ semántica.
 |    2 | política a nivel de aplicación, no de permiso y carril                        | bloqueo excesivo o bypass                | `AUTH-DB-020`; `AUTH-DB-034`                       |
 |    3 | búsqueda de check-in no exige `shift_id` coincidente                          | sesión prestada entre turnos             | `AUTH-DB-033`; `AUTH-DB-034`                       |
 |    4 | búsqueda no exige `site_id` coincidente                                       | presencia prestada entre sedes           | `AUTH-DB-033`; `AUTH-DB-034`                       |
-|    5 | `limit 1` oculta multiplicidad                                                | autorización arbitraria                  | `AUTH-DB-033`; `AUTH-ERR-012`                      |
-|    6 | cualquier salida posterior del empleado cierra por inferencia eventos previos | correlación imprecisa                    | `AUTH-DB-033`; `AUTH-ERR-012`                      |
+|    5 | `limit 1` oculta multiplicidad                                                | autorización arbitraria                  | `AUTH-DB-033`; `AUTH-ERR-017`                      |
+|    6 | cualquier salida posterior del empleado cierra por inferencia eventos previos | correlación imprecisa                    | `AUTH-DB-033`; `AUTH-ERR-017`                      |
 |    7 | ledger no materializa identidad explícita de sesión                           | ambigüedad de correlación                | `AUTH-DB-033`                                      |
 |    8 | no existe unicidad física de sesión abierta                                   | duplicidad concurrente                   | `AUTH-DB-033`; `SHELL-CI-018`                      |
 |    9 | FK de turno permite `SET NULL`                                                | historia no utilizable para autorización | `AUTH-DB-033`; tarea de integridad correspondiente |
@@ -3650,7 +3653,8 @@ La implementación futura deberá distribuirse así:
 - `SHELL-AUTH-002`: adaptar navegación, acciones, API, RPC y clientes;
 - `SHELL-AUTH-004`: prohibir aliases, bypass y decisiones locales divergentes;
 - `SHELL-AUTH-005`: migrar las aplicaciones consumidoras;
-- `AUTH-ERR-012`: definir cierre incompleto y conflictos residuales;
+- `AUTH-ERR-017`: clasificar cierre incompleto, multiplicidad, residualidad y mismatches concluyentes;
+- `AUTH-ERR-019`: clasificar la imposibilidad técnica de verificar el ledger;
 - `AUTH-ERR-017`, `AUTH-ERR-019` y `AUTH-ERR-020`: completar configuración,
   fallos técnicos, copy y distribución;
 - `SHELL-CI-016`, `SHELL-CI-018` y `SHELL-CI-019`: ejecutar pruebas y conservar
@@ -3665,18 +3669,19 @@ ejecutarse desde `vento-shell`.
 
 **Resultado:** GENERA REQUISITOS DE PRUEBA
 
-| ID              | Regla protegida                                                                                                                                                                       | Tipo                                   | Prioridad | Momento de implementación       | Destino                                                                                       |
-| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | --------- | ------------------------------- | --------------------------------------------------------------------------------------------- |
-| `TREQ-AUTH-229` | Un carril `T+C` con turno publicado y vigente, resolución concluyente y ausencia de sesión abierta compatible produce `AUTH_CHECKIN_REQUIRED`, `403`, deny y cero efectos.            | contractual + seguridad + contexto     | crítica   | evaluador unificado             | `AUTH-DB-034`; `SHELL-CI-016`                                                                 |
-| `TREQ-AUTH-230` | La ausencia de check-in se aplica solo a 39 carriles `T+C`; 19 carriles `T` y 54 permisos sin carril operativo no se bloquean por esta razón.                                         | catálogo + contractual + regresión     | crítica   | catálogo físico y paridad       | `AUTH-DB-020`; `AUTH-DB-031`; `SHELL-CI-016`                                                  |
-| `TREQ-AUTH-231` | Una sesión activa debe coincidir exactamente con actor, sede y turno, estar abierta, confirmada y ser única; cliente, evento reciente o `limit 1` no bastan.                          | base de datos + contexto + seguridad   | crítica   | resolver de asistencia          | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-018`                                                  |
-| `TREQ-AUTH-232` | Ausencia, cierre normal, intención pendiente, mismatch, multiplicidad, check-out incompleto e indisponibilidad conservan causas y propietarios distintos.                             | razones + integración + regresión      | crítica   | catálogo de razones y evaluador | `AUTH-ERR-012`; `AUTH-ERR-017`; `AUTH-ERR-019`; `AUTH-DB-034`                                 |
-| `TREQ-AUTH-233` | Publicación y temporalidad preceden al check-in; rol, dispositivo y permiso se evalúan después de resolver una sesión requerida.                                                      | precedencia + autorización + seguridad | crítica   | evaluador unificado             | `AUTH-DB-034`; `SHELL-AUTH-004`; `SHELL-CI-016`                                               |
-| `TREQ-AUTH-234` | Diez canales producen la misma razón, preservan sesión, mantienen cero efectos y exigen una solicitud nueva después del check-in.                                                     | integración + E2E + concurrencia       | crítica   | SDK, adapters e invalidación    | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `AUTH-DB-035`; `SHELL-CI-018`                             |
-| `TREQ-AUTH-235` | Las diez aplicaciones deciden por permiso y carril; ANIMA puede crear asistencia, PASS no presta sesión laboral y NEXO migra su política global sin debilitar `T+C`.                  | aplicación + identidad + contrato      | alta      | migración de consumidoras       | `SHELL-AUTH-005`; `SHELL-CI-016`                                                              |
-| `TREQ-AUTH-236` | Copy, recuperación, privacidad y accesibilidad ofrecen check-in autorizado sin revelar horario, sede, turno, sesión, método ni causas internas.                                       | interfaz + privacidad + accesibilidad  | alta      | catálogo compartido de mensajes | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                                              |
-| `TREQ-AUTH-237` | Solicitudes offline, concurrencia y replay no crean autoridad ni sesiones duplicadas; la confirmación invalida contexto y obliga a una decisión nueva.                                | idempotencia + concurrencia + offline  | crítica   | ledger, invalidación y adapters | `AUTH-DB-033`; `AUTH-DB-035`; `SHELL-CI-018`; `SHELL-CI-019`                                  |
-| `TREQ-AUTH-238` | La regresión reconcilia 5132 eventos, cero sesiones abiertas en el snapshot, una política NEXO, 13 funciones consumidoras, 8 índices y catorce brechas sin alterar datos productivos. | regresión + RPC + RLS + seguridad      | crítica   | gates y evidencia E5            | `AUTH-DB-031`; `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018` |
+| ID              | Regla protegida                                                                                                                                                                                                                                                                                 | Tipo                                             | Prioridad | Momento de implementación            | Destino                                                                                       |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | --------- | ------------------------------------ | --------------------------------------------------------------------------------------------- |
+| `TREQ-AUTH-229` | Un carril `T+C` con turno publicado y vigente, resolución concluyente y ausencia de sesión abierta compatible produce `AUTH_CHECKIN_REQUIRED`, `403`, deny y cero efectos.                                                                                                                      | contractual + seguridad + contexto               | crítica   | evaluador unificado                  | `AUTH-DB-034`; `SHELL-CI-016`                                                                 |
+| `TREQ-AUTH-230` | La ausencia de check-in se aplica solo a 39 carriles `T+C`; 19 carriles `T` y 54 permisos sin carril operativo no se bloquean por esta razón.                                                                                                                                                   | catálogo + contractual + regresión               | crítica   | catálogo físico y paridad            | `AUTH-DB-020`; `AUTH-DB-031`; `SHELL-CI-016`                                                  |
+| `TREQ-AUTH-231` | Una sesión activa debe coincidir exactamente con actor, sede y turno, estar abierta, confirmada y ser única; cliente, evento reciente o `limit 1` no bastan.                                                                                                                                    | base de datos + contexto + seguridad             | crítica   | resolver de asistencia               | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-018`                                                  |
+| `TREQ-AUTH-232` | Ausencia y cierre normal conservan `AUTH-ERR-011`; mismatch, multiplicidad, sesión residual y check-out contradictorio usan `AUTH-ERR-017` cuando son concluyentes; indisponibilidad usa `AUTH-ERR-019`; `AUTH-ERR-012` queda exclusivamente para rol faltante.                                 | razones + integración + regresión                | crítica   | catálogo de razones y evaluador      | `AUTH-ERR-017`; `AUTH-ERR-019`; `AUTH-DB-033`; `AUTH-DB-034`                                  |
+| `TREQ-AUTH-233` | Publicación y temporalidad preceden al check-in; rol, dispositivo y permiso se evalúan después de resolver una sesión requerida.                                                                                                                                                                | precedencia + autorización + seguridad           | crítica   | evaluador unificado                  | `AUTH-DB-034`; `SHELL-AUTH-004`; `SHELL-CI-016`                                               |
+| `TREQ-AUTH-234` | Diez canales producen la misma razón, preservan sesión, mantienen cero efectos y exigen una solicitud nueva después del check-in.                                                                                                                                                               | integración + E2E + concurrencia                 | crítica   | SDK, adapters e invalidación         | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `AUTH-DB-035`; `SHELL-CI-018`                             |
+| `TREQ-AUTH-235` | Las diez aplicaciones deciden por permiso y carril; ANIMA puede crear asistencia, PASS no presta sesión laboral y NEXO migra su política global sin debilitar `T+C`.                                                                                                                            | aplicación + identidad + contrato                | alta      | migración de consumidoras            | `SHELL-AUTH-005`; `SHELL-CI-016`                                                              |
+| `TREQ-AUTH-236` | Copy, recuperación, privacidad y accesibilidad ofrecen check-in autorizado sin revelar horario, sede, turno, sesión, método ni causas internas.                                                                                                                                                 | interfaz + privacidad + accesibilidad            | alta      | catálogo compartido de mensajes      | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                                              |
+| `TREQ-AUTH-237` | Solicitudes offline, concurrencia y replay no crean autoridad ni sesiones duplicadas; la confirmación invalida contexto y obliga a una decisión nueva.                                                                                                                                          | idempotencia + concurrencia + offline            | crítica   | ledger, invalidación y adapters      | `AUTH-DB-033`; `AUTH-DB-035`; `SHELL-CI-018`; `SHELL-CI-019`                                  |
+| `TREQ-AUTH-238` | La regresión reconcilia 5132 eventos, cero sesiones abiertas en el snapshot, una política NEXO, 13 funciones consumidoras, 8 índices y catorce brechas sin alterar datos productivos.                                                                                                           | regresión + RPC + RLS + seguridad                | crítica   | gates y evidencia E5                 | `AUTH-DB-031`; `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018` |
+| `TREQ-AUTH-330` | Ausencia limpia y cierre normal conservan `AUTH-ERR-011`; mismatch, multiplicidad, sesión residual y check-out contradictorio producen `AUTH-ERR-017` cuando son concluyentes; indisponibilidad produce `AUTH-ERR-019`; `AUTH-ERR-012` queda reservado exclusivamente a rol operativo faltante. | razones + integración + concurrencia + regresión | crítica   | resolver de asistencia y precedencia | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`; `SHELL-CI-018`                                  |
 
 ---
 
@@ -3785,7 +3790,7 @@ AUTH-ERR-011 no:
 20. Un cierre normal no es check-out incompleto.
 21. Un mismatch no se presenta como ausencia limpia.
 22. La multiplicidad no se resuelve con `limit 1`.
-23. Una sesión residual pertenece a `AUTH-ERR-012` o inconsistencia.
+23. Una sesión residual pertenece a `AUTH-ERR-017` cuando la residualidad es concluyente o a `AUTH-ERR-019` cuando no puede verificarse.
 24. Una fuente indisponible conserva `AUTH-ERR-019`.
 25. El check-in no selecciona turno.
 26. El check-in no crea sede, área, rol, permiso ni scope.
@@ -7406,7 +7411,7 @@ resuelto en servidor.
 
 #### 2. Resultado material
 
-Se aprueban cinco artefactos documentales completos:
+Se aprueban seis artefactos documentales completos:
 
 1. `SHARED-DEVICE-AUTHORIZATION-BLOCKING-CONTRACT-001`, que congela identidad
    pública, aplicabilidad, fuentes autoritativas, decisión, recuperación,
@@ -7422,7 +7427,10 @@ Se aprueban cinco artefactos documentales completos:
    aplicación;
 5. `SHARED-DEVICE-AUTHORIZATION-PHYSICAL-RECONCILIATION-001`, que registra el
    snapshot físico de solo lectura y catorce brechas con destino documental
-   explícito.
+   explícito;
+6. `SHARED-DEVICE-AUXILIARY-INTERACTION-STATE-REGISTER-001`, que separa
+   identificación de actor y reautenticación fuerte de las razones públicas
+   de denegación.
 
 Cobertura materializada:
 
@@ -7778,12 +7786,33 @@ STRONG_REAUTH_REQUIRED
 dispositivo con soporte
 +
 evidencia fuerte ausente o expirada
-→ REAUTENTICACIÓN REQUERIDA
+→ STRONG_REAUTHENTICATION_REQUIRED
 → no degradar a dispositivo no autorizado
 ```
 
 Un permiso nuevo inicia denegado en dispositivos hasta clasificación y versión
 de paquete aprobadas.
+
+---
+
+##### 11.1 `SHARED-DEVICE-AUXILIARY-INTERACTION-STATE-REGISTER-001`
+
+Los estados siguientes quedan explícitamente fuera de `AuthorizationReasonCode`:
+
+| Estado interactivo                 | Condición                                                                                                     | Decisión empresarial                                                    | Propietarios de implementación y distribución                    |
+| ---------------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `ACTOR_IDENTIFICATION_REQUIRED`    | dispositivo autorizado sin sesión vigente de actor                                                            | todavía no existe evaluación empresarial atribuible                     | `AUTH-DEV-007`; `AUTH-DEV-012`; `SHELL-AUTH-002`; `SHELL-UI-016` |
+| `STRONG_REAUTHENTICATION_REQUIRED` | dispositivo y actor válidos, acción clasificada `STRONG_REAUTH_REQUIRED`, evidencia fuerte ausente o expirada | no ejecutar hasta completar reautenticación; no es deny del dispositivo | `AUTH-DEV-014`; `SHELL-AUTH-002`; `SHELL-UI-016`                 |
+
+Reglas:
+
+1. ninguno de estos estados se mapea a `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`;
+2. ninguno se incorpora como reason code del catálogo de bloqueos;
+3. ambos requieren un catálogo compartido de estados interactivos antes de la
+   migración de consumidoras;
+4. completar identificación o reautenticación crea una solicitud nueva y una
+   evaluación completa;
+5. no se conserva ni reproduce una mutación previa.
 
 ---
 
@@ -7847,6 +7876,12 @@ Identifícate para registrar la acción a tu nombre.
 ```
 
 No produce `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`.
+
+`ACTOR_IDENTIFICATION_REQUIRED` es un estado interactivo previo a la
+autorización del actor, no un `AuthorizationReasonCode`, no usa `403` y no se
+cuenta dentro del catálogo de bloqueos de `AUTH-ERR-020`. Su implementación y
+distribución pertenecen a `AUTH-DEV-007`, `AUTH-DEV-012`, `SHELL-AUTH-002` y
+`SHELL-UI-016`.
 
 La superficie previa a identificación podrá mostrar únicamente:
 
@@ -8435,22 +8470,23 @@ Ninguno de estos comportamientos se corrige dentro de esta tarea documental.
 
 #### 35. `SHARED-DEVICE-AUTHORIZATION-PHYSICAL-RECONCILIATION-001`
 
-|    # | Brecha física                                                                   | Estado                        | Riesgo                                              | Destino exacto                                                  |
-| ---: | ------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------- | --------------------------------------------------------------- |
-|    1 | no existe productor físico completo de `DeviceContext@1.0.0`                    | `PENDIENTE_DE_IMPLEMENTACION` | decisión fragmentada                                | `AUTH-CTX-025`; `AUTH-DB-033`; `AUTH-DB-034`                    |
-|    2 | vínculo técnico no expone diagnóstico canónico de missing/ambiguous/revoked     | `PENDIENTE_DE_IMPLEMENTACION` | principal mal clasificado                           | `AUTH-CTX-025`; `AUTH-CTX-028`                                  |
-|    3 | plantilla y versión exactas no se resuelven en el contexto efectivo             | `PENDIENTE_DE_IMPLEMENTACION` | configuración no reproducible                       | `AUTH-DEV-014`; `AUTH-CTX-025`; BLOQUE R                        |
-|    4 | paquetes versionados y reducciones no están materializados conforme al contrato | `PENDIENTE_DE_IMPLEMENTACION` | techo inexistente o ampliable                       | `AUTH-DEV-006`; `AUTH-CTX-028`; BLOQUE E5; BLOQUE R             |
-|    5 | `navigation_role` participa como rol efectivo                                   | `BLOQUEADO`                   | elevación y rol inventado                           | `AUTH-DEV-009`; `AUTH-CTX-027`; `AUTH-CTX-028`; `AUTH-DB-030`   |
-|    6 | app permitida puede convertirse en `<app>.access`                               | `BLOQUEADO`                   | app convertida en grant                             | `AUTH-CAT-014`; `AUTH-CTX-017`; `AUTH-CTX-026`; `AUTH-QA-030`   |
-|    7 | `can_operate` legacy solo refleja app y no decisión completa                    | `BLOQUEADO`                   | allow parcial                                       | `AUTH-CTX-026`; `AUTH-DB-034`                                   |
-|    8 | territorio de la instancia puede ser sustituido por valores preferidos          | `BLOQUEADO`                   | operación cross-site/cross-area                     | `AUTH-CTX-027`; `AUTH-CTX-028`; `AUTH-QA-030`                   |
-|    9 | funciones de actor usan asistencia y campos legacy como fallback                | `BLOQUEADO`                   | actor, turno o rol incorrectos                      | `AUTH-DEV-008`; `AUTH-CTX-028`; `AUTH-DB-030`                   |
-|   10 | no existen sesiones de actor persistidas                                        | `PENDIENTE_DE_IMPLEMENTACION` | acciones sin atribución                             | `AUTH-DEV-007`; `AUTH-DEV-012`; BLOQUE R                        |
-|   11 | cambio, expiración y revocación de actor no están validados operacionalmente    | `PENDIENTE_DE_EVIDENCIA`      | autoridad residual                                  | `AUTH-DEV-011` a `AUTH-DEV-013`; `AUTH-QA-030`                  |
-|   12 | política `same_site_active_worker` del kiosco es demasiado amplia               | `BLOQUEADO`                   | cualquier trabajador de sede podría intentar operar | `AUTH-DEV-008`; `AUTH-DEV-014`                                  |
-|   13 | no existe evidencia de heartbeat ni operación física verificada                 | `PENDIENTE_DE_EVIDENCIA`      | estado registral confundido con disponibilidad      | `AUTH-DEV-014` a `AUTH-DEV-016`; BLOQUE E4                      |
-|   14 | mensajes y reason codes de consumidoras no están unificados                     | `PENDIENTE_DE_IMPLEMENTACION` | UX y respuesta divergentes                          | `AUTH-ERR-015`; `SHELL-AUTH-004`; `SHELL-CI-016`; `AUTH-QA-030` |
+|    # | Brecha física                                                                   | Estado                        | Riesgo                                              | Destino exacto                                                                   |
+| ---: | ------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------- |
+|    1 | no existe productor físico completo de `DeviceContext@1.0.0`                    | `PENDIENTE_DE_IMPLEMENTACION` | decisión fragmentada                                | `AUTH-CTX-025`; `AUTH-DB-033`; `AUTH-DB-034`                                     |
+|    2 | vínculo técnico no expone diagnóstico canónico de missing/ambiguous/revoked     | `PENDIENTE_DE_IMPLEMENTACION` | principal mal clasificado                           | `AUTH-CTX-025`; `AUTH-CTX-028`                                                   |
+|    3 | plantilla y versión exactas no se resuelven en el contexto efectivo             | `PENDIENTE_DE_IMPLEMENTACION` | configuración no reproducible                       | `AUTH-DEV-014`; `AUTH-CTX-025`; BLOQUE R                                         |
+|    4 | paquetes versionados y reducciones no están materializados conforme al contrato | `PENDIENTE_DE_IMPLEMENTACION` | techo inexistente o ampliable                       | `AUTH-DEV-006`; `AUTH-CTX-028`; BLOQUE E5; BLOQUE R                              |
+|    5 | `navigation_role` participa como rol efectivo                                   | `BLOQUEADO`                   | elevación y rol inventado                           | `AUTH-DEV-009`; `AUTH-CTX-027`; `AUTH-CTX-028`; `AUTH-DB-030`                    |
+|    6 | app permitida puede convertirse en `<app>.access`                               | `BLOQUEADO`                   | app convertida en grant                             | `AUTH-CAT-014`; `AUTH-CTX-017`; `AUTH-CTX-026`; `AUTH-QA-030`                    |
+|    7 | `can_operate` legacy solo refleja app y no decisión completa                    | `BLOQUEADO`                   | allow parcial                                       | `AUTH-CTX-026`; `AUTH-DB-034`                                                    |
+|    8 | territorio de la instancia puede ser sustituido por valores preferidos          | `BLOQUEADO`                   | operación cross-site/cross-area                     | `AUTH-CTX-027`; `AUTH-CTX-028`; `AUTH-QA-030`                                    |
+|    9 | funciones de actor usan asistencia y campos legacy como fallback                | `BLOQUEADO`                   | actor, turno o rol incorrectos                      | `AUTH-DEV-008`; `AUTH-CTX-028`; `AUTH-DB-030`                                    |
+|   10 | no existen sesiones de actor persistidas                                        | `PENDIENTE_DE_IMPLEMENTACION` | acciones sin atribución                             | `AUTH-DEV-007`; `AUTH-DEV-012`; BLOQUE R                                         |
+|   11 | cambio, expiración y revocación de actor no están validados operacionalmente    | `PENDIENTE_DE_EVIDENCIA`      | autoridad residual                                  | `AUTH-DEV-011` a `AUTH-DEV-013`; `AUTH-QA-030`                                   |
+|   12 | política `same_site_active_worker` del kiosco es demasiado amplia               | `BLOQUEADO`                   | cualquier trabajador de sede podría intentar operar | `AUTH-DEV-008`; `AUTH-DEV-014`                                                   |
+|   13 | no existe evidencia de heartbeat ni operación física verificada                 | `PENDIENTE_DE_EVIDENCIA`      | estado registral confundido con disponibilidad      | `AUTH-DEV-014` a `AUTH-DEV-016`; BLOQUE E4                                       |
+|   14 | mensajes y reason codes de consumidoras no están unificados                     | `PENDIENTE_DE_IMPLEMENTACION` | UX y respuesta divergentes                          | `AUTH-ERR-015`; `SHELL-AUTH-004`; `SHELL-CI-016`; `AUTH-QA-030`                  |
+|   15 | identificación de actor y reautenticación fuerte no poseen catálogo compartido  | `PENDIENTE_DE_IMPLEMENTACION` | estados interactivos degradados a deny o copy local | `AUTH-DEV-007`; `AUTH-DEV-012`; `AUTH-DEV-014`; `SHELL-AUTH-002`; `SHELL-UI-016` |
 
 Cada brecha conserva propietario y condición de salida. No se crean tareas
 nuevas porque existen destinos canónicos concretos.
@@ -8472,22 +8508,24 @@ Se incorporan al registro canónico:
 - `TREQ-AUTH-275`;
 - `TREQ-AUTH-276`;
 - `TREQ-AUTH-277`;
-- `TREQ-AUTH-278`.
+- `TREQ-AUTH-278`;
+- `TREQ-AUTH-331`.
 
 Cobertura:
 
-| Rango | Cobertura                                                   |
-| ----- | ----------------------------------------------------------- |
-| `269` | contrato público, `403`, cero efectos y recuperación        |
-| `270` | separación principal, instancia, actor y sesión personal    |
-| `271` | identidad, estado, plantilla, versión, apps y configuración |
-| `272` | clasificación de 112 permisos, paquete y techo exacto       |
-| `273` | actor session, política, territorio y soporte fuerte        |
-| `274` | causas, fronteras y precedencia                             |
-| `275` | equivalencia de diez canales                                |
-| `276` | cobertura de diez aplicaciones e inventario documental      |
-| `277` | UX, privacidad, invalidación, concurrencia y auditoría      |
-| `278` | reconciliación física y eliminación de fallbacks legacy     |
+| Rango | Cobertura                                                                                                       |
+| ----- | --------------------------------------------------------------------------------------------------------------- |
+| `269` | contrato público, `403`, cero efectos y recuperación                                                            |
+| `270` | separación principal, instancia, actor y sesión personal                                                        |
+| `271` | identidad, estado, plantilla, versión, apps y configuración                                                     |
+| `272` | clasificación de 112 permisos, paquete y techo exacto                                                           |
+| `273` | actor session, política, territorio y soporte fuerte                                                            |
+| `274` | causas, fronteras y precedencia                                                                                 |
+| `275` | equivalencia de diez canales                                                                                    |
+| `276` | cobertura de diez aplicaciones e inventario documental                                                          |
+| `277` | UX, privacidad, invalidación, concurrencia y auditoría                                                          |
+| `278` | reconciliación física y eliminación de fallbacks legacy                                                         |
+| `331` | identificación y reautenticación fuerte como estados interactivos auxiliares fuera de `AuthorizationReasonCode` |
 
 Los requisitos permanecen `IDENTIFICADO` hasta que existan implementación y
 evidencia reproducibles.
@@ -8514,8 +8552,8 @@ El artefacto deberá permitir comprobar:
 14. 10 canales equivalentes;
 15. 10 aplicaciones reconciliadas;
 16. 19 claves documentales conservadas;
-17. 14 brechas con destino;
-18. 10 requisitos nuevos únicos;
+17. 15 brechas con destino;
+18. 11 requisitos resolubles, incluido `TREQ-AUTH-331`;
 19. 6.666 requisitos históricos preservados;
 20. catorce columnas en cada fila del registro.
 

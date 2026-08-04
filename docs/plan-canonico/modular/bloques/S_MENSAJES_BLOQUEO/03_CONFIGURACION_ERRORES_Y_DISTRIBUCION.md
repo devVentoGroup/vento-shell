@@ -339,19 +339,19 @@ No serán autoritativos:
 `ADMINISTRATIVE-CONFIGURATION-STATE-DECISION-MATRIX-001` conserva once perfiles
 de enrutamiento:
 
-| Perfil                      | Hecho concluyente                                                                                 | Propietario público                         |
-| --------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------------- |
-| `NO_AUTHENTICATED_SESSION`  | sesión ausente, inválida, expirada o revocada                                                     | `AUTH-ERR-001`                              |
-| `IDENTITY_INACTIVE`         | identidad requerida explícitamente inactiva                                                       | `AUTH-ERR-002`                              |
-| `APP_ACCESS_DENIED`         | aplicación registrada y evaluación coherente sin acceso                                           | `AUTH-ERR-003`                              |
-| `PERMISSION_DENIED`         | permiso registrado, configuración coherente y grant insuficiente o deny aplicable                 | `AUTH-ERR-004` o razón posterior de permiso |
-| `ORDINARY_CONTEXT_ABSENCE`  | asignación, sede, área, turno, check-in o rol ausentes/inactivos bajo una configuración coherente | `AUTH-ERR-005` a `AUTH-ERR-014`             |
-| `DEVICE_RESTRICTION`        | dispositivo coherente restringe la solicitud                                                      | `AUTH-ERR-015`                              |
-| `SIMULATION_EXECUTION`      | simulación intenta producir autoridad o efectos reales                                            | `AUTH-ERR-016`                              |
-| `CONFIGURATION_CONFLICT`    | contradicción, ambigüedad, forma inválida, versión incompatible o snapshot mixto                  | `AUTH-ERR-017`                              |
-| `PERMISSION_NOT_REGISTERED` | la clave completa solicitada no existe                                                            | `AUTH-ERR-018`                              |
-| `TECHNICAL_UNAVAILABLE`     | lectura, red, RPC, proveedor o fuente no permite concluir                                         | `AUTH-ERR-019`                              |
-| `MESSAGE_DISTRIBUTION`      | adaptación y presentación compartida del resultado                                                | `AUTH-ERR-020`                              |
+| Perfil                      | Hecho concluyente                                                                                             | Propietario público                                   |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `NO_AUTHENTICATED_SESSION`  | sesión ausente, inválida, expirada o revocada                                                                 | `AUTH-ERR-001`                                        |
+| `IDENTITY_INACTIVE`         | identidad requerida explícitamente inactiva                                                                   | `AUTH-ERR-002`                                        |
+| `APP_ACCESS_DENIED`         | aplicación registrada y evaluación coherente sin acceso                                                       | `AUTH-ERR-003`                                        |
+| `PERMISSION_DENIED`         | permiso registrado, configuración coherente y grant insuficiente, deny aplicable o scope mismatch concluyente | `AUTH-ERR-004`, seleccionando perfil base u operativo |
+| `ORDINARY_CONTEXT_ABSENCE`  | asignación, sede, área, turno, check-in o rol ausentes/inactivos bajo una configuración coherente             | `AUTH-ERR-005` a `AUTH-ERR-014`                       |
+| `DEVICE_RESTRICTION`        | dispositivo coherente restringe la solicitud                                                                  | `AUTH-ERR-015`                                        |
+| `SIMULATION_EXECUTION`      | simulación intenta producir autoridad o efectos reales                                                        | `AUTH-ERR-016`                                        |
+| `CONFIGURATION_CONFLICT`    | contradicción, ambigüedad, forma inválida, versión incompatible o snapshot mixto                              | `AUTH-ERR-017`                                        |
+| `PERMISSION_NOT_REGISTERED` | la clave completa solicitada no existe                                                                        | `AUTH-ERR-018`                                        |
+| `TECHNICAL_UNAVAILABLE`     | lectura, red, RPC, proveedor o fuente no permite concluir                                                     | `AUTH-ERR-019`                                        |
+| `MESSAGE_DISTRIBUTION`      | adaptación y presentación compartida del resultado                                                            | `AUTH-ERR-020`                                        |
 
 Una misma solicitud no publica dos razones principales. La primera causa
 concluyente aplicable prevalece, mientras las causas internas subordinadas se
@@ -792,8 +792,8 @@ La recuperación segura es administrativa y explícita:
 1. conservar la sesión y el estado no sensible de navegación;
 2. impedir toda mutación o exposición adicional;
 3. registrar correlación y diagnóstico privado;
-4. ofrecer `Solicitar revisión` cuando exista un canal autorizado;
-5. permitir volver a una superficie segura ya autorizada;
+4. permitir volver a una superficie segura ya autorizada;
+5. ofrecer `Solicitar revisión` únicamente cuando exista un canal autorizado, funcional y disponible; si no existe, conservar `Volver` como única acción principal;
 6. corregir la fuente mediante el proceso propietario;
 7. invalidar cachés y snapshots afectados;
 8. emitir una solicitud nueva después de la corrección;
@@ -882,13 +882,13 @@ No se incluyen:
 
 Copy aprobado en español:
 
-| Elemento          | Texto exacto                                                                                                                       |
-| ----------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
-| Título            | `No pudimos validar la configuración`                                                                                              |
-| Mensaje           | `La configuración necesaria para autorizar esta acción es inconsistente. Solicita una revisión administrativa antes de continuar.` |
-| Acción principal  | `Solicitar revisión`                                                                                                               |
-| Acción secundaria | `Volver`                                                                                                                           |
-| Código de soporte | `AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT`                                                                                   |
+| Elemento           | Texto exacto                                                                                                                       |
+| ------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Título             | `No pudimos validar la configuración`                                                                                              |
+| Mensaje            | `La configuración necesaria para autorizar esta acción es inconsistente. Solicita una revisión administrativa antes de continuar.` |
+| Acción principal   | `Volver`                                                                                                                           |
+| Acción condicional | `Solicitar revisión`, solo cuando existe un canal autorizado, funcional y disponible                                               |
+| Código de soporte  | `AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT`                                                                                   |
 
 Reglas de experiencia:
 
@@ -1185,6 +1185,8 @@ versionado, contratos, consumidores ni comportamiento multicanal futuro.
 |   12 | la matriz de rol tiene unicidad `(site_id, role_code)`, `area_id` sin FK observada y FK de rol `NOT VALID`                     | `BLOQUEADO`                   | no puede representar varias áreas del mismo rol y no garantiza integridad histórica completa | `AUTH-CTX-013`; `AUTH-DB-020`; `AUTH-DB-033`; `AUTH-DB-034`                                                                            |
 |   13 | turnos usan `published_at` sin identidad física de revisión ni zona horaria contractual y no existe constraint de solapamiento | `PENDIENTE_DE_IMPLEMENTACION` | snapshot no reproducible, ambigüedad temporal o mezcla de revisión                           | `AUTH-CTX-010`; `AUTH-CTX-025`; `AUTH-DB-020`; `AUTH-DB-033`                                                                           |
 |   14 | no existe envelope compartido `409` ni suite multicanal que pruebe las fronteras `017/018/019`                                 | `PENDIENTE_DE_IMPLEMENTACION` | UI, RPC, RLS, Edge, Realtime y offline pueden divergir                                       | `AUTH-ERR-020`; `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+|   15 | evaluadores y consumidores físicos no discriminan denegación base de denegación operativa                                      | `PENDIENTE_DE_IMPLEMENTACION` | un deny operativo puede mostrarse como administrativo o reducirse a `false`                  | `AUTH-ERR-004`; `AUTH-DB-034`; `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-CI-016`                                                      |
+|   16 | no existe catálogo compartido para identificación de actor y reautenticación fuerte                                            | `PENDIENTE_DE_IMPLEMENTACION` | estados interactivos pueden degradarse a dispositivo no autorizado o copy local              | `AUTH-ERR-015`; `AUTH-DEV-007`; `AUTH-DEV-012`; `AUTH-DEV-014`; `SHELL-AUTH-002`; `SHELL-UI-016`                                       |
 
 Cada brecha conserva propietario y condición de salida. No se crean tareas
 nuevas porque existen destinos canónicos concretos.
@@ -3682,32 +3684,32 @@ Jobs, colas, webhooks e integraciones:
 
 #### 30. `AUTHORIZATION-RESULT-STATE-DECISION-MATRIX-001`
 
-|    # | Escenario                                                                      | Resultado                                   | Propietario o acción                                                       |
-| ---: | ------------------------------------------------------------------------------ | ------------------------------------------- | -------------------------------------------------------------------------- |
-|    1 | superficie pública sin autorización                                            | continuar                                   | no aplica                                                                  |
-|    2 | envelope ausente o mal formado                                                 | error contractual                           | `AUTH-CTX-026`                                                             |
-|    3 | sesión concluyentemente ausente                                                | `DECIDED + DENY` o bloqueo previo           | `AUTH-ERR-001`                                                             |
-|    4 | identidad concluyentemente inactiva                                            | `DECIDED + DENY`                            | `AUTH-ERR-002`                                                             |
-|    5 | aplicación registrada y evaluación completa sin acceso                         | `DECIDED + DENY`                            | `AUTH-ERR-003`                                                             |
-|    6 | permiso registrado sin allow suficiente                                        | `DECIDED + DENY`                            | default deny o razón de carril                                             |
-|    7 | explicit deny coincidente                                                      | `DECIDED + DENY`                            | razón de deny aplicable                                                    |
-|    8 | ausencia ordinaria de turno, check-in, sede, área o rol                        | `DECIDED + DENY` cuando el permiso lo exige | `AUTH-ERR-005` a `AUTH-ERR-014`                                            |
-|    9 | dispositivo coherente restringe la solicitud                                   | `DECIDED + DENY`                            | `AUTH-ERR-015`                                                             |
-|   10 | simulación intenta ejecutar                                                    | `DECIDED + DENY`                            | `AUTH-ERR-016`                                                             |
-|   11 | configuración completa pero contradictoria                                     | `DECIDED + DENY`                            | `AUTH-ERR-017`                                                             |
-|   12 | catálogo completo y clave exacta ausente                                       | `DECIDED + DENY`                            | `AUTH-ERR-018`                                                             |
-|   13 | DNS, red o conexión impiden consultar fuente obligatoria                       | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
-|   14 | RPC devuelve error técnico                                                     | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
-|   15 | presupuesto de timeout agotado                                                 | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
-|   16 | respuesta parcial o no verificable                                             | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
-|   17 | no puede demostrarse versión, hash o freshness                                 | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
-|   18 | resolver de recurso obligatorio no responde                                    | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
-|   19 | serializer o validador impide producir contrato completo                       | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                             |
-|   20 | RLS devuelve cero filas sin preflight concluyente                              | bloquear sin atribuir causa                 | reevaluar por frontera autoritativa; si no está disponible, `AUTH-ERR-019` |
-|   21 | `BASE_AND_OPERATIONAL` con un carril denegado y otro técnicamente indisponible | `TECHNICAL_FAILURE`                         | no fabricar `DENY` completo                                                |
-|   22 | `BASE_OR_OPERATIONAL` con fuente obligatoria de un carril indisponible         | `TECHNICAL_FAILURE`                         | no omitir carril aplicable ni posible deny transversal                     |
-|   23 | decisión completa ya emitida y falla telemetría opcional                       | conservar decisión                          | incidente de observabilidad separado                                       |
-|   24 | falla persistencia obligatoria antes del efecto                                | `TECHNICAL_FAILURE` y cero efectos          | nueva solicitud después de recuperar                                       |
+|    # | Escenario                                                                      | Resultado                                   | Propietario o acción                                                                           |
+| ---: | ------------------------------------------------------------------------------ | ------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+|    1 | superficie pública sin autorización                                            | continuar                                   | no aplica                                                                                      |
+|    2 | envelope ausente o mal formado                                                 | error contractual                           | `AUTH-CTX-026`                                                                                 |
+|    3 | sesión concluyentemente ausente                                                | `DECIDED + DENY` o bloqueo previo           | `AUTH-ERR-001`                                                                                 |
+|    4 | identidad concluyentemente inactiva                                            | `DECIDED + DENY`                            | `AUTH-ERR-002`                                                                                 |
+|    5 | aplicación registrada y evaluación completa sin acceso                         | `DECIDED + DENY`                            | `AUTH-ERR-003`                                                                                 |
+|    6 | permiso registrado sin allow suficiente                                        | `DECIDED + DENY`                            | default deny o razón de carril                                                                 |
+|    7 | explicit deny coincidente                                                      | `DECIDED + DENY`                            | `AUTH_ADMIN_PERMISSION_DENIED` o `AUTH_OPERATIONAL_PERMISSION_DENIED` según el carril decisivo |
+|    8 | ausencia ordinaria de turno, check-in, sede, área o rol                        | `DECIDED + DENY` cuando el permiso lo exige | `AUTH-ERR-005` a `AUTH-ERR-014`                                                                |
+|    9 | dispositivo coherente restringe la solicitud                                   | `DECIDED + DENY`                            | `AUTH-ERR-015`                                                                                 |
+|   10 | simulación intenta ejecutar                                                    | `DECIDED + DENY`                            | `AUTH-ERR-016`                                                                                 |
+|   11 | configuración completa pero contradictoria                                     | `DECIDED + DENY`                            | `AUTH-ERR-017`                                                                                 |
+|   12 | catálogo completo y clave exacta ausente                                       | `DECIDED + DENY`                            | `AUTH-ERR-018`                                                                                 |
+|   13 | DNS, red o conexión impiden consultar fuente obligatoria                       | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                                                 |
+|   14 | RPC devuelve error técnico                                                     | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                                                 |
+|   15 | presupuesto de timeout agotado                                                 | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                                                 |
+|   16 | respuesta parcial o no verificable                                             | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                                                 |
+|   17 | no puede demostrarse versión, hash o freshness                                 | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                                                 |
+|   18 | resolver de recurso obligatorio no responde                                    | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                                                 |
+|   19 | serializer o validador impide producir contrato completo                       | `TECHNICAL_FAILURE`                         | `AUTH-ERR-019`                                                                                 |
+|   20 | RLS devuelve cero filas sin preflight concluyente                              | bloquear sin atribuir causa                 | reevaluar por frontera autoritativa; si no está disponible, `AUTH-ERR-019`                     |
+|   21 | `BASE_AND_OPERATIONAL` con un carril denegado y otro técnicamente indisponible | `TECHNICAL_FAILURE`                         | no fabricar `DENY` completo                                                                    |
+|   22 | `BASE_OR_OPERATIONAL` con fuente obligatoria de un carril indisponible         | `TECHNICAL_FAILURE`                         | no omitir carril aplicable ni posible deny transversal                                         |
+|   23 | decisión completa ya emitida y falla telemetría opcional                       | conservar decisión                          | incidente de observabilidad separado                                                           |
+|   24 | falla persistencia obligatoria antes del efecto                                | `TECHNICAL_FAILURE` y cero efectos          | nueva solicitud después de recuperar                                                           |
 
 La matriz no permite `ALLOW`, `DENY` ni `NOT_APPLICABLE` sintéticos para una
 fuente obligatoria indisponible.
@@ -4101,26 +4103,27 @@ La tarea elimina como diseño permitido:
 
 Se aprueban cinco artefactos documentales completos:
 
-1. `AUTHORIZATION-MESSAGE-CATALOG-001`, que materializa las diecinueve
+1. `AUTHORIZATION-MESSAGE-CATALOG-001`, que materializa las veinte
    identidades públicas aprobadas y sus textos, acciones, confirmaciones y
    límites de exposición;
 2. `AUTHORIZATION-MESSAGE-DISTRIBUTION-CONTRACT-001`, que fija propiedad,
    módulos, publicación, versionado, inmutabilidad, compatibilidad y consumo;
 3. `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001`, que materializa
-   veinticuatro perfiles de presentación sin inventar copy donde una tarea
+   veinticinco perfiles de presentación sin inventar copy donde una tarea
    anterior no lo aprobó;
 4. `AUTHORIZATION-MESSAGE-CONSUMER-CHANNEL-MATRIX-001`, que decide diez canales
    y diez aplicaciones con una semántica equivalente;
-5. `AUTHORIZATION-MESSAGE-PHYSICAL-RECONCILIATION-001`, que registra el estado
-   físico observado y catorce brechas con destino canónico exacto.
+6. `AUTHORIZATION-MESSAGE-PHYSICAL-RECONCILIATION-001`, que registra el estado
+   físico observado y dieciséis brechas con destino canónico exacto.
 
 Cobertura materializada:
 
 | Elemento                                                 |   Cantidad |
 | -------------------------------------------------------- | ---------: |
 | Tareas de bloqueo consumidas                             |         19 |
-| `reason_code` públicos únicos                            |         19 |
-| Perfiles de presentación                                 |         24 |
+| `reason_code` públicos únicos                            |         20 |
+| Perfiles de presentación                                 |         25 |
+| Estados interactivos auxiliares excluidos                |          2 |
 | Locale fuente aprobado                                   | 1, `es-CO` |
 | Familias de paquete con responsabilidad explícita        |          3 |
 | Canales con decisión explícita                           |         10 |
@@ -4132,8 +4135,8 @@ Cobertura materializada:
 | Workspace compartido de autorización existente           | 1, parcial |
 | Paquetes físicos `@vento/contracts` observados           |          0 |
 | Paquetes físicos `@vento/ui-web` observados              |          0 |
-| Brechas físicas registradas                              |         14 |
-| Requisitos de prueba derivados                           |         10 |
+| Brechas físicas registradas                              |         16 |
+| Requisitos de prueba derivados                           |         13 |
 
 Las cifras físicas describen el corte inspeccionado. No certifican adopción,
 publicación, paridad ni ejecución operativa.
@@ -4183,19 +4186,20 @@ AUTH-ERR-020 decide:
 
 1. la identidad del catálogo;
 2. el locale fuente;
-3. los diecinueve códigos públicos incluidos;
-4. los veinticuatro perfiles de presentación;
+3. los veinte códigos públicos incluidos;
+4. los veinticinco perfiles de presentación;
+5. los dos estados interactivos auxiliares excluidos y sus propietarios;
 5. el modelo de campos obligatorios, opcionales y prohibidos;
-6. la propiedad de cada módulo compartido;
-7. el algoritmo de resolución;
-8. las reglas de fallback;
-9. la inmutabilidad y el versionado;
-10. la separación entre respuesta pública y evidencia privada;
-11. la equivalencia entre canales;
-12. la cobertura de las diez aplicaciones;
-13. los límites de las acciones de recuperación;
-14. la estrategia de adopción y rollback;
-15. las brechas físicas y sus destinos exactos.
+7. la propiedad de cada módulo compartido;
+8. el algoritmo de resolución;
+9. las reglas de fallback;
+10. la inmutabilidad y el versionado;
+11. la separación entre respuesta pública y evidencia privada;
+12. la equivalencia entre canales;
+13. la cobertura de las diez aplicaciones;
+14. los límites de las acciones de recuperación;
+15. la estrategia de adopción y rollback;
+16. las brechas físicas y sus destinos exactos.
 
 No decide:
 
@@ -4221,8 +4225,9 @@ catalog_id = vento.authorization.messages
 catalog_version = 1.0.0
 schema_version = 1.0.0
 source_locale = es-CO
-reason_count = 19
-presentation_profile_count = 24
+reason_count = 20
+presentation_profile_count = 25
+auxiliary_interaction_state_count = 2
 ```
 
 Una publicación física deberá conservar:
@@ -4303,6 +4308,7 @@ AUTH_NO_SESSION
 AUTH_USER_INACTIVE
 AUTH_APP_ACCESS_DENIED
 AUTH_ADMIN_PERMISSION_DENIED
+AUTH_OPERATIONAL_PERMISSION_DENIED
 AUTH_SITE_ASSIGNMENT_REQUIRED
 AUTH_ACTIVE_SITE_REQUIRED
 AUTH_AREA_ASSIGNMENT_REQUIRED
@@ -4377,7 +4383,7 @@ es-CO
 Reglas:
 
 1. `es-CO` siempre debe estar completo;
-2. un locale adicional deberá cubrir las veinticuatro claves de perfil;
+2. un locale adicional deberá cubrir las veinticinco claves de perfil;
 3. una traducción no cambia `reason_code`, estado, decisión, HTTP, acción
    permitida ni privacidad;
 4. si el locale solicitado no existe, se usa `es-CO` de la misma versión;
@@ -4579,96 +4585,107 @@ una incompatibilidad del catálogo.
 `AUTHORIZATION-MESSAGE-CATALOG-001` deberá validar:
 
 ```text
-reason_codes esperados = 19
-reason_codes materializados = 19
+reason_codes esperados = 20
+reason_codes materializados = 20
 faltantes = 0
 duplicados = 0
-perfiles esperados = 24
-perfiles materializados = 24
+perfiles esperados = 25
+perfiles materializados = 25
 faltantes = 0
 duplicados = 0
 ```
 
 Las razones con perfil único conservan `default`. `AUTH_USER_INACTIVE` conserva
 perfiles laboral y cliente. `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` conserva cinco
-perfiles de presentación.
+perfiles de presentación. `AUTH_OPERATIONAL_PERMISSION_DENIED` conserva un
+perfil propio y no reutiliza el copy administrativo.
 
 ---
 
-#### 19. `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001` — perfiles 001 a 007
+#### 19. `AUXILIARY-AUTH-STATE-EXCLUSION-REGISTER-001`
 
-|    # | Profile key                             | Título                                        | Mensaje                                                                                                                                         | Acción principal    | Acción secundaria / ayuda                                                                                         |
-| ---: | --------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
-|    1 | `AUTH_NO_SESSION/default`               | `Inicia sesión para continuar`                | `Tu sesión no está disponible o dejó de ser válida. Inicia sesión nuevamente para volver a la aplicación.`                                      | `Iniciar sesión`    | `Volver a Vento OS`                                                                                               |
-|    2 | `AUTH_USER_INACTIVE/employee`           | `Tu acceso está inactivo`                     | `Tu identidad para esta aplicación está inactiva. No puedes continuar mientras permanezca en este estado.`                                      | `Cerrar sesión`     | `Volver a Vento OS`; ayuda: `Si consideras que es un error, solicita una revisión a un administrador autorizado.` |
-|    3 | `AUTH_USER_INACTIVE/customer`           | `Tu acceso está inactivo`                     | `Tu perfil de cliente está inactivo. No puedes continuar mientras permanezca en este estado.`                                                   | `Cerrar sesión`     | ayuda: `Si consideras que es un error, solicita una revisión por el canal oficial de atención.`                   |
-|    4 | `AUTH_APP_ACCESS_DENIED/default`        | `No tienes acceso a esta aplicación`          | `Tu sesión está activa, pero esta aplicación no está habilitada para tu cuenta.`                                                                | `Volver a Vento OS` | `Cerrar sesión`                                                                                                   |
-|    5 | `AUTH_ADMIN_PERMISSION_DENIED/default`  | `No tienes permiso para realizar esta acción` | `Tu cuenta puede usar esta aplicación, pero no tiene el permiso administrativo necesario para completar esta acción.`                           | `Volver`            | `Volver a Vento OS`                                                                                               |
-|    6 | `AUTH_SITE_ASSIGNMENT_REQUIRED/default` | `Necesitas una sede asignada`                 | `Tu perfil laboral no tiene una sede asignada para continuar con esta acción. Solicita a un administrador autorizado que revise tu asignación.` | `Volver a Vento OS` | `Ir al inicio de la aplicación`; ayuda aprobada                                                                   |
-|    7 | `AUTH_ACTIVE_SITE_REQUIRED/default`     | `No hay una sede activa disponible`           | `Tu sesión está activa, pero esta acción requiere una sede activa y no hay una disponible para el contexto actual.`                             | `Volver a Vento OS` | `Cerrar sesión`; condicional: `Elegir otra sede`                                                                  |
+Los estados siguientes no son denegaciones ni fallos de autorización y quedan
+fuera de `AuthorizationReasonCode`:
 
-Para el perfil 6, la ayuda exacta es:
+| Estado                             | Semántica                                                                               | Catálogo propietario                                  | Tareas de implementación                                         |
+| ---------------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------- | ---------------------------------------------------------------- |
+| `ACTOR_IDENTIFICATION_REQUIRED`    | dispositivo autorizado todavía no tiene actor humano atribuible                         | catálogo compartido de estados interactivos de sesión | `AUTH-DEV-007`; `AUTH-DEV-012`; `SHELL-AUTH-002`; `SHELL-UI-016` |
+| `STRONG_REAUTHENTICATION_REQUIRED` | actor y dispositivo son válidos, pero una acción fuerte exige evidencia personal fresca | catálogo compartido de reautenticación                | `AUTH-DEV-014`; `SHELL-AUTH-002`; `SHELL-UI-016`                 |
 
-```text
-Si consideras que es un error, solicita una revisión a un administrador autorizado.
-```
+Reglas:
 
-`Elegir otra sede` solo existe si el servidor demostró una alternativa activa,
-autorizada y segura.
+1. no se mapean a `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`;
+2. no se cuentan dentro de los veinte reason codes;
+3. no usan el catálogo de bloqueos como sustituto de su flujo interactivo;
+4. completar el flujo crea una solicitud nueva;
+5. la ausencia de implementación física se conserva como brecha, no como copy local.
 
 ---
 
-#### 20. `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001` — perfiles 008 a 014
+#### 20. `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001` — perfiles 001 a 008
+
+|    # | Profile key                                  | Título                                            | Mensaje                                                                                                                                         | Acción principal    | Acción secundaria / ayuda                        |
+| ---: | -------------------------------------------- | ------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ------------------------------------------------ |
+|    1 | `AUTH_NO_SESSION/default`                    | `Inicia sesión para continuar`                    | `Tu sesión no está disponible o dejó de ser válida. Inicia sesión nuevamente para volver a la aplicación.`                                      | `Iniciar sesión`    | `Volver a Vento OS`                              |
+|    2 | `AUTH_USER_INACTIVE/employee`                | `Tu acceso está inactivo`                         | `Tu identidad para esta aplicación está inactiva. No puedes continuar mientras permanezca en este estado.`                                      | `Cerrar sesión`     | `Volver a Vento OS`; ayuda aprobada              |
+|    3 | `AUTH_USER_INACTIVE/customer`                | `Tu acceso está inactivo`                         | `Tu perfil de cliente está inactivo. No puedes continuar mientras permanezca en este estado.`                                                   | `Cerrar sesión`     | ayuda aprobada                                   |
+|    4 | `AUTH_APP_ACCESS_DENIED/default`             | `No tienes acceso a esta aplicación`              | `Tu sesión está activa, pero esta aplicación no está habilitada para tu cuenta.`                                                                | `Volver a Vento OS` | `Cerrar sesión`                                  |
+|    5 | `AUTH_ADMIN_PERMISSION_DENIED/default`       | `No tienes permiso para realizar esta acción`     | `Tu cuenta puede usar esta aplicación, pero no tiene el permiso administrativo necesario para completar esta acción.`                           | `Volver`            | `Volver a Vento OS`                              |
+|    6 | `AUTH_OPERATIONAL_PERMISSION_DENIED/default` | `No tienes permiso para completar esta operación` | `Tu sesión y contexto operativo están activos, pero no tienes la autorización operativa necesaria para completar esta acción.`                  | `Volver`            | `Volver a Vento OS`                              |
+|    7 | `AUTH_SITE_ASSIGNMENT_REQUIRED/default`      | `Necesitas una sede asignada`                     | `Tu perfil laboral no tiene una sede asignada para continuar con esta acción. Solicita a un administrador autorizado que revise tu asignación.` | `Volver a Vento OS` | `Ir al inicio de la aplicación`; ayuda aprobada  |
+|    8 | `AUTH_ACTIVE_SITE_REQUIRED/default`          | `No hay una sede activa disponible`               | `Tu sesión está activa, pero esta acción requiere una sede activa y no hay una disponible para el contexto actual.`                             | `Volver a Vento OS` | `Cerrar sesión`; condicional: `Elegir otra sede` |
+
+Las ayudas de identidad inactiva y sede asignada conservan exactamente el copy
+de sus tareas propietarias. `Elegir otra sede` solo existe con alternativa
+activa, autorizada y segura demostrada por servidor.
+
+---
+
+#### 21. `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001` — perfiles 009 a 015
 
 |    # | Profile key                                      | Título                                        | Mensaje                                                                                                                                                             | Acción principal    | Acción secundaria / ayuda                                                        |
 | ---: | ------------------------------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | -------------------------------------------------------------------------------- |
-|    8 | `AUTH_AREA_ASSIGNMENT_REQUIRED/default`          | `No tienes un área asignada para esta acción` | `Tu cuenta puede usar esta aplicación, pero necesita una asignación de área compatible para completar esta acción.`                                                 | `Volver`            | `Volver a Vento OS`                                                              |
-|    9 | `AUTH_ACTIVE_AREA_REQUIRED/default`              | `Necesitas un área activa`                    | `No hay un área activa y compatible disponible para continuar con esta acción. Solicita a un administrador autorizado que revise la configuración correspondiente.` | `Volver a Vento OS` | `Ir al inicio de la aplicación`; ayuda aprobada; condicional: `Elegir otra área` |
-|   10 | `AUTH_PUBLISHED_SHIFT_REQUIRED/default`          | `Necesitas un turno publicado`                | `No tienes un turno laboral publicado disponible para continuar con esta acción. Solicita a un administrador autorizado que revise tu programación.`                | `Volver a Vento OS` | `Ir al inicio de la aplicación`; ayuda aprobada                                  |
-|   11 | `AUTH_OUTSIDE_SHIFT_WINDOW/default`              | `No estás dentro de tu turno`                 | `Tienes un turno publicado, pero no está vigente en este momento. Revisa tu horario antes de continuar.`                                                            | `Ver mi horario`    | `Volver a Vento OS`                                                              |
-|   12 | `AUTH_CHECKIN_REQUIRED/default`                  | `Check-in requerido`                          | `Registra tu entrada para continuar con esta operación.`                                                                                                            | `Registrar entrada` | `Volver a una vista disponible` cuando exista una superficie autorizada          |
-|   13 | `AUTH_OPERATIONAL_ROLE_REQUIRED/default`         | `null`                                        | `Tu turno no tiene un rol operativo asignado. Solicita que lo corrijan para continuar.`                                                                             | `null`              | `null`                                                                           |
-|   14 | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE/default` | `null`                                        | `Tu rol operativo no está habilitado para esta sede. Solicita que revisen tu turno para continuar.`                                                                 | `null`              | `null`                                                                           |
+|    9 | `AUTH_AREA_ASSIGNMENT_REQUIRED/default`          | `No tienes un área asignada para esta acción` | `Tu cuenta puede usar esta aplicación, pero necesita una asignación de área compatible para completar esta acción.`                                                 | `Volver`            | `Volver a Vento OS`                                                              |
+|   10 | `AUTH_ACTIVE_AREA_REQUIRED/default`              | `Necesitas un área activa`                    | `No hay un área activa y compatible disponible para continuar con esta acción. Solicita a un administrador autorizado que revise la configuración correspondiente.` | `Volver a Vento OS` | `Ir al inicio de la aplicación`; ayuda aprobada; condicional: `Elegir otra área` |
+|   11 | `AUTH_PUBLISHED_SHIFT_REQUIRED/default`          | `Necesitas un turno publicado`                | `No tienes un turno laboral publicado disponible para continuar con esta acción. Solicita a un administrador autorizado que revise tu programación.`                | `Volver a Vento OS` | `Ir al inicio de la aplicación`; ayuda aprobada                                  |
+|   12 | `AUTH_OUTSIDE_SHIFT_WINDOW/default`              | `No estás dentro de tu turno`                 | `Tienes un turno publicado, pero no está vigente en este momento. Revisa tu horario antes de continuar.`                                                            | `Ver mi horario`    | `Volver a Vento OS`                                                              |
+|   13 | `AUTH_CHECKIN_REQUIRED/default`                  | `Check-in requerido`                          | `Registra tu entrada para continuar con esta operación.`                                                                                                            | `Registrar entrada` | `Volver a una vista disponible` cuando exista una superficie autorizada          |
+|   14 | `AUTH_OPERATIONAL_ROLE_REQUIRED/default`         | `null`                                        | `Tu turno no tiene un rol operativo asignado. Solicita que lo corrijan para continuar.`                                                                             | `null`              | `null`                                                                           |
+|   15 | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE/default` | `null`                                        | `Tu rol operativo no está habilitado para esta sede. Solicita que revisen tu turno para continuar.`                                                                 | `null`              | `null`                                                                           |
 
-La ayuda exacta de los perfiles 9 y 10 es:
-
-```text
-Si consideras que es un error, solicita una revisión a un administrador autorizado.
-```
-
-Los campos `null` son deliberados: ninguna aplicación podrá completar esos
-textos por inferencia.
+Los campos `null` son deliberados. Ninguna aplicación podrá completarlos por
+inferencia.
 
 ---
 
-#### 21. `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001` — perfiles 015 a 024
+#### 22. `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001` — perfiles 016 a 025
 
 |    # | Profile key                                              | Título                                                   | Mensaje                                                                                                                                               | Acción principal                                 | Acción secundaria / confirmación                                                        |
 | ---: | -------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------- |
-|   15 | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA/default`         | `null`                                                   | `Tu rol operativo no está habilitado para esta área. Solicita que revisen tu turno para continuar.`                                                   | `null`                                           | `null`                                                                                  |
-|   16 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/default`              | `null`                                                   | mensaje base exacto definido debajo                                                                                                                   | `null`                                           | confirmar que no se realizaron cambios                                                  |
-|   17 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/personal_session`     | `Esta operación requiere una sesión personal`            | mensaje base del código                                                                                                                               | `Iniciar sesión de forma personal`               | —                                                                                       |
-|   18 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/device_unavailable`   | `Este dispositivo no está disponible para operar`        | mensaje base del código                                                                                                                               | `Usar otro dispositivo`                          | —                                                                                       |
-|   19 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/configuration_review` | `Este dispositivo necesita una revisión`                 | mensaje base del código                                                                                                                               | `Solicitar revisión`                             | —                                                                                       |
-|   20 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/app_unavailable`      | `Esta aplicación no está disponible en este dispositivo` | mensaje base del código                                                                                                                               | `Volver a las aplicaciones permitidas`           | —                                                                                       |
-|   21 | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION/default`          | `null`                                                   | `Esta acción no puede ejecutarse durante una simulación. Sal de la simulación y abre la operación real para continuar.`                               | `Salir de simulación`                            | `Abrir operación real` cuando exista ruta conocida; `No se realizó ningún cambio real.` |
-|   22 | `AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT/default` | `No pudimos validar la configuración`                    | `La configuración necesaria para autorizar esta acción es inconsistente. Solicita una revisión administrativa antes de continuar.`                    | `Solicitar revisión`                             | `Volver`                                                                                |
-|   23 | `AUTH_PERMISSION_NOT_REGISTERED/default`                 | `Esta función no está disponible`                        | `La función solicitada no está registrada en Vento OS. Informa el código de soporte para que revisen la configuración.`                               | `Copiar código de soporte`                       | `Volver`; `No se realizó ningún cambio.`                                                |
-|   24 | `AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE/default`      | `No pudimos verificar el acceso`                         | `Ocurrió un problema técnico al verificar tu acceso. No se realizó ningún cambio. Intenta nuevamente en unos minutos o informa el código de soporte.` | `Intentar de nuevo` solo cuando `retryable=true` | `Copiar código de soporte`; `Volver`; `No se realizó ningún cambio.`                    |
+|   16 | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA/default`         | `null`                                                   | `Tu rol operativo no está habilitado para esta área. Solicita que revisen tu turno para continuar.`                                                   | `null`                                           | `null`                                                                                  |
+|   17 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/default`              | `null`                                                   | mensaje base exacto definido debajo                                                                                                                   | `null`                                           | confirmar que no se realizaron cambios                                                  |
+|   18 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/personal_session`     | `Esta operación requiere una sesión personal`            | mensaje base del código                                                                                                                               | `Iniciar sesión de forma personal`               | —                                                                                       |
+|   19 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/device_unavailable`   | `Este dispositivo no está disponible para operar`        | mensaje base del código                                                                                                                               | `Usar otro dispositivo`                          | —                                                                                       |
+|   20 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/configuration_review` | `Este dispositivo necesita una revisión`                 | mensaje base del código                                                                                                                               | `Solicitar revisión`                             | —                                                                                       |
+|   21 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/app_unavailable`      | `Esta aplicación no está disponible en este dispositivo` | mensaje base del código                                                                                                                               | `Volver a las aplicaciones permitidas`           | —                                                                                       |
+|   22 | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION/default`          | `null`                                                   | `Esta acción no puede ejecutarse durante una simulación. Sal de la simulación y abre la operación real para continuar.`                               | `Salir de simulación`                            | `Abrir operación real` cuando exista ruta conocida; `No se realizó ningún cambio real.` |
+|   23 | `AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT/default` | `No pudimos validar la configuración`                    | `La configuración necesaria para autorizar esta acción es inconsistente. Solicita una revisión administrativa antes de continuar.`                    | `Volver`                                         | condicional: `Solicitar revisión` solo con canal autorizado y funcional                 |
+|   24 | `AUTH_PERMISSION_NOT_REGISTERED/default`                 | `Esta función no está disponible`                        | `La función solicitada no está registrada en Vento OS. Informa el código de soporte para que revisen la configuración.`                               | `Copiar código de soporte`                       | `Volver`; `No se realizó ningún cambio.`                                                |
+|   25 | `AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE/default`      | `No pudimos verificar el acceso`                         | `Ocurrió un problema técnico al verificar tu acceso. No se realizó ningún cambio. Intenta nuevamente en unos minutos o informa el código de soporte.` | `Intentar de nuevo` solo cuando `retryable=true` | `Copiar código de soporte`; `Volver`; `No se realizó ningún cambio.`                    |
 
-El mensaje base exacto de los perfiles 16 a 20 es:
+El mensaje base exacto de los perfiles 17 a 21 es:
 
 ```text
 Este dispositivo no está autorizado para esta operación.
 Usa un dispositivo permitido o inicia sesión de forma personal.
 ```
 
-Los perfiles 17 a 20 no sustituyen el mensaje base. Solo fijan un título y una
+Los perfiles 18 a 21 no sustituyen el mensaje base. Solo fijan un título y una
 acción permitidos para una recuperación segura ya demostrada.
 
 ---
 
-#### 22. Matriz de identidad, decisión y estado
+#### 23. Matriz de identidad, decisión y estado
 
 | Reason code                                      | Resultado contractual             | HTTP no navegacional | Sesión                             | Retry automático                                      |
 | ------------------------------------------------ | --------------------------------- | -------------------: | ---------------------------------- | ----------------------------------------------------- |
@@ -4676,6 +4693,7 @@ acción permitidos para una recuperación segura ya demostrada.
 | `AUTH_USER_INACTIVE`                             | `DENY`                            |                  403 | conservada hasta acción voluntaria | no                                                    |
 | `AUTH_APP_ACCESS_DENIED`                         | `DENY`                            |                  403 | preservada                         | no                                                    |
 | `AUTH_ADMIN_PERMISSION_DENIED`                   | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_OPERATIONAL_PERMISSION_DENIED`             | `DENY`                            |                  403 | preservada                         | no                                                    |
 | `AUTH_SITE_ASSIGNMENT_REQUIRED`                  | `DENY`                            |                  403 | preservada                         | no                                                    |
 | `AUTH_ACTIVE_SITE_REQUIRED`                      | `DENY`                            |                  403 | preservada                         | no                                                    |
 | `AUTH_AREA_ASSIGNMENT_REQUIRED`                  | `DENY`                            |                  403 | preservada                         | no                                                    |
@@ -4697,7 +4715,7 @@ la razón y los valida por consistencia.
 
 ---
 
-#### 23. Exactitud del copy
+#### 24. Exactitud del copy
 
 Cada cadena de `es-CO` deberá coincidir byte a byte con el texto aprobado,
 salvo normalización canónica de fin de línea y Unicode definida por el build.
@@ -4720,7 +4738,7 @@ nueva; no puede surgir localmente.
 
 ---
 
-#### 24. Parámetros e interpolación
+#### 25. Parámetros e interpolación
 
 La versión `1.0.0` no autoriza interpolaciones públicas de:
 
@@ -4744,7 +4762,7 @@ los autorice. No se insertan dentro del mensaje principal.
 
 ---
 
-#### 25. `AUTHORIZATION-MESSAGE-CONSUMER-CHANNEL-MATRIX-001`
+#### 26. `AUTHORIZATION-MESSAGE-CONSUMER-CHANNEL-MATRIX-001`
 
 | Canal                                 | Consumo requerido                               | Respuesta pública                              | Prohibiciones                                     |
 | ------------------------------------- | ----------------------------------------------- | ---------------------------------------------- | ------------------------------------------------- |
@@ -4770,7 +4788,7 @@ duplicados = 0
 
 ---
 
-#### 26. Envelope compartido
+#### 27. Envelope compartido
 
 Forma pública mínima conceptual:
 
@@ -4798,7 +4816,7 @@ fingerprint.
 
 ---
 
-#### 27. Cobertura de aplicaciones
+#### 28. Cobertura de aplicaciones
 
 | Aplicación | Decisión de consumo                                                                                                             |
 | ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
@@ -4825,7 +4843,7 @@ aplicaciones autorizadas a definir copy alternativo = 0
 
 ---
 
-#### 28. Fronteras especiales de PASS y AURA
+#### 29. Fronteras especiales de PASS y AURA
 
 PASS:
 
@@ -4845,7 +4863,7 @@ AURA:
 
 ---
 
-#### 29. Propiedad server-side y cliente
+#### 30. Propiedad server-side y cliente
 
 El servidor decide:
 
@@ -4874,7 +4892,7 @@ CLIENTE NO CONVIERTE ERROR EN DENY
 
 ---
 
-#### 30. Versionado, publicación y rollback
+#### 31. Versionado, publicación y rollback
 
 La implementación futura deberá cumplir:
 
@@ -4898,7 +4916,7 @@ sin una transición explícita.
 
 ---
 
-#### 31. Adopción y transición
+#### 32. Adopción y transición
 
 Orden previsto:
 
@@ -4929,7 +4947,7 @@ pruebas y rollback.
 
 ---
 
-#### 32. Auditoría y observabilidad
+#### 33. Auditoría y observabilidad
 
 La auditoría de resolución del mensaje podrá registrar:
 
@@ -4971,7 +4989,7 @@ o falla técnica.
 
 ---
 
-#### 33. Seguridad de la cadena de suministro
+#### 34. Seguridad de la cadena de suministro
 
 La distribución deberá proteger:
 
@@ -4993,7 +5011,7 @@ no se utiliza y produce fallo técnico seguro.
 
 ---
 
-#### 34. Snapshot físico de solo lectura
+#### 35. Snapshot físico de solo lectura
 
 Estado observado:
 
@@ -5022,20 +5040,20 @@ Observaciones:
 - FOGO y ORIGO muestran ruta, permiso y una variante local de rol de prueba;
 - PULSO atribuye el bloqueo a permisos y sede seleccionada;
 - VISO muestra copy genérico y la ruta solicitada;
-- ninguna de las cinco páginas resuelve los diecinueve códigos o veinticuatro
+- ninguna de las cinco páginas resuelve los veinte códigos o veinticinco
   perfiles desde una fuente compartida;
 - el workspace `@vento/os-context` existente no implementa el contrato final y
   conserva tipos legacy incompatibles.
 
 ---
 
-#### 35. `AUTHORIZATION-MESSAGE-PHYSICAL-RECONCILIATION-001`
+#### 36. `AUTHORIZATION-MESSAGE-PHYSICAL-RECONCILIATION-001`
 
 |    # | Brecha física                                                                | Estado                        | Riesgo                                                                   | Destino exacto                                                                  |
 | ---: | ---------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
 |    1 | no existe el paquete físico `@vento/contracts`                               | `PENDIENTE_DE_IMPLEMENTACION` | códigos y schemas no tienen distribución canónica                        | `SHELL-CON-001`; `SHELL-PKG-001` a `SHELL-PKG-008`                              |
 |    2 | no existe export `@vento/contracts/authorization` con catálogo y perfiles    | `PENDIENTE_DE_IMPLEMENTACION` | cada consumidor puede definir otra semántica                             | `SHELL-CON-008`; `SHELL-AUTH-001`                                               |
-|    3 | no existe schema o tipo generado que valide 19 razones y 24 perfiles         | `PENDIENTE_DE_IMPLEMENTACION` | faltantes, duplicados y campos inseguros                                 | `SHELL-CON-008`; `SHELL-AUTH-001`; `SHELL-CI-016`                               |
+|    3 | no existe schema o tipo generado que valide 20 razones y 25 perfiles         | `PENDIENTE_DE_IMPLEMENTACION` | faltantes, duplicados y campos inseguros                                 | `SHELL-CON-008`; `SHELL-AUTH-001`; `SHELL-CI-016`                               |
 |    4 | `@vento/os-context` solo exporta types y client legacy                       | `BLOQUEADO`                   | no existe resolver compartido y persisten `can_operate` y strings libres | `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-AUTH-002`                             |
 |    5 | no existe paquete físico `@vento/ui-web` ni componente de bloqueo compartido | `PENDIENTE_DE_IMPLEMENTACION` | cinco aplicaciones mantienen páginas divergentes                         | `SHELL-UI-001`; `SHELL-UI-016`                                                  |
 |    6 | NEXO conserva página genérica que muestra la ruta                            | `PENDIENTE_DE_MIGRACION`      | filtración y causa incorrecta                                            | `SHELL-AUTH-005`; `SHELL-UI-016`; `SHELL-CI-016`                                |
@@ -5052,7 +5070,7 @@ Ninguna brecha autoriza implementación durante esta tarea documental.
 
 ---
 
-#### 36. Caché, invalidación y concurrencia
+#### 37. Caché, invalidación y concurrencia
 
 Una resolución cacheada deberá incluir:
 
@@ -5085,34 +5103,38 @@ habilita copy local. Una aplicación offline puede mostrar el último descriptor
 
 ---
 
-#### 37. Requisitos de prueba derivados
+#### 38. Requisitos de prueba derivados
 
 **Resultado:** GENERA REQUISITOS DE PRUEBA
 
-| ID              | Regla protegida                                                                                       | Tipo                                               | Prioridad | Momento de implementación                 | Destino                                                                         |
-| --------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- | --------- | ----------------------------------------- | ------------------------------------------------------------------------------- |
-| `TREQ-AUTH-319` | catálogo inmutable y completo de 19 razones con versión, schema, hash y procedencia                   | contractual + estática + regresión                 | crítica   | creación de contratos compartidos         | `SHELL-CON-001`; `SHELL-CON-008`; `SHELL-PKG-001` a `SHELL-PKG-008`             |
-| `TREQ-AUTH-320` | 24 perfiles `es-CO` con copy exacto, campos nulos preservados y cero variantes locales                | contractual + experiencia + regresión              | crítica   | build del catálogo y UI compartida        | `SHELL-CON-008`; `SHELL-UI-016`; `SHELL-CI-016`                                 |
-| `TREQ-AUTH-321` | fronteras de ownership entre contracts, os-context y ui-web                                           | arquitectura + integración + regresión             | crítica   | creación y exports de paquetes            | `SHELL-CON-001`; `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-UI-001`              |
-| `TREQ-AUTH-322` | localización segura, fallback a `es-CO`, incompatibilidad fail closed y privacidad                    | contractual + localización + seguridad + regresión | crítica   | resolver y adapters                       | `SHELL-AUTH-002`; `SHELL-AUTH-004`; `SHELL-CI-016`                              |
-| `TREQ-AUTH-323` | equivalencia de diez canales y envelope sin booleano, copy o razón inventados                         | integración + RPC + RLS + E2E + regresión          | crítica   | adopción multicanal                       | `AUTH-DB-034`; `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-018`               |
-| `TREQ-AUTH-324` | paridad de diez aplicaciones, sin copy local ni exposición de ruta o permiso                          | aplicación + privacidad + E2E + regresión          | crítica   | migración de consumidores                 | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`; `SHELL-CI-016`              |
-| `TREQ-AUTH-325` | selección determinista de reason, variant, locale y acciones condicionales                            | unitaria + contractual + seguridad + regresión     | crítica   | SDK y renderer compartidos                | `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-UI-016`                              |
-| `TREQ-AUTH-326` | gate de completitud, duplicados, copy exacto, códigos desconocidos y ausencia de diccionarios locales | estática + lint + CI + regresión                   | crítica   | gates de paquetes y consumidores          | `SHELL-PKG-008`; `SHELL-AUTH-004`; `SHELL-CI-016`                               |
-| `TREQ-AUTH-327` | publicación privada, semver, lockfile, inmutabilidad, procedencia, compatibilidad y rollback          | supply chain + integración + regresión             | crítica   | release y adopción                        | `SHELL-PKG-001` a `SHELL-PKG-008`; `SHELL-CI-018`; `SHELL-CI-019`               |
-| `TREQ-AUTH-328` | cierre de 14 brechas y certificación transversal de catálogo, resolver, UI y consumidores             | seguridad + integración + E2E + regresión          | crítica   | paquete de implementación y certificación | `SHELL-AUTH-005`; `AUTH-QA-019`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+| ID              | Regla protegida                                                                                                                                                | Tipo                                                | Prioridad | Momento de implementación                 | Destino                                                                                          |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | --------- | ----------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| `TREQ-AUTH-319` | catálogo inmutable y completo de 20 razones con versión, schema, hash y procedencia                                                                            | contractual + estática + regresión                  | crítica   | creación de contratos compartidos         | `SHELL-CON-001`; `SHELL-CON-008`; `SHELL-PKG-001` a `SHELL-PKG-008`                              |
+| `TREQ-AUTH-320` | 25 perfiles `es-CO` con copy exacto, campos nulos preservados y cero variantes locales                                                                         | contractual + experiencia + regresión               | crítica   | build del catálogo y UI compartida        | `SHELL-CON-008`; `SHELL-UI-016`; `SHELL-CI-016`                                                  |
+| `TREQ-AUTH-321` | fronteras de ownership entre contracts, os-context y ui-web                                                                                                    | arquitectura + integración + regresión              | crítica   | creación y exports de paquetes            | `SHELL-CON-001`; `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-UI-001`                               |
+| `TREQ-AUTH-322` | localización segura, fallback a `es-CO`, incompatibilidad fail closed y privacidad                                                                             | contractual + localización + seguridad + regresión  | crítica   | resolver y adapters                       | `SHELL-AUTH-002`; `SHELL-AUTH-004`; `SHELL-CI-016`                                               |
+| `TREQ-AUTH-323` | equivalencia de diez canales y envelope sin booleano, copy o razón inventados                                                                                  | integración + RPC + RLS + E2E + regresión           | crítica   | adopción multicanal                       | `AUTH-DB-034`; `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-018`                                |
+| `TREQ-AUTH-324` | paridad de diez aplicaciones, sin copy local ni exposición de ruta o permiso                                                                                   | aplicación + privacidad + E2E + regresión           | crítica   | migración de consumidores                 | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`; `SHELL-CI-016`                               |
+| `TREQ-AUTH-325` | selección determinista de reason, variant, locale y acciones condicionales                                                                                     | unitaria + contractual + seguridad + regresión      | crítica   | SDK y renderer compartidos                | `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-UI-016`                                               |
+| `TREQ-AUTH-326` | gate de completitud, duplicados, copy exacto, códigos desconocidos y ausencia de diccionarios locales                                                          | estática + lint + CI + regresión                    | crítica   | gates de paquetes y consumidores          | `SHELL-PKG-008`; `SHELL-AUTH-004`; `SHELL-CI-016`                                                |
+| `TREQ-AUTH-327` | publicación privada, semver, lockfile, inmutabilidad, procedencia, compatibilidad y rollback                                                                   | supply chain + integración + regresión              | crítica   | release y adopción                        | `SHELL-PKG-001` a `SHELL-PKG-008`; `SHELL-CI-018`; `SHELL-CI-019`                                |
+| `TREQ-AUTH-328` | cierre de 16 brechas y certificación transversal de catálogo, resolver, UI y consumidores                                                                      | seguridad + integración + E2E + regresión           | crítica   | paquete de implementación y certificación | `SHELL-AUTH-005`; `AUTH-QA-019`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019`                  |
+| `TREQ-AUTH-329` | denegación operativa concluyente con reason code, copy, composición por modalidad y cero efectos                                                               | contractual + autorización + seguridad + regresión  | crítica   | evaluador y catálogo compartido           | `AUTH-DB-034`; `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-CI-016`                                |
+| `TREQ-AUTH-330` | conflictos de asistencia concluyentes usan `AUTH-ERR-017`, indisponibilidad usa `AUTH-ERR-019` y `AUTH-ERR-012` queda reservado a rol faltante                 | razones + contexto + regresión                      | crítica   | resolver de asistencia y precedencia      | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                     |
+| `TREQ-AUTH-331` | identificación de actor y reautenticación fuerte permanecen estados interactivos auxiliares, fuera de `AuthorizationReasonCode`, con catálogo y UI compartidos | contractual + dispositivo + experiencia + regresión | crítica   | catálogo de interacción y adapters        | `AUTH-DEV-007`; `AUTH-DEV-012`; `AUTH-DEV-014`; `SHELL-AUTH-002`; `SHELL-UI-016`; `SHELL-CI-016` |
 
 Los requisitos se incorporan al registro canónico completo. Esta tarea no
 implementa las pruebas.
 
 ---
 
-#### 38. Estados y evidencia
+#### 39. Estados y evidencia
 
 | Elemento                                     | Estado                             |
 | -------------------------------------------- | ---------------------------------- |
-| catálogo documental de 19 razones            | `ESPECIFICADO`                     |
-| registro documental de 24 perfiles           | `ESPECIFICADO`                     |
+| catálogo documental de 20 razones            | `ESPECIFICADO`                     |
+| registro documental de 25 perfiles           | `ESPECIFICADO`                     |
+| registro de 2 estados interactivos excluidos | `ESPECIFICADO`                     |
 | contrato de distribución                     | `ESPECIFICADO`                     |
 | matriz de diez canales                       | `ESPECIFICADO`                     |
 | cobertura de diez aplicaciones               | `ESPECIFICADO`                     |
@@ -5131,7 +5153,7 @@ adopción futura.
 
 ---
 
-#### 39. Fuera del alcance
+#### 40. Fuera del alcance
 
 AUTH-ERR-020 no:
 
@@ -5157,14 +5179,15 @@ en la reconciliación física.
 
 ---
 
-#### 40. Criterios de aceptación
+#### 41. Criterios de aceptación
 
 - [x] Se definió `vento.authorization.messages@1.0.0`.
 - [x] Se definió `schema_version=1.0.0`.
 - [x] Se definió `es-CO` como locale fuente.
-- [x] Se materializaron diecinueve reason codes.
-- [x] Se materializaron veinticuatro perfiles.
-- [x] Se preservó el copy aprobado de `AUTH-ERR-001` a `AUTH-ERR-019`.
+- [x] Se materializaron veinte reason codes.
+- [x] Se materializaron veinticinco perfiles.
+- [x] Se excluyeron formalmente dos estados interactivos auxiliares.
+- [x] Se preservó y corrigió el copy aprobado de `AUTH-ERR-001` a `AUTH-ERR-019`, incluido el perfil operativo complementario de `AUTH-ERR-004`.
 - [x] Se conservaron campos `null` donde no existía texto aprobado.
 - [x] Se prohibió inventar copy local.
 - [x] Se separaron códigos, copy y evidencia privada.
@@ -5194,37 +5217,39 @@ en la reconciliación física.
 - [x] Se inspeccionaron cinco páginas físicas divergentes.
 - [x] Se registró la ausencia física de `@vento/contracts` y `@vento/ui-web`.
 - [x] Se registró el estado parcial legacy de `@vento/os-context`.
-- [x] Se registraron catorce brechas con destino exacto.
-- [x] Se derivaron `TREQ-AUTH-319` a `TREQ-AUTH-328`.
+- [x] Se registraron dieciséis brechas con destino exacto.
+- [x] Se conservaron `TREQ-AUTH-319` a `TREQ-AUTH-328` y se derivaron `TREQ-AUTH-329` a `TREQ-AUTH-331`.
 - [x] No se modificó código, Supabase, paquetes, aplicaciones ni repositorios remotos.
 - [x] `NEXO-DOM-001` permanece únicamente reservada.
 
 ---
 
-#### 41. Riesgos controlados
+#### 42. Riesgos controlados
 
-| Riesgo                                       | Control                                   |
-| -------------------------------------------- | ----------------------------------------- |
-| aplicación inventa un mensaje                | catálogo único y gate contra copy local   |
-| causa técnica mostrada como falta de permiso | reason code y perfil tipados              |
-| permiso o ruta expuestos                     | descriptor público minimizado             |
-| traducción cambia semántica                  | source locale y paridad contractual       |
-| campo no aprobado recibe texto local         | `null` explícito                          |
-| paquete stale mezcla versiones               | versión, hash y lockfile                  |
-| variant amplía recuperación                  | selección server-side                     |
-| acción repite mutación                       | solicitud nueva y cero replay             |
-| RLS cero filas inventa causa                 | adapter autoritativo                      |
-| PASS recibe RBAC laboral indebido            | frontera de dominio cliente               |
-| AURA diferida se presenta como falla         | no materializar superficie inexistente    |
-| UI compartida decide autorización            | separación contracts/context/UI           |
-| registry comprometido altera copy            | inmutabilidad, procedencia e integridad   |
-| rollback manual pierde paridad               | versión exacta y lockfile anterior        |
-| adopción parcial deja bypass                 | certificación de diez apps y diez canales |
-| copy cambia sin prueba                       | semver, changelog y gates                 |
+| Riesgo                                                 | Control                                     |
+| ------------------------------------------------------ | ------------------------------------------- |
+| aplicación inventa un mensaje                          | catálogo único y gate contra copy local     |
+| causa técnica mostrada como falta de permiso           | reason code y perfil tipados                |
+| permiso o ruta expuestos                               | descriptor público minimizado               |
+| traducción cambia semántica                            | source locale y paridad contractual         |
+| campo no aprobado recibe texto local                   | `null` explícito                            |
+| paquete stale mezcla versiones                         | versión, hash y lockfile                    |
+| variant amplía recuperación                            | selección server-side                       |
+| acción repite mutación                                 | solicitud nueva y cero replay               |
+| RLS cero filas inventa causa                           | adapter autoritativo                        |
+| PASS recibe RBAC laboral indebido                      | frontera de dominio cliente                 |
+| AURA diferida se presenta como falla                   | no materializar superficie inexistente      |
+| UI compartida decide autorización                      | separación contracts/context/UI             |
+| registry comprometido altera copy                      | inmutabilidad, procedencia e integridad     |
+| rollback manual pierde paridad                         | versión exacta y lockfile anterior          |
+| adopción parcial deja bypass                           | certificación de diez apps y diez canales   |
+| denegación operativa se presenta como administrativa   | perfil operativo y composición determinista |
+| identificación o reautenticación se presenta como deny | registro explícito de estados auxiliares    |
+| copy cambia sin prueba                                 | semver, changelog y gates                   |
 
 ---
 
-#### 42. Cierre de tarea y continuidad
+#### 43. Cierre de tarea y continuidad
 
 **ÚLTIMA TAREA APROBADA**
 
@@ -5237,4 +5262,3 @@ en la reconciliación física.
 **SIGUIENTE TAREA RESERVADA**
 
 `NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores`
-

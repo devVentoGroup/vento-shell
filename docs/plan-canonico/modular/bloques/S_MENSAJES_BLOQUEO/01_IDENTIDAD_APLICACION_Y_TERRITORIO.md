@@ -172,17 +172,18 @@ mostrarse al usuario como detalle técnico ni utilizarse para revelar:
 
 #### 5. Condiciones que no pertenecen a `AUTH_NO_SESSION`
 
-| Condición observada                                                        | Clasificación correcta                 | Tarea propietaria                   |
-| -------------------------------------------------------------------------- | -------------------------------------- | ----------------------------------- |
-| la verificación de Auth falla por red, timeout o excepción no clasificable | error técnico, no denegación de sesión | `AUTH-ERR-019`                      |
-| faltan URL, clave pública o configuración del cliente Supabase             | configuración técnica inconsistente    | `AUTH-ERR-017` y `AUTH-ERR-019`     |
-| existe sesión válida, pero el empleado o usuario está inactivo             | usuario inactivo                       | `AUTH-ERR-002`                      |
-| existe sesión válida, pero la aplicación no está permitida                 | sin acceso a la aplicación             | `AUTH-ERR-003`                      |
-| existe sesión válida, pero falta permiso                                   | bloqueo de permiso correspondiente     | `AUTH-ERR-004` o tareas posteriores |
-| existe sesión válida, pero falta sede, área, turno, check-in o rol         | bloqueo contextual correspondiente     | `AUTH-ERR-005` a `AUTH-ERR-014`     |
-| el código de permiso solicitado no existe                                  | permiso no registrado                  | `AUTH-ERR-018`                      |
-| el login, callback o ruta pública se solicita sin sesión                   | acceso público legítimo                | no aplica bloqueo                   |
-| un actor técnico autenticado usa credenciales de servicio válidas          | identidad técnica, no sesión laboral   | contrato de integración propietario |
+| Condición observada                                                                             | Clasificación correcta                 | Tarea propietaria                   |
+| ----------------------------------------------------------------------------------------------- | -------------------------------------- | ----------------------------------- |
+| la verificación de Auth falla por red, timeout o excepción no clasificable                      | error técnico, no denegación de sesión | `AUTH-ERR-019`                      |
+| la ausencia de URL, clave pública o configuración obligatoria se comprueba de forma concluyente | configuración técnica inconsistente    | `AUTH-ERR-017`                      |
+| la configuración o el proveedor no pueden consultarse o verificarse                             | indisponibilidad técnica               | `AUTH-ERR-019`                      |
+| existe sesión válida, pero el empleado o usuario está inactivo                                  | usuario inactivo                       | `AUTH-ERR-002`                      |
+| existe sesión válida, pero la aplicación no está permitida                                      | sin acceso a la aplicación             | `AUTH-ERR-003`                      |
+| existe sesión válida, pero falta permiso                                                        | bloqueo de permiso correspondiente     | `AUTH-ERR-004` o tareas posteriores |
+| existe sesión válida, pero falta sede, área, turno, check-in o rol                              | bloqueo contextual correspondiente     | `AUTH-ERR-005` a `AUTH-ERR-014`     |
+| el código de permiso solicitado no existe                                                       | permiso no registrado                  | `AUTH-ERR-018`                      |
+| el login, callback o ruta pública se solicita sin sesión                                        | acceso público legítimo                | no aplica bloqueo                   |
+| un actor técnico autenticado usa credenciales de servicio válidas                               | identidad técnica, no sesión laboral   | contrato de integración propietario |
 
 Regla obligatoria:
 
@@ -744,12 +745,16 @@ clasificar mediante AUTH-ERR-019
 
 ##### Caso D — Configuración Supabase ausente
 
-Resultado:
+Resultado cuando la ausencia se comprueba de forma concluyente:
 
 ```text
 NO usar AUTH_NO_SESSION
-AUTH-ERR-017 / AUTH-ERR-019
+AUTH-ERR-017
 ```
+
+Si la configuración o el proveedor no pueden consultarse o verificarse, el
+resultado pertenece a `AUTH-ERR-019`. Nunca se seleccionan ambos códigos para
+el mismo intento.
 
 ##### Caso E — Sesión válida, empleado inactivo
 
@@ -1223,21 +1228,23 @@ de la aplicación sin revelar información sensible.
 
 #### 5. Condiciones que no pertenecen a `AUTH_USER_INACTIVE`
 
-| Condición observada                                          | Clasificación correcta                             | Tarea propietaria               |
-| ------------------------------------------------------------ | -------------------------------------------------- | ------------------------------- |
-| no existe sesión válida                                      | `AUTH_NO_SESSION`                                  | `AUTH-ERR-001`                  |
-| la verificación Auth falla por red o timeout                 | error técnico                                      | `AUTH-ERR-019`                  |
-| faltan variables, claves o configuración                     | configuración inconsistente                        | `AUTH-ERR-017`; `AUTH-ERR-019`  |
-| la identidad requerida no existe                             | identidad incompleta o configuración inconsistente | `AUTH-CTX-007`; `AUTH-ERR-017`  |
-| existen varias identidades candidatas incompatibles          | identidad ambigua, fail closed                     | `AUTH-CTX-007`; `AUTH-ERR-017`  |
-| `employees.is_active` es `null`                              | estado incompleto, no identidad activa             | `AUTH-CTX-007`; `AUTH-ERR-017`  |
-| `auth.users.banned_until` está vigente                       | ciclo técnico de Auth, no inactividad empresarial  | `AUTH-ERR-001`; `AUTH-ERR-019`  |
-| existe empleado activo pero no acceso a la aplicación        | sin acceso a la aplicación                         | `AUTH-ERR-003`                  |
-| existe empleado activo pero falta un permiso                 | bloqueo de permiso                                 | `AUTH-ERR-004` o posterior      |
-| sede, área, turno, check-in o rol están inactivos o ausentes | bloqueo contextual específico                      | `AUTH-ERR-005` a `AUTH-ERR-014` |
-| el dispositivo está inactivo                                 | dispositivo no autorizado                          | `AUTH-ERR-015`                  |
-| la acción real se intenta desde simulación                   | acción no permitida en simulación                  | `AUTH-ERR-016`                  |
-| un servicio técnico carece de actor o allowlist              | identidad técnica o delegación inválida            | `AUTH-CTX-006`; `AUTH-ERR-019`  |
+| Condición observada                                                                        | Clasificación correcta                             | Tarea propietaria               |
+| ------------------------------------------------------------------------------------------ | -------------------------------------------------- | ------------------------------- |
+| no existe sesión válida                                                                    | `AUTH_NO_SESSION`                                  | `AUTH-ERR-001`                  |
+| la verificación Auth falla por red o timeout                                               | error técnico                                      | `AUTH-ERR-019`                  |
+| la ausencia de variables, claves o configuración obligatoria se comprueba concluyentemente | configuración inconsistente                        | `AUTH-ERR-017`                  |
+| variables, configuración o proveedor no pueden consultarse o verificarse                   | indisponibilidad técnica                           | `AUTH-ERR-019`                  |
+| la identidad requerida no existe                                                           | identidad incompleta o configuración inconsistente | `AUTH-CTX-007`; `AUTH-ERR-017`  |
+| existen varias identidades candidatas incompatibles                                        | identidad ambigua, fail closed                     | `AUTH-CTX-007`; `AUTH-ERR-017`  |
+| `employees.is_active` es `null`                                                            | estado incompleto, no identidad activa             | `AUTH-CTX-007`; `AUTH-ERR-017`  |
+| `auth.users.banned_until` vigente se confirma y deja la sesión no utilizable               | ciclo técnico de Auth, no inactividad empresarial  | `AUTH-ERR-001`                  |
+| el estado técnico de Auth no puede consultarse o verificarse                               | indisponibilidad técnica                           | `AUTH-ERR-019`                  |
+| existe empleado activo pero no acceso a la aplicación                                      | sin acceso a la aplicación                         | `AUTH-ERR-003`                  |
+| existe empleado activo pero falta un permiso                                               | bloqueo de permiso                                 | `AUTH-ERR-004` o posterior      |
+| sede, área, turno, check-in o rol están inactivos o ausentes                               | bloqueo contextual específico                      | `AUTH-ERR-005` a `AUTH-ERR-014` |
+| el dispositivo está inactivo                                                               | dispositivo no autorizado                          | `AUTH-ERR-015`                  |
+| la acción real se intenta desde simulación                                                 | acción no permitida en simulación                  | `AUTH-ERR-016`                  |
+| un servicio técnico carece de actor o allowlist                                            | identidad técnica o delegación inválida            | `AUTH-CTX-006`; `AUTH-ERR-019`  |
 
 Reglas críticas:
 
@@ -2392,19 +2399,21 @@ una denegación personal.
 
 #### 6. Condiciones que no pertenecen al bloqueo
 
-| Condición                                                 | Clasificación                   | Tarea o contrato propietario     |
-| --------------------------------------------------------- | ------------------------------- | -------------------------------- |
-| No existe sesión válida                                   | autenticación ausente           | `AUTH-ERR-001`                   |
-| La identidad requerida está inactiva                      | identidad inactiva              | `AUTH-ERR-002`                   |
-| La aplicación no está registrada                          | configuración inconsistente     | `AUTH-ERR-017` / `AUTH-ERR-019`  |
-| `apps.is_active=false`                                    | ciclo de vida o disponibilidad  | `AUTH-CAT-001`                   |
-| Falta `app_code.access` o está inactivo                   | contrato de catálogo incompleto | `AUTH-CAT-017` / `AUTH-ERR-017`  |
-| El evaluador devuelve excepción o timeout                 | error técnico                   | `AUTH-ERR-019`                   |
-| Existe acceso a la app, pero falta permiso administrativo | permiso administrativo          | `AUTH-ERR-004`                   |
-| Existe un carril posible, pero falta sede o área          | contexto territorial            | `AUTH-ERR-005` a `AUTH-ERR-008`  |
-| Falta turno, check-in o rol operativo                     | contexto laboral                | `AUTH-ERR-009` a `AUTH-ERR-014`  |
-| La app está diferida y no existe superficie disponible    | ciclo de vida                   | `AUTH-CAT-001`                   |
-| Cliente final entra a Pass                                | autorización de cliente         | `AUTH-DB-019` / `SHELL-AUTH-005` |
+| Condición                                                                                                 | Clasificación                   | Tarea o contrato propietario                         |
+| --------------------------------------------------------------------------------------------------------- | ------------------------------- | ---------------------------------------------------- |
+| No existe sesión válida                                                                                   | autenticación ausente           | `AUTH-ERR-001`                                       |
+| La identidad requerida está inactiva                                                                      | identidad inactiva              | `AUTH-ERR-002`                                       |
+| La aplicación requerida no está registrada tras lectura concluyente                                       | configuración inconsistente     | `AUTH-ERR-017`                                       |
+| El catálogo de aplicaciones no puede consultarse o verificarse                                            | indisponibilidad técnica        | `AUTH-ERR-019`                                       |
+| `apps.is_active=false`                                                                                    | ciclo de vida o disponibilidad  | `AUTH-CAT-001`                                       |
+| Falta `app_code.access` o está inactivo                                                                   | contrato de catálogo incompleto | `AUTH-CAT-017` / `AUTH-ERR-017`                      |
+| El evaluador devuelve excepción o timeout                                                                 | error técnico                   | `AUTH-ERR-019`                                       |
+| Existe acceso a la app, pero el carril base termina en deny concluyente                                   | permiso base                    | `AUTH_ADMIN_PERMISSION_DENIED`; `AUTH-ERR-004`       |
+| Existe acceso a la app y contexto operativo íntegro, pero el carril operativo termina en deny concluyente | permiso operativo               | `AUTH_OPERATIONAL_PERMISSION_DENIED`; `AUTH-ERR-004` |
+| Existe un carril posible, pero falta sede o área                                                          | contexto territorial            | `AUTH-ERR-005` a `AUTH-ERR-008`                      |
+| Falta turno, check-in o rol operativo                                                                     | contexto laboral                | `AUTH-ERR-009` a `AUTH-ERR-014`                      |
+| La app está diferida y no existe superficie disponible                                                    | ciclo de vida                   | `AUTH-CAT-001`                                       |
+| Cliente final entra a Pass                                                                                | autorización de cliente         | `AUTH-DB-019` / `SHELL-AUTH-005`                     |
 
 Regla obligatoria:
 
@@ -2594,24 +2603,24 @@ Toda acción posterior conserva su permiso exacto, modalidad, alcance y recurso.
 
 #### 12. `APPLICATION-ACCESS-IDENTITY-DECISION-MATRIX-001`
 
-| ID      | Escenario                                               | Evaluación                                       | Resultado                                                       | Propietario                      |
-| ------- | ------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------- | -------------------------------- |
-| `AA-01` | Ruta pública o callback                                 | No se aplica el gate                             | Continuar según contrato público                                | `No aplica`                      |
-| `AA-02` | Superficie protegida sin sesión válida                  | No existe principal autenticado                  | `AUTH_NO_SESSION`                                               | `AUTH-ERR-001`                   |
-| `AA-03` | Sesión válida e identidad requerida inactiva            | La identidad de dominio está inactiva            | `AUTH_USER_INACTIVE`                                            | `AUTH-ERR-002`                   |
-| `AA-04` | Sesión e identidad activas; `app_code` no registrado    | Catálogo incompleto o entrada inválida           | Error de configuración, sin afirmar falta de acceso             | `AUTH-ERR-017 / AUTH-ERR-019`    |
-| `AA-05` | Aplicación registrada pero `apps.is_active=false`       | Ciclo de vida o disponibilidad deshabilitada     | Aplicación no disponible, no denegación personal                | `AUTH-CAT-001`                   |
-| `AA-06` | Aplicación activa sin permiso `app_code.access` activo  | Contrato de catálogo incompleto                  | Error de configuración, fail closed                             | `AUTH-CAT-017 / AUTH-ERR-017`    |
-| `AA-07` | Evaluador, RPC o red falla                              | No existe decisión autoritativa                  | Error técnico; no `AUTH_APP_ACCESS_DENIED`                      | `AUTH-ERR-019`                   |
-| `AA-08` | Denegación individual explícita aplicable               | Existe `DENY` efectivo                           | `AUTH_APP_ACCESS_DENIED`                                        | `AUTH-ERR-003`                   |
-| `AA-09` | No existe concesión efectiva aplicable                  | Se evaluaron todas las fuentes permitidas        | `AUTH_APP_ACCESS_DENIED`                                        | `AUTH-ERR-003`                   |
-| `AA-10` | Existe concesión base o individual efectiva             | Gate de entrada satisfecho                       | Continuar hacia permisos, contexto, acción y recurso            | `Tareas posteriores`             |
-| `AA-11` | Solo existe carril operativo posible y falta contexto   | La entrada no es concluyentemente denegada       | Emitir razón contextual específica; no app access               | `AUTH-ERR-005 a AUTH-ERR-014`    |
-| `AA-12` | Dispositivo activo sin asignación de la aplicación      | Allowlist técnica del dispositivo excluye la app | `AUTH_APP_ACCESS_DENIED`                                        | `AUTH-ERR-003`                   |
-| `AA-13` | Dispositivo asignado a la app, pero sin actor requerido | Gate técnico satisfecho; actor no resuelto       | Razón de actor o dispositivo específica                         | `AUTH-ERR-012 a AUTH-ERR-015`    |
-| `AA-14` | Dispositivo y actor válidos; actor sin acceso efectivo  | Gate empresarial del actor falla                 | `AUTH_APP_ACCESS_DENIED`                                        | `AUTH-ERR-003`                   |
-| `AA-15` | Cliente activo entra a Vento Pass                       | Identidad cliente válida                         | Evaluar contrato de cliente; ignorar RBAC laboral `pass.access` | `AUTH-DB-019` / `SHELL-AUTH-005` |
-| `AA-16` | AURA o producto diferido sin superficie desplegada      | Ciclo de vida no materializado                   | Aplicación no disponible; no atribuir al usuario                | `AUTH-CAT-001`                   |
+| ID      | Escenario                                                                               | Evaluación                                       | Resultado                                                           | Propietario                                    |
+| ------- | --------------------------------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------- | ---------------------------------------------- |
+| `AA-01` | Ruta pública o callback                                                                 | No se aplica el gate                             | Continuar según contrato público                                    | `No aplica`                                    |
+| `AA-02` | Superficie protegida sin sesión válida                                                  | No existe principal autenticado                  | `AUTH_NO_SESSION`                                                   | `AUTH-ERR-001`                                 |
+| `AA-03` | Sesión válida e identidad requerida inactiva                                            | La identidad de dominio está inactiva            | `AUTH_USER_INACTIVE`                                                | `AUTH-ERR-002`                                 |
+| `AA-04` | Sesión e identidad activas; `app_code` requerido no registrado tras lectura concluyente | Catálogo de aplicaciones incompleto              | Error de configuración, sin afirmar falta de acceso                 | `AUTH-ERR-017`                                 |
+| `AA-05` | Aplicación registrada pero `apps.is_active=false`                                       | Ciclo de vida o disponibilidad deshabilitada     | Aplicación no disponible, no denegación personal                    | `AUTH-CAT-001`                                 |
+| `AA-06` | Aplicación activa sin permiso `app_code.access` activo                                  | Contrato de catálogo incompleto                  | Error de configuración, fail closed                                 | `AUTH-CAT-017 / AUTH-ERR-017`                  |
+| `AA-07` | Evaluador, RPC o red falla                                                              | No existe decisión autoritativa                  | Error técnico; no `AUTH_APP_ACCESS_DENIED`                          | `AUTH-ERR-019`                                 |
+| `AA-08` | Denegación individual explícita aplicable                                               | Existe `DENY` efectivo                           | `AUTH_APP_ACCESS_DENIED`                                            | `AUTH-ERR-003`                                 |
+| `AA-09` | No existe concesión efectiva aplicable                                                  | Se evaluaron todas las fuentes permitidas        | `AUTH_APP_ACCESS_DENIED`                                            | `AUTH-ERR-003`                                 |
+| `AA-10` | Existe concesión base o individual efectiva                                             | Gate de entrada satisfecho                       | Continuar hacia permisos, contexto, acción y recurso                | `Tareas posteriores`                           |
+| `AA-11` | Solo existe carril operativo posible y falta contexto                                   | La entrada no es concluyentemente denegada       | Emitir razón contextual específica; no app access                   | `AUTH-ERR-005 a AUTH-ERR-014`                  |
+| `AA-12` | Dispositivo activo sin asignación de la aplicación                                      | Allowlist técnica del dispositivo excluye la app | `AUTH_APP_ACCESS_DENIED`                                            | `AUTH-ERR-003`                                 |
+| `AA-13` | Dispositivo asignado a la app, pero sin actor requerido                                 | Gate técnico satisfecho; actor no resuelto       | `ACTOR_IDENTIFICATION_REQUIRED`; no es un `AuthorizationReasonCode` | `AUTH-DEV-007`; `AUTH-DEV-012`; `AUTH-ERR-015` |
+| `AA-14` | Dispositivo y actor válidos; actor sin acceso efectivo                                  | Gate empresarial del actor falla                 | `AUTH_APP_ACCESS_DENIED`                                            | `AUTH-ERR-003`                                 |
+| `AA-15` | Cliente activo entra a Vento Pass                                                       | Identidad cliente válida                         | Evaluar contrato de cliente; ignorar RBAC laboral `pass.access`     | `AUTH-DB-019` / `SHELL-AUTH-005`               |
+| `AA-16` | AURA o producto diferido sin superficie desplegada                                      | Ciclo de vida no materializado                   | Aplicación no disponible; no atribuir al usuario                    | `AUTH-CAT-001`                                 |
 
 La matriz tiene dieciséis decisiones y no admite fallback entre ellas.
 
@@ -3137,10 +3146,10 @@ No se inicia ni modifica `AUTH-ERR-004` en esta tarea.
 **Estado:** APROBADA
 **Tarea anterior:** `AUTH-ERR-003 — Sin acceso a la aplicación` — APROBADA
 **Tarea siguiente:** `AUTH-ERR-005 — Sin sede asignada` — RESERVADA
-**Tipo de tarea:** documental; definición contractual, funcional, de seguridad y experiencia del bloqueo por denegación concluyente del carril base
+**Tipo de tarea:** documental; definición contractual, funcional, de seguridad y experiencia de las denegaciones concluyentes de permiso en carril base y carril operativo
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md`
-**Artefactos producidos:** `ADMIN-PERMISSION-BLOCKING-CONTRACT-001`, `ADMIN-PERMISSION-DECISION-MATRIX-001`, `ADMIN-PERMISSION-CHANNEL-RESPONSE-MATRIX-001`, `ADMIN-PERMISSION-APPLICATION-COVERAGE-REGISTER-001` y `ADMIN-PERMISSION-PHYSICAL-RECONCILIATION-001`
+**Artefactos producidos:** `ADMIN-PERMISSION-BLOCKING-CONTRACT-001`, `OPERATIONAL-PERMISSION-DENIAL-CONTRACT-001`, `ADMIN-PERMISSION-DECISION-MATRIX-001`, `ADMIN-PERMISSION-CHANNEL-RESPONSE-MATRIX-001`, `ADMIN-PERMISSION-APPLICATION-COVERAGE-REGISTER-001` y `ADMIN-PERMISSION-PHYSICAL-RECONCILIATION-001`
 **Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001`; `AUTH-MOD-002`; `AUTH-MOD-003`; `AUTH-MOD-004`; `AUTH-MOD-006`; `AUTH-MOD-013` a `AUTH-MOD-019`; `AUTH-CAT-001`; `AUTH-CAT-006`; `AUTH-CAT-017`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009`; `AUTH-CTX-015` a `AUTH-CTX-018`; `AUTH-ERR-001`; `AUTH-ERR-002`; `AUTH-ERR-003`; matrices base e individuales vigentes; catálogo canónico de permisos; estado desplegado inspeccionado; contrato documental vigente
 **Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, configuración, permisos, roles, asignaciones, aplicaciones ni despliegues
 
@@ -3150,8 +3159,9 @@ No se inicia ni modifica `AUTH-ERR-004` en esta tarea.
 
 Definir de forma única, segura y verificable qué debe ocurrir cuando una
 solicitud ya superó autenticación, actividad de identidad y acceso a la
-aplicación, pero el carril base no autoriza el permiso exacto requerido para
-la acción administrativa solicitada.
+aplicación; el permiso exacto está registrado y posee contrato válido; y el
+carril base o el carril operativo, después de satisfacer todos sus
+prerrequisitos, termina en una denegación concluyente y decisiva.
 
 La regla raíz queda:
 
@@ -3162,29 +3172,36 @@ IDENTIDAD LABORAL ACTIVA
 +
 ACCESO A LA APLICACIÓN PERMITIDO
 +
-PERMISO REGISTRADO Y ACTIVO
+PERMISO REGISTRADO, ACTIVO Y CON CONTRATO VÁLIDO
 +
-PERMISO COMPATIBLE CON CARRIL BASE
+RECURSO Y TERRITORIO RESOLUBLES
 +
-CONTEXTO Y RECURSO RESOLUBLES
+CARRIL BASE DENEGADO DE FORMA CONCLUYENTE Y DECISIVA
+→ AUTH_ADMIN_PERMISSION_DENIED
+
+O
+
+CARRIL OPERATIVO ESTRUCTURAL Y CONTEXTUALMENTE ÍNTEGRO
 +
-CARRIL BASE DENEGADO DE FORMA CONCLUYENTE
-→
-DENY
-+
-AUTH_ADMIN_PERMISSION_DENIED
-+
-403
-+
-CERO EFECTOS
+CARRIL OPERATIVO DENEGADO DE FORMA CONCLUYENTE Y DECISIVA
+→ AUTH_OPERATIONAL_PERMISSION_DENIED
+
+AMBOS RESULTADOS
+→ DENY + 403 + SESIÓN PRESERVADA + CERO EFECTOS
 ```
 
 La tarea responde exclusivamente:
 
 ```text
-¿EL CARRIL BASE AUTORIZA EL PERMISO EXACTO
-SOBRE EL RECURSO EXACTO EN ESTE CONTEXTO?
+¿EL CARRIL BASE O EL CARRIL OPERATIVO, SEGÚN LA MODALIDAD,
+AUTORIZAN EL PERMISO EXACTO SOBRE EL RECURSO EXACTO?
 ```
+
+El identificador y el título histórico de `AUTH-ERR-004` se conservan para no
+inventar una tarea nueva. La corrección integral del bloque asigna a esta misma
+tarea el perfil complementario `AUTH_OPERATIONAL_PERMISSION_DENIED`, necesario
+cuando todos los prerrequisitos operativos son válidos y el carril operativo
+termina en una denegación concluyente y decisiva.
 
 No responde:
 
@@ -3204,29 +3221,30 @@ No responde:
 
 #### 2. Resultado material
 
-Se aprueban cinco artefactos documentales completos:
+Se aprueban seis artefactos documentales completos:
 
-1. `ADMIN-PERMISSION-BLOCKING-CONTRACT-001`, que congela la identidad pública,
-   condiciones de aplicación, causas internas, envelope, seguridad,
-   recuperación, frescura y auditoría;
-2. `ADMIN-PERMISSION-DECISION-MATRIX-001`, que decide veinte escenarios sin
+1. `ADMIN-PERMISSION-BLOCKING-CONTRACT-001`, que congela la identidad pública
+   y las reglas del carril base;
+2. `OPERATIONAL-PERMISSION-DENIAL-CONTRACT-001`, que congela la identidad
+   pública, causas, copy y selección del carril operativo ya íntegro;
+3. `ADMIN-PERMISSION-DECISION-MATRIX-001`, que decide veinticuatro escenarios sin
    mezclar carriles, configuración, contexto, simulación ni errores técnicos;
-3. `ADMIN-PERMISSION-CHANNEL-RESPONSE-MATRIX-001`, que materializa diez canales
+4. `ADMIN-PERMISSION-CHANNEL-RESPONSE-MATRIX-001`, que materializa diez canales
    de entrega con respuesta coherente y cero efectos;
-4. `ADMIN-PERMISSION-APPLICATION-COVERAGE-REGISTER-001`, que registra las diez
+5. `ADMIN-PERMISSION-APPLICATION-COVERAGE-REGISTER-001`, que registra las diez
    aplicaciones canónicas y las 146 filas físicas candidatas por metadata
    administrativa sin convertir esa metadata en autoridad normativa;
-5. `ADMIN-PERMISSION-PHYSICAL-RECONCILIATION-001`, que registra catorce brechas
+6. `ADMIN-PERMISSION-PHYSICAL-RECONCILIATION-001`, que registra catorce brechas
    físicas observadas y su propietario exacto.
 
 Cobertura materializada:
 
 | Elemento                                                                  |                    Cantidad |
 | ------------------------------------------------------------------------- | --------------------------: |
-| Código público canónico                                                   |                           1 |
+| Códigos públicos canónicos                                                |                           2 |
 | Estado HTTP no navegacional                                               |                    1, `403` |
-| Causas internas admitidas                                                 |                           5 |
-| Escenarios con decisión explícita                                         |                          20 |
+| Causas internas admitidas                                                 |                           8 |
+| Escenarios con decisión explícita                                         |                          24 |
 | Canales con respuesta explícita                                           |                          10 |
 | Aplicaciones canónicas reconciliadas                                      |                          10 |
 | Aplicaciones con permisos internos de audiencia administrativa observados |                           7 |
@@ -3244,8 +3262,8 @@ Cobertura materializada:
 | Funciones PostgreSQL de autorización inspeccionadas                       |                           8 |
 | Guards de aplicación reconciliados                                        |                           5 |
 | Pantallas físicas de no acceso reconciliadas                              |                           5 |
-| Brechas físicas registradas                                               |                          14 |
-| Requisitos de prueba derivados                                            |                          10 |
+| Brechas físicas registradas                                               |                          15 |
+| Requisitos de prueba derivados                                            |                          11 |
 
 Las cifras físicas son un snapshot de solo lectura. No constituyen conformidad,
 no aprueban las matrices actuales y no sustituyen la clasificación canónica
@@ -3286,37 +3304,44 @@ BASE_OR_OPERATIONAL
 BASE_AND_OPERATIONAL
 ```
 
-`OPERATIONAL_ONLY` no puede producir `AUTH_ADMIN_PERMISSION_DENIED`.
+`OPERATIONAL_ONLY` no puede producir `AUTH_ADMIN_PERMISSION_DENIED`. Cuando su
+contexto está íntegro y la denegación del carril operativo es concluyente y
+decisiva, produce `AUTH_OPERATIONAL_PERMISSION_DENIED`.
 
 La metadata física observada sirve para inventario y transición, pero no puede
 sustituir el contrato canónico del permiso.
 
 ---
 
-#### 4. Identidad canónica del bloqueo
+#### 4. Identidades canónicas del bloqueo
 
-La identidad pública única es:
+La tarea materializa dos identidades públicas mutuamente excluyentes:
 
 ```text
 reason_code = AUTH_ADMIN_PERMISSION_DENIED
+reason_code = AUTH_OPERATIONAL_PERMISSION_DENIED
 ```
 
-| Propiedad                      | Valor                             |
-| ------------------------------ | --------------------------------- |
-| Dominio                        | `AUTHORIZATION`                   |
-| Decisión                       | `DENY`                            |
-| Principal                      | autenticado y válido              |
-| Identidad laboral              | activa                            |
-| Gate de aplicación             | permitido                         |
-| Carril afectado                | `BASE`                            |
-| Estado público                 | `FORBIDDEN_ADMIN_PERMISSION`      |
-| Estado HTTP no navegacional    | `403 Forbidden`                   |
-| Ejecutable                     | `false`                           |
-| Sesión Auth                    | se conserva                       |
-| Acceso general a la aplicación | se conserva cuando siga permitido |
-| Acción original                | no se ejecuta ni se reintenta     |
-| Recuperación principal         | `RETURN_TO_SAFE_SURFACE`          |
-| Datos protegidos               | no se entregan                    |
+| Propiedad                   | Perfil base                   | Perfil operativo                   |
+| --------------------------- | ----------------------------- | ---------------------------------- |
+| Dominio                     | `AUTHORIZATION`               | `AUTHORIZATION`                    |
+| Decisión                    | `DENY`                        | `DENY`                             |
+| Principal                   | autenticado y válido          | autenticado y válido               |
+| Identidad laboral           | activa                        | activa                             |
+| Gate de aplicación          | permitido                     | permitido                          |
+| Carril afectado             | `BASE`                        | `OPERATIONAL`                      |
+| Estado público              | `FORBIDDEN_ADMIN_PERMISSION`  | `FORBIDDEN_OPERATIONAL_PERMISSION` |
+| Estado HTTP no navegacional | `403 Forbidden`               | `403 Forbidden`                    |
+| Ejecutable                  | `false`                       | `false`                            |
+| Sesión Auth                 | se conserva                   | se conserva                        |
+| Acción original             | no se ejecuta ni se reintenta | no se ejecuta ni se reintenta      |
+| Recuperación principal      | `RETURN_TO_SAFE_SURFACE`      | `RETURN_TO_SAFE_SURFACE`           |
+| Datos protegidos            | no se entregan                | no se entregan                     |
+
+`AUTH_OPERATIONAL_PERMISSION_DENIED` solo aparece después de satisfacer turno,
+ventana, check-in cuando aplique, rol, habilitación territorial, dispositivo,
+simulación, recurso y demás prerrequisitos del carril operativo. Nunca absorbe
+una ausencia o contradicción de contexto.
 
 Quedan prohibidos como identidad pública alternativa:
 
@@ -3359,19 +3384,34 @@ fueron demostradas:
 Si cualquiera de las condiciones 1 a 12 no puede demostrarse, esta tarea no
 permite inventar una denegación administrativa.
 
+
+Para `AUTH_OPERATIONAL_PERMISSION_DENIED` deberán demostrarse además:
+
+1. la modalidad admite o exige carril operativo;
+2. todos los prerrequisitos contextuales del carril están satisfechos;
+3. el rol operativo efectivo está habilitado para sede y área;
+4. el dispositivo y la simulación no introducen un bloqueo anterior;
+5. el recurso y el scope operativo son resolubles;
+6. se evaluaron deny operativo, allow operativo y alcance;
+7. el carril operativo terminó en `DENY` concluyente;
+8. la composición por modalidad hace decisiva esa denegación.
+
 ---
 
 #### 6. Causas internas admitidas
 
 Las causas internas son exhaustivas y no se muestran al usuario.
 
-| Causa interna                         | Definición                                                                                | Resultado público              | Exposición   |
-| ------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------ | ------------ |
-| `ACTOR_WIDE_PERMISSION_DENY`          | Existe un bloqueo individual transversal aplicable al actor, permiso, recurso y vigencia. | `AUTH_ADMIN_PERMISSION_DENIED` | No se expone |
-| `EXPLICIT_BASE_PERMISSION_DENY`       | Existe un deny aplicable dentro del carril base y prevalece sobre cualquier allow base.   | `AUTH_ADMIN_PERMISSION_DENIED` | No se expone |
-| `NO_EFFECTIVE_BASE_PERMISSION_ALLOW`  | No existe allow base aplicable después de evaluar rol base y concesiones individuales.    | `AUTH_ADMIN_PERMISSION_DENIED` | No se expone |
-| `BASE_PERMISSION_SCOPE_MISMATCH`      | Existen allows base, pero ninguno cubre el recurso y territorio ya resueltos.             | `AUTH_ADMIN_PERMISSION_DENIED` | No se expone |
-| `BASE_PERMISSION_PREREQUISITE_DENIED` | Un prerrequisito explícito y registrado del permiso fue denegado en el carril base.       | `AUTH_ADMIN_PERMISSION_DENIED` | No se expone |
+| Causa interna                               | Definición                                                                                        | Resultado público                    | Exposición   |
+| ------------------------------------------- | ------------------------------------------------------------------------------------------------- | ------------------------------------ | ------------ |
+| `ACTOR_WIDE_PERMISSION_DENY`                | Existe un bloqueo individual transversal aplicable al actor, permiso, recurso y vigencia.         | `AUTH_ADMIN_PERMISSION_DENIED`       | No se expone |
+| `EXPLICIT_BASE_PERMISSION_DENY`             | Existe un deny aplicable dentro del carril base y prevalece sobre cualquier allow base.           | `AUTH_ADMIN_PERMISSION_DENIED`       | No se expone |
+| `NO_EFFECTIVE_BASE_PERMISSION_ALLOW`        | No existe allow base aplicable después de evaluar rol base y concesiones individuales.            | `AUTH_ADMIN_PERMISSION_DENIED`       | No se expone |
+| `BASE_PERMISSION_SCOPE_MISMATCH`            | Existen allows base, pero ninguno cubre el recurso y territorio ya resueltos.                     | `AUTH_ADMIN_PERMISSION_DENIED`       | No se expone |
+| `BASE_PERMISSION_PREREQUISITE_DENIED`       | Un prerrequisito explícito y registrado del permiso fue denegado en el carril base.               | `AUTH_ADMIN_PERMISSION_DENIED`       | No se expone |
+| `EXPLICIT_OPERATIONAL_PERMISSION_DENY`      | Existe un deny aplicable dentro del carril operativo y prevalece sobre cualquier allow operativo. | `AUTH_OPERATIONAL_PERMISSION_DENIED` | No se expone |
+| `NO_EFFECTIVE_OPERATIONAL_PERMISSION_ALLOW` | No existe allow operativo aplicable para el rol, permiso y contexto íntegros.                     | `AUTH_OPERATIONAL_PERMISSION_DENIED` | No se expone |
+| `OPERATIONAL_PERMISSION_SCOPE_MISMATCH`     | Existen allows operativos, pero ninguno cubre el recurso y territorio ya resueltos.               | `AUTH_OPERATIONAL_PERMISSION_DENIED` | No se expone |
 
 No se admiten causas `UNKNOWN`, `OTHER`, texto libre o errores técnicos
 convertidos en causas de política.
@@ -3392,25 +3432,25 @@ ACTOR-WIDE DENY
 
 #### 7. Condiciones que no pertenecen al bloqueo
 
-| Condición observada                                  | Clasificación correcta                     | Tarea o contrato propietario          |
-| ---------------------------------------------------- | ------------------------------------------ | ------------------------------------- |
-| No existe sesión válida                              | autenticación ausente                      | `AUTH-ERR-001`                        |
-| La identidad requerida está inactiva                 | identidad inactiva                         | `AUTH-ERR-002`                        |
-| No existe acceso a la aplicación                     | gate de aplicación                         | `AUTH-ERR-003`                        |
-| El permiso solicitado no existe                      | permiso no registrado                      | `AUTH-ERR-018`                        |
-| El permiso está inactivo                             | configuración o ciclo de vida              | `AUTH-ERR-017` / catálogo propietario |
-| Falta `authorization_requirement`                    | configuración administrativa inconsistente | `AUTH-ERR-017`                        |
-| La modalidad contiene un valor no admitido           | configuración administrativa inconsistente | `AUTH-ERR-017`                        |
-| El evaluador, RPC o red devuelve error               | error técnico, sin decisión autoritativa   | `AUTH-ERR-019`                        |
-| El permiso es `OPERATIONAL_ONLY`                     | evaluación operativa, no carril base       | contrato de autorización operativo    |
-| Falta sede asignada necesaria                        | bloqueo territorial                        | `AUTH-ERR-005`                        |
-| Falta sede activa necesaria                          | bloqueo territorial                        | `AUTH-ERR-006`                        |
-| Falta área asignada necesaria                        | bloqueo territorial                        | `AUTH-ERR-007`                        |
-| Falta área activa necesaria                          | bloqueo territorial                        | `AUTH-ERR-008`                        |
-| Falta turno, check-in o rol operativo                | bloqueo operativo específico               | `AUTH-ERR-009` a `AUTH-ERR-014`       |
-| El dispositivo no está autorizado                    | bloqueo de dispositivo                     | `AUTH-ERR-015`                        |
-| Una simulación intenta ejecutar una acción real      | bloqueo de simulación                      | `AUTH-ERR-016`                        |
-| RLS devuelve cero filas sin diagnóstico autoritativo | resultado insuficiente para clasificar     | `AUTH-ERR-019` / adapter propietario  |
+| Condición observada                                                                | Clasificación correcta                     | Tarea o contrato propietario                         |
+| ---------------------------------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------------- |
+| No existe sesión válida                                                            | autenticación ausente                      | `AUTH-ERR-001`                                       |
+| La identidad requerida está inactiva                                               | identidad inactiva                         | `AUTH-ERR-002`                                       |
+| No existe acceso a la aplicación                                                   | gate de aplicación                         | `AUTH-ERR-003`                                       |
+| El permiso solicitado no existe                                                    | permiso no registrado                      | `AUTH-ERR-018`                                       |
+| El permiso está inactivo                                                           | configuración o ciclo de vida              | `AUTH-ERR-017` / catálogo propietario                |
+| Falta `authorization_requirement`                                                  | configuración administrativa inconsistente | `AUTH-ERR-017`                                       |
+| La modalidad contiene un valor no admitido                                         | configuración administrativa inconsistente | `AUTH-ERR-017`                                       |
+| El evaluador, RPC o red devuelve error                                             | error técnico, sin decisión autoritativa   | `AUTH-ERR-019`                                       |
+| El permiso es `OPERATIONAL_ONLY` y el carril operativo termina en deny concluyente | denegación operativa                       | `AUTH_OPERATIONAL_PERMISSION_DENIED`; `AUTH-ERR-004` |
+| Falta sede asignada necesaria                                                      | bloqueo territorial                        | `AUTH-ERR-005`                                       |
+| Falta sede activa necesaria                                                        | bloqueo territorial                        | `AUTH-ERR-006`                                       |
+| Falta área asignada necesaria                                                      | bloqueo territorial                        | `AUTH-ERR-007`                                       |
+| Falta área activa necesaria                                                        | bloqueo territorial                        | `AUTH-ERR-008`                                       |
+| Falta turno, check-in o rol operativo                                              | bloqueo operativo específico               | `AUTH-ERR-009` a `AUTH-ERR-014`                      |
+| El dispositivo no está autorizado                                                  | bloqueo de dispositivo                     | `AUTH-ERR-015`                                       |
+| Una simulación intenta ejecutar una acción real                                    | bloqueo de simulación                      | `AUTH-ERR-016`                                       |
+| RLS devuelve cero filas sin diagnóstico autoritativo                               | resultado insuficiente para clasificar     | `AUTH-ERR-019` / adapter propietario                 |
 
 Regla obligatoria:
 
@@ -3437,9 +3477,9 @@ Orden normativo:
 8. RESOLVER RECURSO Y TERRITORIO OBLIGATORIO
 9. EVALUAR DENEGACIONES ESTRUCTURALES
 10. EVALUAR BLOQUEO INDIVIDUAL TRANSVERSAL
-11. EVALUAR DENY BASE APLICABLE
-12. EVALUAR ALLOW BASE APLICABLE
-13. EVALUAR CARRIL OPERATIVO CUANDO EL CONTRATO LO EXIJA O ADMITA
+11. EVALUAR DENY Y ALLOW BASE CUANDO EL CARRIL APLIQUE
+12. RESOLVER PRERREQUISITOS Y CONTEXTO DEL CARRIL OPERATIVO CUANDO APLIQUE
+13. EVALUAR DENY, ALLOW Y SCOPE OPERATIVOS CUANDO EL CARRIL ESTÉ ÍNTEGRO
 14. COMBINAR CARRILES SEGÚN EL CONTRATO
 15. EMITIR UNA DECISIÓN Y UNA RAZÓN PÚBLICA
 ```
@@ -3489,14 +3529,38 @@ type AdminPermissionBlockingReason = {
 proyección pública no incluye el código exacto del permiso ni identificadores
 sensibles del recurso.
 
-La forma pública mínima será:
+El contrato operativo complementario será:
 
 ```ts
-type PublicAdminPermissionDenied = {
-  reason_code: "AUTH_ADMIN_PERMISSION_DENIED";
+type OperationalPermissionBlockingReason = {
+  contract: "OPERATIONAL-PERMISSION-DENIAL-CONTRACT-001";
+  contract_version: "1.0.0";
+  reason_code: "AUTH_OPERATIONAL_PERMISSION_DENIED";
+  domain: "AUTHORIZATION";
+  decision: "DENY";
+  lane: "OPERATIONAL";
+  state: "FORBIDDEN_OPERATIONAL_PERMISSION";
+  executable: false;
+  http_status: 403;
+  session_preserved: true;
+  effects_committed: 0;
+  retryable: false;
+  recovery_action: "RETURN_TO_SAFE_SURFACE";
+  correlation_id: string;
+};
+```
+
+La forma pública mínima será una unión discriminada:
+
+```ts
+type PublicPermissionDenied = {
+  reason_code:
+    | "AUTH_ADMIN_PERMISSION_DENIED"
+    | "AUTH_OPERATIONAL_PERMISSION_DENIED";
   decision: "DENY";
   executable: false;
   http_status: 403;
+  session_preserved: true;
   correlation_id: string;
   recovery_action: "RETURN_TO_SAFE_SURFACE";
 };
@@ -3846,36 +3910,83 @@ antes de utilizar el cliente administrativo.
 
 ---
 
-#### 19. `ADMIN-PERMISSION-DECISION-MATRIX-001`
+#### 19. Denegación concluyente del carril operativo
 
-| ID      | Escenario                                                      | Evidencia concluyente                            | Resultado                                                         | Propietario                     |
-| ------- | -------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------- | ------------------------------- |
-| `AP-01` | Superficie pública                                             | No requiere autorización laboral                 | permitir acceso público                                           | contrato de superficie          |
-| `AP-02` | Sin sesión                                                     | No existe principal autenticado válido           | `AUTH_NO_SESSION`                                                 | `AUTH-ERR-001`                  |
-| `AP-03` | Identidad laboral inactiva                                     | Actividad negativa confirmada                    | `AUTH_USER_INACTIVE`                                              | `AUTH-ERR-002`                  |
-| `AP-04` | Sin acceso a aplicación                                        | Gate `app_code.access` denegado                  | `AUTH_APP_ACCESS_DENIED`                                          | `AUTH-ERR-003`                  |
-| `AP-05` | Permiso no registrado                                          | Catálogo no contiene el código                   | error de catálogo                                                 | `AUTH-ERR-018`                  |
-| `AP-06` | Permiso inactivo o modalidad ausente                           | Contrato incompleto                              | error de configuración                                            | `AUTH-ERR-017`                  |
-| `AP-07` | Evaluador o RPC falla                                          | No existe decisión autoritativa                  | error técnico                                                     | `AUTH-ERR-019`                  |
-| `AP-08` | `OPERATIONAL_ONLY` solicitado                                  | Carril base incompatible                         | continuar evaluación operativa; no usar esta razón                | contrato operativo              |
-| `AP-09` | `BASE_ONLY` con actor-wide deny                                | Bloqueo transversal aplicable                    | `AUTH_ADMIN_PERMISSION_DENIED`                                    | `AUTH-ERR-004`                  |
-| `AP-10` | `BASE_ONLY` con deny base                                      | Denegación de carril aplicable                   | `AUTH_ADMIN_PERMISSION_DENIED`                                    | `AUTH-ERR-004`                  |
-| `AP-11` | `BASE_ONLY` sin allow                                          | Evaluación completa sin concesión                | `AUTH_ADMIN_PERMISSION_DENIED`                                    | `AUTH-ERR-004`                  |
-| `AP-12` | `BASE_ONLY` con scope mismatch                                 | Contexto y recurso resueltos, concesión no cubre | `AUTH_ADMIN_PERMISSION_DENIED`                                    | `AUTH-ERR-004`                  |
-| `AP-13` | Falta sede o área necesaria                                    | Territorio no resoluble                          | razón territorial específica                                      | `AUTH-ERR-005` a `AUTH-ERR-008` |
-| `AP-14` | `BASE_OR_OPERATIONAL`: base deny, operativo allow              | Un carril completo permite                       | `ALLOW`                                                           | autorización canónica           |
-| `AP-15` | `BASE_OR_OPERATIONAL`: base allow, operativo deny              | Un carril completo permite                       | `ALLOW`                                                           | autorización canónica           |
-| `AP-16` | `BASE_OR_OPERATIONAL`: ambos deny                              | Ningún carril permite                            | `DENY`; seleccionar razón por precedencia y causa decisiva        | autorización canónica           |
-| `AP-17` | `BASE_AND_OPERATIONAL`: base deny, operativo válido            | Base requerido falla                             | `AUTH_ADMIN_PERMISSION_DENIED`                                    | `AUTH-ERR-004`                  |
-| `AP-18` | `BASE_AND_OPERATIONAL`: base allow, contexto operativo ausente | Condición estructural operativa falla            | razón operativa específica                                        | `AUTH-ERR-009` a `AUTH-ERR-014` |
-| `AP-19` | Simulación intenta mutar                                       | Modo simulado confirmado                         | acción no permitida en simulación                                 | `AUTH-ERR-016`                  |
-| `AP-20` | Permiso permitido y recurso cubierto                           | Evaluación completa y fresca                     | continuar ejecución con nueva validación en frontera autoritativa | paquete propietario             |
+`AUTH_OPERATIONAL_PERMISSION_DENIED` aplica únicamente después de que el
+carril operativo quedó estructural y contextualmente íntegro.
+
+```text
+TURNO, VENTANA, CHECK-IN CUANDO APLIQUE, ROL, SEDE, ÁREA,
+DISPOSITIVO, SIMULACIÓN, RECURSO Y CONTRATO = VÁLIDOS
++
+DENY OPERATIVO APLICABLE O AUSENCIA CONCLUYENTE DE ALLOW OPERATIVO
+→
+AUTH_OPERATIONAL_PERMISSION_DENIED
+```
+
+Selección determinista por modalidad:
+
+| Modalidad              | Resultado de carriles                    | Razón pública final                                                        |
+| ---------------------- | ---------------------------------------- | -------------------------------------------------------------------------- |
+| `BASE_ONLY`            | base `DENY`                              | `AUTH_ADMIN_PERMISSION_DENIED`                                             |
+| `OPERATIONAL_ONLY`     | operativo íntegro `DENY`                 | `AUTH_OPERATIONAL_PERMISSION_DENIED`                                       |
+| `BASE_OR_OPERATIONAL`  | cualquier carril completo `ALLOW`        | `ALLOW`; no publicar deny del otro carril                                  |
+| `BASE_OR_OPERATIONAL`  | base `DENY` y operativo íntegro `DENY`   | `AUTH_OPERATIONAL_PERMISSION_DENIED`; conservar ambas causas privadas      |
+| `BASE_AND_OPERATIONAL` | base `DENY`                              | `AUTH_ADMIN_PERMISSION_DENIED` por precedencia del primer carril requerido |
+| `BASE_AND_OPERATIONAL` | base `ALLOW` y operativo íntegro `DENY`  | `AUTH_OPERATIONAL_PERMISSION_DENIED`                                       |
+| cualquier modalidad    | carril operativo incompleto por contexto | razón específica `AUTH-ERR-009` a `AUTH-ERR-015`, `017` o `019`            |
+
+La razón operativa no significa rol faltante, rol territorialmente inválido,
+check-in ausente, dispositivo no autorizado, configuración contradictoria ni
+fallo técnico. Es exclusivamente una denegación de política después de resolver
+todos esos hechos.
+
+Copy aprobado:
+
+| Elemento          | Texto exacto                                                                                                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Título            | `No tienes permiso para completar esta operación`                                                                              |
+| Mensaje           | `Tu sesión y contexto operativo están activos, pero no tienes la autorización operativa necesaria para completar esta acción.` |
+| Acción principal  | `Volver`                                                                                                                       |
+| Acción secundaria | `Volver a Vento OS`                                                                                                            |
+| Código de soporte | `AUTH_OPERATIONAL_PERMISSION_DENIED`                                                                                           |
+
+---
+
+#### 20. `ADMIN-PERMISSION-DECISION-MATRIX-001`
+
+| ID      | Escenario                                                        | Evidencia concluyente                                               | Resultado                                                         | Propietario                     |
+| ------- | ---------------------------------------------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------------- | ------------------------------- |
+| `AP-01` | Superficie pública                                               | No requiere autorización laboral                                    | permitir acceso público                                           | contrato de superficie          |
+| `AP-02` | Sin sesión                                                       | No existe principal autenticado válido                              | `AUTH_NO_SESSION`                                                 | `AUTH-ERR-001`                  |
+| `AP-03` | Identidad laboral inactiva                                       | Actividad negativa confirmada                                       | `AUTH_USER_INACTIVE`                                              | `AUTH-ERR-002`                  |
+| `AP-04` | Sin acceso a aplicación                                          | Gate `app_code.access` denegado                                     | `AUTH_APP_ACCESS_DENIED`                                          | `AUTH-ERR-003`                  |
+| `AP-05` | Permiso no registrado                                            | Catálogo no contiene el código                                      | error de catálogo                                                 | `AUTH-ERR-018`                  |
+| `AP-06` | Permiso inactivo o modalidad ausente                             | Contrato incompleto                                                 | error de configuración                                            | `AUTH-ERR-017`                  |
+| `AP-07` | Evaluador o RPC falla                                            | No existe decisión autoritativa                                     | error técnico                                                     | `AUTH-ERR-019`                  |
+| `AP-08` | `OPERATIONAL_ONLY` solicitado                                    | Carril base incompatible                                            | continuar evaluación operativa; no usar esta razón                | contrato operativo              |
+| `AP-09` | `BASE_ONLY` con actor-wide deny                                  | Bloqueo transversal aplicable                                       | `AUTH_ADMIN_PERMISSION_DENIED`                                    | `AUTH-ERR-004`                  |
+| `AP-10` | `BASE_ONLY` con deny base                                        | Denegación de carril aplicable                                      | `AUTH_ADMIN_PERMISSION_DENIED`                                    | `AUTH-ERR-004`                  |
+| `AP-11` | `BASE_ONLY` sin allow                                            | Evaluación completa sin concesión                                   | `AUTH_ADMIN_PERMISSION_DENIED`                                    | `AUTH-ERR-004`                  |
+| `AP-12` | `BASE_ONLY` con scope mismatch                                   | Contexto y recurso resueltos, concesión no cubre                    | `AUTH_ADMIN_PERMISSION_DENIED`                                    | `AUTH-ERR-004`                  |
+| `AP-13` | Falta sede o área necesaria                                      | Territorio no resoluble                                             | razón territorial específica                                      | `AUTH-ERR-005` a `AUTH-ERR-008` |
+| `AP-14` | `BASE_OR_OPERATIONAL`: base deny, operativo allow                | Un carril completo permite                                          | `ALLOW`                                                           | autorización canónica           |
+| `AP-15` | `BASE_OR_OPERATIONAL`: base allow, operativo deny                | Un carril completo permite                                          | `ALLOW`                                                           | autorización canónica           |
+| `AP-16` | `BASE_OR_OPERATIONAL`: ambos deny                                | Ningún carril permite                                               | `DENY`; seleccionar razón por precedencia y causa decisiva        | autorización canónica           |
+| `AP-17` | `BASE_AND_OPERATIONAL`: base deny, operativo válido              | Base requerido falla                                                | `AUTH_ADMIN_PERMISSION_DENIED`                                    | `AUTH-ERR-004`                  |
+| `AP-18` | `BASE_AND_OPERATIONAL`: base allow, contexto operativo ausente   | Condición estructural operativa falla                               | razón operativa específica                                        | `AUTH-ERR-009` a `AUTH-ERR-014` |
+| `AP-19` | Simulación intenta mutar                                         | Modo simulado confirmado                                            | acción no permitida en simulación                                 | `AUTH-ERR-016`                  |
+| `AP-20` | Permiso permitido y recurso cubierto                             | Evaluación completa y fresca                                        | continuar ejecución con nueva validación en frontera autoritativa | paquete propietario             |
+| `AP-21` | `OPERATIONAL_ONLY` con contexto íntegro y explicit deny          | Denegación operativa aplicable                                      | `AUTH_OPERATIONAL_PERMISSION_DENIED`                              | `AUTH-ERR-004`                  |
+| `AP-22` | `OPERATIONAL_ONLY` con contexto íntegro y sin allow              | Default deny operativo                                              | `AUTH_OPERATIONAL_PERMISSION_DENIED`                              | `AUTH-ERR-004`                  |
+| `AP-23` | `BASE_OR_OPERATIONAL`: ambos carriles completos terminan en deny | Ningún carril permite; operativo es la razón pública más específica | `AUTH_OPERATIONAL_PERMISSION_DENIED`                              | `AUTH-ERR-004`                  |
+| `AP-24` | `BASE_AND_OPERATIONAL`: base allow, operativo íntegro deny       | Carril operativo requerido falla                                    | `AUTH_OPERATIONAL_PERMISSION_DENIED`                              | `AUTH-ERR-004`                  |
 
 La matriz no autoriza acciones. Materializa la clasificación de cada escenario.
 
 ---
 
-#### 20. `ADMIN-PERMISSION-CHANNEL-RESPONSE-MATRIX-001`
+#### 21. `ADMIN-PERMISSION-CHANNEL-RESPONSE-MATRIX-001`
 
 | Canal                              | Respuesta canónica                                       | Estado            | Efecto permitido | Prohibiciones                                       |
 | ---------------------------------- | -------------------------------------------------------- | ----------------- | ---------------- | --------------------------------------------------- |
@@ -3891,13 +4002,14 @@ La matriz no autoriza acciones. Materializa la clasificación de cada escenario.
 | Cliente nativo                     | estado discriminado persistible sin secretos             | `403`             | ninguno          | loop de login, reenvío de mutación                  |
 
 Todos los canales deben producir una decisión equivalente para el mismo
-snapshot y recurso.
+snapshot y recurso. El envelope conserva el reason code del carril decisivo:
+`AUTH_ADMIN_PERMISSION_DENIED` o `AUTH_OPERATIONAL_PERMISSION_DENIED`.
 
 ---
 
-#### 21. Mensaje humano canónico
+#### 22. Mensaje humano canónico
 
-Copy aprobado en español:
+Copy aprobado para la denegación del carril base:
 
 | Elemento          | Texto exacto                                                                                                          |
 | ----------------- | --------------------------------------------------------------------------------------------------------------------- |
@@ -3906,6 +4018,16 @@ Copy aprobado en español:
 | Acción principal  | `Volver`                                                                                                              |
 | Acción secundaria | `Volver a Vento OS`                                                                                                   |
 | Código de soporte | `AUTH_ADMIN_PERMISSION_DENIED`                                                                                        |
+
+Copy aprobado para la denegación del carril operativo:
+
+| Elemento          | Texto exacto                                                                                                                   |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| Título            | `No tienes permiso para completar esta operación`                                                                              |
+| Mensaje           | `Tu sesión y contexto operativo están activos, pero no tienes la autorización operativa necesaria para completar esta acción.` |
+| Acción principal  | `Volver`                                                                                                                       |
+| Acción secundaria | `Volver a Vento OS`                                                                                                            |
+| Código de soporte | `AUTH_OPERATIONAL_PERMISSION_DENIED`                                                                                           |
 
 Reglas:
 
@@ -3924,9 +4046,9 @@ Reglas:
 
 ---
 
-#### 22. Recuperación segura
+#### 23. Recuperación segura
 
-##### 22.1 Acción principal — `Volver`
+##### 23.1 Acción principal — `Volver`
 
 Debe regresar a una superficie autenticada segura que el actor pueda utilizar,
 por ejemplo:
@@ -3947,12 +4069,12 @@ No debe:
 - activar simulación;
 - abrir una pantalla para editar permisos.
 
-##### 22.2 Acción secundaria — `Volver a Vento OS`
+##### 23.2 Acción secundaria — `Volver a Vento OS`
 
 Dirige al Hub autenticado. Cada superficie del Hub y cada aplicación destino
 vuelven a validar su propio acceso.
 
-##### 22.3 Solicitud de acceso
+##### 23.3 Solicitud de acceso
 
 Esta tarea no crea un flujo automático de solicitud o concesión de permisos.
 Si una aplicación ofrece soporte, solo podrá enviar una referencia opaca,
@@ -3961,7 +4083,7 @@ matrices desde la pantalla de bloqueo.
 
 ---
 
-#### 23. Seguridad y minimización
+#### 24. Seguridad y minimización
 
 La respuesta pública no incluirá:
 
@@ -3993,7 +4115,7 @@ controlado.
 
 ---
 
-#### 24. Frescura, concurrencia y fronteras autoritativas
+#### 25. Frescura, concurrencia y fronteras autoritativas
 
 Una decisión `ALLOW` o `DENY` pertenece a un snapshot concreto.
 
@@ -4023,7 +4145,7 @@ Reglas:
 
 ---
 
-#### 25. Auditoría mínima
+#### 26. Auditoría mínima
 
 Eventos mínimos:
 
@@ -4049,7 +4171,7 @@ ejecutada.
 
 ---
 
-#### 26. `ADMIN-PERMISSION-APPLICATION-COVERAGE-REGISTER-001`
+#### 27. `ADMIN-PERMISSION-APPLICATION-COVERAGE-REGISTER-001`
 
 El inventario físico de solo lectura usa `permission_audience=administrative`
 como señal diagnóstica. La clasificación canónica futura deberá provenir de
@@ -4090,9 +4212,9 @@ La distribución demuestra que `permission_audience`, `is_operational` y
 
 ---
 
-#### 27. Estado físico de Supabase inspeccionado
+#### 28. Estado físico de Supabase inspeccionado
 
-##### 27.1 Catálogo
+##### 28.1 Catálogo
 
 `public.app_permissions` no contiene actualmente una columna desplegada
 `authorization_requirement`.
@@ -4117,7 +4239,7 @@ BASE_OR_OPERATIONAL / BASE_AND_OPERATIONAL
 La implementación pertenece a `AUTH-CAT-006`, `AUTH-DB-034` y al paquete E5
 correspondiente mediante migración versionada en `vento-shell`.
 
-##### 27.2 Matrices
+##### 28.2 Matrices
 
 El snapshot registra:
 
@@ -4130,7 +4252,7 @@ El snapshot registra:
 Cero denies observados no prueba que los evaluadores implementen correctamente
 la precedencia futura `deny > allow`.
 
-##### 27.3 Funciones
+##### 28.3 Funciones
 
 Se inspeccionaron:
 
@@ -4147,7 +4269,7 @@ Las funciones constituyen evidencia de transición, no conformidad canónica.
 
 ---
 
-#### 28. Estado físico de aplicaciones inspeccionado
+#### 29. Estado físico de aplicaciones inspeccionado
 
 Se reconciliaron guards y pantallas de no acceso de:
 
@@ -4173,30 +4295,31 @@ Esta tarea no modifica esos repositorios.
 
 ---
 
-#### 29. `ADMIN-PERMISSION-PHYSICAL-RECONCILIATION-001`
+#### 30. `ADMIN-PERMISSION-PHYSICAL-RECONCILIATION-001`
 
-| ID       | Brecha física observada                                                                          | Riesgo                                               | Tarea responsable                                  | Condición de salida                           |
-| -------- | ------------------------------------------------------------------------------------------------ | ---------------------------------------------------- | -------------------------------------------------- | --------------------------------------------- |
-| `APG-01` | `app_permissions` no materializa `authorization_requirement`.                                    | Modalidad inferida o permisiva.                      | `AUTH-CAT-006`; `AUTH-DB-034`                      | Catálogo físico versionado y validado.        |
-| `APG-02` | `has_permission` produce booleano sin causa, versiones ni lane.                                  | Default deny, explicit deny y error indistinguibles. | `AUTH-DB-034`; `SHELL-AUTH-002`                    | Decisión estructurada consumible.             |
-| `APG-03` | `has_permission` evalúa deny individual, pero no deny de rol base.                               | Allow puede vencer una política negativa futura.     | `AUTH-DB-034`; `SHELL-CI-016`                      | Precedencia completa probada.                 |
-| `APG-04` | `has_role_permission` consulta únicamente allows.                                                | Simulación o helper de rol ignora denies.            | `AUTH-DB-034`; `SHELL-CI-016`                      | Denies del carril incluidos.                  |
-| `APG-05` | `has_effective_permission_v1` combina base y operación con `OR` sin consumir modalidad canónica. | Carril incompatible puede autorizar.                 | `AUTH-DB-034`; `SHELL-AUTH-001`                    | Combinación gobernada por catálogo.           |
-| `APG-06` | `has_operational_permission` retorna `true` cuando existe bypass administrativo.                 | Rol base autoriza cualquier permiso operativo.       | `AUTH-DB-034`; `SHELL-AUTH-002`                    | Bypass eliminado y pruebas negativas.         |
-| `APG-07` | `get_operational_context` activa bypass por nombres `propietario` y `gerente_general`.           | Wildcard por cargo.                                  | `AUTH-DB-034`; `SHELL-AUTH-005`                    | Permisos explícitos reemplazan nombres.       |
-| `APG-08` | `get_effective_context_v1` usa `navigation_role` como rol operativo efectivo de dispositivo.     | Preferencia de navegación se vuelve autoridad.       | `AUTH-DB-033`; `SHELL-AUTH-001`                    | Sesión de actor y rol real resueltos.         |
-| `APG-09` | La ruta de simulación puede consultar grants y participar en `has_effective_permission_v1`.      | Decisión simulada reutilizada como real.             | `AUTH-SIM-006`; `SHELL-AUTH-002`                   | Evaluadores físico real y simulado separados. |
-| `APG-10` | VISO permite role override mediante cookie dentro del guard.                                     | Cookie local cambia autorización real.               | `AUTH-SIM-006`; `SHELL-AUTH-005`                   | Override limitado a simulación no mutante.    |
-| `APG-11` | Helpers TypeScript convierten cualquier error RPC en `false`.                                    | Falla técnica presentada como falta de permiso.      | `AUTH-ERR-019`; `SHELL-AUTH-002`                   | Resultados discriminados y errores separados. |
-| `APG-12` | Guards duplican evaluación y razones libres entre aplicaciones.                                  | Drift y precedencia divergente.                      | `SHELL-AUTH-001`; `SHELL-AUTH-005`                 | SDK compartido adoptado por consumidoras.     |
-| `APG-13` | Pantallas muestran ruta, permiso o copy que mezcla módulo, acción y territorio.                  | Filtración y mensaje incorrecto.                     | `AUTH-ERR-020`; `SHELL-AUTH-005`                   | Catálogo compartido de mensajes aplicado.     |
-| `APG-14` | No se demostró cobertura equivalente en las diez aplicaciones.                                   | Adopción parcial presentada como cumplimiento.       | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-019` | Registro de consumidoras y evidencia por app. |
+| ID       | Brecha física observada                                                                          | Riesgo                                                                   | Tarea responsable                                                 | Condición de salida                                            |
+| -------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------ | ----------------------------------------------------------------- | -------------------------------------------------------------- |
+| `APG-01` | `app_permissions` no materializa `authorization_requirement`.                                    | Modalidad inferida o permisiva.                                          | `AUTH-CAT-006`; `AUTH-DB-034`                                     | Catálogo físico versionado y validado.                         |
+| `APG-02` | `has_permission` produce booleano sin causa, versiones ni lane.                                  | Default deny, explicit deny y error indistinguibles.                     | `AUTH-DB-034`; `SHELL-AUTH-002`                                   | Decisión estructurada consumible.                              |
+| `APG-03` | `has_permission` evalúa deny individual, pero no deny de rol base.                               | Allow puede vencer una política negativa futura.                         | `AUTH-DB-034`; `SHELL-CI-016`                                     | Precedencia completa probada.                                  |
+| `APG-04` | `has_role_permission` consulta únicamente allows.                                                | Simulación o helper de rol ignora denies.                                | `AUTH-DB-034`; `SHELL-CI-016`                                     | Denies del carril incluidos.                                   |
+| `APG-05` | `has_effective_permission_v1` combina base y operación con `OR` sin consumir modalidad canónica. | Carril incompatible puede autorizar.                                     | `AUTH-DB-034`; `SHELL-AUTH-001`                                   | Combinación gobernada por catálogo.                            |
+| `APG-06` | `has_operational_permission` retorna `true` cuando existe bypass administrativo.                 | Rol base autoriza cualquier permiso operativo.                           | `AUTH-DB-034`; `SHELL-AUTH-002`                                   | Bypass eliminado y pruebas negativas.                          |
+| `APG-07` | `get_operational_context` activa bypass por nombres `propietario` y `gerente_general`.           | Wildcard por cargo.                                                      | `AUTH-DB-034`; `SHELL-AUTH-005`                                   | Permisos explícitos reemplazan nombres.                        |
+| `APG-08` | `get_effective_context_v1` usa `navigation_role` como rol operativo efectivo de dispositivo.     | Preferencia de navegación se vuelve autoridad.                           | `AUTH-DB-033`; `SHELL-AUTH-001`                                   | Sesión de actor y rol real resueltos.                          |
+| `APG-09` | La ruta de simulación puede consultar grants y participar en `has_effective_permission_v1`.      | Decisión simulada reutilizada como real.                                 | `AUTH-SIM-006`; `SHELL-AUTH-002`                                  | Evaluadores físico real y simulado separados.                  |
+| `APG-10` | VISO permite role override mediante cookie dentro del guard.                                     | Cookie local cambia autorización real.                                   | `AUTH-SIM-006`; `SHELL-AUTH-005`                                  | Override limitado a simulación no mutante.                     |
+| `APG-11` | Helpers TypeScript convierten cualquier error RPC en `false`.                                    | Falla técnica presentada como falta de permiso.                          | `AUTH-ERR-019`; `SHELL-AUTH-002`                                  | Resultados discriminados y errores separados.                  |
+| `APG-12` | Guards duplican evaluación y razones libres entre aplicaciones.                                  | Drift y precedencia divergente.                                          | `SHELL-AUTH-001`; `SHELL-AUTH-005`                                | SDK compartido adoptado por consumidoras.                      |
+| `APG-13` | Pantallas muestran ruta, permiso o copy que mezcla módulo, acción y territorio.                  | Filtración y mensaje incorrecto.                                         | `AUTH-ERR-020`; `SHELL-AUTH-005`                                  | Catálogo compartido de mensajes aplicado.                      |
+| `APG-14` | No se demostró cobertura equivalente en las diez aplicaciones.                                   | Adopción parcial presentada como cumplimiento.                           | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-019`                | Registro de consumidoras y evidencia por app.                  |
+| `APG-15` | Evaluadores, helpers y pantallas no discriminan denegación base de denegación operativa.         | Un deny operativo se reduce a `false` o se presenta como administrativo. | `AUTH-DB-034`; `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-CI-016` | Resultado tipado, catálogo compartido y pruebas por modalidad. |
 
 Ninguna brecha se declara implementada o validada.
 
 ---
 
-#### 30. Propiedad de implementación y orden
+#### 31. Propiedad de implementación y orden
 
 Orden obligatorio de materialización futura:
 
@@ -4231,72 +4354,62 @@ Toda migración de Supabase se creará, versionará y ejecutará desde
 
 ---
 
-#### 31. Requisitos de prueba derivados
+#### 32. Requisitos de prueba derivados
 
 **Resultado:** GENERA REQUISITOS DE PRUEBA
 
-| ID              | Regla protegida                                                                                                 | Tipo                                  | Prioridad | Momento de implementación       | Destino                                                            |
-| --------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------- | --------- | ------------------------------- | ------------------------------------------------------------------ |
-| `TREQ-AUTH-159` | Denegación concluyente del carril base produce código, `403` y cero efectos.                                    | contractual + seguridad               | crítica   | paquete de autorización         | `AUTH-DB-034`; `SHELL-AUTH-002`; `SHELL-CI-016`                    |
-| `TREQ-AUTH-160` | La clasificación administrativa proviene de `authorization_requirement`, no de metadata, tabla, rol o pantalla. | contractual + catálogo                | crítica   | catálogo físico y SDK           | `AUTH-CAT-006`; `SHELL-AUTH-001`; `SHELL-CI-016`                   |
-| `TREQ-AUTH-161` | Las cuatro modalidades combinan carriles sin mezclar fragmentos incompletos.                                    | autorización + integración            | crítica   | evaluador unificado             | `AUTH-MOD-018`; `AUTH-DB-034`; `SHELL-CI-016`                      |
-| `TREQ-AUTH-162` | Bloqueo estructural, actor-wide deny, deny de carril, allow y default deny conservan precedencia.               | seguridad + regresión                 | crítica   | evaluador y matrices            | `AUTH-MOD-019`; `AUTH-DB-034`; `SHELL-CI-016`                      |
-| `TREQ-AUTH-163` | Un contexto territorial ausente no se presenta como falta de permiso; scope mismatch exige recurso resoluble.   | contexto + seguridad                  | crítica   | AccessContext y evaluador       | `AUTH-CTX-009`; `AUTH-DB-033`; `AUTH-DB-034`                       |
-| `TREQ-AUTH-164` | Diez canales responden de forma equivalente y sin efectos.                                                      | integración + E2E                     | crítica   | adapters y consumidoras         | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-018`                 |
-| `TREQ-AUTH-165` | Simulación, override, dispositivo, service role y nombre de cargo no conceden permisos base reales.             | seguridad + simulación + dispositivo  | crítica   | SDK y migración                 | `AUTH-SIM-006`; `AUTH-DB-033`; `SHELL-AUTH-005`                    |
-| `TREQ-AUTH-166` | UI usa copy exacto, conserva sesión y no expone ruta, permiso, rol, recurso o fuente de decisión.               | interfaz + privacidad + accesibilidad | alta      | catálogo compartido de mensajes | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                   |
-| `TREQ-AUTH-167` | Cambios de permisos, denies, scopes y versiones invalidan decisiones y se revalidan antes del efecto.           | concurrencia + auditoría              | crítica   | frescura y observabilidad       | `AUTH-DB-035`; `SHELL-AUTH-004`; `SHELL-CI-019`                    |
-| `TREQ-AUTH-168` | La regresión reconcilia 146 candidatos, 384 allows de rol, 8 individuales, 14 brechas y diez aplicaciones.      | regresión + RPC + RLS + estática      | crítica   | gates y evidencia E5            | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-018`; `SHELL-CI-019` |
+| ID              | Regla protegida                                                                                                                                                                                                                                            | Tipo                                               | Prioridad | Momento de implementación                 | Destino                                                            |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | --------- | ----------------------------------------- | ------------------------------------------------------------------ |
+| `TREQ-AUTH-159` | Denegación concluyente del carril base produce código, `403` y cero efectos.                                                                                                                                                                               | contractual + seguridad                            | crítica   | paquete de autorización                   | `AUTH-DB-034`; `SHELL-AUTH-002`; `SHELL-CI-016`                    |
+| `TREQ-AUTH-160` | La clasificación administrativa proviene de `authorization_requirement`, no de metadata, tabla, rol o pantalla.                                                                                                                                            | contractual + catálogo                             | crítica   | catálogo físico y SDK                     | `AUTH-CAT-006`; `SHELL-AUTH-001`; `SHELL-CI-016`                   |
+| `TREQ-AUTH-161` | Las cuatro modalidades combinan carriles sin mezclar fragmentos incompletos.                                                                                                                                                                               | autorización + integración                         | crítica   | evaluador unificado                       | `AUTH-MOD-018`; `AUTH-DB-034`; `SHELL-CI-016`                      |
+| `TREQ-AUTH-162` | Bloqueo estructural, actor-wide deny, deny de carril, allow y default deny conservan precedencia.                                                                                                                                                          | seguridad + regresión                              | crítica   | evaluador y matrices                      | `AUTH-MOD-019`; `AUTH-DB-034`; `SHELL-CI-016`                      |
+| `TREQ-AUTH-163` | Un contexto territorial ausente no se presenta como falta de permiso; scope mismatch exige recurso resoluble.                                                                                                                                              | contexto + seguridad                               | crítica   | AccessContext y evaluador                 | `AUTH-CTX-009`; `AUTH-DB-033`; `AUTH-DB-034`                       |
+| `TREQ-AUTH-164` | Diez canales responden de forma equivalente y sin efectos.                                                                                                                                                                                                 | integración + E2E                                  | crítica   | adapters y consumidoras                   | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-018`                 |
+| `TREQ-AUTH-165` | Simulación, override, dispositivo, service role y nombre de cargo no conceden permisos base reales.                                                                                                                                                        | seguridad + simulación + dispositivo               | crítica   | SDK y migración                           | `AUTH-SIM-006`; `AUTH-DB-033`; `SHELL-AUTH-005`                    |
+| `TREQ-AUTH-166` | UI usa copy exacto, conserva sesión y no expone ruta, permiso, rol, recurso o fuente de decisión.                                                                                                                                                          | interfaz + privacidad + accesibilidad              | alta      | catálogo compartido de mensajes           | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                   |
+| `TREQ-AUTH-167` | Cambios de permisos, denies, scopes y versiones invalidan decisiones y se revalidan antes del efecto.                                                                                                                                                      | concurrencia + auditoría                           | crítica   | frescura y observabilidad                 | `AUTH-DB-035`; `SHELL-AUTH-004`; `SHELL-CI-019`                    |
+| `TREQ-AUTH-168` | La regresión reconcilia 146 candidatos, 384 allows de rol, 8 individuales, 15 brechas y diez aplicaciones.                                                                                                                                                 | regresión + RPC + RLS + estática                   | crítica   | gates y evidencia E5                      | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-018`; `SHELL-CI-019` |
+| `TREQ-AUTH-329` | Un carril operativo íntegro que termina en explicit deny, default deny o scope mismatch concluyente produce `AUTH_OPERATIONAL_PERMISSION_DENIED`, `403`, sesión preservada y cero efectos; la composición por modalidad selecciona una sola razón pública. | contractual + autorización + seguridad + regresión | crítica   | evaluador unificado y catálogo compartido | `AUTH-DB-034`; `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-CI-016`  |
 
 El detalle canónico de estas filas se incorpora al registro completo `04A`.
 
 ---
 
-#### 32. Validaciones documentales definidas
+#### 33. Validaciones documentales definidas
 
 El validador futuro deberá comprobar como mínimo:
 
-1. código público único;
-2. estado no navegacional `403`;
-3. `DENY` y `executable=false`;
-4. cinco causas internas exhaustivas;
-5. separación de sesión, actividad y acceso a aplicación;
-6. permiso exacto registrado y activo;
-7. modalidad válida y versionada;
-8. `OPERATIONAL_ONLY` excluido;
-9. precedencia estructural antes del permiso;
-10. actor-wide deny antes de denies de carril;
-11. deny base antes de allow base;
-12. default deny separado de explicit deny;
-13. alcance evaluado contra recurso real;
-14. contexto ausente separado de scope mismatch;
-15. `BASE_ONLY` completo;
-16. `BASE_OR_OPERATIONAL` sin mezcla de fragmentos;
-17. `BASE_AND_OPERATIONAL` como intersección;
-18. rol base separado de rol operativo;
-19. cero bypass por nombre de rol;
-20. cero autoridad por `navigation_role`;
-21. simulación no mutante;
-22. role override no autoritativo;
-23. service role no empresarial;
-24. diez canales completos;
-25. veinte escenarios completos;
-26. diez aplicaciones registradas;
-27. 146 candidatos físicos reconciliados;
-28. 384 allows de rol reconciliados;
-29. 8 allows individuales reconciliados;
-30. 14 brechas con propietario;
-31. copy exacto y accesible;
-32. no exposición de ruta o permiso;
-33. sesión conservada;
-34. cero reintento automático;
-35. invalidación y revalidación;
-36. auditoría minimizada;
-37. diez TREQ consecutivos y resolubles.
+1. dos códigos públicos únicos y mutuamente excluyentes;
+2. estado no navegacional `403`, sesión preservada y cero efectos;
+3. ocho causas internas exhaustivas y privadas;
+4. separación de sesión, actividad, acceso a aplicación y configuración;
+5. permiso exacto registrado, activo y con contrato versionado;
+6. modalidad y carril decisivo resueltos server-side;
+7. `BASE_ONLY` limitado al perfil base;
+8. `OPERATIONAL_ONLY` limitado al perfil operativo después de contexto íntegro;
+9. `BASE_OR_OPERATIONAL` sin mezcla de fragmentos y con selección determinista;
+10. `BASE_AND_OPERATIONAL` como intersección de carriles completos;
+11. actor-wide deny antes de allows de carril;
+12. deny aplicable antes de allow del mismo carril;
+13. default deny separado de explicit deny;
+14. scope mismatch evaluado contra recurso y territorio reales;
+15. ausencias de contexto separadas de denegaciones de permiso;
+16. rol base separado de rol operativo;
+17. cero bypass por rol, `navigation_role`, cookie, simulación o service role;
+18. veinticuatro escenarios completos;
+19. diez canales con el mismo reason code del carril decisivo;
+20. diez aplicaciones registradas;
+21. copy base y operativo exactos y accesibles;
+22. no exposición de permiso, ruta, rol, grant, deny o recurso;
+23. cero reintento automático;
+24. invalidación, revalidación y auditoría minimizada;
+25. quince brechas con propietario y condición de salida;
+26. once requisitos resolubles: `TREQ-AUTH-159` a `TREQ-AUTH-168` y `TREQ-AUTH-329`.
 
 ---
 
-#### 33. Fuera del alcance
+#### 34. Fuera del alcance
 
 AUTH-ERR-004 no:
 
@@ -4328,71 +4441,52 @@ AUTH-ERR-004 no:
 
 ---
 
-#### 34. Criterios de aceptación
+#### 35. Criterios de aceptación
 
-1. `AUTH_ADMIN_PERMISSION_DENIED` es el único código público de esta tarea.
-2. La razón pertenece a autorización y no a autenticación.
-3. La sesión permanece válida.
-4. La identidad laboral ya está activa.
-5. El acceso a la aplicación ya fue permitido.
-6. El permiso exacto existe y está activo.
-7. La modalidad canónica admite carril base.
-8. `permission_audience` no define por sí solo un permiso administrativo.
-9. La tabla de asignación no define la modalidad.
-10. El nombre del rol no define autoridad.
-11. La pantalla no define modalidad.
-12. `OPERATIONAL_ONLY` nunca produce esta razón.
-13. La respuesta no navegacional usa `403`.
-14. La decisión es `DENY` y `executable=false`.
-15. Ninguna mutación produce efectos parciales.
-16. Las cinco causas internas están definidas y no se exponen.
-17. Actor-wide deny prevalece sobre todos los allows compatibles.
-18. Deny base aplicable prevalece sobre allows base.
-19. Allow individual normal no vence deny de rol.
-20. Allow de rol no vence deny individual.
-21. Ausencia de allow se distingue de explicit deny.
-22. Scope mismatch requiere contexto y recurso resolubles.
-23. Falta de sede o área conserva razón territorial específica.
-24. Un error técnico no se convierte en deny.
-25. Un permiso no registrado conserva `AUTH-ERR-018`.
-26. Modalidad ausente conserva `AUTH-ERR-017`.
-27. `BASE_ONLY` evalúa exclusivamente base.
-28. `BASE_OR_OPERATIONAL` permite si cualquier carril completo permite.
-29. `BASE_OR_OPERATIONAL` no mezcla permiso y alcance de carriles diferentes.
-30. `BASE_AND_OPERATIONAL` exige ambos carriles sobre el mismo recurso.
-31. Una razón estructural operativa conserva precedencia.
-32. El rol base no crea turno ni rol operativo.
-33. El rol operativo no crea autoridad administrativa.
-34. Propietario y gerente general no poseen wildcard por nombre.
-35. `navigation_role` no concede permisos.
-36. La allowlist del dispositivo no concede acciones administrativas.
-37. La simulación no autoriza acciones reales.
-38. Una cookie de override no modifica autorización real.
-39. Service role no sustituye permiso empresarial.
-40. Los diez canales poseen decisión explícita.
-41. La UI usa el copy exacto aprobado.
-42. La UI no muestra permiso, ruta, rol, recurso ni fuente de decisión.
-43. La acción principal es volver a una superficie segura.
-44. El Hub se ofrece como fallback sin cerrar sesión.
-45. No existe reintento automático de la acción.
-46. Las decisiones se invalidan ante cambios relevantes.
-47. La mutación revalida antes del efecto.
-48. La auditoría distingue causas sin secretos.
-49. Las diez aplicaciones poseen decisión documental.
-50. Las 146 filas candidatas se registran sin declararlas canónicas.
-51. Las 3 filas marcadas operativas y las 15 con contexto se conservan como evidencia de transición.
-52. Las 384 concesiones de rol y 8 individuales se preservan como snapshot.
-53. Las 16 filas sin allow observado no reciben grants por inferencia.
-54. Las catorce brechas tienen propietario y condición de salida.
-55. Ninguna brecha se declara implementada.
-56. Se generan `TREQ-AUTH-159` a `TREQ-AUTH-168`.
-57. Las 6556 filas históricas se conservan sin modificación.
-58. No se modifica código, Supabase, datos ni repositorios remotos.
-59. `AUTH-ERR-005` permanece reservada.
+1. `AUTH_ADMIN_PERMISSION_DENIED` identifica la denegación concluyente del carril base.
+2. `AUTH_OPERATIONAL_PERMISSION_DENIED` identifica la denegación concluyente del carril operativo íntegro.
+3. Ambos códigos pertenecen a autorización, no autenticación.
+4. La sesión permanece válida y la aplicación ya fue permitida.
+5. El permiso exacto existe, está activo y posee contrato válido.
+6. La modalidad y el carril decisivo se determinan server-side.
+7. `permission_audience`, tabla, rol, pantalla o nombre de cargo no definen el carril.
+8. `BASE_ONLY` solo puede producir el perfil base.
+9. `OPERATIONAL_ONLY` solo puede producir el perfil operativo después de satisfacer contexto.
+10. `BASE_OR_OPERATIONAL` permite si cualquier carril completo permite.
+11. `BASE_OR_OPERATIONAL` con ambos carriles completos en deny usa el perfil operativo y conserva ambas causas privadas.
+12. `BASE_AND_OPERATIONAL` con base deny usa el perfil base por precedencia.
+13. `BASE_AND_OPERATIONAL` con base allow y operativo deny usa el perfil operativo.
+14. Ninguna modalidad mezcla fragmentos de carriles diferentes.
+15. La respuesta no navegacional usa `403`, `DENY`, `executable=false` y cero efectos.
+16. Las ocho causas internas están definidas y no se exponen.
+17. Actor-wide deny prevalece sobre allows compatibles.
+18. Deny de carril prevalece sobre allows del mismo carril.
+19. Ausencia de allow se distingue de explicit deny.
+20. Scope mismatch exige contexto y recurso resolubles.
+21. Falta de sede, área, turno, check-in o rol conserva su razón específica.
+22. Rol no habilitado para sede o área conserva `AUTH-ERR-013/014`.
+23. Dispositivo no autorizado conserva `AUTH-ERR-015`.
+24. Configuración contradictoria conserva `AUTH-ERR-017`.
+25. Permiso no registrado conserva `AUTH-ERR-018`.
+26. Error técnico conserva `AUTH-ERR-019`.
+27. Propietario, gerente general, `navigation_role`, override, simulación o service role no crean wildcard.
+28. Los diez canales conservan el mismo código del carril decisivo.
+29. La UI usa el copy exacto del perfil base u operativo.
+30. La UI no muestra permiso, ruta, rol, recurso, grant ni fuente de decisión.
+31. La recuperación vuelve a una superficie segura sin cerrar sesión ni repetir la acción.
+32. Decisiones y cachés se invalidan ante cambios relevantes.
+33. Toda mutación revalida inmediatamente antes del efecto.
+34. La auditoría conserva carriles, causas y composición sin secretos.
+35. Las diez aplicaciones poseen decisión documental por permiso y carril.
+36. El snapshot físico se conserva como evidencia de transición, no como autoridad normativa.
+37. Las quince brechas mantienen propietario y condición de salida.
+38. Se conservan `TREQ-AUTH-159` a `TREQ-AUTH-168` y se agrega `TREQ-AUTH-329`.
+39. No se modifica código, Supabase, datos ni repositorios remotos.
+40. `AUTH-ERR-005` permanece reservada.
 
 ---
 
-#### 35. Cierre de tarea y continuidad
+#### 36. Cierre de tarea y continuidad
 
 | Tarea          | Estado      | Relación                                                      |
 | -------------- | ----------- | ------------------------------------------------------------- |
@@ -6008,11 +6102,12 @@ TURNO EXISTE, PERO NO HA COMENZADO
 TURNO ACTIVO Y COMENZADO, SEDE INACTIVA
 → AUTH_ACTIVE_SITE_REQUIRED
 
-SEDE OPERATIVA ACTIVA, SIN CHECK-IN REQUERIDO
+SEDE OPERATIVA ACTIVA, SIN EL CHECK-IN REQUERIDO
 → AUTH-ERR-011
 
 CHECK-IN ACTIVO EN OTRA SEDE
-→ AUTH-ERR-012
+→ AUTH-ERR-017 SI EL MISMATCH ES CONCLUYENTE
+→ AUTH-ERR-019 SI LA FUENTE NO ES VERIFICABLE
 ```
 
 `NO_ACTIVE_SHIFT` no se registrará como `OPERATIONAL_SITE_MISSING`. La ausencia
@@ -6088,15 +6183,16 @@ Una fila `employee_sites.is_active=true` no prueba que `sites.is_active=true`.
 
 #### 12. Diferencia con turno, check-in y rol
 
-| Condición                           | Tarea propietaria |
-| ----------------------------------- | ----------------- |
-| no existe turno activo              | `AUTH-ERR-009`    |
-| el turno todavía no ha comenzado    | `AUTH-ERR-010`    |
-| turno activo apunta a sede inactiva | `AUTH-ERR-006`    |
-| falta check-in requerido            | `AUTH-ERR-011`    |
-| check-in corresponde a otra sede    | `AUTH-ERR-012`    |
-| falta rol operativo                 | `AUTH-ERR-013`    |
-| rol operativo no permitido          | `AUTH-ERR-014`    |
+| Condición                                                     | Tarea propietaria |
+| ------------------------------------------------------------- | ----------------- |
+| no existe turno activo                                        | `AUTH-ERR-009`    |
+| el turno todavía no ha comenzado                              | `AUTH-ERR-010`    |
+| turno activo apunta a sede inactiva                           | `AUTH-ERR-006`    |
+| falta check-in requerido                                      | `AUTH-ERR-011`    |
+| check-in corresponde a otra sede y el mismatch es concluyente | `AUTH-ERR-017`    |
+| falta rol operativo                                           | `AUTH-ERR-012`    |
+| rol operativo no está habilitado para la sede                 | `AUTH-ERR-013`    |
+| rol operativo está habilitado en sede, pero no en el área     | `AUTH-ERR-014`    |
 
 La tarea no anticipa ni aprueba los contratos posteriores. Solo congela sus
 fronteras para impedir que “sin sede activa” absorba razones distintas.
@@ -6229,28 +6325,29 @@ No son causas internas de esta razón:
 
 #### 17. `ACTIVE-SITE-MODE-DECISION-MATRIX-001`
 
-|    # | Escenario                                                           | Perfil                                | Resultado público                | Continúa en          |
-| ---: | ------------------------------------------------------------------- | ------------------------------------- | -------------------------------- | -------------------- |
-|    1 | acción `NT` u `ORG` sin sede activa                                 | `NO_ACTIVE_SITE_DEPENDENCY`           | no aplica bloqueo                | permiso y recurso    |
-|    2 | permiso global administrativo sobre recurso organizacional          | `NO_ACTIVE_SITE_DEPENDENCY`           | no aplica bloqueo                | permiso exacto       |
-|    3 | acción administrativa local con sede solicitada activa y autorizada | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | continuar                        | alcance y recurso    |
-|    4 | selección inactiva, pero primaria activa y autorizada               | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | ignorar selección y continuar    | fallback validado    |
-|    5 | selección y primaria inactivas, sin otra candidata activa           | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | `AUTH_ACTIVE_SITE_REQUIRED`      | recuperación         |
-|    6 | sede candidata activa, pero fuera del scope                         | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | denegación de alcance            | permiso/scope        |
-|    7 | actor sin asignación exigida                                        | perfil previo de asignación           | `AUTH_SITE_ASSIGNMENT_REQUIRED`  | `AUTH-ERR-005`       |
-|    8 | asignación activa apunta a sede inactiva                            | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | `AUTH_ACTIVE_SITE_REQUIRED`      | recuperación         |
-|    9 | operación sin turno activo                                          | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | razón de turno                   | `AUTH-ERR-009`       |
-|   10 | turno existe, pero no ha comenzado                                  | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | razón temporal                   | `AUTH-ERR-010`       |
-|   11 | turno activo y comenzado con sede activa                            | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | continuar                        | rol, área y check-in |
-|   12 | turno activo y comenzado con sede inactiva                          | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | `AUTH_ACTIVE_SITE_REQUIRED`      | recuperación         |
-|   13 | turno apunta a sede ausente o desconocida                           | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | configuración o técnica          | `AUTH-ERR-017/019`   |
-|   14 | sede operativa activa, pero falta check-in requerido                | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | razón de check-in                | `AUTH-ERR-011`       |
-|   15 | sede operativa activa y check-in en otra sede activa                | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | mismatch de check-in             | `AUTH-ERR-012`       |
-|   16 | recurso de sede activa y dentro del scope                           | `RESOURCE_ACTIVE_SITE_REQUIRED`       | continuar                        | decisión de recurso  |
-|   17 | recurso de sede inactiva                                            | `RESOURCE_ACTIVE_SITE_REQUIRED`       | `AUTH_ACTIVE_SITE_REQUIRED`      | recuperación         |
-|   18 | recurso exige sede, pero no puede resolverla                        | `RESOURCE_ACTIVE_SITE_REQUIRED`       | razón de recurso/configuración   | contrato propietario |
-|   19 | operación multisede con un extremo inactivo                         | `MULTI_SITE_ACTIVE_SET_REQUIRED`      | `AUTH_ACTIVE_SITE_REQUIRED`      | recuperación         |
-|   20 | lectura de estado de sede falla o expira                            | cualquier perfil dependiente          | error técnico, no deny inventado | `AUTH-ERR-019`       |
+|    # | Escenario                                                             | Perfil                                | Resultado público                       | Continúa en          |
+| ---: | --------------------------------------------------------------------- | ------------------------------------- | --------------------------------------- | -------------------- |
+|    1 | acción `NT` u `ORG` sin sede activa                                   | `NO_ACTIVE_SITE_DEPENDENCY`           | no aplica bloqueo                       | permiso y recurso    |
+|    2 | permiso global administrativo sobre recurso organizacional            | `NO_ACTIVE_SITE_DEPENDENCY`           | no aplica bloqueo                       | permiso exacto       |
+|    3 | acción administrativa local con sede solicitada activa y autorizada   | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | continuar                               | alcance y recurso    |
+|    4 | selección inactiva, pero primaria activa y autorizada                 | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | ignorar selección y continuar           | fallback validado    |
+|    5 | selección y primaria inactivas, sin otra candidata activa             | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | `AUTH_ACTIVE_SITE_REQUIRED`             | recuperación         |
+|    6 | sede candidata activa, pero fuera del scope                           | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | denegación de alcance                   | permiso/scope        |
+|    7 | actor sin asignación exigida                                          | perfil previo de asignación           | `AUTH_SITE_ASSIGNMENT_REQUIRED`         | `AUTH-ERR-005`       |
+|    8 | asignación activa apunta a sede inactiva                              | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | `AUTH_ACTIVE_SITE_REQUIRED`             | recuperación         |
+|    9 | operación sin turno activo                                            | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | razón de turno                          | `AUTH-ERR-009`       |
+|   10 | turno existe, pero no ha comenzado                                    | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | razón temporal                          | `AUTH-ERR-010`       |
+|   11 | turno activo y comenzado con sede activa                              | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | continuar                               | rol, área y check-in |
+|   12 | turno activo y comenzado con sede inactiva                            | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | `AUTH_ACTIVE_SITE_REQUIRED`             | recuperación         |
+|   13 | turno apunta a sede ausente o contradictoria tras lectura concluyente | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | configuración inconsistente             | `AUTH-ERR-017`       |
+|   14 | la sede o su catálogo no pueden consultarse o verificarse             | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | indisponibilidad técnica                | `AUTH-ERR-019`       |
+|   14 | sede operativa activa, pero falta check-in requerido                  | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | razón de check-in                       | `AUTH-ERR-011`       |
+|   15 | sede operativa activa y check-in en otra sede activa                  | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | contradicción concluyente de asistencia | `AUTH-ERR-017`       |
+|   16 | recurso de sede activa y dentro del scope                             | `RESOURCE_ACTIVE_SITE_REQUIRED`       | continuar                               | decisión de recurso  |
+|   17 | recurso de sede inactiva                                              | `RESOURCE_ACTIVE_SITE_REQUIRED`       | `AUTH_ACTIVE_SITE_REQUIRED`             | recuperación         |
+|   18 | recurso exige sede, pero no puede resolverla                          | `RESOURCE_ACTIVE_SITE_REQUIRED`       | razón de recurso/configuración          | contrato propietario |
+|   19 | operación multisede con un extremo inactivo                           | `MULTI_SITE_ACTIVE_SET_REQUIRED`      | `AUTH_ACTIVE_SITE_REQUIRED`             | recuperación         |
+|   20 | lectura de estado de sede falla o expira                              | cualquier perfil dependiente          | error técnico, no deny inventado        | `AUTH-ERR-019`       |
 
 La matriz es exhaustiva para las fronteras de esta tarea. Ningún escenario
 permite sustituir la sede faltante por selección, primaria, legacy, check-in o
@@ -6627,18 +6724,18 @@ Toda migración futura de Supabase deberá crearse, versionarse y ejecutarse des
 
 **Resultado:** GENERA REQUISITOS DE PRUEBA
 
-| ID              | Regla protegida                                                                                                                          | Tipo                                  | Prioridad | Momento de implementación | Destino                                                            |
-| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | --------- | ------------------------- | ------------------------------------------------------------------ |
-| `TREQ-AUTH-179` | Una acción que exige sede activa y no encuentra candidata compatible produce código, `403`, deny y cero efectos.                         | contractual + seguridad               | crítica   | evaluador territorial     | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                       |
-| `TREQ-AUTH-180` | La dependencia se deriva por modo, alcance y recurso; `NT`, `ORG` y capacidades no territoriales no fabrican sede.                       | contractual + contexto                | crítica   | catálogo y evaluador      | `AUTH-CAT-011`; `AUTH-DB-034`; `SHELL-CI-016`                      |
-| `TREQ-AUTH-181` | La sede administrativa valida solicitud, selección y primaria sin convertir preferencias en autoridad.                                   | contexto + navegación                 | crítica   | resolver y adapters       | `AUTH-DB-033`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                  |
-| `TREQ-AUTH-182` | La sede operativa procede del turno válido; no turno, turno no iniciado, sede inactiva y check-in conservan razones distintas.           | contexto + regresión                  | crítica   | resolver y evaluador      | `AUTH-ERR-009`; `AUTH-ERR-010`; `AUTH-ERR-011`; `AUTH-DB-034`      |
-| `TREQ-AUTH-183` | Recursos de una o varias sedes validan actividad de todos los extremos antes de permiso, lectura o mutación.                             | autorización + recurso                | crítica   | evaluador y RLS           | `AUTH-DB-034`; `SHELL-CI-018`                                      |
-| `TREQ-AUTH-184` | Diez canales aplican respuesta equivalente sin datos parciales, fallback territorial, login loop, reintentos ni efectos.                 | integración + E2E                     | crítica   | adapters y consumidoras   | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-018`                 |
-| `TREQ-AUTH-185` | Las diez aplicaciones distinguen capacidades no territoriales, administrativas, operativas y de recurso sin imponer sede por aplicación. | contractual + integración             | alta      | contratos por aplicación  | `SHELL-AUTH-001`; `SHELL-AUTH-005`; `SHELL-CI-016`                 |
-| `TREQ-AUTH-186` | La UI usa copy exacto, conserva sesión y no expone sede, causa, asignaciones, turno, permiso, recurso o alternativas no autorizadas.     | interfaz + privacidad + accesibilidad | alta      | mensajes compartidos      | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                   |
-| `TREQ-AUTH-187` | Cambios de actividad de sede invalidan contexto, decisiones, cachés y Realtime; toda mutación revalida antes del efecto.                 | concurrencia + auditoría              | crítica   | frescura y observabilidad | `AUTH-DB-035`; `SHELL-AUTH-004`; `SHELL-CI-019`                    |
-| `TREQ-AUTH-188` | La regresión reconcilia snapshot, 49 funciones, 68 políticas, 40 tablas, consumidora NEXO y catorce brechas sin crear datos productivos. | regresión + RPC + RLS + estática      | crítica   | gates y evidencia E5      | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-018`; `SHELL-CI-019` |
+| ID              | Regla protegida                                                                                                                                                                                                                                                         | Tipo                                  | Prioridad | Momento de implementación | Destino                                                                                       |
+| --------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | --------- | ------------------------- | --------------------------------------------------------------------------------------------- |
+| `TREQ-AUTH-179` | Una acción que exige sede activa y no encuentra candidata compatible produce código, `403`, deny y cero efectos.                                                                                                                                                        | contractual + seguridad               | crítica   | evaluador territorial     | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                  |
+| `TREQ-AUTH-180` | La dependencia se deriva por modo, alcance y recurso; `NT`, `ORG` y capacidades no territoriales no fabrican sede.                                                                                                                                                      | contractual + contexto                | crítica   | catálogo y evaluador      | `AUTH-CAT-011`; `AUTH-DB-034`; `SHELL-CI-016`                                                 |
+| `TREQ-AUTH-181` | La sede administrativa valida solicitud, selección y primaria sin convertir preferencias en autoridad.                                                                                                                                                                  | contexto + navegación                 | crítica   | resolver y adapters       | `AUTH-DB-033`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                                             |
+| `TREQ-AUTH-182` | La sede operativa procede exclusivamente del turno válido; ausencia de turno, turno fuera de ventana, sede inactiva, check-in ausente, mismatch concluyente de asistencia e indisponibilidad conservan `AUTH-ERR-009`, `010`, `011`, `017` y `019` sin desplazamientos. | contexto + regresión                  | crítica   | resolver y evaluador      | `AUTH-ERR-009`; `AUTH-ERR-010`; `AUTH-ERR-011`; `AUTH-ERR-017`; `AUTH-ERR-019`; `AUTH-DB-034` |
+| `TREQ-AUTH-183` | Recursos de una o varias sedes validan actividad de todos los extremos antes de permiso, lectura o mutación.                                                                                                                                                            | autorización + recurso                | crítica   | evaluador y RLS           | `AUTH-DB-034`; `SHELL-CI-018`                                                                 |
+| `TREQ-AUTH-184` | Diez canales aplican respuesta equivalente sin datos parciales, fallback territorial, login loop, reintentos ni efectos.                                                                                                                                                | integración + E2E                     | crítica   | adapters y consumidoras   | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-018`                                            |
+| `TREQ-AUTH-185` | Las diez aplicaciones distinguen capacidades no territoriales, administrativas, operativas y de recurso sin imponer sede por aplicación.                                                                                                                                | contractual + integración             | alta      | contratos por aplicación  | `SHELL-AUTH-001`; `SHELL-AUTH-005`; `SHELL-CI-016`                                            |
+| `TREQ-AUTH-186` | La UI usa copy exacto, conserva sesión y no expone sede, causa, asignaciones, turno, permiso, recurso o alternativas no autorizadas.                                                                                                                                    | interfaz + privacidad + accesibilidad | alta      | mensajes compartidos      | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                                              |
+| `TREQ-AUTH-187` | Cambios de actividad de sede invalidan contexto, decisiones, cachés y Realtime; toda mutación revalida antes del efecto.                                                                                                                                                | concurrencia + auditoría              | crítica   | frescura y observabilidad | `AUTH-DB-035`; `SHELL-AUTH-004`; `SHELL-CI-019`                                               |
+| `TREQ-AUTH-188` | La regresión reconcilia snapshot, 49 funciones, 68 políticas, 40 tablas, consumidora NEXO y catorce brechas sin crear datos productivos.                                                                                                                                | regresión + RPC + RLS + estática      | crítica   | gates y evidencia E5      | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-018`; `SHELL-CI-019`                            |
 
 El detalle canónico de estas filas se incorpora al registro completo `04A`.
 
@@ -6761,8 +6858,8 @@ AUTH-ERR-006 no:
 23. Ausencia de turno conserva `AUTH-ERR-009`.
 24. Turno no iniciado conserva `AUTH-ERR-010`.
 25. Falta de check-in conserva `AUTH-ERR-011`.
-26. Check-in de otra sede conserva `AUTH-ERR-012`.
-27. Falta o invalidez de rol conserva `AUTH-ERR-013/014`.
+26. Check-in de otra sede conserva `AUTH-ERR-017` cuando el mismatch es concluyente y `AUTH-ERR-019` cuando la fuente no es verificable.
+27. Rol faltante conserva `AUTH-ERR-012`; incompatibilidad de sede o área conserva `AUTH-ERR-013/014`.
 28. Error de fuente conserva `AUTH-ERR-019`.
 29. Recurso sin sede conserva razón de recurso/configuración.
 30. Sede activa fuera del scope conserva denegación de alcance.
@@ -7098,8 +7195,9 @@ Una fila activa en `employee_areas` no será utilizable si:
 - el contrato exige otro `area_kind`;
 - la restricción explícita produce una intersección vacía.
 
-Las contradicciones estructurales no se degradan silenciosamente a ausencia de
-asignación. Conservan `AUTH-ERR-017` o `AUTH-ERR-019` según su naturaleza.
+Las contradicciones estructurales demostradas de forma concluyente no se
+degradan a ausencia de asignación y conservan `AUTH-ERR-017`. Cuando la fuente
+no puede consultarse o verificarse, la solicitud conserva `AUTH-ERR-019`.
 
 ---
 
@@ -7230,8 +7328,8 @@ La ausencia de área en el turno para un permiso `REQUIRED` pertenece al
 contrato de área activa y no a esta razón.
 
 Un rol restringido a área con turno sin `area_id` tampoco produce esta razón.
-La evaluación corresponde a `AUTH-ERR-008`, `AUTH-ERR-013` o
-`AUTH-ERR-014` según el hecho concluyente.
+La evaluación corresponde a `AUTH-ERR-008`, `AUTH-ERR-012`,
+`AUTH-ERR-013` o `AUTH-ERR-014` según el hecho concluyente.
 
 ---
 
@@ -7490,11 +7588,12 @@ Consecuencias:
 - sin turno: `AUTH-ERR-009`;
 - turno no iniciado: `AUTH-ERR-010`;
 - sin check-in: `AUTH-ERR-011`;
-- check-in de otra sede: `AUTH-ERR-012`;
-- sin rol operativo: `AUTH-ERR-013`;
-- rol no permitido: `AUTH-ERR-014`;
-- permiso operativo ausente: `AUTH-ERR-015`;
-- dispositivo no permitido: `AUTH-ERR-016`;
+- check-in de otra sede o turno, si el conflicto es concluyente: `AUTH-ERR-017`;
+- sin rol operativo: `AUTH-ERR-012`;
+- rol no habilitado para la sede: `AUTH-ERR-013`;
+- rol no habilitado para el área: `AUTH-ERR-014`;
+- permiso operativo denegado con contexto íntegro: `AUTH_OPERATIONAL_PERMISSION_DENIED`, propiedad de `AUTH-ERR-004`;
+- dispositivo no permitido: `AUTH-ERR-015`;
 - configuración contradictoria: `AUTH-ERR-017`;
 - código desconocido: `AUTH-ERR-018`;
 - fallo técnico: `AUTH-ERR-019`.
@@ -8648,7 +8747,7 @@ Reglas:
    ya son resolubles;
 3. permiso `REQUIRED` + rol site-wide todavía exige área del turno;
 4. área activa + rol no permitido en ella conserva `AUTH-ERR-014`;
-5. rol ausente conserva `AUTH-ERR-013`;
+5. rol ausente conserva `AUTH-ERR-012`;
 6. una fila area-bound no se satisface porque el contexto tenga área nula;
 7. el nombre del rol no crea área ni bypass.
 
@@ -8668,14 +8767,15 @@ RESOURCE
 → SCOPE AND CONTEXT MATCH
 ```
 
-| Condición                                          | Resultado                                   |
-| -------------------------------------------------- | ------------------------------------------- |
-| recurso sin dimensión de área y contrato site-wide | continuar sin fabricar área                 |
-| recurso con área activa y compatible               | continuar                                   |
-| recurso con área activa fuera del scope o contexto | denegación de alcance o mismatch de recurso |
-| recurso con área confirmada inactiva               | `AUTH_ACTIVE_AREA_REQUIRED`                 |
-| recurso exige área, pero no puede resolverla       | `AUTH-ERR-017` o `AUTH-ERR-019` según causa |
-| conjunto multiárea con un extremo inactivo         | `AUTH_ACTIVE_AREA_REQUIRED` y cero efectos  |
+| Condición                                                             | Resultado                                   |
+| --------------------------------------------------------------------- | ------------------------------------------- |
+| recurso sin dimensión de área y contrato site-wide                    | continuar sin fabricar área                 |
+| recurso con área activa y compatible                                  | continuar                                   |
+| recurso con área activa fuera del scope o contexto                    | denegación de alcance o mismatch de recurso |
+| recurso con área confirmada inactiva                                  | `AUTH_ACTIVE_AREA_REQUIRED`                 |
+| recurso exige área y la lectura concluyente demuestra contradicción   | `AUTH-ERR-017`                              |
+| recurso exige área, pero la fuente no puede consultarse o verificarse | `AUTH-ERR-019`                              |
+| conjunto multiárea con un extremo inactivo                            | `AUTH_ACTIVE_AREA_REQUIRED` y cero efectos  |
 
 El área del recurso no cambia el turno ni crea área operativa para el actor.
 
@@ -9442,7 +9542,7 @@ AUTH-ERR-008 no:
 23. Sin asignación requerida conserva `AUTH-ERR-007`.
 24. Sin turno conserva `AUTH-ERR-009`.
 25. Temporalidad de turno conserva `AUTH-ERR-010`.
-26. Rol ausente o incompatible conserva `AUTH-ERR-013/014`.
+26. Rol ausente conserva `AUTH-ERR-012`; incompatibilidad de sede o área conserva `AUTH-ERR-013/014`.
 27. Área desconocida o ambigua conserva `AUTH-ERR-017`.
 28. Fallo de fuente conserva `AUTH-ERR-019`.
 29. Área activa fuera del scope conserva denegación de alcance.
@@ -9500,4 +9600,3 @@ AUTH-ERR-009 — RESERVADA
 ```
 
 No se inicia ni modifica `AUTH-ERR-009` en esta tarea.
-
