@@ -8639,4 +8639,1256 @@ AUTH-ERR-015 no:
 `AUTH-ERR-016 — Acción no permitida en simulación`
 
 
-### [ ] AUTH-ERR-016 — Acción no permitida en simulación
+### ✅ AUTH-ERR-016 — Acción no permitida en simulación
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-015 — Dispositivo no autorizado` — APROBADA
+**Tarea siguiente:** `AUTH-ERR-017 — Configuración administrativa inconsistente` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, causal, funcional, de seguridad, experiencia y reconciliación física del bloqueo que impide convertir una evaluación simulada, una vista previa o un resultado hipotético en autoridad o efectos empresariales reales
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué debe ocurrir cuando una
+solicitud procede de una superficie, sesión, resultado, token, caché o
+contexto de simulación e intenta ejecutar una acción real, abrir una ruta
+protegida como si el escenario fuera efectivo, consultar datos reales por
+autoridad simulada o producir cualquier efecto empresarial.
+
+La regla raíz queda:
+
+```text
+ACTOR REAL AUTENTICADO
++
+SUPERFICIE O PROCEDENCIA DE SIMULACION RESUELTA
++
+INTENTO DE USAR AUTORIDAD, CONTEXTO O RESULTADO SIMULADO
+PARA UNA ACCION, LECTURA O EFECTO REAL
+→
+DENY
++
+AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION
++
+403
++
+SIMULATION_EXECUTION_FORBIDDEN
++
+CERO EFECTOS EMPRESARIALES
+```
+
+La tarea responde exclusivamente:
+
+```text
+¿ESTA SOLICITUD PRETENDE SALIR DEL PLANO EXPLICATIVO
+Y UTILIZAR LA SIMULACION COMO AUTORIDAD REAL?
+```
+
+No responde:
+
+```text
+¿EL ACTOR REAL PUEDE ENTRAR A LA HERRAMIENTA DE SIMULACION?
+¿EL ESCENARIO HIPOTETICO ESTA COMPLETO Y ES COHERENTE?
+¿EL RESULTADO HIPOTETICO SERIA WOULD_ALLOW O WOULD_DENY?
+¿EL ACTOR REAL PUEDE CONSULTAR LOS DATOS REALES MOSTRADOS?
+¿LA CONFIGURACION ADMINISTRATIVA ES CONSISTENTE?
+¿LA FUENTE AUTORITATIVA ESTA DISPONIBLE?
+```
+
+El resultado `WOULD_ALLOW` nunca constituye autorización ejecutable. Una
+acción real posterior exige abandonar el modo simulado y emitir una solicitud
+nueva, sin procedencia de simulación, completamente evaluada contra la
+autoridad real vigente.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `SIMULATION-EXECUTION-BLOCKING-CONTRACT-001`, que congela identidad
+   pública, aplicabilidad, procedencia, decisión, recuperación, privacidad,
+   auditoría y cero efectos;
+2. `SIMULATION-ACTION-STATE-DECISION-MATRIX-001`, que decide veinticuatro
+   escenarios y separa evaluación permitida, vista previa inerte, ejecución
+   prohibida, contexto inválido e indisponibilidad técnica;
+3. `SIMULATION-CHANNEL-RESPONSE-MATRIX-001`, que materializa diez canales con
+   semántica equivalente;
+4. `SIMULATION-APPLICATION-COVERAGE-REGISTER-001`, que decide el alcance para
+   las diez aplicaciones canónicas y conserva la distribución de 112
+   permisos;
+5. `SIMULATION-EXECUTION-PHYSICAL-RECONCILIATION-001`, que registra el snapshot
+   desplegado de solo lectura y catorce brechas con destino canónico.
+
+Cobertura materializada:
+
+| Elemento                                                 |                            Cantidad |
+| -------------------------------------------------------- | ----------------------------------: |
+| Código público canónico                                  |                                   1 |
+| Causa transversal de enforcement consumida               | 1, `SIMULATION_EXECUTION_FORBIDDEN` |
+| Estado HTTP no navegacional                              |                            1, `403` |
+| Planos separados                                         |                                   4 |
+| Familias internas de causa                               |                                   7 |
+| Causas internas normalizadas                             |                                  17 |
+| Escenarios con decisión explícita                        |                                  24 |
+| Canales con respuesta explícita                          |                                  10 |
+| Aplicaciones canónicas reconciliadas                     |                                  10 |
+| Permisos canónicos evaluados                             |                                 112 |
+| Permisos `FULL_PREVIEW`                                  |                                  78 |
+| Permisos `DECISION_ONLY`                                 |                                  31 |
+| Permisos `NOT_ALLOWED`                                   |                                   3 |
+| Superficies de mezcla heredadas                          |                                  16 |
+| Superficies que pueden aceptar autoridad simulada        |                                   0 |
+| Funciones SQL desplegadas inspeccionadas                 |                                   6 |
+| Funciones inspeccionadas `SECURITY DEFINER`              |                                   6 |
+| Funciones inspeccionadas ejecutables por `authenticated` |                                   6 |
+| Sesiones físicas de simulación observadas                |                                   0 |
+| Permisos físicos activos observados                      |                                 179 |
+| Brechas físicas registradas                              |                                  14 |
+| Requisitos de prueba derivados                           |                                  10 |
+
+Las cifras físicas son un snapshot de solo lectura. No certifican que el
+contrato esté implementado ni que la ausencia actual de sesiones elimine la
+capacidad de mezclar autoridad real y simulada.
+
+---
+
+#### 3. Identidad canónica del bloqueo
+
+La identidad pública única es:
+
+```text
+reason_code = AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION
+```
+
+La causa estructurada de enforcement heredada es:
+
+```text
+SIMULATION_EXECUTION_FORBIDDEN
+```
+
+| Propiedad                   | Valor                                                        |
+| --------------------------- | ------------------------------------------------------------ |
+| Dominio                     | `AUTHORIZATION_SIMULATION`                                   |
+| Categoría                   | `DENIED`                                                     |
+| Decisión                    | `DENY`                                                       |
+| Estado público              | `SIMULATED_ACTION_NOT_EXECUTABLE`                            |
+| Estado HTTP no navegacional | `403 Forbidden`                                              |
+| Ejecutable                  | `false`                                                      |
+| Efectos empresariales       | `0`                                                          |
+| Sesión personal real        | preservada, salvo razón anterior independiente               |
+| Sesión de simulación        | preservada para continuar la vista previa cuando siga válida |
+| Reintento automático        | prohibido                                                    |
+| Recuperación                | salir de simulación y crear una solicitud real nueva         |
+
+Quedan prohibidos como identidad pública alternativa:
+
+- `SIMULATION_EXECUTION_FORBIDDEN` expuesto directamente;
+- `WOULD_ALLOW_NOT_EXECUTABLE`;
+- `PREVIEW_MODE`;
+- `READ_ONLY_MODE` cuando oculte la prohibición;
+- `NO_PERMISSION`;
+- `UNAUTHORIZED` sin tipificación;
+- `INVALID_CONTEXT` para toda tentativa;
+- mensajes libres por aplicación, RPC o política RLS.
+
+El código público es estable y no se traduce. El texto humano puede
+localizarse sin modificar la lógica.
+
+---
+
+#### 4. Definición exacta de acción no permitida en simulación
+
+Existe intento prohibido cuando una solicitud con procedencia simulada intenta
+realizar al menos una de estas operaciones:
+
+- producir `INSERT`, `UPDATE`, `DELETE` o cambio de estado empresarial;
+- ejecutar una Server Action, Route Handler, RPC o Edge Function de negocio;
+- utilizar `WOULD_ALLOW`, un rol simulado o un territorio simulado como grant;
+- consultar filas reales que el actor no puede leer por su autoridad real;
+- activar una ruta real mediante un guard alimentado por simulación;
+- autorizar RLS o Data API con contexto simulado;
+- abrir una suscripción Realtime protegida por permiso simulado;
+- exportar, imprimir, emitir, notificar u obtener una copia de contenido por autoridad
+  hipotética;
+- programar un job, cola, webhook o integración a partir del resultado;
+- iniciar otra simulación desde una simulación;
+- reutilizar una sesión, token, cookie, claim, caché o fingerprint simulado
+  como credencial real;
+- ejecutar un resultado expirado, obsoleto o correspondiente a otra versión.
+
+No es una acción empresarial prohibida:
+
+- cambiar parámetros hipotéticos autorizados;
+- calcular `WOULD_ALLOW`, `WOULD_DENY` o `INDETERMINATE`;
+- mostrar una vista previa inerte admitida;
+- consultar razones seguras;
+- comparar escenarios;
+- cerrar, detener o abandonar la simulación;
+- navegar hacia la salida del modo simulado;
+- registrar la auditoría de la evaluación o del intento bloqueado.
+
+---
+
+#### 5. Condición exacta de aplicación
+
+`AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION` se produce únicamente cuando:
+
+1. existe una sesión personal real autenticada o la autenticación ya fue
+   resuelta;
+2. el servidor identifica de forma concluyente procedencia simulada;
+3. la solicitud pretende ejecutar, revelar o producir un efecto real;
+4. la operación no pertenece al conjunto técnico permitido para mantener o
+   cerrar la vista previa;
+5. ninguna razón anterior y más específica debe prevalecer;
+6. la evaluación puede bloquearse antes de cualquier efecto empresarial.
+
+```text
+SIMULATION_PROVENANCE = CONCLUSIVE
+AND
+REQUESTED_EFFECT_CLASS = REAL_OR_PROTECTED
+AND
+SIMULATED_EXECUTION_ALLOWED = FALSE
+→
+AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION
+```
+
+La mera existencia de una sesión de simulación no bloquea todas las
+operaciones del actor. La herramienta puede continuar calculando y mostrando
+resultados hipotéticos dentro de sus límites. El bloqueo aparece cuando la
+solicitud intenta cruzar hacia autoridad o efectos reales.
+
+---
+
+#### 6. Cuatro planos y procedencia obligatoria
+
+Se conservan cuatro planos disjuntos:
+
+| Plano                           | Fuente                                             | Función                              | Autoriza acción real |
+| ------------------------------- | -------------------------------------------------- | ------------------------------------ | -------------------: |
+| `REAL_AUTHORITY_PLANE`          | actor, sesión, permisos, alcance y contexto reales | controlar datos y ejecución          |                   Sí |
+| `SIMULATED_EVALUATION_PLANE`    | escenario hipotético validado                      | calcular tres resultados hipotéticos |                   No |
+| `SIMULATION_PRESENTATION_PLANE` | resultado simulado                                 | representar UI y razones             |                   No |
+| `SIMULATION_AUDIT_PLANE`        | actor real, escenario y doble resultado            | trazabilidad                         |                   No |
+
+Toda solicitud deberá declarar o resolver su procedencia de forma tipada. No
+se admite un objeto genérico `effective_context` que pueda significar tanto
+contexto real como simulado.
+
+Invariantes:
+
+```text
+ALLOW ≠ WOULD_ALLOW
+DENY ≠ WOULD_DENY
+REAL_SESSION_ID ≠ SIMULATION_SESSION_ID
+REAL_ACTOR_ID ≠ SIMULATED_SUBJECT_REFERENCE
+REAL_CONTEXT_FINGERPRINT ≠ SCENARIO_FINGERPRINT
+```
+
+La procedencia no se infiere desde el texto de la ruta, un color de interfaz o
+una cookie no firmada. Se resuelve en servidor desde contratos y referencias
+versionadas.
+
+---
+
+#### 7. Operaciones permitidas durante la simulación
+
+La superficie podrá permitir, según la autorización real del simulador:
+
+1. seleccionar un rol, sede, área, turno, check-in, permiso, acción y recurso
+   hipotéticos;
+2. validar coherencia del escenario;
+3. calcular `WOULD_ALLOW`, `WOULD_DENY` o `INDETERMINATE`;
+4. mostrar navegación hipotética;
+5. mostrar controles inertes para `FULL_PREVIEW`;
+6. mostrar solo razones para `DECISION_ONLY`;
+7. utilizar datos sintéticos, vacíos, enmascarados o datos reales que el
+   actor real ya puede consultar;
+8. comparar resultados sin crear operaciones;
+9. cerrar o abandonar la sesión de simulación;
+10. abrir una ruta de regreso que obligue a una autorización real nueva.
+
+Cada operación permitida permanece dentro del plano explicativo y conserva:
+
+```text
+executable = false
+```
+
+Una vista previa puede representar un botón habilitado en el escenario, pero
+el control real debe carecer de handler empresarial o dirigir exclusivamente al
+evaluador hipotético.
+
+---
+
+#### 8. Operaciones prohibidas
+
+Durante una simulación quedan prohibidos, como mínimo:
+
+- movimientos de inventario;
+- ajustes, entradas, retiros, conteos o transferencias;
+- creación, preparación, despacho, tránsito, recepción o cancelación de
+  remisiones;
+- creación o cierre de lotes de producción;
+- ventas, pagos, devoluciones, entregas y cierres de caja;
+- órdenes de compra, recepciones y aprobaciones;
+- cambios de empleados, roles, permisos, sedes, áreas o turnos;
+- check-in, check-out o correcciones de asistencia;
+- cambios de contenido, clientes, fidelización o finanzas;
+- emisión de documentos, impresiones, exportaciones o notificaciones;
+- firma de acciones, aprobaciones o reautenticaciones reutilizables;
+- eventos empresariales de éxito;
+- creación de jobs, colas, webhooks o callbacks ejecutables;
+- escritura en Storage o sistemas externos;
+- autorización de lecturas reales por el permiso simulado.
+
+No se permite degradar una mutación a una operación real de solo lectura si
+esa lectura tampoco está autorizada por el actor real. La simulación no crea
+un permiso alternativo.
+
+---
+
+#### 9. Clasificación de los 112 permisos
+
+Se conserva exactamente la clasificación aprobada:
+
+| `simulation_requirement` | Cantidad | Superficie permitida                                                 |
+| ------------------------ | -------: | -------------------------------------------------------------------- |
+| `FULL_PREVIEW`           |       78 | evaluación y representación inerte con datos permitidos              |
+| `DECISION_ONLY`          |       31 | resultado y razones; sin contenido protegido ni formulario operativo |
+| `NOT_ALLOWED`            |        3 | sin participación simulada                                           |
+| **Total**                |  **112** |                                                                      |
+
+Los tres permisos `NOT_ALLOWED` son:
+
+- `aura.access`;
+- `pass.access`;
+- `viso.authorization.context_simulations.view`.
+
+Reglas:
+
+1. `FULL_PREVIEW` no significa ejecución;
+2. `DECISION_ONLY` no puede renderizar un formulario o contenido protegido;
+3. `NOT_ALLOWED` no puede producir escenario, UI ni resultado simulado;
+4. valor ausente o desconocido falla cerrado;
+5. una nueva clave inicia sin capacidad de simulación hasta clasificación
+   explícita;
+6. la clasificación no concede al actor real el permiso objetivo;
+7. el permiso real del simulador limita los datos reales visibles.
+
+---
+
+#### 10. `SIMULATION-EXECUTION-BLOCKING-CONTRACT-001`
+
+El contrato queda:
+
+```text
+INPUT
+  real_actor
+  real_session
+  real_authority_decision
+  simulation_session
+  simulation_request_id
+  simulation_result
+  simulation_requirement
+  requested_action
+  requested_effect_class
+  requested_resource
+  request_provenance
+  real_context_fingerprint
+  scenario_fingerprint
+  contract_versions
+  evaluated_at
+
+PRECONDITION
+  authentication_resolved = true
+  simulation_provenance = conclusive
+  requested_effect_class in REAL_OR_PROTECTED
+  request_is_simulation_control = false
+
+OUTPUT
+  decision = DENY
+  reason_code = AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION
+  public_state = SIMULATED_ACTION_NOT_EXECUTABLE
+  internal_reason = SIMULATION_EXECUTION_FORBIDDEN
+  executable = false
+  effects_committed = false
+  real_session_preserved = true
+  simulation_session_preserved = true when still valid
+  automatic_retry = false
+  recovery = EXIT_SIMULATION_AND_REAUTHORIZE_REAL_REQUEST
+```
+
+La preservación de la sesión simulada permite que la persona continúe
+analizando el escenario. No permite repetir la acción. Si la sesión está
+expirada, revocada o inválida, su ciclo de vida se resuelve por la causa
+correspondiente y no se reactiva implícitamente.
+
+---
+
+#### 11. Fuentes autoritativas e insumos mínimos
+
+La decisión consume, como mínimo:
+
+- principal y sesión real;
+- permiso real para usar la herramienta;
+- identidad de la sesión de simulación;
+- estado, vigencia y propietario de la sesión;
+- `simulation_request_id`;
+- resultado tipado y `executable = false`;
+- actor real y sujeto simulado separados;
+- acción y clase de efecto solicitadas;
+- permiso objetivo y su `simulation_requirement`;
+- recurso hipotético o real solicitado;
+- modo de datos;
+- fingerprints real y simulado;
+- versiones de catálogos, contratos y escenario;
+- `evaluated_at` de servidor;
+- presencia de `simulation_id`, preview token, cookie, claim o metadata;
+- canal y consumidor que solicita la operación.
+
+No son fuentes autoritativas:
+
+- un booleano `true` sin procedencia;
+- `can_operate` de un contexto compartido;
+- el rol mostrado en la vista previa;
+- la ruta visible;
+- el botón renderizado;
+- local storage;
+- una cookie no firmada;
+- el último resultado;
+- una captura de pantalla;
+- un `WOULD_ALLOW` enviado por cliente;
+- un payload que omita deliberadamente `simulation_id` pero conserve claims,
+  caché o referencias simuladas.
+
+---
+
+#### 12. Causas internas admitidas
+
+Se admiten diecisiete causas internas agrupadas en siete familias:
+
+| Familia          | Causas normalizadas                                                                                                             |
+| ---------------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| Ejecución        | `simulation_execution_forbidden`, `simulated_result_non_executable`, `simulation_context_in_real_request`                       |
+| Superficie       | `simulation_preview_control_invoked_real_handler`, `simulation_decision_only_surface_exceeded`, `simulation_target_not_allowed` |
+| Datos            | `simulation_real_data_authority_forbidden`, `simulation_sensitive_data_expansion_attempted`                                     |
+| Enforcement      | `simulation_rls_authority_forbidden`, `simulation_rpc_authority_forbidden`, `simulation_realtime_authority_forbidden`           |
+| Efectos externos | `simulation_export_forbidden`, `simulation_notification_forbidden`, `simulation_async_effect_forbidden`                         |
+| Ciclo de vida    | `simulation_result_expired`, `simulation_version_mismatch`                                                                      |
+| Anidamiento      | `simulation_nested_forbidden`                                                                                                   |
+
+Todas mapean al único código público cuando existe un intento real de
+ejecución. Las causas `simulation_result_expired` y
+`simulation_version_mismatch` pueden producir `INDETERMINATE` o un problema
+estructural sin `AUTH-ERR-016` cuando solo se está evaluando y no existe
+intento de efecto real.
+
+Las causas internas no se exponen al trabajador. La auditoría restringida
+puede conservarlas con versiones, canal y correlación.
+
+---
+
+#### 13. Frontera con autenticación y elegibilidad del simulador
+
+| Situación                                                      | Resultado                       |
+| -------------------------------------------------------------- | ------------------------------- |
+| sesión real ausente, inválida o expirada                       | razón de autenticación anterior |
+| actor real sin `viso.access`                                   | denegación de aplicación        |
+| actor sin `viso.authorization.context_simulations.view`        | denegación de permiso real      |
+| principal de dispositivo intenta iniciar simulación            | `AUTH-ERR-015`                  |
+| actor real elegible inicia simulación                          | continuar al evaluador          |
+| actor elegible intenta ejecutar una acción desde la simulación | `AUTH-ERR-016`                  |
+
+El rol simulado no puede aportar el permiso para entrar a la herramienta. El
+resultado hipotético tampoco corrige una denegación real del simulador.
+
+---
+
+#### 14. Frontera con sesión o escenario inválidos
+
+Una sesión inexistente no se inventa desde una cookie, metadata o último
+escenario. Cuando el usuario intenta simplemente evaluar:
+
+- sesión expirada;
+- escenario incompleto;
+- rol, sede o área no resolubles;
+- versiones incompatibles;
+- varias sesiones candidatas;
+- fingerprint divergente;
+
+se devuelve el estado estructural o hipotético aplicable, normalmente
+`INDETERMINATE`, `WOULD_DENY` o `AUTH-ERR-017`.
+
+Si cualquiera de esos artefactos se presenta para ejecutar una acción real,
+la tentativa también queda bloqueada por `AUTH-ERR-016`; la auditoría
+conserva la causa de ciclo de vida sin convertir el resultado en autoridad.
+
+Una fuente que no responde o no permite concluir pertenece a `AUTH-ERR-019`.
+
+---
+
+#### 15. Frontera entre evaluación y vista previa ejecutable
+
+La evaluación permitida termina en:
+
+```text
+WOULD_ALLOW
+WOULD_DENY
+INDETERMINATE
+```
+
+La presentación puede mostrar:
+
+- visibilidad hipotética;
+- controles aparentes;
+- formularios sintéticos;
+- validaciones locales no empresariales;
+- confirmaciones simuladas;
+- razones de bloqueo.
+
+Todo control debe ser inerte o invocar exclusivamente al evaluador. Si conserva
+un handler real, una URL empresarial, una RPC de negocio o una mutación, el
+intento produce `AUTH-ERR-016`.
+
+No existe el estado:
+
+```text
+WOULD_ALLOW_AND_EXECUTE
+```
+
+---
+
+#### 16. Frontera con lectura de datos reales
+
+La simulación no concede lectura adicional. Los modos admitidos son:
+
+| Modo              | Regla                                                            |
+| ----------------- | ---------------------------------------------------------------- |
+| `SYNTHETIC`       | datos ficticios sin relación con registros reales                |
+| `MASKED`          | estructura o datos autorizados con campos protegidos minimizados |
+| `REAL_AUTHORIZED` | solo datos que el actor real ya puede consultar                  |
+| `NONE`            | sin contenido; obligatorio para `DECISION_ONLY`                  |
+
+Si el actor real carece de permiso o alcance para los datos, la respuesta usa
+`sintético`, `enmascarado`, `vacío` o `NONE`. No consulta filas por la
+autoridad del sujeto simulado.
+
+Un intento de obtener datos reales usando rol, permiso, sede o área simulados
+produce `AUTH-ERR-016`. Una denegación real independiente puede registrarse
+también, pero nunca se devuelven filas antes de resolverla.
+
+---
+
+#### 17. Frontera con grant, scope, recurso y denegaciones reales
+
+El actor real puede tener permiso para usar el simulador y aun carecer de:
+
+- permiso para la acción real;
+- alcance sobre el recurso;
+- cobertura territorial;
+- reautenticación fuerte;
+- estado de recurso compatible;
+- ausencia de denegaciones.
+
+El resultado simulado no aporta ninguno de esos componentes.
+
+```text
+REAL_DENY + WOULD_ALLOW → DENY REAL
+REAL_ALLOW + WOULD_ALLOW → PREVIEW NO EJECUTABLE
+REAL_ALLOW + WOULD_DENY → EXPLICACION HIPOTETICA
+```
+
+Una denegación explícita real conserva precedencia. La simulación no la
+elimina, y `AUTH-ERR-016` no se utiliza para ocultar cuál era la frontera real
+cuando la solicitud ya salió del modo simulado y fue evaluada de nuevo.
+
+---
+
+#### 18. RLS y Data API
+
+RLS, vistas expuestas y Data API utilizarán exclusivamente:
+
+- `auth.uid()` y sesión real;
+- actor real;
+- permisos y alcances reales;
+- territorio y recurso reales;
+- denegaciones reales;
+- contratos de sistema explícitos.
+
+Queda prohibido:
+
+- leer `simulation_id` como claim de autoridad;
+- usar rol, sede o área simulados dentro de una policy;
+- aceptar un preview token como JWT empresarial;
+- ampliar filas por `WOULD_ALLOW`;
+- consultar con `service_role` y devolver filas al actor por permiso simulado;
+- omitir la evaluación real porque el frontend ya mostró la vista previa.
+
+Una solicitud de datos que transporte autoridad simulada se rechaza antes de
+exponer filas y usa `AUTH-ERR-016` cuando la procedencia es concluyente.
+
+---
+
+#### 19. Server Actions, Route Handlers, RPC y Edge Functions
+
+Toda frontera de ejecución deberá:
+
+1. detectar procedencia simulada;
+2. clasificar la operación como control de simulación, evaluación o efecto
+   real;
+3. bloquear cualquier efecto real antes de abrir transacción;
+4. ignorar o rechazar campos simulados en una solicitud real;
+5. recalcular autorización real cuando la solicitud ya salió de simulación;
+6. devolver el envelope público uniforme;
+7. registrar correlación sin datos sensibles.
+
+No basta con deshabilitar un botón. La misma regla se aplica a llamadas
+directas, payload manipulado, replay y clientes antiguos.
+
+Una RPC explicativa de simulación puede ejecutar cálculo, pero nunca una
+función empresarial o una rama que escriba datos.
+
+---
+
+#### 20. Realtime, offline y caché
+
+Durante simulación:
+
+- una suscripción Realtime real solo puede usar permisos reales;
+- una vista previa no abre canales protegidos por permisos simulados;
+- caché real y simulada usan namespaces y fingerprints distintos;
+- un resultado simulado no se persiste como decisión positiva;
+- una cola offline no almacena una mutación ejecutable desde simulación;
+- un evento offline originado en preview se descarta o conserva como evidencia
+  no ejecutable;
+- la sincronización nunca convierte el evento en operación;
+- salir de simulación invalida todo estado hipotético;
+- cambiar de escenario invalida los resultados previos.
+
+Un replay de una acción simulada produce `AUTH-ERR-016`, aunque la sesión de
+simulación ya haya terminado. La ausencia de `simulation_id` visible no
+elimina la procedencia conservada en el evento o fingerprint.
+
+---
+
+#### 21. Jobs, colas, webhooks e integraciones
+
+Un proceso técnico puede ejecutar el evaluador para diagnóstico, pruebas o
+comparación, pero no puede:
+
+- ejecutar la acción hipotética;
+- publicar eventos empresariales;
+- crear jobs de dominio;
+- enviar webhooks o notificaciones reales;
+- actuar con `service_role` como el sujeto simulado;
+- convertir resultados masivos en acciones masivas;
+- omitir al actor real que solicitó la simulación.
+
+Si una cola o integración recibe un payload con procedencia simulada y destino
+empresarial, debe marcarlo no ejecutable, impedir el efecto y conservar una
+referencia segura. No se reencola automáticamente como solicitud real.
+
+---
+
+#### 22. Simulación anidada
+
+Una simulación activa no puede iniciar, controlar ni autorizar otra
+simulación.
+
+```text
+SIMULATION_SESSION_A
++
+START_SIMULATION_B
+→
+AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION
+```
+
+El actor puede:
+
+- modificar el escenario de la sesión vigente dentro de su alcance;
+- cerrar la sesión vigente;
+- salir y solicitar una nueva simulación desde autoridad real fresca.
+
+No puede:
+
+- usar el rol simulado para obtener permiso de simulación;
+- apilar sedes o áreas de varios escenarios;
+- mantener dos resultados como una autoridad combinada;
+- ocultar el actor real mediante una cadena de simulaciones.
+
+---
+
+#### 23. Expiración, obsolescencia y versiones
+
+Una sesión o resultado deja de ser utilizable cuando:
+
+- expira;
+- se cierra o revoca;
+- cambia el actor real;
+- cambia el permiso del simulador;
+- cambia el escenario;
+- cambia una versión de catálogo o contrato;
+- cambia el recurso o su versión;
+- cambia el fingerprint real o simulado;
+- se detecta contaminación entre planos.
+
+Una evaluación obsoleta no se actualiza de forma implícita y no ejecuta. El
+usuario puede solicitar una nueva evaluación hipotética. Para una acción
+real debe salir y reautorizar desde cero.
+
+El intento de ejecutar un resultado obsoleto usa `AUTH-ERR-016`. La simple
+consulta de un resultado vencido puede usar `SIMULATION_RESULT_EXPIRED` sin
+presentarlo como acción empresarial denegada.
+
+---
+
+#### 24. Recuperación hacia contexto real
+
+El flujo único para pasar de vista previa a operación real es:
+
+```text
+1. SALIR O CERRAR LA SIMULACION
+2. DESCARTAR RESULTADO, CACHE, PREVIEW TOKEN Y ESCENARIO
+3. RESTAURAR LA REPRESENTACION REAL
+4. EMITIR UNA SOLICITUD NUEVA SIN PROCEDENCIA SIMULADA
+5. RESOLVER ACTOR, SESION, PERMISO, ALCANCE, CONTEXTO Y RECURSO REALES
+6. EJECUTAR SOLO SI LA NUEVA DECISION REAL ES ALLOW
+```
+
+Una interfaz puede ofrecer:
+
+```text
+Salir de simulacion y abrir la operacion real
+```
+
+No puede ofrecer:
+
+```text
+Ejecutar este WOULD_ALLOW
+```
+
+La navegación posterior no conserva formularios, borradores, recursos,
+selecciones o aprobaciones simuladas como datos empresariales. Solo puede
+conservar una referencia visual no autoritativa cuando el contrato de la
+pantalla lo permita y la nueva solicitud resuelva el recurso de nuevo.
+
+---
+
+#### 25. Regla de cero efectos
+
+Antes de cualquier efecto empresarial, el servidor debe confirmar que la
+solicitud no usa autoridad simulada.
+
+Ante el bloqueo quedan prohibidos:
+
+- escrituras o eliminaciones;
+- cambios de estado;
+- reservas y movimientos de inventario;
+- ventas, cobros, entregas o cierres;
+- producción, compras, recepciones o remisiones;
+- asistencia y programación laboral;
+- emisión, impresión, exportación o notificación;
+- eventos empresariales de éxito;
+- jobs, colas, webhooks y llamadas externas;
+- auditoría de éxito;
+- creación de token o recibo ejecutable;
+- reintento automático al salir del modo simulado.
+
+Se permiten exclusivamente efectos de control del propio simulador:
+
+- registrar el intento denegado;
+- mantener o cerrar la sesión de simulación;
+- invalidar caché hipotética;
+- limpiar la presentación;
+- emitir una referencia segura para soporte.
+
+---
+
+#### 26. Envelope público
+
+Ejemplo no vinculante de forma pública:
+
+```json
+{
+  "ok": false,
+  "reason_code": "AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION",
+  "state": "SIMULATED_ACTION_NOT_EXECUTABLE",
+  "category": "DENIED",
+  "message": "Esta acción no puede ejecutarse durante una simulación. Sal de la simulación y abre la operación real para continuar.",
+  "executable": false,
+  "effects_committed": false,
+  "recovery_actions": [
+    "EXIT_SIMULATION",
+    "OPEN_REAL_OPERATION"
+  ]
+}
+```
+
+El envelope no incluirá:
+
+- rol o identidad del sujeto simulado;
+- permisos que producirían `WOULD_ALLOW`;
+- reglas RLS, funciones o tablas;
+- tokens, cookies o claims;
+- fingerprints completos;
+- datos sensibles del recurso;
+- causas internas;
+- detalles que permitan fabricar una solicitud real;
+- confirmación falsa de que la operación fue guardada.
+
+---
+
+#### 27. Copy y experiencia
+
+Copy principal exacto:
+
+```text
+Esta acción no puede ejecutarse durante una simulación. Sal de la simulación y abre la operación real para continuar.
+```
+
+Estado preservado:
+
+```text
+No se realizó ningún cambio real.
+```
+
+Acción primaria:
+
+```text
+Salir de simulación
+```
+
+Acción secundaria, cuando exista una ruta real conocida:
+
+```text
+Abrir operación real
+```
+
+Reglas de experiencia:
+
+- el indicador de simulación permanece visible mientras la sesión siga
+  activa;
+- el mensaje explica el límite sin presentar un fallo técnico;
+- no culpa al trabajador;
+- no sugiere usar otra cuenta;
+- no ofrece elevar permisos;
+- no ejecuta al confirmar;
+- no cierra la sesión real;
+- no oculta si el trabajo era solo hipotético;
+- la salida restaura el contexto real antes de mostrar una acción ejecutable.
+
+---
+
+#### 28. Privacidad y minimización
+
+La respuesta visible y la telemetría ordinaria no exponen:
+
+- documentos, finanzas, costos, clientes o datos laborales protegidos;
+- rol real completo del simulador;
+- rol, sede, área, turno o check-in simulados cuando no sean necesarios para
+  la explicación autorizada;
+- permisos internos;
+- razones antifraude;
+- nombres de policies o funciones;
+- contenido de tokens;
+- `service_role`;
+- recursos fuera del alcance real;
+- existencia de registros que el actor no puede conocer.
+
+La auditoría restringida puede conservar identificadores opacos, hashes,
+versiones, canal y causa interna. La vista previa usa datos sintéticos o
+enmascarados cuando la autoridad real no permite el contenido.
+
+---
+
+#### 29. Auditoría
+
+Cada intento bloqueado conservará, como mínimo:
+
+- `audit_event_id`;
+- actor y sesión reales;
+- `simulation_request_id` y `simulation_session_id`;
+- sujeto simulado opaco cuando corresponda;
+- permiso, acción y recurso objetivo;
+- resultado simulado;
+- decisión real aplicable a la superficie;
+- código público y causa interna;
+- canal y consumidor;
+- fingerprints real y simulado;
+- versiones contractuales;
+- `evaluated_at`;
+- confirmación de cero efectos;
+- acción de recuperación seleccionada.
+
+No se almacenará un único campo `allowed = true` para representar
+autoridad real y resultado hipotético. La evidencia de `WOULD_ALLOW` nunca es
+evidencia de autorización o ejecución real.
+
+---
+
+#### 30. Invalidación, concurrencia e idempotencia
+
+La protección debe mantenerse cuando:
+
+- el usuario abre varias pestaúnas;
+- una pestaña sale de simulación y otra conserva estado anterior;
+- cambia el escenario durante una solicitud;
+- expira la sesión antes del commit;
+- cambia la versión del recurso;
+- cambia el permiso real del simulador;
+- una respuesta llega tarde;
+- una cola offline intenta sincronizar;
+- Realtime actualiza el recurso;
+- un cliente antiguo omite campos de procedencia.
+
+Reglas:
+
+1. toda mutación revalida procedencia y autoridad real inmediatamente antes
+   del commit;
+2. un `idempotency_key` de simulación no puede ejecutarse como clave real;
+3. una acción bloqueada conserva cero efectos en reintentos;
+4. salir de simulación invalida resultados, tokens y cachés hipotéticos;
+5. una nueva solicitud real usa otra identidad de operación;
+6. una respuesta tardía no reactiva la simulación ni ejecuta;
+7. no se selecciona la sesión más reciente para resolver ambigúedad.
+
+---
+
+#### 31. `SIMULATION-ACTION-STATE-DECISION-MATRIX-001`
+
+|    # | Escenario                                                                           | Decisión                    | Destino                                        |
+| ---: | ----------------------------------------------------------------------------------- | --------------------------- | ---------------------------------------------- |
+|    1 | sesión real ausente o inválida                                                      | denegar antes de simulación | autenticación requerida                        |
+|    2 | actor real sin permiso para usar el simulador                                       | denegar                     | permiso real faltante                          |
+|    3 | sesión real válida, sin simulación, acción real                                     | evaluar normalmente         | autorización real                              |
+|    4 | simulación válida solicita cálculo hipotético                                       | permitir evaluación         | `WOULD_*` o `INDETERMINATE`                    |
+|    5 | `FULL_PREVIEW` muestra control inerte                                               | permitir presentación       | cero efectos                                   |
+|    6 | `FULL_PREVIEW` invoca handler empresarial                                           | denegar                     | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|    7 | `DECISION_ONLY` solicita resultado y razones                                        | permitir                    | sin contenido protegido                        |
+|    8 | `DECISION_ONLY` intenta formulario, ruta o contenido protegido                      | denegar                     | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|    9 | permiso `NOT_ALLOWED` se solicita como objetivo simulado                            | denegar                     | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   10 | `WOULD_ALLOW`, `WOULD_DENY` o `INDETERMINATE` se usa para continuar una acción real | denegar                     | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   11 | solicitud real transporta `simulation_id` o preview token                           | denegar                     | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   12 | solicitud real transporta rol, sede, área, turno o permiso simulados                | denegar                     | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   13 | consulta de datos reales depende del permiso simulado                               | denegar sin filas           | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   14 | RLS o Data API intenta usar contexto simulado                                       | denegar sin filas           | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   15 | Server Action, Route Handler, RPC o Edge Function recibe procedencia simulada       | denegar antes de efecto     | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   16 | Realtime intenta abrir suscripción protegida por simulación                         | denegar                     | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   17 | caché u operación offline reproduce una acción de preview                           | descartar y auditar         | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   18 | exportar, imprimir o notificar desde preview                                        | denegar                     | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   19 | job, cola, webhook o integración nace de `WOULD_ALLOW`                              | no programar                | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   20 | simulación activa intenta iniciar otra simulación                                   | denegar                     | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   21 | usuario cierra o abandona la simulación                                             | permitir control            | limpiar estado hipotético                      |
+|   22 | resultado expirado u obsoleto se presenta para ejecutar                             | denegar                     | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`        |
+|   23 | escenario inválido o versión incompatible sin intento de efecto                     | no ejecutar; explicar       | `INDETERMINATE`, `WOULD_DENY` o `AUTH-ERR-017` |
+|   24 | fuente autoritativa no permite concluir                                             | fail closed temporal        | `AUTH-ERR-019`                                 |
+
+No existe un escenario donde un resultado simulado autorice directamente una
+acción real.
+
+---
+
+#### 32. Precedencia
+
+Orden mínimo relevante:
+
+```text
+1. autenticacion y sesion real
+2. identidad y actividad del actor real
+3. acceso real a la herramienta de simulacion
+4. permiso y alcance reales del simulador
+5. sesion de simulacion, vigencia y versiones
+6. coherencia del escenario
+7. simulation_requirement del permiso objetivo
+8. autoridad real sobre datos visibles
+9. calculo hipotetico
+10. procedencia de la solicitud posterior
+11. clasificacion de la operacion o efecto
+12. bloqueo de ejecucion simulada
+13. autorizacion real fresca fuera de simulacion
+```
+
+Reglas:
+
+- una sesión real inválida no se presenta como `AUTH-ERR-016`;
+- un actor sin permiso de simulación no llega a la vista previa;
+- un escenario inválido sin tentativa de efecto conserva su razón propia;
+- la indisponibilidad técnica usa `AUTH-ERR-019`;
+- una tentativa concluyente de usar simulación como autoridad usa
+  `AUTH-ERR-016`;
+- una solicitud real emitida después de salir se evalúa desde cero y puede
+  recibir cualquier razón real aplicable.
+
+---
+
+#### 33. `SIMULATION-CHANNEL-RESPONSE-MATRIX-001`
+
+| Canal                                 | Detección obligatoria                     | Resultado ante ejecución simulada                | Efecto |
+| ------------------------------------- | ----------------------------------------- | ------------------------------------------------ | -----: |
+| Launcher y navegación                 | modo visible y guard server-side          | bloquear ruta real o salir primero               |      0 |
+| RSC y render server-side              | procedencia, permiso real y modo de datos | no renderizar contenido protegido por simulación |      0 |
+| Server Actions                        | sesión y payload                          | `403` antes de transacción                       |      0 |
+| Route Handlers y API                  | headers, token, sesión y cuerpo           | envelope uniforme                                |      0 |
+| RPC y PostgREST                       | sesión real y argumentos                  | negar rama empresarial                           |      0 |
+| RLS y Data API                        | autoridad real exclusivamente             | cero filas o denegación sin ampliar alcance      |      0 |
+| Edge Functions                        | claims reales y procedencia               | no llamar efectos externos                       |      0 |
+| Realtime                              | permiso real y canal solicitado           | no suscribir por rol simulado                    |      0 |
+| Cliente offline y caché               | namespace y fingerprint                   | descartar replay ejecutable                      |      0 |
+| Jobs, colas, webhooks e integraciones | correlación y origen                      | no programar ni emitir                           |      0 |
+
+Para las mismas entradas autoritativas, todos los canales producen una decisión
+equivalente. La interfaz no es el único control.
+
+---
+
+#### 34. `SIMULATION-APPLICATION-COVERAGE-REGISTER-001`
+
+| Aplicación | Decisión durante simulación                             | Ejemplos bloqueados                                                                                            | Regla                                         |
+| ---------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | --------------------------------------------- |
+| SHELL      | previsualizar navegación; rutas reales requieren salida | abrir apps como sujeto simulado                                                                                | el launcher no emite autoridad                |
+| ANIMA      | preview admitida según catálogo y datos permitidos      | check-in, check-out, crear, actualizar o cancelar turnos                                                       | asistencia real no se simula mediante efectos |
+| AURA       | `aura.access` es `NOT_ALLOWED`                          | iniciar superficie AURA simulada                                                                               | dominio diferido, sin escenario ejecutable    |
+| FOGO       | preview sintética o enmascarada                         | crear lotes, cambiar órdenes, producir                                                                         | cero cambios de producción                    |
+| NEXO       | preview de inventario, logística y remisiones           | mover stock, retirar, contar, transferir, preparar, despachar o recibir                                        | ningún movimiento desde `WOULD_ALLOW`         |
+| NUMERA     | decisión o preview bajo techo real de datos             | exportar finanzas, registrar o aprobar                                                                         | datos y efectos usan autoridad real           |
+| ORIGO      | preview de compras y recepciones                        | crear orden, recibir, modificar proveedor                                                                      | cero efectos de abastecimiento                |
+| PASS       | `pass.access` es `NOT_ALLOWED`                          | fabricar identidad o sesión de cliente                                                                         | dominio cliente separado                      |
+| PULSO      | preview de controles comerciales                        | venta, pago, devolución, entrega o cierre                                                                      | no existen transacciones simuladas reales     |
+| VISO       | aloja la herramienta mediante autoridad real            | modificar empleados, matrices, permisos, contenido o ejecutar `context_simulations.view` como permiso simulado | la herramienta no se autoautoriza             |
+
+Cobertura:
+
+```text
+aplicaciones esperadas = 10
+aplicaciones materializadas = 10
+faltantes = 0
+duplicados = 0
+aplicaciones que aceptan autoridad simulada = 0
+```
+
+---
+
+#### 35. Snapshot físico de solo lectura
+
+El estado desplegado inspeccionado muestra:
+
+| Elemento                                            | Resultado observado |
+| --------------------------------------------------- | ------------------: |
+| filas en `context_simulation_sessions`              |                   0 |
+| sesiones activas efectivas                          |                   0 |
+| permisos en `app_permissions`                       |                 179 |
+| permisos activos                                    |                 179 |
+| columna física `simulation_requirement`             |     no identificada |
+| funciones SQL de simulación/contexto inspeccionadas |                   6 |
+| funciones `SECURITY DEFINER`                        |                   6 |
+| funciones ejecutables por `authenticated`           |                   6 |
+| policy RLS directa sobre la tabla de sesiones       |  1, `SELECT` propio |
+| helpers compartidos de contexto inspeccionados      |                   2 |
+| tipos compartidos de contexto inspeccionados        |                   2 |
+
+Comportamiento observado:
+
+- `can_manage_context_simulation_v1` autoriza por nombres de rol
+  `propietario` y `gerente_general`;
+- `start_context_simulation_v1` admite duración entre 15 y 720 minutos, con
+  valor predeterminado de 240;
+- `get_effective_context_v1` prioriza una sesión simulada y copia roles,
+  sede y área simulados a campos `effective_*`;
+- esa rama fija `can_operate = true` y razones vacías;
+- `has_effective_permission_v1` puede devolver `true` desde permisos del rol
+  simulado;
+- `packages/os-context` expone un helper booleano sin procedencia y un tipo
+  único que incluye `source = simulation` y `can_operate`;
+- el índice de código consultado no identificó otros consumidores
+  directos, pero ese resultado no constituye una prueba exhaustiva;
+- cero sesiones persistidas no demuestra conformidad.
+
+---
+
+#### 36. `SIMULATION-EXECUTION-PHYSICAL-RECONCILIATION-001`
+
+|    # | Brecha física                                                                                                                   | Estado                               | Riesgo                                          | Destino exacto                                |
+| ---: | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ | ----------------------------------------------- | --------------------------------------------- |
+|    1 | no existen APIs separadas para autoridad real y evaluación simulada                                                             | `BLOQUEADO`                          | consumidor mezcla planos                        | `AUTH-DB-013`; `AUTH-SRV-015`                 |
+|    2 | `get_effective_context_v1` convierte simulación en contexto efectivo                                                            | `BLOQUEADO`                          | escenario usado como autoridad                  | `AUTH-DB-013`; `AUTH-SRV-015`                 |
+|    3 | la rama simulada fija `can_operate = true`                                                                                      | `BLOQUEADO`                          | allow parcial o directo                         | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`  |
+|    4 | roles, sede y área simulados se copian a campos `effective_*`                                                                   | `BLOQUEADO`                          | contaminación del contexto real                 | `AUTH-DB-013`; `AUTH-SRV-015`                 |
+|    5 | `has_effective_permission_v1` devuelve booleano desde roles simulados                                                           | `BLOQUEADO`                          | `true` interpretado como permiso real           | `AUTH-DB-013`; `AUTH-SRV-015`                 |
+|    6 | `hasEffectivePermission` elimina procedencia en cliente                                                                         | `BLOQUEADO`                          | guard o UI consume booleano ambiguo             | `AUTH-SRV-015`; contratos compartidos         |
+|    7 | `EffectiveContext` mezcla fuentes reales, dispositivo y simulación                                                              | `BLOQUEADO`                          | tipos permiten ejecución accidental             | `AUTH-SRV-015`; contratos compartidos         |
+|    8 | el catálogo físico no materializa `simulation_requirement` y contiene 179 permisos activos frente al snapshot documental de 112 | `PENDIENTE_DE_RECONCILIACION`        | deriva entre catálogo y contrato                | `AUTH-CAT-015`; `AUTH-DB-013`; `AUTH-QA-019`  |
+|    9 | `can_manage_context_simulation_v1` autoriza por nombre de rol                                                                   | `BLOQUEADO`                          | bypass de permiso exacto y alcance              | `AUTH-SIM-001`; `AUTH-DB-013`; `AUTH-SRV-015` |
+|   10 | la duración física admite 15 a 720 minutos y predetermina 240                                                                   | `PENDIENTE_DE_RECONCILIACION`        | sesión excesiva o divergente                    | `AUTH-DB-013`; `AUTH-SRV-015`                 |
+|   11 | no se identificó un gate físico uniforme por clase de efecto                                                                    | `PENDIENTE_DE_IMPLEMENTACION`        | mutación alcanza backend                        | `AUTH-SRV-015`; `SHELL-AUTH-004`              |
+|   12 | seis funciones privilegiadas son ejecutables por `authenticated`                                                                | `PENDIENTE_DE_REVISION_DE_SEGURIDAD` | superficie privilegiada amplia                  | `AUTH-DB-013`; `AUTH-DB-034`                  |
+|   13 | la tabla expone solo policy `SELECT`; altas y cierres dependen de funciones privilegiadas                                       | `PENDIENTE_DE_IMPLEMENTACION`        | ciclo de vida controlado por checks incompletos | `AUTH-DB-013`; `AUTH-SRV-015`                 |
+|   14 | cero sesiones y ausencia de pruebas E2E no certifican el bloqueo                                                                | `PENDIENTE_DE_EVIDENCIA`             | conformidad falsa por falta de uso              | `AUTH-QA-019`; `SHELL-CI-016`                 |
+
+Cada brecha conserva propietario y condición de salida. Esta tarea no modifica
+los objetos desplegados.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al registro canónico:
+
+- `TREQ-AUTH-279`;
+- `TREQ-AUTH-280`;
+- `TREQ-AUTH-281`;
+- `TREQ-AUTH-282`;
+- `TREQ-AUTH-283`;
+- `TREQ-AUTH-284`;
+- `TREQ-AUTH-285`;
+- `TREQ-AUTH-286`;
+- `TREQ-AUTH-287`;
+- `TREQ-AUTH-288`.
+
+| Rango | Cobertura                                              |
+| ----- | ------------------------------------------------------ |
+| `279` | contrato público, `403`, procedencia y cero efectos    |
+| `280` | separación de planos, resultados y autoridad real      |
+| `281` | distribución `78/31/3` y superficies permitidas        |
+| `282` | bloqueo de acciones, datos y efectos externos          |
+| `283` | salida, solicitud real fresca y prohibición de replay  |
+| `284` | causas, fronteras, precedencia y ciclo de vida         |
+| `285` | equivalencia de diez canales                           |
+| `286` | cobertura de diez aplicaciones                         |
+| `287` | UX, privacidad, auditoría, invalidación y concurrencia |
+| `288` | reconciliación física y cierre de catorce brechas      |
+
+Los requisitos permanecen `IDENTIFICADO` hasta que existan implementación y
+evidencia reproducibles.
+
+---
+
+#### 38. Validaciones documentales definidas
+
+El artefacto permite comprobar:
+
+1. un único código público;
+2. una causa de enforcement heredada sin exponerla;
+3. `403` solo después de autenticación resuelta;
+4. cero efectos empresariales;
+5. cuatro planos separados;
+6. tres resultados hipotéticos y ningún `ALLOW` simulado;
+7. `executable = false` en toda simulación;
+8. distribución exacta `78/31/3`;
+9. tres permisos `NOT_ALLOWED` conservados;
+10. veinticuatro escenarios sin decisión nula;
+11. diez canales equivalentes;
+12. diez aplicaciones reconciliadas;
+13. salida y autorización real fresca;
+14. ningún replay automático;
+15. datos reales limitados por autoridad real;
+16. RLS, RPC, Edge, Realtime y procesos asíncronos protegidos;
+17. catorce brechas con destino;
+18. diez requisitos nuevos y únicos;
+19. 6.676 requisitos históricos preservados;
+20. catorce columnas en cada fila del registro.
+
+---
+
+#### 39. Evidencia, estados y límites materiales
+
+| Elemento                              | Estado                             |
+| ------------------------------------- | ---------------------------------- |
+| contrato de bloqueo                   | `ESPECIFICADO`                     |
+| matriz de escenarios                  | `ESPECIFICADO`                     |
+| matriz de canales                     | `ESPECIFICADO`                     |
+| cobertura de aplicaciones             | `ESPECIFICADO`                     |
+| snapshot de Supabase                  | `PENDIENTE_DE_EVIDENCIA_OPERATIVA` |
+| separación física de APIs y tipos     | `BLOQUEADO`                        |
+| enforcement uniforme antes de efectos | `PENDIENTE_DE_IMPLEMENTACION`      |
+| clasificación física de permisos      | `PENDIENTE_DE_RECONCILIACION`      |
+| pruebas automatizadas                 | `PENDIENTE_DE_IMPLEMENTACION`      |
+| pruebas E2E y operativas              | `PENDIENTE_DE_EVIDENCIA`           |
+
+AUTH-ERR-016 no:
+
+- modifica funciones, tablas, policies, grants o datos;
+- crea migraciones;
+- ejecuta DDL, DML, backfills o despliegues;
+- cambia sesiones de simulación;
+- crea permisos ni altera su clasificación;
+- corrige el catálogo físico de 179 filas;
+- modifica `packages/os-context`;
+- cambia aplicaciones consumidoras;
+- ejecuta una simulación productiva;
+- crea datos de prueba;
+- certifica comportamiento RLS, RPC, Edge, Realtime o dispositivos;
+- inicia `AUTH-ERR-017`.
+
+---
+
+#### 40. Criterios de aceptación
+
+- [x] Se definió un código público único.
+- [x] Se consumió `SIMULATION_EXECUTION_FORBIDDEN` sin exponerlo.
+- [x] Se definió `403` y cero efectos.
+- [x] Se separaron cuatro planos.
+- [x] Se prohibió convertir `WOULD_ALLOW` en `ALLOW`.
+- [x] Se preservaron los tres resultados hipotéticos.
+- [x] Se definió la frontera entre evaluación, preview y ejecución.
+- [x] Se conservaron 78 `FULL_PREVIEW`, 31 `DECISION_ONLY` y 3 `NOT_ALLOWED`.
+- [x] Se identificaron los tres permisos `NOT_ALLOWED`.
+- [x] Se bloquearon datos reales por autoridad simulada.
+- [x] Se protegieron RLS y Data API.
+- [x] Se protegieron Server Actions, rutas, RPC y Edge Functions.
+- [x] Se protegieron Realtime, offline y caché.
+- [x] Se bloquearon jobs, colas, webhooks e integraciones.
+- [x] Se prohibió la simulación anidada.
+- [x] Se definió expiración, versiones e invalidación.
+- [x] Se definió salida y solicitud real fresca.
+- [x] Se prohibió replay o ejecución automática al salir.
+- [x] Se decidió veinticuatro escenarios.
+- [x] Se definió precedencia determinista.
+- [x] Se definieron diez canales equivalentes.
+- [x] Se reconciliaron diez aplicaciones.
+- [x] Se definió copy, estado preservado y recuperación.
+- [x] Se definió privacidad y auditoría separada.
+- [x] Se registró el snapshot físico sin declararlo conformidad.
+- [x] Se registraron catorce brechas con destino exacto.
+- [x] Se derivaron `TREQ-AUTH-279` a `TREQ-AUTH-288`.
+- [x] No se modificó código, Supabase, migraciones, configuración, datos ni aplicaciones.
+- [x] `AUTH-ERR-017` permanece únicamente reservada.
+
+---
+
+#### 41. Riesgos controlados
+
+| Riesgo                                   | Control                                    |
+| ---------------------------------------- | ------------------------------------------ |
+| `WOULD_ALLOW` ejecutado como `ALLOW`     | procedencia tipada y gate previo a efectos |
+| contexto simulado convertido en efectivo | planos y APIs separados                    |
+| rol simulado convertido en grant         | autoridad real exclusiva                   |
+| lectura de datos reales ampliada         | techo de datos del actor real              |
+| botón preview conserva handler real      | control inerte o evaluador solamente       |
+| RLS usa rol o sede simulados             | autoridad real exclusiva en policies       |
+| booleano ambiguo autoriza                | resultados discriminados                   |
+| resultado expirado se reutiliza          | fingerprint, versión e invalidación        |
+| replay offline ejecuta                   | cola no ejecutable y reautorización fresca |
+| job o webhook nace de preview            | bloqueo de efectos asíncronos              |
+| simulación anidada eleva alcance         | una sesión y actor real visible            |
+| salida ejecuta automáticamente           | nueva solicitud real obligatoria           |
+| mensaje oculta estado del trabajo        | confirmación de cero cambios               |
+| cero sesiones se presenta como seguridad | estado `PENDIENTE_DE_EVIDENCIA`            |
+
+---
+
+#### 42. Cierre de tarea y continuidad
+
+**ÚLTIMA TAREA APROBADA**
+
+`AUTH-ERR-015 — Dispositivo no autorizado`
+
+**TAREA ACTUAL APROBADA**
+
+`AUTH-ERR-016 — Acción no permitida en simulación`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`AUTH-ERR-017 — Configuración administrativa inconsistente`
+
