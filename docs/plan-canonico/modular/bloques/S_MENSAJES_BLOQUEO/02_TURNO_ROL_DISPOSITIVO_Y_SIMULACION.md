@@ -3863,7 +3863,1124 @@ AUTH-ERR-012 — RESERVADA
 No se inicia ni modifica `AUTH-ERR-012` en esta tarea.
 
 
-### [ ] AUTH-ERR-012 — Rol operativo faltante
+### ✅ AUTH-ERR-012 — Rol operativo faltante
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-011 — Check-in requerido` — APROBADA
+**Tarea siguiente:** `AUTH-ERR-013 — Rol operativo inválido para la sede` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, funcional, causal, de seguridad y experiencia del bloqueo producido cuando una capacidad necesita carril operativo, existe un turno laboral publicado y vigente, los prerrequisitos anteriores aplicables fueron satisfechos y la revisión autoritativa del turno no contiene un rol operativo asignado
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md`
+**Artefactos producidos:** `OPERATIONAL-ROLE-REQUIRED-BLOCKING-CONTRACT-001`, `OPERATIONAL-ROLE-STATE-DECISION-MATRIX-001`, `OPERATIONAL-ROLE-CHANNEL-RESPONSE-MATRIX-001`, `OPERATIONAL-ROLE-APPLICATION-COVERAGE-REGISTER-001` y `OPERATIONAL-ROLE-PHYSICAL-RECONCILIATION-001`
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-006`; `AUTH-MOD-009`; `AUTH-MOD-010`; `AUTH-MOD-018`; `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-007`; `AUTH-CAT-012` a `AUTH-CAT-015`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-008` a `AUTH-CTX-017`; `AUTH-CTX-020`; `AUTH-CTX-024` a `AUTH-CTX-030`; `AUTH-ERR-001` a `AUTH-ERR-011`; contratos vigentes de identidad, aplicación, turno, check-in, rol base, rol operativo, territorio, permiso, recurso, disponibilidad, simulación y precedencia; estado remoto y desplegado inspeccionado; contrato documental vigente
+**Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, constraints, índices, triggers, turnos, catálogos, perfiles, matrices, sedes, áreas, roles, permisos, aplicaciones ni despliegues
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué debe ocurrir cuando una
+solicitud necesita participar en el carril operativo, ya superó los controles
+anteriores que le correspondan, consume exactamente un turno laboral publicado
+y vigente, pero la revisión autoritativa de ese turno no contiene un código de
+rol operativo asignado.
+
+La regla raíz queda:
+
+```text
+SESIÓN AUTENTICADA VÁLIDA
++
+IDENTIDAD LABORAL ACTIVA
++
+ACCESO A LA APLICACIÓN PERMITIDO
++
+CAPACIDAD CON CARRIL OPERATIVO APLICABLE
++
+TURNO LABORAL PUBLICADO Y VIGENTE INEQUÍVOCO
++
+CHECK-IN VÁLIDO CUANDO EL CARRIL EXIGE T+C
++
+OPERATIONAL_ROLE_SOURCE = CONCLUSIVE_ABSENT
+→
+DENY DEL CARRIL OPERATIVO
++
+AUTH_OPERATIONAL_ROLE_REQUIRED
++
+403 CUANDO LA DECISIÓN FINAL QUEDA DENEGADA
++
+CERO EFECTOS
+```
+
+La tarea responde exclusivamente:
+
+```text
+¿EL CARRIL OPERATIVO NECESITA UN ROL EFECTIVO Y
+EL TURNO AUTORITATIVO VIGENTE CARECE DE UN CÓDIGO
+DE ROL OPERATIVO ASIGNADO?
+```
+
+No responde:
+
+```text
+¿EXISTE SESIÓN DE AUTENTICACIÓN?
+¿EL EMPLEADO ESTÁ ACTIVO?
+¿PUEDE ACCEDER A LA APLICACIÓN?
+¿EXISTE TURNO PUBLICADO?
+¿EL TURNO ESTÁ VIGENTE?
+¿EXISTE CHECK-IN CUANDO ES REQUERIDO?
+¿EL CÓDIGO OBSERVADO EXISTE Y ESTÁ ACTIVO?
+¿EL ROL ESTÁ HABILITADO EN LA SEDE?
+¿EL ROL ES COMPATIBLE CON EL ÁREA?
+¿EL ROL TIENE EL PERMISO EXACTO?
+¿EL RECURSO ESTÁ DENTRO DEL SCOPE?
+¿EL DISPOSITIVO ES CONFIABLE?
+¿LA FUENTE TÉCNICA ESTÁ DISPONIBLE?
+```
+
+La ausencia limpia del código pertenece a `AUTH-ERR-012`. Un código presente
+pero desconocido, inactivo, deprecado, contradictorio o no resoluble constituye
+configuración inválida. Un rol canónico que no está habilitado en la sede
+pertenece a `AUTH-ERR-013`. Un rol canónico que no es compatible con el área
+pertenece a `AUTH-ERR-014`.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `OPERATIONAL-ROLE-REQUIRED-BLOCKING-CONTRACT-001`, que congela la identidad
+   pública, aplicabilidad, fuente autoritativa, respuesta, recuperación,
+   privacidad, auditoría y cero efectos;
+2. `OPERATIONAL-ROLE-STATE-DECISION-MATRIX-001`, que decide veinticuatro
+   escenarios y separa ausencia limpia, código inválido, incompatibilidad
+   territorial, falta de permiso, simulación e indisponibilidad;
+3. `OPERATIONAL-ROLE-CHANNEL-RESPONSE-MATRIX-001`, que materializa diez canales
+   con semántica equivalente;
+4. `OPERATIONAL-ROLE-APPLICATION-COVERAGE-REGISTER-001`, que decide el alcance
+   para las diez aplicaciones canónicas sin autorizar por nombre de
+   aplicación;
+5. `OPERATIONAL-ROLE-PHYSICAL-RECONCILIATION-001`, que registra el snapshot
+   físico, las incompatibilidades observadas y catorce brechas con destino de
+   implementación explícito.
+
+Cobertura materializada:
+
+| Elemento                                                     | Cantidad |
+| ------------------------------------------------------------ | -------: |
+| Código público canónico                                      |        1 |
+| Estado HTTP no navegacional                                  | 1, `403` |
+| Causas internas admitidas                                    |        3 |
+| Escenarios con decisión explícita                            |       24 |
+| Canales con respuesta explícita                              |       10 |
+| Aplicaciones canónicas reconciliadas                         |       10 |
+| Permisos canónicos evaluados por carril                      |      112 |
+| Permisos sin carril operativo                                |       54 |
+| Permisos con carril operativo                                |       58 |
+| Carriles operativos `T`                                      |       19 |
+| Carriles operativos `T+C`                                    |       39 |
+| Roles operativos físicos observados                          |       13 |
+| Roles físicos activos observados                             |       13 |
+| Turnos físicos observados                                    |     2844 |
+| Turnos laborales observados                                  |     2411 |
+| Turnos de descanso observados                                |      433 |
+| Turnos laborales publicados no cancelados                    |     2318 |
+| Turnos laborales publicados no cancelados sin rol            |     1535 |
+| Turnos laborales publicados no cancelados con rol            |      783 |
+| Códigos de rol usados por esos turnos                        |       12 |
+| Habilitaciones físicas sede/área activas                     |       16 |
+| Perfiles operativos físicos activos                          |        1 |
+| Grants operativos físicos permitidos                         |       32 |
+| Funciones físicas que referencian rol operativo              |       13 |
+| Políticas RLS inspeccionadas sobre cinco tablas relacionadas |       12 |
+| Brechas físicas registradas                                  |       14 |
+| Requisitos de prueba derivados                               |       10 |
+
+Las cifras físicas son un snapshot de solo lectura. No certifican que los
+turnos históricos deban corregirse indiscriminadamente ni que el contrato esté
+implementado.
+
+---
+
+#### 3. Identidad canónica del bloqueo
+
+La identidad pública única es:
+
+```text
+reason_code = AUTH_OPERATIONAL_ROLE_REQUIRED
+```
+
+| Propiedad                                    | Valor                                                                                            |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Dominio                                      | `AUTHORIZATION_CONTEXT`                                                                          |
+| Estado público                               | `MISSING_REQUIRED_OPERATIONAL_ROLE`                                                              |
+| Decisión de carril                           | `DENY` para el carril operativo                                                                  |
+| Decisión final                               | depende de la modalidad; nunca autoriza un carril incompleto                                     |
+| Estado HTTP cuando la decisión final deniega | `403 Forbidden`                                                                                  |
+| `executable`                                 | `false` cuando no existe otro carril completo que autorice                                       |
+| Sesión de autenticación                      | se conserva                                                                                      |
+| Efectos empresariales                        | cero                                                                                             |
+| Reintento automático                         | prohibido                                                                                        |
+| Recuperación principal                       | corregir y publicar el turno mediante autoridad administrativa, luego obtener una decisión nueva |
+| Copy principal                               | `Tu turno no tiene un rol operativo asignado. Solicita que lo corrijan para continuar.`          |
+| Causas internas públicas                     | ninguna                                                                                          |
+
+Quedan prohibidos como códigos públicos alternativos:
+
+- `invalid_operational_role`;
+- `missing_role`;
+- `role_required` sin namespace;
+- `no_role`;
+- `no_permission`;
+- el código de un rol esperado;
+- mensajes libres usados como identidad contractual.
+
+Las razones legacy podrán mapearse temporalmente como aliases internos, pero no
+podrán competir con la identidad pública canónica.
+
+---
+
+#### 4. Definición exacta de ausencia limpia
+
+Existe ausencia limpia únicamente cuando:
+
+```text
+active_shift = exactly_one
+AND
+active_shift.operational_role_code IS NULL OR BLANK
+AND
+SHIFT_RESOLUTION = CONCLUSIVE
+AND
+ROLE_SOURCE_READ = SUCCESS
+```
+
+El valor vacío deberá normalizarse antes de decidir:
+
+```text
+null
+""
+"   "
+→ CONCLUSIVE_ABSENT
+```
+
+La ausencia no se infiere cuando existe un valor observado que no puede ser
+validado. Estos estados son diferentes:
+
+| Estado de la fuente              | Significado                                         | Resultado propietario  |
+| -------------------------------- | --------------------------------------------------- | ---------------------- |
+| `CONCLUSIVE_ABSENT`              | la revisión publicada no contiene código            | `AUTH-ERR-012`         |
+| `PRESENT_CANONICAL`              | existe código canónico activo                       | continuar              |
+| `PRESENT_UNKNOWN`                | existe código no reconocido                         | configuración inválida |
+| `PRESENT_INACTIVE_OR_DEPRECATED` | existe código no utilizable                         | configuración inválida |
+| `CONTRADICTORY`                  | revisiones o fuentes producen valores incompatibles | `AUTH-ERR-017`         |
+| `UNAVAILABLE`                    | la fuente no pudo consultarse                       | `AUTH-ERR-019`         |
+
+Un código inválido no se convertirá en ausencia para mostrar un mensaje más
+simple.
+
+---
+
+#### 5. Fuente autoritativa del rol
+
+La fuente exclusiva para una operación real es:
+
+```text
+active_shift.operational_role_code
+```
+
+La cadena debe proceder de la misma revisión publicada que aportó:
+
+- `shift_id`;
+- `employee_id`;
+- `site_id`;
+- `area_id`;
+- ventana temporal;
+- estado de publicación.
+
+No podrán crear ni completar el rol efectivo:
+
+- `employees.role`;
+- `base_role`;
+- un perfil operativo predeterminado;
+- el último turno;
+- el último rol utilizado;
+- una cookie;
+- un parámetro del cliente;
+- un selector visual;
+- `navigation_role` del dispositivo;
+- el nombre del área;
+- la sede seleccionada;
+- el check-in;
+- un permiso solicitado;
+- la aplicación abierta;
+- una heurística por oficio;
+- una simulación presentada como contexto real.
+
+---
+
+#### 6. Separación entre rol base y rol operativo
+
+El rol base conserva identidad y responsabilidades permanentes. El rol
+operativo representa la función temporal de un turno concreto.
+
+```text
+ROL BASE VÁLIDO
+≠
+ROL OPERATIVO EFECTIVO
+```
+
+Por tanto:
+
+```text
+base_role = supervisor
+active_shift.operational_role_code = null
+→ operational_role = null
+```
+
+También:
+
+```text
+base_role = propietario
+active_shift.operational_role_code = null
+→ el carril operativo no obtiene rol por jerarquía
+```
+
+Un carril base completo podrá autorizar únicamente cuando la modalidad del
+permiso lo admita. No podrá prestarle el rol al carril operativo.
+
+---
+
+#### 7. Catálogo operativo consumido
+
+Cuando exista un código, el resolver deberá consultarlo exclusivamente en el
+catálogo operativo canónico.
+
+```text
+operational_role_code
+→ operational_roles
+```
+
+No deberá consultarlo indistintamente en catálogos base y operativos.
+
+La presencia del código no basta. El rol deberá ser:
+
+- canónico;
+- activo;
+- no deprecado;
+- único;
+- resoluble en el namespace operativo;
+- coherente con la revisión del turno.
+
+Un valor como `propietario_admin`, declarado deprecado por el contrato de
+contexto, no constituye ausencia limpia aunque la tabla física lo mantenga
+activo durante transición.
+
+---
+
+#### 8. Aplicabilidad por permiso y carril
+
+La razón se evalúa únicamente si el permiso admite o exige carril operativo.
+
+Distribución canónica:
+
+| Clasificación                 | Cantidad | Efecto ante rol faltante                           |
+| ----------------------------- | -------: | -------------------------------------------------- |
+| permisos sin carril operativo |       54 | no evalúan esta razón                              |
+| carriles operativos `T`       |       19 | requieren rol después de resolver turno vigente    |
+| carriles operativos `T+C`     |       39 | requieren rol después de resolver turno y check-in |
+| total con carril operativo    |       58 | el carril operativo queda denegado si falta rol    |
+
+Ninguna aplicación podrá convertir todos sus permisos en una única política de
+rol. La unidad de decisión continúa siendo el permiso, su modalidad y el
+carril evaluado.
+
+---
+
+#### 9. Modalidades de autorización
+
+##### `BASE_ONLY`
+
+No consume rol operativo. Su ausencia no produce esta razón.
+
+##### `OPERATIONAL_ONLY`
+
+La ausencia del rol deniega la decisión final porque el único carril admitido
+está incompleto.
+
+##### `BASE_OR_OPERATIONAL`
+
+Los carriles se evalúan de forma independiente:
+
+```text
+BASE_ALLOW completo
++
+ROL OPERATIVO FALTANTE
+→ ALLOW por carril base
+```
+
+```text
+BASE_DENY
++
+ROL OPERATIVO FALTANTE
+→ DENY final
+→ AUTH_OPERATIONAL_ROLE_REQUIRED si es la primera causa concluyente aplicable
+```
+
+##### `BASE_AND_OPERATIONAL`
+
+La ausencia del rol deniega la decisión final aunque el carril base sea válido.
+No se combinan fragmentos incompletos.
+
+---
+
+#### 10. Precondiciones exactas
+
+Antes de producir esta razón deberán haberse resuelto:
+
+1. sesión y actor efectivo;
+2. actividad laboral;
+3. aplicación solicitada;
+4. permiso y modalidad;
+5. selección del carril operativo;
+6. turno publicado;
+7. vigencia temporal del turno;
+8. check-in cuando el carril es `T+C`;
+9. lectura concluyente del campo de rol del turno.
+
+Para un carril `T`, la evaluación de rol ocurre después de la vigencia del
+turno y no requiere check-in.
+
+Para un carril `T+C`, la evaluación ocurre después de confirmar el check-in
+activo compatible. El check-in no completa el rol.
+
+---
+
+#### 11. Causas internas admitidas
+
+Se admiten exactamente tres causas internas para esta identidad pública:
+
+| Causa interna                     | Condición                                                  |
+| --------------------------------- | ---------------------------------------------------------- |
+| `SHIFT_OPERATIONAL_ROLE_NULL`     | el campo autoritativo es `null`                            |
+| `SHIFT_OPERATIONAL_ROLE_EMPTY`    | el campo existe pero queda vacío al normalizar             |
+| `PUBLISHED_REVISION_ROLE_OMITTED` | la revisión publicada reproducible omitió el rol requerido |
+
+Estas causas podrán registrarse en auditoría restringida. No se expondrán al
+usuario ni cambiarán el código público.
+
+No pertenecen a esta identidad:
+
+- código desconocido;
+- rol inactivo o deprecado;
+- rol no habilitado en sede;
+- rol incompatible con área;
+- múltiples roles candidatos;
+- fallo de catálogo;
+- fallo de base de datos.
+
+---
+
+#### 12. `OPERATIONAL-ROLE-REQUIRED-BLOCKING-CONTRACT-001`
+
+El contrato queda:
+
+```text
+INPUT
+  actor_effective
+  requested_permission
+  authorization_requirement
+  selected_lane
+  active_shift
+  active_checkin_session
+  operational_role_source_state
+  resolved_at
+  context_fingerprint
+
+PRECONDITION
+  selected_lane = OPERATIONAL
+  active_shift = valid_published_current_shift
+  checkin_requirement_satisfied = true
+  operational_role_source_state = CONCLUSIVE_ABSENT
+
+OUTPUT
+  lane_decision = DENY
+  reason_code = AUTH_OPERATIONAL_ROLE_REQUIRED
+  public_state = MISSING_REQUIRED_OPERATIONAL_ROLE
+  executable = false for the operational lane
+  side_effects = 0
+  session_preserved = true
+  automatic_retry = false
+```
+
+Si otro carril independiente produce `ALLOW`, la decisión final respetará la
+modalidad sin presentar el bloqueo como denegación global.
+
+---
+
+#### 13. Frontera con rol inválido
+
+Los siguientes casos contienen un valor observado y no son ausencia limpia:
+
+| Caso                                   | Resultado                                      |
+| -------------------------------------- | ---------------------------------------------- |
+| código inexistente                     | configuración inválida; no usar `AUTH-ERR-012` |
+| código inactivo                        | configuración inválida                         |
+| código deprecado                       | configuración inválida                         |
+| código base escrito en campo operativo | configuración inválida                         |
+| código ambiguo entre revisiones        | `AUTH-ERR-017`                                 |
+| catálogo no disponible                 | `AUTH-ERR-019`                                 |
+
+No se elegirá el rol “más parecido”, un alias no aprobado ni el primer registro
+encontrado.
+
+---
+
+#### 14. Frontera con sede y área
+
+Cuando el código existe, es canónico y está activo, el resolver continuará con
+las tareas territoriales:
+
+```text
+ROL PRESENTE
++
+NO HABILITADO EN SEDE
+→ AUTH-ERR-013
+```
+
+```text
+ROL PRESENTE
++
+SEDE VÁLIDA
++
+ÁREA FALTANTE O INCOMPATIBLE CUANDO ES OBLIGATORIA
+→ AUTH-ERR-014
+```
+
+La falta de habilitación no podrá reescribirse como falta de rol. El nodo
+observado podrá conservar el código para diagnóstico restringido, con
+`valid_for_site=false` o `valid_for_area=false`.
+
+---
+
+#### 15. Frontera con permisos
+
+Un rol presente, activo y territorialmente válido puede no tener el permiso
+solicitado.
+
+```text
+ROL OPERATIVO VÁLIDO
++
+0 GRANTS COINCIDENTES
+→ DENEGACIÓN DE PERMISO
+```
+
+Ese caso no pertenece a `AUTH-ERR-012`.
+
+La presencia de una fila en `operational_role_permissions` tampoco crea un rol
+cuando el turno carece de él.
+
+---
+
+#### 16. Perfil operativo predeterminado
+
+El perfil predeterminado puede ayudar a planificar o completar un turno antes
+de publicarlo, pero no es autoridad en tiempo de ejecución.
+
+```text
+default_operational_role = bodeguero
+active_shift.operational_role_code = null
+→ AUTH_OPERATIONAL_ROLE_REQUIRED
+```
+
+El correctivo deberá modificar la fuente administrativa del turno, publicar la
+revisión correspondiente y producir un nuevo snapshot. No se aplicará fallback
+en el evaluador.
+
+---
+
+#### 17. Dispositivos compartidos y navegación
+
+Un dispositivo puede declarar una plantilla o expectativa de navegación. Eso
+no asigna función laboral al actor.
+
+```text
+device.navigation_role = cajero_satelite
+active_shift.operational_role_code = null
+→ AUTH_OPERATIONAL_ROLE_REQUIRED
+```
+
+Quedan prohibidos:
+
+- heredar el rol del actor anterior;
+- convertir la plantilla del dispositivo en rol efectivo;
+- persistir una selección local como asignación;
+- completar el turno desde una cookie;
+- autorizar por la pantalla visible.
+
+---
+
+#### 18. Simulación
+
+Una simulación podrá evaluar hipotéticamente otro rol dentro de un contrato
+separado y no ejecutable.
+
+No podrá:
+
+- rellenar el rol real del turno;
+- cambiar el contexto efectivo real;
+- convertir `WOULD_ALLOW` en `ALLOW`;
+- persistir una asignación;
+- habilitar mutaciones empresariales.
+
+Si se intenta ejecutar una acción real desde simulación, la razón propietaria
+permanece en `AUTH-ERR-016`.
+
+---
+
+#### 19. Actor `SYSTEM`
+
+Un proceso autónomo de sistema no recibe un rol laboral sintético.
+
+Si el permiso es de sistema y no posee carril operativo laboral, esta razón no
+aplica.
+
+Si un proceso actúa delegadamente en nombre de un empleado para ejecutar una
+capacidad operativa, deberá resolver el mismo turno y rol del actor efectivo.
+No podrá usar una cuenta técnica para completar la ausencia.
+
+---
+
+#### 20. Entradas mínimas y determinismo
+
+Las entradas mínimas son:
+
+- identidad del actor efectivo;
+- código del permiso;
+- modalidad y prerrequisitos del permiso;
+- carril evaluado;
+- turno publicado vigente resuelto;
+- estado del check-in cuando aplique;
+- valor bruto del rol dentro de la revisión publicada;
+- estado de lectura de la fuente;
+- `resolved_at` de servidor;
+- versión del catálogo y fingerprint del contexto.
+
+Para las mismas entradas autoritativas deberá producirse exactamente el mismo
+resultado. No participarán el orden físico de filas, la aplicación abierta, el
+último rol usado ni el estado local del cliente.
+
+---
+
+#### 21. `OPERATIONAL-ROLE-STATE-DECISION-MATRIX-001`
+
+|    # | Escenario                                                  | Decisión                                            |
+| ---: | ---------------------------------------------------------- | --------------------------------------------------- |
+|    1 | `BASE_ONLY`, sin turno ni rol                              | no aplica; evaluar carril base                      |
+|    2 | `BASE_OR_OPERATIONAL`, carril base completo y rol faltante | `ALLOW` por base; carril operativo `DENY`           |
+|    3 | `OPERATIONAL_ONLY`, sin turno publicado                    | `AUTH-ERR-009`                                      |
+|    4 | turno publicado fuera de ventana                           | `AUTH-ERR-010`                                      |
+|    5 | carril `T+C`, check-in ausente                             | `AUTH-ERR-011`                                      |
+|    6 | carril `T`, turno vigente y rol `null`                     | `AUTH_OPERATIONAL_ROLE_REQUIRED`                    |
+|    7 | carril `T+C`, check-in válido y rol `null`                 | `AUTH_OPERATIONAL_ROLE_REQUIRED`                    |
+|    8 | campo de rol vacío o whitespace                            | `AUTH_OPERATIONAL_ROLE_REQUIRED`                    |
+|    9 | revisión publicada omitió el rol                           | `AUTH_OPERATIONAL_ROLE_REQUIRED`                    |
+|   10 | perfil predeterminado tiene rol, turno no                  | `AUTH_OPERATIONAL_ROLE_REQUIRED`                    |
+|   11 | rol base coincide semánticamente, turno no tiene rol       | `AUTH_OPERATIONAL_ROLE_REQUIRED`                    |
+|   12 | dispositivo declara `navigation_role`, turno no            | `AUTH_OPERATIONAL_ROLE_REQUIRED`                    |
+|   13 | cliente propone rol, turno no                              | ignorar propuesta; `AUTH_OPERATIONAL_ROLE_REQUIRED` |
+|   14 | historial contiene último rol, turno actual no             | ignorar historial; `AUTH_OPERATIONAL_ROLE_REQUIRED` |
+|   15 | código presente pero desconocido                           | configuración inválida; no esta razón               |
+|   16 | código presente pero inactivo o deprecado                  | configuración inválida; no esta razón               |
+|   17 | rol canónico no habilitado en sede                         | `AUTH-ERR-013`                                      |
+|   18 | rol canónico incompatible con área                         | `AUTH-ERR-014`                                      |
+|   19 | revisiones producen roles contradictorios                  | `AUTH-ERR-017`                                      |
+|   20 | catálogo o fuente no disponible                            | `AUTH-ERR-019`                                      |
+|   21 | rol válido sin grant del permiso                           | denegación de permiso posterior                     |
+|   22 | rol válido, carril `T`, sin check-in                       | continuar evaluación                                |
+|   23 | rol válido, carril `T+C`, check-in compatible              | continuar evaluación                                |
+|   24 | actor `SYSTEM` con permiso técnico explícito               | no crear rol sintético; usar contrato de sistema    |
+
+La matriz conserva una decisión explícita para cada escenario y prohíbe
+fallback permisivo.
+
+---
+
+#### 22. Precedencia
+
+El orden mínimo relevante queda:
+
+```text
+AUTENTICACIÓN
+→ IDENTIDAD LABORAL
+→ ACCESO A APLICACIÓN
+→ TERRITORIO LABORAL PREVIO APLICABLE
+→ TURNO PUBLICADO
+→ VIGENCIA TEMPORAL
+→ CHECK-IN CUANDO T+C
+→ PRESENCIA DEL ROL OPERATIVO
+→ VALIDEZ DEL CÓDIGO
+→ HABILITACIÓN EN SEDE
+→ COMPATIBILIDAD DE ÁREA
+→ DISPOSITIVO Y SIMULACIÓN
+→ GRANT DEL PERMISO
+→ SCOPE Y RECURSO
+```
+
+La primera causa concluyente aplicable prevalece. Una causa posterior no
+ocultará una anterior, y una anterior ya satisfecha no seguirá apareciendo.
+
+---
+
+#### 23. Regla de cero efectos
+
+Antes de cualquier efecto empresarial, el servidor deberá confirmar que el
+carril necesario posee rol operativo efectivo.
+
+Mientras la razón esté vigente quedan prohibidos:
+
+- inserciones o actualizaciones empresariales;
+- cambios de estado;
+- movimientos de inventario;
+- preparación, despacho o recepción;
+- impresión o emisión de documentos operativos;
+- eventos empresariales;
+- jobs o colas derivados;
+- notificaciones que presupongan éxito;
+- suscripciones protegidas;
+- reserva de recursos;
+- auditoría de éxito.
+
+Solo se permite registrar el intento denegado con minimización de datos.
+
+---
+
+#### 24. Envelope público
+
+Cuando la decisión final sea denegada por esta causa, la respuesta compartida
+representará como mínimo:
+
+```json
+{
+  "decision": "DENY",
+  "reason_code": "AUTH_OPERATIONAL_ROLE_REQUIRED",
+  "public_state": "MISSING_REQUIRED_OPERATIONAL_ROLE",
+  "http_status": 403,
+  "executable": false,
+  "retryable": false,
+  "session_preserved": true
+}
+```
+
+No incluirá:
+
+- rol esperado;
+- código de rol anterior;
+- nombre del empleado;
+- sede o área;
+- turno o revisión;
+- nombres de tablas;
+- existencia de grants;
+- SQL, policy o RPC involucrada;
+- causas internas.
+
+---
+
+#### 25. Copy, accesibilidad y recuperación
+
+Copy principal exacto:
+
+```text
+Tu turno no tiene un rol operativo asignado. Solicita que lo corrijan para continuar.
+```
+
+La experiencia deberá:
+
+- conservar la sesión;
+- explicar que la operación está bloqueada, no que la cuenta está desactivada;
+- ofrecer un canal accesible para solicitar corrección cuando exista;
+- no sugerir cambiar de rol desde el cliente;
+- no permitir elegir un rol como mecanismo de recuperación;
+- no presentar un reintento automático;
+- anunciar el bloqueo mediante texto y semántica accesible;
+- conservar navegación segura hacia ANIMA, soporte o vistas base permitidas.
+
+La recuperación autoritativa es administrativa:
+
+```text
+corregir turno
+→ publicar revisión
+→ invalidar snapshot anterior
+→ resolver contexto nuevo
+→ emitir solicitud nueva
+```
+
+---
+
+#### 26. `OPERATIONAL-ROLE-CHANNEL-RESPONSE-MATRIX-001`
+
+| Canal                           | Resultado obligatorio                                                                         |
+| ------------------------------- | --------------------------------------------------------------------------------------------- |
+| navegación web y guard          | bloquear la superficie operativa; conservar sesión y accesos base independientes              |
+| Server Action                   | no ejecutar cuerpo ni efectos; devolver razón tipada                                          |
+| Route Handler o API             | `403` con envelope canónico                                                                   |
+| RSC o fetch de servidor         | no serializar datos protegidos; representar el estado tipado                                  |
+| RPC o PostgREST                 | fail closed; no reducirse a `false` sin diagnóstico contractual                               |
+| RLS o Data API                  | impedir lectura o mutación protegida y conservar correlación diagnóstica fuera de la política |
+| Edge Function                   | revalidar contexto y responder razón equivalente                                              |
+| Realtime                        | no crear ni conservar suscripción protegida con snapshot inválido                             |
+| cliente nativo u offline        | no considerar una selección local como rol; exigir resolución nueva en línea                  |
+| dispositivo compartido o kiosco | no heredar plantilla, cookie ni rol del actor anterior                                        |
+
+Los diez canales deberán producir la misma decisión semántica y cero efectos.
+
+---
+
+#### 27. Reintentos, concurrencia y frescura
+
+El usuario no podrá resolver esta causa repitiendo la misma solicitud sobre el
+mismo snapshot.
+
+Invalidan la decisión anterior:
+
+- publicación de una revisión corregida;
+- cambio del código de rol en el turno;
+- cancelación o retiro del turno;
+- cambio del actor;
+- cambio de sede o área del turno;
+- desactivación o deprecación del rol;
+- cambio de habilitación territorial;
+- inicio o cierre de check-in cuando corresponda;
+- entrada o salida de simulación;
+- cambio de dispositivo compartido;
+- vencimiento temporal del turno.
+
+Una operación iniciada con rol válido deberá revalidar antes del commit cuando
+exista riesgo de cambio concurrente.
+
+---
+
+#### 28. Auditoría
+
+El evento de denegación deberá registrar de forma restringida:
+
+- identificador de correlación;
+- actor efectivo;
+- permiso solicitado;
+- modalidad y carril;
+- `shift_id` y revisión resuelta;
+- estado normalizado de la fuente de rol;
+- causa interna;
+- versión del catálogo;
+- `resolved_at`;
+- fingerprint del contexto;
+- aplicación y canal;
+- decisión final;
+- confirmación de cero efectos.
+
+No registrará el copy localizado como identidad técnica ni el contenido de
+cookies o tokens.
+
+---
+
+#### 29. `OPERATIONAL-ROLE-APPLICATION-COVERAGE-REGISTER-001`
+
+| Aplicación | Decisión                                                                                                            |
+| ---------- | ------------------------------------------------------------------------------------------------------------------- |
+| SHELL      | sus capacidades base no exigen rol; las superficies operativas futuras deberán decidir por permiso                  |
+| ANIMA      | el acceso y la corrección de asistencia continúan por capacidades base; no puede completar el rol al marcar entrada |
+| AURA       | no recibe rol laboral sintético para capacidades de cliente o sistema                                               |
+| VISO       | planificación puede corregir el turno mediante permisos base; operaciones reales usan el rol del turno              |
+| NEXO       | sus  carriles operativos `T` y `T+C` exigen rol; se elimina autoridad de cookies y overrides locales                |
+| FOGO       | producción operativa exige rol del turno y no oficio inferido                                                       |
+| ORIGO      | recepción y compras separan capacidades base de acciones operativas por permiso                                     |
+| PULSO      | caja y operación presencial exigen rol del turno sin inferirlo desde dispositivo o terminal                         |
+| NUMERA     | administración base permanece independiente; operaciones contextualizadas usan el mismo contrato                    |
+| PASS       | la identidad cliente no recibe ni presta rol operativo laboral                                                      |
+
+La aplicación no es la unidad de autorización. Cada fila obliga a consumir el
+contrato por permiso, modalidad, actor y carril.
+
+---
+
+#### 30. Snapshot físico observado
+
+El snapshot de solo lectura observó:
+
+| Elemento físico                                         |                            Resultado |
+| ------------------------------------------------------- | -----------------------------------: |
+| `operational_roles`                                     |                 13 filas, 13 activas |
+| roles que exigen check-in externo                       |                                    1 |
+| roles que exigen check-out externo                      |                                    1 |
+| `employee_shifts`                                       |                           2844 filas |
+| turnos laborales                                        |                                 2411 |
+| turnos de descanso                                      |                                  433 |
+| turnos laborales publicados y no cancelados             |                                 2318 |
+| publicados laborales sin `operational_role`             |                                 1535 |
+| publicados laborales con código no vacío                |                                  783 |
+| códigos distintos usados en turnos publicados laborales |                                   12 |
+| códigos usados sin correspondencia en catálogo          |                                    0 |
+| `site_operational_roles`                                |                     16 filas activas |
+| habilitaciones site-wide activas                        |                                    3 |
+| habilitaciones con área activa                          |                                   13 |
+| `employee_site_operational_profiles`                    | 1 fila activa con rol predeterminado |
+| `operational_role_permissions`                          |                  32 filas permitidas |
+| funciones que referencian `operational_role`            |                                   13 |
+| políticas RLS inspeccionadas                            |                                   12 |
+
+La ausencia histórica no se declara automáticamente defecto individual. La
+migración futura deberá distinguir periodos, revisiones, turnos consumibles y
+estrategia aprobada de compatibilidad.
+
+---
+
+#### 31. Esquema físico observado
+
+El estado físico relevante presenta:
+
+- `employee_shifts.operational_role` como `text` nullable;
+- ausencia de foreign key entre ese campo y `operational_roles(code)`;
+- catálogo `operational_roles` con trece códigos físicamente activos;
+- `site_operational_roles` con rol, sede y área opcional;
+- foreign key de `site_operational_roles.role_code` marcada `NOT VALID`;
+- `employee_site_operational_profiles.default_operational_role` con foreign key
+  al catálogo, pero con semántica de default no autoritativa;
+- `operational_role_permissions` separada de la asignación del turno;
+- RLS de lectura y administración sobre catálogos y matrices;
+- cinco políticas RLS sobre `employee_shifts` basadas en identidad y rol base;
+- funciones `SECURITY DEFINER` que resuelven contexto y permisos.
+
+La presencia de tablas y policies no demuestra equivalencia con el contrato.
+
+---
+
+#### 32. Comportamiento físico observado
+
+`get_operational_context` actualmente:
+
+- toma `employee_shifts.operational_role` como texto;
+- selecciona un turno mediante orden y `limit 1`;
+- emite `invalid_operational_role` tanto por ausencia como por incompatibilidad;
+- valida habilitación mediante `site_operational_roles`;
+- no separa códigos públicos para ausencia, sede y área;
+- aplica bypass por nombres de roles administrativos;
+- aplica política global por aplicación en vez de prerrequisito por permiso;
+- expone `active_operational_role` aunque el contrato público no esté
+  versionado.
+
+`get_effective_context_v1` puede construir `effective_operational_role` desde
+`navigation_role` de un dispositivo compartido o desde una simulación. Esa
+forma no podrá actuar como autoridad para una operación real.
+
+El consumidor NEXO observado:
+
+- permite un override de rol derivado de cookies para determinados roles;
+- reemplaza `active_operational_role` en memoria;
+- busca un área activa por tipo mediante `limit 1`;
+- consume una RPC booleana de permiso;
+- no mapea `invalid_operational_role` a código y copy canónicos;
+- utiliza un fallback de permiso o un mensaje genérico.
+
+---
+
+#### 33. `OPERATIONAL-ROLE-PHYSICAL-RECONCILIATION-001`
+
+|    # | Brecha física                                                                  | Estado                   | Destino de cierre                                                    |
+| ---: | ------------------------------------------------------------------------------ | ------------------------ | -------------------------------------------------------------------- |
+|    1 | campo de rol del turno nullable                                                | `BLOQUEADO`              | `AUTH-DB-033`; estrategia compatible para publicación y backfill     |
+|    2 | campo del turno sin FK al catálogo                                             | `BLOQUEADO`              | `AUTH-DB-020`; `AUTH-DB-030`                                         |
+|    3 | 1535 turnos laborales publicados no cancelados sin rol                         | `PENDIENTE_DE_EVIDENCIA` | inventario y backfill determinista en paquete E5 autorizado          |
+|    4 | `propietario_admin` físicamente activo aunque el contrato lo declara deprecado | `BLOQUEADO`              | reconciliación de catálogo y consumidores en `AUTH-DB-020`           |
+|    5 | FK de `site_operational_roles.role_code` permanece `NOT VALID`                 | `BLOQUEADO`              | validación de integridad y migración desde `vento-shell`             |
+|    6 | perfil predeterminado puede alimentar planificación y funciones auxiliares     | `ESPECIFICADO`           | impedir uso autoritativo en `AUTH-DB-033`; adaptar en `AUTH-CTX-028` |
+|    7 | razón legacy agrupa ausencia e incompatibilidad                                | `BLOQUEADO`              | catálogo de razones y evaluador en `AUTH-DB-034`                     |
+|    8 | selección de turno por `limit 1` no prueba unicidad                            | `BLOQUEADO`              | resolver determinista y ambigüedad en `AUTH-DB-033`                  |
+|    9 | política física opera por aplicación, no por permiso y carril                  | `BLOQUEADO`              | catálogo físico `AUTH-DB-031`; evaluador `AUTH-DB-034`               |
+|   10 | bypass por nombre de rol administrativo                                        | `BLOQUEADO`              | retirar en `AUTH-DB-034`; usar permisos explícitos                   |
+|   11 | contexto efectivo de dispositivo usa `navigation_role`                         | `BLOQUEADO`              | contrato de dispositivo y adapters `SHELL-AUTH-004`                  |
+|   12 | simulación comparte campo de rol efectivo con contexto real                    | `BLOQUEADO`              | separar `WOULD_ALLOW` en `SHELL-AUTH-004`                            |
+|   13 | NEXO muta rol y área desde cookie y primera coincidencia                       | `BLOQUEADO`              | migración de consumidora `SHELL-AUTH-005`                            |
+|   14 | NEXO carece de código, envelope y copy canónicos                               | `BLOQUEADO`              | SDK y catálogo de mensajes `SHELL-AUTH-002`; `AUTH-ERR-020`          |
+
+Ninguna brecha autoriza cambios físicos durante esta tarea documental.
+
+---
+
+#### 34. Handoff de implementación
+
+La materialización futura deberá incluir, como mínimo:
+
+1. contrato versionado de razón y envelope;
+2. resolver único de turno y rol sin fallback;
+3. distinción entre ausencia, código inválido, sede, área e indisponibilidad;
+4. catálogo físico alineado con códigos y estado canónicos;
+5. estrategia determinista e idempotente para turnos históricos;
+6. validación de constraints y compatibilidad antes de endurecer nulabilidad;
+7. evaluación por permiso, modalidad y carril;
+8. retiro de bypasses por nombre y overrides de cliente;
+9. adapters equivalentes para diez canales y diez aplicaciones;
+10. pruebas contractuales, base de datos, RPC, RLS, integración, E2E y
+    regresión;
+11. observabilidad, invalidación y cero efectos;
+12. rollback compatible cuando una migración afecte turnos existentes.
+
+Toda modificación de Supabase deberá crearse, versionarse, documentarse y
+ejecutarse desde `vento-shell`.
+
+---
+
+#### 35. Requisitos de prueba derivados
+
+Esta tarea crea diez requisitos:
+
+- `TREQ-AUTH-239`;
+- `TREQ-AUTH-240`;
+- `TREQ-AUTH-241`;
+- `TREQ-AUTH-242`;
+- `TREQ-AUTH-243`;
+- `TREQ-AUTH-244`;
+- `TREQ-AUTH-245`;
+- `TREQ-AUTH-246`;
+- `TREQ-AUTH-247`;
+- `TREQ-AUTH-248`.
+
+Los diez quedan en estado `IDENTIFICADO`. La definición documental no equivale
+a implementación ni a evidencia de ejecución.
+
+---
+
+#### 36. Validaciones documentales definidas
+
+La implementación deberá probar al menos:
+
+1. código, estado, `403`, decisión de carril y cero efectos;
+2. aplicación exclusiva a los 58 carriles operativos;
+3. no afectación de 54 permisos sin carril operativo;
+4. independencia de `BASE_OR_OPERATIONAL`;
+5. ausencia `null`, vacía y omitida;
+6. prohibición de fallback desde rol base, perfil, historial, dispositivo,
+   cookie, cliente o aplicación;
+7. separación de código desconocido, inactivo y deprecado;
+8. separación de sede y área;
+9. separación de grant faltante;
+10. precedencia con turno y check-in;
+11. equivalencia de diez canales;
+12. decisión explícita para diez aplicaciones;
+13. invalidación por cambio de revisión o catálogo;
+14. auditoría minimizada y cero efectos;
+15. reconciliación de las catorce brechas físicas;
+16. preservación de sesión y accesibilidad;
+17. no creación de rol para actores `SYSTEM`;
+18. simulación no ejecutable;
+19. compatibilidad y rollback de datos históricos;
+20. ausencia de bypass por nombre de rol.
+
+---
+
+#### 37. Evidencia y estados
+
+| Resultado                         | Estado al cerrar esta tarea                                   |
+| --------------------------------- | ------------------------------------------------------------- |
+| contrato documental               | `ESPECIFICADO`                                                |
+| matriz de veinticuatro escenarios | `ESPECIFICADO`                                                |
+| matriz de diez canales            | `ESPECIFICADO`                                                |
+| cobertura de diez aplicaciones    | `ESPECIFICADO`                                                |
+| snapshot físico                   | `PENDIENTE_DE_EVIDENCIA` para certificación de implementación |
+| migraciones y backfill            | `NO_APLICA` en esta fase documental                           |
+| código compartido y adapters      | `NO_APLICA` en esta fase documental                           |
+| pruebas automatizadas             | `PENDIENTE_DE_EVIDENCIA`                                      |
+| validación operativa              | `PENDIENTE_DE_EVIDENCIA`                                      |
+
+No se presenta ninguna brecha física como implementada o validada.
+
+---
+
+#### 38. Fuera del alcance
+
+Esta tarea no:
+
+- corrige turnos;
+- completa roles históricos;
+- crea migraciones;
+- endurece nulabilidad;
+- valida constraints físicas;
+- cambia catálogos;
+- modifica matrices de sede o área;
+- cambia grants;
+- elimina perfiles;
+- edita NEXO u otra aplicación;
+- implementa SDK;
+- despliega funciones;
+- ejecuta DDL, DML o backfills;
+- crea datos de prueba productivos;
+- inicia `AUTH-ERR-013`.
+
+---
+
+#### 39. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. existe una sola identidad pública;
+2. la ausencia limpia está definida sin confundirla con invalidez;
+3. la fuente exclusiva es el rol de la revisión publicada del turno;
+4. se prohíben todos los fallbacks no autoritativos;
+5. se preserva la separación entre rol base y operativo;
+6. los 112 permisos se reconcilian en distribución 54/19/39;
+7. los 58 carriles operativos requieren rol;
+8. las cuatro modalidades tienen decisión explícita;
+9. la precedencia con turno y check-in es inequívoca;
+10. sede y área permanecen en `AUTH-ERR-013` y `AUTH-ERR-014`;
+11. código inválido y fuente indisponible conservan razones distintas;
+12. veinticuatro escenarios tienen resultado;
+13. diez canales tienen respuesta equivalente;
+14. diez aplicaciones tienen decisión explícita;
+15. copy, privacidad, accesibilidad y recuperación están definidos;
+16. se exige cero efectos y nueva decisión;
+17. el snapshot físico declara cifras y límites;
+18. catorce brechas poseen estado y destino;
+19. diez requisitos `TREQ-*` están derivados;
+20. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 40. Riesgos controlados
+
+La tarea controla:
+
+- autorización por rol base en ausencia de rol operativo;
+- fallback desde perfiles o historial;
+- préstamo de rol desde dispositivo compartido;
+- override por cookie o frontend;
+- selección arbitraria mediante `limit 1`;
+- mezcla de ausencia con incompatibilidad territorial;
+- bloqueo indiscriminado de capacidades base;
+- bypass por nombre de administrador;
+- simulación tratada como autoridad real;
+- respuesta genérica sin recuperación;
+- datos protegidos serializados antes del deny;
+- efectos parciales;
+- drift entre canales y aplicaciones;
+- backfill no determinista de turnos históricos;
+- exposición de datos laborales internos.
+
+---
+
+#### 41. Cierre de tarea y continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+AUTH-ERR-011 — Check-in requerido
+
+TAREA ACTUAL APROBADA
+AUTH-ERR-012 — Rol operativo faltante
+
+SIGUIENTE TAREA RESERVADA
+AUTH-ERR-013 — Rol operativo inválido para la sede
+```
+
+No se inicia ni modifica `AUTH-ERR-013` en esta tarea.
+
+
 ### [ ] AUTH-ERR-013 — Rol operativo inválido para la sede
 ### [ ] AUTH-ERR-014 — Rol operativo inválido para el área
 ### [ ] AUTH-ERR-015 — Dispositivo no autorizado
