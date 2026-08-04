@@ -2748,7 +2748,7 @@ No se inicia ni modifica `AUTH-ERR-011` en esta tarea.
 
 **Estado:** APROBADA
 **Tarea anterior:** `AUTH-ERR-010 — Fuera de turno` — APROBADA
-**Tarea siguiente:** `AUTH-ERR-012 — Check-out incompleto` — RESERVADA
+**Tarea siguiente:** `AUTH-ERR-012 — Rol operativo faltante` — RESERVADA
 **Tipo de tarea:** documental; definición contractual, funcional, causal, de seguridad y experiencia del bloqueo producido cuando una capacidad operativa exige check-in activo, existe un turno laboral publicado y vigente inequívoco, pero no existe una sesión de check-in autoritativa, abierta y compatible
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md`
