@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **545** |
+| Aprobadas | **546** |
 | En propuesta | **0** |
-| No iniciadas | **1049** |
+| No iniciadas | **1048** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **34.19% (545/1594)** |
+| Porcentaje de completamiento | **34.25% (546/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-ERR-020` — Compartir mensajes desde vento-shell | ✅ APROBADA |
-| Tarea actual | `NEXO-DOM-001` — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores | ⬜ NO INICIADA |
-| Siguiente reservada | `NEXO-UX-001` — Inventariar procesos reales de inventario y logística | ⬜ NO INICIADA |
+| Última aprobada | `NEXO-DOM-001` — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores | ✅ APROBADA |
+| Tarea actual | `NEXO-UX-001` — Inventariar procesos reales de inventario y logística | ⬜ NO INICIADA |
+| Siguiente reservada | `NEXO-UX-002` — Separar operación, supervisión y configuración | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -906,7 +906,7 @@
 | ⬜ NO INICIADA | `NEXO-AUTH-018` | Migrar a paquetes de vento-shell | `bloques/K_NEXO/00_INTRO.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-019` | Eliminar helpers duplicados | `bloques/K_NEXO/00_INTRO.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-020` | Ejecutar pruebas integrales | `bloques/K_NEXO/00_INTRO.md` |
-| ⬜ NO INICIADA | `NEXO-DOM-001` | Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores | `bloques/K_NEXO/02_DOMINIO_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
+| ✅ APROBADA | `NEXO-DOM-001` | Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores | `bloques/K_NEXO/02_DOMINIO_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-DOM-002` | Definir propósito y tipos canónicos de LPN | `bloques/K_NEXO/02_DOMINIO_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-DOM-003` | Definir ciclo de vida de LPN: crear, activar, cerrar, anular y reetiquetar | `bloques/K_NEXO/02_DOMINIO_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-DOM-004` | Definir contenido, empaque y desempaque de LPN | `bloques/K_NEXO/02_DOMINIO_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |

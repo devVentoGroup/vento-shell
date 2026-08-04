@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **545** |
+| Tareas aprobadas | **546** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1049** |
+| Tareas no iniciadas | **1048** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **34.19% (545/1594)** |
+| Porcentaje de completamiento | **34.25% (546/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-ERR-020 — Compartir mensajes desde vento-shell** |
-| Tarea actual | **NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores** |
+| Última tarea aprobada | **NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores** |
+| Tarea actual | **NEXO-UX-001 — Inventariar procesos reales de inventario y logística** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NEXO-UX-001 — Inventariar procesos reales de inventario y logística** |
-| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 12: NEXO_INVENTORY_CLASSIFICATION** |
-| Progreso del bloque | **CARRIL NEXO: 0 de 1 aprobadas; NEXO-DOM-001 pendiente** |
+| Siguiente tarea | **NEXO-UX-002 — Separar operación, supervisión y configuración** |
+| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 13: NEXO_FUNCTIONAL_UX** |
+| Progreso del bloque | **CARRIL NEXO: 0 de 25 aprobadas; NEXO-UX-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-ERR-020` — Compartir mensajes desde vento-shell |
-| Tarea actual | `NEXO-DOM-001` — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores — **NO INICIADA** |
-| Siguiente tarea | `NEXO-UX-001` — Inventariar procesos reales de inventario y logística |
+| Última aprobada | `NEXO-DOM-001` — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores |
+| Tarea actual | `NEXO-UX-001` — Inventariar procesos reales de inventario y logística — **NO INICIADA** |
+| Siguiente tarea | `NEXO-UX-002` — Separar operación, supervisión y configuración |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 1 APROBADAS — ACTUAL NEXO-DOM-001** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 25 APROBADAS — ACTUAL NEXO-UX-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-ERR-020 — Compartir mensajes desde vento-shell
-        ↓
-TAREA ACTUAL
 NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NEXO-UX-001 — Inventariar procesos reales de inventario y logística
         ↓
+SIGUIENTE TAREA RESERVADA
+NEXO-UX-002 — Separar operación, supervisión y configuración
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 0 de 1 tareas aprobadas
+CARRIL NEXO — 0 de 25 tareas aprobadas
 ```
