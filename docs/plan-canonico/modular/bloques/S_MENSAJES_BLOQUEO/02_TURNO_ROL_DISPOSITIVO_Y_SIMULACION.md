@@ -6101,6 +6101,1238 @@ AUTH-ERR-014 — Rol operativo inválido para el área
 No se inicia ni modifica `AUTH-ERR-014` en esta tarea.
 
 
-### [ ] AUTH-ERR-014 — Rol operativo inválido para el área
+### ✅ AUTH-ERR-014 — Rol operativo inválido para el área
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-013 — Rol operativo inválido para la sede` — APROBADA
+**Tarea siguiente:** `AUTH-ERR-015 — Dispositivo no autorizado` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, causal, funcional, territorial, de seguridad y experiencia del bloqueo producido cuando una capacidad necesita carril operativo, el rol operativo canónico del turno está habilitado en su sede, pero no existe una habilitación activa y concluyente para el área exacta del mismo turno
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué debe ocurrir cuando una
+solicitud necesita participar en el carril operativo, ya superó los controles
+anteriores aplicables, consume exactamente un turno laboral publicado y
+vigente, contiene un rol operativo canónico y activo, resuelve una sede y un
+área operativas válidas desde esa misma revisión, encuentra al menos una
+habilitación activa del rol dentro de la sede, pero no encuentra una
+habilitación site-wide ni una habilitación activa para el área exacta del
+turno.
+
+La regla raíz queda:
+
+```text
+SESIÓN AUTENTICADA VÁLIDA
++
+IDENTIDAD LABORAL ACTIVA
++
+ACCESO A LA APLICACIÓN PERMITIDO
++
+CAPACIDAD CON CARRIL OPERATIVO APLICABLE
++
+TURNO LABORAL PUBLICADO Y VIGENTE INEQUÍVOCO
++
+CHECK-IN VÁLIDO CUANDO EL CARRIL EXIGE T+C
++
+ROL OPERATIVO PRESENTE, CANÓNICO Y ACTIVO
++
+SEDE EXACTA DEL TURNO VÁLIDA Y OPERATIVA
++
+SITE_ROLE_ENABLEMENT = PRESENT_AREA_SCOPED
++
+ÁREA EXACTA DEL TURNO PRESENTE, ACTIVA Y PERTENECIENTE A LA SEDE
++
+SITE_WIDE_ENABLEMENT = ABSENT
++
+EXACT_AREA_ENABLEMENT = CONCLUSIVE_ABSENT
+→
+DENY DEL CARRIL OPERATIVO
++
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
++
+403 CUANDO LA DECISIÓN FINAL QUEDA DENEGADA
++
+CERO EFECTOS
+```
+
+La tarea responde exclusivamente:
+
+```text
+¿EL ROL OPERATIVO CANÓNICO DEL TURNO ESTÁ HABILITADO
+EN LA SEDE, PERO NO PARA EL ÁREA EXACTA DE ESE MISMO TURNO?
+```
+
+No responde:
+
+```text
+¿EXISTE SESIÓN DE AUTENTICACIÓN?
+¿EL EMPLEADO ESTÁ ACTIVO?
+¿EXISTE UN TURNO PUBLICADO Y VIGENTE?
+¿EXISTE CHECK-IN CUANDO ES REQUERIDO?
+¿EL TURNO CONTIENE ROL OPERATIVO?
+¿EL CÓDIGO DE ROL ES CANÓNICO Y ACTIVO?
+¿LA SEDE DEL TURNO EXISTE Y ESTÁ ACTIVA?
+¿EL ROL ESTÁ HABILITADO EN LA SEDE?
+¿EL ÁREA DEL TURNO EXISTE, ESTÁ ACTIVA Y PERTENECE A LA SEDE?
+¿EL ROL TIENE EL GRANT DEL PERMISO?
+¿EL RECURSO PERTENECE AL TERRITORIO?
+¿LA FUENTE TÉCNICA ESTÁ DISPONIBLE?
+```
+
+La ausencia limpia del rol pertenece a `AUTH-ERR-012`. La ausencia total de
+habilitación del rol dentro de la sede pertenece a `AUTH-ERR-013`. Un área
+nula, inexistente, inactiva, perteneciente a otra sede, ambigua o no resoluble
+constituye contexto o configuración inválida y no se degradará a esta razón.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `OPERATIONAL-ROLE-AREA-BLOCKING-CONTRACT-001`, que congela identidad
+   pública, aplicabilidad, fuentes autoritativas, decisión, recuperación,
+   privacidad, auditoría y cero efectos;
+2. `OPERATIONAL-ROLE-AREA-STATE-DECISION-MATRIX-001`, que decide veinticuatro
+   escenarios y separa área incompatible, sede no habilitada, área no
+   resoluble, rol faltante, rol inválido, grant faltante, simulación e
+   indisponibilidad;
+3. `OPERATIONAL-ROLE-AREA-CHANNEL-RESPONSE-MATRIX-001`, que materializa diez
+   canales con semántica equivalente;
+4. `OPERATIONAL-ROLE-AREA-APPLICATION-COVERAGE-REGISTER-001`, que decide el
+   alcance para las diez aplicaciones canónicas sin autorizar por nombre de
+   aplicación;
+5. `OPERATIONAL-ROLE-AREA-PHYSICAL-RECONCILIATION-001`, que registra el
+   snapshot físico, los dos casos agregados observados y catorce brechas con
+   destino documental explícito.
+
+Cobertura materializada:
+
+| Elemento                                              | Cantidad |
+| ----------------------------------------------------- | -------: |
+| Código público canónico                               |        1 |
+| Estado HTTP no navegacional                           | 1, `403` |
+| Causas internas admitidas                             |        3 |
+| Escenarios con decisión explícita                     |       24 |
+| Canales con respuesta explícita                       |       10 |
+| Aplicaciones canónicas reconciliadas                  |       10 |
+| Permisos canónicos evaluados por carril               |      112 |
+| Permisos sin carril operativo                         |       54 |
+| Permisos con carril operativo                         |       58 |
+| Carriles operativos `T`                               |       19 |
+| Carriles operativos `T+C`                             |       39 |
+| Roles operativos canónicos consumibles                |       12 |
+| Roles operativos físicos activos observados           |       13 |
+| Sedes con habilitaciones activas observadas           |        5 |
+| Habilitaciones físicas activas sede/área              |       16 |
+| Pares distintos sede–rol activos                      |       16 |
+| Habilitaciones site-wide activas                      |        3 |
+| Habilitaciones con área activa                        |       13 |
+| Turnos laborales publicados no cancelados             |     2318 |
+| Turnos clasificados como rol faltante                 |     1535 |
+| Turnos válidos por habilitación site-wide             |       23 |
+| Turnos válidos por coincidencia de área exacta        |      758 |
+| Turnos con rol inválido para sede                     |        0 |
+| Turnos con rol inválido para área                     |        2 |
+| Casos agregados distintos de incompatibilidad de área |        2 |
+| Brechas físicas registradas                           |       14 |
+| Requisitos de prueba derivados                        |       10 |
+
+Las cifras físicas son un snapshot de solo lectura. Los dos casos observados no
+certifican implementación del contrato, no autorizan exponer identidades de
+trabajadores y no deberán corregirse mediante una mutación indiscriminada.
+
+---
+
+#### 3. Identidad canónica del bloqueo
+
+La identidad pública única es:
+
+```text
+reason_code = AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+```
+
+| Propiedad                                    | Valor                                                                                                              |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| Dominio                                      | `AUTHORIZATION_CONTEXT`                                                                                            |
+| Estado público                               | `OPERATIONAL_ROLE_NOT_ENABLED_FOR_ACTIVE_AREA`                                                                     |
+| Decisión de carril                           | `DENY` para el carril operativo                                                                                    |
+| Decisión final                               | depende de la modalidad; nunca autoriza un carril operativo territorialmente incompleto                            |
+| Estado HTTP cuando la decisión final deniega | `403 Forbidden`                                                                                                    |
+| `executable`                                 | `false` cuando no existe otro carril completo que autorice                                                         |
+| Sesión de autenticación                      | se conserva                                                                                                        |
+| Efectos empresariales                        | cero                                                                                                               |
+| Reintento automático                         | prohibido                                                                                                          |
+| Recuperación principal                       | corrección administrativa del turno o de la matriz territorial; después, resolución de contexto y solicitud nuevas |
+| Copy principal                               | `Tu rol operativo no está habilitado para esta área. Solicita que revisen tu turno para continuar.`                |
+| Causas internas públicas                     | ninguna                                                                                                            |
+
+Quedan prohibidos como códigos públicos alternativos:
+
+- `invalid_operational_role`;
+- `invalid_area`;
+- `wrong_area`;
+- `role_not_allowed`;
+- `area_role_invalid` sin namespace;
+- `no_permission`;
+- el código del rol;
+- el código o nombre del área;
+- mensajes libres usados como identidad contractual.
+
+Una razón legacy podrá mapearse temporalmente como alias interno, pero no podrá
+competir con la identidad pública canónica.
+
+---
+
+#### 4. Definición exacta de área no habilitada
+
+Existe área no habilitada únicamente cuando:
+
+```text
+active_shift = exactly_one
+AND
+operational_role = PRESENT_CANONICAL_ACTIVE
+AND
+active_shift.site = PRESENT_ACTIVE_OPERATIONAL
+AND
+active_enablement(role_code, active_shift.site_id) = ONE_OR_MORE
+AND
+active_shift.area = PRESENT_ACTIVE_AND_BELONGS_TO_SHIFT_SITE
+AND
+SITE_ROLE_ENABLEMENT_READ = SUCCESS
+AND
+SITE_WIDE_ENABLEMENT = NONE
+AND
+EXACT_AREA_ENABLEMENT(role_code, site_id, area_id) = NONE
+```
+
+La búsqueda territorial deberá realizarse por identidad estable:
+
+```text
+active_shift.operational_role_code
++
+active_shift.site_id
++
+active_shift.area_id
+```
+
+No se autorizará por coincidencia de nombre, `kind`, etiqueta, posición,
+jerarquía visual o primera fila devuelta.
+
+Estados diferenciados:
+
+| Estado de la fuente          | Significado                                                                                                                | Resultado propietario       |
+| ---------------------------- | -------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| `PRESENT_SITE_WIDE`          | el rol está habilitado para toda la sede                                                                                   | continuar a grant y recurso |
+| `PRESENT_EXACT_AREA`         | existe relación activa para el área exacta                                                                                 | continuar a grant y recurso |
+| `PRESENT_OTHER_AREA_ONLY`    | el rol está habilitado en la sede, pero solo en otra área                                                                  | `AUTH-ERR-014`              |
+| `INACTIVE_EXACT_AREA_ONLY`   | la coincidencia exacta existe, pero está retirada o inactiva, y otra relación activa mantiene habilitado el rol en la sede | `AUTH-ERR-014`              |
+| `NO_SITE_ENABLEMENT`         | no existe ninguna relación activa del rol en la sede                                                                       | `AUTH-ERR-013`              |
+| `INVALID_OR_UNRESOLVED_AREA` | área nula, inexistente, inactiva, ajena a la sede o ambigua                                                                | `AUTH-ERR-017`              |
+| `CONTRADICTORY`              | configuración mixta o revisiones incompatibles impiden decisión única                                                      | `AUTH-ERR-017`              |
+| `UNAVAILABLE`                | la fuente no pudo consultarse                                                                                              | `AUTH-ERR-019`              |
+
+Una relación retirada no concede autoridad y no podrá revivirse por caché,
+historial, equivalencia semántica ni coincidencia textual.
+
+---
+
+#### 5. Fuentes autoritativas de rol, sede y área
+
+El rol, la sede y el área evaluados procederán de la misma revisión publicada:
+
+```text
+active_shift.operational_role_code
+active_shift.site_id
+active_shift.area_id
+```
+
+La habilitación procederá del contrato canónico equivalente a:
+
+```text
+site_operational_roles
+role_code = active_shift.operational_role_code
+site_id   = active_shift.site_id
+is_active = true
+```
+
+La compatibilidad exacta se resuelve así:
+
+```text
+area_id IS NULL
+→ habilitación site-wide
+
+area_id = active_shift.area_id
+→ habilitación exacta
+
+area_id distinto
+→ no habilita el área del turno
+```
+
+La implementación futura deberá además confirmar:
+
+- existencia y actividad del área;
+- pertenencia del área a la sede exacta del turno;
+- existencia y actividad de la sede y del rol;
+- vigencia de la relación en `resolved_at`;
+- ausencia de contradicción estructural;
+- versión reproducible de turno, catálogo y matriz.
+
+No podrán sustituir estas fuentes:
+
+- área del check-in;
+- área seleccionada en interfaz;
+- área primaria o preferida del trabajador;
+- área del dispositivo;
+- última área utilizada;
+- área recibida en query, body, cookie o header;
+- primera área de la sede;
+- un área con el mismo `kind`;
+- un área con el mismo nombre;
+- perfil operativo predeterminado;
+- una coincidencia del rol en otra sede;
+- un grant de permiso;
+- una heurística por aplicación.
+
+---
+
+#### 6. Separación entre asignación, habilitación y grant
+
+Estas condiciones son independientes:
+
+```text
+EMPLEADO ASIGNADO A UN ÁREA
+≠
+ROL HABILITADO EN ESA ÁREA
+```
+
+```text
+ROL HABILITADO EN LA SEDE
+≠
+ROL HABILITADO EN EL ÁREA
+```
+
+```text
+ROL HABILITADO EN EL ÁREA
+≠
+PERMISO CONCEDIDO
+```
+
+```text
+PERMISO CONCEDIDO
+≠
+RECURSO DENTRO DEL SCOPE
+```
+
+Una asignación laboral válida no crea una habilitación del rol. Una
+habilitación site-wide autoriza el gate territorial de área, pero no concede el
+grant ni amplía el scope del recurso. Un grant no corrige un área incompatible.
+
+La validación territorial completa conserva, como mínimo:
+
+1. empleado habilitado para trabajar en el territorio;
+2. turno vigente en la sede y área exactas;
+3. rol canónico del turno;
+4. rol habilitado en la sede;
+5. habilitación site-wide o coincidencia de área exacta;
+6. grant exacto del permiso;
+7. recurso dentro del alcance.
+
+---
+
+#### 7. Matriz territorial consumida
+
+La matriz deberá admitir dos modalidades explícitas:
+
+| Modalidad     | Representación                                      | Efecto                                                                  |
+| ------------- | --------------------------------------------------- | ----------------------------------------------------------------------- |
+| `SITE_WIDE`   | relación activa con `area_id = null`                | el gate de área queda satisfecho para cualquier área válida de esa sede |
+| `AREA_SCOPED` | una o más relaciones activas con `area_id` concreto | solo las áreas exactas relacionadas satisfacen el gate                  |
+
+La ausencia de un campo explícito de modalidad no autoriza inferencias
+contradictorias. La implementación deberá normalizar la modalidad y validar su
+integridad.
+
+Para un mismo par `site_id + role_code` queda prohibida una configuración
+activa simultánea `SITE_WIDE + AREA_SCOPED` sin una regla contractual versionada
+que elimine la ambigüedad. Mientras dicha mezcla no esté aprobada, se tratará
+como `CONTRADICTORY` y pertenecerá a `AUTH-ERR-017`.
+
+La modalidad `AREA_SCOPED` deberá poder representar más de un área para el
+mismo rol dentro de una sede. El orden físico de filas no participa en la
+decisión.
+
+---
+
+#### 8. Aplicabilidad por permiso y carril
+
+La razón se evalúa únicamente si el permiso admite o exige carril operativo.
+
+| Clasificación                 | Cantidad | Efecto ante área incompatible                                  |
+| ----------------------------- | -------: | -------------------------------------------------------------- |
+| permisos sin carril operativo |       54 | no evalúan esta razón                                          |
+| carriles operativos `T`       |       19 | evalúan área después de turno, rol y sede                      |
+| carriles operativos `T+C`     |       39 | evalúan área después de turno, check-in, rol y sede            |
+| total con carril operativo    |       58 | el carril operativo queda denegado si el área no es compatible |
+
+Ninguna aplicación podrá convertir todos sus permisos en una única política de
+área. La unidad de decisión continúa siendo el permiso, su modalidad y el
+carril evaluado.
+
+---
+
+#### 9. Modalidades de autorización
+
+##### `BASE_ONLY`
+
+No consume rol ni área operativos. La incompatibilidad de área no produce esta
+razón.
+
+##### `OPERATIONAL_ONLY`
+
+El área incompatible deniega la decisión final porque el único carril admitido
+está incompleto.
+
+##### `BASE_OR_OPERATIONAL`
+
+Los carriles se evalúan de forma independiente:
+
+```text
+BASE_ALLOW completo
++
+ÁREA OPERATIVA INCOMPATIBLE
+→ ALLOW por carril base
+→ carril operativo DENY
+```
+
+```text
+BASE_DENY
++
+ÁREA OPERATIVA INCOMPATIBLE
+→ DENY final
+→ AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+```
+
+##### `BASE_AND_OPERATIONAL`
+
+La incompatibilidad de área deniega la decisión final aunque el carril base sea
+válido. No se combinan fragmentos incompletos.
+
+---
+
+#### 10. Precondiciones exactas
+
+Antes de producir esta razón deberán haberse resuelto:
+
+1. sesión y actor efectivo;
+2. actividad laboral;
+3. aplicación solicitada;
+4. permiso y modalidad;
+5. selección del carril operativo;
+6. turno publicado;
+7. vigencia temporal del turno;
+8. check-in cuando el carril es `T+C`;
+9. presencia y validez del rol;
+10. existencia, actividad y carácter operativo de la sede del turno;
+11. al menos una habilitación activa del rol dentro de esa sede;
+12. existencia, actividad y pertenencia del área del turno a esa sede;
+13. lectura concluyente de la matriz territorial.
+
+Para un carril `T`, la evaluación de área ocurre después de la vigencia, rol y
+sede, sin exigir check-in.
+
+Para un carril `T+C`, la evaluación ocurre después de confirmar el check-in
+activo compatible. El check-in no crea, sustituye ni corrige el área del turno.
+
+---
+
+#### 11. Causas internas admitidas
+
+Se admiten exactamente tres causas internas para esta identidad pública:
+
+| Causa interna                          | Condición                                                                                                      |
+| -------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `ROLE_ENABLED_ONLY_IN_OTHER_AREA`      | existen relaciones activas del rol en la sede, pero ninguna corresponde al área exacta del turno               |
+| `EXACT_AREA_ENABLEMENT_INACTIVE`       | existe relación exacta retirada o inactiva y otra relación activa mantiene al rol habilitado dentro de la sede |
+| `AREA_SCOPED_ROLE_WITHOUT_EXACT_MATCH` | la modalidad resuelta es `AREA_SCOPED`, el área es válida y la lectura concluye sin coincidencia exacta        |
+
+Estas causas podrán registrarse en auditoría restringida. No se expondrán al
+usuario ni cambiarán el código público.
+
+No pertenecen a esta identidad:
+
+- rol faltante;
+- código desconocido, inactivo o deprecado;
+- ausencia total de habilitación del rol en la sede;
+- área nula, inexistente, inactiva o de otra sede;
+- configuración mixta o contradictoria;
+- múltiples turnos o revisiones candidatas;
+- grant faltante;
+- fallo de catálogo, matriz o base de datos.
+
+---
+
+#### 12. `OPERATIONAL-ROLE-AREA-BLOCKING-CONTRACT-001`
+
+El contrato queda:
+
+```text
+INPUT
+  actor_effective
+  requested_permission
+  authorization_requirement
+  selected_lane
+  active_shift
+  active_checkin_session
+  operational_role
+  active_site
+  active_area
+  site_role_enablements
+  resolved_at
+  contract_versions
+  context_fingerprint
+
+PRECONDITION
+  selected_lane = OPERATIONAL
+  active_shift = valid_published_current_shift
+  checkin_requirement_satisfied = true
+  operational_role = canonical_active
+  active_site = valid_active_operational_site
+  site_role_enablement = present
+  active_area = valid_active_area_belonging_to_active_site
+  enablement_read = conclusive
+  site_wide_enablement = absent
+  exact_area_enablement = absent
+
+OUTPUT
+  lane_decision = DENY
+  reason_code = AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+  public_state = OPERATIONAL_ROLE_NOT_ENABLED_FOR_ACTIVE_AREA
+  executable = false for the operational lane
+  side_effects = 0
+  session_preserved = true
+  automatic_retry = false
+```
+
+Si otro carril independiente produce `ALLOW`, la decisión final respetará la
+modalidad sin presentar el bloqueo como denegación global.
+
+---
+
+#### 13. Frontera con rol faltante o inválido
+
+| Estado del rol del turno       | Propietario                            |
+| ------------------------------ | -------------------------------------- |
+| `null`, vacío u omitido        | `AUTH-ERR-012`                         |
+| presente, desconocido          | configuración inválida; `AUTH-ERR-017` |
+| presente, inactivo o deprecado | configuración inválida; `AUTH-ERR-017` |
+| canónico y activo              | continuar a sede y área                |
+
+No se buscará un rol alternativo compatible con el área. La función del turno
+no puede cambiarse durante autorización.
+
+---
+
+#### 14. Frontera con sede
+
+La evaluación de sede responde si el rol puede existir dentro de la sede. La
+evaluación de área responde dónde puede operar dentro de esa sede.
+
+```text
+NO EXISTE NINGUNA HABILITACIÓN ACTIVA DEL ROL EN LA SEDE
+→
+AUTH-ERR-013
+```
+
+```text
+EXISTE AL MENOS UNA HABILITACIÓN ACTIVA DEL ROL EN LA SEDE
++
+NO EXISTE HABILITACIÓN SITE-WIDE
++
+NO EXISTE COINCIDENCIA DE ÁREA EXACTA
+→
+AUTH-ERR-014
+```
+
+Una habilitación por otra área demuestra que el rol está admitido en la sede,
+pero no autoriza el área actual. No se utilizará
+`AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE` para ese caso.
+
+---
+
+#### 15. Frontera con área inválida o no resoluble
+
+Esta razón exige un área válida antes de evaluar compatibilidad. Los siguientes
+casos no son “rol inválido para el área”:
+
+| Estado del área                                   | Resultado                                           |
+| ------------------------------------------------- | --------------------------------------------------- |
+| `area_id = null` cuando el contrato necesita área | configuración o contexto inválido; `AUTH-ERR-017`   |
+| identificador inexistente                         | configuración inválida; `AUTH-ERR-017`              |
+| área inactiva o retirada                          | configuración inválida; `AUTH-ERR-017`              |
+| área perteneciente a otra sede                    | contexto territorial contradictorio; `AUTH-ERR-017` |
+| más de un área candidata                          | contexto contradictorio; `AUTH-ERR-017`             |
+| lectura no disponible                             | `AUTH-ERR-019`                                      |
+
+El evaluador no podrá elegir el área del check-in, del perfil, del dispositivo,
+del cliente ni la primera área de la sede para producir un diagnóstico
+aparentemente recuperable.
+
+---
+
+#### 16. Frontera con permisos y recursos
+
+Un rol compatible con el área no implica que posea el permiso solicitado.
+
+```text
+AREA_COMPATIBILITY = ALLOW
++
+OPERATIONAL_GRANT = ABSENT
+→
+DENEGACIÓN DE PERMISO POSTERIOR
+```
+
+Un grant existente para un rol incompatible con el área tampoco corrige la
+relación territorial:
+
+```text
+OPERATIONAL_GRANT = PRESENT
++
+AREA_COMPATIBILITY = DENY
+→
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+```
+
+Después de área y grant deberá validarse el scope del recurso. Un recurso de
+otra sede, área o territorio no se presentará como incompatibilidad del rol si
+el contexto laboral ya era válido.
+
+---
+
+#### 17. Perfil operativo predeterminado
+
+El perfil predeterminado puede sugerir rol, sede o área durante planificación,
+pero no puede:
+
+- reemplazar el rol del turno;
+- reemplazar la sede o el área del turno;
+- añadir una habilitación territorial;
+- elegir otra área donde el rol sí esté habilitado;
+- convertir una relación inactiva en activa;
+- corregir el bloqueo durante la solicitud.
+
+La corrección deberá persistirse por autoridad administrativa y producir una
+revisión nueva y consumible.
+
+---
+
+#### 18. Dispositivos compartidos y navegación
+
+Un dispositivo puede declarar una plantilla de navegación, pero no presta
+área ni autoridad territorial.
+
+Queda prohibido:
+
+- usar `navigation_role` como rol efectivo;
+- usar el área o la sede del dispositivo como contexto del turno;
+- conservar el área del actor anterior;
+- sustituir una coincidencia faltante con una cookie;
+- elegir automáticamente un área compatible;
+- mutar el contexto en memoria para superar el gate;
+- continuar una suscripción protegida iniciada por otro actor.
+
+El actor real debe resolver su propio turno, rol, sede, área y habilitación.
+
+---
+
+#### 19. Simulación
+
+Una simulación podrá evaluar hipotéticamente:
+
+```text
+role_code hipotético
++
+site_id hipotético
++
+area_id hipotético
++
+matriz hipotética aprobada
+→
+WOULD_ALLOW o WOULD_DENY
+```
+
+No podrá:
+
+- modificar el contexto real;
+- convertir `WOULD_ALLOW` en autoridad;
+- habilitar una mutación;
+- persistir rol, sede o área en el turno;
+- modificar la matriz;
+- omitir el contexto real en auditoría de una operación real.
+
+Cuando la simulación reproduzca este caso, el estado será informativo y
+`executable = false`.
+
+---
+
+#### 20. Actor `SYSTEM`
+
+Un actor `SYSTEM` autónomo no recibe área laboral ni habilitación de rol por
+área.
+
+Las automatizaciones deberán utilizar permisos técnicos explícitos y un
+contrato de territorio propio. No se les asignará un área operativa sintética
+para superar esta razón.
+
+Una operación delegada en nombre de un empleado conserva el empleado como
+actor efectivo y evalúa el mismo turno, rol, sede y área.
+
+---
+
+#### 21. Entradas mínimas y determinismo
+
+Las entradas mínimas son:
+
+- actor efectivo;
+- permiso, modalidad y prerrequisito;
+- carril evaluado;
+- turno publicado vigente y revisión;
+- estado del check-in cuando aplique;
+- rol operativo canónico del turno;
+- sede y área exactas del turno;
+- catálogo de roles;
+- estados de sede y área;
+- relación área–sede;
+- conjunto completo de habilitaciones activas del rol en la sede;
+- modalidad territorial resuelta;
+- `resolved_at` de servidor;
+- versiones contractuales y fingerprint.
+
+Para las mismas entradas autoritativas deberá producirse exactamente el mismo
+resultado. No participan el orden físico de filas, el primer registro devuelto,
+la aplicación abierta, el área seleccionada, el área del dispositivo ni el
+estado local del cliente.
+
+---
+
+#### 22. `OPERATIONAL-ROLE-AREA-STATE-DECISION-MATRIX-001`
+
+|    # | Escenario                                                                                     | Decisión                                                                                    |
+| ---: | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+|    1 | `BASE_ONLY`, sin turno, rol, sede ni área                                                     | no aplica; evaluar carril base                                                              |
+|    2 | `BASE_OR_OPERATIONAL`, carril base completo y área incompatible                               | `ALLOW` por base; carril operativo `DENY`                                                   |
+|    3 | sin turno publicado                                                                           | `AUTH-ERR-009`                                                                              |
+|    4 | turno publicado fuera de ventana                                                              | `AUTH-ERR-010`                                                                              |
+|    5 | carril `T+C`, check-in ausente                                                                | `AUTH-ERR-011`                                                                              |
+|    6 | turno vigente con rol ausente                                                                 | `AUTH-ERR-012`                                                                              |
+|    7 | rol presente, pero desconocido, inactivo o deprecado                                          | configuración inválida; `AUTH-ERR-017`                                                      |
+|    8 | sede del turno nula, inexistente o inactiva                                                   | configuración o contexto inválido; `AUTH-ERR-017`                                           |
+|    9 | rol canónico sin ninguna relación activa en la sede                                           | `AUTH-ERR-013`                                                                              |
+|   10 | existe habilitación site-wide activa y configuración no contradictoria                        | continuar a grant y recurso                                                                 |
+|   11 | existe habilitación activa para el área exacta                                                | continuar a grant y recurso                                                                 |
+|   12 | el rol está habilitado en la sede únicamente para otra área                                   | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA`                                                    |
+|   13 | la relación exacta está inactiva y otra relación activa mantiene habilitado el rol en la sede | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA`                                                    |
+|   14 | área del turno nula cuando la modalidad es `AREA_SCOPED`                                      | configuración o contexto inválido; `AUTH-ERR-017`                                           |
+|   15 | área inexistente, inactiva o perteneciente a otra sede                                        | configuración o contexto inválido; `AUTH-ERR-017`                                           |
+|   16 | cliente propone un área donde el rol sí está habilitado                                       | ignorar propuesta; mantener decisión del turno                                              |
+|   17 | check-in contiene otra área                                                                   | razón previa de check-in o contexto; no sustituir área del turno                            |
+|   18 | dispositivo o perfil contienen un área compatible                                             | ignorar fallback; mantener decisión real                                                    |
+|   19 | mismo nombre o `area_kind`, identificador distinto                                            | no equivale; `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA` si ambas áreas son válidas de la sede |
+|   20 | configuración activa mezcla site-wide y area-scoped sin regla versionada                      | `AUTH-ERR-017`                                                                              |
+|   21 | simulación hipotética con área incompatible                                                   | `WOULD_DENY`; cero efectos                                                                  |
+|   22 | área compatible, pero grant ausente                                                           | denegación de permiso posterior                                                             |
+|   23 | matriz, revisión o cardinalidad contradictoria                                                | `AUTH-ERR-017`                                                                              |
+|   24 | fuente de catálogo, área o matriz no disponible                                               | `AUTH-ERR-019`                                                                              |
+
+La matriz conserva una decisión explícita para cada escenario y prohíbe
+fallback territorial.
+
+---
+
+#### 23. Precedencia
+
+El orden mínimo relevante permanece:
+
+```text
+AUTENTICACIÓN
+→ IDENTIDAD LABORAL
+→ ACCESO A APLICACIÓN
+→ TERRITORIO LABORAL PREVIO APLICABLE
+→ TURNO PUBLICADO
+→ VIGENCIA TEMPORAL
+→ CHECK-IN CUANDO T+C
+→ PRESENCIA DEL ROL OPERATIVO
+→ VALIDEZ DEL CÓDIGO
+→ VALIDEZ DE LA SEDE DEL TURNO
+→ HABILITACIÓN DEL ROL EN LA SEDE
+→ VALIDEZ Y PERTENENCIA DEL ÁREA DEL TURNO
+→ COMPATIBILIDAD EXACTA DEL ROL CON EL ÁREA
+→ DISPOSITIVO Y SIMULACIÓN
+→ GRANT DEL PERMISO
+→ SCOPE Y RECURSO
+```
+
+La primera causa concluyente aplicable prevalece. `AUTH-ERR-014` no ocultará
+turno o check-in faltante, rol ausente o inválido, sede no resoluble, ausencia
+total de habilitación en sede, área inválida, contradicción o indisponibilidad.
+
+---
+
+#### 24. Regla de cero efectos
+
+Antes de cualquier efecto empresarial, el servidor deberá confirmar que el
+rol operativo está habilitado site-wide o para el área exacta del turno.
+
+Mientras la razón esté vigente quedan prohibidos:
+
+- inserciones o actualizaciones empresariales;
+- cambios de estado;
+- movimientos de inventario;
+- preparación, producción, despacho o recepción;
+- operaciones de caja o cierre;
+- impresión o emisión de documentos;
+- eventos empresariales;
+- jobs, colas o notificaciones derivados;
+- suscripciones protegidas;
+- reserva de recursos;
+- auditoría de éxito.
+
+Solo se permite registrar el intento denegado con minimización de datos.
+
+---
+
+#### 25. Envelope público
+
+Cuando la decisión final sea denegada por esta causa, la respuesta compartida
+representará como mínimo:
+
+```json
+{
+  "decision": "DENY",
+  "reason_code": "AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA",
+  "public_state": "OPERATIONAL_ROLE_NOT_ENABLED_FOR_ACTIVE_AREA",
+  "http_status": 403,
+  "executable": false,
+  "retryable": false,
+  "session_preserved": true
+}
+```
+
+No incluirá:
+
+- código o nombre del rol;
+- código o nombre de la sede o del área;
+- áreas donde sí estaría habilitado;
+- rol o área esperados;
+- turno o revisión;
+- nombre del empleado;
+- grants existentes;
+- nombres físicos de tablas, funciones o políticas;
+- causas internas.
+
+---
+
+#### 26. Copy, accesibilidad y recuperación
+
+Copy principal exacto:
+
+```text
+Tu rol operativo no está habilitado para esta área. Solicita que revisen tu turno para continuar.
+```
+
+La experiencia deberá:
+
+- conservar la sesión;
+- explicar que la operación está bloqueada por contexto, no por cuenta inactiva;
+- no permitir cambiar área o rol desde el cliente como recuperación;
+- no revelar otras áreas donde el rol esté permitido;
+- ofrecer un canal accesible de soporte cuando exista;
+- anunciar el bloqueo mediante texto y semántica accesible;
+- mantener vistas base independientes que sí estén autorizadas;
+- no reintentar automáticamente sobre el mismo snapshot.
+
+La recuperación autoritativa es:
+
+```text
+revisar turno, área y matriz
+→ corregir la fuente propietaria autorizada
+→ publicar o activar la revisión aprobada
+→ invalidar snapshot anterior
+→ resolver contexto nuevo
+→ emitir solicitud nueva
+```
+
+---
+
+#### 27. `OPERATIONAL-ROLE-AREA-CHANNEL-RESPONSE-MATRIX-001`
+
+| Canal                           | Resultado obligatorio                                                                                               |
+| ------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| navegación web y guard          | bloquear la superficie operativa; conservar sesión y accesos base independientes                                    |
+| Server Action                   | no ejecutar cuerpo ni efectos; devolver razón tipada                                                                |
+| Route Handler o API             | `403` con envelope canónico                                                                                         |
+| RSC o fetch de servidor         | no serializar datos protegidos; representar el estado tipado                                                        |
+| RPC o PostgREST                 | fail closed; distinguir sede, área inválida y área incompatible; no reducirse a `false` sin diagnóstico contractual |
+| RLS o Data API                  | impedir lectura o mutación protegida y conservar correlación diagnóstica fuera de la política                       |
+| Edge Function                   | revalidar rol, sede, área y matriz; responder razón equivalente                                                     |
+| Realtime                        | cancelar o negar suscripción protegida cuando la relación territorial no existe o fue retirada                      |
+| cliente nativo u offline        | no usar área ni matriz cacheadas como autoridad; reautorizar en línea antes de ejecutar                             |
+| dispositivo compartido o kiosco | no sustituir área mediante plantilla, cookie, selección ni actor anterior                                           |
+
+Los diez canales deberán producir la misma decisión semántica y cero efectos.
+
+---
+
+#### 28. Reintentos, concurrencia y frescura
+
+Repetir la solicitud sobre el mismo snapshot no resuelve esta causa.
+
+Invalidan la decisión anterior:
+
+- publicación de un turno corregido;
+- cambio del rol, sede o área del turno;
+- activación, retiro o modificación de una habilitación site-wide o por área;
+- activación o desactivación del rol, sede o área;
+- corrección de la pertenencia área–sede;
+- cambio de actor;
+- entrada o salida de simulación;
+- cambio de dispositivo compartido;
+- fin del turno;
+- nueva versión de catálogo o matriz.
+
+Una operación iniciada con área compatible deberá revalidar antes del commit
+cuando exista riesgo de retiro concurrente, cambio de turno o transferencia de
+actor.
+
+---
+
+#### 29. Auditoría
+
+El evento de denegación deberá registrar de forma restringida:
+
+- identificador de correlación;
+- actor efectivo;
+- permiso, modalidad y carril;
+- `shift_id` y revisión;
+- identificadores internos de rol, sede y área;
+- modalidad territorial resuelta;
+- estado normalizado de la coincidencia;
+- causa interna;
+- versiones del catálogo y matriz;
+- `resolved_at`;
+- fingerprint del contexto;
+- aplicación y canal;
+- decisión final;
+- confirmación de cero efectos.
+
+La telemetría pública no expondrá rol, sede, área, matriz ni causa interna. El
+copy localizado no será identidad técnica.
+
+---
+
+#### 30. `OPERATIONAL-ROLE-AREA-APPLICATION-COVERAGE-REGISTER-001`
+
+| Aplicación | Decisión                                                                                                                |
+| ---------- | ----------------------------------------------------------------------------------------------------------------------- |
+| SHELL      | sus capacidades base no exigen área operativa; toda superficie operativa decide por permiso, turno y territorio exacto  |
+| ANIMA      | acceso y asistencia base permanecen disponibles; el check-in no puede sustituir ni corregir el área publicada del turno |
+| AURA       | no recibe rol, sede ni área laborales sintéticos para identidades de cliente o sistema                                  |
+| VISO       | planificación puede corregir turno o matriz mediante permisos base; una acción operativa consume el área real publicada |
+| NEXO       | inventario y logística validan el área exacta; cookies, overrides y primera coincidencia local carecen de autoridad     |
+| FOGO       | producción exige habilitación site-wide o coincidencia exacta antes de operar órdenes, estaciones o lotes               |
+| ORIGO      | compras administrativas permanecen separadas de recepción o ejecución operativa contextualizada por área                |
+| PULSO      | caja y operación presencial no pueden usar la terminal, ubicación o área seleccionada para sustituir el turno           |
+| NUMERA     | administración base permanece independiente; cualquier operación contextualizada consume el mismo contrato territorial  |
+| PASS       | la identidad cliente no recibe ni presta rol, sede o área laborales                                                     |
+
+La aplicación no es la unidad de autorización. Cada fila obliga a consumir el
+contrato por permiso, modalidad, actor y carril.
+
+---
+
+#### 31. Site-wide, area-scoped y operación multiárea
+
+La habilitación site-wide satisface el gate de compatibilidad para cualquier
+área válida perteneciente a la misma sede. No autoriza áreas inexistentes,
+inactivas o de otra sede y no sustituye el scope del recurso.
+
+La habilitación area-scoped exige coincidencia exacta por `area_id`. Un mismo
+rol podrá necesitar varias áreas dentro de una sede; cada identidad autorizada
+deberá estar materializada de forma explícita y versionable.
+
+Quedan prohibidos:
+
+- comparar solo `area_kind`;
+- comparar nombres normalizados;
+- heredar autorización desde áreas padre o hermanas sin contrato explícito;
+- escoger una sola fila mediante `limit 1`;
+- asumir que `area_id = null` en el turno significa site-wide;
+- asumir que un área ausente elimina el requisito;
+- interpretar la ubicación física del recurso como área laboral del actor.
+
+El contrato de multiárea deberá conservar unicidad por identidad completa y no
+por el par incompleto `site_id + role_code`.
+
+---
+
+#### 32. Snapshot físico observado
+
+El snapshot de solo lectura observó:
+
+| Elemento físico                               | Resultado |
+| --------------------------------------------- | --------: |
+| `operational_roles` activas                   |        13 |
+| roles canónicos consumibles por este contrato |        12 |
+| sedes con habilitaciones activas              |         5 |
+| `site_operational_roles` activas              |        16 |
+| pares distintos sede–rol activos              |        16 |
+| habilitaciones site-wide activas              |         3 |
+| habilitaciones con área activa                |        13 |
+| turnos laborales publicados no cancelados     |      2318 |
+| turnos con rol faltante                       |      1535 |
+| turnos con rol presente                       |       783 |
+| turnos válidos por habilitación site-wide     |        23 |
+| turnos válidos por área exacta                |       758 |
+| turnos con rol inválido para sede             |         0 |
+| turnos con rol inválido para área             |         2 |
+| casos agregados distintos de incompatibilidad |         2 |
+
+Los conteos clasifican cada turno una sola vez. Los 23 casos site-wide y los
+758 casos de área exacta suman los 781 turnos territorialmente compatibles
+observados.
+
+---
+
+#### 33. Casos físicos agregados observados
+
+Sin exponer identidades de trabajadores, los dos casos agregados son:
+
+| Sede    | Rol del turno      | Área del turno          | Área activa observada para el rol | Turnos |
+| ------- | ------------------ | ----------------------- | --------------------------------- | -----: |
+| `SAUDO` | `barista_satelite` | `CAJA` (`caja`)         | `COCINA` (`cocina_bar`)           |      1 |
+| `SAUDO` | `cajero_satelite`  | `COCINA` (`cocina_bar`) | `CAJA` (`caja`)                   |      1 |
+
+Ambos casos satisfacen la frontera de esta tarea: el rol está habilitado dentro
+de `SAUDO`, pero no existe relación site-wide ni coincidencia con el área
+exacta del turno.
+
+El snapshot no determina por sí solo si debe corregirse el turno, la matriz o
+la planificación laboral. Esa decisión deberá tomarse mediante autoridad
+administrativa, evidencia operativa y una revisión publicada; queda prohibido
+realizar un backfill automático por semejanza de nombres o roles.
+
+---
+
+#### 34. Comportamiento físico observado
+
+El resolver físico actual presenta estas conductas relevantes:
+
+- combina rol, sede y área en una sola búsqueda y reduce fallos diferentes a
+  `invalid_operational_role`;
+- puede derivar sede o área desde check-in, selección o perfil antes de decidir;
+- no valida de forma concluyente que el área esté activa y pertenezca a la sede
+  del turno;
+- selecciona turno mediante `limit 1` sin demostrar unicidad;
+- permite bypass por nombres de roles administrativos;
+- no expone un estado público específico para esta tarea.
+
+El evaluador físico de permiso contiene una condición equivalente a:
+
+```text
+sor.area_id IS NULL
+OR active_area_id IS NULL
+OR sor.area_id = active_area_id
+```
+
+Por tanto, un área nula puede convertir una relación area-scoped en compatible,
+lo que contradice el contrato fail closed.
+
+El contexto efectivo de dispositivo puede derivar rol, sede o área desde
+navegación o simulación. El consumidor NEXO observado puede modificar rol desde
+cookie y, cuando falta área, seleccionar la primera área de la sede mediante
+`limit(1)`.
+
+---
+
+#### 35. `OPERATIONAL-ROLE-AREA-PHYSICAL-RECONCILIATION-001`
+
+|    # | Brecha física                                                                                                    | Estado                   | Destino de cierre                                                                                   |
+| ---: | ---------------------------------------------------------------------------------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------------- |
+|    1 | razón legacy agrupa rol faltante, sede y área                                                                    | `BLOQUEADO`              | `AUTH-DB-034`; catálogo y evaluador tipado                                                          |
+|    2 | el resolver combina sede y área en un mismo `exists`                                                             | `BLOQUEADO`              | `AUTH-DB-033`; resolución territorial por etapas                                                    |
+|    3 | el área efectiva puede priorizar check-in o valores seleccionados sobre el turno                                 | `BLOQUEADO`              | `AUTH-DB-033`; fuente única de revisión publicada                                                   |
+|    4 | no existe validación cruzada concluyente de que `employee_shifts.area_id` pertenezca a `employee_shifts.site_id` | `BLOQUEADO`              | `AUTH-DB-020`; integridad territorial compatible                                                    |
+|    5 | `site_operational_roles.area_id` carece de foreign key y de garantía cruzada con su sede                         | `BLOQUEADO`              | `AUTH-DB-020`; constraint y validación progresiva                                                   |
+|    6 | el índice único por `site_id + role_code` impide varias áreas para un mismo rol en una sede                      | `BLOQUEADO`              | `AUTH-DB-020`; cardinalidad multiárea versionada                                                    |
+|    7 | el catálogo físico no declara modalidad `SITE_WIDE` o `AREA_SCOPED`                                              | `BLOQUEADO`              | `AUTH-DB-030`; contrato explícito de alcance de área                                                |
+|    8 | `has_operational_permission` considera compatible cualquier relación cuando el área resuelta es nula             | `BLOQUEADO`              | `AUTH-DB-034`; fail closed y razón tipada                                                           |
+|    9 | el evaluador booleano no separa área inválida, incompatible, grant faltante ni indisponibilidad                  | `BLOQUEADO`              | `AUTH-DB-034`; envelope compartido                                                                  |
+|   10 | existen bypasses por nombres de roles y valores suministrados por el llamador                                    | `BLOQUEADO`              | `AUTH-DB-034`; permisos y contexto autoritativos                                                    |
+|   11 | `get_effective_context_v1` puede derivar rol, sede o área desde dispositivo o simulación                         | `BLOQUEADO`              | `SHELL-AUTH-004`; separación de autoridad real y contexto presentado                                |
+|   12 | NEXO admite override por cookie y selecciona una primera área local mediante `limit(1)`                          | `BLOQUEADO`              | `SHELL-AUTH-005`; adapter canónico                                                                  |
+|   13 | existen dos turnos productivos agregados con área incompatible y su corrección causal no está certificada        | `PENDIENTE_DE_EVIDENCIA` | revisión administrativa controlada y fixtures sintéticos en `SHELL-CI-016`; sin mutación automática |
+|   14 | consumidoras carecen de código, envelope, copy, invalidación y pruebas canónicos                                 | `BLOQUEADO`              | `SHELL-AUTH-002`; `AUTH-ERR-020`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019`                    |
+
+Ninguna brecha autoriza cambios físicos durante esta tarea documental.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+Esta tarea crea diez requisitos:
+
+- `TREQ-AUTH-259`;
+- `TREQ-AUTH-260`;
+- `TREQ-AUTH-261`;
+- `TREQ-AUTH-262`;
+- `TREQ-AUTH-263`;
+- `TREQ-AUTH-264`;
+- `TREQ-AUTH-265`;
+- `TREQ-AUTH-266`;
+- `TREQ-AUTH-267`;
+- `TREQ-AUTH-268`.
+
+Los diez quedan en estado `IDENTIFICADO`. La definición documental no equivale
+a implementación ni a evidencia de ejecución.
+
+---
+
+#### 37. Validaciones documentales definidas
+
+La implementación deberá probar al menos:
+
+1. código, estado, `403`, decisión de carril y cero efectos;
+2. aplicación exclusiva a los 58 carriles operativos;
+3. no afectación de los 54 permisos sin carril operativo;
+4. independencia de `BASE_OR_OPERATIONAL`;
+5. rol, sede y área tomados de la misma revisión publicada;
+6. habilitación site-wide válida;
+7. coincidencia de área exacta válida;
+8. relación únicamente en otra área;
+9. relación exacta inactiva o retirada;
+10. ausencia total de habilitación en sede separada de área incompatible;
+11. área nula, inexistente, inactiva o ajena a la sede separada de incompatibilidad;
+12. prohibición de coincidencia por nombre, `kind` o primera fila;
+13. prohibición de fallback desde check-in, perfil, dispositivo, cookie, cliente o historial;
+14. precedencia con turno, check-in, rol y sede;
+15. separación de grant y scope;
+16. equivalencia de diez canales;
+17. decisión explícita para diez aplicaciones;
+18. invalidación y revalidación concurrente;
+19. auditoría minimizada, copy y recuperación;
+20. reconciliación de catorce brechas y dos casos físicos agregados.
+
+---
+
+#### 38. Evidencia y estados
+
+| Resultado                         | Estado al cerrar esta tarea                                                  |
+| --------------------------------- | ---------------------------------------------------------------------------- |
+| contrato documental               | `ESPECIFICADO`                                                               |
+| matriz de veinticuatro escenarios | `ESPECIFICADO`                                                               |
+| matriz de diez canales            | `ESPECIFICADO`                                                               |
+| cobertura de diez aplicaciones    | `ESPECIFICADO`                                                               |
+| snapshot físico                   | `PENDIENTE_DE_EVIDENCIA` para certificación de implementación                |
+| dos casos físicos agregados       | `IDENTIFICADO`; no equivalen a validación ni autorizan corrección automática |
+| migraciones o ajustes de datos    | `NO_APLICA` en esta fase documental                                          |
+| código compartido y adapters      | `NO_APLICA` en esta fase documental                                          |
+| pruebas automatizadas             | `PENDIENTE_DE_EVIDENCIA`                                                     |
+| validación operativa              | `PENDIENTE_DE_EVIDENCIA`                                                     |
+
+No se presenta ninguna brecha física como implementada o validada.
+
+---
+
+#### 39. Fuera del alcance
+
+Esta tarea no:
+
+- corrige turnos productivos;
+- crea, activa, retira o amplía habilitaciones;
+- cambia sedes, áreas o roles;
+- modifica grants;
+- completa datos históricos;
+- crea migraciones;
+- valida constraints físicas;
+- edita aplicaciones;
+- implementa SDK;
+- despliega funciones;
+- ejecuta DDL, DML o backfills;
+- crea datos productivos para pruebas;
+- inicia `AUTH-ERR-015`.
+
+---
+
+#### 40. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando:
+
+1. existe una sola identidad pública;
+2. área no habilitada se define por ausencia concluyente de site-wide y del par exacto;
+3. rol, sede y área proceden de la misma revisión publicada;
+4. el área debe existir, estar activa y pertenecer a la sede antes de evaluar compatibilidad;
+5. se prohíben fallbacks de cliente, perfil, check-in y dispositivo;
+6. asignación, sede, área, habilitación, grant y scope permanecen separados;
+7. los 112 permisos se reconcilian en distribución 54/19/39;
+8. los 58 carriles operativos evalúan compatibilidad de área;
+9. las cuatro modalidades tienen decisión explícita;
+10. site-wide y area-scoped tienen semántica definida;
+11. multiárea no depende del orden ni de una primera coincidencia;
+12. rol faltante queda en `AUTH-ERR-012`;
+13. ausencia de habilitación en sede queda en `AUTH-ERR-013`;
+14. área inválida, contradicción e indisponibilidad conservan razones diferentes;
+15. veinticuatro escenarios tienen resultado;
+16. diez canales tienen respuesta equivalente;
+17. diez aplicaciones tienen decisión explícita;
+18. copy, privacidad, accesibilidad y recuperación están definidos;
+19. se exige cero efectos y contexto nuevo;
+20. snapshot físico reconcilia 23 casos site-wide, 758 exactos y 2 incompatibles;
+21. catorce brechas poseen estado y destino;
+22. diez requisitos `TREQ-*` están derivados;
+23. la siguiente tarea permanece únicamente reservada.
+
+---
+
+#### 41. Riesgos controlados
+
+La tarea controla:
+
+- rol válido usado en un área no habilitada;
+- área de otra función tomada por coincidencia de nombre o tipo;
+- primera área seleccionada de forma no determinista;
+- área nula tratada como permiso universal;
+- check-in, cookie o dispositivo usados para sustituir el turno;
+- grant interpretado como habilitación territorial;
+- sede inválida presentada como área incompatible;
+- área inválida presentada como incompatibilidad ordinaria;
+- bypass por nombre de administrador;
+- configuración multiárea imposible por cardinalidad física;
+- relación retirada conservada por caché;
+- divergencia entre RPC, RLS, API y UI;
+- mensaje genérico sin recuperación;
+- exposición de rol, sede, área o matriz;
+- efectos parciales antes del deny;
+- backfill productivo basado en inferencia.
+
+---
+
+#### 42. Cierre de tarea y continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+AUTH-ERR-013 — Rol operativo inválido para la sede
+
+TAREA ACTUAL APROBADA
+AUTH-ERR-014 — Rol operativo inválido para el área
+
+SIGUIENTE TAREA RESERVADA
+AUTH-ERR-015 — Dispositivo no autorizado
+```
+
+No se inicia ni modifica `AUTH-ERR-015` en esta tarea.
+
+
 ### [ ] AUTH-ERR-015 — Dispositivo no autorizado
 ### [ ] AUTH-ERR-016 — Acción no permitida en simulación
