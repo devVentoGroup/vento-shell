@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **526** |
+| Aprobadas | **527** |
 | En propuesta | **0** |
-| No iniciadas | **1068** |
+| No iniciadas | **1067** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **33.00% (526/1594)** |
+| Porcentaje de completamiento | **33.06% (527/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-ERR-001` — Sin sesión | ✅ APROBADA |
-| Tarea actual | `AUTH-ERR-002` — Usuario inactivo | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-ERR-003` — Sin acceso a la aplicación | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-ERR-002` — Usuario inactivo | ✅ APROBADA |
+| Tarea actual | `AUTH-ERR-003` — Sin acceso a la aplicación | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-ERR-004` — Sin permiso administrativo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1265,7 +1265,7 @@
 | ⬜ NO INICIADA | `AUTH-DB-030` | Retirar objetos legacy únicamente después de adopción comprobada | `bloques/R_SUPABASE/06_R3_RETIRO_Y_CERTIFICACION_FINAL.md` |
 | ⬜ NO INICIADA | `AUTH-DB-031` | Certificar paridad entre documento, vento-shell, Supabase y aplicaciones | `bloques/R_SUPABASE/06_R3_RETIRO_Y_CERTIFICACION_FINAL.md` |
 | ✅ APROBADA | `AUTH-ERR-001` | Sin sesión | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
-| ⬜ NO INICIADA | `AUTH-ERR-002` | Usuario inactivo | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
+| ✅ APROBADA | `AUTH-ERR-002` | Usuario inactivo | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-003` | Sin acceso a la aplicación | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-004` | Sin permiso administrativo | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-005` | Sin sede asignada | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |

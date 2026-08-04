@@ -1039,7 +1039,1166 @@ AUTH-ERR-002 — RESERVADA
 No se inicia ni modifica `AUTH-ERR-002` en esta tarea.
 
 
-### [ ] AUTH-ERR-002 — Usuario inactivo
+### ✅ AUTH-ERR-002 — Usuario inactivo
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-001 — Sin sesión` — APROBADA
+**Tarea siguiente:** `AUTH-ERR-003 — Sin acceso a la aplicación` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, funcional, técnica y de experiencia del bloqueo por identidad de dominio inactiva
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md`
+**Artefactos producidos:** `INACTIVE-USER-BLOCKING-CONTRACT-001`, `INACTIVE-IDENTITY-STATE-MATRIX-001`, `INACTIVE-USER-CHANNEL-RESPONSE-MATRIX-001`, `INACTIVE-USER-APPLICATION-COVERAGE-REGISTER-001` e `INACTIVE-USER-PHYSICAL-RECONCILIATION-001`
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001`; `AUTH-MOD-019`; `AUTH-CAT-001`; `AUTH-CTX-005` a `AUTH-CTX-008`; `AUTH-CTX-015`; `AUTH-ERR-001`; catálogo canónico de aplicaciones; contratos vigentes de identidad, actor y autorización; estado desplegado de Supabase y consumidores inspeccionados
+**Cambios físicos autorizados:** ninguno; no modifica código, sesiones, cookies, tokens, Supabase Auth, tablas, RLS, RPC, Edge Functions, datos, migraciones, configuración, aplicaciones ni despliegues
+
+---
+
+#### 1. Propósito
+
+Definir de forma única y verificable qué debe ocurrir cuando una solicitud ya
+posee un principal técnico autenticado válido, pero la identidad de dominio que
+la aplicación necesita existe y está explícitamente inactiva.
+
+La regla raíz queda:
+
+```text
+SESIÓN AUTENTICADA VÁLIDA
++
+IDENTIDAD DE DOMINIO REQUERIDA
++
+ESTADO EXPLÍCITO INACTIVO
+→
+DENY
++
+AUTH_USER_INACTIVE
++
+SIN EJECUCIÓN
+```
+
+La inactividad pertenece a la identidad empresarial, no a la validez técnica
+de la sesión.
+
+```text
+PRINCIPAL AUTENTICADO VÁLIDO
+≠
+IDENTIDAD LABORAL ACTIVA
+≠
+IDENTIDAD DE CLIENTE ACTIVA
+```
+
+Por tanto, esta tarea impide que una aplicación:
+
+- trate una sesión válida como autorización suficiente;
+- permita que roles, permisos, sedes, áreas, turnos, check-ins o simulaciones
+  reactiven una identidad inactiva;
+- confunda `employees.is_active = false` con ausencia de sesión;
+- confunda `public.users.is_active = false` con inactividad laboral;
+- confunda un bloqueo técnico de Supabase Auth con estado empresarial inactivo;
+- redirija repetidamente al login a una persona que ya está autenticada;
+- cierre o destruya automáticamente la sesión Auth como sustituto del bloqueo;
+- permita que una caché, suscripción, token de contexto o decisión anterior
+  conserve autoridad después de la desactivación;
+- revele razones laborales, administrativas, disciplinarias o comerciales que
+  no pertenecen al contrato público de bloqueo.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `INACTIVE-USER-BLOCKING-CONTRACT-001`, que congela identidad, precedencia,
+   envelope, estado HTTP, recuperación, privacidad, auditoría y revalidación;
+2. `INACTIVE-IDENTITY-STATE-MATRIX-001`, que materializa doce combinaciones de
+   sesión, empleado, cliente y actor de dispositivo;
+3. `INACTIVE-USER-CHANNEL-RESPONSE-MATRIX-001`, que decide el comportamiento
+   para diez canales de entrega y ejecución;
+4. `INACTIVE-USER-APPLICATION-COVERAGE-REGISTER-001`, que resuelve las diez
+   aplicaciones canónicas sin mezclar identidad laboral y de cliente;
+5. `INACTIVE-USER-PHYSICAL-RECONCILIATION-001`, que registra el snapshot
+   desplegado, clasifica treinta y dos funciones y vincula las brechas físicas
+   con tareas existentes.
+
+Cobertura materializada:
+
+| Elemento                                                     | Cantidad |
+| ------------------------------------------------------------ | -------: |
+| Código público canónico                                      |        1 |
+| Causas internas de identidad inactiva                        |        3 |
+| Estado HTTP no navegacional                                  | 1, `403` |
+| Escenarios de identidad decididos                            |       12 |
+| Canales con respuesta explícita                              |       10 |
+| Aplicaciones canónicas reconciliadas                         |       10 |
+| Funciones PostgreSQL con referencia a `public.employees`     |       32 |
+| Funciones con puerta estricta directa de actividad            |       13 |
+| Funciones sin puerta estricta directa o con semántica permisiva |     14 |
+| Funciones no autoritativas o pendientes de revisión semántica |        5 |
+| Políticas RLS con dependencia laboral directa o indirecta     |      161 |
+| Políticas con predicado estricto visible en la propia política |      13 |
+| Políticas dependientes de helpers o sin predicado local visible |     148 |
+| Empleados físicos observados                                 |       59 |
+| Empleados físicos inactivos observados                       |       17 |
+| Perfiles de cliente físicos observados                       |       83 |
+| Perfiles de cliente inactivos observados                     |        1 |
+| Sujetos Auth observados                                      |       76 |
+| Sujetos simultáneamente empleado y cliente                   |       59 |
+| Sujetos Auth bloqueados técnicamente en el instante observado |        3 |
+| Requisitos de prueba derivados                               |       10 |
+
+Las cifras físicas son evidencia de diagnóstico del snapshot inspeccionado. No
+constituyen implementación ni congelan cantidades operativas futuras.
+
+---
+
+#### 3. Identidad canónica del bloqueo
+
+La identidad pública única es:
+
+```text
+reason_code = AUTH_USER_INACTIVE
+```
+
+Propiedades normativas:
+
+| Propiedad                   | Valor                                                        |
+| --------------------------- | ------------------------------------------------------------ |
+| Dominio                     | identidad de dominio                                         |
+| Decisión                    | `DENY`                                                       |
+| Principal técnico           | autenticado y válido                                         |
+| Identidad requerida         | existe                                                       |
+| Estado de identidad         | explícitamente `INACTIVE`                                    |
+| Estado HTTP no navegacional | `403 Forbidden`                                              |
+| Ejecutable                  | `false`                                                      |
+| Recuperación pública        | salir, volver a superficie pública o solicitar revisión      |
+| Reactivación automática     | prohibida                                                    |
+| Reintento                   | solicitud nueva después de una reactivación autoritativa     |
+| Exposición del motivo       | prohibida                                                    |
+
+Quedan prohibidos como identidad pública alternativa:
+
+- `AUTH_NO_SESSION`;
+- `NO_USER`;
+- `EMPLOYEE_NOT_FOUND`;
+- `ACCOUNT_BANNED`;
+- `NO_PERMISSION`;
+- `NO_APP_ACCESS`;
+- `USER_DISABLED` sin contrato;
+- mensajes libres de Supabase;
+- excepciones SQL sin mapping;
+- un booleano `false` sin razón tipada;
+- una redirección al login como respuesta permanente.
+
+Los textos humanos podrán localizarse, pero `AUTH_USER_INACTIVE` será estable,
+versionado y no se traducirá.
+
+---
+
+#### 4. Definición exacta de “usuario inactivo”
+
+Existe `AUTH_USER_INACTIVE` únicamente cuando se cumplen todas estas
+condiciones:
+
+1. la superficie exige una identidad de dominio;
+2. la autenticación técnica pudo verificarse;
+3. el principal técnico es válido;
+4. la identidad de dominio requerida fue resuelta de forma inequívoca;
+5. la fuente autoritativa declara explícitamente estado inactivo;
+6. la inactividad aplica al dominio que la aplicación o acción requiere;
+7. la evaluación ocurre dentro de un snapshot vigente;
+8. ninguna reactivación autoritativa posterior ha sido observada.
+
+Fuentes autoritativas vigentes por variante:
+
+| Variante interna             | Fuente autoritativa             | Condición exacta               |
+| ---------------------------- | ------------------------------- | ------------------------------ |
+| `EMPLOYEE_INACTIVE`          | `public.employees`              | `is_active = false`            |
+| `CUSTOMER_INACTIVE`          | `public.users`                  | `is_active = false`            |
+| `ACTOR_EMPLOYEE_INACTIVE`    | `public.employees` del actor    | `is_active = false`            |
+
+Las variantes internas sirven para resolución y auditoría protegida. El usuario
+recibe el mismo código público estable, con copy ajustado únicamente al dominio
+de la aplicación sin revelar información sensible.
+
+---
+
+#### 5. Condiciones que no pertenecen a `AUTH_USER_INACTIVE`
+
+| Condición observada                                                       | Clasificación correcta                              | Tarea propietaria              |
+| ------------------------------------------------------------------------- | --------------------------------------------------- | ------------------------------ |
+| no existe sesión válida                                                   | `AUTH_NO_SESSION`                                   | `AUTH-ERR-001`                 |
+| la verificación Auth falla por red o timeout                              | error técnico                                       | `AUTH-ERR-019`                 |
+| faltan variables, claves o configuración                                  | configuración inconsistente                         | `AUTH-ERR-017`; `AUTH-ERR-019` |
+| la identidad requerida no existe                                          | identidad incompleta o configuración inconsistente  | `AUTH-CTX-007`; `AUTH-ERR-017` |
+| existen varias identidades candidatas incompatibles                       | identidad ambigua, fail closed                       | `AUTH-CTX-007`; `AUTH-ERR-017` |
+| `employees.is_active` es `null`                                           | estado incompleto, no identidad activa               | `AUTH-CTX-007`; `AUTH-ERR-017` |
+| `auth.users.banned_until` está vigente                                    | ciclo técnico de Auth, no inactividad empresarial    | `AUTH-ERR-001`; `AUTH-ERR-019` |
+| existe empleado activo pero no acceso a la aplicación                     | sin acceso a la aplicación                           | `AUTH-ERR-003`                 |
+| existe empleado activo pero falta un permiso                              | bloqueo de permiso                                   | `AUTH-ERR-004` o posterior     |
+| sede, área, turno, check-in o rol están inactivos o ausentes               | bloqueo contextual específico                        | `AUTH-ERR-005` a `AUTH-ERR-014`|
+| el dispositivo está inactivo                                              | dispositivo no autorizado                            | `AUTH-ERR-015`                 |
+| la acción real se intenta desde simulación                                | acción no permitida en simulación                    | `AUTH-ERR-016`                 |
+| un servicio técnico carece de actor o allowlist                           | identidad técnica o delegación inválida              | `AUTH-CTX-006`; `AUTH-ERR-019` |
+
+Reglas críticas:
+
+```text
+ESTADO AUSENTE O NULO
+≠
+ESTADO ACTIVO
+```
+
+```text
+SUJETO AUTH BLOQUEADO
+≠
+EMPLEADO INACTIVO
+```
+
+```text
+EMPLEADO INACTIVO
+≠
+CLIENTE INACTIVO
+```
+
+---
+
+#### 6. Precedencia dentro del árbol de bloqueo
+
+Orden obligatorio para una aplicación laboral personal:
+
+```text
+1. superficie pública o protegida
+2. verificación técnica disponible
+3. sesión autenticada válida
+4. identidad laboral resoluble y no ambigua
+5. identidad laboral activa
+6. acceso a la aplicación
+7. rol, permisos y denegaciones
+8. sede, área, turno, check-in y dispositivo
+9. acción y recurso
+```
+
+Orden obligatorio para Vento Pass cliente:
+
+```text
+1. superficie pública o protegida
+2. verificación técnica disponible
+3. sesión autenticada válida
+4. identidad de cliente resoluble y no ambigua
+5. identidad de cliente activa
+6. autorización del dominio Pass
+7. acción y recurso
+```
+
+Orden obligatorio para un dispositivo compartido:
+
+```text
+1. principal técnico del dispositivo válido
+2. dispositivo empresarial activo
+3. sesión de actor vigente
+4. empleado actor resoluble
+5. empleado actor activo
+6. turno, check-in, rol y territorio
+7. permiso, acción y recurso
+```
+
+Si el paso de actividad produce `AUTH_USER_INACTIVE`:
+
+- no se evalúan permisos residuales;
+- no se aplican bypasses por rol;
+- no se usan sedes o áreas asignadas;
+- no se usa turno, check-in o sesión de actor como reactivación;
+- no se acepta simulación;
+- no se consulta el recurso para construir una razón posterior;
+- no se ejecuta ninguna mutación;
+- no se produce un segundo código público para el mismo intento.
+
+---
+
+#### 7. `INACTIVE-USER-BLOCKING-CONTRACT-001`
+
+El contrato lógico mínimo será:
+
+```ts
+type InactiveUserBlockingReason = {
+  contract: "INACTIVE-USER-BLOCKING-CONTRACT-001";
+  contract_version: "1.0.0";
+  reason_code: "AUTH_USER_INACTIVE";
+  domain: "DOMAIN_IDENTITY";
+  decision: "DENY";
+  principal_state: "AUTHENTICATED";
+  domain_identity_kind: "EMPLOYEE" | "CUSTOMER" | "ACTOR_EMPLOYEE";
+  domain_identity_state: "INACTIVE";
+  executable: false;
+  recovery_action: "SIGN_OUT_OR_REQUEST_REVIEW";
+  http_status: 403;
+  app_code: string;
+  channel: InactiveUserChannel;
+  correlation_id: string;
+  occurred_at: string;
+};
+```
+
+La forma pública no incluirá:
+
+- `auth_user_id`;
+- `employee_id`;
+- `customer_id`;
+- `device_id`;
+- nombre, alias, correo, teléfono o documento;
+- rol;
+- sede o área;
+- turno o check-in;
+- permiso solicitado;
+- recurso exacto;
+- fecha de retiro;
+- motivo laboral, disciplinario, contractual o comercial;
+- persona que desactivó la identidad;
+- notas internas;
+- token, cookie o JWT;
+- estado `banned_until`;
+- stack trace;
+- mensaje bruto del proveedor.
+
+El identificador de dominio y la causa interna completa se conservarán solo en
+la evidencia de auditoría protegida.
+
+---
+
+#### 8. Efecto de la inactividad
+
+La inactividad produce denegación total dentro del dominio afectado.
+
+Para empleado inactivo:
+
+```text
+permisos base = no utilizables
+permisos individuales = no utilizables
+permisos operativos = no utilizables
+sedes y áreas = no autorizan
+turnos y check-ins = no autorizan
+sesiones de actor = no autorizan
+simulación = no autoriza ni puede iniciarse
+```
+
+Para cliente inactivo:
+
+```text
+puntos, beneficios, QR, redenciones y acciones de cliente = no ejecutables
+identidad laboral independiente = no alterada
+```
+
+Para actor empleado inactivo en dispositivo compartido:
+
+```text
+dispositivo técnico = puede conservar operaciones técnicas expresas
+actor empresarial = inválido
+acción empresarial = denegada
+sesión de actor = debe invalidarse o dejar de ser utilizable
+```
+
+La inactividad no borra por sí misma:
+
+- historia laboral;
+- historia comercial;
+- auditoría;
+- turnos históricos;
+- movimientos o ventas previas;
+- documentos;
+- relaciones de atribución;
+- identidad Auth;
+- datos necesarios para obligaciones legales o contables.
+
+---
+
+#### 9. Sesión Auth y reactivación
+
+Una identidad inactiva puede coexistir con una sesión Auth técnicamente válida.
+
+Por defecto, el bloqueo empresarial:
+
+- conserva la distinción entre autenticación e identidad de dominio;
+- no convierte la sesión en anónima;
+- no emite `401`;
+- no redirige al login;
+- no crea un bucle de autenticación;
+- no elimina cookies indiscriminadamente;
+- no revoca el sujeto Auth por inferencia;
+- no reactiva la identidad al volver a iniciar sesión.
+
+Una política de seguridad separada podrá ordenar revocación técnica de sesiones
+cuando exista una tarea y mecanismo aprobados. Esa revocación no cambia la
+clasificación histórica de la denegación original.
+
+Reactivar requiere una escritura autoritativa en la fuente de dominio realizada
+por una capacidad administrativa autorizada. Después de la reactivación:
+
+1. se invalida el contexto anterior;
+2. se emite una solicitud nueva;
+3. se resuelven identidad y actividad desde cero;
+4. se evalúan aplicación, permisos, contexto y recurso;
+5. no se hereda ningún `ALLOW` anterior.
+
+---
+
+#### 10. Dualidad empleado–cliente
+
+Una misma persona puede compartir `auth_user_id` con:
+
+```text
+identidad laboral
++
+identidad de cliente
+```
+
+Los estados se evalúan de forma independiente.
+
+| Empleado | Cliente | Aplicación laboral | Vento Pass cliente |
+| -------- | ------- | ------------------ | ------------------ |
+| activo   | activo  | continúa evaluación | continúa evaluación |
+| inactivo | activo  | `AUTH_USER_INACTIVE` | continúa evaluación |
+| activo   | inactivo| continúa evaluación | `AUTH_USER_INACTIVE` |
+| inactivo | inactivo| `AUTH_USER_INACTIVE` | `AUTH_USER_INACTIVE` |
+
+Queda prohibido:
+
+- usar `public.users.is_active` para autorizar Vento OS laboral;
+- usar `employees.is_active` para bloquear automáticamente Vento Pass cliente;
+- reactivar una identidad porque la otra está activa;
+- copiar estado entre tablas;
+- asumir que una única bandera representa todos los dominios.
+
+---
+
+#### 11. Mensaje humano canónico
+
+Copy aprobado en español para una superficie laboral:
+
+| Elemento          | Texto exacto                                                                                                           |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Título            | `Tu acceso está inactivo`                                                                                              |
+| Mensaje           | `Tu identidad para esta aplicación está inactiva. No puedes continuar mientras permanezca en este estado.`             |
+| Acción principal  | `Cerrar sesión`                                                                                                        |
+| Acción secundaria | `Volver a Vento OS`                                                                                                    |
+| Ayuda             | `Si consideras que es un error, solicita una revisión a un administrador autorizado.`                                  |
+| Código de soporte | `AUTH_USER_INACTIVE`                                                                                                   |
+
+Copy aprobado para Vento Pass cliente:
+
+| Elemento          | Texto exacto                                                                                                           |
+| ----------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Título            | `Tu acceso está inactivo`                                                                                              |
+| Mensaje           | `Tu perfil de cliente está inactivo. No puedes continuar mientras permanezca en este estado.`                          |
+| Acción principal  | `Cerrar sesión`                                                                                                        |
+| Ayuda             | `Si consideras que es un error, solicita una revisión por el canal oficial de atención.`                               |
+| Código de soporte | `AUTH_USER_INACTIVE`                                                                                                   |
+
+Reglas:
+
+1. no afirmar que la sesión expiró;
+2. no pedir que la persona vuelva a iniciar sesión como solución;
+3. no afirmar que carece de permisos;
+4. no mostrar motivo de desactivación;
+5. no revelar fecha, responsable o notas internas;
+6. no presentar una reactivación automática;
+7. no culpar al usuario;
+8. no prometer plazos de soporte;
+9. no mostrar errores brutos;
+10. mantener el código de soporte disponible sin dominar la interfaz.
+
+---
+
+#### 12. `INACTIVE-IDENTITY-STATE-MATRIX-001`
+
+| ID | Principal | Identidad requerida | Estado | Resultado público | Decisión | Efecto adicional |
+| -- | --------- | ------------------- | ------ | ----------------- | -------- | ---------------- |
+| `IU-01` | anónimo | cualquiera | no resoluble | `AUTH_NO_SESSION` | `DENY` | pertenece a `AUTH-ERR-001` |
+| `IU-02` | humano autenticado | empleado | inexistente | identidad incompleta | `DENY` | `AUTH-CTX-007` y `AUTH-ERR-017` |
+| `IU-03` | humano autenticado | empleado | `is_active = null` | identidad incompleta | `DENY` | nunca se trata como activo |
+| `IU-04` | humano autenticado | empleado | activo | continuar | pendiente | evaluar acceso a aplicación |
+| `IU-05` | humano autenticado | empleado | inactivo | `AUTH_USER_INACTIVE` | `DENY` | no evaluar permisos ni contexto |
+| `IU-06` | humano autenticado | cliente | activo | continuar | pendiente | evaluar dominio Pass |
+| `IU-07` | humano autenticado | cliente | inactivo | `AUTH_USER_INACTIVE` | `DENY` | no ejecutar acciones de cliente |
+| `IU-08` | humano autenticado | empleado inactivo + cliente activo | según aplicación | laboral deniega; Pass continúa | separada | no copiar estado entre dominios |
+| `IU-09` | humano autenticado | empleado activo + cliente inactivo | según aplicación | laboral continúa; Pass deniega | separada | no copiar estado entre dominios |
+| `IU-10` | dispositivo técnico | actor empleado | activo | continuar | pendiente | evaluar sesión, turno y permiso |
+| `IU-11` | dispositivo técnico | actor empleado | inactivo | `AUTH_USER_INACTIVE` | `DENY` | actor deja de ser utilizable |
+| `IU-12` | servicio técnico | identidad laboral | no aplica | contrato técnico | pendiente | no usar esta razón por inferencia |
+
+Cobertura:
+
+```text
+escenarios esperados = 12
+escenarios materializados = 12
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 13. `INACTIVE-USER-CHANNEL-RESPONSE-MATRIX-001`
+
+| Canal o superficie | Respuesta obligatoria | Estado | Efectos prohibidos |
+| ------------------ | --------------------- | -----: | ------------------ |
+| navegación web protegida | renderizar superficie de bloqueo autenticada y accesible | `403` semántico | redirect al login, contenido protegido o navegación autorizada |
+| formulario o mutación web | detener antes de la escritura y devolver razón tipada | `403` | reintento automático, escritura parcial o mensaje genérico |
+| fetch de cliente | envelope JSON canónico | `403` | HTML de login, datos parciales o fallback permisivo |
+| Route Handler o API | envelope JSON canónico con correlación | `403` | ejecutar handler de negocio o revelar recurso |
+| Server Action | error tipado serializable y cero efectos | `403` lógico | lanzar texto bruto, repetir acción o usar caché anterior |
+| RPC o PostgREST | fail closed y mapping estable a `AUTH_USER_INACTIVE` | `403` en adapter | excepción libre, booleano ambiguo o `ALLOW` residual |
+| RLS | impedir lectura o escritura empresarial | no expone detalle | confiar solo en UI o conceder por helper permisivo |
+| Edge Function | verificar actividad antes de operación empresarial | `403` | service role como bypass o notificación posterior a efecto |
+| Realtime, stream o suscripción | negar o cerrar entrega de datos nuevos y limpiar proyección | evento tipado | conservar flujo, datos de otra sede o caché sensible |
+| cliente nativo o dispositivo compartido | estado tipado; actor inactivo vuelve a selección segura | `403` lógico | cerrar dispositivo completo por inferencia o aceptar actor residual |
+
+Todo canal deberá conservar:
+
+```text
+reason_code = AUTH_USER_INACTIVE
+decision = DENY
+executable = false
+```
+
+---
+
+#### 14. Navegación y recuperación
+
+Una navegación ya autenticada no se redirige al login.
+
+La superficie de bloqueo deberá:
+
+- reemplazar contenido protegido antes de renderizar datos;
+- conservar una ruta pública o neutral para salir;
+- permitir cerrar sesión;
+- permitir volver a una superficie pública de Vento OS;
+- evitar loops entre aplicación, SHELL y login;
+- impedir que el botón atrás restaure contenido sensible;
+- anunciar el título y mensaje mediante tecnologías de asistencia;
+- mover foco al encabezado del bloqueo;
+- no depender exclusivamente de color o iconografía.
+
+No existe autorreactivación. La acción de solicitar revisión:
+
+- no cambia `is_active`;
+- no crea una solicitud si no existe un proceso propietario aprobado;
+- no expone datos internos;
+- no promete resolución;
+- no impide cerrar sesión.
+
+---
+
+#### 15. Revalidación, caché y concurrencia
+
+La actividad deberá revalidarse en cada frontera autoritativa donde pueda
+producirse un efecto empresarial.
+
+Controles obligatorios:
+
+1. un contexto construido antes de la desactivación queda obsoleto;
+2. una decisión `ALLOW` anterior no sobrevive al cambio de actividad;
+3. una caché de rol, sede, permiso o navegación no puede restaurar autoridad;
+4. una suscripción Realtime no continúa entregando datos nuevos;
+5. un token o referencia de contexto no convierte el estado anterior en válido;
+6. una mutación debe verificar actividad en servidor antes del efecto;
+7. cuando la operación posea una frontera transaccional, la actividad deberá
+   revalidarse dentro o inmediatamente antes de esa frontera;
+8. si la identidad cambia a inactiva antes del commit autoritativo, la operación
+   se aborta sin efecto parcial;
+9. jobs y procesos delegados no siguen atribuyendo acciones a un actor inactivo;
+10. reactivar no reanuda automáticamente la operación original.
+
+La implementación de invalidación, fingerprints y productor canónico de
+contexto corresponde a `AUTH-DB-033`, `AUTH-DB-035`, `SHELL-AUTH-001` y
+`SHELL-AUTH-002`.
+
+---
+
+#### 16. Auditoría y privacidad
+
+Eventos conceptuales mínimos:
+
+| Evento | Cuándo se registra | Datos mínimos |
+| ------ | ------------------ | ------------- |
+| `auth.domain_identity_inactive_detected` | una solicitud encuentra identidad inactiva | correlación, app, canal, clase de identidad, snapshot |
+| `auth.domain_identity_inactive_denied` | se emite la denegación | razón pública, decisión, ejecutable, versión |
+| `auth.inactive_actor_session_invalidated` | un actor de dispositivo deja de ser utilizable | dispositivo referenciado, actor protegido, instante |
+| `auth.domain_identity_reactivated_observed` | una solicitud nueva observa actividad restaurada | correlación, app, versión, sin heredar autorización |
+
+La auditoría protegida podrá conservar identificadores internos cuando sean
+necesarios para trazabilidad. No registrará:
+
+- token o cookie;
+- PIN;
+- motivo laboral o comercial libre;
+- documentos;
+- notas disciplinarias;
+- salario;
+- datos de salud;
+- cuerpo completo de la solicitud;
+- recurso sensible completo;
+- stack trace en eventos funcionales.
+
+La interfaz, analytics y logs públicos solo usarán datos minimizados.
+
+---
+
+#### 17. `INACTIVE-USER-APPLICATION-COVERAGE-REGISTER-001`
+
+| Aplicación | Identidad requerida | Estado que produce el bloqueo | Decisión | Particularidad |
+| ---------- | ------------------- | ----------------------------- | -------- | ------------- |
+| `shell` | empleado | `employees.is_active = false` | `DENY` | muestra superficie central autenticada; no loop de login |
+| `anima` | empleado | `employees.is_active = false` | `DENY` | no permite asistencia, documentos ni gestión personal laboral |
+| `viso` | empleado | `employees.is_active = false` | `DENY` | roles administrativos residuales no crean bypass |
+| `nexo` | empleado o actor empleado | empleado o actor inactivo | `DENY` | dispositivo técnico puede conservar solo funciones técnicas expresas |
+| `fogo` | empleado o actor empleado | empleado o actor inactivo | `DENY` | no inicia ni modifica ejecución productiva |
+| `origo` | empleado o actor empleado | empleado o actor inactivo | `DENY` | no compra, aprueba ni recibe mediante identidad residual |
+| `pulso` | empleado o actor empleado | empleado o actor inactivo | `DENY` | no vende, cobra, redime ni opera caja |
+| `numera` | empleado | `employees.is_active = false` | `DENY` | no expone ni modifica información financiera |
+| `aura` | empleado | `employees.is_active = false` | `DENY` | contrato obligatorio antes de activar la aplicación diferida |
+| `pass` | cliente | `public.users.is_active = false` | `DENY` | actividad laboral no determina la identidad de cliente |
+
+Cobertura:
+
+```text
+aplicaciones esperadas = 10
+aplicaciones materializadas = 10
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 18. Dispositivo compartido
+
+El dispositivo y el actor son identidades distintas.
+
+```text
+DISPOSITIVO ACTIVO
++
+ACTOR EMPLEADO INACTIVO
+→
+DISPOSITIVO TÉCNICO PUEDE SEGUIR ACTIVO
++
+ACTOR EMPRESARIAL NO PUEDE OPERAR
+```
+
+Al detectar `ACTOR_EMPLOYEE_INACTIVE`:
+
+- la sesión de actor deja de satisfacer autorización empresarial;
+- las firmas o referencias no consumidas no podrán utilizarse;
+- el dispositivo vuelve a selección segura de actor;
+- no se reutiliza el último rol, turno, área o permiso;
+- no se transfiere la acción a otro empleado;
+- no se cierra la credencial técnica por inferencia;
+- no se expone al dispositivo el motivo interno de desactivación;
+- la acción original no se repite después de seleccionar otro actor.
+
+La protección física deberá implementarse mediante `SHELL-AUTH-001`,
+`SHELL-AUTH-002`, `SHELL-AUTH-005` y los productores canónicos de contexto de
+`AUTH-DB-033`.
+
+---
+
+#### 19. Estado físico observado
+
+Snapshot de solo lectura:
+
+```text
+proyecto Supabase = vento-os-dev
+project_ref = clzdpinthhtknkmefsxx
+inspeccionado_en = 2026-08-04T02:27:02Z
+```
+
+Distribución observada:
+
+| Métrica | Resultado |
+| ------- | --------: |
+| empleados | 59 |
+| empleados activos | 42 |
+| empleados inactivos | 17 |
+| empleados con `is_active = null` | 0 |
+| perfiles de cliente | 83 |
+| clientes activos | 82 |
+| clientes inactivos | 1 |
+| sujetos Auth | 76 |
+| sujetos Auth confirmados | 68 |
+| sujetos Auth bloqueados técnicamente | 3 |
+| sujetos Auth eliminados | 0 |
+| sujetos vinculados a empleado | 59 |
+| sujetos vinculados a cliente | 76 |
+| sujetos vinculados simultáneamente a empleado y cliente | 59 |
+| empleados sin sujeto Auth | 0 |
+| clientes sin sujeto Auth | 7 |
+
+Conclusiones verificables:
+
+1. la inactividad empresarial existe materialmente;
+2. los diecisiete empleados inactivos conservan sujeto Auth vinculado;
+3. todos los empleados observados también poseen perfil de cliente;
+4. el estado laboral y el estado de cliente no pueden fusionarse;
+5. los tres bloqueos técnicos de Auth no prueban inactividad empresarial;
+6. `employees.is_active` es físicamente nullable aunque actualmente no posee
+   filas nulas;
+7. no se observó trigger de desactivación que invalide de forma centralizada
+   contexto, caché, sesión de actor o sesión Auth.
+
+No se realizaron escrituras, DDL, DML, cambios de Auth ni modificaciones de
+datos durante la inspección.
+
+---
+
+#### 20. Matriz física de funciones con dependencia de `employees`
+
+La inspección materializó las treinta y dos funciones PostgreSQL que contienen
+referencia a `public.employees`. La columna “tratamiento directo” describe la
+presencia visible de una puerta estricta en la función, no certifica por sí sola
+la seguridad del flujo completo.
+
+| # | Función | Tratamiento directo de actividad | Decisión documental | Destino |
+| -: | ------- | ------------------------------- | ------------------- | ------- |
+| 1 | `anima_diagnostic_push_token_coverage()` | `e.is_active = true` | puerta estricta visible | regresión en `SHELL-CI-016` |
+| 2 | `anima_is_active_employee()` | `e.is_active = true` | puerta estricta visible | SDK en `SHELL-AUTH-001` |
+| 3 | `anima_is_active_owner()` | `e.is_active = true` | puerta estricta visible | SDK en `SHELL-AUTH-001` |
+| 4 | `can_access_area(uuid)` | no verifica directamente actividad del empleado | requiere cierre transitivo | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| 5 | `can_access_site(uuid)` | acepta `is_active is null` | incompatible con fail closed | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| 6 | `can_manage_context_simulation_v1(uuid)` | sin puerta directa visible | no puede aceptar simulador inactivo | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| 7 | `close_open_attendance_day_end(text)` | `coalesce(e.is_active,false)=true` | filtro estricto visible; revisar efecto histórico | `AUTH-ERR-019`; `SHELL-CI-016` |
+| 8 | `close_stale_open_attendance_shifts(timestamptz,text)` | sin puerta directa visible | mantenimiento, no autoridad de usuario; requiere clasificación | `AUTH-ERR-019` |
+| 9 | `current_actor_shift_for_shared_device_v1(...)` | `e.is_active is true` | puerta estricta visible | `AUTH-DB-033` |
+| 10 | `current_employee_primary_site_id()` | sin puerta directa visible | no debe devolver contexto autorizante para inactivo | `AUTH-DB-033` |
+| 11 | `current_employee_role()` | sin puerta directa visible | no debe devolver rol autorizante para inactivo | `AUTH-DB-033` |
+| 12 | `current_employee_selected_area_id()` | sin puerta directa visible | no debe devolver territorio autorizante para inactivo | `AUTH-DB-033` |
+| 13 | `employee_wallet_eligibility(uuid)` | actividad incorporada a elegibilidad | puerta fail closed visible | regresión en `SHELL-CI-016` |
+| 14 | `enforce_attendance_geofence()` | solo rechaza `is_active is false` | `null` no queda cerrado | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| 15 | `enforce_employee_inventory_location_assignment_site()` | sin puerta directa de empleado | trigger de configuración; no concede autoridad por sí solo | `AUTH-ERR-019` |
+| 16 | `get_effective_context_v1(text)` | sin puerta directa visible | brecha crítica de contexto efectivo | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| 17 | `get_operational_context(uuid,uuid,text)` | sin puerta directa de empleado | puede construir contexto sin actividad laboral | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| 18 | `has_permission(text,uuid,uuid)` | `e.is_active = true` | puerta estricta visible | preservar en `AUTH-DB-034` |
+| 19 | `is_employee()` | `coalesce(e.is_active,true)=true` | `null` tratado como activo; incompatible | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| 20 | `mark_restock_request_in_transit(uuid)` | `e.is_active = true` | puerta estricta visible | preservar en `AUTH-SRV-015` |
+| 21 | `nexo_kiosk_withdraw_workers(uuid)` | `coalesce(e.is_active,true)=true` | puede listar trabajador con estado nulo | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| 22 | `reconcile_staff_invitations()` | `is_active is distinct from false` | estado nulo tratado como aceptable | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| 23 | `register_shift_departure_event(...)` | `coalesce(is_active,false)` | puerta estricta visible | preservar en `SHELL-CI-016` |
+| 24 | `register_shift_departure_event_autoclose(...)` | `coalesce(is_active,false)` | puerta estricta visible | preservar en `SHELL-CI-016` |
+| 25 | `set_employee_kiosk_pin(uuid,text)` | sin puerta directa visible | no debe habilitar credencial de actor inactivo | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| 26 | `shared_device_actor_is_allowed_v1(...)` | actor exige booleano verdadero | puerta estricta visible | preservar en `AUTH-DB-033` |
+| 27 | `sign_shared_device_action(...)` | `e.is_active is true` | puerta estricta visible | preservar en `AUTH-SRV-015` |
+| 28 | `start_attendance_break(uuid,text,text)` | `coalesce(is_active,false)` | puerta estricta visible | preservar en `SHELL-CI-016` |
+| 29 | `support_ticket_is_visible_to_current_employee(uuid)` | sin puerta directa del empleado actual | requiere cierre transitivo | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| 30 | `sync_employee_primary_site_assignment()` | no es guard de usuario | sincronización; no puede reactivar autoridad | `AUTH-ERR-019` |
+| 31 | `verify_employee_kiosk_pin(uuid,text)` | `is_active is true` | puerta estricta visible | preservar en `AUTH-DB-033` |
+| 32 | `viso_enforce_monthly_schedule_publish_limit()` | sin puerta directa visible | trigger o guard debe conservar actor activo cuando aplique | `AUTH-DB-033`; `SHELL-AUTH-005` |
+
+Reconciliación:
+
+```text
+funciones esperadas = 32
+funciones materializadas = 32
+faltantes = 0
+duplicados = 0
+puerta estricta directa = 13
+sin puerta estricta directa o semántica permisiva = 14
+mantenimiento/configuración/revisión semántica = 5
+```
+
+Una función sin puerta local no se declara automáticamente explotable: puede
+depender de un helper transitivo. Precisamente por ello `AUTH-DB-033` y
+`SHELL-AUTH-005` deberán certificar la cadena completa en vez de aceptar la
+presencia de un helper por nombre.
+
+---
+
+#### 21. RLS y consumidores físicos
+
+La consulta agregada de políticas observó:
+
+```text
+políticas con dependencia laboral directa o indirecta = 161
+predicado estricto visible en la política = 13
+dependencia de helper o sin predicado local visible = 148
+```
+
+Esto no prueba que las 148 políticas concedan acceso a una identidad inactiva.
+Sí prueba que su conformidad depende de helpers y cadenas transitorias que no
+pueden certificarse mediante inspección local de la política.
+
+Decisión:
+
+- `AUTH-DB-033` deberá resolver la identidad activa una sola vez en el contexto
+  canónico;
+- `AUTH-DB-034` deberá consumir esa identidad y producir la decisión;
+- `SHELL-AUTH-004` deberá detectar helpers legacy permisivos;
+- `SHELL-AUTH-005` deberá migrar consumidores;
+- `SHELL-CI-018` deberá impedir despliegue con rutas no certificadas.
+
+Consumidores confirmados:
+
+| Consumidor | Hallazgo | Decisión | Destino |
+| ---------- | -------- | -------- | ------- |
+| middleware de seis aplicaciones laborales | valida sesión Auth, pero no actividad de identidad empresarial | no es suficiente para permitir render o acción | `SHELL-AUTH-002`; `SHELL-AUTH-005` |
+| NEXO `src/lib/auth/operational-context.ts` | consume `get_operational_context.can_operate` y no posee razón `employee_inactive` | debe consumir razón canónica, sin override que reactive | `SHELL-AUTH-005` |
+| ORIGO `src/lib/auth/operational-session.ts` | consulta empleado sin `is_active` y construye sesión laboral incluso sin fila activa confirmada | debe fallar cerrado antes de rol, sede y permiso | `SHELL-AUTH-005` |
+| helpers SQL de contexto | tratamiento heterogéneo de `false`, `null` y ausencia | unificar productor canónico | `AUTH-DB-033`; `AUTH-DB-034` |
+| RLS dependiente de helpers | seguridad transitiva no verificable por predicado local | certificar cadena y retirar helpers incompatibles | `AUTH-DB-033`; `SHELL-AUTH-004` |
+
+---
+
+#### 22. Registro de brechas físicas
+
+| ID | Brecha | Estado | Riesgo | Propietario | Condición de salida |
+| -- | ------ | ------ | ------ | ----------- | ------------------- |
+| `IU-GAP-001` | middleware considera suficiente un usuario Auth válido | `IDENTIFICADO` | render y consultas antes de resolver actividad | `SHELL-AUTH-002`; `SHELL-AUTH-005` | adapter compartido bloquea antes de datos |
+| `IU-GAP-002` | `get_effective_context_v1` no muestra puerta directa de empleado activo | `IDENTIFICADO` | contexto efectivo de identidad inactiva | `AUTH-DB-033` | productor canónico fail closed y pruebas |
+| `IU-GAP-003` | `get_operational_context` no verifica directamente empleado activo | `IDENTIFICADO` | `can_operate` potencialmente inconsistente | `AUTH-DB-033`; `SHELL-AUTH-005` | razón canónica y cero autoridad residual |
+| `IU-GAP-004` | helpers de rol, sede y área no verifican actividad directamente | `IDENTIFICADO` | contexto residual | `AUTH-DB-033` | helpers privados consumen identidad activa |
+| `IU-GAP-005` | `can_access_site`, `is_employee` y otros aceptan estado nulo | `IDENTIFICADO` | fail open ante dato incompleto | `AUTH-DB-033`; `SHELL-AUTH-004` | nulo produce identidad incompleta y `DENY` |
+| `IU-GAP-006` | NEXO no presenta razón específica de empleado inactivo | `IDENTIFICADO` | mensaje incorrecto y override de contexto | `SHELL-AUTH-005`; `AUTH-ERR-020` | reason code compartido y copy aprobado |
+| `IU-GAP-007` | ORIGO construye sesión de empleado sin seleccionar `is_active` | `IDENTIFICADO` | rol y sede residuales | `SHELL-AUTH-005` | resolución tipada exige actividad verdadera |
+| `IU-GAP-008` | 148 políticas dependen de cadena transitiva sin predicado local visible | `PENDIENTE_DE_EVIDENCIA` | adopción parcial o helper permisivo | `AUTH-DB-033`; `SHELL-CI-018` | matriz de dependencia y pruebas de identidad inactiva |
+| `IU-GAP-009` | no existe invalidación central observada al desactivar empleado | `IDENTIFICADO` | caché, contexto o actor session obsoletos | `AUTH-DB-035`; `SHELL-AUTH-001` | fingerprint e invalidación certificada |
+| `IU-GAP-010` | estado laboral y de cliente comparten sujetos sin contrato físico unificado | `IDENTIFICADO` | bloqueo cruzado de dominio | `AUTH-DB-019`; `SHELL-AUTH-001` | vínculo tipado conserva estados independientes |
+
+No se crea una tarea nueva porque todas las brechas poseen propietario canónico
+existente, momento de resolución y condición de salida verificable.
+
+---
+
+#### 23. Casos normativos
+
+##### Caso A — Sesión válida y empleado inactivo
+
+```text
+principal = VALID
+employee.is_active = false
+```
+
+Resultado:
+
+```text
+AUTH_USER_INACTIVE
+403
+DENY
+```
+
+No se redirige al login.
+
+##### Caso B — Empleado activo sin acceso a NEXO
+
+```text
+employee.is_active = true
+nexo.access = false
+```
+
+Resultado:
+
+```text
+AUTH-ERR-003
+```
+
+No se usa `AUTH_USER_INACTIVE`.
+
+##### Caso C — Empleado inactivo con rol propietario
+
+Resultado:
+
+```text
+DENY
+```
+
+El nombre del rol no produce bypass.
+
+##### Caso D — Empleado inactivo con permiso individual permitido
+
+Resultado:
+
+```text
+DENY
+```
+
+La asignación residual se conserva como historia, no como autoridad.
+
+##### Caso E — Empleado inactivo con turno y check-in abiertos
+
+Resultado:
+
+```text
+DENY
+```
+
+El contexto operativo queda inutilizable y la corrección histórica se maneja
+por procesos propietarios.
+
+##### Caso F — Empleado inactivo y cliente activo
+
+Aplicación laboral:
+
+```text
+AUTH_USER_INACTIVE
+```
+
+Vento Pass:
+
+```text
+continúa evaluación de cliente
+```
+
+##### Caso G — Empleado activo y cliente inactivo
+
+Vento Pass:
+
+```text
+AUTH_USER_INACTIVE
+```
+
+Aplicación laboral:
+
+```text
+continúa evaluación laboral
+```
+
+##### Caso H — Estado laboral nulo
+
+Resultado:
+
+```text
+DENY
+identity incomplete
+```
+
+No se usa `AUTH_USER_INACTIVE` ni se asume activo.
+
+##### Caso I — Auth `banned_until` vigente
+
+Resultado:
+
+```text
+clasificación técnica de Auth
+```
+
+No se traduce automáticamente a empleado inactivo.
+
+##### Caso J — Actor de dispositivo se desactiva durante uso
+
+Resultado:
+
+```text
+actor session no utilizable
+acción abortada
+selección segura de actor
+```
+
+El dispositivo no hereda permisos del actor anterior.
+
+##### Caso K — Desactivación durante mutación no confirmada
+
+Resultado:
+
+```text
+revalidación antes de frontera autoritativa
+sin efecto parcial
+AUTH_USER_INACTIVE
+```
+
+##### Caso L — Reactivación posterior
+
+Resultado:
+
+```text
+solicitud nueva
+contexto nuevo
+autorización completa nueva
+```
+
+No se reanuda la acción original.
+
+---
+
+#### 24. Seguridad y privacidad
+
+Controles obligatorios:
+
+1. fail closed;
+2. sesión y actividad separadas;
+3. `403` para principal autenticado con identidad inactiva;
+4. actividad explícitamente verdadera;
+5. estado nulo nunca equivale a activo;
+6. precedencia sobre permisos y contexto;
+7. aislamiento empleado–cliente;
+8. aislamiento dispositivo–actor;
+9. no bypass por rol;
+10. no bypass por permiso residual;
+11. no bypass por turno o check-in;
+12. no bypass por simulación;
+13. revalidación en servidor;
+14. invalidación de caché y contexto;
+15. cierre de suscripciones nuevas;
+16. no repetición de mutaciones;
+17. no revocación Auth por inferencia;
+18. no exposición de motivos internos;
+19. auditoría minimizada;
+20. copy accesible y estable.
+
+---
+
+#### 25. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+| ID              | Regla protegida                                                                                                           | Tipo                            | Prioridad | Momento de implementación             | Destino |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------- | ------------------------------- | --------- | ------------------------------------- | ------- |
+| `TREQ-AUTH-139` | sesión válida más identidad requerida explícitamente inactiva produce `AUTH_USER_INACTIVE`, `DENY`, `403` y cero efectos | contractual + seguridad         | crítica   | productor y adapter canónicos         | `AUTH-DB-033`; `SHELL-AUTH-002` |
+| `TREQ-AUTH-140` | inactividad precede aplicación, roles, permisos, sedes, turnos, check-ins, dispositivos y simulación                    | autorización + regresión        | crítica   | evaluador y migración de consumidores | `AUTH-DB-034`; `SHELL-AUTH-005` |
+| `TREQ-AUTH-141` | actividad laboral y de cliente se resuelven por separado para sujetos con ambas identidades                              | contractual + integración       | crítica   | vínculos de identidad y SDK           | `AUTH-DB-019`; `SHELL-AUTH-001` |
+| `TREQ-AUTH-142` | actor empleado inactivo invalida autoridad empresarial sin convertir el dispositivo técnico en empleado                 | seguridad + dispositivo + E2E   | crítica   | contexto compartido y consumidores    | `AUTH-DB-033`; `SHELL-AUTH-005` |
+| `TREQ-AUTH-143` | los diez canales aplican bloqueo autenticado o `403` tipado, sin redirect al login, retry ni mutación                    | integración + E2E + regresión   | crítica   | adapters y consumidoras               | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-016` |
+| `TREQ-AUTH-144` | estado ausente, nulo o ambiguo falla cerrado como identidad incompleta y nunca como activo o inactivo confirmado         | contractual + datos + regresión | crítica   | productor canónico                    | `AUTH-DB-033`; `AUTH-ERR-017`; `SHELL-CI-016` |
+| `TREQ-AUTH-145` | desactivación invalida contexto, caché, decisiones, actor session y entrega de datos antes de un efecto nuevo            | concurrencia + seguridad + E2E  | crítica   | frescura e invalidación                | `AUTH-DB-035`; `SHELL-AUTH-001`; `SHELL-CI-018` |
+| `TREQ-AUTH-146` | copy, accesibilidad y recuperación no revelan motivo interno ni prometen reactivación                                    | interfaz + experiencia          | alta      | mensajes compartidos                  | `AUTH-ERR-020`; `SHELL-CI-016` |
+| `TREQ-AUTH-147` | auditoría distingue identidad inactiva de Auth bloqueado, no destruye sesión por inferencia y no reutiliza autorización | auditoría + seguridad           | alta      | SDK y evidencia                       | `SHELL-AUTH-001`; `SHELL-CI-019` |
+| `TREQ-AUTH-148` | regresión reconcilia 32 funciones, cadena RLS y consumidores, cerrando las diez brechas físicas sin bloquear dominios sanos | regresión + RPC + RLS + estática | crítica | migración y gates de consumidoras     | `AUTH-DB-033`; `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-018` |
+
+El detalle canónico de estas diez filas se incorpora al Registro Canónico de
+Requisitos de Prueba.
+
+---
+
+#### 26. Validaciones documentales definidas
+
+El futuro validador deberá comprobar como mínimo:
+
+1. existencia única de `AUTH_USER_INACTIVE`;
+2. decisión `DENY`;
+3. `executable=false`;
+4. estado `403` fuera de navegación;
+5. principal autenticado conservado;
+6. tres causas internas exhaustivas;
+7. ausencia de Auth ban como causa empresarial;
+8. actividad explícitamente verdadera;
+9. estado nulo clasificado como incompleto;
+10. precedencia sobre acceso a aplicación;
+11. precedencia sobre permisos y contexto;
+12. separación empleado–cliente;
+13. separación dispositivo–actor;
+14. doce escenarios materializados;
+15. diez canales materializados;
+16. diez aplicaciones materializadas;
+17. no redirect al login;
+18. no reintento de mutación;
+19. copy exacto y accesible;
+20. auditoría minimizada;
+21. invalidación de contexto y caché;
+22. cierre de suscripciones nuevas;
+23. treinta y dos funciones reconciliadas;
+24. diez brechas físicas con propietario y salida;
+25. diez TREQ consecutivos y resolubles.
+
+---
+
+#### 27. Fuera del alcance
+
+AUTH-ERR-002 no:
+
+- activa o desactiva usuarios;
+- modifica `employees.is_active`;
+- modifica `public.users.is_active`;
+- bloquea o desbloquea sujetos Auth;
+- revoca sesiones;
+- limpia cookies;
+- cierra turnos históricos;
+- termina check-ins mediante DML;
+- invalida físicamente sesiones de actor;
+- modifica RLS;
+- modifica funciones o RPC;
+- crea triggers;
+- crea eventos de auditoría físicos;
+- crea SDK;
+- modifica middleware;
+- corrige NEXO u ORIGO;
+- migra aplicaciones;
+- implementa UI;
+- define acceso a aplicación;
+- aprueba `AUTH-ERR-003`;
+- ejecuta pruebas operativas.
+
+Toda brecha física tiene destino exacto en las secciones 20 a 22.
+
+---
+
+#### 28. Criterios de aceptación
+
+AUTH-ERR-002 queda materialmente completa cuando se acepta que:
+
+1. `AUTH_USER_INACTIVE` es el único código público de esta razón;
+2. la sesión técnica ya fue validada;
+3. la identidad requerida existe;
+4. el estado inactivo es explícito;
+5. el dominio es identidad empresarial;
+6. la decisión es `DENY`;
+7. `executable=false`;
+8. el estado no navegacional es `403`;
+9. no se usa `401`;
+10. no se redirige al login;
+11. no se destruye la sesión Auth por inferencia;
+12. volver a iniciar sesión no reactiva;
+13. `EMPLOYEE_INACTIVE` procede de `employees.is_active=false`;
+14. `CUSTOMER_INACTIVE` procede de `public.users.is_active=false`;
+15. `ACTOR_EMPLOYEE_INACTIVE` procede del empleado actor;
+16. Auth ban no equivale a identidad inactiva;
+17. ausencia de fila no equivale a inactividad;
+18. estado nulo no equivale a activo;
+19. identidad ambigua falla cerrado;
+20. inactividad precede acceso a aplicación;
+21. inactividad precede roles y permisos;
+22. inactividad precede sede y área;
+23. inactividad precede turno y check-in;
+24. inactividad precede dispositivo y simulación empresarial;
+25. permisos residuales no reactivan;
+26. roles privilegiados no crean bypass;
+27. empleado y cliente se evalúan por separado;
+28. un empleado inactivo puede conservar cliente activo;
+29. un cliente inactivo puede conservar empleado activo;
+30. Pass usa identidad de cliente;
+31. aplicaciones laborales usan identidad laboral;
+32. actor inactivo no desactiva por inferencia el dispositivo;
+33. actor inactivo no puede firmar ni ejecutar acciones;
+34. los diez canales poseen respuesta explícita;
+35. las diez aplicaciones poseen decisión explícita;
+36. no se repite una mutación;
+37. contexto y caché anteriores quedan obsoletos;
+38. Realtime no sigue entregando datos nuevos;
+39. la frontera autoritativa revalida actividad;
+40. una reactivación genera solicitud y autorización nuevas;
+41. el copy no revela motivos internos;
+42. la experiencia es accesible;
+43. la auditoría conserva correlación sin secretos;
+44. el snapshot físico queda declarado como diagnóstico;
+45. las treinta y dos funciones quedan materializadas;
+46. las 161 políticas se tratan como cadena de dependencia, no como conformidad presumida;
+47. las diez brechas tienen tarea responsable y condición de salida;
+48. no se crean tareas huérfanas;
+49. se generan `TREQ-AUTH-139` a `TREQ-AUTH-148`;
+50. no se realizan cambios físicos;
+51. `AUTH-ERR-003` permanece reservada.
+
+---
+
+#### 29. Estado final y continuidad
+
+| Tarea          | Estado      | Relación                                                      |
+| -------------- | ----------- | ------------------------------------------------------------- |
+| `AUTH-ERR-001` | APROBADA    | tarea anterior                                                |
+| `AUTH-ERR-002` | APROBADA    | tarea actual preparada para confirmación canónica del usuario |
+| `AUTH-ERR-003` | NO INICIADA | tarea siguiente reservada                                     |
+
+```text
+AUTH-ERR-001 — APROBADA
+        ↓
+AUTH-ERR-002 — APROBADA
+        ↓
+AUTH-ERR-003 — RESERVADA
+```
+
+No se inicia ni modifica `AUTH-ERR-003` en esta tarea.
+
 ### [ ] AUTH-ERR-003 — Sin acceso a la aplicación
 ### [ ] AUTH-ERR-004 — Sin permiso administrativo
 ### [ ] AUTH-ERR-005 — Sin sede asignada
