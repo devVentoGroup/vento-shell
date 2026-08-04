@@ -7334,5 +7334,1309 @@ AUTH-ERR-015 — Dispositivo no autorizado
 No se inicia ni modifica `AUTH-ERR-015` en esta tarea.
 
 
-### [ ] AUTH-ERR-015 — Dispositivo no autorizado
+### ✅ AUTH-ERR-015 — Dispositivo no autorizado
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-014 — Rol operativo inválido para el área` — APROBADA
+**Tarea siguiente:** `AUTH-ERR-016 — Acción no permitida en simulación` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, causal, funcional, de seguridad, experiencia y reconciliación física del bloqueo producido cuando una solicitud procede de un principal de dispositivo compartido o intenta ejecutarse desde una instancia compartida y una restricción concluyente del dispositivo impide continuar
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué debe ocurrir cuando una
+solicitud empresarial intenta utilizar un dispositivo compartido y, después de
+resolver la sesión de autenticación y el tipo de principal, el servidor concluye
+que la identidad técnica, la instancia, el estado, la configuración, la
+aplicación, el paquete de capacidades, la política de actor, el territorio o el
+soporte de seguridad del dispositivo no autorizan la solicitud.
+
+La regla raíz queda:
+
+```text
+SESIÓN DE AUTENTICACIÓN VÁLIDA
++
+PRINCIPAL = SHARED_DEVICE
++
+SOLICITUD EMPRESARIAL O ACCESO A APLICACIÓN PROTEGIDA
++
+RESTRICCIÓN CONCLUYENTE DEL DISPOSITIVO
+→
+DENY DE LA SOLICITUD DESDE ESE DISPOSITIVO
++
+AUTH_SHARED_DEVICE_NOT_AUTHORIZED
++
+403 CUANDO LA DECISIÓN FINAL QUEDA DENEGADA
++
+SESIÓN TÉCNICA PRESERVADA O REVOCADA SEGÚN EL ESTADO DEL DISPOSITIVO
++
+CERO EFECTOS EMPRESARIALES
+```
+
+La tarea responde exclusivamente:
+
+```text
+¿ESTE PRINCIPAL Y ESTA INSTANCIA COMPARTIDA PUEDEN PARTICIPAR
+EN LA APLICACIÓN Y ACCIÓN SOLICITADAS BAJO SU CONFIGURACIÓN EFECTIVA?
+```
+
+No responde:
+
+```text
+¿EXISTE UNA SESIÓN DE AUTENTICACIÓN VÁLIDA?
+¿FALTA IDENTIFICAR AL TRABAJADOR EN UN DISPOSITIVO VÁLIDO?
+¿EL EMPLEADO ESTÁ ACTIVO?
+¿EXISTE UN TURNO VIGENTE?
+¿EXISTE CHECK-IN CUANDO ES REQUERIDO?
+¿EL ROL OPERATIVO ESTÁ PRESENTE Y ES CANÓNICO?
+¿EL ROL ES VÁLIDO PARA LA SEDE Y EL ÁREA?
+¿EL ACTOR TIENE EL GRANT DEL PERMISO?
+¿EL RECURSO ESTÁ DENTRO DEL ALCANCE?
+¿LA ACCIÓN ESTÁ SIENDO SIMULADA?
+¿LA FUENTE TÉCNICA ESTÁ TEMPORALMENTE INDISPONIBLE?
+```
+
+Un equipo físicamente compartido utilizado mediante una sesión personal
+`HUMAN_USER` no produce esta razón por el solo hecho de ser una tablet, caja,
+kiosco o computador de uso común. La clasificación depende del principal
+resuelto en servidor.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `SHARED-DEVICE-AUTHORIZATION-BLOCKING-CONTRACT-001`, que congela identidad
+   pública, aplicabilidad, fuentes autoritativas, decisión, recuperación,
+   privacidad, auditoría y cero efectos;
+2. `SHARED-DEVICE-AUTHORIZATION-STATE-DECISION-MATRIX-001`, que decide
+   veinticuatro escenarios y separa dispositivo no autorizado, actor no
+   identificado, contexto laboral inválido, permiso faltante, simulación e
+   indisponibilidad técnica;
+3. `SHARED-DEVICE-AUTHORIZATION-CHANNEL-RESPONSE-MATRIX-001`, que materializa
+   diez canales con semántica equivalente;
+4. `SHARED-DEVICE-AUTHORIZATION-APPLICATION-COVERAGE-REGISTER-001`, que decide
+   el alcance para las diez aplicaciones canónicas sin autorizar por nombre de
+   aplicación;
+5. `SHARED-DEVICE-AUTHORIZATION-PHYSICAL-RECONCILIATION-001`, que registra el
+   snapshot físico de solo lectura y catorce brechas con destino documental
+   explícito.
+
+Cobertura materializada:
+
+| Elemento                                         | Cantidad |
+| ------------------------------------------------ | -------: |
+| Código público canónico                          |        1 |
+| Estado HTTP no navegacional                      | 1, `403` |
+| Familias internas de causa                       |        8 |
+| Causas internas normalizadas                     |       18 |
+| Escenarios con decisión explícita                |       24 |
+| Canales con respuesta explícita                  |       10 |
+| Aplicaciones canónicas reconciliadas             |       10 |
+| Permisos canónicos evaluados                     |      112 |
+| Permisos `STANDARD_ACTOR_SESSION`                |       52 |
+| Permisos `STRONG_REAUTH_REQUIRED`                |       40 |
+| Permisos `NOT_ALLOWED`                           |       20 |
+| Claves únicas presentes en algún paquete         |       83 |
+| Claves ausentes de todos los paquetes            |       29 |
+| Paquetes documentales exactos                    |        9 |
+| Membresías documentales de paquete               |      177 |
+| Plantillas objetivo                              |       14 |
+| Asociaciones máximas plantilla–permiso           |      266 |
+| Instancias físicas configuradas observadas       |        2 |
+| Observaciones físicas sin identidad autoritativa |        2 |
+| Plantillas físicas registradas                   |        6 |
+| Asociaciones físicas plantilla–aplicación        |       17 |
+| Asociaciones físicas instancia–aplicación        |        4 |
+| Políticas físicas de actor por instancia         |        2 |
+| Políticas físicas de actor por plantilla         |        7 |
+| Sesiones físicas de actor persistidas            |        0 |
+| Eventos físicos de dispositivo                   |        3 |
+| Instancias con `last_seen_at`                    |        0 |
+| Rutinas físicas relacionadas identificadas       |       11 |
+| Políticas RLS físicas relacionadas observadas    |        8 |
+| Brechas físicas registradas                      |       14 |
+| Requisitos de prueba derivados                   |       10 |
+
+Las cifras físicas representan un snapshot de solo lectura. No certifican que
+las instancias estén listas para operación canónica, no exponen credenciales y
+no autorizan correcciones automáticas sobre producción.
+
+---
+
+#### 3. Identidad canónica del bloqueo
+
+La identidad pública única es:
+
+```text
+reason_code = AUTH_SHARED_DEVICE_NOT_AUTHORIZED
+```
+
+| Propiedad                                    | Valor                                                                                                                                |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| Dominio                                      | `AUTHORIZATION_CONTEXT`                                                                                                              |
+| Estado público                               | `SHARED_DEVICE_NOT_AUTHORIZED_FOR_REQUEST`                                                                                           |
+| Categoría humana                             | `DENIED` cuando la restricción es estable; `BLOCKED` cuando exige corrección administrativa                                          |
+| Decisión                                     | `DENY` para la solicitud desde esa instancia                                                                                         |
+| Estado HTTP cuando la decisión final deniega | `403 Forbidden`                                                                                                                      |
+| `executable`                                 | `false`                                                                                                                              |
+| Sesión personal                              | no aplica al principal técnico                                                                                                       |
+| Sesión técnica                               | se conserva solo si el dispositivo continúa activo y no revocado                                                                     |
+| Sesión de actor                              | se termina cuando el dispositivo queda `INACTIVE`, `INVALID` o revocado                                                              |
+| Efectos empresariales                        | cero                                                                                                                                 |
+| Reintento automático                         | prohibido mientras no cambie la configuración o el contexto                                                                          |
+| Recuperación principal                       | utilizar una instancia autorizada, iniciar una sesión personal cuando el permiso lo exija o solicitar corrección de la configuración |
+| Copy principal                               | `Este dispositivo no está autorizado para esta operación. Usa un dispositivo permitido o inicia sesión de forma personal.`           |
+| Causas internas públicas                     | ninguna                                                                                                                              |
+
+Quedan prohibidos como códigos públicos alternativos:
+
+- `app_not_allowed`;
+- `device_invalid`;
+- `device_inactive`;
+- `device_not_found`;
+- `shared_device_permission_not_listed`;
+- `shared_device_permission_not_allowed`;
+- `navigation_role_invalid`;
+- `no_permission`;
+- el código del dispositivo;
+- el código de la plantilla;
+- el código del paquete;
+- mensajes libres usados como identidad contractual.
+
+Razones legacy podrán mapearse temporalmente como causas internas, pero no
+competirán con la identidad pública canónica.
+
+---
+
+#### 4. Definición exacta de dispositivo no autorizado
+
+Existe dispositivo no autorizado cuando la sesión de autenticación ya fue
+validada, el principal se clasificó como `SHARED_DEVICE` y al menos una de las
+siguientes condiciones concluyentes se cumple:
+
+```text
+NO EXISTE VÍNCULO EMPRESARIAL ÚNICO PARA EL PRINCIPAL TÉCNICO
+OR
+LA INSTANCIA ESTÁ INACTIVA, SUSPENDIDA, RETIRADA O REVOCADA
+OR
+LA INSTANCIA O SU CONFIGURACIÓN SON INVALIDAS
+OR
+LA APLICACIÓN SOLICITADA NO PERTENECE AL CONJUNTO EFECTIVO
+OR
+NO EXISTE PAQUETE EFECTIVO APROBADO PARA LA ACCIÓN EMPRESARIAL
+OR
+LA CLAVE SOLICITADA NO PERTENECE AL TECHO EFECTIVO
+OR
+EL PERMISO ESTÁ CLASIFICADO NOT_ALLOWED EN DISPOSITIVO COMPARTIDO
+OR
+EL DISPOSITIVO NO SOPORTA LA REAUTENTICACIÓN FUERTE EXIGIDA
+OR
+LA POLÍTICA DE ACTOR DEL DISPOSITIVO NO ADMITE AL ACTOR
+OR
+EL TERRITORIO O RECURSO DEL DISPOSITIVO ES INCOMPATIBLE
+```
+
+La evaluación deberá ser exacta, server-side, determinista y fail closed.
+
+No existe dispositivo no autorizado por:
+
+- ausencia de heartbeat por sí sola;
+- uso físico de un equipo compartido bajo sesión personal;
+- falta de actor en una instancia válida;
+- falta de turno, check-in, rol o grant del actor;
+- que una aplicación no esté instalada localmente si la solicitud no la usa;
+- que el dispositivo no haya sido usado recientemente;
+- que el actor anterior haya cerrado su sesión correctamente.
+
+---
+
+#### 5. Fuente autoritativa del dispositivo
+
+La fuente autoritativa se resuelve exclusivamente en servidor:
+
+```text
+principal autenticado
+→ tipo de principal
+→ vínculo técnico único y vigente
+→ instancia empresarial exacta
+→ plantilla y versión exactas
+→ estado efectivo
+→ aplicaciones efectivas
+→ paquete efectivo
+→ política de actor
+→ restricciones territoriales y de recurso
+```
+
+No podrán actuar como fuente autoritativa:
+
+- `device_id` enviado por el cliente;
+- `device_code` guardado en local storage;
+- cookie no firmada;
+- correo técnico interpretado por prefijo;
+- IP, MAC, serial o user agent;
+- hostname;
+- ruta visitada;
+- aplicación instalada;
+- QR no validado;
+- `navigation_role`;
+- último dispositivo usado;
+- último actor;
+- sede o área seleccionadas;
+- rol base u operativo del actor;
+- nombre físico del equipo;
+- metadata no tipada del cliente.
+
+Un error, ausencia o ambigüedad de la fuente no se resolverá escogiendo la
+primera fila ni convirtiendo el principal en `HUMAN_USER`.
+
+---
+
+#### 6. Principal técnico, instancia y actor humano
+
+Se conservan tres identidades distintas:
+
+| Identidad             | Función                                       | Puede conceder autorización empresarial |
+| --------------------- | --------------------------------------------- | --------------------------------------- |
+| Principal técnico     | Autentica la procedencia técnica              | No                                      |
+| Instancia empresarial | Define restricciones máximas y estado         | No; solo restringe                      |
+| Actor humano          | Aporta identidad, carriles, grants y contexto | Sí, si toda la decisión es válida       |
+
+Reglas:
+
+```text
+principal técnico ≠ dispositivo empresarial
+
+dispositivo empresarial ≠ actor humano
+
+actor humano ≠ último actor recordado
+
+identidad técnica válida ≠ acción autorizada
+```
+
+Un dispositivo autorizado no ejecuta acciones anónimas. Un actor autorizado no
+puede utilizar un dispositivo que no admita la acción.
+
+---
+
+#### 7. Estados del dispositivo
+
+| Estado contractual | Significado                                                        | Resultado empresarial                     |
+| ------------------ | ------------------------------------------------------------------ | ----------------------------------------- |
+| `ACTIVE`           | instancia única, habilitada y configuración resoluble              | puede continuar la evaluación; no concede |
+| `INACTIVE`         | deshabilitada, suspendida, retirada o revocada administrativamente | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`       |
+| `INVALID`          | identidad o configuración contradictoria                           | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`       |
+
+`ACTIVE` no significa:
+
+- conectado;
+- saludable;
+- con actor vigente;
+- con turno;
+- con check-in;
+- con aplicación autorizada para la solicitud;
+- con permiso concedido;
+- operativamente verificado.
+
+La ausencia de `last_seen_at` no transforma automáticamente un dispositivo en
+`INACTIVE`. La presencia de `last_seen_at` tampoco demuestra autorización.
+
+---
+
+#### 8. Configuración mínima autorizable
+
+Una instancia `ACTIVE` deberá resolver sin ambigüedad:
+
+1. identidad empresarial única;
+2. vínculo técnico único y vigente;
+3. tipo canónico;
+4. plantilla canónica;
+5. versión exacta de plantilla;
+6. sede fija o política territorial autorizada;
+7. política de área cuando aplique;
+8. aplicaciones efectivas;
+9. paquete efectivo versionado;
+10. política de actor;
+11. soporte de sesión ordinaria;
+12. soporte de reautenticación fuerte cuando la acción lo exija;
+13. estado de revocación;
+14. reglas de invalidación y limpieza.
+
+Una ampliación de instancia sobre la plantilla, una referencia inexistente, una
+lista con códigos no canónicos, un paquete obsoleto o una combinación imposible
+produce `INVALID`.
+
+---
+
+#### 9. Aplicaciones efectivas
+
+La lista efectiva será:
+
+```text
+APLICACIONES DE LA PLANTILLA VERSIONADA
+∩
+APLICACIONES NO RETIRADAS POR LA INSTANCIA
+∩
+APLICACIONES CANÓNICAS ACTIVAS
+∩
+CLIENTE DESPLEGADO COMPATIBLE CUANDO APLIQUE
+```
+
+Para principal `SHARED_DEVICE`:
+
+```text
+requested_app_code ∉ allowed_application_codes
+→ AUTH_SHARED_DEVICE_NOT_AUTHORIZED
+```
+
+La coincidencia de aplicación solo permite continuar. No concede:
+
+- `<app>.access`;
+- módulos internos;
+- rutas;
+- permisos;
+- carril base;
+- carril operativo;
+- alcance;
+- recurso.
+
+Lista vacía significa ninguna aplicación empresarial disponible.
+
+---
+
+#### 10. Paquete efectivo y techo de capacidades
+
+La clave solicitada deberá pertenecer simultáneamente a:
+
+```text
+PAQUETES EXACTOS DE LA VERSIÓN DE PLANTILLA
+∩
+REDUCCIONES EXPLÍCITAS DE LA INSTANCIA
+∩
+APLICACIONES EFECTIVAS
+∩
+CATÁLOGO CANÓNICO ACTIVO
+```
+
+El paquete:
+
+- es un techo restrictivo;
+- utiliza claves exactas;
+- no admite wildcards ni prefijos;
+- no concede al actor;
+- no reemplaza matrices;
+- no elimina denegaciones;
+- no crea turno, check-in, rol, sede o área;
+- no transforma una aplicación en permiso.
+
+Para una acción empresarial:
+
+```text
+capability_package_code = null
+OR
+package_version = unresolved
+OR
+permission_key ∉ effective_package
+→ AUTH_SHARED_DEVICE_NOT_AUTHORIZED
+```
+
+Un paquete nulo puede ser válido para una superficie técnica o una instancia en
+configuración, pero no para ejecutar una acción empresarial.
+
+---
+
+#### 11. Compatibilidad del permiso
+
+Los 112 permisos conservan exactamente una clasificación:
+
+| Clasificación            | Cantidad | Regla                                                                    |
+| ------------------------ | -------: | ------------------------------------------------------------------------ |
+| `STANDARD_ACTOR_SESSION` |       52 | requiere dispositivo autorizado y sesión ordinaria de actor válida       |
+| `STRONG_REAUTH_REQUIRED` |       40 | requiere además reautenticación fuerte personal válida                   |
+| `NOT_ALLOWED`            |       20 | exige sesión personal y no puede ejecutarse desde dispositivo compartido |
+
+Casos:
+
+```text
+NOT_ALLOWED
+→ AUTH_SHARED_DEVICE_NOT_AUTHORIZED
+→ ofrecer sesión personal cuando sea procedente
+```
+
+```text
+STRONG_REAUTH_REQUIRED
++
+dispositivo sin soporte fuerte
+→ AUTH_SHARED_DEVICE_NOT_AUTHORIZED
+```
+
+```text
+STRONG_REAUTH_REQUIRED
++
+dispositivo con soporte
++
+evidencia fuerte ausente o expirada
+→ REAUTENTICACIÓN REQUERIDA
+→ no degradar a dispositivo no autorizado
+```
+
+Un permiso nuevo inicia denegado en dispositivos hasta clasificación y versión
+de paquete aprobadas.
+
+---
+
+#### 12. `SHARED-DEVICE-AUTHORIZATION-BLOCKING-CONTRACT-001`
+
+```ts
+type SharedDeviceAuthorizationBlockingContract = {
+  contract_id: "SHARED-DEVICE-AUTHORIZATION-BLOCKING-CONTRACT-001";
+  reason_code: "AUTH_SHARED_DEVICE_NOT_AUTHORIZED";
+  public_state: "SHARED_DEVICE_NOT_AUTHORIZED_FOR_REQUEST";
+  category: "DENIED" | "BLOCKED";
+  decision: "DENY";
+  http_status: 403;
+  executable: false;
+  session_effect:
+    | "PRESERVE_TECHNICAL_SESSION"
+    | "TERMINATE_ACTOR_SESSION"
+    | "REQUIRE_TECHNICAL_REAUTHENTICATION";
+  effects_committed: false;
+  retry_policy: "AFTER_CONTEXT_OR_CONFIGURATION_CHANGE";
+  recovery:
+    | "USE_AUTHORIZED_DEVICE"
+    | "USE_PERSONAL_SESSION"
+    | "REQUEST_DEVICE_CONFIGURATION_REVIEW";
+};
+```
+
+El envelope no expondrá causa interna, identificadores técnicos, plantillas,
+paquetes, políticas, claves permitidas ni reglas de seguridad.
+
+---
+
+#### 13. Frontera con autenticación
+
+| Situación                                              | Resultado                                                    |
+| ------------------------------------------------------ | ------------------------------------------------------------ |
+| JWT ausente, inválido o expirado                       | error de autenticación anterior; no `AUTH-ERR-015`           |
+| sesión personal válida                                 | evaluar como `HUMAN_USER`; no `AUTH-ERR-015` por el hardware |
+| principal técnico válido sin vínculo empresarial único | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`                          |
+| credencial técnica revocada y sesión ya inválida       | autenticación requerida; revocación auditada                 |
+| vínculo técnico ambiguo                                | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` y `INVALID`              |
+
+La tarea no convierte un fallo de autenticación en `403` ni un vínculo
+empresarial inválido en usuario personal.
+
+---
+
+#### 14. Frontera con actor no identificado
+
+Un dispositivo válido sin sesión de actor produce:
+
+```text
+ACTOR_IDENTIFICATION_REQUIRED
+```
+
+Copy objetivo:
+
+```text
+Este equipo está autorizado, pero todavía no sabemos quién está operando.
+Identifícate para registrar la acción a tu nombre.
+```
+
+No produce `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`.
+
+La superficie previa a identificación podrá mostrar únicamente:
+
+- identidad visual segura del terminal;
+- estado técnico mínimo;
+- mecanismo de identificación;
+- aplicaciones permitidas por configuración sin datos empresariales;
+- mantenimiento o bloqueo.
+
+---
+
+#### 15. Frontera con sesión de actor inválida
+
+| Situación                                    | Resultado                                              |
+| -------------------------------------------- | ------------------------------------------------------ |
+| sesión ausente                               | identificación requerida                               |
+| sesión expirada                              | cerrar y solicitar identificación nueva                |
+| dos o más sesiones activas incompatibles     | problema estructural; no elegir una                    |
+| sesión de otro dispositivo                   | problema estructural                                   |
+| actor inactivo                               | identidad laboral inválida                             |
+| último actor recordado sin sesión vigente    | actor ausente                                          |
+| dispositivo `INACTIVE`, `INVALID` o revocado | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` y cierre de sesión |
+
+Una sesión inválida no se corrige reutilizando PIN, cookie, actor previo o
+estado local sin nueva resolución autoritativa.
+
+---
+
+#### 16. Frontera con turno, check-in, rol, sede y área
+
+Cuando el dispositivo raíz es válido y la acción admite dispositivo compartido,
+se conservan los bloqueos específicos del actor:
+
+- turno ausente o inválido;
+- check-in requerido;
+- rol operativo faltante;
+- rol operativo inválido para la sede;
+- rol operativo inválido para el área;
+- sede o área estructuralmente inválidas.
+
+El dispositivo:
+
+- no crea turno;
+- no crea check-in;
+- no aporta rol;
+- no reemplaza sede ni área;
+- no convierte `navigation_role` en rol efectivo;
+- no elige el turno que mejor coincida con su territorio.
+
+Si la restricción territorial del dispositivo falla después de resolver un
+contexto laboral válido, se utiliza `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` con
+causa interna de incompatibilidad territorial del dispositivo.
+
+---
+
+#### 17. Frontera con grant, scope, recurso y denegaciones
+
+| Situación                                          | Resultado                                             |
+| -------------------------------------------------- | ----------------------------------------------------- |
+| clave no incluida en el techo del dispositivo      | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`                   |
+| permiso `NOT_ALLOWED` en dispositivo               | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`                   |
+| actor sin grant                                    | denegación de permiso del actor, no esta razón        |
+| scope del actor insuficiente                       | denegación de alcance, no esta razón                  |
+| recurso fuera del territorio del actor             | denegación territorial o de recurso                   |
+| recurso fuera del límite adicional del dispositivo | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`                   |
+| denegación explícita aplicable                     | prevalece la denegación; el dispositivo no la elimina |
+
+La tarea preserva la fórmula:
+
+```text
+AUTORIDAD DEL ACTOR
+∩
+LÍMITE DEL DISPOSITIVO
+=
+CAPACIDAD EVALUABLE
+```
+
+Nunca unión.
+
+---
+
+#### 18. Política de actor
+
+Una instancia puede restringir quién puede iniciar o mantener una sesión.
+
+La política final deberá consumir hechos canónicos:
+
+- empleado activo;
+- sesión de actor vigente;
+- asignación laboral cuando aplique;
+- turno;
+- rol operativo;
+- sede;
+- área;
+- relación con recurso;
+- modo de sesión permitido.
+
+No podrá autorizar únicamente por:
+
+- mismo sitio físico;
+- nombre de rol;
+- `navigation_role`;
+- correo;
+- último actor;
+- perfil predeterminado;
+- primer empleado coincidente.
+
+Política no satisfecha:
+
+```text
+AUTH_SHARED_DEVICE_NOT_AUTHORIZED
+```
+
+La respuesta pública no revelará qué roles o trabajadores sí serían elegibles.
+
+---
+
+#### 19. Territorio y recurso del dispositivo
+
+La instancia restringe por intersección:
+
+```text
+territorio válido del actor
+∩
+territorio permitido por dispositivo
+∩
+territorio del recurso
+```
+
+No podrá:
+
+- trasladar el turno;
+- sustituir el área del actor;
+- convertir `null` en toda la sede;
+- usar `area_kind` como `area_id`;
+- autorizar por cercanía física;
+- ampliar una plantilla;
+- convertir una ruta o vehículo en wildcard cross-site.
+
+Una incompatibilidad concluyente del dispositivo con el territorio o recurso
+solicitado produce `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`.
+
+---
+
+#### 20. Simulación
+
+La simulación administrativa no puede iniciarse ni mantenerse desde:
+
+- identidad técnica de dispositivo;
+- sesión ligera de actor;
+- kiosco;
+- terminal POS compartida;
+- PIN de dispositivo.
+
+Casos:
+
+| Situación                                             | Resultado                                                           |
+| ----------------------------------------------------- | ------------------------------------------------------------------- |
+| principal compartido intenta iniciar simulación       | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` para el acceso a la herramienta |
+| sesión personal simula hipotéticamente un dispositivo | evaluación simulada; no `AUTH-ERR-015` real                         |
+| simulación activa intenta ejecutar una acción         | `AUTH-ERR-016`                                                      |
+| permiso de simulación no permitido en dispositivo     | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`                                 |
+
+La simulación no crea vínculo técnico, paquete, actor session ni soporte fuerte.
+
+---
+
+#### 21. Actor `SYSTEM` y procesos asíncronos
+
+Un actor `SYSTEM` no se representa como dispositivo compartido ni como empleado
+ligero.
+
+Una acción iniciada válidamente desde dispositivo y continuada de forma
+asíncrona deberá conservar:
+
+- actor humano original;
+- dispositivo original;
+- aplicación;
+- permiso;
+- contexto y recurso;
+- decisión o evidencia reevaluable;
+- correlación.
+
+La expiración posterior de la sesión no transforma el proceso en una acción del
+dispositivo. Un callback, worker o cola no podrá usar la identidad técnica del
+terminal para adquirir autoridad nueva.
+
+---
+
+#### 22. Causas internas admitidas
+
+Las causas internas se agrupan sin exposición pública:
+
+| Familia        | Causas normalizadas                                                                                      |
+| -------------- | -------------------------------------------------------------------------------------------------------- |
+| Identidad      | `device_binding_missing`, `device_binding_ambiguous`, `device_binding_revoked`                           |
+| Estado         | `device_inactive`, `device_suspended`, `device_retired`                                                  |
+| Configuración  | `device_template_unresolved`, `device_template_version_invalid`, `device_configuration_conflicted`       |
+| Aplicación     | `shared_device_app_not_allowed`, `shared_device_app_catalog_invalid`                                     |
+| Paquete        | `shared_device_package_unresolved`, `shared_device_package_stale`, `shared_device_permission_not_listed` |
+| Compatibilidad | `shared_device_permission_not_allowed`, `shared_device_strong_not_supported`                             |
+| Política       | `shared_device_actor_policy_not_satisfied`                                                               |
+| Territorio     | `shared_device_territory_mismatch`                                                                       |
+
+Reglas:
+
+- cada causa interna tendrá exactamente una familia;
+- la primera causa concluyente se conserva;
+- causas derivadas se suprimen sin perder auditoría;
+- la respuesta pública usa siempre el mismo `reason_code`;
+- causas de actor, turno, permiso o fuente no se mezclarán en este catálogo.
+
+---
+
+#### 23. `SHARED-DEVICE-AUTHORIZATION-STATE-DECISION-MATRIX-001`
+
+|    # | Escenario                                                                      | Decisión                                            | Razón pública o destino             |
+| ---: | ------------------------------------------------------------------------------ | --------------------------------------------------- | ----------------------------------- |
+|    1 | sesión personal válida en equipo físicamente compartido                        | evaluar como humano                                 | no aplica                           |
+|    2 | sesión de autenticación ausente o inválida                                     | denegar antes                                       | autenticación requerida             |
+|    3 | principal técnico sin vínculo empresarial                                      | denegar                                             | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|    4 | principal técnico vinculado a varias instancias                                | denegar                                             | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|    5 | instancia inactiva, suspendida o retirada                                      | denegar y cerrar actor                              | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|    6 | instancia revocada                                                             | denegar, invalidar y exigir reautenticación técnica | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|    7 | plantilla o versión no resoluble                                               | denegar                                             | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|    8 | instancia amplía plantilla o contiene configuración contradictoria             | denegar                                             | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|    9 | aplicación solicitada ausente del conjunto efectivo                            | denegar                                             | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|   10 | aplicación desconocida o inactiva en configuración                             | denegar                                             | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|   11 | paquete empresarial nulo o no resoluble                                        | denegar                                             | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|   12 | paquete obsoleto o contradictorio con catálogo/apps                            | denegar                                             | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|   13 | clave solicitada ausente del paquete efectivo                                  | denegar                                             | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|   14 | permiso clasificado `NOT_ALLOWED`                                              | denegar y ofrecer sesión personal                   | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|   15 | permiso `STRONG`, dispositivo sin soporte fuerte                               | denegar y ofrecer sesión personal                   | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|   16 | permiso `STRONG`, soporte disponible, evidencia ausente                        | bloquear hasta reautenticación                      | reautenticación requerida           |
+|   17 | dispositivo válido sin actor                                                   | bloquear identificación                             | actor requerido                     |
+|   18 | sesión de actor expirada                                                       | cerrar y solicitar nueva identificación             | sesión de actor expirada            |
+|   19 | varias sesiones activas incompatibles                                          | denegar y reconciliar                               | problema estructural                |
+|   20 | política de actor no satisfecha                                                | denegar                                             | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|   21 | contexto del actor válido pero territorio/recurso del dispositivo incompatible | denegar                                             | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` |
+|   22 | dispositivo válido y actor sin grant                                           | denegar por actor                                   | permiso faltante                    |
+|   23 | dispositivo válido, simulación intenta mutar                                   | denegar                                             | `AUTH-ERR-016`                      |
+|   24 | fuente autoritativa no responde o no permite concluir                          | fail closed temporal                                | `AUTH-ERR-019`                      |
+
+La matriz es exhaustiva para esta tarea. Un caso nuevo deberá incorporarse con
+identidad, precedencia, recuperación y prueba explícitas.
+
+---
+
+#### 24. Precedencia
+
+Orden obligatorio:
+
+```text
+1. autenticación y principal
+2. identidad empresarial del dispositivo
+3. estado, revocación, plantilla y configuración raíz
+4. aplicación solicitada
+5. actor session cuando la superficie lo exige
+6. identidad laboral y contexto del actor
+7. compatibilidad del permiso con dispositivo
+8. paquete y clave exacta
+9. política de actor y territorio del dispositivo
+10. grants, carriles, prerrequisitos, scope, recurso y denegaciones
+11. simulación
+12. decisión final
+```
+
+Reglas de presentación:
+
+- un dispositivo raíz `INACTIVE` o `INVALID` impide resolver o exponer datos del
+  actor;
+- una aplicación no permitida puede bloquearse antes de solicitar PIN;
+- en una aplicación permitida, actor ausente se presenta como identificación
+  requerida, no como dispositivo no autorizado;
+- una vez el dispositivo participa válidamente, los bloqueos específicos de
+  turno, check-in, rol, sede y área conservan su identidad;
+- una indisponibilidad de fuente no se presenta como denegación estable.
+
+---
+
+#### 25. Regla de cero efectos
+
+Ante `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`:
+
+- no se inserta, actualiza ni elimina información empresarial;
+- no se cambia estado de dominio;
+- no se reserva inventario;
+- no se mueve stock;
+- no se registra venta, entrega, producción, recepción o retiro;
+- no se publica asistencia;
+- no se firma una acción;
+- no se crea una sesión de actor como recuperación implícita;
+- no se cambia aplicación, paquete, política, sede o área;
+- no se reutiliza una decisión positiva anterior;
+- no se emite evento empresarial de éxito;
+- no se muestra información protegida;
+- no se degrada a solo lectura salvo que exista un permiso independiente válido;
+- no se intenta automáticamente con otro rol, actor o dispositivo.
+
+La auditoría de denegación no constituye efecto empresarial de la acción.
+
+---
+
+#### 26. Envelope público
+
+Ejemplo no vinculante de forma pública:
+
+```json
+{
+  "ok": false,
+  "reason_code": "AUTH_SHARED_DEVICE_NOT_AUTHORIZED",
+  "state": "SHARED_DEVICE_NOT_AUTHORIZED_FOR_REQUEST",
+  "category": "DENIED",
+  "message": "Este dispositivo no está autorizado para esta operación. Usa un dispositivo permitido o inicia sesión de forma personal.",
+  "executable": false,
+  "effects_committed": false,
+  "recovery_actions": [
+    "USE_AUTHORIZED_DEVICE",
+    "USE_PERSONAL_SESSION",
+    "REQUEST_DEVICE_CONFIGURATION_REVIEW"
+  ]
+}
+```
+
+No se incluirán:
+
+- `auth_user_id`;
+- email técnico;
+- `device_id` interno salvo referencia segura autorizada;
+- plantilla o versión;
+- paquete;
+- lista de aplicaciones o permisos;
+- política de actor;
+- roles elegibles;
+- PIN, hash, QR o token;
+- causas internas;
+- consultas SQL;
+- nombres de tablas o funciones.
+
+---
+
+#### 27. Copy, accesibilidad y recuperación
+
+Copy principal:
+
+```text
+Este dispositivo no está autorizado para esta operación.
+Usa un dispositivo permitido o inicia sesión de forma personal.
+```
+
+Variantes permitidas por recuperación:
+
+| Condición segura                   | Título                                                   | Acción principal                       |
+| ---------------------------------- | -------------------------------------------------------- | -------------------------------------- |
+| permiso requiere sesión personal   | `Esta operación requiere una sesión personal`            | `Iniciar sesión de forma personal`     |
+| dispositivo está fuera de servicio | `Este dispositivo no está disponible para operar`        | `Usar otro dispositivo`                |
+| configuración requiere revisión    | `Este dispositivo necesita una revisión`                 | `Solicitar revisión`                   |
+| aplicación no admitida             | `Esta aplicación no está disponible en este dispositivo` | `Volver a las aplicaciones permitidas` |
+
+Reglas:
+
+- no culpar al trabajador;
+- no mostrar solo `Acceso denegado`;
+- no sugerir usar cuenta ajena;
+- no sugerir cambiar manualmente sede, área o rol;
+- no enumerar quién sí tiene acceso;
+- no mostrar códigos internos;
+- anunciar con tecnología asistiva;
+- mover el foco al resumen del bloqueo;
+- conservar una referencia segura para soporte;
+- informar que no se realizaron cambios.
+
+---
+
+#### 28. `SHARED-DEVICE-AUTHORIZATION-CHANNEL-RESPONSE-MATRIX-001`
+
+| Canal                               | Comportamiento obligatorio                                                                 |
+| ----------------------------------- | ------------------------------------------------------------------------------------------ |
+| Launcher o navegación               | ocultar o bloquear app no permitida sin convertir visibilidad en autorización              |
+| Server Component / RSC              | resolver en servidor y no serializar datos protegidos                                      |
+| Server Action                       | responder `403`, cero efectos y razón pública canónica                                     |
+| Route Handler / API                 | envelope canónico, sin detalles internos ni reintento automático                           |
+| RPC / PostgREST                     | fail closed; no usar booleano permisivo como decisión completa                             |
+| RLS / Data API                      | impedir filas o mutaciones; conservar evidencia diagnóstica fuera de la respuesta sensible |
+| Edge Function                       | reevaluar principal, dispositivo, app, paquete, actor y recurso                            |
+| Realtime                            | no suscribir ni filtrar solo en cliente; revocar al invalidar contexto                     |
+| Cliente offline o caché             | vista cacheada no autoriza; ninguna mutación protegida sin confirmación server-side        |
+| Cola, impresión o proceso asíncrono | conservar actor y dispositivo originales; no adquirir autoridad nueva                      |
+
+Todos los canales deberán producir la misma decisión para la misma entrada y
+frescura contractual.
+
+---
+
+#### 29. Reintentos, concurrencia e invalidación
+
+`AUTH_SHARED_DEVICE_NOT_AUTHORIZED` no admite reintento automático mientras no
+cambie una de estas condiciones:
+
+- vínculo técnico;
+- estado o revocación;
+- plantilla o versión;
+- aplicaciones;
+- paquete;
+- política de actor;
+- territorio o recurso;
+- soporte fuerte;
+- sesión utilizada.
+
+Eventos que invalidan contexto y decisiones positivas:
+
+```text
+device_activated
+device_deactivated
+device_suspended
+device_revoked
+device_template_changed
+device_template_version_changed
+device_apps_changed
+device_package_changed
+device_actor_policy_changed
+device_territory_changed
+device_actor_session_started
+device_actor_session_ended
+device_actor_session_expired
+device_actor_changed
+permission_catalog_changed
+```
+
+Una acción deberá conservar el mismo dispositivo, actor, app, permiso, contexto
+y recurso desde la evaluación hasta la confirmación transaccional. Cualquier
+cambio obliga a reiniciar la decisión.
+
+---
+
+#### 30. Auditoría
+
+La auditoría mínima conservará, cuando exista y sea seguro:
+
+- `reason_code` público;
+- causa interna;
+- familia de causa;
+- principal type;
+- identificador técnico pseudonimizado;
+- `device_id` empresarial;
+- `device_code` interno;
+- estado del dispositivo;
+- plantilla y versión;
+- paquete y versión;
+- aplicación solicitada;
+- permiso solicitado;
+- actor y actor session cuando existan;
+- sede, área y recurso;
+- política evaluada;
+- soporte fuerte;
+- decisión y carril;
+- `resolved_at`;
+- fingerprint de contexto;
+- correlación e idempotency key;
+- efectos confirmados, siempre cero;
+- recuperación ofrecida;
+- fuente y versión de reglas.
+
+No se registrarán en logs ordinarios:
+
+- PIN;
+- hash de PIN;
+- token;
+- JWT;
+- QR secreto;
+- contraseña;
+- factor MFA;
+- contenido protegido de la acción;
+- listas completas de permisos del actor.
+
+---
+
+#### 31. `SHARED-DEVICE-AUTHORIZATION-APPLICATION-COVERAGE-REGISTER-001`
+
+| Aplicación | Compatibilidad documental                                                        | Decisión de `AUTH-ERR-015`                                                              |
+| ---------- | -------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| SHELL      | `shell.access` es `STANDARD`; la superficie previa se controla por configuración | bloquear app o acción no incluida; no conceder por launcher                             |
+| ANIMA      | sus 10 permisos son `NOT_ALLOWED`                                                | exigir sesión personal; la asistencia no usa actor ligero                               |
+| AURA       | `aura.access` es `NOT_ALLOWED` y la aplicación permanece diferida                | bloquear desde dispositivo compartido                                                   |
+| FOGO       | 5 permisos `STANDARD`, 1 `NOT_ALLOWED`                                           | admitir solo claves exactas del paquete y área de producción compatibles                |
+| NEXO       | mezcla de `STANDARD`, `STRONG` y `NOT_ALLOWED`                                   | aplicar paquete, actor, territorio, recurso y soporte fuerte por acción                 |
+| NUMERA     | 6 permisos `STRONG`                                                              | solo terminal y paquete aprobados con reautenticación fuerte; de lo contrario bloquear  |
+| ORIGO      | 4 permisos compartibles y 1 `STRONG`                                             | aplicar app, paquete, recepción y soporte fuerte exactos                                |
+| PASS       | `pass.access` es `NOT_ALLOWED`                                                   | conservar sesión de cliente separada; bloquear identidad técnica laboral                |
+| PULSO      | 1 `STANDARD` y 1 `STRONG`                                                        | admitir POS autorizado; override exige soporte y evidencia fuerte                       |
+| VISO       | 17 permisos `STRONG`                                                             | únicamente terminal administrativa aprobada y sesión personal fuerte; no bypass por rol |
+
+La cobertura no asigna aplicaciones ni permisos a instancias concretas. Consume
+las clasificaciones y paquetes aprobados y define la respuesta cuando una
+restricción del dispositivo falla.
+
+---
+
+#### 32. Plantillas, instancias y observaciones
+
+Se conservan exactamente diecinueve claves documentales:
+
+| Clase                     | Cantidad | Tratamiento                                        |
+| ------------------------- | -------: | -------------------------------------------------- |
+| `CONFIGURED_INSTANCE`     |        2 | registradas pero no verificadas operacionalmente   |
+| `PHYSICAL_OBSERVATION`    |        2 | no constituyen identidad autoritativa              |
+| `TARGET_TEMPLATE`         |       14 | política definida, no instancia activa por sí sola |
+| `RETIRED_LEGACY_TEMPLATE` |        1 | no admite nuevas instancias ni paquetes            |
+
+Reglas:
+
+- una observación no se autoriza por ubicación o etiqueta;
+- una plantilla no es un dispositivo;
+- una instancia registrada no queda certificada por estar activa en una tabla;
+- la plantilla retirada no recibe nuevas aplicaciones ni capacidades;
+- no se crea instancia por inferencia desde una pantalla o equipo físico.
+
+---
+
+#### 33. Snapshot físico observado
+
+Snapshot de solo lectura:
+
+| Elemento                                                         |   Resultado observado |
+| ---------------------------------------------------------------- | --------------------: |
+| `shared_operational_devices`                                     |                     2 |
+| instancias con `is_active = true` y `activation_status = active` |                     2 |
+| instancias vinculadas a Auth                                     |                     2 |
+| instancias con sede                                              |                     2 |
+| instancias con área                                              |                     2 |
+| instancias con `last_seen_at`                                    |                     0 |
+| `shared_operational_device_apps`                                 |                     4 |
+| apps de `CAJA_VENTO_CAFE_01`                                     | 3: SHELL, NEXO, PULSO |
+| apps de `KIOSCO_BODEGA_CP`                                       |               1: NEXO |
+| `shared_operational_device_actor_sessions`                       |                     0 |
+| `shared_operational_device_events`                               |                     3 |
+| `shared_operational_device_templates`                            |                     6 |
+| `shared_operational_device_template_apps`                        |                    17 |
+| `shared_operational_device_actor_policies`                       |                     2 |
+| `shared_operational_device_template_actor_policies`              |                     7 |
+| rutinas relacionadas identificadas                               |                    11 |
+| políticas RLS relacionadas observadas                            |                     8 |
+
+Instancias observadas:
+
+| Instancia            | Tipo                 | Plantilla física  | Política física de actor  | Estado documental       |
+| -------------------- | -------------------- | ----------------- | ------------------------- | ----------------------- |
+| `CAJA_VENTO_CAFE_01` | `pos_terminal`       | `pos_satellite`   | `role_in_area`            | `REGISTERED_UNVERIFIED` |
+| `KIOSCO_BODEGA_CP`   | `warehouse_terminal` | `warehouse_kiosk` | `same_site_active_worker` | `REGISTERED_UNVERIFIED` |
+
+La ausencia de sesiones y heartbeat no vuelve inactivas las filas, pero impide
+presentarlas como evidencia de operación canónica verificada.
+
+---
+
+#### 34. Comportamiento físico observado
+
+El runtime físico actual presenta estas características:
+
+1. `current_shared_operational_device_v1()` selecciona por `auth.uid()`, estado
+   activo y relaciones de aplicación;
+2. la función no demuestra versión de plantilla ni paquete efectivo;
+3. devuelve `navigation_role`;
+4. `get_effective_context_v1()` usa `navigation_role` como
+   `effective_operational_role`;
+5. el `can_operate` compartido se calcula principalmente por pertenencia de la
+   aplicación;
+6. `current_shared_device_can_access_app(text)` devuelve un booleano basado en
+   instancia y app activa;
+7. las funciones legacy de actor usan asistencia, campos legacy del empleado y
+   fallbacks de rol;
+8. NEXO consulta directamente `shared_operational_devices`;
+9. NEXO permite que `preferredSiteId` y `preferredAreaId` precedan al territorio
+   de la instancia;
+10. NEXO asigna `navigation_role` como rol de la sesión compartida;
+11. NEXO trata `<app>.access` como permitido cuando la app está listada;
+12. no existen sesiones de actor persistidas que demuestren el flujo objetivo;
+13. el kiosco de bodega conserva una política `same_site_active_worker` que el
+   contrato documental considera insuficiente como política final;
+14. no se demostró una capa física versionada de paquetes y reducciones que
+   materialice el techo documental.
+
+Ninguno de estos comportamientos se corrige dentro de esta tarea documental.
+
+---
+
+#### 35. `SHARED-DEVICE-AUTHORIZATION-PHYSICAL-RECONCILIATION-001`
+
+|    # | Brecha física                                                                   | Estado                        | Riesgo                                              | Destino exacto                                                  |
+| ---: | ------------------------------------------------------------------------------- | ----------------------------- | --------------------------------------------------- | --------------------------------------------------------------- |
+|    1 | no existe productor físico completo de `DeviceContext@1.0.0`                    | `PENDIENTE_DE_IMPLEMENTACION` | decisión fragmentada                                | `AUTH-CTX-025`; `AUTH-DB-033`; `AUTH-DB-034`                    |
+|    2 | vínculo técnico no expone diagnóstico canónico de missing/ambiguous/revoked     | `PENDIENTE_DE_IMPLEMENTACION` | principal mal clasificado                           | `AUTH-CTX-025`; `AUTH-CTX-028`                                  |
+|    3 | plantilla y versión exactas no se resuelven en el contexto efectivo             | `PENDIENTE_DE_IMPLEMENTACION` | configuración no reproducible                       | `AUTH-DEV-014`; `AUTH-CTX-025`; BLOQUE R                        |
+|    4 | paquetes versionados y reducciones no están materializados conforme al contrato | `PENDIENTE_DE_IMPLEMENTACION` | techo inexistente o ampliable                       | `AUTH-DEV-006`; `AUTH-CTX-028`; BLOQUE E5; BLOQUE R             |
+|    5 | `navigation_role` participa como rol efectivo                                   | `BLOQUEADO`                   | elevación y rol inventado                           | `AUTH-DEV-009`; `AUTH-CTX-027`; `AUTH-CTX-028`; `AUTH-DB-030`   |
+|    6 | app permitida puede convertirse en `<app>.access`                               | `BLOQUEADO`                   | app convertida en grant                             | `AUTH-CAT-014`; `AUTH-CTX-017`; `AUTH-CTX-026`; `AUTH-QA-030`   |
+|    7 | `can_operate` legacy solo refleja app y no decisión completa                    | `BLOQUEADO`                   | allow parcial                                       | `AUTH-CTX-026`; `AUTH-DB-034`                                   |
+|    8 | territorio de la instancia puede ser sustituido por valores preferidos          | `BLOQUEADO`                   | operación cross-site/cross-area                     | `AUTH-CTX-027`; `AUTH-CTX-028`; `AUTH-QA-030`                   |
+|    9 | funciones de actor usan asistencia y campos legacy como fallback                | `BLOQUEADO`                   | actor, turno o rol incorrectos                      | `AUTH-DEV-008`; `AUTH-CTX-028`; `AUTH-DB-030`                   |
+|   10 | no existen sesiones de actor persistidas                                        | `PENDIENTE_DE_IMPLEMENTACION` | acciones sin atribución                             | `AUTH-DEV-007`; `AUTH-DEV-012`; BLOQUE R                        |
+|   11 | cambio, expiración y revocación de actor no están validados operacionalmente    | `PENDIENTE_DE_EVIDENCIA`      | autoridad residual                                  | `AUTH-DEV-011` a `AUTH-DEV-013`; `AUTH-QA-030`                  |
+|   12 | política `same_site_active_worker` del kiosco es demasiado amplia               | `BLOQUEADO`                   | cualquier trabajador de sede podría intentar operar | `AUTH-DEV-008`; `AUTH-DEV-014`                                  |
+|   13 | no existe evidencia de heartbeat ni operación física verificada                 | `PENDIENTE_DE_EVIDENCIA`      | estado registral confundido con disponibilidad      | `AUTH-DEV-014` a `AUTH-DEV-016`; BLOQUE E4                      |
+|   14 | mensajes y reason codes de consumidoras no están unificados                     | `PENDIENTE_DE_IMPLEMENTACION` | UX y respuesta divergentes                          | `AUTH-ERR-015`; `SHELL-AUTH-004`; `SHELL-CI-016`; `AUTH-QA-030` |
+
+Cada brecha conserva propietario y condición de salida. No se crean tareas
+nuevas porque existen destinos canónicos concretos.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan al registro canónico:
+
+- `TREQ-AUTH-269`;
+- `TREQ-AUTH-270`;
+- `TREQ-AUTH-271`;
+- `TREQ-AUTH-272`;
+- `TREQ-AUTH-273`;
+- `TREQ-AUTH-274`;
+- `TREQ-AUTH-275`;
+- `TREQ-AUTH-276`;
+- `TREQ-AUTH-277`;
+- `TREQ-AUTH-278`.
+
+Cobertura:
+
+| Rango | Cobertura                                                   |
+| ----- | ----------------------------------------------------------- |
+| `269` | contrato público, `403`, cero efectos y recuperación        |
+| `270` | separación principal, instancia, actor y sesión personal    |
+| `271` | identidad, estado, plantilla, versión, apps y configuración |
+| `272` | clasificación de 112 permisos, paquete y techo exacto       |
+| `273` | actor session, política, territorio y soporte fuerte        |
+| `274` | causas, fronteras y precedencia                             |
+| `275` | equivalencia de diez canales                                |
+| `276` | cobertura de diez aplicaciones e inventario documental      |
+| `277` | UX, privacidad, invalidación, concurrencia y auditoría      |
+| `278` | reconciliación física y eliminación de fallbacks legacy     |
+
+Los requisitos permanecen `IDENTIFICADO` hasta que existan implementación y
+evidencia reproducibles.
+
+---
+
+#### 37. Validaciones documentales definidas
+
+El artefacto deberá permitir comprobar:
+
+1. un único código público;
+2. un único estado público;
+3. `403` solo después de autenticación válida;
+4. cero efectos en todos los canales;
+5. sesión personal separada del principal técnico;
+6. actor ausente separado de dispositivo no autorizado;
+7. turno, check-in, rol, sede y área con razones propias;
+8. app visible sin grant implícito;
+9. paquete exacto sin wildcard;
+10. `NOT_ALLOWED` bloqueado universalmente;
+11. `STRONG` sin degradación;
+12. `navigation_role` excluido de autorización;
+13. 24 escenarios sin decisión nula;
+14. 10 canales equivalentes;
+15. 10 aplicaciones reconciliadas;
+16. 19 claves documentales conservadas;
+17. 14 brechas con destino;
+18. 10 requisitos nuevos únicos;
+19. 6.666 requisitos históricos preservados;
+20. catorce columnas en cada fila del registro.
+
+---
+
+#### 38. Evidencia y estados
+
+| Elemento                       | Estado                             |
+| ------------------------------ | ---------------------------------- |
+| contrato de bloqueo            | `ESPECIFICADO`                     |
+| matriz de escenarios           | `ESPECIFICADO`                     |
+| matriz de canales              | `ESPECIFICADO`                     |
+| cobertura de aplicaciones      | `ESPECIFICADO`                     |
+| snapshot de Supabase           | `PENDIENTE_DE_EVIDENCIA_OPERATIVA` |
+| productor central de contexto  | `PENDIENTE_DE_IMPLEMENTACION`      |
+| evaluador uniforme             | `PENDIENTE_DE_IMPLEMENTACION`      |
+| paquetes físicos versionados   | `PENDIENTE_DE_IMPLEMENTACION`      |
+| sesiones de actor              | `PENDIENTE_DE_IMPLEMENTACION`      |
+| pruebas automatizadas          | `PENDIENTE_DE_IMPLEMENTACION`      |
+| pruebas en dispositivos reales | `PENDIENTE_DE_EVIDENCIA`           |
+
+La presencia de tablas, filas, funciones o una compilación no equivale a
+`VALIDADO` ni `VERIFICADO`.
+
+---
+
+#### 39. Fuera del alcance
+
+AUTH-ERR-015 no:
+
+- crea o revoca dispositivos;
+- cambia credenciales técnicas;
+- crea plantillas o versiones;
+- modifica aplicaciones permitidas;
+- crea paquetes o membresías;
+- cambia políticas de actor;
+- crea PIN, passkey o MFA;
+- crea sesiones de actor;
+- modifica turnos, check-ins, roles, sedes o áreas;
+- asigna permisos;
+- elimina `navigation_role`;
+- cambia NEXO, PULSO, FOGO u otra aplicación;
+- crea tablas, constraints, triggers, RLS, RPC o funciones;
+- crea migraciones;
+- ejecuta DDL, DML, backfills o despliegues;
+- modifica Supabase;
+- certifica dispositivos físicos;
+- inicia `AUTH-ERR-016`.
+
+---
+
+#### 40. Criterios de aceptación
+
+- [x] Se definió un código público único.
+- [x] Se definió un estado público único.
+- [x] Se definió `403` para una sesión autenticada cuya instancia no autoriza.
+- [x] Se separó autenticación de autorización de dispositivo.
+- [x] Se separó sesión personal de principal compartido.
+- [x] Se separó dispositivo de actor humano.
+- [x] Se separó actor ausente de dispositivo no autorizado.
+- [x] Se preservaron turno, check-in, rol, sede y área con razones propias.
+- [x] Se definieron estados `ACTIVE`, `INACTIVE` e `INVALID`.
+- [x] Se prohibió usar heartbeat como autorización.
+- [x] Se definió identidad técnica única y server-side.
+- [x] Se definió plantilla y versión exactas.
+- [x] Se definió instancia solo restrictiva.
+- [x] Se definieron aplicaciones efectivas por intersección.
+- [x] Se prohibió convertir app visible en grant.
+- [x] Se definió paquete efectivo y clave exacta.
+- [x] Se conservaron 52 `STANDARD`, 40 `STRONG` y 20 `NOT_ALLOWED`.
+- [x] Se prohibió degradar `STRONG`.
+- [x] Se definió recuperación mediante dispositivo autorizado o sesión personal.
+- [x] Se definieron dieciocho causas internas en ocho familias.
+- [x] Se decidieron veinticuatro escenarios.
+- [x] Se definió precedencia determinista.
+- [x] Se exigieron cero efectos.
+- [x] Se definieron diez canales equivalentes.
+- [x] Se reconciliaron diez aplicaciones.
+- [x] Se preservaron diecinueve claves documentales de dispositivo.
+- [x] Se registró el snapshot físico sin presentarlo como validación operativa.
+- [x] Se registraron catorce brechas con destino exacto.
+- [x] Se derivaron `TREQ-AUTH-269` a `TREQ-AUTH-278`.
+- [x] No se modificó código, Supabase, migraciones, configuración, datos ni dispositivos.
+- [x] `AUTH-ERR-016` permanece únicamente reservada.
+
+---
+
+#### 41. Riesgos controlados
+
+| Riesgo                                             | Control                                     |
+| -------------------------------------------------- | ------------------------------------------- |
+| identidad técnica convertida en trabajador         | separación principal–instancia–actor        |
+| fila activa presentada como dispositivo verificado | estado documental `REGISTERED_UNVERIFIED`   |
+| app permitida convertida en permiso                | evaluación independiente de grant y paquete |
+| `navigation_role` usado como rol efectivo          | prohibición y brecha explícita              |
+| instancia amplía plantilla                         | `INVALID` y fail closed                     |
+| paquete nulo tratado como ilimitado                | ninguna capacidad empresarial               |
+| permiso `NOT_ALLOWED` degradado                    | sesión personal obligatoria                 |
+| acción `STRONG` ejecutada solo con PIN             | soporte y reautenticación fuerte separados  |
+| actor anterior reutilizado                         | sesión vigente única e invalidación         |
+| territorio del dispositivo reemplaza turno         | intersección restrictiva                    |
+| causa técnica presentada como denegación estable   | frontera con `AUTH-ERR-019`                 |
+| datos internos expuestos en mensaje                | envelope público mínimo                     |
+| reintentos duplican efectos                        | cero efectos e invalidación por versión     |
+| consumidoras divergen                              | matriz de canales y TREQ transversal        |
+
+---
+
+#### 42. Cierre de tarea y continuidad
+
+**ÚLTIMA TAREA APROBADA**
+
+`AUTH-ERR-014 — Rol operativo inválido para el área`
+
+**TAREA ACTUAL APROBADA**
+
+`AUTH-ERR-015 — Dispositivo no autorizado`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`AUTH-ERR-016 — Acción no permitida en simulación`
+
+
 ### [ ] AUTH-ERR-016 — Acción no permitida en simulación

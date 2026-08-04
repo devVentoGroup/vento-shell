@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **539** |
+| Aprobadas | **540** |
 | En propuesta | **0** |
-| No iniciadas | **1055** |
+| No iniciadas | **1054** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **33.81% (539/1594)** |
+| Porcentaje de completamiento | **33.88% (540/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-ERR-014` — Rol operativo inválido para el área | ✅ APROBADA |
-| Tarea actual | `AUTH-ERR-015` — Dispositivo no autorizado | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-ERR-016` — Acción no permitida en simulación | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-ERR-015` — Dispositivo no autorizado | ✅ APROBADA |
+| Tarea actual | `AUTH-ERR-016` — Acción no permitida en simulación | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-ERR-017` — Configuración administrativa inconsistente | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1278,7 +1278,7 @@
 | ✅ APROBADA | `AUTH-ERR-012` | Rol operativo faltante | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ✅ APROBADA | `AUTH-ERR-013` | Rol operativo inválido para la sede | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ✅ APROBADA | `AUTH-ERR-014` | Rol operativo inválido para el área | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
-| ⬜ NO INICIADA | `AUTH-ERR-015` | Dispositivo no autorizado | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
+| ✅ APROBADA | `AUTH-ERR-015` | Dispositivo no autorizado | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-016` | Acción no permitida en simulación | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-017` | Configuración administrativa inconsistente | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-018` | Permiso no registrado | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |

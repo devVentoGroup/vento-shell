@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **539** |
+| Tareas aprobadas | **540** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1055** |
+| Tareas no iniciadas | **1054** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **33.81% (539/1594)** |
+| Porcentaje de completamiento | **33.88% (540/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-ERR-014 — Rol operativo inválido para el área** |
-| Tarea actual | **AUTH-ERR-015 — Dispositivo no autorizado** |
+| Última tarea aprobada | **AUTH-ERR-015 — Dispositivo no autorizado** |
+| Tarea actual | **AUTH-ERR-016 — Acción no permitida en simulación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-ERR-016 — Acción no permitida en simulación** |
+| Siguiente tarea | **AUTH-ERR-017 — Configuración administrativa inconsistente** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 11: AUTHORIZATION_ERRORS** |
-| Progreso del bloque | **CARRIL NEXO: 14 de 20 aprobadas; AUTH-ERR-015 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 15 de 20 aprobadas; AUTH-ERR-016 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-ERR-014` — Rol operativo inválido para el área |
-| Tarea actual | `AUTH-ERR-015` — Dispositivo no autorizado — **NO INICIADA** |
-| Siguiente tarea | `AUTH-ERR-016` — Acción no permitida en simulación |
+| Última aprobada | `AUTH-ERR-015` — Dispositivo no autorizado |
+| Tarea actual | `AUTH-ERR-016` — Acción no permitida en simulación — **NO INICIADA** |
+| Siguiente tarea | `AUTH-ERR-017` — Configuración administrativa inconsistente |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 14 DE 20 APROBADAS — ACTUAL AUTH-ERR-015** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 15 DE 20 APROBADAS — ACTUAL AUTH-ERR-016** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-ERR-014 — Rol operativo inválido para el área
-        ↓
-TAREA ACTUAL
 AUTH-ERR-015 — Dispositivo no autorizado
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-ERR-016 — Acción no permitida en simulación
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-ERR-017 — Configuración administrativa inconsistente
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 14 de 20 tareas aprobadas
+CARRIL NEXO — 15 de 20 tareas aprobadas
 ```
