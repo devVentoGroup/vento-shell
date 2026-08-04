@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **542** |
+| Tareas aprobadas | **543** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1052** |
+| Tareas no iniciadas | **1051** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **34.00% (542/1594)** |
+| Porcentaje de completamiento | **34.07% (543/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-ERR-017 — Configuración administrativa inconsistente** |
-| Tarea actual | **AUTH-ERR-018 — Permiso no registrado** |
+| Última tarea aprobada | **AUTH-ERR-018 — Permiso no registrado** |
+| Tarea actual | **AUTH-ERR-019 — Diferenciar error técnico y denegación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-ERR-019 — Diferenciar error técnico y denegación** |
+| Siguiente tarea | **AUTH-ERR-020 — Compartir mensajes desde vento-shell** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 11: AUTHORIZATION_ERRORS** |
-| Progreso del bloque | **CARRIL NEXO: 17 de 20 aprobadas; AUTH-ERR-018 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 18 de 20 aprobadas; AUTH-ERR-019 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-ERR-017` — Configuración administrativa inconsistente |
-| Tarea actual | `AUTH-ERR-018` — Permiso no registrado — **NO INICIADA** |
-| Siguiente tarea | `AUTH-ERR-019` — Diferenciar error técnico y denegación |
+| Última aprobada | `AUTH-ERR-018` — Permiso no registrado |
+| Tarea actual | `AUTH-ERR-019` — Diferenciar error técnico y denegación — **NO INICIADA** |
+| Siguiente tarea | `AUTH-ERR-020` — Compartir mensajes desde vento-shell |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 17 DE 20 APROBADAS — ACTUAL AUTH-ERR-018** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 18 DE 20 APROBADAS — ACTUAL AUTH-ERR-019** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-ERR-017 — Configuración administrativa inconsistente
-        ↓
-TAREA ACTUAL
 AUTH-ERR-018 — Permiso no registrado
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-ERR-019 — Diferenciar error técnico y denegación
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-ERR-020 — Compartir mensajes desde vento-shell
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 17 de 20 tareas aprobadas
+CARRIL NEXO — 18 de 20 tareas aprobadas
 ```
