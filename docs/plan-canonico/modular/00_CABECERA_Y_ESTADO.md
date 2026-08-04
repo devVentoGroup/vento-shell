@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **550** |
+| Tareas aprobadas | **551** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1044** |
+| Tareas no iniciadas | **1043** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **34.50% (550/1594)** |
+| Porcentaje de completamiento | **34.57% (551/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NEXO-UX-004 — Diseñar inicio para bodeguero** |
-| Tarea actual | **NEXO-UX-005 — Diseñar inicio para conductor** |
+| Última tarea aprobada | **NEXO-UX-005 — Diseñar inicio para conductor** |
+| Tarea actual | **NEXO-UX-006 — Diseñar inicio para receptor** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NEXO-UX-006 — Diseñar inicio para receptor** |
+| Siguiente tarea | **NEXO-UX-007 — Diseñar inicio para supervisor** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 13: NEXO_FUNCTIONAL_UX** |
-| Progreso del bloque | **CARRIL NEXO: 4 de 25 aprobadas; NEXO-UX-005 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 5 de 25 aprobadas; NEXO-UX-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NEXO-UX-004` — Diseñar inicio para bodeguero |
-| Tarea actual | `NEXO-UX-005` — Diseñar inicio para conductor — **NO INICIADA** |
-| Siguiente tarea | `NEXO-UX-006` — Diseñar inicio para receptor |
+| Última aprobada | `NEXO-UX-005` — Diseñar inicio para conductor |
+| Tarea actual | `NEXO-UX-006` — Diseñar inicio para receptor — **NO INICIADA** |
+| Siguiente tarea | `NEXO-UX-007` — Diseñar inicio para supervisor |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 4 DE 25 APROBADAS — ACTUAL NEXO-UX-005** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 5 DE 25 APROBADAS — ACTUAL NEXO-UX-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NEXO-UX-004 — Diseñar inicio para bodeguero
-        ↓
-TAREA ACTUAL
 NEXO-UX-005 — Diseñar inicio para conductor
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NEXO-UX-006 — Diseñar inicio para receptor
         ↓
+SIGUIENTE TAREA RESERVADA
+NEXO-UX-007 — Diseñar inicio para supervisor
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 4 de 25 tareas aprobadas
+CARRIL NEXO — 5 de 25 tareas aprobadas
 ```

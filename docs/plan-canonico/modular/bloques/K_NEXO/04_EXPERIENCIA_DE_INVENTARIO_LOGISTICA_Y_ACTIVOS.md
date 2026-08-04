@@ -2673,7 +2673,638 @@ Ningún destino anterior se inicia mediante esta tarea.
 `NEXO-UX-005 — Diseñar inicio para conductor`
 
 
-### [ ] NEXO-UX-005 — Diseñar inicio para conductor
+### ✅ NEXO-UX-005 — Diseñar inicio para conductor
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-004 — Diseñar inicio para bodeguero` — APROBADA
+**Tarea siguiente:** `NEXO-UX-006 — Diseñar inicio para receptor` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo del inicio operativo del conductor, trabajo asignado, prioridad, custodia, ruta, composición de capacidades, estados, autorización, decisiones por etapa y ruta, y handoff de implementación
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Artefactos producidos:** `NEXO-DRIVER-HOME-CONTRACT-001`, `NEXO-DRIVER-HOME-INFORMATION-ARCHITECTURE-001`, `NEXO-DRIVER-WORK-QUEUE-CATALOG-001`, `NEXO-DRIVER-CAPABILITY-COMPOSITION-CONTRACT-001`, `NEXO-DRIVER-STAGE-PROJECTION-MATRIX-001`, `NEXO-DRIVER-ROUTE-DISPOSITION-001`, `NEXO-DRIVER-HOME-STATE-CONTRACT-001` y `NEXO-DRIVER-HOME-HANDOFF-001`
+**Decisiones consumidas:** `NEXO-UX-LANE-CONTRACT-001`; `NEXO-ASIS-STAGE-LANE-MATRIX-001`; `NEXO-ROUTE-LANE-DISPOSITION-001`; `NEXO-REQUESTER-HOME-CONTRACT-001`; `NEXO-WAREHOUSE-HOME-CONTRACT-001`; `NEXO-WAREHOUSE-WORK-QUEUE-CATALOG-001`; `AUTH-RBAC-018`; `VPROC-0028`; inventario `NEXO-ROUTE-001` a `NEXO-ROUTE-064`; requisitos `TREQ-*` vigentes; código actual de `vento-nexo`
+**Cambios físicos autorizados:** ninguno; no modifica código, rutas, permisos, datos, remisiones, stock, movimientos, Supabase, migraciones, RLS, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar el inicio operativo de NEXO para la función `conductor_logistica`, de
+modo que la persona identifique y continúe únicamente el trabajo de transporte
+que le fue asignado, conozca la carga bajo su custodia, la siguiente parada y
+los bloqueos vigentes, y pueda componer otras capacidades operativas sin
+confundirlas con la autoridad del conductor.
+
+La regla canónica es:
+
+```text
+ACTOR HUMANO EFECTIVO
++
+TURNO Y CHECK-IN VIGENTES CUANDO APLIQUEN
++
+FUNCION OPERATIVA conductor_logistica
++
+RUTA, VEHICULO U OPERACION ASIGNADOS
++
+PERMISO EXACTO Y TERRITORIO RESUELTOS EN SERVIDOR
++
+CUSTODIA Y VERSION VIGENTES
++
+PRIORIDAD OPERATIVA AUTORITATIVA
+→
+INICIO DEL CONDUCTOR
+```
+
+La proyección visual no concede autoridad. El nombre del cargo, una ruta
+visible, un vehículo, una sede, un dispositivo, un PIN o el conocimiento del
+identificador no autorizan leer, aceptar custodia, iniciar tránsito, entregar,
+recibir, ajustar, cancelar ni cerrar una remisión.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban ocho artefactos documentales consumibles:
+
+1. `NEXO-DRIVER-HOME-CONTRACT-001`, que define audiencia, contexto,
+   asignación, custodia, autoridad y límites;
+2. `NEXO-DRIVER-HOME-INFORMATION-ARCHITECTURE-001`, que materializa ocho
+   secciones y una única acción primaria;
+3. `NEXO-DRIVER-WORK-QUEUE-CATALOG-001`, que define ocho colas propias de
+   recogida, custodia, tránsito, parada, entrega, incidente, retorno y bloqueo;
+4. `NEXO-DRIVER-CAPABILITY-COMPOSITION-CONTRACT-001`, que resuelve seis casos
+   de composición, incluido el actor que prepara y conduce;
+5. `NEXO-DRIVER-STAGE-PROJECTION-MATRIX-001`, que decide las nueve etapas de
+   `VPROC-0028` para esta proyección;
+6. `NEXO-DRIVER-ROUTE-DISPOSITION-001`, que decide dieciséis rutas existentes
+   sin inventar URLs ni convertir navegación en permiso;
+7. `NEXO-DRIVER-HOME-STATE-CONTRACT-001`, que define catorce estados de carga,
+   vacío, conflicto, autorización, versión y conectividad;
+8. `NEXO-DRIVER-HOME-HANDOFF-001`, que separa diseño, implementación,
+   contratos atómicos, pruebas y certificación posteriores.
+
+Cobertura materializada:
+
+| Elemento                                  | Total esperado | Total materializado | Faltantes | Duplicados |
+| ----------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Procesos canónicos reconciliados          |              1 |                   1 |         0 |          0 |
+| Etapas canónicas decididas                |              9 |                   9 |         0 |          0 |
+| Clases de cola del conductor              |              8 |                   8 |         0 |          0 |
+| Casos de composición de capacidades       |              6 |                   6 |         0 |          0 |
+| Rutas relevantes decididas                |             16 |                  16 |         0 |          0 |
+| Secciones obligatorias                    |              8 |                   8 |         0 |          0 |
+| Acciones primarias                        |              1 |                   1 |         0 |          0 |
+| Estados de interfaz                       |             14 |                  14 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados |              7 |                   7 |         0 |          0 |
+
+La tarea deja el diseño en estado `ESPECIFICADO`. No declara el inicio dedicado
+`IMPLEMENTADO` ni `VALIDADO`.
+
+---
+
+#### 3. Alcance funcional
+
+##### 3.1. Incluido
+
+- inicio del conductor resuelto por función, asignación y custodia;
+- cargas preparadas y asignadas para recogida;
+- contraste de manifiesto, bultos, LPN, sellos, vehículo, origen y destino;
+- aceptación explícita de custodia e inicio de tránsito;
+- carga bajo custodia, ruta activa y siguiente parada;
+- entrega física y handoff como estados diferenciados de la recepción;
+- incidentes, entrega fallida y retorno como colas reconocibles aunque sus
+  capacidades atómicas continúen pendientes;
+- prioridad y desempate autoritativos;
+- estados vacíos, revocación, conflicto, datos parciales y red intermitente;
+- composición entre preparación y conducción para una misma persona;
+- decisión explícita por etapa y ruta relevante;
+- diagnóstico de las superficies actuales de `vento-nexo`.
+
+##### 3.2. Excluido
+
+- creación o edición de solicitudes;
+- asignación de origen, fulfillment, conductor, ruta, vehículo o parada;
+- preparación concedida por el solo hecho de ser conductor;
+- modificación de cantidades, picks, manifiestos, sellos o bultos preparados;
+- recepción en nombre del destino;
+- autoaceptación de diferencias;
+- ajustes, cancelaciones, cierres, overrides o decisiones supervisoras;
+- configuración de rutas, ventanas, productos, políticas o vehículos;
+- monitoreo global de conductores o desempeño;
+- definición detallada del documento, despacho, entrega, incidente o retorno;
+- cambios en código, datos, permisos o Supabase;
+- validación operativa, móvil, offline o de vehículo.
+
+---
+
+#### 4. `NEXO-DRIVER-HOME-CONTRACT-001`
+
+##### 4.1. Audiencia y función activa
+
+La audiencia primaria es la función operativa `conductor_logistica`. Esta
+función es temporal y contextual; no equivale a un cargo permanente, un
+vehículo, un usuario técnico ni una autoridad logística global.
+
+El inicio deberá resolver como mínimo:
+
+| Componente        | Regla                                                           |
+| ----------------- | --------------------------------------------------------------- |
+| principal técnico | identidad autenticada y vigente                                 |
+| actor efectivo    | persona empresarial responsable de la acción                    |
+| función activa    | participación como conductor para la jornada                    |
+| turno y check-in  | vigentes cuando el contrato de la acción los exija              |
+| asignación        | ruta, vehículo, operación, parada o remisión vinculada al actor |
+| territorio        | origen, destinos y paradas autorizados                          |
+| permiso           | capacidad exacta para lectura o transición                      |
+| custodia          | actor custodio, estado, versión y momento de transferencia      |
+| dispositivo       | contexto técnico sin autoridad empresarial propia               |
+| conectividad      | condición necesaria para confirmar o reconciliar mutaciones     |
+
+Toda ausencia o conflicto falla cerrado.
+
+##### 4.2. Alcance de datos
+
+Una operación solo puede aparecer cuando exista una relación autoritativa:
+
+```text
+ACTOR_ASIGNADO_A_OPERACION
+ACTOR_ASIGNADO_A_RUTA
+ACTOR_ASIGNADO_A_VEHICULO_EN_JORNADA
+ACTOR_CUSTODIO_VIGENTE
+ACTOR_REQUERIDO_PARA_HANDOFF
+```
+
+No bastan la misma empresa, sede, fecha, origen, destino, tipo de ruta, estado,
+permiso genérico o conocimiento de la URL.
+
+##### 4.3. Carril funcional
+
+El inicio pertenece al carril `OPERACION`. Puede incluir referencias
+contextuales de solo lectura, pero excluye:
+
+- monitoreo y decisión de `SUPERVISION`;
+- maestros y políticas de `CONFIGURACION`;
+- utilidades sin una tarea invocante;
+- colas de solicitante, bodeguero o receptor como si fueran autoridad del
+  conductor.
+
+##### 4.4. Regla de custodia
+
+La custodia cambia únicamente mediante un hecho explícito, autorizado,
+versionado e idempotente. Como mínimo deberá conservar:
+
+- actor que entrega;
+- actor que acepta;
+- remisión o shipment;
+- versión de manifiesto;
+- bultos, LPN y sellos;
+- origen, destino y vehículo;
+- fecha y hora de servidor;
+- estado anterior y posterior;
+- evidencia o causa de rechazo;
+- clave idempotente.
+
+Preparación, custodia, tránsito, entrega física y recepción son hechos
+diferentes aunque una misma persona ejecute más de una función.
+
+---
+
+#### 5. `NEXO-DRIVER-HOME-INFORMATION-ARCHITECTURE-001`
+
+##### 5.1. Orden obligatorio
+
+| Orden | Sección                            | Propósito                                                                                    | Acción permitida                                               |
+| ----: | ---------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------- |
+|     1 | Contexto de jornada                | mostrar actor, función, turno, check-in, ruta, vehículo y condición de custodia              | cambiar contexto solo mediante el selector canónico autorizado |
+|     2 | Siguiente tarea                    | presentar una única prioridad autoritativa                                                   | `CONTINUAR_SIGUIENTE_TAREA`                                    |
+|     3 | Por recoger                        | cargas preparadas, asignadas y dentro de ventana                                             | abrir verificación de recogida                                 |
+|     4 | Bajo mi custodia                   | cargas cuya custodia pertenece al actor                                                      | continuar tránsito, parada o handoff válido                    |
+|     5 | Ruta y próxima parada              | secuencia asignada y siguiente destino autorizado                                            | abrir detalle de parada o navegación permitida                 |
+|     6 | Entregas y handoffs                | cargas presentadas o próximas a transferencia                                                | ejecutar solo la capacidad atómica disponible                  |
+|     7 | Incidentes y bloqueos              | diferencias, seguridad, entrega fallida, retorno o conflicto                                 | reportar o consultar resolución según autoridad                |
+|     8 | Funciones adicionales y utilidades | acceso separado a preparación u otra función realmente concedida y herramientas contextuales | cambiar de función o invocar utilidad sin mezclar comandos     |
+
+Las secciones pueden estar vacías, pero no se sustituyen por indicadores
+supervisores, configuración, rutas ajenas ni métricas de productividad.
+
+##### 5.2. Acción primaria
+
+La única acción primaria es:
+
+```text
+CONTINUAR_SIGUIENTE_TAREA
+```
+
+Se habilita solo cuando el servidor devuelve una tarea vigente con actor,
+función, asignación, etapa, permiso, territorio, versión y custodia
+compatibles. La acción no recibe del cliente la prioridad, el rol, la sede, el
+estado ni el destino como autoridad.
+
+##### 5.3. Tarjeta mínima
+
+Cada carga o tarea visible muestra como mínimo:
+
+| Campo                | Regla                                                |
+| -------------------- | ---------------------------------------------------- |
+| identificador humano | código estable de remisión, shipment o tarea         |
+| origen y destino     | únicamente los extremos necesarios para la operación |
+| ruta y parada        | ruta asignada y siguiente parada cuando existan      |
+| vehículo             | identificador operativo mínimo cuando esté asignado  |
+| manifiesto           | versión y resumen de bultos, LPN y sellos            |
+| etapa y estado       | valores derivados de hechos canónicos                |
+| custodia             | actor o condición de custodia vigente                |
+| ventana              | hora confirmada, nunca inventada por cliente         |
+| bloqueo              | causa accionable y propietario funcional             |
+| siguiente acción     | una transición exacta o acceso de solo lectura       |
+| última actualización | fecha y hora del último hecho confirmado             |
+
+##### 5.4. Prioridad
+
+La prioridad se resuelve en este orden:
+
+```text
+1. SEGURIDAD_O_INCIDENTE_SOBRE_CUSTODIA_ACTIVA
+2. CARGA_BAJO_CUSTODIA_CON_SIGUIENTE_PARADA
+3. HANDOFF_O_ENTREGA_DENTRO_DE_VENTANA
+4. CARGA_ASIGNADA_LISTA_PARA_RECOGIDA
+5. RETORNO_O_TRANSFERENCIA_FORMAL_PENDIENTE
+6. PREPARACION_ADICIONAL_QUE_ES_PRERREQUISITO_DE_LA_PROPIA_RECOGIDA
+7. OTRA_FUNCION_ADICIONAL_AUTORIZADA
+```
+
+Una tarea de preparación adicional nunca desplaza una incidencia o carga ya
+bajo custodia. Cuando la misma persona debe preparar la carga que luego
+transportará y todavía no posee custodia activa, el sistema puede señalar la
+tarea separada de preparación como siguiente prerrequisito.
+
+Dentro de cada nivel se ordena por ventana confirmada, secuencia de ruta,
+antigüedad de atribución y un identificador estable. La interfaz no inventa
+urgencia, SLA o severidad.
+
+---
+
+#### 6. `NEXO-DRIVER-WORK-QUEUE-CATALOG-001`
+
+| Cola                    | Propósito                                                                                    | Entrada                                                                         | Salida                                                           | Bloqueo principal                                                                  | Propiedad funcional                               |
+| ----------------------- | -------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------- |
+| `DRVQ-RECOGIDA`         | Carga preparada y asignada que espera verificación física en el origen.                      | Remisión lista, actor o vehículo asignado y ventana vigente.                    | Carga contrastada o desviada a bloqueo.                          | No existe asignación; la carga no está lista; falta manifiesto o ventana.          | conductor_logistica                               |
+| `DRVQ-ACEPTAR_CUSTODIA` | Carga verificada que espera aceptación explícita de custodia.                                | Bultos, LPN, sellos, manifiesto, origen, destino, vehículo y versión coinciden. | Custodia atribuida o aceptación rechazada con causa.             | Diferencia física, versión obsoleta, actor incorrecto o autorización revocada.     | conductor_logistica                               |
+| `DRVQ-TRANSITO`         | Carga actualmente bajo custodia del actor y en desplazamiento autorizado.                    | Custodia aceptada e inicio de tránsito confirmado.                              | Arribo a siguiente parada, entrega física, incidencia o retorno. | Ruta suspendida, conexión incierta, pérdida de asignación o conflicto de custodia. | conductor_logistica                               |
+| `DRVQ-PARADA`           | Próxima parada autorizada de la ruta activa.                                                 | Ruta publicada, parada vigente y carga relacionada bajo custodia.               | Arribo o salida confirmados cuando exista capacidad atómica.     | Progreso de ruta todavía sin contrato ejecutable o secuencia modificada.           | conductor_logistica                               |
+| `DRVQ-ENTREGA`          | Carga presentada al receptor y pendiente de transferencia documentada.                       | Destino autorizado, receptor disponible y carga identificada.                   | Handoff aceptado por el receptor o entrega fallida documentada.  | No existe capacidad atómica de entrega, prueba de entrega o receptor válido.       | conductor_logistica + receptor                    |
+| `DRVQ-INCIDENTE`        | Demora, avería, daño, rechazo, faltante, accidente o imposibilidad de continuar.             | Hecho detectado durante recogida, custodia, tránsito o entrega.                 | Incidente registrado y escalado a la autoridad responsable.      | No existe capacidad atómica de incidente o falta información mínima segura.        | conductor_logistica reporta; supervisión resuelve |
+| `DRVQ-RETORNO`          | Carga no entregada que debe volver, transferirse o continuar mediante decisión autorizada.   | Entrega fallida o instrucción formal de retorno.                                | Custodia transferida, devolución recibida o excepción cerrada.   | No existe flujo atómico de devolución o destino de retorno autorizado.             | conductor_logistica + origen o receptor           |
+| `DRVQ-BLOQUEO`          | Trabajo detenido por diferencia, conflicto, autorización, versión, seguridad o conectividad. | Cualquier condición que impida una transición segura.                           | Causa resuelta y tarea revalidada desde servidor.                | El actor no puede resolver unilateralmente la causa.                               | actor responsable según causa                     |
+
+Reconciliación:
+
+```text
+EXPECTED_DRIVER_QUEUES = 8
+MATERIALIZED_DRIVER_QUEUES = 8
+UNIQUE_DRIVER_QUEUES = 8
+MISSING_DRIVER_QUEUES = 0
+DUPLICATE_DRIVER_QUEUES = 0
+```
+
+Las colas `DRVQ-PARADA`, `DRVQ-ENTREGA`, `DRVQ-INCIDENTE` y `DRVQ-RETORNO`
+reconocen trabajo necesario, pero no declaran implementadas las capacidades
+atómicas pendientes.
+
+---
+
+#### 7. `NEXO-DRIVER-CAPABILITY-COMPOSITION-CONTRACT-001`
+
+##### 7.1. Principio
+
+```text
+MISMA PERSONA
+PUEDE TENER VARIAS CAPACIDADES
+PERO CADA FUNCION, COLA, COMANDO Y TRANSICION
+CONSERVA SU PROPIO CONTRATO
+```
+
+La composición no modifica `AUTH-RBAC-018`: el rol operativo
+`conductor_logistica` no recibe preparación. La misma persona puede preparar
+porque posee además la capacidad efectiva de preparación en un contexto
+compatible.
+
+##### 7.2. Casos materializados
+
+| Caso                            | Condición                                                                                          | Proyección resultante                                                                                                                                 | Límite obligatorio                                                                                                         | Estado         |
+| ------------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `CONDUCTOR_UNICAMENTE`          | Capacidad vigente de transporte sin preparación.                                                   | Inicio del conductor con colas propias asignadas.                                                                                                     | No muestra preparación, recepción, supervisión ni configuración.                                                           | `ESPECIFICADO` |
+| `PREPARADOR_UNICAMENTE`         | Capacidad vigente de preparación sin transporte.                                                   | Inicio del bodeguero o proyección de preparación.                                                                                                     | No abre colas de custodia o tránsito por el nombre del cargo o la sede.                                                    | `ESPECIFICADO` |
+| `CONDUCTOR_Y_PREPARADOR`        | La misma persona posee capacidades vigentes y territorios compatibles para preparar y transportar. | El inicio del conductor conserva sus colas y muestra una entrada separada a la tarea de preparación autorizada cuando sea la siguiente acción válida. | La preparación no se convierte en acción del rol conductor; finalizar preparación no acepta custodia ni inicia tránsito.   | `ESPECIFICADO` |
+| `CONDUCTOR_Y_RECEPTOR`          | La misma persona posee ambas capacidades en contextos distintos.                                   | Cada función se proyecta por contexto, extremo y etapa.                                                                                               | No puede auto-recibir la carga que permanece bajo su propia custodia ni confirmar por el destino sin transferencia válida. | `ESPECIFICADO` |
+| `CONDUCTOR_Y_SUPERVISION`       | La misma persona posee capacidad supervisora adicional.                                            | El control se abre en proyección separada y revalida autoridad.                                                                                       | El inicio del conductor no incorpora decisiones de excepción, ajustes, cierre o monitoreo global.                          | `ESPECIFICADO` |
+| `DISPOSITIVO_SIN_SESION_HUMANA` | Existe dispositivo o vehículo identificado, pero no actor humano vigente.                          | No existe inicio operativo ni acciones empresariales.                                                                                                 | El equipo, vehículo, PIN o código no sustituyen identidad ni permiso.                                                      | `BLOQUEADO`    |
+
+Reconciliación:
+
+```text
+EXPECTED_COMPOSITION_CASES = 6
+MATERIALIZED_COMPOSITION_CASES = 6
+UNIQUE_COMPOSITION_CASES = 6
+MISSING_COMPOSITION_CASES = 0
+DUPLICATE_COMPOSITION_CASES = 0
+```
+
+##### 7.3. Secuencia obligatoria cuando la misma persona prepara y conduce
+
+```text
+PREPARACION_INICIADA
+→
+PREPARACION_FINALIZADA
+→
+CARGA_LISTA_PARA_HANDOFF
+→
+VERIFICACION_DE_MANIFIESTO_Y_BULTOS
+→
+CUSTODIA_ACEPTADA
+→
+TRANSITO_INICIADO
+```
+
+No se permite convertir `PREPARACION_FINALIZADA` directamente en
+`TRANSITO_INICIADO`. El registro podrá conservar el mismo actor en
+`prepared_by` y `custody_accepted_by`, pero deberá mantener hechos, tiempos,
+versiones y evidencias separados.
+
+Una política posterior puede exigir doble verificación para cargas críticas;
+esta tarea no impone esa condición a todas las remisiones ni elimina la
+posibilidad de que una sola persona ejecute ambas funciones.
+
+---
+
+#### 8. `NEXO-DRIVER-STAGE-PROJECTION-MATRIX-001`
+
+| Etapa            | Nombre canónico                                                 | Proyección                                 | Acción del conductor                                                                                                                                 | Límite                                                                                  | Estado         |
+| ---------------- | --------------------------------------------------------------- | ------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | -------------- |
+| `VPROC-0028-E01` | Crear solicitud interna                                         | `REFERENCIA_POSTERIOR_A_ASIGNACION`        | Ninguna acción de creación como conductor.                                                                                                           | La solicitud solo aparece cuando una remisión derivada queda asignada a su operación.   | `ESPECIFICADO` |
+| `VPROC-0028-E02` | Aplicar ruta, producto y política de solicitud                  | `RESULTADO_DE_POLITICA_EN_SOLO_LECTURA`    | Consultar restricciones relevantes para transportar.                                                                                                 | No configura rutas, productos, ventanas, mínimos ni políticas.                          | `ESPECIFICADO` |
+| `VPROC-0028-E03` | Crear origen y fulfillment por línea                            | `REFERENCIA_DE_CARGA_ASIGNADA`             | Consultar origen, destino, líneas y estado de preparación.                                                                                           | No crea fulfillment, asigna origen ni decide disponibilidad.                            | `ESPECIFICADO` |
+| `VPROC-0028-E04` | Elegir LOC, posición y cantidad de picking                      | `OTRA_FUNCION_CON_COMPOSICION_CONDICIONAL` | Ninguna acción en función conductor; puede abrir la tarea separada de preparación si el mismo actor posee capacidad vigente.                         | El permiso de transporte no concede picking y la interfaz no mezcla comandos.           | `ESPECIFICADO` |
+| `VPROC-0028-E05` | Preparar, dejar listo o registrar faltante                      | `OTRA_FUNCION_CON_COMPOSICION_CONDICIONAL` | Ver estado de carga; preparar solo mediante la proyección separada y el permiso exacto de preparación.                                               | Dejar listo no acepta custodia, no despacha y no inicia tránsito.                       | `ESPECIFICADO` |
+| `VPROC-0028-E06` | Cargar, sellar y despachar                                      | `FRONTERA_PRIMARIA_DE_CUSTODIA`            | Contrastar manifiesto, bultos, LPN, sellos, vehículo, origen, destino y versión; aceptar custodia e iniciar tránsito mediante transición autorizada. | No altera cantidades, picks, sellos o manifiesto; una diferencia bloquea la aceptación. | `ESPECIFICADO` |
+| `VPROC-0028-E07` | Transportar y confirmar tránsito                                | `TRABAJO_PRIMARIO_DEL_CONDUCTOR`           | Continuar ruta asignada, consultar próxima parada y registrar hitos únicamente cuando exista capacidad atómica.                                      | No ve rutas ajenas, reordena paradas, cambia vehículo ni declara recepción.             | `ESPECIFICADO` |
+| `VPROC-0028-E08` | Recibir parcial o totalmente                                    | `HANDOFF_SIN_AUTORIDAD_DE_RECEPCION`       | Presentar carga y conservar custodia hasta aceptación documentada del receptor.                                                                      | No ejecuta `remissions.receive`, no decide cantidades aceptadas y no auto-recibe.       | `ESPECIFICADO` |
+| `VPROC-0028-E09` | Resolver faltante, sobrante, daño, rechazo, devolución o cierre | `REPORTE_Y_CUSTODIA_SIN_RESOLUCION`        | Registrar evidencia o incidencia cuando exista capacidad atómica y seguir la instrucción autorizada.                                                 | No ajusta inventario, cancela, resuelve diferencias ni cierra unilateralmente.          | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_PROCESS_STAGES = 9
+MATERIALIZED_PROCESS_STAGES = 9
+UNIQUE_PROCESS_STAGES = 9
+MISSING_PROCESS_STAGES = 0
+DUPLICATE_PROCESS_STAGES = 0
+```
+
+---
+
+#### 9. `NEXO-DRIVER-ROUTE-DISPOSITION-001`
+
+| Ruta             | Patrón actual                             | Disposición                                   | Decisión materializada                                                                                                                | Estado         |
+| ---------------- | ----------------------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `NEXO-ROUTE-001` | `/`                                       | `PROYECTAR_HOME_CONDUCTOR`                    | Inicio por trabajo asignado, custodia y siguiente parada; no conserva el cockpit agregado como autoridad.                             | `ESPECIFICADO` |
+| `NEXO-ROUTE-031` | `/inventory/remissions`                   | `LISTA_ACOTADA_A_OPERACIONES_ASIGNADAS`       | Muestra únicamente remisiones relacionadas con el actor, ruta, vehículo o custodia vigentes.                                          | `ESPECIFICADO` |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`              | `DETALLE_COMPARTIDO_CON_ACCIONES_POR_FUNCION` | Expone el detalle mínimo y comandos de conductor según etapa; otras funciones revalidan sus propias capacidades.                      | `ESPECIFICADO` |
+| `NEXO-ROUTE-033` | `/inventory/remissions/[id]/edit`         | `EXCLUIR_DEL_HOME_CONDUCTOR`                  | El conductor no edita solicitud, líneas, origen, destino, cantidades ni política.                                                     | `ESPECIFICADO` |
+| `NEXO-ROUTE-034` | `/inventory/remissions/conductor`         | `DESTINO_OPERATIVO_PRIMARIO_TRANSITORIO`      | Concentra cargas físicas del conductor, pero debe filtrarse por asignación y adoptar el contrato de custodia.                         | `ESPECIFICADO` |
+| `NEXO-ROUTE-035` | `/inventory/remissions/fulfillment`       | `REFERENCIA_O_FUNCION_SEPARADA`               | Como conductor solo consulta el resultado asignado; si también prepara, abre la proyección separada autorizada.                       | `ESPECIFICADO` |
+| `NEXO-ROUTE-036` | `/inventory/remissions/prepare`           | `FUNCION_ADICIONAL_SEPARADA`                  | No pertenece a la autoridad del conductor; solo aparece mediante capacidad efectiva de preparación y contexto compatible.             | `ESPECIFICADO` |
+| `NEXO-ROUTE-037` | `/inventory/remissions/receive`           | `EXCLUIR_AUTO_RECEPCION`                      | Pertenece al receptor; no se enlaza como continuación ordinaria desde una carga bajo custodia del conductor.                          | `ESPECIFICADO` |
+| `NEXO-ROUTE-038` | `/inventory/remissions/transit`           | `DIVIDIR_CUSTODIA_Y_MONITOREO`                | La operación propia de custodia y tránsito pertenece al conductor; monitoreo global, retrasos y excepciones pertenecen a supervisión. | `ESPECIFICADO` |
+| `NEXO-ROUTE-041` | `/inventory/settings/fulfillment-routes`  | `EXCLUIR_CONFIGURACION`                       | El conductor consume el resultado publicado; no modifica fulfillment ni asignaciones maestras.                                        | `ESPECIFICADO` |
+| `NEXO-ROUTE-045` | `/inventory/settings/remissions`          | `EXCLUIR_CONFIGURACION`                       | No expone parámetros generales de remisiones.                                                                                         | `ESPECIFICADO` |
+| `NEXO-ROUTE-046` | `/inventory/settings/remissions/products` | `EXCLUIR_CONFIGURACION`                       | No modifica elegibilidad, presentación ni comportamiento de productos.                                                                | `ESPECIFICADO` |
+| `NEXO-ROUTE-047` | `/inventory/settings/request-policies`    | `MOSTRAR_SOLO_RESULTADO_APLICABLE`            | Puede explicar una restricción aplicada a su carga sin abrir controles de política.                                                   | `ESPECIFICADO` |
+| `NEXO-ROUTE-050` | `/inventory/settings/supply-routes`       | `PROYECTAR_RUTA_ASIGNADA_EN_SOLO_LECTURA`     | Muestra secuencia y ventanas de la jornada asignada; no permite configurar ni reordenar.                                              | `ESPECIFICADO` |
+| `NEXO-ROUTE-062` | `/printing/jobs`                          | `UTILIDAD_CONTEXTUAL_PROPIA`                  | Solo accede a documentos o trabajos originados por su operación y no a la cola global.                                                | `ESPECIFICADO` |
+| `NEXO-ROUTE-064` | `/scanner`                                | `HEREDAR_TAREA_Y_CUSTODIA`                    | Identifica manifiesto, bulto, LPN o parada dentro de la tarea invocante; no ejecuta transición por inferencia.                        | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_RELEVANT_ROUTES = 16
+MATERIALIZED_RELEVANT_ROUTES = 16
+UNIQUE_RELEVANT_ROUTES = 16
+MISSING_RELEVANT_ROUTES = 0
+DUPLICATE_RELEVANT_ROUTES = 0
+```
+
+Toda ruta revalida en servidor el actor, función, asignación, permiso,
+territorio, etapa, versión y custodia. La navegación visible no sustituye el
+guard de lectura ni el comando de mutación.
+
+---
+
+#### 10. `NEXO-DRIVER-HOME-STATE-CONTRACT-001`
+
+| Estado de interfaz       | Condición                                                                                       | Respuesta obligatoria                                                               |
+| ------------------------ | ----------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| `RESOLVIENDO_CONTEXTO`   | Se están resolviendo actor, turno, check-in, ruta, vehículo, asignaciones, permisos y custodia. | No mostrar colas definitivas ni habilitar mutaciones.                               |
+| `SIN_JORNADA_VALIDA`     | No existe turno o check-in exigible vigente.                                                    | Mostrar causa y acceso al mecanismo canónico de regularización; bloquear operación. |
+| `SIN_ASIGNACION`         | Existe sesión válida, pero no ruta, vehículo, operación ni carga asignados.                     | Mostrar vacío operativo sin exponer trabajo general ni permitir autoasignación.     |
+| `CARGANDO_TRABAJO`       | La consulta autoritativa de tareas está en curso.                                               | Mantener contexto visible y evitar conteos parciales como definitivos.              |
+| `TRABAJO_DISPONIBLE`     | Existe al menos una tarea válida y atribuida.                                                   | Habilitar solo `CONTINUAR_SIGUIENTE_TAREA` sobre la prioridad resuelta.             |
+| `SIN_TRABAJO_ASIGNADO`   | La consulta completa no devuelve tareas vigentes.                                               | Mostrar vacío confirmado y hora de actualización.                                   |
+| `MANIFIESTO_NO_COINCIDE` | Bultos, LPN, sellos, cantidades, origen, destino, vehículo o versión difieren.                  | Bloquear custodia y tránsito; enviar a `DRVQ-BLOQUEO`.                              |
+| `CUSTODIA_EN_CONFLICTO`  | Otro actor figura como custodio o existe transferencia incompleta.                              | Bloquear mutación y requerir resolución autoritativa.                               |
+| `DATOS_PARCIALES`        | Una fuente secundaria falló o la proyección es incompleta.                                      | Etiquetar parcialidad; no inferir ausencia, prioridad ni éxito.                     |
+| `ERROR_RECUPERABLE`      | La operación de lectura falló sin resultado confirmado.                                         | Permitir reintento idempotente después de revalidar contexto.                       |
+| `SIN_AUTORIZACION`       | Falta permiso, territorio, relación o condición de la acción.                                   | Fallar cerrado y explicar la razón sin revelar datos protegidos.                    |
+| `CONTEXTO_REVOCADO`      | Cambió turno, check-in, asignación, rol operativo, permiso, ruta, vehículo o custodia.          | Invalidar colas y comandos; resolver nuevamente desde servidor.                     |
+| `CONECTIVIDAD_INCIERTA`  | No se conoce el resultado de una mutación o la red está intermitente.                           | No repetir a ciegas ni mostrar éxito; reconciliar por clave idempotente.            |
+| `TAREA_CAMBIADA`         | La versión, estado, prioridad o actor responsable cambió desde la carga de la vista.            | Rechazar el comando obsoleto y recargar la siguiente acción válida.                 |
+
+Reconciliación:
+
+```text
+EXPECTED_INTERFACE_STATES = 14
+MATERIALIZED_INTERFACE_STATES = 14
+UNIQUE_INTERFACE_STATES = 14
+MISSING_INTERFACE_STATES = 0
+DUPLICATE_INTERFACE_STATES = 0
+```
+
+Una petición enviada no equivale a custodia aceptada, salida, arribo, entrega,
+recepción, incidencia o retorno confirmados. Ante resultado desconocido, el
+cliente reconcilia el hecho antes de ofrecer reintento.
+
+---
+
+#### 11. Reglas de dispositivo, movilidad y conectividad
+
+1. el dispositivo personal, corporativo o instalado en el vehículo no es el
+   actor empresarial;
+2. un dispositivo compartido exige sesión humana vigente antes de mostrar
+   información protegida o mutar;
+3. escaneo y geolocalización heredan la tarea y no conceden permisos;
+4. la geolocalización, cuando se implemente, se limita a finalidad logística,
+   jornada y retención definidas;
+5. cada mutación usa clave idempotente, versión esperada y hora de servidor;
+6. una operación offline queda pendiente de reconciliación y no se representa
+   como exitosa;
+7. si la asignación o custodia cambió durante la desconexión, el comando
+   obsoleto se rechaza;
+8. no se almacena una cola global completa en el dispositivo para simular
+   autorización sin conexión;
+9. fotografías, firmas, códigos o pruebas de entrega requieren contrato
+   atómico, minimización y retención antes de habilitarse;
+10. la pérdida de conexión no habilita saltar manifiesto, handoff o recepción.
+
+---
+
+#### 12. Evidencia técnica actual y diagnóstico
+
+| Superficie o capacidad actual                                        | Evidencia permitida                                                                                                                                                                                  | Estado                   | Destino                                               |
+| -------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------------------------------------------------- |
+| Inicio raíz `src/app/page.tsx`                                       | Organiza acciones por tipo de sede y permisos generales; no resuelve una proyección dedicada del conductor ni su custodia.                                                                           | `IMPLEMENTADO_PARCIAL`   | Paquete de implementación NEXO                        |
+| `NEXO-ROUTE-034` y `src/app/inventory/remissions/conductor/page.tsx` | Consulta envíos físicos en varios estados, pero no demuestra filtro por actor, ruta, vehículo o territorio y enlaza una carga en tránsito hacia recepción.                                           | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-011; NEXO-UX-012; implementación NEXO         |
+| `src/app/inventory/remissions/conductor/actions.ts`                  | Actualiza un envío a `in_transit` con sesión autenticada y estado permitido, sin materializar en esa acción el contrato completo de turno, asignación, manifiesto, custodia, versión e idempotencia. | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-011; NEXO-UX-012; AUTH-SRV-001 a AUTH-SRV-005 |
+| `NEXO-ROUTE-038` y `src/app/inventory/remissions/transit/page.tsx`   | Usa guard operativo y permiso legacy por sede, pero consulta remisiones de centros autorizados y mezcla preparando, tránsito y parcial sin demostrar asignación exclusiva al conductor.              | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-012; NEXO-UX-007; implementación NEXO         |
+| Detalle y acciones de remisión                                       | Conviven `restock_requests`, shipments físicos, posting de inventario y transiciones complejas; su existencia no prueba un home, handoff o modelo único adoptado.                                    | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-009 a NEXO-UX-013                             |
+| Inicio dedicado por actor, ruta y custodia                           | No existe una superficie única que materialice el contrato aprobado de esta tarea.                                                                                                                   | `NO_IMPLEMENTADO`        | Paquete de implementación NEXO                        |
+| Entrega, prueba de entrega, incidente, progreso de ruta y retorno    | Las brechas atómicas continúan declaradas en `AUTH-RBAC-018` y no deben aparentarse como funciones disponibles.                                                                                      | `BLOQUEADO`              | NEXO-UX-011; NEXO-UX-012; NEXO-UX-022                 |
+| Validación móvil, offline y física                                   | No se ejecutó piloto con rutas, vehículos, bultos, sellos, receptores ni conectividad intermitente.                                                                                                  | `PENDIENTE_DE_EVIDENCIA` | NEXO-UX-023 a NEXO-UX-025                             |
+
+El código actual demuestra superficies y transiciones parciales. No demuestra
+el contrato completo del home ni valida operación física, asignación real,
+custodia, movilidad o conectividad intermitente.
+
+---
+
+#### 13. Brechas y bloqueos preservados
+
+| Brecha                                                | Efecto en el inicio                                                     | Propietario documental         | Condición de salida                                        |
+| ----------------------------------------------------- | ----------------------------------------------------------------------- | ------------------------------ | ---------------------------------------------------------- |
+| capacidad atómica de entrega o handoff ausente        | `DRVQ-ENTREGA` no puede presentar una confirmación ejecutable ordinaria | `NEXO-UX-011`; `NEXO-UX-012`   | contrato, estado, comando, permiso y prueba aprobados      |
+| prueba de entrega ausente                             | firma, fotografía, código o sello no se muestran como disponibles       | `NEXO-UX-012`; `NEXO-UX-022`   | evidencia, sensibilidad y retención definidas              |
+| incidente de transporte sin acción atómica            | `DRVQ-INCIDENTE` permanece informativa o bloqueada                      | `NEXO-UX-012`; `NEXO-UX-022`   | registrar, escalar y resolver con estados separados        |
+| progreso de ruta sin contrato atómico                 | `DRVQ-PARADA` no confirma llegada o salida por inferencia               | `NEXO-UX-012`                  | acciones idempotentes de progreso aprobadas                |
+| entrega fallida y retorno sin flujo completo          | `DRVQ-RETORNO` no cierra ni transfiere custodia automáticamente         | `NEXO-UX-012`; `NEXO-UX-022`   | retorno, destino, custodia y recepción definidos           |
+| asignación de conductor, vehículo y ruta no unificada | las consultas actuales pueden ser más amplias que el trabajo propio     | paquete de implementación NEXO | fuente autoritativa y filtros de servidor materializados   |
+| coexistencia de `restock_requests` y shipments        | dos superficies pueden representar etapas semejantes sin adopción única | `NEXO-UX-009` a `NEXO-UX-013`  | modelo de transición y compatibilidad aprobado             |
+| validación móvil y offline pendiente                  | no existe evidencia de seguridad o usabilidad en ruta                   | `NEXO-UX-023` a `NEXO-UX-025`  | piloto con dispositivos, red intermitente y actores reales |
+
+Ningún bloqueo queda sin tarea responsable.
+
+---
+
+#### 14. Decisiones aprobadas
+
+1. el inicio se resuelve por función activa, trabajo asignado y custodia, no
+   por cargo, sede o vehículo;
+2. existe una sola acción primaria: `CONTINUAR_SIGUIENTE_TAREA`;
+3. las ocho colas del conductor representan hechos de transporte y custodia;
+4. la prioridad protege primero seguridad y cargas bajo custodia;
+5. el conductor ve únicamente operaciones asignadas o bajo su custodia;
+6. preparación, custodia, tránsito, entrega física y recepción no se fusionan;
+7. la misma persona puede preparar y conducir mediante capacidades separadas;
+8. la preparación adicional abre la proyección de bodega y no modifica la
+   autoridad de `conductor_logistica`;
+9. finalizar preparación no acepta custodia ni inicia tránsito;
+10. el mismo actor puede quedar atribuido en etapas consecutivas sin perder
+    separación de hechos y evidencia;
+11. el conductor no auto-recibe ni confirma por el destino;
+12. una incidencia no ajusta, cancela, recibe ni cierra automáticamente;
+13. ruta, vehículo, dispositivo, perfil y URL no conceden permiso;
+14. escáner, impresión y geolocalización son utilidades contextuales;
+15. las dieciséis rutas existentes conservan identidad y disposición;
+16. los catorce estados fallan cerrados y no inventan éxito;
+17. las brechas atómicas permanecen visibles como bloqueos, no como funciones;
+18. las superficies actuales son evidencia parcial y no validación;
+19. no se modifica código, Supabase, permisos, datos ni operación;
+20. `NEXO-UX-006` permanece reservada.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+Esta tarea crea siete requisitos y no modifica, difiere, descarta ni declara
+obsoleto ningún requisito histórico:
+
+| Identificador   | Regla protegida resumida                                                                                                                          | Estado inicial |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `TREQ-NEXO-062` | El home se resuelve desde actor efectivo, turno, check-in, asignación, ruta, vehículo, permiso, territorio y custodia autoritativos.              | `IDENTIFICADO` |
+| `TREQ-NEXO-063` | La arquitectura conserva ocho secciones, una acción primaria y ocho colas priorizadas en servidor sobre trabajo asignado.                         | `IDENTIFICADO` |
+| `TREQ-NEXO-064` | Las nueve etapas conservan fronteras entre solicitante, preparación, custodia, tránsito, recepción, supervisión y configuración.                  | `IDENTIFICADO` |
+| `TREQ-NEXO-065` | La misma persona puede preparar y conducir mediante capacidades separadas, sin fusionar colas, comandos, atribución ni transiciones.              | `IDENTIFICADO` |
+| `TREQ-NEXO-066` | Las dieciséis rutas relevantes fallan cerradas y no conceden edición, auto-recepción, configuración, monitoreo global ni trabajo ajeno.           | `IDENTIFICADO` |
+| `TREQ-NEXO-067` | Manifiesto, bultos, sellos, LPN, versión, custodia, idempotencia, concurrencia y conectividad impiden transiciones duplicadas o fuera de orden.   | `IDENTIFICADO` |
+| `TREQ-NEXO-068` | Los catorce estados y las brechas contractuales no se presentan como éxito, entrega, recepción, incidencia o retorno implementados sin evidencia. | `IDENTIFICADO` |
+
+Los siete requisitos permanecen pendientes de implementación, automatización y
+evidencia.
+
+---
+
+#### 16. Criterios de aceptación
+
+La tarea queda documentalmente completa cuando se confirme que:
+
+- la audiencia primaria es `conductor_logistica` en una jornada válida;
+- actor, asignación, permiso, territorio y custodia se resuelven en servidor;
+- existe una única acción primaria y ocho secciones;
+- existen ocho colas únicas y catorce estados únicos;
+- las nueve etapas de `VPROC-0028` tienen decisión explícita;
+- las dieciséis rutas relevantes tienen disposición explícita;
+- no se inventaron rutas, permisos, estados de dominio ni resultados técnicos;
+- la prioridad protege seguridad y custodia activa;
+- la visibilidad se limita a operaciones asignadas;
+- manifiesto, bultos, LPN, sellos, vehículo y versión se contrastan antes de
+  aceptar custodia;
+- preparación no concede transporte y transporte no concede recepción;
+- una misma persona puede preparar y conducir sin fusionar funciones;
+- el cambio de función revalida permiso y contexto;
+- terminar preparación no dispara tránsito automáticamente;
+- entrega física y recepción permanecen separadas;
+- incidentes, retornos y diferencias no producen efectos automáticos;
+- el acceso directo por URL falla cerrado;
+- la conectividad incierta no muestra éxito ni repite mutaciones a ciegas;
+- las brechas contractuales conservan propietario y condición de salida;
+- se crean exactamente `TREQ-NEXO-062` a `TREQ-NEXO-068`;
+- `NEXO-UX-006` permanece únicamente reservada.
+
+---
+
+#### 17. `NEXO-DRIVER-HOME-HANDOFF-001`
+
+| Destino                        | Handoff aprobado                                                                                                       |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------- |
+| `NEXO-UX-006`                  | diseñar el inicio receptor sin reutilizar custodia o confirmaciones del conductor                                      |
+| `NEXO-UX-007`                  | separar monitoreo global, retrasos, excepciones y decisiones supervisoras                                              |
+| `NEXO-UX-008`                  | organizar navegación por tareas y función activa, incluida la composición de capacidades                               |
+| `NEXO-UX-009`; `NEXO-UX-010`   | consolidar solicitud, fulfillment, picks y preparación sin fusionarlos con transporte                                  |
+| `NEXO-UX-011`                  | definir documento, carga, sellado, aceptación de custodia y despacho                                                   |
+| `NEXO-UX-012`                  | definir ruta, progreso, entrega, prueba, incidencia, retorno y transferencia de custodia                               |
+| `NEXO-UX-013`                  | definir recepción independiente y conciliación de cantidades                                                           |
+| `NEXO-UX-020` a `NEXO-UX-022`  | definir escaneo, cantidades, estados, errores y excepciones                                                            |
+| `NEXO-UX-023` a `NEXO-UX-025`  | validar móvil, vehículo, conectividad, prototipo, métricas y piloto                                                    |
+| paquete de implementación NEXO | construir home, consultas asignadas, selector de función, guards, comandos, pruebas y observabilidad                   |
+| certificación posterior        | validar con preparadores-conductores, conductores exclusivos, receptores, vehículos, bultos, sellos y red intermitente |
+
+Ningún destino anterior se inicia mediante esta tarea.
+
+---
+
+#### 18. Continuidad canónica
+
+**ÚLTIMA TAREA APROBADA**
+
+`NEXO-UX-004 — Diseñar inicio para bodeguero`
+
+**TAREA ACTUAL APROBADA**
+
+`NEXO-UX-005 — Diseñar inicio para conductor`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`NEXO-UX-006 — Diseñar inicio para receptor`
+
+
 ### [ ] NEXO-UX-006 — Diseñar inicio para receptor
 ### [ ] NEXO-UX-007 — Diseñar inicio para supervisor
 ### [ ] NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas
