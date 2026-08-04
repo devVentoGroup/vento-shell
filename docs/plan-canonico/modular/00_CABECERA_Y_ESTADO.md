@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **522** |
+| Tareas aprobadas | **524** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1072** |
+| Tareas no iniciadas | **1070** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **32.75% (522/1594)** |
+| Porcentaje de completamiento | **32.87% (524/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-SIM-003 — Definir sede simulada** |
-| Tarea actual | **AUTH-SIM-004 — Definir área simulada** |
+| Última tarea aprobada | **AUTH-SIM-005 — Definir turno simulado** |
+| Tarea actual | **AUTH-SIM-006 — No mezclar permisos reales y simulados** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-SIM-005 — Definir turno simulado** |
+| Siguiente tarea | **AUTH-ERR-001 — Sin sesión** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 10: SIMULATION_CONTRACT** |
-| Progreso del bloque | **CARRIL NEXO: 3 de 6 aprobadas; AUTH-SIM-004 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 5 de 6 aprobadas; AUTH-SIM-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-SIM-003` — Definir sede simulada |
-| Tarea actual | `AUTH-SIM-004` — Definir área simulada — **NO INICIADA** |
-| Siguiente tarea | `AUTH-SIM-005` — Definir turno simulado |
+| Última aprobada | `AUTH-SIM-005` — Definir turno simulado |
+| Tarea actual | `AUTH-SIM-006` — No mezclar permisos reales y simulados — **NO INICIADA** |
+| Siguiente tarea | `AUTH-ERR-001` — Sin sesión |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 3 DE 6 APROBADAS — ACTUAL AUTH-SIM-004** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 5 DE 6 APROBADAS — ACTUAL AUTH-SIM-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-SIM-003 — Definir sede simulada
-        ↓
-TAREA ACTUAL
-AUTH-SIM-004 — Definir área simulada
-        ↓
-SIGUIENTE TAREA RESERVADA
 AUTH-SIM-005 — Definir turno simulado
         ↓
+TAREA ACTUAL
+AUTH-SIM-006 — No mezclar permisos reales y simulados
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-ERR-001 — Sin sesión
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 3 de 6 tareas aprobadas
+CARRIL NEXO — 5 de 6 tareas aprobadas
 ```

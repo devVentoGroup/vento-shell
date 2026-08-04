@@ -2471,6 +2471,2058 @@ Se incorporan `TREQ-AUTH-089` a `TREQ-AUTH-098` en el Registro Canónico de Requ
 `AUTH-SIM-004 — Definir área simulada`
 
 
-### [ ] AUTH-SIM-004 — Definir área simulada
-### [ ] AUTH-SIM-005 — Definir turno simulado
+### ✅ AUTH-SIM-004 — Definir área simulada
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-SIM-003 — Definir sede simulada` — APROBADA
+**Tarea siguiente:** `AUTH-SIM-005 — Definir turno simulado` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de elegibilidad del área simulada, registro materializado de áreas exactas, administrativas, operativas, aisladas y agregadas, y reconciliación de compatibilidad rol–sede–área
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md`
+**Artefactos producidos:** `SIMULATED-AREA-ELIGIBILITY-CONTRACT-001`, `SIMULATED-AREA-REGISTER-001`, `SIMULATED-AREA-ROLE-COMPATIBILITY-REGISTER-001` y `SIMULATED-AREA-PHYSICAL-RECONCILIATION-001`
+**Decisiones y contratos consumidos:** `AUTH-MOD-008`, `AUTH-MOD-012` a `AUTH-MOD-015`, `AUTH-SIM-001`, `AUTH-SIM-002`, `AUTH-SIM-003`, catálogo vigente de `public.areas` y `public.area_kinds`, habilitaciones de `public.site_operational_roles`, migración histórica de áreas generales satélite y estado físico observado de `public.context_simulation_sessions`
+**Cambios en código, Supabase, migraciones, RLS, RPC, configuración, datos, sedes, áreas, asignaciones, turnos, sesiones, dispositivos o permisos:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Definir exactamente qué área puede formar parte de un contexto simulado de autorización, sin confundir:
+
+- área simulada con área real del solicitante;
+- área exacta con tipo de área;
+- área operativa con área administrativa;
+- área seleccionada con área autorizada;
+- área primaria con área efectiva;
+- área de rol con área de turno;
+- área de recurso con área de dispositivo;
+- fila agregada `Todos` o `General` con una identidad operativa exacta;
+- compatibilidad rol–área con permiso para ejecutar;
+- ausencia legítima de área con wildcard territorial.
+
+```text
+ÁREA SIMULADA EXACTA
+≠
+ÁREA SELECCIONADA
+≠
+ÁREA PRIMARIA
+≠
+ÁREA REAL DEL SIMULADOR
+≠
+ÁREA DEL DISPOSITIVO
+≠
+ÁREA DEL TURNO
+≠
+ÁREA DEL RECURSO
+≠
+AUTORIDAD EJECUTABLE
+```
+
+El área simulada es un componente hipotético subordinado a una sede simulada previamente aceptada. Nunca modifica ni sustituye el contexto real desde el que se autoriza al solicitante.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban:
+
+1. `SIMULATED-AREA-ELIGIBILITY-CONTRACT-001`, que define identidad exacta, sede padre, modos de objetivo, alcance real, compatibilidad rol–área, agregados, ausencia de área, coherencia con recursos, precedencia, razones y fail closed;
+2. `SIMULATED-AREA-REGISTER-001`, que materializa una decisión para las 22 áreas activas observadas;
+3. `SIMULATED-AREA-ROLE-COMPATIBILITY-REGISTER-001`, que materializa 13 vínculos exactos y tres vínculos operativos sin área resuelta;
+4. `SIMULATED-AREA-PHYSICAL-RECONCILIATION-001`, que conserva brechas físicas sin convertirlas en autorización ni modificar el despliegue.
+
+Cobertura materializada:
+
+| Resultado                                        | Cantidad |
+| ------------------------------------------------ | -------: |
+| Áreas activas con decisión explícita             |       22 |
+| Áreas organizacionales ordinarias exactas        |       18 |
+| Áreas operativas ordinarias exactas              |       13 |
+| Áreas administrativas ordinarias exactas         |        5 |
+| Área aislada exacta                              |        1 |
+| Filas agregadas no admitidas como área exacta    |        3 |
+| `area_kinds` activos observados                  |       16 |
+| Habilitaciones activas rol–sede observadas       |       16 |
+| Habilitaciones con `area_id` exacto              |       13 |
+| Habilitaciones con área no resuelta              |        3 |
+| Sesiones físicas de simulación observadas        |        0 |
+| Wildcards, fallbacks o áreas inferidas aprobadas |        0 |
+| Áreas capaces de autorizar por ser seleccionadas |        0 |
+
+---
+
+#### 3. Base normativa heredada
+
+La tarea conserva íntegramente que:
+
+- el solicitante real debe superar `AUTH-SIM-001`;
+- el rol objetivo debe superar `AUTH-SIM-002`;
+- la sede objetivo debe superar `AUTH-SIM-003`;
+- el área pertenece a una sede exacta aceptada;
+- una sede no determina automáticamente un área;
+- `null` no significa todas las áreas;
+- un rol operativo debe ser compatible con sede y área;
+- área administrativa y área operativa permanecen separadas;
+- el área del recurso deberá resolverse cuando el contrato lo exija;
+- una sede sin áreas no permite inventarlas;
+- un área inactiva, ambigua o de otra sede falla cerrado;
+- la selección simulada no modifica asignaciones ni contexto real;
+- el resultado solo puede ser explicativo y no ejecutable;
+- toda ambigüedad, brecha o incompatibilidad falla cerrado.
+
+---
+
+#### 4. Identidades separadas
+
+| Identidad                    | Función                                                          | Autoridad                              |
+| ---------------------------- | ---------------------------------------------------------------- | -------------------------------------- |
+| `simulator_real_area_scope`  | Conjunto real de áreas que el simulador puede inspeccionar       | Limita la solicitud; no se modifica    |
+| `simulated_site_id`          | Sede exacta hipotética aceptada por `AUTH-SIM-003`               | Padre obligatorio del área exacta      |
+| `simulated_area_id`          | Área exacta hipotética evaluada                                  | No autoriza acciones reales            |
+| `simulated_area_code`        | Código corroborativo dentro de la sede                           | No sustituye el UUID                   |
+| `simulated_area_kind`        | Clasificación funcional de la fila exacta                        | No es wildcard ni identidad suficiente |
+| `simulated_area_class`       | Clase contractual: operativa, administrativa, aislada o agregada | Define tratamiento, no concede permiso |
+| `simulated_resource_area_id` | Área resuelta del recurso hipotético                             | Debe ser coherente cuando aplique      |
+| `simulated_shift_area_id`    | Área hipotética del turno, definida por la tarea siguiente       | No sustituye al área objetivo          |
+| `real_active_area_id`        | Área real activa del actor                                       | Permanece inalterada                   |
+| `real_selected_area_id`      | Preferencia real de interfaz                                     | No es evidencia de autorización        |
+| `shared_device_area_id`      | Límite real del dispositivo compartido                           | Solo restringe; nunca amplía           |
+
+```text
+simulated_area_id
+≠
+real_active_area_id
+≠
+real_selected_area_id
+≠
+shared_device_area_id
+≠
+simulated_shift_area_id
+≠
+simulated_resource_area_id
+```
+
+---
+
+#### 5. Modos contractuales de objetivo
+
+```ts
+type SimulatedAreaTarget =
+  | {
+      mode: "EXACT_AREA";
+      simulated_site_id: string;
+      simulated_site_code: string;
+      simulated_area_id: string;
+      simulated_area_code: string;
+      simulated_area_kind: string;
+      simulated_area_class:
+        | "OPERATIONAL"
+        | "ADMINISTRATIVE"
+        | "ISOLATED";
+      site_catalog_version: string;
+      area_catalog_version: string;
+    }
+  | {
+      mode: "NO_AREA_NOT_REQUIRED";
+      simulated_site_id: string | null;
+      simulated_area_id: null;
+      simulated_area_code: null;
+      simulated_area_kind: null;
+      simulated_area_class: null;
+      site_catalog_version: string;
+      area_catalog_version: string;
+    };
+```
+
+Reglas:
+
+1. `EXACT_AREA` exige sede y área únicas, activas y coherentes;
+2. `NO_AREA_NOT_REQUIRED` declara positivamente que el contrato evaluado no requiere área;
+3. una fila `AGGREGATE_NOT_EXACT` no puede poblar `EXACT_AREA`;
+4. `area_kind` no constituye un tercer modo;
+5. una consulta por tipo se expande en servidor a una lista finita de áreas exactas autorizadas;
+6. `null`, cadena vacía, primer resultado, área primaria, área seleccionada o única área visible no se transforman en `EXACT_AREA`;
+7. cada evaluación conserva versiones de sede y área.
+
+---
+
+#### 6. Contrato conceptual
+
+```ts
+type SimulatedAreaEligibilityInput = {
+  simulation_request_id: string;
+  simulator_actor_id: string;
+  real_session_id: string;
+  simulated_role_kind: "BASE" | "OPERATIONAL";
+  simulated_role_code: string;
+  role_catalog_version: string;
+  role_matrix_version: string;
+  simulated_site_id: string | null;
+  site_catalog_version: string;
+  area_target: SimulatedAreaTarget;
+  target_permission_key: string | null;
+  target_action: string | null;
+  target_resource_reference: string | null;
+  simulated_resource_area_id: string | null;
+  strong_reauth_evidence_id: string | null;
+};
+```
+
+```ts
+type SimulatedAreaEligibilityResult = {
+  accepted: boolean;
+  decision:
+    | "SIMULABLE_CONDITIONAL"
+    | "ISOLATED_EXPLICIT_ONLY"
+    | "AGGREGATE_NOT_EXACT"
+    | "NO_AREA_ACCEPTED"
+    | "INDETERMINATE"
+    | "DENY";
+  exact_area_resolved: boolean;
+  belongs_to_simulated_site: boolean | null;
+  within_simulator_real_scope: boolean;
+  role_area_compatible: boolean | null;
+  resource_area_compatible: boolean | null;
+  aggregate_reference_rejected: boolean;
+  strong_reauth_required: boolean;
+  simulated_decision:
+    | "would_allow"
+    | "would_deny"
+    | "indeterminate"
+    | null;
+  reason_codes: string[];
+  evaluated_site_catalog_version: string;
+  evaluated_area_catalog_version: string;
+  evaluated_role_matrix_version: string;
+  policy_version: string;
+  evaluated_at: string;
+};
+```
+
+La implementación física podrá normalizar estas formas sin perder identidad exacta, sede padre, clase, tipo, versiones, alcance real, compatibilidad, razones ni separación respecto del contexto real.
+
+---
+
+#### 7. Fórmula de elegibilidad
+
+```text
+SOLICITANTE ELEGIBLE SEGÚN AUTH-SIM-001
+∩
+ROL OBJETIVO VÁLIDO SEGÚN AUTH-SIM-002
+∩
+SEDE OBJETIVO ACEPTADA SEGÚN AUTH-SIM-003
+∩
+MODO DE ÁREA EXPLÍCITO
+∩
+ÁREA EXACTA ACTIVA O AUSENCIA VÁLIDA
+∩
+ÁREA PERTENECE A LA SEDE SIMULADA
+∩
+ÁREA SOLICITADA ⊆ ALCANCE REAL DE INSPECCIÓN
+∩
+COMPATIBILIDAD ROL–SEDE–ÁREA CUANDO APLIQUE
+∩
+COHERENCIA CON PERMISO, ACCIÓN Y RECURSO
+∩
+AISLAMIENTO Y REAUTENTICACIÓN CUANDO APLIQUEN
+∩
+AUSENCIA DE DENEGACIONES
+=
+OBJETIVO DE ÁREA ACEPTADO
+```
+
+Aceptar el área no produce por sí solo `would_allow`. Turno, check-in, permiso, acción y recurso deberán satisfacer sus contratos cuando sean obligatorios.
+
+---
+
+#### 8. Resolución exacta y pertenencia a sede
+
+Para `EXACT_AREA` deberán coincidir simultáneamente:
+
+```text
+area.id = simulated_area_id
+area.site_id = simulated_site_id
+area.code = simulated_area_code
+area.kind = simulated_area_kind
+area.is_active = true
+site.is_active = true
+versiones compatibles
+```
+
+Reglas:
+
+- el UUID es la identidad autoritativa;
+- el código es corroborativo y único dentro de la sede, no global;
+- el nombre visible nunca es identidad;
+- una coincidencia de `area_kind` no sustituye una fila exacta;
+- un área de otra sede produce `DENY` aunque el nombre o tipo coincida;
+- una referencia con ID y código contradictorios produce `DENY`;
+- una fila retirada se conserva como evidencia histórica, pero no se simula como activa;
+- la sede aceptada puede reducir las áreas candidatas, nunca inventarlas.
+
+---
+
+#### 9. Registro materializado de áreas activas
+
+| Sede              | `area_id`                              | Código             | Nombre observado       | `area_kind`       | Clase            | Decisión                 | Regla                                                                                                      |
+| ----------------- | -------------------------------------- | ------------------ | ---------------------- | ----------------- | ---------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------- |
+| `APP-REVIEW`      | `01f8e7eb-43dc-4ed3-8709-67fec5f1ffe4` | `OPERACION`        | Operacion              | `general`         | `AISLADA`        | `ISOLATED_EXPLICIT_ONLY` | Área exacta de la sede aislada; exige cobertura independiente y minimización.                              |
+| `CENTRO_PROD`     | `1c013f8f-2020-4fa3-b8a9-33e055842209` | `BODEGA`           | Bodega                 | `bodega`          | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta; vinculada físicamente con `bodeguero`.                                              |
+| `CENTRO_PROD`     | `afb228fe-8134-41b7-bc75-f6cb3f43210e` | `COC-CAL`          | Cocina caliente        | `cocina_caliente` | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta; vinculada con `produccion_cocina`.                                                  |
+| `CENTRO_PROD`     | `8bfe8c1d-9dd9-40a5-9c25-3631dd78b619` | `PAN-GALL`         | Galleteria y Panaderia | `panaderia`       | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta; vinculada con `produccion_panaderia`.                                               |
+| `CENTRO_PROD`     | `9e73ffd6-7191-46ee-a644-134ec0bb6015` | `REPOSTERIA`       | Reposteria             | `reposteria`      | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta; vinculada con `produccion_reposteria`.                                              |
+| `MOLKA_PRINCIPAL` | `79fffc7f-1712-47f0-b1a1-a0cbac5b4ed4` | `MOSTRADOR`        | Mostrador              | `mostrador`       | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área exacta disponible; el rol `operador_integral_satelite` no posee vínculo de área y no puede inferirse. |
+| `MOLKA_PRINCIPAL` | `8c9633dc-603d-46df-8873-a58cbd1147de` | `todos`            | Todos                  | `general`         | `AGREGADA`       | `AGGREGATE_NOT_EXACT`    | Área agregada histórica de remisiones; no representa una única área operativa.                             |
+| `SAUDO`           | `abc554c3-cb48-4a43-8761-4a9e9e863614` | `CAJA`             | Caja                   | `caja`            | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta; vinculada con `cajero_satelite`.                                                    |
+| `SAUDO`           | `07380165-7819-4d1f-8295-6e9ed9b615a8` | `COCINA_BARRA`     | Cocina / Barra         | `cocina_bar`      | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta compartida por `barista_satelite` y `cocinero_satelite`.                             |
+| `SAUDO`           | `3ecfd3c7-235f-45d7-b607-704ccb862c83` | `SALON`            | Salón                  | `salon`           | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta; vinculada con `servicio_salon`.                                                     |
+| `SAUDO`           | `2fce4815-fc38-41f6-8870-c19d415f61a8` | `todos`            | Todos                  | `general`         | `AGREGADA`       | `AGGREGATE_NOT_EXACT`    | Área agregada histórica de remisiones; no es wildcard de autorización.                                     |
+| `VENTO_CAFE`      | `2ac36aff-b87b-4260-a32a-9c710ec4a124` | `BARRA`            | Barra                  | `bar`             | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta; vinculada con `barista_satelite`.                                                   |
+| `VENTO_CAFE`      | `3215396a-dfc5-44b7-924b-b27260cc455d` | `CAJA`             | Caja                   | `caja`            | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta; vinculada con `cajero_satelite`.                                                    |
+| `VENTO_CAFE`      | `31437887-3357-4ccb-aae2-747cc7802453` | `COCINA`           | Cocina                 | `cocina`          | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta; vinculada con `cocinero_satelite`.                                                  |
+| `VENTO_CAFE`      | `891a9d67-dc0e-4943-9eef-558b580efb37` | `GENERAL`          | General                | `general`         | `AGREGADA`       | `AGGREGATE_NOT_EXACT`    | Fila general de sede satélite; su código físico divergente no la convierte en área exacta.                 |
+| `VENTO_CAFE`      | `7d1e1556-1f53-48be-bf1b-8e060926eb78` | `MOSTRADOR`        | Mostrador              | `mostrador`       | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta; vinculada con `mostrador_satelite`.                                                 |
+| `VENTO_CAFE`      | `12b3aeac-3b44-4528-a1ce-0a1a3057751a` | `SALON`            | Salón                  | `salon`           | `OPERATIVA`      | `SIMULABLE_CONDITIONAL`  | Área operativa exacta; vinculada con `servicio_salon`.                                                     |
+| `VENTO_GROUP`     | `9aa70d16-4bf5-498a-9b26-126eb49c3c12` | `CONDUCTOR`        | Conductor              | `logistica`       | `ADMINISTRATIVA` | `SIMULABLE_CONDITIONAL`  | Área organizacional exacta; no se vincula por inferencia con `conductor_logistica` de otra sede.           |
+| `VENTO_GROUP`     | `99f9c151-fcd1-4e97-9c6d-03cd58565823` | `CONTABILIDAD`     | Contabilidad           | `contabilidad`    | `ADMINISTRATIVA` | `SIMULABLE_CONDITIONAL`  | Área administrativa exacta; exige permiso y alcance real compatibles.                                      |
+| `VENTO_GROUP`     | `96afcf8a-b638-48f0-96b6-8295ba8419e2` | `DIRECCION`        | Dirección              | `liderazgo`       | `ADMINISTRATIVA` | `SIMULABLE_CONDITIONAL`  | Área administrativa exacta; no crea privilegios de dirección.                                              |
+| `VENTO_GROUP`     | `94eb19b4-ef3a-4df2-887c-d9d06b03ca02` | `GERENCIA_GENERAL` | Gerencia General       | `gerencia`        | `ADMINISTRATIVA` | `SIMULABLE_CONDITIONAL`  | Área administrativa exacta; no equivale al rol base `gerente_general`.                                     |
+| `VENTO_GROUP`     | `57993559-0f55-4d6a-a1e3-e7c9721d7f40` | `MARKETING`        | Marketing              | `marketing`       | `ADMINISTRATIVA` | `SIMULABLE_CONDITIONAL`  | Área administrativa exacta; no concede permisos de marketing.                                              |
+
+Totales:
+
+```text
+18 SIMULABLE_CONDITIONAL
+1 ISOLATED_EXPLICIT_ONLY
+3 AGGREGATE_NOT_EXACT
+= 22 decisiones exactas
+```
+
+La existencia física y el estado activo de una fila no bastan para convertirla en área exacta simulable.
+
+---
+
+#### 10. Tipos de área observados
+
+Los dieciséis `area_kinds` activos observados son:
+
+```text
+bar
+bodega
+caja
+cocina
+cocina_bar
+cocina_caliente
+contabilidad
+general
+gerencia
+liderazgo
+logistica
+marketing
+mostrador
+panaderia
+reposteria
+salon
+```
+
+Reglas:
+
+1. el tipo describe una fila; no es identidad;
+2. un tipo puede existir en varias sedes;
+3. un tipo no incluye automáticamente áreas futuras;
+4. `general` no tiene una semántica única: puede representar agregado satélite o área aislada según la identidad exacta;
+5. una comparación por tipo se expande a áreas exactas actuales y autorizadas;
+6. las filas agregadas permanecen excluidas de la expansión operativa;
+7. el área aislada solo entra mediante cobertura específica;
+8. cada área produce una decisión independiente.
+
+---
+
+#### 11. Filas agregadas `Todos` y `General`
+
+La migración histórica de NEXO creó o normalizó un área `kind=general` para remisiones en las sedes satélite Vento Café, Saudo y Molka. El estado físico actual presenta:
+
+| Sede              | Código físico | Clase contractual     |
+| ----------------- | ------------- | --------------------- |
+| `MOLKA_PRINCIPAL` | `todos`       | `AGGREGATE_NOT_EXACT` |
+| `SAUDO`           | `todos`       | `AGGREGATE_NOT_EXACT` |
+| `VENTO_CAFE`      | `GENERAL`     | `AGGREGATE_NOT_EXACT` |
+
+Reglas:
+
+- la divergencia de código en Vento Café se registra, no se corrige en esta tarea;
+- estas filas pueden servir a procesos agregados heredados, pero no representan una estación laboral exacta;
+- no pueden actuar como todas las áreas;
+- no pueden resolver el área de un rol, turno, recurso o dispositivo;
+- no pueden convertirse en wildcard por su nombre o `kind`;
+- no sustituyen el conjunto finito de áreas exactas;
+- una implementación futura deberá conservar compatibilidad de NEXO sin reutilizarlas como identidad de autorización.
+
+---
+
+#### 12. Área aislada `APP-REVIEW/OPERACION`
+
+`APP-REVIEW/OPERACION` conserva aislamiento respecto de las áreas productivas y administrativas ordinarias.
+
+Para aceptarla deberán coexistir:
+
+- sede `APP-REVIEW` aceptada por `AUTH-SIM-003`;
+- área exacta `OPERACION`;
+- cobertura real explícita e independiente;
+- propósito de revisión compatible;
+- justificación específica;
+- sesión personal real;
+- minimización y enmascaramiento;
+- reautenticación fuerte cuando corresponda;
+- ausencia de denegaciones.
+
+`area_kind=general` no la incorpora a los agregados de remisión ni permite mezclar datos productivos con datos de revisión.
+
+---
+
+#### 13. Sede sin área organizacional simulable
+
+`pickup_camioneta_principal` no posee filas en `public.areas` y no es una sede organizacional simulable según `AUTH-SIM-003`.
+
+```text
+site = pickup_camioneta_principal
++
+area inexistente o inventada
+=
+DENY
+```
+
+No se crearán áreas conceptuales como patio, conductor, vehículo o logística por inferencia. Una tarea posterior podrá tratar el punto físico mediante una identidad distinta para check-in, sin poblar `simulated_area_id`.
+
+---
+
+#### 14. Compatibilidad materializada rol–sede–área
+
+| Sede              | Rol operativo                | Área exacta    | Estado                    | Regla                                                                                   |
+| ----------------- | ---------------------------- | -------------- | ------------------------- | --------------------------------------------------------------------------------------- |
+| `CENTRO_PROD`     | `bodeguero`                  | `BODEGA`       | `EXACT_BINDING`           | Compatible únicamente con el área exacta vinculada.                                     |
+| `CENTRO_PROD`     | `produccion_cocina`          | `COC-CAL`      | `EXACT_BINDING`           | Compatible únicamente con Cocina caliente.                                              |
+| `CENTRO_PROD`     | `produccion_panaderia`       | `PAN-GALL`     | `EXACT_BINDING`           | Compatible únicamente con Galleteria y Panaderia.                                       |
+| `CENTRO_PROD`     | `produccion_reposteria`      | `REPOSTERIA`   | `EXACT_BINDING`           | Compatible únicamente con Reposteria.                                                   |
+| `SAUDO`           | `barista_satelite`           | `COCINA_BARRA` | `EXACT_BINDING`           | Comparte área exacta con `cocinero_satelite`; no comparte autoridad.                    |
+| `SAUDO`           | `cajero_satelite`            | `CAJA`         | `EXACT_BINDING`           | Compatible únicamente con Caja.                                                         |
+| `SAUDO`           | `cocinero_satelite`          | `COCINA_BARRA` | `EXACT_BINDING`           | Comparte área exacta con `barista_satelite`; conserva permisos propios.                 |
+| `SAUDO`           | `servicio_salon`             | `SALON`        | `EXACT_BINDING`           | Compatible únicamente con Salón.                                                        |
+| `VENTO_CAFE`      | `barista_satelite`           | `BARRA`        | `EXACT_BINDING`           | Compatible únicamente con Barra.                                                        |
+| `VENTO_CAFE`      | `cajero_satelite`            | `CAJA`         | `EXACT_BINDING`           | Compatible únicamente con Caja.                                                         |
+| `VENTO_CAFE`      | `cocinero_satelite`          | `COCINA`       | `EXACT_BINDING`           | Compatible únicamente con Cocina.                                                       |
+| `VENTO_CAFE`      | `mostrador_satelite`         | `MOSTRADOR`    | `EXACT_BINDING`           | Compatible únicamente con Mostrador.                                                    |
+| `VENTO_CAFE`      | `servicio_salon`             | `SALON`        | `EXACT_BINDING`           | Compatible únicamente con Salón.                                                        |
+| `CENTRO_PROD`     | `conductor_logistica`        | —              | `AREA_BINDING_UNRESOLVED` | La sede está habilitada, pero no existe `area_id`; no se infiere Bodega ni otra área.   |
+| `MOLKA_PRINCIPAL` | `operador_integral_satelite` | —              | `AREA_BINDING_UNRESOLVED` | No se infiere Mostrador ni `todos`; una acción con área queda indeterminada o denegada. |
+| `VENTO_GROUP`     | `gerencia_operativa`         | —              | `AREA_BINDING_UNRESOLVED` | No se infiere Dirección, Gerencia General ni otra área administrativa.                  |
+
+Totales:
+
+```text
+13 EXACT_BINDING
+3 AREA_BINDING_UNRESOLVED
+= 16 habilitaciones activas observadas
+```
+
+Reglas:
+
+1. un vínculo exacto permite considerar compatible el trío rol–sede–área;
+2. no concede el permiso objetivo;
+3. no crea turno ni check-in;
+4. dos roles pueden compartir un área sin compartir permisos;
+5. un rol sin `area_id` no recibe un área por nombre, única candidata, sede o práctica operativa;
+6. para una acción que exige área, `AREA_BINDING_UNRESOLVED` produce `indeterminate` o `would_deny`;
+7. una tarea de implementación deberá corregir o modelar la brecha antes de producir `would_allow` reproducible.
+
+---
+
+#### 15. Roles base y áreas administrativas
+
+Los roles base no dependen de `site_operational_roles`, pero un permiso, recurso o acción territorial puede exigir un área exacta.
+
+Reglas:
+
+- `DIRECCION` no equivale a `propietario`;
+- `GERENCIA_GENERAL` no equivale a `gerente_general`;
+- `CONTABILIDAD` no concede permisos financieros;
+- `MARKETING` no concede permisos de campañas;
+- `CONDUCTOR` no crea el rol `conductor_logistica` ni lo traslada desde Centro de Producción;
+- seleccionar un área administrativa no amplía cobertura organizacional;
+- un rol base global ordinario no atraviesa `APP-REVIEW`;
+- una vista de matriz sin acción concreta puede conservar área pendiente;
+- una acción con recurso de área exige coherencia exacta.
+
+---
+
+#### 16. Contexto operativo simulado
+
+Una acción operativa con área deberá satisfacer como mínimo:
+
+```text
+rol operativo tipado
++
+sede exacta aceptada
++
+área exacta compatible
++
+turno hipotético válido
++
+check-in hipotético cuando corresponda
++
+permiso operativo exacto
++
+recurso territorial coherente
+```
+
+El área no reconstruye los demás componentes. Un rol compatible con la sede pero sin vínculo exacto de área no puede producir `would_allow` para una acción dependiente de área.
+
+---
+
+#### 17. Coherencia con recurso, turno y dispositivo
+
+Cuando existan estas identidades:
+
+```text
+simulated_area_id
+simulated_resource_area_id
+simulated_shift_area_id
+shared_device_area_id
+```
+
+se aplicará intersección restrictiva, no unión.
+
+| Condición                                       | Resultado                              |
+| ----------------------------------------------- | -------------------------------------- |
+| Recurso exige la misma área y coincide          | Continúa la evaluación                 |
+| Recurso pertenece a otra área                   | `would_deny`                           |
+| Turno exige área y coincide                     | Continúa la evaluación                 |
+| Turno exige área y falta o contradice           | `indeterminate` o `would_deny`         |
+| Dispositivo limita a otra área                  | `DENY`                                 |
+| Dispositivo no tiene política de área resoluble | `DENY` para acción dependiente de área |
+| Área seleccionada coincide solo por preferencia | No aporta autoridad                    |
+
+La tarea siguiente definirá el turno simulado sin alterar estas reglas.
+
+---
+
+#### 18. Alcance real del simulador
+
+```text
+REQUESTED_SIMULATED_AREA
+⊆
+SIMULATOR_REAL_AUTHORIZED_INSPECTION_SCOPE
+```
+
+La comprobación utiliza permisos y asignaciones reales.
+
+| Alcance real           | Áreas simulables                                                                     |
+| ---------------------- | ------------------------------------------------------------------------------------ |
+| `OWN`                  | Contexto propio y áreas que el contrato propio permita inspeccionar                  |
+| Área exacta            | Únicamente esa área                                                                  |
+| Conjunto explícito     | Lista finita de áreas exactas autorizadas                                            |
+| Tipo de área           | Expansión finita actual, excluyendo agregados e aisladas no autorizadas              |
+| Sede exacta            | No implica automáticamente todas sus áreas; exige permiso cuya cobertura las incluya |
+| Global ordinario       | Áreas organizacionales ordinarias cubiertas; excluye aislamiento                     |
+| Área aislada explícita | Solo `APP-REVIEW/OPERACION` cuando esté autorizada                                   |
+
+No existen fallbacks desde sede visible, rol global, área primaria, `general`, `Todos` o `null`.
+
+---
+
+#### 19. Ausencia legítima de área
+
+`NO_AREA_NOT_REQUIRED` solo procede cuando el contrato del rol, permiso, acción y recurso no utiliza área.
+
+Casos conceptuales admisibles:
+
+- vista general de matriz sin acción territorial;
+- permiso administrativo verdaderamente no segmentado por área;
+- recurso organizacional cuyo contrato no posee área;
+- explicación de una denegación anterior a la resolución de área.
+
+Casos no admisibles:
+
+- producción;
+- inventario por ubicación;
+- venta o caja;
+- servicio de salón;
+- turno con área;
+- check-in con área efectiva;
+- recurso con `area_id` resoluble;
+- rol operativo al evaluar una acción dependiente de área.
+
+```text
+area_target.mode = NO_AREA_NOT_REQUIRED
++
+acción que requiere área
+=
+indeterminate o would_deny
+```
+
+Nunca `would_allow`.
+
+---
+
+#### 20. Área ausente, inactiva, ambigua o incompatible
+
+| Condición                                   | Resultado                      |
+| ------------------------------------------- | ------------------------------ |
+| ID o código ausente en `EXACT_AREA`         | `DENY`                         |
+| ID y código resuelven áreas distintas       | `DENY`                         |
+| Área inexistente                            | `DENY`                         |
+| Área inactiva o retirada                    | `DENY`                         |
+| Versión de catálogo incompatible            | `DENY`                         |
+| Área pertenece a otra sede                  | `DENY`                         |
+| `area_kind` enviado como objetivo exacto    | `DENY`                         |
+| Fila agregada enviada como objetivo exacto  | `DENY`                         |
+| Área fuera del alcance real                 | `DENY`                         |
+| Área aislada sin cobertura específica       | `DENY`                         |
+| Rol operativo incompatible con el área      | `would_deny`                   |
+| Vínculo rol–área no resuelto                | `indeterminate` o `would_deny` |
+| Acción con área obligatoria y modo sin área | `indeterminate` o `would_deny` |
+| Recurso con área contradictoria             | `would_deny`                   |
+
+La interfaz podrá pedir corrección del escenario, pero no seleccionar un fallback silencioso.
+
+---
+
+#### 21. Datos reales y minimización
+
+El área simulada no concede acceso a datos de esa área.
+
+La vista podrá utilizar:
+
+- metadatos de área no sensibles ya visibles para el simulador;
+- estructuras vacías;
+- datos sintéticos;
+- datos anonimizados;
+- datos reales consultables mediante permisos reales.
+
+No podrá revelar por la selección del área:
+
+- inventario o ubicaciones;
+- costos, márgenes o ventas;
+- turnos de terceros;
+- trabajadores asignados;
+- documentos laborales;
+- clientes;
+- producción;
+- auditorías sensibles;
+- información de otra área o sede;
+- datos de `APP-REVIEW` fuera del aislamiento.
+
+---
+
+#### 22. Prohibición de mutaciones
+
+Seleccionar, cambiar o comparar un área simulada no podrá:
+
+- crear, activar, desactivar o modificar `public.areas`;
+- modificar `public.area_kinds`;
+- modificar `employee_areas`;
+- modificar `employees.area_id`;
+- modificar `employee_settings.selected_area_id`;
+- modificar `employee_area_purpose_assignments`;
+- modificar `site_operational_roles`;
+- cambiar sede, turno o check-in real;
+- cambiar dispositivo o estación;
+- alterar RLS, permisos o sesiones;
+- mover inventario, activos o recursos;
+- ejecutar acciones como el rol, sede o área simulados.
+
+```text
+CAMBIO DE ÁREA SIMULADA
+=
+NUEVA EVALUACIÓN HIPOTÉTICA
+≠
+MUTACIÓN TERRITORIAL REAL
+```
+
+---
+
+#### 23. Precedencia de decisión
+
+```text
+SOLICITANTE_REAL_INVÁLIDO
+>
+SIMULACIÓN_ANIDADA
+>
+ROL_OBJETIVO_INVÁLIDO
+>
+SEDE_OBJETIVO_INVÁLIDA
+>
+VERSIÓN_DE_ÁREA_INCOMPATIBLE
+>
+ÁREA_AUSENTE_O_INACTIVA
+>
+ÁREA_NO_PERTENECE_A_SEDE
+>
+FILA_AGREGADA_NO_EXACTA
+>
+AISLAMIENTO_NO_AUTORIZADO
+>
+ALCANCE_REAL_INSUFICIENTE
+>
+ROL_NO_COMPATIBLE_CON_ÁREA
+>
+VÍNCULO_DE_ÁREA_NO_RESUELTO
+>
+RECURSO_O_DISPOSITIVO_INCOMPATIBLE
+>
+REAUTENTICACIÓN_FALTANTE
+>
+OBJETIVO_DE_ÁREA_ACEPTADO
+>
+CONTEXTO_DE_ACCIÓN_INCOMPLETO
+>
+DEFAULT_DENY
+```
+
+Un área válida nunca neutraliza una denegación anterior.
+
+---
+
+#### 24. Razones mínimas estructuradas
+
+| Razón                                      | Significado                                                         |
+| ------------------------------------------ | ------------------------------------------------------------------- |
+| `simulation_area_reference_incomplete`     | Falta un componente de la referencia exacta.                        |
+| `simulation_area_not_found`                | El área no existe.                                                  |
+| `simulation_area_inactive`                 | El área está inactiva o retirada.                                   |
+| `simulation_area_ambiguous`                | ID, código o fuentes resuelven resultados incompatibles.            |
+| `simulation_area_catalog_version_mismatch` | La versión solicitada no coincide con la evaluada.                  |
+| `simulation_area_site_mismatch`            | El área no pertenece a la sede simulada.                            |
+| `simulation_area_not_in_real_scope`        | El simulador no puede inspeccionar esa área.                        |
+| `simulation_area_aggregate_not_exact`      | La fila representa un agregado y no una identidad operativa exacta. |
+| `simulation_area_isolated_scope_missing`   | Falta cobertura independiente para el área aislada.                 |
+| `simulation_area_strong_reauth_required`   | Falta reautenticación fuerte aplicable.                             |
+| `simulation_role_not_allowed_at_area`      | El rol operativo no está vinculado al área exacta.                  |
+| `simulation_role_area_binding_unresolved`  | Existe habilitación de sede, pero falta un `area_id` autoritativo.  |
+| `simulation_area_required`                 | La acción o recurso exige área y no existe una exacta.              |
+| `simulation_no_area_mode_invalid`          | Se utilizó ausencia de área para un escenario dependiente de área.  |
+| `simulation_area_kind_not_exact_target`    | Se envió un tipo como si fuera área exacta.                         |
+| `simulation_area_resource_mismatch`        | El área del recurso contradice el escenario.                        |
+| `simulation_area_device_mismatch`          | El límite de área del dispositivo contradice el escenario.          |
+| `simulation_area_context_incomplete`       | Falta turno u otro componente posterior obligatorio.                |
+
+Los mensajes visibles aplicarán minimización y no revelarán áreas fuera del alcance real.
+
+---
+
+#### 25. Auditoría mínima
+
+Todo intento permitido o denegado deberá conservar:
+
+- `simulation_request_id`;
+- actor, usuario, empleado y sesión reales;
+- rol real del simulador;
+- rol objetivo tipado y versiones;
+- sede simulada exacta y versión;
+- modo de área;
+- `simulated_area_id`, código, tipo y clase cuando existan;
+- versión del catálogo de áreas;
+- alcance real utilizado;
+- fuente de compatibilidad rol–sede–área;
+- estado `EXACT_BINDING` o `AREA_BINDING_UNRESOLVED`;
+- área de recurso, turno y dispositivo cuando existan;
+- aislamiento evaluado;
+- reautenticación exigida y evidencia referenciada;
+- permiso, acción y recurso hipotéticos;
+- resultado de área y resultado de acción;
+- razones estructuradas;
+- fecha, duración y correlación.
+
+No almacenará secretos, tokens, credenciales, códigos de reautenticación ni payloads empresariales completos.
+
+---
+
+#### 26. Reconciliación con el estado físico observado
+
+| Elemento                                                          |        Resultado | Estado documental                      |
+| ----------------------------------------------------------------- | ---------------: | -------------------------------------- |
+| Filas activas en `public.areas`                                   |               22 | `OBSERVADO`                            |
+| Filas inactivas observadas                                        |                0 | `OBSERVADO`                            |
+| Tipos activos en `public.area_kinds`                              |               16 | `OBSERVADO`                            |
+| Áreas ordinarias exactas                                          |               18 | `SIMULABLE_CONDITIONAL`                |
+| Área aislada exacta                                               |                1 | `ISOLATED_EXPLICIT_ONLY`               |
+| Filas agregadas satélite                                          |                3 | `AGGREGATE_NOT_EXACT`                  |
+| Habilitaciones activas en `site_operational_roles`                |               16 | Fuente física de compatibilidad actual |
+| Habilitaciones con `area_id` exacto                               |               13 | `EXACT_BINDING`                        |
+| Habilitaciones sin `area_id`                                      |                3 | `AREA_BINDING_UNRESOLVED`              |
+| Sesiones en `context_simulation_sessions`                         |                0 | Sin evidencia de ejecución física      |
+| Constraint compuesto que obligue `area.site_id = session.site_id` |     No observado | `PENDIENTE_DE_IMPLEMENTACION`          |
+| Versionado físico específico de catálogo de áreas para simulación | No materializado | `PENDIENTE_DE_IMPLEMENTACION`          |
+
+Brechas físicas conservadas:
+
+1. `conductor_logistica` en `CENTRO_PROD` no tiene `area_id`;
+2. `operador_integral_satelite` en `MOLKA_PRINCIPAL` no tiene `area_id`;
+3. `gerencia_operativa` en `VENTO_GROUP` no tiene `area_id`;
+4. `context_simulation_sessions` posee FKs independientes a sede y área, pero no una restricción compuesta observada que impida cruce de sede;
+5. la fila general de Vento Café conserva código físico `GENERAL` en vez de la normalización histórica `todos`;
+6. no existe evidencia física de versionado reproducible del catálogo para simulación.
+
+Esta tarea no corrige esas brechas ni afirma que el contrato esté implementado.
+
+---
+
+#### 27. Límites de esta tarea
+
+AUTH-SIM-004 no define:
+
+- el estado completo del turno simulado;
+- el estado completo del check-in simulado;
+- duración o expiración de la simulación;
+- interfaz final;
+- persistencia definitiva;
+- tablas, constraints, RLS, RPC o servicios nuevos;
+- migraciones, backfills o normalización de datos;
+- corrección de vínculos con `area_id` nulo;
+- cambio del código `GENERAL`;
+- creación o retiro de áreas;
+- ejecución de simulaciones;
+- pruebas operativas.
+
+Estas responsabilidades permanecen en sus tareas canónicas.
+
+---
+
+#### 28. Handoff exacto a AUTH-SIM-005
+
+`AUTH-SIM-005` deberá definir el turno simulado conservando:
+
+1. sede y área exactas previamente aceptadas;
+2. separación entre turno hipotético y turno real;
+3. que el turno no puede inventar sede, área ni rol;
+4. que el área del turno deberá coincidir con el escenario cuando sea obligatoria;
+5. que un vínculo rol–área no resuelto impide `would_allow` reproducible;
+6. que una fila agregada no puede poblar el área del turno;
+7. que el punto físico de check-in permanece separado de sede y área;
+8. que horario, vigencia, publicación y estado deben ser explícitos;
+9. que el turno simulado no crea check-in ni autoridad real;
+10. que toda incompatibilidad o dato faltante falla cerrado.
+
+Esta tarea no anticipa decisiones de horario, publicación, vigencia ni check-in.
+
+---
+
+#### 29. Invariantes
+
+1. Toda área exacta posee UUID, código, sede padre, tipo y versión.
+2. El UUID es la identidad autoritativa.
+3. El código solo es único dentro de su sede.
+4. El nombre visible no autoriza.
+5. El tipo de área no es un área exacta.
+6. Un tipo no incorpora áreas futuras.
+7. El área simulada pertenece a la sede simulada.
+8. Un área de otra sede falla cerrado.
+9. `null` no significa todas las áreas.
+10. `NO_AREA_NOT_REQUIRED` exige un contrato realmente independiente de área.
+11. Una acción dependiente de área sin área exacta no produce `would_allow`.
+12. Existen 22 áreas activas observadas.
+13. Existen 18 áreas ordinarias exactas.
+14. Existen 13 áreas operativas ordinarias exactas.
+15. Existen cinco áreas administrativas ordinarias exactas.
+16. Existe un área aislada exacta.
+17. Existen tres filas agregadas no exactas.
+18. `general` no tiene una semántica universal.
+19. `Todos` y `General` no son wildcards.
+20. `APP-REVIEW/OPERACION` exige cobertura independiente.
+21. `pickup_camioneta_principal` no permite inventar un área.
+22. Existen 16 habilitaciones rol–sede activas observadas.
+23. Trece poseen vínculo exacto de área.
+24. Tres permanecen sin área resuelta.
+25. Un área única visible no se infiere para un rol sin vínculo.
+26. Dos roles pueden compartir área sin compartir permisos.
+27. Un área administrativa no equivale a un rol base.
+28. El área del dispositivo solo restringe.
+29. El área del recurso debe ser coherente.
+30. El turno no podrá sustituir el área objetivo.
+31. Datos reales siguen gobernados por permisos reales.
+32. Seleccionar un área no modifica asignaciones ni preferencias.
+33. Seleccionar un área no modifica RLS ni permisos.
+34. No existe simulación anidada.
+35. Toda ambigüedad falla cerrado.
+36. Toda evaluación ocurre en servidor.
+37. Todo intento queda auditado con minimización.
+38. La tarea siguiente permanece limitada a definir turno simulado.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-AUTH-099` a `TREQ-AUTH-108` en el Registro Canónico de Requisitos de Prueba.
+
+| ID              | Regla protegida                                                                                                                                                                                                                                                                                                                               | Tipo                                                                | Prioridad | Momento de implementación                         | Destino                                                       |
+| --------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------- | --------- | ------------------------------------------------- | ------------------------------------------------------------- |
+| `TREQ-AUTH-099` | Toda área simulada exacta deberá resolverse mediante `simulated_site_id`, `simulated_area_id`, código, clase, `area_kind` y versiones compatibles; nombre, preferencia, área primaria, fila visible o valor enviado por cliente no podrán constituir identidad autoritativa.                                                                  | seguridad + contractual + integración + regresión                   | crítica   | Paquete que materialice el contrato de simulación | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`                  |
+| `TREQ-AUTH-100` | El registro deberá cubrir exactamente 22 áreas activas: 18 áreas organizacionales ordinarias `SIMULABLE_CONDITIONAL`, un área aislada `ISOLATED_EXPLICIT_ONLY` y tres filas agregadas `AGGREGATE_NOT_EXACT`, sin faltantes, duplicados ni reclasificación por nombre.                                                                         | contractual + base de datos + estática + regresión                  | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-004`; `AUTH-DB-013`; `AUTH-QA-019`                  |
+| `TREQ-AUTH-101` | Un área exacta deberá pertenecer a la sede simulada aceptada y estar activa en la versión autoritativa; un área de otra sede, inexistente, retirada, ambigua o con referencia contradictoria deberá fallar cerrado.                                                                                                                           | seguridad + base de datos + autorización + regresión                | crítica   | Paquete que materialice el contrato de simulación | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`                  |
+| `TREQ-AUTH-102` | La compatibilidad operativa deberá usar los 13 vínculos exactos rol–sede–área observados. Los tres vínculos activos sin `area_id` permanecerán `AREA_BINDING_UNRESOLVED` y nunca podrán resolverse por rol, sede, nombre, área única o agregado `general`.                                                                                    | autorización + contexto + base de datos + integración + regresión   | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-004`; `AUTH-SIM-005`; `AUTH-SRV-015`; `AUTH-QA-019` |
+| `TREQ-AUTH-103` | Las filas satélite de clase agregada —`MOLKA_PRINCIPAL/todos`, `SAUDO/todos` y `VENTO_CAFE/GENERAL`— no podrán poblar `simulated_area_id`, actuar como wildcard, representar todas las áreas ni producir autorización; una comparación amplia se expandirá a áreas exactas finitas.                                                           | seguridad + contractual + integración + regresión                   | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-004`; `AUTH-SRV-015`; `AUTH-QA-019`                 |
+| `TREQ-AUTH-104` | `APP-REVIEW/OPERACION` solo podrá aceptarse junto con la sede aislada exacta, cobertura real independiente, justificación, minimización y reautenticación aplicable; `area_kind=general` no la mezclará con agregados productivos.                                                                                                            | seguridad + autenticación + autorización + E2E + regresión          | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-008`; `AUTH-SRV-015`; `AUTH-QA-019`                 |
+| `TREQ-AUTH-105` | El modo `NO_AREA_NOT_REQUIRED` solo será válido cuando rol, permiso, acción y recurso no exijan área. Un escenario operativo o recurso con área obligatoria producirá `indeterminate` o `would_deny`, nunca `would_allow` ni fallback.                                                                                                        | contractual + contexto + autorización + E2E + regresión             | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-005`; `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019` |
+| `TREQ-AUTH-106` | Área de rol, área de turno, área de recurso, área de dispositivo y área seleccionada deberán permanecer separadas y ser coherentes cuando el contrato las exija; ninguna podrá sustituir o ampliar a las demás por inferencia.                                                                                                                | seguridad + autorización + contexto + integración + E2E + regresión | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-005`; `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019` |
+| `TREQ-AUTH-107` | Seleccionar, cambiar o comparar un área simulada no podrá modificar `employee_areas`, `employees.area_id`, `employee_settings.selected_area_id`, turnos, dispositivos, recursos, RLS, permisos, datos ni contexto real, ni revelar datos fuera del alcance real.                                                                              | seguridad + autorización + RLS + integración + E2E + regresión      | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019`                 |
+| `TREQ-AUTH-108` | Toda evaluación de área deberá auditar identidad exacta, sede padre, clase, `area_kind`, versiones, alcance real, vínculo rol–área, coherencia con recurso y turno, resultado y razones; la reconciliación deberá conservar 22 áreas, 16 tipos, 16 vínculos rol–sede, 13 vínculos con área, tres sin área y cero sesiones físicas observadas. | contractual + auditoría + integración + estática + regresión        | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-004`; `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`  |
+
+---
+
+#### 30. Criterios de aceptación
+
+- [x] Se distinguió el área simulada de todas las áreas reales y derivadas.
+- [x] Se definieron dos modos explícitos de objetivo.
+- [x] Se exigieron identidad exacta, sede padre, tipo, clase y versiones.
+- [x] Se materializaron 22 decisiones de áreas activas.
+- [x] Se clasificaron 18 áreas ordinarias exactas.
+- [x] Se clasificó un área aislada exacta.
+- [x] Se bloquearon tres filas agregadas como objetivo exacto.
+- [x] Se cubrieron 16 `area_kinds` activos.
+- [x] Se materializaron 13 vínculos rol–sede–área exactos.
+- [x] Se conservaron tres vínculos sin área como `AREA_BINDING_UNRESOLVED`.
+- [x] Se prohibieron inferencias desde sede, rol, nombre, área única o agregado.
+- [x] Se separaron áreas operativas y administrativas.
+- [x] Se preservó el aislamiento de `APP-REVIEW/OPERACION`.
+- [x] Se definió ausencia legítima de área.
+- [x] Se exigió coherencia con recurso, turno y dispositivo.
+- [x] Se preservó el alcance real como límite superior.
+- [x] Se preservó la minimización de datos.
+- [x] Se prohibieron todas las mutaciones reales.
+- [x] Se definieron precedencia y razones estructuradas.
+- [x] Se definió auditoría mínima.
+- [x] Se reconciliaron las brechas físicas sin modificarlas.
+- [x] Se generaron `TREQ-AUTH-099` a `TREQ-AUTH-108`.
+- [x] No se modificó código, Supabase, migraciones, RLS, RPC, configuración, datos, sedes, áreas, asignaciones, turnos, sesiones, dispositivos ni permisos.
+- [x] `AUTH-SIM-005` permanece únicamente reservada.
+
+---
+
+#### 31. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SIM-003 — Definir sede simulada`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SIM-004 — Definir área simulada`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SIM-005 — Definir turno simulado`
+
+
+### ✅ AUTH-SIM-005 — Definir turno simulado
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-SIM-004 — Definir área simulada` — APROBADA
+**Tarea siguiente:** `AUTH-SIM-006 — No mezclar permisos reales y simulados` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de elegibilidad temporal del turno simulado, registro materializado de estados de turno y reconciliación con la estructura física observada
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md`
+**Artefactos producidos:** `SIMULATED-SHIFT-ELIGIBILITY-CONTRACT-001`, `SIMULATED-SHIFT-STATE-REGISTER-001` y `SIMULATED-SHIFT-PHYSICAL-RECONCILIATION-001`
+**Decisiones y contratos consumidos:** `AUTH-MOD-005`, `AUTH-MOD-006`, `AUTH-MOD-009`, `AUTH-MOD-010`, `AUTH-MOD-012`, `AUTH-CAT-012`, `AUTH-CAT-013`, `AUTH-CTX-010`, `AUTH-CTX-011`, `AUTH-SIM-001` a `AUTH-SIM-004`, catálogo operativo vigente y estado físico observado de `public.employee_shifts`, `public.context_simulation_sessions`, `public.operational_roles`, `public.site_operational_roles`, `public.sites`, `public.areas`, `public.attendance_logs`, `public.shift_policy` y `public.attendance_policy`
+**Cambios en código, Supabase, migraciones, RLS, RPC, configuración, datos, turnos, horarios, publicaciones, asistencia, sesiones, permisos o aplicaciones:** no autorizados
+
+---
+
+#### 1. Propósito
+
+Definir exactamente qué estado de turno puede incorporarse a una simulación de contexto de autorización, sin confundir:
+
+- turno simulado con turno real del solicitante;
+- turno hipotético con fila persistida;
+- turno publicado con turno vigente;
+- turno vigente con turno activo;
+- turno activo con permiso efectivo;
+- confirmación del trabajador con publicación;
+- horario local con intervalo absoluto;
+- sede del turno con punto físico de check-in;
+- área del turno con área seleccionada;
+- rol asignado al turno con rol base;
+- ausencia de turno con un dato desconocido;
+- check-in simulado con check-in real;
+- evaluación retrospectiva con autoridad retroactiva.
+
+```text
+TURNO SIMULADO
+≠
+TURNO REAL DEL SIMULADOR
+≠
+FILA REAL MODIFICADA
+≠
+CHECK-IN REAL
+≠
+PERMISO EJECUTABLE
+```
+
+El turno simulado es un componente temporal hipotético utilizado para explicar cómo se evaluaría un permiso. Nunca crea una jornada, una publicación, una marcación, una sesión operativa ni autoridad empresarial real.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban:
+
+1. `SIMULATED-SHIFT-ELIGIBILITY-CONTRACT-001`, que define modos de objetivo, identidad, publicación, revisión, estado, horario absoluto, zona horaria, vigencia, rol, sede, área, check-in hipotético, prerrequisitos, precedencia, razones, auditoría y comportamiento fail closed;
+2. `SIMULATED-SHIFT-STATE-REGISTER-001`, que materializa una decisión para quince escenarios canónicos de turno y evita que los consumidores reconstruyan estados permisivos por inferencia;
+3. `SIMULATED-SHIFT-PHYSICAL-RECONCILIATION-001`, que documenta la estructura y distribución física observadas sin convertir datos legacy en contrato implementado ni modificar el estado desplegado.
+
+Cobertura materializada:
+
+| Resultado                                                 | Cantidad |
+| --------------------------------------------------------- | -------: |
+| Modos de objetivo de turno                                |        3 |
+| Escenarios de estado con decisión explícita               |       15 |
+| Prerrequisitos operativos reconciliados                   |        3 |
+| Estados hipotéticos de check-in asociados                 |        5 |
+| Ejes temporales separados                                 |        2 |
+| Zona horaria organizacional vigente documentada           |        1 |
+| Filas físicas de `employee_shifts` observadas             |     2844 |
+| Filas publicadas observadas                               |     2723 |
+| Filas no publicadas observadas                            |      121 |
+| Turnos laborales observados                               |     2411 |
+| Descansos observados                                      |      433 |
+| Candidatos vigentes en el snapshot controlado             |        8 |
+| Empleados con más de un candidato vigente en ese snapshot |        0 |
+| Sesiones físicas de simulación observadas                 |        0 |
+| Fallbacks o conversiones implícitas aprobados             |        0 |
+| Turnos simulados capaces de autorizar una acción real     |        0 |
+
+---
+
+#### 3. Base normativa heredada
+
+La tarea conserva íntegramente que:
+
+- el solicitante debe superar `AUTH-SIM-001` desde su identidad, sesión, permisos y alcance reales;
+- el rol objetivo debe superar `AUTH-SIM-002` mediante identidad tipada y versiones compatibles;
+- la sede objetivo debe superar `AUTH-SIM-003` como sede exacta o ausencia territorial legítima;
+- el área objetivo debe superar `AUTH-SIM-004` como área exacta, ausencia permitida o bloqueo explícito;
+- el rol operativo efectivo real proviene exclusivamente de un turno válido;
+- un perfil operativo, rol base, dispositivo, área seleccionada o nombre de oficio no reemplazan al turno;
+- publicación, vigencia, check-in, ejecución y resultado son dimensiones distintas;
+- la confirmación del trabajador es informativa y no participa en autorización;
+- un permiso operativo puede exigir `T` o `T+C`; un permiso base usa `N`;
+- una simulación solo produce `would_allow`, `would_deny` o `indeterminate`;
+- ninguna simulación modifica la sesión, el turno, la asistencia o el contexto real;
+- el acceso a datos reales continúa gobernado por la autoridad real del simulador;
+- toda ambigüedad o incompatibilidad falla cerrado.
+
+---
+
+#### 4. Identidades y tiempos separados
+
+| Identidad o tiempo             | Función                                                | Autoridad                         |
+| ------------------------------ | ------------------------------------------------------ | --------------------------------- |
+| `simulation_request_id`        | Solicitud inmutable que agrupa el escenario            | No concede autoridad              |
+| `simulated_shift_reference`    | Identidad sintética del turno hipotético               | No es `shift_id` real             |
+| `source_shift_id`              | Fila real consultada cuando el modo es exacto          | Solo referencia; no se modifica   |
+| `published_revision_reference` | Revisión o snapshot autoritativo utilizado             | Exige reproducibilidad            |
+| `simulated_resolved_at`        | Instante hipotético en el que se evalúa la vigencia    | No cambia el reloj real           |
+| `evaluated_at`                 | Instante real en que el servidor ejecuta la evaluación | Auditoría, no contexto hipotético |
+| `simulated_starts_at`          | Inicio absoluto del turno hipotético                   | Límite temporal                   |
+| `simulated_ends_at`            | Fin absoluto del turno hipotético                      | Límite temporal                   |
+| `real_active_shift_id`         | Turno real del actor, cuando exista                    | Permanece separado                |
+| `simulated_checkin_state`      | Estado hipotético asociado al mismo turno simulado     | No crea asistencia real           |
+| `real_active_checkin_id`       | Sesión real de asistencia, cuando exista               | No se presta al escenario         |
+
+```text
+simulated_resolved_at
+≠
+evaluated_at
+```
+
+```text
+simulated_shift_reference
+≠
+real_active_shift_id
+```
+
+```text
+simulated_checkin_state
+≠
+real_active_checkin_id
+```
+
+---
+
+#### 5. Modos contractuales de objetivo
+
+```ts
+type SimulatedShiftTarget =
+  | {
+      mode: "NO_SHIFT";
+      simulated_shift_reference: null;
+      source_shift_id: null;
+      published_revision_reference: null;
+      row_fingerprint: null;
+      simulated_resolved_at: string;
+      timezone: string;
+      shift_contract_version: string;
+    }
+  | {
+      mode: "HYPOTHETICAL_SHIFT";
+      simulated_shift_reference: string;
+      source_shift_id: null;
+      published_revision_reference: string;
+      row_fingerprint: string;
+      simulated_shift_kind: "LABORAL" | "DESCANSO";
+      simulated_publication_state:
+        | "DRAFT"
+        | "PUBLISHED"
+        | "WITHDRAWN";
+      simulated_shift_status:
+        | "SCHEDULED"
+        | "CONFIRMED"
+        | "COMPLETED"
+        | "CANCELLED"
+        | "NO_SHOW";
+      simulated_starts_at: string;
+      simulated_ends_at: string;
+      simulated_resolved_at: string;
+      simulated_site_id: string;
+      simulated_area_id: string | null;
+      simulated_operational_role_code: string;
+      timezone: string;
+      shift_contract_version: string;
+      role_catalog_version: string;
+      site_catalog_version: string;
+      area_catalog_version: string;
+    }
+  | {
+      mode: "EXACT_PUBLISHED_SHIFT";
+      simulated_shift_reference: string;
+      source_shift_id: string;
+      published_revision_reference: string;
+      row_fingerprint: string;
+      simulated_shift_kind: "LABORAL" | "DESCANSO";
+      simulated_publication_state: "PUBLISHED" | "WITHDRAWN";
+      simulated_shift_status:
+        | "SCHEDULED"
+        | "CONFIRMED"
+        | "COMPLETED"
+        | "CANCELLED"
+        | "NO_SHOW";
+      simulated_starts_at: string;
+      simulated_ends_at: string;
+      simulated_resolved_at: string;
+      simulated_site_id: string;
+      simulated_area_id: string | null;
+      simulated_operational_role_code: string;
+      timezone: string;
+      shift_contract_version: string;
+      role_catalog_version: string;
+      site_catalog_version: string;
+      area_catalog_version: string;
+    };
+```
+
+Reglas:
+
+1. `NO_SHIFT` es una declaración positiva de ausencia de turno, no un error ni un valor desconocido;
+2. `HYPOTHETICAL_SHIFT` utiliza una identidad sintética y no puede recibir un `shift_id` real como si fuera propio;
+3. `EXACT_PUBLISHED_SHIFT` exige una fila real, una revisión o snapshot reproducible y un fingerprint íntegro;
+4. ningún modo admite un `shift_id`, horario, sede, área, rol o estado enviado por cliente como fuente autoritativa sin validación de servidor;
+5. una referencia exacta sin revisión o fingerprint no puede reproducir una decisión histórica confiable;
+6. `null`, una única fila visible, el último turno o el turno real del simulador no se transforman automáticamente en objetivo;
+7. el modo y sus versiones quedan fijados en cada evaluación.
+
+---
+
+#### 6. Estado hipotético de check-in asociado
+
+El turno simulado podrá incorporar exclusivamente uno de estos estados explicativos:
+
+```ts
+type SimulatedCheckinState =
+  | "NOT_APPLICABLE"
+  | "ABSENT"
+  | "ACTIVE_HYPOTHETICAL"
+  | "CLOSED_HYPOTHETICAL"
+  | "INVALID_HYPOTHETICAL";
+```
+
+Reglas:
+
+1. `NOT_APPLICABLE` solo procede cuando el permiso no usa el carril operativo o su prerrequisito no exige check-in;
+2. `ABSENT` representa que el turno no posee check-in hipotético activo;
+3. `ACTIVE_HYPOTHETICAL` exige el mismo turno, actor hipotético, sede y ventana compatibles;
+4. `CLOSED_HYPOTHETICAL` no satisface `T+C`;
+5. `INVALID_HYPOTHETICAL` bloquea el carril operativo, incluso cuando el permiso solo exige `T`, porque existe una contradicción contextual explícita;
+6. un check-in real no puede completar un turno simulado;
+7. el estado hipotético no crea filas en `attendance_logs`, sesiones de asistencia, geocercas ni eventos;
+8. el punto físico hipotético de marcación, cuando exista, permanece separado de la sede organizacional del turno.
+
+---
+
+#### 7. Contrato conceptual
+
+```ts
+type SimulatedShiftEligibilityInput = {
+  simulation_request_id: string;
+  simulator_actor_id: string;
+  real_session_id: string;
+  simulated_role_kind: "BASE" | "OPERATIONAL";
+  simulated_role_code: string;
+  simulated_site_id: string | null;
+  simulated_area_id: string | null;
+  shift_target: SimulatedShiftTarget;
+  simulated_checkin_state: SimulatedCheckinState;
+  simulated_checkin_point_id: string | null;
+  target_permission_key: string | null;
+  target_action: string | null;
+  target_resource_reference: string | null;
+  strong_reauth_evidence_id: string | null;
+};
+```
+
+```ts
+type SimulatedShiftEligibilityResult = {
+  accepted: boolean;
+  decision:
+    | "NO_SHIFT_ACCEPTED"
+    | "SIMULABLE_CONDITIONAL"
+    | "NOT_PUBLISHED"
+    | "PUBLISHED_NOT_CURRENT"
+    | "NOT_LABORAL"
+    | "TERMINAL_STATE"
+    | "WITHDRAWN"
+    | "INDETERMINATE_REPLAY"
+    | "AMBIGUOUS"
+    | "DENY";
+  shift_prerequisite_satisfied: boolean;
+  checkin_prerequisite_satisfied: boolean | null;
+  exact_shift_resolved: boolean;
+  publication_resolved: boolean;
+  currently_valid: boolean;
+  role_site_area_coherent: boolean;
+  reproducible_snapshot: boolean;
+  simulated_decision:
+    | "would_allow"
+    | "would_deny"
+    | "indeterminate"
+    | null;
+  reason_codes: string[];
+  evaluated_shift_contract_version: string;
+  evaluated_at: string;
+};
+```
+
+La implementación física podrá normalizar estas formas sin perder modo, identidad, revisión, fingerprint, tiempos absolutos, zona horaria, publicación, estado, rol, sede, área, check-in hipotético, versiones, razones ni separación respecto del contexto real.
+
+---
+
+#### 8. Fórmula de elegibilidad temporal
+
+```text
+SOLICITANTE ELEGIBLE SEGÚN AUTH-SIM-001
+∩
+ROL OBJETIVO VÁLIDO SEGÚN AUTH-SIM-002
+∩
+SEDE OBJETIVO ACEPTADA SEGÚN AUTH-SIM-003
+∩
+ÁREA OBJETIVO ACEPTADA O AUSENCIA VÁLIDA SEGÚN AUTH-SIM-004
+∩
+MODO DE TURNO EXPLÍCITO
+∩
+PUBLICACIÓN Y REVISIÓN REPRODUCIBLES CUANDO APLIQUEN
+∩
+INTERVALO ABSOLUTO VÁLIDO
+∩
+ESTADO DE TURNO COMPATIBLE
+∩
+ROL, SEDE Y ÁREA COHERENTES
+∩
+CHECK-IN HIPOTÉTICO COMPATIBLE CUANDO APLIQUE
+∩
+AUSENCIA DE DENEGACIONES
+=
+OBJETIVO TEMPORAL ACEPTADO
+```
+
+Aceptar el objetivo temporal no produce automáticamente `would_allow`. El permiso, la modalidad, el prerrequisito, el recurso, el alcance y las denegaciones continúan gobernando la decisión hipotética.
+
+---
+
+#### 9. Ejes temporales y zona horaria
+
+La evaluación conservará dos tiempos independientes:
+
+```text
+simulated_resolved_at
+→ instante hipotético del escenario
+
+evaluated_at
+→ instante real de ejecución y auditoría
+```
+
+Reglas:
+
+1. ambos valores serán timestamps absolutos ISO 8601;
+2. `simulated_resolved_at` será validado en servidor y quedará incluido en el fingerprint;
+3. el reloj, zona horaria o locale del navegador no son autoritativos;
+4. para la operación vigente de Vento Group se utiliza `America/Bogota`;
+5. una futura operación multizona exigirá una fuente versionada por sede antes de cambiar esta regla;
+6. cambiar el instante simulado crea una evaluación nueva, no extiende un turno real;
+7. una evaluación retrospectiva no crea autoridad retroactiva;
+8. una evaluación futura no reserva ni publica un turno.
+
+---
+
+#### 10. Intervalo temporal
+
+La vigencia del turno se evalúa mediante intervalo semiabierto:
+
+```text
+simulated_starts_at <= simulated_resolved_at < simulated_ends_at
+```
+
+Consecuencias:
+
+- el turno comienza exactamente en `simulated_starts_at`;
+- deja de ser vigente exactamente en `simulated_ends_at`;
+- dos turnos consecutivos pueden tocarse sin solaparse;
+- no se aplican minutos de gracia implícitos;
+- la ventana de check-in puede ser distinta, pero no cambia la vigencia del turno;
+- `show_end_as_close` es presentación y no altera el intervalo;
+- `simulated_ends_at` deberá ser posterior a `simulated_starts_at`.
+
+##### 10.1 Cruce de medianoche
+
+Cuando la hora local de fin sea menor o igual que la hora de inicio y el turno permita cruce nocturno, el fin pertenece al día calendario siguiente.
+
+```text
+inicio local: 2026-08-03 22:00
+fin local:    2026-08-04 06:00
+```
+
+La evaluación a las `2026-08-04 02:00 America/Bogota` permanece dentro del turno.
+
+No se filtrará únicamente por la fecha calendario de `simulated_resolved_at`.
+
+---
+
+#### 11. Publicación y revisión
+
+Una fila o escenario no satisface el prerrequisito de turno solo por contener horario, sede, área y rol.
+
+```text
+DRAFT
+→ no satisface T ni T+C
+```
+
+```text
+PUBLISHED
++
+revisión autoritativa
++
+publicación efectiva en o antes de simulated_resolved_at
+→ puede continuar la evaluación
+```
+
+```text
+WITHDRAWN
+→ no satisface T ni T+C
+```
+
+Reglas:
+
+1. publicación y estado se evalúan por separado;
+2. `CONFIRMED` no crea, extiende ni bloquea vigencia;
+3. una publicación posterior al inicio no autoriza el periodo anterior a `published_at`;
+4. un borrador posterior no modifica la revisión publicada vigente;
+5. no se mezclan campos de revisiones distintas;
+6. una revisión retirada no se utiliza por fallback;
+7. dos revisiones publicadas simultáneas sin precedencia inequívoca producen `AMBIGUOUS`;
+8. el modo exacto exige una revisión o snapshot persistible y un fingerprint;
+9. el esquema físico legacy que solo ofrece `published_at` no se presenta como versionado completo.
+
+---
+
+#### 12. Estados operables y terminales
+
+##### 12.1 Estados que pueden continuar
+
+```text
+SCHEDULED
+CONFIRMED
+```
+
+Ambos se tratan de forma equivalente respecto de la autorización. `CONFIRMED` solo conserva una señal informativa de reconocimiento.
+
+##### 12.2 Estados que no satisfacen turno vigente
+
+```text
+COMPLETED
+CANCELLED
+NO_SHOW
+WITHDRAWN
+```
+
+Un estado desconocido, vacío o contradictorio produce `DENY`.
+
+##### 12.3 Tipo de turno
+
+Solo `LABORAL` puede satisfacer `T` o `T+C`.
+
+`DESCANSO` puede formar parte de una vista de calendario explicativa, pero no crea rol operativo, área operativa, check-in activo ni autoridad.
+
+---
+
+#### 13. Registro materializado de estados
+
+`SIMULATED-SHIFT-STATE-REGISTER-001` cubre los siguientes escenarios:
+
+|    # | Escenario                                  | Condiciones principales                                                   | Decisión de turno       | Satisface `T` | Regla                                                                                       |
+| ---: | ------------------------------------------ | ------------------------------------------------------------------------- | ----------------------- | ------------: | ------------------------------------------------------------------------------------------- |
+|    1 | `NO_SHIFT`                                 | Ausencia declarada explícitamente                                         | `NO_SHIFT_ACCEPTED`     |            No | Permite explicar denegación o evaluar un permiso `N`; no es dato desconocido.               |
+|    2 | `HYPOTHETICAL_DRAFT`                       | Horario completo, pero publicación `DRAFT`                                | `NOT_PUBLISHED`         |            No | Un borrador no habilita operación.                                                          |
+|    3 | `HYPOTHETICAL_PUBLISHED_FUTURE`            | Publicado; `simulated_resolved_at < starts_at`                            | `PUBLISHED_NOT_CURRENT` |            No | Un turno futuro no autoriza antes de iniciar.                                               |
+|    4 | `HYPOTHETICAL_PUBLISHED_CURRENT_SCHEDULED` | Laboral, publicado, `SCHEDULED`, dentro del intervalo, contexto coherente | `SIMULABLE_CONDITIONAL` |            Sí | Puede satisfacer el prerrequisito de turno; aún exige permiso y demás controles.            |
+|    5 | `HYPOTHETICAL_PUBLISHED_CURRENT_CONFIRMED` | Igual al anterior con estado `CONFIRMED`                                  | `SIMULABLE_CONDITIONAL` |            Sí | La confirmación no amplía ni reduce la decisión.                                            |
+|    6 | `HYPOTHETICAL_PUBLISHED_ENDED`             | `simulated_resolved_at >= ends_at`                                        | `PUBLISHED_NOT_CURRENT` |            No | El fin temporal revoca el prerrequisito aunque el estado físico siga `SCHEDULED`.           |
+|    7 | `HYPOTHETICAL_REST_CURRENT`                | Tipo `DESCANSO` dentro del intervalo                                      | `NOT_LABORAL`           |            No | No crea contexto operativo.                                                                 |
+|    8 | `HYPOTHETICAL_CANCELLED`                   | Estado `CANCELLED`                                                        | `TERMINAL_STATE`        |            No | El horario no neutraliza la cancelación.                                                    |
+|    9 | `HYPOTHETICAL_NO_SHOW`                     | Estado `NO_SHOW`                                                          | `TERMINAL_STATE`        |            No | No se convierte en turno activo.                                                            |
+|   10 | `HYPOTHETICAL_COMPLETED`                   | Estado `COMPLETED`                                                        | `TERMINAL_STATE`        |            No | Un turno terminado no es vigente.                                                           |
+|   11 | `HYPOTHETICAL_WITHDRAWN`                   | Revisión retirada                                                         | `WITHDRAWN`             |            No | No se reutiliza una revisión retirada.                                                      |
+|   12 | `EXACT_VERSIONED_CURRENT`                  | Fila exacta, revisión y fingerprint reproducibles, laboral y vigente      | `SIMULABLE_CONDITIONAL` |            Sí | Puede utilizarse como escenario exacto sin modificar la fila.                               |
+|   13 | `EXACT_LEGACY_UNVERSIONED`                 | Fila exacta sin revisión o snapshot reproducible                          | `INDETERMINATE_REPLAY`  |            No | Puede mostrarse como evidencia actual, pero no afirmar una decisión histórica reproducible. |
+|   14 | `AMBIGUOUS_MULTIPLE_CANDIDATES`            | Dos o más candidatos vigentes aplicables                                  | `AMBIGUOUS`             |            No | No se elige primero, último, confirmado ni coincidente por UI.                              |
+|   15 | `INVALID_CONTEXT_REFERENCE`                | Rol, sede, área, tiempos o versiones ausentes o incompatibles             | `DENY`                  |            No | Toda contradicción falla cerrado.                                                           |
+
+Totales:
+
+```text
+15 escenarios materializados
+3 escenarios capaces de satisfacer T bajo contrato completo
+12 escenarios que no satisfacen T
+0 escenarios que autorizan una acción real
+```
+
+Los tres escenarios capaces de satisfacer `T` son los números 4, 5 y 12. Su aceptación continúa condicionada al permiso, recurso, alcance, check-in cuando corresponda y ausencia de denegaciones.
+
+---
+
+#### 14. Coherencia con rol, sede y área
+
+Para un turno simulado operativo deberán cumplirse simultáneamente:
+
+```text
+shift.simulated_operational_role_code
+=
+rol operativo objetivo aceptado
+```
+
+```text
+shift.simulated_site_id
+=
+sede simulada exacta aceptada
+```
+
+```text
+shift.simulated_area_id
+=
+área simulada exacta aceptada
+```
+
+cuando el rol o permiso exija área.
+
+Reglas:
+
+1. el turno no puede inventar un rol que `AUTH-SIM-002` bloqueó;
+2. el turno no puede cambiar la sede aceptada por `AUTH-SIM-003`;
+3. el turno no puede utilizar un área de otra sede;
+4. las filas agregadas `Todos` o `General` no pueden poblar el área operativa exacta;
+5. un vínculo rol–área `AREA_BINDING_UNRESOLVED` no se completa con un área visible, única o preferida;
+6. un rol site-wide solo puede omitir área cuando su contrato exacto lo permita;
+7. `null` no significa todas las áreas;
+8. el punto físico de check-in no sustituye a la sede ni al área del turno;
+9. una incoherencia entre turno y recurso produce `would_deny`;
+10. una incoherencia estructural anterior produce `DENY` antes de evaluar el permiso.
+
+---
+
+#### 15. Prerrequisitos `N`, `T` y `T+C`
+
+##### 15.1 `N`
+
+```text
+turno no requerido
+check-in no requerido
+```
+
+El estado del turno simulado no concede ni bloquea por ese prerrequisito. Continúan aplicando permiso, alcance, recurso, sensibilidad y denegaciones.
+
+##### 15.2 `T`
+
+```text
+turno simulado laboral, publicado, vigente, único y coherente
++
+check-in no requerido
+```
+
+Puede satisfacer el prerrequisito de turno.
+
+No obstante, un `INVALID_HYPOTHETICAL` explícito en el check-in bloquea el carril por inconsistencia contextual; no se ignora silenciosamente.
+
+##### 15.3 `T+C`
+
+```text
+turno simulado válido
++
+ACTIVE_HYPOTHETICAL para el mismo turno
+```
+
+Ambos son obligatorios.
+
+```text
+turno válido + ABSENT
+→ would_deny
+```
+
+```text
+turno válido + estado de check-in desconocido
+→ indeterminate
+```
+
+```text
+NO_SHIFT + ACTIVE_HYPOTHETICAL
+→ DENY
+```
+
+Queda prohibida la combinación check-in activo sin turno válido.
+
+---
+
+#### 16. Check-in físico, geocerca y sede operativa
+
+El turno conserva separados:
+
+| Campo                        | Función                                          |
+| ---------------------------- | ------------------------------------------------ |
+| `simulated_site_id`          | Sede organizacional del turno                    |
+| `simulated_area_id`          | Área operativa del turno cuando aplica           |
+| `simulated_checkin_point_id` | Punto físico hipotético admitido por la política |
+| `simulated_checkin_state`    | Estado explicativo de presencia                  |
+
+`pickup_camioneta_principal` u otro punto físico solo puede aparecer en `simulated_checkin_point_id` cuando una política lo admita. No puede:
+
+- sustituir `simulated_site_id`;
+- crear un área;
+- cambiar el rol;
+- conceder cobertura territorial;
+- convertir una sede no laboral en sede de turno;
+- activar por sí solo `T+C`.
+
+---
+
+#### 17. Modo exacto y reproducibilidad
+
+`EXACT_PUBLISHED_SHIFT` deberá fijar como mínimo:
+
+- `source_shift_id`;
+- revisión publicada o snapshot inmutable;
+- fingerprint de todos los campos relevantes;
+- actor o sujeto hipotético;
+- sede, área y rol exactos;
+- tipo y estado;
+- publicación efectiva;
+- inicio, fin y zona horaria;
+- `simulated_resolved_at`;
+- versiones de catálogos y políticas.
+
+El fingerprint deberá cambiar cuando cambie cualquiera de esos componentes.
+
+El estado físico observado no posee una entidad explícita de revisión publicada para `employee_shifts`. Por tanto:
+
+```text
+shift_id + published_at
+≠
+versionado completo reproducible
+```
+
+Una implementación futura podrá producir un snapshot firmado o persistido sin modificar la fila original. Hasta entonces, una reproducción histórica sin snapshot se clasifica `INDETERMINATE_REPLAY`.
+
+---
+
+#### 18. Selección y ambigüedad
+
+Para un sujeto y un instante simulados deberá existir como máximo un turno exacto aplicable cuando el modo dependa de datos reales.
+
+```text
+0 candidatos
+→ NO_SHIFT o referencia ausente, según el modo declarado
+```
+
+```text
+1 candidato válido
+→ continuar
+```
+
+```text
+2 o más candidatos
+→ AMBIGUOUS
+→ DENY
+```
+
+No se resolverá por:
+
+- orden físico de filas;
+- fecha de creación;
+- turno más reciente;
+- turno confirmado;
+- sede seleccionada;
+- check-in existente;
+- rol más específico;
+- coincidencia parcial de área;
+- valor recordado en cliente.
+
+---
+
+#### 19. Datos reales y minimización
+
+El turno simulado no concede acceso a información laboral, operativa o personal adicional.
+
+La vista podrá utilizar:
+
+- metadatos del turno que el simulador real pueda consultar;
+- un snapshot mínimo autorizado;
+- datos sintéticos;
+- estructuras vacías;
+- datos anonimizados;
+- razones minimizadas.
+
+No podrá revelar por la sola selección del turno:
+
+- nombres o documentos de trabajadores fuera del alcance real;
+- asistencia detallada;
+- ubicación o geocercas históricas;
+- horarios de terceros no autorizados;
+- información de otra sede o área;
+- costos, ventas, inventario o producción;
+- secretos, tokens o credenciales;
+- payloads completos de auditoría.
+
+Cuando la evaluación necesite un dato que el actor real no puede consultar, el servidor podrá utilizarlo internamente para decidir, pero la respuesta visible deberá minimizarlo.
+
+---
+
+#### 20. Prohibición de mutaciones
+
+Crear, cambiar, comparar o cerrar un turno simulado no podrá:
+
+- insertar, actualizar, cancelar, retirar o eliminar `employee_shifts`;
+- establecer o cambiar `published_at` o `published_by`;
+- crear revisiones reales;
+- modificar horario, sede, área o rol de un turno real;
+- crear check-in, check-out, descansos o eventos de asistencia;
+- modificar `context_simulation_sessions` como sustituto de un contrato aprobado de persistencia;
+- iniciar o terminar una sesión operativa real;
+- cambiar el turno real del actor;
+- modificar permisos, RLS, asignaciones o dispositivos;
+- ejecutar acciones empresariales;
+- emitir notificaciones como el sujeto simulado;
+- producir autoridad retroactiva o futura.
+
+```text
+CAMBIO DE TURNO SIMULADO
+=
+NUEVA EVALUACIÓN HIPOTÉTICA
+≠
+CAMBIO DE PROGRAMACIÓN REAL
+```
+
+---
+
+#### 21. Precedencia de decisión
+
+```text
+SOLICITANTE_REAL_INVÁLIDO
+>
+SIMULACIÓN_ANIDADA
+>
+ROL_OBJETIVO_INVÁLIDO
+>
+SEDE_OBJETIVO_INVÁLIDA
+>
+ÁREA_OBJETIVO_INVÁLIDA
+>
+VERSIÓN_DE_TURNO_INCOMPATIBLE
+>
+REFERENCIA_DE_TURNO_INCOMPLETA
+>
+REVISIÓN_O_FINGERPRINT_NO_REPRODUCIBLE
+>
+PUBLICACIÓN_INVÁLIDA
+>
+TIPO_NO_LABORAL
+>
+ESTADO_TERMINAL_O_RETIRO
+>
+INTERVALO_INVÁLIDO
+>
+TURNO_NO_VIGENTE
+>
+MÚLTIPLES_CANDIDATOS
+>
+INCOHERENCIA_ROL_SEDE_ÁREA
+>
+CHECKIN_HIPOTÉTICO_INCOMPATIBLE
+>
+PRERREQUISITO_ACEPTADO
+>
+CONTEXTO_DE_ACCIÓN_INCOMPLETO
+>
+DEFAULT_DENY
+```
+
+Un turno temporalmente válido nunca neutraliza una denegación anterior.
+
+---
+
+#### 22. Razones mínimas estructuradas
+
+| Razón                                           | Significado                                                        |
+| ----------------------------------------------- | ------------------------------------------------------------------ |
+| `simulation_shift_mode_invalid`                 | El modo no es reconocido o contradice los campos presentes.        |
+| `simulation_shift_reference_incomplete`         | Falta identidad, revisión, fingerprint o componente obligatorio.   |
+| `simulation_shift_not_found`                    | El turno exacto no existe en la fuente autoritativa.               |
+| `simulation_shift_revision_unresolved`          | No existe revisión o snapshot reproducible.                        |
+| `simulation_shift_fingerprint_mismatch`         | El contenido actual no coincide con el snapshot evaluado.          |
+| `simulation_shift_contract_version_mismatch`    | La versión solicitada no coincide con la evaluada.                 |
+| `simulation_shift_not_published`                | El escenario permanece en borrador.                                |
+| `simulation_shift_published_after_resolved_at`  | La publicación no era efectiva en el instante hipotético.          |
+| `simulation_shift_withdrawn`                    | La revisión fue retirada.                                          |
+| `simulation_shift_not_laboral`                  | El tipo no crea contexto operativo.                                |
+| `simulation_shift_terminal_state`               | El turno está completado, cancelado o marcado no-show.             |
+| `simulation_shift_interval_invalid`             | Fin, inicio o zona horaria no producen un intervalo válido.        |
+| `simulation_shift_not_current`                  | El instante queda antes del inicio o en/después del fin.           |
+| `simulation_shift_ambiguous`                    | Existen múltiples candidatos o revisiones incompatibles.           |
+| `simulation_shift_role_mismatch`                | El rol del turno contradice el objetivo aceptado.                  |
+| `simulation_shift_site_mismatch`                | La sede del turno contradice la sede simulada.                     |
+| `simulation_shift_area_mismatch`                | El área contradice la sede o el área simulada.                     |
+| `simulation_shift_area_required`                | Falta área exacta donde el contrato la exige.                      |
+| `simulation_shift_aggregate_area_not_allowed`   | Se intentó utilizar una fila agregada como área operativa.         |
+| `simulation_shift_role_area_binding_unresolved` | El vínculo rol–área no permite una decisión reproducible.          |
+| `simulation_shift_required`                     | El permiso exige `T` o `T+C` y no existe turno válido.             |
+| `simulation_checkin_required`                   | El permiso exige `T+C` y falta check-in hipotético activo.         |
+| `simulation_checkin_without_shift`              | Existe check-in hipotético activo sin turno válido.                |
+| `simulation_checkin_shift_mismatch`             | El check-in hipotético corresponde a otro turno.                   |
+| `simulation_checkin_site_mismatch`              | El punto o sede de marcación contradicen la política.              |
+| `simulation_shift_target_accepted`              | El turno puede utilizarse para continuar la evaluación hipotética. |
+
+Los mensajes visibles aplicarán minimización y no revelarán turnos, horarios, trabajadores o controles fuera del alcance real del actor.
+
+---
+
+#### 23. Auditoría mínima
+
+Toda selección, cambio, comparación o bloqueo deberá registrar:
+
+- `simulation_request_id`;
+- actor, usuario, empleado y sesión reales;
+- rol objetivo tipado;
+- sede y área simuladas;
+- modo de turno;
+- referencia sintética y `source_shift_id` cuando exista;
+- revisión o snapshot;
+- fingerprint;
+- tipo, estado y publicación;
+- inicio, fin, zona horaria y `simulated_resolved_at`;
+- `evaluated_at` real;
+- rol, sede y área del turno;
+- estado de check-in hipotético y punto físico cuando exista;
+- prerrequisito `N`, `T` o `T+C` evaluado;
+- permiso, acción y recurso hipotéticos;
+- versiones de catálogos, contrato y políticas;
+- resultado y razones estructuradas;
+- correlación y duración de la evaluación.
+
+No almacenará secretos, tokens, PIN, coordenadas innecesarias, payloads completos de asistencia ni datos personales no requeridos.
+
+---
+
+#### 24. Reconciliación con el estado físico observado
+
+La inspección de solo lectura del estado desplegado produjo:
+
+| Elemento                                                             | Resultado observado | Decisión documental                                                          |
+| -------------------------------------------------------------------- | ------------------: | ---------------------------------------------------------------------------- |
+| Filas totales en `employee_shifts`                                   |                2844 | Inventario físico; no equivale a escenarios simulables.                      |
+| Filas con `published_at`                                             |                2723 | Evidencia legacy de publicación; no constituye revisión versionada completa. |
+| Filas sin `published_at`                                             |                 121 | Borradores o filas no publicadas; no satisfacen `T`.                         |
+| Filas `shift_kind = laboral`                                         |                2411 | Requieren validar publicación, estado, horario y contexto.                   |
+| Filas `shift_kind = descanso`                                        |                 433 | No crean contexto operativo.                                                 |
+| Filas publicadas laborales con estado `scheduled` o `confirmed`      |                2318 | Candidatos históricos potenciales antes de validar contexto completo.        |
+| De esas filas, sin `operational_role`                                |                1535 | No pueden producir turno operativo reproducible.                             |
+| De esas filas, sin `area_id`                                         |                1663 | Solo serían admisibles si el rol y permiso permiten ausencia exacta de área. |
+| Incompatibilidades exactas observadas entre vínculo rol–área y turno |                   2 | Deben fallar cerrado si se seleccionan.                                      |
+| Áreas de turno pertenecientes a otra sede                            |                   0 | Sin brecha observada en esa comprobación.                                    |
+| Pares de turnos publicados operables solapados                       |                   0 | Sin solapamientos observados en el conjunto consultado.                      |
+| Turnos publicados operables que cruzan medianoche                    |                   0 | El contrato los admite aunque no existan en el snapshot.                     |
+| Filas cuya publicación observada ocurrió después del inicio          |                  77 | No autorizan retroactivamente el periodo anterior a la publicación.          |
+| Campos específicos de turno dentro de `context_simulation_sessions`  |                   0 | La tabla física no materializa este contrato.                                |
+| Sesiones físicas de simulación observadas                            |                   0 | No existe evidencia de ejecución.                                            |
+
+La alta cantidad de filas legacy sin rol o área no se corrige en esta tarea. Tampoco se asume que cada ausencia sea un error operativo actual; únicamente se bloquea su uso como evidencia suficiente para una simulación reproducible.
+
+---
+
+#### 25. Snapshot controlado de vigencia
+
+Para el instante de servidor:
+
+```text
+2026-08-04T00:57:00Z
+=
+2026-08-03T19:57:00-05:00 America/Bogota
+```
+
+la consulta de solo lectura encontró:
+
+| Métrica                                                                            | Resultado |
+| ---------------------------------------------------------------------------------- | --------: |
+| Candidatos publicados, laborales, `scheduled`/`confirmed` y temporalmente vigentes |         8 |
+| Empleados distintos representados                                                  |         8 |
+| Empleados con múltiples candidatos vigentes                                        |         0 |
+| Candidatos sin rol operativo                                                       |         0 |
+| Candidatos sin área                                                                |         0 |
+| Candidatos con área de otra sede                                                   |         0 |
+| Candidatos con empleado inactivo                                                   |         0 |
+| Candidatos con sede inactiva                                                       |         0 |
+| Candidatos con rol desconocido o inactivo                                          |         0 |
+
+Distribución contextual observada:
+
+| Sede         | Área           | Rol                  | Candidatos |
+| ------------ | -------------- | -------------------- | ---------: |
+| `SAUDO`      | `COCINA_BARRA` | `cocinero_satelite`  |          2 |
+| `VENTO_CAFE` | `BARRA`        | `barista_satelite`   |          1 |
+| `VENTO_CAFE` | `COCINA`       | `cocinero_satelite`  |          2 |
+| `VENTO_CAFE` | `MOSTRADOR`    | `mostrador_satelite` |          1 |
+| `VENTO_CAFE` | `SALON`        | `servicio_salon`     |          2 |
+
+Estas cifras prueban únicamente que el algoritmo documental puede reconciliar un snapshot físico. No identifican personas, no crean sesiones y no certifican implementación del contrato de simulación.
+
+---
+
+#### 26. Brechas físicas asignadas
+
+| Brecha                                                                                                 | Estado                             | Destino documental                             | Condición de salida                                                      |
+| ------------------------------------------------------------------------------------------------------ | ---------------------------------- | ---------------------------------------------- | ------------------------------------------------------------------------ |
+| `context_simulation_sessions` no conserva turno, revisión, fingerprint, tiempos ni check-in hipotético | `PENDIENTE_DE_IMPLEMENTACION`      | `AUTH-DB-013`; `AUTH-SRV-015`                  | Contrato físico versionado, migración aprobada y pruebas de aislamiento. |
+| `employee_shifts` no posee revisión publicada explícita                                                | `PENDIENTE_DE_IMPLEMENTACION`      | `AUTH-DB-013`; transición de turnos aplicable  | Snapshot o revisión autoritativa reproducible.                           |
+| Filas legacy sin rol o área                                                                            | `PENDIENTE_DE_RECONCILIACION`      | transición de contexto y datos; `AUTH-CTX-028` | Clasificación o corrección aprobada sin inferencias.                     |
+| Dos incompatibilidades rol–área observadas                                                             | `BLOQUEADO_PARA_SIMULACION_EXACTA` | transición de datos y validación de turnos     | Fuente corregida o excepción canónica explícita.                         |
+| Ausencia de versión física del contrato de turno simulado                                              | `PENDIENTE_DE_IMPLEMENTACION`      | `AUTH-DB-013`; `AUTH-SRV-015`                  | Versión persistida y consumida por el evaluador.                         |
+| Ausencia de pruebas automatizadas del registro de quince escenarios                                    | `PENDIENTE_DE_EVIDENCIA`           | `AUTH-QA-019`; `AUTH-QA-030`                   | Suite automatizada ejecutada con evidencia reproducible.                 |
+
+Esta tarea no crea nuevas tareas, porque cada brecha queda vinculada a responsables canónicos existentes.
+
+---
+
+#### 27. Comportamiento fail closed
+
+```text
+modo desconocido o campos incompatibles
+→ DENY
+```
+
+```text
+turno exacto sin revisión o fingerprint reproducible
+→ INDETERMINATE_REPLAY
+```
+
+```text
+borrador, retiro o estado terminal
+→ no satisface T ni T+C
+```
+
+```text
+instante fuera del intervalo
+→ no satisface T ni T+C
+```
+
+```text
+múltiples candidatos
+→ DENY
+```
+
+```text
+rol, sede o área incompatibles
+→ DENY
+```
+
+```text
+T+C sin ACTIVE_HYPOTHETICAL
+→ would_deny o indeterminate según completitud
+```
+
+```text
+check-in hipotético sin turno válido
+→ DENY
+```
+
+```text
+error, dato desconocido o fuente múltiple incompatible
+→ DENY
+```
+
+No se utilizarán como fallback el turno real del simulador, último turno, turno confirmado, sede seleccionada, área visible, perfil operativo, check-in real, reloj del cliente ni primera fila coincidente.
+
+---
+
+#### 28. Límites de esta tarea
+
+AUTH-SIM-005 no define:
+
+- mezcla final de permisos reales y simulados;
+- interfaz final;
+- persistencia física definitiva;
+- tabla de revisiones de turno;
+- migraciones, constraints, RLS, RPC o servicios;
+- corrección o backfill de turnos legacy;
+- publicación, cancelación o retiro de turnos reales;
+- creación o cierre de asistencia real;
+- políticas laborales de duración, descansos o horas máximas;
+- gestión administrativa de horarios;
+- ejecución de simulaciones;
+- pruebas operativas.
+
+Estas responsabilidades permanecen en sus tareas canónicas.
+
+---
+
+#### 29. Handoff exacto a AUTH-SIM-006
+
+`AUTH-SIM-006` deberá impedir mezcla de permisos reales y simulados conservando:
+
+1. actor, sesión, alcance y permisos reales del solicitante como única autoridad para acceder a datos y operar la herramienta;
+2. rol, sede, área, turno y check-in simulados como entradas exclusivamente hipotéticas;
+3. prohibición de tomar prestado el turno o check-in real para completar el escenario;
+4. prohibición de usar un turno simulado para habilitar una acción real;
+5. separación de `simulated_resolved_at` y `evaluated_at`;
+6. separación de `source_shift_id` y `real_active_shift_id`;
+7. resultados exclusivos `would_allow`, `would_deny` o `indeterminate`;
+8. mutaciones empresariales bloqueadas aunque la evaluación produzca `would_allow`;
+9. datos reales minimizados por el alcance real del simulador;
+10. auditoría correlacionada de contexto real e hipotético sin fusionarlos.
+
+Esta tarea no anticipa la fórmula final de separación de autoridades.
+
+---
+
+#### 30. Invariantes
+
+1. El turno simulado nunca es el turno real del simulador.
+2. La identidad sintética no sustituye un `shift_id` real.
+3. Un `shift_id` real no se modifica durante una simulación.
+4. `simulated_resolved_at` y `evaluated_at` son tiempos distintos.
+5. La zona organizacional vigente es `America/Bogota`.
+6. Todo intervalo usa inicio inclusivo y fin exclusivo.
+7. El fin debe ser posterior al inicio.
+8. Los turnos nocturnos pueden cruzar medianoche.
+9. Un borrador no satisface turno.
+10. Una publicación futura no autoriza antes de ser efectiva.
+11. Una publicación tardía no crea autoridad retroactiva.
+12. `CONFIRMED` no es requisito de autorización.
+13. `SCHEDULED` y `CONFIRMED` reciben la misma semántica de vigencia.
+14. `COMPLETED`, `CANCELLED`, `NO_SHOW` y `WITHDRAWN` no satisfacen turno.
+15. Un descanso no crea contexto operativo.
+16. Un turno futuro no satisface `T`.
+17. Un turno terminado no satisface `T`.
+18. Dos candidatos aplicables producen ambigüedad.
+19. No se elige un candidato por orden físico.
+20. El turno conserva el rol objetivo aceptado.
+21. El turno conserva la sede exacta aceptada.
+22. El turno conserva el área exacta cuando sea obligatoria.
+23. El turno no puede utilizar un área de otra sede.
+24. Una fila agregada no es área operativa exacta.
+25. Un vínculo rol–área no resuelto bloquea `would_allow` reproducible.
+26. El punto físico de check-in no sustituye sede ni área.
+27. `NO_SHIFT` es ausencia explícita, no wildcard.
+28. Un permiso `N` no obtiene autoridad del turno.
+29. Un permiso `T` exige turno simulado válido.
+30. Un permiso `T+C` exige turno y check-in hipotéticos compatibles.
+31. No existe check-in activo sin turno válido.
+32. Un check-in real no completa un escenario simulado.
+33. Un turno simulado no crea asistencia real.
+34. Un turno simulado no cambia el contexto real.
+35. Un turno exacto exige revisión o snapshot reproducible.
+36. Un fingerprint incompatible bloquea la evaluación.
+37. Los datos reales continúan gobernados por permisos reales.
+38. La selección no modifica programación ni asistencia.
+39. Toda ambigüedad falla cerrado.
+40. Toda evaluación ocurre en servidor.
+41. Todo intento queda auditado con minimización.
+42. La tarea siguiente permanece limitada a impedir mezcla de permisos reales y simulados.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-AUTH-109` a `TREQ-AUTH-118` en el Registro Canónico de Requisitos de Prueba.
+
+| ID              | Regla protegida                                                                                                                                                                                                                                                                                                                                                                                               | Tipo                                                              | Prioridad | Momento de implementación                         | Destino                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- | --------- | ------------------------------------------------- | ------------------------------------------------------------- |
+| `TREQ-AUTH-109` | Todo objetivo de turno simulado deberá declarar uno de tres modos, identidad, instante hipotético, zona horaria y versión; el modo exacto exigirá `shift_id`, revisión o snapshot y fingerprint, mientras el modo hipotético usará identidad sintética y `NO_SHIFT` expresará ausencia positiva.                                                                                                              | seguridad + contractual + integración + regresión                 | crítica   | Paquete que materialice el contrato de simulación | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`                  |
+| `TREQ-AUTH-110` | El registro de estados deberá cubrir exactamente quince escenarios y conservar sus decisiones, incluidos borrador, futuro, vigente, descanso, estados terminales, retiro, turno exacto versionado, legacy no reproducible, ambigüedad y contexto inválido, sin fallbacks ni reclasificaciones implícitas.                                                                                                     | contractual + estática + integración + regresión                  | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-005`; `AUTH-DB-013`; `AUTH-QA-019`                  |
+| `TREQ-AUTH-111` | Un turno solo satisfará el prerrequisito temporal cuando sea laboral, publicado mediante una revisión reproducible, efectivo en `simulated_resolved_at`, único y vigente dentro del intervalo semiabierto en `America/Bogota`; reloj del cliente, fecha aislada o minutos de gracia implícitos no podrán alterar la decisión.                                                                                 | contractual + temporal + integración + E2E + regresión            | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SRV-015`; `AUTH-QA-019`                                 |
+| `TREQ-AUTH-112` | Rol, sede y área del turno deberán coincidir con los objetivos aceptados. El turno no podrá inventar contexto, usar un área agregada, cruzar sedes ni completar un vínculo rol–área no resuelto; el punto físico de check-in permanecerá separado.                                                                                                                                                            | seguridad + autorización + contexto + integración + regresión     | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-005`; `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019` |
+| `TREQ-AUTH-113` | `SCHEDULED` y `CONFIRMED` deberán conservar la misma semántica de autorización; la confirmación no será requisito. Borradores, turnos futuros o terminados, descansos, `COMPLETED`, `CANCELLED`, `NO_SHOW` y `WITHDRAWN` no podrán satisfacer `T` ni `T+C`.                                                                                                                                                   | contractual + autorización + temporal + regresión                 | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SRV-015`; `AUTH-QA-019`                                 |
+| `TREQ-AUTH-114` | La evaluación deberá respetar `N`, `T` y `T+C`: `N` no depende del turno; `T` exige turno simulado válido; `T+C` exige además `ACTIVE_HYPOTHETICAL` para el mismo turno. Un check-in real no podrá completar el escenario y un check-in hipotético sin turno deberá denegarse.                                                                                                                                | autorización + contexto + integración + E2E + regresión           | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019`                 |
+| `TREQ-AUTH-115` | Turno, check-in, actor, tiempos y contexto reales deberán permanecer separados de sus equivalentes simulados; ninguna ausencia hipotética se completará con el estado real y ningún resultado simulado podrá convertirse en sesión, token o autoridad ejecutable.                                                                                                                                             | seguridad + autorización + sesión + integración + E2E + regresión | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019`                 |
+| `TREQ-AUTH-116` | Toda simulación de un turno exacto deberá fijar revisión o snapshot, fingerprint, catálogos, políticas y tiempos. Una fila legacy sin versionado reproducible producirá `INDETERMINATE_REPLAY`; cambios posteriores no podrán alterar silenciosamente una decisión histórica.                                                                                                                                 | contractual + auditoría + versionado + integración + regresión    | crítica   | Paquete que materialice el contrato de simulación | `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`; `AUTH-QA-030`   |
+| `TREQ-AUTH-117` | Crear, cambiar o cerrar un turno simulado no podrá modificar turnos, publicaciones, asistencia, sesiones operativas, permisos, RLS, dispositivos, recursos ni datos reales, ejecutar mutaciones o ampliar la lectura más allá del alcance real del simulador.                                                                                                                                                 | seguridad + autorización + RLS + integración + E2E + regresión    | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-006`; `AUTH-SRV-015`; `AUTH-QA-019`                 |
+| `TREQ-AUTH-118` | La auditoría y reconciliación deberán conservar quince escenarios y el snapshot físico documentado: 2844 turnos, 2723 publicados, 121 no publicados, 2411 laborales, 433 descansos, 2318 candidatos históricos potenciales, 1535 sin rol, 1663 sin área, dos incompatibilidades rol–área, 77 publicaciones posteriores al inicio, ocho candidatos vigentes controlados y cero sesiones físicas de simulación. | contractual + auditoría + base de datos + estática + regresión    | crítica   | Paquete que materialice el contrato de simulación | `AUTH-SIM-005`; `AUTH-DB-013`; `AUTH-SRV-015`; `AUTH-QA-019`  |
+
+---
+
+#### 31. Criterios de aceptación
+
+- [x] Se distinguió el turno simulado del turno real del solicitante.
+- [x] Se definieron tres modos explícitos de objetivo.
+- [x] Se exigieron identidad, versiones, revisión y fingerprint cuando corresponden.
+- [x] Se separaron `simulated_resolved_at` y `evaluated_at`.
+- [x] Se fijó `America/Bogota` como zona organizacional vigente.
+- [x] Se definió el intervalo semiabierto y el cruce de medianoche.
+- [x] Se separaron publicación, vigencia, check-in, ejecución y resultado.
+- [x] Se confirmó que `CONFIRMED` no afecta autorización.
+- [x] Se materializaron quince escenarios con decisión explícita.
+- [x] Se distinguieron estados operables, no vigentes, no laborales y terminales.
+- [x] Se prohibió resolver múltiples candidatos por fallback.
+- [x] Se exigió coherencia exacta entre rol, sede, área y turno.
+- [x] Se bloquearon áreas agregadas y vínculos rol–área no resueltos.
+- [x] Se separó el punto físico de check-in del territorio organizacional.
+- [x] Se reconciliaron `N`, `T` y `T+C`.
+- [x] Se definieron cinco estados hipotéticos de check-in.
+- [x] Se prohibió tomar prestado un check-in real.
+- [x] Se preservó el alcance real como límite de datos visibles.
+- [x] Se prohibieron todas las mutaciones reales.
+- [x] Se definieron precedencia y razones estructuradas.
+- [x] Se definió auditoría mínima.
+- [x] Se reconciliaron 2844 filas físicas y el snapshot de ocho candidatos sin modificarlos.
+- [x] Se documentaron brechas físicas con responsables y condiciones de salida.
+- [x] Se generaron `TREQ-AUTH-109` a `TREQ-AUTH-118`.
+- [x] No se modificó código, Supabase, migraciones, RLS, RPC, configuración, datos, turnos, horarios, asistencia, sesiones, permisos ni aplicaciones.
+- [x] `AUTH-SIM-006` permanece únicamente reservada.
+
+---
+
+#### 32. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`AUTH-SIM-004 — Definir área simulada`
+
+**TAREA ACTUAL APROBADA**
+`AUTH-SIM-005 — Definir turno simulado`
+
+**SIGUIENTE TAREA RESERVADA**
+`AUTH-SIM-006 — No mezclar permisos reales y simulados`
+
+
 ### [ ] AUTH-SIM-006 — No mezclar permisos reales y simulados

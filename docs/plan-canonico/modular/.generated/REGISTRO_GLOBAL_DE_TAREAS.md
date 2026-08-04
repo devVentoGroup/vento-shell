@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **522** |
+| Aprobadas | **524** |
 | En propuesta | **0** |
-| No iniciadas | **1072** |
+| No iniciadas | **1070** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **32.75% (522/1594)** |
+| Porcentaje de completamiento | **32.87% (524/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-SIM-003` — Definir sede simulada | ✅ APROBADA |
-| Tarea actual | `AUTH-SIM-004` — Definir área simulada | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-SIM-005` — Definir turno simulado | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-SIM-005` — Definir turno simulado | ✅ APROBADA |
+| Tarea actual | `AUTH-SIM-006` — No mezclar permisos reales y simulados | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-ERR-001` — Sin sesión | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1200,8 +1200,8 @@
 | ✅ APROBADA | `AUTH-SIM-001` | Definir quién puede simular | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
 | ✅ APROBADA | `AUTH-SIM-002` | Definir roles simulables | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
 | ✅ APROBADA | `AUTH-SIM-003` | Definir sede simulada | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
-| ⬜ NO INICIADA | `AUTH-SIM-004` | Definir área simulada | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
-| ⬜ NO INICIADA | `AUTH-SIM-005` | Definir turno simulado | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
+| ✅ APROBADA | `AUTH-SIM-004` | Definir área simulada | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
+| ✅ APROBADA | `AUTH-SIM-005` | Definir turno simulado | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
 | ⬜ NO INICIADA | `AUTH-SIM-006` | No mezclar permisos reales y simulados | `bloques/Q_SIMULACION/01_CONTEXTO_Y_ALCANCE_SIMULADO.md` |
 | ⬜ NO INICIADA | `AUTH-SIM-007` | Mostrar aviso persistente | `bloques/Q_SIMULACION/02_VISIBILIDAD_AUDITORIA_Y_RESTRICCIONES.md` |
 | ⬜ NO INICIADA | `AUTH-SIM-008` | Registrar inicio de simulación | `bloques/Q_SIMULACION/02_VISIBILIDAD_AUDITORIA_Y_RESTRICCIONES.md` |
