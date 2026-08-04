@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **525** |
+| Aprobadas | **526** |
 | En propuesta | **0** |
-| No iniciadas | **1069** |
+| No iniciadas | **1068** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **32.94% (525/1594)** |
+| Porcentaje de completamiento | **33.00% (526/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-SIM-006` — No mezclar permisos reales y simulados | ✅ APROBADA |
-| Tarea actual | `AUTH-ERR-001` — Sin sesión | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-ERR-002` — Usuario inactivo | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-ERR-001` — Sin sesión | ✅ APROBADA |
+| Tarea actual | `AUTH-ERR-002` — Usuario inactivo | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-ERR-003` — Sin acceso a la aplicación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1264,7 +1264,7 @@
 | ⬜ NO INICIADA | `INT-DB-008` | Crear mecanismos de conciliación por integración | `bloques/R_SUPABASE/05_INFRAESTRUCTURA_DE_INTEGRACIONES_EXTERNAS.md` |
 | ⬜ NO INICIADA | `AUTH-DB-030` | Retirar objetos legacy únicamente después de adopción comprobada | `bloques/R_SUPABASE/06_R3_RETIRO_Y_CERTIFICACION_FINAL.md` |
 | ⬜ NO INICIADA | `AUTH-DB-031` | Certificar paridad entre documento, vento-shell, Supabase y aplicaciones | `bloques/R_SUPABASE/06_R3_RETIRO_Y_CERTIFICACION_FINAL.md` |
-| ⬜ NO INICIADA | `AUTH-ERR-001` | Sin sesión | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
+| ✅ APROBADA | `AUTH-ERR-001` | Sin sesión | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-002` | Usuario inactivo | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-003` | Sin acceso a la aplicación | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-004` | Sin permiso administrativo | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |

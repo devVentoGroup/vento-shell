@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **525** |
+| Tareas aprobadas | **526** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1069** |
+| Tareas no iniciadas | **1068** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **32.94% (525/1594)** |
+| Porcentaje de completamiento | **33.00% (526/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-SIM-006 — No mezclar permisos reales y simulados** |
-| Tarea actual | **AUTH-ERR-001 — Sin sesión** |
+| Última tarea aprobada | **AUTH-ERR-001 — Sin sesión** |
+| Tarea actual | **AUTH-ERR-002 — Usuario inactivo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-ERR-002 — Usuario inactivo** |
+| Siguiente tarea | **AUTH-ERR-003 — Sin acceso a la aplicación** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 11: AUTHORIZATION_ERRORS** |
-| Progreso del bloque | **CARRIL NEXO: 0 de 20 aprobadas; AUTH-ERR-001 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 1 de 20 aprobadas; AUTH-ERR-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-SIM-006` — No mezclar permisos reales y simulados |
-| Tarea actual | `AUTH-ERR-001` — Sin sesión — **NO INICIADA** |
-| Siguiente tarea | `AUTH-ERR-002` — Usuario inactivo |
+| Última aprobada | `AUTH-ERR-001` — Sin sesión |
+| Tarea actual | `AUTH-ERR-002` — Usuario inactivo — **NO INICIADA** |
+| Siguiente tarea | `AUTH-ERR-003` — Sin acceso a la aplicación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 20 APROBADAS — ACTUAL AUTH-ERR-001** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 1 DE 20 APROBADAS — ACTUAL AUTH-ERR-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-SIM-006 — No mezclar permisos reales y simulados
-        ↓
-TAREA ACTUAL
 AUTH-ERR-001 — Sin sesión
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-ERR-002 — Usuario inactivo
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-ERR-003 — Sin acceso a la aplicación
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 0 de 20 tareas aprobadas
+CARRIL NEXO — 1 de 20 tareas aprobadas
 ```
