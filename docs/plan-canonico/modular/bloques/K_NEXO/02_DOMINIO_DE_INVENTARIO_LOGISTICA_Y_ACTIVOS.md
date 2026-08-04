@@ -18,7 +18,7 @@ Esta sección organiza **dominio de inventario logistica y activos** dentro de *
 **Tipo de tarea:** documental; definición contractual, taxonómica, funcional, de comportamiento, transición y reconciliación física de las clases canónicas de control para inventario, activos, reutilizables, repuestos, kits y contenedores de NEXO
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/02_DOMINIO_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
-**Artefactos producidos:** `NEXO-INVENTORY-CLASSIFICATION-CONTRACT-001`, `NEXO-INVENTORY-CLASS-DECISION-MATRIX-001`, `NEXO-INVENTORY-CLASS-BEHAVIOR-MATRIX-001`, `NEXO-INVENTORY-CLASS-LEGACY-CROSSWALK-001` y `NEXO-INVENTORY-CLASS-PHYSICAL-RECONCILIATION-001`
+**Artefactos producidos:** `NEXO-INVENTORY-CLASSIFICATION-CONTRACT-001`, `NEXO-INVENTORY-CLASS-DECISION-MATRIX-001`, `NEXO-INVENTORY-CLASS-BEHAVIOR-MATRIX-001`, `NEXO-INVENTORY-CLASS-LEGACY-CROSSWALK-001`, `NEXO-INVENTORY-IDENTITY-DECISION-MATRIX-001` y `NEXO-INVENTORY-CLASS-PHYSICAL-RECONCILIATION-001`
 **Decisiones consumidas:** `CAP-SCOPE-004`; `CAP-SCOPE-006`; `CAP-SCOPE-007`; `CODE-AUD-011`; `TREQ-NEXO-011` a `TREQ-NEXO-016`; extensión canónica de NEXO; contratos vigentes de producto, presentación, unidad, existencia, lote, serial, LOC, LPN, activos, mantenimiento, remisiones, autorización y transición; estado remoto y desplegado inspeccionado; contrato documental vigente
 **Cambios físicos autorizados:** ninguno; no modifica productos, perfiles, categorías, stock, activos, grupos, LPN, movimientos, remisiones, Supabase, tablas, constraints, funciones, RLS, datos, migraciones, código, paquetes, aplicaciones ni despliegues
 
@@ -63,45 +63,55 @@ o `asset` decida simultáneamente:
 
 #### 2. Resultado material
 
-Se aprueban cinco artefactos documentales completos:
+Se aprueban seis artefactos documentales completos:
 
 1. `NEXO-INVENTORY-CLASSIFICATION-CONTRACT-001`, que congela siete clases
    primarias, sus invariantes, estados y dimensiones independientes;
 2. `NEXO-INVENTORY-CLASS-DECISION-MATRIX-001`, que decide veintiocho escenarios
    y elimina solapamientos entre consumo, cantidad, reutilización, identidad,
    instalación, composición y contención;
-3. `NEXO-INVENTORY-CLASS-BEHAVIOR-MATRIX-001`, que materializa el comportamiento
-   por clase para saldo, movimiento, conteo, reserva, custodia, mantenimiento,
-   remisión, LPN y costo;
-4. `NEXO-INVENTORY-CLASS-LEGACY-CROSSWALK-001`, que reconcilia los 963 productos
-   físicos observados por cohortes sin convertir heurísticas en aprobación;
-5. `NEXO-INVENTORY-CLASS-PHYSICAL-RECONCILIATION-001`, que registra veinte
+3. `NEXO-INVENTORY-CLASS-BEHAVIOR-MATRIX-001`, que materializa explícitamente
+   por clase saldo o identidad, movimiento, conteo, reserva, custodia,
+   mantenimiento, remisión, LPN y costo o valoración;
+4. `NEXO-INVENTORY-CLASS-LEGACY-CROSSWALK-001`, que reconcilia las seis cohortes
+   heredadas sin convertir heurísticas en aprobación;
+5. `NEXO-INVENTORY-IDENTITY-DECISION-MATRIX-001`, que conserva los 963 UUID
+   estables y asigna a cada identidad un resultado, estado y bloqueo explícitos;
+6. `NEXO-INVENTORY-CLASS-PHYSICAL-RECONCILIATION-001`, que registra veinte
    brechas físicas y su destino canónico.
 
 Cobertura materializada:
 
-| Elemento                                  | Cantidad |
-| ----------------------------------------- | -------: |
-| Clases primarias canónicas                |        7 |
-| Dimensiones secundarias obligatorias      |       12 |
-| Escenarios con decisión explícita         |       28 |
-| Cohortes legacy reconciliadas             |        6 |
-| Productos físicos observados              |      963 |
-| Productos activos observados              |      950 |
-| Perfiles de inventario observados         |      963 |
-| Productos sin perfil observados           |        0 |
-| Perfiles legacy `unclassified` observados |        0 |
-| Productos legacy `asset` observados       |      169 |
-| Filas de activo individual observadas     |       38 |
-| Grupos reutilizables observados           |       90 |
-| LPN observados                            |        0 |
-| Contenidos de LPN observados              |        0 |
-| Perfiles de presentación observados       |    1.190 |
-| Brechas físicas registradas               |       20 |
-| Requisitos de prueba derivados            |       10 |
+| Elemento                                              | Cantidad |
+| ----------------------------------------------------- | -------: |
+| Clases primarias canónicas                            |        7 |
+| Dimensiones secundarias obligatorias                  |       12 |
+| Escenarios con decisión explícita                     |       28 |
+| Cohortes legacy reconciliadas                         |        6 |
+| Decisiones individualizadas por `product_id`          |      963 |
+| Identificadores `product_id` únicos                   |      963 |
+| Identidades faltantes en la matriz                    |        0 |
+| Identidades duplicadas en la matriz                   |        0 |
+| Decisiones pendientes de clasificación o confirmación |      904 |
+| Decisiones bloqueadas                                 |       59 |
+| Clasificaciones objetivo aprobadas automáticamente    |        0 |
+| Productos físicos observados                          |      963 |
+| Productos activos observados                          |      950 |
+| Perfiles de inventario observados                     |      963 |
+| Productos sin perfil observados                       |        0 |
+| Perfiles legacy `unclassified` observados             |        0 |
+| Productos legacy `asset` observados                   |      169 |
+| Filas de activo individual observadas                 |       38 |
+| Grupos reutilizables observados                       |       90 |
+| LPN observados                                        |        0 |
+| Contenidos de LPN observados                          |        0 |
+| Perfiles de presentación observados                   |    1.190 |
+| Brechas físicas registradas                           |       20 |
+| Requisitos de prueba derivados                        |       10 |
 
-Las cifras físicas describen el corte inspeccionado y no aprueban una
-clasificación producto por producto.
+La matriz individual no adopta una clase objetivo por heurística. Conserva la
+identidad, materializa la decisión provisional aplicable y bloquea cualquier
+operación dependiente hasta cumplir la condición de salida correspondiente.
 
 ---
 
@@ -704,18 +714,20 @@ Reglas:
 
 #### 21. `NEXO-INVENTORY-CLASS-BEHAVIOR-MATRIX-001`
 
-| Clase                | Saldo o identidad                         | Uso ordinario                             | Retorno                                         | Custodia                              | Mantenimiento                             | LPN                                              | Remisión                                                         |
-| -------------------- | ----------------------------------------- | ----------------------------------------- | ----------------------------------------------- | ------------------------------------- | ----------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------- |
-| `CONSUMABLE`         | saldo por cantidad                        | consumo irreversible                      | no                                              | no individual                         | solo del equipo consumidor, no del insumo | contenido por cantidad cuando aplique            | línea de cantidad                                                |
-| `QUANTITY_STOCK`     | saldo por cantidad y dimensiones          | consumo, transformación, venta o traslado | según devolución empresarial, no por naturaleza | no individual                         | no                                        | contenido por cantidad, lote y condición         | línea de cantidad                                                |
-| `REUSABLE_QUANTITY`  | cantidad esperada, observada y utilizable | préstamo, uso y retorno                   | sí                                              | por grupo o expediente                | inspección o cuidado por grupo            | contenido por cantidad con estado retornable     | línea reutilizable con obligación o conciliación                 |
-| `SERIALIZED_ASSET`   | identidad por unidad                      | asignación, préstamo o uso                | según expediente                                | individual                            | sí, por unidad                            | por identidad cuando el contrato lo permita      | transferencia de activos exactos                                 |
-| `SPARE_PART`         | saldo por cantidad o serial               | reserva e instalación                     | devolución o disposición según orden            | no antes de instalación, salvo serial | se consume dentro de mantenimiento        | contenido de mantenimiento por cantidad o serial | línea de repuesto                                                |
-| `KIT`                | definición e instancia                    | asignación del conjunto                   | sí cuando sea reutilizable                      | por instancia                         | sobre instancia o componentes             | puede viajar dentro de LPN                       | línea de kit más validación de componentes                       |
-| `PHYSICAL_CONTAINER` | identidad por instancia                   | contener y transportar                    | normalmente sí                                  | individual o por expediente           | inspección y reparación según política    | puede ser soporte físico del LPN                 | línea de contenedor o vínculo de custodia, no saldo de contenido |
+| Clase                | Saldo o identidad                                        | Movimiento                                                                                                           | Conteo                                                                     | Reserva                                                        | Custodia                                         | Mantenimiento                                               | Remisión                                                         | LPN                                                       | Costo o valoración                                                                             |
+| -------------------- | -------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------- | ---------------------------------------------------------------------------------------------- |
+| `CONSUMABLE`         | saldo por cantidad y dimensiones aplicables              | recepción, traslado, consumo irreversible y ajuste autorizado                                                        | cantidad, unidad, lote, condición y ubicación cuando apliquen              | cantidad disponible                                            | no individual                                    | no pertenece al insumo; solo al equipo consumidor           | línea de cantidad; sin obligación natural de retorno             | contenido por cantidad cuando aplique                     | costo de la cantidad recibida y consumida; efecto contable gobernado por NUMERA                |
+| `QUANTITY_STOCK`     | saldo por cantidad y dimensiones de existencia           | recepción, transformación, venta, consumo, devolución empresarial, traslado y ajuste autorizado                      | cantidad, unidad, lote, vencimiento, condición y ubicación cuando apliquen | cantidad disponible por dimensiones                            | no individual                                    | no                                                          | línea de cantidad y dimensiones                                  | contenido por cantidad, lote y condición                  | valoración según método aprobado; NUMERA conserva la fuente contable                           |
+| `REUSABLE_QUANTITY`  | cantidad esperada, observada, utilizable y por condición | entrega, préstamo, uso, retorno, traslado, daño, pérdida y retiro                                                    | total, utilizable, dañada, prestada, faltante y ubicación                  | cantidad utilizable y obligación de retorno cuando corresponda | por grupo o expediente                           | inspección y cuidado por grupo                              | línea reutilizable con obligación, condición y conciliación      | cantidad con estado retornable                            | costo del grupo o de la unidad equivalente, separado del valor de un activo individual         |
+| `SERIALIZED_ASSET`   | identidad estable por unidad física                      | alta autorizada, asignación, préstamo, traslado, retorno, mantenimiento, baja y disposición                          | conjunto exacto de identidades, condición, ubicación y custodia            | identidades exactas                                            | individual                                       | por unidad                                                  | transferencia de activos exactos                                 | por identidad cuando el contrato lo permita               | valor por activo o componente individual; tratamiento contable gobernado por NUMERA            |
+| `SPARE_PART`         | saldo por cantidad o identidad serial según política     | recepción, reserva, retiro, instalación, devolución, reparación, descarte y ajuste autorizado                        | cantidad o serial, reservas e instalaciones pendientes                     | cantidad o serial contra orden de trabajo o activo             | no antes de instalación, salvo pieza serializada | se consume o vincula dentro del expediente de mantenimiento | línea de repuesto por cantidad o serial                          | contenido por cantidad o serial                           | costo acompaña reserva, retiro e instalación sin duplicar stock y componente instalado         |
+| `KIT`                | definición versionada e instancia cuando se materializa  | constitución, completitud, sustitución, asignación, traslado, retorno, desarme y cierre                              | identidad de instancia y completitud exacta de componentes                 | instancia completa o componentes necesarios para constituirla  | por instancia                                    | sobre la instancia o sus componentes                        | línea de kit con validación de componentes                       | puede viajar dentro de LPN sin convertirse en LPN         | no duplica valoración de componentes; cualquier valor propio requiere regla contable explícita |
+| `PHYSICAL_CONTAINER` | identidad estable por contenedor controlado              | alta autorizada, asignación, carga, traslado, retorno, inspección, reparación, retiro y vínculo o desvínculo con LPN | identidades exactas, condición, ubicación, custodia y vínculo LPN          | instancia y capacidad, nunca contenido por inferencia          | individual o por expediente                      | inspección y reparación por instancia                       | línea de contenedor o vínculo de custodia separado del contenido | puede soportar físicamente un LPN sin compartir identidad | costo propio del contenedor separado del costo y valor de su contenido                         |
 
-Ningún movimiento podrá incrementar simultáneamente el saldo del objeto y el de
-una representación duplicada.
+Las nueve dimensiones son obligatorias y no podrán sustituirse por una columna
+genérica de uso. Ningún movimiento, conteo, reserva, remisión, vínculo LPN o
+tratamiento económico podrá incrementar simultáneamente el saldo o valor del
+objeto y el de una representación duplicada.
 
 ---
 
@@ -891,8 +903,1016 @@ duplicados entre cohortes = 0
 clasificaciones objetivo aprobadas automáticamente = 0
 ```
 
-La tabla no autoriza cambios masivos. Materializa una decisión explícita para
-cada cohorte y la puerta que deberá superar.
+La tabla no autoriza cambios masivos. Reconcilia las cohortes y remite la
+decisión individual, su estado y su bloqueo a
+`NEXO-INVENTORY-IDENTITY-DECISION-MATRIX-001`.
+
+---
+
+#### 28A. `NEXO-INVENTORY-IDENTITY-DECISION-MATRIX-001`
+
+La matriz conserva el `product_id` UUID como identificador estable. Cada fila
+usa el formato `product_id|decision_code`. El código forma parte de la fila y
+resuelve simultáneamente el resultado, el candidato permitido, el estado, el
+bloqueo y la condición de salida.
+
+| Código | Cohorte fuente                  | Cantidad | Resultado por identidad       | Candidato           | Estado                       | Bloqueo y condición de salida                                                                                                                    |
+| ------ | ------------------------------- | -------: | ----------------------------- | ------------------- | ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `D1`   | `ingredient`                    |      385 | `REVIEW_REQUIRED`             | `UNRESOLVED`        | `PENDIENTE_DE_CLASIFICACION` | `B1_FACTS_REQUIRED`: documentar función física, consumo o retorno, granularidad e identidad antes de decidir clase                               |
+| `D2`   | `finished` o `resale`           |      409 | `CANDIDATE_QUANTITY_STOCK`    | `QUANTITY_STOCK`    | `PENDIENTE_DE_CLASIFICACION` | `B2_PHYSICAL_STOCK_CONFIRMATION`: confirmar existencia física inventariable y descartar oferta o servicio no inventariable                       |
+| `D3`   | `asset` con solo `asset_items`  |       25 | `CANDIDATE_SERIALIZED_ASSET`  | `SERIALIZED_ASSET`  | `PENDIENTE_DE_CLASIFICACION` | `B3_INSTANCE_HISTORY_CONFIRMATION`: validar historia individual y consolidar identidad de instancia                                              |
+| `D4`   | `asset` con solo `asset_groups` |       85 | `CANDIDATE_REUSABLE_QUANTITY` | `REUSABLE_QUANTITY` | `PENDIENTE_DE_CLASIFICACION` | `B4_RETURNABILITY_CONFIRMATION`: validar retorno, condición y ausencia de necesidad de historia individual                                       |
+| `D5`   | `asset` con item y grupo        |        4 | `CONFLICTING_REPRESENTATION`  | `UNRESOLVED`        | `BLOQUEADO`                  | `B5_DOUBLE_REPRESENTATION`: reconciliar item, grupo, existencia y evitar doble contabilización                                                   |
+| `D6`   | `asset` sin item ni grupo       |       55 | `INCOMPLETE_INSTANCE_MODEL`   | `UNRESOLVED`        | `BLOQUEADO`                  | `B6_INSTANCE_MODEL_MISSING`: decidir si corresponde a modelo, activo futuro, reutilizable, contenedor, kit, repuesto o registro no inventariable |
+
+```text
+005b3df2-cca8-4a48-942d-ed142f8ef812|D1
+008d61d5-18a1-41db-8ff4-e6afd342b615|D2
+00e55734-4a8c-44a3-b9cb-9144dbd15329|D6
+010f0a37-0f33-4487-b703-11902de58295|D4
+01c84672-ac54-49ae-926b-c3fcc8615d68|D2
+02575aea-4699-4414-a199-6deb1543aad0|D4
+02f60f26-37c0-4fc6-a170-51c2b7fce8c6|D4
+02f6fd39-a6ac-481a-a788-cb080e7e8e9e|D2
+0338517f-56d9-4dd3-bfa9-119c180e0f10|D1
+03411cad-2708-4f35-88d5-06c672105191|D2
+034fa85f-c355-44eb-8ce8-b7d76d5a968d|D4
+03ad15ab-5abf-4fc4-b14c-dc6a2cce4f38|D1
+03d31f01-6293-49ed-9c7c-18a082df02df|D1
+03f08229-33eb-411f-93d5-4591b7ced037|D1
+0469cca9-088c-44ba-a485-39dcaae4353c|D1
+05124cca-e5e0-4bfe-9f21-1b186ff2d91f|D2
+0515038c-0444-4dc1-92bf-4871f1ca2852|D1
+052715bc-4c33-43af-8035-1d4df8445925|D4
+058bd9c8-1ceb-42ac-98ae-832f5f89eee0|D1
+05cf4d7c-7120-446d-bff9-528040f1ba63|D2
+06114605-0ba9-4ad4-824d-7839de6afc24|D1
+064cce03-c815-4cfb-9e6b-1567ee1167f5|D1
+0659e3fc-682d-4908-8150-a3a081d3b622|D2
+0698a179-2caf-43d7-adc8-de98e7441f22|D1
+06b1a146-c8ae-423d-9c1a-fe50949ad13a|D4
+06b4b086-53de-4bf0-9d1c-e5aa2b40146c|D1
+07347e4e-0efd-4f46-828c-767ea7f190cb|D2
+086c2349-43cd-43b9-bf2f-6f6eea719b42|D2
+089cc123-93e3-43a3-b0f6-9cfbf9730e5b|D1
+08c44196-46f3-4b6a-9ed6-d96bb3d6e26e|D1
+08cff9c1-c2f4-4d95-9170-736a2e1b01c3|D1
+08e349a2-d85d-4466-a67c-e3f7d508dffa|D2
+09019992-e1bd-4463-9aea-cdbfa5624137|D2
+0906092d-ad2f-4f52-a091-3bbfafc3c736|D1
+090ea58e-c2fc-4a50-a91b-a18c64af580f|D6
+0946cf84-70fa-4385-a6c0-97954751d9bc|D1
+0972d7f5-f0a6-43ce-9d6a-beaeab815a5a|D4
+099abb5f-bc8c-428b-b6f6-64739c364bb2|D2
+099dd646-8b04-4290-b2db-95587f81fc8f|D2
+09beb68c-a683-47bc-989a-063079ddb261|D1
+09f17bf2-3aff-4771-9164-45ae6b976202|D1
+0a47d4df-2107-47a3-9981-9f203d947b20|D2
+0a82cfca-00b9-47b7-9ccd-f3104d0eeea8|D2
+0ab74a32-a4e0-436a-8cd1-bf990df0bdf0|D2
+0ac6b2e6-3dc8-484c-9627-e04d270e66cb|D2
+0b7c43ec-4955-427f-9203-9b8188d8c299|D1
+0bc2baac-db50-455d-bc8c-2ffda730137c|D1
+0bca043c-223c-44a6-99f3-fed8105fb15f|D2
+0bee6c8a-c1ed-4e77-94a2-532865652c40|D2
+0c6a482b-d8f0-47fa-8d63-b21cd8d3cc8d|D6
+0c741a2e-36e4-4709-be81-85d0c65903f4|D1
+0c88bbea-4717-46a5-abe3-632521007012|D2
+0cba0b8a-793d-4d98-86f9-85e500b07ab0|D2
+0d18fcec-df74-447f-8df0-7cad8abf021c|D1
+0d40e3bb-ccc5-44fb-a447-b31387000fe7|D1
+0dd0c93f-6c86-4043-8396-2f0d39b37d9a|D1
+0dd8cd7b-6ccb-4d6d-93af-80a0bd21bfea|D1
+0e0ab677-9826-42c0-987d-1b4fbfd8153b|D2
+0e2796a6-0ac6-4723-b994-0f6a2fd505f2|D2
+0e391fd2-21f1-4123-be0a-39de90508301|D2
+0e41a8fa-6d4f-474c-b3ef-948dc4deb4fe|D1
+0e868d22-98c6-4d14-91d0-b6f3e7e5b105|D2
+0f16cc3f-560e-44d0-a56e-e9c9c83816a2|D4
+0f839b07-be3a-46b3-bee2-582fb52a59b1|D2
+0f9e4a4f-aa26-4267-9127-7c8d22997eb2|D2
+0fb5b034-dec0-4600-a584-2e835cd2400b|D1
+102cacca-9bcb-4269-a6ae-6f969baac458|D1
+105069e8-cced-4752-9c07-51a9d40ca682|D2
+10bef515-b2dd-42d6-bff0-42570ea06581|D4
+10f56d50-1339-4aac-8710-7ff4bf2b9af9|D2
+1108c10d-fbb4-43eb-9d01-68da556d45bf|D2
+112bcbab-7127-4ab4-8824-d57afaa581e0|D2
+11492427-1367-47eb-b8bc-51119a7df3e7|D1
+114e26e0-fda3-45d5-9640-6b65a2035011|D2
+11606540-a1b1-4ff0-8b23-3c69269f9bb6|D1
+11d98320-8faf-41d8-b006-29f46b61d978|D4
+11ed3d77-a8e9-4d0a-a0e0-23738cfc423f|D2
+11f198c2-2829-49e2-b32f-93df3e5038e7|D1
+12744d44-31a9-4f23-b877-6b308b5871ae|D2
+12ad9952-0853-4dda-b78a-37ef16940c34|D4
+12b6c743-d87b-481d-8bf3-0031481fb691|D2
+12ff4fd7-2c39-422a-b9bf-e89289fcdead|D4
+131906ab-095b-4c49-b249-278f7a357bd7|D1
+13525b36-8f35-4a09-8c21-c5a21c9d154e|D1
+1397fa90-180a-4c8a-8e41-3ab1ed9a4fb3|D1
+13b7b0ea-9cd6-45ae-a8fd-1035a89d6eea|D1
+13d47350-ec1c-477a-afba-4146d0d0e9e0|D1
+13ee6f98-2997-43e2-aab3-a7a46d8ca398|D1
+14915a17-e3c9-4e71-b3ec-29bb20639ddf|D4
+14ac55aa-9aba-47d4-b1a3-62ce3fcb5a90|D2
+14b2145c-7b22-4be6-8e51-72e6713a4568|D2
+154c46df-323a-453b-8441-d3754284fa71|D2
+157eec37-e602-4c96-a6db-9e50264c1611|D2
+15c02490-5f52-42d2-a8fa-d4ecc8277a13|D3
+15d0144e-0eed-4ae4-899f-652990084a37|D1
+15d4a6f8-67fc-41ad-9c5e-2622e0a0cbbb|D1
+166c289a-edda-452e-8f47-e779c7153fbc|D4
+16819c28-c86c-4037-851b-2f54160b98f0|D1
+16b6185d-371f-4f54-94bc-51bf1770f70c|D4
+16b7d54c-be1d-405f-9573-c51b7e27cce6|D2
+16e6c092-2544-4fd2-9c62-df8f05ac8295|D2
+16eca68b-4ca3-4f0f-8631-31b140b15f50|D1
+170dc865-f23d-417f-8ec5-3f8b02696b39|D1
+17b83553-2f8c-44fc-92a0-44eede2799d9|D1
+17b89c99-fa06-46df-9b7a-4b12bdf7aab5|D1
+1830f7b5-fbcb-42f5-9eb9-1fccfd5d8e8a|D1
+18530d1d-0fc5-41c9-b1a7-7caaea298ed8|D1
+1865aab5-e12a-4220-a1d6-0cc0d12c62ec|D2
+187c0c23-dc8e-4bd8-9d24-37793d2e8ee9|D6
+187cc540-f0c9-41ca-9af8-9c79b9c449dc|D2
+18a3b1d6-7743-47b9-83f7-ad24c5c47ae6|D1
+18d0f107-d869-4d68-ac39-47dee3d24163|D2
+18eac218-16c8-494a-ba09-144cb10a61b3|D4
+19233bf4-305b-469d-bbd7-27e37dc1fee3|D2
+19863780-c68c-4412-a12f-df3a54b2939e|D2
+19e52cb5-ac8c-4b7c-b784-ea0ebb8a7985|D1
+19ef7b56-03fe-4218-8fc0-a7c51f2ba7c6|D1
+1a23b767-3561-4f75-8b30-c2dca2949fda|D1
+1a2e70d4-4c5b-455c-ad9e-952d0a6dea16|D6
+1a8ea804-1bbd-46ce-9f00-38d6b05feab1|D1
+1b23d7b7-b3df-4ed7-8779-4d71fdab5dc8|D6
+1b25d88c-aa7a-4327-aa15-5141e5a9260b|D2
+1b5a5814-ddc2-4bd1-8cf7-0e9437732568|D1
+1b6cdc36-9b8c-4ea1-af1a-7349d0b138c1|D2
+1ba7438a-8975-4a6a-a3db-a5d5c120f2be|D6
+1be61e39-b381-406c-b497-73b2dbb62297|D1
+1c7e6df1-8fc9-419d-8281-aff4c2814c83|D4
+1cc8f9c3-8d97-4b7d-b9a5-54dabb91bdb9|D4
+1cfcad4f-a857-48b9-b8b7-f3f17a18e7ac|D2
+1e3ad478-929e-4cd8-a991-9d02f1402796|D2
+1e99a2f0-2612-40f1-bb87-c721363dcd4e|D2
+1f686d80-dfd4-41ce-8473-d4b689d2baaf|D1
+20199019-b09c-4c35-be72-ca4030d36b12|D1
+20404142-4dfd-4581-a719-4b150f194bc2|D2
+207126a1-bdda-420a-b407-764be708f216|D2
+209443bd-1d3f-4c92-82e4-833dfbae26d0|D2
+2116a787-4307-4371-acd6-0d53b37cb26a|D1
+211f9b54-4220-4b9e-8ffc-950c356aa04f|D2
+21380507-f4f5-48fb-8ecf-2107584641d1|D1
+21e41f3d-85a7-4704-b9d9-370458cd5b37|D1
+224f1f65-81ae-4b07-b0fb-42dc123eafc7|D2
+2415f66a-330e-4dae-bf93-ebe941d8892a|D2
+24eaaa36-8501-45a4-839e-cea5e1ac21aa|D1
+253772e9-562f-4160-b394-787ed72b729c|D5
+25bc99ea-4f17-4d9c-b7b2-45410bf3782f|D2
+26062d9e-78d2-475e-85dc-3f7e25ef2e3f|D2
+26470f91-2e38-470d-9211-f6bca357e7ba|D2
+26d3c6f4-7658-4319-8b97-d302f6765892|D1
+26e3a67f-1b50-4913-b361-65601de6a166|D2
+273f8b83-6b45-4046-8101-a99a2730e86f|D2
+27890c97-a0a2-4389-ac2d-f2b2a169415c|D1
+27bb69ef-cf73-4548-b928-cb723ac43db4|D2
+28239478-300e-4f09-9585-f19e89bdaffe|D2
+2832b193-af6e-46f5-8d73-1b7051e6c105|D1
+287e4d1c-fa44-474f-bc18-91af6420ad42|D2
+28cd5694-b9d5-4c84-9d6c-9befd57b5846|D1
+28e6268f-565f-47fa-b26e-66c7b951680b|D2
+292d8839-be37-4160-a5c2-b2abbbec0889|D1
+2989283d-8d40-430c-ad57-09aef0cceb92|D1
+298ca969-6d4b-4d7d-9045-a59ad4ef0e62|D4
+29e965f6-0751-4554-8f1f-ba8745c57701|D1
+2ab2c04f-2277-468b-8fce-bcb2df96f691|D2
+2ac1c1aa-09b5-4a84-800a-864a62f3a808|D2
+2ae46f62-60bf-459f-8115-a9358f36763c|D2
+2b072cb8-0d30-4410-bcb7-f2a6d655994f|D1
+2b0c45ee-0e66-4640-ba33-1c843f1b661a|D2
+2c11cacb-df21-439e-a813-d8d15e3fad94|D2
+2c3f28b8-f9eb-4b08-bd78-3eda0b4e6dc1|D1
+2ceefadf-a67e-4149-8443-a57d7ada1c58|D1
+2d1750ae-e575-4fb5-895c-b73a24f8c3f9|D1
+2d18dcce-e90f-4ab3-8879-59f66ab0ca70|D2
+2d61356c-df67-4cb9-8ed3-801185b0f2d0|D1
+2d845158-e2cc-4326-abd6-93e175e899ce|D3
+2e08594c-6d0e-4ca0-ac81-06044d2723ea|D2
+2e40d6d1-faf2-4c77-912b-47ab58d004eb|D4
+2e6ed1d5-eff7-478e-818a-e3a77f87614f|D2
+2eae204a-685d-4257-ab7a-1826d72c0ee2|D1
+2f1b6d3e-e161-493b-b3a8-944a30bb87cc|D1
+2f2317fe-9452-465e-9bfd-22bc1681b6ed|D1
+2fd062af-e75b-40ee-8fc1-351cc01342ee|D1
+2fe2ef20-871b-43c0-a302-b4ab71681174|D1
+30895ad2-71a6-4286-956e-24d01214e086|D2
+313688ed-3a06-433f-8aa8-860c5ce12669|D2
+313ee628-ada6-4108-80b0-de7682676400|D1
+31693af7-ab13-4c39-9920-8093c09ef3de|D1
+318df1ec-d831-4fe7-ba6c-554ca0c78a5c|D1
+323f0f6a-b63f-465a-b4f1-0c11465788d1|D1
+329bf8ac-3392-4193-8bf6-a67542105fe7|D4
+334198ae-c394-48f2-83f5-af515905200b|D1
+33433a0f-63e2-4946-a4e0-d2d078e8586d|D2
+334ecca9-df55-4144-8f0f-a6f614763b0b|D2
+3383ff31-34cd-40b0-8717-eb8dd464b8d5|D4
+33a3dd5e-1bc8-48e9-bf15-f82d2a0ead03|D2
+349a0494-247a-4194-b3e8-6c604452fe8b|D1
+35330eca-7576-4e2c-b4a3-b43d28975fbc|D1
+35c6107e-8e9b-4ebb-a4e9-91f551cd1a3a|D2
+36f54474-01e8-4d4e-ae52-8918aeebb212|D2
+37313d68-3e52-4509-80ef-a7fd3647f6da|D1
+376eeb3e-8b99-4d67-accd-c5fbfd260259|D1
+382b35f2-e12c-4ba7-afc0-bb944fb65e5b|D2
+384ee9b6-5482-4a28-83fc-a43dacf05d74|D2
+38697d2e-5714-4a76-8b59-062288d810de|D1
+38b538e9-0dba-46f5-982b-794f569f725b|D2
+38ecbbb7-252a-41c7-9919-6bf75232ea27|D2
+398f89db-5386-4b0d-a1d9-bf8a8175bb1e|D2
+39b77cba-f965-4af4-a303-36bf13ab7027|D4
+39ccb809-d61e-4855-a4d8-72ffea68887b|D4
+3a0e52d3-2270-46b8-b44b-658951f13f02|D2
+3a3671c4-b09f-4f5f-a721-23e2b9f527f2|D1
+3a454caa-f772-4540-9489-335fd180a71b|D2
+3bd71743-430d-4d72-829e-585bf4de923c|D1
+3bdcebd4-8fd7-462a-b295-b4aa39f1ab54|D4
+3be5bc70-889a-439e-83b3-cc0130dc42fb|D2
+3beb5fbf-4da6-4d1d-b888-d5ce90564e6d|D1
+3c03b74a-9b5e-47de-b2f9-8dfe0cf39251|D2
+3c0ab052-beee-43bb-abb0-cb6f75c4c4e2|D2
+3c16e3e2-626a-446c-910f-327e6aa82510|D1
+3c269594-8362-4ffa-bbd1-062570c9846f|D3
+3c45f7ca-712e-4287-b2f6-30af6d2011db|D1
+3c47c22a-bb19-47a1-b7dc-bacf2522c797|D6
+3c60c7ee-5ab3-447c-99ea-0cfaa28a4622|D3
+3c68e20e-0031-4722-9aa0-1ea2733d4c52|D6
+3c6dab52-eddb-42a6-a1d4-d901b18a9a05|D1
+3c8f37bd-9c49-48e8-8f3a-e36f625d37e2|D1
+3cc5946c-d512-41a1-bc47-084bf288df8d|D1
+3cfbd9f2-d0f5-4e64-9519-f87c68047813|D6
+3d0c0d40-48a4-43ca-9dbc-b5f00ea0086c|D1
+3d39e5ee-7eeb-4846-a208-170b96b6bc4c|D1
+3da2bf52-8ab3-42ab-a299-aa1f7ad927f1|D6
+3df01931-4806-4c99-9903-407ace277ab1|D2
+3e4dd48c-9fec-429d-9e57-9799824ee5a9|D2
+3e5ab6a2-e2c3-4477-a73c-d16787500800|D1
+3eb9a2b8-4f62-4013-935e-ecd29f3f8618|D2
+3efd2636-9f68-4aa0-9780-cff84b9f1ebc|D2
+3f4939ba-1afe-476d-9e61-039a7f6ffad4|D2
+3f5d2bd0-4ac7-42bf-a05c-88c9a27d056f|D2
+3f77a02b-c87b-487f-ae11-abee25ed3a58|D2
+3f7c5b37-beb2-4f97-bb1a-0ffab03d9d17|D1
+3fb2aa66-6bf8-445f-ad20-8e72c0bd4918|D2
+4036709d-cf3b-4c7e-bc26-019c91917060|D2
+4042f395-e77d-4ca9-b06d-d111282076c9|D1
+40570b9f-5987-47b2-b3c6-ef3ce233448d|D2
+40640c25-ceec-475b-831a-18c092d462bb|D2
+40937b36-d3ca-4cb5-bb89-c17488bb05a4|D6
+40d7b6e5-65e1-4a86-9582-79dcf3d95a6a|D1
+411a13fa-3d82-4f99-9c25-25e8ff1fe544|D2
+419442e7-1a90-41db-82ca-a8eca2825eb7|D2
+41aba5ca-5b82-48d7-b19f-c614e7d9192f|D2
+42ad4143-2469-4ae0-8510-14507b614b6f|D2
+42d7d1a8-379f-4ce8-b17c-6c86f79a59c3|D1
+43141356-bba9-4be1-bb90-f1b159df62eb|D4
+43433dee-f492-4c97-8aae-00ca93eae017|D4
+43470a4e-1aa5-4752-9e47-014ba878b110|D2
+43d53991-a87d-47ab-a5d0-4c97f99f8f54|D2
+4437740c-2f53-43c7-ae41-0e8e82983f64|D1
+444db9bc-4fb6-440b-9c96-773b5e765acb|D1
+4459dce4-7898-45df-83a6-b8b9ba774f87|D1
+4465297f-65c1-41af-ab68-db52c08ad627|D1
+449a2b73-0c98-4e48-8269-c298519bf429|D1
+4589a955-2f36-4c18-9415-0987466b185b|D1
+45ce1c01-5c65-4f9c-846f-0caa5aa7ae76|D1
+45e30a21-9fa0-4a41-a458-4e9179a4f86d|D2
+45e5621a-6dc5-41c1-aba6-242562fdb9f3|D1
+463273fc-26b1-4c73-8701-c5ba1bc57095|D1
+469744f0-e5f0-43cf-a9b0-3725e2278796|D2
+4722879f-bedd-4369-9504-0ec90410a577|D1
+47247cf8-9c13-44e3-8d12-2a96ecfc2e2c|D1
+473f76b2-3002-412c-92b2-e244c9641358|D1
+47641fc1-3ffb-4d9f-9b9b-849aa65964b2|D1
+47b00115-54fe-403b-9724-a0f07f82016e|D1
+47dca876-72fc-477c-bd7a-79a1e2801f57|D1
+481d2083-fc7d-4be5-b1b8-cda597e8ec09|D2
+48377bfd-4cfb-4706-b47c-e4e7ea75760f|D2
+485f1953-7644-4eeb-ad5c-595de849b3c5|D1
+48b8aaca-aa35-4a3f-8fba-299c26dc9524|D2
+48d0c038-0229-44c2-8ad8-92087d89687f|D1
+48f7c975-7582-4f6f-8ea9-c45c70a60c12|D1
+48ff95ee-de87-43cd-9517-07968bc876af|D2
+495c8fb1-e018-40a6-871c-4fc0c745635b|D2
+498149bb-84cc-4d39-90e2-39ee6eff0e8f|D1
+498caa80-7e37-4bef-aae1-6572a8a0a7fb|D4
+49951ce4-52d3-445e-b3d8-855ccb737f47|D2
+49b68281-b5fc-43d7-97cb-8e5c2e07c028|D4
+49b7231e-903c-47af-9695-3870342a99a6|D1
+49c14368-911f-453c-abb4-b3084052e89b|D1
+49db7f00-56c6-48e5-b420-0cafef1786b1|D2
+4a063d3b-1c61-423d-be40-86b0ab8a1d65|D1
+4a818a8e-6ccc-4d0b-b595-ce4410fe269f|D2
+4a8426e1-7a26-4403-9649-3dc460da096c|D1
+4a86ef71-736b-4d07-bc4a-81ca1db408ac|D1
+4aa46fb2-3dbf-4820-8d48-f97f889bcc85|D2
+4aa56072-0444-4980-a71b-345257b44fdd|D3
+4aa705b1-54e0-4f6e-ad4f-4ff989ed1580|D1
+4ab46277-5648-472b-9442-f7050555f74b|D3
+4b35a4bf-ff04-4e25-a15a-2ba2bfa19e2a|D1
+4b4c22b9-02b9-48be-9ef9-c4f392276d93|D2
+4b6157f5-6aa1-4f71-bce0-40faa0c88171|D2
+4b933fda-70ba-4a60-8cd4-7d8087392918|D1
+4b990726-0c1e-4b4a-996d-3544017ea6ed|D2
+4c629c79-ce71-40a1-8c60-45252ccecdfc|D2
+4c699128-0658-4ee0-83b6-a187a4730e2b|D6
+4c72ef9c-aba0-4d1b-9680-ab0c779d5d2f|D2
+4c7bd2a0-d776-42f5-9425-74ffdd79d19e|D2
+4cf80e8a-32fa-4845-b491-553479317897|D6
+4d220fb6-0cf9-4c9a-9dce-9b4632166464|D1
+4d2d43da-fa88-4b95-ab10-90b4e55a0852|D2
+4d524c45-3f93-445c-bf59-85bfb33f90f3|D6
+4d561053-6b11-437c-b321-423bb59c3cb9|D2
+4d56a0c4-10d4-4e14-bd46-b6d835540eca|D1
+4d7d3427-77b9-4361-9a37-75b8c229ab6f|D4
+4dd989e7-fdd9-454f-bbb8-6a0fabee0e32|D1
+4ddce8f8-eaa6-436d-9f63-45558f0bd750|D1
+4e63223c-8133-4d8e-aab2-5dfe6d80a67c|D2
+4e6aeb69-e923-407e-924e-33f2c1cc9f11|D2
+4eab2507-e458-489b-bdf0-6dce644f67ff|D2
+4f45a711-ae30-4188-be07-a0a94373fe64|D1
+4f718536-a297-4495-b625-8a71cdf0f831|D6
+4faf9084-b306-4d8b-9d3b-0eb26e9b9d0f|D2
+5041c022-36c1-4ccc-baf6-bbe3d3dd2ebe|D4
+5066913b-c86a-413d-ab5c-e772e94f9b07|D1
+506c2640-5819-4694-98d2-1002339a7019|D2
+50839a70-30d6-4c5e-b03e-d1cba6620f3a|D2
+50e2f662-b570-4688-b221-5a10b52ef50d|D6
+50f9a30f-a98c-404a-8cb4-12dfb5802bc9|D1
+51655c42-0dae-4c1b-a763-9c6f2f07c93b|D1
+520b9e6a-0b15-4102-bebe-7ed4c33e5fea|D1
+5216780e-57d3-486e-a299-b6888236d04e|D2
+523393df-f98a-4932-87e6-7b93b0ebd17e|D2
+52561980-57e4-4048-8b76-585a0ba79fe1|D2
+52cb8eec-7ab4-4314-890d-18f0cbb6ef00|D1
+52ccfd8f-e4ea-4cea-8731-308341c1ea48|D2
+53f4f0bd-72d3-48fd-8bcf-e232e6812a15|D1
+541aa171-1c10-4fa6-99e7-fbb277fd6d16|D4
+542402ff-afb8-4a7c-95b7-57986b2dffea|D1
+54910231-e9b6-4a84-9739-9831bcc5f4a8|D1
+54d73843-0403-4029-b4b0-b279b5f1d798|D1
+5541f2be-b0c4-4512-a924-b944a720cc03|D2
+5597e2af-b261-4220-8e9e-fe4e69f17c5f|D1
+56917b61-7093-4652-8277-29d643791063|D2
+56bd7148-9151-4c0f-a702-0ef47e8a63dd|D1
+56e01a80-269e-4dc5-8c25-91b00fbaab8a|D6
+570e147b-9077-4b3e-b1e8-dac8d248006e|D6
+573438c9-78bf-44cb-af63-7dd2964ef2e3|D4
+57431650-56d2-4caa-acd8-e3eae91f3cb7|D2
+575ced55-ca85-4c27-b3a9-abe2bac272cd|D1
+57808baa-cb8d-47af-9256-05d90f568633|D2
+57929aff-2404-4517-9b46-2f1ff4cfe4e1|D1
+579956da-58f4-41fe-bfcc-da0327b79e1e|D1
+57ba4d45-3099-4bef-8239-6b3743986450|D2
+5801b6bb-240e-4f07-a6fd-c1408cd42fc5|D1
+5816489e-96d9-4f08-9479-74b88a6018cc|D2
+584104a8-5790-412c-a562-72726d7cb04d|D1
+5853a505-123d-46e9-939e-229268bbe751|D4
+58d044b0-2f49-42cc-952f-d10e6c26b20a|D2
+58d57dd4-ae8b-4763-adfe-3cc3e8759277|D2
+58dde552-fd5a-4202-a7a2-b1165ae3ea84|D2
+592298f7-3014-49bc-b216-efbc95105bbd|D6
+59446a22-befc-4688-a0ad-c9d36b5d9d19|D1
+59bf5bb8-b918-4135-8eb1-2989dd8bbdb3|D4
+5a79b260-2e87-4af0-89ca-16f48d13274d|D2
+5ab51665-1187-4800-92dd-b27f74b666ca|D2
+5aec34d7-f5b0-43ad-9055-d924f9a3f03c|D6
+5b755dfb-ef2e-4e95-94c2-77eaf3ecf46a|D2
+5b7675be-44f5-45cf-9b79-2e7b45b4cce0|D2
+5b9441d2-f964-424c-99d9-a13890cfe608|D4
+5bb1be67-3a4a-440d-9bd0-14a64796c385|D2
+5bb29848-644d-4f37-b346-6585aeb12364|D4
+5bf34c41-b1fa-47a1-b358-b399085bbdad|D1
+5bf72eab-09b1-43f6-aa65-11d888d92f9e|D1
+5c066f28-9d46-4886-a616-c7befaf3933d|D6
+5c213cdd-724b-4000-98d4-32b0a67b80d6|D6
+5c28775c-7de0-469b-8855-97815aac40f5|D1
+5c6ce7b3-e275-43f9-80ff-71eff7347c86|D1
+5c959efc-34aa-4f0b-9aee-b32a6fce973a|D1
+5c9a4e60-30bc-404c-b70b-6f94e955bee6|D2
+5ca5ba8f-215a-4788-a8c2-0f566ba22441|D1
+5ca6e162-9331-4246-bcff-87328ce87121|D3
+5cc0d070-c4ec-4552-b35c-c7d03492a39f|D1
+5d5083e4-b0ec-4a67-8329-4a3ed02841bc|D1
+5dae0dde-c0ff-4973-a6e2-7fb09cb980bb|D1
+5db9eeab-548f-4989-80b0-9611ff918dad|D1
+5deac98d-cec0-47ee-9152-fdd104d8fd36|D1
+5e0729da-20dd-423c-b07b-4cd55ddd2838|D2
+5ed328e9-9304-47e6-8fb2-e61dee3b1c23|D2
+5f0cf0a6-a639-4b4a-8da1-2783d52cd732|D1
+5f43a498-0269-4e2d-aa6d-60f24d528509|D2
+5f4c0e64-f802-407a-8c59-d30623a1284b|D4
+5f77cba5-7336-4d6a-9638-013df3e66976|D4
+5fa8673c-feaf-4dee-99f3-f07c7b8dbdb6|D2
+5fcc5a93-b107-45b1-b853-24664eb2e6d8|D4
+6020f9ef-9bc0-4a65-87f6-c4d84f601f4b|D1
+6086d0fe-1319-4532-9ece-1cc2c468a31c|D2
+608c46a5-3449-456f-bca2-0ae7c21f2f3b|D1
+60de0762-6de5-46b7-b9c4-48871c4e8b8c|D1
+60e780f4-5354-47d7-86ca-64eac835a8fe|D1
+614569cc-8eab-4a0b-a117-de69ab082086|D6
+6178a7af-36db-4b0b-94a7-cabb733b9138|D1
+61808611-eced-41cf-b6cc-a8b8cb6c0b6d|D3
+61b022af-291c-4b09-b8da-cc43baa279f3|D1
+61b33cd1-9d53-42a8-a879-daf3f03461f4|D1
+61e96452-5f36-4af0-a78f-ca0e8a1ad083|D6
+6244e86d-22b2-4d52-83fc-882899ddb943|D1
+62e435a4-e0cc-4c2e-aa55-71b73deb63c3|D2
+62ec0c70-679d-49b5-9e3e-b9e058b5c184|D1
+6330b583-aa60-44e0-82a0-adb1d6c3d6ab|D1
+636fe437-372a-4283-85ba-10e6f69bc424|D2
+6379d97e-9362-4e1d-8016-94ad8ec44d5b|D4
+64273d7e-6692-4769-975b-392f9eee5edb|D1
+645a435b-b29f-45be-a45e-b6958b158b8e|D4
+646ec95f-55a2-4b1e-a6e4-8ed19b45caa4|D4
+6473a91c-250f-4dd3-809b-5a34d5a209b3|D1
+64c59bc7-4213-466a-84bc-26a000b00333|D1
+654001b7-8d3c-4ed3-9e35-e80415caf4a5|D1
+66380d91-884a-415f-8beb-d61a7e67bcec|D2
+66506751-37bc-49d1-9c81-0a09c01317ca|D1
+6663a610-16a1-49a4-91bf-edd1bf8debc1|D3
+66869edb-f059-4b51-ab2e-27e67c844776|D1
+66908ec9-1fb3-45fd-ad27-e2f92a963aab|D2
+66a1ee94-ec4a-4530-bddf-d3824f85fd08|D1
+66a2c08c-d354-4cea-b7d1-d08f03ed9333|D1
+66b98180-a89f-41f8-b2d9-7b0c4144b0e3|D2
+66c7a285-6df1-449f-9572-17f53adab185|D1
+66d54c27-834e-4ab4-9100-7b128dbb62ae|D1
+66e3cccf-4391-433f-ba79-d507d8d1dcbf|D1
+66ea6ecb-04e5-454b-904c-ff1297c80fa9|D2
+67898159-f0cb-4916-8fa1-2dde06b3d182|D2
+67e563ef-893e-4ad1-b53e-72fb562608ce|D1
+67ebf927-9d6e-484d-9822-b693068b0d88|D1
+680defe4-b1b4-4012-be98-0e71c08ac623|D1
+6852d575-3cd5-47df-9807-449f4bd02472|D2
+68bda8c4-b408-4308-bc52-e9c83b6446ad|D1
+692109f1-5387-4b55-a7a5-d3ee5184f5e0|D2
+6930bf36-b180-4692-a85b-d32ecea4eb50|D2
+6964e91a-9922-4e75-81e3-22a64ac2f32b|D1
+697b325b-ae6e-47af-917a-7dc34c891dac|D2
+69925a0e-562f-4b2c-a4e7-f092abcd68a3|D6
+6a5607a3-09b2-423f-a946-301a52381324|D2
+6a7e84cf-0d3d-471a-a3b7-ae1e03841d07|D2
+6ac2d447-81d5-4230-ae49-d378002adbef|D2
+6af8682b-adc0-443a-9c3b-2d1c18119e2e|D4
+6afb41b7-b716-4c03-8615-1a0942c643c5|D2
+6b0467af-80b6-4340-afff-f118f641d2ee|D2
+6b3aaf2a-bb0b-4ad2-94c9-2f4be7464ec7|D4
+6b9434c4-38b1-4270-87fc-41f449aec25f|D2
+6b9bea3e-1716-4c2e-81d2-27d374c23d5f|D1
+6c211a67-2db1-4beb-b27c-c62ab91fde64|D2
+6c80a1af-a4e2-458e-87c9-ad0660d8abf1|D2
+6c81f20a-23fb-424b-a53c-ba5511a609bf|D2
+6ca54b37-43d5-49b3-9044-80678e785f3e|D2
+6cb8fff4-52c3-4631-a716-5223b1af5885|D2
+6dc2ed04-6bde-4b63-9bbb-ce3e9ca01baa|D2
+6e4f1992-240a-4eb8-8e90-399bc85d46b6|D1
+6e7dbe51-784e-427c-9874-4237c9e52816|D1
+6eb04ac5-c779-4467-a349-3fe9a6513f15|D1
+6eb3ad36-c85a-4e5e-8f30-6e92814d043e|D1
+6f207515-d676-4fbd-95b2-2c8431f61b4d|D2
+6f26a059-3ae2-44e4-8eba-fe738f2b9183|D6
+6f91a0a5-8690-45d1-8daf-57100ae9e4ae|D2
+6fe2a298-aa65-4fcd-9aad-bbab99f286a5|D1
+7071c159-799a-4b19-a547-d46d8f72b7d6|D1
+70a35510-d158-4f6b-a6c2-82dd7fa5f792|D1
+70bc7be2-8ed6-44d2-9bf5-ac7308f21e53|D1
+713140cd-197e-40fb-9c96-306983807fa0|D1
+71882507-863e-4d3d-b684-9b76ecb5ec31|D2
+71b12956-0fdf-4656-82de-a1c76778e1d0|D1
+722839e3-47b4-414f-b260-b62a39dda683|D2
+729318c5-0bce-4e82-b4cc-4e402f1b1ac2|D1
+72983973-8f49-4a0c-9cbf-c518eb3554f3|D2
+72faf05b-c811-4991-9459-68735cc0b47a|D2
+73110168-6dfa-4281-acbb-ee02729d7270|D2
+7346b967-957f-42ba-b49a-b55a7782279f|D1
+737702f3-552a-4fd9-9a6c-8b97bb0f53b7|D2
+737b4c06-13d4-4abc-9a6d-621423865ac7|D3
+739a202e-363d-4914-80eb-f7f405ae3481|D1
+73a559dd-9f56-4952-bea2-67bde75767c5|D2
+743a7513-4507-411a-9bb8-327526e8323a|D1
+74784215-209a-4f58-ab63-dcfb8275e6a0|D1
+7480f974-6363-43fb-a04d-30ccdb727fa9|D4
+74f02588-7999-45d6-9d27-8154ac7389d0|D1
+74ff902d-bfdf-4496-8ea6-f559c70b3da9|D1
+75037dbe-e5ed-4bb5-9ff7-1b2f1024cd5c|D2
+750df0db-f2fb-4956-bdb7-2ebba19d7428|D1
+7562c7c9-aa47-4f78-a403-12a0a3a2fb2f|D6
+756a3ef8-0b17-4f90-8dad-1c9a122510ab|D1
+759f2fd6-e54c-476e-96dd-75701723cad3|D4
+75dd96af-c777-4b69-bc55-9bfca5fdf726|D1
+7663a994-fb8b-40fb-8468-50bf442f39a5|D4
+76768332-cb66-4593-9e46-add910018576|D6
+767cea9b-3eb7-4319-9fd3-ee23debfbafb|D2
+767ecc80-9b62-4261-958f-824df5a7e656|D1
+76c6a812-7d87-4b12-b98b-e8434e2831d0|D2
+76f107fe-2fdd-472e-81bb-c16d28fd8f42|D2
+7703535d-f449-49c3-93d0-e8bb59071885|D2
+770e5027-e2aa-4da2-a175-412820bf3b8e|D2
+7762c54d-24ee-481d-88a8-2e6739d41f13|D6
+77b6390b-b264-4d19-b79f-c7fde71ad1b1|D4
+77e2e677-ed6c-48b5-b092-59a78a315fcb|D2
+7839ab85-cf4c-4304-bb61-17427530673f|D6
+786c4d51-fa92-4a99-ba68-9bc5b1b01bf1|D1
+791c64fd-7d69-4e46-ae99-03be1d6fd2aa|D2
+79234aa6-720b-4a09-9075-65d6b3a68f00|D2
+7954c32e-5b3b-4a91-b5c3-51893fcf65fc|D2
+79f60437-28f7-4938-a539-1ae4f6768931|D1
+7a0452f2-3817-4290-b444-ff33ec27b2d2|D2
+7a36c9de-fe60-42c7-b409-5892223bf95e|D2
+7a88f4c9-69c9-46d3-9439-d347d487944f|D4
+7ac13035-ce32-43b4-b9a5-6f88808ea508|D2
+7adcd1b5-7109-4aa0-9510-583584af68da|D2
+7c757e78-68ab-47a8-aff7-be53ccc89c77|D2
+7ce1592c-f22a-433a-bd37-1c6a2ddf35e9|D3
+7d5dfdeb-9bfa-4caf-9138-9b32f54ee043|D1
+7da9dacb-42e4-4fca-a808-bc32a19acf88|D1
+7e4795bb-e129-48d1-83ae-82a0a7cffd24|D1
+7f28b4fa-5510-4e0d-8426-b62c3b0a2cd7|D2
+7f30ee61-0343-41fb-8d30-518fcaf18bae|D2
+7f579239-ba9e-4c78-90a9-635e2b2a33be|D2
+7f7b8e49-e5a8-49e9-aeb7-317ca3cac050|D2
+7f7d8173-ad62-45ab-ae9d-648050608375|D1
+8098883f-6d00-4065-be38-d5206bd6111a|D2
+80d86886-cd23-4b32-acbf-e3d64f78246a|D2
+81599088-9b30-48cf-a571-b95d52e1b5cd|D6
+816defcd-0a02-4433-b948-27d931357558|D4
+81ceac83-7a58-4a09-906f-e95dfe6b474b|D1
+82353e2d-e875-4e07-adff-99393df41ee7|D2
+825eda73-92c7-4835-8b95-577a146358f2|D2
+82d73038-6f2e-4338-b9a8-848c96450903|D2
+82e0a009-29a9-4c95-a7a8-819e0dbaf449|D1
+82f25679-7f0a-41f7-ba26-41a1526a05fb|D1
+82fd8419-adc3-4c93-beb7-42cd38d1798e|D1
+832a62a1-b0ce-4d74-807e-6d6dddcb039e|D2
+834b8afd-8699-400d-b797-56dd9a601577|D4
+836bd981-ab1e-4b57-ab02-7e2016ad67fe|D1
+83815b30-8a7e-49d7-8bcd-2912ff119351|D1
+83a07027-cada-4dab-8f02-9a66acb26aaf|D1
+83c11ca2-1da2-4749-950e-e2db642d7a2d|D1
+84049a84-fb60-4bfc-83df-0a21688e8762|D1
+843ae2a2-d573-4997-ab6d-0e26b318576e|D1
+84b9ef4a-acd7-4c9c-97fc-ed7b609dd28f|D2
+84d3ecb7-958b-42da-8a4e-740373685d04|D2
+84e0b57d-5343-4cab-83ed-19b5bc256d82|D2
+850257c1-4be0-446a-bbd3-6ab14fc69818|D1
+851346a1-37f5-49a2-addc-f5dd034a4af4|D2
+85a5be22-d1b3-474b-bb21-3b2a67a97397|D2
+8628a15e-ded0-45cf-8ec1-871e2ff71bd6|D2
+86cab387-69da-4e37-ac67-f6f2ba06bbe5|D1
+8732aa9e-51eb-4a58-bfa5-62874ad4e08d|D6
+876e68ea-2a5a-48b6-a94f-af29315bd7b7|D2
+88c3c3ce-6e13-4b9e-b96d-af4c07d88a78|D2
+88cd625b-40a0-4ba9-aaf0-37751d187dd9|D2
+88d22b10-64cf-42fa-8e87-dd906d73cdfa|D1
+899683c2-6c23-4799-ad7d-019d5a0a9c14|D2
+8a1082a0-0040-4113-bcea-b53e50f7c7a4|D2
+8a38e8a4-cc27-4060-aa4f-a82f378c5e95|D1
+8a4ae3e3-8631-4d72-bbba-c52125dbbfa4|D2
+8a8fb3d4-870d-474d-9cab-0fa2ce5fb610|D1
+8af934fc-363b-4a8b-812e-ac4643291d65|D2
+8b35cee2-5a09-4266-8461-018bb7bfb4ff|D1
+8b47f020-b3db-4119-a985-38ce64ceeb4a|D2
+8b6840ab-f5d6-47a1-abc7-121fe5afee3c|D4
+8b8962d6-7133-4dfe-a22e-ad57c9a3f01a|D2
+8bfd4882-3175-4d03-93da-d3042d1c3d9b|D2
+8c050a43-51b3-43f4-93f9-6a96f43ea24d|D2
+8c1f16cd-ea7f-47cf-bd8e-7782e00546df|D2
+8c477c17-2d61-45e6-a76c-efd49ff10120|D3
+8c884f3a-1f3a-464a-aa41-cab218484661|D2
+8c91c9de-82c0-475f-a01b-98746b473806|D1
+8caf560e-8666-4adb-bdda-2bc1326cd863|D2
+8dd6ab00-ccfc-47aa-ab09-eac0e543c835|D2
+8dda0a9e-824e-4a2c-888c-3d1c363d64ad|D1
+8ead2271-c4d4-414f-a25b-c7edfe33b2ef|D1
+8ef62af2-c488-4e60-8279-2e68682eea38|D2
+8f14e7ba-0763-4b45-9dd5-f15749ebd6fc|D2
+8f2cd216-3310-4053-b7dd-9c3bbdeb7454|D2
+8fdde401-b30c-499a-811a-8fffdf192b72|D2
+903e08a5-7fc3-4e1a-85cd-b1e8b8e13f94|D6
+909dac7e-53e7-4016-bc94-de5a2d8395a2|D2
+912f5964-0274-4401-9a23-9b0ce3fa5768|D1
+914a9973-d465-4060-9edd-62e62212b4c5|D1
+91a8e147-b294-44ef-9028-308efe6cc278|D2
+92145d9e-e79c-44f2-a2be-4ab98f3e8f60|D4
+923e7c10-6673-422c-8b75-9715f67094c8|D3
+926ee65f-d0fb-4f6a-9544-09fee3677ad1|D2
+92708031-37ba-4d0f-bbb5-0e5f3c3ac8b5|D1
+92b649a2-bac1-42b3-88e8-bd15b85e21a6|D1
+92fe470e-bd50-4539-8588-3403ce9949e4|D1
+93733fdf-0728-4afe-bf19-0512887184bd|D2
+93a22bf1-3646-44ef-b240-81c769fe92ea|D1
+93a416a4-c961-4dcc-9133-996ebae7f032|D1
+94122215-9080-45e1-b617-2c5c1263f693|D1
+952009af-06d9-4fc7-9ede-3858dfa7e28b|D1
+95281265-8039-4ceb-81a4-e0c35d49367f|D3
+9673c1ec-edb2-43a1-b67a-da018310b803|D2
+96b79cd7-6848-49dc-bf3e-82f9d9f074cd|D1
+970b1376-beeb-4bf9-92df-e091c31d6310|D4
+9711eaf6-daa6-461d-80b4-f9a9fe511176|D2
+971f8746-8376-4575-b7bf-5aba3618dc56|D2
+978ecbd5-f4c8-415a-9477-899dd71e1bef|D4
+97990b59-6153-4643-86c8-263919b3428f|D1
+97c043c4-39a3-4558-99af-274cd40bc066|D1
+97dcd8e4-b3a2-4f77-8688-5060caccf6a8|D2
+97fad903-4e61-41fd-801c-5ab112c6fef3|D2
+980953c0-3d62-4909-a416-88da1b513c2e|D1
+98996db2-1d52-42f7-a4e1-c1c20abf9a61|D2
+98db3d83-bcc2-4540-9b87-2d3817e6adec|D1
+99801779-b9e6-4e8f-ae1c-f7bc85091c7c|D1
+99e22280-b613-478c-afb0-15b1914305cf|D2
+9a5cd47c-64a6-4720-81ac-d5ba1823fb5c|D3
+9a681410-b509-4f7e-b0a1-7ba88d801d04|D1
+9a96f2d6-ec63-4f23-bac5-a5e839249a20|D2
+9af29f54-bf2e-4394-9f50-a3988651f186|D2
+9b2f713b-39e5-4086-9741-25444a5b2a26|D1
+9bc1944a-0a54-4e76-a9db-5f2a3b169ea1|D2
+9be5971b-ef8b-4e6c-b338-98121e8d2289|D6
+9c168e0e-e049-4711-84ab-6ada2eb79907|D1
+9c1e4cd6-59b4-4c1a-8550-c546ae169e24|D1
+9c5e2a0a-eb80-4e7e-9e3d-72c171503b39|D1
+9c6d2d91-ed62-4930-a234-77fb8f40f1c9|D6
+9c8fd5d7-f5f4-4535-a3bc-6a0c09d49a60|D2
+9cf23eca-5366-4311-8b0b-1c67728507be|D4
+9cfba9a7-90bd-4a18-b4ec-ad897a981808|D2
+9d65a7f7-c517-4ccd-a7fc-90a7e2a0c973|D6
+9db6bcda-53a6-4735-86bc-e336ba8a6622|D3
+9dcd3328-4c7d-48ce-966a-5109d6045bfb|D1
+9e03ae2e-cd56-4978-9a8c-f9da2d0732e1|D2
+9e131b71-76c0-4846-82cb-572917aac3d0|D6
+9eac4ffc-87d9-4ef1-8b18-78d394a8c743|D3
+9eb22e31-6a1d-4fca-b336-b9a1a0f648d9|D2
+9f3b685a-b3cb-420b-a40d-cb7720512e38|D1
+9f6297ee-2841-471e-954c-4e79b5470867|D1
+a05f17d4-6e0c-4607-b74d-6d0200ba7a82|D1
+a09868a4-dcf6-4a4b-a775-85ff0b505d58|D2
+a0c40b80-ab43-44e5-8bf5-dc4177805443|D2
+a10fb984-4a5c-459d-893c-1ba5c663a26f|D2
+a138a7c6-1727-4e0b-a0e1-40b7b778e6a1|D1
+a1f4c67c-410a-4527-a34f-fc5a3a4f81f8|D1
+a2029212-ad3a-4d02-8c8c-4e6e2ce96208|D2
+a2229f28-ee2c-48ca-a19b-b4c010dffa16|D2
+a29343f8-2515-48db-bfeb-54d96671a9a8|D1
+a2bef857-8696-4585-a33a-0a0d7e3d587c|D5
+a2efc649-2146-4b61-89bf-a96eb066e62e|D2
+a301a0ee-e260-40b8-9ac2-ba15472662cb|D2
+a3e9d09b-3027-455b-bf56-3eb2ebaf259e|D3
+a3fd38d6-4891-4664-9e5b-4a4a63fe3a9f|D3
+a417ada2-278c-4c4d-9d4e-3899e939f86c|D1
+a420c821-edee-44b7-9276-37fb195f8252|D1
+a4ae5368-a48c-4816-8e4d-b1e794753c40|D1
+a4af2d39-f349-4c52-b06b-43b3cc5900f7|D2
+a4cc387a-3085-404e-beb8-54b033f0ac74|D3
+a4f5cf72-ac28-4c7c-bdc2-e773a3f2a1be|D1
+a523d4f2-acb5-4677-be7d-57e70aa39cad|D1
+a55f9e90-e40d-4556-bd19-8378da458754|D4
+a5fe9438-4675-4965-a328-743fa5611e47|D1
+a608a5fd-3b1c-463c-96ef-4edbbbe4a52e|D2
+a6d158a6-46fa-457f-8fcc-1edf85991edb|D1
+a6df1af3-5c6a-411a-8441-d65f7f563051|D2
+a7f8f7e4-5553-42b9-96f3-53ffe4cdcedd|D6
+a829674c-bdcb-4337-ba86-c2dc63fdbe5e|D4
+a885404e-cafa-4eef-872a-5016311767a1|D1
+a8d5f019-81ba-4192-9dc2-498f4c2f7ef4|D2
+a8db44df-45d8-4348-8e83-5ac8997efcfe|D2
+a915a16a-ea92-474b-b11e-5eb84b490988|D4
+a9a41fae-927d-49fc-ade5-9163c7ffee18|D1
+a9c06416-bc74-44e0-935b-b882863186bb|D2
+a9dad08d-500f-4f6c-9f3b-f110a2a79fe9|D6
+a9ed8ee3-dde6-4433-bebd-f79191462163|D2
+aa3d1c65-e7cb-4c55-9027-531bab7db95e|D1
+aa4fe56a-b3b4-403f-af98-99103fb7b7ea|D2
+aa9fa40c-84d7-404c-bb44-793af8173080|D2
+aaa126df-af05-4fe2-9e7c-ea2f1ca04ffa|D1
+aabaf8c8-f757-4094-a568-81a030fd94bb|D2
+ab4f5165-ca6d-4650-944c-dff5f33c338d|D2
+ab52bb0c-0dd0-4e87-9cf2-7621ecbc9466|D2
+ab849e38-ec56-4555-9462-ac0f397a759c|D2
+ab9cc7cf-7c99-4c65-9d21-6667ca0649f9|D2
+abbcd9bf-8f9d-4d08-ba67-4b7e0bc2cd16|D6
+abd73c80-2f64-4425-91fa-d39a375d2162|D1
+abd93287-bd75-4b92-9bda-8f520c8e3ad2|D1
+acd24ce9-d4ae-4208-88f7-0bbc1d05bf23|D1
+acddd25d-4946-4dcf-b88f-2861181f68f3|D2
+ad349259-f003-4ea6-8e6c-8c674d7475a1|D2
+ae28894f-672f-4c49-9725-38917f851083|D1
+ae75c0f7-ece7-46d5-ab70-0f7c44c7c4e2|D1
+ae9fc095-8f27-474f-b197-b436908f9c3d|D2
+aee16304-af23-4e44-ac50-af66b049a574|D2
+aee9a115-ca96-4eb4-9353-bd596d7d95d7|D1
+af413d72-d255-47a3-ace8-d23ddf46f12c|D6
+af8c43df-e750-423d-876e-a9047ccc28b8|D2
+afa831a1-417a-4696-b04b-386182777d4c|D1
+afb4f611-cd68-43dd-9def-9ba11797a33a|D2
+afbcac6a-650e-4fd4-9e85-f92b55a199dc|D1
+b03c23ad-7543-456c-a99c-0e30f06eeee5|D2
+b06f4c26-b552-43c3-95ff-3aaed509a30f|D1
+b15089c1-06a0-4fc5-9ad4-85600942386c|D1
+b182d4de-96e8-48e1-9b70-54a02860da97|D1
+b193ee54-2701-4731-a996-eed140820d24|D4
+b25e3597-de0e-4265-9981-4b0bcddef24d|D1
+b322762d-9cc1-43d8-832e-66659eb63e74|D2
+b3575318-3c20-4924-8b93-83186de765fa|D1
+b3cda0cd-3df5-4bac-a12d-366c1decb0eb|D1
+b3fb12c1-d9e6-4281-bda4-08a65b20141d|D1
+b41b4d6b-0965-417b-baac-755e1f0cb22b|D2
+b4d56187-0be9-4956-b4aa-0259f939c388|D1
+b4de4752-e6ef-413e-bf41-e39e775faf48|D1
+b4f48220-f218-44e0-8ca3-4745a1765178|D4
+b5533761-6555-40b8-9605-d7aae6372d8d|D2
+b591f230-81ec-4f6a-93ec-7fa7baa90588|D2
+b5a90996-1f6f-4452-86ca-5c5efef2f092|D2
+b5bd54be-e6ae-40a9-aeea-e89bd0f28bbf|D1
+b5bdd3ba-cd34-41af-876a-a089a83ea56d|D1
+b6032bf0-4624-4d83-af7b-0fa043bc5f99|D1
+b6212d56-325c-47c2-9b5a-0af2796930ac|D1
+b6a1a340-1f13-4cdf-9902-65fdf186fe1b|D1
+b6e9c59a-d03b-44bb-8a6d-1f868a187ae3|D2
+b70b4d16-06e1-4f4b-a29e-d89a0e499ae6|D2
+b730b55a-36ff-4fa9-a241-3b4339fd41fd|D2
+b74bc247-3b6a-4f69-8be1-ae997ff95eec|D1
+b76141d2-6a6a-42db-9251-cfd137b10d3c|D2
+b80abfff-3b79-4fc0-a31f-692835ce5852|D2
+b80ce000-566f-4ea8-b8f0-df3125a04fa3|D1
+b917ad34-9668-4d90-89d3-3d865f7b1e36|D2
+b9658e63-64e8-4c37-99de-5ef181910cb8|D6
+b98f0b5b-aa88-4275-8173-9052390d3f68|D6
+b9becd41-e66e-4615-92f7-5b24a7fbb15d|D4
+ba0bbdc7-681d-437c-bbbb-0f0a329747b6|D1
+ba5c20fd-be7b-43a6-b8bb-41d8cf75cea6|D2
+ba858854-ed29-4cff-966f-25374876e6c1|D4
+ba8cf3d6-d7d4-4aa8-a29d-c3fec461318c|D1
+bbde2bf6-0777-4bd3-acfc-25652b7aedba|D4
+bc4f7715-92a2-432e-a838-0a7560278510|D2
+bc749d13-196f-40af-ae3d-82b1ade1d609|D1
+bcefa6db-9e0e-4d9f-b27b-26d0d2d6f2c9|D2
+bd2d25a7-3174-4085-b8a3-2798fb00a70c|D4
+bd4584cb-3d60-4304-8909-18422bd8aa7e|D1
+bd8e9e2a-c6e4-4f61-9f82-685e3e9ac4e8|D4
+bdbe7250-d3ad-4937-94a1-e5c11f55d34a|D2
+be2f9650-175e-4470-83ca-cbd951579215|D2
+be464ba2-1484-4bc7-8087-75bd027814d4|D3
+be5f445b-28bd-421d-a881-c74cac0513bb|D2
+be7edafa-8141-4a5c-9293-50b50666f268|D1
+bf36c39f-25fe-40c1-b258-8c53a6dac7d5|D2
+bf5e52a9-6066-45db-a453-5a6fbf3b6d34|D2
+bf762747-858e-403e-9c9b-ab44681f1dd8|D2
+c0eaa116-fae4-492b-a8a1-162ed9e547bf|D2
+c101e7d5-253f-424a-b67b-eddc7231413a|D2
+c187125e-6bee-44f2-a8db-93140d2bebd9|D2
+c1fe29cf-64ca-4c00-ab49-7af40e70eeb0|D2
+c24b7e5b-f12d-4f42-9804-b2a7f49bcb61|D2
+c28e6fe9-5826-44f4-ba6f-7efdc05861f8|D2
+c29cd6ec-3bdb-4495-aebc-6ed5d6051ad4|D2
+c350f3bd-ee60-486b-8a0a-c73fb36110f2|D1
+c39242cc-7cd0-47cd-94b0-eca90aaa641a|D4
+c426a3ec-ed72-4db3-a5aa-96d9409115ba|D2
+c4cd00f6-b0fe-4180-b8b1-53464bc9b9d3|D2
+c5139fe2-b04d-403c-91ca-c47f855bafed|D1
+c52c568e-8cba-4e4e-b3b8-1b4f0a1ca813|D1
+c58eabc4-5ad7-4872-9b4b-6c76268e3409|D2
+c59b5e3a-8cda-47a4-abb4-9e9280605e9e|D6
+c5b1961c-0ae8-4ce0-b6f8-9e16f544b151|D6
+c5d4f677-0274-4f9b-9533-050c1794e9d4|D2
+c618236a-5864-466d-bf8c-699d6c146e25|D2
+c67a7fa9-f537-4e59-a612-9f32b9280314|D4
+c6d212ed-9edd-4715-992c-219b37c3ca4e|D1
+c7111ef2-7a39-4531-bc6b-df04d9fb9c1f|D1
+c79a79bb-93ec-4787-9ca4-99ba0f778e69|D2
+c7d85bbd-3d65-4338-9e16-3fbac0a92868|D4
+c7e21fdf-0f38-429d-b9ce-eeab361051b0|D2
+c80ed0d2-010f-4643-aed1-45ba8cf0e911|D1
+c8aa8046-ca46-44f8-9144-84b54a7f61be|D2
+c8ca93f1-2e9a-4e73-a22c-d6256281aa61|D1
+c9356466-9179-4b20-9a66-50dc817919ca|D1
+c9955703-5ab1-4005-8644-28dec1d582d3|D3
+cac8116e-3274-4a63-9fbd-bb30e1c2dd74|D1
+caddbb71-abc3-459c-afcd-25c4174875d1|D2
+cb2829be-6494-45e9-bf2c-29436cf5c587|D2
+cb7423d3-eb7f-4785-9d85-418d25884bd0|D2
+cb798da0-ad73-49ee-8a7b-836c788866b5|D2
+cc44a954-a3c4-4900-afe8-e53cf39212b6|D2
+cc470af9-12c0-46ee-ad5b-35e2ca962b11|D2
+cc5ae544-8255-4c02-a38d-a829fb36e8da|D1
+cc8ab41d-4310-4995-b377-a56e7b25eba5|D2
+cd0a666a-6045-4719-a148-0f6709e1b94a|D1
+cd167bf8-6266-4073-bee6-a3aa424f4aa0|D1
+cd5670fa-cae4-43af-a6e3-64b65f4eee20|D2
+cd6bb24a-efed-4784-9664-5c06731421a3|D2
+cd7563c7-bc4d-4737-8fac-2301121c2d7c|D1
+cd759a5c-f6f8-4e10-b907-6cc0624cbfd3|D2
+cd7f29db-0765-4822-a1e0-12f973936452|D2
+cd7ff907-81b4-4890-a084-779188433ee3|D1
+ce0e5301-6d13-46d6-984b-7446639809e5|D2
+ce6a0e8b-53fc-4c96-bd06-2b1b344d8a86|D2
+ce7063ef-c60d-48ad-b253-346d9a99368a|D1
+cf03a681-adf5-4237-86d9-e4f6079a695c|D2
+cf3c5e31-17c4-4aaf-b456-b69efc6e8f1a|D1
+cfadeb54-decf-42c1-9f0b-efa78ba205e1|D2
+cff5ec9e-3ba6-4b7c-8125-1c4d347fb062|D1
+cff7d285-a632-4010-993a-17ea6c9360fb|D2
+d03ba8c8-661d-4e20-8211-6105a0a87032|D1
+d064c496-2979-4433-a103-52d25723333c|D1
+d0709a88-fdc9-46cd-9a7d-670816f10501|D2
+d0db8b4e-f761-4610-beab-8b47ef28d040|D2
+d112410c-8323-4975-a227-4cb3b7f88624|D1
+d14976bf-280d-4415-947d-05f86dbf843a|D1
+d15cbb62-046b-48b9-b010-e78d7d750990|D2
+d1ba6fe4-1c0b-4306-a30e-5bef771498fe|D2
+d1f197d3-217a-4e54-8dd4-8be7ef0716d8|D2
+d2322e22-044e-4c3c-ba1c-47cf3880705b|D1
+d35151da-b2e0-4903-90f5-bb9af31890a1|D2
+d36f44cc-3d31-47c7-a3a7-416e06fb6dcd|D2
+d3972ed1-27f3-4659-a05f-6cb6c91b16eb|D1
+d3b3acf2-aa48-4115-a56e-ede925ced84a|D1
+d44117f7-f836-4eb5-b43c-53e949ae4cee|D2
+d5254786-a400-4ad4-94ba-497aafe8bdc8|D2
+d598a79f-2b82-4b2f-9f96-8281a9ff3199|D2
+d5cb9503-4321-4a27-be83-0f38d0a32880|D1
+d5ecd6d4-affb-43ab-8b44-326168f71e2d|D1
+d63eff15-bc81-4047-897d-58d1b7abb4ce|D2
+d668c0b8-5d53-4cc3-9334-cafd655d3954|D1
+d6828e0d-f1b2-4fa5-93c6-71bd4d15deb8|D4
+d775850c-3a0f-4d3f-917d-37121d45717c|D1
+d7809b42-af4e-41a2-9ee3-844374106e11|D4
+d789639f-7da1-434a-9426-a91cc7bf99dc|D1
+d79d4a3d-2db2-4d67-95c2-259ea0245283|D6
+d79d4bbe-bf38-4819-86ac-cf82c613351c|D1
+d7e5718d-76b2-469c-afa0-969f467e9126|D1
+d80789c8-7dba-4138-88c7-3d3c36bf1f83|D2
+d894b11c-5434-4d4d-aaec-78610bddc2b9|D2
+d8a23407-56e8-4768-9442-fa1b5a7bb514|D1
+d8f832f5-c01f-48ea-9fe6-13cb1994864a|D4
+d8f89235-55c7-4c43-a826-8b4713781146|D1
+d9d03e48-fa7d-42da-bd64-e7ef02c6adc1|D2
+d9e3d3e0-7eb7-4835-8b73-726389b85b93|D2
+da6bd18a-a581-455d-8edb-4784c00bcdd8|D2
+db5890f4-69d9-4d02-8484-811772185b7e|D1
+db599e31-59ab-4ac3-9ea0-994ced46dc46|D2
+db59b2ab-5dad-40c5-809b-271d8aa38d3f|D2
+db59f493-f735-42f4-86ea-685c9d27eea6|D1
+dbb32692-f1c6-46b2-9f74-a275c8de48de|D3
+dbf324bf-bda5-44f3-9166-77ae58614784|D2
+dc3352a5-a480-44da-a169-c258271acc67|D2
+dc7f893c-d6eb-4ecc-aad0-5a8a8cdacbf8|D4
+dcb21880-f353-4f29-9c9e-8a44009eaa02|D2
+dcb4ce05-1978-4ec1-ae8d-f4ed13bc67a6|D2
+dcecf9ad-845f-4406-ba3f-d2ff8cab3144|D4
+dd019c32-84b3-460f-9090-c62e9f4f17ce|D1
+dd6f44cd-ee54-4906-9b7f-fe88afaaf800|D2
+dd755eed-546a-42fc-9ec0-2cf553812279|D1
+dd7cb62e-acd1-4b6c-a1e9-c75563cab732|D6
+dd80c310-0091-414c-a942-702c12710d7b|D1
+dda537ff-1f02-445d-88a6-2f725ba32e48|D6
+de1f6176-3449-44f0-9bb4-010fcf9c93c8|D2
+de43f5f5-53aa-4999-a0f6-587ef067073b|D2
+de7df240-f977-4670-bce7-6c791528192f|D2
+dedc5b97-c820-4642-ac2e-515d85032e60|D6
+deef4ce7-c1d7-427f-914a-077c88340dea|D4
+df0b7460-1c81-4511-9c00-34e556e1da06|D1
+df577b0e-a93a-411f-919a-d7227fd4059c|D1
+dfc16f52-794b-4a0c-8251-944622322616|D2
+e189d7f0-939a-439f-a145-13631ca19f8a|D4
+e18a0219-c29a-48aa-9a1f-65eb6d322a17|D1
+e1f63ed4-7bf5-452f-bfe0-6d2d8058856e|D6
+e2be67a0-e7f0-4b16-bce5-cf6e6ddebcc1|D1
+e3053956-fbe2-4cdb-af87-737b89c74f84|D1
+e30a6b42-d826-4901-ae46-82b31ff6834c|D1
+e31f7038-6d76-4e70-b3e2-c184ac00efa2|D2
+e365bf9f-5b7b-4b1e-af42-5fadfdb909cb|D1
+e39b2a09-d7f0-4612-8675-aa150e120a2a|D1
+e3a79547-fcf7-4e6f-93e6-259a9fa3352c|D2
+e3d51650-27f6-4116-8f01-39469ff41add|D1
+e3fd6cba-7b72-43ba-a58f-89e8e6d88174|D2
+e48dc98f-e2f2-4856-a8f9-161f30d7cebd|D4
+e4bf3ee1-018c-43ae-a595-7887930b9d3e|D2
+e4ef76e3-5330-4c35-834e-8bcbbff95a12|D1
+e509e5dd-d52e-4eae-afd2-f9b01c50e712|D1
+e516d3fb-06e6-4899-9f59-ab4c58010491|D1
+e5551867-4329-48c1-8b6e-6e72c17f0b0a|D2
+e569f30f-b3e5-482e-98fa-be4324ec5f6f|D2
+e57e0a5a-4e1a-4372-9971-9791e94e6942|D2
+e5d0fa9e-e6df-4867-a75d-40bef09b1a2b|D2
+e62a36a2-b0d8-413b-b9fc-89aea36d49d5|D1
+e678b2d9-61cd-4eff-82d3-ddf14f81383d|D2
+e6863b92-2953-4ecf-bda5-50ddafe62e94|D1
+e6a21042-1df7-457b-a6fe-568bfe9457e2|D1
+e72f9470-889e-42ce-a0d5-77175d039ae3|D2
+e752d48c-24e8-41fc-a183-116047814a43|D1
+e773da3f-e019-4099-8305-8f783c437908|D1
+e7fb3a22-2cf2-4746-840c-59c42e52504d|D4
+e8677dc3-2412-4ee6-a72f-3cac382d8f85|D1
+e89d0afd-20c4-45b2-81fa-04e2ac500824|D2
+e8e642a0-265c-40a1-bc4c-714eaa3d676b|D6
+e8f2d0e2-4906-4ce8-8b5a-254f7902a43b|D2
+e951e25c-4da1-4464-8de1-d82320737b99|D1
+e994efc4-bcbd-41a8-b116-3ae5dd721e8d|D6
+e9f83880-2b15-4a23-a171-b5b376ee0429|D2
+ea45d1b3-4b3c-4c82-8cb6-dd12a5b4de73|D1
+eb37e847-9d19-4d54-92b4-a38c69a11e98|D1
+eb81971f-1aab-4e14-b41d-8fd02df0c461|D1
+eb910e88-c185-42a8-8250-566eea6f83bc|D1
+eb9487eb-1c12-450c-9037-c6dc446405bf|D1
+ebe62d81-f211-4b4d-9418-3c0d81ba4a3c|D2
+ebf26263-57f5-47f0-a6c6-d158c3cb9cb4|D3
+ec100501-ff5d-4e27-a5cc-8985510ab8ce|D4
+ec448eb0-739a-446e-948b-655a939317de|D2
+ec4765bc-296d-4148-8cee-9b3ad2d3b055|D2
+edb369a7-b937-42b9-9e3d-4e0ae6466070|D1
+edba4b2c-a5ec-49d6-8c7a-ee1eaba942d9|D1
+edf11207-e643-496d-9edb-fb78366fc095|D4
+ee0c502c-339f-47bf-a13d-ca401e173242|D2
+ee13f87a-2718-4508-be6e-255cad3c10ef|D1
+ee4b5f1b-170d-4cfe-8a7c-0d48f2195ca5|D1
+ee7b1680-cf10-45f7-8b30-4709e9767b6b|D2
+eece0e53-893c-4621-afa6-740c40afad77|D1
+ef0d8c87-ce73-4584-bb9b-eadfaeadcb1e|D2
+ef356138-8513-45d6-a0b9-253ceceb5b8a|D6
+ef55719d-69c9-45ba-9cb5-7f51c28310c7|D2
+efb4f0b9-9fae-4116-a7b6-2a392611c2fb|D2
+efc05933-9a88-4259-b6ce-a7ee459c575e|D2
+f0063be7-51ef-4bdc-ac8e-50cfbfbba91d|D2
+f052d54e-2ff6-4ec0-9323-81a3cd924ae8|D2
+f0956e68-0094-4682-87b3-c12822dd1328|D1
+f0fdd33a-b03d-4ea3-9bb9-c499f19d7f44|D2
+f110b03a-fdb3-4b8d-8cf0-24de9eea98bb|D1
+f169410b-fe0e-42d4-815c-e588daa5c2a8|D1
+f18e96a9-f524-4f51-b6b6-62a2fa86c816|D2
+f1b05cc9-8d52-480f-8e60-a27df5625788|D2
+f1f0f500-027d-4432-bc2b-28abc14fe693|D6
+f24fcf33-16db-49b0-9a19-afc31a453cbf|D1
+f27a18b9-4b81-4846-96e5-e21538f49183|D2
+f2828fab-00f9-4847-98df-7bc63329e632|D4
+f2918cbc-283f-4e04-81a6-736b93ce5d82|D2
+f2a703e3-eba7-4e67-950e-754deee854ac|D2
+f2c0bc54-d9d2-4c0e-9192-99bdd5cd86e6|D1
+f2f46cdd-497b-46e1-9085-a268fa56a43b|D2
+f3c8752c-8347-49b7-b3c3-1891f6583614|D5
+f3f59ee0-b81e-4ca3-b2b5-675f47468174|D1
+f40aa33a-784c-4f58-a444-b221c6d3f201|D4
+f43256f1-10dc-453c-a1f0-13e8180ada54|D2
+f451e8e2-96f0-42d1-877f-409dd1ab0be8|D3
+f4aa3520-f584-4485-963f-3dbfccb8a63e|D2
+f5231dc4-4ca5-40bf-b69f-9b14aafe993b|D2
+f5631d14-78df-4cd0-b7ff-2a6c0811578b|D1
+f5f35543-9667-4936-87bd-e732a88952ac|D1
+f6d23dc7-ec12-40f6-aec8-d87410274447|D2
+f701de70-78cc-4319-a452-473525fa3590|D2
+f72994ee-1f5e-4fda-9097-95c823e4aa1a|D2
+f7561546-f631-45a6-9b9c-a3bc89b28010|D4
+f7aff496-6687-4575-b342-30f8fdaeb4f6|D1
+f80f232e-46e1-4e5a-a404-4579a1b72c44|D1
+f87b45ff-dce7-4b8b-a25c-97d290a02267|D2
+f89621bb-04e5-40b9-b338-5a61a9ec2d2a|D5
+f8e0ca07-b4bc-4dd5-a8f2-06b73daf0252|D1
+f904247f-bc96-4923-ae67-2e65beaee0ba|D4
+f96fb6fd-7122-4048-b7d8-584bedbe124d|D1
+f997a1ba-76d5-47c8-b97f-0395d893f651|D2
+f9fdd102-1a36-45ea-8482-e4a1cdf2436a|D2
+fa74b543-e07e-43e3-84a6-ea987ffeeb06|D1
+fa7c5f99-d2dc-4cab-9fca-adcffdd1be87|D2
+fb6ee78d-6129-409d-aeca-4a0d52849b7d|D2
+fbd2dd92-0517-483d-b004-25fcad40d002|D1
+fc3dc21e-eca6-418c-b42e-3b4797910989|D2
+fd3be1e3-6319-45b6-9591-f041db3fe9ce|D2
+ff332de2-c287-42ad-96c5-4fe2bf125134|D1
+ff6bd1db-8e5d-494e-8e14-859034acfb1d|D2
+fff65edd-b05a-4d5b-9061-8576b9708670|D2
+```
+
+Reconciliación individual:
+
+```text
+identidades esperadas = 963
+filas materializadas = 963
+product_id únicos = 963
+faltantes = 0
+duplicados = 0
+D1 = 385
+D2 = 409
+D3 = 25
+D4 = 85
+D5 = 4
+D6 = 55
+pendientes de clasificación = 904
+bloqueadas = 59
+clasificaciones objetivo aprobadas automáticamente = 0
+```
+
+La matriz materializa una decisión explícita para cada identidad sin declarar
+migración ni aprobación final. Toda clasificación definitiva exige evidencia,
+aprobación versionada y transición reconciliada.
 
 ---
 
@@ -988,17 +2008,18 @@ puerta verificable.
 
 La clasificación queda:
 
-| Capa                                           | Estado                                     |
-| ---------------------------------------------- | ------------------------------------------ |
-| contrato de siete clases                       | `ESPECIFICADO`                             |
-| árbol y matriz de decisión                     | `ESPECIFICADO`                             |
-| comportamiento por clase                       | `ESPECIFICADO`                             |
-| crosswalk agregado de 963 productos            | `VALIDADO` contra snapshot de solo lectura |
-| clasificación individual de 963 productos      | `PENDIENTE_DE_CLASIFICACION`               |
-| campos, constraints y tipos físicos            | `PENDIENTE_DE_IMPLEMENTACION`              |
-| transición de datos                            | `PENDIENTE_DE_IMPLEMENTACION`              |
-| adopción por NEXO y consumidoras               | `PENDIENTE_DE_IMPLEMENTACION`              |
-| evidencia de remisiones, LPN, kits y repuestos | `PENDIENTE_DE_EVIDENCIA`                   |
+| Capa                                              | Estado                                                                                                 |
+| ------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| contrato de siete clases                          | `ESPECIFICADO`                                                                                         |
+| árbol y matriz de decisión                        | `ESPECIFICADO`                                                                                         |
+| comportamiento por clase                          | `ESPECIFICADO`                                                                                         |
+| crosswalk agregado de 963 productos               | `VALIDADO` contra snapshot de solo lectura                                                             |
+| matriz individual de 963 decisiones provisionales | `VALIDADO` contra snapshot de solo lectura; 904 pendientes, 59 bloqueadas y 0 aprobaciones automáticas |
+| clasificación final individual de 963 productos   | `PENDIENTE_DE_CLASIFICACION`                                                                           |
+| campos, constraints y tipos físicos               | `PENDIENTE_DE_IMPLEMENTACION`                                                                          |
+| transición de datos                               | `PENDIENTE_DE_IMPLEMENTACION`                                                                          |
+| adopción por NEXO y consumidoras                  | `PENDIENTE_DE_IMPLEMENTACION`                                                                          |
+| evidencia de remisiones, LPN, kits y repuestos    | `PENDIENTE_DE_EVIDENCIA`                                                                               |
 
 Ningún producto queda declarado migrado por esta tarea.
 
@@ -1111,18 +2132,18 @@ Se incorporan al registro canónico:
 - `TREQ-NEXO-048`;
 - `TREQ-NEXO-049`.
 
-| Rango | Cobertura                                                               |
-| ----- | ----------------------------------------------------------------------- |
-| `040` | unicidad y vigencia de las siete clases                                 |
-| `041` | separación de clase, rol, presentación, unidad, lote, serial y estado   |
-| `042` | consumible y stock por cantidad                                         |
-| `043` | reutilizable por cantidad y activo serializado                          |
-| `044` | repuesto e instalación                                                  |
-| `045` | definición, instancia y completitud de kit                              |
-| `046` | contenedor físico y vínculo con LPN                                     |
-| `047` | movimientos, conteos, reservas, remisiones y cero doble contabilización |
-| `048` | transición versionada del modelo legacy                                 |
-| `049` | reconciliación de 963 productos y cierre de veinte brechas              |
+| Rango | Cobertura                                                                                                                                            |
+| ----- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `040` | unicidad y vigencia de las siete clases                                                                                                              |
+| `041` | separación de clase, rol, presentación, unidad, lote, serial y estado                                                                                |
+| `042` | consumible y stock por cantidad                                                                                                                      |
+| `043` | reutilizable por cantidad y activo serializado                                                                                                       |
+| `044` | repuesto e instalación                                                                                                                               |
+| `045` | definición, instancia y completitud de kit                                                                                                           |
+| `046` | contenedor físico y vínculo con LPN                                                                                                                  |
+| `047` | comportamiento explícito por clase para movimientos, conteos, reservas, custodia, mantenimiento, remisiones, LPN, costo y cero doble contabilización |
+| `048` | transición versionada del modelo legacy                                                                                                              |
+| `049` | matriz individual de 963 UUID, decisiones por fila, reconciliación completa y cierre de veinte brechas                                               |
 
 Los requisitos permanecen `IDENTIFICADO` hasta disponer de implementación y
 evidencia reproducibles.
@@ -1147,17 +2168,22 @@ La implementación deberá comprobar como mínimo:
 12. kit sin duplicar componentes;
 13. contenedor separado de LPN;
 14. LPN separado de LOC y kit;
-15. conteo específico por clase;
-16. remisión específica por clase;
-17. reclassificación versionada;
-18. cohortes 385, 409, 25, 85, 4 y 55 reconciliadas;
-19. 963 perfiles sin faltantes;
-20. cuatro dobles representaciones bloqueadas;
-21. cincuenta y cinco modelos incompletos bloqueados;
-22. cero clasificaciones automáticas por nombre;
-23. transición idempotente y reversible;
-24. veinte brechas con propietario y salida;
-25. diez requisitos únicos y resolubles.
+15. nueve dimensiones de comportamiento explícitas para las siete clases;
+16. conteo específico por clase;
+17. reserva específica por clase;
+18. remisión específica por clase;
+19. costo o valoración separados de la clase y sin doble contabilización;
+20. reclassificación versionada;
+21. matriz individual con exactamente 963 filas;
+22. 963 UUID únicos, cero faltantes y cero duplicados;
+23. cada fila con código resoluble a resultado, candidato, estado y bloqueo;
+24. distribución exacta D1=385, D2=409, D3=25, D4=85, D5=4 y D6=55;
+25. cuatro dobles representaciones bloqueadas;
+26. cincuenta y cinco modelos incompletos bloqueados;
+27. cero clasificaciones automáticas por nombre;
+28. transición idempotente y reversible;
+29. veinte brechas con propietario y salida;
+30. diez requisitos únicos y resolubles.
 
 ---
 
@@ -1169,13 +2195,15 @@ Evidencia disponible:
 - owner file y secuencia prioritaria;
 - esquema y constraints desplegados;
 - conteos agregados del catálogo;
-- cohortes de activos y representaciones;
+- 963 UUID de producto únicos reconciliados individualmente;
+- decisión provisional, estado y bloqueo por cada identidad;
+- distribución exacta de seis cohortes y cero faltantes o duplicados;
 - tablas y consumidores físicos inspeccionados;
 - cero filas LPN observadas.
 
 Evidencia no disponible todavía:
 
-- decisión individual aprobada para cada producto;
+- aprobación final de clase primaria para cada producto;
 - pruebas operativas de las siete clases;
 - migración de datos;
 - paridad entre legacy y objetivo;
@@ -1183,7 +2211,8 @@ Evidencia no disponible todavía:
 - evidencia de LPN con contenido real;
 - certificación de remisiones por clase.
 
-La ausencia de evidencia no se presenta como cumplimiento.
+La ausencia de evidencia no se presenta como cumplimiento. Una decisión
+provisional individual no equivale a clasificación aprobada ni migrada.
 
 ---
 
@@ -1225,24 +2254,29 @@ NEXO-DOM-001 no:
 11. presentación y unidad no crean clase;
 12. serial pertenece a la instancia;
 13. roles secundarios pueden coexistir sin clase múltiple;
-14. se decide un método de conteo por clase;
-15. se decide participación en reservas y remisiones por clase;
-16. se prohíbe doble contabilización;
-17. reclassificación conserva historia y reconciliación;
-18. los veintiocho escenarios tienen resultado;
-19. los 963 productos quedan cubiertos por seis cohortes exhaustivas;
-20. las cohortes suman 963 sin faltantes ni duplicados;
-21. ninguna cohorte se declara migrada;
-22. se registran 38 activos individuales y 90 grupos;
-23. se detectan cuatro dobles representaciones;
-24. se detectan cincuenta y cinco productos de activo sin instancia;
-25. se registra que existen cero LPN y cero contenidos observados;
-26. se registran veinte brechas físicas;
-27. cada brecha tiene propietario existente;
-28. se generan `TREQ-NEXO-040` a `TREQ-NEXO-049`;
-29. no se modifica código, Supabase ni datos;
-30. el handoff prioritario queda en `NEXO-UX-001`;
-31. `NEXO-DOM-002` permanece no iniciada dentro de la continuidad normal.
+14. la matriz de comportamiento explicita saldo o identidad, movimiento,
+    conteo, reserva, custodia, mantenimiento, remisión, LPN y costo para las
+    siete clases;
+15. se prohíbe doble contabilización física y económica;
+16. reclassificación conserva historia y reconciliación;
+17. los veintiocho escenarios tienen resultado;
+18. los 963 productos quedan cubiertos por seis cohortes exhaustivas;
+19. las cohortes suman 963 sin faltantes ni duplicados;
+20. se materializan exactamente 963 filas individuales con UUID estable;
+21. cada fila resuelve resultado, candidato, estado y bloqueo mediante D1 a D6;
+22. existen 963 `product_id` únicos, cero faltantes y cero duplicados;
+23. D1=385, D2=409, D3=25, D4=85, D5=4 y D6=55;
+24. ninguna identidad se declara migrada o aprobada automáticamente;
+25. se registran 38 activos individuales y 90 grupos;
+26. se bloquean cuatro dobles representaciones;
+27. se bloquean cincuenta y cinco productos de activo sin instancia;
+28. se registra que existen cero LPN y cero contenidos observados;
+29. se registran veinte brechas físicas;
+30. cada brecha tiene propietario existente;
+31. se generan y conservan `TREQ-NEXO-040` a `TREQ-NEXO-049`;
+32. no se modifica código, Supabase ni datos;
+33. el handoff prioritario queda en `NEXO-UX-001`;
+34. `NEXO-DOM-002` permanece no iniciada dentro de la continuidad normal.
 
 ---
 
