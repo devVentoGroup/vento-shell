@@ -1348,7 +1348,1402 @@ AUTH-ERR-010 — RESERVADA
 No se inicia ni modifica `AUTH-ERR-010` en esta tarea.
 
 
-### [ ] AUTH-ERR-010 — Fuera de turno
+### ✅ AUTH-ERR-010 — Fuera de turno
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-009 — Sin turno publicado` — APROBADA
+**Tarea siguiente:** `AUTH-ERR-011 — Check-in requerido` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, funcional, temporal, de seguridad y experiencia del bloqueo producido cuando existe un turno laboral publicado aplicable, pero el instante autoritativo se encuentra fuera de su ventana vigente
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md`
+**Artefactos producidos:** `SHIFT-WINDOW-BLOCKING-CONTRACT-001`, `SHIFT-WINDOW-TEMPORAL-DECISION-MATRIX-001`, `SHIFT-WINDOW-CHANNEL-RESPONSE-MATRIX-001`, `SHIFT-WINDOW-APPLICATION-COVERAGE-REGISTER-001` y `SHIFT-WINDOW-PHYSICAL-RECONCILIATION-001`
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-006` a `AUTH-MOD-011`; `AUTH-MOD-018`; `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-012` a `AUTH-CAT-015`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009` a `AUTH-CTX-017`; `AUTH-CTX-020`; `AUTH-CTX-024` a `AUTH-CTX-030`; `AUTH-ERR-001` a `AUTH-ERR-009`; contratos vigentes de identidad, aplicación, territorio, publicación, temporalidad, turno, check-in, rol, permiso, recurso, disponibilidad y precedencia; estado remoto y desplegado inspeccionado; contrato documental vigente
+**Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, constraints, triggers, turnos, revisiones, publicaciones, horarios, empleados, sedes, áreas, roles, permisos, aplicaciones ni despliegues
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué debe ocurrir cuando una
+solicitud ya superó autenticación, actividad de identidad, acceso a la
+aplicación y los prerrequisitos anteriores aplicables; el carril operativo de
+la capacidad exige un turno vigente; existe exactamente un turno laboral
+publicado y autoritativo aplicable al actor; y el instante de resolución se
+encuentra antes de su inicio o en su fin o después de él.
+
+La regla raíz queda:
+
+```text
+SESIÓN AUTENTICADA VÁLIDA
++
+IDENTIDAD LABORAL ACTIVA
++
+ACCESO A LA APLICACIÓN PERMITIDO
++
+CAPACIDAD QUE EXIGE TURNO VIGENTE
++
+UN TURNO LABORAL PUBLICADO AUTORITATIVO
++
+RESOLUCIÓN TEMPORAL CONCLUYENTE
++
+RESOLVED_AT FUERA DE [STARTS_AT, ENDS_AT)
+→
+DENY
++
+AUTH_OUTSIDE_SHIFT_WINDOW
++
+403
++
+CERO EFECTOS
+```
+
+La tarea responde exclusivamente:
+
+```text
+¿EXISTE UNA PUBLICACIÓN LABORAL APLICABLE,
+PERO EL INSTANTE AUTORITATIVO ESTÁ FUERA
+DE SU VENTANA TEMPORAL VIGENTE?
+```
+
+No responde:
+
+```text
+¿EXISTE SESIÓN?
+¿EL USUARIO O EMPLEADO ESTÁ ACTIVO?
+¿PUEDE ENTRAR A LA APLICACIÓN?
+¿EXISTE UN TURNO PUBLICADO?
+¿EXISTE CHECK-IN ACTIVO?
+¿EL ROL OPERATIVO EXISTE?
+¿EL ROL ES VÁLIDO PARA LA SEDE O EL ÁREA?
+¿TIENE EL PERMISO EXACTO?
+¿EL RECURSO ESTÁ DENTRO DEL SCOPE?
+¿EL DISPOSITIVO ESTÁ AUTORIZADO?
+¿LA FUENTE TÉCNICA ESTÁ DISPONIBLE?
+```
+
+La ausencia de publicación pertenece a `AUTH-ERR-009`. La existencia de una
+publicación aplicable fuera de la ventana pertenece a `AUTH-ERR-010`. La falta
+de check-in después de confirmar una ventana vigente pertenece a
+`AUTH-ERR-011`.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `SHIFT-WINDOW-BLOCKING-CONTRACT-001`, que congela identidad pública,
+   semántica temporal, causas internas, respuesta, recuperación, seguridad,
+   frescura y auditoría;
+2. `SHIFT-WINDOW-TEMPORAL-DECISION-MATRIX-001`, que decide veinticuatro
+   escenarios y separa publicación, inicio, fin, check-in, rol, ambigüedad,
+   dispositivo, simulación y fallo técnico;
+3. `SHIFT-WINDOW-CHANNEL-RESPONSE-MATRIX-001`, que materializa diez canales con
+   respuesta equivalente y cero efectos;
+4. `SHIFT-WINDOW-APPLICATION-COVERAGE-REGISTER-001`, que decide el alcance para
+   las diez aplicaciones canónicas sin imponer temporalidad laboral a
+   capacidades base, administrativas, de cliente o de sistema;
+5. `SHIFT-WINDOW-PHYSICAL-RECONCILIATION-001`, que registra catorce brechas
+   físicas, el snapshot desplegado y el destino exacto de cada cierre.
+
+Cobertura materializada:
+
+| Elemento                                            |             Cantidad |
+| --------------------------------------------------- | -------------------: |
+| Código público canónico                             |                    1 |
+| Estado HTTP no navegacional                         |             1, `403` |
+| Causas internas temporales admitidas                |                    2 |
+| Intervalo temporal canónico                         |       1, semiabierto |
+| Escenarios con decisión explícita                   |                   24 |
+| Canales con respuesta explícita                     |                   10 |
+| Aplicaciones canónicas reconciliadas                |                   10 |
+| Permisos canónicos evaluados por prerrequisito      |                  112 |
+| Permisos sin carril operativo                       |                   54 |
+| Permisos con carril operativo que exige turno       |                   58 |
+| Carriles operativos `T`                             |                   19 |
+| Carriles operativos `T+C`                           |                   39 |
+| Turnos físicos observados                           |                 2844 |
+| Turnos publicados observados                        |                 2723 |
+| Turnos no publicados observados                     |                  121 |
+| Turnos laborales observados                         |                 2411 |
+| Turnos de descanso observados                       |                  433 |
+| Turnos laborales publicados futuros observados      |                  141 |
+| Turnos laborales publicados finalizados observados  |                 2177 |
+| Turnos laborales publicados vigentes en el snapshot |                    0 |
+| Turnos físicos que cruzan medianoche observados     |                    0 |
+| Funciones que referencian `employee_shifts`         |                   10 |
+| Funciones que referencian `published_at`            |                    5 |
+| Funciones que emiten `out_of_shift`                 |                    1 |
+| Políticas físicas activas de aplicación             | 1, únicamente `nexo` |
+| Brechas físicas registradas                         |                   14 |
+| Requisitos de prueba derivados                      |                   10 |
+
+Las cifras físicas son un snapshot de solo lectura. No certifican que el
+contrato esté implementado ni que cada turno histórico satisfaga las reglas
+canónicas de revisión, temporalidad, territorio, rol o autorización.
+
+---
+
+#### 3. Identidad canónica del bloqueo
+
+La identidad pública única es:
+
+```text
+reason_code = AUTH_OUTSIDE_SHIFT_WINDOW
+```
+
+| Propiedad                   | Valor                                                                           |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| Dominio                     | `AUTHORIZATION_CONTEXT`                                                         |
+| Decisión                    | `DENY`                                                                          |
+| Principal                   | autenticado y conservado                                                        |
+| Identidad requerida         | laboral, existente y activa                                                     |
+| Aplicación                  | acceso general ya permitido                                                     |
+| Publicación                 | presente, laboral y autoritativa                                                |
+| Estado público              | `OUTSIDE_PUBLISHED_SHIFT_WINDOW`                                                |
+| Estado HTTP no navegacional | `403 Forbidden`                                                                 |
+| Ejecutable                  | `false`                                                                         |
+| Recuperación                | revisar horario o esperar una nueva ventana válida y emitir una solicitud nueva |
+| Cierre de sesión            | no automático                                                                   |
+| Reintento automático        | prohibido                                                                       |
+| Efectos parciales           | prohibidos                                                                      |
+
+Quedan prohibidos como identidad pública alternativa:
+
+- `OUT_OF_SHIFT`;
+- `OUT_OF_SCHEDULE`;
+- `NOT_IN_SHIFT`;
+- `SHIFT_INACTIVE`;
+- `NO_ACTIVE_SHIFT`;
+- `NO_SHIFT`;
+- `SHIFT_REQUIRED`;
+- `TIME_RESTRICTED`;
+- `NO_PERMISSION`;
+- `UNAUTHORIZED` sin tipificación;
+- mensajes libres de una aplicación, RPC o política RLS.
+
+`AUTH_ACTIVE_SHIFT_REQUIRED` no se adopta porque la expresión “turno activo”
+también se utiliza para el conjunto turno vigente más check-in activo. Esta
+tarea protege únicamente la ventana temporal y no debe absorber
+`AUTH-ERR-011`.
+
+El código público es estable y no se traduce. El texto humano podrá
+localizarse.
+
+---
+
+#### 4. Definición exacta de “fuera de turno”
+
+Existe `AUTH_OUTSIDE_SHIFT_WINDOW` cuando:
+
+1. la capacidad exige un carril operativo con turno vigente;
+2. existe exactamente una publicación laboral autoritativa aplicable al actor
+   y a la ocurrencia pertinente;
+3. su intervalo absoluto puede construirse de forma determinista;
+4. la resolución temporal se ejecuta con tiempo de servidor;
+5. `resolved_at` no pertenece al intervalo semiabierto aprobado;
+6. ninguna razón anterior o estructural más específica debe prevalecer.
+
+La forma lógica es:
+
+```text
+PUBLISHED_SHIFT_FACT = PRESENT
+AND
+TEMPORAL_RESOLUTION = CONCLUSIVE
+AND
+NOT (STARTS_AT <= RESOLVED_AT < ENDS_AT)
+→
+AUTH_OUTSIDE_SHIFT_WINDOW
+```
+
+La condición admite dos causas internas:
+
+```text
+RESOLVED_AT < STARTS_AT
+→ PUBLISHED_SHIFT_NOT_STARTED
+
+RESOLVED_AT >= ENDS_AT
+→ PUBLISHED_SHIFT_ENDED
+```
+
+Ambas causas producen la misma respuesta pública. La causa interna solo se
+conserva para auditoría, diagnóstico protegido, métricas y pruebas.
+
+---
+
+#### 5. Condiciones que no pertenecen a esta razón
+
+| Condición observada                                           | Clasificación correcta              | Tarea propietaria     |
+| ------------------------------------------------------------- | ----------------------------------- | --------------------- |
+| no existe publicación laboral aplicable                       | ausencia de turno publicado         | `AUTH-ERR-009`        |
+| solo existe borrador                                          | ausencia de turno publicado         | `AUTH-ERR-009`        |
+| publicación cancelada o retirada                              | ausencia de publicación utilizable  | `AUTH-ERR-009`        |
+| solo existe descanso o programación no laboral                | ausencia de turno laboral publicado | `AUTH-ERR-009`        |
+| existe turno publicado y `starts_at <= resolved_at < ends_at` | continuar evaluación                | autorización canónica |
+| ventana vigente y falta check-in requerido                    | check-in requerido                  | `AUTH-ERR-011`        |
+| ventana vigente y falta rol operativo                         | rol faltante                        | `AUTH-ERR-012`        |
+| rol incompatible con sede                                     | rol inválido para sede              | `AUTH-ERR-013`        |
+| rol incompatible con área                                     | rol inválido para área              | `AUTH-ERR-014`        |
+| dispositivo incompatible                                      | dispositivo no autorizado           | `AUTH-ERR-015`        |
+| simulación intenta efecto real                                | acción no permitida en simulación   | `AUTH-ERR-016`        |
+| dos o más turnos vigentes candidatos                          | configuración ambigua               | `AUTH-ERR-017`        |
+| intervalo, zona o revisión no resoluble                       | configuración inválida              | `AUTH-ERR-017`        |
+| permiso no registrado                                         | permiso no registrado               | `AUTH-ERR-018`        |
+| consulta falla, expira o no es concluyente                    | error técnico                       | `AUTH-ERR-019`        |
+| permiso base autoriza sin carril operativo                    | continuar carril base               | autorización canónica |
+| actor cliente o sistema autónomo                              | contrato no laboral                 | contrato propietario  |
+
+Regla obligatoria:
+
+```text
+NO SE ENCONTRÓ UN TURNO VIGENTE
+≠
+SE DEMOSTRÓ QUE UN TURNO PUBLICADO ESTÁ FUERA DE VENTANA
+```
+
+Un `active_shift = null` no basta para producir esta razón.
+
+---
+
+#### 6. Modelo temporal canónico
+
+Toda resolución utilizará tres valores absolutos:
+
+```text
+STARTS_AT
+ENDS_AT
+RESOLVED_AT
+```
+
+| Valor         | Fuente autoritativa                                                  |
+| ------------- | -------------------------------------------------------------------- |
+| `starts_at`   | revisión publicada, fecha laboral, hora local y zona autoritativa    |
+| `ends_at`     | revisión publicada, regla de cruce de medianoche y zona autoritativa |
+| `resolved_at` | reloj del servidor dentro del snapshot de autorización               |
+
+No se utilizarán como autoridad:
+
+- hora del navegador;
+- reloj del dispositivo;
+- hora enviada en body, query o header;
+- timestamp local de una cola offline;
+- hora almacenada en local storage;
+- último valor mostrado en UI;
+- tiempo de una decisión anterior;
+- hora del check-in para extender el turno;
+- `status = scheduled` para mantenerlo vigente;
+- ejecución de un job como requisito para que termine.
+
+Para la operación actual de Vento Group la zona organizacional es:
+
+```text
+America/Bogota
+```
+
+Una operación multizona futura deberá incorporar una fuente canónica por sede
+antes de modificar esta regla.
+
+---
+
+#### 7. Intervalo semiabierto obligatorio
+
+La ventana vigente es:
+
+```text
+[STARTS_AT, ENDS_AT)
+```
+
+Equivale a:
+
+```text
+STARTS_AT <= RESOLVED_AT
+AND
+RESOLVED_AT < ENDS_AT
+```
+
+Decisiones exactas:
+
+| Instante                | Resultado                   |
+| ----------------------- | --------------------------- |
+| antes de `starts_at`    | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+| exactamente `starts_at` | turno vigente; continuar    |
+| entre inicio y fin      | turno vigente; continuar    |
+| exactamente `ends_at`   | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+| después de `ends_at`    | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+
+No existen segundos, minutos o tolerancias implícitas. Una ventana de gracia
+para check-in o asistencia no amplía automáticamente la ventana de
+autorización. Toda tolerancia distinta deberá ser explícita, versionada y
+consumida por el contrato propietario.
+
+---
+
+#### 8. Turnos que cruzan medianoche
+
+Cuando una revisión laboral válida declara una hora de fin menor o igual que
+la hora de inicio y la clasificación permite un turno nocturno:
+
+```text
+ENDS_AT = DÍA SIGUIENTE + HORA DE FIN
+```
+
+Ejemplo:
+
+```text
+shift_date = 2026-08-03
+start_time = 22:00
+end_time   = 06:00
+```
+
+produce:
+
+```text
+starts_at = 2026-08-03T22:00:00-05:00
+ends_at   = 2026-08-04T06:00:00-05:00
+```
+
+A las 02:00 del 4 de agosto el turno está vigente. Queda prohibido filtrar
+exclusivamente:
+
+```text
+shift_date = fecha local de resolved_at
+```
+
+porque descartaría el turno iniciado el día anterior.
+
+Un cruce de medianoche no resoluble, una duración inválida o una zona
+desconocida no producen `AUTH_OUTSIDE_SHIFT_WINDOW`; producen configuración
+inválida mediante `AUTH-ERR-017`.
+
+---
+
+#### 9. Causas internas admitidas
+
+| Causa interna                 | Condición                                                | Respuesta pública           |
+| ----------------------------- | -------------------------------------------------------- | --------------------------- |
+| `PUBLISHED_SHIFT_NOT_STARTED` | existe publicación aplicable y `resolved_at < starts_at` | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+| `PUBLISHED_SHIFT_ENDED`       | existe publicación aplicable y `resolved_at >= ends_at`  | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+
+No se admiten como causas internas de esta tarea:
+
+- `SHIFT_NOT_FOUND`;
+- `UNPUBLISHED_SHIFT`;
+- `DRAFT_SHIFT`;
+- `CANCELLED_SHIFT`;
+- `CHECKIN_MISSING`;
+- `ROLE_MISSING`;
+- `ROLE_INVALID`;
+- `SITE_MISMATCH`;
+- `AREA_MISMATCH`;
+- `DEVICE_DENIED`;
+- `MULTIPLE_SHIFTS`;
+- `SOURCE_UNAVAILABLE`.
+
+Estas condiciones conservan sus tareas propietarias y no se reetiquetan para
+simplificar una implementación.
+
+---
+
+#### 10. `SHIFT-WINDOW-BLOCKING-CONTRACT-001`
+
+La forma pública mínima será:
+
+```ts
+type ShiftWindowBlockingReason = {
+  contract: "SHIFT-WINDOW-BLOCKING-CONTRACT-001";
+  contract_version: "1.0.0";
+  reason_code: "AUTH_OUTSIDE_SHIFT_WINDOW";
+  state: "OUTSIDE_PUBLISHED_SHIFT_WINDOW";
+  domain: "AUTHORIZATION_CONTEXT";
+  decision: "DENY";
+  executable: false;
+  retryable: false;
+  recovery_action: "REVIEW_SCHEDULE";
+  http_status: 403;
+  app_code: string;
+  channel: ShiftWindowChannel;
+  correlation_id: string;
+  resolved_at: string;
+};
+```
+
+La forma pública no incluirá:
+
+- `shift_id`;
+- `employee_id`;
+- `starts_at`;
+- `ends_at`;
+- fecha del turno;
+- sede;
+- área;
+- rol;
+- publicador;
+- revisión;
+- causa interna;
+- minuto restante;
+- turno siguiente;
+- permiso;
+- recurso;
+- contenido de check-in;
+- identificadores de dispositivo;
+- SQL, RPC o política que produjo la decisión.
+
+La causa interna y los hashes mínimos se registrarán en un envelope de
+auditoría protegido.
+
+---
+
+#### 11. Dependencia por permiso y carril
+
+Esta tarea no crea una clasificación paralela. Consume los prerrequisitos
+`N`, `T` y `T+C`.
+
+| Prerrequisito | Dependencia temporal                    | Resultado fuera de ventana        |
+| ------------- | --------------------------------------- | --------------------------------- |
+| `N`           | no exige turno                          | esta razón no aplica              |
+| `T`           | exige turno vigente, no check-in propio | deniega el carril operativo       |
+| `T+C`         | exige turno vigente y después check-in  | deniega antes de evaluar check-in |
+
+Distribución canónica:
+
+| Clasificación                 | Cantidad | Efecto                                             |
+| ----------------------------- | -------: | -------------------------------------------------- |
+| permisos sin carril operativo |       54 | no se bloquean por temporalidad laboral            |
+| permisos con carril operativo |       58 | su carril operativo exige ventana vigente          |
+| carriles `T`                  |       19 | esta razón si la publicación está fuera de ventana |
+| carriles `T+C`                |       39 | esta razón precede al requisito de check-in        |
+
+Una aplicación visible, dispositivo, simulación, rol o bypass local no puede
+degradar `T+C` a `T` ni `T` a `N`.
+
+---
+
+#### 12. Modalidades de autorización
+
+##### 12.1 `BASE_ONLY`
+
+No evalúa temporalidad laboral por esta tarea.
+
+```text
+CARRIL BASE VÁLIDO
++
+SIN TURNO VIGENTE
+→
+CONTINUAR EVALUACIÓN BASE
+```
+
+##### 12.2 `OPERATIONAL_ONLY`
+
+Exige ventana vigente.
+
+```text
+PUBLICACIÓN APLICABLE
++
+FUERA DE VENTANA
+→
+AUTH_OUTSIDE_SHIFT_WINDOW
+```
+
+##### 12.3 `BASE_OR_OPERATIONAL`
+
+Los carriles permanecen independientes.
+
+```text
+BASE ALLOW
++
+OPERATIVO FUERA DE VENTANA
+→
+LA DECISIÓN PUEDE SER ALLOW POR EL CARRIL BASE
+```
+
+```text
+BASE DENY
++
+OPERATIVO FUERA DE VENTANA
+→
+AUTH_OUTSIDE_SHIFT_WINDOW
+```
+
+No se mostrará esta razón cuando el carril base concluyente ya autorice la
+capacidad.
+
+##### 12.4 `BASE_AND_OPERATIONAL`
+
+Ambos carriles son obligatorios. Aunque el carril base sea válido, una ventana
+operativa inválida produce esta razón.
+
+---
+
+#### 13. Publicación, revisión y temporalidad
+
+La evaluación temporal solo ocurre después de resolver una publicación
+utilizable.
+
+```text
+OCURRENCIA LÓGICA
+→ REVISIÓN PUBLICADA AUTORITATIVA
+→ CONSTRUIR INTERVALO ABSOLUTO
+→ EVALUAR RESOLVED_AT
+```
+
+Reglas:
+
+1. un borrador no entra a la evaluación temporal;
+2. una edición posterior no publicada no cambia `starts_at` ni `ends_at`;
+3. una republicación efectiva reemplaza la revisión anterior para solicitudes
+   nuevas;
+4. una revisión retirada o cancelada vuelve a la razón de `AUTH-ERR-009`;
+5. la confirmación del trabajador no modifica la ventana;
+6. `status = scheduled` no prolonga el turno;
+7. el check-in no extiende `ends_at`;
+8. una sesión abierta residual no convierte un turno terminado en vigente;
+9. una publicación tardía no autoriza retroactivamente una acción antigua;
+10. una corrección de horario exige resolver un snapshot nuevo.
+
+---
+
+#### 14. Estados terminales y resultado histórico
+
+Una fila físicamente marcada como:
+
+- `cancelled`;
+- `completed`;
+- `no_show`;
+- `withdrawn`;
+- `deleted`;
+- equivalente terminal futuro;
+
+no se tratará como una publicación temporal ordinaria.
+
+| Situación                                                     | Razón                                  |
+| ------------------------------------------------------------- | -------------------------------------- |
+| cancelación o retiro elimina la publicación utilizable        | `AUTH-ERR-009`                         |
+| estado terminal contradice una revisión supuestamente vigente | `AUTH-ERR-017`                         |
+| el intervalo terminó aunque `status` siga `scheduled`         | `AUTH-ERR-010`                         |
+| resultado histórico se actualiza después                      | no altera retroactivamente la decisión |
+
+El fin temporal no depende de que un proceso actualice el estado físico.
+
+---
+
+#### 15. Relación con check-in
+
+La temporalidad precede al check-in.
+
+```text
+VENTANA NO VIGENTE
+→ AUTH-ERR-010
+→ NO EVALUAR CHECK-IN COMO CAUSA PÚBLICA PRINCIPAL
+```
+
+```text
+VENTANA VIGENTE
++
+PERMISO T+C
++
+SIN CHECK-IN ACTIVO
+→ AUTH-ERR-011
+```
+
+Un check-in residual después de `ends_at`:
+
+- no extiende el turno;
+- no satisface `T` ni `T+C`;
+- no cambia la razón pública de esta tarea;
+- debe invalidarse o cerrarse según los contratos de asistencia;
+- conserva evidencia auditada;
+- no permite una mutación tardía.
+
+Un permiso `T` puede continuar dentro de la ventana sin check-in. Un permiso
+`T+C` debe evaluar check-in únicamente después de confirmar la ventana.
+
+---
+
+#### 16. Actor efectivo, dispositivo y sistema
+
+| Actor                     | Regla                                                                    |
+| ------------------------- | ------------------------------------------------------------------------ |
+| `EMPLOYEE`                | puede producir esta razón cuando el carril operativo exige turno vigente |
+| `CUSTOMER`                | PASS cliente no recibe temporalidad laboral ficticia                     |
+| `SYSTEM` autónomo         | usa identidad y contrato técnico; no recibe turno laboral sintético      |
+| `DEVICE` sin actor humano | conserva razón de actor o dispositivo, no esta razón                     |
+| `DEVICE` con actor válido | evalúa el turno del empleado efectivo                                    |
+| `UNRESOLVED`              | conserva razón anterior de identidad o disponibilidad                    |
+
+Un dispositivo compartido no:
+
+- presta un turno;
+- presta una hora;
+- presta la sede del último actor;
+- conserva el turno al cerrar la sesión de actor;
+- extiende la ventana mientras permanece encendido;
+- convierte su zona local en autoridad;
+- elimina el requisito temporal.
+
+La fórmula es restrictiva:
+
+```text
+AUTORIDAD DEL ACTOR
+∩
+VENTANA DEL TURNO DEL ACTOR
+∩
+RESTRICCIONES DEL DISPOSITIVO
+```
+
+---
+
+#### 17. Fuentes autoritativas y datos no confiables
+
+La resolución deberá consumir:
+
+- actor efectivo;
+- publicación autoritativa;
+- revisión vigente de la ocurrencia;
+- fecha y horas de la revisión;
+- clasificación laboral;
+- zona horaria autoritativa;
+- `resolved_at` de servidor;
+- estado terminal o retiro aplicable;
+- modalidad y prerrequisito del permiso.
+
+No aceptará como autoridad:
+
+- `shift_id` cliente sin validación;
+- `starts_at` o `ends_at` enviados por cliente;
+- fecha u hora de dispositivo;
+- turno seleccionado visualmente;
+- último turno trabajado;
+- turno más cercano;
+- check-in para escoger turno;
+- rol base o perfil predeterminado;
+- sede seleccionada;
+- caché sin fingerprint vigente;
+- fila ordenada primero por SQL;
+- simulación como hecho real.
+
+---
+
+#### 18. Entradas mínimas y resultado determinista
+
+El evaluador temporal mínimo recibe:
+
+```ts
+type ShiftWindowEvaluationInput = {
+  actor_id: string;
+  permission_code: string;
+  authorization_lane: "BASE" | "OPERATIONAL";
+  prerequisite: "N" | "T" | "T+C";
+  published_shift_revision_id: string | null;
+  starts_at: string | null;
+  ends_at: string | null;
+  resolved_at: string;
+  timezone: string;
+  terminal_state: string | null;
+  context_version: string;
+  context_fingerprint: string;
+};
+```
+
+Para los mismos hechos y `resolved_at`, la decisión debe ser idéntica en todos
+los canales. El resultado no depende del orden físico de filas ni de la hora
+del cliente.
+
+---
+
+#### 19. Precedencia dentro del árbol de bloqueo
+
+Orden obligatorio para una capacidad laboral protegida:
+
+```text
+1. superficie pública o protegida
+2. disponibilidad técnica de autenticación y autorización
+3. sesión válida
+4. identidad y estado del usuario o empleado
+5. acceso a la aplicación
+6. modalidad y carril potencialmente autorizable
+7. territorio estructural anterior aplicable
+8. dependencia de turno del permiso
+9. existencia de publicación laboral utilizable
+10. integridad de revisión e intervalo
+11. vigencia temporal
+12. sede y área operativas
+13. check-in cuando corresponda
+14. rol operativo
+15. dispositivo
+16. permiso, scope, recurso y estado
+17. ejecución atómica
+```
+
+Reglas:
+
+1. `AUTH-ERR-009` precede a esta razón cuando falta publicación;
+2. esta razón precede a `AUTH-ERR-011` porque sin ventana vigente no se evalúa
+   la presencia como causa principal;
+3. una ambigüedad o intervalo inválido conserva `AUTH-ERR-017`;
+4. un fallo de fuente conserva `AUTH-ERR-019`;
+5. el carril base puede concluir antes cuando la modalidad lo permite;
+6. una causa posterior no oculta una causa anterior concluyente;
+7. solo se expone una razón pública principal por intento.
+
+---
+
+#### 20. `SHIFT-WINDOW-TEMPORAL-DECISION-MATRIX-001`
+
+|    # | Escenario                                                              | Decisión                                            | Razón pública               |
+| ---: | ---------------------------------------------------------------------- | --------------------------------------------------- | --------------------------- |
+|    1 | permiso `N`, sin turno vigente                                         | continuar carril base                               | ninguna                     |
+|    2 | `BASE_OR_OPERATIONAL`, carril base permite, operativo fuera de ventana | `ALLOW` por base si las demás condiciones coinciden | ninguna                     |
+|    3 | `OPERATIONAL_ONLY`, publicación futura                                 | denegar                                             | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+|    4 | `OPERATIONAL_ONLY`, publicación finalizada                             | denegar                                             | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+|    5 | `BASE_AND_OPERATIONAL`, publicación futura                             | denegar                                             | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+|    6 | `BASE_AND_OPERATIONAL`, publicación finalizada                         | denegar                                             | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+|    7 | no existe publicación laboral                                          | denegar antes                                       | `AUTH-ERR-009`              |
+|    8 | solo existe borrador                                                   | denegar antes                                       | `AUTH-ERR-009`              |
+|    9 | publicación aplicable y `resolved_at < starts_at`                      | denegar                                             | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+|   10 | `resolved_at = starts_at`                                              | continuar                                           | ninguna                     |
+|   11 | `starts_at < resolved_at < ends_at`                                    | continuar                                           | ninguna                     |
+|   12 | `resolved_at = ends_at`                                                | denegar                                             | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+|   13 | `resolved_at > ends_at`                                                | denegar                                             | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+|   14 | turno nocturno antes de medianoche dentro del intervalo                | continuar                                           | ninguna                     |
+|   15 | turno nocturno después de medianoche dentro del intervalo              | continuar                                           | ninguna                     |
+|   16 | turno inició el día anterior y sigue vigente                           | continuar; no filtrar por fecha actual              | ninguna                     |
+|   17 | dos turnos publicados vigentes candidatos                              | denegar por ambigüedad                              | `AUTH-ERR-017`              |
+|   18 | intervalo, zona o revisión no resoluble                                | denegar por configuración                           | `AUTH-ERR-017`              |
+|   19 | check-in residual después del fin                                      | denegar por temporalidad                            | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+|   20 | permiso `T`, ventana vigente y sin check-in                            | continuar evaluación                                | ninguna                     |
+|   21 | permiso `T+C`, ventana vigente y sin check-in                          | denegar después                                     | `AUTH-ERR-011`              |
+|   22 | dispositivo autorizado, actor identificado y turno fuera de ventana    | denegar                                             | `AUTH_OUTSIDE_SHIFT_WINDOW` |
+|   23 | proceso `SYSTEM` autónomo sin turno laboral                            | aplicar contrato técnico                            | ninguna                     |
+|   24 | timeout, excepción o respuesta no concluyente                          | denegar por disponibilidad                          | `AUTH-ERR-019`              |
+
+La matriz es exhaustiva para esta tarea. No se elige arbitrariamente el turno
+más cercano, el último, el confirmado, el que tiene check-in ni el de la sede
+seleccionada.
+
+---
+
+#### 21. Regla de cero efectos
+
+Cuando se produce `AUTH_OUTSIDE_SHIFT_WINDOW`:
+
+- no se ejecuta la acción solicitada;
+- no se abre una transacción de negocio;
+- no se crean filas parciales;
+- no se reserva ni descuenta inventario;
+- no se cambia estado de remisión;
+- no se registra recepción, retiro, conteo, despacho o entrega;
+- no se publica evento empresarial;
+- no se crea impresión;
+- no se confirma una cola offline;
+- no se prolonga el turno;
+- no se crea check-in;
+- no se modifica el horario;
+- no se ajusta `status`;
+- no se reutiliza un `ALLOW` anterior;
+- no se mantiene una suscripción incompatible;
+- no se registra la denegación como éxito funcional.
+
+Si una capa descubre la causa después de un efecto, existe un defecto de
+atomicidad y la prueba debe fallar.
+
+---
+
+#### 22. Envelope público
+
+Respuesta JSON mínima:
+
+```json
+{
+  "ok": false,
+  "decision": "DENY",
+  "reason_code": "AUTH_OUTSIDE_SHIFT_WINDOW",
+  "state": "OUTSIDE_PUBLISHED_SHIFT_WINDOW",
+  "executable": false,
+  "retryable": false,
+  "correlation_id": "opaque"
+}
+```
+
+Reglas:
+
+- `correlation_id` es opaco;
+- no contiene identificadores laborales;
+- no devuelve horario ni intervalo;
+- no distingue públicamente antes de inicio o después de fin;
+- no devuelve el turno siguiente;
+- no devuelve sede, área o rol;
+- no devuelve causa interna;
+- el estado HTTP es `403` fuera de navegación;
+- una navegación podrá renderizar la superficie segura equivalente sin perder
+  el código semántico en servidor.
+
+---
+
+#### 23. Copy canónico
+
+| Elemento          | Texto exacto                                                                                             |
+| ----------------- | -------------------------------------------------------------------------------------------------------- |
+| Título            | `No estás dentro de tu turno`                                                                            |
+| Mensaje           | `Tienes un turno publicado, pero no está vigente en este momento. Revisa tu horario antes de continuar.` |
+| Acción principal  | `Ver mi horario`                                                                                         |
+| Acción secundaria | `Volver a Vento OS`                                                                                      |
+| Código de soporte | `AUTH_OUTSIDE_SHIFT_WINDOW`                                                                              |
+
+Reglas de experiencia:
+
+1. no culpa al trabajador;
+2. no afirma que falte turno publicado;
+3. no afirma que falte check-in;
+4. no revela si el turno todavía no empezó o ya terminó;
+5. no muestra horas, sede, área o rol;
+6. no muestra un contador;
+7. no promete activación automática;
+8. no induce cierre de sesión;
+9. no permite modificar el horario desde el bloqueo;
+10. no reintenta automáticamente.
+
+`Ver mi horario` solo se ofrece cuando existe una ruta autorizada a la
+programación propia, como la superficie correspondiente de ANIMA. En clientes
+no visuales se omite sin alterar el código tipado.
+
+---
+
+#### 24. Recuperación
+
+##### 24.1 Publicación todavía no iniciada
+
+La recuperación válida es:
+
+```text
+CONSULTAR PROGRAMACIÓN PROPIA AUTORIZADA
+→
+ESPERAR STARTS_AT O UNA CORRECCIÓN PUBLICADA
+→
+INVALIDAR SNAPSHOT ANTERIOR
+→
+EMITIR SOLICITUD NUEVA
+```
+
+##### 24.2 Publicación ya finalizada
+
+La recuperación válida es:
+
+```text
+CONSULTAR PROGRAMACIÓN PROPIA AUTORIZADA
+→
+RESOLVER UNA NUEVA PUBLICACIÓN VIGENTE O CORRECCIÓN ADMINISTRATIVA
+→
+INVALIDAR SNAPSHOT ANTERIOR
+→
+EMITIR SOLICITUD NUEVA
+```
+
+La superficie de bloqueo no deberá:
+
+- cambiar el turno;
+- ampliar la ventana;
+- crear una publicación;
+- registrar check-in retroactivo;
+- usar el siguiente turno antes de su inicio;
+- repetir una mutación;
+- preservar un formulario ejecutable;
+- aceptar una hora enviada por cliente;
+- conceder un bypass temporal.
+
+---
+
+#### 25. `SHIFT-WINDOW-CHANNEL-RESPONSE-MATRIX-001`
+
+| Canal                    | Detección                                      | Respuesta                                 | Efecto obligatorio                            |
+| ------------------------ | ---------------------------------------------- | ----------------------------------------- | --------------------------------------------- |
+| navegación web / RSC     | guard o loader central con snapshot fresco     | superficie segura con copy canónico       | sin datos protegidos ni redirect a login      |
+| Server Action            | evaluador inmediatamente antes de mutación     | error tipado y `403` semántico            | cero escritura y cero revalidación de éxito   |
+| Route Handler            | middleware o servicio compartido               | envelope canónico, `403`                  | sin body parcial                              |
+| fetch desde cliente      | SDK compartido                                 | error tipado                              | UI conserva sesión y limpia estado sensible   |
+| RPC / PostgREST          | función de decisión                            | deny tipado o error contractual mapeado   | sin DML                                       |
+| RLS / Data API           | política y adapter                             | cero filas o denegación mapeada           | no convertir vacío en éxito silencioso        |
+| Edge Function            | verificación central                           | envelope canónico, `403`                  | no usar service role para saltar temporalidad |
+| Realtime                 | reevaluación al suscribir y al cruzar frontera | no suscribir o retirar entrega            | sin eventos posteriores al fin                |
+| cliente nativo / offline | revalidación al sincronizar                    | conflicto de autorización no reintentable | no confirmar cola con hora cliente            |
+| dispositivo compartido   | intersección actor–turno–dispositivo           | bloqueo seguro                            | el reloj o sesión técnica no extiende turno   |
+
+Todos los canales conservan el mismo `reason_code`, la misma semántica temporal
+y el mismo resultado de cero efectos.
+
+---
+
+#### 26. Navegación, accesibilidad y privacidad
+
+Al producirse el bloqueo:
+
+- se conserva la sesión;
+- se conserva el acceso general a la aplicación si sigue permitido;
+- se descartan datos sensibles cargados para la acción;
+- no se conserva un formulario ejecutable;
+- no se muestra un CTA de guardar o reintentar;
+- no se identifica públicamente la causa interna;
+- el foco se mueve al título;
+- el código de soporte queda como texto seleccionable;
+- título, mensaje y acciones poseen orden accesible;
+- la acción principal funciona con teclado;
+- zoom y contraste mantienen legibilidad;
+- una ruta de horario no expone turnos de terceros.
+
+La respuesta no revelará:
+
+- hora de inicio o fin;
+- duración;
+- turno siguiente;
+- sede o área;
+- rol operativo;
+- permiso evaluado;
+- recurso solicitado;
+- datos de check-in;
+- publicador o revisión;
+- configuración del dispositivo;
+- causa interna temporal.
+
+---
+
+#### 27. Operación offline, reintentos e idempotencia
+
+Una acción capturada offline deberá reconstruir la autorización en el
+servidor al sincronizar.
+
+```text
+CONTEXTO LOCAL PARECÍA VÁLIDO
++
+SERVIDOR RESUELVE FUERA DE VENTANA
+→
+DENY
++
+AUTH_OUTSIDE_SHIFT_WINDOW
++
+CERO EFECTOS
+```
+
+Reglas:
+
+- la hora del cliente no prueba autorización;
+- una captura antes del fin no garantiza ejecución posterior;
+- una captura futura no se difiere automáticamente hasta el inicio;
+- una corrección posterior no autoriza retroactivamente la mutación antigua;
+- la clave idempotente no transforma el deny en éxito;
+- no se reintenta automáticamente al comenzar otro turno;
+- el usuario debe emitir una solicitud nueva;
+- una operación parcial no queda pendiente silenciosamente.
+
+---
+
+#### 28. Frescura e invalidación
+
+Invalidan el snapshot y cualquier decisión asociada:
+
+- llegada exacta a `starts_at`;
+- llegada exacta a `ends_at`;
+- publicación o republicación;
+- retiro o cancelación;
+- cambio de fecha u horario;
+- cambio de zona horaria;
+- cambio de clasificación laboral;
+- cambio de actor;
+- cambio de sede, área o rol;
+- desactivación de empleado, sede, área o rol;
+- cambio de modalidad o prerrequisito;
+- cambio de permiso, scope o recurso;
+- cierre o revocación de sesión;
+- cambio de actor en dispositivo compartido;
+- inicio o finalización de simulación;
+- actualización contractual incompatible.
+
+Toda mutación deberá revalidar inmediatamente antes del primer efecto.
+
+Una decisión de navegación no se reutiliza para una mutación posterior. Un
+cache debe expirar o invalidarse en las fronteras temporales aunque no exista
+un evento de base de datos. Realtime debe retirar entregas al llegar a
+`ends_at`.
+
+---
+
+#### 29. Auditoría
+
+La auditoría mínima protegida incluirá:
+
+```text
+event_type = AUTHORIZATION_DENIED
+reason_code = AUTH_OUTSIDE_SHIFT_WINDOW
+internal_cause
+actor_id_hash
+permission_code
+authorization_lane
+prerequisite
+published_shift_revision_id_hash
+starts_at_bucket
+ends_at_bucket
+resolved_at
+context_version
+context_fingerprint
+app_code
+channel
+correlation_id
+```
+
+Reglas:
+
+- `internal_cause` distingue inicio pendiente de turno finalizado;
+- los timestamps exactos se restringen según necesidad diagnóstica;
+- el log público no contiene horario;
+- no se registran nombres de empleado, sede, área o rol;
+- no se registran tokens, cookies ni secretos;
+- la denegación no se contabiliza como error técnico;
+- una excepción de fuente se registra como `AUTH-ERR-019`, no como esta razón.
+
+---
+
+#### 30. `SHIFT-WINDOW-APPLICATION-COVERAGE-REGISTER-001`
+
+| Aplicación | Dependencia temporal válida                          | No debe producir esta razón por                              | Decisión documental                                |
+| ---------- | ---------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------- |
+| SHELL      | una capacidad futura con carril operativo explícito  | acceso al hub o navegación base                              | no imponer horario laboral al hub                  |
+| ANIMA      | acciones operativas futuras clasificadas `T` o `T+C` | consulta de horario propio, asistencia o documentación base  | conservar acceso al horario para recuperación      |
+| AURA       | una capacidad laboral operativa futura explícita     | acceso editorial diferido o capacidades sin carril operativo | no inventar turno                                  |
+| FOGO       | 5 carriles operativos `T` o `T+C`                    | recetario maestro base                                       | exigir ventana por permiso                         |
+| NEXO       | 47 carriles operativos `T` o `T+C`                   | 16 capacidades base exclusivas                               | aplicar temporalidad por carril, no por aplicación |
+| NUMERA     | ninguna capacidad operativa actual                   | acceso y analítica administrativa                            | no imponer turno                                   |
+| ORIGO      | 4 carriles operativos                                | revisión base del catálogo                                   | exigir ventana solo al carril operativo            |
+| PASS       | ninguna capacidad laboral del cliente                | sesión, puntos y beneficios del cliente                      | no mezclar cliente con empleado                    |
+| PULSO      | 2 carriles operativos                                | procesos técnicos o de sistema con contrato propio           | exigir ventana al actor laboral efectivo           |
+| VISO       | ninguna capacidad operativa actual                   | administración, horarios, auditoría y simulación             | no bloquear gestión administrativa por horario     |
+
+Cobertura cuantitativa total:
+
+| Aplicación | Permisos totales | Carriles operativos |
+| ---------- | ---------------: | ------------------: |
+| SHELL      |                1 |                   0 |
+| ANIMA      |               10 |                   0 |
+| AURA       |                1 |                   0 |
+| FOGO       |                6 |                   5 |
+| NEXO       |               63 |                  47 |
+| NUMERA     |                6 |                   0 |
+| ORIGO      |                5 |                   4 |
+| PASS       |                1 |                   0 |
+| PULSO      |                2 |                   2 |
+| VISO       |               17 |                   0 |
+| **Total**  |          **112** |              **58** |
+
+La dependencia se determina por permiso, modalidad y carril. El nombre de la
+aplicación nunca basta.
+
+---
+
+#### 31. Snapshot físico desplegado
+
+La inspección de solo lectura del proyecto VENTO observó, en el snapshot
+`2026-08-04T00:01:27-05:00`:
+
+| Métrica                                          |  Valor observado |
+| ------------------------------------------------ | ---------------: |
+| filas de `employee_shifts`                       |             2844 |
+| filas con `published_at`                         |             2723 |
+| filas sin `published_at`                         |              121 |
+| turnos laborales                                 |             2411 |
+| descansos                                        |              433 |
+| publicaciones laborales futuras                  |              141 |
+| publicaciones laborales finalizadas              |             2177 |
+| publicaciones laborales vigentes en el instante  |                0 |
+| filas con cruce de medianoche                    |                0 |
+| empleados con publicación vigente en el instante |                0 |
+| funciones que referencian `employee_shifts`      |               10 |
+| funciones que referencian `published_at`         |                5 |
+| funciones que emiten `out_of_shift`              |                1 |
+| políticas activas en `app_operation_policies`    |                1 |
+| política activa observada                        | `nexo:true:true` |
+
+La ausencia de turnos vigentes en un snapshot de medianoche no prueba que el
+contrato funcione. La ausencia de filas nocturnas tampoco sustituye pruebas de
+cruce de día. La evidencia operativa debe producirse en ambientes controlados
+sin crear datos productivos no autorizados.
+
+---
+
+#### 32. Comportamiento físico observado
+
+La función desplegada `get_operational_context`:
+
+1. calcula fecha y hora local con `America/Bogota`;
+2. filtra `employee_shifts.shift_date = fecha local actual`;
+3. exige `published_at is not null`;
+4. excluye únicamente `status = cancelled`;
+5. compara horas locales y no timestamps absolutos;
+6. usa una condición inclusiva equivalente a `between` para turnos del mismo
+   día;
+7. intenta reconocer turnos nocturnos por comparación de horas, pero mantiene
+   el filtro de fecha actual;
+8. ordena por hora de inicio y toma una sola fila;
+9. emite `out_of_shift` cuando no encuentra candidato;
+10. no distingue ausencia de publicación, publicación futura o publicación
+    finalizada;
+11. puede añadir `checkin_required` en el mismo resultado;
+12. conserva bypass físicos por rol o permiso.
+
+El consumidor NEXO convierte `out_of_shift` en el texto libre:
+
+```text
+No puedes operar porque estás fuera de turno.
+```
+
+No existe todavía un envelope compartido con
+`AUTH_OUTSIDE_SHIFT_WINDOW`, ni evidencia transversal para los diez canales.
+
+---
+
+#### 33. `SHIFT-WINDOW-PHYSICAL-RECONCILIATION-001`
+
+| ID       | Brecha física                                                                    | Estado                 | Propietario                                          | Condición de salida                             |
+| -------- | -------------------------------------------------------------------------------- | ---------------------- | ---------------------------------------------------- | ----------------------------------------------- |
+| `SWG-01` | `out_of_shift` mezcla ausencia de publicación y temporalidad                     | BLOQUEADO              | `AUTH-DB-033`; `AUTH-DB-034`                         | razones separadas y contrato probado            |
+| `SWG-02` | filtro `shift_date = hoy` pierde turnos nocturnos iniciados el día anterior      | BLOQUEADO              | `AUTH-DB-033`                                        | resolver por intervalos absolutos               |
+| `SWG-03` | comparación inclusiva en el fin contradice `[starts_at, ends_at)`                | BLOQUEADO              | `AUTH-DB-033`; `AUTH-DB-034`                         | frontera exacta validada                        |
+| `SWG-04` | comparación por hora local aislada no produce timestamps autoritativos           | BLOQUEADO              | `AUTH-DB-033`                                        | `starts_at`, `ends_at` y zona materializados    |
+| `SWG-05` | no existen causas internas antes de inicio y después de fin                      | BLOQUEADO              | `AUTH-DB-034`; `AUTH-ERR-020`                        | causas y auditoría implementadas                |
+| `SWG-06` | `order by ... limit 1` oculta candidatos solapados                               | BLOQUEADO              | `AUTH-DB-033`; `AUTH-DB-034`                         | ambigüedad fail closed                          |
+| `SWG-07` | estados terminales distintos de cancelación no están excluidos de forma uniforme | BLOQUEADO              | `AUTH-DB-033`                                        | catálogo de estados normalizado                 |
+| `SWG-08` | una política de aplicación NEXO sustituye la matriz por permiso                  | BLOQUEADO              | `AUTH-DB-020`; `AUTH-DB-031`; `AUTH-DB-034`          | 112 permisos y 54/19/39 materializados          |
+| `SWG-09` | bypass por nombre de rol o permiso puede omitir temporalidad                     | BLOQUEADO              | `AUTH-DB-034`                                        | modalidad y grants evaluados sin bypass nominal |
+| `SWG-10` | NEXO usa texto libre y razón legacy                                              | BLOQUEADO              | `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-AUTH-005` | SDK y mensaje compartido adoptados              |
+| `SWG-11` | no existe envelope público tipado con estado temporal                            | BLOQUEADO              | `SHELL-AUTH-001`; `AUTH-ERR-020`                     | contrato publicado y consumido                  |
+| `SWG-12` | cachés y Realtime no demuestran invalidación en `starts_at` y `ends_at`          | PENDIENTE_DE_EVIDENCIA | `AUTH-DB-035`; `SHELL-CI-018`; `SHELL-CI-019`        | pruebas de fronteras y retirada de entrega      |
+| `SWG-13` | no hay evidencia desplegada de turnos nocturnos                                  | PENDIENTE_DE_EVIDENCIA | `SHELL-CI-016`; `SHELL-CI-018`                       | fixture controlado cruza medianoche             |
+| `SWG-14` | no existe evidencia E2E equivalente para diez canales                            | PENDIENTE_DE_EVIDENCIA | `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019`       | matriz completa ejecutada y archivada           |
+
+Las catorce brechas poseen propietario, destino y condición de salida. Ninguna
+se considera implementada por existir este documento.
+
+---
+
+#### 34. Handoff de implementación
+
+La implementación futura deberá distribuirse así:
+
+- `AUTH-DB-020` y `AUTH-DB-031`: materializar catálogo y paridad de
+  prerrequisitos;
+- `AUTH-DB-033`: resolver publicación, revisión, timestamps absolutos,
+  nocturnidad y candidatos;
+- `AUTH-DB-034`: evaluar modalidad, temporalidad, precedencia, permiso, scope y
+  recurso;
+- `AUTH-DB-035`: invalidar contexto, decisiones, cachés y suscripciones en
+  fronteras y cambios;
+- `SHELL-AUTH-001`: publicar código, tipos, envelope y SDK;
+- `SHELL-AUTH-002`: adaptar navegación, acciones, API, RPC y clientes;
+- `SHELL-AUTH-004`: lint, métricas y gates de dependencia;
+- `SHELL-AUTH-005`: migrar consumidoras;
+- `AUTH-ERR-011` a `AUTH-ERR-020`: completar check-in, rol, dispositivo,
+  configuración, técnica y distribución;
+- `SHELL-CI-016`, `SHELL-CI-018` y `SHELL-CI-019`: ejecutar pruebas y conservar
+  evidencia.
+
+Toda migración futura de Supabase deberá crearse, versionarse, documentarse y
+ejecutarse desde `vento-shell`.
+
+---
+
+#### 35. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+| ID              | Regla protegida                                                                                                                                                                                                      | Tipo                                   | Prioridad | Momento de implementación            | Destino                                                                                                       |
+| --------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | --------- | ------------------------------------ | ------------------------------------------------------------------------------------------------------------- |
+| `TREQ-AUTH-219` | Una capacidad cuyo carril operativo exige turno vigente y resuelve una publicación fuera de `[starts_at, ends_at)` produce `AUTH_OUTSIDE_SHIFT_WINDOW`, `403`, deny y cero efectos.                                  | contractual + seguridad + temporalidad | crítica   | resolver y evaluador de turno        | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                                  |
+| `TREQ-AUTH-220` | La vigencia usa `resolved_at` de servidor, timestamps absolutos, `America/Bogota` y el intervalo semiabierto; inicio exacto permite y fin exacto deniega.                                                            | temporal + fronteras + regresión       | crítica   | resolver temporal                    | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                                                                  |
+| `TREQ-AUTH-221` | `PUBLISHED_SHIFT_NOT_STARTED` y `PUBLISHED_SHIFT_ENDED` conservan diagnóstico interno, pero comparten una respuesta pública que no revela horario ni dirección temporal.                                             | privacidad + auditoría + contrato      | alta      | catálogo de razones y observabilidad | `AUTH-ERR-020`; `AUTH-DB-034`; `SHELL-CI-016`                                                                 |
+| `TREQ-AUTH-222` | Ausencia de publicación, temporalidad, check-in, rol, configuración, permiso y fallo técnico conservan códigos y precedencia distintos sin convertir `active_shift = null` en una razón genérica.                    | integración + razones + seguridad      | crítica   | evaluador y catálogo de razones      | `AUTH-ERR-009`; `AUTH-ERR-011`; `AUTH-ERR-012`; `AUTH-ERR-017`; `AUTH-ERR-019`; `AUTH-DB-034`                 |
+| `TREQ-AUTH-223` | La temporalidad se aplica por permiso y carril: 54 permisos no operativos no se bloquean, mientras 19 `T` y 39 `T+C` exigen ventana vigente.                                                                         | contractual + catálogo + contexto      | crítica   | catálogo físico y evaluador          | `AUTH-CAT-012`; `AUTH-DB-020`; `AUTH-DB-031`; `SHELL-CI-016`                                                  |
+| `TREQ-AUTH-224` | Turnos nocturnos, filas iniciadas el día anterior, candidatos simultáneos, zonas y duraciones se resuelven con intervalos absolutos; la ambigüedad falla cerrado.                                                    | temporal + contexto + regresión        | crítica   | resolver de turno                    | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`; `SHELL-CI-018`                                                  |
+| `TREQ-AUTH-225` | Diez canales producen respuesta equivalente, conservan sesión, revalidan en fronteras y no generan datos, suscripciones ni efectos parciales.                                                                        | integración + E2E + concurrencia       | crítica   | SDK, adapters e invalidación         | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `AUTH-DB-035`; `SHELL-CI-016`; `SHELL-CI-018`                             |
+| `TREQ-AUTH-226` | Las diez aplicaciones aplican temporalidad por permiso, modalidad y actor; PASS cliente, procesos autónomos y capacidades base no reciben turno laboral sintético.                                                   | contractual + aplicación + identidad   | alta      | migración de consumidoras            | `SHELL-AUTH-001`; `SHELL-AUTH-005`; `SHELL-CI-016`                                                            |
+| `TREQ-AUTH-227` | Copy, recuperación, privacidad y accesibilidad conservan sesión, permiten revisar horario propio y no revelan inicio, fin, sede, área, rol, revisión, causa interna ni recurso.                                      | interfaz + privacidad + accesibilidad  | alta      | catálogo compartido de mensajes      | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                                                              |
+| `TREQ-AUTH-228` | La regresión reconcilia 2844 turnos, distribución futura/finalizada, ausencia de nocturnos, 10 funciones, 5 referencias de publicación, razón legacy, política NEXO y catorce brechas sin alterar datos productivos. | regresión + RPC + RLS + seguridad      | crítica   | gates y evidencia E5                 | `AUTH-DB-031`; `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+
+---
+
+#### 36. Validaciones documentales definidas
+
+La implementación deberá probar, como mínimo:
+
+1. permiso `N` fuera de cualquier turno;
+2. `OPERATIONAL_ONLY` antes del inicio;
+3. `OPERATIONAL_ONLY` después del fin;
+4. `BASE_OR_OPERATIONAL` con base permitido y operativo fuera de ventana;
+5. `BASE_OR_OPERATIONAL` con base denegado y operativo fuera de ventana;
+6. `BASE_AND_OPERATIONAL` antes del inicio y después del fin;
+7. ausencia de publicación conserva `AUTH-ERR-009`;
+8. borrador conserva `AUTH-ERR-009`;
+9. inicio exacto permite continuar;
+10. instante interior permite continuar;
+11. fin exacto produce esta razón;
+12. instante posterior produce esta razón;
+13. turno nocturno antes y después de medianoche;
+14. turno del día anterior todavía vigente;
+15. dos candidatos simultáneos conservan `AUTH-ERR-017`;
+16. intervalo o zona inválida conserva `AUTH-ERR-017`;
+17. fallo de fuente conserva `AUTH-ERR-019`;
+18. check-in residual no extiende el turno;
+19. permiso `T` vigente sin check-in continúa;
+20. permiso `T+C` vigente sin check-in conserva `AUTH-ERR-011`;
+21. dispositivo compartido con actor fuera de ventana;
+22. actor `CUSTOMER` y proceso `SYSTEM` sin turno sintético;
+23. simulación sin efecto real;
+24. equivalencia de diez canales;
+25. cero efectos y ausencia de reintento;
+26. invalidación automática en `starts_at` y `ends_at`;
+27. copy, teclado, lector de pantalla, zoom y contraste;
+28. auditoría minimizada con dos causas internas;
+29. reconciliación de las 10 funciones y política NEXO;
+30. cobertura de las catorce brechas físicas.
+
+---
+
+#### 37. Evidencia y estados
+
+| Elemento                                | Estado                                                                  |
+| --------------------------------------- | ----------------------------------------------------------------------- |
+| contrato documental                     | ESPECIFICADO                                                            |
+| matriz temporal, canales y aplicaciones | ESPECIFICADO                                                            |
+| snapshot de solo lectura                | VALIDADO contra estado desplegado observado                             |
+| código público compartido               | PENDIENTE_DE_IMPLEMENTACIÓN — `SHELL-AUTH-001`; `AUTH-ERR-020`          |
+| resolver de timestamps y nocturnidad    | PENDIENTE_DE_IMPLEMENTACIÓN — `AUTH-DB-033`                             |
+| evaluador unificado                     | PENDIENTE_DE_IMPLEMENTACIÓN — `AUTH-DB-034`                             |
+| catálogo físico `N/T/T+C`               | PENDIENTE_DE_IMPLEMENTACIÓN — `AUTH-DB-020`; `AUTH-DB-031`              |
+| invalidación temporal y Realtime        | PENDIENTE_DE_IMPLEMENTACIÓN — `AUTH-DB-035`                             |
+| adapters de aplicaciones                | PENDIENTE_DE_IMPLEMENTACIÓN — `SHELL-AUTH-002`; `SHELL-AUTH-005`        |
+| evidencia de diez canales               | PENDIENTE_DE_EVIDENCIA — `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+| evidencia de fronteras y nocturnidad    | PENDIENTE_DE_EVIDENCIA — `SHELL-CI-016`; `SHELL-CI-018`                 |
+
+El snapshot no demuestra que el contrato esté implementado. No se declara una
+prueba satisfecha sin evidencia reproducible.
+
+---
+
+#### 38. Fuera del alcance
+
+AUTH-ERR-010 no:
+
+- crea, edita, publica, republica, cancela o retira turnos;
+- corrige turnos históricos, futuros o finalizados;
+- cambia horarios, tipos o zonas horarias;
+- crea revisiones físicas;
+- asigna empleados, sedes, áreas o roles;
+- cambia los conteos 54/19/39;
+- reclasifica permisos;
+- registra check-in o check-out;
+- cierra sesiones residuales;
+- corrige solapamientos;
+- implementa `AccessContext` o `AuthorizationDecision`;
+- crea tablas, columnas, constraints, funciones, RPC, RLS o triggers;
+- ejecuta migraciones, DDL, DML o backfills;
+- crea datos de prueba productivos;
+- modifica aplicaciones;
+- despliega código;
+- escribe en GitHub;
+- inicia `AUTH-ERR-011`;
+- ejecuta pruebas operativas.
+
+---
+
+#### 39. Criterios de aceptación
+
+1. `AUTH_OUTSIDE_SHIFT_WINDOW` es el único código público de la tarea.
+2. `OUTSIDE_PUBLISHED_SHIFT_WINDOW` es el estado público.
+3. La razón pertenece a autorización contextual, no autenticación.
+4. La sesión permanece válida.
+5. La respuesta no navegacional usa `403`.
+6. La decisión es `DENY`, `executable=false` y cero efectos.
+7. Existe exactamente una publicación laboral autoritativa antes de evaluar
+   esta razón.
+8. La ausencia de publicación conserva `AUTH-ERR-009`.
+9. Un borrador conserva `AUTH-ERR-009`.
+10. Una cancelación o retiro conserva `AUTH-ERR-009`.
+11. La temporalidad usa `resolved_at` de servidor.
+12. `starts_at` y `ends_at` son timestamps absolutos.
+13. La zona actual es `America/Bogota`.
+14. La ventana es `[starts_at, ends_at)`.
+15. Exactamente en `starts_at` el turno está vigente.
+16. Exactamente en `ends_at` el turno no está vigente.
+17. No existen tolerancias implícitas.
+18. La causa antes del inicio es `PUBLISHED_SHIFT_NOT_STARTED`.
+19. La causa desde el fin es `PUBLISHED_SHIFT_ENDED`.
+20. Las causas internas no se muestran públicamente.
+21. El copy no revela horario.
+22. Los turnos nocturnos terminan al día siguiente.
+23. No se filtra exclusivamente `shift_date = hoy`.
+24. Una duración o zona inválida conserva `AUTH-ERR-017`.
+25. Dos candidatos vigentes conservan `AUTH-ERR-017`.
+26. Un fallo de fuente conserva `AUTH-ERR-019`.
+27. `status = scheduled` no extiende la ventana.
+28. El check-in no extiende `ends_at`.
+29. Un check-in residual no permite operar.
+30. Una ventana vigente precede a la evaluación de check-in.
+31. Una ventana no vigente precede a `AUTH-ERR-011`.
+32. Los 54 permisos sin carril operativo no se bloquean por temporalidad.
+33. Los 58 permisos con carril operativo exigen ventana vigente.
+34. Los 19 carriles `T` no exigen check-in propio.
+35. Los 39 carriles `T+C` evalúan check-in después de la ventana.
+36. `BASE_ONLY` no usa esta razón.
+37. `BASE_OR_OPERATIONAL` conserva independencia entre carriles.
+38. `BASE_AND_OPERATIONAL` conserva el requisito operativo.
+39. El actor cliente no recibe turno laboral.
+40. El proceso autónomo no recibe turno laboral.
+41. El dispositivo no presta turno ni tiempo.
+42. La simulación no modifica la ventana real.
+43. El cliente no elige el turno ni los timestamps.
+44. No existe reintento automático.
+45. Una corrección exige solicitud nueva.
+46. Toda mutación revalida inmediatamente antes del efecto.
+47. Cachés expiran o se invalidan en fronteras temporales.
+48. Realtime retira entrega después del fin.
+49. Los diez canales poseen respuesta explícita.
+50. Las diez aplicaciones poseen decisión explícita.
+51. La UI usa el copy exacto y es accesible.
+52. La UI permite revisar únicamente la programación propia autorizada.
+53. El snapshot registra 2844 turnos.
+54. El snapshot registra 141 publicaciones laborales futuras.
+55. El snapshot registra 2177 publicaciones laborales finalizadas.
+56. El snapshot registra cero publicaciones vigentes en el instante observado.
+57. El snapshot registra cero turnos nocturnos físicos.
+58. El snapshot registra 10 funciones que referencian `employee_shifts`.
+59. El snapshot registra 5 funciones que referencian `published_at`.
+60. El snapshot registra una función que emite `out_of_shift`.
+61. El snapshot registra una política activa, únicamente `nexo:true:true`.
+62. Las catorce brechas tienen propietario y condición de salida.
+63. Se generan `TREQ-AUTH-219` a `TREQ-AUTH-228`.
+64. Las 6616 filas históricas del registro se conservan sin modificación.
+65. No se modifica código, Supabase, datos ni repositorios remotos.
+66. `AUTH-ERR-011` permanece reservada.
+
+---
+
+#### 40. Cierre de tarea y continuidad
+
+| Continuidad               | Tarea          | Estado      |
+| ------------------------- | -------------- | ----------- |
+| ÚLTIMA TAREA APROBADA     | `AUTH-ERR-009` | APROBADA    |
+| TAREA ACTUAL APROBADA     | `AUTH-ERR-010` | APROBADA    |
+| SIGUIENTE TAREA RESERVADA | `AUTH-ERR-011` | NO INICIADA |
+
+```text
+ÚLTIMA TAREA APROBADA
+AUTH-ERR-009 — APROBADA
+        ↓
+TAREA ACTUAL APROBADA
+AUTH-ERR-010 — APROBADA
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-ERR-011 — RESERVADA
+```
+
+No se inicia ni modifica `AUTH-ERR-011` en esta tarea.
+
+
 ### [ ] AUTH-ERR-011 — Check-in requerido
 ### [ ] AUTH-ERR-012 — Rol operativo faltante
 ### [ ] AUTH-ERR-013 — Rol operativo inválido para la sede
