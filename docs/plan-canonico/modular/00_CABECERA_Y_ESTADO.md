@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **541** |
+| Tareas aprobadas | **542** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1053** |
+| Tareas no iniciadas | **1052** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **33.94% (541/1594)** |
+| Porcentaje de completamiento | **34.00% (542/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-ERR-016 — Acción no permitida en simulación** |
-| Tarea actual | **AUTH-ERR-017 — Configuración administrativa inconsistente** |
+| Última tarea aprobada | **AUTH-ERR-017 — Configuración administrativa inconsistente** |
+| Tarea actual | **AUTH-ERR-018 — Permiso no registrado** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-ERR-018 — Permiso no registrado** |
+| Siguiente tarea | **AUTH-ERR-019 — Diferenciar error técnico y denegación** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 11: AUTHORIZATION_ERRORS** |
-| Progreso del bloque | **CARRIL NEXO: 16 de 20 aprobadas; AUTH-ERR-017 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 17 de 20 aprobadas; AUTH-ERR-018 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-ERR-016` — Acción no permitida en simulación |
-| Tarea actual | `AUTH-ERR-017` — Configuración administrativa inconsistente — **NO INICIADA** |
-| Siguiente tarea | `AUTH-ERR-018` — Permiso no registrado |
+| Última aprobada | `AUTH-ERR-017` — Configuración administrativa inconsistente |
+| Tarea actual | `AUTH-ERR-018` — Permiso no registrado — **NO INICIADA** |
+| Siguiente tarea | `AUTH-ERR-019` — Diferenciar error técnico y denegación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 16 DE 20 APROBADAS — ACTUAL AUTH-ERR-017** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 17 DE 20 APROBADAS — ACTUAL AUTH-ERR-018** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-ERR-016 — Acción no permitida en simulación
-        ↓
-TAREA ACTUAL
 AUTH-ERR-017 — Configuración administrativa inconsistente
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-ERR-018 — Permiso no registrado
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-ERR-019 — Diferenciar error técnico y denegación
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 16 de 20 tareas aprobadas
+CARRIL NEXO — 17 de 20 tareas aprobadas
 ```

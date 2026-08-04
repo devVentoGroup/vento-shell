@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **541** |
+| Aprobadas | **542** |
 | En propuesta | **0** |
-| No iniciadas | **1053** |
+| No iniciadas | **1052** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **33.94% (541/1594)** |
+| Porcentaje de completamiento | **34.00% (542/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-ERR-016` — Acción no permitida en simulación | ✅ APROBADA |
-| Tarea actual | `AUTH-ERR-017` — Configuración administrativa inconsistente | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-ERR-018` — Permiso no registrado | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-ERR-017` — Configuración administrativa inconsistente | ✅ APROBADA |
+| Tarea actual | `AUTH-ERR-018` — Permiso no registrado | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-ERR-019` — Diferenciar error técnico y denegación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1280,7 +1280,7 @@
 | ✅ APROBADA | `AUTH-ERR-014` | Rol operativo inválido para el área | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ✅ APROBADA | `AUTH-ERR-015` | Dispositivo no autorizado | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ✅ APROBADA | `AUTH-ERR-016` | Acción no permitida en simulación | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
-| ⬜ NO INICIADA | `AUTH-ERR-017` | Configuración administrativa inconsistente | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
+| ✅ APROBADA | `AUTH-ERR-017` | Configuración administrativa inconsistente | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-018` | Permiso no registrado | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-019` | Diferenciar error técnico y denegación | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-020` | Compartir mensajes desde vento-shell | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
