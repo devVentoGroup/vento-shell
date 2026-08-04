@@ -2744,7 +2744,1125 @@ AUTH-ERR-011 — RESERVADA
 No se inicia ni modifica `AUTH-ERR-011` en esta tarea.
 
 
-### [ ] AUTH-ERR-011 — Check-in requerido
+### ✅ AUTH-ERR-011 — Check-in requerido
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-010 — Fuera de turno` — APROBADA
+**Tarea siguiente:** `AUTH-ERR-012 — Check-out incompleto` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, funcional, causal, de seguridad y experiencia del bloqueo producido cuando una capacidad operativa exige check-in activo, existe un turno laboral publicado y vigente inequívoco, pero no existe una sesión de check-in autoritativa, abierta y compatible
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md`
+**Artefactos producidos:** `CHECKIN-REQUIRED-BLOCKING-CONTRACT-001`, `CHECKIN-STATE-DECISION-MATRIX-001`, `CHECKIN-CHANNEL-RESPONSE-MATRIX-001`, `CHECKIN-APPLICATION-COVERAGE-REGISTER-001` y `CHECKIN-PHYSICAL-RECONCILIATION-001`
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-007` a `AUTH-MOD-011`; `AUTH-MOD-018`; `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-012` a `AUTH-CAT-015`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009` a `AUTH-CTX-017`; `AUTH-CTX-020`; `AUTH-CTX-024` a `AUTH-CTX-030`; `AUTH-ERR-001` a `AUTH-ERR-010`; contratos vigentes de identidad, aplicación, territorio, publicación, temporalidad, turno, check-in, rol, permiso, recurso, disponibilidad y precedencia; estado remoto y desplegado inspeccionado; contrato documental vigente
+**Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, constraints, índices, triggers, eventos de asistencia, turnos, empleados, sedes, áreas, roles, permisos, aplicaciones ni despliegues
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué debe ocurrir cuando una
+solicitud ya superó autenticación, actividad de identidad, acceso a la
+aplicación, publicación y vigencia temporal del turno; el carril operativo de
+la capacidad exige expresamente `T+C`; y el servidor no puede resolver una
+sesión de check-in abierta, confirmada y exactamente compatible con el actor,
+la sede y el turno vigentes.
+
+La regla raíz queda:
+
+```text
+SESIÓN AUTENTICADA VÁLIDA
++
+IDENTIDAD LABORAL ACTIVA
++
+ACCESO A LA APLICACIÓN PERMITIDO
++
+CAPACIDAD CUYO CARRIL OPERATIVO EXIGE T+C
++
+UN TURNO LABORAL PUBLICADO Y VIGENTE INEQUÍVOCO
++
+CHECKIN_RESOLUTION = CONCLUSIVE_ABSENT
+→
+DENY
++
+AUTH_CHECKIN_REQUIRED
++
+403
++
+CERO EFECTOS
+```
+
+La tarea responde exclusivamente:
+
+```text
+¿LA OPERACIÓN EXIGE CHECK-IN ACTIVO Y,
+DESPUÉS DE RESOLVER UN TURNO VIGENTE,
+NO EXISTE UNA SESIÓN ABIERTA Y COMPATIBLE
+CONFIRMADA POR LA FUENTE AUTORITATIVA?
+```
+
+No responde:
+
+```text
+¿EXISTE SESIÓN DE AUTENTICACIÓN?
+¿EL USUARIO O EMPLEADO ESTÁ ACTIVO?
+¿PUEDE ENTRAR A LA APLICACIÓN?
+¿EXISTE UN TURNO PUBLICADO?
+¿EL TURNO ESTÁ DENTRO DE SU VENTANA?
+¿EXISTE UN CHECK-OUT PENDIENTE O CONTRADICTORIO?
+¿EL ROL OPERATIVO ES SUFICIENTE?
+¿EL DISPOSITIVO ES CONFIABLE?
+¿EL PERMISO EXACTO ESTÁ CONCEDIDO?
+¿EL RECURSO ESTÁ DENTRO DEL SCOPE?
+¿LA FUENTE TÉCNICA ESTÁ DISPONIBLE?
+```
+
+La ausencia de publicación pertenece a `AUTH-ERR-009`. La publicación fuera de
+ventana pertenece a `AUTH-ERR-010`. La ausencia limpia y concluyente de
+check-in para un carril `T+C` pertenece a `AUTH-ERR-011`. Un historial abierto,
+duplicado, cruzado o contradictorio que evidencie cierre incompleto pertenece a
+`AUTH-ERR-012` o a la razón técnica o de configuración que corresponda.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `CHECKIN-REQUIRED-BLOCKING-CONTRACT-001`, que congela identidad pública,
+   precondiciones, causas internas, respuesta, recuperación, privacidad y
+   auditoría;
+2. `CHECKIN-STATE-DECISION-MATRIX-001`, que decide veinticuatro escenarios y
+   separa ausencia, no obligatoriedad, cierre normal, conflicto, duplicidad,
+   check-out incompleto, turno, rol, dispositivo y fallo técnico;
+3. `CHECKIN-CHANNEL-RESPONSE-MATRIX-001`, que define el mismo resultado para
+   diez canales de consumo;
+4. `CHECKIN-APPLICATION-COVERAGE-REGISTER-001`, que fija una decisión explícita
+   para las diez aplicaciones canónicas sin convertir la aplicación en unidad
+   de autorización;
+5. `CHECKIN-PHYSICAL-RECONCILIATION-001`, que contrasta el contrato objetivo con
+   el esquema, RPC, políticas, índices, funciones y consumidor NEXO observados.
+
+El resultado es especificación documental. No equivale a implementación ni a
+evidencia de ejecución operativa.
+
+---
+
+#### 3. Identidad canónica del bloqueo
+
+La identidad pública única es:
+
+```text
+reason_code = AUTH_CHECKIN_REQUIRED
+```
+
+| Propiedad                   | Valor                                                                     |
+| --------------------------- | ------------------------------------------------------------------------- |
+| Dominio                     | `AUTHORIZATION_CONTEXT`                                                   |
+| Estado público              | `MISSING_REQUIRED_ACTIVE_CHECKIN`                                         |
+| Decisión                    | `DENY`                                                                    |
+| Estado HTTP no navegacional | `403`                                                                     |
+| `executable`                | `false`                                                                   |
+| Sesión de autenticación     | se conserva                                                               |
+| Efectos empresariales       | cero                                                                      |
+| Reintento automático        | prohibido                                                                 |
+| Recuperación principal      | completar check-in por un flujo autorizado y solicitar una decisión nueva |
+| Copy principal              | `Registra tu entrada para continuar con esta operación.`                  |
+| Causas internas públicas    | ninguna                                                                   |
+
+Quedan prohibidos como códigos públicos alternativos:
+
+- `active_checkin_required`;
+- `checkin_required`;
+- `checked_in_now_false`;
+- `missing_attendance`;
+- `not_clocked_in`;
+- mensajes libres usados como identidad contractual.
+
+Las formas legacy podrán existir durante transición exclusivamente como aliases
+internos observables. No podrán competir con `AUTH_CHECKIN_REQUIRED` en SDK,
+clientes, eventos, métricas ni pruebas contractuales.
+
+---
+
+#### 4. Definición exacta de “check-in requerido”
+
+La razón se produce únicamente cuando todas las condiciones siguientes son
+verdaderas:
+
+1. existe un actor efectivo de tipo empleado;
+2. la sesión de autenticación y la identidad laboral son válidas;
+3. la aplicación solicitada es accesible;
+4. la capacidad posee un carril operativo aplicable;
+5. ese carril está clasificado `T+C`;
+6. existe exactamente un turno laboral publicado aplicable;
+7. ese turno está vigente en `resolved_at`;
+8. la resolución del check-in terminó sin error ni ambigüedad;
+9. no existe una sesión abierta que coincida exactamente con empleado, sede y
+   turno;
+10. ninguna razón de precedencia anterior ya deniega la solicitud.
+
+Formalmente:
+
+```text
+REQUIRES_CHECKIN = true
+AND ACTIVE_SHIFT = exactly_one
+AND ACTIVE_CHECKIN_SESSION = null
+AND CHECKIN_STATE = absent
+AND CHECKIN_RESOLUTION = conclusive
+→ AUTH_CHECKIN_REQUIRED
+```
+
+`active_checkin_session = null` por sí solo no basta. Antes se debe demostrar
+que la operación exige check-in, que el turno vigente existe y que no hay
+conflicto estructural ni indisponibilidad técnica.
+
+---
+
+#### 5. Condiciones que no pertenecen a esta razón
+
+| Condición                                              | Resultado propietario                                    |
+| ------------------------------------------------------ | -------------------------------------------------------- |
+| la capacidad no tiene carril operativo                 | continuar por su carril aplicable; no usar esta razón    |
+| carril operativo `T`                                   | continuar sin check-in si los demás controles se cumplen |
+| `BASE_ONLY`                                            | no evaluar check-in                                      |
+| `BASE_OR_OPERATIONAL` con carril base válido           | el carril base puede autorizar sin check-in              |
+| no existe turno publicado                              | `AUTH-ERR-009`                                           |
+| el turno publicado aún no inicia o ya terminó          | `AUTH-ERR-010`                                           |
+| dos turnos vigentes o turno inválido                   | `AUTH-ERR-017`                                           |
+| check-in de otro actor, sede o turno                   | conflicto estructural; no convertir en ausencia limpia   |
+| dos o más sesiones abiertas                            | conflicto o check-out incompleto; no escoger una         |
+| sesión residual de jornada anterior                    | `AUTH-ERR-012` o razón técnica según el hecho            |
+| no se puede consultar la fuente                        | `AUTH-ERR-019`                                           |
+| check-out normal ya registrado y nueva operación `T+C` | esta razón; la sesión anterior está cerrada              |
+| falta rol operativo                                    | `AUTH-ERR-013`                                           |
+| dispositivo no confiable                               | `AUTH-ERR-014`                                           |
+| dispositivo compartido obligatorio                     | `AUTH-ERR-015`                                           |
+| simulación no permitida                                | `AUTH-ERR-016`                                           |
+| permiso denegado                                       | razón de permiso correspondiente                         |
+
+Una causa posterior no deberá ocultar una causa estructural anterior ya
+concluyente.
+
+---
+
+#### 6. Contrato de sesión activa consumido
+
+La sesión de check-in autoritativa se define como:
+
+```text
+active_checkin_session =
+  resolved_open_attendance_session(
+    actor_effective.employee_id,
+    current_site_id,
+    active_shift.shift_id,
+    resolved_at
+  )
+```
+
+Para ser válida deberá probar simultáneamente:
+
+```text
+employee_id = actor_effective.employee_id
+AND site_id = current_site_id
+AND shift_id = active_shift.shift_id
+AND check_in_confirmed_by_server = true
+AND session_is_open = true
+AND session_is_unique = true
+AND references_are_consistent = true
+```
+
+La sesión activa no es:
+
+- cualquier evento reciente de entrada;
+- el último evento del empleado sin contexto;
+- una solicitud offline pendiente;
+- un estado visual del cliente;
+- un booleano persistido sin identidad de sesión;
+- la existencia de turno;
+- la actividad general del empleado;
+- un evento de dispositivo;
+- una inferencia desde sede seleccionada;
+- una sesión cerrada.
+
+---
+
+#### 7. Fuente autoritativa y fuentes derivadas
+
+La fuente canónica aprobada para asistencia es `attendance_logs`. Su forma
+física actual es un ledger de eventos `check_in` y `check_out`; por tanto, la
+implementación objetivo deberá producir una resolución determinista de sesión
+abierta sin elevar vistas o agregados a fuente de autorización.
+
+| Fuente                           | Uso permitido                            | Uso prohibido                                    |
+| -------------------------------- | ---------------------------------------- | ------------------------------------------------ |
+| `attendance_logs`                | hechos autoritativos de entrada y salida | escoger una sesión incompatible por conveniencia |
+| `employee_attendance_status`     | proyección de estado                     | autorizar sin reconciliar ledger                 |
+| `attendance_shift_events`        | evidencia y auditoría                    | reemplazar la sesión abierta                     |
+| `attendance_employee_stats_view` | analítica                                | autorización transaccional                       |
+| `attendance_today_dashboard`     | visualización                            | decisión de permiso                              |
+| `employee_shift_attendance`      | conciliación                             | fuente única de sesión activa                    |
+| `shift_runtime_events`           | eventos operativos                       | probar presencia laboral                         |
+| cliente, cookie o estado local   | UX transitoria                           | autoridad                                        |
+
+Una proyección puede acelerar lectura, pero deberá ser verificable contra la
+fuente autoritativa y conservar versión, frescura e identidad de contexto.
+
+---
+
+#### 8. Estados canónicos de check-in
+
+| Estado                 | Significado                                                | Consecuencia para `T+C`                                |
+| ---------------------- | ---------------------------------------------------------- | ------------------------------------------------------ |
+| `NOT_REQUIRED`         | el carril elegido no exige check-in                        | no evaluar esta razón                                  |
+| `ACTIVE`               | existe exactamente una sesión compatible y abierta         | continuar                                              |
+| `ABSENT`               | resolución concluyente sin sesión compatible abierta       | `AUTH_CHECKIN_REQUIRED`                                |
+| `CLOSED`               | hubo sesión, pero está cerrada de forma consistente        | `AUTH_CHECKIN_REQUIRED` para una nueva operación `T+C` |
+| `PENDING_CONFIRMATION` | el cliente todavía no posee confirmación autoritativa      | tratar como ausencia; no ejecutar                      |
+| `INCONSISTENT`         | referencias cruzadas, duplicidad o historia contradictoria | no usar esta razón; fallar cerrado                     |
+| `UNAVAILABLE`          | la fuente no pudo resolverse                               | `AUTH-ERR-019`                                         |
+
+`CLOSED` no significa check-out incompleto. Un cierre correcto termina la
+sesión. `AUTH-ERR-012` se reserva para ausencia de cierre esperado,
+solapamiento, sesión residual o contradicción material.
+
+---
+
+#### 9. Causas internas admitidas
+
+Esta tarea admite tres causas internas para una ausencia concluyente:
+
+| Causa interna                           | Condición                                                                               |
+| --------------------------------------- | --------------------------------------------------------------------------------------- |
+| `REQUIRED_CHECKIN_NOT_FOUND`            | no existe evento o sesión abierta compatible                                            |
+| `REQUIRED_CHECKIN_CLOSED`               | la sesión compatible anterior fue cerrada correctamente                                 |
+| `REQUIRED_CHECKIN_NOT_SERVER_CONFIRMED` | existe intención local, importación o solicitud pendiente sin confirmación autoritativa |
+
+Las tres producen públicamente:
+
+```text
+AUTH_CHECKIN_REQUIRED
+```
+
+No son causas internas de esta tarea:
+
+- `CHECKIN_ACTOR_MISMATCH`;
+- `CHECKIN_SITE_MISMATCH`;
+- `CHECKIN_SHIFT_MISMATCH`;
+- `MULTIPLE_ACTIVE_CHECKINS`;
+- `RESIDUAL_OPEN_CHECKIN`;
+- `CHECKOUT_INCOMPLETE`;
+- `CHECKIN_SOURCE_UNAVAILABLE`.
+
+Estas condiciones exigen otro propietario y nunca deberán degradarse a
+`REQUIRED_CHECKIN_NOT_FOUND`.
+
+---
+
+#### 10. `CHECKIN-REQUIRED-BLOCKING-CONTRACT-001`
+
+```json
+{
+  "reason_code": "AUTH_CHECKIN_REQUIRED",
+  "domain": "AUTHORIZATION_CONTEXT",
+  "public_state": "MISSING_REQUIRED_ACTIVE_CHECKIN",
+  "decision": "DENY",
+  "http_status": 403,
+  "executable": false,
+  "session_action": "PRESERVE",
+  "retry": "USER_ACTION_THEN_NEW_REQUEST",
+  "recovery_action": "START_AUTHORIZED_CHECKIN",
+  "public_message": "Registra tu entrada para continuar con esta operación.",
+  "required_facts": {
+    "requires_checkin": true,
+    "active_shift": "EXACTLY_ONE",
+    "checkin_state": "ABSENT_OR_CLOSED",
+    "resolution": "CONCLUSIVE"
+  },
+  "effects": {
+    "business_write": false,
+    "event_emit": false,
+    "job_enqueue": false,
+    "realtime_delivery": false,
+    "offline_commit": false
+  }
+}
+```
+
+El envelope público podrá añadir `request_id`, `correlation_id`,
+`context_version` y una acción de recuperación estable. No deberá exponer
+identificadores laborales, horario, sede, área, turno, sesión de asistencia,
+método de marcación ni causas internas.
+
+---
+
+#### 11. Dependencia por permiso y carril
+
+La unidad de decisión es la capacidad y el carril, no la aplicación completa.
+La distribución canónica se conserva:
+
+| Grupo                         | Cantidad | Check-in                       |
+| ----------------------------- | -------: | ------------------------------ |
+| permisos sin carril operativo |       54 | no aplica                      |
+| carriles operativos `T`       |       19 | no requerido                   |
+| carriles operativos `T+C`     |       39 | requerido                      |
+| total de permisos canónicos   |      112 | decisión explícita por permiso |
+
+La ausencia de check-in solo puede bloquear los 39 carriles `T+C` cuando sean
+el carril necesario para autorizar la solicitud.
+
+Una política por aplicación no sustituye esta matriz. `requires_checkin=true`
+a nivel de aplicación puede ser un límite transitorio más restrictivo, pero no
+puede convertirse en la clasificación canónica de cada permiso.
+
+---
+
+#### 12. Modalidades de autorización
+
+| Modalidad                    | Regla ante ausencia de check-in                               |
+| ---------------------------- | ------------------------------------------------------------- |
+| `BASE_ONLY`                  | no evalúa esta razón                                          |
+| `OPERATIONAL_ONLY` con `T`   | continúa sin check-in                                         |
+| `OPERATIONAL_ONLY` con `T+C` | deniega con esta razón                                        |
+| `BASE_OR_OPERATIONAL`        | evalúa carriles por separado; una base válida puede autorizar |
+| `BASE_AND_OPERATIONAL`       | el carril operativo `T+C` es obligatorio; deniega             |
+
+Queda prohibido:
+
+- bloquear indiscriminadamente una aplicación por no existir check-in;
+- convertir `T` en `T+C` desde un adapter local;
+- permitir `T+C` porque el actor posee una concesión base no suficiente;
+- usar el nombre del rol como bypass;
+- usar propietario o gerente general como bypass implícito;
+- usar dispositivo, sede seleccionada o simulación para fabricar presencia.
+
+---
+
+#### 13. Precedencia dentro del árbol de bloqueo
+
+La precedencia aplicable queda:
+
+```text
+AUTENTICACIÓN
+→ IDENTIDAD ACTIVA
+→ ACCESO A APLICACIÓN
+→ PUBLICACIÓN DE TURNO
+→ VIGENCIA TEMPORAL
+→ NECESIDAD DE CHECK-IN POR PERMISO Y CARRIL
+→ RESOLUCIÓN DE SESIÓN ABIERTA
+→ ROL OPERATIVO
+→ TERRITORIO Y ÁREA
+→ DISPOSITIVO
+→ PERMISO, SCOPE Y RECURSO
+→ DECISIÓN
+```
+
+| Hecho                                             | Primera razón concluyente      |
+| ------------------------------------------------- | ------------------------------ |
+| no hay publicación aplicable                      | `AUTH-ERR-009`                 |
+| publicación antes del inicio o desde el fin       | `AUTH-ERR-010`                 |
+| turno vigente, carril `T`, sin check-in           | ninguna; continuar             |
+| turno vigente, carril `T+C`, ausencia concluyente | `AUTH_CHECKIN_REQUIRED`        |
+| turno vigente, check-in residual o contradictorio | `AUTH-ERR-012` o razón técnica |
+| turno y check-in válidos, rol insuficiente        | `AUTH-ERR-013`                 |
+| contexto válido, fuente indisponible              | `AUTH-ERR-019`                 |
+
+La evaluación de check-in nunca selecciona el turno. Consume el turno ya
+resuelto por la etapa anterior.
+
+---
+
+#### 14. Check-in pendiente, offline e importado
+
+Una intención de check-in no es una sesión activa.
+
+```text
+SOLICITUD LOCAL
+≠ ACEPTACIÓN DEL SERVIDOR
+≠ SESIÓN ACTIVA
+```
+
+Reglas:
+
+1. una solicitud offline pendiente no permite ejecutar `T+C`;
+2. la cola puede conservar el intento de asistencia, pero no la mutación
+   empresarial dependiente;
+3. al recibir confirmación se deberá resolver nuevamente turno, sede, sesión,
+   rol y permiso;
+4. una importación deberá alcanzar estado autoritativo y referencias válidas;
+5. un replay no podrá crear sesiones abiertas duplicadas;
+6. `client_event_id` podrá proteger idempotencia del evento, pero no demuestra
+   por sí solo una sesión activa compatible;
+7. una respuesta tardía no revive una decisión empresarial anterior.
+
+---
+
+#### 15. Relación con check-out
+
+| Situación                                       | Resultado                                                    |
+| ----------------------------------------------- | ------------------------------------------------------------ |
+| check-in abierto compatible                     | continuar                                                    |
+| check-out normal posterior                      | sesión cerrada; una nueva operación `T+C` produce esta razón |
+| check-out pendiente pero sesión todavía abierta | analizar contrato de cierre y `AUTH-ERR-012`                 |
+| sesión abierta de jornada anterior              | `AUTH-ERR-012` o configuración inválida                      |
+| varios check-in sin cierre                      | `AUTH-ERR-012` o inconsistencia técnica                      |
+| check-out sin entrada relacionada               | inconsistencia; no esta razón                                |
+| turno ya finalizado con sesión abierta          | `AUTH-ERR-010` precede; además se audita cierre incompleto   |
+
+`AUTH-ERR-011` no corrige, cierra ni reconstruye asistencia. Solo deniega una
+operación que requiere presencia confirmada y no la posee de forma limpia.
+
+---
+
+#### 16. Actor efectivo, dispositivo y simulación
+
+La sesión debe pertenecer al actor efectivo real evaluado.
+
+- un dispositivo compartido no presta el check-in del actor anterior;
+- la sede fija del dispositivo no crea presencia;
+- el área permitida del dispositivo no sustituye el turno;
+- una sesión del actor real no se reasigna automáticamente al actor simulado;
+- la simulación no crea check-in real;
+- una cuenta de servicio o proceso autónomo no recibe asistencia humana
+  sintética;
+- PASS cliente permanece separado del contexto laboral;
+- `checked_in_now=true` enviado por cliente es dato no confiable.
+
+Cuando cambia actor, sede, turno, dispositivo vinculante o versión de contexto,
+la sesión deberá resolverse nuevamente.
+
+---
+
+#### 17. Entradas mínimas y resultado determinista
+
+Entradas mínimas:
+
+| Entrada                          | Requisito                              |
+| -------------------------------- | -------------------------------------- |
+| `actor_effective.employee_id`    | no nulo y activo                       |
+| `permission_code`                | canónico                               |
+| `authorization_lane`             | resuelto por modalidad                 |
+| `requires_checkin`               | derivado del catálogo del permiso      |
+| `active_shift.shift_id`          | exactamente uno y vigente              |
+| `current_site_id`                | derivado del turno y territorio válido |
+| `resolved_at`                    | servidor                               |
+| `context_version`                | presente                               |
+| ledger o proyección autoritativa | disponible y fresca                    |
+
+Resultado determinista:
+
+```text
+same canonical inputs
++
+same authoritative attendance state
++
+same context_version
+→ same decision
+```
+
+El orden físico de filas, el último registro encontrado o el caché del cliente
+no podrán alterar la decisión.
+
+---
+
+#### 18. `CHECKIN-STATE-DECISION-MATRIX-001`
+
+|    # | Escenario                                                          | Resultado                                       |
+| ---: | ------------------------------------------------------------------ | ----------------------------------------------- |
+|    1 | `BASE_ONLY`, sin check-in                                          | continuar                                       |
+|    2 | `OPERATIONAL_ONLY/T`, turno vigente, sin check-in                  | continuar                                       |
+|    3 | `OPERATIONAL_ONLY/T+C`, turno vigente, sin eventos                 | esta razón                                      |
+|    4 | `T+C`, sesión compatible cerrada normalmente                       | esta razón                                      |
+|    5 | `T+C`, solicitud local pendiente                                   | esta razón; cero efectos                        |
+|    6 | `T+C`, importación no confirmada                                   | esta razón                                      |
+|    7 | `T+C`, exactamente una sesión compatible abierta                   | continuar                                       |
+|    8 | `BASE_OR_OPERATIONAL`, base válida, operativo sin check-in         | autorizar solo por base                         |
+|    9 | `BASE_OR_OPERATIONAL`, base inválida, operativo `T+C` sin check-in | esta razón                                      |
+|   10 | `BASE_AND_OPERATIONAL`, base válida, sin check-in                  | esta razón                                      |
+|   11 | sin publicación                                                    | `AUTH-ERR-009`                                  |
+|   12 | publicación fuera de ventana                                       | `AUTH-ERR-010`                                  |
+|   13 | dos turnos vigentes                                                | `AUTH-ERR-017`                                  |
+|   14 | sesión abierta de otro actor                                       | conflicto; no esta razón                        |
+|   15 | sesión abierta de otra sede                                        | conflicto; no esta razón                        |
+|   16 | sesión abierta de otro turno                                       | conflicto; no esta razón                        |
+|   17 | dos sesiones abiertas compatibles                                  | `AUTH-ERR-012` o inconsistencia                 |
+|   18 | sesión residual de jornada anterior                                | `AUTH-ERR-012`                                  |
+|   19 | check-out sin entrada correlacionable                              | inconsistencia                                  |
+|   20 | fuente de asistencia indisponible                                  | `AUTH-ERR-019`                                  |
+|   21 | turno finaliza después del check-in                                | `AUTH-ERR-010`; el check-in no extiende ventana |
+|   22 | cambio de sede o turno                                             | invalidar y resolver de nuevo                   |
+|   23 | dispositivo compartido conserva sesión del actor anterior          | denegar por conflicto; nunca reutilizar         |
+|   24 | operación repetida después de check-in confirmado                  | nueva decisión; no replay de la anterior        |
+
+La matriz contiene exactamente veinticuatro decisiones y no deja escenarios
+sin propietario.
+
+---
+
+#### 19. Regla de cero efectos
+
+Cuando se produce esta razón, quedan prohibidos antes de una autorización
+nueva:
+
+- inserts, updates o deletes empresariales;
+- transiciones de estado;
+- reservas o descuentos de inventario;
+- impresión, despacho, recepción o preparación;
+- emisión de eventos empresariales;
+- jobs y colas;
+- notificaciones derivadas de la operación;
+- publicación Realtime de datos protegidos;
+- confirmación de comandos offline;
+- creación automática del check-in;
+- selección automática de turno;
+- corrección automática de asistencia.
+
+La propia operación autorizada de registrar entrada pertenece al dominio de
+asistencia y deberá poder ejecutarse sin exigir el check-in que intenta crear.
+
+---
+
+#### 20. Envelope público
+
+Respuesta JSON mínima:
+
+```json
+{
+  "ok": false,
+  "decision": "DENY",
+  "reason_code": "AUTH_CHECKIN_REQUIRED",
+  "state": "MISSING_REQUIRED_ACTIVE_CHECKIN",
+  "message": "Registra tu entrada para continuar con esta operación.",
+  "executable": false,
+  "recovery": {
+    "action": "START_AUTHORIZED_CHECKIN"
+  }
+}
+```
+
+Una navegación protegida podrá adaptar la presentación, pero deberá conservar
+el mismo código, estado, decisión y ausencia de efectos. No se devolverá un
+redirect opaco como sustituto del contrato.
+
+---
+
+#### 21. Copy canónico
+
+**Título:** `Check-in requerido`
+
+**Mensaje principal:**
+
+```text
+Registra tu entrada para continuar con esta operación.
+```
+
+**Acción primaria:**
+
+```text
+Registrar entrada
+```
+
+**Acción secundaria cuando exista una superficie autorizada:**
+
+```text
+Volver a una vista disponible
+```
+
+Quedan prohibidos:
+
+- `No tienes asistencia`;
+- `No estás trabajando`;
+- `Tu jefe no te programó`;
+- `No encontramos tu turno`;
+- mostrar IDs, hora exacta, sede, área, rol o método de marcación;
+- afirmar que el check-in falló cuando no existe evidencia de intento;
+- cerrar sesión de autenticación;
+- permitir continuar de todos modos.
+
+---
+
+#### 22. Recuperación
+
+La recuperación segura es:
+
+```text
+DENY
+→ MOSTRAR ACCIÓN DE CHECK-IN AUTORIZADA
+→ REGISTRAR Y CONFIRMAR EN SERVIDOR
+→ INVALIDAR CONTEXTO ANTERIOR
+→ RESOLVER NUEVO CONTEXTO
+→ EVALUAR NUEVA SOLICITUD
+```
+
+No existe recuperación mediante:
+
+- cambiar un booleano en cliente;
+- reintentar la mutación automáticamente;
+- seleccionar otro turno;
+- usar la sede seleccionada;
+- usar el check-in de otro dispositivo o actor;
+- elevar rol;
+- aplicar bypass por nombre;
+- reusar una decisión anterior.
+
+Si el actor no puede registrar entrada, el flujo podrá mostrar ayuda o ruta de
+soporte autorizada sin revelar información laboral adicional ni alterar la
+decisión.
+
+---
+
+#### 23. `CHECKIN-CHANNEL-RESPONSE-MATRIX-001`
+
+| Canal                    | Respuesta exigida                               | Cero efectos | Recuperación                     |
+| ------------------------ | ----------------------------------------------- | ------------ | -------------------------------- |
+| navegación y páginas     | vista accesible con código estable              | sí           | abrir flujo autorizado           |
+| Server Actions           | resultado tipado; no lanzar HTML genérico       | sí           | acción del cliente               |
+| Route Handlers           | JSON `403`                                      | sí           | nueva solicitud                  |
+| RSC y fetch              | estado serializable y no cacheado indebidamente | sí           | revalidar contexto               |
+| RPC y PostgREST          | denegación estructurada                         | sí           | no reintento automático          |
+| RLS y Data API           | fail closed y correlación observable            | sí           | resolver por servicio autorizado |
+| Edge Functions           | envelope equivalente                            | sí           | nueva evaluación                 |
+| Realtime                 | no entregar payload protegido                   | sí           | resuscribir tras nuevo contexto  |
+| clientes nativos         | código estable, no solo copy                    | sí           | check-in y refresh               |
+| dispositivos compartidos | limpiar contexto del actor anterior             | sí           | identificar actor y marcar       |
+
+Los diez canales deberán mapear aliases legacy únicamente en una capa de
+compatibilidad temporal y emitir telemetría de deprecación.
+
+---
+
+#### 24. Navegación, accesibilidad y privacidad
+
+La experiencia deberá:
+
+- conservar foco y ruta cuando sea seguro;
+- anunciar título, motivo y acción con lector de pantalla;
+- permitir teclado completo;
+- conservar contraste y zoom;
+- no depender solo de color;
+- impedir doble envío de la operación bloqueada;
+- no revelar presencia, ausencia o horario de otros empleados;
+- no mostrar identificadores de asistencia;
+- no exponer el método de check-in;
+- no listar turnos candidatos;
+- no ofrecer acciones que el actor no puede ejecutar.
+
+La acción `Registrar entrada` deberá aparecer solo cuando el actor y la
+superficie puedan iniciar el flujo autorizado. De lo contrario, se mostrará
+una ruta de ayuda o retorno segura.
+
+---
+
+#### 25. Reintentos, idempotencia y concurrencia
+
+1. la mutación bloqueada no se reintenta automáticamente;
+2. el evento de check-in puede usar una clave idempotente independiente;
+3. dos intentos concurrentes de check-in no podrán producir dos sesiones
+   abiertas;
+4. la confirmación del check-in no autoriza una mutación ya rechazada;
+5. una nueva operación deberá usar un `context_version` posterior;
+6. cada efecto revalida inmediatamente antes del commit;
+7. una salida concurrente invalida la sesión antes de operaciones posteriores;
+8. una llegada tardía offline no desplaza una sesión vigente sin reconciliación;
+9. Realtime no sustituye una lectura autoritativa;
+10. una sesión cerrada entre evaluación y efecto deberá causar fail closed.
+
+---
+
+#### 26. Frescura e invalidación
+
+La sesión deberá invalidarse o re-resolverse ante:
+
+- check-out confirmado;
+- cambio de turno;
+- fin de turno;
+- cambio de sede o área operativa;
+- desactivación del empleado;
+- cancelación o retiro de publicación;
+- cambio de política del permiso;
+- cambio de actor efectivo;
+- cambio de dispositivo vinculante;
+- cambio de versión de contexto;
+- detección de duplicidad o contradicción;
+- revocación de sesión de asistencia.
+
+Un TTL por sí solo no es suficiente para mutaciones. La validación final deberá
+leer una versión autoritativa compatible.
+
+---
+
+#### 27. Auditoría
+
+La auditoría interna podrá registrar:
+
+- `request_id` y `correlation_id`;
+- actor real y actor efectivo;
+- aplicación, permiso y carril;
+- `requires_checkin`;
+- identidad de turno y sesión únicamente en almacenamiento protegido;
+- estado de resolución;
+- causa interna;
+- `context_version`;
+- fuente y latencia;
+- decisión y cero efectos;
+- alias legacy observado;
+- acción de recuperación ofrecida.
+
+La telemetría pública no deberá contener IDs laborales ni datos de asistencia.
+Los logs internos deberán respetar retención, acceso mínimo y trazabilidad.
+
+---
+
+#### 28. `CHECKIN-APPLICATION-COVERAGE-REGISTER-001`
+
+| Aplicación | Decisión de cobertura                                                                                                                   |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| SHELL      | sus capacidades base no exigen check-in; distribuye contrato y contexto                                                                 |
+| ANIMA      | asistencia y programación deben seguir disponibles para crear o cerrar la propia sesión; otras capacidades se evalúan por permiso       |
+| AURA       | no se bloquea por nombre de aplicación; aplica únicamente si una capacidad futura posee carril `T+C`                                    |
+| VISO       | capacidades administrativas base no exigen check-in; cualquier carril operativo se rige por catálogo                                    |
+| NEXO       | posee política física activa que exige turno y check-in a nivel de aplicación; deberá migrar a decisión por permiso sin debilitar `T+C` |
+| FOGO       | operaciones presenciales `T+C` deberán consumir el contrato compartido; entrada y referencias `T` no se bloquearán                      |
+| ORIGO      | operaciones presenciales `T+C` deberán consumir el contrato compartido; administración base permanece independiente                     |
+| PULSO      | mutaciones operativas `T+C` deberán consumir el contrato; sesión POS o dispositivo no crea check-in                                     |
+| NUMERA     | sus carriles base y operativos se separan; no se impone check-in a capacidades base                                                     |
+| PASS       | la sesión cliente no es check-in laboral y nunca satisface este contrato                                                                |
+
+La tabla decide las diez aplicaciones sin inventar cobertura implementada. El
+catálogo de 112 permisos sigue siendo la fuente de granularidad.
+
+---
+
+#### 29. Snapshot físico desplegado
+
+Inspección de solo lectura en `vento-os-dev`:
+
+| Métrica                                                    |          Resultado observado |
+| ---------------------------------------------------------- | ---------------------------: |
+| instante `America/Bogota`                                  | `2026-08-04 00:23:08.722637` |
+| versión PostgreSQL                                         |                 `17.6.1.054` |
+| eventos en `attendance_logs`                               |                         5132 |
+| check-in abiertos inferidos por la lógica física observada |                            0 |
+| contextos abiertos duplicados observados                   |                            0 |
+| abiertos sin turno                                         |                            0 |
+| abiertos sin sede                                          |                            0 |
+| abiertos sin empleado resoluble                            |                            0 |
+| abiertos con turno inexistente                             |                            0 |
+| políticas de aplicación activas                            |                            1 |
+| políticas activas que exigen check-in                      |                            1 |
+| política activa                                            |        `nexo:true:true:true` |
+| funciones que referencian `attendance_logs`                |                           13 |
+| funciones que emiten `checkin_required`                    |                            1 |
+| funciones que referencian `requires_checkin`               |                            1 |
+| índices físicos sobre `attendance_logs`                    |                            8 |
+
+El valor cero de sesiones abiertas describe únicamente el instante observado.
+No prueba cobertura, corrección del modelo ni ausencia histórica de conflictos.
+
+---
+
+#### 30. Esquema físico observado
+
+`attendance_logs` utiliza eventos independientes con:
+
+- `action` limitado a `check_in` o `check_out`;
+- FK de empleado con `ON DELETE CASCADE`;
+- FK de turno con `ON DELETE SET NULL`;
+- FK de sede con `ON DELETE RESTRICT`;
+- `source` limitado a `mobile`, `web`, `kiosk` o `system`;
+- índice idempotente único por `employee_id, client_event_id` cuando existe;
+- índices temporales por empleado, sede y ocurrencia;
+- ninguna restricción observada que garantice por sí sola exactamente una
+  sesión abierta por empleado, sede y turno.
+
+Las políticas RLS observadas permiten inserción propia desde fuentes
+controladas y lectura propia o gerencial acotada. RLS protege acceso a filas,
+pero no sustituye la resolución semántica de una sesión activa.
+
+---
+
+#### 31. Comportamiento físico observado
+
+El RPC físico `get_operational_context`:
+
+1. carga una política por `app_code` con `limit 1`;
+2. resuelve un turno del día actual con `limit 1`;
+3. infiere check-in abierto buscando el último `check_in` del empleado sin
+   cualquier `check_out` posterior del mismo empleado;
+4. no exige en esa selección la coincidencia simultánea con el turno y la sede
+   ya resueltos;
+5. no detecta multiplicidad antes de escoger una fila;
+6. incluye la sede del check-in dentro de la cadena de `coalesce` territorial;
+7. emite `checkin_required` cuando la política de aplicación lo exige y no
+   encuentra el evento inferido;
+8. contiene bypass explícito para `propietario` y `gerente_general`;
+9. devuelve booleans y un arreglo de razones legacy, no el envelope público
+   aprobado.
+
+El consumidor NEXO:
+
+- tipa los campos del RPC;
+- transforma `checkin_required` en el mensaje `No puedes operar porque no tienes check-in activo.`;
+- retorna un booleano para la comprobación del permiso;
+- no conserva un contrato tipado compartido con el código público aprobado;
+- aplica además una modificación de área y rol desde simulación local.
+
+Estas observaciones son diagnóstico del estado actual, no aprobación de su
+semántica.
+
+---
+
+#### 32. `CHECKIN-PHYSICAL-RECONCILIATION-001`
+
+|    # | Brecha física                                                                 | Riesgo                                   | Propietario de cierre                              |
+| ---: | ----------------------------------------------------------------------------- | ---------------------------------------- | -------------------------------------------------- |
+|    1 | política activa solo para NEXO                                                | cobertura parcial                        | `AUTH-DB-031`; `SHELL-AUTH-005`                    |
+|    2 | política a nivel de aplicación, no de permiso y carril                        | bloqueo excesivo o bypass                | `AUTH-DB-020`; `AUTH-DB-034`                       |
+|    3 | búsqueda de check-in no exige `shift_id` coincidente                          | sesión prestada entre turnos             | `AUTH-DB-033`; `AUTH-DB-034`                       |
+|    4 | búsqueda no exige `site_id` coincidente                                       | presencia prestada entre sedes           | `AUTH-DB-033`; `AUTH-DB-034`                       |
+|    5 | `limit 1` oculta multiplicidad                                                | autorización arbitraria                  | `AUTH-DB-033`; `AUTH-ERR-012`                      |
+|    6 | cualquier salida posterior del empleado cierra por inferencia eventos previos | correlación imprecisa                    | `AUTH-DB-033`; `AUTH-ERR-012`                      |
+|    7 | ledger no materializa identidad explícita de sesión                           | ambigüedad de correlación                | `AUTH-DB-033`                                      |
+|    8 | no existe unicidad física de sesión abierta                                   | duplicidad concurrente                   | `AUTH-DB-033`; `SHELL-CI-018`                      |
+|    9 | FK de turno permite `SET NULL`                                                | historia no utilizable para autorización | `AUTH-DB-033`; tarea de integridad correspondiente |
+|   10 | check-in participa en fallback de sede activa                                 | inversión de precedencia territorial     | `AUTH-DB-034`                                      |
+|   11 | bypass físico por nombres de rol                                              | omisión de `T+C`                         | `AUTH-DB-034`; `SHELL-AUTH-004`                    |
+|   12 | razones legacy no poseen envelope público                                     | divergencia contractual                  | `SHELL-AUTH-001`; `AUTH-ERR-020`                   |
+|   13 | consumidor NEXO reduce permiso a booleano y copy local                        | pérdida de causa y trazabilidad          | `SHELL-AUTH-002`; `SHELL-AUTH-005`                 |
+|   14 | no existe evidencia observada para las otras nueve aplicaciones               | cobertura no demostrada                  | `SHELL-AUTH-005`; `SHELL-CI-016`                   |
+
+Cada brecha permanece pendiente de implementación o evidencia; ninguna se
+corrige en esta tarea documental.
+
+---
+
+#### 33. Handoff de implementación
+
+La implementación futura deberá distribuirse así:
+
+- `AUTH-DB-020` y `AUTH-DB-031`: materializar la clasificación `N/T/T+C` y su
+  paridad física;
+- `AUTH-DB-033`: resolver turno y sesión de asistencia exactos, únicos y
+  correlacionados;
+- `AUTH-DB-034`: aplicar precedencia, modalidad, carril, check-in, rol, scope y
+  recurso;
+- `AUTH-DB-035`: invalidar contexto y cachés ante entrada, salida y cambios;
+- `SHELL-AUTH-001`: publicar código, tipos, estado y envelope;
+- `SHELL-AUTH-002`: adaptar navegación, acciones, API, RPC y clientes;
+- `SHELL-AUTH-004`: prohibir aliases, bypass y decisiones locales divergentes;
+- `SHELL-AUTH-005`: migrar las aplicaciones consumidoras;
+- `AUTH-ERR-012`: definir cierre incompleto y conflictos residuales;
+- `AUTH-ERR-017`, `AUTH-ERR-019` y `AUTH-ERR-020`: completar configuración,
+  fallos técnicos, copy y distribución;
+- `SHELL-CI-016`, `SHELL-CI-018` y `SHELL-CI-019`: ejecutar pruebas y conservar
+  evidencia.
+
+Toda migración futura de Supabase deberá crearse, versionarse, documentarse y
+ejecutarse desde `vento-shell`.
+
+---
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+| ID              | Regla protegida                                                                                                                                                                       | Tipo                                   | Prioridad | Momento de implementación       | Destino                                                                                       |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------- | --------- | ------------------------------- | --------------------------------------------------------------------------------------------- |
+| `TREQ-AUTH-229` | Un carril `T+C` con turno publicado y vigente, resolución concluyente y ausencia de sesión abierta compatible produce `AUTH_CHECKIN_REQUIRED`, `403`, deny y cero efectos.            | contractual + seguridad + contexto     | crítica   | evaluador unificado             | `AUTH-DB-034`; `SHELL-CI-016`                                                                 |
+| `TREQ-AUTH-230` | La ausencia de check-in se aplica solo a 39 carriles `T+C`; 19 carriles `T` y 54 permisos sin carril operativo no se bloquean por esta razón.                                         | catálogo + contractual + regresión     | crítica   | catálogo físico y paridad       | `AUTH-DB-020`; `AUTH-DB-031`; `SHELL-CI-016`                                                  |
+| `TREQ-AUTH-231` | Una sesión activa debe coincidir exactamente con actor, sede y turno, estar abierta, confirmada y ser única; cliente, evento reciente o `limit 1` no bastan.                          | base de datos + contexto + seguridad   | crítica   | resolver de asistencia          | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-018`                                                  |
+| `TREQ-AUTH-232` | Ausencia, cierre normal, intención pendiente, mismatch, multiplicidad, check-out incompleto e indisponibilidad conservan causas y propietarios distintos.                             | razones + integración + regresión      | crítica   | catálogo de razones y evaluador | `AUTH-ERR-012`; `AUTH-ERR-017`; `AUTH-ERR-019`; `AUTH-DB-034`                                 |
+| `TREQ-AUTH-233` | Publicación y temporalidad preceden al check-in; rol, dispositivo y permiso se evalúan después de resolver una sesión requerida.                                                      | precedencia + autorización + seguridad | crítica   | evaluador unificado             | `AUTH-DB-034`; `SHELL-AUTH-004`; `SHELL-CI-016`                                               |
+| `TREQ-AUTH-234` | Diez canales producen la misma razón, preservan sesión, mantienen cero efectos y exigen una solicitud nueva después del check-in.                                                     | integración + E2E + concurrencia       | crítica   | SDK, adapters e invalidación    | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `AUTH-DB-035`; `SHELL-CI-018`                             |
+| `TREQ-AUTH-235` | Las diez aplicaciones deciden por permiso y carril; ANIMA puede crear asistencia, PASS no presta sesión laboral y NEXO migra su política global sin debilitar `T+C`.                  | aplicación + identidad + contrato      | alta      | migración de consumidoras       | `SHELL-AUTH-005`; `SHELL-CI-016`                                                              |
+| `TREQ-AUTH-236` | Copy, recuperación, privacidad y accesibilidad ofrecen check-in autorizado sin revelar horario, sede, turno, sesión, método ni causas internas.                                       | interfaz + privacidad + accesibilidad  | alta      | catálogo compartido de mensajes | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                                              |
+| `TREQ-AUTH-237` | Solicitudes offline, concurrencia y replay no crean autoridad ni sesiones duplicadas; la confirmación invalida contexto y obliga a una decisión nueva.                                | idempotencia + concurrencia + offline  | crítica   | ledger, invalidación y adapters | `AUTH-DB-033`; `AUTH-DB-035`; `SHELL-CI-018`; `SHELL-CI-019`                                  |
+| `TREQ-AUTH-238` | La regresión reconcilia 5132 eventos, cero sesiones abiertas en el snapshot, una política NEXO, 13 funciones consumidoras, 8 índices y catorce brechas sin alterar datos productivos. | regresión + RPC + RLS + seguridad      | crítica   | gates y evidencia E5            | `AUTH-DB-031`; `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-AUTH-004`; `SHELL-CI-016`; `SHELL-CI-018` |
+
+---
+
+#### 35. Validaciones documentales definidas
+
+La implementación deberá probar, como mínimo:
+
+1. `BASE_ONLY` sin check-in;
+2. `OPERATIONAL_ONLY/T` sin check-in;
+3. `OPERATIONAL_ONLY/T+C` sin eventos;
+4. sesión compatible cerrada normalmente;
+5. solicitud local pendiente;
+6. evento importado no confirmado;
+7. sesión compatible abierta;
+8. `BASE_OR_OPERATIONAL` autorizado por base;
+9. `BASE_OR_OPERATIONAL` dependiente de `T+C`;
+10. `BASE_AND_OPERATIONAL` sin check-in;
+11. ausencia de publicación conserva `AUTH-ERR-009`;
+12. fuera de ventana conserva `AUTH-ERR-010`;
+13. dos turnos conservan configuración inválida;
+14. mismatch de actor;
+15. mismatch de sede;
+16. mismatch de turno;
+17. dos sesiones abiertas;
+18. sesión residual;
+19. check-out huérfano;
+20. fuente indisponible;
+21. fin de turno con sesión abierta;
+22. cambio de sede y turno;
+23. dispositivo compartido con actor nuevo;
+24. simulación sin check-in real;
+25. actor cliente y proceso autónomo;
+26. equivalencia de diez canales;
+27. cero efectos y ausencia de replay;
+28. invalidación al check-in y check-out;
+29. copy, teclado, lector de pantalla, zoom y contraste;
+30. reconciliación de las catorce brechas físicas.
+
+---
+
+#### 36. Evidencia y estados
+
+| Elemento                                  | Estado                                                                  |
+| ----------------------------------------- | ----------------------------------------------------------------------- |
+| contrato documental                       | ESPECIFICADO                                                            |
+| matriz de estados, canales y aplicaciones | ESPECIFICADO                                                            |
+| snapshot de solo lectura                  | VALIDADO contra estado desplegado observado                             |
+| código público compartido                 | PENDIENTE_DE_IMPLEMENTACIÓN — `SHELL-AUTH-001`; `AUTH-ERR-020`          |
+| resolver único de sesión                  | PENDIENTE_DE_IMPLEMENTACIÓN — `AUTH-DB-033`                             |
+| evaluador por permiso y carril            | PENDIENTE_DE_IMPLEMENTACIÓN — `AUTH-DB-034`                             |
+| catálogo físico `N/T/T+C`                 | PENDIENTE_DE_IMPLEMENTACIÓN — `AUTH-DB-020`; `AUTH-DB-031`              |
+| invalidación por entrada y salida         | PENDIENTE_DE_IMPLEMENTACIÓN — `AUTH-DB-035`                             |
+| adapters de aplicaciones                  | PENDIENTE_DE_IMPLEMENTACIÓN — `SHELL-AUTH-002`; `SHELL-AUTH-005`        |
+| evidencia de diez canales                 | PENDIENTE_DE_EVIDENCIA — `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+| evidencia de concurrencia y offline       | PENDIENTE_DE_EVIDENCIA — `SHELL-CI-018`; `SHELL-CI-019`                 |
+
+El snapshot no demuestra que el contrato esté implementado. No se declara una
+prueba satisfecha sin evidencia reproducible.
+
+---
+
+#### 37. Fuera del alcance
+
+AUTH-ERR-011 no:
+
+- registra check-in o check-out;
+- crea, cierra o repara sesiones de asistencia;
+- reconstruye correlaciones históricas;
+- corrige eventos duplicados o huérfanos;
+- modifica turnos, publicaciones, sedes, áreas o roles;
+- cambia los conteos 54/19/39;
+- reclasifica permisos;
+- implementa `AccessContext` o `AuthorizationDecision`;
+- crea tablas, columnas, constraints, índices, funciones, RPC, RLS o triggers;
+- ejecuta migraciones, DDL, DML o backfills;
+- crea datos de prueba productivos;
+- modifica aplicaciones;
+- despliega código;
+- escribe en GitHub;
+- inicia `AUTH-ERR-012`;
+- ejecuta pruebas operativas.
+
+---
+
+#### 38. Criterios de aceptación
+
+1. `AUTH_CHECKIN_REQUIRED` es el único código público de la tarea.
+2. `MISSING_REQUIRED_ACTIVE_CHECKIN` es el estado público.
+3. La razón pertenece a autorización contextual, no autenticación.
+4. La sesión de autenticación permanece válida.
+5. La respuesta no navegacional usa `403`.
+6. La decisión es `DENY`, `executable=false` y cero efectos.
+7. La capacidad y el carril se resuelven antes de evaluar check-in.
+8. Solo los 39 carriles `T+C` pueden producir esta razón.
+9. Los 19 carriles `T` no exigen check-in.
+10. Los 54 permisos sin carril operativo no se bloquean.
+11. Existe exactamente un turno publicado y vigente antes de esta razón.
+12. Sin publicación permanece `AUTH-ERR-009`.
+13. Fuera de ventana permanece `AUTH-ERR-010`.
+14. La sesión activa coincide con actor, sede y turno.
+15. La sesión está abierta y confirmada por servidor.
+16. La sesión es única.
+17. Una intención local no autoriza.
+18. Un evento reciente no autoriza por sí solo.
+19. Una sesión cerrada produce esta razón para una nueva operación `T+C`.
+20. Un cierre normal no es check-out incompleto.
+21. Un mismatch no se presenta como ausencia limpia.
+22. La multiplicidad no se resuelve con `limit 1`.
+23. Una sesión residual pertenece a `AUTH-ERR-012` o inconsistencia.
+24. Una fuente indisponible conserva `AUTH-ERR-019`.
+25. El check-in no selecciona turno.
+26. El check-in no crea sede, área, rol, permiso ni scope.
+27. Un dispositivo no presta check-in.
+28. La simulación no crea asistencia real.
+29. PASS cliente no satisface presencia laboral.
+30. ANIMA puede ofrecer el flujo de asistencia sin exigir check-in previo.
+31. `BASE_OR_OPERATIONAL` conserva independencia de carriles.
+32. `BASE_AND_OPERATIONAL` conserva `T+C` obligatorio.
+33. No existe bypass por nombre de rol.
+34. El copy exacto es `Registra tu entrada para continuar con esta operación.`
+35. El copy no revela horario ni identificadores.
+36. La recuperación usa un flujo autorizado.
+37. La operación bloqueada no se reintenta automáticamente.
+38. La confirmación del check-in exige una decisión nueva.
+39. Toda mutación revalida antes del efecto.
+40. El check-out invalida la sesión.
+41. Cambio de actor, sede o turno invalida contexto.
+42. Los diez canales poseen respuesta explícita.
+43. Las diez aplicaciones poseen decisión explícita.
+44. La UI es accesible.
+45. La auditoría interna minimiza datos.
+46. El snapshot registra 5132 eventos.
+47. El snapshot registra cero sesiones abiertas inferidas.
+48. El snapshot registra una política activa NEXO.
+49. El snapshot registra 13 funciones que referencian asistencia.
+50. El snapshot registra una función que emite `checkin_required`.
+51. El snapshot registra ocho índices sobre `attendance_logs`.
+52. Las catorce brechas tienen propietario y condición de salida.
+53. Se generan `TREQ-AUTH-229` a `TREQ-AUTH-238`.
+54. Las 6626 filas históricas del registro se conservan sin modificación.
+55. No se modifica código, Supabase, datos ni repositorios remotos.
+56. `AUTH-ERR-012` permanece reservada.
+
+---
+
+#### 39. Riesgos controlados
+
+| Riesgo                        | Control aprobado                            |
+| ----------------------------- | ------------------------------------------- |
+| bloqueo global por aplicación | decisión por permiso y carril               |
+| check-in de otro turno        | coincidencia exacta de `shift_id`           |
+| check-in de otra sede         | coincidencia exacta de `site_id`            |
+| sesión del actor anterior     | coincidencia exacta de actor e invalidación |
+| duplicidad                    | fail closed y propietario de conflicto      |
+| replay offline                | idempotencia y decisión nueva               |
+| bypass gerencial              | prohibición por nombre de rol               |
+| filtración laboral            | envelope minimizado                         |
+| efecto parcial                | gate antes del commit                       |
+| razón genérica                | código público y causas internas separadas  |
+| cobertura no demostrada       | estado pendiente y evidencia E5             |
+| deriva entre aplicaciones     | SDK y gates compartidos                     |
+
+---
+
+#### 40. Cierre de tarea y continuidad
+
+| Continuidad               | Tarea          | Estado      |
+| ------------------------- | -------------- | ----------- |
+| ÚLTIMA TAREA APROBADA     | `AUTH-ERR-010` | APROBADA    |
+| TAREA ACTUAL APROBADA     | `AUTH-ERR-011` | APROBADA    |
+| SIGUIENTE TAREA RESERVADA | `AUTH-ERR-012` | NO INICIADA |
+
+```text
+ÚLTIMA TAREA APROBADA
+AUTH-ERR-010 — APROBADA
+        ↓
+TAREA ACTUAL APROBADA
+AUTH-ERR-011 — APROBADA
+        ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-ERR-012 — RESERVADA
+```
+
+No se inicia ni modifica `AUTH-ERR-012` en esta tarea.
+
+
 ### [ ] AUTH-ERR-012 — Rol operativo faltante
 ### [ ] AUTH-ERR-013 — Rol operativo inválido para la sede
 ### [ ] AUTH-ERR-014 — Rol operativo inválido para el área

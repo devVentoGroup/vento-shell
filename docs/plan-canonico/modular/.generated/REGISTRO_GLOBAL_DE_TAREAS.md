@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **535** |
+| Aprobadas | **536** |
 | En propuesta | **0** |
-| No iniciadas | **1059** |
+| No iniciadas | **1058** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **33.56% (535/1594)** |
+| Porcentaje de completamiento | **33.63% (536/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-ERR-010` — Fuera de turno | ✅ APROBADA |
-| Tarea actual | `AUTH-ERR-011` — Check-in requerido | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-ERR-012` — Rol operativo faltante | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-ERR-011` — Check-in requerido | ✅ APROBADA |
+| Tarea actual | `AUTH-ERR-012` — Rol operativo faltante | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-ERR-013` — Rol operativo inválido para la sede | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1274,7 +1274,7 @@
 | ✅ APROBADA | `AUTH-ERR-008` | Sin área activa | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ✅ APROBADA | `AUTH-ERR-009` | Sin turno publicado | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ✅ APROBADA | `AUTH-ERR-010` | Fuera de turno | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
-| ⬜ NO INICIADA | `AUTH-ERR-011` | Check-in requerido | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
+| ✅ APROBADA | `AUTH-ERR-011` | Check-in requerido | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-012` | Rol operativo faltante | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-013` | Rol operativo inválido para la sede | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-014` | Rol operativo inválido para el área | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
