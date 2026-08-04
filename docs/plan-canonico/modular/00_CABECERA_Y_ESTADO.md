@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **530** |
+| Tareas aprobadas | **531** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1064** |
+| Tareas no iniciadas | **1063** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **33.25% (530/1594)** |
+| Porcentaje de completamiento | **33.31% (531/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-ERR-005 — Sin sede asignada** |
-| Tarea actual | **AUTH-ERR-006 — Sin sede activa** |
+| Última tarea aprobada | **AUTH-ERR-006 — Sin sede activa** |
+| Tarea actual | **AUTH-ERR-007 — Sin área asignada** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-ERR-007 — Sin área asignada** |
+| Siguiente tarea | **AUTH-ERR-008 — Sin área activa** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 11: AUTHORIZATION_ERRORS** |
-| Progreso del bloque | **CARRIL NEXO: 5 de 20 aprobadas; AUTH-ERR-006 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 6 de 20 aprobadas; AUTH-ERR-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-ERR-005` — Sin sede asignada |
-| Tarea actual | `AUTH-ERR-006` — Sin sede activa — **NO INICIADA** |
-| Siguiente tarea | `AUTH-ERR-007` — Sin área asignada |
+| Última aprobada | `AUTH-ERR-006` — Sin sede activa |
+| Tarea actual | `AUTH-ERR-007` — Sin área asignada — **NO INICIADA** |
+| Siguiente tarea | `AUTH-ERR-008` — Sin área activa |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 5 DE 20 APROBADAS — ACTUAL AUTH-ERR-006** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 6 DE 20 APROBADAS — ACTUAL AUTH-ERR-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-ERR-005 — Sin sede asignada
-        ↓
-TAREA ACTUAL
 AUTH-ERR-006 — Sin sede activa
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-ERR-007 — Sin área asignada
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-ERR-008 — Sin área activa
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 5 de 20 tareas aprobadas
+CARRIL NEXO — 6 de 20 tareas aprobadas
 ```

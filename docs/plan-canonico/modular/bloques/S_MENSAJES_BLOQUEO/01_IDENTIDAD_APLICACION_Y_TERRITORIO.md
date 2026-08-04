@@ -5671,6 +5671,1150 @@ AUTH-ERR-006 — RESERVADA
 No se inicia ni modifica `AUTH-ERR-006` en esta tarea.
 
 
-### [ ] AUTH-ERR-006 — Sin sede activa
+### ✅ AUTH-ERR-006 — Sin sede activa
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-005 — Sin sede asignada` — APROBADA
+**Tarea siguiente:** `AUTH-ERR-007 — Sin área asignada` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, funcional, territorial, de seguridad y experiencia del bloqueo por ausencia confirmada de una sede activa exigida por la acción
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md`
+**Artefactos producidos:** `ACTIVE-SITE-BLOCKING-CONTRACT-001`, `ACTIVE-SITE-MODE-DECISION-MATRIX-001`, `ACTIVE-SITE-CHANNEL-RESPONSE-MATRIX-001`, `ACTIVE-SITE-APPLICATION-COVERAGE-REGISTER-001` y `ACTIVE-SITE-PHYSICAL-RECONCILIATION-001`
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-006`; `AUTH-MOD-007`; `AUTH-MOD-013` a `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-011`; `AUTH-CAT-012`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009`; `AUTH-CTX-013`; `AUTH-CTX-015`; `AUTH-CTX-016`; `AUTH-CTX-018`; `AUTH-CTX-028`; `AUTH-ERR-001` a `AUTH-ERR-005`; contratos vigentes de identidad, contexto, territorio, recurso, disponibilidad y autorización; estado remoto y desplegado inspeccionado; contrato documental vigente
+**Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, constraints, triggers, sedes, turnos, check-ins, asignaciones, permisos, aplicaciones ni despliegues
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué debe ocurrir cuando una
+solicitud ya superó autenticación, actividad de identidad, acceso a la
+aplicación y los prerrequisitos anteriores aplicables, pero la acción necesita
+una sede activa y la evaluación autoritativa concluye que ninguna sede
+compatible puede constituir el contexto territorial requerido.
+
+La regla raíz queda:
+
+```text
+SESIÓN AUTENTICADA VÁLIDA
++
+IDENTIDAD ACTIVA
++
+ACCESO A LA APLICACIÓN PERMITIDO
++
+ACCIÓN O RECURSO CON DEPENDENCIA TERRITORIAL DE SEDE
++
+RESOLUCIÓN AUTORITATIVA CONCLUYENTE
++
+NINGUNA SEDE COMPATIBLE EN ESTADO ACTIVO
+→
+DENY
++
+AUTH_ACTIVE_SITE_REQUIRED
++
+403
++
+CERO EFECTOS
+```
+
+La tarea responde exclusivamente:
+
+```text
+¿LA ACCIÓN REQUIERE UNA SEDE ACTIVA
+Y EXISTE UNA SEDE AUTORITATIVA, ACTIVA Y COMPATIBLE
+PARA EL MODO, EL ALCANCE Y EL RECURSO EVALUADOS?
+```
+
+No responde:
+
+```text
+¿EXISTE SESIÓN?
+¿EL USUARIO ESTÁ ACTIVO?
+¿PUEDE ENTRAR A LA APLICACIÓN?
+¿TIENE EL PERMISO ADMINISTRATIVO?
+¿POSEE UNA ASIGNACIÓN LABORAL DE SEDE?
+¿POSEE ÁREA ASIGNADA O ACTIVA?
+¿EXISTE UN TURNO ACTIVO?
+¿EL TURNO YA COMENZÓ?
+¿EXISTE CHECK-IN?
+¿EL CHECK-IN ES DE OTRA SEDE?
+¿EXISTE ROL OPERATIVO?
+¿EL ROL ES VÁLIDO PARA LA ACCIÓN?
+¿LA FUENTE TÉCNICA DE CONTEXTO ESTÁ DISPONIBLE?
+```
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `ACTIVE-SITE-BLOCKING-CONTRACT-001`, que congela identidad pública,
+   aplicabilidad, causas internas, envelope, seguridad, recuperación,
+   frescura y auditoría;
+2. `ACTIVE-SITE-MODE-DECISION-MATRIX-001`, que decide veinte escenarios y
+   separa sede administrativa, sede operativa, sede del recurso, asignación,
+   turno, check-in, selección, dispositivo y disponibilidad técnica;
+3. `ACTIVE-SITE-CHANNEL-RESPONSE-MATRIX-001`, que materializa diez canales con
+   respuesta equivalente y cero efectos;
+4. `ACTIVE-SITE-APPLICATION-COVERAGE-REGISTER-001`, que decide el alcance para
+   las diez aplicaciones canónicas sin exigir sede a capacidades `NT`, `ORG`
+   o administrativas globales que no la consumen;
+5. `ACTIVE-SITE-PHYSICAL-RECONCILIATION-001`, que registra catorce brechas
+   físicas, un inventario desplegado ampliado y su destino exacto.
+
+Cobertura materializada:
+
+| Elemento                                                 |           Cantidad |
+| -------------------------------------------------------- | -----------------: |
+| Código público canónico                                  |                  1 |
+| Estado HTTP no navegacional                              |           1, `403` |
+| Causas internas admitidas                                |                  5 |
+| Perfiles derivados de dependencia de sede activa         |                  5 |
+| Escenarios con decisión explícita                        |                 20 |
+| Canales con respuesta explícita                          |                 10 |
+| Aplicaciones canónicas reconciliadas                     |                 10 |
+| Empleados activos observados                             |                 42 |
+| Sedes observadas                                         |   7, todas activas |
+| Asignaciones de sede observadas                          |  91, todas activas |
+| Empleados activos sin sede utilizable observados         |                  0 |
+| Turnos relevantes inspeccionados por estado              |               2842 |
+| Turnos relevantes hacia sede inactiva observados         |                  0 |
+| Turnos relevantes hacia sede ausente observados          |                  0 |
+| Funciones del inventario ampliado de sede activa         |                 49 |
+| Funciones que verifican explícitamente actividad de sede |                 16 |
+| Políticas RLS dependientes de resolución de sede         | 68 sobre 40 tablas |
+| Brechas físicas registradas                              |                 14 |
+| Requisitos de prueba derivados                           |                 10 |
+
+Las cifras físicas son un snapshot de solo lectura. La ausencia actual de
+sedes inactivas y de turnos vinculados a ellas no elimina el contrato
+preventivo ni constituye evidencia de que todas las consumidoras producen la
+razón correcta.
+
+---
+
+#### 3. Identidad canónica del bloqueo
+
+La identidad pública única es:
+
+```text
+reason_code = AUTH_ACTIVE_SITE_REQUIRED
+```
+
+| Propiedad                   | Valor                                                            |
+| --------------------------- | ---------------------------------------------------------------- |
+| Dominio                     | `AUTHORIZATION_CONTEXT`                                          |
+| Decisión                    | `DENY`                                                           |
+| Principal                   | autenticado y conservado                                         |
+| Identidad requerida         | existente y activa                                               |
+| Aplicación                  | acceso general ya permitido                                      |
+| Estado público              | `MISSING_REQUIRED_ACTIVE_SITE`                                   |
+| Estado HTTP no navegacional | `403 Forbidden`                                                  |
+| Ejecutable                  | `false`                                                          |
+| Recuperación                | seleccionar o restaurar una sede activa y emitir solicitud nueva |
+| Cierre de sesión            | no automático                                                    |
+| Reintento automático        | prohibido                                                        |
+| Efectos parciales           | prohibidos                                                       |
+
+Quedan prohibidos como identidad pública alternativa:
+
+- `NO_SITE`;
+- `SITE_MISSING`;
+- `SITE_INACTIVE` expuesto sin contrato público;
+- `NO_ASSIGNED_SITE`;
+- `OUT_OF_SHIFT`;
+- `SHIFT_NOT_STARTED`;
+- `CHECKIN_REQUIRED`;
+- `WRONG_SITE`;
+- `NO_PERMISSION`;
+- `UNAUTHORIZED` sin tipificación;
+- mensajes libres de una función SQL o aplicación.
+
+El código es estable y no se traduce. El texto humano podrá localizarse.
+
+---
+
+#### 4. Definición exacta de sede activa
+
+Una sede activa para autorización es un hecho territorial resuelto con una
+identidad de sede canónica, una fuente autorizada para el modo evaluado y un
+estado organizacional activo comprobado en el momento de la decisión.
+
+Representación conceptual:
+
+```text
+SITE_ID RESUELTO
++
+SOURCE ADMITIDA PARA EL MODO
++
+SITE_EXISTS = true
++
+SITE_IS_ACTIVE = true
++
+SITE_IS_COMPATIBLE = true
+→
+ACTIVE_SITE_FACT
+```
+
+Una sede activa no es una propiedad genérica denominada “sede actual”. El
+modelo conserva por separado:
+
+1. sede asignada;
+2. sede primaria;
+3. sede seleccionada;
+4. sede activa administrativa;
+5. sede activa operativa;
+6. sede del recurso;
+7. sede del check-in;
+8. sede del dispositivo.
+
+Cada hecho tiene procedencia y función distintas. Ninguno podrá reemplazar a
+otro sin una regla canónica explícita.
+
+---
+
+#### 5. Perfiles derivados de dependencia de sede activa
+
+La decisión no crea una nueva clasificación persistida. Deriva uno de cinco
+perfiles a partir del contrato del permiso, la acción, el modo y el recurso:
+
+| Perfil derivado                       | Condición                                                                        | Exigencia                                                        |
+| ------------------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `NO_ACTIVE_SITE_DEPENDENCY`           | recurso `NT` o `ORG`, acceso de aplicación o capacidad que no consume territorio | la ausencia de sede no bloquea                                   |
+| `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | acción administrativa local, filtro obligatorio o recurso de una sede            | exige sede administrativa activa y autorizada                    |
+| `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | acción operativa cuyo contrato consume `CTX`                                     | exige sede del turno operativo válido y activo                   |
+| `RESOURCE_ACTIVE_SITE_REQUIRED`       | el recurso posee una sede única autoritativa                                     | esa sede deberá existir, estar activa y estar dentro del alcance |
+| `MULTI_SITE_ACTIVE_SET_REQUIRED`      | recurso o acción une varios extremos territoriales                               | todas las sedes obligatorias deberán estar activas y autorizadas |
+
+Reglas:
+
+- `NT`, `ORG` y acceso de aplicación no reciben sede por inferencia;
+- un permiso administrativo global no necesita una sede para existir, aunque
+  un recurso territorial concreto sí deba resolver la suya;
+- `AS`, `SS`, `AST`, `TST` y `CTX` conservan sus semánticas aprobadas;
+- la dependencia se evalúa por acción y recurso, no por nombre de aplicación;
+- `null` nunca significa todas las sedes;
+- una sede inactiva nunca integra un alcance efectivo.
+
+---
+
+#### 6. Condición exacta de aplicación
+
+`AUTH_ACTIVE_SITE_REQUIRED` se produce únicamente cuando las siguientes
+condiciones son concluyentes:
+
+1. la solicitud requiere una sede activa según uno de los perfiles anteriores;
+2. la identidad, el modo y los hechos previos aplicables fueron resueltos;
+3. la fuente autoritativa pudo consultarse sin error técnico;
+4. existe una sede candidata o un conjunto territorial esperado;
+5. ninguna sede candidata satisface simultáneamente existencia, actividad y
+   compatibilidad para la acción.
+
+Fórmula:
+
+```text
+REQUIRES_ACTIVE_SITE = true
+AND
+ACTIVE_SITE_RESOLUTION = CONCLUSIVE
+AND
+COMPATIBLE_ACTIVE_SITE_COUNT = 0
+→
+AUTH_ACTIVE_SITE_REQUIRED
+```
+
+No se producirá esta razón cuando:
+
+- la acción no dependa de sede;
+- la identidad laboral carezca de asignaciones y ese requisito sea previo;
+- no exista turno activo;
+- el turno todavía no haya comenzado;
+- falte check-in;
+- el check-in corresponda a otra sede;
+- falte rol operativo;
+- exista un error o timeout al leer las fuentes;
+- la sede no esté dentro del alcance del permiso, pero sí esté activa;
+- el recurso no tenga territorio resoluble por inconsistencia de datos.
+
+---
+
+#### 7. Sede activa administrativa
+
+La sede activa administrativa es un contexto de navegación o actuación local,
+no una autoridad autónoma.
+
+Orden de resolución aprobado:
+
+```text
+1. requested_site, si la acción admite selección explícita
+2. validar existencia, actividad, navegabilidad y alcance
+3. selected_site, como preferencia validable
+4. primary_site, como fallback visual validable
+5. ninguna sede
+```
+
+Reglas:
+
+1. la sede solicitada por cliente es un dato no confiable y se revalida;
+2. una selección inactiva se ignora y se limpia cuando corresponda;
+3. una primaria inactiva no se convierte en autoridad;
+4. si existe otra sede activa y autorizada, el sistema puede ofrecer selección
+   segura o aplicar el fallback permitido por la superficie;
+5. solo cuando la acción necesita una sede y no queda candidata activa se
+   produce `AUTH_ACTIVE_SITE_REQUIRED`;
+6. una acción organizacional continúa sin fabricar una sede;
+7. una sede activa fuera del scope produce la razón de permiso o alcance, no
+   la razón de esta tarea.
+
+---
+
+#### 8. Sede activa operativa
+
+La sede activa operativa procede del turno válido que ya comenzó y se encuentra
+dentro de su ventana efectiva.
+
+```text
+ACTIVE_PUBLISHED_SHIFT
++
+SHIFT_STARTED
++
+SHIFT_SITE EXISTS
++
+SHIFT_SITE IS ACTIVE
+→
+OPERATIONAL_ACTIVE_SITE
+```
+
+Fuentes que no sustituyen la sede del turno:
+
+- sede seleccionada;
+- sede primaria;
+- `employees.site_id`;
+- último check-in;
+- sede del dispositivo;
+- parámetro de ruta;
+- sede del recurso;
+- simulación real.
+
+Precedencia obligatoria:
+
+```text
+SIN TURNO ACTIVO
+→ AUTH-ERR-009
+
+TURNO EXISTE, PERO NO HA COMENZADO
+→ AUTH-ERR-010
+
+TURNO ACTIVO Y COMENZADO, SEDE INACTIVA
+→ AUTH_ACTIVE_SITE_REQUIRED
+
+SEDE OPERATIVA ACTIVA, SIN CHECK-IN REQUERIDO
+→ AUTH-ERR-011
+
+CHECK-IN ACTIVO EN OTRA SEDE
+→ AUTH-ERR-012
+```
+
+`NO_ACTIVE_SHIFT` no se registrará como `OPERATIONAL_SITE_MISSING`. La ausencia
+normal de turno deja la sede operativa en `NOT_APPLICABLE` hasta que la tarea
+propietaria evalúe el prerrequisito de turno.
+
+---
+
+#### 9. Sede del recurso
+
+Cuando el recurso posee territorio, su sede se deriva del backend y no de una
+preferencia del actor.
+
+```text
+RESOURCE
+→ AUTHORITATIVE_RESOURCE_SITE_ID
+→ SITE EXISTS
+→ SITE IS ACTIVE
+→ SCOPE MATCH
+```
+
+Reglas:
+
+- recurso con sede activa y dentro del scope continúa;
+- recurso con sede activa fuera del scope produce denegación de alcance;
+- recurso con sede inactiva produce `AUTH_ACTIVE_SITE_REQUIRED` si la acción
+  exige operar sobre ese recurso;
+- recurso sin sede cuando el contrato la exige conserva una razón de recurso o
+  configuración, no una falsa sede inactiva;
+- un permiso global no convierte un recurso ambiguo en resoluble;
+- la sede del recurso no cambia la sede operativa del actor.
+
+---
+
+#### 10. Recursos y operaciones multisede
+
+Una remisión, traslado, coordinación o consulta transversal puede exigir más
+de una sede.
+
+```text
+REQUIRED_SITE_SET = {ORIGIN, DESTINATION, OTHER_REQUIRED_ENDPOINTS}
+```
+
+La decisión será:
+
+| Condición                                                       | Resultado                              |
+| --------------------------------------------------------------- | -------------------------------------- |
+| todas las sedes requeridas existen, están activas y autorizadas | continuar                              |
+| una sede requerida está inactiva                                | `AUTH_ACTIVE_SITE_REQUIRED`            |
+| una sede requerida está fuera del alcance                       | denegación de alcance                  |
+| una sede requerida no puede resolverse                          | razón de recurso o configuración       |
+| la fuente falla                                                 | razón técnica, no denegación inventada |
+
+No se autorizará parcialmente un extremo ni se ejecutarán efectos compensables
+antes de resolver el conjunto completo.
+
+---
+
+#### 11. Diferencia con `AUTH-ERR-005 — Sin sede asignada`
+
+| Situación                                                               | Razón correcta                                      |
+| ----------------------------------------------------------------------- | --------------------------------------------------- |
+| la acción exige asignación y el actor no tiene relación compatible      | `AUTH_SITE_ASSIGNMENT_REQUIRED`                     |
+| existe asignación compatible, pero la sede organizacional está inactiva | `AUTH_ACTIVE_SITE_REQUIRED`                         |
+| existen varias asignaciones y al menos una candidata activa es válida   | continuar o seleccionar; no bloquear por esta tarea |
+| no se pudo leer la asignación o el estado de sede                       | error técnico o disponibilidad                      |
+| permiso global administrativo sobre recurso organizacional              | no exige asignación ni sede activa local            |
+
+La actividad de la asignación y la actividad de la sede son hechos separados.
+Una fila `employee_sites.is_active=true` no prueba que `sites.is_active=true`.
+
+---
+
+#### 12. Diferencia con turno, check-in y rol
+
+| Condición                           | Tarea propietaria |
+| ----------------------------------- | ----------------- |
+| no existe turno activo              | `AUTH-ERR-009`    |
+| el turno todavía no ha comenzado    | `AUTH-ERR-010`    |
+| turno activo apunta a sede inactiva | `AUTH-ERR-006`    |
+| falta check-in requerido            | `AUTH-ERR-011`    |
+| check-in corresponde a otra sede    | `AUTH-ERR-012`    |
+| falta rol operativo                 | `AUTH-ERR-013`    |
+| rol operativo no permitido          | `AUTH-ERR-014`    |
+
+La tarea no anticipa ni aprueba los contratos posteriores. Solo congela sus
+fronteras para impedir que “sin sede activa” absorba razones distintas.
+
+---
+
+#### 13. Selección, primaria y campo legacy
+
+##### 13.1 Sede seleccionada
+
+`employee_settings.selected_site_id` es una preferencia administrativa. Debe
+existir, estar activa, ser navegable y encontrarse dentro de cobertura antes de
+usarse. Una selección inválida se ignora, limpia o reemplaza por un fallback
+visual permitido. No modifica permisos ni contexto operativo.
+
+##### 13.2 Sede primaria
+
+`employee_sites.is_primary=true` es referencia laboral y fallback visual. No
+es autorización. Una primaria inactiva no se usa; si existen otras sedes
+activas, la ausencia de primaria válida no produce esta razón por sí sola.
+
+##### 13.3 `employees.site_id`
+
+Es un campo legacy. No prueba asignación vigente, actividad de sede ni contexto
+operativo. Su valor no podrá evitar `AUTH_ACTIVE_SITE_REQUIRED` ni seleccionar
+silenciosamente una sede.
+
+---
+
+#### 14. Check-in, dispositivo compartido y simulación
+
+##### 14.1 Check-in
+
+El check-in es evidencia de presencia. No crea ni reactiva una sede. Solo se
+evalúa después de que el turno haya producido una sede operativa activa.
+
+##### 14.2 Dispositivo compartido
+
+La sede del dispositivo limita el terminal. No se transfiere al actor humano.
+La acción deberá comprobar por separado:
+
+```text
+DEVICE_SITE ACTIVE
+AND
+ACTOR CONTEXT SITE ACTIVE
+AND
+DEVICE/ACTOR SITE COMPATIBLE
+```
+
+Una sede de dispositivo inactiva conserva la razón técnica o de autorización
+del dispositivo cuando corresponda. No se presentará como una sede laboral del
+actor.
+
+##### 14.3 Simulación
+
+La simulación podrá mostrar hipotéticamente `AUTH_ACTIVE_SITE_REQUIRED`, pero
+no cambiará `sites.is_active`, selección, asignaciones, turno, check-in,
+permisos ni recursos reales.
+
+---
+
+#### 15. `ACTIVE-SITE-BLOCKING-CONTRACT-001`
+
+Contrato lógico mínimo:
+
+```ts
+type ActiveSiteBlockingReason = {
+  contract: "ACTIVE-SITE-BLOCKING-CONTRACT-001";
+  contract_version: "1.0.0";
+  reason_code: "AUTH_ACTIVE_SITE_REQUIRED";
+  domain: "AUTHORIZATION_CONTEXT";
+  decision: "DENY";
+  state: "MISSING_REQUIRED_ACTIVE_SITE";
+  executable: false;
+  http_status: 403;
+  app_code: string;
+  channel: ActiveSiteChannel;
+  mode: "ADMINISTRATIVE" | "OPERATIONAL" | "RESOURCE" | "MULTI_SITE";
+  correlation_id: string;
+  occurred_at: string;
+  recovery_action: "SELECT_ACTIVE_SITE" | "RETURN_TO_SHELL" | "CONTACT_ADMIN";
+};
+```
+
+La forma pública no incluirá:
+
+- `user_id` o `employee_id`;
+- nombres o códigos de sedes asignadas;
+- sede inactiva exacta;
+- sede del recurso;
+- sede del turno, check-in o dispositivo;
+- permiso solicitado;
+- rol;
+- identificadores de turno, check-in, recurso o dispositivo;
+- causa interna;
+- consulta SQL;
+- stack trace;
+- mensaje bruto de Supabase;
+- lista de sedes alternativas.
+
+Los identificadores necesarios para auditoría se conservarán en un envelope
+interno protegido.
+
+---
+
+#### 16. Causas internas admitidas
+
+| Causa interna                           | Condición concluyente                                                            | Resultado público           |
+| --------------------------------------- | -------------------------------------------------------------------------------- | --------------------------- |
+| `NO_ACTIVE_ADMINISTRATIVE_SITE`         | la acción administrativa necesita sede y no existe candidata activa y autorizada | `AUTH_ACTIVE_SITE_REQUIRED` |
+| `ASSIGNED_SITE_INACTIVE`                | la relación laboral existe, pero la sede correspondiente está inactiva           | `AUTH_ACTIVE_SITE_REQUIRED` |
+| `OPERATIONAL_SHIFT_SITE_INACTIVE`       | turno válido y comenzado apunta a sede inactiva                                  | `AUTH_ACTIVE_SITE_REQUIRED` |
+| `RESOURCE_SITE_INACTIVE`                | el recurso autoritativo pertenece a sede inactiva                                | `AUTH_ACTIVE_SITE_REQUIRED` |
+| `MULTI_SITE_SET_CONTAINS_INACTIVE_SITE` | al menos un extremo territorial obligatorio está inactivo                        | `AUTH_ACTIVE_SITE_REQUIRED` |
+
+No son causas internas de esta razón:
+
+- `NO_ACTIVE_SHIFT`;
+- `SHIFT_NOT_STARTED`;
+- `NO_ACTIVE_CHECKIN`;
+- `CHECKIN_SITE_MISMATCH`;
+- `NO_EFFECTIVE_OPERATIONAL_ROLE`;
+- `SITE_MISMATCH` con ambas sedes activas;
+- `RESOURCE_SITE_MISSING`;
+- `CONTEXT_UNAVAILABLE`;
+- `DATA_SOURCE_TIMEOUT`;
+- `PERMISSION_SCOPE_MISMATCH`.
+
+---
+
+#### 17. `ACTIVE-SITE-MODE-DECISION-MATRIX-001`
+
+|    # | Escenario                                                           | Perfil                                | Resultado público                | Continúa en          |
+| ---: | ------------------------------------------------------------------- | ------------------------------------- | -------------------------------- | -------------------- |
+|    1 | acción `NT` u `ORG` sin sede activa                                 | `NO_ACTIVE_SITE_DEPENDENCY`           | no aplica bloqueo                | permiso y recurso    |
+|    2 | permiso global administrativo sobre recurso organizacional          | `NO_ACTIVE_SITE_DEPENDENCY`           | no aplica bloqueo                | permiso exacto       |
+|    3 | acción administrativa local con sede solicitada activa y autorizada | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | continuar                        | alcance y recurso    |
+|    4 | selección inactiva, pero primaria activa y autorizada               | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | ignorar selección y continuar    | fallback validado    |
+|    5 | selección y primaria inactivas, sin otra candidata activa           | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | `AUTH_ACTIVE_SITE_REQUIRED`      | recuperación         |
+|    6 | sede candidata activa, pero fuera del scope                         | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | denegación de alcance            | permiso/scope        |
+|    7 | actor sin asignación exigida                                        | perfil previo de asignación           | `AUTH_SITE_ASSIGNMENT_REQUIRED`  | `AUTH-ERR-005`       |
+|    8 | asignación activa apunta a sede inactiva                            | `ADMINISTRATIVE_ACTIVE_SITE_REQUIRED` | `AUTH_ACTIVE_SITE_REQUIRED`      | recuperación         |
+|    9 | operación sin turno activo                                          | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | razón de turno                   | `AUTH-ERR-009`       |
+|   10 | turno existe, pero no ha comenzado                                  | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | razón temporal                   | `AUTH-ERR-010`       |
+|   11 | turno activo y comenzado con sede activa                            | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | continuar                        | rol, área y check-in |
+|   12 | turno activo y comenzado con sede inactiva                          | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | `AUTH_ACTIVE_SITE_REQUIRED`      | recuperación         |
+|   13 | turno apunta a sede ausente o desconocida                           | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | configuración o técnica          | `AUTH-ERR-017/019`   |
+|   14 | sede operativa activa, pero falta check-in requerido                | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | razón de check-in                | `AUTH-ERR-011`       |
+|   15 | sede operativa activa y check-in en otra sede activa                | `OPERATIONAL_ACTIVE_SITE_REQUIRED`    | mismatch de check-in             | `AUTH-ERR-012`       |
+|   16 | recurso de sede activa y dentro del scope                           | `RESOURCE_ACTIVE_SITE_REQUIRED`       | continuar                        | decisión de recurso  |
+|   17 | recurso de sede inactiva                                            | `RESOURCE_ACTIVE_SITE_REQUIRED`       | `AUTH_ACTIVE_SITE_REQUIRED`      | recuperación         |
+|   18 | recurso exige sede, pero no puede resolverla                        | `RESOURCE_ACTIVE_SITE_REQUIRED`       | razón de recurso/configuración   | contrato propietario |
+|   19 | operación multisede con un extremo inactivo                         | `MULTI_SITE_ACTIVE_SET_REQUIRED`      | `AUTH_ACTIVE_SITE_REQUIRED`      | recuperación         |
+|   20 | lectura de estado de sede falla o expira                            | cualquier perfil dependiente          | error técnico, no deny inventado | `AUTH-ERR-019`       |
+
+La matriz es exhaustiva para las fronteras de esta tarea. Ningún escenario
+permite sustituir la sede faltante por selección, primaria, legacy, check-in o
+dispositivo.
+
+---
+
+#### 18. Precedencia completa
+
+Orden público obligatorio para una acción territorial:
+
+```text
+1. SUPERFICIE PÚBLICA O PROTEGIDA
+2. DISPONIBILIDAD TÉCNICA DE AUTENTICACIÓN Y CONTEXTO
+3. SESIÓN AUTENTICADA
+4. IDENTIDAD REQUERIDA ACTIVA
+5. ACCESO A LA APLICACIÓN
+6. PERMISO ADMINISTRATIVO BASE, CUANDO APLIQUE
+7. REQUISITO DE ASIGNACIÓN DE SEDE, CUANDO APLIQUE
+8. REQUISITO DE TURNO Y ESTADO TEMPORAL, CUANDO APLIQUE
+9. SEDE ACTIVA SEGÚN MODO Y RECURSO
+10. ÁREA ASIGNADA Y ACTIVA, CUANDO APLIQUE
+11. CHECK-IN Y COMPATIBILIDAD, CUANDO APLIQUE
+12. ROL OPERATIVO
+13. PERMISO EFECTIVO, SCOPE Y RECURSO
+14. DECISIÓN FINAL
+```
+
+Reglas:
+
+- el fallo técnico previo no se convierte en sede inactiva;
+- la ausencia de turno no se convierte en sede ausente;
+- la falta de asignación conserva precedencia cuando el contrato la exige;
+- la actividad de la sede se comprueba antes de usarla como contexto;
+- una razón posterior no debe filtrarse si una anterior ya bloquea;
+- se selecciona la primera razón aplicable, no la primera condición técnica
+  encontrada en el código.
+
+---
+
+#### 19. `ACTIVE-SITE-CHANNEL-RESPONSE-MATRIX-001`
+
+| Canal                  | Comportamiento obligatorio                                                               | Prohibiciones                                      |
+| ---------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| navegación web         | renderizar estado seguro, conservar sesión y evitar superficie territorial               | login loop, revelar sede o mostrar datos parciales |
+| Server Action          | devolver resultado tipado y no ejecutar mutación                                         | throw libre, reintento o efecto parcial            |
+| Route Handler/API      | `403` con envelope estable                                                               | `401`, HTML inesperado o mensaje SQL               |
+| fetch/RSC              | propagar razón tipada sin hidratar datos protegidos                                      | fallback silencioso a otra sede                    |
+| RPC/PostgREST          | negar antes del efecto y conservar correlación interna                                   | booleano sin causa como respuesta pública          |
+| RLS/Data API           | devolver cero filas o negar mutación según contrato y acompañar diagnóstico fuera de RLS | usar una sede legacy o inactiva                    |
+| Edge Function          | verificar estado actual antes de leer o mutar                                            | confiar en `site_id` del cliente                   |
+| Realtime               | no suscribir o retirar entrega incompatible                                              | eventos de sede inactiva después del cambio        |
+| cliente nativo         | mostrar copy canónico, conservar sesión y exigir solicitud nueva                         | caché de `ALLOW` o reintento automático            |
+| dispositivo compartido | validar terminal, actor y sede por separado                                              | transferir la sede del dispositivo al actor        |
+
+Equivalencia mínima entre canales:
+
+```text
+reason_code = AUTH_ACTIVE_SITE_REQUIRED
+http_status = 403, cuando aplique
+executable = false
+partial_effects = 0
+session_preserved = true
+```
+
+---
+
+#### 20. Mensaje humano canónico
+
+Copy aprobado en español:
+
+| Elemento          | Texto exacto                                                                                                        |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Título            | `No hay una sede activa disponible`                                                                                 |
+| Mensaje           | `Tu sesión está activa, pero esta acción requiere una sede activa y no hay una disponible para el contexto actual.` |
+| Acción principal  | `Volver a Vento OS`                                                                                                 |
+| Acción secundaria | `Cerrar sesión`                                                                                                     |
+| Código de soporte | `AUTH_ACTIVE_SITE_REQUIRED`                                                                                         |
+
+Cuando la aplicación pueda demostrar de forma segura que existe otra sede
+activa y autorizada, podrá ofrecer adicionalmente `Elegir otra sede`. Esa
+acción no reemplaza el copy canónico, no revela sedes fuera de cobertura y
+siempre genera una solicitud nueva.
+
+Queda prohibido afirmar:
+
+- “no tienes sedes asignadas”;
+- “estás fuera de turno”;
+- “tu sede fue eliminada”;
+- “no tienes permisos”;
+- “inicia sesión de nuevo” como solución principal;
+- “usa esta otra sede” sin validación autoritativa.
+
+---
+
+#### 21. Recuperación
+
+Recuperaciones admitidas:
+
+1. `SELECT_ACTIVE_SITE`, solo si existe otra sede activa, navegable y
+   autorizada para la superficie;
+2. `RETURN_TO_SHELL`, para abandonar de forma segura la superficie territorial;
+3. `CONTACT_ADMIN`, cuando la organización deba reactivar o corregir la sede.
+
+Toda recuperación deberá:
+
+- conservar la sesión;
+- invalidar la decisión anterior;
+- emitir una solicitud nueva;
+- volver a evaluar identidad, asignación, actividad, turno, check-in, rol,
+  permiso, scope y recurso;
+- evitar repetir automáticamente una mutación;
+- no autoactivar sedes ni modificar catálogos.
+
+Cerrar sesión es una acción secundaria voluntaria, no una reparación del
+territorio.
+
+---
+
+#### 22. Seguridad y privacidad
+
+La respuesta pública no revelará:
+
+- qué sede está inactiva;
+- por qué fue desactivada;
+- quién la desactivó;
+- fecha o notas internas;
+- sedes alternativas fuera de cobertura;
+- asignaciones del empleado;
+- turno, check-in, rol o permiso;
+- recurso solicitado;
+- configuración del dispositivo;
+- diferencias entre ambientes;
+- detalles de infraestructura.
+
+La UI podrá mostrar una lista de sedes activas solo mediante un endpoint
+separado, autorizado y filtrado. El error no transportará ese inventario.
+
+---
+
+#### 23. Frescura, concurrencia e invalidación
+
+Eventos que invalidan contexto y decisiones:
+
+- `sites.is_active` cambia;
+- una sede se elimina o deja de ser asignable;
+- cambia una asignación;
+- cambia la sede primaria o seleccionada;
+- se publica, inicia, cancela o modifica un turno;
+- cambia la sede del recurso;
+- cambia la sede o autorización de un dispositivo;
+- cambia el scope del permiso;
+- cambia el estado de una simulación.
+
+Reglas:
+
+1. toda mutación revalida la sede inmediatamente antes del efecto;
+2. un `ALLOW` cacheado no sobrevive a la desactivación de la sede;
+3. Realtime deja de entregar datos cuando el contexto deja de ser compatible;
+4. una transacción multisede valida todos los extremos dentro de la misma
+   frontera de consistencia;
+5. una activación posterior no reanuda la operación original;
+6. la recuperación exige una solicitud nueva e idempotencia cuando corresponda.
+
+---
+
+#### 24. Auditoría
+
+Evento mínimo interno:
+
+```ts
+type ActiveSiteBlockedAudit = {
+  event: "authorization.active_site_blocked";
+  reason_code: "AUTH_ACTIVE_SITE_REQUIRED";
+  internal_cause:
+    | "NO_ACTIVE_ADMINISTRATIVE_SITE"
+    | "ASSIGNED_SITE_INACTIVE"
+    | "OPERATIONAL_SHIFT_SITE_INACTIVE"
+    | "RESOURCE_SITE_INACTIVE"
+    | "MULTI_SITE_SET_CONTAINS_INACTIVE_SITE";
+  app_code: string;
+  mode: "ADMINISTRATIVE" | "OPERATIONAL" | "RESOURCE" | "MULTI_SITE";
+  actor_ref: string;
+  site_refs: string[];
+  correlation_id: string;
+  occurred_at: string;
+  executable: false;
+};
+```
+
+Los identificadores internos deberán estar protegidos, minimizados y sujetos a
+retención. No se registrarán tokens, cookies, cuerpos sensibles, PIN, secretos,
+stack traces ni datos personales innecesarios.
+
+La auditoría distinguirá:
+
+- sede inactiva confirmada;
+- ausencia de asignación;
+- ausencia o temporalidad de turno;
+- mismatch de check-in;
+- denegación de permiso;
+- recurso sin territorio;
+- fallo técnico o timeout.
+
+---
+
+#### 25. `ACTIVE-SITE-APPLICATION-COVERAGE-REGISTER-001`
+
+| Aplicación | Identidad o superficie                     | Regla de `AUTH-ERR-006`                                                                                      | Estado documental |
+| ---------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------ | ----------------- |
+| `shell`    | hub y navegación transversal               | el hub no exige sede; una superficie local solo bloquea cuando su contrato la requiere                       | ESPECIFICADO      |
+| `anima`    | asistencia y administración laboral        | catálogos globales no exigen sede; check-in, turno y gestión local validan sede activa según su contrato     | ESPECIFICADO      |
+| `aura`     | aplicación administrativa diferida         | no se presupone sede; cada acción deberá declarar dependencia antes de habilitarse                           | ESPECIFICADO      |
+| `viso`     | administración global y local              | gobierno organizacional puede operar sin sede local; vistas y mutaciones locales requieren sede activa       | ESPECIFICADO      |
+| `nexo`     | inventario, remisiones y logística         | operaciones `CTX`, recursos locales y extremos de remisión requieren sedes activas                           | ESPECIFICADO      |
+| `fogo`     | producción y recetas                       | ejecución productiva local requiere sede activa; definición organizacional no por inferencia                 | ESPECIFICADO      |
+| `origo`    | compras, proveedores y recepciones         | recepción y operación local requieren sede activa; catálogos organizacionales no necesariamente              | ESPECIFICADO      |
+| `pulso`    | operación POS                              | la sede operativa procede del turno o dispositivo autorizado y deberá estar activa                           | ESPECIFICADO      |
+| `numera`   | costos, finanzas y reportes                | reportes globales no exigen sede; transacciones o cierres locales sí cuando el recurso la consume            | ESPECIFICADO      |
+| `pass`     | cliente y superficies laborales auxiliares | el cliente final no usa sede laboral; capacidades internas aplican solo al actor y contrato correspondientes | ESPECIFICADO      |
+
+La tabla no concede permisos ni modifica requisitos de turno. Materializa la
+decisión por aplicación y obliga a cada consumidor a usar el contrato exacto
+de su acción.
+
+---
+
+#### 26. Snapshot físico desplegado
+
+Inspección de solo lectura en `vento-os-dev`:
+
+| Métrica física                                           | Resultado observado |
+| -------------------------------------------------------- | ------------------: |
+| empleados activos                                        |                  42 |
+| sedes totales                                            |                   7 |
+| sedes activas                                            |                   7 |
+| sedes inactivas                                          |                   0 |
+| filas `employee_sites`                                   |                  91 |
+| filas activas                                            |                  91 |
+| empleados activos sin sede utilizable                    |                   0 |
+| empleados activos asignados a sede inactiva              |                   0 |
+| turnos relevantes por estado inspeccionado               |                2842 |
+| turnos relevantes hacia sede inactiva                    |                   0 |
+| turnos relevantes hacia sede ausente                     |                   0 |
+| funciones que referencian `employee_sites`               |                  11 |
+| funciones que referencian selección de sede              |                   8 |
+| funciones que referencian `current_employee_site_id`     |                   3 |
+| funciones que referencian `can_access_site`              |                   9 |
+| funciones que referencian `employee_shifts`              |                  10 |
+| funciones que referencian asistencia/check-in            |                  13 |
+| funciones que referencian el catálogo `sites`            |                  15 |
+| funciones que verifican explícitamente actividad de sede |                  16 |
+| funciones distintas del inventario ampliado              |                  49 |
+| políticas RLS dependientes de resolución de sede         |                  68 |
+| tablas cubiertas por esas políticas                      |                  40 |
+
+El inventario ampliado de 49 funciones añade señales de turno, asistencia y
+catálogo de sedes al inventario de asignación usado en `AUTH-ERR-005`. No
+reemplaza ni degrada la cifra histórica de esa tarea.
+
+Conclusiones permitidas:
+
+1. no existe un caso desplegado actual de sede inactiva para producir evidencia
+   positiva del bloqueo;
+2. el contrato es necesario para desactivaciones, cierres, migraciones,
+   recursos históricos y estados concurrentes;
+3. las siete sedes activas no certifican las 49 funciones ni las 68 políticas;
+4. la ausencia de caso negativo exige fixtures o ambiente controlado futuro;
+5. no se autoriza crear datos productivos para probar esta tarea.
+
+---
+
+#### 27. Resolución física actual observada
+
+| Helper                                     | Comportamiento desplegado relevante                                                                             | Brecha contractual                                                       |
+| ------------------------------------------ | --------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ |
+| `can_access_site`                          | permite por propietario, gerente global, `employee_sites` o `employees.site_id`; no comprueba `sites.is_active` | puede autorizar territorio inactivo y mezclar rol con actividad          |
+| `current_employee_primary_site_id`         | toma primaria sin filtrar actividad y cae a legacy                                                              | primaria inactiva puede convertirse en contexto                          |
+| `current_employee_selected_site_id`        | usa selección y cae a primaria sin validar sede                                                                 | preferencia inactiva puede propagarse                                    |
+| `current_employee_site_id`                 | alias de la selección anterior                                                                                  | colapsa sede activa a una preferencia                                    |
+| `get_operational_context`                  | resuelve `p_site_id`, selección, check-in, turno y legacy en ese orden                                          | la selección puede preceder a la sede del turno y no se valida actividad |
+| `get_effective_context_v1`                 | hereda el contexto anterior y acepta sede de dispositivo o simulación                                           | no emite razón canónica de sede inactiva                                 |
+| `current_actor_shift_for_shared_device_v1` | deriva sede desde metadata de check-in, asistencia o legacy                                                     | no exige turno válido ni comprueba actividad de sede                     |
+
+`get_operational_context` utiliza actualmente razones libres como
+`out_of_shift`, `checkin_required`, `shift_site_mismatch` y
+`checkin_site_mismatch`. No produce `AUTH_ACTIVE_SITE_REQUIRED` ni el catálogo
+estructurado aprobado por contexto.
+
+---
+
+#### 28. Consumidora física confirmada
+
+`vento-nexo/src/lib/auth/operational-context.ts`:
+
+- consume `get_operational_context`;
+- devuelve `null` ante error de RPC;
+- usa `active_site_id` o `selected_site_id` para role override;
+- reduce `has_operational_permission` a booleano;
+- traduce una lista limitada de cadenas legacy a mensajes locales;
+- no reconoce sede inactiva como causa tipada;
+- puede terminar en un fallback genérico.
+
+Este hallazgo demuestra una consumidora directa. No prueba que las demás
+aplicaciones estén libres de la misma deriva. El inventario completo se
+certificará mediante las tareas de migración y CI ya existentes.
+
+---
+
+#### 29. `ACTIVE-SITE-PHYSICAL-RECONCILIATION-001`
+
+| ID                    | Brecha física                                                                            | Estado                 | Tarea responsable                                             | Condición de salida                                                          |
+| --------------------- | ---------------------------------------------------------------------------------------- | ---------------------- | ------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `ACTIVE-SITE-GAP-001` | las siete sedes están activas y no existe caso desplegado negativo                       | PENDIENTE_DE_EVIDENCIA | `SHELL-CI-016`; `SHELL-CI-019`                                | fixture o ambiente controlado reproduce sede inactiva sin datos productivos  |
+| `ACTIVE-SITE-GAP-002` | `can_access_site` no consulta `sites.is_active` y contiene bypasses por rol y legacy     | IDENTIFICADO           | `AUTH-DB-034`                                                 | evaluador tipado valida actividad y elimina bypasses implícitos              |
+| `ACTIVE-SITE-GAP-003` | `current_employee_primary_site_id` no filtra asignación ni sede activa                   | IDENTIFICADO           | `AUTH-DB-033`                                                 | resolver certificado excluye sedes y relaciones inactivas                    |
+| `ACTIVE-SITE-GAP-004` | `current_employee_selected_site_id` no valida existencia, actividad, navegación ni scope | IDENTIFICADO           | `AUTH-DB-033`; `SHELL-AUTH-002`                               | selección se valida, limpia y no actúa como autoridad                        |
+| `ACTIVE-SITE-GAP-005` | `current_employee_site_id` oculta que devuelve selección/primaria                        | IDENTIFICADO           | `AUTH-DB-033`; `SHELL-AUTH-005`                               | consumidoras usan hechos tipados y procedencia explícita                     |
+| `ACTIVE-SITE-GAP-006` | `get_operational_context` prioriza parámetro, selección y check-in antes del turno       | IDENTIFICADO           | `AUTH-DB-033`; `AUTH-DB-034`                                  | sede operativa procede exclusivamente del turno válido                       |
+| `ACTIVE-SITE-GAP-007` | `get_operational_context` no valida `sites.is_active`                                    | IDENTIFICADO           | `AUTH-DB-033`; `AUTH-DB-034`                                  | contexto emite `ACTIVE`, `INACTIVE`, `MISSING`, `UNKNOWN` o `NOT_APPLICABLE` |
+| `ACTIVE-SITE-GAP-008` | razones legacy no distinguen turno, actividad, disponibilidad y recurso                  | IDENTIFICADO           | `AUTH-DB-034`; `AUTH-ERR-020`                                 | catálogo estructurado y adapters públicos producen razón correcta            |
+| `ACTIVE-SITE-GAP-009` | `get_effective_context_v1` hereda el resolver y no tipifica sede inactiva                | IDENTIFICADO           | `AUTH-DB-033`; `SHELL-AUTH-001`                               | `AccessContext` versionado conserva estado y procedencia                     |
+| `ACTIVE-SITE-GAP-010` | resolver de actor en dispositivo usa check-in, metadata y legacy como sede activa        | IDENTIFICADO           | `AUTH-DB-033`; `SHELL-AUTH-002`                               | dispositivo, actor, turno y sede se validan por separado                     |
+| `ACTIVE-SITE-GAP-011` | la consumidora NEXO reduce errores a `null`, booleanos o mensajes locales                | IDENTIFICADO           | `SHELL-AUTH-002`; `SHELL-AUTH-005`                            | SDK discriminado sustituye strings y fallbacks locales                       |
+| `ACTIVE-SITE-GAP-012` | 49 funciones usan señales territoriales heterogéneas                                     | IDENTIFICADO           | `SHELL-AUTH-004`; `SHELL-AUTH-005`                            | inventario completo queda migrado o justificado y gate estático activo       |
+| `ACTIVE-SITE-GAP-013` | 68 políticas sobre 40 tablas dependen de resolución de sede no certificada               | IDENTIFICADO           | `AUTH-DB-034`; `SHELL-CI-018`                                 | cadena RLS prueba sede activa, inactiva, ausente y error sin fuga            |
+| `ACTIVE-SITE-GAP-014` | no existe catálogo compartido de código, copy, recuperación, auditoría e invalidación    | IDENTIFICADO           | `AUTH-ERR-020`; `AUTH-DB-035`; `SHELL-CI-016`; `SHELL-CI-019` | todos los canales consumen el contrato y aportan evidencia reproducible      |
+
+No se crean tareas nuevas. Cada brecha queda vinculada a una tarea existente y
+no se declara implementada.
+
+---
+
+#### 30. Handoff de implementación
+
+La implementación futura deberá producir como mínimo:
+
+```text
+AccessContext versionado
++
+hechos separados de sede administrativa, operativa y de recurso
++
+estado de sede autoritativo y fresco
++
+AuthorizationDecision discriminada
++
+precedencia de turno, sede, área, check-in y rol
++
+invalidación por cambio de sites.is_active
++
+SDK y adapters compartidos
++
+pruebas contractuales, RPC, RLS, integración y E2E
+```
+
+Tareas propietarias:
+
+- `AUTH-DB-033`: resolver contexto, estados, procedencia y compatibilidad;
+- `AUTH-DB-034`: evaluar requisito, precedencia, permiso, scope y recurso;
+- `AUTH-DB-035`: invalidar decisiones, cachés y suscripciones;
+- `SHELL-AUTH-001`: publicar contrato y SDK;
+- `SHELL-AUTH-002`: adaptar navegación, acciones, API, RPC y clientes;
+- `SHELL-AUTH-004`: lint, métricas y gates de dependencia;
+- `SHELL-AUTH-005`: migrar consumidoras;
+- `AUTH-ERR-017` a `AUTH-ERR-020`: configuración, catálogo, técnica y mensajes;
+- `SHELL-CI-016`, `SHELL-CI-018` y `SHELL-CI-019`: pruebas y evidencia.
+
+Toda migración futura de Supabase deberá crearse, versionarse y ejecutarse desde
+`vento-shell`.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+| ID              | Regla protegida                                                                                                                          | Tipo                                  | Prioridad | Momento de implementación | Destino                                                            |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | --------- | ------------------------- | ------------------------------------------------------------------ |
+| `TREQ-AUTH-179` | Una acción que exige sede activa y no encuentra candidata compatible produce código, `403`, deny y cero efectos.                         | contractual + seguridad               | crítica   | evaluador territorial     | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                       |
+| `TREQ-AUTH-180` | La dependencia se deriva por modo, alcance y recurso; `NT`, `ORG` y capacidades no territoriales no fabrican sede.                       | contractual + contexto                | crítica   | catálogo y evaluador      | `AUTH-CAT-011`; `AUTH-DB-034`; `SHELL-CI-016`                      |
+| `TREQ-AUTH-181` | La sede administrativa valida solicitud, selección y primaria sin convertir preferencias en autoridad.                                   | contexto + navegación                 | crítica   | resolver y adapters       | `AUTH-DB-033`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                  |
+| `TREQ-AUTH-182` | La sede operativa procede del turno válido; no turno, turno no iniciado, sede inactiva y check-in conservan razones distintas.           | contexto + regresión                  | crítica   | resolver y evaluador      | `AUTH-ERR-009`; `AUTH-ERR-010`; `AUTH-ERR-011`; `AUTH-DB-034`      |
+| `TREQ-AUTH-183` | Recursos de una o varias sedes validan actividad de todos los extremos antes de permiso, lectura o mutación.                             | autorización + recurso                | crítica   | evaluador y RLS           | `AUTH-DB-034`; `SHELL-CI-018`                                      |
+| `TREQ-AUTH-184` | Diez canales aplican respuesta equivalente sin datos parciales, fallback territorial, login loop, reintentos ni efectos.                 | integración + E2E                     | crítica   | adapters y consumidoras   | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-018`                 |
+| `TREQ-AUTH-185` | Las diez aplicaciones distinguen capacidades no territoriales, administrativas, operativas y de recurso sin imponer sede por aplicación. | contractual + integración             | alta      | contratos por aplicación  | `SHELL-AUTH-001`; `SHELL-AUTH-005`; `SHELL-CI-016`                 |
+| `TREQ-AUTH-186` | La UI usa copy exacto, conserva sesión y no expone sede, causa, asignaciones, turno, permiso, recurso o alternativas no autorizadas.     | interfaz + privacidad + accesibilidad | alta      | mensajes compartidos      | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                   |
+| `TREQ-AUTH-187` | Cambios de actividad de sede invalidan contexto, decisiones, cachés y Realtime; toda mutación revalida antes del efecto.                 | concurrencia + auditoría              | crítica   | frescura y observabilidad | `AUTH-DB-035`; `SHELL-AUTH-004`; `SHELL-CI-019`                    |
+| `TREQ-AUTH-188` | La regresión reconcilia snapshot, 49 funciones, 68 políticas, 40 tablas, consumidora NEXO y catorce brechas sin crear datos productivos. | regresión + RPC + RLS + estática      | crítica   | gates y evidencia E5      | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-018`; `SHELL-CI-019` |
+
+El detalle canónico de estas filas se incorpora al registro completo `04A`.
+
+---
+
+#### 32. Validaciones documentales definidas
+
+La implementación deberá probar como mínimo:
+
+1. código público único;
+2. `403`, `DENY`, `executable=false` y cero efectos;
+3. cinco perfiles derivados;
+4. cinco causas internas;
+5. veinte escenarios;
+6. diez canales;
+7. diez aplicaciones;
+8. `NT` y `ORG` sin sede inventada;
+9. permiso global administrativo sin asignación local artificial;
+10. selección inactiva con fallback activo;
+11. selección y primaria inactivas sin fallback;
+12. asignación existente hacia sede inactiva;
+13. ausencia de asignación separada;
+14. no turno separado;
+15. turno no iniciado separado;
+16. turno activo hacia sede inactiva;
+17. check-in ausente separado;
+18. check-in de otra sede separado;
+19. recurso de sede inactiva;
+20. recurso sin sede separado;
+21. remisión con origen o destino inactivo;
+22. error técnico separado;
+23. dispositivo sin transferencia de sede al actor;
+24. simulación sin efectos;
+25. mensaje y accesibilidad;
+26. privacidad territorial;
+27. invalidación inmediata;
+28. mutación con revalidación;
+29. retiro de Realtime;
+30. auditoría minimizada;
+31. 49 funciones clasificadas;
+32. 68 políticas sobre 40 tablas certificadas;
+33. consumidora NEXO migrada;
+34. catorce brechas cerradas o justificadas;
+35. caso negativo reproducido en ambiente controlado;
+36. diez TREQ consecutivos y resolubles.
+
+---
+
+#### 33. Evidencia y estados
+
+| Elemento                    | Estado                                               | Evidencia actual                                                                   |
+| --------------------------- | ---------------------------------------------------- | ---------------------------------------------------------------------------------- |
+| contrato documental         | ESPECIFICADO                                         | esta tarea                                                                         |
+| matriz de veinte escenarios | ESPECIFICADO                                         | `ACTIVE-SITE-MODE-DECISION-MATRIX-001`                                             |
+| diez canales                | ESPECIFICADO                                         | matriz de canales                                                                  |
+| diez aplicaciones           | ESPECIFICADO                                         | registro de cobertura                                                              |
+| snapshot de datos           | VALIDADO contra servicio remoto de solo lectura      | 42 empleados, 7 sedes activas, 91 asignaciones y 2842 turnos relevantes            |
+| helpers desplegados         | VALIDADO contra definiciones remotas de solo lectura | siete helpers centrales inspeccionados                                             |
+| consumidora NEXO            | VALIDADO contra código remoto                        | `operational-context.ts`                                                           |
+| implementación compartida   | NO INICIADA                                          | pertenece a tareas físicas posteriores                                             |
+| caso de sede inactiva       | PENDIENTE_DE_EVIDENCIA                               | no existen sedes inactivas en el snapshot y no se autorizaron fixtures productivos |
+| pruebas automatizadas       | NO INICIADA                                          | tareas de CI y paquetes E5                                                         |
+
+No se declara implementado ni probado operativamente el bloqueo.
+
+---
+
+#### 34. Fuera del alcance
+
+AUTH-ERR-006 no:
+
+- activa o desactiva sedes;
+- modifica `sites.is_active`;
+- crea fixtures productivos;
+- cambia asignaciones;
+- cambia primaria o selección;
+- cambia turnos o check-ins;
+- modifica recursos;
+- concede permisos o scopes;
+- define área asignada o activa;
+- aprueba `AUTH-ERR-007`;
+- define los contratos completos de turno, check-in o rol;
+- implementa `AccessContext`;
+- implementa `AuthorizationDecision`;
+- corrige funciones SQL;
+- modifica RLS;
+- modifica Edge Functions;
+- modifica aplicaciones;
+- ejecuta migraciones, DDL o DML;
+- despliega código;
+- escribe en GitHub;
+- ejecuta pruebas operativas o de dispositivo.
+
+---
+
+#### 35. Criterios de aceptación
+
+1. `AUTH_ACTIVE_SITE_REQUIRED` es el único código público de la tarea.
+2. La razón pertenece a contexto de autorización, no a autenticación.
+3. La sesión se conserva.
+4. La identidad y el acceso a la aplicación ya fueron validados.
+5. El contrato deriva uno de cinco perfiles.
+6. `NO_ACTIVE_SITE_DEPENDENCY` no bloquea.
+7. `NT` y `ORG` no fabrican sede.
+8. Una capacidad global no exige sede local por inferencia.
+9. La resolución autoritativa debe ser concluyente.
+10. Cero sedes compatibles activas produce `DENY`.
+11. La respuesta no navegacional usa `403`.
+12. La decisión usa `executable=false` y cero efectos.
+13. Las cinco causas internas son exhaustivas para esta tarea.
+14. Las causas internas no se exponen.
+15. La sede seleccionada es preferencia.
+16. La sede primaria es fallback visual.
+17. `employees.site_id` permanece legacy.
+18. La sede operativa procede del turno.
+19. El check-in no crea sede operativa.
+20. La sede del dispositivo no se transfiere al actor.
+21. La sede del recurso no cambia la sede del actor.
+22. Ausencia de asignación conserva `AUTH-ERR-005`.
+23. Ausencia de turno conserva `AUTH-ERR-009`.
+24. Turno no iniciado conserva `AUTH-ERR-010`.
+25. Falta de check-in conserva `AUTH-ERR-011`.
+26. Check-in de otra sede conserva `AUTH-ERR-012`.
+27. Falta o invalidez de rol conserva `AUTH-ERR-013/014`.
+28. Error de fuente conserva `AUTH-ERR-019`.
+29. Recurso sin sede conserva razón de recurso/configuración.
+30. Sede activa fuera del scope conserva denegación de alcance.
+31. Recurso de sede inactiva produce esta razón.
+32. Un extremo multisede inactivo produce esta razón y cero efectos.
+33. Los diez canales poseen decisión explícita.
+34. Las diez aplicaciones poseen decisión explícita.
+35. La UI usa el copy exacto.
+36. La UI no revela sede ni causa interna.
+37. La acción principal vuelve a Vento OS.
+38. `Elegir otra sede` solo aparece con alternativa activa y autorizada.
+39. No existe reintento automático.
+40. No existe autoactivación de sede.
+41. Los cambios de actividad invalidan decisiones y caché.
+42. La mutación revalida antes del efecto.
+43. Realtime retira entrega incompatible.
+44. La auditoría distingue las cinco causas.
+45. El snapshot registra 42 empleados activos.
+46. El snapshot registra 7 sedes activas y 0 inactivas.
+47. El snapshot registra 91 asignaciones activas.
+48. El snapshot registra 2842 turnos relevantes y cero hacia sede inactiva o ausente.
+49. El inventario ampliado registra 49 funciones.
+50. Se registran 16 funciones con comprobación explícita de actividad.
+51. Se registran 68 políticas sobre 40 tablas.
+52. La consumidora NEXO queda identificada sin declararse migrada.
+53. Las catorce brechas tienen propietario y condición de salida.
+54. El caso negativo permanece pendiente de evidencia controlada.
+55. Se generan `TREQ-AUTH-179` a `TREQ-AUTH-188`.
+56. Las 6576 filas históricas se conservan sin modificación sustantiva.
+57. No se modifica código, Supabase, datos ni repositorios remotos.
+58. `AUTH-ERR-007` permanece reservada.
+
+---
+
+#### 36. Cierre de tarea y continuidad
+
+| Tarea          | Estado      | Relación                                                      |
+| -------------- | ----------- | ------------------------------------------------------------- |
+| `AUTH-ERR-005` | APROBADA    | tarea anterior                                                |
+| `AUTH-ERR-006` | APROBADA    | tarea actual preparada para confirmación canónica del usuario |
+| `AUTH-ERR-007` | NO INICIADA | tarea siguiente reservada                                     |
+
+```text
+AUTH-ERR-005 — APROBADA
+        ↓
+AUTH-ERR-006 — APROBADA
+        ↓
+AUTH-ERR-007 — RESERVADA
+```
+
+No se inicia ni modifica `AUTH-ERR-007` en esta tarea.
+
+
 ### [ ] AUTH-ERR-007 — Sin área asignada
 ### [ ] AUTH-ERR-008 — Sin área activa

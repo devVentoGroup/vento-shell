@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **530** |
+| Aprobadas | **531** |
 | En propuesta | **0** |
-| No iniciadas | **1064** |
+| No iniciadas | **1063** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **33.25% (530/1594)** |
+| Porcentaje de completamiento | **33.31% (531/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-ERR-005` — Sin sede asignada | ✅ APROBADA |
-| Tarea actual | `AUTH-ERR-006` — Sin sede activa | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-ERR-007` — Sin área asignada | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-ERR-006` — Sin sede activa | ✅ APROBADA |
+| Tarea actual | `AUTH-ERR-007` — Sin área asignada | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-ERR-008` — Sin área activa | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1269,7 +1269,7 @@
 | ✅ APROBADA | `AUTH-ERR-003` | Sin acceso a la aplicación | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ✅ APROBADA | `AUTH-ERR-004` | Sin permiso administrativo | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ✅ APROBADA | `AUTH-ERR-005` | Sin sede asignada | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
-| ⬜ NO INICIADA | `AUTH-ERR-006` | Sin sede activa | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
+| ✅ APROBADA | `AUTH-ERR-006` | Sin sede activa | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-007` | Sin área asignada | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-008` | Sin área activa | `bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md` |
 | ⬜ NO INICIADA | `AUTH-ERR-009` | Sin turno publicado | `bloques/S_MENSAJES_BLOQUEO/02_TURNO_ROL_DISPOSITIVO_Y_SIMULACION.md` |
