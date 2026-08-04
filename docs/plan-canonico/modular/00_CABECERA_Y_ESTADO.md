@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **544** |
+| Tareas aprobadas | **545** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1050** |
+| Tareas no iniciadas | **1049** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **34.13% (544/1594)** |
+| Porcentaje de completamiento | **34.19% (545/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-ERR-019 — Diferenciar error técnico y denegación** |
-| Tarea actual | **AUTH-ERR-020 — Compartir mensajes desde vento-shell** |
+| Última tarea aprobada | **AUTH-ERR-020 — Compartir mensajes desde vento-shell** |
+| Tarea actual | **NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores** |
-| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 11: AUTHORIZATION_ERRORS** |
-| Progreso del bloque | **CARRIL NEXO: 19 de 20 aprobadas; AUTH-ERR-020 pendiente** |
+| Siguiente tarea | **NEXO-UX-001 — Inventariar procesos reales de inventario y logística** |
+| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 12: NEXO_INVENTORY_CLASSIFICATION** |
+| Progreso del bloque | **CARRIL NEXO: 0 de 1 aprobadas; NEXO-DOM-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-ERR-019` — Diferenciar error técnico y denegación |
-| Tarea actual | `AUTH-ERR-020` — Compartir mensajes desde vento-shell — **NO INICIADA** |
-| Siguiente tarea | `NEXO-DOM-001` — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores |
+| Última aprobada | `AUTH-ERR-020` — Compartir mensajes desde vento-shell |
+| Tarea actual | `NEXO-DOM-001` — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores — **NO INICIADA** |
+| Siguiente tarea | `NEXO-UX-001` — Inventariar procesos reales de inventario y logística |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 19 DE 20 APROBADAS — ACTUAL AUTH-ERR-020** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 1 APROBADAS — ACTUAL NEXO-DOM-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-ERR-019 — Diferenciar error técnico y denegación
-        ↓
-TAREA ACTUAL
 AUTH-ERR-020 — Compartir mensajes desde vento-shell
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores
         ↓
+SIGUIENTE TAREA RESERVADA
+NEXO-UX-001 — Inventariar procesos reales de inventario y logística
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 19 de 20 tareas aprobadas
+CARRIL NEXO — 0 de 1 tareas aprobadas
 ```

@@ -4042,4 +4042,1199 @@ reconciliación física.
 `AUTH-ERR-020 — Compartir mensajes desde vento-shell`
 
 
-### [ ] AUTH-ERR-020 — Compartir mensajes desde vento-shell
+### ✅ AUTH-ERR-020 — Compartir mensajes desde vento-shell
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-019 — Diferenciar error técnico y denegación` — APROBADA
+**Tarea siguiente:** `NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, materialización del catálogo de mensajes de autorización, distribución compartida, perfiles de presentación, localización, seguridad, adopción multicanal y reconciliación física desde `vento-shell`
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md`
+**Artefactos producidos:** `AUTHORIZATION-MESSAGE-CATALOG-001`, `AUTHORIZATION-MESSAGE-DISTRIBUTION-CONTRACT-001`, `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001`, `AUTHORIZATION-MESSAGE-CONSUMER-CHANNEL-MATRIX-001` y `AUTHORIZATION-MESSAGE-PHYSICAL-RECONCILIATION-001`
+**Cambios físicos autorizados:** ninguno; no crea paquetes, código, componentes, schemas, migraciones, tablas, funciones, RLS, datos, releases, despliegues ni modificaciones en repositorios consumidores
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, completa y verificable cómo Vento OS comparte desde
+`vento-shell` los códigos, textos, perfiles, acciones y metadatos públicos de
+los bloqueos de autorización aprobados en `AUTH-ERR-001` a `AUTH-ERR-019`.
+
+La regla raíz queda:
+
+```text
+REASON_CODE CANÓNICO
++
+VARIANTE DE PRESENTACIÓN APROBADA
++
+LOCALE SOPORTADO
++
+CANAL
+→
+MENSAJE COMPARTIDO VERSIONADO
++
+ACCIONES SEGURAS
++
+MISMA SEMÁNTICA EN TODAS LAS APLICACIONES
+```
+
+```text
+APLICACIÓN CONSUMIDORA
+NO DEFINE
+CÓDIGO, COPY, RECUPERACIÓN, PRIVACIDAD O PRECEDENCIA LOCAL
+```
+
+La tarea elimina como diseño permitido:
+
+- mensajes libres por aplicación;
+- títulos genéricos como sustituto de una razón canónica;
+- códigos locales transportados en query string;
+- exposición del permiso, ruta, rol o causa interna;
+- copy derivado de excepciones, SQL o mensajes de Supabase;
+- divergencia entre navegador, API, RPC, RLS, Realtime, offline y workers;
+- correcciones silenciosas de texto desde cada repositorio consumidor.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `AUTHORIZATION-MESSAGE-CATALOG-001`, que materializa las diecinueve
+   identidades públicas aprobadas y sus textos, acciones, confirmaciones y
+   límites de exposición;
+2. `AUTHORIZATION-MESSAGE-DISTRIBUTION-CONTRACT-001`, que fija propiedad,
+   módulos, publicación, versionado, inmutabilidad, compatibilidad y consumo;
+3. `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001`, que materializa
+   veinticuatro perfiles de presentación sin inventar copy donde una tarea
+   anterior no lo aprobó;
+4. `AUTHORIZATION-MESSAGE-CONSUMER-CHANNEL-MATRIX-001`, que decide diez canales
+   y diez aplicaciones con una semántica equivalente;
+5. `AUTHORIZATION-MESSAGE-PHYSICAL-RECONCILIATION-001`, que registra el estado
+   físico observado y catorce brechas con destino canónico exacto.
+
+Cobertura materializada:
+
+| Elemento                                                 |   Cantidad |
+| -------------------------------------------------------- | ---------: |
+| Tareas de bloqueo consumidas                             |         19 |
+| `reason_code` públicos únicos                            |         19 |
+| Perfiles de presentación                                 |         24 |
+| Locale fuente aprobado                                   | 1, `es-CO` |
+| Familias de paquete con responsabilidad explícita        |          3 |
+| Canales con decisión explícita                           |         10 |
+| Aplicaciones canónicas reconciliadas                     |         10 |
+| Páginas físicas `no-access` inspeccionadas               |          5 |
+| Páginas inspeccionadas con copy local divergente         |          5 |
+| Páginas inspeccionadas que exponen la ruta solicitada    |          4 |
+| Páginas inspeccionadas que exponen el permiso solicitado |          2 |
+| Workspace compartido de autorización existente           | 1, parcial |
+| Paquetes físicos `@vento/contracts` observados           |          0 |
+| Paquetes físicos `@vento/ui-web` observados              |          0 |
+| Brechas físicas registradas                              |         14 |
+| Requisitos de prueba derivados                           |         10 |
+
+Las cifras físicas describen el corte inspeccionado. No certifican adopción,
+publicación, paridad ni ejecución operativa.
+
+---
+
+#### 3. Decisión principal y propiedad
+
+La fuente canónica de mensajes de autorización será propiedad de
+`vento-shell` y se distribuirá por responsabilidades separadas:
+
+```text
+@vento/contracts/authorization
+→ reason codes
+→ message catalog
+→ presentation profiles
+→ schemas y tipos derivados
+→ versiones y fingerprints
+
+@vento/os-context
+→ resolución de reason code
+→ selección de perfil
+→ selección de locale
+→ proyección segura por canal
+→ adapters de compatibilidad temporal
+
+@vento/ui-web
+→ componentes accesibles
+→ layout de bloqueo
+→ acciones seguras
+→ estados recuperables
+→ presentación visual sin decidir autorización
+```
+
+Supabase, cada aplicación y cada componente no serán propietarios alternativos
+del copy.
+
+La distribución física futura conservará el mecanismo aprobado de paquetes npm
+privados e inmutables publicados desde `vento-shell`. Esta tarea define el
+contenido contractual; no crea ni publica paquetes.
+
+---
+
+#### 4. Alcance exacto
+
+AUTH-ERR-020 decide:
+
+1. la identidad del catálogo;
+2. el locale fuente;
+3. los diecinueve códigos públicos incluidos;
+4. los veinticuatro perfiles de presentación;
+5. el modelo de campos obligatorios, opcionales y prohibidos;
+6. la propiedad de cada módulo compartido;
+7. el algoritmo de resolución;
+8. las reglas de fallback;
+9. la inmutabilidad y el versionado;
+10. la separación entre respuesta pública y evidencia privada;
+11. la equivalencia entre canales;
+12. la cobertura de las diez aplicaciones;
+13. los límites de las acciones de recuperación;
+14. la estrategia de adopción y rollback;
+15. las brechas físicas y sus destinos exactos.
+
+No decide:
+
+- el estilo visual final de cada componente;
+- el proveedor definitivo del registry;
+- la creación física de los paquetes;
+- la implementación de adapters;
+- la migración de consumidores;
+- la instrumentación de métricas;
+- la implementación del evaluador;
+- el contenido de errores funcionales ajenos a autorización;
+- traducciones adicionales a `es-CO`;
+- cambios en los códigos o copy ya aprobados.
+
+---
+
+#### 5. Identidad del catálogo
+
+Se congela:
+
+```text
+catalog_id = vento.authorization.messages
+catalog_version = 1.0.0
+schema_version = 1.0.0
+source_locale = es-CO
+reason_count = 19
+presentation_profile_count = 24
+```
+
+Una publicación física deberá conservar:
+
+- versión semántica exacta;
+- hash del contenido canónico;
+- commit fuente;
+- fecha de construcción;
+- schema compatible;
+- lista completa de perfiles;
+- orden determinista;
+- ausencia de claves duplicadas;
+- procedencia desde `vento-shell`.
+
+No se aceptan como versión:
+
+```text
+latest
+main
+current
+production
+unknown
+```
+
+---
+
+#### 6. Contrato lógico de mensaje
+
+Forma conceptual:
+
+```ts
+type AuthorizationMessageDescriptor = {
+  catalog_id: "vento.authorization.messages";
+  catalog_version: "1.0.0";
+  schema_version: "1.0.0";
+  source_locale: "es-CO";
+  reason_code: AuthorizationReasonCode;
+  profile_key: string;
+  title: string | null;
+  message: string;
+  help_text: string | null;
+  effects_confirmation: string | null;
+  primary_action_label: string | null;
+  secondary_action_label: string | null;
+  support_action_label: string | null;
+  conditional_action_labels: string[];
+  public_code_visible: boolean;
+  session_preserved: boolean;
+  executable: false;
+  retryable: boolean;
+  privacy_class: "PUBLIC_SAFE";
+};
+```
+
+El contrato no contiene:
+
+- permiso exacto;
+- ruta solicitada;
+- rol;
+- grant o deny;
+- sede o área;
+- identificador del recurso;
+- causa interna;
+- tabla, función, policy o SQL;
+- stack trace;
+- token, cookie o secreto;
+- nombres personales;
+- instrucciones administrativas no aprobadas.
+
+---
+
+#### 7. `AuthorizationReasonCode`
+
+La unión cerrada será:
+
+```text
+AUTH_NO_SESSION
+AUTH_USER_INACTIVE
+AUTH_APP_ACCESS_DENIED
+AUTH_ADMIN_PERMISSION_DENIED
+AUTH_SITE_ASSIGNMENT_REQUIRED
+AUTH_ACTIVE_SITE_REQUIRED
+AUTH_AREA_ASSIGNMENT_REQUIRED
+AUTH_ACTIVE_AREA_REQUIRED
+AUTH_PUBLISHED_SHIFT_REQUIRED
+AUTH_OUTSIDE_SHIFT_WINDOW
+AUTH_CHECKIN_REQUIRED
+AUTH_OPERATIONAL_ROLE_REQUIRED
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE
+AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA
+AUTH_SHARED_DEVICE_NOT_AUTHORIZED
+AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION
+AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT
+AUTH_PERMISSION_NOT_REGISTERED
+AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE
+```
+
+Reglas:
+
+1. cada código aparece exactamente una vez en el índice de razones;
+2. un código puede tener uno o más perfiles;
+3. ningún consumidor agrega códigos locales a esta unión;
+4. un código desconocido no se convierte en el mensaje de otro bloqueo;
+5. la ausencia del código esperado se trata como incompatibilidad contractual;
+6. los códigos no se traducen ni se normalizan;
+7. el copy no se usa como identidad.
+
+---
+
+#### 8. Fuente de verdad e inmutabilidad
+
+La fuente de verdad será el artefacto versionado construido desde
+`vento-shell`.
+
+```text
+DOCUMENTACIÓN APROBADA
+→ CATÁLOGO FUENTE
+→ VALIDACIÓN
+→ BUILD INMUTABLE
+→ PAQUETE VERSIONADO
+→ LOCKFILE DEL CONSUMIDOR
+```
+
+No serán fuentes autoritativas independientes:
+
+- una tabla mutable de copy;
+- una variable de entorno;
+- un archivo copiado a una aplicación;
+- una página `no-access`;
+- un guard;
+- una query string;
+- un mensaje de excepción;
+- un diccionario local;
+- una traducción del navegador;
+- una respuesta de IA;
+- un texto recibido desde el cliente.
+
+Una versión publicada no se modifica in-place. Cualquier cambio de texto,
+acción, semántica o perfil exige nueva versión, changelog y pruebas de
+compatibilidad.
+
+---
+
+#### 9. Localización y fallback
+
+El locale fuente inicial es:
+
+```text
+es-CO
+```
+
+Reglas:
+
+1. `es-CO` siempre debe estar completo;
+2. un locale adicional deberá cubrir las veinticuatro claves de perfil;
+3. una traducción no cambia `reason_code`, estado, decisión, HTTP, acción
+   permitida ni privacidad;
+4. si el locale solicitado no existe, se usa `es-CO` de la misma versión;
+5. si el perfil solicitado no existe en `es-CO`, no se inventa copy;
+6. ante incompatibilidad de versión se usa una superficie técnica segura con
+   código de soporte, no una denegación falsa;
+7. el cliente no mezcla cadenas de versiones distintas;
+8. números, fechas y nombres no se insertan salvo parámetros explícitamente
+   aprobados; la versión inicial no define interpolaciones públicas.
+
+---
+
+#### 10. Perfiles y selección determinista
+
+La identidad de un perfil se deriva de:
+
+```text
+reason_code + "/" + variant
+```
+
+La variante predeterminada es:
+
+```text
+default
+```
+
+Algoritmo:
+
+```text
+1. validar catalog_version
+2. validar reason_code
+3. resolver variant permitida por la decisión
+4. resolver locale exacto o fallback es-CO
+5. proyectar campos permitidos por canal
+6. validar acciones contra el estado real
+7. renderizar o serializar
+```
+
+La aplicación no selecciona una variante para cambiar la causa. La variante
+procede de hechos ya resueltos y solo modifica presentación o recuperación
+aprobada.
+
+---
+
+#### 11. Campos opcionales y ausencia explícita
+
+`title`, `help_text`, confirmación y etiquetas de acción pueden ser `null`
+cuando la tarea propietaria anterior no aprobó un texto exacto.
+
+Regla obligatoria:
+
+```text
+CAMPO NO APROBADO
+→ null
+→ NO INVENTAR COPY LOCAL
+```
+
+Un canal visual podrá usar estructura accesible sin título textual adicional,
+pero no fabricará un título semántico. Una acción de navegación genérica solo
+podrá mostrarse cuando el contrato del canal ya la autorice y no se presentará
+como parte del copy canónico ausente.
+
+---
+
+#### 12. Acciones y recuperación
+
+Las etiquetas aprobadas describen acciones de presentación. No conceden
+capacidad empresarial ni autorizan ejecutar la operación bloqueada.
+
+Reglas:
+
+1. la acción principal no repite una mutación;
+2. cualquier reintento crea una solicitud nueva y reevalúa autorización;
+3. `Cerrar sesión` solo aparece cuando fue aprobado y nunca se ejecuta
+   automáticamente;
+4. `Volver` o `Volver a Vento OS` no transportan body, secretos ni recurso;
+5. acciones condicionales solo aparecen con evidencia server-side suficiente;
+6. un dispositivo no ofrece usar cuenta ajena;
+7. una pantalla de bloqueo no crea permisos, asignaciones, turnos o check-ins;
+8. copiar soporte solo copia un código opaco;
+9. una etiqueta no sustituye la autorización de la ruta destino;
+10. el consumidor no cambia la recuperación por conveniencia local.
+
+---
+
+#### 13. Separación pública y privada
+
+La respuesta pública consume únicamente:
+
+- `reason_code`;
+- perfil seguro;
+- locale;
+- textos aprobados;
+- acciones aprobadas;
+- código de soporte opaco cuando corresponda;
+- flags públicos de ejecución, retry y sesión.
+
+La evidencia privada podrá conservar, con minimización:
+
+- causa interna;
+- operación propietaria;
+- permiso y recurso;
+- actor y principal;
+- contexto y fingerprints;
+- versiones;
+- consumidor;
+- canal;
+- correlación;
+- resultado técnico.
+
+La evidencia privada nunca se serializa dentro del descriptor público.
+
+---
+
+#### 14. Privacidad y prevención de enumeración
+
+El catálogo compartido no permitirá que un cliente ordinario descubra:
+
+- permisos existentes o ausentes;
+- roles con acceso;
+- sedes o áreas candidatas;
+- rutas protegidas;
+- recursos existentes;
+- configuración del dispositivo;
+- versiones internas completas;
+- reglas de precedencia;
+- proveedores o infraestructura;
+- causas disciplinarias;
+- actores o identidades de terceros.
+
+Las páginas no mostrarán `returnTo`, `permission` ni `reason` libre como
+información de diagnóstico. Un estado de retorno seguro será opaco y validado.
+
+---
+
+#### 15. Accesibilidad
+
+Todo renderer compartido deberá:
+
+- mover el foco al resumen del bloqueo;
+- anunciar título cuando exista, mensaje, confirmación y recuperación;
+- mantener orden lógico de acciones;
+- no depender únicamente de color, icono o animación;
+- impedir trampas de foco;
+- permitir copiar el código de soporte mediante teclado;
+- conservar zoom, contraste y lectura por tecnología asistiva;
+- no ocultar el mensaje detrás de un toast efímero;
+- informar explícitamente cero cambios cuando el perfil lo declare;
+- mantener el indicador de simulación o dispositivo cuando el contrato lo
+  exija sin revelar datos internos.
+
+---
+
+#### 16. Resolución por canal
+
+El catálogo no obliga a renderizar HTML. Cada canal proyecta la misma
+semántica:
+
+```text
+VISUAL
+→ textos y acciones aprobadas
+
+NO VISUAL
+→ reason_code + message_code/perfil + flags + correlación
+
+RLS/DATA API
+→ deny técnico o cero filas
++
+adapter autoritativo separado para la razón pública
+```
+
+Un canal no visual puede omitir etiquetas humanas, pero no cambiar el código,
+la decisión, la recuperabilidad o la confirmación de efectos.
+
+---
+
+#### 17. Compatibilidad y fallo cerrado
+
+Estados de consumo:
+
+| Estado                           | Resultado                                                             |
+| -------------------------------- | --------------------------------------------------------------------- |
+| catálogo y schema compatibles    | resolver perfil exacto                                                |
+| reason conocido, variant ausente | incompatibilidad; no inventar variant                                 |
+| reason desconocido               | incompatibilidad; no mapear a otro bloqueo                            |
+| locale ausente                   | fallback a `es-CO` de la misma versión                                |
+| hash inválido                    | fallo técnico; no usar contenido                                      |
+| versión no soportada             | fallo técnico; no mezclar versiones                                   |
+| descriptor incompleto            | configuración inconsistente o fallo técnico según lectura concluyente |
+| paquete no disponible            | conservar sesión, cero efectos y tratar como indisponibilidad técnica |
+
+Queda prohibido usar un mensaje genérico de “No tienes permisos” para ocultar
+una incompatibilidad del catálogo.
+
+---
+
+#### 18. Completitud del índice
+
+`AUTHORIZATION-MESSAGE-CATALOG-001` deberá validar:
+
+```text
+reason_codes esperados = 19
+reason_codes materializados = 19
+faltantes = 0
+duplicados = 0
+perfiles esperados = 24
+perfiles materializados = 24
+faltantes = 0
+duplicados = 0
+```
+
+Las razones con perfil único conservan `default`. `AUTH_USER_INACTIVE` conserva
+perfiles laboral y cliente. `AUTH_SHARED_DEVICE_NOT_AUTHORIZED` conserva cinco
+perfiles de presentación.
+
+---
+
+#### 19. `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001` — perfiles 001 a 007
+
+|    # | Profile key                             | Título                                        | Mensaje                                                                                                                                         | Acción principal    | Acción secundaria / ayuda                                                                                         |
+| ---: | --------------------------------------- | --------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | ----------------------------------------------------------------------------------------------------------------- |
+|    1 | `AUTH_NO_SESSION/default`               | `Inicia sesión para continuar`                | `Tu sesión no está disponible o dejó de ser válida. Inicia sesión nuevamente para volver a la aplicación.`                                      | `Iniciar sesión`    | `Volver a Vento OS`                                                                                               |
+|    2 | `AUTH_USER_INACTIVE/employee`           | `Tu acceso está inactivo`                     | `Tu identidad para esta aplicación está inactiva. No puedes continuar mientras permanezca en este estado.`                                      | `Cerrar sesión`     | `Volver a Vento OS`; ayuda: `Si consideras que es un error, solicita una revisión a un administrador autorizado.` |
+|    3 | `AUTH_USER_INACTIVE/customer`           | `Tu acceso está inactivo`                     | `Tu perfil de cliente está inactivo. No puedes continuar mientras permanezca en este estado.`                                                   | `Cerrar sesión`     | ayuda: `Si consideras que es un error, solicita una revisión por el canal oficial de atención.`                   |
+|    4 | `AUTH_APP_ACCESS_DENIED/default`        | `No tienes acceso a esta aplicación`          | `Tu sesión está activa, pero esta aplicación no está habilitada para tu cuenta.`                                                                | `Volver a Vento OS` | `Cerrar sesión`                                                                                                   |
+|    5 | `AUTH_ADMIN_PERMISSION_DENIED/default`  | `No tienes permiso para realizar esta acción` | `Tu cuenta puede usar esta aplicación, pero no tiene el permiso administrativo necesario para completar esta acción.`                           | `Volver`            | `Volver a Vento OS`                                                                                               |
+|    6 | `AUTH_SITE_ASSIGNMENT_REQUIRED/default` | `Necesitas una sede asignada`                 | `Tu perfil laboral no tiene una sede asignada para continuar con esta acción. Solicita a un administrador autorizado que revise tu asignación.` | `Volver a Vento OS` | `Ir al inicio de la aplicación`; ayuda aprobada                                                                   |
+|    7 | `AUTH_ACTIVE_SITE_REQUIRED/default`     | `No hay una sede activa disponible`           | `Tu sesión está activa, pero esta acción requiere una sede activa y no hay una disponible para el contexto actual.`                             | `Volver a Vento OS` | `Cerrar sesión`; condicional: `Elegir otra sede`                                                                  |
+
+Para el perfil 6, la ayuda exacta es:
+
+```text
+Si consideras que es un error, solicita una revisión a un administrador autorizado.
+```
+
+`Elegir otra sede` solo existe si el servidor demostró una alternativa activa,
+autorizada y segura.
+
+---
+
+#### 20. `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001` — perfiles 008 a 014
+
+|    # | Profile key                                      | Título                                        | Mensaje                                                                                                                                                             | Acción principal    | Acción secundaria / ayuda                                                        |
+| ---: | ------------------------------------------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------- | -------------------------------------------------------------------------------- |
+|    8 | `AUTH_AREA_ASSIGNMENT_REQUIRED/default`          | `No tienes un área asignada para esta acción` | `Tu cuenta puede usar esta aplicación, pero necesita una asignación de área compatible para completar esta acción.`                                                 | `Volver`            | `Volver a Vento OS`                                                              |
+|    9 | `AUTH_ACTIVE_AREA_REQUIRED/default`              | `Necesitas un área activa`                    | `No hay un área activa y compatible disponible para continuar con esta acción. Solicita a un administrador autorizado que revise la configuración correspondiente.` | `Volver a Vento OS` | `Ir al inicio de la aplicación`; ayuda aprobada; condicional: `Elegir otra área` |
+|   10 | `AUTH_PUBLISHED_SHIFT_REQUIRED/default`          | `Necesitas un turno publicado`                | `No tienes un turno laboral publicado disponible para continuar con esta acción. Solicita a un administrador autorizado que revise tu programación.`                | `Volver a Vento OS` | `Ir al inicio de la aplicación`; ayuda aprobada                                  |
+|   11 | `AUTH_OUTSIDE_SHIFT_WINDOW/default`              | `No estás dentro de tu turno`                 | `Tienes un turno publicado, pero no está vigente en este momento. Revisa tu horario antes de continuar.`                                                            | `Ver mi horario`    | `Volver a Vento OS`                                                              |
+|   12 | `AUTH_CHECKIN_REQUIRED/default`                  | `Check-in requerido`                          | `Registra tu entrada para continuar con esta operación.`                                                                                                            | `Registrar entrada` | `Volver a una vista disponible` cuando exista una superficie autorizada          |
+|   13 | `AUTH_OPERATIONAL_ROLE_REQUIRED/default`         | `null`                                        | `Tu turno no tiene un rol operativo asignado. Solicita que lo corrijan para continuar.`                                                                             | `null`              | `null`                                                                           |
+|   14 | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE/default` | `null`                                        | `Tu rol operativo no está habilitado para esta sede. Solicita que revisen tu turno para continuar.`                                                                 | `null`              | `null`                                                                           |
+
+La ayuda exacta de los perfiles 9 y 10 es:
+
+```text
+Si consideras que es un error, solicita una revisión a un administrador autorizado.
+```
+
+Los campos `null` son deliberados: ninguna aplicación podrá completar esos
+textos por inferencia.
+
+---
+
+#### 21. `AUTHORIZATION-MESSAGE-PRESENTATION-PROFILE-REGISTER-001` — perfiles 015 a 024
+
+|    # | Profile key                                              | Título                                                   | Mensaje                                                                                                                                               | Acción principal                                 | Acción secundaria / confirmación                                                        |
+| ---: | -------------------------------------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------------- |
+|   15 | `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA/default`         | `null`                                                   | `Tu rol operativo no está habilitado para esta área. Solicita que revisen tu turno para continuar.`                                                   | `null`                                           | `null`                                                                                  |
+|   16 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/default`              | `null`                                                   | mensaje base exacto definido debajo                                                                                                                   | `null`                                           | confirmar que no se realizaron cambios                                                  |
+|   17 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/personal_session`     | `Esta operación requiere una sesión personal`            | mensaje base del código                                                                                                                               | `Iniciar sesión de forma personal`               | —                                                                                       |
+|   18 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/device_unavailable`   | `Este dispositivo no está disponible para operar`        | mensaje base del código                                                                                                                               | `Usar otro dispositivo`                          | —                                                                                       |
+|   19 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/configuration_review` | `Este dispositivo necesita una revisión`                 | mensaje base del código                                                                                                                               | `Solicitar revisión`                             | —                                                                                       |
+|   20 | `AUTH_SHARED_DEVICE_NOT_AUTHORIZED/app_unavailable`      | `Esta aplicación no está disponible en este dispositivo` | mensaje base del código                                                                                                                               | `Volver a las aplicaciones permitidas`           | —                                                                                       |
+|   21 | `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION/default`          | `null`                                                   | `Esta acción no puede ejecutarse durante una simulación. Sal de la simulación y abre la operación real para continuar.`                               | `Salir de simulación`                            | `Abrir operación real` cuando exista ruta conocida; `No se realizó ningún cambio real.` |
+|   22 | `AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT/default` | `No pudimos validar la configuración`                    | `La configuración necesaria para autorizar esta acción es inconsistente. Solicita una revisión administrativa antes de continuar.`                    | `Solicitar revisión`                             | `Volver`                                                                                |
+|   23 | `AUTH_PERMISSION_NOT_REGISTERED/default`                 | `Esta función no está disponible`                        | `La función solicitada no está registrada en Vento OS. Informa el código de soporte para que revisen la configuración.`                               | `Copiar código de soporte`                       | `Volver`; `No se realizó ningún cambio.`                                                |
+|   24 | `AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE/default`      | `No pudimos verificar el acceso`                         | `Ocurrió un problema técnico al verificar tu acceso. No se realizó ningún cambio. Intenta nuevamente en unos minutos o informa el código de soporte.` | `Intentar de nuevo` solo cuando `retryable=true` | `Copiar código de soporte`; `Volver`; `No se realizó ningún cambio.`                    |
+
+El mensaje base exacto de los perfiles 16 a 20 es:
+
+```text
+Este dispositivo no está autorizado para esta operación.
+Usa un dispositivo permitido o inicia sesión de forma personal.
+```
+
+Los perfiles 17 a 20 no sustituyen el mensaje base. Solo fijan un título y una
+acción permitidos para una recuperación segura ya demostrada.
+
+---
+
+#### 22. Matriz de identidad, decisión y estado
+
+| Reason code                                      | Resultado contractual             | HTTP no navegacional | Sesión                             | Retry automático                                      |
+| ------------------------------------------------ | --------------------------------- | -------------------: | ---------------------------------- | ----------------------------------------------------- |
+| `AUTH_NO_SESSION`                                | `DENY` de autenticación           |                  401 | no disponible                      | no                                                    |
+| `AUTH_USER_INACTIVE`                             | `DENY`                            |                  403 | conservada hasta acción voluntaria | no                                                    |
+| `AUTH_APP_ACCESS_DENIED`                         | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_ADMIN_PERMISSION_DENIED`                   | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_SITE_ASSIGNMENT_REQUIRED`                  | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_ACTIVE_SITE_REQUIRED`                      | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_AREA_ASSIGNMENT_REQUIRED`                  | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_ACTIVE_AREA_REQUIRED`                      | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_PUBLISHED_SHIFT_REQUIRED`                  | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_OUTSIDE_SHIFT_WINDOW`                      | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_CHECKIN_REQUIRED`                          | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_OPERATIONAL_ROLE_REQUIRED`                 | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_OPERATIONAL_ROLE_INVALID_FOR_SITE`         | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_OPERATIONAL_ROLE_INVALID_FOR_AREA`         | `DENY`                            |                  403 | preservada                         | no                                                    |
+| `AUTH_SHARED_DEVICE_NOT_AUTHORIZED`              | `DENY`                            |                  403 | preservada según principal         | no                                                    |
+| `AUTH_ACTION_NOT_ALLOWED_IN_SIMULATION`          | `DENY` de ejecución real          |                  403 | real preservada                    | no                                                    |
+| `AUTH_ADMINISTRATIVE_CONFIGURATION_INCONSISTENT` | `DENY` estructural                |                  409 | preservada                         | no                                                    |
+| `AUTH_PERMISSION_NOT_REGISTERED`                 | `DENY` estructural                |                  500 | preservada                         | no                                                    |
+| `AUTH_AUTHORIZATION_EVALUATION_UNAVAILABLE`      | `TECHNICAL_FAILURE`, sin decisión |                  503 | preservada                         | solo retry interno limitado; nunca replay de mutación |
+
+El catálogo de mensajes no recalcula estos valores. Los consume del contrato de
+la razón y los valida por consistencia.
+
+---
+
+#### 23. Exactitud del copy
+
+Cada cadena de `es-CO` deberá coincidir byte a byte con el texto aprobado,
+salvo normalización canónica de fin de línea y Unicode definida por el build.
+
+Queda prohibido:
+
+- corregir estilo o puntuación por aplicación;
+- reemplazar `Vento OS` por el nombre del módulo;
+- agregar el permiso o la ruta;
+- abreviar por tamaño de pantalla;
+- cambiar “sesión” por “usuario”;
+- cambiar un error técnico por “sin permisos”;
+- cambiar una falta contextual por “acceso denegado”;
+- cambiar una confirmación de cero efectos;
+- ocultar ayuda o soporte requeridos;
+- traducir mediante un servicio en runtime.
+
+Una variante de tono o longitud futura requiere perfil explícito y versión
+nueva; no puede surgir localmente.
+
+---
+
+#### 24. Parámetros e interpolación
+
+La versión `1.0.0` no autoriza interpolaciones públicas de:
+
+- nombres;
+- correo;
+- rol;
+- sede;
+- área;
+- turno;
+- permiso;
+- recurso;
+- dispositivo;
+- horario;
+- cantidad de intentos;
+- duración estimada;
+- nombres de administradores.
+
+Los únicos valores externos admitidos en la superficie son referencias opacas
+y separadas del copy, como `support_code` o `correlation_id`, cuando el contrato
+los autorice. No se insertan dentro del mensaje principal.
+
+---
+
+#### 25. `AUTHORIZATION-MESSAGE-CONSUMER-CHANNEL-MATRIX-001`
+
+| Canal                                 | Consumo requerido                               | Respuesta pública                              | Prohibiciones                                     |
+| ------------------------------------- | ----------------------------------------------- | ---------------------------------------------- | ------------------------------------------------- |
+| Launcher y navegación                 | descriptor seguro y estado de retorno opaco     | vista de bloqueo compartida                    | query libre de reason, permiso o ruta; copy local |
+| React Server Components               | resolver server-side antes de datos protegidos  | descriptor serializable mínimo                 | hidratar evidencia privada o contenido protegido  |
+| Server Actions                        | resultado discriminado del evaluador            | envelope estable; no redirect como única señal | excepción bruta, efecto parcial, copy local       |
+| Route Handlers y API                  | adapter compartido                              | JSON tipado con códigos y flags                | HTML inesperado, texto SQL, claves internas       |
+| RPC y PostgREST                       | proyección contractual del backend              | decisión o fallo tipado                        | booleano como mensaje, texto libre                |
+| RLS y Data API                        | preflight o adapter de servicio                 | razón correlacionable fuera de RLS             | inferir razón solo desde cero filas               |
+| Edge Functions                        | paquete compatible y evaluador central          | mismo reason/profile                           | service role como bypass, copy embebido           |
+| Realtime                              | razón en cierre o rechazo seguro cuando aplique | no suscribir o retirar entrega                 | mantener stream, filtrar solo en cliente          |
+| Offline y caché                       | descriptor versionado cacheable sin autoridad   | mostrar estado; no ejecutar                    | replay automático, mezclar versiones              |
+| Jobs, colas, webhooks e integraciones | códigos y schemas compartidos                   | fallo/deny tipado para observabilidad          | mensaje humano como protocolo, confirmar efectos  |
+
+Reconciliación:
+
+```text
+canales esperados = 10
+canales materializados = 10
+faltantes = 0
+duplicados = 0
+```
+
+---
+
+#### 26. Envelope compartido
+
+Forma pública mínima conceptual:
+
+```ts
+type AuthorizationPublicResponse = {
+  ok: false;
+  result_kind: "DENY" | "TECHNICAL_FAILURE";
+  reason_code: AuthorizationReasonCode;
+  message_profile_key: string;
+  catalog_version: "1.0.0";
+  locale: "es-CO" | string;
+  executable: false;
+  retryable: boolean;
+  session_preserved: boolean;
+  effects_committed: false;
+  support_code?: string;
+  correlation_id?: string;
+};
+```
+
+La forma no transporta el copy completo como autoridad. Un cliente con paquete
+compatible lo resuelve localmente; un servidor podrá adjuntar una proyección
+humana para clientes externos, pero deberá provenir de la misma versión y
+fingerprint.
+
+---
+
+#### 27. Cobertura de aplicaciones
+
+| Aplicación | Decisión de consumo                                                                                                             |
+| ---------- | ------------------------------------------------------------------------------------------------------------------------------- |
+| SHELL      | propietario de catálogo, retorno seguro, superficies de autenticación, Hub y distribución; no convierte fallos en login         |
+| ANIMA      | consume perfiles laborales y cliente cuando corresponda; no reduce error a mapa vacío ni inventa mensajes de asistencia         |
+| AURA       | su estado diferido no produce un mensaje de autorización local; adopta el contrato al materializar superficies                  |
+| FOGO       | consume mensajes compartidos antes de producción, recetas, lotes y operaciones; no expone permiso ni ruta                       |
+| NEXO       | consume catálogo para inventario, ubicaciones, conteos y remisiones; la página genérica actual no es canónica                   |
+| NUMERA     | consume el mismo catálogo para superficies financieras sin revelar costos o recursos                                            |
+| ORIGO      | consume mensajes compartidos para compras, proveedores y recepciones; no muestra claves técnicas                                |
+| PASS       | conserva dominio cliente; usa el perfil `AUTH_USER_INACTIVE/customer` y no impone RBAC laboral a flujos de cliente no modelados |
+| PULSO      | consume mensajes antes de ventas, pagos, caja e impresión; no atribuye siempre el bloqueo a la sede seleccionada                |
+| VISO       | consume catálogo para administración y diagnóstico; detalle privado requiere autorización separada                              |
+
+Reconciliación:
+
+```text
+aplicaciones esperadas = 10
+aplicaciones materializadas = 10
+faltantes = 0
+duplicados = 0
+aplicaciones autorizadas a definir copy alternativo = 0
+```
+
+---
+
+#### 28. Fronteras especiales de PASS y AURA
+
+PASS:
+
+- no usa automáticamente mensajes laborales para clientes;
+- utiliza únicamente perfiles cuya razón sea aplicable al dominio cliente;
+- conserva autenticación, identidad y autorización de cliente separadas;
+- no muestra roles, sedes, turnos o permisos laborales inexistentes;
+- puede consumir contratos compartidos de plataforma sin perder su propietario
+  funcional.
+
+AURA:
+
+- una aplicación diferida no es una falla técnica ni una denegación personal;
+- no se publica copy de autorización para superficies no materializadas;
+- cualquier futura adopción deberá fijar versión y pasar las mismas pruebas;
+- no se fabrica una razón local durante su diferimiento.
+
+---
+
+#### 29. Propiedad server-side y cliente
+
+El servidor decide:
+
+- razón;
+- resultado `DENY` o `TECHNICAL_FAILURE`;
+- perfil permitido;
+- flags;
+- acciones condicionales;
+- soporte;
+- retorno seguro.
+
+El cliente decide únicamente:
+
+- layout aprobado;
+- foco;
+- orden visual;
+- activación de la acción ya autorizada;
+- locale soportado dentro de la versión compatible.
+
+```text
+CLIENTE NO ELIGE REASON_CODE
+CLIENTE NO ELIGE VARIANT PARA AMPLIAR RECUPERACIÓN
+CLIENTE NO CONSTRUYE SUPPORT_CODE
+CLIENTE NO CONVIERTE ERROR EN DENY
+```
+
+---
+
+#### 30. Versionado, publicación y rollback
+
+La implementación futura deberá cumplir:
+
+1. paquete privado e inmutable;
+2. versión exacta en `package.json` y lockfile;
+3. build reproducible;
+4. hash y procedencia;
+5. changelog;
+6. pruebas antes de publicar;
+7. publicación desde `vento-shell`;
+8. lectura con privilegio mínimo;
+9. adopción por PR, no actualización directa;
+10. rollback mediante versión y lockfile anteriores;
+11. prohibición de alterar una versión publicada;
+12. compatibilidad declarada con `@vento/os-context` y `@vento/ui-web`.
+
+La publicación de una nueva versión no obliga a todas las aplicaciones a
+adoptarla simultáneamente, pero no se permitirá que dos versiones produzcan
+semántica distinta para el mismo reason code durante una operación compartida
+sin una transición explícita.
+
+---
+
+#### 31. Adopción y transición
+
+Orden previsto:
+
+```text
+SHELL-PKG-001..008
+→ SHELL-CON-001 y SHELL-CON-008
+→ SHELL-AUTH-001 y SHELL-CTX-001
+→ SHELL-AUTH-002..004
+→ SHELL-UI-001 y SHELL-UI-016
+→ pruebas y publicación
+→ SHELL-AUTH-005
+→ certificación multicanal y multi-repositorio
+```
+
+Cada consumidor deberá:
+
+- eliminar diccionarios y copy locales alcanzados;
+- reemplazar query params libres por estado seguro;
+- dejar de exponer permiso y ruta;
+- consumir la versión exacta;
+- pasar pruebas de paridad;
+- conservar rollback;
+- demostrar que un código desconocido falla cerrado;
+- registrar la versión adoptada.
+
+La migración no autoriza retirar compatibilidad antes de completar inventario,
+pruebas y rollback.
+
+---
+
+#### 32. Auditoría y observabilidad
+
+La auditoría de resolución del mensaje podrá registrar:
+
+```text
+reason_code
+profile_key
+catalog_version
+schema_version
+locale solicitado
+locale resuelto
+consumer_app
+consumer_version
+channel
+resolution_status
+fallback_used
+support_code_reference
+correlation_id
+resolved_at
+```
+
+No registrará el copy completo como causa primaria, PII, permiso, ruta, token,
+cookie, secreto o payload empresarial.
+
+Métricas mínimas:
+
+- perfil desconocido;
+- versión incompatible;
+- fallback de locale;
+- hash inválido;
+- consumidor con versión obsoleta;
+- uso de copy local detectado;
+- código desconocido;
+- fallo de render;
+- acción condicional rechazada;
+- paridad por aplicación y canal.
+
+Las métricas de resolución de mensaje no reemplazan las métricas de denegación
+o falla técnica.
+
+---
+
+#### 33. Seguridad de la cadena de suministro
+
+La distribución deberá proteger:
+
+- token de publicación separado de lectura;
+- registry privado;
+- versiones inmutables;
+- lockfiles;
+- integridad del artefacto;
+- procedencia del build;
+- revisión del cambio de copy;
+- bloqueo de publicación desde repositorios consumidores;
+- prohibición de secretos en bundle cliente;
+- análisis de dependencias y paquete;
+- rollback verificable;
+- revocación de credenciales sin cambiar el namespace.
+
+Un paquete alterado, no firmado por procedencia aprobada o con hash divergente
+no se utiliza y produce fallo técnico seguro.
+
+---
+
+#### 34. Snapshot físico de solo lectura
+
+Estado observado:
+
+| Elemento                                                      |                   Resultado |
+| ------------------------------------------------------------- | --------------------------: |
+| workspaces declarados en `vento-shell`                        |                `packages/*` |
+| paquete físico `@vento/os-context`                            |                           1 |
+| versión física de `@vento/os-context`                         |     `0.1.0`, `private=true` |
+| exports físicos de `@vento/os-context`                        |      1 raíz; types + client |
+| tipos físicos legacy con `can_operate` y `blocked_reasons`    |                   presentes |
+| paquete físico `@vento/contracts`                             |                           0 |
+| paquete físico `@vento/ui-web`                                |                           0 |
+| catálogo físico de mensajes de autorización                   |                           0 |
+| perfiles físicos versionados y con hash                       |                           0 |
+| páginas `no-access` inspeccionadas                            |                           5 |
+| páginas con copy local divergente                             |                           5 |
+| páginas que muestran ruta solicitada                          | 4: NEXO, FOGO, ORIGO y VISO |
+| páginas que muestran permiso solicitado                       |             2: FOGO y ORIGO |
+| páginas que usan “No tienes permisos” o equivalente genérico  |                           5 |
+| guards físicos inspeccionados previamente con reasons locales |                           5 |
+| repositorios con reducción booleana o copy local observada    |                           6 |
+
+Observaciones:
+
+- NEXO muestra un mensaje genérico y la ruta solicitada;
+- FOGO y ORIGO muestran ruta, permiso y una variante local de rol de prueba;
+- PULSO atribuye el bloqueo a permisos y sede seleccionada;
+- VISO muestra copy genérico y la ruta solicitada;
+- ninguna de las cinco páginas resuelve los diecinueve códigos o veinticuatro
+  perfiles desde una fuente compartida;
+- el workspace `@vento/os-context` existente no implementa el contrato final y
+  conserva tipos legacy incompatibles.
+
+---
+
+#### 35. `AUTHORIZATION-MESSAGE-PHYSICAL-RECONCILIATION-001`
+
+|    # | Brecha física                                                                | Estado                        | Riesgo                                                                   | Destino exacto                                                                  |
+| ---: | ---------------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+|    1 | no existe el paquete físico `@vento/contracts`                               | `PENDIENTE_DE_IMPLEMENTACION` | códigos y schemas no tienen distribución canónica                        | `SHELL-CON-001`; `SHELL-PKG-001` a `SHELL-PKG-008`                              |
+|    2 | no existe export `@vento/contracts/authorization` con catálogo y perfiles    | `PENDIENTE_DE_IMPLEMENTACION` | cada consumidor puede definir otra semántica                             | `SHELL-CON-008`; `SHELL-AUTH-001`                                               |
+|    3 | no existe schema o tipo generado que valide 19 razones y 24 perfiles         | `PENDIENTE_DE_IMPLEMENTACION` | faltantes, duplicados y campos inseguros                                 | `SHELL-CON-008`; `SHELL-AUTH-001`; `SHELL-CI-016`                               |
+|    4 | `@vento/os-context` solo exporta types y client legacy                       | `BLOQUEADO`                   | no existe resolver compartido y persisten `can_operate` y strings libres | `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-AUTH-002`                             |
+|    5 | no existe paquete físico `@vento/ui-web` ni componente de bloqueo compartido | `PENDIENTE_DE_IMPLEMENTACION` | cinco aplicaciones mantienen páginas divergentes                         | `SHELL-UI-001`; `SHELL-UI-016`                                                  |
+|    6 | NEXO conserva página genérica que muestra la ruta                            | `PENDIENTE_DE_MIGRACION`      | filtración y causa incorrecta                                            | `SHELL-AUTH-005`; `SHELL-UI-016`; `SHELL-CI-016`                                |
+|    7 | FOGO conserva ruta, permiso y copy local de override                         | `PENDIENTE_DE_MIGRACION`      | enumeración de capacidades y semántica de simulación incorrecta          | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`                              |
+|    8 | ORIGO conserva ruta, permiso y copy local de override                        | `PENDIENTE_DE_MIGRACION`      | enumeración y drift                                                      | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`                              |
+|    9 | PULSO conserva mensaje genérico ligado a sede seleccionada                   | `PENDIENTE_DE_MIGRACION`      | atribución falsa del bloqueo                                             | `SHELL-AUTH-005`; `SHELL-UI-016`; `SHELL-CI-016`                                |
+|   10 | VISO conserva copy genérico y muestra ruta                                   | `PENDIENTE_DE_MIGRACION`      | diagnóstico administrativo filtrado sin contrato                         | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`                              |
+|   11 | guards transportan `reason`, `permission` y `returnTo` libres                | `BLOQUEADO`                   | manipulación, exposición y mapping local                                 | `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-004`; `SHELL-AUTH-005`          |
+|   12 | no existe versionado, hash, locale y fingerprint físicos del catálogo        | `PENDIENTE_DE_IMPLEMENTACION` | mezcla de versiones, stale copy y rollback incierto                      | `SHELL-PKG-002` a `SHELL-PKG-005`; `SHELL-CON-008`; `SHELL-CI-019`              |
+|   13 | no existe gate de completitud, exactitud y ausencia de copy local            | `PENDIENTE_DE_IMPLEMENTACION` | una app puede omitir o alterar perfiles                                  | `SHELL-PKG-008`; `SHELL-AUTH-004`; `SHELL-CI-016`                               |
+|   14 | no existe adopción y certificación de diez aplicaciones y diez canales       | `PENDIENTE_DE_EVIDENCIA`      | implementación parcial y bypass entre superficies                        | `SHELL-AUTH-005`; `AUTH-QA-019`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+
+Ninguna brecha autoriza implementación durante esta tarea documental.
+
+---
+
+#### 36. Caché, invalidación y concurrencia
+
+Una resolución cacheada deberá incluir:
+
+```text
+catalog_version
+schema_version
+catalog_hash
+reason_code
+profile_key
+locale
+renderer_version cuando aplique
+```
+
+Invalidan el resultado:
+
+- nueva versión del catálogo;
+- cambio de hash;
+- cambio de locale pack;
+- cambio de perfil;
+- revocación de una acción condicional;
+- cambio de contrato de la razón;
+- cambio de sesión o actor cuando la variante dependa de dominio;
+- cambio de dispositivo;
+- salida de simulación;
+- actualización del consumidor.
+
+Un resultado tardío no reemplaza una versión más nueva. Un cache miss no
+habilita copy local. Una aplicación offline puede mostrar el último descriptor
+íntegro compatible, pero no usarlo como autoridad para ejecutar.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+| ID              | Regla protegida                                                                                       | Tipo                                               | Prioridad | Momento de implementación                 | Destino                                                                         |
+| --------------- | ----------------------------------------------------------------------------------------------------- | -------------------------------------------------- | --------- | ----------------------------------------- | ------------------------------------------------------------------------------- |
+| `TREQ-AUTH-319` | catálogo inmutable y completo de 19 razones con versión, schema, hash y procedencia                   | contractual + estática + regresión                 | crítica   | creación de contratos compartidos         | `SHELL-CON-001`; `SHELL-CON-008`; `SHELL-PKG-001` a `SHELL-PKG-008`             |
+| `TREQ-AUTH-320` | 24 perfiles `es-CO` con copy exacto, campos nulos preservados y cero variantes locales                | contractual + experiencia + regresión              | crítica   | build del catálogo y UI compartida        | `SHELL-CON-008`; `SHELL-UI-016`; `SHELL-CI-016`                                 |
+| `TREQ-AUTH-321` | fronteras de ownership entre contracts, os-context y ui-web                                           | arquitectura + integración + regresión             | crítica   | creación y exports de paquetes            | `SHELL-CON-001`; `SHELL-AUTH-001`; `SHELL-CTX-001`; `SHELL-UI-001`              |
+| `TREQ-AUTH-322` | localización segura, fallback a `es-CO`, incompatibilidad fail closed y privacidad                    | contractual + localización + seguridad + regresión | crítica   | resolver y adapters                       | `SHELL-AUTH-002`; `SHELL-AUTH-004`; `SHELL-CI-016`                              |
+| `TREQ-AUTH-323` | equivalencia de diez canales y envelope sin booleano, copy o razón inventados                         | integración + RPC + RLS + E2E + regresión          | crítica   | adopción multicanal                       | `AUTH-DB-034`; `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-018`               |
+| `TREQ-AUTH-324` | paridad de diez aplicaciones, sin copy local ni exposición de ruta o permiso                          | aplicación + privacidad + E2E + regresión          | crítica   | migración de consumidores                 | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-UI-016`; `SHELL-CI-016`              |
+| `TREQ-AUTH-325` | selección determinista de reason, variant, locale y acciones condicionales                            | unitaria + contractual + seguridad + regresión     | crítica   | SDK y renderer compartidos                | `SHELL-AUTH-001`; `SHELL-AUTH-002`; `SHELL-UI-016`                              |
+| `TREQ-AUTH-326` | gate de completitud, duplicados, copy exacto, códigos desconocidos y ausencia de diccionarios locales | estática + lint + CI + regresión                   | crítica   | gates de paquetes y consumidores          | `SHELL-PKG-008`; `SHELL-AUTH-004`; `SHELL-CI-016`                               |
+| `TREQ-AUTH-327` | publicación privada, semver, lockfile, inmutabilidad, procedencia, compatibilidad y rollback          | supply chain + integración + regresión             | crítica   | release y adopción                        | `SHELL-PKG-001` a `SHELL-PKG-008`; `SHELL-CI-018`; `SHELL-CI-019`               |
+| `TREQ-AUTH-328` | cierre de 14 brechas y certificación transversal de catálogo, resolver, UI y consumidores             | seguridad + integración + E2E + regresión          | crítica   | paquete de implementación y certificación | `SHELL-AUTH-005`; `AUTH-QA-019`; `SHELL-CI-016`; `SHELL-CI-018`; `SHELL-CI-019` |
+
+Los requisitos se incorporan al registro canónico completo. Esta tarea no
+implementa las pruebas.
+
+---
+
+#### 38. Estados y evidencia
+
+| Elemento                                     | Estado                             |
+| -------------------------------------------- | ---------------------------------- |
+| catálogo documental de 19 razones            | `ESPECIFICADO`                     |
+| registro documental de 24 perfiles           | `ESPECIFICADO`                     |
+| contrato de distribución                     | `ESPECIFICADO`                     |
+| matriz de diez canales                       | `ESPECIFICADO`                     |
+| cobertura de diez aplicaciones               | `ESPECIFICADO`                     |
+| snapshot físico de páginas y paquetes        | `PENDIENTE_DE_EVIDENCIA_OPERATIVA` |
+| paquete `@vento/contracts`                   | `PENDIENTE_DE_IMPLEMENTACION`      |
+| módulo `@vento/contracts/authorization`      | `PENDIENTE_DE_IMPLEMENTACION`      |
+| resolver en `@vento/os-context`              | `PENDIENTE_DE_IMPLEMENTACION`      |
+| componente en `@vento/ui-web`                | `PENDIENTE_DE_IMPLEMENTACION`      |
+| publicación privada                          | `PENDIENTE_DE_IMPLEMENTACION`      |
+| migración de consumidores                    | `PENDIENTE_DE_IMPLEMENTACION`      |
+| pruebas automatizadas                        | `PENDIENTE_DE_IMPLEMENTACION`      |
+| certificación multicanal y multi-repositorio | `PENDIENTE_DE_EVIDENCIA`           |
+
+La inspección física demuestra divergencia actual; no demuestra conformidad ni
+adopción futura.
+
+---
+
+#### 39. Fuera del alcance
+
+AUTH-ERR-020 no:
+
+- crea `@vento/contracts`;
+- modifica `@vento/os-context`;
+- crea `@vento/ui-web`;
+- publica paquetes;
+- elige definitivamente un proveedor de registry;
+- modifica páginas `no-access`;
+- cambia guards, middleware o query params;
+- corrige helpers booleanos;
+- implementa el evaluador;
+- modifica Supabase;
+- crea migraciones, tablas, funciones, RLS o datos;
+- traduce a otros idiomas;
+- ejecuta pruebas operativas;
+- despliega componentes;
+- escribe en GitHub;
+- inicia `NEXO-DOM-001`.
+
+La implementación corresponde exclusivamente a las tareas exactas registradas
+en la reconciliación física.
+
+---
+
+#### 40. Criterios de aceptación
+
+- [x] Se definió `vento.authorization.messages@1.0.0`.
+- [x] Se definió `schema_version=1.0.0`.
+- [x] Se definió `es-CO` como locale fuente.
+- [x] Se materializaron diecinueve reason codes.
+- [x] Se materializaron veinticuatro perfiles.
+- [x] Se preservó el copy aprobado de `AUTH-ERR-001` a `AUTH-ERR-019`.
+- [x] Se conservaron campos `null` donde no existía texto aprobado.
+- [x] Se prohibió inventar copy local.
+- [x] Se separaron códigos, copy y evidencia privada.
+- [x] Se definió propiedad en `@vento/contracts/authorization`.
+- [x] Se definió resolución en `@vento/os-context`.
+- [x] Se definió rendering en `@vento/ui-web`.
+- [x] Se mantuvo `vento-shell` como propietario de autoría y publicación.
+- [x] Se definió catálogo inmutable con versión y hash.
+- [x] Se prohibieron versiones `latest` o equivalentes.
+- [x] Se definió fallback exclusivo a `es-CO` compatible.
+- [x] Se prohibió mezclar versiones o locales.
+- [x] Se definió selección determinista de perfil.
+- [x] Se definieron acciones condicionales server-side.
+- [x] Se prohibió replay automático.
+- [x] Se definió privacidad y anti-enumeración.
+- [x] Se prohibió mostrar ruta, permiso o causa interna.
+- [x] Se definió accesibilidad.
+- [x] Se definió envelope compartido.
+- [x] Se decidieron diez canales.
+- [x] Se reconciliaron diez aplicaciones.
+- [x] Se preservó el dominio cliente de PASS.
+- [x] Se preservó el estado diferido de AURA.
+- [x] Se definió versionado, publicación y rollback.
+- [x] Se definió orden de adopción.
+- [x] Se definieron auditoría y métricas de resolución.
+- [x] Se definió seguridad de supply chain.
+- [x] Se inspeccionaron cinco páginas físicas divergentes.
+- [x] Se registró la ausencia física de `@vento/contracts` y `@vento/ui-web`.
+- [x] Se registró el estado parcial legacy de `@vento/os-context`.
+- [x] Se registraron catorce brechas con destino exacto.
+- [x] Se derivaron `TREQ-AUTH-319` a `TREQ-AUTH-328`.
+- [x] No se modificó código, Supabase, paquetes, aplicaciones ni repositorios remotos.
+- [x] `NEXO-DOM-001` permanece únicamente reservada.
+
+---
+
+#### 41. Riesgos controlados
+
+| Riesgo                                       | Control                                   |
+| -------------------------------------------- | ----------------------------------------- |
+| aplicación inventa un mensaje                | catálogo único y gate contra copy local   |
+| causa técnica mostrada como falta de permiso | reason code y perfil tipados              |
+| permiso o ruta expuestos                     | descriptor público minimizado             |
+| traducción cambia semántica                  | source locale y paridad contractual       |
+| campo no aprobado recibe texto local         | `null` explícito                          |
+| paquete stale mezcla versiones               | versión, hash y lockfile                  |
+| variant amplía recuperación                  | selección server-side                     |
+| acción repite mutación                       | solicitud nueva y cero replay             |
+| RLS cero filas inventa causa                 | adapter autoritativo                      |
+| PASS recibe RBAC laboral indebido            | frontera de dominio cliente               |
+| AURA diferida se presenta como falla         | no materializar superficie inexistente    |
+| UI compartida decide autorización            | separación contracts/context/UI           |
+| registry comprometido altera copy            | inmutabilidad, procedencia e integridad   |
+| rollback manual pierde paridad               | versión exacta y lockfile anterior        |
+| adopción parcial deja bypass                 | certificación de diez apps y diez canales |
+| copy cambia sin prueba                       | semver, changelog y gates                 |
+
+---
+
+#### 42. Cierre de tarea y continuidad
+
+**ÚLTIMA TAREA APROBADA**
+
+`AUTH-ERR-019 — Diferenciar error técnico y denegación`
+
+**TAREA ACTUAL APROBADA**
+
+`AUTH-ERR-020 — Compartir mensajes desde vento-shell`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores`
+

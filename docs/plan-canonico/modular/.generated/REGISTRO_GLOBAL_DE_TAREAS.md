@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **544** |
+| Aprobadas | **545** |
 | En propuesta | **0** |
-| No iniciadas | **1050** |
+| No iniciadas | **1049** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **34.13% (544/1594)** |
+| Porcentaje de completamiento | **34.19% (545/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-ERR-019` — Diferenciar error técnico y denegación | ✅ APROBADA |
-| Tarea actual | `AUTH-ERR-020` — Compartir mensajes desde vento-shell | ⬜ NO INICIADA |
-| Siguiente reservada | `NEXO-DOM-001` — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-ERR-020` — Compartir mensajes desde vento-shell | ✅ APROBADA |
+| Tarea actual | `NEXO-DOM-001` — Clasificar consumibles, stock por cantidad, reutilizables, activos serializados, repuestos, kits y contenedores | ⬜ NO INICIADA |
+| Siguiente reservada | `NEXO-UX-001` — Inventariar procesos reales de inventario y logística | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1283,7 +1283,7 @@
 | ✅ APROBADA | `AUTH-ERR-017` | Configuración administrativa inconsistente | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
 | ✅ APROBADA | `AUTH-ERR-018` | Permiso no registrado | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
 | ✅ APROBADA | `AUTH-ERR-019` | Diferenciar error técnico y denegación | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
-| ⬜ NO INICIADA | `AUTH-ERR-020` | Compartir mensajes desde vento-shell | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
+| ✅ APROBADA | `AUTH-ERR-020` | Compartir mensajes desde vento-shell | `bloques/S_MENSAJES_BLOQUEO/03_CONFIGURACION_ERRORES_Y_DISTRIBUCION.md` |
 | ⬜ NO INICIADA | `SHELL-CI-001` | Crear pruebas de paquetes compartidos | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
 | ⬜ NO INICIADA | `SHELL-CI-002` | Crear build independiente por paquete | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
 | ⬜ NO INICIADA | `SHELL-CI-003` | Crear releases versionados | `bloques/T_CALIDAD_Y_DESPLIEGUE/01_PAQUETES_RELEASES_Y_COMPATIBILIDAD.md` |
