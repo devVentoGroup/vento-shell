@@ -6816,5 +6816,1465 @@ AUTH-ERR-007 — RESERVADA
 No se inicia ni modifica `AUTH-ERR-007` en esta tarea.
 
 
-### [ ] AUTH-ERR-007 — Sin área asignada
+### ✅ AUTH-ERR-007 — Sin área asignada
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-006 — Sin sede activa` — APROBADA
+**Tarea siguiente:** `AUTH-ERR-008 — Sin área activa` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, funcional, territorial, de seguridad y experiencia del bloqueo por ausencia confirmada de una asignación laboral de área exigida por la acción
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md`
+**Artefactos producidos:** `AREA-ASSIGNMENT-BLOCKING-CONTRACT-001`, `AREA-ASSIGNMENT-DEPENDENCY-MATRIX-001`, `AREA-ASSIGNMENT-CHANNEL-RESPONSE-MATRIX-001`, `AREA-ASSIGNMENT-APPLICATION-COVERAGE-REGISTER-001` y `AREA-ASSIGNMENT-PHYSICAL-RECONCILIATION-001`
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001` a `AUTH-MOD-004`; `AUTH-MOD-006` a `AUTH-MOD-008`; `AUTH-MOD-013` a `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-011` a `AUTH-CAT-013`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009`; `AUTH-CTX-013`; `AUTH-CTX-015`; `AUTH-CTX-016`; `AUTH-CTX-018`; `AUTH-CTX-019`; `AUTH-CTX-020`; `AUTH-CTX-025`; `AUTH-CTX-028`; `AUTH-ERR-001` a `AUTH-ERR-006`; contratos vigentes de identidad, cobertura administrativa, territorio, recurso, autorización y disponibilidad; estado remoto y desplegado inspeccionado; contrato documental vigente
+**Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, constraints, triggers, áreas, sedes, turnos, check-ins, asignaciones, permisos, aplicaciones ni despliegues
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué debe ocurrir cuando una
+solicitud ya superó autenticación, actividad de identidad, acceso a la
+aplicación y los prerrequisitos anteriores aplicables, pero el contrato del
+carril base exige una afiliación laboral de área y la evaluación autoritativa
+concluye que el actor no posee ninguna asignación activa compatible.
+
+La regla raíz queda:
+
+```text
+SESIÓN AUTENTICADA VÁLIDA
++
+IDENTIDAD LABORAL ACTIVA
++
+ACCESO A LA APLICACIÓN PERMITIDO
++
+ACCIÓN CON DEPENDENCIA EXPLÍCITA DE ÁREA ASIGNADA
++
+RESOLUCIÓN AUTORITATIVA CONCLUYENTE
++
+NINGUNA ASIGNACIÓN LABORAL DE ÁREA ACTIVA Y COMPATIBLE
+→
+DENY
++
+AUTH_AREA_ASSIGNMENT_REQUIRED
++
+403
++
+CERO EFECTOS
+```
+
+La tarea responde exclusivamente:
+
+```text
+¿EL CONTRATO ADMINISTRATIVO EXIGE AFILIACIÓN LABORAL DE ÁREA
+Y EL ACTOR POSEE AL MENOS UNA ASIGNACIÓN ACTIVA COMPATIBLE
+CON LA SEDE, EL ÁREA, EL TIPO DE ÁREA Y EL RECURSO EVALUADOS?
+```
+
+No responde:
+
+```text
+¿EXISTE SESIÓN?
+¿EL USUARIO ESTÁ ACTIVO?
+¿PUEDE ENTRAR A LA APLICACIÓN?
+¿TIENE EL PERMISO ADMINISTRATIVO?
+¿POSEE SEDE ASIGNADA?
+¿LA SEDE ESTÁ ACTIVA?
+¿EL ÁREA ORGANIZACIONAL ESTÁ ACTIVA?
+¿EXISTE UN TURNO VIGENTE?
+¿EL TURNO CONTIENE ÁREA OPERATIVA?
+¿EL TURNO YA COMENZÓ?
+¿EXISTE CHECK-IN?
+¿EL CHECK-IN ES DE OTRA SEDE?
+¿EXISTE ROL OPERATIVO?
+¿EL ROL OPERATIVO EXIGE ÁREA?
+¿EL PERMISO OPERATIVO EXIGE ÁREA ACTIVA?
+¿EL RECURSO ESTÁ EN OTRA ÁREA?
+¿LA FUENTE TÉCNICA ESTÁ DISPONIBLE?
+```
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `AREA-ASSIGNMENT-BLOCKING-CONTRACT-001`, que congela identidad pública,
+   aplicabilidad, causas internas, respuesta, seguridad, recuperación,
+   frescura y auditoría;
+2. `AREA-ASSIGNMENT-DEPENDENCY-MATRIX-001`, que decide veinte escenarios y
+   separa afiliación administrativa, cobertura, grant, área activa, turno,
+   rol, selección, dispositivo y recurso;
+3. `AREA-ASSIGNMENT-CHANNEL-RESPONSE-MATRIX-001`, que materializa diez canales
+   con respuesta equivalente y cero efectos;
+4. `AREA-ASSIGNMENT-APPLICATION-COVERAGE-REGISTER-001`, que decide el alcance
+   para las diez aplicaciones canónicas sin convertir `employee_areas` en
+   requisito operativo universal;
+5. `AREA-ASSIGNMENT-PHYSICAL-RECONCILIATION-001`, que registra catorce brechas
+   físicas, el snapshot desplegado de asignaciones y el destino exacto de cada
+   cierre.
+
+Cobertura materializada:
+
+| Elemento                                                    |          Cantidad |
+| ----------------------------------------------------------- | ----------------: |
+| Código público canónico                                     |                 1 |
+| Estado HTTP no navegacional                                 |          1, `403` |
+| Causas internas admitidas                                   |                 5 |
+| Perfiles derivados de dependencia de asignación de área     |                 5 |
+| Escenarios con decisión explícita                           |                20 |
+| Canales con respuesta explícita                             |                10 |
+| Aplicaciones canónicas reconciliadas                        |                10 |
+| Empleados activos observados                                |                42 |
+| Áreas observadas                                            | 22, todas activas |
+| Filas observadas en `employee_areas`                        |         1, activa |
+| Empleados activos con asignación de área utilizable         |                 1 |
+| Empleados activos sin asignación de área utilizable         |                41 |
+| Empleados activos con `employees.area_id` no nulo           |                 0 |
+| Turnos publicados no cancelados inspeccionados              |              2721 |
+| Turnos inspeccionados con área                              |               655 |
+| Turnos inspeccionados sin área                              |              2066 |
+| Turnos con rol operativo no nulo                            |               783 |
+| Turnos con rol operativo no nulo y sin área                 |               128 |
+| Habilitaciones operativas activas de rol por sede           |                16 |
+| Habilitaciones site-wide                                    |                 3 |
+| Habilitaciones vinculadas a área                            |                13 |
+| Grants base por área exacta observados                      |                 0 |
+| Grants base por tipo de área observados                     |                 5 |
+| Excepciones individuales por área o tipo de área observadas |                 0 |
+| Funciones del inventario de dependencias de área            |                15 |
+| Políticas RLS con dependencia de área                       | 12 sobre 8 tablas |
+| Brechas físicas registradas                                 |                14 |
+| Requisitos de prueba derivados                              |                10 |
+
+Las cifras físicas son un snapshot de solo lectura. Demuestran que
+`employee_areas` posee cobertura material mínima y que, por tanto, su ausencia
+no puede bloquear toda operación o toda autorización por inferencia. No
+constituyen evidencia de que el bloqueo público definido aquí esté
+implementado.
+
+---
+
+#### 3. Identidad canónica del bloqueo
+
+La identidad pública única es:
+
+```text
+reason_code = AUTH_AREA_ASSIGNMENT_REQUIRED
+```
+
+| Propiedad                   | Valor                                                                                       |
+| --------------------------- | ------------------------------------------------------------------------------------------- |
+| Dominio                     | `AUTHORIZATION_CONTEXT`                                                                     |
+| Decisión                    | `DENY`                                                                                      |
+| Principal                   | autenticado y conservado                                                                    |
+| Identidad requerida         | laboral, existente y activa                                                                 |
+| Aplicación                  | acceso general ya permitido                                                                 |
+| Estado público              | `MISSING_REQUIRED_AREA_ASSIGNMENT`                                                          |
+| Estado HTTP no navegacional | `403 Forbidden`                                                                             |
+| Ejecutable                  | `false`                                                                                     |
+| Recuperación                | solicitar o corregir una asignación laboral de área compatible y emitir una solicitud nueva |
+| Cierre de sesión            | no automático                                                                               |
+| Reintento automático        | prohibido                                                                                   |
+| Efectos parciales           | prohibidos                                                                                  |
+
+Quedan prohibidos como identidad pública alternativa:
+
+- `NO_AREA`;
+- `AREA_MISSING`;
+- `NO_ACTIVE_AREA`;
+- `AREA_INACTIVE`;
+- `NO_SHIFT_AREA`;
+- `NO_PERMISSION`;
+- `INVALID_ROLE`;
+- `OUT_OF_SHIFT`;
+- `WRONG_AREA`;
+- `UNAUTHORIZED` sin tipificación;
+- mensajes libres emitidos por una aplicación, RPC o política RLS.
+
+El código es estable y no se traduce. El texto humano podrá localizarse.
+
+---
+
+#### 4. Definición exacta de área asignada
+
+Un área asignada es una afiliación laboral explícita y persistente entre un
+empleado y un área organizacional concreta.
+
+Representación conceptual:
+
+```text
+EMPLEADO ACTIVO
++
+RELACIÓN EMPLOYEE_AREAS ACTIVA
++
+ÁREA ORGANIZACIONAL EXACTA
++
+SEDE PROPIETARIA COHERENTE
++
+SEDE LABORAL ASIGNADA Y UTILIZABLE
+→
+ASSIGNED_AREA_FACT
+```
+
+Fuente normativa:
+
+```text
+public.employee_areas
++
+public.areas
++
+public.employee_sites
++
+public.sites
+```
+
+La relación conserva separados:
+
+1. `area_id` exacto;
+2. `site_id` propietario del área;
+3. `area_kind` como clasificación, no identidad;
+4. estado de la relación laboral;
+5. estado organizacional del área;
+6. condición primaria por sede;
+7. asignación de sede compatible.
+
+Un área asignada no es:
+
+- un permiso;
+- un grant;
+- una denegación;
+- un turno;
+- un área operativa activa;
+- un área seleccionada;
+- un área primaria convertida en autoridad;
+- un área del dispositivo;
+- un área del check-in;
+- un área del recurso;
+- un tipo de área genérico;
+- una inferencia desde el nombre del rol;
+- una fila legacy de `employees.area_id`.
+
+Regla obligatoria:
+
+```text
+ASIGNACIÓN DE ÁREA
+≠
+AUTORIZACIÓN
+```
+
+---
+
+#### 5. Asignación utilizable
+
+Una asignación es utilizable para la dependencia definida en esta tarea
+cuando se cumplen simultáneamente:
+
+```text
+employee_areas.employee_id = actor_effective.employee_id
+AND employee_areas.is_active = true
+AND employee_areas.area_id = área candidata exacta
+AND areas.id = employee_areas.area_id
+AND areas.site_id = sede propietaria esperada
+AND existe employee_sites activo para esa sede
+AND la sede es asignable y utilizable
+```
+
+La actividad de la sede y del área se evalúa antes de producir esta razón:
+
+- sede inactiva conserva `AUTH-ERR-006`;
+- área existente pero inactiva conserva `AUTH-ERR-008`;
+- relación de asignación ausente o inactiva, con sede y área válidas, produce
+  `AUTH_AREA_ASSIGNMENT_REQUIRED` cuando el contrato exige afiliación.
+
+Una fila activa en `employee_areas` no será utilizable si:
+
+- pertenece a otro empleado;
+- su área no existe;
+- el área pertenece a otra sede;
+- la sede no está asignada al empleado;
+- la sede no es laboralmente asignable;
+- existe contradicción estructural;
+- el contrato exige otra área exacta;
+- el contrato exige otro `area_kind`;
+- la restricción explícita produce una intersección vacía.
+
+Las contradicciones estructurales no se degradan silenciosamente a ausencia de
+asignación. Conservan `AUTH-ERR-017` o `AUTH-ERR-019` según su naturaleza.
+
+---
+
+#### 6. Dependencia explícita, no inferida
+
+La ausencia de `employee_areas` solo bloquea cuando el contrato administrativo
+indica que la afiliación de área es un prerrequisito real.
+
+No se inferirá dependencia únicamente porque:
+
+- el recurso posea `area_id`;
+- el permiso tenga alcance `area` o `area_kind` sin analizar su fuente de
+  cobertura;
+- una pantalla muestre un selector de área;
+- el actor tenga una sede asignada;
+- el actor posea un rol local;
+- una tabla contenga `area_id`;
+- el turno contenga área;
+- el rol operativo esté vinculado a un área;
+- el permiso operativo use `operational_area_requirement = REQUIRED`;
+- el dispositivo esté configurado para un área;
+- el check-in ocurra en un punto asociado a un área;
+- el cliente envíe un área;
+- el área sea primaria o seleccionada.
+
+La aplicación del bloqueo debe estar respaldada por uno de los perfiles
+normativos de la sección siguiente.
+
+---
+
+#### 7. Perfiles derivados de dependencia de asignación de área
+
+La decisión no crea una nueva clasificación persistida. Deriva uno de cinco
+perfiles desde el contrato del carril base, la cobertura administrativa, el
+grant, el recurso y la restricción aplicable:
+
+| Perfil derivado                           | Condición                                                                                                 | Exigencia                                                                            |
+| ----------------------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `NO_AREA_ASSIGNMENT_DEPENDENCY`           | permiso organizacional, global, de sede, de tipo de sede, no territorial o carril operativo independiente | la ausencia de `employee_areas` no bloquea                                           |
+| `ASSIGNED_AREAS_COVERAGE_REQUIRED`        | `administrative_coverage.mode = ASSIGNED_AREAS`                                                           | exige al menos una asignación activa dentro de la cobertura válida                   |
+| `SPECIFIC_AREA_ASSIGNMENT_REQUIRED`       | `administrative_coverage.mode = SPECIFIC_AREA` o política explícita sobre un `area_id` exacto             | exige relación activa con esa área exacta y su sede propietaria                      |
+| `AREA_KIND_ASSIGNMENT_REQUIRED`           | el grant o contrato administrativo exige un `area_kind` y la cobertura debe proceder de afiliación        | exige al menos un área activa asignada del tipo exacto dentro de una sede compatible |
+| `RESOURCE_ADMIN_AREA_ASSIGNMENT_REQUIRED` | la acción administrativa sobre un recurso exige afiliación laboral al área propietaria                    | exige coincidencia entre asignación y territorio autoritativo del recurso            |
+
+Reglas:
+
+- una capacidad `global` no exige asignaciones locales por defecto;
+- una capacidad `site` o `site_type` no se reduce automáticamente a áreas
+  asignadas;
+- `ASSIGNED_SITES` no se transforma en `ASSIGNED_AREAS` porque existan áreas;
+- `SPECIFIC_AREA` exige fuente explícita, área exacta, sede propietaria y
+  asignación compatible;
+- `AREA_KIND_ASSIGNMENT_REQUIRED` no permite sustituir `area_id` por el nombre
+  humano del área;
+- una asignación de tipo compatible no autoriza áreas de otras sedes sin
+  cobertura válida;
+- la asignación no concede el permiso: solo satisface un prerrequisito
+  territorial del carril base.
+
+---
+
+#### 8. Independencia del carril operativo
+
+La operación no depende de manera general de `employee_areas`.
+
+Fuente canónica del área operativa:
+
+```text
+active_shift.area_id
+→ operational_area
+```
+
+Por tanto:
+
+```text
+TURNO VIGENTE CON ÁREA VÁLIDA
++
+ROL OPERATIVO COMPATIBLE
++
+PERMISO OPERATIVO VÁLIDO
++
+employee_areas = []
+→
+NO PRODUCE AUTH_AREA_ASSIGNMENT_REQUIRED
+```
+
+La ausencia de asignación laboral de área no invalida por sí sola:
+
+- el área del turno;
+- una habilitación temporal aprobada;
+- un rol operativo válido en la sede y área;
+- un permiso operativo `REQUIRED`;
+- un permiso operativo `SITE_SUFFICIENT`;
+- una operación site-wide legítima.
+
+El evaluador operativo deberá aplicar sus propios prerrequisitos:
+
+- turno;
+- sede operativa;
+- área operativa cuando corresponda;
+- rol operativo;
+- check-in cuando corresponda;
+- dispositivo;
+- permiso;
+- territorio del recurso.
+
+Regla crítica:
+
+```text
+ÁREA ASIGNADA
+≠
+ÁREA OPERATIVA
+```
+
+---
+
+#### 9. Relación con `operational_area_requirement`
+
+La clasificación aprobada por AUTH-CAT-013 contiene:
+
+| Valor             | Cantidad canónica | Efecto frente a esta tarea                                                                                    |
+| ----------------- | ----------------: | ------------------------------------------------------------------------------------------------------------- |
+| `REQUIRED`        |       31 permisos | exige área operativa del turno; no exige `employee_areas` por inferencia                                      |
+| `SITE_SUFFICIENT` |       27 permisos | puede continuar sin área si el rol y el recurso lo admiten; no exige asignación administrativa por inferencia |
+| `NOT_APPLICABLE`  |       54 permisos | no consume carril operativo; su dependencia administrativa se decide por cobertura y scope                    |
+
+La ausencia de área en el turno para un permiso `REQUIRED` pertenece al
+contrato de área activa y no a esta razón.
+
+Un rol restringido a área con turno sin `area_id` tampoco produce esta razón.
+La evaluación corresponde a `AUTH-ERR-008`, `AUTH-ERR-013` o
+`AUTH-ERR-014` según el hecho concluyente.
+
+---
+
+#### 10. Relación con alcances base
+
+Los alcances físicos vigentes son:
+
+```text
+global
+site
+site_type
+area
+area_kind
+```
+
+Decisión por alcance:
+
+| Alcance     | Dependencia predeterminada de `employee_areas` | Regla                                                                                           |
+| ----------- | ---------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| `global`    | no                                             | el permiso exacto conserva cobertura organizacional sin exigir una fila por área                |
+| `site`      | no                                             | la cobertura de sede puede abarcar sus áreas si el contrato lo permite                          |
+| `site_type` | no                                             | el tipo de sede no se convierte en lista de áreas asignadas                                     |
+| `area`      | condicional                                    | exige asignación solo cuando la fuente de cobertura o el contrato declara afiliación compatible |
+| `area_kind` | condicional                                    | exige al menos una asignación del tipo cuando la fuente de cobertura es laboral por áreas       |
+
+Un scope no es por sí solo una concesión ni una asignación.
+
+La evaluación completa continúa requiriendo:
+
+```text
+GRANT APLICABLE
++
+COBERTURA ADMINISTRATIVA VÁLIDA
++
+SCOPE COINCIDENTE
++
+RECURSO COINCIDENTE
++
+AUSENCIA DE DENEGACIÓN
+```
+
+---
+
+#### 11. Relación con `administrative_coverage`
+
+Esta razón puede producirse únicamente cuando la cobertura administrativa
+necesaria es válida en su forma esperada, pero no puede materializarse por
+falta concluyente de afiliación compatible.
+
+Casos principales:
+
+```text
+mode esperado = ASSIGNED_AREAS
++
+assigned_areas utilizables = []
+→ AUTH_AREA_ASSIGNMENT_REQUIRED
+```
+
+```text
+mode esperado = SPECIFIC_AREA
++
+área y sede activas
++
+asignación compatible ausente
+→ AUTH_AREA_ASSIGNMENT_REQUIRED
+```
+
+No se produce esta razón cuando:
+
+```text
+mode = ORGANIZATION
+```
+
+```text
+mode = ASSIGNED_SITES
+```
+
+```text
+mode = SPECIFIC_SITE
+```
+
+```text
+mode = NONE
++
+la acción no requiere cobertura de área
+```
+
+Si la forma de `administrative_coverage` es contradictoria, inválida o
+ambigua, se conserva `AUTH-ERR-017`.
+
+---
+
+#### 12. Fuentes autoritativas y fuentes prohibidas
+
+Fuentes admitidas:
+
+1. identidad laboral efectiva resuelta en servidor;
+2. `assigned_areas` del `AccessContext` canónico;
+3. relación canónica equivalente a `public.employee_areas`;
+4. `public.areas` para identidad y sede propietaria;
+5. `assigned_sites` y `public.employee_sites` para coherencia laboral;
+6. `public.sites` para la sede propietaria;
+7. cobertura administrativa aprobada;
+8. grant y scope exactos;
+9. territorio autoritativo del recurso;
+10. snapshot y versión de contexto aplicables.
+
+Fuentes prohibidas como sustituto:
+
+- `employees.area_id`;
+- `employee_settings.selected_area_id`;
+- área primaria;
+- nombre humano del área;
+- `area_kind` sin resolver área concreta cuando el contrato la exige;
+- primer área de la sede;
+- área del último turno;
+- área del check-in;
+- área del dispositivo;
+- área incluida por el frontend;
+- query string;
+- cookie no firmada;
+- local storage;
+- estado de React;
+- rol base;
+- rol operativo;
+- perfil predeterminado;
+- simulación presentada como contexto real;
+- service role presentado como trabajador.
+
+---
+
+#### 13. Entradas mínimas del contrato
+
+El evaluador deberá consumir como mínimo:
+
+```ts
+type AreaAssignmentRequirementInput = {
+  actor_kind: "EMPLOYEE" | "CUSTOMER" | "SYSTEM" | "DEVICE" | "UNRESOLVED";
+  actor_id: string | null;
+  employee_active: boolean | null;
+  requested_permission: string;
+  authorization_requirement: string;
+  administrative_coverage_mode: string | null;
+  administrative_coverage_valid: boolean | null;
+  grant_scope_type: "global" | "site" | "site_type" | "area" | "area_kind" | null;
+  required_site_id: string | null;
+  required_area_id: string | null;
+  required_area_kind: string | null;
+  resource_site_id: string | null;
+  resource_area_id: string | null;
+  assigned_sites: AssignedSiteContext[];
+  assigned_areas: AssignedAreaContext[];
+  operational_area_requirement: "REQUIRED" | "SITE_SUFFICIENT" | "NOT_APPLICABLE" | null;
+  evaluation_lane: "BASE" | "OPERATIONAL" | "COMBINED";
+  context_version: string;
+  resolved_at: string;
+};
+```
+
+No se agrega este tipo a código en esta tarea. La forma es contractual y sirve
+para impedir decisiones locales incompletas.
+
+---
+
+#### 14. Resultado canónico
+
+```ts
+type AreaAssignmentBlockDecision = {
+  decision: "DENY";
+  reason_code: "AUTH_AREA_ASSIGNMENT_REQUIRED";
+  public_state: "MISSING_REQUIRED_AREA_ASSIGNMENT";
+  domain: "AUTHORIZATION_CONTEXT";
+  http_status: 403;
+  executable: false;
+  effects_committed: 0;
+  session_preserved: true;
+  retryable: false;
+  recovery: "CORRECT_ASSIGNMENT_AND_SUBMIT_NEW_REQUEST";
+  correlation_id: string;
+};
+```
+
+El contrato no expondrá:
+
+- `employee_id`;
+- `area_id` faltante;
+- área requerida;
+- área seleccionada;
+- áreas asignadas actuales;
+- sede propietaria;
+- rol;
+- permiso;
+- grant;
+- scope;
+- recurso;
+- causa interna;
+- consulta SQL;
+- nombre de tabla;
+- existencia de otras áreas;
+- persona que debe aprobar la asignación.
+
+---
+
+#### 15. Causas internas admitidas
+
+Se congelan cinco causas internas:
+
+| Causa interna                               | Condición concluyente                                                                                                       |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `NO_AREA_ASSIGNMENT_RECORD`                 | el perfil exige cobertura por áreas asignadas y no existe ninguna relación de área para el actor                            |
+| `ALL_AREA_ASSIGNMENTS_INACTIVE`             | existen relaciones, pero todas las aplicables tienen `assignment_active=false`; las áreas y sedes objetivo son válidas      |
+| `REQUIRED_SPECIFIC_AREA_UNASSIGNED`         | una política válida exige un `area_id` exacto y no existe relación activa coincidente                                       |
+| `REQUIRED_AREA_KIND_UNASSIGNED`             | una política válida exige un `area_kind` y no existe asignación activa de ese tipo dentro de la sede o cobertura compatible |
+| `ASSIGNED_AREA_COVERAGE_INTERSECTION_EMPTY` | existen asignaciones activas, pero la intersección con la restricción administrativa y el recurso es vacía                  |
+
+Propiedades:
+
+1. son internas;
+2. no se localizan;
+3. no se muestran al actor;
+4. no reemplazan el código público;
+5. deben quedar en auditoría protegida;
+6. permiten diagnóstico sin filtrar estructura laboral;
+7. no se utilizarán para escoger una alternativa permisiva;
+8. no incluyen área inactiva, sede inactiva, error técnico o configuración
+   contradictoria.
+
+---
+
+#### 16. Precedencia
+
+La precedencia obligatoria es:
+
+```text
+1. sesión y principal
+2. identidad laboral y estado del empleado
+3. acceso a aplicación
+4. existencia y actividad del permiso
+5. configuración estructural resoluble
+6. sede asignada cuando sea requisito
+7. sede activa
+8. área organizacional resoluble y activa
+9. dependencia explícita de asignación de área
+10. asignación de área compatible
+11. permiso base, scope y recurso
+12. turno, área operativa, rol y check-in cuando participe el carril operativo
+13. dispositivo y restricciones adicionales
+14. decisión final
+```
+
+Consecuencias:
+
+- sin sede asignada: `AUTH-ERR-005`;
+- sede inactiva: `AUTH-ERR-006`;
+- área inactiva: `AUTH-ERR-008`;
+- sin turno: `AUTH-ERR-009`;
+- turno no iniciado: `AUTH-ERR-010`;
+- sin check-in: `AUTH-ERR-011`;
+- check-in de otra sede: `AUTH-ERR-012`;
+- sin rol operativo: `AUTH-ERR-013`;
+- rol no permitido: `AUTH-ERR-014`;
+- permiso operativo ausente: `AUTH-ERR-015`;
+- dispositivo no permitido: `AUTH-ERR-016`;
+- configuración contradictoria: `AUTH-ERR-017`;
+- código desconocido: `AUTH-ERR-018`;
+- fallo técnico: `AUTH-ERR-019`.
+
+Una causa posterior no deberá ocultar una causa estructural anterior ya
+concluyente.
+
+---
+
+#### 17. `AREA-ASSIGNMENT-DEPENDENCY-MATRIX-001`
+
+|    # | Escenario                                                                                         | Decisión                                          | Razón pública                                       |
+| ---: | ------------------------------------------------------------------------------------------------- | ------------------------------------------------- | --------------------------------------------------- |
+|    1 | permiso base `global`, actor sin `employee_areas`                                                 | continuar evaluación                              | ninguna                                             |
+|    2 | permiso base `site` o `site_type`, sede válida, actor sin áreas asignadas                         | continuar evaluación                              | ninguna                                             |
+|    3 | cobertura `ORGANIZATION`, recurso de área resoluble                                               | continuar con grant y recurso                     | ninguna                                             |
+|    4 | cobertura `ASSIGNED_SITES`, recurso permitido por sede y sin dependencia laboral de área          | continuar                                         | ninguna                                             |
+|    5 | cobertura requerida `ASSIGNED_AREAS`, cero relaciones                                             | denegar                                           | `AUTH_AREA_ASSIGNMENT_REQUIRED`                     |
+|    6 | cobertura requerida `ASSIGNED_AREAS`, todas las relaciones inactivas y catálogos activos          | denegar                                           | `AUTH_AREA_ASSIGNMENT_REQUIRED`                     |
+|    7 | cobertura `SPECIFIC_AREA`, área activa exacta sin relación activa                                 | denegar                                           | `AUTH_AREA_ASSIGNMENT_REQUIRED`                     |
+|    8 | alcance administrativo `area_kind`, sin asignación activa del tipo dentro de la sede compatible   | denegar                                           | `AUTH_AREA_ASSIGNMENT_REQUIRED`                     |
+|    9 | asignación activa exacta, sede y área activas, grant aplicable                                    | continuar evaluación                              | ninguna                                             |
+|   10 | relación activa exacta, área organizacional inactiva                                              | denegar antes                                     | `AUTH-ERR-008`                                      |
+|   11 | relación activa exacta, sede propietaria inactiva                                                 | denegar antes                                     | `AUTH-ERR-006`                                      |
+|   12 | relación de área activa, pero no existe asignación laboral de su sede                             | denegar antes                                     | `AUTH-ERR-005` o `AUTH-ERR-017`, según el hecho     |
+|   13 | área seleccionada no asignada, pero existe otra asignada compatible y la selección es solo filtro | ignorar o limpiar selección; continuar            | ninguna                                             |
+|   14 | área primaria ausente, pero existen áreas asignadas compatibles                                   | continuar                                         | ninguna                                             |
+|   15 | área primaria presente pero distinta del recurso exacto requerido                                 | no usar fallback; evaluar la asignación requerida | esta razón solo si la requerida no está asignada    |
+|   16 | turno válido con área operativa válida y `employee_areas=[]`                                      | continuar carril operativo                        | ninguna                                             |
+|   17 | rol site-wide y permiso `SITE_SUFFICIENT`, turno sin área                                         | continuar si las demás condiciones se cumplen     | ninguna                                             |
+|   18 | permiso operativo `REQUIRED`, turno sin área, aunque exista área asignada                         | denegar por área operativa                        | `AUTH-ERR-008` o razón operativa aplicable, no esta |
+|   19 | consulta de asignaciones falla o retorna resultado no confiable                                   | denegar por disponibilidad                        | `AUTH-ERR-019`                                      |
+|   20 | duplicados contradictorios, área asociada a dos sedes o cobertura mal formada                     | denegar por configuración                         | `AUTH-ERR-017`                                      |
+
+La matriz es exhaustiva para esta tarea. Ningún escenario autoriza por
+fallback a selección, primaria, legacy, dispositivo o recurso.
+
+---
+
+#### 18. Regla de cero efectos
+
+Cuando se produce `AUTH_AREA_ASSIGNMENT_REQUIRED`:
+
+- no se ejecuta la acción solicitada;
+- no se abre una transacción de negocio;
+- no se crean filas parciales;
+- no se reserva inventario;
+- no se cambia estado;
+- no se publica evento empresarial;
+- no se crea remisión;
+- no se modifica turno;
+- no se crea ni activa una asignación;
+- no se cambia `selected_area_id`;
+- no se asigna un área por defecto;
+- no se altera el contexto operativo;
+- no se envía impresión;
+- no se confirma una operación offline;
+- no se mantiene una suscripción incompatible;
+- no se registra la denegación como éxito funcional.
+
+Si una capa descubre la causa después de un efecto, existe un defecto de
+atomicidad y la prueba debe fallar.
+
+---
+
+#### 19. Envelope público
+
+Respuesta JSON mínima:
+
+```json
+{
+  "ok": false,
+  "decision": "DENY",
+  "reason_code": "AUTH_AREA_ASSIGNMENT_REQUIRED",
+  "state": "MISSING_REQUIRED_AREA_ASSIGNMENT",
+  "executable": false,
+  "retryable": false,
+  "correlation_id": "opaque"
+}
+```
+
+Reglas:
+
+- `correlation_id` es opaco;
+- no contiene identificadores laborales;
+- no se devuelve lista de áreas;
+- no se devuelve área requerida;
+- no se devuelve `assignment_active`;
+- no se devuelve causa interna;
+- el estado HTTP es `403` fuera de navegación;
+- una navegación podrá renderizar la superficie segura equivalente sin perder
+  el código semántico en servidor.
+
+---
+
+#### 20. Copy canónico
+
+| Elemento          | Texto                                                                                                               |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------- |
+| Título            | `No tienes un área asignada para esta acción`                                                                       |
+| Mensaje           | `Tu cuenta puede usar esta aplicación, pero necesita una asignación de área compatible para completar esta acción.` |
+| Acción principal  | `Volver`                                                                                                            |
+| Acción secundaria | `Volver a Vento OS`                                                                                                 |
+| Código de soporte | `AUTH_AREA_ASSIGNMENT_REQUIRED`                                                                                     |
+
+Reglas de experiencia:
+
+1. no culpa al trabajador;
+2. no afirma que el área esté inactiva;
+3. no afirma que falte un turno;
+4. no muestra áreas internas;
+5. no ofrece autoasignación;
+6. no promete aprobación automática;
+7. no induce cierre de sesión;
+8. no muestra un selector como sustituto de asignación;
+9. no reintenta automáticamente;
+10. conserva navegación segura.
+
+---
+
+#### 21. Recuperación
+
+La recuperación válida es administrativa:
+
+```text
+REVISAR NECESIDAD FUNCIONAL
+→
+CREAR O ACTIVAR ASIGNACIÓN LABORAL COMPATIBLE
+→
+INVALIDAR CONTEXTO Y CACHÉS
+→
+RESOLVER NUEVO SNAPSHOT
+→
+EMITIR NUEVA SOLICITUD
+```
+
+La interfaz no deberá:
+
+- crear `employee_areas`;
+- activar una relación;
+- copiar el área del turno;
+- copiar el área seleccionada;
+- copiar el área del dispositivo;
+- copiar el área del recurso;
+- elegir la primera área de la sede;
+- ampliar el grant;
+- cambiar el scope;
+- convertir una asignación temporal operativa en afiliación permanente.
+
+Puede mostrar una vía de soporte institucional solo cuando esa vía exista y no
+revele información sensible.
+
+---
+
+#### 22. `AREA-ASSIGNMENT-CHANNEL-RESPONSE-MATRIX-001`
+
+| Canal                    | Detección                                       | Respuesta                                 | Efecto obligatorio                              |
+| ------------------------ | ----------------------------------------------- | ----------------------------------------- | ----------------------------------------------- |
+| navegación web / RSC     | guard o loader central                          | superficie segura con copy canónico       | sin datos protegidos ni redirect a login        |
+| Server Action            | evaluador previo a mutación                     | error tipado y `403` semántico            | cero escritura y cero revalidación de éxito     |
+| Route Handler            | middleware o servicio                           | envelope canónico, `403`                  | sin body parcial                                |
+| fetch desde cliente      | SDK compartido                                  | error tipado                              | UI conserva sesión y limpia estado sensible     |
+| RPC / PostgREST          | función de decisión                             | deny tipado o error contractual mapeado   | sin DML                                         |
+| RLS / Data API           | política y adapter                              | cero filas o denegación mapeada           | no convertir vacío en éxito silencioso          |
+| Edge Function            | verificación central                            | envelope canónico, `403`                  | no usar service role para saltar la condición   |
+| Realtime                 | reevaluación al suscribir y al cambiar contexto | no suscribir o retirar entrega            | sin eventos residuales                          |
+| cliente nativo / offline | revalidación en sincronización                  | conflicto de autorización no reintentable | no confirmar cola ni usar contexto antiguo      |
+| dispositivo compartido   | intersección actor–turno–dispositivo            | bloqueo seguro                            | el área del dispositivo no se vuelve asignación |
+
+Todos los canales deberán conservar el mismo `reason_code` y el mismo
+resultado de cero efectos.
+
+---
+
+#### 23. Navegación y estado de interfaz
+
+Al producirse el bloqueo:
+
+- se conserva la sesión;
+- se conserva el acceso general a la aplicación si sigue válido;
+- se descartan datos sensibles cargados para la acción;
+- no se conserva un formulario ejecutable;
+- no se muestra un CTA de guardar;
+- no se marca la operación como pendiente de reintento;
+- no se cambia automáticamente el área seleccionada;
+- no se muestra un selector de áreas no autorizadas;
+- el foco se mueve al título del bloqueo;
+- el código de soporte queda disponible como texto seleccionable;
+- los lectores de pantalla reciben título, mensaje y acciones en orden.
+
+Volver a una superficie segura no equivale a conceder acceso al recurso
+original.
+
+---
+
+#### 24. Seguridad y privacidad
+
+La respuesta pública no revelará:
+
+- si existe la asignación pero está inactiva;
+- cuántas áreas posee el empleado;
+- nombres o códigos de áreas;
+- área requerida por el recurso;
+- área de otro trabajador;
+- estructura de sedes;
+- permisos del rol;
+- alcance del grant;
+- contenido del turno;
+- configuración del dispositivo;
+- identificador del recurso;
+- reglas internas de cobertura;
+- propietario de la aprobación;
+- SQL, RLS o helper que produjo la decisión.
+
+La auditoría protegida sí podrá conservar estos hechos minimizados con acceso
+restringido.
+
+---
+
+#### 25. Actores no laborales
+
+| Actor             | Regla                                                                                   |
+| ----------------- | --------------------------------------------------------------------------------------- |
+| `EMPLOYEE`        | puede producir esta razón cuando la acción exige afiliación administrativa de área      |
+| `CUSTOMER`        | no posee `employee_areas`; PASS no usa esta razón para la sesión del cliente            |
+| `SYSTEM` autónomo | usa territorio y autoridad de sistema explícitos; no recibe asignación laboral ficticia |
+| `DEVICE`          | no posee asignación laboral propia                                                      |
+| `UNRESOLVED`      | conserva razón de identidad o disponibilidad anterior                                   |
+
+Una operación técnica delegada en nombre de un empleado deberá evaluar al
+actor efectivo real. El service role no transforma la ausencia de asignación
+en autorización.
+
+---
+
+#### 26. Dispositivo compartido
+
+El dispositivo puede declarar sede, área y capacidades permitidas como
+restricciones técnicas.
+
+No puede:
+
+- crear una relación `employee_areas`;
+- prestar su área al actor;
+- convertir `navigation_role` en afiliación laboral;
+- completar cobertura `ASSIGNED_AREAS`;
+- satisfacer `SPECIFIC_AREA`;
+- activar una relación inactiva;
+- ampliar el scope del grant.
+
+La fórmula es restrictiva:
+
+```text
+AUTORIDAD DEL ACTOR
+∩
+CONTEXTO LABORAL
+∩
+RESTRICCIONES DEL DISPOSITIVO
+```
+
+Nunca:
+
+```text
+ACTOR
+∪
+ÁREA DEL DISPOSITIVO
+```
+
+---
+
+#### 27. Simulación
+
+La simulación puede calcular hipotéticamente:
+
+- cómo cambiaría la cobertura con otra asignación;
+- qué causa interna se produciría;
+- qué decisión resultaría;
+- qué recursos quedarían dentro o fuera.
+
+No puede:
+
+- crear una asignación real;
+- modificar `assigned_areas` real;
+- reutilizar `WOULD_ALLOW` como `ALLOW`;
+- habilitar una mutación;
+- persistir el área simulada como selección autoritativa;
+- ocultar que el actor real carece de asignación.
+
+Toda salida simulada debe permanecer claramente separada del contexto real.
+
+---
+
+#### 28. Operación offline, reintentos e idempotencia
+
+Una acción creada offline con un contexto que parecía válido deberá
+reconstruir la autorización al sincronizar.
+
+Si la asignación requerida ya no existe o nunca existió:
+
+```text
+SYNC
+→ DENY
+→ AUTH_AREA_ASSIGNMENT_REQUIRED
+→ CERO EFECTOS
+```
+
+Reglas:
+
+- no se acepta una captura local de `assigned_areas` como autoridad;
+- no se reintenta automáticamente después de una corrección;
+- el usuario emite una solicitud nueva;
+- la clave idempotente no convierte el deny en éxito;
+- una asignación posterior no autoriza retroactivamente una mutación antigua;
+- una operación parcial no se conserva como pendiente silenciosa.
+
+---
+
+#### 29. Frescura e invalidación
+
+Invalidan el snapshot y cualquier decisión asociada:
+
+- creación de una asignación de área;
+- activación o desactivación de `employee_areas`;
+- cambio de área de la relación;
+- cambio de sede propietaria del área;
+- activación o desactivación del área;
+- activación o desactivación de la sede;
+- cambio de asignación de sede;
+- cambio de rol base;
+- cambio de cobertura administrativa;
+- cambio de grant o scope;
+- cambio de territorio del recurso;
+- inicio o finalización de simulación;
+- cambio de actor en dispositivo compartido;
+- revocación o cierre de sesión;
+- actualización contractual incompatible.
+
+Toda mutación deberá revalidar inmediatamente antes del primer efecto.
+
+Realtime deberá retirar entregas cuando la nueva resolución ya no satisfaga la
+asignación requerida.
+
+---
+
+#### 30. Auditoría
+
+La auditoría mínima protegida incluirá:
+
+```text
+event_type = AUTHORIZATION_DENIED
+reason_code = AUTH_AREA_ASSIGNMENT_REQUIRED
+internal_cause
+actor_id_hash
+permission_code
+lane
+coverage_mode
+scope_type
+required_site_id_hash
+required_area_id_hash
+required_area_kind
+resource_id_hash
+context_version
+context_fingerprint
+resolved_at
+correlation_id
+```
+
+No incluirá por defecto:
+
+- nombres de empleados;
+- nombres humanos de áreas;
+- listas completas de asignaciones;
+- contenido del recurso;
+- notas laborales;
+- datos del dispositivo no necesarios;
+- query SQL completa;
+- secretos o tokens.
+
+La auditoría deberá distinguir las cinco causas internas sin alterar la
+respuesta pública.
+
+---
+
+#### 31. `AREA-ASSIGNMENT-APPLICATION-COVERAGE-REGISTER-001`
+
+| Aplicación | Dependencia válida                                                                  | No debe producir esta razón por                                                | Decisión documental                                     |
+| ---------- | ----------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| SHELL      | una superficie administrativa futura explícitamente restringida a áreas asignadas   | acceso al hub, navegación general o selección visual                           | no imponer área al hub                                  |
+| ANIMA      | administración local cuya política exija `ASSIGNED_AREAS` o `SPECIFIC_AREA`         | consulta de programación propia, turno o asistencia                            | separar afiliación administrativa de turno              |
+| AURA       | capacidad editorial o empresarial futura con restricción explícita de área          | acceso o contenido organizacional                                              | no inventar afiliación territorial                      |
+| VISO       | gestión administrativa local de un área exacta cuando la cobertura lo exija         | gobierno organizacional, mapa operativo o gestión de sede con scope suficiente | usar cobertura y grant exactos                          |
+| NEXO       | configuración administrativa de recurso de área con afiliación requerida            | operación de inventario cuyo área procede del turno                            | no usar `employee_areas` como guard operativo universal |
+| FOGO       | administración base del recetario por área o tipo cuando la fuente exija afiliación | producción operativa con área del turno                                        | mantener separados carril base y operativo              |
+| ORIGO      | configuración administrativa de destinos internos con restricción explícita         | recepción o abastecimiento site-wide legítimo                                  | no exigir área a todo recibo                            |
+| PULSO      | una futura administración local expresamente territorializada                       | sesión POS, entrega o operación de sede                                        | el dispositivo y turno no crean asignación              |
+| NUMERA     | contabilidad local de área si el recurso y la política la exigen                    | reportes globales, organizacionales o de sede                                  | no reducir capacidades financieras globales             |
+| PASS       | ninguna en la sesión del cliente                                                    | identidad de cliente, puntos, beneficios y canjes                              | no aplicar RBAC laboral al cliente                      |
+
+Cada aplicación deberá consumir la misma decisión compartida. La tabla no
+declara implementada ninguna consumidora.
+
+---
+
+#### 32. Snapshot físico desplegado
+
+Consulta de solo lectura sobre `vento-os-dev`:
+
+| Indicador                                       | Resultado |
+| ----------------------------------------------- | --------: |
+| empleados activos                               |        42 |
+| áreas totales                                   |        22 |
+| áreas activas                                   |        22 |
+| áreas inactivas                                 |         0 |
+| filas `employee_areas`                          |         1 |
+| filas activas `employee_areas`                  |         1 |
+| empleados activos con asignación utilizable     |         1 |
+| empleados activos sin asignación utilizable     |        41 |
+| empleados activos con `employees.area_id`       |         0 |
+| turnos publicados no cancelados                 |      2721 |
+| turnos con área                                 |       655 |
+| turnos sin área                                 |      2066 |
+| turnos con rol operativo no nulo                |       783 |
+| turnos con rol operativo no nulo y sin área     |       128 |
+| habilitaciones activas `site_operational_roles` |        16 |
+| habilitaciones site-wide                        |         3 |
+| habilitaciones vinculadas a área                |        13 |
+| habilitaciones con área inexistente             |         0 |
+| habilitaciones con área de otra sede            |         0 |
+
+Distribución observada de turnos con rol y área nula:
+
+- `gerencia_operativa`: 81;
+- `operador_integral_satelite`: 36;
+- `conductor_logistica`: 9;
+- `cocinero_satelite`: 2.
+
+La distribución confirma que `area_id=null` puede representar operación
+site-wide o deuda de turno según rol y permiso. No prueba por sí sola una
+asignación administrativa faltante.
+
+---
+
+#### 33. Inventario técnico desplegado
+
+| Dependencia                                                        | Cantidad observada |
+| ------------------------------------------------------------------ | -----------------: |
+| funciones que referencian `employee_areas`                         |                  2 |
+| funciones que referencian `employees.area_id` o equivalente legacy |                  9 |
+| funciones que referencian `selected_area_id`                       |                  2 |
+| funciones que combinan turno y área                                |                  1 |
+| funciones que combinan roles operativos y área                     |                  5 |
+| funciones que consumen `can_access_area`                           |                  3 |
+| funciones que verifican texto de actividad de área                 |                 11 |
+| funciones distintas en el inventario consolidado                   |                 15 |
+| políticas que consumen `can_access_area`                           |                  4 |
+| políticas con `area_id` en su expresión                            |                 12 |
+| tablas cubiertas por políticas dependientes de área                |                  8 |
+
+Grants observados:
+
+| Fuente                            | `area` | `area_kind` | Otros |
+| --------------------------------- | -----: | ----------: | ----: |
+| `role_permissions` permitidos     |      0 |           5 |   608 |
+| `employee_permissions` permitidos |      0 |           0 |    17 |
+
+Los cinco grants por `area_kind` pertenecen a roles base y capacidades FOGO
+observadas. Su existencia no demuestra que el contrato canónico de cobertura
+y razones esté implementado.
+
+---
+
+#### 34. Comportamiento físico observado
+
+##### 34.1 `can_access_area`
+
+La función desplegada:
+
+- retorna `true` cuando `p_area_id` es nulo;
+- permite bypass por `is_owner()` o `is_global_manager()`;
+- consulta `employee_areas`;
+- exige que la sede del área coincida con la sede seleccionada;
+- conserva fallback a `employees.area_id`;
+- no produce razón tipada;
+- no distingue afiliación, cobertura, grant, operación o recurso;
+- no comprueba explícitamente `areas.is_active` en la expresión observada.
+
+##### 34.2 `permission_scope_matches`
+
+La función desplegada:
+
+- admite `global`, `site`, `site_type`, `area` y `area_kind`;
+- delega `area` y `area_kind` en `can_access_area`;
+- retorna únicamente booleano;
+- no devuelve causa pública ni interna;
+- no consume `administrative_coverage` versionado;
+- no distingue un scope administrativo de un área operativa.
+
+##### 34.3 `has_permission`
+
+La función desplegada:
+
+- usa `current_employee_site_id()` como fallback territorial;
+- recibe `p_area_id` directamente;
+- consume `permission_scope_matches`;
+- retorna booleano;
+- no distingue falta de asignación, área inactiva, scope mismatch o fallo de
+  contexto;
+- no consume un `AccessContext` unificado.
+
+##### 34.4 Contexto operativo
+
+`get_operational_context` resuelve el área observada desde check-in o turno y
+valida el rol contra `site_operational_roles`, pero no consume la clasificación
+canónica `operational_area_requirement`.
+
+`has_operational_permission` acepta la habilitación del rol cuando:
+
+```text
+sor.area_id is null
+OR v_area_id is null
+OR sor.area_id = v_area_id
+```
+
+La rama `v_area_id is null` puede aceptar una habilitación vinculada a área sin
+área efectiva y deberá cerrarse en implementación.
+
+##### 34.5 Dispositivo y simulación
+
+`current_actor_shift_for_shared_device_v1` puede completar el área desde
+metadatos del dispositivo o `employees.area_id`.
+
+`get_effective_context_v1` puede publicar área desde dispositivo o simulación
+antes de resolver el contexto laboral real.
+
+Estos comportamientos no satisfacen el contrato canónico.
+
+---
+
+#### 35. `AREA-ASSIGNMENT-PHYSICAL-RECONCILIATION-001`
+
+| ID       | Brecha física                                                                                               | Riesgo                                                     | Propietario documental                                             | Condición de salida                                                                |
+| -------- | ----------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------- | ------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `AAG-01` | `employee_areas` solo cubre 1 de 42 empleados activos                                                       | convertir ausencia generalizada en bloqueo universal       | `AUTH-CTX-028`; `AUTH-DB-020`; `AUTH-DB-031`                       | estrategia de transición y cobertura laboral certificada sin inventar asignaciones |
+| `AAG-02` | nueve funciones conservan dependencia de `employees.area_id`                                                | fallback legacy o doble fuente                             | `AUTH-CTX-028`; `AUTH-DB-030`                                      | consumo legacy retirado después de paridad                                         |
+| `AAG-03` | `can_access_area(null)` retorna `true`                                                                      | `null` tratado como wildcard                               | `AUTH-DB-034`; `SHELL-CI-016`                                      | `null` clasificado por contrato y fail closed cuando corresponda                   |
+| `AAG-04` | bypass por propietario o gerente global                                                                     | nombre de rol sustituye grant y cobertura                  | `AUTH-DB-034`; `SHELL-AUTH-002`                                    | autorización explícita sin bypass nominal                                          |
+| `AAG-05` | `can_access_area` depende de sede seleccionada                                                              | preferencia visual convertida en autoridad                 | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-AUTH-005`                     | contexto administrativo resuelto en servidor                                       |
+| `AAG-06` | `can_access_area` no comprueba actividad de área de forma explícita                                         | área inactiva admitida o razón incorrecta                  | `AUTH-DB-033`; `AUTH-ERR-008`; `SHELL-CI-016`                      | actividad validada con razón separada                                              |
+| `AAG-07` | scopes `area` y `area_kind` retornan booleano sin causa                                                     | UI y servicios no distinguen asignación, scope o actividad | `AUTH-DB-034`; `SHELL-AUTH-002`                                    | decisión tipada y auditable                                                        |
+| `AAG-08` | `has_permission` combina fallback de sede y área proporcionada por consumidor                               | contexto mixto manipulable o inconsistente                 | `AUTH-DB-033`; `AUTH-DB-034`                                       | evaluador consume snapshot único                                                   |
+| `AAG-09` | `app_permissions` no materializa `operational_area_requirement` ni dependencia administrativa de afiliación | clasificación documental no ejecutable                     | `AUTH-CAT-013`; `AUTH-DB-034`; `SHELL-AUTH-001`                    | catálogo físico versionado y validado                                              |
+| `AAG-10` | NEXO puede aplicar role override para inyectar área                                                         | simulación local altera contexto real                      | `AUTH-SIM-006`; `SHELL-AUTH-005`                                   | simulación separada y no ejecutable                                                |
+| `AAG-11` | `has_operational_permission` admite habilitación de área cuando `v_area_id` es nulo                         | rol area-bound operando sin área                           | `AUTH-DB-034`; `SHELL-CI-016`                                      | matriz exacta y prueba negativa                                                    |
+| `AAG-12` | helper de dispositivo completa área desde metadatos o legacy                                                | área técnica prestada al actor                             | `AUTH-DB-033`; `SHELL-AUTH-002`                                    | turno autoritativo y dispositivo restrictivo                                       |
+| `AAG-13` | contexto efectivo puede priorizar dispositivo o simulación                                                  | autoridad laboral sustituida por contexto hipotético       | `AUTH-DB-033`; `SHELL-AUTH-001`; `AUTH-SIM-006`                    | namespaces y lanes separados                                                       |
+| `AAG-14` | 15 funciones y 12 políticas sobre 8 tablas no consumen un contrato de razón común                           | divergencia entre canales y aplicaciones                   | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-018`; `SHELL-CI-019` | adopción completa, inventario cerrado y evidencia E5                               |
+
+Ninguna brecha se corrige dentro de esta tarea documental.
+
+---
+
+#### 36. Handoff de implementación
+
+| Resultado documental                            | Tarea o paquete responsable                        |
+| ----------------------------------------------- | -------------------------------------------------- |
+| productor SQL de `assigned_areas` y cobertura   | `AUTH-CTX-025`; `AUTH-DB-020`; `AUTH-DB-033`       |
+| evaluador unificado y razones tipadas           | `AUTH-CTX-026`; `AUTH-DB-034`; `SHELL-AUTH-002`    |
+| adapters compartidos y eliminación de fallbacks | `AUTH-CTX-027`; `SHELL-AUTH-001`; `SHELL-AUTH-005` |
+| compatibilidad legacy                           | `AUTH-CTX-028`; `AUTH-DB-030`                      |
+| invalidación y fingerprint                      | `AUTH-CTX-029`; `AUTH-DB-035`; `SHELL-AUTH-004`    |
+| pruebas contractuales                           | `AUTH-CTX-030`; `SHELL-CI-016`; `SHELL-CI-018`     |
+| mensajes y accesibilidad                        | `AUTH-ERR-020`; `SHELL-AUTH-005`                   |
+| certificación transversal                       | `AUTH-DB-031`; `SHELL-CI-019`                      |
+
+La implementación deberá originar cualquier cambio Supabase desde
+`vento-shell`.
+
+---
+
+#### 37. Requisitos de prueba derivados
+
+| TREQ            | Regla protegida                                                                                                                | Tipo mínimo                            | Severidad | Destino                   | Dependencias                                                                   |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------ | -------------------------------------- | --------- | ------------------------- | ------------------------------------------------------------------------------ |
+| `TREQ-AUTH-189` | una dependencia explícita de asignación sin relación compatible produce código, `403`, deny y cero efectos                     | contractual + seguridad + regresión    | crítica   | evaluador y adapters      | `AUTH-DB-034`; `SHELL-AUTH-002`; `SHELL-CI-016`                                |
+| `TREQ-AUTH-190` | ausencia de `employee_areas` no bloquea capacidades globales, de sede ni carril operativo por inferencia                       | contractual + regresión negativa       | crítica   | catálogo y evaluador      | `AUTH-CAT-013`; `AUTH-DB-034`; `SHELL-CI-016`                                  |
+| `TREQ-AUTH-191` | `ASSIGNED_AREAS`, `SPECIFIC_AREA` y `area_kind` resuelven asignación exacta, activa y territorialmente coherente               | contractual + contexto + base de datos | crítica   | AccessContext y SQL       | `AUTH-CTX-025`; `AUTH-DB-020`; `AUTH-DB-033`                                   |
+| `TREQ-AUTH-192` | sede asignada, sede activa, área activa, asignación, configuración y fallo técnico conservan precedencia y razones distintas   | integración + regresión                | crítica   | catálogo de razones       | `AUTH-ERR-005`; `AUTH-ERR-006`; `AUTH-ERR-008`; `AUTH-ERR-017`; `AUTH-ERR-019` |
+| `TREQ-AUTH-193` | el área operativa procede del turno y nunca toma prestada `employee_areas`, selección, legacy, dispositivo o recurso           | contexto + autorización + regresión    | crítica   | resolver operativo        | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-AUTH-001`                                 |
+| `TREQ-AUTH-194` | diez canales producen respuesta equivalente, sesión conservada y cero efectos                                                  | integración + E2E                      | crítica   | SDK y adapters            | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-018`                             |
+| `TREQ-AUTH-195` | diez aplicaciones aplican dependencia por contrato y no por nombre de aplicación                                               | contractual + integración              | alta      | contratos de consumidoras | `SHELL-AUTH-001`; `SHELL-AUTH-005`; `SHELL-CI-016`                             |
+| `TREQ-AUTH-196` | UI usa copy aprobado y no revela estructura laboral, áreas o causas internas                                                   | interfaz + privacidad + accesibilidad  | alta      | mensajes compartidos      | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                               |
+| `TREQ-AUTH-197` | cambios de asignación invalidan contexto, caché, decisiones y Realtime; toda mutación revalida                                 | concurrencia + auditoría               | crítica   | frescura y observabilidad | `AUTH-DB-035`; `SHELL-AUTH-004`; `SHELL-CI-019`                                |
+| `TREQ-AUTH-198` | regresión reconcilia snapshot, 15 funciones, 12 políticas, 8 tablas, grants y catorce brechas sin datos productivos inventados | regresión + RPC + RLS + estática       | crítica   | gates y evidencia E5      | `AUTH-DB-031`; `SHELL-AUTH-004`; `SHELL-CI-018`; `SHELL-CI-019`                |
+
+El detalle canónico de estas filas se incorpora al registro completo `04A`.
+
+---
+
+#### 38. Validaciones documentales definidas
+
+La implementación deberá probar como mínimo:
+
+1. código público único;
+2. `403`, `DENY`, `executable=false` y cero efectos;
+3. cinco perfiles derivados;
+4. cinco causas internas;
+5. veinte escenarios;
+6. diez canales;
+7. diez aplicaciones;
+8. global sin área asignada;
+9. sede sin área asignada;
+10. cobertura `ASSIGNED_AREAS` vacía;
+11. cobertura `SPECIFIC_AREA` sin asignación;
+12. `area_kind` sin asignación compatible;
+13. relación inactiva con área activa;
+14. área inactiva separada;
+15. sede inactiva separada;
+16. sede no asignada separada;
+17. asignación exacta válida;
+18. selección inválida sin autoridad;
+19. primaria ausente válida;
+20. turno con área y sin `employee_areas`;
+21. rol site-wide sin área;
+22. permiso operativo `REQUIRED` sin área del turno;
+23. dispositivo sin transferencia de área;
+24. simulación sin efectos;
+25. error técnico separado;
+26. configuración contradictoria separada;
+27. copy y accesibilidad;
+28. privacidad laboral;
+29. invalidación inmediata;
+30. mutación con revalidación;
+31. retiro de Realtime;
+32. auditoría minimizada;
+33. snapshot de 42 empleados y 22 áreas;
+34. relación 1 de 42 certificada;
+35. 15 funciones clasificadas;
+36. 12 políticas sobre 8 tablas clasificadas;
+37. grants de área reconciliados;
+38. catorce brechas cerradas o justificadas;
+39. caso negativo reproducido en ambiente controlado;
+40. diez TREQ consecutivos y resolubles.
+
+---
+
+#### 39. Evidencia y estados
+
+| Elemento                    | Estado                                               | Evidencia actual                                                               |
+| --------------------------- | ---------------------------------------------------- | ------------------------------------------------------------------------------ |
+| contrato documental         | ESPECIFICADO                                         | esta tarea                                                                     |
+| matriz de veinte escenarios | ESPECIFICADO                                         | `AREA-ASSIGNMENT-DEPENDENCY-MATRIX-001`                                        |
+| diez canales                | ESPECIFICADO                                         | matriz de canales                                                              |
+| diez aplicaciones           | ESPECIFICADO                                         | registro de cobertura                                                          |
+| snapshot de datos           | VALIDADO contra servicio remoto de solo lectura      | 42 empleados, 22 áreas y 1 asignación utilizable                               |
+| inventario de helpers       | VALIDADO contra definiciones remotas de solo lectura | 15 funciones centrales clasificadas                                            |
+| inventario RLS              | VALIDADO contra catálogo remoto de solo lectura      | 12 políticas sobre 8 tablas                                                    |
+| grants de alcance de área   | VALIDADO contra servicio remoto de solo lectura      | 0 exactos, 5 por `area_kind`, 0 excepciones individuales                       |
+| consumidoras parciales      | VALIDADO contra código remoto                        | NEXO y VISO inspeccionados sin declarar adopción canónica                      |
+| implementación compartida   | NO INICIADA                                          | pertenece a tareas físicas posteriores                                         |
+| bloqueo público en runtime  | PENDIENTE_DE_EVIDENCIA                               | no existe razón compartida implementada ni se autorizaron mutaciones de prueba |
+| pruebas automatizadas       | NO INICIADA                                          | tareas de CI y paquetes E5                                                     |
+
+No se declara implementado ni probado operativamente el bloqueo.
+
+---
+
+#### 40. Fuera del alcance
+
+AUTH-ERR-007 no:
+
+- crea, activa o desactiva asignaciones de área;
+- completa los 41 empleados sin asignación;
+- decide que todos deban recibir una asignación;
+- modifica `employee_areas`;
+- modifica `employees.area_id`;
+- modifica `selected_area_id`;
+- activa o desactiva áreas;
+- define el bloqueo de área activa;
+- aprueba `AUTH-ERR-008`;
+- cambia turnos, roles o check-ins;
+- cambia grants o scopes;
+- convierte área operativa en afiliación laboral;
+- implementa `AccessContext`;
+- implementa `AuthorizationDecision`;
+- corrige funciones SQL;
+- modifica RLS;
+- modifica Edge Functions;
+- modifica aplicaciones;
+- ejecuta migraciones, DDL o DML;
+- crea fixtures productivos;
+- despliega código;
+- escribe en GitHub;
+- ejecuta pruebas operativas o de dispositivo.
+
+---
+
+#### 41. Criterios de aceptación
+
+1. `AUTH_AREA_ASSIGNMENT_REQUIRED` es el único código público de la tarea.
+2. La razón pertenece a contexto de autorización, no a autenticación.
+3. La sesión se conserva.
+4. La identidad y el acceso a la aplicación ya fueron validados.
+5. La dependencia de asignación debe ser explícita.
+6. Se derivan exactamente cinco perfiles.
+7. `NO_AREA_ASSIGNMENT_DEPENDENCY` no bloquea.
+8. Un permiso global no exige filas por área.
+9. Un permiso de sede no exige áreas por inferencia.
+10. `ASSIGNED_SITES` no se convierte en `ASSIGNED_AREAS`.
+11. `ASSIGNED_AREAS` exige al menos una relación activa compatible.
+12. `SPECIFIC_AREA` exige área exacta y asignación compatible.
+13. `area_kind` no reemplaza `area_id` cuando el recurso exige identidad exacta.
+14. La asignación no concede permisos.
+15. La asignación no amplía scope.
+16. El área asignada no sustituye área operativa.
+17. El área operativa procede del turno.
+18. `employee_areas=[]` no invalida un turno por sí solo.
+19. Los 31 permisos `REQUIRED` no reciben dependencia administrativa por inferencia.
+20. Los 27 `SITE_SUFFICIENT` conservan su semántica.
+21. Los 54 `NOT_APPLICABLE` se evalúan por carril base cuando corresponda.
+22. El dispositivo no presta área al actor.
+23. La simulación no crea asignación real.
+24. `employees.area_id` permanece legacy y no autoriza.
+25. `selected_area_id` permanece preferencia.
+26. Área primaria es opcional y no autoriza.
+27. Sin sede asignada conserva `AUTH-ERR-005`.
+28. Sede inactiva conserva `AUTH-ERR-006`.
+29. Área inactiva conserva `AUTH-ERR-008`.
+30. Sin turno conserva `AUTH-ERR-009`.
+31. Sin rol o rol no permitido conserva `AUTH-ERR-013/014`.
+32. Configuración contradictoria conserva `AUTH-ERR-017`.
+33. Fallo técnico conserva `AUTH-ERR-019`.
+34. La respuesta no navegacional usa `403`.
+35. La decisión usa `executable=false` y cero efectos.
+36. Las cinco causas internas son exhaustivas para esta tarea.
+37. Las causas internas no se exponen.
+38. Los veinte escenarios poseen decisión explícita.
+39. Los diez canales poseen respuesta explícita.
+40. Las diez aplicaciones poseen decisión explícita.
+41. La UI usa el copy exacto.
+42. La UI no revela áreas ni estructura laboral.
+43. No existe autoasignación.
+44. No existe reintento automático.
+45. Una corrección exige solicitud nueva.
+46. Cambios de asignación invalidan contexto y caché.
+47. Toda mutación revalida antes del efecto.
+48. Realtime retira entrega incompatible.
+49. La auditoría distingue las cinco causas.
+50. El snapshot registra 42 empleados y 22 áreas activas.
+51. El snapshot registra una sola asignación de área utilizable.
+52. El snapshot registra 41 empleados activos sin asignación utilizable.
+53. El snapshot registra 2721 turnos inspeccionados, 655 con área y 2066 sin área.
+54. El inventario registra 15 funciones.
+55. El inventario registra 12 políticas sobre 8 tablas.
+56. Los grants observados registran 0 por área exacta y 5 por tipo de área.
+57. Las catorce brechas tienen propietario y condición de salida.
+58. El bloqueo de runtime permanece pendiente de evidencia controlada.
+59. Se generan `TREQ-AUTH-189` a `TREQ-AUTH-198`.
+60. Las 6586 filas históricas se conservan sin modificación sustantiva.
+61. No se modifica código, Supabase, datos ni repositorios remotos.
+62. `AUTH-ERR-008` permanece reservada.
+
+---
+
+#### 42. Cierre de tarea y continuidad
+
+| Tarea          | Estado      | Relación                                                      |
+| -------------- | ----------- | ------------------------------------------------------------- |
+| `AUTH-ERR-006` | APROBADA    | tarea anterior                                                |
+| `AUTH-ERR-007` | APROBADA    | tarea actual preparada para confirmación canónica del usuario |
+| `AUTH-ERR-008` | NO INICIADA | tarea siguiente reservada                                     |
+
+```text
+AUTH-ERR-006 — APROBADA
+        ↓
+AUTH-ERR-007 — APROBADA
+        ↓
+AUTH-ERR-008 — RESERVADA
+```
+
+No se inicia ni modifica `AUTH-ERR-008` en esta tarea.
+
+
 ### [ ] AUTH-ERR-008 — Sin área activa
