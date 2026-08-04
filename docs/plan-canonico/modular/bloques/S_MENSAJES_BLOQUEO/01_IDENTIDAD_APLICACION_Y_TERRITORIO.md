@@ -4411,7 +4411,1266 @@ AUTH-ERR-005 — RESERVADA
 No se inicia ni modifica `AUTH-ERR-005` en esta tarea.
 
 
-### [ ] AUTH-ERR-005 — Sin sede asignada
+### ✅ AUTH-ERR-005 — Sin sede asignada
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-ERR-004 — Sin permiso administrativo` — APROBADA
+**Tarea siguiente:** `AUTH-ERR-006 — Sin sede activa` — RESERVADA
+**Tipo de tarea:** documental; definición contractual, funcional, territorial, de seguridad y experiencia del bloqueo por ausencia confirmada de una asignación laboral de sede exigida
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/S_MENSAJES_BLOQUEO/01_IDENTIDAD_APLICACION_Y_TERRITORIO.md`
+**Artefactos producidos:** `SITE-ASSIGNMENT-BLOCKING-CONTRACT-001`, `SITE-ASSIGNMENT-DECISION-MATRIX-001`, `SITE-ASSIGNMENT-CHANNEL-RESPONSE-MATRIX-001`, `SITE-ASSIGNMENT-APPLICATION-COVERAGE-REGISTER-001` y `SITE-ASSIGNMENT-PHYSICAL-RECONCILIATION-001`
+**Decisiones consumidas:** `ADR-AUTH-001`; `AUTH-MOD-001`; `AUTH-MOD-002`; `AUTH-MOD-003`; `AUTH-MOD-004`; `AUTH-MOD-006`; `AUTH-MOD-007`; `AUTH-MOD-013` a `AUTH-MOD-019`; `AUTH-CAT-006`; `AUTH-CAT-011`; `AUTH-CTX-001`; `AUTH-CTX-002`; `AUTH-CTX-009`; `AUTH-CTX-013`; `AUTH-CTX-018`; `AUTH-CTX-028`; `AUTH-ERR-001` a `AUTH-ERR-004`; contratos vigentes de identidad, contexto, territorio, recurso y autorización; estado desplegado inspeccionado; contrato documental vigente
+**Cambios físicos autorizados:** ninguno; no modifica código, Supabase, Auth, RLS, RPC, Edge Functions, datos, migraciones, constraints, triggers, asignaciones, sedes, permisos, aplicaciones ni despliegues
+
+---
+
+#### 1. Propósito
+
+Definir de forma única, segura y verificable qué debe ocurrir cuando una
+solicitud ya superó autenticación, actividad de identidad y acceso a la
+aplicación, pero la acción necesita una asignación laboral de sede y el actor
+empleado no posee la relación canónica requerida.
+
+La regla raíz queda:
+
+```text
+SESIÓN AUTENTICADA VÁLIDA
++
+IDENTIDAD LABORAL ACTIVA
++
+ACCESO A LA APLICACIÓN PERMITIDO
++
+ACCIÓN CON REQUISITO EXPLÍCITO DE SEDE ASIGNADA
++
+CONJUNTO DE ASIGNACIONES LABORALES RESUELTO DE FORMA CONCLUYENTE
++
+NINGUNA ASIGNACIÓN SATISFACE EL REQUISITO
+→
+DENY
++
+AUTH_SITE_ASSIGNMENT_REQUIRED
++
+403
++
+CERO EFECTOS
+```
+
+La tarea responde exclusivamente:
+
+```text
+¿LA ACCIÓN EXIGE UNA RELACIÓN LABORAL DE SEDE
+Y EL ACTOR POSEE UNA ASIGNACIÓN CANÓNICA COMPATIBLE?
+```
+
+No responde:
+
+```text
+¿EXISTE SESIÓN?
+¿EL EMPLEADO ESTÁ ACTIVO?
+¿PUEDE ENTRAR A LA APLICACIÓN?
+¿TIENE EL PERMISO EXACTO?
+¿LA SEDE ASIGNADA ESTÁ ACTIVA?
+¿EXISTE UNA SEDE ACTIVA PARA LA SOLICITUD?
+¿TIENE ÁREA ASIGNADA O ACTIVA?
+¿TIENE TURNO O CHECK-IN?
+¿EL ROL OPERATIVO ES VÁLIDO?
+¿EL RECURSO PERTENECE A LA SEDE INDICADA?
+¿LA EVALUACIÓN TÉCNICA PUDO COMPLETARSE?
+```
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cinco artefactos documentales completos:
+
+1. `SITE-ASSIGNMENT-BLOCKING-CONTRACT-001`, que congela identidad pública,
+   condiciones de aplicación, causas internas, envelope, recuperación,
+   seguridad, frescura y auditoría;
+2. `SITE-ASSIGNMENT-DECISION-MATRIX-001`, que decide veinte escenarios y
+   separa asignación, actividad, selección, turno, recurso, dispositivo,
+   permiso y error técnico;
+3. `SITE-ASSIGNMENT-CHANNEL-RESPONSE-MATRIX-001`, que materializa diez canales
+   de entrega con una respuesta equivalente y cero efectos;
+4. `SITE-ASSIGNMENT-APPLICATION-COVERAGE-REGISTER-001`, que decide el alcance
+   para las diez aplicaciones canónicas sin imponer sede laboral a superficies
+   organizacionales o identidades no laborales;
+5. `SITE-ASSIGNMENT-PHYSICAL-RECONCILIATION-001`, que registra catorce brechas
+   físicas, el snapshot desplegado y su destino exacto.
+
+Cobertura materializada:
+
+| Elemento                                                |           Cantidad |
+| ------------------------------------------------------- | -----------------: |
+| Código público canónico                                 |                  1 |
+| Estado HTTP no navegacional                             |           1, `403` |
+| Causas internas admitidas                               |                  5 |
+| Perfiles derivados de dependencia de asignación         |                  5 |
+| Escenarios con decisión explícita                       |                 20 |
+| Canales con respuesta explícita                         |                 10 |
+| Aplicaciones canónicas reconciliadas                    |                 10 |
+| Empleados activos observados                            |                 42 |
+| Empleados activos sin asignación utilizable observados  |                  0 |
+| Empleados activos con una asignación utilizable         |                 22 |
+| Empleados activos con varias asignaciones utilizables   |                 20 |
+| Filas físicas de `employee_sites`                       |                 91 |
+| Filas asociadas a empleados activos                     |                 74 |
+| Filas asociadas a empleados inactivos                   |                 17 |
+| Sedes observadas                                        |   7, todas activas |
+| Funciones PostgreSQL dependientes de resolución de sede |                 39 |
+| Políticas RLS dependientes de resolución de sede        | 68 sobre 40 tablas |
+| Repositorios con consumidoras directas observadas       |                  7 |
+| Brechas físicas registradas                             |                 14 |
+| Requisitos de prueba derivados                          |                 10 |
+
+Las cifras físicas son un snapshot de solo lectura. Que no exista hoy un
+empleado activo sin sede no elimina el contrato preventivo ni certifica que la
+resolución desplegada sea canónica.
+
+---
+
+#### 3. Identidad canónica del bloqueo
+
+La identidad pública única es:
+
+```text
+reason_code = AUTH_SITE_ASSIGNMENT_REQUIRED
+```
+
+| Propiedad                   | Valor                                       |
+| --------------------------- | ------------------------------------------- |
+| Dominio                     | `AUTHORIZATION_CONTEXT`                     |
+| Decisión                    | `DENY`                                      |
+| Principal                   | autenticado y conservado                    |
+| Identidad laboral           | existente y activa                          |
+| Aplicación                  | acceso general ya permitido                 |
+| Estado público              | `MISSING_REQUIRED_SITE_ASSIGNMENT`          |
+| Estado HTTP no navegacional | `403 Forbidden`                             |
+| Ejecutable                  | `false`                                     |
+| Recuperación                | corrección administrativa y solicitud nueva |
+| Cierre de sesión            | no automático                               |
+| Reintento de la operación   | prohibido                                   |
+| Efectos parciales           | prohibidos                                  |
+
+Quedan prohibidos como código público alternativo:
+
+- `NO_SITE`;
+- `SITE_MISSING`;
+- `NO_ACTIVE_SITE`;
+- `WRONG_SITE`;
+- `INVALID_SITE`;
+- `NO_PERMISSION`;
+- `UNAUTHORIZED` sin tipificación;
+- `AUTH_ADMIN_PERMISSION_DENIED`;
+- `AUTH_APP_ACCESS_DENIED`;
+- mensajes libres producidos por una aplicación o una función SQL.
+
+El código es estable y no se traduce. El texto humano podrá localizarse.
+
+---
+
+#### 4. Definición exacta de sede asignada
+
+Una sede asignada es una relación laboral canónica, vigente y explícita entre
+el actor empleado y una sede organizacional identificada.
+
+Representación conceptual:
+
+```text
+EMPLOYEE_ID
++
+SITE_ID
++
+ASSIGNMENT_EXISTS
++
+ASSIGNMENT_CURRENT
+→
+ASSIGNED_SITE_FACT
+```
+
+La relación responde:
+
+```text
+¿ESTE EMPLEADO ESTÁ LABORALMENTE VINCULADO A ESTA SEDE?
+```
+
+No responde:
+
+```text
+¿PUEDE EJECUTAR EL PERMISO?
+¿LA SEDE ESTÁ ACTIVA?
+¿ES LA SEDE SELECCIONADA?
+¿ES LA SEDE PRIMARIA?
+¿ES LA SEDE DEL TURNO?
+¿ES LA SEDE DEL RECURSO?
+¿ES LA SEDE DEL DISPOSITIVO?
+¿EL PERMISO TIENE ALCANCE GLOBAL?
+```
+
+La fuente futura deberá ser el conjunto canónico de asignaciones laborales
+resuelto por `AccessContext`. El campo físico legacy `employees.site_id` no es
+una asignación adicional ni una autoridad independiente.
+
+---
+
+#### 5. Condición exacta de aplicación
+
+`AUTH_SITE_ASSIGNMENT_REQUIRED` se produce únicamente cuando las cuatro
+condiciones siguientes son concluyentes:
+
+1. la identidad laboral está activa;
+2. la solicitud o el contrato del permiso requiere una asignación de sede;
+3. la fuente canónica de asignaciones fue consultada sin error ni ambigüedad;
+4. ninguna asignación vigente satisface el requisito aplicable.
+
+Fórmula:
+
+```text
+REQUIRES_ASSIGNED_SITE = true
+AND
+ASSIGNMENT_RESOLUTION = CONCLUSIVE
+AND
+MATCHING_ASSIGNMENT_COUNT = 0
+→
+AUTH_SITE_ASSIGNMENT_REQUIRED
+```
+
+Una lista vacía solo produce esta razón cuando la acción necesita asignación.
+No existirá una regla global que bloquee toda Vento OS por no tener sede.
+
+---
+
+#### 6. Perfiles derivados de dependencia de asignación
+
+AUTH-ERR-005 no crea una clasificación paralela al catálogo. El evaluador
+derivará la dependencia de asignación desde los tipos de alcance aprobados en
+`AUTH-CAT-011`, el carril y el contrato del recurso.
+
+| Perfil derivado                | Códigos o contexto canónico de entrada                                  | Regla de asignación                                                                    |
+| ------------------------------ | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `NO_ASSIGNMENT_DEPENDENCY`     | `NT`, `ORG`, `G` o `TST`, cuando el contrato no agrega otra restricción | la ausencia de `employee_sites` no bloquea por sí sola                                 |
+| `ASSIGNED_SITES`               | `AS` o `scope_type=site` con `scope_site_id=null`                       | exige al menos una sede asignada y limita a ese conjunto                               |
+| `SPECIFIC_SITE`                | `SS` o `scope_type=site` con sede explícita                             | exige que la sede específica también esté asignada al actor                            |
+| `ASSIGNED_SITE_TYPE`           | `AST`                                                                   | exige una sede asignada del tipo requerido                                             |
+| `OPERATIONAL_SITE_ELIGIBILITY` | `CTX` o carril operativo por sede                                       | exige asignación activa a la sede operativa cuando la elegibilidad laboral lo requiera |
+
+`OWN`, `AA`, `SA`, `AAT` y `ATW` conservan el límite territorial superior que
+les corresponda. No determinan por sí solos si existe una asignación de sede.
+
+La dependencia no se inferirá desde:
+
+- el nombre de la aplicación;
+- el nombre del rol;
+- que la pantalla contenga un selector de sede;
+- el valor actual de `employees.site_id`;
+- una query string;
+- la tabla que contiene el permiso;
+- que el permiso tenga scope global, site o area;
+- la sede del último turno;
+- el dispositivo utilizado.
+
+La fuente normativa será el contrato versionado del permiso, proceso, acción o
+recurso. Una modalidad ausente cuando sea necesaria es configuración
+inconsistente y pertenece a `AUTH-ERR-017`.
+
+---
+
+#### 7. Elementos que no sustituyen una asignación
+
+| Elemento observado                    | Significado correcto                          | Puede crear asignación |
+| ------------------------------------- | --------------------------------------------- | ---------------------: |
+| `employees.site_id`                   | compatibilidad legacy o proyección primaria   |                     No |
+| `employee_settings.selected_site_id`  | preferencia de navegación                     |                     No |
+| `is_primary=true`                     | prioridad entre asignaciones existentes       |                     No |
+| sede del turno                        | territorio operativo temporal                 |                     No |
+| sede del check-in                     | hecho de presencia temporal                   |                     No |
+| sede del recurso                      | territorio objetivo                           |                     No |
+| sede del dispositivo                  | ubicación técnica del terminal                |                     No |
+| `navigation_role`                     | preferencia de navegación                     |                     No |
+| parámetro `site_id`                   | solicitud del cliente pendiente de validación |                     No |
+| permiso global                        | alcance territorial de una capacidad exacta   |                     No |
+| rol `propietario` o `gerente_general` | responsabilidad base                          |                     No |
+| último sitio utilizado                | historial de experiencia                      |                     No |
+
+Invariante:
+
+```text
+PREFERENCIA O CONTEXTO TEMPORAL
+≠
+RELACIÓN LABORAL PERMANENTE
+```
+
+---
+
+#### 8. Diferencia con `AUTH-ERR-006 — Sin sede activa`
+
+Las dos razones permanecen separadas.
+
+| Estado                                                                 | Razón correcta                  |
+| ---------------------------------------------------------------------- | ------------------------------- |
+| no existe ninguna relación laboral requerida                           | `AUTH_SITE_ASSIGNMENT_REQUIRED` |
+| existe alguna asignación, pero ninguna sede utilizable está activa     | `AUTH-ERR-006`                  |
+| la relación existe, pero está inactiva o fuera de vigencia             | `AUTH-ERR-006`                  |
+| la sede asignada existe, pero la sede organizacional está inactiva     | `AUTH-ERR-006`                  |
+| existen sedes asignadas, pero no se resolvió una sede activa requerida | `AUTH-ERR-006`                  |
+| falta una relación con la sede objetivo, aunque existan otras          | `AUTH_SITE_ASSIGNMENT_REQUIRED` |
+| no se pudo consultar la fuente de asignaciones                         | `AUTH-ERR-019`                  |
+| hay asignaciones contradictorias o una modalidad incompleta            | `AUTH-ERR-017`                  |
+
+`AUTH-ERR-005` no define el copy ni el contrato de sede inactiva. Esa tarea
+permanece reservada.
+
+---
+
+#### 9. Diferencia con permiso y alcance
+
+Una falta de sede asignada no es una falta de permiso.
+
+Orden obligatorio:
+
+```text
+1. resolver sesión e identidad;
+2. confirmar acceso a aplicación;
+3. confirmar que el permiso existe y su modalidad es válida;
+4. resolver el recurso y su territorio autoritativo;
+5. identificar carriles, grants, denies y perfiles de alcance candidatos;
+6. derivar la dependencia de asignación desde el alcance canónico;
+7. resolver las asignaciones laborales exigidas;
+8. resolver sede activa y demás contexto cuando corresponda;
+9. concluir grants, denies, scope y decisión final.
+```
+
+Los pasos 5 y 6 identifican qué contrato debe evaluarse; no producen todavía
+un `ALLOW` ni un deny de permiso. La decisión concluyente de alcance ocurre
+solo después de resolver los hechos territoriales requeridos.
+
+Cuando el permiso requiere sede y no existe asignación compatible:
+
+```text
+NO MATCHING ASSIGNMENT
+→ AUTH_SITE_ASSIGNMENT_REQUIRED
+```
+
+Solo cuando la asignación y el territorio son resolubles podrá una concesión
+fallar por alcance y producir `AUTH_ADMIN_PERMISSION_DENIED` u otra razón de
+permiso aplicable.
+
+Queda prohibido:
+
+```text
+has_permission() = false
+→ asumir siempre falta de permiso
+```
+
+Un booleano sin causa no es suficiente para seleccionar el mensaje.
+
+---
+
+#### 10. Acciones organizacionales y permisos globales
+
+Una acción organizacional podrá ejecutarse sin sede asignada cuando derive el
+perfil `NO_ASSIGNMENT_DEPENDENCY` desde `NT`, `ORG`, `G` o `TST` y exista
+autorización completa.
+
+Ejemplos conceptuales:
+
+- administrar un catálogo verdaderamente organizacional;
+- consultar un reporte consolidado con permiso global;
+- gestionar una política transversal;
+- acceder a una superficie de SHELL previa a la selección territorial.
+
+Reglas:
+
+1. `scope_type=global` no exige asignación por sí solo;
+2. una asignación vacía no convierte un permiso global en denegado;
+3. una acción global no crea asignaciones;
+4. un permiso global sigue requiriendo permiso exacto, identidad activa y
+   recurso válido;
+5. si el contrato de una acción global exige además vinculación laboral a una
+   sede, la exigencia deberá ser explícita y auditable;
+6. `propietario` y `gerente_general` no reciben una sede ficticia por nombre.
+
+---
+
+#### 11. Acciones por sede y recursos territoriales
+
+Para una acción con perfil derivado `SPECIFIC_SITE`, la sede objetivo se obtiene del
+recurso o proceso autoritativo.
+
+```text
+TARGET_RESOURCE
+→ TARGET_SITE_ID
+→ MATCH AGAINST ASSIGNED_SITES
+```
+
+No se tomará exclusivamente de:
+
+- `site_id` enviado por el cliente;
+- selector visual;
+- cookie;
+- header personalizado;
+- URL;
+- sede primaria;
+- sede seleccionada;
+- última sede utilizada.
+
+Si el recurso no permite determinar su sede, la razón es contexto o recurso no
+resoluble y no `AUTH_SITE_ASSIGNMENT_REQUIRED`.
+
+Si el recurso determina una sede y el actor tiene otras sedes, pero no esa:
+
+```text
+REQUIRED_SITE_NOT_ASSIGNED
+→ AUTH_SITE_ASSIGNMENT_REQUIRED
+```
+
+---
+
+#### 12. Asignación primaria y selección
+
+##### 12.1 Sede primaria
+
+Una sede primaria es una prioridad entre relaciones existentes.
+
+```text
+PRIMARY_SITE
+⊂
+ASSIGNED_SITES
+```
+
+No podrá existir como asignación independiente ni autorizar una acción por sí
+sola. Ausencia de primaria con otras asignaciones válidas no produce
+`AUTH-ERR-005`; representa una inconsistencia o una necesidad de selección
+según el contrato aplicable.
+
+##### 12.2 Sede seleccionada
+
+La sede seleccionada es una preferencia de navegación.
+
+```text
+SELECTED_SITE
+≠
+ASSIGNED_SITE
+```
+
+Una selección solo será utilizable si el servidor la valida contra la
+cobertura y asignaciones correspondientes. Una selección vacía con asignaciones
+existentes no significa falta de asignación.
+
+##### 12.3 Campo legacy
+
+```text
+employees.site_id
+≠
+assigned_sites
+```
+
+El campo podrá actuar como proyección transitoria, pero nunca revivirá una
+relación ausente, inactiva o retirada. La adaptación legacy deberá conservar
+trazabilidad y fail closed.
+
+---
+
+#### 13. Contexto operativo
+
+Un turno, check-in o rol operativo puede aportar una sede operativa temporal.
+No crea una relación laboral permanente.
+
+| Situación                                                                         | Resultado                                      |
+| --------------------------------------------------------------------------------- | ---------------------------------------------- |
+| acción operativa no exige asignación permanente y el contexto operativo es válido | continuar evaluación                           |
+| acción exige asignación permanente a la sede del turno y no existe                | `AUTH_SITE_ASSIGNMENT_REQUIRED`                |
+| turno no existe                                                                   | `AUTH-ERR-009` o `AUTH-ERR-010` según contrato |
+| check-in requerido no existe                                                      | `AUTH-ERR-011`                                 |
+| rol operativo falta o es inválido                                                 | `AUTH-ERR-012` a `AUTH-ERR-014`                |
+| sede operativa existe, pero está inactiva                                         | `AUTH-ERR-006`                                 |
+
+El carril operativo no tomará prestada una asignación base de otra sede ni el
+carril base tomará prestada la sede del turno para completar una relación
+laboral ausente.
+
+---
+
+#### 14. Dispositivo compartido
+
+El dispositivo conserva su identidad técnica y su sede configurada. Esa sede
+no se transfiere al empleado actor.
+
+```text
+DEVICE.SITE_ID
+≠
+ACTOR.ASSIGNED_SITE
+```
+
+Cuando el contrato de actor del dispositivo exige que el empleado esté
+asignado a la sede del terminal:
+
+```text
+DEVICE ACTOR
++
+NO MATCHING EMPLOYEE ASSIGNMENT
+→
+AUTH_SITE_ASSIGNMENT_REQUIRED
+```
+
+La credencial técnica puede permanecer activa para operaciones técnicas
+permitidas. La acción empresarial queda bloqueada y no se transfiere a otro
+empleado.
+
+Una allowlist de aplicación del dispositivo no sustituye la asignación del
+actor ni su permiso.
+
+---
+
+#### 15. Simulación y override
+
+La simulación podrá mostrar hipotéticamente el resultado de un sujeto sin sede,
+pero no modificará la identidad real ni ejecutará efectos.
+
+Reglas:
+
+1. la simulación usa un `AccessContext` simulado separado;
+2. la razón simulada se marca como hipotética;
+3. no se modifica RLS;
+4. no se crea `employee_sites`;
+5. no se cambia `employees.site_id`;
+6. no se selecciona una sede real por el sujeto simulado;
+7. una cookie de role override no concede asignaciones;
+8. el actor real y el sujeto simulado permanecen auditables;
+9. toda mutación desde simulación continúa prohibida.
+
+---
+
+#### 16. Clientes, servicios y actores no laborales
+
+`AUTH_SITE_ASSIGNMENT_REQUIRED` pertenece al contexto laboral de un actor
+empleado.
+
+| Identidad                                              | Regla                                                                                    |
+| ------------------------------------------------------ | ---------------------------------------------------------------------------------------- |
+| cliente de Vento Pass                                  | no requiere `employee_sites` para capacidades de cliente                                 |
+| empleado que usa una superficie administrativa de Pass | aplica solo si el contrato laboral lo exige                                              |
+| servicio del sistema                                   | utiliza identidad y allowlist técnica; no recibe sede laboral ficticia                   |
+| integración externa                                    | usa contrato de integración y territorio del proceso, no `employee_sites` por inferencia |
+| dispositivo técnico sin actor                          | no ejecuta acciones empresariales humanas                                                |
+| usuario Auth sin identidad laboral                     | identidad incompleta; no es esta razón                                                   |
+
+La ausencia de sede de un dominio no bloqueará automáticamente otro dominio
+sano de la misma credencial.
+
+---
+
+#### 17. `SITE-ASSIGNMENT-BLOCKING-CONTRACT-001`
+
+Forma lógica mínima:
+
+```ts
+type SiteAssignmentBlockingReason = {
+  contract: "SITE-ASSIGNMENT-BLOCKING-CONTRACT-001";
+  contract_version: "1.0.0";
+  reason_code: "AUTH_SITE_ASSIGNMENT_REQUIRED";
+  domain: "AUTHORIZATION_CONTEXT";
+  decision: "DENY";
+  principal_state: "AUTHENTICATED";
+  identity_state: "ACTIVE_EMPLOYEE";
+  executable: false;
+  recovery_action: "REQUEST_ADMIN_REVIEW";
+  http_status: 403;
+  app_code: string;
+  channel: SiteAssignmentChannel;
+  correlation_id: string;
+  occurred_at: string;
+  assignment_dependency:
+    | "ASSIGNED_SITES"
+    | "SPECIFIC_SITE"
+    | "ASSIGNED_SITE_TYPE"
+    | "OPERATIONAL_SITE_ELIGIBILITY";
+};
+```
+
+La forma pública no incluirá:
+
+- `employee_id`;
+- `auth_user_id`;
+- nombre del trabajador;
+- rol;
+- permiso exacto;
+- sede requerida;
+- sedes actualmente asignadas;
+- sede primaria;
+- sede seleccionada;
+- sede del turno;
+- sede del dispositivo;
+- recurso solicitado;
+- identificadores internos;
+- causa interna;
+- query o body original;
+- stack trace;
+- mensaje bruto de Supabase.
+
+La implementación podrá conservar internamente referencias minimizadas para
+auditoría protegida.
+
+---
+
+#### 18. Causas internas admitidas
+
+| Causa interna                      | Condición concluyente                                                   | Resultado público               |
+| ---------------------------------- | ----------------------------------------------------------------------- | ------------------------------- |
+| `ASSIGNED_SITE_SET_EMPTY`          | la acción exige cualquier asignación y no existe relación vigente       | `AUTH_SITE_ASSIGNMENT_REQUIRED` |
+| `REQUIRED_SITE_NOT_ASSIGNED`       | la sede objetivo es autoritativa y no pertenece al conjunto asignado    | `AUTH_SITE_ASSIGNMENT_REQUIRED` |
+| `REQUIRED_SITE_TYPE_NOT_ASSIGNED`  | no existe asignación a una sede del tipo requerido                      | `AUTH_SITE_ASSIGNMENT_REQUIRED` |
+| `DEVICE_ACTOR_SITE_NOT_ASSIGNED`   | el actor del dispositivo no está asignado a la sede exigida             | `AUTH_SITE_ASSIGNMENT_REQUIRED` |
+| `ASSIGNMENT_REMOVED_BEFORE_EFFECT` | la relación válida al inicio desapareció antes de la frontera de efecto | `AUTH_SITE_ASSIGNMENT_REQUIRED` |
+
+Las causas internas no se mostrarán al usuario. No se agregarán causas libres.
+
+Quedan fuera:
+
+- asignación inactiva;
+- sede organizacional inactiva;
+- sede activa no seleccionada;
+- error de lectura;
+- timeout;
+- catálogo incompleto;
+- permiso inexistente;
+- turno ausente;
+- área ausente.
+
+---
+
+#### 19. `SITE-ASSIGNMENT-DECISION-MATRIX-001`
+
+|    # | Escenario                                                                           | Decisión pública                | Observación                             |
+| ---: | ----------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------- |
+|    1 | superficie protegida sin sesión                                                     | `AUTH_NO_SESSION`               | precedencia de autenticación            |
+|    2 | sesión válida con empleado inactivo                                                 | `AUTH_USER_INACTIVE`            | precedencia de identidad                |
+|    3 | identidad activa sin acceso a aplicación                                            | `AUTH_APP_ACCESS_DENIED`        | gate de aplicación                      |
+|    4 | permiso solicitado no está registrado                                               | `AUTH-ERR-018`                  | no se evalúa asignación                 |
+|    5 | falla técnica al consultar asignaciones                                             | `AUTH-ERR-019`                  | no afirmar ausencia                     |
+|    6 | asignaciones contradictorias o modalidad territorial incompleta                     | `AUTH-ERR-017`                  | configuración inconsistente             |
+|    7 | acción organizacional con requisito `NONE` y asignaciones vacías                    | continuar                       | ausencia no aplicable                   |
+|    8 | acción global autorizada que no exige relación laboral de sede                      | continuar                       | scope global no crea requisito          |
+|    9 | acción exige cualquier asignación y `assigned_sites=[]`                             | `AUTH_SITE_ASSIGNMENT_REQUIRED` | causa `ASSIGNED_SITE_SET_EMPTY`         |
+|   10 | actor posee otras sedes, pero no la sede objetivo requerida                         | `AUTH_SITE_ASSIGNMENT_REQUIRED` | causa `REQUIRED_SITE_NOT_ASSIGNED`      |
+|   11 | acción exige un tipo de sede sin coincidencia                                       | `AUTH_SITE_ASSIGNMENT_REQUIRED` | causa `REQUIRED_SITE_TYPE_NOT_ASSIGNED` |
+|   12 | solo existe `employees.site_id`, sin relación canónica                              | `AUTH_SITE_ASSIGNMENT_REQUIRED` | fallback legacy prohibido               |
+|   13 | existe relación, pero la asignación o sede está inactiva                            | `AUTH-ERR-006`                  | no es ausencia de relación              |
+|   14 | existen asignaciones, pero falta sede activa o selección válida requerida           | `AUTH-ERR-006`                  | tarea siguiente reservada               |
+|   15 | asignación y sede válidas, pero el scope del permiso no cubre el recurso            | `AUTH_ADMIN_PERMISSION_DENIED`  | denegación de permiso concluyente       |
+|   16 | turno válido aporta sede, pero la acción exige además asignación permanente ausente | `AUTH_SITE_ASSIGNMENT_REQUIRED` | turno no crea relación                  |
+|   17 | dispositivo compartido exige actor asignado a su sede y no coincide                 | `AUTH_SITE_ASSIGNMENT_REQUIRED` | credencial técnica se conserva          |
+|   18 | cliente Pass o servicio técnico sin requisito laboral                               | continuar por su contrato       | no aplicar relación laboral             |
+|   19 | sujeto simulado sin sede requerida                                                  | deny hipotético                 | cero efectos reales                     |
+|   20 | asignación creada después del bloqueo                                               | solicitud nueva                 | no se reintenta la mutación original    |
+
+La matriz es exhaustiva para las causas públicas de esta tarea. Una aplicación
+no podrá sustituirlas por un mensaje genérico.
+
+---
+
+#### 20. Precedencia completa
+
+Orden público obligatorio para una acción laboral protegida:
+
+```text
+ERROR TÉCNICO O CONFIGURACIÓN NO CONCLUYENTE
+        ↓
+SESIÓN
+        ↓
+IDENTIDAD ACTIVA
+        ↓
+ACCESO A APLICACIÓN
+        ↓
+PERMISO REGISTRADO Y CONTRATO VÁLIDO
+        ↓
+RECURSO Y TERRITORIO AUTORITATIVOS
+        ↓
+CARRIL Y PERFIL DE ALCANCE CANDIDATOS
+        ↓
+ASIGNACIÓN DE SEDE EXIGIDA POR ESE PERFIL
+        ↓
+SEDE ACTIVA Y DEMÁS CONTEXTO
+        ↓
+GRANTS, DENIES Y SCOPE CONCLUYENTES
+        ↓
+DECISIÓN FINAL
+```
+
+La posición concreta de las condiciones operativas podrá variar según la
+modalidad del permiso, pero se conservan estos invariantes:
+
+1. una razón no concluyente no se presenta como ausencia confirmada;
+2. no se evalúa scope contra un territorio inventado;
+3. no se mezcla una sede del carril operativo con una asignación base ausente;
+4. el primer bloqueo público concluyente detiene la acción;
+5. nunca se emiten dos códigos públicos para el mismo intento.
+
+---
+
+#### 21. `SITE-ASSIGNMENT-CHANNEL-RESPONSE-MATRIX-001`
+
+| Canal                           | Respuesta requerida                                                      | Prohibiciones                                                          |
+| ------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| navegación protegida            | vista de bloqueo tipada, sesión conservada, `403` semántico              | renderizar contenido protegido, login loop                             |
+| Server Action                   | error tipado sin commit                                                  | redirect genérico, excepción cruda, efecto parcial                     |
+| Route Handler o API             | `403` con envelope estable                                               | HTML, `401`, cuerpo con datos sensibles                                |
+| fetch o RSC                     | resultado discriminado y sin datos protegidos                            | `null` ambiguo, fallback a sede legacy                                 |
+| RPC                             | decisión tipada o excepción contractual estable                          | solo `false`, mutar antes de validar                                   |
+| RLS o Data API                  | cero filas o deny coherente y correlacionable                            | exponer filas de otra sede, confundir con ausencia de datos de negocio |
+| Edge Function                   | `403` estable con correlación                                            | usar service role como bypass empresarial                              |
+| Realtime                        | no suscribir o revocar entrega incompatible                              | mantener stream después de retirar asignación                          |
+| cliente nativo                  | estado tipado, accesible y recuperable                                   | reintento silencioso, cierre de sesión                                 |
+| dispositivo compartido o kiosco | bloquear acción empresarial del actor y conservar modo técnico permitido | transferir actor, heredar sede del terminal                            |
+
+Todos los canales deberán producir:
+
+```text
+DENY
++
+executable=false
++
+zero_effects=true
+```
+
+Ningún canal podrá responder como si la sesión hubiese expirado.
+
+---
+
+#### 22. Mensaje humano canónico
+
+Copy aprobado en español:
+
+| Elemento          | Texto exacto                                                                                                                                    |
+| ----------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| Título            | `Necesitas una sede asignada`                                                                                                                   |
+| Mensaje           | `Tu perfil laboral no tiene una sede asignada para continuar con esta acción. Solicita a un administrador autorizado que revise tu asignación.` |
+| Acción principal  | `Volver a Vento OS`                                                                                                                             |
+| Acción secundaria | `Ir al inicio de la aplicación`                                                                                                                 |
+| Ayuda             | `Si consideras que es un error, solicita una revisión a un administrador autorizado.`                                                           |
+| Código de soporte | `AUTH_SITE_ASSIGNMENT_REQUIRED`                                                                                                                 |
+
+Reglas de experiencia:
+
+1. no afirmar que la sede está inactiva;
+2. no afirmar que falta permiso;
+3. no mostrar el nombre de la sede requerida;
+4. no listar asignaciones existentes;
+5. no revelar el recurso;
+6. no cerrar sesión;
+7. no ofrecer “seleccionar sede” como solución si no existe asignación;
+8. no prometer corrección automática;
+9. no permitir continuar parcialmente;
+10. el código de soporte debe ser copiable sin dominar la interfaz.
+
+La acción secundaria se mostrará solo cuando la ruta de inicio sea segura y no
+repita automáticamente la condición bloqueada.
+
+---
+
+#### 23. Recuperación
+
+La recuperación correcta es administrativa y explícita:
+
+```text
+ADMINISTRADOR AUTORIZADO
+→
+CREA O RESTAURA ASIGNACIÓN CANÓNICA
+→
+INVALIDA CONTEXTO Y DECISIONES
+→
+USUARIO EMITE SOLICITUD NUEVA
+→
+AUTORIZACIÓN COMPLETA NUEVA
+```
+
+La UI no creará asignaciones ni permitirá que el trabajador se autoasigne.
+
+Quedan prohibidos:
+
+- insertar una fila desde la pantalla de bloqueo;
+- elegir una sede no asignada;
+- usar `employees.site_id` como reparación silenciosa;
+- copiar la sede del turno o dispositivo;
+- repetir automáticamente la mutación original;
+- conservar un `ALLOW` calculado antes del cambio;
+- presentar cerrar sesión como corrección;
+- permitir que una selección visual sustituya la aprobación administrativa.
+
+---
+
+#### 24. Seguridad y privacidad
+
+La respuesta pública deberá minimizar información.
+
+No revelará:
+
+- si el actor tiene otras sedes;
+- cuántas sedes tiene;
+- cuál es primaria;
+- cuál está seleccionada;
+- la sede del recurso;
+- la sede del dispositivo;
+- el permiso solicitado;
+- el rol;
+- la causa interna;
+- quién retiró la asignación;
+- cuándo se retiró;
+- observaciones administrativas;
+- datos de otros empleados.
+
+El servidor deberá resolver la sede objetivo y las asignaciones antes de
+producir cualquier dato protegido. Ocultar un botón o una ruta no constituye
+control de autorización.
+
+---
+
+#### 25. Frescura, concurrencia e invalidación
+
+Una asignación podrá cambiar entre la carga inicial y la frontera de efecto.
+
+Eventos invalidantes mínimos:
+
+- alta o baja de `employee_sites`;
+- activación o desactivación de una asignación;
+- cambio de sede objetivo del recurso;
+- cambio de actividad de la sede;
+- cambio de contrato territorial;
+- cambio de identidad o actor efectivo;
+- inicio o cierre de sesión de actor en dispositivo;
+- cambio de versión del contexto o catálogo.
+
+Reglas:
+
+1. los cambios invalidan caché y decisiones relacionadas;
+2. una mutación revalida inmediatamente antes del efecto;
+3. una asignación retirada produce cero efectos nuevos;
+4. Realtime deja de entregar datos incompatibles;
+5. una asignación añadida no reanuda automáticamente la acción bloqueada;
+6. cada reintento humano constituye una solicitud nueva;
+7. la auditoría conserva versión y timestamp de la resolución.
+
+---
+
+#### 26. Auditoría
+
+Evento mínimo protegido:
+
+```ts
+type SiteAssignmentDenialAudit = {
+  reason_code: "AUTH_SITE_ASSIGNMENT_REQUIRED";
+  internal_cause: SiteAssignmentInternalCause;
+  correlation_id: string;
+  actor_kind: "EMPLOYEE";
+  actor_id: string;
+  app_code: string;
+  permission_code_hash: string | null;
+  assignment_dependency: string;
+  target_site_hash: string | null;
+  assignment_snapshot_version: string;
+  context_version: string;
+  decision_version: string;
+  occurred_at: string;
+};
+```
+
+La auditoría no almacenará tokens, cookies, cuerpos completos, PIN, rutas con
+secretos ni datos personales innecesarios.
+
+Deberá distinguir:
+
+- ausencia confirmada;
+- asignación inactiva;
+- sede inactiva;
+- error de lectura;
+- configuración contradictoria;
+- denegación de permiso;
+- intento simulado;
+- actor de dispositivo.
+
+---
+
+#### 27. `SITE-ASSIGNMENT-APPLICATION-COVERAGE-REGISTER-001`
+
+| Aplicación | Identidad o superficie                     | Regla de `AUTH-ERR-005`                                                                                                        | Estado documental |
+| ---------- | ------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------ | ----------------- |
+| `shell`    | hub laboral y superficies transversales    | el ingreso al hub no exige sede; funciones territoriales sí cuando su contrato lo indique                                      | ESPECIFICADO      |
+| `anima`    | asistencia y administración laboral        | abrir ANIMA no exige sede por sí solo; check-in, turno o administración local pueden exigir asignación compatible              | ESPECIFICADO      |
+| `aura`     | aplicación administrativa diferida         | no se presupone requisito; deberá declararse por acción antes de habilitarla                                                   | ESPECIFICADO      |
+| `viso`     | administración global y local              | capacidades organizacionales pueden usar `NONE`; gestión local exige la asignación que declare el contrato                     | ESPECIFICADO      |
+| `nexo`     | inventario, remisiones y logística         | acciones sobre sede o recurso local pueden depender de `AS`, `SS`, `AST` o `CTX`; catálogos organizacionales no por inferencia | ESPECIFICADO      |
+| `fogo`     | producción y recetas                       | ejecución local puede exigir sede asignada; definición organizacional de recetas no necesariamente                             | ESPECIFICADO      |
+| `origo`    | compras, proveedores y recepciones         | recepción o compra local puede exigir asignación; catálogo de proveedores no por inferencia                                    | ESPECIFICADO      |
+| `pulso`    | operación POS                              | la sede operativa proviene del contexto; asignación permanente solo cuando el contrato del actor lo exige                      | ESPECIFICADO      |
+| `numera`   | costos, finanzas y reportes                | reportes organizacionales no requieren sede; operaciones locales podrán exigirla explícitamente                                | ESPECIFICADO      |
+| `pass`     | cliente y superficies laborales auxiliares | cliente no usa sede laboral; una superficie interna aplica solo a identidad empleado y contrato explícito                      | ESPECIFICADO      |
+
+La tabla no habilita acciones ni modifica los contratos de cada permiso. La
+implementación deberá consumir las decisiones funcionales y de recurso
+aprobadas para cada capacidad.
+
+---
+
+#### 28. Snapshot físico desplegado
+
+Inspección de solo lectura en `vento-os-dev`:
+
+| Métrica física                                        | Resultado observado |
+| ----------------------------------------------------- | ------------------: |
+| empleados activos                                     |                  42 |
+| filas `employee_sites`                                |                  91 |
+| filas activas                                         |                  91 |
+| filas inactivas                                       |                   0 |
+| filas para empleados activos                          |                  74 |
+| filas para empleados inactivos                        |                  17 |
+| empleados activos sin fila                            |                   0 |
+| empleados activos sin asignación activa               |                   0 |
+| empleados activos sin asignación utilizable           |                   0 |
+| empleados activos con una asignación utilizable       |                  22 |
+| empleados activos con varias asignaciones utilizables |                  20 |
+| empleados activos sin primaria activa                 |                   0 |
+| empleados activos con varias primarias activas        |                   0 |
+| sedes totales                                         |                   7 |
+| sedes activas                                         |                   7 |
+| sedes inactivas                                       |                   0 |
+| asignaciones activas hacia sede inactiva              |                   0 |
+| empleados con `selected_site_id`                      |                  59 |
+| selecciones fuera de asignaciones activas             |                   0 |
+| selecciones hacia sede inactiva o ausente             |                   0 |
+
+Conclusiones permitidas:
+
+1. no existe hoy evidencia de un empleado activo sin asignación utilizable;
+2. el escenario sigue siendo necesario para cambios, migraciones, revocaciones,
+   recursos de otras sedes y estados intermedios;
+3. la consistencia actual está reforzada por sincronización legacy;
+4. las cifras no prueban que cada función y política produzca la causa correcta;
+5. el snapshot no autoriza eliminar el bloqueo ni marcar pruebas como cumplidas.
+
+---
+
+#### 29. Resolución física actual de sede
+
+Se observaron seis helpers centrales:
+
+| Helper                              | Comportamiento desplegado relevante                                                                     | Brecha contractual                                                |
+| ----------------------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `can_access_site`                   | permite por nombre de rol, `employee_sites` o `employees.site_id`; acepta empleado con `is_active null` | mezcla asignación, rol, legacy y actividad                        |
+| `current_employee_primary_site_id`  | toma primaria sin filtrar actividad y cae a `employees.site_id`                                         | primaria y legacy sustituyen resolución canónica                  |
+| `current_employee_selected_site_id` | usa selección y cae a primaria                                                                          | preferencia se convierte en contexto efectivo                     |
+| `current_employee_site_id`          | alias de sede seleccionada                                                                              | nombre sugiere hecho laboral, pero devuelve preferencia           |
+| `get_operational_context`           | combina parámetro, selección, check-in, turno y `employees.site_id`                                     | no emite causa tipada de asignación ausente                       |
+| `get_effective_context_v1`          | hereda el contexto anterior                                                                             | no expone conjunto canónico de asignaciones ni requisito aplicado |
+
+También se observó:
+
+- `employees.site_id` es físicamente `NOT NULL`;
+- un trigger de `employees` crea o reactiva una fila primaria de
+  `employee_sites` y actualiza la selección;
+- un trigger de `employee_sites` selecciona una primaria y escribe de vuelta en
+  `employees.site_id` y `employee_settings`;
+- retirar la última asignación entra en tensión con el `NOT NULL` legacy;
+- la base actual fuerza una representación de sede incluso donde el modelo
+  canónico debería poder expresar ausencia y bloquear de forma tipada.
+
+---
+
+#### 30. Dependencias físicas de resolución territorial
+
+Inventario agregado observado:
+
+| Dependencia                                                       | Cantidad |
+| ----------------------------------------------------------------- | -------: |
+| funciones que referencian `employee_sites`                        |       11 |
+| funciones que referencian semántica legacy de `employees.site_id` |       32 |
+| funciones que referencian `selected_site_id`                      |        8 |
+| funciones que referencian `can_access_site`                       |        9 |
+| funciones que referencian `current_employee_site_id`              |        3 |
+| funciones distintas dependientes de resolución de sede            |       39 |
+| políticas que referencian `employee_sites`                        |       13 |
+| políticas que referencian `can_access_site`                       |       44 |
+| políticas que referencian `current_employee_site_id`              |       11 |
+| políticas distintas dependientes de resolución de sede            |       68 |
+| tablas cubiertas por esas políticas                               |       40 |
+
+Estas cifras describen dependencia, no vulnerabilidad demostrada en cada
+objeto. La certificación deberá evaluar la cadena transitiva y la razón pública
+producida.
+
+---
+
+#### 31. Consumidoras físicas observadas
+
+Se observaron lecturas directas o reconstrucciones de `employee_sites` en al
+menos los siguientes repositorios:
+
+| Repositorio   | Superficies observadas                                         | Riesgo de deriva                                    |
+| ------------- | -------------------------------------------------------------- | --------------------------------------------------- |
+| `vento-shell` | plantilla compartida y Edge Function de invitaciones           | contrato central no distribuido todavía             |
+| `vento-nexo`  | inicio, kiosco, inventario y role override                     | selección o fallback local puede sustituir contexto |
+| `vento-viso`  | personal, asistencia, programación, auditoría y mapa operativo | varias pantallas reconstruyen cobertura             |
+| `vento-origo` | sesión operativa y órdenes de compra                           | resolución local de sede y empleado                 |
+| `vento-fogo`  | shell visual y edición de recetas                              | selección local vinculada a experiencia             |
+| `vento-anima` | edición de equipo                                              | asignaciones administradas fuera de un SDK único    |
+| `vento-pass`  | hook de sedes de empleado                                      | riesgo de mezclar identidad cliente y laboral       |
+
+Este registro no afirma que cada coincidencia sea un defecto explotable. Exige
+migrar decisiones de autorización hacia contratos compartidos sin eliminar
+interfaces legítimas de administración de asignaciones.
+
+---
+
+#### 32. `SITE-ASSIGNMENT-PHYSICAL-RECONCILIATION-001`
+
+| ID             | Brecha física                                                                                                    | Estado       | Tarea responsable                                             | Condición de salida                                                                                        |
+| -------------- | ---------------------------------------------------------------------------------------------------------------- | ------------ | ------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| `SITE-GAP-001` | `employees.site_id NOT NULL` impide representar limpiamente ausencia de asignación                               | IDENTIFICADO | `AUTH-DB-033`                                                 | contexto canónico representa cero asignaciones sin inventar sede y compatibilidad legacy queda documentada |
+| `SITE-GAP-002` | trigger de `employees` crea o reactiva asignación primaria automáticamente                                       | IDENTIFICADO | `AUTH-DB-033`                                                 | migración versionada distingue proyección legacy de fuente canónica y prueba alta, cambio y ausencia       |
+| `SITE-GAP-003` | trigger de `employee_sites` escribe primaria, legacy y selección; la última baja entra en tensión con `NOT NULL` | IDENTIFICADO | `AUTH-DB-033`; `AUTH-DB-035`                                  | baja y revocación son deterministas, invalidan contexto y no crean fallback                                |
+| `SITE-GAP-004` | `current_employee_primary_site_id` omite actividad y cae a legacy                                                | IDENTIFICADO | `AUTH-DB-033`                                                 | resolver certificado filtra vigencia y no usa legacy como autoridad                                        |
+| `SITE-GAP-005` | `current_employee_selected_site_id` convierte preferencia en fallback efectivo                                   | IDENTIFICADO | `AUTH-DB-033`; `SHELL-AUTH-002`                               | selección se valida y permanece separada de asignación                                                     |
+| `SITE-GAP-006` | `current_employee_site_id` oculta que devuelve selección o primaria                                              | IDENTIFICADO | `AUTH-DB-033`; `SHELL-AUTH-005`                               | consumidoras usan nodos tipados de `AccessContext`                                                         |
+| `SITE-GAP-007` | `can_access_site` contiene bypass por rol, fallback legacy y actividad nullable permisiva                        | IDENTIFICADO | `AUTH-DB-034`                                                 | evaluación unificada elimina bypasses y devuelve explicación tipada                                        |
+| `SITE-GAP-008` | `get_operational_context` acepta parámetro, selección, turno, check-in y legacy sin gate de asignación tipado    | IDENTIFICADO | `AUTH-DB-033`; `AUTH-DB-034`                                  | contexto separa hechos y evaluador aplica requisito explícito                                              |
+| `SITE-GAP-009` | `get_effective_context_v1` no expone asignaciones ni razón de ausencia                                           | IDENTIFICADO | `AUTH-DB-033`                                                 | `AccessContext` versionado incluye conjunto y procedencia                                                  |
+| `SITE-GAP-010` | `has_permission` reduce contexto ausente a `false` o usa sede seleccionada                                       | IDENTIFICADO | `AUTH-DB-034`; `SHELL-AUTH-001`                               | decisión discriminada conserva causa antes de proyectar booleano legado                                    |
+| `SITE-GAP-011` | 39 funciones dependen de fuentes mixtas de sede                                                                  | IDENTIFICADO | `SHELL-AUTH-004`; `SHELL-AUTH-005`                            | inventario completo clasificado, migrado o justificado y gate estático activo                              |
+| `SITE-GAP-012` | 68 políticas sobre 40 tablas dependen de helpers mixtos                                                          | IDENTIFICADO | `AUTH-DB-034`; `SHELL-CI-018`                                 | cadena RLS certificada para ausencia, actividad y alcance sin fuga de filas                                |
+| `SITE-GAP-013` | siete repositorios reconstruyen asignaciones o selección localmente                                              | IDENTIFICADO | `SHELL-AUTH-002`; `SHELL-AUTH-005`                            | consumidoras usan SDK/adapters y pruebas contractuales compartidas                                         |
+| `SITE-GAP-014` | no existe catálogo compartido de mensaje, auditoría, frescura y canales para esta razón                          | IDENTIFICADO | `AUTH-ERR-020`; `AUTH-DB-035`; `SHELL-CI-016`; `SHELL-CI-019` | código, copy, invalidación y evidencia son uniformes en canales aplicables                                 |
+
+No se crean tareas nuevas. Cada brecha queda vinculada a una tarea existente y
+no se declara implementada.
+
+---
+
+#### 33. Handoff de implementación
+
+La implementación futura deberá producir como mínimo:
+
+```text
+AccessContext versionado
++
+assigned_sites autoritativas y trazables
++
+requisito territorial explícito
++
+AuthorizationDecision discriminada
++
+invalidación por cambios de asignación
++
+SDK y adapters compartidos
++
+mensajes compartidos
++
+pruebas contractuales, RPC, RLS, integración y E2E
+```
+
+Tareas propietarias:
+
+- `AUTH-DB-033`: resolver contexto, asignaciones, procedencia y compatibilidad;
+- `AUTH-DB-034`: evaluar requisito, precedencia, permiso, scope y recurso;
+- `AUTH-DB-035`: invalidar decisiones y suscripciones;
+- `SHELL-AUTH-001`: publicar contrato y SDK;
+- `SHELL-AUTH-002`: adaptar navegación, acciones, API, RPC y clientes;
+- `SHELL-AUTH-004`: lint, métricas y gates de dependencia;
+- `SHELL-AUTH-005`: migrar consumidoras;
+- `AUTH-ERR-017` a `AUTH-ERR-020`: configuración, catálogo, técnica y mensajes;
+- `SHELL-CI-016`, `SHELL-CI-018` y `SHELL-CI-019`: pruebas y evidencia.
+
+Toda migración de Supabase se creará, versionará y ejecutará desde
+`vento-shell`.
+
+---
+
+#### 34. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+| ID              | Regla protegida                                                                                                                    | Tipo                                  | Prioridad | Momento de implementación | Destino                                                            |
+| --------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | --------- | ------------------------- | ------------------------------------------------------------------ |
+| `TREQ-AUTH-169` | Una acción que exige sede y no encuentra asignación compatible produce código, `403`, deny y cero efectos.                         | contractual + seguridad               | crítica   | evaluador territorial     | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-CI-016`                       |
+| `TREQ-AUTH-170` | La dependencia de asignación se deriva de `NT`, `ORG`, `G`, `AS`, `SS`, `AST`, `TST` y `CTX` sin crear una clasificación paralela. | contractual + contexto                | crítica   | catálogo y evaluador      | `AUTH-CAT-011`; `AUTH-DB-034`; `SHELL-CI-016`                      |
+| `TREQ-AUTH-171` | Primaria, selección, turno, recurso, dispositivo y `employees.site_id` no sustituyen `assigned_sites`.                             | contexto + regresión                  | crítica   | resolver y adapters       | `AUTH-DB-033`; `SHELL-AUTH-002`; `SHELL-AUTH-005`                  |
+| `TREQ-AUTH-172` | Ausencia de relación, asignación inactiva, sede inactiva y configuración ambigua conservan razones distintas.                      | contractual + seguridad               | crítica   | evaluador y mensajes      | `AUTH-ERR-006`; `AUTH-ERR-017`; `AUTH-ERR-019`; `AUTH-DB-034`      |
+| `TREQ-AUTH-173` | La falta de asignación precede al scope mismatch y no se reduce a un booleano de permiso.                                          | autorización + integración            | crítica   | evaluador unificado       | `AUTH-DB-034`; `SHELL-AUTH-001`; `SHELL-AUTH-002`                  |
+| `TREQ-AUTH-174` | Diez canales aplican respuesta equivalente sin datos parciales, login loop, reintentos ni efectos.                                 | integración + E2E                     | crítica   | adapters y consumidoras   | `SHELL-AUTH-002`; `SHELL-AUTH-005`; `SHELL-CI-018`                 |
+| `TREQ-AUTH-175` | Dispositivo, simulación, servicio y cliente no fabrican una asignación laboral ni autoridad humana.                                | seguridad + dispositivo + simulación  | crítica   | contexto y migración      | `AUTH-DB-033`; `AUTH-DB-034`; `SHELL-AUTH-005`                     |
+| `TREQ-AUTH-176` | La UI usa copy exacto, conserva sesión y no expone sede, permiso, recurso, rol o asignaciones.                                     | interfaz + privacidad + accesibilidad | alta      | mensajes compartidos      | `AUTH-ERR-020`; `SHELL-AUTH-005`; `SHELL-CI-016`                   |
+| `TREQ-AUTH-177` | Altas, bajas y cambios de asignación invalidan contexto y se revalidan antes del efecto y de Realtime.                             | concurrencia + auditoría              | crítica   | frescura y observabilidad | `AUTH-DB-035`; `SHELL-AUTH-004`; `SHELL-CI-019`                    |
+| `TREQ-AUTH-178` | La regresión reconcilia snapshot, 39 funciones, 68 políticas, 40 tablas, siete repositorios y catorce brechas.                     | regresión + RPC + RLS + estática      | crítica   | gates y evidencia E5      | `SHELL-AUTH-004`; `SHELL-AUTH-005`; `SHELL-CI-018`; `SHELL-CI-019` |
+
+El detalle canónico de estas filas se incorpora al registro completo `04A`.
+
+---
+
+#### 35. Validaciones documentales definidas
+
+El validador futuro deberá comprobar como mínimo:
+
+1. código público único;
+2. estado no navegacional `403`;
+3. `DENY` y `executable=false`;
+4. cinco causas internas exhaustivas;
+5. cinco perfiles derivados de dependencia;
+6. aplicación solo ante requisito explícito;
+7. acciones organizacionales no bloqueadas por inferencia;
+8. asignación separada de actividad;
+9. asignación separada de primaria;
+10. asignación separada de selección;
+11. asignación separada de turno y check-in;
+12. asignación separada de recurso;
+13. asignación separada de dispositivo;
+14. `employees.site_id` tratado como legacy;
+15. ausencia concluyente separada de error técnico;
+16. configuración contradictoria separada de ausencia;
+17. sede inactiva reservada a `AUTH-ERR-006`;
+18. permiso y scope evaluados después del territorio resoluble;
+19. cero bypass por nombre de rol;
+20. cero autoridad por scope global aislado;
+21. actor de dispositivo revalidado;
+22. simulación sin efectos;
+23. Pass cliente no bloqueado por identidad laboral ajena;
+24. diez canales completos;
+25. veinte escenarios completos;
+26. diez aplicaciones registradas;
+27. snapshot de 42 empleados reconciliado;
+28. 91 asignaciones reconciliadas;
+29. 7 sedes reconciliadas;
+30. 39 funciones clasificadas;
+31. 68 políticas y 40 tablas clasificadas;
+32. siete repositorios consumidores reconciliados;
+33. catorce brechas con propietario y salida;
+34. copy exacto y accesible;
+35. no exposición de territorio o asignaciones;
+36. sesión conservada;
+37. cero reintento automático;
+38. invalidación y revalidación;
+39. auditoría minimizada;
+40. diez TREQ consecutivos y resolubles.
+
+---
+
+#### 36. Fuera del alcance
+
+AUTH-ERR-005 no:
+
+- crea, retira o reactiva asignaciones;
+- cambia sedes primarias;
+- cambia selecciones de navegación;
+- modifica `employees.site_id`;
+- modifica `employee_sites`;
+- modifica `employee_settings`;
+- cambia constraints o triggers;
+- agrega columnas al catálogo;
+- define el contrato de sede inactiva;
+- aprueba `AUTH-ERR-006`;
+- define área asignada o activa;
+- cambia turnos o check-ins;
+- concede permisos;
+- modifica scopes;
+- implementa `AccessContext`;
+- implementa `AuthorizationDecision`;
+- corrige funciones SQL;
+- modifica RLS;
+- modifica Edge Functions;
+- modifica aplicaciones;
+- implementa mensajes compartidos;
+- ejecuta migraciones;
+- ejecuta DDL o DML;
+- crea datos de prueba;
+- despliega código;
+- escribe en GitHub;
+- ejecuta pruebas operativas.
+
+---
+
+#### 37. Criterios de aceptación
+
+1. `AUTH_SITE_ASSIGNMENT_REQUIRED` es el único código público de la tarea.
+2. La razón pertenece a contexto de autorización y no a autenticación.
+3. La sesión permanece válida.
+4. La identidad laboral ya está activa.
+5. El acceso a aplicación ya fue permitido.
+6. La evaluación deriva un perfil distinto de `NO_ASSIGNMENT_DEPENDENCY`.
+7. La fuente de asignaciones fue resuelta concluyentemente.
+8. Cero asignaciones compatibles producen `DENY`.
+9. La respuesta no navegacional usa `403`.
+10. La decisión usa `executable=false` y cero efectos.
+11. Las cinco causas internas están definidas y no se exponen.
+12. Los cinco perfiles derivados y su mapeo canónico están definidos.
+13. Una acción organizacional no se bloquea por ausencia de sede.
+14. Un permiso global no crea ni exige asignación por sí solo.
+15. `employees.site_id` no sustituye la relación canónica.
+16. La sede primaria no concede autoridad.
+17. La sede seleccionada no concede autoridad.
+18. La sede del turno no crea asignación permanente.
+19. La sede del check-in no crea asignación permanente.
+20. La sede del recurso no crea asignación.
+21. La sede del dispositivo no se transfiere al actor.
+22. Un parámetro del cliente no crea asignación.
+23. El nombre de rol no crea asignación.
+24. Ausencia de primaria con otras asignaciones no produce esta razón.
+25. Ausencia de selección con otras asignaciones no produce esta razón.
+26. Asignación inactiva conserva razón de `AUTH-ERR-006`.
+27. Sede inactiva conserva razón de `AUTH-ERR-006`.
+28. Error de lectura conserva razón técnica.
+29. Ambigüedad conserva razón de configuración.
+30. Permiso no registrado conserva `AUTH-ERR-018`.
+31. Scope mismatch solo se evalúa con contexto resoluble.
+32. `has_permission=false` no basta para elegir mensaje.
+33. Dispositivo compartido conserva identidad técnica.
+34. Actor de dispositivo no hereda sede del terminal.
+35. Simulación produce solo resultado hipotético.
+36. Override no modifica asignaciones reales.
+37. Cliente Pass no necesita sede laboral para capacidad cliente.
+38. Servicio técnico no recibe sede laboral ficticia.
+39. Los diez canales poseen decisión explícita.
+40. La UI usa el copy exacto aprobado.
+41. La UI no muestra sede requerida o asignaciones actuales.
+42. La acción principal vuelve a Vento OS.
+43. La acción secundaria solo usa una ruta segura.
+44. La UI no ofrece autoasignación.
+45. No existe reintento automático.
+46. Cambios de asignación invalidan decisiones.
+47. La mutación revalida antes del efecto.
+48. Realtime deja de entregar datos incompatibles.
+49. La auditoría distingue cinco causas internas.
+50. Las diez aplicaciones poseen decisión documental.
+51. El snapshot conserva 42 empleados activos y cero casos actuales sin asignación utilizable.
+52. Las 91 filas físicas se registran sin declararlas modelo final.
+53. Las 39 funciones se tratan como dependencias, no como conformidad.
+54. Las 68 políticas y 40 tablas se tratan como cadena a certificar.
+55. Los siete repositorios consumidores no se declaran migrados.
+56. Las catorce brechas tienen tarea responsable y condición de salida.
+57. Ninguna brecha se declara implementada.
+58. Se generan `TREQ-AUTH-169` a `TREQ-AUTH-178`.
+59. Las 6566 filas históricas se conservan sin modificación.
+60. No se modifica código, Supabase, datos ni repositorios remotos.
+61. `AUTH-ERR-006` permanece reservada.
+
+---
+
+#### 38. Cierre de tarea y continuidad
+
+| Tarea          | Estado      | Relación                                                      |
+| -------------- | ----------- | ------------------------------------------------------------- |
+| `AUTH-ERR-004` | APROBADA    | tarea anterior                                                |
+| `AUTH-ERR-005` | APROBADA    | tarea actual preparada para confirmación canónica del usuario |
+| `AUTH-ERR-006` | NO INICIADA | tarea siguiente reservada                                     |
+
+```text
+AUTH-ERR-004 — APROBADA
+        ↓
+AUTH-ERR-005 — APROBADA
+        ↓
+AUTH-ERR-006 — RESERVADA
+```
+
+No se inicia ni modifica `AUTH-ERR-006` en esta tarea.
+
+
 ### [ ] AUTH-ERR-006 — Sin sede activa
 ### [ ] AUTH-ERR-007 — Sin área asignada
 ### [ ] AUTH-ERR-008 — Sin área activa
