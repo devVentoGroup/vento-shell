@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **547** |
+| Aprobadas | **548** |
 | En propuesta | **0** |
-| No iniciadas | **1047** |
+| No iniciadas | **1046** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **34.32% (547/1594)** |
+| Porcentaje de completamiento | **34.38% (548/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NEXO-UX-001` — Inventariar procesos reales de inventario y logística | ✅ APROBADA |
-| Tarea actual | `NEXO-UX-002` — Separar operación, supervisión y configuración | ⬜ NO INICIADA |
-| Siguiente reservada | `NEXO-UX-003` — Diseñar inicio para solicitante | ⬜ NO INICIADA |
+| Última aprobada | `NEXO-UX-002` — Separar operación, supervisión y configuración | ✅ APROBADA |
+| Tarea actual | `NEXO-UX-003` — Diseñar inicio para solicitante | ⬜ NO INICIADA |
+| Siguiente reservada | `NEXO-UX-004` — Diseñar inicio para bodeguero | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -957,7 +957,7 @@
 | ⬜ NO INICIADA | `NEXO-AUTH-031` | Proteger instalaciones, mantenimiento, limpieza, inspecciones, calibración, acceso físico y obras | `bloques/K_NEXO/03_AUTORIZACION_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-AUTH-032` | Separar reporte, solicitud, aprobación, ejecución, verificación, liberación, cierre y reapertura | `bloques/K_NEXO/03_AUTORIZACION_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-001` | Inventariar procesos reales de inventario y logística | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
-| ⬜ NO INICIADA | `NEXO-UX-002` | Separar operación, supervisión y configuración | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
+| ✅ APROBADA | `NEXO-UX-002` | Separar operación, supervisión y configuración | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-003` | Diseñar inicio para solicitante | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-004` | Diseñar inicio para bodeguero | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-005` | Diseñar inicio para conductor | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |

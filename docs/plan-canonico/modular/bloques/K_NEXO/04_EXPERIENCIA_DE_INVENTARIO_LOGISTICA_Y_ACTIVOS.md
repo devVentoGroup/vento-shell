@@ -849,7 +849,389 @@ continuidad normal de `NEXO-DOM-002` a `NEXO-DOM-038` permanece preservada y
 no se modifica en esta tarea.
 
 
-### [ ] NEXO-UX-002 — Separar operación, supervisión y configuración
+### ✅ NEXO-UX-002 — Separar operación, supervisión y configuración
+
+**Estado:** APROBADA
+**Tarea anterior:** NEXO-UX-001 — Inventariar procesos reales de inventario y logística
+**Tarea siguiente:** NEXO-UX-003 — Diseñar inicio para solicitante
+**Tipo de tarea:** Documental
+**Bloque:** BLOQUE K — NEXO
+**Mini-bloque:** Experiencia de inventario, logística y activos
+**Fase:** Diseño funcional de experiencia, sin implementación física
+**Repositorio propietario:** `devVentoGroup/vento-shell`
+**Aplicación analizada:** `devVentoGroup/vento-nexo`
+**Cambios en código, migraciones, Supabase, permisos, rutas o despliegues:** no autorizados ni ejecutados
+
+**Artefactos canónicos producidos:**
+
+- `NEXO-UX-LANE-CONTRACT-001`;
+- `NEXO-ASIS-STAGE-LANE-MATRIX-001`;
+- `NEXO-ROUTE-LANE-DISPOSITION-001`;
+- `NEXO-LANE-NAVIGATION-HANDOFF-001`.
+
+---
+
+#### 1. Propósito
+
+Separar de forma explícita el trabajo operativo, el control supervisor y la administración de configuración dentro de NEXO, de modo que cada actor encuentre las tareas que le corresponden sin recibir facultades implícitas, pantallas mezcladas ni acciones incompatibles en una misma proyección de experiencia.
+
+La separación se aplica a las **40 etapas AS-IS** aprobadas en `NEXO-UX-001` y a las **64 rutas reales** inventariadas para NEXO. No cambia todavía rutas, navegación, permisos, componentes, tablas ni comportamiento ejecutable.
+
+```text
+PROCESO Y ETAPA CANÓNICOS
+        +
+RUTA O SUPERFICIE ACTUAL
+        ↓
+CARRIL FUNCIONAL EXPLÍCITO
+        ↓
+OPERACIÓN | SUPERVISIÓN | CONFIGURACIÓN
+        +
+SEPARACIÓN EXPLÍCITA CUANDO UNA SUPERFICIE MEZCLA AUTORIDADES
+```
+
+---
+
+#### 2. Resultado obligatorio
+
+La tarea produce una clasificación materializada y reconciliada que:
+
+1. asigna exactamente un carril a cada etapa AS-IS;
+2. asigna exactamente una disposición a cada ruta real;
+3. identifica los puntos que requieren separación visible de captura, decisión, publicación o cierre;
+4. preserva la autorización de servidor como autoridad independiente de la clasificación visual;
+5. evita que configuración aparezca en el flujo primario de personal operativo;
+6. evita que supervisión modifique hechos operativos sin decisión y evidencia explícitas;
+7. conserva referencias de solo lectura cuando una tarea operativa necesita contexto supervisor;
+8. entrega handoffs exactos a las tareas posteriores del mismo mini-bloque.
+
+---
+
+#### 3. Fuentes canónicas y técnicas consumidas
+
+- `01_PROTOCOLO.md`;
+- `delivery-contract.json`;
+- `active-sequence.json`;
+- `execution-route.json`;
+- `priority-route-progress.json`;
+- `NEXO-UX-001 — Inventariar procesos reales de inventario y logística`;
+- `NEXO-DOM-001 — Clasificar consumibles, stock por cantidad, activos, reutilizables, LPN y costo`;
+- `PROC-CAT-004` a `PROC-CAT-008`;
+- `AUTH-UI-001`;
+- `AUTH-UI-015` a `AUTH-UI-018`;
+- inventario de rutas y clasificación funcional vigente de BLOQUE I;
+- `devVentoGroup/vento-nexo`, rama `main`, incluyendo el inicio actual y sus secciones `operate`, `verify`, `configure` y `utilities`.
+
+---
+
+#### 4. `NEXO-UX-LANE-CONTRACT-001`
+
+##### 4.1. Carriles canónicos
+
+| Carril                 | Definición                                                                                                            | Puede contener                                                                        | No puede contener                                                               |
+| ---------------------- | --------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `OPERACION`            | Trabajo activo sobre un caso, existencia, ubicación, documento o custodia concretos.                                  | captura, ejecución física, confirmación de etapa, consulta contextual de solo lectura | gobierno de políticas, edición de maestros, aprobación implícita de excepciones |
+| `SUPERVISION`          | Control de colas, diferencias, excepciones, cumplimiento y decisiones que condicionan o corrigen la operación.        | seguimiento, investigación, autorización, priorización, cierre de control             | mutación silenciosa de hechos operativos, configuración reutilizable            |
+| `CONFIGURACION`        | Gobierno de datos maestros, políticas, rutas, unidades, capacidades de sede, dispositivos y parámetros reutilizables. | creación, edición, activación, versionado y retiro controlado de configuración        | ejecución de un caso operativo concreto, cierre de una excepción operativa      |
+| `TRANSVERSAL_TECNICA`  | Acceso, redirección, deep link o utilidad compartida que no constituye por sí misma un carril empresarial.            | autenticación, resolución de destino, escaneo contextual                              | autoridad funcional propia                                                      |
+| `SEPARACION_EXPLICITA` | Condición temporal de una etapa o ruta que hoy reúne acciones pertenecientes a más de un carril.                      | lectura compartida y proyecciones diferenciadas por actor                             | una sola acción o pantalla con autoridad ambigua                                |
+
+##### 4.2. Invariantes
+
+1. El carril funcional no concede permisos; la autorización de servidor continúa siendo la autoridad ejecutable.
+2. Una pantalla operativa puede consultar referencias maestras, pero no modificarlas desde el flujo ordinario.
+3. Una pantalla supervisora puede investigar y decidir, pero no reescribir hechos ni saldos sin una transición explícita y auditable.
+4. Una pantalla de configuración no forma parte del inicio predeterminado de solicitantes, preparadores, conductores o receptores.
+5. Una misma entidad puede tener vistas de lectura en varios carriles, pero cada acción de mutación pertenece a uno solo.
+6. Las rutas de redirección y deep links heredan el carril de la superficie destino.
+7. `utilities` no constituye un cuarto carril empresarial; cada utilidad se invoca desde el contexto que la necesita.
+8. Esta tarea no renombra rutas ni modifica el código actual.
+
+##### 4.3. Tratamiento del inicio actual
+
+| Sección actual | Decisión canónica                                                                                                                                              |
+| -------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `operate`      | Se convierte en la fuente del carril `OPERACION` y se proyecta por actor en `NEXO-UX-003` a `NEXO-UX-006`.                                                     |
+| `verify`       | Se divide entre `SUPERVISION` y referencias contextuales de solo lectura dentro de una tarea operativa. No mantiene acciones de control mezcladas con captura. |
+| `configure`    | Se conserva exclusivamente como `CONFIGURACION`, fuera del inicio predeterminado de personal operativo.                                                        |
+| `utilities`    | Se distribuye como herramienta contextual; escáner, impresión o búsqueda no obtienen autoridad funcional independiente.                                        |
+
+---
+
+#### 5. `NEXO-ASIS-STAGE-LANE-MATRIX-001`
+
+##### 5.1. Reconciliación cuantitativa
+
+| Métrica                              | Resultado |
+| ------------------------------------ | --------: |
+| Etapas esperadas desde `NEXO-UX-001` |    **40** |
+| Etapas materializadas                |    **40** |
+| Identificadores únicos               |    **40** |
+| Faltantes                            |     **0** |
+| Duplicados                           |     **0** |
+| `OPERACION`                          |    **22** |
+| `SUPERVISION`                        |     **9** |
+| `CONFIGURACION`                      |     **4** |
+| `SEPARACION_EXPLICITA`               |     **5** |
+
+##### 5.2. Decisión por etapa
+
+| Etapa            | Proceso      | Trabajo real                                                    | Carril                 | Estado         | Decisión materializada                                                                                                                                              | Tarea de salida |
+| ---------------- | ------------ | --------------------------------------------------------------- | ---------------------- | -------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------- |
+| `VPROC-0023-E01` | `VPROC-0023` | Crear o editar LOC                                              | `CONFIGURACION`        | `ESPECIFICADO` | La identidad y los atributos reutilizables de una LOC pertenecen a configuración.                                                                                   | `NEXO-UX-015`   |
+| `VPROC-0023-E02` | `VPROC-0023` | Crear zonas, niveles y posiciones                               | `CONFIGURACION`        | `ESPECIFICADO` | La estructura física reutilizable se mantiene fuera de la operación diaria.                                                                                         | `NEXO-UX-015`   |
+| `VPROC-0023-E03` | `VPROC-0023` | Definir productos permitidos por ubicación                      | `CONFIGURACION`        | `ESPECIFICADO` | La regla de elegibilidad es una política reutilizable y versionable.                                                                                                | `NEXO-UX-015`   |
+| `VPROC-0023-E04` | `VPROC-0023` | Consultar stock por sede, LOC o posición                        | `SUPERVISION`          | `ESPECIFICADO` | La consulta consolidada se usa para control, investigación y priorización; la consulta contextual de una tarea operativa permanece como referencia de solo lectura. | `NEXO-UX-007`   |
+| `VPROC-0023-E05` | `VPROC-0023` | Abrir una ubicación mediante tablero, kiosco o código           | `OPERACION`            | `ESPECIFICADO` | La apertura contextual inicia trabajo sobre una ubicación concreta sin alterar su configuración.                                                                    | `NEXO-UX-004`   |
+| `VPROC-0024-E01` | `VPROC-0024` | Registrar una entrada de emergencia                             | `OPERACION`            | `ESPECIFICADO` | Captura un hecho físico excepcional sobre un caso concreto.                                                                                                         | `NEXO-UX-014`   |
+| `VPROC-0024-E02` | `VPROC-0024` | Registrar una entrada correlacionada con orden de compra        | `OPERACION`            | `ESPECIFICADO` | Materializa la recepción física vinculada a una referencia aprobada.                                                                                                | `NEXO-UX-014`   |
+| `VPROC-0024-E03` | `VPROC-0024` | Capturar producto, cantidad, unidad y costo                     | `OPERACION`            | `ESPECIFICADO` | Registra datos del hecho recibido; no define unidades ni políticas maestras.                                                                                        | `NEXO-UX-014`   |
+| `VPROC-0024-E04` | `VPROC-0024` | Asignar LOC de almacenamiento                                   | `OPERACION`            | `ESPECIFICADO` | Decide el destino físico de la existencia recibida dentro del caso.                                                                                                 | `NEXO-UX-015`   |
+| `VPROC-0024-E05` | `VPROC-0024` | Asignar posición interna                                        | `OPERACION`            | `ESPECIFICADO` | Completa la ubicación física de la existencia sin modificar la estructura de posiciones.                                                                            | `NEXO-UX-015`   |
+| `VPROC-0024-E06` | `VPROC-0024` | Publicar, corregir o reversar la entrada                        | `SEPARACION_EXPLICITA` | `BLOQUEADO`    | Publicar pertenece a operación; revisar y autorizar corrección o reversión pertenece a supervisión. Deben existir acciones y evidencia separadas.                   | `NEXO-UX-022`   |
+| `VPROC-0025-E01` | `VPROC-0025` | Identificar sede, LOC, posición y producto                      | `OPERACION`            | `ESPECIFICADO` | Resuelve el contexto mínimo del movimiento que se ejecutará.                                                                                                        | `NEXO-UX-016`   |
+| `VPROC-0025-E02` | `VPROC-0025` | Elegir presentación o unidad de medida                          | `OPERACION`            | `ESPECIFICADO` | Selecciona una opción ya configurada para una transacción concreta.                                                                                                 | `NEXO-UX-016`   |
+| `VPROC-0025-E03` | `VPROC-0025` | Verificar disponibilidad y alcance                              | `OPERACION`            | `ESPECIFICADO` | La verificación contextual habilita o bloquea la acción sin convertirse en tablero supervisor.                                                                      | `NEXO-UX-016`   |
+| `VPROC-0025-E04` | `VPROC-0025` | Consumir stock general                                          | `OPERACION`            | `ESPECIFICADO` | Ejecuta un retiro o consumo identificado.                                                                                                                           | `NEXO-UX-017`   |
+| `VPROC-0025-E05` | `VPROC-0025` | Consumir desde posición o kiosco                                | `OPERACION`            | `ESPECIFICADO` | Ejecuta el retiro desde una ubicación física concreta.                                                                                                              | `NEXO-UX-017`   |
+| `VPROC-0025-E06` | `VPROC-0025` | Transferir entre LOC conservando historial                      | `OPERACION`            | `ESPECIFICADO` | Ejecuta un movimiento correlacionado entre origen y destino.                                                                                                        | `NEXO-UX-016`   |
+| `VPROC-0026-E01` | `VPROC-0026` | Abrir sesión de conteo                                          | `SUPERVISION`          | `ESPECIFICADO` | La apertura define un control formal, alcance y responsabilidad de verificación.                                                                                    | `NEXO-UX-018`   |
+| `VPROC-0026-E02` | `VPROC-0026` | Congelar alcance y stock de apertura                            | `SUPERVISION`          | `ESPECIFICADO` | Establece la línea base controlada contra la que se compararán observaciones.                                                                                       | `NEXO-UX-018`   |
+| `VPROC-0026-E03` | `VPROC-0026` | Registrar observación por producto                              | `OPERACION`            | `ESPECIFICADO` | El contador captura un hecho observado sin decidir el ajuste.                                                                                                       | `NEXO-UX-018`   |
+| `VPROC-0026-E04` | `VPROC-0026` | Registrar múltiples presentaciones o posiciones                 | `OPERACION`            | `ESPECIFICADO` | Completa la observación física usando opciones ya configuradas.                                                                                                     | `NEXO-UX-018`   |
+| `VPROC-0026-E05` | `VPROC-0026` | Calcular diferencia                                             | `SUPERVISION`          | `ESPECIFICADO` | La diferencia es información de control y no modifica por sí misma el saldo.                                                                                        | `NEXO-UX-018`   |
+| `VPROC-0026-E06` | `VPROC-0026` | Aplicar reconciliación o ajuste autorizado                      | `SEPARACION_EXPLICITA` | `BLOQUEADO`    | La investigación y autorización pertenecen a supervisión; la publicación del movimiento autorizado pertenece a operación controlada.                                | `NEXO-UX-019`   |
+| `VPROC-0026-E07` | `VPROC-0026` | Cerrar sesión y conservar historial                             | `SUPERVISION`          | `ESPECIFICADO` | El cierre confirma completitud del control y preserva evidencia.                                                                                                    | `NEXO-UX-018`   |
+| `VPROC-0027-E01` | `VPROC-0027` | Detectar alerta, daño, pérdida, merma o vencimiento             | `SEPARACION_EXPLICITA` | `BLOQUEADO`    | La captura puede originarse en operación o automatización; la clasificación y prioridad del caso pertenecen a supervisión.                                          | `NEXO-UX-022`   |
+| `VPROC-0027-E02` | `VPROC-0027` | Identificar producto, existencia, lote, LOC y condición         | `OPERACION`            | `ESPECIFICADO` | Materializa el objeto físico afectado y su contexto.                                                                                                                | `NEXO-UX-022`   |
+| `VPROC-0027-E03` | `VPROC-0027` | Poner en cuarentena o bloquear                                  | `SEPARACION_EXPLICITA` | `BLOQUEADO`    | La ejecución física es operación; la autoridad para imponer o levantar el bloqueo pertenece a supervisión.                                                          | `NEXO-UX-022`   |
+| `VPROC-0027-E04` | `VPROC-0027` | Evaluar condición, temperatura y aptitud                        | `SUPERVISION`          | `ESPECIFICADO` | Produce una evaluación de control sobre evidencia operativa.                                                                                                        | `NEXO-UX-022`   |
+| `VPROC-0027-E05` | `VPROC-0027` | Decidir liberación, merma, pérdida, rechazo o disposición       | `SUPERVISION`          | `ESPECIFICADO` | Es una decisión de control con impacto sobre disponibilidad y destino.                                                                                              | `NEXO-UX-022`   |
+| `VPROC-0027-E06` | `VPROC-0027` | Ejecutar movimiento físico y efecto de stock                    | `OPERACION`            | `ESPECIFICADO` | Materializa la decisión autorizada sin sustituirla.                                                                                                                 | `NEXO-UX-022`   |
+| `VPROC-0027-E07` | `VPROC-0027` | Conservar evidencia y cerrar caso                               | `SUPERVISION`          | `ESPECIFICADO` | Confirma resolución y mantiene trazabilidad de la excepción.                                                                                                        | `NEXO-UX-022`   |
+| `VPROC-0028-E01` | `VPROC-0028` | Crear solicitud interna                                         | `OPERACION`            | `ESPECIFICADO` | El solicitante crea un caso concreto de abastecimiento.                                                                                                             | `NEXO-UX-009`   |
+| `VPROC-0028-E02` | `VPROC-0028` | Aplicar ruta, producto y política de solicitud                  | `CONFIGURACION`        | `ESPECIFICADO` | Las reglas reutilizables se gobiernan en configuración; la operación solo consume la resolución vigente.                                                            | `NEXO-UX-009`   |
+| `VPROC-0028-E03` | `VPROC-0028` | Crear origen y fulfillment por línea                            | `SUPERVISION`          | `ESPECIFICADO` | La asignación determina responsabilidad de abastecimiento y tratamiento de faltantes por línea.                                                                     | `NEXO-UX-010`   |
+| `VPROC-0028-E04` | `VPROC-0028` | Elegir LOC, posición y cantidad de picking                      | `OPERACION`            | `ESPECIFICADO` | El preparador ejecuta la selección física dentro de una asignación vigente.                                                                                         | `NEXO-UX-010`   |
+| `VPROC-0028-E05` | `VPROC-0028` | Preparar, dejar listo o registrar faltante                      | `OPERACION`            | `ESPECIFICADO` | Materializa cantidades preparadas y faltantes del caso.                                                                                                             | `NEXO-UX-010`   |
+| `VPROC-0028-E06` | `VPROC-0028` | Cargar, sellar y despachar                                      | `OPERACION`            | `ESPECIFICADO` | Transfiere custodia física al transporte.                                                                                                                           | `NEXO-UX-011`   |
+| `VPROC-0028-E07` | `VPROC-0028` | Transportar y confirmar tránsito                                | `OPERACION`            | `ESPECIFICADO` | Mantiene custodia y evidencia durante el traslado.                                                                                                                  | `NEXO-UX-012`   |
+| `VPROC-0028-E08` | `VPROC-0028` | Recibir parcial o totalmente                                    | `OPERACION`            | `ESPECIFICADO` | El receptor confirma cantidades y condición efectivamente recibidas.                                                                                                | `NEXO-UX-013`   |
+| `VPROC-0028-E09` | `VPROC-0028` | Resolver faltante, sobrante, daño, rechazo, devolución o cierre | `SEPARACION_EXPLICITA` | `BLOQUEADO`    | La captura de la diferencia pertenece a operación; la decisión de resolución y cierre pertenece a supervisión.                                                      | `NEXO-UX-022`   |
+
+---
+
+#### 6. `NEXO-ROUTE-LANE-DISPOSITION-001`
+
+##### 6.1. Reconciliación cuantitativa
+
+| Métrica                             | Resultado |
+| ----------------------------------- | --------: |
+| Rutas esperadas desde `AUTH-UI-001` |    **64** |
+| Rutas materializadas                |    **64** |
+| Identificadores únicos              |    **64** |
+| Faltantes                           |     **0** |
+| Duplicados                          |     **0** |
+| `OPERACION`                         |    **14** |
+| `SUPERVISION`                       |    **14** |
+| `CONFIGURACION`                     |    **25** |
+| `SEPARACION_EXPLICITA`              |     **5** |
+| `TRANSVERSAL_TECNICA`               |     **6** |
+
+##### 6.2. Decisión por ruta
+
+| Ruta             | Patrón actual                                | Carril                 | Disposición                    | Estado         | Decisión materializada                                                                                                      | Tarea de salida                         |
+| ---------------- | -------------------------------------------- | ---------------------- | ------------------------------ | -------------- | --------------------------------------------------------------------------------------------------------------------------- | --------------------------------------- |
+| `NEXO-ROUTE-001` | `/`                                          | `SUPERVISION`          | `SEPARAR_PROYECCION`           | `ESPECIFICADO` | El inicio actual funciona como tablero agregado; deberá ofrecer accesos por carril sin mezclar decisiones ni configuración. | `NEXO-UX-003; NEXO-UX-007; NEXO-UX-008` |
+| `NEXO-ROUTE-002` | `/inventory/adjust`                          | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | La superficie decide correcciones de saldo; la publicación autorizada deberá permanecer segregada.                          | `NEXO-UX-019`                           |
+| `NEXO-ROUTE-003` | `/inventory/assets`                          | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Consulta consolidada de activos; el subdominio se diseña en su bloque reservado.                                            | `NEXO-UX-030`                           |
+| `NEXO-ROUTE-004` | `/inventory/assets/counts`                   | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Administra sesiones de conteo de activos.                                                                                   | `NEXO-UX-034`                           |
+| `NEXO-ROUTE-005` | `/inventory/assets/counts/[id]`              | `SEPARACION_EXPLICITA` | `DIVIDIR_CAPTURA_Y_CIERRE`     | `BLOQUEADO`    | La captura de observaciones y la decisión de cierre no deben compartir autoridad implícita.                                 | `NEXO-UX-034`                           |
+| `NEXO-ROUTE-006` | `/inventory/assets/groups/[id]`              | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Consulta condición, completitud y custodia del conjunto.                                                                    | `NEXO-UX-033`                           |
+| `NEXO-ROUTE-007` | `/inventory/assets/items/[id]`               | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Consulta historial, condición y custodia del activo individual.                                                             | `NEXO-UX-031; NEXO-UX-032`              |
+| `NEXO-ROUTE-008` | `/inventory/assets/new`                      | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Crea identidad reutilizable de activo.                                                                                      | `NEXO-UX-030`                           |
+| `NEXO-ROUTE-009` | `/inventory/assets/quick`                    | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Captura rápida de un activo o grupo durante trabajo de campo.                                                               | `NEXO-UX-039`                           |
+| `NEXO-ROUTE-010` | `/inventory/catalog`                         | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Gobierna maestro de productos logísticos.                                                                                   | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-011` | `/inventory/catalog/[id]`                    | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Edita atributos reutilizables del producto.                                                                                 | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-012` | `/inventory/catalog/[id]/ficha`              | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene ficha canónica de referencia.                                                                                      | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-013` | `/inventory/catalog/[id]/presentations`      | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene presentaciones y conversiones reutilizables.                                                                       | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-014` | `/inventory/catalog/new`                     | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Crea una identidad maestra de producto.                                                                                     | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-015` | `/inventory/catalog/presentations`           | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Administra presentaciones del catálogo.                                                                                     | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-016` | `/inventory/cost-center`                     | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene referencias de centro de costo; no ejecuta movimiento físico.                                                      | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-017` | `/inventory/count-initial`                   | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Abre y administra sesiones formales de conteo.                                                                              | `NEXO-UX-018`                           |
+| `NEXO-ROUTE-018` | `/inventory/count-initial/session/[id]`      | `SEPARACION_EXPLICITA` | `DIVIDIR_CAPTURA_Y_DECISION`   | `BLOQUEADO`    | La captura operativa, el cálculo de diferencia y el cierre supervisor requieren affordances diferenciadas.                  | `NEXO-UX-018; NEXO-UX-019`              |
+| `NEXO-ROUTE-019` | `/inventory/entries`                         | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Registra entradas físicas y excepcionales.                                                                                  | `NEXO-UX-014`                           |
+| `NEXO-ROUTE-020` | `/inventory/locations`                       | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Consulta estructura y estado de ubicaciones; la edición debe remitirse a configuración.                                     | `NEXO-UX-015`                           |
+| `NEXO-ROUTE-021` | `/inventory/locations/[id]`                  | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Consulta detalle y stock de una ubicación.                                                                                  | `NEXO-UX-015`                           |
+| `NEXO-ROUTE-022` | `/inventory/locations/[id]/board`            | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Tablero contextual para ejecutar trabajo sobre una LOC.                                                                     | `NEXO-UX-015; NEXO-UX-017`              |
+| `NEXO-ROUTE-023` | `/inventory/locations/[id]/kiosk-withdraw`   | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Retiro operativo desde kiosco.                                                                                              | `NEXO-UX-017`                           |
+| `NEXO-ROUTE-024` | `/inventory/locations/[id]/positions`        | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene posiciones internas de una LOC.                                                                                    | `NEXO-UX-015`                           |
+| `NEXO-ROUTE-025` | `/inventory/locations/open`                  | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Resuelve una ubicación para iniciar trabajo contextual.                                                                     | `NEXO-UX-015`                           |
+| `NEXO-ROUTE-026` | `/inventory/locations/zone`                  | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Opera una zona filtrada de almacenamiento.                                                                                  | `NEXO-UX-015`                           |
+| `NEXO-ROUTE-027` | `/inventory/locations/zones`                 | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene zonas reutilizables.                                                                                               | `NEXO-UX-015`                           |
+| `NEXO-ROUTE-028` | `/inventory/lpns`                            | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Consulta estado e identidad de LPN; su ciclo de vida se diseña en tareas reservadas.                                        | `NEXO-UX-026; NEXO-UX-029`              |
+| `NEXO-ROUTE-029` | `/inventory/movements`                       | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Consulta ledger e historial para investigación.                                                                             | `NEXO-UX-016`                           |
+| `NEXO-ROUTE-030` | `/inventory/production-batches`              | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Consume evidencia de lotes producidos sin asumir propiedad de FOGO.                                                         | `NEXO-UX-007`                           |
+| `NEXO-ROUTE-031` | `/inventory/remissions`                      | `SEPARACION_EXPLICITA` | `DIVIDIR_BANDEJA_POR_ACTOR`    | `BLOQUEADO`    | La bandeja actual mezcla creación, seguimiento, preparación y control; deberá proyectarse por actor y carril.               | `NEXO-UX-003; NEXO-UX-004; NEXO-UX-007` |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`                 | `SEPARACION_EXPLICITA` | `DIVIDIR_ACCIONES_POR_ETAPA`   | `BLOQUEADO`    | El detalle puede ser compartido como lectura, pero las acciones deben separarse por etapa, actor y autoridad.               | `NEXO-UX-009; NEXO-UX-013; NEXO-UX-022` |
+| `NEXO-ROUTE-033` | `/inventory/remissions/[id]/edit`            | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Edita una solicitud todavía operable sin alterar políticas maestras.                                                        | `NEXO-UX-009`                           |
+| `NEXO-ROUTE-034` | `/inventory/remissions/conductor`            | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Concentra custodia y acciones del conductor.                                                                                | `NEXO-UX-005; NEXO-UX-012`              |
+| `NEXO-ROUTE-035` | `/inventory/remissions/fulfillment`          | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Ejecuta asignación y disponibilidad por línea.                                                                              | `NEXO-UX-010`                           |
+| `NEXO-ROUTE-036` | `/inventory/remissions/prepare`              | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Ejecuta picking y preparación.                                                                                              | `NEXO-UX-010`                           |
+| `NEXO-ROUTE-037` | `/inventory/remissions/receive`              | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Captura recepción y cantidades recibidas.                                                                                   | `NEXO-UX-006; NEXO-UX-013`              |
+| `NEXO-ROUTE-038` | `/inventory/remissions/transit`              | `SEPARACION_EXPLICITA` | `DIVIDIR_CUSTODIA_Y_MONITOREO` | `BLOQUEADO`    | La confirmación de custodia pertenece a operación; el monitoreo de retrasos y excepciones pertenece a supervisión.          | `NEXO-UX-005; NEXO-UX-007; NEXO-UX-012` |
+| `NEXO-ROUTE-039` | `/inventory/settings`                        | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Hub exclusivo de configuración.                                                                                             | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-040` | `/inventory/settings/categories`             | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene categorías operativas.                                                                                             | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-041` | `/inventory/settings/fulfillment-routes`     | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene reglas reutilizables de fulfillment.                                                                               | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-042` | `/inventory/settings/internal-prices`        | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene listas y referencias de precio interno.                                                                            | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-043` | `/inventory/settings/locations/[id]/catalog` | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene elegibilidad de productos por ubicación.                                                                           | `NEXO-UX-015`                           |
+| `NEXO-ROUTE-044` | `/inventory/settings/products`               | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene configuración logística por producto.                                                                              | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-045` | `/inventory/settings/remissions`             | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene parámetros generales de remisiones.                                                                                | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-046` | `/inventory/settings/remissions/products`    | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene elegibilidad y comportamiento de productos en remisiones.                                                          | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-047` | `/inventory/settings/request-policies`       | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene restricciones, mínimos y pasos de solicitud.                                                                       | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-048` | `/inventory/settings/sites`                  | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene parámetros logísticos por sede.                                                                                    | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-049` | `/inventory/settings/sites/[id]/operations`  | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene capacidades operativas configurables de una sede.                                                                  | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-050` | `/inventory/settings/supply-routes`          | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene rutas de abastecimiento reutilizables.                                                                             | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-051` | `/inventory/settings/units`                  | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene unidades y conversiones maestras.                                                                                  | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-052` | `/inventory/stock`                           | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Consulta consolidada de existencias y diferencias.                                                                          | `NEXO-UX-007`                           |
+| `NEXO-ROUTE-053` | `/inventory/stock/assign-location`           | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Asigna físicamente stock existente a una ubicación.                                                                         | `NEXO-UX-015`                           |
+| `NEXO-ROUTE-054` | `/inventory/transfers`                       | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Ejecuta traslados entre LOC.                                                                                                | `NEXO-UX-016`                           |
+| `NEXO-ROUTE-055` | `/inventory/warehouse`                       | `TRANSVERSAL_TECNICA`  | `HEREDAR_DESTINO`              | `ESPECIFICADO` | Alias técnico; hereda el carril de la ruta objetivo y no constituye superficie autónoma.                                    | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-056` | `/inventory/withdraw`                        | `OPERACION`            | `MANTENER_EN_OPERACION`        | `ESPECIFICADO` | Ejecuta retiro o consumo de inventario.                                                                                     | `NEXO-UX-017`                           |
+| `NEXO-ROUTE-057` | `/kiosk/[slug]`                              | `TRANSVERSAL_TECNICA`  | `HEREDAR_DESTINO`              | `ESPECIFICADO` | Entrada por slug que resuelve una superficie operativa contextual.                                                          | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-058` | `/l/[code]`                                  | `TRANSVERSAL_TECNICA`  | `HEREDAR_DESTINO`              | `ESPECIFICADO` | Deep link de LOC; hereda el carril operativo del destino.                                                                   | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-059` | `/login`                                     | `TRANSVERSAL_TECNICA`  | `MANTENER_TRANSVERSAL`         | `ESPECIFICADO` | Acceso técnico; no pertenece a un carril empresarial.                                                                       | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-060` | `/no-access`                                 | `TRANSVERSAL_TECNICA`  | `MANTENER_TRANSVERSAL`         | `ESPECIFICADO` | Resultado técnico de autorización; no es una superficie empresarial.                                                        | `NEXO-UX-008`                           |
+| `NEXO-ROUTE-061` | `/printing/designer`                         | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene diseños reutilizables de impresión.                                                                                | `NEXO-UX-037`                           |
+| `NEXO-ROUTE-062` | `/printing/jobs`                             | `SUPERVISION`          | `MANTENER_EN_SUPERVISION`      | `ESPECIFICADO` | Monitorea trabajos, errores y reintentos de impresión.                                                                      | `NEXO-UX-037`                           |
+| `NEXO-ROUTE-063` | `/printing/setup`                            | `CONFIGURACION`        | `MANTENER_EN_CONFIGURACION`    | `ESPECIFICADO` | Mantiene dispositivos y parámetros reutilizables de impresión.                                                              | `NEXO-UX-037`                           |
+| `NEXO-ROUTE-064` | `/scanner`                                   | `TRANSVERSAL_TECNICA`  | `HEREDAR_DESTINO`              | `ESPECIFICADO` | Utilidad técnica que hereda el carril de la tarea que invoca el escaneo.                                                    | `NEXO-UX-020`                           |
+
+---
+
+#### 7. Reglas de composición de superficies
+
+##### 7.1. Operación
+
+Una superficie operativa deberá presentar, en este orden:
+
+1. el caso o recurso sobre el que se trabaja;
+2. la siguiente acción permitida;
+3. la cantidad, unidad, origen, destino, custodia o condición relevante;
+4. referencias de solo lectura necesarias para decidir;
+5. confirmación y evidencia del hecho ejecutado;
+6. salida clara hacia la siguiente etapa o hacia una excepción.
+
+No mostrará editores de políticas, rutas, unidades, sedes, catálogos o dispositivos.
+
+##### 7.2. Supervisión
+
+Una superficie supervisora deberá presentar:
+
+1. alcance y filtro explícitos;
+2. cola, diferencia, excepción o riesgo;
+3. evidencia del hecho original;
+4. decisión permitida y autoridad requerida;
+5. responsable y vencimiento cuando aplique;
+6. resultado de la decisión sin sobrescribir el hecho original.
+
+##### 7.3. Configuración
+
+Una superficie de configuración deberá presentar:
+
+1. identidad del objeto reutilizable;
+2. alcance por empresa, sede, área, producto o dispositivo;
+3. vigencia y estado;
+4. dependencias y consumidores;
+5. validación previa a publicar;
+6. historial o evidencia de cambio cuando el contrato lo exija.
+
+---
+
+#### 8. Puntos obligatorios de separación explícita
+
+| Punto                         | Captura o ejecución operativa                            | Decisión supervisora                                      | Condición de salida                                                       |
+| ----------------------------- | -------------------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------------------- |
+| Entrada corregida o reversada | Registrar el hecho original y la solicitud de corrección | Autorizar, rechazar o definir reversión                   | `NEXO-UX-022` materializa acciones y evidencia separadas                  |
+| Conteo con diferencia         | Registrar observaciones físicas                          | Investigar, aprobar diferencia y ordenar ajuste           | `NEXO-UX-018` y `NEXO-UX-019` separan observación, decisión y publicación |
+| Alerta de condición           | Identificar existencia y capturar evidencia              | Clasificar, priorizar y decidir tratamiento               | `NEXO-UX-022` define caso y excepción                                     |
+| Cuarentena o bloqueo          | Ejecutar inmovilización física                           | Imponer, mantener o levantar la condición                 | `NEXO-UX-022` define autoridad y transición                               |
+| Remisión con diferencia       | Capturar faltante, sobrante, daño, rechazo o devolución  | Resolver responsabilidad, reposición, aceptación o cierre | `NEXO-UX-022` diseña manejo de diferencias                                |
+| Tránsito                      | Confirmar entrega y custodia                             | Monitorear retraso, pérdida o ruptura de custodia         | `NEXO-UX-005`, `NEXO-UX-007` y `NEXO-UX-012` separan las proyecciones     |
+
+---
+
+#### 9. `NEXO-LANE-NAVIGATION-HANDOFF-001`
+
+| Tarea consumidora             | Handoff aprobado                                                                                                                                           |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXO-UX-003`                 | Diseñar inicio del solicitante usando solo creación y seguimiento operativo de sus propias solicitudes.                                                    |
+| `NEXO-UX-004`                 | Diseñar inicio del bodeguero con colas operativas, referencias de stock de solo lectura y acceso separado a controles supervisores cuando tenga autoridad. |
+| `NEXO-UX-005`                 | Diseñar inicio del conductor sobre custodia, carga, tránsito y entrega, sin configuración ni control global.                                               |
+| `NEXO-UX-006`                 | Diseñar inicio del receptor sobre recepción, diferencias capturables y evidencia del caso.                                                                 |
+| `NEXO-UX-007`                 | Diseñar inicio del supervisor con colas, diferencias, cumplimiento, autorizaciones y cierres de control.                                                   |
+| `NEXO-UX-008`                 | Organizar navegación por tareas y carriles, no por la estructura técnica de rutas.                                                                         |
+| `NEXO-UX-009` a `NEXO-UX-019` | Aplicar el carril y las separaciones definidas a cada flujo de inventario y remisiones.                                                                    |
+| `NEXO-UX-020`                 | Mantener escáner y captura como utilidades contextuales del carril invocante.                                                                              |
+| `NEXO-UX-022`                 | Materializar excepciones sin mezclar captura operativa con decisión supervisora.                                                                           |
+| `NEXO-UX-026` a `NEXO-UX-040` | Conservar la clasificación de rutas de LPN y activos sin anticipar el diseño detallado del subdominio.                                                     |
+| `NEXO-UX-037` a `NEXO-UX-038` | Separar diseño de impresión, monitoreo de trabajos y uso contextual del escáner.                                                                           |
+
+---
+
+#### 10. Decisiones fuera de alcance
+
+Esta tarea no:
+
+- cambia permisos ni matrices RBAC;
+- crea nuevas rutas o elimina rutas actuales;
+- modifica el inicio implementado en `vento-nexo`;
+- cambia estados, transiciones o cantidades de remisiones;
+- cambia tablas, RPC, RLS, funciones, triggers o datos;
+- implementa filtros por rol o dispositivo;
+- decide el diseño visual detallado de los inicios por actor;
+- aprueba como validado ningún flujo operativo.
+
+---
+
+#### 11. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA.
+
+**Justificación:** la tarea reconcilia y compone clasificaciones funcionales ya aprobadas para procesos, etapas y vistas. No introduce una regla ejecutable nueva de autorización, transición, cálculo, persistencia, API, mutación, integración o comportamiento en runtime. Los diseños posteriores deberán crear o modificar requisitos únicamente cuando materialicen comportamiento verificable adicional.
+
+---
+
+#### 12. Criterios de aceptación
+
+- [ ] Las 40 etapas de `NEXO-UX-001` están materializadas una sola vez.
+- [ ] Las 64 rutas de `AUTH-UI-001` están materializadas una sola vez.
+- [ ] No existen etapas ni rutas faltantes o duplicadas.
+- [ ] Cada etapa tiene un carril, estado, decisión y tarea de salida.
+- [ ] Cada ruta tiene carril, disposición, estado y tarea de salida.
+- [ ] Operación, supervisión y configuración tienen fronteras normativas distintas.
+- [ ] Las superficies mezcladas están identificadas como `SEPARACION_EXPLICITA`.
+- [ ] La clasificación no se presenta como permiso ni como implementación.
+- [ ] Configuración queda fuera del inicio predeterminado de actores operativos.
+- [ ] Referencias supervisoras dentro de una tarea operativa son de solo lectura.
+- [ ] Los redirects y utilidades heredan el carril de su destino o contexto.
+- [ ] No se modificaron código, Supabase, permisos, rutas ni despliegues.
+- [ ] La tarea declara cero cambios `TREQ-*` con justificación concreta.
+- [ ] `NEXO-UX-003` permanece reservada y no iniciada.
+
+---
+
+#### 13. Continuidad
+
+**ÚLTIMA TAREA APROBADA**
+`NEXO-UX-001 — Inventariar procesos reales de inventario y logística`
+
+**TAREA ACTUAL APROBADA**
+`NEXO-UX-002 — Separar operación, supervisión y configuración`
+
+**SIGUIENTE TAREA RESERVADA**
+`NEXO-UX-003 — Diseñar inicio para solicitante`
+
+
 ### [ ] NEXO-UX-003 — Diseñar inicio para solicitante
 ### [ ] NEXO-UX-004 — Diseñar inicio para bodeguero
 ### [ ] NEXO-UX-005 — Diseñar inicio para conductor

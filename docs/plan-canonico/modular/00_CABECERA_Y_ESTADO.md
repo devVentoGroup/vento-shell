@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **547** |
+| Tareas aprobadas | **548** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1047** |
+| Tareas no iniciadas | **1046** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **34.32% (547/1594)** |
+| Porcentaje de completamiento | **34.38% (548/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NEXO-UX-001 — Inventariar procesos reales de inventario y logística** |
-| Tarea actual | **NEXO-UX-002 — Separar operación, supervisión y configuración** |
+| Última tarea aprobada | **NEXO-UX-002 — Separar operación, supervisión y configuración** |
+| Tarea actual | **NEXO-UX-003 — Diseñar inicio para solicitante** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NEXO-UX-003 — Diseñar inicio para solicitante** |
+| Siguiente tarea | **NEXO-UX-004 — Diseñar inicio para bodeguero** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 13: NEXO_FUNCTIONAL_UX** |
-| Progreso del bloque | **CARRIL NEXO: 1 de 25 aprobadas; NEXO-UX-002 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 2 de 25 aprobadas; NEXO-UX-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NEXO-UX-001` — Inventariar procesos reales de inventario y logística |
-| Tarea actual | `NEXO-UX-002` — Separar operación, supervisión y configuración — **NO INICIADA** |
-| Siguiente tarea | `NEXO-UX-003` — Diseñar inicio para solicitante |
+| Última aprobada | `NEXO-UX-002` — Separar operación, supervisión y configuración |
+| Tarea actual | `NEXO-UX-003` — Diseñar inicio para solicitante — **NO INICIADA** |
+| Siguiente tarea | `NEXO-UX-004` — Diseñar inicio para bodeguero |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 1 DE 25 APROBADAS — ACTUAL NEXO-UX-002** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 2 DE 25 APROBADAS — ACTUAL NEXO-UX-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NEXO-UX-001 — Inventariar procesos reales de inventario y logística
-        ↓
-TAREA ACTUAL
 NEXO-UX-002 — Separar operación, supervisión y configuración
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NEXO-UX-003 — Diseñar inicio para solicitante
         ↓
+SIGUIENTE TAREA RESERVADA
+NEXO-UX-004 — Diseñar inicio para bodeguero
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 1 de 25 tareas aprobadas
+CARRIL NEXO — 2 de 25 tareas aprobadas
 ```
