@@ -4985,7 +4985,7 @@ No se inicia ni modifica `AUTH-ERR-013` en esta tarea.
 
 **Estado:** APROBADA
 **Tarea anterior:** `AUTH-ERR-012 — Rol operativo faltante` — APROBADA
-**Tarea siguiente:** `AUTH-ERR-014 — Rol operativo incompatible con el área` — RESERVADA
+**Tarea siguiente:** `AUTH-ERR-014 — Rol operativo inválido para el área` — RESERVADA
 **Tipo de tarea:** documental; definición contractual, causal, funcional, territorial, de seguridad y experiencia del bloqueo producido cuando una capacidad necesita carril operativo, el turno vigente contiene un rol operativo canónico y activo, pero dicho rol no posee una habilitación activa y concluyente para la sede exacta del turno
 
 ---
@@ -6095,7 +6095,7 @@ TAREA ACTUAL APROBADA
 AUTH-ERR-013 — Rol operativo inválido para la sede
 
 SIGUIENTE TAREA RESERVADA
-AUTH-ERR-014 — Rol operativo incompatible con el área
+AUTH-ERR-014 — Rol operativo inválido para el área
 ```
 
 No se inicia ni modifica `AUTH-ERR-014` en esta tarea.
