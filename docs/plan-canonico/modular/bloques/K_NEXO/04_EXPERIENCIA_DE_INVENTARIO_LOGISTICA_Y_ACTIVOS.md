@@ -4775,7 +4775,584 @@ Esta tarea no inicia ninguno de esos trabajos.
 `NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas`
 
 
-### [ ] NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas
+### ✅ NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-007 — Diseñar inicio para supervisor` — APROBADA
+**Tarea siguiente:** `NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión` — RESERVADA
+**Tipo de tarea:** documental; arquitectura funcional completa de navegación de NEXO por tareas humanas, familias de trabajo, composición por actor y contexto, binding de rutas existentes, deep links, retorno, utilidades contextuales, estados y handoff de implementación
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Artefactos producidos:** `NEXO-TASK-NAVIGATION-CONTRACT-001`, `NEXO-NAVIGATION-TASK-CATALOG-001`, `NEXO-ACTOR-TASK-COMPOSITION-MATRIX-001`, `NEXO-ROUTE-TO-TASK-REGISTRY-001`, `NEXO-NAVIGATION-ENTRY-RETURN-CONTRACT-001`, `NEXO-CONTEXTUAL-UTILITY-CONTRACT-001`, `NEXO-NAVIGATION-STATE-CONTRACT-001` y `NEXO-TASK-NAVIGATION-HANDOFF-001`
+**Decisiones consumidas:** `UX-BASE-001` a `UX-BASE-005`; `UX-STATION-010` a `UX-STATION-012`; `PROC-SCREEN-001` a `PROC-SCREEN-004`; `NEXO-REAL-PROCESS-INVENTORY-001`; `NEXO-UX-LANE-CONTRACT-001`; `NEXO-ROUTE-LANE-DISPOSITION-001`; `NEXO-REQUESTER-HOME-CONTRACT-001`; `NEXO-WAREHOUSE-HOME-CONTRACT-001`; `NEXO-DRIVER-HOME-CONTRACT-001`; `NEXO-RECEIVER-HOME-CONTRACT-001`; `NEXO-SUPERVISOR-HOME-CONTRACT-001`; inventario `NEXO-ROUTE-001` a `NEXO-ROUTE-064`; requisitos `TREQ-*` vigentes; código, contratos de navegación y migraciones actuales de `vento-nexo` y `vento-shell`
+**Cambios físicos autorizados:** ninguno; no modifica rutas, componentes, permisos, datos, navegación desplegada, Supabase, migraciones, RLS, RPC, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Organizar la navegación de NEXO alrededor de lo que una persona necesita hacer, continuar, consultar o administrar, y no alrededor de la estructura de carpetas, segmentos de URL, nombres de tablas, componentes o rutas técnicas existentes.
+
+La regla canónica es:
+
+```text
+ACTOR EFECTIVO Y FUNCION VIGENTES
++ CONTEXTO, TERRITORIO Y DISPOSITIVO COMPATIBLES
++ TAREA HUMANA O INSTANCIA DE TRABAJO
++ ETAPA, RECURSO Y PERMISO EXACTOS
++ BINDING VERSIONADO HACIA UNA SUPERFICIE FISICA
+→ NAVEGACION POR TAREA
+```
+
+La URL continúa siendo un mecanismo de implementación. No es identidad de tarea, no es nombre de pantalla, no es permiso, no concede autoridad y no determina por sí sola qué debe ver una persona.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban ocho artefactos documentales consumibles:
+
+1. `NEXO-TASK-NAVIGATION-CONTRACT-001`, que define identidad de tarea, jerarquía, lenguaje, autoridad y composición;
+2. `NEXO-NAVIGATION-TASK-CATALOG-001`, que materializa ocho familias y veintinueve tareas humanas o resolutores;
+3. `NEXO-ACTOR-TASK-COMPOSITION-MATRIX-001`, que decide ocho contextos de actor, función y dispositivo;
+4. `NEXO-ROUTE-TO-TASK-REGISTRY-001`, que vincula las sesenta y cuatro rutas existentes con una tarea y una disposición explícitas;
+5. `NEXO-NAVIGATION-ENTRY-RETURN-CONTRACT-001`, que define entrada, continuación, deep link, breadcrumb, retorno y reanudación;
+6. `NEXO-CONTEXTUAL-UTILITY-CONTRACT-001`, que mantiene escaneo, alias, kioscos y resolutores fuera del menú global;
+7. `NEXO-NAVIGATION-STATE-CONTRACT-001`, que materializa catorce estados verificables;
+8. `NEXO-TASK-NAVIGATION-HANDOFF-001`, que asigna los flujos detallados, la implementación y la certificación a sus responsables canónicos.
+
+| Elemento                                  | Total esperado | Total materializado | Faltantes | Duplicados |
+| ----------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Familias de tareas                        |              8 |                   8 |         0 |          0 |
+| Tareas o resolutores de navegación        |             29 |                  29 |         0 |          0 |
+| Contextos de composición                  |              8 |                   8 |         0 |          0 |
+| Rutas existentes vinculadas               |             64 |                  64 |         0 |          0 |
+| Grupos humanos de navegación global       |              4 |                   4 |         0 |          0 |
+| Estados de navegación                     |             14 |                  14 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados |              8 |                   8 |         0 |          0 |
+
+El resultado queda `ESPECIFICADO`. No declara la navegación objetivo `IMPLEMENTADA`, `VALIDADA` ni desplegada.
+
+---
+
+#### 3. Alcance funcional
+
+##### 3.1. Incluido
+
+- identidad estable de tarea humana separada de URL y pantalla;
+- grupos de navegación en lenguaje de trabajo;
+- composición dinámica por actor, función, permiso, territorio, dispositivo y trabajo vigente;
+- una entrada primaria hacia la tarea actual y accesos secundarios mínimos;
+- binding completo de las sesenta y cuatro rutas inventariadas;
+- tratamiento de rutas de detalle, configuración, referencia, acceso, alias y utilidad;
+- deep links, retorno, reanudación, breadcrumbs y cambio de contexto;
+- estados de carga, vacío, denegación, revocación, datos parciales, offline y resultado desconocido;
+- diagnóstico verificable del soporte físico actual;
+- handoff a los flujos `NEXO-UX-009` a `NEXO-UX-039` y al paquete de implementación NEXO.
+
+##### 3.2. Excluido
+
+- diseñar el contenido detallado de los flujos reservados desde `NEXO-UX-009`;
+- crear nuevas URLs, pantallas, permisos o roles;
+- renombrar físicamente rutas actuales;
+- ejecutar migraciones o modificar `app_navigation_items`;
+- implementar el resolutor de tareas, componentes de navegación o eventos;
+- certificar navegación en producción, tablet, kiosco, escáner o impresora;
+- redefinir las matrices de autorización aprobadas;
+- convertir la navegación en fuente de autorización.
+
+---
+
+#### 4. `NEXO-TASK-NAVIGATION-CONTRACT-001`
+
+##### 4.1. Identidades distintas
+
+| Identidad            | Qué representa                                  | Regla                                                |
+| -------------------- | ----------------------------------------------- | ---------------------------------------------------- |
+| `task_key`           | intención humana estable                        | no contiene URL, rol, sede, componente ni versión    |
+| `task_instance_id`   | trabajo concreto que puede continuarse          | existe solo cuando hay una instancia autoritativa    |
+| `task_family_key`    | agrupación de intenciones relacionadas          | no concede acceso a todas las tareas de la familia   |
+| `screen_id`          | superficie lógica estable                       | puede servir a una o varias tareas y cambiar de ruta |
+| `route_binding`      | asociación versionada entre tarea y ruta física | es reemplazable y nunca constituye permiso           |
+| `process_id` y etapa | posición empresarial del trabajo                | determina elegibilidad junto con estado y actor      |
+| permiso              | capacidad atómica evaluada por servidor         | no se deriva de que una opción sea visible           |
+
+##### 4.2. Resolución autoritativa
+
+El servidor resolverá como mínimo:
+
+```text
+principal tecnico
++ actor efectivo
++ fuente de autoridad
++ funcion o carril
++ sede, area y territorio
++ turno, check-in y dispositivo cuando apliquen
++ proceso, etapa, recurso y version
++ permisos de lectura y accion
++ tarea vigente y prioridad
++ binding de superficie vigente
+```
+
+El cliente puede solicitar una `task_key`, pero no puede declarar como autoridad el rol, la función, la sede, el territorio, la prioridad, la etapa, el estado, el recurso, el permiso ni la ruta final.
+
+##### 4.3. Lenguaje de navegación
+
+Toda etiqueta visible deberá:
+
+1. comenzar con un verbo o expresar una intención reconocible;
+2. nombrar el objeto empresarial necesario;
+3. evitar nombres de carpetas, tablas, componentes y tecnologías;
+4. evitar como etiqueta primaria `settings`, `fulfillment`, `transit`, `scanner`, `LOC`, `LPN`, `API`, `RPC`, `stock` o slugs sin explicación humana;
+5. conservar el mismo significado aunque cambie la URL;
+6. distinguir ejecutar, consultar, controlar y administrar;
+7. no prometer autoridad que el actor no posee.
+
+Ejemplos:
+
+| No usar como entrada primaria    | Usar                                 |
+| -------------------------------- | ------------------------------------ |
+| `remissions/receive`             | Recibir abastecimiento               |
+| `inventory/adjust`               | Controlar la operación               |
+| `settings/request-policies`      | Configurar abastecimiento            |
+| `inventory/locations/[id]/board` | Ubicar existencias                   |
+| `printing/jobs`                  | Controlar impresión                  |
+| `scanner`                        | no aparece; se invoca desde la tarea |
+
+##### 4.4. Grupos globales
+
+| Orden | Grupo visible         | Contenido permitido                                      | Regla                                          |
+| ----: | --------------------- | -------------------------------------------------------- | ---------------------------------------------- |
+|     1 | Inicio                | proyección vigente, siguiente tarea y cambios relevantes | siempre primero                                |
+|     2 | Mi trabajo            | tareas ejecutables propias o asignadas                   | solo acciones compatibles con actor y contexto |
+|     3 | Consultar y controlar | lecturas, investigación y casos de supervisión           | separado de ejecución y configuración          |
+|     4 | Administrar           | maestros, políticas, referencias y dispositivos          | solo capacidades exactas de configuración      |
+
+No existe un grupo global `Utilidades`. Una utilidad aparece dentro de la tarea que la requiere.
+
+##### 4.5. Acción principal
+
+La navegación conserva una sola acción primaria por proyección:
+
+```text
+CONTINUAR_SIGUIENTE_TAREA
+```
+
+Para el solicitante, cuando no exista trabajo propio que continuar y sí exista capacidad de iniciación, la acción especializada aprobada `NUEVA_SOLICITUD` permanece disponible. Esa excepción no convierte el menú en un catálogo de rutas.
+
+---
+
+#### 5. `NEXO-NAVIGATION-TASK-CATALOG-001`
+
+##### 5.1. Familias
+
+| Familia                | Nombre humano                    | Frontera                                                                                                           |
+| ---------------------- | -------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `NEXO-TASK-FAMILY-001` | Inicio y continuidad             | Resolver la proyección vigente y la siguiente tarea sin convertir el inicio en un catálogo de módulos.             |
+| `NEXO-TASK-FAMILY-002` | Abastecimiento interno           | Solicitar, preparar, transportar y recibir abastecimiento mediante funciones separadas.                            |
+| `NEXO-TASK-FAMILY-003` | Ejecución física de inventario   | Registrar entradas, ubicar, mover, retirar y contar existencias.                                                   |
+| `NEXO-TASK-FAMILY-004` | Consulta, control y trazabilidad | Consultar saldos, ubicaciones, contenedores, movimientos y casos de supervisión.                                   |
+| `NEXO-TASK-FAMILY-005` | Ciclo de activos                 | Consultar, capturar, contar y configurar activos sin anticipar los flujos reservados del subdominio.               |
+| `NEXO-TASK-FAMILY-006` | Maestros y configuración         | Administrar productos, ubicaciones, reglas de abastecimiento y referencias internas.                               |
+| `NEXO-TASK-FAMILY-007` | Impresión                        | Controlar trabajos y mantener configuración de impresión en carriles separados.                                    |
+| `NEXO-TASK-FAMILY-008` | Acceso y utilidades contextuales | Resolver autenticación, denegación, deep links, alias, kioscos y escaneo sin exponerlos como tareas empresariales. |
+
+##### 5.2. Tareas materializadas
+
+| Tarea           | Etiqueta humana                   | Familia                | Carril                 | Grupo                 | Audiencia funcional                                 | Regla de exposición          | Responsable del detalle                                  |
+| --------------- | --------------------------------- | ---------------------- | ---------------------- | --------------------- | --------------------------------------------------- | ---------------------------- | -------------------------------------------------------- |
+| `NEXO-TASK-001` | Ir al inicio                      | `NEXO-TASK-FAMILY-001` | `SUPERVISION`          | Inicio                | todos los actores con acceso a NEXO                 | `RESOLVER_PROYECCION`        | NEXO-UX-003 a NEXO-UX-007                                |
+| `NEXO-TASK-002` | Gestionar abastecimiento interno  | `NEXO-TASK-FAMILY-002` | `SEPARACION_EXPLICITA` | Mi trabajo            | actor participante en VPROC-0028                    | `RESOLVER_FUNCION_Y_ETAPA`   | NEXO-UX-009 a NEXO-UX-013; NEXO-UX-022                   |
+| `NEXO-TASK-003` | Solicitar abastecimiento          | `NEXO-TASK-FAMILY-002` | `OPERACION`            | Mi trabajo            | solicitante autorizado                              | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-009                                              |
+| `NEXO-TASK-004` | Preparar abastecimiento           | `NEXO-TASK-FAMILY-002` | `OPERACION`            | Mi trabajo            | bodeguero o preparador autorizado                   | `MOSTRAR_SI_HAY_TRABAJO`     | NEXO-UX-010; NEXO-UX-011                                 |
+| `NEXO-TASK-005` | Transportar abastecimiento        | `NEXO-TASK-FAMILY-002` | `OPERACION`            | Mi trabajo            | conductor o custodio autorizado                     | `MOSTRAR_SI_HAY_CUSTODIA`    | NEXO-UX-012                                              |
+| `NEXO-TASK-006` | Recibir abastecimiento            | `NEXO-TASK-FAMILY-002` | `OPERACION`            | Mi trabajo            | receptor autorizado                                 | `MOSTRAR_SI_HAY_ENTREGA`     | NEXO-UX-013                                              |
+| `NEXO-TASK-007` | Registrar una entrada             | `NEXO-TASK-FAMILY-003` | `OPERACION`            | Mi trabajo            | receptor de inventario autorizado                   | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-014                                              |
+| `NEXO-TASK-008` | Ubicar existencias                | `NEXO-TASK-FAMILY-003` | `OPERACION`            | Mi trabajo            | bodeguero autorizado                                | `MOSTRAR_SI_HAY_EXISTENCIA`  | NEXO-UX-015                                              |
+| `NEXO-TASK-009` | Mover existencias                 | `NEXO-TASK-FAMILY-003` | `OPERACION`            | Mi trabajo            | bodeguero autorizado                                | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-016                                              |
+| `NEXO-TASK-010` | Registrar un retiro               | `NEXO-TASK-FAMILY-003` | `OPERACION`            | Mi trabajo            | actor de retiro autorizado                          | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-017                                              |
+| `NEXO-TASK-011` | Contar inventario                 | `NEXO-TASK-FAMILY-003` | `SEPARACION_EXPLICITA` | Mi trabajo            | contador operativo o supervisor según etapa         | `RESOLVER_CAPTURA_O_CONTROL` | NEXO-UX-018; NEXO-UX-019                                 |
+| `NEXO-TASK-012` | Controlar la operación            | `NEXO-TASK-FAMILY-004` | `SUPERVISION`          | Consultar y controlar | supervisor con cobertura territorial                | `MOSTRAR_SI_HAY_CASOS`       | NEXO-UX-007; NEXO-UX-019; NEXO-UX-021 a NEXO-UX-025      |
+| `NEXO-TASK-013` | Consultar existencias             | `NEXO-TASK-FAMILY-004` | `SUPERVISION`          | Consultar y controlar | actor con permiso de lectura                        | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-007; NEXO-UX-021                                 |
+| `NEXO-TASK-014` | Investigar movimientos            | `NEXO-TASK-FAMILY-004` | `SUPERVISION`          | Consultar y controlar | supervisor o auditor autorizado                     | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-016; NEXO-UX-021                                 |
+| `NEXO-TASK-015` | Consultar ubicaciones             | `NEXO-TASK-FAMILY-004` | `SUPERVISION`          | Consultar y controlar | actor con permiso territorial de lectura            | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-015                                              |
+| `NEXO-TASK-016` | Consultar contenedores logísticos | `NEXO-TASK-FAMILY-004` | `SUPERVISION`          | Consultar y controlar | actor con permiso de lectura de LPN                 | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-026 a NEXO-UX-029                                |
+| `NEXO-TASK-017` | Gestionar activos                 | `NEXO-TASK-FAMILY-005` | `SUPERVISION`          | Consultar y controlar | actor con permiso de lectura de activos             | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-030 a NEXO-UX-036                                |
+| `NEXO-TASK-018` | Capturar activos                  | `NEXO-TASK-FAMILY-005` | `OPERACION`            | Mi trabajo            | actor de campo autorizado                           | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-039                                              |
+| `NEXO-TASK-019` | Contar activos                    | `NEXO-TASK-FAMILY-005` | `SEPARACION_EXPLICITA` | Mi trabajo            | contador de activos o supervisor según etapa        | `RESOLVER_CAPTURA_O_CIERRE`  | NEXO-UX-034                                              |
+| `NEXO-TASK-020` | Configurar activos                | `NEXO-TASK-FAMILY-005` | `CONFIGURACION`        | Administrar           | configurador de activos autorizado                  | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-030 a NEXO-UX-036                                |
+| `NEXO-TASK-021` | Administrar NEXO                  | `NEXO-TASK-FAMILY-006` | `CONFIGURACION`        | Administrar           | actor con al menos una capacidad de configuración   | `RESOLVER_CAPACIDADES`       | NEXO-UX-008; paquete de implementación NEXO              |
+| `NEXO-TASK-022` | Administrar productos y unidades  | `NEXO-TASK-FAMILY-006` | `CONFIGURACION`        | Administrar           | configurador de catálogo autorizado                 | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-008; NEXO-UX-009 a NEXO-UX-019 como consumidores |
+| `NEXO-TASK-023` | Administrar ubicaciones           | `NEXO-TASK-FAMILY-006` | `CONFIGURACION`        | Administrar           | configurador de ubicaciones autorizado              | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-015                                              |
+| `NEXO-TASK-024` | Configurar abastecimiento         | `NEXO-TASK-FAMILY-006` | `CONFIGURACION`        | Administrar           | configurador logístico autorizado                   | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-009 a NEXO-UX-013                                |
+| `NEXO-TASK-025` | Configurar referencias internas   | `NEXO-TASK-FAMILY-006` | `CONFIGURACION`        | Administrar           | actor con permiso financiero o de referencia exacto | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-008; tareas financieras propietarias             |
+| `NEXO-TASK-026` | Controlar impresión               | `NEXO-TASK-FAMILY-007` | `SUPERVISION`          | Consultar y controlar | supervisor o soporte autorizado                     | `MOSTRAR_SI_HAY_TRABAJOS`    | NEXO-UX-037; NEXO-UX-038                                 |
+| `NEXO-TASK-027` | Configurar impresión              | `NEXO-TASK-FAMILY-007` | `CONFIGURACION`        | Administrar           | configurador de impresión autorizado                | `MOSTRAR_SI_AUTORIZADA`      | NEXO-UX-037; NEXO-UX-038                                 |
+| `NEXO-TASK-028` | Resolver un destino contextual    | `NEXO-TASK-FAMILY-008` | `TRANSVERSAL_TECNICA`  | Oculta                | actor, dispositivo y tarea invocante compatibles    | `NO_MOSTRAR_EN_MENU`         | NEXO-UX-015; NEXO-UX-020                                 |
+| `NEXO-TASK-029` | Resolver acceso                   | `NEXO-TASK-FAMILY-008` | `TRANSVERSAL_TECNICA`  | Oculta                | sesión técnica o actor que entra a NEXO             | `NO_MOSTRAR_EN_MENU`         | AUTH-UI-045; paquete de implementación NEXO              |
+
+Reconciliación:
+
+```text
+EXPECTED_TASK_FAMILIES = 8
+MATERIALIZED_TASK_FAMILIES = 8
+EXPECTED_TASK_KEYS = 29
+MATERIALIZED_TASK_KEYS = 29
+DUPLICATE_TASK_KEYS = 0
+TASK_KEYS_WITHOUT_FAMILY = 0
+```
+
+---
+
+#### 6. `NEXO-ACTOR-TASK-COMPOSITION-MATRIX-001`
+
+| Caso           | Contexto resuelto                       | Entradas prioritarias                                                    | Entradas secundarias                                        | Ocultamiento obligatorio                                                      | Resultado                                  |
+| -------------- | --------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------- | ----------------------------------------------------------------------------- | ------------------------------------------ |
+| `NAV-COMP-001` | solicitante autorizado                  | `NEXO-TASK-003`; solicitudes propias continuables                        | `NEXO-TASK-013` solo si existe permiso de lectura necesario | preparación, conducción, recepción, supervisión y configuración no concedidas | inicio y navegación de solicitante         |
+| `NAV-COMP-002` | bodeguero o preparador autorizado       | `NEXO-TASK-004`; `007`; `008`; `009`; `010`; `011` según trabajo vigente | `NEXO-TASK-013`; `014`; `015` cuando sirven a la tarea      | funciones de conductor, receptor, supervisor y configuración no concedidas    | cola de bodega por prioridad               |
+| `NAV-COMP-003` | conductor o custodio autorizado         | `NEXO-TASK-005`                                                          | detalle de carga y referencias necesarias                   | solicitud, picking, recepción, ajustes y configuración                        | cola de custodia y ruta                    |
+| `NAV-COMP-004` | receptor autorizado                     | `NEXO-TASK-006`; `007` cuando el origen empresarial lo permita           | existencia, ubicación y evidencia necesarias                | conducción, preparación, decisiones supervisoras y configuración              | cola de entregas por recibir               |
+| `NAV-COMP-005` | supervisor con cobertura territorial    | `NEXO-TASK-012`                                                          | `013` a `017` y `026` según permisos                        | mutaciones operativas o de configuración no concedidas                        | cola de control y referencias              |
+| `NAV-COMP-006` | configurador autorizado                 | `NEXO-TASK-021`                                                          | `020`; `022` a `025`; `027` según capacidades exactas       | ejecución física y supervisión no concedidas                                  | administración por capacidad, no por cargo |
+| `NAV-COMP-007` | persona con varias funciones            | la siguiente tarea autoritativa de la función activa                     | entradas de otras funciones en secciones separadas          | mezcla de acciones, autoridad heredada y autoaprobación                       | composición sin colapsar carriles          |
+| `NAV-COMP-008` | dispositivo compartido con actor activo | únicamente tareas compatibles con dispositivo, actor, turno y contexto   | utilidades contextuales requeridas por la tarea             | administración, datos sensibles y acciones sin actor                          | sesión atribuida y navegación mínima       |
+
+Reglas:
+
+1. la composición no se basa en una lista fija de nombres de rol;
+2. cada entrada se evalúa por tarea, acción, territorio, recurso y etapa;
+3. una persona multifunción no obtiene una interfaz híbrida con todas las acciones simultáneas;
+4. cambiar de función invalida tarea, filtros, borradores y bindings incompatibles;
+5. una opción oculta sigue protegida en servidor frente a acceso directo;
+6. supervisar una tarea propia no concede aprobación cuando se exige independencia.
+
+---
+
+#### 7. `NEXO-ROUTE-TO-TASK-REGISTRY-001`
+
+##### 7.1. Clases de binding
+
+| Clase                 | Uso                                                                                                                              | Visibilidad global |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------ |
+| `TASK_RESOLVER`       | Puede aparecer como entrada humana, pero el servidor resuelve función, tarea, instancia y destino antes de abrir una superficie. | condicionada       |
+| `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | condicionada       |
+| `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | oculta             |
+| `REFERENCE_STEP`      | No aparece como módulo; se abre como referencia de solo lectura desde una tarea autorizada.                                      | oculta             |
+| `CONFIGURATION_ENTRY` | Puede aparecer únicamente bajo Administrar y solo cuando existe una capacidad exacta de configuración.                           | condicionada       |
+| `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | oculta             |
+| `CONTEXT_RESOLVER`    | Permanece oculto; resuelve código, ubicación, slug o dispositivo y redirige a una tarea autorizada.                              | oculta             |
+| `LEGACY_ALIAS`        | Permanece oculto como alias compatible y no adquiere identidad ni etiqueta de navegación.                                        | oculta             |
+| `ACCESS_SYSTEM`       | Permanece fuera de la navegación empresarial; resuelve autenticación o denegación segura.                                        | oculta             |
+| `CONTEXT_UTILITY`     | Permanece oculto y solo se invoca desde una tarea que necesita la utilidad; al terminar retorna al mismo contexto.               | oculta             |
+
+##### 7.2. Registro completo
+
+| Ruta             | Patrón físico actual                         | Tarea           | Etiqueta humana                   | Carril heredado        | Clase de binding      | Decisión de navegación                                                                                                           | Responsable del flujo                 |
+| ---------------- | -------------------------------------------- | --------------- | --------------------------------- | ---------------------- | --------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- |
+| `NEXO-ROUTE-001` | `/`                                          | `NEXO-TASK-001` | Ir al inicio                      | `SUPERVISION`          | `TASK_RESOLVER`       | Puede aparecer como entrada humana, pero el servidor resuelve función, tarea, instancia y destino antes de abrir una superficie. | NEXO-UX-003; NEXO-UX-007; NEXO-UX-008 |
+| `NEXO-ROUTE-002` | `/inventory/adjust`                          | `NEXO-TASK-012` | Controlar la operación            | `SUPERVISION`          | `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | NEXO-UX-019                           |
+| `NEXO-ROUTE-003` | `/inventory/assets`                          | `NEXO-TASK-017` | Gestionar activos                 | `SUPERVISION`          | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-030                           |
+| `NEXO-ROUTE-004` | `/inventory/assets/counts`                   | `NEXO-TASK-019` | Contar activos                    | `SUPERVISION`          | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-034                           |
+| `NEXO-ROUTE-005` | `/inventory/assets/counts/[id]`              | `NEXO-TASK-019` | Contar activos                    | `SEPARACION_EXPLICITA` | `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | NEXO-UX-034                           |
+| `NEXO-ROUTE-006` | `/inventory/assets/groups/[id]`              | `NEXO-TASK-017` | Gestionar activos                 | `SUPERVISION`          | `REFERENCE_STEP`      | No aparece como módulo; se abre como referencia de solo lectura desde una tarea autorizada.                                      | NEXO-UX-033                           |
+| `NEXO-ROUTE-007` | `/inventory/assets/items/[id]`               | `NEXO-TASK-017` | Gestionar activos                 | `SUPERVISION`          | `REFERENCE_STEP`      | No aparece como módulo; se abre como referencia de solo lectura desde una tarea autorizada.                                      | NEXO-UX-031; NEXO-UX-032              |
+| `NEXO-ROUTE-008` | `/inventory/assets/new`                      | `NEXO-TASK-020` | Configurar activos                | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-030                           |
+| `NEXO-ROUTE-009` | `/inventory/assets/quick`                    | `NEXO-TASK-018` | Capturar activos                  | `OPERACION`            | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-039                           |
+| `NEXO-ROUTE-010` | `/inventory/catalog`                         | `NEXO-TASK-022` | Administrar productos y unidades  | `CONFIGURACION`        | `CONFIGURATION_ENTRY` | Puede aparecer únicamente bajo Administrar y solo cuando existe una capacidad exacta de configuración.                           | NEXO-UX-008                           |
+| `NEXO-ROUTE-011` | `/inventory/catalog/[id]`                    | `NEXO-TASK-022` | Administrar productos y unidades  | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-012` | `/inventory/catalog/[id]/ficha`              | `NEXO-TASK-022` | Administrar productos y unidades  | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-013` | `/inventory/catalog/[id]/presentations`      | `NEXO-TASK-022` | Administrar productos y unidades  | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-014` | `/inventory/catalog/new`                     | `NEXO-TASK-022` | Administrar productos y unidades  | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-015` | `/inventory/catalog/presentations`           | `NEXO-TASK-022` | Administrar productos y unidades  | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-016` | `/inventory/cost-center`                     | `NEXO-TASK-025` | Configurar referencias internas   | `CONFIGURACION`        | `CONFIGURATION_ENTRY` | Puede aparecer únicamente bajo Administrar y solo cuando existe una capacidad exacta de configuración.                           | NEXO-UX-008                           |
+| `NEXO-ROUTE-017` | `/inventory/count-initial`                   | `NEXO-TASK-011` | Contar inventario                 | `SUPERVISION`          | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-018                           |
+| `NEXO-ROUTE-018` | `/inventory/count-initial/session/[id]`      | `NEXO-TASK-011` | Contar inventario                 | `SEPARACION_EXPLICITA` | `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | NEXO-UX-018; NEXO-UX-019              |
+| `NEXO-ROUTE-019` | `/inventory/entries`                         | `NEXO-TASK-007` | Registrar una entrada             | `OPERACION`            | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-014                           |
+| `NEXO-ROUTE-020` | `/inventory/locations`                       | `NEXO-TASK-015` | Consultar ubicaciones             | `SUPERVISION`          | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-015                           |
+| `NEXO-ROUTE-021` | `/inventory/locations/[id]`                  | `NEXO-TASK-015` | Consultar ubicaciones             | `SUPERVISION`          | `REFERENCE_STEP`      | No aparece como módulo; se abre como referencia de solo lectura desde una tarea autorizada.                                      | NEXO-UX-015                           |
+| `NEXO-ROUTE-022` | `/inventory/locations/[id]/board`            | `NEXO-TASK-008` | Ubicar existencias                | `OPERACION`            | `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | NEXO-UX-015; NEXO-UX-017              |
+| `NEXO-ROUTE-023` | `/inventory/locations/[id]/kiosk-withdraw`   | `NEXO-TASK-010` | Registrar un retiro               | `OPERACION`            | `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | NEXO-UX-017                           |
+| `NEXO-ROUTE-024` | `/inventory/locations/[id]/positions`        | `NEXO-TASK-023` | Administrar ubicaciones           | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-015                           |
+| `NEXO-ROUTE-025` | `/inventory/locations/open`                  | `NEXO-TASK-028` | Resolver un destino contextual    | `OPERACION`            | `CONTEXT_RESOLVER`    | Permanece oculto; resuelve código, ubicación, slug o dispositivo y redirige a una tarea autorizada.                              | NEXO-UX-015                           |
+| `NEXO-ROUTE-026` | `/inventory/locations/zone`                  | `NEXO-TASK-008` | Ubicar existencias                | `OPERACION`            | `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | NEXO-UX-015                           |
+| `NEXO-ROUTE-027` | `/inventory/locations/zones`                 | `NEXO-TASK-023` | Administrar ubicaciones           | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-015                           |
+| `NEXO-ROUTE-028` | `/inventory/lpns`                            | `NEXO-TASK-016` | Consultar contenedores logísticos | `SUPERVISION`          | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-026; NEXO-UX-029              |
+| `NEXO-ROUTE-029` | `/inventory/movements`                       | `NEXO-TASK-014` | Investigar movimientos            | `SUPERVISION`          | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-016                           |
+| `NEXO-ROUTE-030` | `/inventory/production-batches`              | `NEXO-TASK-012` | Controlar la operación            | `SUPERVISION`          | `REFERENCE_STEP`      | No aparece como módulo; se abre como referencia de solo lectura desde una tarea autorizada.                                      | NEXO-UX-007                           |
+| `NEXO-ROUTE-031` | `/inventory/remissions`                      | `NEXO-TASK-002` | Gestionar abastecimiento interno  | `SEPARACION_EXPLICITA` | `TASK_RESOLVER`       | Puede aparecer como entrada humana, pero el servidor resuelve función, tarea, instancia y destino antes de abrir una superficie. | NEXO-UX-003; NEXO-UX-004; NEXO-UX-007 |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`                 | `NEXO-TASK-002` | Gestionar abastecimiento interno  | `SEPARACION_EXPLICITA` | `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | NEXO-UX-009; NEXO-UX-013; NEXO-UX-022 |
+| `NEXO-ROUTE-033` | `/inventory/remissions/[id]/edit`            | `NEXO-TASK-003` | Solicitar abastecimiento          | `OPERACION`            | `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | NEXO-UX-009                           |
+| `NEXO-ROUTE-034` | `/inventory/remissions/conductor`            | `NEXO-TASK-005` | Transportar abastecimiento        | `OPERACION`            | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-005; NEXO-UX-012              |
+| `NEXO-ROUTE-035` | `/inventory/remissions/fulfillment`          | `NEXO-TASK-004` | Preparar abastecimiento           | `OPERACION`            | `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | NEXO-UX-010                           |
+| `NEXO-ROUTE-036` | `/inventory/remissions/prepare`              | `NEXO-TASK-004` | Preparar abastecimiento           | `OPERACION`            | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-010                           |
+| `NEXO-ROUTE-037` | `/inventory/remissions/receive`              | `NEXO-TASK-006` | Recibir abastecimiento            | `OPERACION`            | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-006; NEXO-UX-013              |
+| `NEXO-ROUTE-038` | `/inventory/remissions/transit`              | `NEXO-TASK-005` | Transportar abastecimiento        | `SEPARACION_EXPLICITA` | `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | NEXO-UX-005; NEXO-UX-007; NEXO-UX-012 |
+| `NEXO-ROUTE-039` | `/inventory/settings`                        | `NEXO-TASK-021` | Administrar NEXO                  | `CONFIGURACION`        | `CONFIGURATION_ENTRY` | Puede aparecer únicamente bajo Administrar y solo cuando existe una capacidad exacta de configuración.                           | NEXO-UX-008                           |
+| `NEXO-ROUTE-040` | `/inventory/settings/categories`             | `NEXO-TASK-022` | Administrar productos y unidades  | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-041` | `/inventory/settings/fulfillment-routes`     | `NEXO-TASK-024` | Configurar abastecimiento         | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-042` | `/inventory/settings/internal-prices`        | `NEXO-TASK-025` | Configurar referencias internas   | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-043` | `/inventory/settings/locations/[id]/catalog` | `NEXO-TASK-023` | Administrar ubicaciones           | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-015                           |
+| `NEXO-ROUTE-044` | `/inventory/settings/products`               | `NEXO-TASK-022` | Administrar productos y unidades  | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-045` | `/inventory/settings/remissions`             | `NEXO-TASK-024` | Configurar abastecimiento         | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-046` | `/inventory/settings/remissions/products`    | `NEXO-TASK-024` | Configurar abastecimiento         | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-047` | `/inventory/settings/request-policies`       | `NEXO-TASK-024` | Configurar abastecimiento         | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-048` | `/inventory/settings/sites`                  | `NEXO-TASK-024` | Configurar abastecimiento         | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-049` | `/inventory/settings/sites/[id]/operations`  | `NEXO-TASK-024` | Configurar abastecimiento         | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-050` | `/inventory/settings/supply-routes`          | `NEXO-TASK-024` | Configurar abastecimiento         | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-051` | `/inventory/settings/units`                  | `NEXO-TASK-022` | Administrar productos y unidades  | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-008                           |
+| `NEXO-ROUTE-052` | `/inventory/stock`                           | `NEXO-TASK-013` | Consultar existencias             | `SUPERVISION`          | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-007                           |
+| `NEXO-ROUTE-053` | `/inventory/stock/assign-location`           | `NEXO-TASK-008` | Ubicar existencias                | `OPERACION`            | `TASK_STEP`           | No aparece como entrada independiente; se abre desde la tarea vigente y conserva contexto, instancia y retorno.                  | NEXO-UX-015                           |
+| `NEXO-ROUTE-054` | `/inventory/transfers`                       | `NEXO-TASK-009` | Mover existencias                 | `OPERACION`            | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-016                           |
+| `NEXO-ROUTE-055` | `/inventory/warehouse`                       | `NEXO-TASK-028` | Resolver un destino contextual    | `TRANSVERSAL_TECNICA`  | `LEGACY_ALIAS`        | Permanece oculto como alias compatible y no adquiere identidad ni etiqueta de navegación.                                        | NEXO-UX-008                           |
+| `NEXO-ROUTE-056` | `/inventory/withdraw`                        | `NEXO-TASK-010` | Registrar un retiro               | `OPERACION`            | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-017                           |
+| `NEXO-ROUTE-057` | `/kiosk/[slug]`                              | `NEXO-TASK-028` | Resolver un destino contextual    | `TRANSVERSAL_TECNICA`  | `CONTEXT_RESOLVER`    | Permanece oculto; resuelve código, ubicación, slug o dispositivo y redirige a una tarea autorizada.                              | NEXO-UX-008                           |
+| `NEXO-ROUTE-058` | `/l/[code]`                                  | `NEXO-TASK-028` | Resolver un destino contextual    | `TRANSVERSAL_TECNICA`  | `CONTEXT_RESOLVER`    | Permanece oculto; resuelve código, ubicación, slug o dispositivo y redirige a una tarea autorizada.                              | NEXO-UX-008                           |
+| `NEXO-ROUTE-059` | `/login`                                     | `NEXO-TASK-029` | Resolver acceso                   | `TRANSVERSAL_TECNICA`  | `ACCESS_SYSTEM`       | Permanece fuera de la navegación empresarial; resuelve autenticación o denegación segura.                                        | NEXO-UX-008                           |
+| `NEXO-ROUTE-060` | `/no-access`                                 | `NEXO-TASK-029` | Resolver acceso                   | `TRANSVERSAL_TECNICA`  | `ACCESS_SYSTEM`       | Permanece fuera de la navegación empresarial; resuelve autenticación o denegación segura.                                        | NEXO-UX-008                           |
+| `NEXO-ROUTE-061` | `/printing/designer`                         | `NEXO-TASK-027` | Configurar impresión              | `CONFIGURACION`        | `CONFIGURATION_STEP`  | No aparece como opción principal; se abre dentro de la tarea de administración correspondiente.                                  | NEXO-UX-037                           |
+| `NEXO-ROUTE-062` | `/printing/jobs`                             | `NEXO-TASK-026` | Controlar impresión               | `SUPERVISION`          | `TASK_ENTRY`          | Puede aparecer como tarea humana cuando existe permiso, contexto y trabajo compatibles; la etiqueta no deriva de la URL.         | NEXO-UX-037                           |
+| `NEXO-ROUTE-063` | `/printing/setup`                            | `NEXO-TASK-027` | Configurar impresión              | `CONFIGURACION`        | `CONFIGURATION_ENTRY` | Puede aparecer únicamente bajo Administrar y solo cuando existe una capacidad exacta de configuración.                           | NEXO-UX-037                           |
+| `NEXO-ROUTE-064` | `/scanner`                                   | `NEXO-TASK-028` | Resolver un destino contextual    | `TRANSVERSAL_TECNICA`  | `CONTEXT_UTILITY`     | Permanece oculto y solo se invoca desde una tarea que necesita la utilidad; al terminar retorna al mismo contexto.               | NEXO-UX-020                           |
+
+Reconciliación:
+
+```text
+EXPECTED_ROUTES = 64
+MATERIALIZED_ROUTES = 64
+UNIQUE_ROUTE_IDENTITIES = 64
+MISSING_ROUTE_BINDINGS = 0
+DUPLICATE_ROUTE_BINDINGS = 0
+ACCESS_SYSTEM = 2
+CONFIGURATION_ENTRY = 4
+CONFIGURATION_STEP = 21
+CONTEXT_RESOLVER = 3
+CONTEXT_UTILITY = 1
+LEGACY_ALIAS = 1
+REFERENCE_STEP = 4
+TASK_ENTRY = 15
+TASK_RESOLVER = 2
+TASK_STEP = 11
+```
+
+##### 7.3. Invariantes del registro
+
+1. cada ruta inventariada tiene exactamente un binding primario;
+2. una tarea puede utilizar varias rutas y una ruta resolutora puede proyectar varias funciones, pero la resolución final conserva una sola intención principal;
+3. ninguna ruta de detalle, acción, referencia, alias, acceso o utilidad se agrega al menú por existir;
+4. las rutas dinámicas no producen etiquetas desde sus segmentos;
+5. cambiar una URL exige actualizar el binding sin renombrar la `task_key`;
+6. retirar una ruta conserva historial y establece sustitución o alias;
+7. el acceso directo revalida toda la autoridad y no confía en el binding enviado por el cliente.
+
+---
+
+#### 8. `NEXO-NAVIGATION-ENTRY-RETURN-CONTRACT-001`
+
+##### 8.1. Contexto mínimo de entrada
+
+| Campo                     | Regla                                                                   |
+| ------------------------- | ----------------------------------------------------------------------- |
+| `task_key`                | identidad humana solicitada o resuelta                                  |
+| `task_instance_id`        | instancia autoritativa cuando existe trabajo concreto                   |
+| `process_id` y etapa      | posición empresarial vigente                                            |
+| `actor_context_ref`       | referencia a actor, función y fuente de autoridad                       |
+| `territory_ref`           | sede, área o relación territorial resuelta                              |
+| `resource_ref`            | recurso mínimo de la tarea                                              |
+| `permission_decision_ref` | decisión server-side de lectura o acción                                |
+| `route_binding_version`   | versión del binding físico aplicado                                     |
+| `continuation_ref`        | referencia opaca para continuar sin confiar en parámetros del cliente   |
+| `return_task_key`         | tarea humana a la que debe volver la superficie                         |
+| `origin_channel`          | inicio, cola, deep link, QR, kiosco, escáner, notificación o referencia |
+| `expected_version`        | versión del recurso o tarea para evitar acciones obsoletas              |
+
+##### 8.2. Entrada directa y deep link
+
+Un deep link puede identificar un recurso o código, pero deberá:
+
+1. resolver la tarea compatible en servidor;
+2. comprobar actor, dispositivo, territorio, recurso, permiso, estado y versión;
+3. redirigir a la proyección humana, no a un módulo genérico;
+4. ocultar existencia y detalles cuando el actor no tenga lectura;
+5. conservar un retorno seguro;
+6. no ejecutar una mutación por abrir el enlace;
+7. expirar o invalidarse cuando cambie la autoridad o el recurso.
+
+##### 8.3. Breadcrumb y retorno
+
+La jerarquía visible tendrá como máximo:
+
+```text
+Inicio > Tarea humana > Paso o recurso
+```
+
+No se construirán breadcrumbs desde segmentos de URL. El botón de retorno vuelve a la tarea o cola que originó el paso, preservando filtros permitidos, no a una carpeta técnica. Si el origen ya no es válido, vuelve al inicio contextual y explica el cambio.
+
+##### 8.4. Reanudación
+
+Una tarea se reanuda únicamente cuando la instancia, asignación, etapa, permiso, territorio y versión continúan vigentes. Si cambió, se muestra `NAV_TASK_CHANGED` y se ofrece la nueva continuación autoritativa; nunca se conserva un botón obsoleto.
+
+---
+
+#### 9. `NEXO-CONTEXTUAL-UTILITY-CONTRACT-001`
+
+| Utilidad o entrada    | Rutas actuales                     | Regla                                                                              | Retorno                                 |
+| --------------------- | ---------------------------------- | ---------------------------------------------------------------------------------- | --------------------------------------- |
+| escaneo               | `NEXO-ROUTE-064`                   | se invoca desde una tarea y recibe tipos de código permitidos; no es módulo global | misma tarea e instancia                 |
+| código de ubicación   | `NEXO-ROUTE-058`                   | resuelve recurso, tarea y autoridad antes de abrir una superficie                  | tarea compatible o inicio seguro        |
+| kiosco por slug       | `NEXO-ROUTE-057`                   | resuelve dispositivo, sede, área, actor y tarea permitida                          | tarea de kiosco autorizada              |
+| apertura de ubicación | `NEXO-ROUTE-025`                   | resuelve la ubicación antes de iniciar trabajo                                     | tarea de ubicación                      |
+| alias de bodega       | `NEXO-ROUTE-055`                   | mantiene compatibilidad sin identidad ni opción de menú propia                     | destino humano resuelto                 |
+| acceso y denegación   | `NEXO-ROUTE-059`; `NEXO-ROUTE-060` | permanecen fuera de la navegación empresarial                                      | destino autorizado o explicación segura |
+
+La utilidad no hereda autoridad por haber sido invocada. El retorno tampoco conserva un contexto revocado.
+
+---
+
+#### 10. `NEXO-NAVIGATION-STATE-CONTRACT-001`
+
+| Estado                      | Significado                                                | Comportamiento obligatorio                                                              |
+| --------------------------- | ---------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `NAV_CONTEXT_RESOLVING`     | se está resolviendo actor, función, territorio y permisos  | no mostrar tareas ni conteos como confirmados                                           |
+| `NAV_TASK_READY`            | existe una siguiente tarea ejecutable                      | mostrar una sola acción primaria y contexto mínimo                                      |
+| `NAV_MULTIPLE_TASKS`        | existen varias tareas compatibles                          | priorizar en servidor y ofrecer las demás como cola secundaria                          |
+| `NAV_NO_CURRENT_TASK`       | no existe trabajo ejecutable vigente                       | mostrar vacío útil y únicamente iniciadores autorizados                                 |
+| `NAV_REFERENCE_ONLY`        | solo existe capacidad de consulta                          | no presentar botones de mutación ni lenguaje de ejecución                               |
+| `NAV_CONFIGURATION_ONLY`    | solo existen capacidades de administración                 | mostrar Administrar sin simular trabajo operativo                                       |
+| `NAV_TASK_CHANGED`          | la tarea, asignación, etapa o versión cambió               | invalidar la acción anterior y cargar la nueva fuente                                   |
+| `NAV_CONTEXT_REVOKED`       | actor, turno, territorio o permiso dejó de ser válido      | fallar cerrado, limpiar contexto y volver al inicio seguro                              |
+| `NAV_DIRECT_LINK_DENIED`    | una ruta directa no supera autorización                    | no revelar existencia ni ofrecer bypass                                                 |
+| `NAV_DEEP_LINK_UNRESOLVED`  | el código o recurso no produce una tarea válida            | explicar que no puede abrirse y conservar un retorno seguro                             |
+| `NAV_PARTIAL_DATA`          | alguna fuente necesaria no respondió o es incompleta       | marcar parcialidad y no calcular una prioridad definitiva                               |
+| `NAV_OFFLINE_LIMITED`       | no existe conectividad suficiente                          | mostrar solo capacidades offline previamente admitidas y sin éxito empresarial ficticio |
+| `NAV_ACTION_RESULT_UNKNOWN` | la navegación o acción fue enviada sin receipt verificable | bloquear repetición ciega y reconciliar antes de continuar                              |
+| `NAV_FATAL_ERROR`           | no es posible resolver navegación de forma segura          | mostrar error canónico, correlación y recuperación sin rutas técnicas                   |
+
+Reconciliación:
+
+```text
+EXPECTED_NAVIGATION_STATES = 14
+MATERIALIZED_NAVIGATION_STATES = 14
+DUPLICATE_NAVIGATION_STATES = 0
+```
+
+---
+
+#### 11. Autorización, seguridad y privacidad
+
+1. la navegación solo consume decisiones de autorización; nunca las reemplaza;
+2. cada carga de menú, tarea, paso y recurso aplica filtro server-side;
+3. el `href` no se considera permiso ni territorio;
+4. una opción visible no autoriza Server Action, API, RPC ni escritura;
+5. una opción oculta no sustituye la denegación de servidor;
+6. los conteos y etiquetas del menú no revelan recursos de otros territorios;
+7. un dispositivo compartido no recibe configuración ni datos sensibles por sesión técnica;
+8. cambiar actor, función, sede operativa, turno o dispositivo invalida bindings y datos incompatibles;
+9. la simulación conserva intersección con la autoridad real y no publica mutaciones;
+10. toda telemetría usa `task_key`, `screen_id` cuando exista y ruta física por separado, sin tratar la URL como identidad empresarial.
+
+---
+
+#### 12. Evidencia técnica actual y diagnóstico
+
+| Fuente actual                                    | Evidencia verificable                                                                                                                  | Estado frente al diseño | Decisión                                                                                                         |
+| ------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | ----------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `app_navigation_items`                           | conserva grupo, etiqueta, `href`, icono y permiso; la unicidad por aplicación y URL hace que el registro físico sea el centro del ítem | `IMPLEMENTADO_PARCIAL`  | ampliar el modelo en implementación con identidad de tarea y binding versionado, sin usar la ruta como identidad |
+| `src/components/vento/standard/vento-shell.tsx`  | carga grupos e ítems desde `app_navigation_items` y filtra por permisos                                                                | `IMPLEMENTADO_PARCIAL`  | consumir un resolutor de tareas y contexto además del permiso                                                    |
+| `src/components/vento/standard/vento-chrome.tsx` | renderiza directamente `group.label`, `item.label` e `item.href`                                                                       | `IMPLEMENTADO_PARCIAL`  | renderizar grupos humanos, tarea, estado y retorno resueltos                                                     |
+| `scripts/sync-navigation.mjs`                    | propone grupos desde segmentos de URL, etiquetas desde el último segmento y permisos desde el patrón de ruta                           | `BRECHA_CONFIRMADA`     | limitar el escaneo a inventario técnico de superficies; no promover automáticamente una ruta como tarea de menú  |
+| `src/app/page.tsx`                               | agrupa acciones en `operate`, `verify`, `configure` y `utilities` y usa rutas como destino                                             | `IMPLEMENTADO_PARCIAL`  | sustituir la composición genérica por las proyecciones de actor aprobadas y por `task_key`                       |
+| inventario actual de rutas                       | existen sesenta y cuatro patrones con detalles, acciones, configuración, acceso, alias y utilidades                                    | `CLASIFICADO`           | aplicar el registro completo de esta tarea sin crear URLs nuevas                                                 |
+
+No se modifica código en esta tarea. La evidencia describe el estado actual y el contrato de salida para implementación posterior.
+
+---
+
+#### 13. Decisiones aprobadas
+
+1. `task_key` es la identidad de intención humana y la URL es un binding reemplazable;
+2. se aprueban exactamente ocho familias y veintinueve tareas o resolutores;
+3. la navegación global utiliza exactamente cuatro grupos humanos;
+4. Inicio y la siguiente tarea preceden cualquier lista secundaria;
+5. cada una de las sesenta y cuatro rutas tiene una disposición explícita;
+6. detalles, acciones, referencias, aliases, acceso y utilidades no aparecen como módulos independientes;
+7. escaneo, kiosco, código y deep link se invocan en contexto y regresan a la tarea;
+8. la composición se resuelve por actor, función, territorio, recurso, permiso, etapa y dispositivo;
+9. una persona multifunción conserva carriles y autoridad separados;
+10. los labels no se generan desde segmentos de URL;
+11. breadcrumbs y retorno usan tareas y recursos, no carpetas técnicas;
+12. una ruta directa revalida autoridad y no constituye bypass;
+13. los catorce estados representan revocación, parcialidad, offline y resultado desconocido sin éxito ficticio;
+14. el catálogo de rutas puede seguir existiendo como inventario técnico, pero no gobierna la experiencia humana.
+
+---
+
+#### 14. Requisitos de prueba derivados
+
+| Requisito       | Cobertura                                                                                                        |
+| --------------- | ---------------------------------------------------------------------------------------------------------------- |
+| `TREQ-NEXO-083` | identidad de tarea, binding versionado y resolución autoritativa separada de URL                                 |
+| `TREQ-NEXO-084` | ocho familias, veintinueve tareas, cuatro grupos y prioridad de siguiente tarea                                  |
+| `TREQ-NEXO-085` | composición de ocho contextos sin herencia por rol ni colapso de carriles                                        |
+| `TREQ-NEXO-086` | registro completo de sesenta y cuatro rutas con una disposición por identidad                                    |
+| `TREQ-NEXO-087` | entrada, deep link, breadcrumb, retorno y reanudación con revalidación                                           |
+| `TREQ-NEXO-088` | utilidades, alias, kioscos, códigos y escáner ocultos y contextuales                                             |
+| `TREQ-NEXO-089` | catorce estados y representación honesta de revocación, parcialidad, offline y resultado desconocido             |
+| `TREQ-NEXO-090` | compatibilidad e implementación sin promover rutas técnicas automáticamente ni usar navegación como autorización |
+
+No se modifica ningún requisito histórico.
+
+---
+
+#### 15. Criterios de aceptación
+
+- [ ] Existen exactamente ocho familias de tareas y veintinueve `task_key` únicas.
+- [ ] Las etiquetas visibles están formuladas como intenciones humanas y no se derivan de URLs.
+- [ ] Existen exactamente cuatro grupos globales: Inicio, Mi trabajo, Consultar y controlar, Administrar.
+- [ ] La siguiente tarea aparece antes que módulos, consultas o configuración.
+- [ ] Los ocho contextos de composición tienen entradas y ocultamientos explícitos.
+- [ ] Las sesenta y cuatro rutas inventariadas aparecen exactamente una vez en el binding primario.
+- [ ] Ninguna ruta dinámica, de detalle, acción, referencia, acceso, alias o utilidad se promueve por existir.
+- [ ] Los accesos directos revalidan actor, contexto, territorio, recurso, permiso, etapa y versión.
+- [ ] Breadcrumb, retorno y reanudación utilizan tarea e instancia, no segmentos de URL.
+- [ ] Escaneo, kiosco, código de ubicación y alias regresan a la tarea invocante.
+- [ ] La navegación no concede permisos ni amplía territorios.
+- [ ] Los catorce estados evitan éxito, prioridad o autoridad ficticios.
+- [ ] Se crean exactamente `TREQ-NEXO-083` a `TREQ-NEXO-090`.
+- [ ] Los flujos detallados posteriores consumen este contrato sin alterar la continuidad.
+
+---
+
+#### 16. `NEXO-TASK-NAVIGATION-HANDOFF-001`
+
+| Resultado                                                                                        | Estado             | Responsable canónico                         | Condición de consumo                                                                              |
+| ------------------------------------------------------------------------------------------------ | ------------------ | -------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| arquitectura por tareas, familias, grupos y estados                                              | `ESPECIFICADO`     | `NEXO-UX-008`                                | toda navegación posterior utiliza `task_key` y bindings                                           |
+| flujo completo de solicitud                                                                      | `RESERVADO`        | `NEXO-UX-009`                                | consumir `NEXO-TASK-003` y el resolutor de abastecimiento                                         |
+| preparación, despacho, transporte y recepción                                                    | `RESERVADO`        | `NEXO-UX-010` a `NEXO-UX-013`                | consumir `NEXO-TASK-004` a `NEXO-TASK-006`                                                        |
+| entradas, ubicaciones, movimientos, retiros, conteos y ajustes                                   | `RESERVADO`        | `NEXO-UX-014` a `NEXO-UX-019`                | consumir `NEXO-TASK-007` a `NEXO-TASK-015`                                                        |
+| escaneo, búsqueda, excepciones, filtros, masivos y offline                                       | `RESERVADO`        | `NEXO-UX-020` a `NEXO-UX-025`                | conservar utilidad contextual y estados de navegación                                             |
+| LPN, activos e impresión                                                                         | `RESERVADO`        | `NEXO-UX-026` a `NEXO-UX-039`                | conservar las tareas clasificadas sin anticipar sus flujos                                        |
+| modelo físico de tareas y bindings, resolutor server-side, componentes, migraciones y telemetría | `FUERA_DE_ALCANCE` | paquete de implementación NEXO en la fase E5 | iniciar solo cuando la secuencia habilite implementación y versionar Supabase desde `vento-shell` |
+| pruebas automatizadas y validación operativa                                                     | `FUERA_DE_ALCANCE` | paquete E5 NEXO y certificación del BLOQUE U | implementar `TREQ-NEXO-083` a `TREQ-NEXO-090` y producir evidencia reproducible                   |
+
+---
+
+#### 17. Continuidad canónica
+
+**ÚLTIMA TAREA APROBADA**
+
+`NEXO-UX-007 — Diseñar inicio para supervisor`
+
+**TAREA ACTUAL APROBADA**
+
+`NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión`
+
+
 ### [ ] NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión
 ### [ ] NEXO-UX-010 — Diseñar flujo completo de preparación
 ### [ ] NEXO-UX-011 — Diseñar flujo completo de despacho

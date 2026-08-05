@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **553** |
+| Tareas aprobadas | **554** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1041** |
+| Tareas no iniciadas | **1040** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **34.69% (553/1594)** |
+| Porcentaje de completamiento | **34.76% (554/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NEXO-UX-007 — Diseñar inicio para supervisor** |
-| Tarea actual | **NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas** |
+| Última tarea aprobada | **NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas** |
+| Tarea actual | **NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión** |
+| Siguiente tarea | **NEXO-UX-010 — Diseñar flujo completo de preparación** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 13: NEXO_FUNCTIONAL_UX** |
-| Progreso del bloque | **CARRIL NEXO: 7 de 25 aprobadas; NEXO-UX-008 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 8 de 25 aprobadas; NEXO-UX-009 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NEXO-UX-007` — Diseñar inicio para supervisor |
-| Tarea actual | `NEXO-UX-008` — Organizar navegación por tareas y no por rutas técnicas — **NO INICIADA** |
-| Siguiente tarea | `NEXO-UX-009` — Diseñar flujo completo de solicitud de remisión |
+| Última aprobada | `NEXO-UX-008` — Organizar navegación por tareas y no por rutas técnicas |
+| Tarea actual | `NEXO-UX-009` — Diseñar flujo completo de solicitud de remisión — **NO INICIADA** |
+| Siguiente tarea | `NEXO-UX-010` — Diseñar flujo completo de preparación |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 7 DE 25 APROBADAS — ACTUAL NEXO-UX-008** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 8 DE 25 APROBADAS — ACTUAL NEXO-UX-009** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NEXO-UX-007 — Diseñar inicio para supervisor
-        ↓
-TAREA ACTUAL
 NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión
         ↓
+SIGUIENTE TAREA RESERVADA
+NEXO-UX-010 — Diseñar flujo completo de preparación
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 7 de 25 tareas aprobadas
+CARRIL NEXO — 8 de 25 tareas aprobadas
 ```
