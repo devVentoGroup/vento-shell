@@ -5353,7 +5353,945 @@ No se modifica ningún requisito histórico.
 `NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión`
 
 
-### [ ] NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión
+### ✅ NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas` — APROBADA
+**Tarea siguiente:** `NEXO-UX-010 — Diseñar flujo completo de preparación y despacho` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo del flujo de solicitud de abastecimiento interno, borrador reanudable, captura de líneas, resolución de origen, revisión, confirmación, persistencia idempotente, receipt, seguimiento y handoff a preparación
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Proceso propietario:** `VPROC-0028 — Abastecer inventario interno de sedes y áreas`
+**Tarea de navegación consumida:** `NEXO-TASK-003 — SOLICITAR_ABASTECIMIENTO_INTERNO`
+**Artefactos producidos:** `NEXO-REMISSION-REQUEST-FLOW-CONTRACT-001`, `NEXO-REMISSION-REQUEST-STATE-MACHINE-001`, `NEXO-REMISSION-REQUEST-STEP-CATALOG-001`, `NEXO-REMISSION-REQUEST-DATA-CONTRACT-001`, `NEXO-REMISSION-REQUEST-LINE-CONTRACT-001`, `NEXO-REMISSION-REQUEST-DRAFT-RESUME-CONTRACT-001`, `NEXO-REMISSION-REQUEST-VALIDATION-CATALOG-001`, `NEXO-REMISSION-REQUEST-IDEMPOTENCY-CONTRACT-001`, `NEXO-REMISSION-REQUEST-CONFIRMATION-RECEIPT-001`, `NEXO-REMISSION-REQUEST-HANDOFF-001`, `NEXO-REMISSION-REQUEST-ROUTE-DISPOSITION-001` y `NEXO-REMISSION-REQUEST-IMPLEMENTATION-HANDOFF-001`
+**Decisiones consumidas:** `UX-BASE-001` a `UX-BASE-005`; `UX-STATION-010` a `UX-STATION-012`; `NEXO-DOM-001`; `NEXO-UX-001` a `NEXO-UX-008`; `NEXO-REQUESTER-HOME-CONTRACT-001`; `NEXO-REQUESTER-HOME-INFORMATION-ARCHITECTURE-001`; `NEXO-REQUESTER-INITIATOR-DECISION-MATRIX-001`; `NEXO-REQUESTER-STAGE-PROJECTION-MATRIX-001`; `NEXO-TASK-NAVIGATION-CONTRACT-001`; `NEXO-NAVIGATION-TASK-CATALOG-001`; `NEXO-ROUTE-TO-TASK-REGISTRY-001`; contratos de autorización, contexto activo, unidades, presentaciones, políticas de solicitud, rutas de abastecimiento, firma de dispositivo compartido y requisitos `TREQ-*` vigentes
+**Cambios físicos autorizados:** ninguno; no modifica código, tablas, RPC, migraciones, RLS, permisos, datos, navegación desplegada, configuración ni ambientes remotos
+
+---
+
+#### 1. Propósito
+
+Definir de extremo a extremo cómo una persona autorizada solicita abastecimiento interno para su sede y área, desde la entrada a la tarea hasta la obtención de un resultado empresarial verificable y el handoff a preparación.
+
+El flujo deberá evitar que la interfaz trate como equivalentes:
+
+- escribir datos en un formulario;
+- conservar un borrador;
+- validar una intención;
+- confirmar una solicitud;
+- crear un registro parcial;
+- recibir un resultado empresarial;
+- crear una remisión física;
+- preparar, despachar, transportar o recibir mercancía.
+
+La regla canónica es:
+
+```text
+CONTEXTO SOLICITANTE AUTORIZADO
++ NECESIDAD Y LINEAS VALIDAS
++ ORIGEN DE ABASTECIMIENTO RESUELTO
++ REVISION COMPLETA
++ CONFIRMACION EXPLICITA
++ COMANDO ATOMICO E IDEMPOTENTE
++ RECEIPT VERIFICABLE
+→ SOLICITUD EMPRESARIAL EN ESTADO REQUESTED
+```
+
+Una solicitud confirmada no reserva inventario, no aprueba disponibilidad, no constituye picking, no crea custodia, no prueba despacho y no acredita recepción.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban doce artefactos documentales consumibles:
+
+1. `NEXO-REMISSION-REQUEST-FLOW-CONTRACT-001`, que fija frontera, lenguaje, actor, autoridad y resultado;
+2. `NEXO-REMISSION-REQUEST-STATE-MACHINE-001`, que separa estado de interfaz, borrador y solicitud empresarial;
+3. `NEXO-REMISSION-REQUEST-STEP-CATALOG-001`, que materializa doce pasos completos y sus transiciones;
+4. `NEXO-REMISSION-REQUEST-DATA-CONTRACT-001`, que define contexto, cabecera, plan de solicitudes y snapshots;
+5. `NEXO-REMISSION-REQUEST-LINE-CONTRACT-001`, que define producto, política, cantidad, unidad, conversión, área y ruta por línea;
+6. `NEXO-REMISSION-REQUEST-DRAFT-RESUME-CONTRACT-001`, que define un borrador activo, autosave, versión, reanudación, descarte y cambio de contexto;
+7. `NEXO-REMISSION-REQUEST-VALIDATION-CATALOG-001`, que materializa veinticuatro validaciones y su momento de aplicación;
+8. `NEXO-REMISSION-REQUEST-IDEMPOTENCY-CONTRACT-001`, que impide duplicados, escrituras parciales y repetición ciega;
+9. `NEXO-REMISSION-REQUEST-CONFIRMATION-RECEIPT-001`, que define revisión, confirmación, receipt y recuperación de resultado desconocido;
+10. `NEXO-REMISSION-REQUEST-HANDOFF-001`, que entrega solicitudes inmutables y versionadas al flujo de preparación;
+11. `NEXO-REMISSION-REQUEST-ROUTE-DISPOSITION-001`, que decide las rutas actuales relacionadas sin inventar URLs;
+12. `NEXO-REMISSION-REQUEST-IMPLEMENTATION-HANDOFF-001`, que separa el contrato aprobado de los cambios físicos posteriores.
+
+| Elemento                                        | Total esperado | Total materializado | Faltantes | Duplicados |
+| ----------------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Pasos del flujo                                 |             12 |                  12 |         0 |          0 |
+| Estados de interfaz                             |             16 |                  16 |         0 |          0 |
+| Estados del borrador                            |              6 |                   6 |         0 |          0 |
+| Estados empresariales producidos por esta tarea |              1 |                   1 |         0 |          0 |
+| Validaciones materializadas                     |             24 |                  24 |         0 |          0 |
+| Disposiciones de rutas relacionadas             |              6 |                   6 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados       |             10 |                  10 |         0 |          0 |
+
+El resultado queda `ESPECIFICADO`. No declara el flujo `IMPLEMENTADO`, `VALIDADO` ni desplegado.
+
+---
+
+#### 3. Alcance
+
+##### 3.1. Incluido
+
+- entrada desde `NEXO-TASK-003` y desde el inicio del solicitante;
+- resolución del actor, sede, área, dispositivo, turno y permiso;
+- detección y reanudación del borrador activo;
+- captura de necesidad, fecha requerida y observaciones cuando apliquen;
+- búsqueda y selección de productos habilitados para la unidad solicitante;
+- cantidad, unidad, presentación, política de solicitud y conversión por línea;
+- resolución de la fuente y ruta de abastecimiento sin selección arbitraria;
+- agrupación explícita cuando las líneas pertenecen a más de una fuente;
+- validaciones cliente y servidor con autoridad exclusivamente server-side;
+- revisión final, consecuencias y confirmación explícita;
+- escritura atómica, idempotencia, concurrencia y recuperación de timeout;
+- receipt estructurado y retorno a seguimiento;
+- handoff inmutable hacia preparación;
+- diagnóstico del código, esquema y flujo actuales.
+
+##### 3.2. Excluido
+
+- aprobar solicitudes;
+- reservar o descontar inventario;
+- elegir LOC, posición interna, lote o LPN de picking;
+- producir, preparar, sustituir, empacar, cargar, sellar o despachar;
+- asumir custodia, transportar, entregar o recibir;
+- resolver faltantes, sobrantes, daños, rechazos, devoluciones o cierres;
+- cambiar políticas, productos, UOM, rutas de abastecimiento o permisos;
+- implementar tablas de borrador, claves de idempotencia, RPC o componentes;
+- ejecutar migraciones, backfills, DDL, DML o despliegues;
+- certificar el flujo en tablet, kiosco, dispositivo compartido o producción.
+
+---
+
+#### 4. `NEXO-REMISSION-REQUEST-FLOW-CONTRACT-001`
+
+##### 4.1. Nombre humano y efecto empresarial
+
+La experiencia utilizará como término principal:
+
+```text
+SOLICITUD DE ABASTECIMIENTO
+```
+
+El término “remisión” podrá conservarse como nombre técnico o documental legacy mientras exista compatibilidad, pero el solicitante no verá “remisión creada” como si el despacho ya existiera.
+
+El único efecto empresarial exitoso de este flujo es:
+
+```text
+REQUEST_CREATED
+business_status = requested
+next_lane = PREPARATION_OR_FULFILLMENT
+```
+
+##### 4.2. Actor autorizado
+
+El actor ordinario es una persona que participa como solicitante en `VPROC-0028` y posee la capacidad exacta `nexo.inventory.remissions.request` dentro del contexto operativo vigente.
+
+La elegibilidad exige conjuntamente:
+
+- identidad y actor efectivo válidos;
+- función solicitante vigente;
+- sede y área solicitantes autorizadas;
+- turno o check-in cuando el contrato operativo lo requiera;
+- dispositivo permitido;
+- permiso exacto;
+- capacidad de la sede para solicitar;
+- producto, política y ruta compatibles;
+- ausencia de revocación, suplantación o contexto obsoleto.
+
+El nombre del rol, una ruta visible, un query parameter o una sesión técnica no sustituyen estas condiciones.
+
+##### 4.3. Segregación
+
+Desde este flujo el solicitante puede:
+
+- crear o continuar su borrador;
+- modificar líneas mientras el borrador sea editable;
+- revisar y confirmar;
+- recibir el receipt;
+- consultar el seguimiento de solicitudes propias autorizadas.
+
+No puede por esta participación:
+
+- aprobar;
+- preparar;
+- seleccionar inventario físico;
+- despachar;
+- registrar tránsito;
+- recibir;
+- conciliar diferencias;
+- cerrar la solicitud;
+- cambiar maestros o políticas.
+
+##### 4.4. Iniciadores admitidos
+
+| Iniciador                       | Entrada                             | Decisión                                                                  |
+| ------------------------------- | ----------------------------------- | ------------------------------------------------------------------------- |
+| `MANUAL_REQUESTER`              | acción `NUEVA_SOLICITUD`            | abre o reanuda el único borrador ordinario compatible                     |
+| `REPLENISHMENT_SUGGESTION`      | sugerencia autorizada de reposición | precarga líneas como propuesta; exige revisión y confirmación humana      |
+| `ASSIGNED_CLARIFICATION_RETURN` | tarea devuelta al solicitante       | reabre únicamente campos autorizados sobre una solicitud todavía editable |
+| `DEEP_LINK_TO_DRAFT`            | referencia opaca de continuación    | revalida actor, contexto, versión y propiedad antes de abrir              |
+| `SHARED_DEVICE_ENTRY`           | tarea en dispositivo compartido     | exige identificación y firma del actor efectivo antes de confirmar        |
+
+Una sugerencia automática nunca se convierte por sí sola en solicitud empresarial.
+
+---
+
+#### 5. `NEXO-REMISSION-REQUEST-STATE-MACHINE-001`
+
+##### 5.1. Tres máquinas de estado separadas
+
+```text
+ESTADO DE INTERFAZ
+≠ ESTADO DEL BORRADOR
+≠ ESTADO EMPRESARIAL DE LA SOLICITUD
+```
+
+La interfaz representa lo que puede hacer la persona. El borrador representa una intención todavía mutable. La solicitud empresarial representa un hecho confirmado y consumible por otros actores.
+
+##### 5.2. Estados del borrador
+
+| Estado             | Significado                                           | Mutabilidad                         |
+| ------------------ | ----------------------------------------------------- | ----------------------------------- |
+| `DRAFT_EMPTY`      | existe contexto válido sin contenido material         | editable                            |
+| `DRAFT_EDITABLE`   | contiene al menos un dato o línea                     | editable                            |
+| `DRAFT_STALE`      | cambió contexto, catálogo, política, ruta o versión   | bloqueado hasta reconciliar         |
+| `DRAFT_CONFLICTED` | otra sesión modificó la misma versión                 | bloqueado hasta recargar o resolver |
+| `DRAFT_DISCARDED`  | descarte explícito y auditado                         | terminal                            |
+| `DRAFT_SUBMITTED`  | fue consumido por un resultado empresarial confirmado | terminal                            |
+
+El borrador no usa `pending`, `requested` ni estados de preparación.
+
+##### 5.3. Estados de interfaz
+
+| Estado                          | Condición                            | Comportamiento obligatorio                                           |
+| ------------------------------- | ------------------------------------ | -------------------------------------------------------------------- |
+| `REQUEST_CONTEXT_RESOLVING`     | se resuelve actor y contexto         | no mostrar formulario operable ni datos como definitivos             |
+| `REQUEST_CONTEXT_BLOCKED`       | falta una condición obligatoria      | explicar bloqueo y no ofrecer bypass                                 |
+| `REQUEST_DRAFT_DECISION`        | existe un borrador compatible        | ofrecer continuar, descartar o volver; no crear otro silenciosamente |
+| `REQUEST_EDITING_EMPTY`         | borrador sin líneas                  | enfocar producto o sugerencias autorizadas                           |
+| `REQUEST_EDITING`               | borrador con contenido               | autosave versionado y resumen visible                                |
+| `REQUEST_DRAFT_SAVING`          | persiste una versión                 | conservar edición local y mostrar estado real                        |
+| `REQUEST_DRAFT_SAVE_FAILED`     | falló el autosave                    | no perder datos; permitir reintento controlado                       |
+| `REQUEST_DRAFT_STALE`           | cambió una dependencia               | listar cambios y exigir reconciliación                               |
+| `REQUEST_VALIDATION_BLOCKED`    | existe al menos un error impeditivo  | identificar línea, regla y corrección necesaria                      |
+| `REQUEST_READY_FOR_REVIEW`      | todas las validaciones previas pasan | habilitar revisión, no envío directo                                 |
+| `REQUEST_REVIEWING`             | se presenta el resumen completo      | impedir edición accidental durante la confirmación                   |
+| `REQUEST_CONFIRMATION_REQUIRED` | consecuencia lista para aceptar      | exigir gesto explícito del actor efectivo                            |
+| `REQUEST_SUBMITTING`            | comando aceptado para envío          | bloquear doble acción y conservar `submission_intent_id`             |
+| `REQUEST_RESULT_UNKNOWN`        | no existe receipt concluyente        | consultar por intención; prohibir repetición ciega                   |
+| `REQUEST_SUBMITTED`             | existe receipt verificable           | mostrar código, estado, siguiente responsable y seguimiento          |
+| `REQUEST_FATAL_ERROR`           | no puede recuperarse con seguridad   | preservar correlación, borrador y retorno seguro                     |
+
+##### 5.4. Estado empresarial producido
+
+Este flujo solo produce:
+
+```text
+requested
+```
+
+Compatibilidad legacy permitida:
+
+```text
+request_status = pending
+flow_status = requested
+```
+
+La implementación deberá mantener una traducción explícita y no inferir que `pending` significa preparado, aprobado o en tránsito.
+
+---
+
+#### 6. `NEXO-REMISSION-REQUEST-STEP-CATALOG-001`
+
+| Paso | Identidad                       | Entrada                   | Acción principal                     | Resultado                       | Interrupción y reanudación                |
+| ---: | ------------------------------- | ------------------------- | ------------------------------------ | ------------------------------- | ----------------------------------------- |
+|    1 | `REQ-STEP-01-RESOLVE-CONTEXT`   | entrada a `NEXO-TASK-003` | validar contexto                     | contexto solicitante o bloqueo  | volver al inicio seguro si se revoca      |
+|    2 | `REQ-STEP-02-RESOLVE-DRAFT`     | contexto válido           | continuar o iniciar                  | borrador único compatible       | referencia opaca y versión                |
+|    3 | `REQ-STEP-03-DEFINE-NEED`       | borrador editable         | registrar necesidad                  | cabecera mínima                 | autosave sin efecto empresarial           |
+|    4 | `REQ-STEP-04-ADD-PRODUCT`       | catálogo autorizado       | añadir producto                      | línea candidata                 | conserva búsqueda y posición de trabajo   |
+|    5 | `REQ-STEP-05-SET-QUANTITY`      | producto elegido          | definir cantidad y política          | cantidad normalizada            | conserva valor original y conversión      |
+|    6 | `REQ-STEP-06-RESOLVE-ROUTE`     | línea completa            | resolver fuente y ruta               | línea elegible o bloqueada      | revalidación si cambia configuración      |
+|    7 | `REQ-STEP-07-CONSOLIDATE-LINES` | una o más líneas          | unir duplicados y agrupar fuentes    | plan de solicitud               | decisión explícita ante líneas bloqueadas |
+|    8 | `REQ-STEP-08-VALIDATE-DRAFT`    | plan completo             | corregir errores                     | borrador listo                  | errores vinculados a campo o línea        |
+|    9 | `REQ-STEP-09-REVIEW`            | borrador válido           | revisar consecuencia                 | resumen inmutable de revisión   | volver a edición conserva borrador        |
+|   10 | `REQ-STEP-10-CONFIRM`           | revisión vigente          | confirmar                            | comando firmado                 | cambio de versión obliga nueva revisión   |
+|   11 | `REQ-STEP-11-SUBMIT`            | comando confirmado        | persistir atómicamente               | receipt o resultado desconocido | reconciliar por intención                 |
+|   12 | `REQ-STEP-12-TRACK`             | receipt verificado        | abrir seguimiento o volver al inicio | solicitud propia visible        | retorno a la tarea originaria             |
+
+Reconciliación:
+
+```text
+EXPECTED_REQUEST_STEPS = 12
+MATERIALIZED_REQUEST_STEPS = 12
+MISSING_REQUEST_STEPS = 0
+DUPLICATE_REQUEST_STEPS = 0
+```
+
+---
+
+#### 7. `NEXO-REMISSION-REQUEST-DATA-CONTRACT-001`
+
+##### 7.1. Contexto autoritativo
+
+```text
+request_context
+- principal_id
+- actor_id
+- actor_source
+- actor_function = REQUESTER
+- destination_site_id
+- requesting_area_id
+- requesting_area_kind
+- shift_id cuando aplique
+- device_id y device_mode
+- permission_decision_id
+- authorization_version
+- context_version
+- resolved_at
+```
+
+La sede destino y el área solicitante se derivan del contexto activo. El flujo ordinario no permite seleccionar arbitrariamente otra sede o área mediante el formulario.
+
+##### 7.2. Cabecera del borrador
+
+```text
+request_draft
+- request_draft_id
+- draft_version
+- lifecycle_state
+- task_key = NEXO-TASK-003
+- destination_site_id
+- requesting_area_id
+- initiator_type
+- need_by_date
+- need_reason_code cuando una política lo exija
+- notes
+- created_by_actor_id
+- updated_by_actor_id
+- created_at
+- updated_at
+- dependency_snapshot_version
+```
+
+La fecha requerida:
+
+- no puede estar en el pasado del contexto operativo;
+- no promete entrega ni crea un SLA;
+- solo será obligatoria cuando una política aprobada lo determine;
+- se interpreta en la zona horaria canónica de la sede;
+- se conserva como solicitud del actor, no como compromiso de bodega.
+
+##### 7.3. Plan de solicitudes
+
+El modelo actual exige un origen por solicitud. Por tanto, la resolución produce uno de estos planes:
+
+| Plan                    | Condición                                            | Resultado de revisión                                          |
+| ----------------------- | ---------------------------------------------------- | -------------------------------------------------------------- |
+| `SINGLE_SOURCE`         | todas las líneas elegibles resuelven la misma fuente | una solicitud empresarial                                      |
+| `MULTI_SOURCE_SPLIT`    | líneas elegibles resuelven fuentes distintas         | varias solicitudes agrupadas bajo una única intención de envío |
+| `BLOCKED_LINES_PRESENT` | una o más líneas carecen de ruta válida              | no enviar hasta corregir o excluir explícitamente esas líneas  |
+| `NO_ELIGIBLE_LINES`     | ninguna línea puede solicitarse                      | bloquear confirmación                                          |
+
+Una separación por fuentes será visible antes de confirmar. No se crearán solicitudes ocultas ni se omitirá una línea silenciosamente.
+
+##### 7.4. Snapshot de dependencias
+
+La revisión conserva como mínimo:
+
+```text
+catalog_version
+request_policy_version
+uom_profile_version
+supply_route_version
+product_fulfillment_route_version
+context_version
+draft_version
+```
+
+Si cualquiera cambia materialmente antes de persistir, el servidor devuelve conflicto y obliga a revisar nuevamente.
+
+---
+
+#### 8. `NEXO-REMISSION-REQUEST-LINE-CONTRACT-001`
+
+##### 8.1. Línea normalizada
+
+```text
+request_line
+- client_line_id
+- product_id
+- product_display_snapshot
+- requesting_area_kind
+- request_policy_id
+- requested_policy_qty
+- input_unit_code
+- input_uom_profile_id
+- input_qty
+- conversion_factor_to_stock
+- stock_unit_code
+- requested_base_qty
+- fulfillment_source_site_id
+- fulfillment_route_id
+- supply_mode
+- route_resolution_status
+- line_version
+```
+
+##### 8.2. Cantidad y unidad
+
+Toda cantidad conserva simultáneamente:
+
+```text
+VALOR SOLICITADO POR LA PERSONA
++ UNIDAD O PRESENTACION ELEGIDA
++ POLITICA APLICADA
++ FACTOR DE CONVERSION VIGENTE
++ CANTIDAD BASE RESULTANTE
+```
+
+Reglas:
+
+1. la interfaz no guarda únicamente la cantidad convertida;
+2. una conversión no se deriva de texto visible ni de una constante local;
+3. el servidor vuelve a validar política, mínimo, paso, fracción y factor;
+4. una unidad incompatible bloquea la línea;
+5. el cambio de perfil o política vuelve obsoleta la revisión;
+6. una cantidad base calculada no autoriza despacho de esa misma cantidad;
+7. productos de peso, conteo con peso, volumen o presentación fija conservan su modo de medición;
+8. planes de empaque productivo permanecen separados de la cantidad solicitada y se consumen después según la ruta.
+
+##### 8.3. Duplicados de línea
+
+La clave lógica de consolidación es:
+
+```text
+product_id
++ requesting_area_kind
++ request_policy_id
++ input_uom_profile_id
++ fulfillment_source_site_id
+```
+
+Cuando dos líneas comparten la clave:
+
+- la interfaz propone consolidarlas;
+- la cantidad combinada se revalida contra mínimo, paso y fracción;
+- no se envían duplicadas silenciosamente;
+- si el usuario conserva separación por una razón empresarial admitida, deberá existir una identidad de línea distinta y una justificación estructurada.
+
+##### 8.4. Disponibilidad y stock
+
+La disponibilidad de la fuente es información de apoyo, no compromiso.
+
+- solo se muestra si el actor posee permiso de lectura compatible;
+- puede reducirse a estado `AVAILABLE`, `LOW`, `UNAVAILABLE` o `UNKNOWN`;
+- no expone ubicaciones, lotes o cantidades sensibles al solicitante sin autorización;
+- un stock bajo no convierte al solicitante en preparador ni bloquea por sí solo la solicitud;
+- preparación decide disponibilidad física y faltantes en `NEXO-UX-010`.
+
+---
+
+#### 9. `NEXO-REMISSION-REQUEST-DRAFT-RESUME-CONTRACT-001`
+
+##### 9.1. Unicidad del borrador ordinario
+
+Existe como máximo un borrador ordinario editable para la combinación:
+
+```text
+actor_id
++ destination_site_id
++ requesting_area_id
++ task_key = NEXO-TASK-003
++ initiator_type = MANUAL_REQUESTER
+```
+
+Una sugerencia automática o una devolución de aclaración conserva identidad de iniciador independiente y no se mezcla silenciosamente con el borrador ordinario.
+
+##### 9.2. Entrada cuando existe borrador
+
+La persona recibe tres decisiones:
+
+| Acción               | Efecto                                 |
+| -------------------- | -------------------------------------- |
+| `CONTINUAR_BORRADOR` | abre la última versión autoritativa    |
+| `DESCARTAR_BORRADOR` | exige confirmación y registra descarte |
+| `VOLVER_AL_INICIO`   | no modifica el borrador                |
+
+No se permite “nuevo” cuando produciría un segundo borrador ordinario compatible.
+
+##### 9.3. Autosave
+
+El autosave:
+
+- persiste después de cambios materiales;
+- utiliza `draft_version` esperada;
+- no crea solicitud empresarial;
+- no reserva stock;
+- no cambia prioridad;
+- no envía tareas a bodega;
+- conserva un indicador honesto entre guardado, pendiente y fallido;
+- no elimina contenido local hasta confirmar la versión persistida;
+- en dispositivo compartido asocia cada cambio al actor efectivo.
+
+##### 9.4. Cambio de contexto
+
+Ante cambio de actor, sede, área, función, turno o dispositivo:
+
+1. se detiene edición;
+2. se conserva el borrador bajo su contexto original;
+3. se limpia contenido sensible de la nueva sesión;
+4. se vuelve a resolver autoridad;
+5. solo el propietario autorizado puede reanudarlo;
+6. no se traslada el borrador a otra sede o área mediante cambio de selector.
+
+##### 9.5. Obsolescencia
+
+Un borrador se marca `DRAFT_STALE` cuando cambia una dependencia material. La reconciliación muestra por línea:
+
+- valor anterior;
+- valor vigente;
+- impacto;
+- decisión requerida;
+- posibilidad de conservar, reemplazar o retirar.
+
+No se actualizan cantidades, unidades, rutas o productos sin conocimiento del actor.
+
+---
+
+#### 10. `NEXO-REMISSION-REQUEST-VALIDATION-CATALOG-001`
+
+| ID            | Regla                                                     | Momento                  | Resultado cuando falla         |
+| ------------- | --------------------------------------------------------- | ------------------------ | ------------------------------ |
+| `REQ-VAL-001` | sesión y actor efectivo válidos                           | entrada y envío          | bloqueo cerrado                |
+| `REQ-VAL-002` | función solicitante vigente                               | entrada y envío          | bloqueo cerrado                |
+| `REQ-VAL-003` | permiso exacto vigente                                    | entrada y envío          | denegación sin bypass          |
+| `REQ-VAL-004` | sede destino coincide con contexto autorizado             | entrada, edición y envío | invalidar contexto             |
+| `REQ-VAL-005` | área solicitante válida y activa                          | entrada, línea y envío   | bloquear líneas y contexto     |
+| `REQ-VAL-006` | sede admite solicitudes                                   | entrada y envío          | no iniciar                     |
+| `REQ-VAL-007` | borrador pertenece al actor y contexto                    | reanudación              | denegar sin revelar contenido  |
+| `REQ-VAL-008` | versión del borrador coincide                             | autosave y envío         | conflicto de concurrencia      |
+| `REQ-VAL-009` | existe al menos una línea elegible                        | revisión y envío         | bloquear confirmación          |
+| `REQ-VAL-010` | producto existe, está activo y habilitado                 | línea y envío            | bloquear línea                 |
+| `REQ-VAL-011` | producto corresponde al área solicitante                  | línea y envío            | bloquear línea                 |
+| `REQ-VAL-012` | política de solicitud existe y está activa                | línea y envío            | bloquear línea                 |
+| `REQ-VAL-013` | cantidad es finita y mayor que cero                       | edición y envío          | error de campo                 |
+| `REQ-VAL-014` | mínimo, paso y fracción cumplen política                  | edición y envío          | explicar corrección exacta     |
+| `REQ-VAL-015` | UOM y presentación pertenecen al producto                 | línea y envío            | bloquear línea                 |
+| `REQ-VAL-016` | conversión y cantidad base son reproducibles              | línea y envío            | conflicto de contrato          |
+| `REQ-VAL-017` | la ruta de abastecimiento está activa y completa          | línea y envío            | línea bloqueada                |
+| `REQ-VAL-018` | fuente resuelta coincide con la ruta vigente              | revisión y envío         | recalcular plan                |
+| `REQ-VAL-019` | duplicados fueron consolidados o justificados             | revisión                 | impedir envío silencioso       |
+| `REQ-VAL-020` | fecha requerida es válida para la sede                    | edición y envío          | error de campo                 |
+| `REQ-VAL-021` | dependencias conservan sus versiones                      | revisión y envío         | volver a revisión              |
+| `REQ-VAL-022` | firma de actor de dispositivo compartido es válida        | confirmación y envío     | bloquear comando               |
+| `REQ-VAL-023` | `submission_intent_id` y fingerprint son coherentes       | envío y retry            | recuperar o devolver conflicto |
+| `REQ-VAL-024` | no existe resultado previo incompatible para la intención | envío                    | impedir duplicado              |
+
+Reconciliación:
+
+```text
+EXPECTED_REQUEST_VALIDATIONS = 24
+MATERIALIZED_REQUEST_VALIDATIONS = 24
+MISSING_REQUEST_VALIDATIONS = 0
+DUPLICATE_REQUEST_VALIDATIONS = 0
+```
+
+La validación cliente mejora interacción. La validación server-side decide autoridad, integridad y persistencia.
+
+---
+
+#### 11. `NEXO-REMISSION-REQUEST-IDEMPOTENCY-CONTRACT-001`
+
+##### 11.1. Identidad del comando
+
+Antes de la confirmación se genera:
+
+```text
+submission_intent_id
+```
+
+El servidor calcula un fingerprint sobre el payload normalizado:
+
+```text
+actor y contexto
++ destino y área
++ iniciador
++ necesidad y fecha
++ grupos por fuente
++ líneas normalizadas
++ snapshots y versiones
++ firma cuando aplique
+```
+
+##### 11.2. Semántica
+
+| Caso                                                      | Resultado                                             |
+| --------------------------------------------------------- | ----------------------------------------------------- |
+| misma intención y mismo fingerprint, sin resultado previo | ejecutar una vez                                      |
+| misma intención y mismo fingerprint, con resultado previo | devolver el mismo receipt                             |
+| misma intención y fingerprint distinto                    | conflicto; no escribir                                |
+| intención nueva con payload equivalente                   | evaluar regla de duplicado empresarial antes de crear |
+| timeout después de enviar                                 | buscar por intención antes de reintentar              |
+
+##### 11.3. Duplicado empresarial
+
+Antes de confirmar, el sistema busca solicitudes activas propias con coincidencia material de:
+
+- sede y área solicitantes;
+- fuente resuelta;
+- productos y cantidades comparables;
+- ventana temporal compatible;
+- estado no terminal.
+
+La coincidencia no se cancela automáticamente. Se presenta:
+
+- solicitud existente;
+- diferencias materiales;
+- opción de abrirla;
+- opción de continuar solo cuando una regla permita una necesidad adicional y el actor confirme el motivo.
+
+##### 11.4. Atomicidad
+
+La persistencia exitosa incluye en una sola unidad transaccional:
+
+1. encabezado o encabezados de solicitud;
+2. líneas;
+3. snapshots de política y conversión;
+4. resolución de fulfillment por línea;
+5. vínculo de agrupación cuando existen varias fuentes;
+6. evento de auditoría;
+7. vínculo de firma de dispositivo compartido;
+8. receipt recuperable por intención;
+9. transición del borrador a `DRAFT_SUBMITTED`.
+
+Un fallo en cualquiera de estos elementos no puede dejar una solicitud visible como creada parcialmente.
+
+##### 11.5. Concurrencia
+
+El comando exige:
+
+- `expected_draft_version`;
+- versiones de contexto y dependencias;
+- bloqueo o control optimista de la intención;
+- unicidad de `submission_intent_id`;
+- rechazo cuando la revisión quedó obsoleta;
+- resultado determinista ante dos clics, dos pestañas o retry de red.
+
+---
+
+#### 12. `NEXO-REMISSION-REQUEST-CONFIRMATION-RECEIPT-001`
+
+##### 12.1. Revisión previa
+
+La pantalla de revisión muestra, sin campos editables:
+
+- actor y unidad solicitante;
+- destino;
+- fecha requerida y su carácter no comprometido;
+- número de solicitudes que se crearán;
+- fuente de cada grupo;
+- productos, cantidades originales, unidades y cantidades base;
+- líneas excluidas o bloqueadas;
+- observaciones;
+- advertencias de disponibilidad cuando estén autorizadas;
+- consecuencia exacta;
+- siguiente responsable funcional.
+
+Volver a editar invalida la versión de revisión. Confirmar siempre consume la revisión vigente.
+
+##### 12.2. Texto de consecuencia
+
+La confirmación deberá comunicar:
+
+```text
+Se enviará la solicitud al equipo responsable de abastecimiento.
+La disponibilidad y las cantidades preparadas se confirmarán después.
+```
+
+No deberá comunicar que:
+
+- la mercancía está reservada;
+- la solicitud fue aprobada;
+- la remisión está lista;
+- la fecha solicitada está garantizada;
+- el inventario ya se movió.
+
+##### 12.3. Receipt mínimo
+
+```text
+request_submission_receipt
+- receipt_id
+- submission_intent_id
+- request_group_id cuando aplique
+- request_ids[]
+- human_codes[]
+- business_status = requested
+- created_at
+- actor_id
+- destination_site_id
+- requesting_area_id
+- source_groups[]
+- accepted_line_count
+- excluded_line_count
+- warning_codes[]
+- next_lane
+- tracking_task_reference
+- server_correlation_id
+```
+
+##### 12.4. Resultado desconocido
+
+Si el cliente no recibe receipt:
+
+1. muestra `REQUEST_RESULT_UNKNOWN`;
+2. conserva la intención y la revisión;
+3. consulta el resultado por `submission_intent_id`;
+4. si existe, devuelve el receipt original;
+5. si no existe y el servidor certifica ausencia, permite reintentar con la misma intención;
+6. si no puede certificarlo, no crea otra intención ni muestra éxito.
+
+##### 12.5. Retorno
+
+Después del receipt se ofrecen solo:
+
+- `VER_SOLICITUD`;
+- `VOLVER_A_MI_TRABAJO`;
+- `CREAR_OTRA_SOLICITUD`, únicamente después de cerrar el resultado anterior y crear una intención distinta.
+
+El retorno conserva `task_key`, referencia de origen y contexto autorizado.
+
+---
+
+#### 13. `NEXO-REMISSION-REQUEST-HANDOFF-001`
+
+##### 13.1. Salida consumible por preparación
+
+Cada solicitud entrega:
+
+```text
+request_id
+request_version
+human_code
+business_status = requested
+requesting_context_snapshot
+source_site_id
+destination_site_id
+need_by_date
+line_snapshot[]
+policy_snapshot[]
+fulfillment_resolution[]
+created_by_actor_id
+created_at
+submission_intent_id
+```
+
+##### 13.2. Inmutabilidad y cambios posteriores
+
+Una vez confirmada:
+
+- el borrador deja de ser editable;
+- las líneas entregadas a preparación no cambian por editar el catálogo;
+- una corrección autorizada crea una nueva versión o comando explícito;
+- preparación consume `request_version` esperada;
+- una edición concurrente o anulación invalida una acción de preparación obsoleta;
+- los cambios no reescriben historia ni el receipt original.
+
+##### 13.3. Frontera con `NEXO-UX-010`
+
+La siguiente tarea recibe:
+
+- solicitud en `requested`;
+- grupos y fuente resueltos;
+- líneas y cantidades solicitadas;
+- rutas de fulfillment y bloqueos conocidos;
+- snapshots de políticas;
+- actor y contexto de origen;
+- versión esperada.
+
+`NEXO-UX-010` decidirá preparación, disponibilidad, picking, producción, faltantes, cantidades reales, empaque y despacho. Esta tarea no anticipa esas acciones.
+
+---
+
+#### 14. `NEXO-REMISSION-REQUEST-ROUTE-DISPOSITION-001`
+
+| Ruta             | Patrón actual                          | Disposición                            | Uso en el flujo                                                                                    | Estado             |
+| ---------------- | -------------------------------------- | -------------------------------------- | -------------------------------------------------------------------------------------------------- | ------------------ |
+| `NEXO-ROUTE-001` | `/`                                    | entrada desde inicio solicitante       | resolver `NEXO-TASK-003` y abrir o reanudar                                                        | `ESPECIFICADO`     |
+| `NEXO-ROUTE-031` | `/inventory/remissions`                | superficie primaria existente          | alojar entrada, edición, revisión, resultado y lista propia sin crear una URL nueva                | `ESPECIFICADO`     |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`           | detalle y seguimiento                  | mostrar receipt, estado y siguiente responsable; revalidar recurso                                 | `ESPECIFICADO`     |
+| `NEXO-ROUTE-033` | `/inventory/remissions/[id]/edit`      | compatibilidad de edición condicionada | solo para una solicitud empresarial todavía editable por regla explícita; no sustituye el borrador | `ESPECIFICADO`     |
+| `NEXO-ROUTE-047` | `/inventory/settings/request-policies` | configuración excluida                 | el flujo consume su resultado, nunca permite editar políticas                                      | `FUERA_DE_ALCANCE` |
+| `NEXO-ROUTE-050` | `/inventory/settings/supply-routes`    | configuración excluida                 | el flujo consume rutas vigentes y muestra bloqueos derivados                                       | `FUERA_DE_ALCANCE` |
+
+Reconciliación:
+
+```text
+EXPECTED_RELATED_ROUTES = 6
+MATERIALIZED_RELATED_ROUTES = 6
+MISSING_RELATED_ROUTES = 0
+DUPLICATE_RELATED_ROUTES = 0
+NEW_ROUTE_IDENTITIES = 0
+```
+
+---
+
+#### 15. Estados vacíos, bloqueo, conectividad y recuperación
+
+| Situación                  | Mensaje funcional                               | Acción disponible                                               | Acción prohibida               |
+| -------------------------- | ----------------------------------------------- | --------------------------------------------------------------- | ------------------------------ |
+| sin productos habilitados  | la unidad no tiene productos solicitables       | volver e informar al responsable de configuración               | mostrar catálogo global        |
+| sin ruta para una línea    | el producto no tiene abastecimiento configurado | retirar línea o volver                                          | elegir una sede arbitraria     |
+| política inválida          | la cantidad o presentación ya no es válida      | corregir con la regla vigente                                   | convertir silenciosamente      |
+| contexto revocado          | la jornada o autorización cambió                | volver al inicio seguro                                         | conservar formulario operable  |
+| conflicto de borrador      | existe una versión más reciente                 | recargar y comparar                                             | sobrescribir sin advertencia   |
+| offline antes de confirmar | no puede verificarse autoridad ni dependencias  | conservar borrador local controlado si el dispositivo lo admite | producir solicitud empresarial |
+| conexión perdida al enviar | el resultado no está confirmado                 | reconciliar por intención                                       | crear una intención nueva      |
+| error transaccional        | la solicitud no fue creada                      | volver al borrador con correlación                              | mostrar receipt parcial        |
+| duplicado probable         | existe una solicitud materialmente similar      | abrir y comparar                                                | crear automáticamente otra     |
+| receipt recuperado         | el servidor ya procesó la intención             | mostrar el mismo resultado                                      | repetir inserciones            |
+
+La captura offline, si se implementa, permanece en borrador y exige revalidación completa al reconectar. No existe éxito empresarial offline por defecto.
+
+---
+
+#### 16. Autorización, seguridad y privacidad
+
+1. el servidor revalida actor, contexto, permiso, recurso y estado al cargar, guardar, revisar y confirmar;
+2. el solicitante ve únicamente productos, políticas, sedes, áreas y solicitudes dentro de su territorio;
+3. los identificadores de sitio, área, producto, ruta y borrador enviados por cliente se tratan como no confiables;
+4. la firma de dispositivo compartido identifica al actor humano y se vincula atómicamente al resultado;
+5. un PIN no se almacena en borrador, receipt, log ni analytics;
+6. el detalle de stock, LOC, lotes y disponibilidad se minimiza según permiso;
+7. notas y motivos no admiten secretos, credenciales ni datos personales innecesarios;
+8. el receipt no contiene tokens reutilizables ni rutas internas sensibles;
+9. la telemetría distingue `request_draft_id`, `submission_intent_id`, `request_id` y `task_key`;
+10. una denegación no revela solicitudes, productos o rutas fuera del alcance;
+11. la UI nunca concede autoridad por mostrar un control;
+12. una Server Action, API o RPC no confía en validaciones previas del navegador.
+
+---
+
+#### 17. Evidencia técnica actual y diagnóstico
+
+| Fuente actual                                     | Evidencia verificable                                                                                                  | Estado frente al diseño    | Decisión                                                                                              |
+| ------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `src/app/inventory/remissions/page.tsx`           | concentra creación, lista y carriles de varios actores en una misma superficie                                         | `IMPLEMENTADO_PARCIAL`     | conservar ruta física y componer la tarea solicitante sin exponer preparación, conducción o recepción |
+| `src/components/vento/remissions-create-form.tsx` | mantiene origen, fecha, notas y líneas en estado cliente; acepta filas iniciales y ejecuta una acción de envío         | `IMPLEMENTADO_PARCIAL`     | incorporar borrador autoritativo, autosave, revisión, confirmación y estados honestos                 |
+| `src/app/inventory/remissions/actions.ts`         | revalida sesión, contexto, permiso, sede, área, productos, políticas, UOM y firma de dispositivo compartido            | `IMPLEMENTADO_PARCIAL`     | preservar controles y mover la persistencia a un comando transaccional e idempotente                  |
+| persistencia actual                               | inserta encabezado, después líneas y luego fulfillments mediante operaciones separadas                                 | `BRECHA_CONFIRMADA`        | evitar solicitud parcial y producir un único receipt recuperable                                      |
+| resultado actual                                  | redirige con mensaje genérico “Remisión creada” y no devuelve código, IDs, intención ni siguiente responsable          | `BRECHA_CONFIRMADA`        | devolver receipt estructurado y lenguaje de solicitud                                                 |
+| selección de origen actual                        | el formulario recibe opciones y un origen por defecto                                                                  | `BRECHA_CONFIRMADA`        | resolver fuente por rutas vigentes y mostrar cualquier división antes de confirmar                    |
+| modelo de estado actual                           | persiste `status = pending`; otras migraciones sincronizan estados legacy desde cantidades                             | `COMPATIBILIDAD_REQUERIDA` | mapear explícitamente `pending` a `requested` sin confundir etapas posteriores                        |
+| idempotencia actual                               | no existe clave de intención ni recuperación por fingerprint en el comando inspeccionado                               | `BRECHA_CONFIRMADA`        | implementar unicidad, retry determinista y consulta de resultado                                      |
+| borrador actual                                   | no existe evidencia de un borrador server-side reanudable para creación ordinaria                                      | `NO_IMPLEMENTADO`          | materializar contrato de borrador en el paquete E5 NEXO                                               |
+| rutas de fulfillment                              | se resuelven después de crear encabezado y líneas; un fallo puede informar que la solicitud se creó sin generar tareas | `BRECHA_CRITICA`           | resolver y validar antes, y persistir todo en la misma transacción                                    |
+
+No se modifica código en esta tarea. El diagnóstico fija el comportamiento esperado y los riesgos que la implementación deberá cerrar.
+
+---
+
+#### 18. Decisiones aprobadas
+
+1. la experiencia se denomina solicitud de abastecimiento y no afirma que exista despacho;
+2. el borrador, la interfaz y la solicitud empresarial tienen estados separados;
+3. existen exactamente doce pasos y dieciséis estados de interfaz;
+4. el flujo ordinario conserva un solo borrador editable por actor, sede, área y tarea;
+5. destino y área se derivan del contexto autorizado;
+6. la fuente se resuelve desde rutas activas y no se elige arbitrariamente;
+7. varias fuentes producen una división visible y confirmada;
+8. ninguna línea se omite silenciosamente;
+9. cantidad original, unidad, política, factor y cantidad base quedan vinculados;
+10. veinticuatro validaciones se aplican en los momentos definidos;
+11. la revisión completa precede la confirmación;
+12. la confirmación no promete stock, aprobación ni fecha;
+13. el comando usa intención, fingerprint, versión esperada y atomicidad;
+14. un timeout se reconcilia antes de reintentar;
+15. el receipt es el único comprobante de éxito empresarial;
+16. una solicitud confirmada queda en `requested` y se entrega versionada a preparación;
+17. el solicitante no adquiere capacidades de aprobación, preparación, despacho, recepción o configuración;
+18. no se crean rutas físicas nuevas en esta tarea.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+| Requisito       | Cobertura                                                                     |
+| --------------- | ----------------------------------------------------------------------------- |
+| `TREQ-NEXO-091` | separación de borrador, interfaz y solicitud empresarial con doce pasos       |
+| `TREQ-NEXO-092` | resolución de actor, destino, área, fuente y elegibilidad por contexto        |
+| `TREQ-NEXO-093` | integridad de línea, política, UOM, conversión, área y duplicados             |
+| `TREQ-NEXO-094` | borrador único, autosave, versión, reanudación, descarte y cambio de contexto |
+| `TREQ-NEXO-095` | catálogo completo de veinticuatro validaciones y revalidación server-side     |
+| `TREQ-NEXO-096` | revisión, consecuencia y confirmación explícita sin promesas falsas           |
+| `TREQ-NEXO-097` | atomicidad, idempotencia, fingerprint, concurrencia y recuperación de timeout |
+| `TREQ-NEXO-098` | receipt estructurado, resultado desconocido, retorno y seguimiento            |
+| `TREQ-NEXO-099` | handoff inmutable y versionado a preparación con segregación de funciones     |
+| `TREQ-NEXO-100` | compatibilidad y cierre de brechas del código, estado y persistencia actuales |
+
+No se modifica ningún requisito histórico.
+
+---
+
+#### 20. Criterios de aceptación
+
+- [ ] El flujo materializa exactamente doce pasos desde resolución de contexto hasta seguimiento.
+- [ ] Existen exactamente dieciséis estados de interfaz y seis estados de borrador.
+- [ ] Borrador, solicitud y remisión física no se presentan como equivalentes.
+- [ ] El actor, destino y área se resuelven desde contexto y permiso vigentes.
+- [ ] Existe como máximo un borrador ordinario compatible por actor y unidad.
+- [ ] El autosave no produce efecto empresarial ni pérdida silenciosa de datos.
+- [ ] Producto, política, unidad, presentación, cantidad original y conversión quedan vinculados.
+- [ ] La fuente se deriva de rutas activas y cualquier división por fuentes es visible.
+- [ ] Las veinticuatro validaciones tienen momento y respuesta definidos.
+- [ ] La revisión muestra toda la consecuencia antes de confirmar.
+- [ ] El servidor revalida autoridad, dependencias y versión al enviar.
+- [ ] El envío completo es atómico e idempotente.
+- [ ] Un doble clic, retry o dos pestañas no crean duplicados.
+- [ ] Un timeout se reconcilia por `submission_intent_id`.
+- [ ] El éxito exige receipt con códigos, IDs, estado y siguiente responsable.
+- [ ] La solicitud producida queda en `requested` y no mueve inventario.
+- [ ] El handoff a preparación conserva versión y snapshots inmutables.
+- [ ] El solicitante no recibe acciones de preparación, despacho o recepción.
+- [ ] Se crean exactamente `TREQ-NEXO-091` a `TREQ-NEXO-100`.
+- [ ] No se crean rutas, migraciones ni cambios físicos durante esta tarea documental.
+
+---
+
+#### 21. `NEXO-REMISSION-REQUEST-IMPLEMENTATION-HANDOFF-001`
+
+| Resultado                                                | Estado             | Responsable canónico                 | Condición de consumo                                                    |
+| -------------------------------------------------------- | ------------------ | ------------------------------------ | ----------------------------------------------------------------------- |
+| contrato funcional, estados, pasos, datos y líneas       | `ESPECIFICADO`     | `NEXO-UX-009`                        | toda implementación consume estas identidades y reglas                  |
+| borrador persistente y versionado                        | `FUERA_DE_ALCANCE` | paquete E5 NEXO                      | implementar propiedad, RLS, limpieza y concurrencia desde `vento-shell` |
+| comando transaccional e idempotente                      | `FUERA_DE_ALCANCE` | paquete E5 NEXO                      | migración y RPC versionados desde `vento-shell`, con rollback y pruebas |
+| componentes de edición, revisión, confirmación y receipt | `FUERA_DE_ALCANCE` | paquete E5 NEXO                      | conservar task-first, accesibilidad y estados aprobados                 |
+| compatibilidad con `restock_requests` y estados legacy   | `FUERA_DE_ALCANCE` | paquete E5 NEXO                      | traducción explícita y migración compatible                             |
+| preparación y despacho                                   | `RESERVADO`        | `NEXO-UX-010`                        | consumir solicitudes `requested` y su versión                           |
+| pruebas automatizadas                                    | `FUERA_DE_ALCANCE` | paquete E5 NEXO y `SHELL-CI-017`     | implementar `TREQ-NEXO-091` a `TREQ-NEXO-100`                           |
+| validación operativa con solicitantes                    | `FUERA_DE_ALCANCE` | `UX-QA-020` a `UX-QA-030` y BLOQUE U | ejecutar con software y ambientes autorizados                           |
+
+---
+
+#### 22. Continuidad canónica
+
+**ÚLTIMA TAREA APROBADA**
+
+`NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas`
+
+**TAREA ACTUAL APROBADA**
+
+`NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`NEXO-UX-010 — Diseñar flujo completo de preparación y despacho`
+
+
 ### [ ] NEXO-UX-010 — Diseñar flujo completo de preparación
 ### [ ] NEXO-UX-011 — Diseñar flujo completo de despacho
 ### [ ] NEXO-UX-012 — Diseñar flujo completo de tránsito

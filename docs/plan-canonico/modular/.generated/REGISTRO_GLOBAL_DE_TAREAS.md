@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **554** |
+| Aprobadas | **555** |
 | En propuesta | **0** |
-| No iniciadas | **1040** |
+| No iniciadas | **1039** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **34.76% (554/1594)** |
+| Porcentaje de completamiento | **34.82% (555/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NEXO-UX-008` — Organizar navegación por tareas y no por rutas técnicas | ✅ APROBADA |
-| Tarea actual | `NEXO-UX-009` — Diseñar flujo completo de solicitud de remisión | ⬜ NO INICIADA |
-| Siguiente reservada | `NEXO-UX-010` — Diseñar flujo completo de preparación | ⬜ NO INICIADA |
+| Última aprobada | `NEXO-UX-009` — Diseñar flujo completo de solicitud de remisión | ✅ APROBADA |
+| Tarea actual | `NEXO-UX-010` — Diseñar flujo completo de preparación | ⬜ NO INICIADA |
+| Siguiente reservada | `NEXO-UX-011` — Diseñar flujo completo de despacho | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -964,7 +964,7 @@
 | ✅ APROBADA | `NEXO-UX-006` | Diseñar inicio para receptor | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-007` | Diseñar inicio para supervisor | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-008` | Organizar navegación por tareas y no por rutas técnicas | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
-| ⬜ NO INICIADA | `NEXO-UX-009` | Diseñar flujo completo de solicitud de remisión | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
+| ✅ APROBADA | `NEXO-UX-009` | Diseñar flujo completo de solicitud de remisión | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-010` | Diseñar flujo completo de preparación | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-011` | Diseñar flujo completo de despacho | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-012` | Diseñar flujo completo de tránsito | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
