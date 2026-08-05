@@ -15448,7 +15448,1198 @@ No queda pendiente narrativo sin tarea, paquete o condición de salida.
 `NEXO-UX-018` deberá consumir balances, identidades físicas, bloqueos, receipts y proyecciones definidos hasta esta tarea; diseñará el conteo como observación independiente y no publicará un retiro o ajuste por el solo hecho de detectar una diferencia.
 
 
-### [ ] NEXO-UX-018 — Diseñar flujo completo de conteos
+### ✅ NEXO-UX-018 — Diseñar flujo completo de conteos
+
+---
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-017 — Diseñar flujo completo de retiros` — APROBADA
+**Tarea siguiente:** `NEXO-UX-019 — Diseñar flujo completo de ajustes` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo de conteos como observación física independiente, con fuente, alcance snapshot, trabajo, sesión, política ciega, cobertura, cantidad, UOM, identidad, cutoff de movimientos, recuento, investigación, handoff a ajustes, activos, compatibilidad y continuidad
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Proceso propietario:** `VPROC-0026 — Contar como observación, investigar diferencias y ajustar mediante decisión separada`
+**Permiso funcional exacto consumido:** `nexo.inventory.counts`; `nexo.inventory.adjustments` permanece propietario de la decisión cuantitativa posterior y `nexo.inventory.stock` no sustituye la capacidad de contar
+**Artefactos producidos:** veinticuatro contratos, catálogos, matrices y handoffs enumerados en esta tarea
+**Decisiones consumidas:** `NEXO-INVENTORY-MOVEMENT-IMPLEMENTATION-HANDOFF-001`, `NEXO-INVENTORY-WITHDRAWAL-IMPLEMENTATION-HANDOFF-001`, contratos aprobados de ubicación, movimientos y retiros, catálogo canónico de procesos y actores, requisitos `TREQ-NEXO-*` vigentes y evidencia técnica actual de `vento-nexo` y `vento-shell`
+**Cambios físicos autorizados:** ninguno; no modifica código, componentes, permisos, datos, Supabase, migraciones, RLS, RPC, tipos, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar de principio a fin cómo Vento observa físicamente cantidades, presencias, ubicaciones y condiciones sin convertir el acto de contar en una mutación de inventario, una aprobación o un ajuste.
+
+El conteo produce evidencia. La diferencia se calcula contra una expectativa reconstruida en un punto autoritativo. La investigación explica la diferencia. Solo una decisión posterior y separada puede producir un ajuste.
+
+```text
+FUENTE DE CONTEO
++ CONTEXTO AUTORIZADO
++ ALCANCE SNAPSHOT
++ RONDA Y SESION HUMANA
++ OBSERVACIONES FISICAS CON RECEIPT
++ CUTOFF DE SECUENCIA Y VENTANA DE MOVIMIENTOS
++ EXPECTED RECONSTRUIDO
+→ SIN DIFERENCIA
+O RECUENTO
+O INVESTIGACION
+O CANDIDATO DE AJUSTE
+```
+
+Regla canónica:
+
+```text
+CONTEO = OBSERVACION
+DIFERENCIA = OBSERVADO - ESPERADO EN EL CUTOFF EXACTO
+AJUSTE = DECISION SEPARADA DE NEXO-UX-019
+```
+
+Fronteras obligatorias:
+
+```text
+CONTEO ≠ MOVIMIENTO
+CONTEO ≠ AJUSTE
+CONTEO ≠ CORRECCION DE MAESTRO
+CONTEO ≠ TRASLADO DE ACTIVO
+CIERRE ≠ APROBACION
+CANTIDAD VACIA ≠ CERO
+NO OBSERVADO ≠ FALTANTE CONFIRMADO
+SUJETO INESPERADO ≠ ALTA AUTOMATICA
+SNAPSHOT DE ALCANCE ≠ SALDO ESPERADO VISIBLE
+SALDO ACTUAL MUTABLE ≠ EXPECTED AUTORITATIVO
+RECUENTO ≠ SOBRESCRITURA
+CONTADOR ≠ INVESTIGADOR ≠ APROBADOR DE AJUSTE
+PERMISO DE STOCK ≠ PERMISO DE CONTEO
+```
+
+Una pantalla, un RPC, una política RLS o un nombre legacy no puede eliminar estas fronteras.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban veinticuatro artefactos documentales consumibles:
+|  N.º | Artefacto                                                    | Resultado material                                                                                |
+| ---: | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+|   1. | `NEXO-INVENTORY-COUNT-FLOW-CONTRACT-001`                     | fija propósito, fronteras, autoridad, entrada, salida y lenguaje canónico del conteo              |
+|   2. | `NEXO-INVENTORY-COUNT-SOURCE-DISPOSITION-001`                | materializa diez fuentes de inicio y su disposición sin crear efectos cuantitativos               |
+|   3. | `NEXO-INVENTORY-COUNT-TYPE-ASSET-BOUNDARY-001`               | separa inventario consumible, activo individual, grupo de activos y condición física              |
+|   4. | `NEXO-INVENTORY-COUNT-SCOPE-SNAPSHOT-CONTRACT-001`           | congela alcance, catálogo, posiciones, sujetos esperados, reglas de inclusión y digest            |
+|   5. | `NEXO-INVENTORY-COUNT-SESSION-WORK-ITEM-CONTRACT-001`        | define trabajo, asignación, claim, rondas, sesión humana y transferencia                          |
+|   6. | `NEXO-INVENTORY-COUNT-STATE-MACHINE-001`                     | materializa veintidós estados empresariales y técnicos                                            |
+|   7. | `NEXO-INVENTORY-COUNT-WORK-QUEUE-CONTRACT-001`               | materializa ocho colas de planeación, captura, corte, variación, recuento e investigación         |
+|   8. | `NEXO-INVENTORY-COUNT-STEP-CATALOG-001`                      | materializa veinticuatro pasos desde contexto hasta archivo                                       |
+|   9. | `NEXO-INVENTORY-COUNT-BLIND-GUIDED-POLICY-001`               | gobierna conteo ciego, identidad guiada y verificación guiada excepcional                         |
+|  10. | `NEXO-INVENTORY-COUNT-OBSERVATION-LINE-CONTRACT-001`         | define observaciones append-only, versiones, evidencia, actor, tiempo y receipt                   |
+|  11. | `NEXO-INVENTORY-COUNT-IDENTITY-UOM-CONTRACT-001`             | conserva producto, activo, posición, presentación, unidad, conversión y precisión                 |
+|  12. | `NEXO-INVENTORY-COUNT-ZERO-UNEXPECTED-OMISSION-CONTRACT-001` | distingue cero confirmado, pendiente, no observado, sujeto inesperado y cobertura incompleta      |
+|  13. | `NEXO-INVENTORY-COUNT-PARTIAL-RECOUNT-CONTRACT-001`          | gobierna alcance parcial autorizado, rondas independientes, recuentos y consenso                  |
+|  14. | `NEXO-INVENTORY-COUNT-CONCURRENCY-CUTOFF-CONTRACT-001`       | ancla cada observación a secuencia, ventana de movimientos y política de congelamiento            |
+|  15. | `NEXO-INVENTORY-COUNT-IDEMPOTENCY-RECEIPT-CONTRACT-001`      | define intención, fingerprint, autosave, receipt, offline, sincronización y resultado desconocido |
+|  16. | `NEXO-INVENTORY-COUNT-DISCREPANCY-INVESTIGATION-HANDOFF-001` | clasifica diferencias y crea casos o recuentos sin ajustar stock                                  |
+|  17. | `NEXO-INVENTORY-COUNT-ADJUSTMENT-BOUNDARY-001`               | entrega candidatos a `NEXO-UX-019` con aprobación separada y sin writer desde conteos             |
+|  18. | `NEXO-INVENTORY-COUNT-CORRECTION-VOID-CONTRACT-001`          | define corrección versionada, anulación, cancelación y nueva ronda sin borrar historia            |
+|  19. | `NEXO-INVENTORY-COUNT-QUERY-EXPORT-CONTRACT-001`             | define consulta, auditoría, filtros, evidencia y exportación minimizada                           |
+|  20. | `NEXO-INVENTORY-COUNT-COMPATIBILITY-CONTRACT-001`            | hace converger sesiones, formularios, RPC, activos, permisos, RLS y writers legacy                |
+|  21. | `NEXO-INVENTORY-COUNT-ROUTE-DISPOSITION-001`                 | decide catorce superficies existentes sin crear superficies nuevas                                |
+|  22. | `NEXO-INVENTORY-COUNT-INTERFACE-STATE-CONTRACT-001`          | materializa treinta estados de interfaz sin éxito ficticio ni omisión silenciosa                  |
+|  23. | `NEXO-INVENTORY-COUNT-VALIDATION-MATRIX-001`                 | asigna cuarenta y ocho comprobaciones a momentos y propietarios concretos                         |
+|  24. | `NEXO-INVENTORY-COUNT-IMPLEMENTATION-HANDOFF-001`            | entrega modelo físico, transición, pruebas, observabilidad y rollback al paquete autorizado       |
+
+Cobertura materializada:
+
+| Elemento                         | Total esperado | Total materializado | Faltantes | Duplicados |
+| -------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Artefactos documentales          |             24 |                  24 |         0 |          0 |
+| Pasos `CNT-STEP-*`               |             24 |                  24 |         0 |          0 |
+| Estados empresariales y técnicos |             22 |                  22 |         0 |          0 |
+| Estados de interfaz              |             30 |                  30 |         0 |          0 |
+| Colas `CNTQ-*`                   |              8 |                   8 |         0 |          0 |
+| Fuentes de inicio                |             10 |                  10 |         0 |          0 |
+| Superficies existentes decididas |             14 |                  14 |         0 |          0 |
+| Comprobaciones `CNT-VAL-*`       |             48 |                  48 |         0 |          0 |
+| Requisitos de prueba nuevos      |             14 |                  14 |         0 |          0 |
+
+Los identificadores `CNT-*` pertenecen exclusivamente a este diseño y no crean procesos, roles, permisos, superficies, tablas ni funciones físicas.
+
+---
+
+#### 3. Alcance, entradas y salidas
+
+Incluye:
+
+- conteo inicial, cíclico, dirigido, puntual, por alerta, por recuento y por cutover;
+- sede, área, LOC, posición, conjunto parcial aprobado, producto, presentación, lote y condición aplicables;
+- activos individuales y grupos patrimoniales únicamente bajo la frontera de `VPROC-0029`;
+- work item, ronda, asignación, claim, sesión humana y dispositivo compartido;
+- política ciega, identidad guiada y verificación guiada excepcional;
+- observaciones append-only, cero confirmado, inesperados, no observados y evidencia;
+- UOM, conversiones, precisión, entradas físicas múltiples y posición;
+- cutoff por secuencia, movimientos concurrentes, expected reconstruido y diferencias;
+- recuentos independientes, investigación y candidato de ajuste;
+- consulta, exportación controlada, compatibilidad y transición.
+
+Excluye:
+
+- publicación de movimientos, responsabilidad de `NEXO-UX-016`;
+- retiros, responsabilidad de `NEXO-UX-017`;
+- decisión y posting de ajustes, responsabilidad de `NEXO-UX-019`;
+- escaneo, hardware, captura física detallada y offline definitivo, responsabilidad de `NEXO-UX-020`, `NEXO-UX-023` a `NEXO-UX-025`;
+- resolución de pérdida, daño, cuarentena, disposición o excepción, responsabilidad de `NEXO-UX-022`;
+- identidad y ciclo completo de LPN, responsabilidad de `NEXO-UX-026` a `NEXO-UX-029`;
+- cambios físicos o evidencia operativa.
+
+Entrada mínima:
+
+```text
+principal_id
+actor_effective_id
+permission_context
+site_id
+area_id_optional
+shift_or_checkin_ref
+device_context
+count_source
+count_subject_type
+scope_definition
+count_policy_ref
+window_ref
+assigned_counter_refs[]
+```
+
+Salida material:
+
+```text
+count_work_item_id
+scope_snapshot_id
+count_round_id
+count_session_id
+claim_id
+observation_receipt_ids[]
+line_observation_versions[]
+line_cutoff_sequences[]
+session_cutoff_sequence
+expected_snapshots[]
+discrepancy_results[]
+recount_round_refs[]
+investigation_case_refs[]
+adjustment_candidate_refs[]
+closure_digest
+```
+
+---
+
+#### 4. Actores, autoridad y segregación
+
+| Actor o contexto                 | Autoridad en esta tarea                                    | Límite obligatorio                                               |
+| -------------------------------- | ---------------------------------------------------------- | ---------------------------------------------------------------- |
+| `REGLA_PROGRAMADA`               | Inicia ciclos aprobados.                                   | No actúa como persona ni confirma observaciones.                 |
+| `BODEGA_Y_ABASTECIMIENTO`        | Inicia, ejecuta o coordina conteos dentro de territorio.   | No aprueba el ajuste de su propia diferencia.                    |
+| `EQUIPO_OPERATIVO_DEL_AREA`      | Cuenta sujetos del área durante función y turno válidos.   | No amplía alcance ni modifica expected.                          |
+| `COORDINACION_DE_OPERACIONES`    | Prioriza, asigna y supervisa trabajos.                     | No reemplaza evidencia física ni autorización de ajuste.         |
+| `RESPONSABLE_ANALITICO`          | Apoya reconstrucción, patrones y conciliación.             | No altera observaciones ni publica stock.                        |
+| `GERENCIA_O_SUPERVISION_DE_SEDE` | Supervisa cierre, recuento e investigación.                | La aprobación de ajuste pertenece al contrato posterior.         |
+| `CONTADOR_ASIGNADO`              | Captura observaciones en una ronda.                        | No ve resultados previos cuando la política exige independencia. |
+| `INVESTIGADOR_ASIGNADO`          | Determina causa y evidencia.                               | No reescribe el conteo original.                                 |
+| `SISTEMA_NEXO`                   | Resuelve snapshots, receipts, cutoff, expected y handoffs. | No inventa cantidad, identidad, motivo o aprobación.             |
+| `DISPOSITIVO_COMPARTIDO`         | Aporta estación y periféricos.                             | No es contador, custodio, investigador ni aprobador.             |
+
+Roles base elegibles, sin concesión automática de acción:
+
+```text
+propietario
+gerente_general
+gerente
+supervisor
+contador
+```
+
+Roles operativos aplicables, siempre bajo permiso, función, turno y territorio:
+
+```text
+cajero_satelite
+barista_satelite
+cocinero_satelite
+servicio_salon
+mostrador_satelite
+operador_integral_satelite
+produccion_cocina
+produccion_panaderia
+produccion_reposteria
+bodeguero
+conductor_logistica
+gerencia_operativa
+```
+
+Separación mínima:
+
+```text
+CAPTURAR OBSERVACION
+≠
+INVESTIGAR DIFERENCIA
+≠
+APROBAR AJUSTE
+≠
+PUBLICAR MOVIMIENTO
+```
+
+El flujo ordinario no agrega una aprobación ficticia para cada observación. La separación se activa al producir recuento, investigación o candidato de ajuste.
+
+---
+
+#### 5. `NEXO-INVENTORY-COUNT-SOURCE-DISPOSITION-001`
+
+| ID               | Fuente                        | Disparador                                                             | Disposición                                              | Límite                                                 |
+| ---------------- | ----------------------------- | ---------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------ |
+| `CNT-SOURCE-001` | `SCHEDULED_CYCLE`             | Regla programada por sede, LOC, posición, familia o clasificación.     | Crea work item versionado con ventana y alcance exactos. | No ajusta ni bloquea por sí sola.                      |
+| `CNT-SOURCE-002` | `SUPERVISOR_REQUEST`          | Solicitud de gerencia o supervisión dentro de territorio.              | Crea trabajo dirigido con razón y prioridad.             | No concede al solicitante aprobación de ajuste.        |
+| `CNT-SOURCE-003` | `THRESHOLD_OR_ALERT`          | Umbral, anomalía, divergencia o alerta técnica.                        | Crea conteo o recuento con referencia causal.            | No transforma la alerta en diferencia confirmada.      |
+| `CNT-SOURCE-004` | `OPERATIONAL_SPOT_CHECK`      | Verificación puntual iniciada por operación autorizada.                | Crea alcance parcial explícito y no improvisado.         | No permite omitir sujetos fuera del alcance declarado. |
+| `CNT-SOURCE-005` | `INITIAL_BASELINE`            | Línea base inicial o reapertura controlada.                            | Captura observación con fuente y condición de corte.     | No usa `initial_count` como writer de saldo.           |
+| `CNT-SOURCE-006` | `DISCREPANCY_RECOUNT`         | Recuento exigido por diferencia, movimiento concurrente o dato dudoso. | Crea ronda independiente enlazada con el caso.           | No sobrescribe la ronda anterior.                      |
+| `CNT-SOURCE-007` | `CUTOVER_OR_MIGRATION_VERIFY` | Verificación durante transición, backfill o cutover autorizado.        | Crea evidencia comparativa y digest.                     | No corrige datos mediante el conteo.                   |
+| `CNT-SOURCE-008` | `HANDOFF_OR_CUSTODY_VERIFY`   | Verificación de entrega, cambio de custodio o cierre de área.          | Crea observación y aceptación separadas.                 | No mueve activos o inventario automáticamente.         |
+| `CNT-SOURCE-009` | `ASSET_AUDIT`                 | Auditoría de presencia, ubicación, condición o cantidad de activos.    | Consume semántica compartida de sesión y evidencia.      | Permanece bajo `VPROC-0029`, no bajo stock consumible. |
+| `CNT-SOURCE-010` | `QUALITY_OR_COMPLIANCE_CHECK` | Inspección de calidad, inocuidad, frío, vencimiento o cumplimiento.    | Captura observación y evidencia estructurada.            | La disposición pertenece a `NEXO-UX-022`.              |
+
+Reconciliación:
+
+```text
+EXPECTED_COUNT_SOURCES = 10
+MATERIALIZED_COUNT_SOURCES = 10
+MISSING_COUNT_SOURCES = 0
+DUPLICATE_COUNT_SOURCES = 0
+```
+
+---
+
+#### 6. `NEXO-INVENTORY-COUNT-TYPE-ASSET-BOUNDARY-001`
+
+| Tipo                          | Proceso propietario         | Sujeto                                   | Resultado                                    | Frontera                                     |
+| ----------------------------- | --------------------------- | ---------------------------------------- | -------------------------------------------- | -------------------------------------------- |
+| `PRODUCT_STOCK_QUANTITY`      | `VPROC-0026`                | Producto, presentación, lote y posición. | Cantidad base y UOM.                         | No modifica stock.                           |
+| `ASSET_ITEM_PRESENCE`         | `VPROC-0029`                | Activo individual con identidad única.   | Encontrado, faltante, ubicación y condición. | No traslada ni cambia maestro.               |
+| `ASSET_GROUP_QUANTITY`        | `VPROC-0029`                | Grupo patrimonial contado por cantidad.  | Cantidad, unidad, ubicación y condición.     | No se mezcla con inventario consumible.      |
+| `ASSET_CONDITION_OBSERVATION` | `VPROC-0029` y `VPROC-0030` | Activo o grupo inspeccionado.            | Condición y evidencia.                       | Mantenimiento o disposición usan su proceso. |
+
+Los conteos patrimoniales pueden consumir sesión, snapshot, receipt, evidencia y recuento compartidos. Sus identidades, estados y movimientos permanecen en el dominio de activos. Una observación `found_elsewhere` no actualiza por sí sola `asset_items`, `asset_groups` ni `asset_movements`.
+
+---
+
+#### 7. `NEXO-INVENTORY-COUNT-SCOPE-SNAPSHOT-CONTRACT-001`
+
+Todo trabajo deberá materializar un snapshot inmutable antes de la primera observación.
+
+Campos mínimos:
+
+| Campo                                                 | Regla                                                |
+| ----------------------------------------------------- | ---------------------------------------------------- |
+| `scope_snapshot_id`                                   | Identificador estable.                               |
+| `work_item_id`                                        | Trabajo que originó el snapshot.                     |
+| `subject_type`                                        | Tipo de sujeto permitido.                            |
+| `site_id`, `area_id`, `location_id`, `position_ids[]` | Territorio exacto.                                   |
+| `subject_ids[]`                                       | Sujetos esperados o regla determinista de inclusión. |
+| `catalog_version_refs[]`                              | Versiones de productos, UOM, activos y posiciones.   |
+| `inclusion_rule`                                      | Regla versionada de pertenencia.                     |
+| `exclusion_rule`                                      | Exclusiones explícitas y justificadas.               |
+| `expected_line_count`                                 | Cobertura esperada.                                  |
+| `blind_policy_id`                                     | Política de visibilidad.                             |
+| `movement_policy`                                     | `MOVEMENT_FREEZE` o `MOVEMENT_RECONCILIATION`.       |
+| `created_at`, `created_by`, `digest`                  | Auditoría e integridad.                              |
+
+Invariantes:
+
+- una línea esperada no desaparece porque el usuario no la diligencie;
+- un sujeto inesperado no se inserta silenciosamente en catálogo o stock;
+- un cambio posterior de maestro no reescribe el alcance;
+- una sesión parcial solo puede excluir sujetos mediante una regla aprobada antes de capturar;
+- cerrar exige que cada sujeto esperado esté observado, marcado `NOT_OBSERVED` con razón o transferido a recuento;
+- `expected_line_count` y el digest se verifican al cierre.
+
+---
+
+#### 8. `NEXO-INVENTORY-COUNT-WORK-QUEUE-CONTRACT-001`
+
+| Cola                 | Contenido                                                             | Propietario                           | Condición de salida                                               |
+| -------------------- | --------------------------------------------------------------------- | ------------------------------------- | ----------------------------------------------------------------- |
+| `CNTQ-PLAN`          | Trabajos por clasificar, priorizar y delimitar.                       | Coordinación o supervisión.           | Fuente válida, política, ventana y alcance snapshot.              |
+| `CNTQ-ASSIGNMENT`    | Trabajo listo sin contador o ronda asignada.                          | Bodega o supervisión.                 | Actor elegible, territorio, claim y segregación.                  |
+| `CNTQ-CAPTURE`       | Sesiones abiertas con observaciones pendientes.                       | Contador asignado.                    | Cobertura completa o clasificación explícita de no observado.     |
+| `CNTQ-CUTOFF`        | Sesiones que solicitaron cierre sin secuencia o reconciliación final. | Servidor y operación.                 | Cutoff resuelto, receipts convergentes y conflictos clasificados. |
+| `CNTQ-VARIANCE`      | Diferencias calculadas contra expected autoritativo.                  | Bodega y supervisión.                 | Sin diferencia, recuento, investigación o candidato de ajuste.    |
+| `CNTQ-RECOUNT`       | Rondas independientes requeridas por política.                        | Contador distinto cuando corresponda. | Nueva observación completa y enlazada.                            |
+| `CNTQ-INVESTIGATION` | Casos de identidad, ubicación, condición, cobertura o movimiento.     | Supervisor y responsables de dominio. | Causa, evidencia, decisión y handoff exacto.                      |
+| `CNTQ-AUDIT`         | Sesiones cerradas, anuladas o entregadas a ajuste.                    | Auditoría autorizada.                 | Retención, digest, exportación controlada y cierre.               |
+
+Reconciliación:
+
+```text
+EXPECTED_COUNT_QUEUES = 8
+MATERIALIZED_COUNT_QUEUES = 8
+MISSING_COUNT_QUEUES = 0
+DUPLICATE_COUNT_QUEUES = 0
+```
+
+---
+
+#### 9. `NEXO-INVENTORY-COUNT-STATE-MACHINE-001`
+
+| Estado                            | Significado                                                     | Transición permitida                            |
+| --------------------------------- | --------------------------------------------------------------- | ----------------------------------------------- |
+| `COUNT_WORK_DRAFT`                | Trabajo en preparación sin alcance aprobado.                    | No admite claim ni captura.                     |
+| `COUNT_WORK_READY`                | Fuente, política, ventana y alcance completos.                  | Puede asignarse.                                |
+| `COUNT_WORK_ASSIGNED`             | Ronda asignada a actor o equipo elegible.                       | Aún no existe observación.                      |
+| `COUNT_SESSION_OPEN`              | Sesión humana reclamada y activa.                               | Admite receipts de observación.                 |
+| `COUNT_SESSION_PAUSED`            | Sesión conservada sin captura activa.                           | No confirma líneas nuevas.                      |
+| `COUNT_SESSION_TRANSFER_REQUIRED` | Cambio de actor o dispositivo exige transferencia.              | Claim anterior debe cerrarse.                   |
+| `COUNT_SESSION_REVOKED`           | Permiso, turno, territorio o identidad dejaron de ser válidos.  | Bloquea toda mutación.                          |
+| `COUNT_SESSION_EXPIRED`           | Claim o ventana operacional vencidos.                           | Requiere revalidación o nueva ronda.            |
+| `COUNT_CAPTURE_IN_PROGRESS`       | Existen líneas pendientes y observaciones confirmadas.          | No puede cerrar.                                |
+| `COUNT_CAPTURE_COMPLETE`          | Cobertura esperada clasificada y receipts recuperables.         | Puede solicitar cierre.                         |
+| `COUNT_CLOSE_REQUESTED`           | El actor solicita cierre y fija intención.                      | No altera aún el estado final.                  |
+| `COUNT_CUTOFF_PENDING`            | Servidor resuelve secuencia y ventana de movimientos.           | No calcula diferencia definitiva.               |
+| `COUNT_CLOSED`                    | Cobertura, cutoff y digest quedaron inmutables.                 | Observaciones no se editan.                     |
+| `COUNT_NO_VARIANCE`               | No existe diferencia material ni caso abierto.                  | Puede archivarse.                               |
+| `COUNT_VARIANCE_OPEN`             | Existe diferencia cuantitativa o cualitativa.                   | No implica ajuste.                              |
+| `COUNT_RECOUNT_REQUIRED`          | Política exige otra ronda independiente.                        | No expone cantidades previas al nuevo contador. |
+| `COUNT_RECOUNT_IN_PROGRESS`       | Nueva ronda enlazada y activa.                                  | Conserva la ronda original.                     |
+| `COUNT_INVESTIGATION_REQUIRED`    | La diferencia necesita causa, evidencia o propietario.          | Se entrega a caso estructurado.                 |
+| `COUNT_ADJUSTMENT_CANDIDATE`      | Investigación produjo candidato cuantitativo.                   | Solo `NEXO-UX-019` puede decidir y publicar.    |
+| `COUNT_VOIDED`                    | Sesión o ronda invalidada con motivo y evidencia.               | No se borra ni se usa como saldo.               |
+| `COUNT_ARCHIVED`                  | Caso sin pendientes y con retención aplicada.                   | Solo lectura.                                   |
+| `COUNT_HANDOFF_COMPLETE`          | El resultado fue aceptado por recuento, investigación o ajuste. | Conserva todas las referencias.                 |
+
+Transiciones prohibidas:
+
+```text
+COUNT_SESSION_OPEN → COUNT_ADJUSTMENT_CANDIDATE
+COUNT_CAPTURE_IN_PROGRESS → COUNT_CLOSED CON PENDIENTES AMBIGUOS
+COUNT_CLOSED → COUNT_SESSION_OPEN
+COUNT_VOIDED → COUNT_NO_VARIANCE
+COUNT_VARIANCE_OPEN → MOVIMIENTO O STOCK
+COUNT_RECOUNT_REQUIRED → SOBRESCRITURA DE RONDA ORIGINAL
+```
+
+Reconciliación:
+
+```text
+EXPECTED_COUNT_STATES = 22
+MATERIALIZED_COUNT_STATES = 22
+MISSING_COUNT_STATES = 0
+DUPLICATE_COUNT_STATES = 0
+```
+
+---
+
+#### 10. `NEXO-INVENTORY-COUNT-STEP-CATALOG-001`
+
+| Paso          | Acción                                                    | Resultado                                         |
+| ------------- | --------------------------------------------------------- | ------------------------------------------------- |
+| `CNT-STEP-01` | Resolver principal, actor efectivo y sesión humana.       | Contexto vigente o bloqueo.                       |
+| `CNT-STEP-02` | Clasificar la fuente entre diez disposiciones.            | Fuente y propietario determinados.                |
+| `CNT-STEP-03` | Resolver tipo de sujeto y proceso propietario.            | Inventario, activo individual, grupo o condición. |
+| `CNT-STEP-04` | Revalidar permiso, territorio, turno, área y dispositivo. | Autorización efectiva.                            |
+| `CNT-STEP-05` | Crear o versionar el work item.                           | Trabajo auditable sin efecto cuantitativo.        |
+| `CNT-STEP-06` | Construir snapshot exacto de alcance.                     | Sujetos, posiciones, catálogo, reglas y digest.   |
+| `CNT-STEP-07` | Resolver política ciega o guiada.                         | Modo, razón y versión persistidos.                |
+| `CNT-STEP-08` | Asignar ronda y contador elegible.                        | Segregación y territorio válidos.                 |
+| `CNT-STEP-09` | Reclamar sesión y registrar dispositivo.                  | Claim único y heartbeat.                          |
+| `CNT-STEP-10` | Cargar líneas esperadas sin cantidades del sistema.       | Cobertura visible según política.                 |
+| `CNT-STEP-11` | Recorrer sede, área, LOC y posición.                      | Punto físico confirmado.                          |
+| `CNT-STEP-12` | Identificar producto, activo, grupo, lote o presentación. | Identidad física resuelta o conflicto.            |
+| `CNT-STEP-13` | Capturar cantidad, estado, condición y evidencia.         | Borrador local o observación candidata.           |
+| `CNT-STEP-14` | Convertir UOM y conservar valor crudo.                    | Cantidad base reproducible.                       |
+| `CNT-STEP-15` | Clasificar cero, inesperado, no observado u omisión.      | Semántica explícita por línea.                    |
+| `CNT-STEP-16` | Confirmar observación con intención idempotente.          | Receipt recuperable y versión append-only.        |
+| `CNT-STEP-17` | Pausar, transferir o recuperar sesión.                    | Claim consistente sin pérdida.                    |
+| `CNT-STEP-18` | Revisar cobertura y solicitar cierre.                     | Cero pendientes ambiguos.                         |
+| `CNT-STEP-19` | Resolver cutoff de secuencia por línea y sesión.          | Ventana de movimientos autoritativa.              |
+| `CNT-STEP-20` | Reconstruir expected desde ledger y checkpoints.          | Saldo esperado en el cutoff exacto.               |
+| `CNT-STEP-21` | Calcular y clasificar diferencias.                        | Resultado cuantitativo o cualitativo.             |
+| `CNT-STEP-22` | Aplicar política de recuento independiente.               | Nueva ronda o resultado confirmado.               |
+| `CNT-STEP-23` | Crear investigación o candidato de ajuste.                | Handoff sin writer de stock.                      |
+| `CNT-STEP-24` | Cerrar, anular o archivar con digest y evidencia.         | Expediente inmutable y consultable.               |
+
+Reconciliación:
+
+```text
+EXPECTED_COUNT_STEPS = 24
+MATERIALIZED_COUNT_STEPS = 24
+MISSING_COUNT_STEPS = 0
+DUPLICATE_COUNT_STEPS = 0
+```
+
+---
+
+#### 11. `NEXO-INVENTORY-COUNT-SESSION-WORK-ITEM-CONTRACT-001`
+
+El trabajo existe antes de la sesión. La sesión existe antes de la observación confirmada.
+
+Work item mínimo:
+
+```text
+count_work_item_id
+source_id
+subject_type
+priority
+policy_version
+scope_snapshot_id
+window_start
+window_end
+assigned_counter_refs[]
+required_rounds
+required_evidence
+status
+version
+```
+
+Sesión mínima:
+
+```text
+count_session_id
+count_work_item_id
+count_round_id
+principal_id
+actor_effective_id
+claim_id
+device_context
+started_at
+last_heartbeat_at
+blind_policy_id
+movement_policy
+status
+version
+```
+
+Reglas:
+
+- un work item puede producir varias rondas, pero cada ronda tiene sesión y receipts propios;
+- un claim activo es único por ronda;
+- transferir exige cerrar el claim anterior y registrar actor, motivo y tiempo;
+- cambiar sede, alcance, política o tipo crea otra versión o work item;
+- pausar no cierra ni calcula diferencias;
+- expirar no borra borradores ni convierte borradores locales en observaciones confirmadas;
+- revocación bloquea toda mutación posterior y conserva receipts previos.
+
+---
+
+#### 12. `NEXO-INVENTORY-COUNT-BLIND-GUIDED-POLICY-001`
+
+| Política                         | Visibilidad                                                        | Uso                                    | Control                                                            |
+| -------------------------------- | ------------------------------------------------------------------ | -------------------------------------- | ------------------------------------------------------------------ |
+| `BLIND_QUANTITY`                 | Identidad y unidad permitidas; expected y diferencia ocultos.      | Conteo de inventario por defecto.      | Evitar anclaje al saldo del sistema.                               |
+| `IDENTITY_GUIDED_QUANTITY_BLIND` | Lista esperada visible; cantidad previa oculta.                    | Activos y grupos patrimoniales.        | Permitir recorrer identidades sin sugerir resultado.               |
+| `GUIDED_VERIFICATION`            | Expected visible solo por política excepcional y razón persistida. | Diagnóstico o verificación autorizada. | Nunca prellena la observación ni reemplaza recuento independiente. |
+
+La política queda snapshot. El frontend no puede revelar expected por parámetros, caché, HTML, exportación, respuesta de red o texto accesible cuando el modo es ciego.
+
+---
+
+#### 13. `NEXO-INVENTORY-COUNT-OBSERVATION-LINE-CONTRACT-001`
+
+Cada observación confirmada es append-only.
+
+Campos mínimos:
+
+```text
+count_observation_id
+count_session_id
+count_round_id
+scope_snapshot_id
+subject_type
+subject_id
+product_id_optional
+asset_item_id_optional
+asset_group_id_optional
+location_id
+location_position_id_optional
+raw_quantity
+input_unit_code
+input_uom_profile_id_optional
+conversion_factor_to_stock
+base_quantity
+stock_unit_code
+observation_status
+condition_status_optional
+evidence_refs[]
+observed_at
+recorded_at
+observed_by_actor_id
+device_context
+observation_cutoff_sequence
+idempotency_key
+fingerprint
+observation_receipt_id
+version
+supersedes_observation_id_optional
+```
+
+`observation_status` admite, como mínimo:
+
+```text
+OBSERVED
+ZERO_CONFIRMED
+NOT_OBSERVED
+UNEXPECTED
+IDENTITY_CONFLICT
+UOM_CONFLICT
+POSITION_CONFLICT
+CONDITION_EXCEPTION
+```
+
+La nota libre es complementaria. Estado, cantidad, identidad, ubicación, condición y evidencia no se reconstruyen desde texto.
+
+---
+
+#### 14. `NEXO-INVENTORY-COUNT-IDENTITY-UOM-CONTRACT-001`
+
+Regla cuantitativa:
+
+```text
+base_quantity = raw_quantity × conversion_factor_to_stock
+```
+
+Se conservan:
+
+- valor crudo y unidad de entrada;
+- perfil y versión de conversión;
+- factor, precisión y redondeo;
+- unidad base;
+- producto, presentación, lote, condición y LPN aplicables;
+- activo individual o grupo patrimonial cuando corresponda;
+- LOC y posición observados;
+- cada entrada física cuando un total mezcla presentaciones o posiciones.
+
+Un perfil inválido produce conflicto. No se sustituye por factor `1`, no se infiere desde etiqueta y no se corrige el maestro durante la captura.
+
+---
+
+#### 15. `NEXO-INVENTORY-COUNT-ZERO-UNEXPECTED-OMISSION-CONTRACT-001`
+
+| Situación                                  | Clasificación            | Efecto                                                 |
+| ------------------------------------------ | ------------------------ | ------------------------------------------------------ |
+| Campo vacío                                | `PENDING`                | No constituye observación ni cero.                     |
+| Cantidad `0` confirmada                    | `ZERO_CONFIRMED`         | Declara ausencia física observada.                     |
+| Sujeto esperado no visto                   | `NOT_OBSERVED`           | Exige razón, evidencia o recuento; no equivale a cero. |
+| Sujeto fuera del snapshot                  | `UNEXPECTED`             | Crea línea separada y caso; no crea catálogo ni stock. |
+| Línea omitida por alcance parcial aprobado | `OUT_OF_SCOPE_BY_POLICY` | Debe existir en la regla del snapshot.                 |
+| Identidad dudosa                           | `IDENTITY_CONFLICT`      | Contiene la línea y exige resolución.                  |
+
+El cierre no acepta una lista formada únicamente por los productos que el usuario decidió enviar. Debe reconciliar la cobertura completa del snapshot.
+
+---
+
+#### 16. `NEXO-INVENTORY-COUNT-PARTIAL-RECOUNT-CONTRACT-001`
+
+Alcance parcial:
+
+```text
+PARTIAL_SCOPE_ALLOWED
+↔
+REGLA DE INCLUSION EXPLICITA
++ EXPECTED LINE COUNT
++ DIGEST
++ PROPIETARIO
++ VENTANA
+```
+
+Recuento:
+
+- crea `count_round_id` nuevo;
+- conserva la ronda original y sus receipts;
+- puede exigir contador distinto;
+- no muestra cantidades previas bajo independencia;
+- no promedia resultados automáticamente;
+- no elige silenciosamente la cantidad más reciente;
+- compara rondas, evidencia, movimientos y condiciones;
+- deja una decisión trazable: aceptar ronda, exigir otra, investigar o producir candidato de ajuste.
+
+Rondas de varios contadores permanecen separadas. Un consolidado es una decisión de evaluación, no una modificación de observaciones.
+
+---
+
+#### 17. `NEXO-INVENTORY-COUNT-CONCURRENCY-CUTOFF-CONTRACT-001`
+
+Dos políticas de movimiento son válidas:
+
+| Política                  | Regla                                                                | Uso                            | Control                                                      |
+| ------------------------- | -------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------ |
+| `MOVEMENT_FREEZE`         | Bloquea movimientos autorizados sobre el alcance durante la ventana. | Conteos críticos o cortos.     | El bloqueo es explícito, temporal y auditable.               |
+| `MOVEMENT_RECONCILIATION` | Permite operación y ancla cada observación a secuencia.              | Conteos largos o en operación. | Movimiento concurrente debe reconciliarse o exigir recuento. |
+
+Para cada observación online, el servidor asigna `observation_cutoff_sequence` en la misma frontera lógica del receipt. El expected se reconstruye desde checkpoint verificado más todos los legs hasta esa secuencia.
+
+```text
+expected_at_observation
+=
+verified_checkpoint_closing
++
+Σ movement_legs_after_checkpoint_to_observation_cutoff
+```
+
+```text
+variance
+=
+observed_base_quantity
+-
+expected_at_observation
+```
+
+No es válido:
+
+- usar `inventory_stock_by_site`, LOC o posición como única fuente histórica;
+- comparar al saldo mutable del momento de cierre;
+- ordenar por fecha sin secuencia estable;
+- ocultar movimientos entre observación y cierre;
+- cerrar con gap de secuencia;
+- asignar cutoff autoritativo a un borrador offline sin reconciliación.
+
+---
+
+#### 18. `NEXO-INVENTORY-COUNT-IDEMPOTENCY-RECEIPT-CONTRACT-001`
+
+Cada autosave o confirmación persiste:
+
+```text
+producer
+session_id
+round_id
+subject_id
+observation_version
+idempotency_key
+fingerprint
+expected_session_version
+expected_claim_version
+expected_scope_digest
+payload_digest
+```
+
+Resultados:
+
+| Caso                           | Resultado                                                        |
+| ------------------------------ | ---------------------------------------------------------------- |
+| Misma clave y mismo payload    | Devuelve el mismo receipt.                                       |
+| Misma clave y payload distinto | Conflicto sin segunda observación.                               |
+| Timeout                        | Consulta intención y receipt antes de repetir.                   |
+| Claim vencido                  | Rechazo; no confirma borrador.                                   |
+| Scope digest distinto          | Conflicto y recarga controlada.                                  |
+| Offline                        | Conserva borrador local; no confirma autoridad, cutoff o cierre. |
+| Sync posterior                 | Revalida identidad, claim, alcance, UOM y movimientos.           |
+
+El éxito visual exige `observation_receipt_id` recuperable. Una escritura en `localStorage` no equivale a observación canónica.
+
+---
+
+#### 19. `NEXO-INVENTORY-COUNT-DISCREPANCY-INVESTIGATION-HANDOFF-001`
+
+Clases mínimas:
+
+| Clase               | Condición                                                     | Disposición                                |
+| ------------------- | ------------------------------------------------------------- | ------------------------------------------ |
+| `NONE`              | Observed coincide con expected dentro de tolerancia aprobada. | Cerrar o archivar.                         |
+| `QUANTITY_POSITIVE` | Observed mayor que expected.                                  | Recuento, investigación o candidato.       |
+| `QUANTITY_NEGATIVE` | Observed menor que expected.                                  | Recuento, investigación o candidato.       |
+| `IDENTITY`          | Producto, activo, lote, etiqueta o serial no coincide.        | Caso estructurado.                         |
+| `LOCATION`          | Sujeto encontrado en otro alcance.                            | Caso y posible proceso de traslado.        |
+| `CONDITION`         | Daño, vencimiento o condición diferente.                      | Caso de `NEXO-UX-022`.                     |
+| `UOM`               | Conversión o unidad no reproducible.                          | Recuento o corrección de maestro separada. |
+| `COVERAGE`          | Sujetos esperados sin observación o inesperados.              | Recuento o investigación.                  |
+| `MOVEMENT_WINDOW`   | Movimiento concurrente no reconciliado.                       | Recuento obligatorio.                      |
+| `DATA_QUALITY`      | Expected o identidad técnica no son confiables.               | Caso y corrección separada.                |
+
+Caso mínimo:
+
+```text
+count_discrepancy_case_id
+work_item_id
+session_id
+round_refs[]
+subject_ref
+variance_type
+observed_refs[]
+expected_snapshot_ref
+movement_window_refs[]
+evidence_refs[]
+assigned_owner
+severity
+due_at
+status
+resolution
+```
+
+El conteo contiene y transfiere. `NEXO-UX-022` resuelve condición, pérdida, daño, cuarentena o disposición. `NEXO-UX-019` decide el efecto cuantitativo.
+
+---
+
+#### 20. `NEXO-INVENTORY-COUNT-ADJUSTMENT-BOUNDARY-001`
+
+El conteo puede producir un candidato, nunca el ajuste:
+
+```text
+COUNT_ADJUSTMENT_CANDIDATE
+=
+OBSERVACION CERRADA
++ EXPECTED SNAPSHOT
++ DIFERENCIA CLASIFICADA
++ RECUENTOS REQUERIDOS
++ INVESTIGACION COMPLETA
++ EVIDENCIA
++ RECOMENDACION
+```
+
+Handoff mínimo a `NEXO-UX-019`:
+
+```text
+adjustment_candidate_id
+count_discrepancy_case_id
+subject_ref
+scope_ref
+proposed_delta
+stock_unit_code
+expected_snapshot_ref
+observation_refs[]
+recount_refs[]
+causal_summary
+evidence_refs[]
+prepared_by
+prepared_at
+```
+
+Reglas:
+
+- `nexo.inventory.counts` no inserta `inventory_movements`;
+- `nexo.inventory.counts` no actualiza stock de sede, LOC, posición o presentación;
+- `nexo.inventory.adjustments` y la autoridad definida por `NEXO-UX-019` son obligatorios para publicar;
+- `apply_inventory_count_adjustments` no pertenece al command boundary futuro de conteos;
+- no existe ajuste automático por cerrar;
+- no existe `greatest(0, ...)` para ocultar un saldo imposible;
+- el original y la investigación permanecen visibles después del ajuste.
+
+---
+
+#### 21. `NEXO-INVENTORY-COUNT-CORRECTION-VOID-CONTRACT-001`
+
+Antes del cierre:
+
+- una corrección crea una versión nueva con `supersedes_observation_id`;
+- la versión anterior permanece consultable;
+- una sesión puede cancelarse con motivo y cero efecto cuantitativo;
+- una línea puede marcarse no observada, nunca borrarse para completar cobertura.
+
+Después del cierre:
+
+- no existe UPDATE ni DELETE sobre sesión, ronda, observación, cutoff o expected snapshot;
+- un error de captura produce anulación de la ronda o línea y recuento nuevo;
+- la anulación conserva actor, autoridad, motivo, evidencia, tiempo y relaciones;
+- una diferencia ya entregada a ajuste conserva la referencia al candidato;
+- cancelar no equivale a revertir un ajuste ya publicado.
+
+---
+
+#### 22. `NEXO-INVENTORY-COUNT-QUERY-EXPORT-CONTRACT-001`
+
+Consulta mínima:
+
+- fuente, trabajo, snapshot y ronda;
+- alcance, sujetos y cobertura;
+- contador, actor efectivo, dispositivo y tiempos;
+- observaciones, versiones, receipts y evidencia;
+- cutoff por línea y sesión;
+- expected snapshots, movimientos concurrentes y gaps;
+- diferencias, recuentos, casos y handoffs;
+- estado de ajuste separado cuando exista.
+
+Filtros se aplican después de resolver cobertura y relaciones. Un subconjunto filtrado no cambia totals, digest o diferencia.
+
+La exportación:
+
+- permanece deshabilitada si el catálogo vigente no entrega una capability exacta de exportación;
+- no se autoriza por strings de rol;
+- revalida territorio y finalidad;
+- incluye versión de esquema, parámetros, digest y secuencia;
+- minimiza identidad personal, costo, notas y evidencia sensible;
+- registra actor, motivo, alcance, cantidad de filas y checksum del contenido.
+
+Esta tarea no crea un permiso nuevo.
+
+---
+
+#### 23. `NEXO-INVENTORY-COUNT-COMPATIBILITY-CONTRACT-001`
+
+Diagnóstico verificado:
+
+| Superficie o contrato      | Estado actual                                                                  | Convergencia obligatoria                                        |
+| -------------------------- | ------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| `/inventory/count-initial` | Usa `inventory.counts`, pero amplía sedes mediante strings de rol.             | Autorización exacta en servidor y territorio.                   |
+| Captura actual             | Borrador principal en `localStorage` y envío solo de líneas diligenciadas.     | Sesión servidor, receipts y cobertura snapshot.                 |
+| RPC de creación            | Recibe `site_id` y `created_by`; `security definer` sin revalidación visible.  | Contexto derivado, permiso exacto y actor del servidor.         |
+| Cierre actual              | Calcula contra proyecciones mutables al cerrar.                                | Expected por cutoff de secuencia del ledger.                    |
+| Aprobación actual          | Misma pantalla y permiso aplican ajustes.                                      | Handoff a `NEXO-UX-019` y segregación.                          |
+| Aplicación actual          | Inserta `adjustment` y muta sede, LOC y posición.                              | Cero writer desde conteos.                                      |
+| Saldos actuales            | Usan `greatest(0, ...)`.                                                       | Conflicto explícito; nunca clamp.                               |
+| Cobertura actual           | Productos pendientes no enviados desaparecen de la sesión.                     | Líneas esperadas y estados de omisión.                          |
+| Unexpected                 | No existe captura estructurada fuera del catálogo cargado.                     | Observación inesperada sin alta automática.                     |
+| Formularios                | Conviven `CountLocationForm` y `count-initial-form`.                           | Un command boundary y una captura canónica.                     |
+| Activos                    | La UI usa `inventory.stock`; RLS usa `inventory.counts` y políticas `for all`. | Permiso coherente y operaciones específicas append-only.        |
+| Activos                    | Sesión y líneas se escriben por pasos con compensación manual.                 | Frontera atómica e idempotente.                                 |
+| Migraciones                | Existe copia de política en `vento-nexo` y versión canónica en `vento-shell`.  | Propiedad única en `vento-shell`.                               |
+| RLS y grants               | Funciones ejecutables por `authenticated` y writers amplios.                   | Funciones cerradas, permisos exactos y cero delete destructivo. |
+
+La transición no inventará expected histórico, contador, cutoff, identidad, evidencia o causa ausentes. Los registros legacy se etiquetarán con limitaciones verificables y no se usarán para certificar exactitud que no poseen.
+
+---
+
+#### 24. `NEXO-INVENTORY-COUNT-ROUTE-DISPOSITION-001`
+
+|  N.º | Superficie existente                                                      | Decisión                               | Resultado                                                                                             |
+| ---: | ------------------------------------------------------------------------- | -------------------------------------- | ----------------------------------------------------------------------------------------------------- |
+|   1. | `/inventory/count-initial`                                                | `CONSERVAR_Y_RENOMBRAR_FUNCIONALMENTE` | Entrada a trabajos y sesiones de conteo de inventario; no se limita a línea base inicial.             |
+|   2. | `/inventory/count-initial/session/[id]`                                   | `CONSERVAR_Y_SEPARAR`                  | Captura, cierre, diferencias y handoff; elimina la aprobación de ajustes dentro del conteo.           |
+|   3. | `/api/inventory/count-initial`                                            | `MIGRAR_A_COMMAND_BOUNDARY`            | Crea trabajo, snapshot, sesión y receipts; no confía en `site_id` o actor del cliente.                |
+|   4. | `/api/inventory/count-initial/approve`                                    | `RETIRAR_DEL_FLUJO_DE_CONTEO`          | La decisión cuantitativa pertenece al comando de ajustes de `NEXO-UX-019`.                            |
+|   5. | `CountLocationForm`                                                       | `CONSERVAR_Y_REHACER`                  | Captura con sesión servidor, cobertura exacta, autosave idempotente y estados explícitos.             |
+|   6. | `CountLocationProductCard`                                                | `CONSERVAR_COMO_PRESENTACION`          | Presenta identidad y entrada; no calcula expected ni autoridad.                                       |
+|   7. | `count-location-model`                                                    | `CONSERVAR_COMO_ADAPTADOR`             | Conversión reproducible; las reglas canónicas se validan también en servidor.                         |
+|   8. | `count-initial-form`                                                      | `RETIRAR_DUPLICADO_LEGACY`             | No mantiene una segunda implementación de captura o conversión.                                       |
+|   9. | `CloseCountForm`                                                          | `CONSERVAR_Y_RESTRINGIR`               | Solicita cierre; no aplica diferencia ni muestra éxito antes del cutoff.                              |
+|  10. | `/inventory/assets/counts`                                                | `CONSERVAR_BAJO_VPROC_0029`            | Administra sesiones patrimoniales usando primitivas compartidas de observación.                       |
+|  11. | `/inventory/assets/counts/[id]`                                           | `CONSERVAR_BAJO_VPROC_0029`            | Presencia, ubicación y condición; no actualiza maestro o movimientos automáticamente.                 |
+|  12. | `AssetCountScopeForm`                                                     | `CONSERVAR_Y_ADAPTAR`                  | Crea snapshot patrimonial exacto y no inserta sesión y líneas por escrituras parciales.               |
+|  13. | `AssetCountLineActions`                                                   | `CONSERVAR_Y_VERSIONAR`                | Guarda observaciones append-only; no sobrescribe líneas cerradas.                                     |
+|  14. | `inventory_count_*`, `asset_count_*`, RPC, RLS y migraciones relacionadas | `CONVERGER_EN_VENTO_SHELL`             | Un solo propietario, permisos exactos, cero delete destructivo y cero writer de ajuste desde conteos. |
+
+Reconciliación:
+
+```text
+EXPECTED_COUNT_SURFACES = 14
+MATERIALIZED_COUNT_SURFACES = 14
+MISSING_COUNT_SURFACES = 0
+DUPLICATE_COUNT_SURFACES = 0
+NEW_SURFACES_CREATED = 0
+```
+
+---
+
+#### 25. `NEXO-INVENTORY-COUNT-INTERFACE-STATE-CONTRACT-001`
+
+| ID          | Estado de interfaz   | Condición                                               |
+| ----------- | -------------------- | ------------------------------------------------------- |
+| `CNT-UI-01` | `CONTEXT_LOADING`    | Contexto y territorios en resolución.                   |
+| `CNT-UI-02` | `ACCESS_DENIED`      | Permiso, función o territorio insuficientes.            |
+| `CNT-UI-03` | `NO_COUNTABLE_SCOPE` | No existe alcance elegible o catálogo verificable.      |
+| `CNT-UI-04` | `SCOPE_SELECTION`    | Sede, área, LOC, posición y tipo por definir.           |
+| `CNT-UI-05` | `WORK_READY`         | Trabajo y snapshot listos para asignación.              |
+| `CNT-UI-06` | `CLAIM_PENDING`      | Sesión humana en proceso de reclamo.                    |
+| `CNT-UI-07` | `SESSION_OPEN`       | Sesión activa con cobertura visible.                    |
+| `CNT-UI-08` | `SESSION_PAUSED`     | Captura detenida con continuidad recuperable.           |
+| `CNT-UI-09` | `SESSION_REVOKED`    | Claim inválido por revocación, turno o territorio.      |
+| `CNT-UI-10` | `LINE_PENDING`       | Sujeto esperado sin clasificación.                      |
+| `CNT-UI-11` | `LINE_CAPTURED`      | Observación confirmada con receipt.                     |
+| `CNT-UI-12` | `ZERO_CONFIRMED`     | Ausencia física declarada explícitamente.               |
+| `CNT-UI-13` | `UNEXPECTED_SUBJECT` | Sujeto físico fuera del snapshot.                       |
+| `CNT-UI-14` | `NOT_OBSERVED`       | Línea no observada con razón estructurada.              |
+| `CNT-UI-15` | `IDENTITY_CONFLICT`  | Código, etiqueta, activo, lote o producto no coinciden. |
+| `CNT-UI-16` | `UOM_CONFLICT`       | Unidad, perfil o conversión no son reproducibles.       |
+| `CNT-UI-17` | `POSITION_CONFLICT`  | Ubicación física no coincide con el alcance.            |
+| `CNT-UI-18` | `AUTOSAVE_PENDING`   | Intención enviada sin receipt definitivo.               |
+| `CNT-UI-19` | `AUTOSAVE_CONFIRMED` | Receipt de observación recuperable.                     |
+| `CNT-UI-20` | `RESULT_UNKNOWN`     | Timeout o respuesta perdida pendiente de consulta.      |
+| `CNT-UI-21` | `OFFLINE_DRAFT`      | Captura local sin autoridad ni cutoff confirmado.       |
+| `CNT-UI-22` | `SYNC_CONFLICT`      | Versión, claim, alcance o fingerprint incompatibles.    |
+| `CNT-UI-23` | `CLOSE_REVIEW`       | Cobertura y líneas antes de solicitar cierre.           |
+| `CNT-UI-24` | `CUTOFF_PENDING`     | Secuencia y ventana de movimientos en resolución.       |
+| `CNT-UI-25` | `CLOSURE_CONFLICT`   | Movimientos, receipts o cobertura impiden cierre.       |
+| `CNT-UI-26` | `NO_VARIANCE`        | Conteo cerrado sin diferencia material.                 |
+| `CNT-UI-27` | `VARIANCE_OPEN`      | Diferencia visible sin efecto automático.               |
+| `CNT-UI-28` | `RECOUNT_REQUIRED`   | Nueva ronda independiente obligatoria.                  |
+| `CNT-UI-29` | `INVESTIGATION_OPEN` | Caso con responsable, evidencia y plazo.                |
+| `CNT-UI-30` | `HANDOFF_COMPLETE`   | Resultado entregado a archivo o ajuste separado.        |
+
+Reglas:
+
+- cero confirmado y línea pendiente nunca comparten estado;
+- offline draft no muestra receipt, cutoff o cierre;
+- resultado desconocido consulta la intención antes de habilitar reintento;
+- diferencia visible no habilita ajuste a quien solo puede contar;
+- sesión revocada conserva lectura de lo ya confirmado y bloquea mutaciones;
+- recuento independiente no revela cantidades previas;
+- éxito exige receipts, digest y estado recuperables;
+- estados de activos usan el mismo lenguaje de sesión sin mezclar stock consumible.
+
+Reconciliación:
+
+```text
+EXPECTED_COUNT_INTERFACE_STATES = 30
+MATERIALIZED_COUNT_INTERFACE_STATES = 30
+MISSING_COUNT_INTERFACE_STATES = 0
+DUPLICATE_COUNT_INTERFACE_STATES = 0
+```
+
+---
+
+#### 26. `NEXO-INVENTORY-COUNT-VALIDATION-MATRIX-001`
+
+##### 26.1. Contexto, autoridad y segregación
+
+| ID            | Regla                                                            | Momento                       | Propietario          |
+| ------------- | ---------------------------------------------------------------- | ----------------------------- | -------------------- |
+| `CNT-VAL-001` | Principal y actor efectivo vigentes.                             | Carga, claim y confirmación.  | Servidor y RLS.      |
+| `CNT-VAL-002` | Sede, área, turno, función y dispositivo compatibles.            | Carga y cada receipt.         | Servidor.            |
+| `CNT-VAL-003` | Permiso exacto `nexo.inventory.counts` sobre el recurso.         | Lectura mutable y comando.    | Servidor y RLS.      |
+| `CNT-VAL-004` | Rol string no amplía territorio ni reemplaza capability.         | Selección de sede y servidor. | Seguridad.           |
+| `CNT-VAL-005` | Contador e investigador no aprueban su ajuste.                   | Handoff y decisión.           | Servidor.            |
+| `CNT-VAL-006` | Dispositivo compartido nunca es actor.                           | Auditoría y receipts.         | Servidor.            |
+| `CNT-VAL-007` | Revocación bloquea nuevas observaciones.                         | Durante sesión.               | Servidor e interfaz. |
+| `CNT-VAL-008` | Exportación no se habilita por rol ni expone datos innecesarios. | Consulta y exportación.       | Servidor.            |
+
+##### 26.2. Fuente, tipo, alcance y política
+
+| ID            | Regla                                                          | Momento              | Propietario          |
+| ------------- | -------------------------------------------------------------- | -------------------- | -------------------- |
+| `CNT-VAL-009` | La fuente cae en una de diez disposiciones.                    | Admisión.            | Servidor.            |
+| `CNT-VAL-010` | Tipo de sujeto conserva su proceso propietario.                | Clasificación.       | Contrato.            |
+| `CNT-VAL-011` | Snapshot contiene sujetos, posiciones, reglas y digest.        | Apertura.            | Base de datos.       |
+| `CNT-VAL-012` | Alcance parcial solo existe si fue declarado.                  | Creación y cierre.   | Servidor.            |
+| `CNT-VAL-013` | Conteo de inventario es ciego por defecto.                     | Carga de líneas.     | Interfaz y servidor. |
+| `CNT-VAL-014` | Identidad guiada de activos no revela cantidad contada previa. | Captura patrimonial. | Interfaz.            |
+| `CNT-VAL-015` | Modo guiado excepcional tiene política y razón.                | Apertura.            | Servidor.            |
+| `CNT-VAL-016` | Cambios de catálogo posteriores no alteran el snapshot.        | Toda la sesión.      | Base de datos.       |
+
+##### 26.3. Observación, identidad y cobertura
+
+| ID            | Regla                                                            | Momento             | Propietario             |
+| ------------- | ---------------------------------------------------------------- | ------------------- | ----------------------- |
+| `CNT-VAL-017` | Vacío permanece pendiente y cero es explícito.                   | Captura.            | Interfaz y servidor.    |
+| `CNT-VAL-018` | Sujeto inesperado crea observación separada.                     | Captura.            | Servidor.               |
+| `CNT-VAL-019` | Omisión no se transforma silenciosamente en cero.                | Revisión y cierre.  | Servidor.               |
+| `CNT-VAL-020` | Producto, activo, grupo, lote y posición son coherentes.         | Identificación.     | Servidor.               |
+| `CNT-VAL-021` | Cantidad cruda, UOM, factor, base y precisión son reproducibles. | Receipt.            | Unitaria y contractual. |
+| `CNT-VAL-022` | Entradas múltiples conservan cada presentación y posición.       | Captura y consulta. | Base de datos.          |
+| `CNT-VAL-023` | Corrección abierta crea versión y no borra original.             | Edición.            | Base de datos.          |
+| `CNT-VAL-024` | Sesión cerrada no admite UPDATE ni DELETE de observaciones.      | Después del cierre. | RLS y base de datos.    |
+
+##### 26.4. Concurrencia, cutoff e idempotencia
+
+| ID            | Regla                                                      | Momento                | Propietario    |
+| ------------- | ---------------------------------------------------------- | ---------------------- | -------------- |
+| `CNT-VAL-025` | Existe un claim activo por ronda y actor autorizado.       | Claim y heartbeat.     | Concurrencia.  |
+| `CNT-VAL-026` | Misma intención y payload devuelven el mismo receipt.      | Reintento.             | Idempotencia.  |
+| `CNT-VAL-027` | Misma clave y payload distinto produce conflicto.          | Reintento.             | Idempotencia.  |
+| `CNT-VAL-028` | Timeout se consulta antes de repetir.                      | Resultado desconocido. | Integración.   |
+| `CNT-VAL-029` | Cada observación obtiene cutoff de secuencia autoritativo. | Confirmación.          | Base de datos. |
+| `CNT-VAL-030` | Expected se reconstruye desde ledger y checkpoint.         | Evaluación.            | Integración.   |
+| `CNT-VAL-031` | Movimiento concurrente se reconcilia o exige recuento.     | Cierre.                | Concurrencia.  |
+| `CNT-VAL-032` | Offline no confirma claim, cutoff, autoridad o cierre.     | Desconexión y sync.    | E2E.           |
+
+##### 26.5. Diferencia, recuento y ajuste
+
+| ID            | Regla                                                                | Momento                | Propietario          |
+| ------------- | -------------------------------------------------------------------- | ---------------------- | -------------------- |
+| `CNT-VAL-033` | Diferencia usa observed menos expected en el cutoff exacto.          | Evaluación.            | Contractual.         |
+| `CNT-VAL-034` | Diferencia cualitativa no se reduce a delta numérico.                | Clasificación.         | Servidor.            |
+| `CNT-VAL-035` | Recuento crea ronda independiente y conserva la original.            | Política de recuento.  | Base de datos.       |
+| `CNT-VAL-036` | Nuevo contador no ve cantidades previas cuando la política lo exige. | Recuento.              | Interfaz y servidor. |
+| `CNT-VAL-037` | Resultados no se promedian ni sobrescriben automáticamente.          | Comparación de rondas. | Servidor.            |
+| `CNT-VAL-038` | Conteo crea cero movimientos y cero mutación de stock.               | Cierre y handoff.      | RLS e integración.   |
+| `CNT-VAL-039` | Ajuste requiere `nexo.inventory.adjustments` y decisión separada.    | Handoff a UX019.       | Seguridad.           |
+| `CNT-VAL-040` | Nunca se aplica clamp a cero para ocultar diferencia.                | Ajuste posterior.      | Base de datos.       |
+
+##### 26.6. Compatibilidad, superficies y operación
+
+| ID            | Regla                                                                          | Momento                  | Propietario             |
+| ------------- | ------------------------------------------------------------------------------ | ------------------------ | ----------------------- |
+| `CNT-VAL-041` | Treinta estados de interfaz tienen condición única.                            | Renderizado.             | Interfaz.               |
+| `CNT-VAL-042` | Catorce superficies tienen disposición explícita.                              | Navegación y transición. | Contractual.            |
+| `CNT-VAL-043` | `approve` deja de aplicar ajustes desde conteos.                               | Migración.               | Integración.            |
+| `CNT-VAL-044` | RPC security definer revalida permiso, actor y territorio.                     | Migración.               | RLS y RPC.              |
+| `CNT-VAL-045` | Asset counts usan permiso coherente y escrituras no destructivas.              | Migración.               | Seguridad.              |
+| `CNT-VAL-046` | Toda migración Supabase vive en `vento-shell` una sola vez.                    | Build y despliegue.      | Migración.              |
+| `CNT-VAL-047` | Rollback detiene writers nuevos sin borrar observaciones.                      | Cutover.                 | Migración.              |
+| `CNT-VAL-048` | Piloto prueba ciego, cero, inesperado, recuento, offline, conflicto y handoff. | Piloto.                  | E2E y manual operativa. |
+
+Reconciliación:
+
+```text
+EXPECTED_COUNT_VALIDATIONS = 48
+MATERIALIZED_COUNT_VALIDATIONS = 48
+MISSING_COUNT_VALIDATIONS = 0
+DUPLICATE_COUNT_VALIDATIONS = 0
+```
+
+---
+
+#### 27. `NEXO-INVENTORY-COUNT-IMPLEMENTATION-HANDOFF-001`
+
+Repositorio de aplicación:
+
+```text
+vento-nexo
+```
+
+Repositorio propietario de toda modificación Supabase:
+
+```text
+vento-shell
+```
+
+Cambios mínimos esperados durante el paquete autorizado:
+
+- entidades de work item, snapshot, ronda, claim, observación, receipt, cutoff, expected snapshot, diferencia y caso;
+- command boundary de conteos con contexto derivado y permisos exactos;
+- readers del ledger, checkpoints y secuencias aprobados en `NEXO-UX-016`;
+- captura de inventario y adaptador patrimonial sobre primitivas compartidas;
+- observaciones append-only y RLS sin UPDATE o DELETE destructivo después del cierre;
+- política ciega y protección contra exposición de expected;
+- autosave idempotente, resultado desconocido y sincronización offline controlada;
+- recuentos independientes, investigación y handoff a ajustes;
+- retiro de `apply_inventory_count_adjustments` del flujo de conteos;
+- eliminación del writer directo de movimientos y proyecciones desde conteos;
+- unificación de migraciones Supabase en `vento-shell`;
+- tipos regenerados, observabilidad, rollback y pruebas.
+
+Orden de implementación:
+
+```text
+SCHEMA AND AUTHORIZATION
+→ WORK, SNAPSHOT AND ROUND
+→ OBSERVATION COMMAND AND RECEIPTS
+→ LEDGER CUTOFF READERS
+→ VARIANCE AND RECOUNT
+→ INVESTIGATION AND ADJUSTMENT HANDOFF
+→ INVENTORY UI
+→ ASSET ADAPTER
+→ LEGACY WRITER CUTOVER
+→ PILOT
+```
+
+Rollback:
+
+- desactivar commands nuevos por feature gate;
+- conservar observaciones, receipts y casos ya confirmados;
+- detener consumers y lectores nuevos antes de reactivar una superficie legacy;
+- no reactivar `apply_inventory_count_adjustments` como parte del conteo;
+- no borrar sesiones, rondas o diferencias;
+- verificar secuencias, coverage digest y ausencia de writers simultáneos.
+
+Handoffs:
+
+| Destino                       | Consume                                                             | Salida exigida                          | Límite                                  |
+| ----------------------------- | ------------------------------------------------------------------- | --------------------------------------- | --------------------------------------- |
+| `NEXO-UX-019`                 | candidato, observed, expected, recuentos, investigación y evidencia | decisión y posting de ajuste separados  | no reinterpretar la observación         |
+| `NEXO-UX-020`                 | estados, sesiones y puntos de captura                               | escaneo por etapa                       | no cambiar reglas cuantitativas         |
+| `NEXO-UX-021`                 | contratos de identidad, UOM y evidencia                             | campos mínimos por etapa                | no crear otra fuente de verdad          |
+| `NEXO-UX-022`                 | casos de identidad, ubicación, condición y pérdida                  | autoridad, resolución y disposición     | conteo contiene; excepción resuelve     |
+| `NEXO-UX-023` a `NEXO-UX-025` | claim, offline, receipts, dispositivo y conflicto                   | evidencia física y de dispositivo       | no declarar validación antes del piloto |
+| `NEXO-UX-026` a `NEXO-UX-029` | LPN observado y su posición                                         | ciclo de identidad y contenido          | no implementar LPN dentro de conteos    |
+| paquete E5 NEXO               | contratos, diagnóstico, matrices y requisitos                       | implementación versionada y verificable | Supabase solo desde `vento-shell`       |
+
+---
+
+#### 28. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-NEXO-203` a `TREQ-NEXO-216` en el registro canónico completo:
+
+| ID              | Comportamiento protegido                                                                     |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| `TREQ-NEXO-203` | contexto, permiso, territorio, sesión, dispositivo, segregación y exportación                |
+| `TREQ-NEXO-204` | cobertura exacta de artefactos, pasos, estados, colas, fuentes, superficies y comprobaciones |
+| `TREQ-NEXO-205` | fuente, tipo de sujeto, work item, alcance snapshot, catálogo, digest y propiedad            |
+| `TREQ-NEXO-206` | sesión, ronda, claim, asignación, expiración, transferencia y estados                        |
+| `TREQ-NEXO-207` | política ciega, identidad guiada, modo guiado excepcional y no exposición de expected        |
+| `TREQ-NEXO-208` | observación append-only, identidad, UOM, cero, inesperado, no observado y cobertura          |
+| `TREQ-NEXO-209` | cutoff de secuencia, ledger, expected, movimientos concurrentes y gaps                       |
+| `TREQ-NEXO-210` | alcance parcial, rondas independientes, recuento y conservación de resultados                |
+| `TREQ-NEXO-211` | intención, fingerprint, receipt, autosave, timeout, offline y sync                           |
+| `TREQ-NEXO-212` | clasificación de diferencias, investigación, evidencia, responsable y plazo                  |
+| `TREQ-NEXO-213` | cero writer desde conteos y handoff separado a ajustes                                       |
+| `TREQ-NEXO-214` | corrección versionada, anulación, cancelación y prohibición de borrado                       |
+| `TREQ-NEXO-215` | treinta estados, catorce superficies, consulta, activos y exportación controlada             |
+| `TREQ-NEXO-216` | convergencia técnica, migración, RLS, RPC, rollback y cuarenta y ocho comprobaciones         |
+
+No se modifica, difiere, descarta ni vuelve obsoleto un requisito histórico.
+
+---
+
+#### 29. Pendientes con propietario y condición de salida
+
+| Pendiente                                            | Estado                   | Propietario                                  | Condición de salida                                                   |
+| ---------------------------------------------------- | ------------------------ | -------------------------------------------- | --------------------------------------------------------------------- |
+| modelo físico de work, snapshot, ronda y observación | `ESPECIFICADO`           | paquete E5 NEXO y `vento-shell`              | migración, RLS, tipos y pruebas aprobadas                             |
+| cutoff y expected desde ledger                       | `ESPECIFICADO`           | paquete E5 NEXO                              | secuencia continua, checkpoint verificado y pruebas de concurrencia   |
+| transición de captura y forms duplicados             | `ESPECIFICADO`           | paquete E5 NEXO                              | un command boundary y cero writer o flujo paralelo                    |
+| separación de ajustes                                | `ESPECIFICADO`           | `NEXO-UX-019` y paquete E5 NEXO              | comando, autoridad y receipt propios                                  |
+| excepciones de identidad, condición y ubicación      | `ESPECIFICADO`           | `NEXO-UX-022`                                | caso, responsable, evidencia y resolución                             |
+| escaneo y offline físico                             | `PENDIENTE_DE_EVIDENCIA` | `NEXO-UX-020`, `NEXO-UX-023` a `NEXO-UX-025` | diseño aprobado y piloto reproducible                                 |
+| adaptador de activos                                 | `ESPECIFICADO`           | paquete E5 NEXO y `VPROC-0029`               | sesión compartida sin mutación automática del maestro                 |
+| histórico sin cutoff o coverage digest               | `ESPECIFICADO`           | paquete E5 NEXO y `SHELL-CI-017`             | clasificación legacy verificable sin certificar exactitud inexistente |
+
+No queda pendiente narrativo sin tarea, paquete o condición de salida.
+
+---
+
+#### 30. Criterios de aceptación
+
+1. existen exactamente veinticuatro artefactos materiales;
+2. existen exactamente diez fuentes de inicio;
+3. existen exactamente ocho colas `CNTQ-*`;
+4. existen exactamente veintidós estados empresariales y técnicos;
+5. existen exactamente veinticuatro pasos `CNT-STEP-*`;
+6. existen exactamente treinta estados de interfaz;
+7. existen exactamente catorce superficies decididas y cero superficies nuevas;
+8. existen exactamente cuarenta y ocho comprobaciones `CNT-VAL-*`;
+9. `VPROC-0026` permanece propietario del conteo de inventario;
+10. los conteos patrimoniales permanecen bajo `VPROC-0029`;
+11. `nexo.inventory.counts` no se convierte en writer de movimientos o stock;
+12. `nexo.inventory.stock` no sustituye la capacidad de contar;
+13. contador, investigador y aprobador de ajuste permanecen separados;
+14. cada trabajo tiene fuente, política, ventana y alcance snapshot;
+15. el snapshot conserva sujetos, posiciones, reglas, conteo esperado y digest;
+16. el conteo de inventario es ciego por defecto;
+17. la identidad guiada patrimonial no revela cantidades previas;
+18. el modo guiado excepcional exige política y razón;
+19. vacío, cero, no observado e inesperado son estados distintos;
+20. las omisiones no desaparecen de la sesión;
+21. la captura inesperada no crea catálogo o stock;
+22. cantidad, UOM, factor, precisión e identidad son reproducibles;
+23. cada observación confirmada tiene receipt e idempotencia;
+24. un borrador offline no confirma autoridad, cutoff o cierre;
+25. cada observación online tiene cutoff de secuencia;
+26. expected se reconstruye desde ledger y checkpoints;
+27. un gap impide diferencia definitiva;
+28. un movimiento concurrente se reconcilia o exige recuento;
+29. la diferencia usa observed menos expected en el cutoff exacto;
+30. el cierre no compara contra una proyección mutable sin secuencia;
+31. el recuento crea ronda independiente;
+32. las rondas no se promedian ni sobrescriben automáticamente;
+33. una corrección abierta crea versión nueva;
+34. una sesión cerrada no admite UPDATE o DELETE destructivo;
+35. cerrar produce cero movimientos y cero mutación de stock;
+36. `apply_inventory_count_adjustments` queda fuera del flujo objetivo;
+37. el ajuste exige `nexo.inventory.adjustments` y decisión separada;
+38. no existe clamp a cero;
+39. activos encontrados en otro LOC no se trasladan automáticamente;
+40. las catorce superficies tienen disposición explícita;
+41. toda modificación Supabase permanece en `vento-shell`;
+42. los catorce requisitos nuevos están en el registro completo;
+43. todos los pendientes tienen propietario y condición de salida;
+44. no se ejecutan cambios físicos ni remotos;
+45. la siguiente tarea permanece reservada.
+
+---
+
+#### 31. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-017 — Diseñar flujo completo de retiros`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-018 — Diseñar flujo completo de conteos`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-019 — Diseñar flujo completo de ajustes`
+
+`NEXO-UX-019` deberá consumir observaciones cerradas, expected snapshots, recuentos, investigaciones, evidencia y candidatos definidos en esta tarea; decidirá el efecto cuantitativo mediante autorización y posting separados, sin reescribir el conteo original.
+
+
 ### [ ] NEXO-UX-019 — Diseñar flujo completo de ajustes
 ### [ ] NEXO-UX-020 — Simplificar escáner y captura
 ### [ ] NEXO-UX-021 — Mostrar solo información necesaria según etapa

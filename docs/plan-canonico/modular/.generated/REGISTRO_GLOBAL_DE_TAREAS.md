@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **563** |
+| Aprobadas | **564** |
 | En propuesta | **0** |
-| No iniciadas | **1031** |
+| No iniciadas | **1030** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **35.32% (563/1594)** |
+| Porcentaje de completamiento | **35.38% (564/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NEXO-UX-017` — Diseñar flujo completo de retiros | ✅ APROBADA |
-| Tarea actual | `NEXO-UX-018` — Diseñar flujo completo de conteos | ⬜ NO INICIADA |
-| Siguiente reservada | `NEXO-UX-019` — Diseñar flujo completo de ajustes | ⬜ NO INICIADA |
+| Última aprobada | `NEXO-UX-018` — Diseñar flujo completo de conteos | ✅ APROBADA |
+| Tarea actual | `NEXO-UX-019` — Diseñar flujo completo de ajustes | ⬜ NO INICIADA |
+| Siguiente reservada | `NEXO-UX-020` — Simplificar escáner y captura | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -973,7 +973,7 @@
 | ✅ APROBADA | `NEXO-UX-015` | Diseñar flujo completo de ubicación | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-016` | Diseñar flujo completo de movimientos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-017` | Diseñar flujo completo de retiros | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
-| ⬜ NO INICIADA | `NEXO-UX-018` | Diseñar flujo completo de conteos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
+| ✅ APROBADA | `NEXO-UX-018` | Diseñar flujo completo de conteos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-019` | Diseñar flujo completo de ajustes | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-020` | Simplificar escáner y captura | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-021` | Mostrar solo información necesaria según etapa | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
