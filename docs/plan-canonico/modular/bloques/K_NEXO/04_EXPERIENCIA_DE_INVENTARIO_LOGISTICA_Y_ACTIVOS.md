@@ -20536,7 +20536,711 @@ No modifica, descarta ni vuelve obsoleto ningún requisito histórico.
 `NEXO-UX-023` deberá consumir los estados, colas, acciones, contenciones, decisiones, instrucciones, resultados desconocidos y receipts definidos aquí para comprobar que la experiencia conserva significado, autoridad, seguridad y continuidad en tablets y quioscos reales.
 
 
-### [ ] NEXO-UX-023 — Probar flujos en tablets y kioscos
+### ✅ NEXO-UX-023 — Probar flujos en tablets y kioscos
+
+---
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-022 — Diseñar manejo de diferencias y excepciones` — APROBADA
+**Tarea siguiente:** `NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores` — RESERVADA
+**Tipo de tarea:** documental; suite de prueba materializada para tablets y quioscos, diagnóstico estático de preparación por etapa, perfiles lógicos de dispositivo, contextos de ejecución, modalidades de entrada, responsive, accesibilidad, sesión compartida, seguridad, conectividad, idempotencia, excepciones, evidencia y continuidad
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Corte técnico inspeccionado:** `vento-shell@3442305e5663ecac3b15915154b985682dcae90f`; `vento-nexo@142c4d696221e3ce3fda4ed3b62f3d1fe5b58799`
+**Procesos cubiertos:** `VPROC-0023` a `VPROC-0028`; cuarenta etapas `VPROC-####::ASIS-##`
+**Artefactos producidos:** los veinticuatro artefactos enumerados en esta tarea
+**Decisiones consumidas:** `NEXO-UX-001` a `NEXO-UX-022`; contratos de solicitud, preparación, conductor, recepción, entradas, ubicaciones, movimientos, retiros, conteos, ajustes, escáner, divulgación por etapa y excepciones; requisitos `TREQ-NEXO-*` vigentes
+**Cambios físicos autorizados:** ninguno; no modifica código, rutas, permisos, productos, stock, movimientos, remisiones, casos, Supabase, tablas, funciones, RLS, migraciones, datos, configuración, despliegues ni dispositivos
+
+#### 1. Propósito
+
+Probar documentalmente la preparación de los flujos aprobados para tablets y
+quioscos mediante una suite completa y una decisión estática por cada etapa,
+sin presentar inspección de código como validación física.
+
+La regla de esta tarea es:
+
+```text
+ETAPA CANÓNICA
++
+PERFIL LÓGICO DE DISPOSITIVO
++
+CONTEXTO DE EJECUCIÓN
++
+MODALIDAD DE ENTRADA
++
+CONTRATO DE AUTORIDAD Y DATOS
++
+ESCENARIO, ORÁCULO Y EVIDENCIA
+→
+RESULTADO REPRODUCIBLE SIN FALSA VALIDACIÓN
+```
+
+`STATIC_SUPPORTED` significa que el corte de código ofrece una base comprobable.
+No significa `VALIDADO`. Toda afirmación de interacción física, rendimiento,
+cámara, scanner, touch, orientación, red o uso humano permanece
+`PENDIENTE_DE_EVIDENCIA` hasta una ejecución real y reproducible.
+
+#### 2. Resultado material
+
+Se aprueban los siguientes veinticuatro artefactos documentales:
+
+|  N.º | Artefacto                                          | Resultado                                                                            |
+| ---: | -------------------------------------------------- | ------------------------------------------------------------------------------------ |
+|    1 | NEXO-DEVICE-TEST-SCOPE-CONTRACT-001                | delimita prueba documental, diagnóstico estático y evidencia física sin confundirlos |
+|    2 | NEXO-DEVICE-PROFILE-CATALOG-001                    | materializa ocho perfiles lógicos de tablet y quiosco                                |
+|    3 | NEXO-DEVICE-EXECUTION-CONTEXT-CATALOG-001          | materializa diez contextos de red, ciclo de vida y actor                             |
+|    4 | NEXO-DEVICE-INPUT-MODALITY-CONTRACT-001            | hace equivalentes seis modalidades de entrada sin alterar autoridad                  |
+|    5 | NEXO-DEVICE-STAGE-COVERAGE-MATRIX-001              | decide las cuarenta etapas heredadas sin faltantes ni duplicados                     |
+|    6 | NEXO-DEVICE-SCENARIO-CATALOG-001                   | define cuarenta escenarios de etapa y dieciséis transversales                        |
+|    7 | NEXO-TABLET-INTERACTION-CONTRACT-001               | define uso portátil, orientación, teclado y continuidad de tarea                     |
+|    8 | NEXO-KIOSK-PURPOSE-SESSION-CONTRACT-001            | limita el quiosco a propósito, contexto, actor y restablecimiento seguros            |
+|    9 | NEXO-DEVICE-SHARED-ACTOR-SIGNATURE-CONTRACT-001    | preserva atribución en terminal compartida y cambio de actor                         |
+|   10 | NEXO-DEVICE-RESPONSIVE-ORIENTATION-CONTRACT-001    | define viewport, safe area, rotación, densidad y teclado visible                     |
+|   11 | NEXO-DEVICE-TOUCH-FOCUS-ACCESSIBILITY-CONTRACT-001 | define objetivos táctiles, foco, zoom, contraste y salidas no visuales               |
+|   12 | NEXO-DEVICE-SCANNER-CAMERA-CONTRACT-001            | consume captura contextual con cámara, wedge y fallback manual                       |
+|   13 | NEXO-DEVICE-CONNECTIVITY-RESILIENCE-CONTRACT-001   | define latencia, intermitencia, offline, reconexión y resultado desconocido          |
+|   14 | NEXO-DEVICE-LIFECYCLE-RESUME-CONTRACT-001          | define bloqueo, background, resume, cambio de orientación y expiración               |
+|   15 | NEXO-DEVICE-DATA-MINIMIZATION-PRIVACY-CONTRACT-001 | evita exposición residual y datos excesivos en pantallas compartidas                 |
+|   16 | NEXO-DEVICE-PERFORMANCE-CAPACITY-CONTRACT-001      | define presupuestos y fixtures sin declarar capacidad no medida                      |
+|   17 | NEXO-DEVICE-REVIEW-RECEIPT-CONTRACT-001            | preserva revisión, envío único, reconciliación y recibo verificable                  |
+|   18 | NEXO-DEVICE-EXCEPTION-CONTINUITY-CONTRACT-001      | mantiene significado de diferencias, contenciones e instrucciones en dispositivo     |
+|   19 | NEXO-DEVICE-SOURCE-ROUTE-DISPOSITION-001           | decide dieciocho superficies actuales y prohíbe bypass por URL                       |
+|   20 | NEXO-DEVICE-INTERFACE-STATE-CONTRACT-001           | materializa treinta estados de interfaz con salida segura                            |
+|   21 | NEXO-DEVICE-STATIC-READINESS-RESULT-001            | registra el diagnóstico estático real del corte de código inspeccionado              |
+|   22 | NEXO-DEVICE-VALIDATION-MATRIX-001                  | define cuarenta y ocho comprobaciones reproducibles                                  |
+|   23 | NEXO-DEVICE-EVIDENCE-PACKAGE-CONTRACT-001          | define evidencia mínima por ejecución, dispositivo, actor, red y resultado           |
+|   24 | NEXO-DEVICE-CONTINUITY-HANDOFF-001                 | entrega hallazgos a validación con usuarios y métricas sin iniciar esas tareas       |
+
+Cobertura materializada:
+
+| Elemento                        | Esperado | Materializado | Faltantes | Duplicados |
+| ------------------------------- | -------: | ------------: | --------: | ---------: |
+| Procesos canónicos              |        6 |             6 |         0 |          0 |
+| Etapas heredadas                |       40 |            40 |         0 |          0 |
+| Perfiles lógicos de dispositivo |        8 |             8 |         0 |          0 |
+| Contextos de ejecución          |       10 |            10 |         0 |          0 |
+| Modalidades de entrada          |        6 |             6 |         0 |          0 |
+| Escenarios de etapa             |       40 |            40 |         0 |          0 |
+| Escenarios transversales        |       16 |            16 |         0 |          0 |
+| Superficies actuales decididas  |       18 |            18 |         0 |          0 |
+| Estados de interfaz             |       30 |            30 |         0 |          0 |
+| Comprobaciones                  |       48 |            48 |         0 |          0 |
+| Ejecuciones físicas declaradas  |        0 |             0 |         0 |          0 |
+| Requisitos nuevos               |       14 |            14 |         0 |          0 |
+
+Resultado estático de las cuarenta etapas:
+
+- `STATIC_SUPPORTED`: **17**;
+- `STATIC_PARTIAL`: **13**;
+- `BLOCKED_NO_SURFACE`: **10**;
+- `VALIDADO_EN_DISPOSITIVO`: **0**;
+- evidencia física pendiente: **40 de 40**.
+
+#### 3. Frontera de evidencia
+
+La tarea distingue cuatro niveles:
+
+| Nivel                     | Significado                                                                     |
+| ------------------------- | ------------------------------------------------------------------------------- |
+| `CANONICAL`               | decisión aprobada y oráculo esperado                                            |
+| `CODE_STATIC`             | ruta, componente, acción o contrato observable en el corte inspeccionado        |
+| `DEVICE_EXECUTED`         | escenario ejecutado en un dispositivo identificado con evidencia                |
+| `OPERATIONALLY_VALIDATED` | ejecución aceptada con actor real, contexto controlado y resultado reproducible |
+
+En esta tarea se materializan `CANONICAL` y `CODE_STATIC`. No se declara
+`DEVICE_EXECUTED` ni `OPERATIONALLY_VALIDATED`.
+
+#### 4. `NEXO-DEVICE-PROFILE-CATALOG-001`
+
+Los perfiles son targets lógicos de prueba, no un inventario de hardware comprado o disponible:
+
+| ID         | Clase                   | Viewport de referencia | Orientación          | Entrada primaria                             | Evidencia                                 |
+| ---------- | ----------------------- | ---------------------- | -------------------- | -------------------------------------------- | ----------------------------------------- |
+| DVC-TAB-01 | Tablet compacta         | 768 × 1024             | portrait             | touch; teclado virtual                       | perfil lógico; evidencia física pendiente |
+| DVC-TAB-02 | Tablet estándar         | 800 × 1280             | portrait             | touch; teclado virtual; cámara               | perfil lógico; evidencia física pendiente |
+| DVC-TAB-03 | Tablet estándar         | 1280 × 800             | landscape            | touch; teclado virtual; cámara               | perfil lógico; evidencia física pendiente |
+| DVC-TAB-04 | Tablet restringida      | 800 × 1280             | portrait o landscape | touch; rendimiento reducido; cámara opcional | perfil lógico; evidencia física pendiente |
+| DVC-KSK-01 | Quiosco táctil fijo     | 1366 × 768             | landscape            | touch; teclado virtual                       | perfil lógico; evidencia física pendiente |
+| DVC-KSK-02 | Quiosco táctil vertical | 1080 × 1920            | portrait             | touch; teclado virtual                       | perfil lógico; evidencia física pendiente |
+| DVC-KSK-03 | Terminal compartida     | 1024 × 768             | landscape            | touch; wedge; teclado físico                 | perfil lógico; evidencia física pendiente |
+| DVC-KSK-04 | Estación compartida     | 1366 × 768             | landscape            | teclado; puntero; wedge                      | perfil lógico; evidencia física pendiente |
+
+Los tamaños son anclas reproducibles para viewport. La aceptación final no se
+limita a esos valores: debe probar límites adyacentes y cambios dinámicos sin
+usar user-agent como sustituto de capacidades reales.
+
+#### 5. `NEXO-DEVICE-EXECUTION-CONTEXT-CATALOG-001`
+
+| ID         | Contexto             | Condición                                                                |
+| ---------- | -------------------- | ------------------------------------------------------------------------ |
+| DVC-CTX-01 | ONLINE_STABLE        | conectividad estable; reloj y sesión válidos                             |
+| DVC-CTX-02 | HIGH_LATENCY         | respuesta lenta sin pérdida de petición                                  |
+| DVC-CTX-03 | INTERMITTENT         | pérdidas y reconexiones durante lectura o envío                          |
+| DVC-CTX-04 | OFFLINE_DRAFT        | sin servidor; solo borrador no concluyente cuando el contrato lo permita |
+| DVC-CTX-05 | RECONNECT_REVALIDATE | retorno de red con revalidación de actor, contexto, versión e intención  |
+| DVC-CTX-06 | ROTATE_RESIZE        | cambio portrait-landscape o resize sin perder datos confirmados          |
+| DVC-CTX-07 | BACKGROUND_RESUME    | app suspendida y reanudada con control de staleness                      |
+| DVC-CTX-08 | INACTIVITY_RESET     | expiración y limpieza de pantalla compartida                             |
+| DVC-CTX-09 | ACTOR_HANDOFF        | cambio de operador con firma y territorio nuevos                         |
+| DVC-CTX-10 | RESULT_UNKNOWN       | timeout posterior al envío; reconciliación antes de reintentar           |
+
+#### 6. `NEXO-DEVICE-INPUT-MODALITY-CONTRACT-001`
+
+| ID        | Modalidad         | Regla                                                           |
+| --------- | ----------------- | --------------------------------------------------------------- |
+| DVC-IN-01 | TOUCH             | selección y acción directa con objetivo táctil suficiente       |
+| DVC-IN-02 | VIRTUAL_KEYBOARD  | texto y números sin ocultar campo, error o acción               |
+| DVC-IN-03 | PHYSICAL_KEYBOARD | tabulación, enter, escape y atajos no destructivos              |
+| DVC-IN-04 | BARCODE_WEDGE     | captura rápida con debounce, deduplicación y foco controlado    |
+| DVC-IN-05 | CAMERA_SCAN       | captura contextual con permiso, fallback y sin retener frames   |
+| DVC-IN-06 | POINTER           | mouse o trackpad sin depender de hover para comprender o actuar |
+
+Las seis modalidades producirán la misma intención tipada. Ninguna modalidad
+podrá otorgar permiso, cambiar territorio, fijar cantidad, aceptar diferencia,
+ejecutar posting o afirmar receipt.
+
+#### 7. `NEXO-DEVICE-STAGE-COVERAGE-MATRIX-001`
+
+Cada identidad heredada recibe una decisión explícita:
+
+| Etapa               | Actividad                                                  | Tablet             | Quiosco        | Preparación estática | Brecha o prueba obligatoria                                                               |
+| ------------------- | ---------------------------------------------------------- | ------------------ | -------------- | -------------------- | ----------------------------------------------------------------------------------------- |
+| VPROC-0023::ASIS-01 | crear o editar LOC por sede y área                         | TABLET_ADMIN       | NO_APLICA      | STATIC_PARTIAL       | configuración separada; formularios actuales requieren prueba responsive y autorización   |
+| VPROC-0023::ASIS-02 | crear zonas, niveles y posiciones internas                 | TABLET_ADMIN       | NO_APLICA      | STATIC_PARTIAL       | árbol y formularios existen; falta evidencia de orientación, teclado y volumen            |
+| VPROC-0023::ASIS-03 | definir productos permitidos por ubicación                 | TABLET_ADMIN       | NO_APLICA      | BLOCKED_NO_SURFACE   | estructura sin materialización operativa suficiente                                       |
+| VPROC-0023::ASIS-04 | consultar stock por sede, LOC y posición                   | TABLET             | KIOSK          | STATIC_SUPPORTED     | stock, board y proyecciones existen; validar densidad, búsqueda y privacidad              |
+| VPROC-0023::ASIS-05 | abrir ubicación mediante board, quiosco o código           | TABLET             | KIOSK          | STATIC_SUPPORTED     | deep link y shortcut existen; no equivalen a validación física                            |
+| VPROC-0024::ASIS-01 | iniciar entrada excepcional                                | TABLET             | NO_APLICA      | STATIC_SUPPORTED     | superficie de entrada existe; conservar permiso de emergencia y revisión                  |
+| VPROC-0024::ASIS-02 | iniciar entrada normal correlacionada                      | TABLET             | NO_APLICA      | STATIC_SUPPORTED     | superficie y correlación existen; validar retorno y datos mínimos                         |
+| VPROC-0024::ASIS-03 | capturar producto, cantidad, presentación, unidad y costo  | TABLET             | NO_APLICA      | STATIC_SUPPORTED     | captura existe; costo queda restringido y teclado no debe ocultar consecuencia            |
+| VPROC-0024::ASIS-04 | asignar LOC de destino                                     | TABLET             | NO_APLICA      | STATIC_SUPPORTED     | selector existe; validar búsqueda, escaneo y territorio                                   |
+| VPROC-0024::ASIS-05 | asignar posición interna                                   | TABLET             | NO_APLICA      | STATIC_PARTIAL       | soporte separado; falta flujo integrado y evidencia con escáner                           |
+| VPROC-0024::ASIS-06 | publicar, corregir o revertir entrada                      | TABLET_SUPERVISOR  | NO_APLICA      | STATIC_PARTIAL       | writers existen; falta experiencia unificada de versión, autoridad y receipt              |
+| VPROC-0025::ASIS-01 | identificar sede, LOC, posición y producto de origen       | TABLET             | KIOSK          | STATIC_SUPPORTED     | board, stock y retiro exponen contexto; debe bloquear alcance inválido                    |
+| VPROC-0025::ASIS-02 | escoger presentación o unidad de captura                   | TABLET             | KIOSK          | STATIC_SUPPORTED     | perfiles y tarjetas existen; validar selección inequívoca y fallback                      |
+| VPROC-0025::ASIS-03 | verificar disponibilidad y alcance                         | TABLET             | KIOSK          | STATIC_PARTIAL       | validaciones servidor existen; falta resultado consistente y recuperación por dispositivo |
+| VPROC-0025::ASIS-04 | consumir o retirar desde stock general                     | TABLET             | NO_APLICA      | STATIC_SUPPORTED     | formulario operativo existe; validar review, doble envío y receipt                        |
+| VPROC-0025::ASIS-05 | consumir o retirar desde posición o quiosco                | TABLET             | KIOSK          | STATIC_SUPPORTED     | board y retiro existen; falta integrar firma compartida e inactividad                     |
+| VPROC-0025::ASIS-06 | transferir entre LOC y conservar historial                 | TABLET             | NO_APLICA      | STATIC_SUPPORTED     | transferencia existe; validar origen, destino, UOM, conflicto y receipt                   |
+| VPROC-0026::ASIS-01 | abrir sesión de conteo con sede y LOC                      | TABLET             | NO_APLICA      | STATIC_SUPPORTED     | superficie existe; validar scope congelado y recuperación                                 |
+| VPROC-0026::ASIS-02 | congelar alcance y stock de apertura                       | TABLET             | NO_APLICA      | STATIC_PARTIAL       | campos existen; falta evidencia de concurrencia y resume                                  |
+| VPROC-0026::ASIS-03 | registrar observación por producto                         | TABLET             | KIOSK_LIMITADO | STATIC_SUPPORTED     | captura ciega existe; no mostrar expected antes del cierre                                |
+| VPROC-0026::ASIS-04 | capturar varias presentaciones o posiciones                | TABLET             | KIOSK_LIMITADO | STATIC_SUPPORTED     | entradas múltiples existen; validar teclado, scroll, foco y escaneo                       |
+| VPROC-0026::ASIS-05 | calcular diferencia sin sobrescribir observación           | TABLET_SUPERVISOR  | NO_APLICA      | STATIC_SUPPORTED     | delta existe; solo visible en etapa supervisora                                           |
+| VPROC-0026::ASIS-06 | aplicar reconciliación o ajuste autorizado                 | TABLET_SUPERVISOR  | PROHIBIDO      | STATIC_PARTIAL       | ajuste existe; no debe exponerse en quiosco ni ejecutarse desde conteo                    |
+| VPROC-0026::ASIS-07 | cerrar sesión y conservar historial                        | TABLET_SUPERVISOR  | NO_APLICA      | STATIC_PARTIAL       | cierre existe; falta receipt separado de cualquier ajuste                                 |
+| VPROC-0027::ASIS-01 | detectar alerta, daño, pérdida, merma o vencimiento        | TABLET             | KIOSK          | BLOCKED_NO_SURFACE   | sin superficie dedicada de reporte y caso                                                 |
+| VPROC-0027::ASIS-02 | identificar producto, existencia, lote, LOC y condición    | TABLET             | KIOSK_LIMITADO | STATIC_PARTIAL       | campos parciales existen; falta captura completa y caso estable                           |
+| VPROC-0027::ASIS-03 | bloquear o poner en cuarentena                             | TABLET_AUTORIZADA  | PROHIBIDO      | BLOCKED_NO_SURFACE   | contrato aprobado sin writer ni superficie actuales                                       |
+| VPROC-0027::ASIS-04 | evaluar condición, temperatura y aptitud                   | TABLET_AUTORIZADA  | NO_APLICA      | BLOCKED_NO_SURFACE   | sin expediente y evidencia ejecutables                                                    |
+| VPROC-0027::ASIS-05 | decidir liberación, merma, pérdida, rechazo o disposición  | TABLET_DECISOR     | PROHIBIDO      | BLOCKED_NO_SURFACE   | sin policy resolver ni decision receipt ejecutables                                       |
+| VPROC-0027::ASIS-06 | ejecutar movimiento físico y efecto de stock               | TABLET_EJECUTOR    | PROHIBIDO      | BLOCKED_NO_SURFACE   | sin instrucción firmada y writer dedicado                                                 |
+| VPROC-0027::ASIS-07 | conservar evidencia y cerrar caso                          | TABLET_VERIFICADOR | NO_APLICA      | BLOCKED_NO_SURFACE   | sin caso, verificación ni cierre desplegados                                              |
+| VPROC-0028::ASIS-01 | crear solicitud por sede, área, producto, cantidad y fecha | TABLET             | NO_APLICA      | STATIC_SUPPORTED     | solicitud existe; validar captura guiada y borrador                                       |
+| VPROC-0028::ASIS-02 | aplicar ruta, elegibilidad y política                      | TABLET_ADMIN       | NO_APLICA      | STATIC_PARTIAL       | settings existen; resultado operativo debe llegar ya resuelto                             |
+| VPROC-0028::ASIS-03 | crear fuente o fulfillment por línea                       | TABLET_BODEGA      | NO_APLICA      | STATIC_PARTIAL       | filas y estados existen; falta recuperación uniforme de bloqueos                          |
+| VPROC-0028::ASIS-04 | escoger LOC, posición y cantidad real de picking           | TABLET_BODEGA      | KIOSK_LIMITADO | BLOCKED_NO_SURFACE   | estructura sin picks observados ni flujo ejecutable completo                              |
+| VPROC-0028::ASIS-05 | preparar y declarar listo o faltante                       | TABLET_BODEGA      | NO_APLICA      | STATIC_SUPPORTED     | workbench existe; validar densidad, escaneo, parcialidad y receipt                        |
+| VPROC-0028::ASIS-06 | cargar, sellar y despachar envío físico                    | TABLET_BODEGA      | KIOSK_LIMITADO | BLOCKED_NO_SURFACE   | sin dispatch run y shipment ejecutables observados                                        |
+| VPROC-0028::ASIS-07 | transportar y confirmar tránsito                           | TABLET_CONDUCTOR   | KIOSK_LIMITADO | STATIC_PARTIAL       | superficies legacy existen; falta custodia y handoff nuevos                               |
+| VPROC-0028::ASIS-08 | recibir cantidades parciales o completas                   | TABLET_RECEPTOR    | KIOSK_LIMITADO | STATIC_PARTIAL       | batch shell existe; selección inicial y receipts requieren convergencia                   |
+| VPROC-0028::ASIS-09 | registrar diferencia, rechazo, retorno y cierre            | TABLET_RECEPTOR    | KIOSK_LIMITADO | BLOCKED_NO_SURFACE   | sin excepción nueva ejecutable ni cierre correlacionado                                   |
+
+Reconciliación:
+
+```text
+EXPECTED_STAGE_IDS = 40
+MATERIALIZED_STAGE_IDS = 40
+UNIQUE_STAGE_IDS = 40
+MISSING_STAGE_IDS = 0
+DUPLICATE_STAGE_IDS = 0
+STATIC_SUPPORTED = 17
+STATIC_PARTIAL = 13
+BLOCKED_NO_SURFACE = 10
+DEVICE_EXECUTED = 0
+```
+
+#### 8. `NEXO-DEVICE-SCENARIO-CATALOG-001`
+
+##### 8.1. Escenarios de etapa
+
+| Escenario    | Etapa               | Objetivo                                                   | Perfiles                         | Resultado estático | Oráculo o brecha                                                                          |
+| ------------ | ------------------- | ---------------------------------------------------------- | -------------------------------- | ------------------ | ----------------------------------------------------------------------------------------- |
+| DVC-FLOW-001 | VPROC-0023::ASIS-01 | crear o editar LOC por sede y área                         | TABLET_ADMIN; NO_APLICA          | STATIC_PARTIAL     | configuración separada; formularios actuales requieren prueba responsive y autorización   |
+| DVC-FLOW-002 | VPROC-0023::ASIS-02 | crear zonas, niveles y posiciones internas                 | TABLET_ADMIN; NO_APLICA          | STATIC_PARTIAL     | árbol y formularios existen; falta evidencia de orientación, teclado y volumen            |
+| DVC-FLOW-003 | VPROC-0023::ASIS-03 | definir productos permitidos por ubicación                 | TABLET_ADMIN; NO_APLICA          | BLOCKED_NO_SURFACE | estructura sin materialización operativa suficiente                                       |
+| DVC-FLOW-004 | VPROC-0023::ASIS-04 | consultar stock por sede, LOC y posición                   | TABLET; KIOSK                    | STATIC_SUPPORTED   | stock, board y proyecciones existen; validar densidad, búsqueda y privacidad              |
+| DVC-FLOW-005 | VPROC-0023::ASIS-05 | abrir ubicación mediante board, quiosco o código           | TABLET; KIOSK                    | STATIC_SUPPORTED   | deep link y shortcut existen; no equivalen a validación física                            |
+| DVC-FLOW-006 | VPROC-0024::ASIS-01 | iniciar entrada excepcional                                | TABLET; NO_APLICA                | STATIC_SUPPORTED   | superficie de entrada existe; conservar permiso de emergencia y revisión                  |
+| DVC-FLOW-007 | VPROC-0024::ASIS-02 | iniciar entrada normal correlacionada                      | TABLET; NO_APLICA                | STATIC_SUPPORTED   | superficie y correlación existen; validar retorno y datos mínimos                         |
+| DVC-FLOW-008 | VPROC-0024::ASIS-03 | capturar producto, cantidad, presentación, unidad y costo  | TABLET; NO_APLICA                | STATIC_SUPPORTED   | captura existe; costo queda restringido y teclado no debe ocultar consecuencia            |
+| DVC-FLOW-009 | VPROC-0024::ASIS-04 | asignar LOC de destino                                     | TABLET; NO_APLICA                | STATIC_SUPPORTED   | selector existe; validar búsqueda, escaneo y territorio                                   |
+| DVC-FLOW-010 | VPROC-0024::ASIS-05 | asignar posición interna                                   | TABLET; NO_APLICA                | STATIC_PARTIAL     | soporte separado; falta flujo integrado y evidencia con escáner                           |
+| DVC-FLOW-011 | VPROC-0024::ASIS-06 | publicar, corregir o revertir entrada                      | TABLET_SUPERVISOR; NO_APLICA     | STATIC_PARTIAL     | writers existen; falta experiencia unificada de versión, autoridad y receipt              |
+| DVC-FLOW-012 | VPROC-0025::ASIS-01 | identificar sede, LOC, posición y producto de origen       | TABLET; KIOSK                    | STATIC_SUPPORTED   | board, stock y retiro exponen contexto; debe bloquear alcance inválido                    |
+| DVC-FLOW-013 | VPROC-0025::ASIS-02 | escoger presentación o unidad de captura                   | TABLET; KIOSK                    | STATIC_SUPPORTED   | perfiles y tarjetas existen; validar selección inequívoca y fallback                      |
+| DVC-FLOW-014 | VPROC-0025::ASIS-03 | verificar disponibilidad y alcance                         | TABLET; KIOSK                    | STATIC_PARTIAL     | validaciones servidor existen; falta resultado consistente y recuperación por dispositivo |
+| DVC-FLOW-015 | VPROC-0025::ASIS-04 | consumir o retirar desde stock general                     | TABLET; NO_APLICA                | STATIC_SUPPORTED   | formulario operativo existe; validar review, doble envío y receipt                        |
+| DVC-FLOW-016 | VPROC-0025::ASIS-05 | consumir o retirar desde posición o quiosco                | TABLET; KIOSK                    | STATIC_SUPPORTED   | board y retiro existen; falta integrar firma compartida e inactividad                     |
+| DVC-FLOW-017 | VPROC-0025::ASIS-06 | transferir entre LOC y conservar historial                 | TABLET; NO_APLICA                | STATIC_SUPPORTED   | transferencia existe; validar origen, destino, UOM, conflicto y receipt                   |
+| DVC-FLOW-018 | VPROC-0026::ASIS-01 | abrir sesión de conteo con sede y LOC                      | TABLET; NO_APLICA                | STATIC_SUPPORTED   | superficie existe; validar scope congelado y recuperación                                 |
+| DVC-FLOW-019 | VPROC-0026::ASIS-02 | congelar alcance y stock de apertura                       | TABLET; NO_APLICA                | STATIC_PARTIAL     | campos existen; falta evidencia de concurrencia y resume                                  |
+| DVC-FLOW-020 | VPROC-0026::ASIS-03 | registrar observación por producto                         | TABLET; KIOSK_LIMITADO           | STATIC_SUPPORTED   | captura ciega existe; no mostrar expected antes del cierre                                |
+| DVC-FLOW-021 | VPROC-0026::ASIS-04 | capturar varias presentaciones o posiciones                | TABLET; KIOSK_LIMITADO           | STATIC_SUPPORTED   | entradas múltiples existen; validar teclado, scroll, foco y escaneo                       |
+| DVC-FLOW-022 | VPROC-0026::ASIS-05 | calcular diferencia sin sobrescribir observación           | TABLET_SUPERVISOR; NO_APLICA     | STATIC_SUPPORTED   | delta existe; solo visible en etapa supervisora                                           |
+| DVC-FLOW-023 | VPROC-0026::ASIS-06 | aplicar reconciliación o ajuste autorizado                 | TABLET_SUPERVISOR; PROHIBIDO     | STATIC_PARTIAL     | ajuste existe; no debe exponerse en quiosco ni ejecutarse desde conteo                    |
+| DVC-FLOW-024 | VPROC-0026::ASIS-07 | cerrar sesión y conservar historial                        | TABLET_SUPERVISOR; NO_APLICA     | STATIC_PARTIAL     | cierre existe; falta receipt separado de cualquier ajuste                                 |
+| DVC-FLOW-025 | VPROC-0027::ASIS-01 | detectar alerta, daño, pérdida, merma o vencimiento        | TABLET; KIOSK                    | BLOCKED_NO_SURFACE | sin superficie dedicada de reporte y caso                                                 |
+| DVC-FLOW-026 | VPROC-0027::ASIS-02 | identificar producto, existencia, lote, LOC y condición    | TABLET; KIOSK_LIMITADO           | STATIC_PARTIAL     | campos parciales existen; falta captura completa y caso estable                           |
+| DVC-FLOW-027 | VPROC-0027::ASIS-03 | bloquear o poner en cuarentena                             | TABLET_AUTORIZADA; PROHIBIDO     | BLOCKED_NO_SURFACE | contrato aprobado sin writer ni superficie actuales                                       |
+| DVC-FLOW-028 | VPROC-0027::ASIS-04 | evaluar condición, temperatura y aptitud                   | TABLET_AUTORIZADA; NO_APLICA     | BLOCKED_NO_SURFACE | sin expediente y evidencia ejecutables                                                    |
+| DVC-FLOW-029 | VPROC-0027::ASIS-05 | decidir liberación, merma, pérdida, rechazo o disposición  | TABLET_DECISOR; PROHIBIDO        | BLOCKED_NO_SURFACE | sin policy resolver ni decision receipt ejecutables                                       |
+| DVC-FLOW-030 | VPROC-0027::ASIS-06 | ejecutar movimiento físico y efecto de stock               | TABLET_EJECUTOR; PROHIBIDO       | BLOCKED_NO_SURFACE | sin instrucción firmada y writer dedicado                                                 |
+| DVC-FLOW-031 | VPROC-0027::ASIS-07 | conservar evidencia y cerrar caso                          | TABLET_VERIFICADOR; NO_APLICA    | BLOCKED_NO_SURFACE | sin caso, verificación ni cierre desplegados                                              |
+| DVC-FLOW-032 | VPROC-0028::ASIS-01 | crear solicitud por sede, área, producto, cantidad y fecha | TABLET; NO_APLICA                | STATIC_SUPPORTED   | solicitud existe; validar captura guiada y borrador                                       |
+| DVC-FLOW-033 | VPROC-0028::ASIS-02 | aplicar ruta, elegibilidad y política                      | TABLET_ADMIN; NO_APLICA          | STATIC_PARTIAL     | settings existen; resultado operativo debe llegar ya resuelto                             |
+| DVC-FLOW-034 | VPROC-0028::ASIS-03 | crear fuente o fulfillment por línea                       | TABLET_BODEGA; NO_APLICA         | STATIC_PARTIAL     | filas y estados existen; falta recuperación uniforme de bloqueos                          |
+| DVC-FLOW-035 | VPROC-0028::ASIS-04 | escoger LOC, posición y cantidad real de picking           | TABLET_BODEGA; KIOSK_LIMITADO    | BLOCKED_NO_SURFACE | estructura sin picks observados ni flujo ejecutable completo                              |
+| DVC-FLOW-036 | VPROC-0028::ASIS-05 | preparar y declarar listo o faltante                       | TABLET_BODEGA; NO_APLICA         | STATIC_SUPPORTED   | workbench existe; validar densidad, escaneo, parcialidad y receipt                        |
+| DVC-FLOW-037 | VPROC-0028::ASIS-06 | cargar, sellar y despachar envío físico                    | TABLET_BODEGA; KIOSK_LIMITADO    | BLOCKED_NO_SURFACE | sin dispatch run y shipment ejecutables observados                                        |
+| DVC-FLOW-038 | VPROC-0028::ASIS-07 | transportar y confirmar tránsito                           | TABLET_CONDUCTOR; KIOSK_LIMITADO | STATIC_PARTIAL     | superficies legacy existen; falta custodia y handoff nuevos                               |
+| DVC-FLOW-039 | VPROC-0028::ASIS-08 | recibir cantidades parciales o completas                   | TABLET_RECEPTOR; KIOSK_LIMITADO  | STATIC_PARTIAL     | batch shell existe; selección inicial y receipts requieren convergencia                   |
+| DVC-FLOW-040 | VPROC-0028::ASIS-09 | registrar diferencia, rechazo, retorno y cierre            | TABLET_RECEPTOR; KIOSK_LIMITADO  | BLOCKED_NO_SURFACE | sin excepción nueva ejecutable ni cierre correlacionado                                   |
+
+##### 8.2. Escenarios transversales
+
+| Escenario   | Tema                      | Oráculo                                                                     |
+| ----------- | ------------------------- | --------------------------------------------------------------------------- |
+| DVC-XCUT-01 | propósito fijo de quiosco | ruta no concede permiso ni permite salir a navegación global                |
+| DVC-XCUT-02 | firma de actor compartido | cada mutación queda atribuida al actor vigente y no al dispositivo          |
+| DVC-XCUT-03 | inactividad y limpieza    | expira sesión, limpia datos y vuelve a pantalla segura                      |
+| DVC-XCUT-04 | revocación y territorio   | revocación o cambio de sede invalida la acción no confirmada                |
+| DVC-XCUT-05 | portrait-landscape        | rotar no duplica, pierde ni confirma datos                                  |
+| DVC-XCUT-06 | teclado virtual           | campo, error, resumen y acción permanecen visibles                          |
+| DVC-XCUT-07 | objetivos táctiles        | acciones no se solapan y la destructiva queda separada                      |
+| DVC-XCUT-08 | cámara denegada           | aparece fallback manual sin declarar identidad resuelta                     |
+| DVC-XCUT-09 | wedge repetido            | debounce y deduplicación evitan doble propuesta                             |
+| DVC-XCUT-10 | borrador offline          | permanece no verificado y sin efecto empresarial                            |
+| DVC-XCUT-11 | reconexión                | revalida actor, contexto, permisos, versiones e identidades                 |
+| DVC-XCUT-12 | background y resume       | snapshot stale se invalida antes de mutar                                   |
+| DVC-XCUT-13 | resultado desconocido     | reconcilia intención y receipt antes de reintentar                          |
+| DVC-XCUT-14 | privacidad de pantalla    | no persisten PIN, costo, actor previo ni evidencia sensible                 |
+| DVC-XCUT-15 | accesibilidad y zoom      | foco, lectura, contraste y 200% no ocultan acción ni estado                 |
+| DVC-XCUT-16 | carga y capacidad         | fixtures pequeño, medio y grande se miden sin inventar presupuesto cumplido |
+
+Cada escenario se ejecutará con una identidad de fixture, un actor, un
+territorio, una intención y un expected version controlados. Los escenarios
+negativos son obligatorios; no se omitirán por ausencia de superficie.
+
+#### 9. `NEXO-TABLET-INTERACTION-CONTRACT-001`
+
+La tablet es una estación portátil de una persona a la vez. Deberá:
+
+1. conservar una tarea primaria por pantalla;
+2. permitir portrait y landscape sin cambiar el significado de la etapa;
+3. mantener visible contexto, identidad, cantidad, UOM, error y consecuencia;
+4. no depender de hover;
+5. soportar touch, teclado virtual, teclado físico y captura contextual;
+6. congelar la revisión antes de una mutación;
+7. invalidar el review al cambiar actor, territorio, versión o contexto;
+8. mostrar receipt verificable antes de limpiar el trabajo;
+9. preservar solo borradores permitidos y no concluyentes;
+10. limpiar datos sensibles al cerrar, expirar o cambiar de actor.
+
+#### 10. `NEXO-KIOSK-PURPOSE-SESSION-CONTRACT-001`
+
+Un quiosco no es una sesión privilegiada ni una versión reducida de toda NEXO.
+Se define por:
+
+```text
+DEVICE_ID + PURPOSE_ID + SITE_ID + AREA_OR_LOC_SCOPE + ALLOWED_TASKS + SESSION_POLICY
+```
+
+Reglas:
+
+- `kiosk=1`, slug, URL, cookie o pantalla completa no conceden autorización;
+- el propósito se resuelve en servidor y se muestra de forma persistente;
+- la navegación global, configuración, costos, ajustes, decisiones y writers no
+  autorizados quedan fuera de la proyección;
+- toda mutación compartida exige atribución del actor vigente;
+- la inactividad limpia selección, PIN, búsqueda, drafts sensibles y receipts;
+- el siguiente actor no hereda contexto personal ni una revisión previa;
+- salir del propósito exige una transición autorizada, no un enlace oculto;
+- revocación, expiración o cambio territorial bloquean la acción no confirmada.
+
+#### 11. `NEXO-DEVICE-SHARED-ACTOR-SIGNATURE-CONTRACT-001`
+
+La firma puntual de actor será un comprobante de atribución, no una sesión
+reutilizable indefinidamente. Tendrá `signature_id`, actor, turno cuando
+aplique, dispositivo, propósito, acción, target, tiempo, TTL, método y
+resultado. La firma:
+
+- se valida en servidor;
+- no se deriva del trabajador seleccionado como destino;
+- se adjunta al target autoritativo y al receipt;
+- expira al cambiar acción, target, actor, dispositivo o contexto;
+- nunca se persiste en query string, localStorage, logs de interfaz o autofill;
+- no sustituye permiso, territorio, relación, segregación ni idempotencia.
+
+El helper actual de firma compartida queda como adapter candidato, pero la
+acción actual de retiro de quiosco no lo consume. La convergencia es obligatoria
+antes de declarar el retiro apto para terminal compartida.
+
+#### 12. `NEXO-DEVICE-RESPONSIVE-ORIENTATION-CONTRACT-001`
+
+La proyección deberá responder a capacidades y viewport efectivos. Debe
+preservar:
+
+- lectura sin zoom forzado ni scroll horizontal para la tarea primaria;
+- safe areas, barras del navegador y dock inferior;
+- foco visible y reposicionamiento ante teclado virtual;
+- una sola acción primaria sticky cuando sea necesaria;
+- orden semántico igual al visual;
+- tablas convertidas a tarjetas o filas scrollables sin perder encabezado;
+- rotación sin reenvío, reset oculto o duplicación;
+- densidad progresiva: resumen primero, detalle expandible después.
+
+Cambiar breakpoint no podrá ocultar un writer peligroso dejando la ruta o la
+acción accesible.
+
+#### 13. `NEXO-DEVICE-TOUCH-FOCUS-ACCESSIBILITY-CONTRACT-001`
+
+Los objetivos interactivos primarios tendrán al menos 44 por 44 CSS px o una
+separación equivalente demostrable. Además:
+
+- la acción destructiva queda separada de la primaria y exige review;
+- foco, label, error y descripción se asocian programáticamente;
+- no se usa color, vibración, sonido, icono o posición como única señal;
+- zoom de 200 por ciento conserva contenido y acción;
+- tab, shift-tab, enter y escape tienen comportamiento predecible;
+- el lector de pantalla recibe estado, progreso y receipt sin live regions
+  repetitivas;
+- animación no bloquea y respeta reducción de movimiento;
+- el teclado virtual no tapa el control enfocado ni la recuperación.
+
+#### 14. `NEXO-DEVICE-SCANNER-CAMERA-CONTRACT-001`
+
+La cámara, el wedge y la captura manual consumen el contrato de `NEXO-UX-020`.
+La prueba deberá demostrar:
+
+1. permiso concedido, denegado, retirado y no disponible;
+2. proposal, ambigüedad, no match, ineligible y duplicate suppressed;
+3. retorno estable al host autorizado;
+4. cero efecto por captura o resolución;
+5. debounce por ráfaga y repetición deliberada separada;
+6. fallback manual equivalente;
+7. no retención de frame, video o audio por defecto;
+8. revalidación tras background, rotación o reconexión.
+
+El redirect actual de `/scanner` no satisface este contrato.
+
+#### 15. `NEXO-DEVICE-CONNECTIVITY-RESILIENCE-CONTRACT-001`
+
+Toda acción declara una política: `ONLINE_REQUIRED`, `DRAFT_OFFLINE_ALLOWED` o
+`READ_CACHED_NON_AUTHORITATIVE`. Offline nunca implica permiso, identidad,
+stock, decisión, posting o receipt.
+
+Al reconectar se revalidan actor, dispositivo, propósito, territorio, work
+item, identidades, versiones, disponibilidad e intención. Un timeout después
+del envío entra en `RESULT_UNKNOWN`; solo una consulta por idempotency key o
+correlation id permite decidir si reintentar.
+
+#### 16. `NEXO-DEVICE-LIFECYCLE-RESUME-CONTRACT-001`
+
+Se prueban boot, lock, unlock, background, resume, refresh, back-forward cache,
+rotación, cierre de pestaña, crash y reapertura. El resume no reutiliza un
+review congelado sin comparar versiones. Un receipt ya emitido puede
+recuperarse; una pantalla de éxito local no lo sustituye.
+
+#### 17. `NEXO-DEVICE-DATA-MINIMIZATION-PRIVACY-CONTRACT-001`
+
+La respuesta se minimiza en servidor por propósito, etapa, actor y territorio.
+En dispositivos compartidos quedan prohibidos:
+
+- PIN, token, actor previo o evidencia sensible persistidos;
+- costo, margen, expected de conteo o causalidad fuera de función;
+- historial del navegador con payloads o identificadores sensibles;
+- autofill en firma, cantidades o evidencias;
+- logs con códigos crudos, notas privadas o fotografías completas;
+- receipt visible después del reset de inactividad.
+
+#### 18. `NEXO-DEVICE-PERFORMANCE-CAPACITY-CONTRACT-001`
+
+Se definen fixtures versionados `SMALL`, `MEDIUM` y `LARGE`, con conteo de
+productos, líneas, posiciones, imágenes y eventos documentado. Se medirán:
+
+- tiempo a contenido útil;
+- tiempo a interacción;
+- latencia de búsqueda y filtro;
+- estabilidad de layout;
+- memoria y reinicios;
+- tamaño de payload;
+- duración de captura y submit;
+- degradación bajo alta latencia.
+
+No se fijan umbrales cumplidos sin medición. Los límites actuales de render y
+paginación son evidencia de implementación, no capacidad certificada.
+
+#### 19. `NEXO-DEVICE-REVIEW-RECEIPT-CONTRACT-001`
+
+Antes de mutar se muestran identidad, contexto, cantidad, UOM, ubicación,
+condición, evidencia, consecuencia, actor y versión decisivos. Durante envío:
+
+- un solo intent y un solo botón activo;
+- abortar UI no cancela un efecto ya aceptado;
+- back, refresh o rotate no generan otra intención;
+- parcialidad y errores por línea permanecen explícitos;
+- receipt contiene resultado real, correlación, versión, actor y siguiente
+  responsable;
+- limpiar pantalla ocurre después de preservar el receipt recuperable.
+
+#### 20. `NEXO-DEVICE-EXCEPTION-CONTINUITY-CONTRACT-001`
+
+Los estados de `NEXO-UX-022` conservan el mismo significado en tablet y
+quiosco. Reportar, contener, reclamar, decidir, instruir, ejecutar, postear,
+verificar y cerrar continúan separados. El quiosco puede reportar u observar
+cuando su propósito lo permita; no puede decidir, ajustar, liberar, destruir o
+cerrar por reducción de interfaz.
+
+#### 21. `NEXO-DEVICE-SOURCE-ROUTE-DISPOSITION-001`
+
+| ID         | Superficie actual                        | Disposición                  | Decisión                                                                           |
+| ---------- | ---------------------------------------- | ---------------------------- | ---------------------------------------------------------------------------------- |
+| DVC-SRC-01 | /kiosk/[slug]                            | CONSERVAR_COMO_ENTRADA       | resolver propósito por configuración versionada; no por slug como autoridad        |
+| DVC-SRC-02 | /inventory/locations/[id]/board?kiosk=1  | CONVERGER                    | usar proyección de quiosco, contexto fijo y salida controlada                      |
+| DVC-SRC-03 | KioskBoardStockView                      | REFACTORIZAR                 | conservar búsqueda y modos; retirar writers administrativos del modo compartido    |
+| DVC-SRC-04 | /inventory/locations/[id]/kiosk-withdraw | CONSERVAR_RESTRINGIDA        | una tarea, un origen y un retorno seguros                                          |
+| DVC-SRC-05 | KioskWithdrawForm                        | REFACTORIZAR                 | añadir revisión, firma, expiración, receipt y recuperación inequívocos             |
+| DVC-SRC-06 | submitKioskWithdraw                      | ENDURECER_SERVIDOR           | permiso atómico, firma compartida, idempotencia y receipt autoritativo             |
+| DVC-SRC-07 | shared-device-signature                  | CONSERVAR_ADAPTER            | integrar en toda mutación compartida; no usar PIN como sesión permanente           |
+| DVC-SRC-08 | /scanner                                 | REEMPLAZAR_REDIRECCION       | implementar utilidad contextual; nunca proceso autónomo                            |
+| DVC-SRC-09 | /l/[code]                                | CONVERGER                    | deep link no confiable hacia resolutor contextual                                  |
+| DVC-SRC-10 | /inventory/locations/open                | CONVERGER                    | resolver LOC sin conceder acción, territorio ni estado final                       |
+| DVC-SRC-11 | count-initial-form                       | REFACTORIZAR                 | preservar conteo ciego, foco, entradas múltiples y resume seguro                   |
+| DVC-SRC-12 | adjust-form                              | RESTRINGIR_TABLET_SUPERVISOR | prohibido en quiosco; retirar ejecución secuencial peligrosa en bloque             |
+| DVC-SRC-13 | GuidedFormShell                          | CONSERVAR_COMPARTIDA         | proyección por etapa y navegación resistente a viewport                            |
+| DVC-SRC-14 | RequiredFieldsGuardForm                  | CONSERVAR_COMPARTIDA         | errores vinculados a campo, resumen y foco recuperable                             |
+| DVC-SRC-15 | SearchableSingleSelect                   | CONSERVAR_FALLBACK           | búsqueda manual equivalente a escaneo; lista no debe filtrar territorio en cliente |
+| DVC-SRC-16 | prepare-workbench                        | REFACTORIZAR                 | picking, parcialidad, faltante, escaneo y receipt por etapa                        |
+| DVC-SRC-17 | conductor y transit                      | REFACTORIZAR_CAMPO           | modo móvil, custodia, handoff y offline no concluyente                             |
+| DVC-SRC-18 | receive-batch-shell                      | REFACTORIZAR                 | no seleccionar todo por defecto; observar antes de confirmar y separar excepciones |
+
+Diagnóstico estático del corte actual:
+
+- `/kiosk/[slug]` resuelve targets hardcoded y redirige a boards;
+- `kiosk=1` cambia proyección, pero no constituye identidad o permiso de dispositivo;
+- el board ofrece búsqueda, vistas y controles táctiles útiles;
+- el formulario de retiro bloquea doble submit local y valida cantidades;
+- existe un adapter de firma compartida, pero no está integrado en la acción
+  de retiro inspeccionada;
+- `/scanner` solo redirige a ubicaciones;
+- la recepción por lote selecciona inicialmente todo lo elegible;
+- no existe suite de pruebas de dispositivo en `package.json`.
+
+Por ello ninguna de las dieciocho superficies queda declarada validada en
+hardware.
+
+#### 22. `NEXO-DEVICE-INTERFACE-STATE-CONTRACT-001`
+
+| ID        | Estado                   | Salida visible                                      |
+| --------- | ------------------------ | --------------------------------------------------- |
+| DVC-UI-01 | BOOTING                  | carga del shell sin acciones habilitadas            |
+| DVC-UI-02 | AUTH_REQUIRED            | sesión requerida; retorno interno seguro            |
+| DVC-UI-03 | DEVICE_CONTEXT_RESOLVING | propósito y dispositivo aún no resueltos            |
+| DVC-UI-04 | DEVICE_REVOKED           | terminal revocada; cero mutaciones                  |
+| DVC-UI-05 | ACTOR_SIGNATURE_REQUIRED | firma puntual antes de acción compartida            |
+| DVC-UI-06 | ACTOR_SIGNATURE_INVALID  | PIN inválido sin revelar identidad                  |
+| DVC-UI-07 | PURPOSE_LOCKED           | quiosco limitado a tarea y contexto autorizados     |
+| DVC-UI-08 | LOADING                  | datos en carga; no mostrar cero como verdad         |
+| DVC-UI-09 | EMPTY                    | vacío real con siguiente acción segura              |
+| DVC-UI-10 | READY                    | una pregunta y acción primaria visibles             |
+| DVC-UI-11 | SEARCHING                | búsqueda activa con cancelación clara               |
+| DVC-UI-12 | CAPTURE_PROPOSAL         | escaneo propone identidad; no confirma              |
+| DVC-UI-13 | CAPTURE_AMBIGUOUS        | varias identidades; selección explícita             |
+| DVC-UI-14 | FIELD_INVALID            | error junto al campo y en resumen                   |
+| DVC-UI-15 | CONTEXT_INELIGIBLE       | objeto válido pero no elegible en contexto          |
+| DVC-UI-16 | REVIEW_REQUIRED          | snapshot decisivo congelado                         |
+| DVC-UI-17 | SUBMITTING               | envío único; acción bloqueada contra repetición     |
+| DVC-UI-18 | SERVER_PENDING           | petición aceptada sin receipt final todavía         |
+| DVC-UI-19 | SUCCESS_RECEIPT          | resultado real, correlación y siguiente responsable |
+| DVC-UI-20 | PARTIAL_RECEIPT          | parcialidad explícita y trabajo restante            |
+| DVC-UI-21 | BUSINESS_BLOCKED         | causa, dueño y recuperación autorizada              |
+| DVC-UI-22 | OFFLINE_UNVERIFIED       | borrador local sin permiso ni efecto inferidos      |
+| DVC-UI-23 | RECONNECTING             | sin mutar mientras revalida contexto                |
+| DVC-UI-24 | STALE_SNAPSHOT           | revisión invalidada por cambio de versión           |
+| DVC-UI-25 | CONFLICT                 | decisión autoritativa y recuperación sin overwrite  |
+| DVC-UI-26 | RESULT_UNKNOWN           | reconciliar antes de repetir                        |
+| DVC-UI-27 | DUPLICATE_SUPPRESSED     | entrada repetida vinculada sin doble efecto         |
+| DVC-UI-28 | CAMERA_DENIED            | permiso denegado y fallback manual                  |
+| DVC-UI-29 | INPUT_OCCLUDED           | teclado o viewport exige reposicionar contenido     |
+| DVC-UI-30 | INACTIVITY_RESET         | datos limpiados y retorno a inicio seguro           |
+
+#### 23. `NEXO-DEVICE-STATIC-READINESS-RESULT-001`
+
+El resultado del diagnóstico estático es:
+
+| Dimensión                                        | Resultado                                        |
+| ------------------------------------------------ | ------------------------------------------------ |
+| rutas de tablet y quiosco observables            | `IMPLEMENTADO_PARCIAL`                           |
+| proyección de board para quiosco                 | `IMPLEMENTADO_PARCIAL`                           |
+| retiro táctil con validación básica              | `IMPLEMENTADO_PARCIAL`                           |
+| firma compartida reutilizable                    | `ESPECIFICADO_EN_CÓDIGO`; integración incompleta |
+| scanner contextual                               | `BLOQUEADO`; redirect únicamente                 |
+| offline y result unknown canónicos               | `ESPECIFICADO`; no demostrados en superficies    |
+| excepción completa                               | `BLOQUEADO_NO_SURFACE`                           |
+| evidencia física por dispositivo                 | `PENDIENTE_DE_EVIDENCIA`                         |
+| validación con bodeguero, conductor y receptores | `FUERA_DE_ALCANCE`; `NEXO-UX-024`                |
+| métricas del piloto                              | `FUERA_DE_ALCANCE`; `NEXO-UX-025`                |
+
+#### 24. `NEXO-DEVICE-VALIDATION-MATRIX-001`
+
+| ID          | Categoría                | Comprobación                                                                                        | Evidencia requerida                                                              |
+| ----------- | ------------------------ | --------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- |
+| DVC-VAL-001 | CONTRACT                 | validar exactamente ocho perfiles lógicos y que ninguno se presente como inventario físico          | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-002 | CONTRACT                 | validar las diez condiciones de ejecución y sus transiciones                                        | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-003 | CONTRACT                 | validar seis modalidades de entrada equivalentes                                                    | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-004 | CONTRACT                 | validar cuarenta etapas únicas sin faltantes ni duplicados                                          | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-005 | CONTRACT                 | validar dieciséis escenarios transversales únicos                                                   | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-006 | CONTRACT                 | validar que STATIC_SUPPORTED no se confunda con VALIDADO                                            | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-007 | CONTRACT                 | validar que toda etapa declare tablet y quiosco aplicable, limitado, prohibido o no aplica          | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-008 | CONTRACT                 | validar que ninguna URL conceda permiso o propósito por sí sola                                     | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-009 | RESPONSIVE_ACCESSIBILITY | probar perfiles portrait y landscape sin scroll horizontal operativo                                | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-010 | RESPONSIVE_ACCESSIBILITY | probar safe areas y barras del navegador                                                            | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-011 | RESPONSIVE_ACCESSIBILITY | probar teclado virtual sin ocultar campo, error, revisión o acción                                  | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-012 | RESPONSIVE_ACCESSIBILITY | probar rotación durante captura sin duplicar ni perder datos confirmados                            | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-013 | RESPONSIVE_ACCESSIBILITY | probar zoom de 200 por ciento y reflow                                                              | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-014 | RESPONSIVE_ACCESSIBILITY | probar navegación completa por teclado y foco visible                                               | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-015 | RESPONSIVE_ACCESSIBILITY | probar objetivos táctiles, separación y orden de acciones                                           | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-016 | RESPONSIVE_ACCESSIBILITY | probar que color, audio o vibración nunca sean la única señal                                       | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-017 | INPUT_SCANNER            | probar touch, teclado virtual, teclado físico y puntero sobre el mismo contrato                     | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-018 | INPUT_SCANNER            | probar wedge con terminador, ráfaga y foco inesperado                                               | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-019 | INPUT_SCANNER            | probar lectura repetida y deduplicación                                                             | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-020 | INPUT_SCANNER            | probar cámara permitida, denegada, no disponible y suspendida                                       | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-021 | INPUT_SCANNER            | probar código válido pero no elegible                                                               | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-022 | INPUT_SCANNER            | probar ambigüedad y no encontrado sin selección automática                                          | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-023 | INPUT_SCANNER            | probar fallback manual sin pérdida de contexto                                                      | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-024 | INPUT_SCANNER            | probar que captura y proposal produzcan cero efecto empresarial                                     | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-025 | SESSION_SECURITY_PRIVACY | probar quiosco con propósito fijo y navegación fuera de alcance bloqueada                           | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-026 | SESSION_SECURITY_PRIVACY | probar firma de actor antes de cada mutación compartida                                             | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-027 | SESSION_SECURITY_PRIVACY | probar cambio de actor sin heredar selección, PIN ni permisos                                       | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-028 | SESSION_SECURITY_PRIVACY | probar expiración y revocación durante revisión                                                     | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-029 | SESSION_SECURITY_PRIVACY | probar territorio y relación en servidor                                                            | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-030 | SESSION_SECURITY_PRIVACY | probar limpieza de pantalla por inactividad                                                         | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-031 | SESSION_SECURITY_PRIVACY | probar que datos sensibles no persistan en historial, autofill o captura de pantalla funcional      | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-032 | SESSION_SECURITY_PRIVACY | probar que costos, causalidad y evidencia se proyecten solo a funciones autorizadas                 | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-033 | RESILIENCE_IDEMPOTENCY   | probar latencia alta sin doble submit                                                               | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-034 | RESILIENCE_IDEMPOTENCY   | probar caída antes del envío y después del envío                                                    | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-035 | RESILIENCE_IDEMPOTENCY   | probar borrador offline no concluyente                                                              | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-036 | RESILIENCE_IDEMPOTENCY   | probar reconexión con revalidación integral                                                         | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-037 | RESILIENCE_IDEMPOTENCY   | probar background y resume con snapshot stale                                                       | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-038 | RESILIENCE_IDEMPOTENCY   | probar conflicto de versión sin overwrite                                                           | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-039 | RESILIENCE_IDEMPOTENCY   | probar result unknown con reconciliación por intención                                              | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-040 | RESILIENCE_IDEMPOTENCY   | probar receipt, parcialidad y siguiente responsable                                                 | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-041 | FLOW_EVIDENCE_PILOT      | probar las diecisiete etapas STATIC_SUPPORTED en todos los perfiles aplicables                      | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-042 | FLOW_EVIDENCE_PILOT      | probar las trece etapas STATIC_PARTIAL como casos negativos y de handoff                            | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-043 | FLOW_EVIDENCE_PILOT      | probar las diez etapas BLOCKED_NO_SURFACE sin simular éxito                                         | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-044 | FLOW_EVIDENCE_PILOT      | probar conteo ciego sin expected antes del cierre                                                   | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-045 | FLOW_EVIDENCE_PILOT      | probar que ajuste y decisiones queden prohibidos en quiosco                                         | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-046 | FLOW_EVIDENCE_PILOT      | probar diferencias y excepciones sin autocierre ni auto-posting                                     | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-047 | FLOW_EVIDENCE_PILOT      | medir carga, interacción y memoria con fixtures pequeño, medio y grande                             | evidencia automatizada, inspección estática o ejecución física según corresponda |
+| DVC-VAL-048 | FLOW_EVIDENCE_PILOT      | capturar evidencia por caso, commit, dispositivo, navegador, actor, red, hora, resultado y defectos | evidencia automatizada, inspección estática o ejecución física según corresponda |
+
+#### 25. `NEXO-DEVICE-EVIDENCE-PACKAGE-CONTRACT-001`
+
+Cada ejecución física futura deberá registrar como mínimo:
+
+- `evidence_id`, scenario id y task version;
+- commit y feature gates;
+- device profile y dispositivo real anonimizado;
+- SO, navegador, viewport, DPR y orientación;
+- modalidades de entrada y periféricos;
+- actor funcional, propósito, territorio y sesión compartida;
+- contexto de red y timestamps monotónicos;
+- fixture, precondiciones y expected versions;
+- pasos, observaciones y resultado real;
+- screenshots o video solo cuando estén autorizados y redactados;
+- correlation ids, receipts y defect ids;
+- resultado `PASS`, `FAIL`, `BLOCKED` o `NOT_RUN`;
+- revisor y fecha.
+
+No se aceptará una captura aislada como evidencia de idempotencia, autorización,
+resultado servidor o continuidad física.
+
+#### 26. Requisitos creados
+
+Esta tarea crea `TREQ-NEXO-273` a `TREQ-NEXO-286`. El registro canónico `04A`
+contiene su definición completa. La tarea no modifica, difiere, descarta ni
+obsolete requisitos históricos.
+
+| ID            | Protección principal                                                         |
+| ------------- | ---------------------------------------------------------------------------- |
+| TREQ-NEXO-273 | frontera entre diagnóstico estático, ejecución física y validación operativa |
+| TREQ-NEXO-274 | cobertura exacta de cuarenta etapas y ocho perfiles lógicos                  |
+| TREQ-NEXO-275 | propósito fijo y navegación segura de quiosco                                |
+| TREQ-NEXO-276 | firma y cambio de actor en dispositivo compartido                            |
+| TREQ-NEXO-277 | equivalencia de modalidades, touch, foco y teclado                           |
+| TREQ-NEXO-278 | responsive, orientación, safe area y teclado virtual                         |
+| TREQ-NEXO-279 | cámara, wedge, fallback y cero efecto del scanner                            |
+| TREQ-NEXO-280 | latencia, offline, reconexión, resume y result unknown                       |
+| TREQ-NEXO-281 | minimización y limpieza de datos compartidos                                 |
+| TREQ-NEXO-282 | accesibilidad, zoom, señales y objetivos táctiles                            |
+| TREQ-NEXO-283 | performance y capacidad con fixtures medidos                                 |
+| TREQ-NEXO-284 | review, envío único, idempotencia y receipt                                  |
+| TREQ-NEXO-285 | convergencia de dieciocho superficies sin bypass                             |
+| TREQ-NEXO-286 | cuarenta y ocho comprobaciones y evidencia física trazable                   |
+
+#### 27. `NEXO-DEVICE-CONTINUITY-HANDOFF-001`
+
+La implementación posterior deberá:
+
+1. convertir los contratos de esta tarea en tipos, proyecciones y pruebas;
+2. resolver identidad y propósito del dispositivo en servidor;
+3. integrar firma compartida en cada mutación aplicable;
+4. converger scanner, deep links y búsqueda manual;
+5. corregir superficies parciales y mantener bloqueadas las inexistentes;
+6. ejecutar `DVC-VAL-001` a `DVC-VAL-048` con evidencia real;
+7. versionar cualquier cambio Supabase exclusivamente desde `vento-shell`;
+8. habilitar por feature gate, telemetría minimizada y rollback;
+9. conservar compatibilidad protegida sin usar rutas legacy como bypass;
+10. no declarar piloto aprobado hasta completar los handoffs siguientes.
+
+`NEXO-UX-024` recibirá los escenarios ejecutables y el paquete de evidencia
+para validarlos con bodeguero, conductor y receptores. `NEXO-UX-025` recibirá
+los mismos identificadores para definir y medir tiempo, error, recuperación y
+capacitación. Ninguna de esas tareas se inicia aquí.
+
+#### 28. Criterios de aceptación
+
+La tarea queda documentalmente completa porque:
+
+- materializa las cuarenta etapas heredadas sin faltantes ni duplicados;
+- decide aplicabilidad de tablet y quiosco por etapa;
+- diferencia soporte estático, bloqueo y evidencia física pendiente;
+- define ocho perfiles, diez contextos y seis modalidades;
+- materializa cincuenta y seis escenarios y treinta estados;
+- decide dieciocho superficies actuales;
+- conserva autorización, territorio, UOM, conteo ciego, scanner, excepciones,
+  idempotencia y receipts aprobados;
+- crea catorce requisitos correlacionados;
+- no declara pruebas físicas, operativas o humanas no ejecutadas;
+- no realiza cambios físicos prohibidos.
+
+#### 29. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-022 — Diseñar manejo de diferencias y excepciones`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-023 — Probar flujos en tablets y kioscos`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores`
+
+`NEXO-UX-024` deberá usar los cincuenta y seis escenarios, los ocho perfiles y
+el paquete de evidencia definidos aquí para ejecutar validación con actores,
+sin reinterpretar como aprobadas las etapas bloqueadas ni las comprobaciones no
+ejecutadas.
+
+
 ### [ ] NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores
 ### [ ] NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo
 
