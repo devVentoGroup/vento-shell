@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **569** |
+| Tareas aprobadas | **570** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1025** |
+| Tareas no iniciadas | **1024** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **35.70% (569/1594)** |
+| Porcentaje de completamiento | **35.76% (570/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NEXO-UX-023 — Probar flujos en tablets y kioscos** |
-| Tarea actual | **NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores** |
+| Última tarea aprobada | **NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores** |
+| Tarea actual | **NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo** |
+| Siguiente tarea | **AUTH-UI-052 — Diseñar página inicial según actor** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 13: NEXO_FUNCTIONAL_UX** |
-| Progreso del bloque | **CARRIL NEXO: 23 de 25 aprobadas; NEXO-UX-024 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 24 de 25 aprobadas; NEXO-UX-025 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NEXO-UX-023` — Probar flujos en tablets y kioscos |
-| Tarea actual | `NEXO-UX-024` — Validar el prototipo con bodeguero, conductor y receptores — **NO INICIADA** |
-| Siguiente tarea | `NEXO-UX-025` — Definir métricas de tiempo, error y capacitación para el piloto operativo |
+| Última aprobada | `NEXO-UX-024` — Validar el prototipo con bodeguero, conductor y receptores |
+| Tarea actual | `NEXO-UX-025` — Definir métricas de tiempo, error y capacitación para el piloto operativo — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-052` — Diseñar página inicial según actor |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 23 DE 25 APROBADAS — ACTUAL NEXO-UX-024** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 24 DE 25 APROBADAS — ACTUAL NEXO-UX-025** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NEXO-UX-023 — Probar flujos en tablets y kioscos
-        ↓
-TAREA ACTUAL
 NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-052 — Diseñar página inicial según actor
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 23 de 25 tareas aprobadas
+CARRIL NEXO — 24 de 25 tareas aprobadas
 ```

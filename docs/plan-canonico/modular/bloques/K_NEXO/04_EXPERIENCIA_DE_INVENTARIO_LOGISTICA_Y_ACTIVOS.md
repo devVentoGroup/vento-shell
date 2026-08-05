@@ -21241,7 +21241,414 @@ sin reinterpretar como aprobadas las etapas bloqueadas ni las comprobaciones no
 ejecutadas.
 
 
-### [ ] NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores
+### ✅ NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-023 — Probar flujos en tablets y kioscos` — APROBADA
+**Tarea siguiente:** `NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo` — RESERVADA
+**Tipo de tarea:** documental; paquete materializado de validación operativa con actores, cobertura de escenarios, guiones, evidencia, defectos, gates y registro verificable de ejecuciones
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Fase:** exclusivamente documental; no autoriza código, migraciones, Supabase, datos productivos, despliegues ni sesiones físicas no coordinadas
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Convertir la suite de dispositivo de `NEXO-UX-023` en un paquete ejecutable y auditable de validación con tres funciones operativas reales: bodeguero, conductor y receptores. La tarea decide qué debe ejecutar cada actor, qué observar, qué evidencia conservar, cómo clasificar defectos y qué condiciones permiten o impiden declarar aceptación.
+
+La regla central es:
+
+```text
+CONTRATO CANÓNICO + PROTOTIPO IDENTIFICADO + ACTOR REAL + DISPOSITIVO REAL
++ ESCENARIO CONTROLADO + RESULTADO OBSERVABLE + EVIDENCIA REPRODUCIBLE
+→ VALIDACIÓN OPERATIVA
+```
+
+Una especificación, ruta, screenshot, demostración del diseñador o diagnóstico estático no equivale a validación con usuarios. En el corte documental de esta tarea no se ejecutaron sesiones con participantes; por tanto, los resultados humanos permanecen `NOT_RUN` y `PENDIENTE_DE_EVIDENCIA`.
+
+#### 2. Resultado material
+
+Se aprueban veinticuatro artefactos documentales:
+
+1. `NEXO-ACTOR-VALIDATION-SCOPE-CONTRACT-001` — fija el alcance, niveles de evidencia y prohibición de inventar sesiones.
+2. `NEXO-ACTOR-PARTICIPANT-PROFILE-CONTRACT-001` — materializa perfiles y criterios de selección de bodeguero, conductor y receptores.
+3. `NEXO-ACTOR-VALIDATION-ETHICS-PRIVACY-CONTRACT-001` — define consentimiento, minimización, anonimización y manejo de evidencia.
+4. `NEXO-ACTOR-SESSION-PLAN-001` — materializa sesiones, duración, orden, precondiciones y salidas.
+5. `NEXO-ACTOR-TASK-SCENARIO-MATRIX-001` — asigna las cuarenta etapas a actor, estado y criterio observable.
+6. `NEXO-ACTOR-CROSS-CUTTING-SCENARIO-MATRIX-001` — asigna los dieciséis escenarios transversales.
+7. `NEXO-ACTOR-BODEGUERO-SCRIPT-001` — guion completo para almacenamiento, entradas, retiros, conteos, excepciones y preparación.
+8. `NEXO-ACTOR-CONDUCTOR-SCRIPT-001` — guion completo para handoff, tránsito, custodia y entrega.
+9. `NEXO-ACTOR-RECEIVER-SCRIPT-001` — guion completo para recepción, diferencias, rechazo y retorno.
+10. `NEXO-ACTOR-OBSERVATION-RUBRIC-001` — define observaciones conductuales y severidad sin convertir opinión en hecho.
+11. `NEXO-ACTOR-COMPREHENSION-CHECK-001` — define preguntas de comprensión de estado, autoridad, cantidad, UOM y consecuencia.
+12. `NEXO-ACTOR-ERROR-RECOVERY-CONTRACT-001` — define errores inducidos, recuperación y no asistencia prematura.
+13. `NEXO-ACTOR-ACCESSIBILITY-INCLUSION-CONTRACT-001` — define ajustes razonables y evidencia accesible.
+14. `NEXO-ACTOR-DEVICE-NETWORK-MATRIX-001` — asigna perfiles, orientaciones, entradas y redes a sesiones.
+15. `NEXO-ACTOR-EVIDENCE-CAPTURE-CONTRACT-001` — define evidencia mínima por tarea y sesión.
+16. `NEXO-ACTOR-DEFECT-TRIAGE-CONTRACT-001` — clasifica hallazgos, severidad, reproducibilidad y propietario.
+17. `NEXO-ACTOR-ACCEPTANCE-GATE-001` — define gates por actor y prohíbe promedio compensatorio.
+18. `NEXO-ACTOR-VALIDATION-RESULT-REGISTER-001` — materializa el registro de resultados con estado NOT_RUN inicial verificable.
+19. `NEXO-ACTOR-TRACEABILITY-MATRIX-001` — vincula escenarios, DVC-VAL, TREQ, actor y evidencia.
+20. `NEXO-ACTOR-SESSION-READINESS-CHECK-001` — decide preparación de entorno, fixtures, permisos y contingencias.
+21. `NEXO-ACTOR-NO-PROTOTYPE-DISPOSITION-001` — decide tratamiento de las diez etapas sin superficie.
+22. `NEXO-ACTOR-RETEST-REGRESSION-CONTRACT-001` — define corrección, retest, regresión y cierre de defectos.
+23. `NEXO-ACTOR-VALIDATION-MATRIX-001` — materializa cuarenta y ocho comprobaciones de preparación y ejecución.
+24. `NEXO-ACTOR-CONTINUITY-HANDOFF-001` — entrega resultados y métricas crudas a NEXO-UX-025 sin iniciarla.
+
+Cobertura materializada:
+
+| Elemento                                   | Esperado | Materializado | Faltantes | Duplicados |
+| ------------------------------------------ | -------: | ------------: | --------: | ---------: |
+| Funciones participantes                    |        3 |             3 |         0 |          0 |
+| Etapas heredadas                           |       40 |            40 |         0 |          0 |
+| Escenarios transversales                   |       16 |            16 |         0 |          0 |
+| Escenarios totales                         |       56 |            56 |         0 |          0 |
+| Perfiles lógicos de dispositivo consumidos |        8 |             8 |         0 |          0 |
+| Comprobaciones                             |       48 |            48 |         0 |          0 |
+| Sesiones humanas ejecutadas                |        0 |             0 |         0 |          0 |
+| Resultados `PASS` o `FAIL` humanos         |        0 |             0 |         0 |          0 |
+| Requisitos nuevos                          |       14 |            14 |         0 |          0 |
+
+#### 3. Estados de evidencia y resultado
+
+| Estado                         | Uso                                                                                 |
+| ------------------------------ | ----------------------------------------------------------------------------------- |
+| `READY_FOR_ACTOR_SESSION`      | existe soporte suficiente para ejecutar el escenario con actor y dispositivo reales |
+| `VALIDATE_AS_LIMIT_OR_HANDOFF` | el prototipo es parcial; se valida comprensión del límite, bloqueo o transferencia  |
+| `BLOCKED_NO_PROTOTYPE`         | no existe superficie ejecutable; no se simula éxito                                 |
+| `NOT_RUN`                      | escenario materializado pero no ejecutado                                           |
+| `PASS`                         | resultado esperado observado y sustentado                                           |
+| `FAIL`                         | desviación reproducible respecto al oráculo                                         |
+| `BLOCKED`                      | ejecución impedida por precondición identificada                                    |
+| `INVALID_EVIDENCE`             | evidencia insuficiente, contradictoria o no atribuible                              |
+
+El estado inicial de las cincuenta y seis ejecuciones es `NOT_RUN`. La aprobación de este documento aprueba el paquete de validación, no resultados humanos inexistentes.
+
+#### 4. `NEXO-ACTOR-PARTICIPANT-PROFILE-CONTRACT-001`
+
+| Actor       | Cobertura mínima                                                                                 | Criterio de selección                                                                                   | Exclusiones                                           |
+| ----------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------- |
+| `BODEGUERO` | almacenamiento, entradas, ubicación, retiros, transferencias, conteo, excepción y preparación    | experiencia reciente en operación real; conoce UOM y ubicaciones; no participó como diseñador principal | no sustituir por administrador sin operación habitual |
+| `CONDUCTOR` | handoff, custodia, tránsito, incidentes y entrega                                                | ejecuta o supervisa rutas reales; comprende sellos, entrega y rechazo                                   | no sustituir por bodeguero que solo conoce despacho   |
+| `RECEPTOR`  | identificación de envío, recepción parcial, diferencia, rechazo, cuarentena y cierre de su etapa | recibe físicamente en sede o área; conoce condición y cantidades                                        | no sustituir por preparador de origen                 |
+
+Cada función requiere al menos dos participantes en el piloto posterior para evitar que una sola persona represente toda la variabilidad. El reclutamiento y agenda no se inventan en esta tarea.
+
+#### 5. `NEXO-ACTOR-SESSION-PLAN-001`
+
+| Sesión     | Actor       | Objetivo                                         | Duración objetivo | Escenarios | Salida                |
+| ---------- | ----------- | ------------------------------------------------ | ----------------: | ---------: | --------------------- |
+| ACT-SES-01 | BODEGUERO   | navegación, ubicación, entrada y captura         |            60 min |         12 | evidencia y defectos  |
+| ACT-SES-02 | BODEGUERO   | retiro, transferencia y conteo ciego             |            60 min |         12 | evidencia y defectos  |
+| ACT-SES-03 | BODEGUERO   | preparación, excepciones y recuperación          |            60 min |         12 | evidencia y defectos  |
+| ACT-SES-04 | CONDUCTOR   | handoff, tránsito, custodia y entrega            |            45 min |          8 | evidencia y defectos  |
+| ACT-SES-05 | RECEPTOR    | recepción, diferencias y rechazo                 |            60 min |          8 | evidencia y defectos  |
+| ACT-SES-06 | TRANSVERSAL | cambio de actor, red, accesibilidad y privacidad |            60 min |         16 | evidencia transversal |
+
+Las cifras son diseño de sesión, no tiempos medidos. `NEXO-UX-025` consumirá únicamente mediciones reales posteriores.
+
+#### 6. `NEXO-ACTOR-TASK-SCENARIO-MATRIX-001`
+
+Las cuarenta etapas heredadas reciben decisión explícita:
+
+| Etapa               | Actividad                                                  | Tablet             | Quiosco        | Preparación        | Prueba heredada                                                                           | Actor primario | Disposición de validación    | Bloqueo o condición                                                     |
+| ------------------- | ---------------------------------------------------------- | ------------------ | -------------- | ------------------ | ----------------------------------------------------------------------------------------- | -------------- | ---------------------------- | ----------------------------------------------------------------------- |
+| VPROC-0023::ASIS-01 | crear o editar LOC por sede y área                         | TABLET_ADMIN       | NO_APLICA      | STATIC_PARTIAL     | configuración separada; formularios actuales requieren prueba responsive y autorización   | BODEGUERO      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0023::ASIS-02 | crear zonas, niveles y posiciones internas                 | TABLET_ADMIN       | NO_APLICA      | STATIC_PARTIAL     | árbol y formularios existen; falta evidencia de orientación, teclado y volumen            | BODEGUERO      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0023::ASIS-03 | definir productos permitidos por ubicación                 | TABLET_ADMIN       | NO_APLICA      | BLOCKED_NO_SURFACE | estructura sin materialización operativa suficiente                                       | BODEGUERO      | BLOCKED_NO_PROTOTYPE         | sin superficie ejecutable; registrar bloqueo, no simular éxito          |
+| VPROC-0023::ASIS-04 | consultar stock por sede, LOC y posición                   | TABLET             | KIOSK          | STATIC_SUPPORTED   | stock, board y proyecciones existen; validar densidad, búsqueda y privacidad              | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0023::ASIS-05 | abrir ubicación mediante board, quiosco o código           | TABLET             | KIOSK          | STATIC_SUPPORTED   | deep link y shortcut existen; no equivalen a validación física                            | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0024::ASIS-01 | iniciar entrada excepcional                                | TABLET             | NO_APLICA      | STATIC_SUPPORTED   | superficie de entrada existe; conservar permiso de emergencia y revisión                  | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0024::ASIS-02 | iniciar entrada normal correlacionada                      | TABLET             | NO_APLICA      | STATIC_SUPPORTED   | superficie y correlación existen; validar retorno y datos mínimos                         | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0024::ASIS-03 | capturar producto, cantidad, presentación, unidad y costo  | TABLET             | NO_APLICA      | STATIC_SUPPORTED   | captura existe; costo queda restringido y teclado no debe ocultar consecuencia            | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0024::ASIS-04 | asignar LOC de destino                                     | TABLET             | NO_APLICA      | STATIC_SUPPORTED   | selector existe; validar búsqueda, escaneo y territorio                                   | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0024::ASIS-05 | asignar posición interna                                   | TABLET             | NO_APLICA      | STATIC_PARTIAL     | soporte separado; falta flujo integrado y evidencia con escáner                           | BODEGUERO      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0024::ASIS-06 | publicar, corregir o revertir entrada                      | TABLET_SUPERVISOR  | NO_APLICA      | STATIC_PARTIAL     | writers existen; falta experiencia unificada de versión, autoridad y receipt              | BODEGUERO      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0025::ASIS-01 | identificar sede, LOC, posición y producto de origen       | TABLET             | KIOSK          | STATIC_SUPPORTED   | board, stock y retiro exponen contexto; debe bloquear alcance inválido                    | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0025::ASIS-02 | escoger presentación o unidad de captura                   | TABLET             | KIOSK          | STATIC_SUPPORTED   | perfiles y tarjetas existen; validar selección inequívoca y fallback                      | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0025::ASIS-03 | verificar disponibilidad y alcance                         | TABLET             | KIOSK          | STATIC_PARTIAL     | validaciones servidor existen; falta resultado consistente y recuperación por dispositivo | BODEGUERO      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0025::ASIS-04 | consumir o retirar desde stock general                     | TABLET             | NO_APLICA      | STATIC_SUPPORTED   | formulario operativo existe; validar review, doble envío y receipt                        | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0025::ASIS-05 | consumir o retirar desde posición o quiosco                | TABLET             | KIOSK          | STATIC_SUPPORTED   | board y retiro existen; falta integrar firma compartida e inactividad                     | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0025::ASIS-06 | transferir entre LOC y conservar historial                 | TABLET             | NO_APLICA      | STATIC_SUPPORTED   | transferencia existe; validar origen, destino, UOM, conflicto y receipt                   | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0026::ASIS-01 | abrir sesión de conteo con sede y LOC                      | TABLET             | NO_APLICA      | STATIC_SUPPORTED   | superficie existe; validar scope congelado y recuperación                                 | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0026::ASIS-02 | congelar alcance y stock de apertura                       | TABLET             | NO_APLICA      | STATIC_PARTIAL     | campos existen; falta evidencia de concurrencia y resume                                  | BODEGUERO      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0026::ASIS-03 | registrar observación por producto                         | TABLET             | KIOSK_LIMITADO | STATIC_SUPPORTED   | captura ciega existe; no mostrar expected antes del cierre                                | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0026::ASIS-04 | capturar varias presentaciones o posiciones                | TABLET             | KIOSK_LIMITADO | STATIC_SUPPORTED   | entradas múltiples existen; validar teclado, scroll, foco y escaneo                       | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0026::ASIS-05 | calcular diferencia sin sobrescribir observación           | TABLET_SUPERVISOR  | NO_APLICA      | STATIC_SUPPORTED   | delta existe; solo visible en etapa supervisora                                           | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0026::ASIS-06 | aplicar reconciliación o ajuste autorizado                 | TABLET_SUPERVISOR  | PROHIBIDO      | STATIC_PARTIAL     | ajuste existe; no debe exponerse en quiosco ni ejecutarse desde conteo                    | BODEGUERO      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0026::ASIS-07 | cerrar sesión y conservar historial                        | TABLET_SUPERVISOR  | NO_APLICA      | STATIC_PARTIAL     | cierre existe; falta receipt separado de cualquier ajuste                                 | BODEGUERO      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0027::ASIS-01 | detectar alerta, daño, pérdida, merma o vencimiento        | TABLET             | KIOSK          | BLOCKED_NO_SURFACE | sin superficie dedicada de reporte y caso                                                 | BODEGUERO      | BLOCKED_NO_PROTOTYPE         | sin superficie ejecutable; registrar bloqueo, no simular éxito          |
+| VPROC-0027::ASIS-02 | identificar producto, existencia, lote, LOC y condición    | TABLET             | KIOSK_LIMITADO | STATIC_PARTIAL     | campos parciales existen; falta captura completa y caso estable                           | BODEGUERO      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0027::ASIS-03 | bloquear o poner en cuarentena                             | TABLET_AUTORIZADA  | PROHIBIDO      | BLOCKED_NO_SURFACE | contrato aprobado sin writer ni superficie actuales                                       | BODEGUERO      | BLOCKED_NO_PROTOTYPE         | sin superficie ejecutable; registrar bloqueo, no simular éxito          |
+| VPROC-0027::ASIS-04 | evaluar condición, temperatura y aptitud                   | TABLET_AUTORIZADA  | NO_APLICA      | BLOCKED_NO_SURFACE | sin expediente y evidencia ejecutables                                                    | BODEGUERO      | BLOCKED_NO_PROTOTYPE         | sin superficie ejecutable; registrar bloqueo, no simular éxito          |
+| VPROC-0027::ASIS-05 | decidir liberación, merma, pérdida, rechazo o disposición  | TABLET_DECISOR     | PROHIBIDO      | BLOCKED_NO_SURFACE | sin policy resolver ni decision receipt ejecutables                                       | BODEGUERO      | BLOCKED_NO_PROTOTYPE         | sin superficie ejecutable; registrar bloqueo, no simular éxito          |
+| VPROC-0027::ASIS-06 | ejecutar movimiento físico y efecto de stock               | TABLET_EJECUTOR    | PROHIBIDO      | BLOCKED_NO_SURFACE | sin instrucción firmada y writer dedicado                                                 | BODEGUERO      | BLOCKED_NO_PROTOTYPE         | sin superficie ejecutable; registrar bloqueo, no simular éxito          |
+| VPROC-0027::ASIS-07 | conservar evidencia y cerrar caso                          | TABLET_VERIFICADOR | NO_APLICA      | BLOCKED_NO_SURFACE | sin caso, verificación ni cierre desplegados                                              | BODEGUERO      | BLOCKED_NO_PROTOTYPE         | sin superficie ejecutable; registrar bloqueo, no simular éxito          |
+| VPROC-0028::ASIS-01 | crear solicitud por sede, área, producto, cantidad y fecha | TABLET             | NO_APLICA      | STATIC_SUPPORTED   | solicitud existe; validar captura guiada y borrador                                       | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0028::ASIS-02 | aplicar ruta, elegibilidad y política                      | TABLET_ADMIN       | NO_APLICA      | STATIC_PARTIAL     | settings existen; resultado operativo debe llegar ya resuelto                             | BODEGUERO      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0028::ASIS-03 | crear fuente o fulfillment por línea                       | TABLET_BODEGA      | NO_APLICA      | STATIC_PARTIAL     | filas y estados existen; falta recuperación uniforme de bloqueos                          | BODEGUERO      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0028::ASIS-04 | escoger LOC, posición y cantidad real de picking           | TABLET_BODEGA      | KIOSK_LIMITADO | BLOCKED_NO_SURFACE | estructura sin picks observados ni flujo ejecutable completo                              | BODEGUERO      | BLOCKED_NO_PROTOTYPE         | sin superficie ejecutable; registrar bloqueo, no simular éxito          |
+| VPROC-0028::ASIS-05 | preparar y declarar listo o faltante                       | TABLET_BODEGA      | NO_APLICA      | STATIC_SUPPORTED   | workbench existe; validar densidad, escaneo, parcialidad y receipt                        | BODEGUERO      | READY_FOR_ACTOR_SESSION      | requiere sesión real, dispositivo identificado y evidencia reproducible |
+| VPROC-0028::ASIS-06 | cargar, sellar y despachar envío físico                    | TABLET_BODEGA      | KIOSK_LIMITADO | BLOCKED_NO_SURFACE | sin dispatch run y shipment ejecutables observados                                        | CONDUCTOR      | BLOCKED_NO_PROTOTYPE         | sin superficie ejecutable; registrar bloqueo, no simular éxito          |
+| VPROC-0028::ASIS-07 | transportar y confirmar tránsito                           | TABLET_CONDUCTOR   | KIOSK_LIMITADO | STATIC_PARTIAL     | superficies legacy existen; falta custodia y handoff nuevos                               | CONDUCTOR      | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0028::ASIS-08 | recibir cantidades parciales o completas                   | TABLET_RECEPTOR    | KIOSK_LIMITADO | STATIC_PARTIAL     | batch shell existe; selección inicial y receipts requieren convergencia                   | RECEPTOR       | VALIDATE_AS_LIMIT_OR_HANDOFF | validar comprensión del límite; no aceptar como flujo completo          |
+| VPROC-0028::ASIS-09 | registrar diferencia, rechazo, retorno y cierre            | TABLET_RECEPTOR    | KIOSK_LIMITADO | BLOCKED_NO_SURFACE | sin excepción nueva ejecutable ni cierre correlacionado                                   | RECEPTOR       | BLOCKED_NO_PROTOTYPE         | sin superficie ejecutable; registrar bloqueo, no simular éxito          |
+
+Reconciliación:
+
+```text
+EXPECTED_STAGE_IDS = 40
+MATERIALIZED_STAGE_IDS = 40
+UNIQUE_STAGE_IDS = 40
+MISSING_STAGE_IDS = 0
+DUPLICATE_STAGE_IDS = 0
+```
+
+#### 7. `NEXO-ACTOR-CROSS-CUTTING-SCENARIO-MATRIX-001`
+
+| Escenario   | Prueba                    | Oráculo                                                                     | Actor principal | Estado inicial |
+| ----------- | ------------------------- | --------------------------------------------------------------------------- | --------------- | -------------- |
+| DVC-XCUT-01 | propósito fijo de quiosco | ruta no concede permiso ni permite salir a navegación global                | BODEGUERO       | NOT_RUN        |
+| DVC-XCUT-02 | firma de actor compartido | cada mutación queda atribuida al actor vigente y no al dispositivo          | BODEGUERO       | NOT_RUN        |
+| DVC-XCUT-03 | inactividad y limpieza    | expira sesión, limpia datos y vuelve a pantalla segura                      | BODEGUERO       | NOT_RUN        |
+| DVC-XCUT-04 | revocación y territorio   | revocación o cambio de sede invalida la acción no confirmada                | BODEGUERO       | NOT_RUN        |
+| DVC-XCUT-05 | portrait-landscape        | rotar no duplica, pierde ni confirma datos                                  | BODEGUERO       | NOT_RUN        |
+| DVC-XCUT-06 | teclado virtual           | campo, error, resumen y acción permanecen visibles                          | BODEGUERO       | NOT_RUN        |
+| DVC-XCUT-07 | objetivos táctiles        | acciones no se solapan y la destructiva queda separada                      | BODEGUERO       | NOT_RUN        |
+| DVC-XCUT-08 | cámara denegada           | aparece fallback manual sin declarar identidad resuelta                     | BODEGUERO       | NOT_RUN        |
+| DVC-XCUT-09 | wedge repetido            | debounce y deduplicación evitan doble propuesta                             | BODEGUERO       | NOT_RUN        |
+| DVC-XCUT-10 | borrador offline          | permanece no verificado y sin efecto empresarial                            | BODEGUERO       | NOT_RUN        |
+| DVC-XCUT-11 | reconexión                | revalida actor, contexto, permisos, versiones e identidades                 | CONDUCTOR       | NOT_RUN        |
+| DVC-XCUT-12 | background y resume       | snapshot stale se invalida antes de mutar                                   | CONDUCTOR       | NOT_RUN        |
+| DVC-XCUT-13 | resultado desconocido     | reconcilia intención y receipt antes de reintentar                          | CONDUCTOR       | NOT_RUN        |
+| DVC-XCUT-14 | privacidad de pantalla    | no persisten PIN, costo, actor previo ni evidencia sensible                 | RECEPTOR        | NOT_RUN        |
+| DVC-XCUT-15 | accesibilidad y zoom      | foco, lectura, contraste y 200% no ocultan acción ni estado                 | RECEPTOR        | NOT_RUN        |
+| DVC-XCUT-16 | carga y capacidad         | fixtures pequeño, medio y grande se miden sin inventar presupuesto cumplido | RECEPTOR        | NOT_RUN        |
+
+#### 8. Guion del bodeguero
+
+El moderador entregará objetivos, no instrucciones de interfaz. El bodeguero deberá:
+
+1. abrir una ubicación válida y explicar sede, LOC, posición y disponibilidad;
+2. registrar una entrada normal y una excepcional sin confundir autoridad;
+3. capturar producto, presentación, cantidad y UOM y explicar la conversión;
+4. asignar LOC y posición y detectar una opción territorial inválida;
+5. retirar desde stock general y desde quiosco sin doble envío;
+6. transferir entre LOC y verificar receipt e historial;
+7. abrir y ejecutar conteo ciego sin ver esperado antes del cierre;
+8. identificar una diferencia sin autoajustarla;
+9. preparar una remisión con cantidad parcial y faltante explícitos;
+10. reportar daño o vencimiento y reconocer cuándo el prototipo está bloqueado;
+11. recuperar una operación ante latencia, pérdida de red y resultado desconocido;
+12. cambiar de actor en terminal compartida sin heredar selección ni PIN.
+
+#### 9. Guion del conductor
+
+El conductor deberá:
+
+1. identificar envío, origen, destino, ruta y condición de custodia;
+2. aceptar handoff únicamente con evidencia y actor atribuible;
+3. confirmar tránsito sin convertirlo en recepción;
+4. reportar sello roto, demora, entrega fallida o daño sin autocerrar;
+5. entregar al receptor y conservar receipt de transferencia de custodia;
+6. enfrentar latencia y resultado desconocido sin repetir ciegamente;
+7. demostrar que no puede preparar, recibir ni resolver diferencias;
+8. cerrar sesión y limpiar información sensible.
+
+#### 10. Guion del receptor
+
+El receptor deberá:
+
+1. identificar envío y comprobar que corresponde a su sede y relación;
+2. registrar recepción completa, parcial y con sobrante;
+3. distinguir solicitado, preparado, enviado, recibido y aceptado;
+4. registrar producto incorrecto, daño, temperatura, rechazo y cuarentena;
+5. comprender que reportar diferencia no la resuelve;
+6. rechazar o solicitar retorno sin ejecutar automáticamente el transporte;
+7. confirmar su etapa con quantity, UOM, evidencia y receipt;
+8. recuperar sesión ante revocación, cambio de actor y reconexión.
+
+#### 11. `NEXO-ACTOR-OBSERVATION-RUBRIC-001`
+
+| Dimensión           | Evidencia observable                                               | Escala                                         |
+| ------------------- | ------------------------------------------------------------------ | ---------------------------------------------- |
+| comprensión         | explica estado, siguiente responsable y consecuencia               | 0 no comprende; 1 con ayuda; 2 autónomo        |
+| ejecución           | completa objetivo sin bypass ni acción peligrosa                   | 0 falla; 1 completa con fricción; 2 completa   |
+| prevención          | detecta territorio, UOM, cantidad, identidad o versión incorrectos | 0 no detecta; 1 detecta tarde; 2 detecta antes |
+| recuperación        | sale de error, red o conflicto sin duplicar                        | 0 insegura; 1 con ayuda; 2 autónoma            |
+| confianza calibrada | distingue éxito, pendiente, bloqueo y resultado desconocido        | 0 sobreconfianza; 1 parcial; 2 correcta        |
+
+La escala no constituye una métrica aprobada de piloto; produce observaciones crudas para `NEXO-UX-025`.
+
+#### 12. `NEXO-ACTOR-COMPREHENSION-CHECK-001`
+
+Después de cada flujo se preguntará, sin sugerir respuesta:
+
+- ¿qué acaba de ocurrir y qué no ocurrió todavía?
+- ¿quién puede continuar?
+- ¿qué cantidad y unidad quedaron registradas?
+- ¿qué evidencia o receipt confirma el resultado?
+- ¿qué haría si la pantalla queda en resultado desconocido?
+- ¿qué dato no debería ver otra persona en esta terminal?
+
+#### 13. Error y recuperación
+
+Cada actor enfrentará de forma controlada: código no elegible, identidad ambigua, stock insuficiente, UOM incompatible, territorio inválido, permiso revocado, conflicto de versión, latencia alta, desconexión antes y después del envío, session timeout y cambio de actor. El moderador no rescatará antes de observar la estrategia de recuperación, salvo riesgo de operación o datos.
+
+#### 14. Dispositivo y red
+
+| Actor     | Perfiles mínimos                   | Orientación          | Entradas                                            | Red                                  |
+| --------- | ---------------------------------- | -------------------- | --------------------------------------------------- | ------------------------------------ |
+| BODEGUERO | DVC-TAB-01, DVC-TAB-02, DVC-KSK-03 | portrait y landscape | touch, teclado virtual, wedge, cámara cuando exista | estable, alta latencia, intermitente |
+| CONDUCTOR | DVC-TAB-01, DVC-TAB-04             | portrait             | touch, cámara, fallback manual                      | estable, intermitente, reconexión    |
+| RECEPTOR  | DVC-TAB-02, DVC-KSK-01             | portrait y landscape | touch, teclado virtual, wedge                       | estable, resultado desconocido       |
+
+No se afirma disponibilidad física de esos equipos. Antes de ejecutar deberá registrarse fabricante/modelo anonimizado, SO, navegador, viewport, DPR, periféricos y red.
+
+#### 15. Evidencia
+
+Cada ejecución conservará `session_id`, participante anonimizado, función, scenario id, task version, commit, feature gates, perfil y dispositivo real, SO, navegador, viewport, orientación, modalidad, red, fixture, precondiciones, pasos observados, timestamps, ayudas, resultado, correlation ids, receipts, defect ids y revisor. Video, audio o imágenes requieren consentimiento y redacción; PIN, documentos, datos personales y secretos no se graban.
+
+#### 16. Defectos y severidad
+
+| Severidad | Criterio                                                               | Gate                                       |
+| --------- | ---------------------------------------------------------------------- | ------------------------------------------ |
+| ACT-SEV-0 | riesgo de seguridad, autorización, integridad, custodia o doble efecto | bloquea piloto                             |
+| ACT-SEV-1 | tarea crítica no completada o estado engañoso sin recuperación segura  | bloquea actor y flujo                      |
+| ACT-SEV-2 | error recuperable con fricción significativa o ayuda frecuente         | requiere corrección o aceptación explícita |
+| ACT-SEV-3 | fricción menor, lenguaje o eficiencia sin riesgo de resultado          | no bloquea por sí sola                     |
+
+Un comentario de preferencia no es automáticamente defecto. Debe vincularse a escenario, oráculo, observación, frecuencia, impacto y evidencia.
+
+#### 17. Gates de aceptación
+
+No se permite promediar actores para compensar fallos. Cada gate se evalúa por función:
+
+1. cero `ACT-SEV-0` abiertos;
+2. cero `ACT-SEV-1` sin mitigación y retest;
+3. 100% de escenarios críticos ejecutados o bloqueo aceptado con propietario;
+4. ninguna mutación sin actor, permiso, territorio, review e idempotencia;
+5. ningún `RESULT_UNKNOWN` presentado como éxito;
+6. conteo ciego preservado;
+7. diferencias sin autocierre ni auto-posting;
+8. evidencia completa y reproducible;
+9. receptores y conductor comprenden custodia y handoff;
+10. resultados crudos disponibles para métricas de `NEXO-UX-025`.
+
+#### 18. Registro materializado de resultados
+
+Las cincuenta y seis identidades quedan creadas con estado inicial `NOT_RUN`. No se crean filas ficticias de participante, tiempo, éxito, error o satisfacción. La ejecución posterior actualizará cada identidad de forma append-only con evidencia.
+
+| Grupo         | Total | READY | LIMIT_OR_HANDOFF | BLOCKED_NO_PROTOTYPE | NOT_RUN | PASS | FAIL |
+| ------------- | ----: | ----: | ---------------: | -------------------: | ------: | ---: | ---: |
+| Etapas        |    40 |    17 |               13 |                   10 |      40 |    0 |    0 |
+| Transversales |    16 |    16 |                0 |                    0 |      16 |    0 |    0 |
+| Total         |    56 |    33 |               13 |                   10 |      56 |    0 |    0 |
+
+#### 19. Trazabilidad
+
+Cada escenario se vincula con `DVC-VAL-001` a `DVC-VAL-048`, `TREQ-NEXO-273` a `TREQ-NEXO-286`, el actor primario, el oráculo del flujo y la evidencia. Un hallazgo nuevo deberá crear defecto con propietario y tarea; no quedará como nota narrativa sin destino.
+
+#### 20. Readiness previo a sesión
+
+Antes de reclutar o ejecutar se exige: prototipo identificable, commit y gates congelados; ambiente y fixtures no productivos; cuentas y permisos por actor; dispositivos inventariados; red controlable; consentimiento; moderador y observador; mecanismo de evidence capture; rollback de datos de prueba; canal de interrupción por riesgo. La ausencia de cualquiera produce `BLOCKED`, no ejecución informal.
+
+#### 21. Disposición de etapas sin prototipo
+
+Las diez etapas `BLOCKED_NO_SURFACE` se presentan al actor únicamente como storyboard o explicación de límite para comprobar modelo mental; no se registran como task success, no generan tiempos comparables y no pueden aprobarse como usabilidad. Su salida es implementación posterior del prototipo y retest bajo el mismo scenario id.
+
+#### 22. Retest y regresión
+
+Toda corrección conserva defect id, scenario id, versión anterior, versión corregida, actor equivalente, dispositivo y resultado. Un retest exitoso no borra el fallo original. Cambios que afecten autorización, UOM, cantidades, custodia, idempotencia o estado exigen regresión transversal además del escenario fallido.
+
+#### 23. `NEXO-ACTOR-VALIDATION-MATRIX-001`
+
+| ID          | Categoría     | Comprobación                                               | Estado documental      |
+| ----------- | ------------- | ---------------------------------------------------------- | ---------------------- |
+| ACT-VAL-001 | SCOPE         | confirmar tres funciones y separación de responsabilidades | SPECIFIED              |
+| ACT-VAL-002 | SCOPE         | confirmar 40 etapas y 16 escenarios transversales          | SPECIFIED              |
+| ACT-VAL-003 | SCOPE         | confirmar que NOT_RUN no se presenta como validado         | SPECIFIED              |
+| ACT-VAL-004 | SCOPE         | confirmar que etapas bloqueadas no simulan éxito           | SPECIFIED              |
+| ACT-VAL-005 | PARTICIPANTS  | verificar criterio de bodeguero                            | SPECIFIED              |
+| ACT-VAL-006 | PARTICIPANTS  | verificar criterio de conductor                            | SPECIFIED              |
+| ACT-VAL-007 | PARTICIPANTS  | verificar criterio de receptor                             | SPECIFIED              |
+| ACT-VAL-008 | PARTICIPANTS  | verificar consentimiento y anonimización                   | SPECIFIED              |
+| ACT-VAL-009 | SESSION       | congelar commit, gates y fixtures                          | SPECIFIED              |
+| ACT-VAL-010 | SESSION       | inventariar dispositivo y navegador                        | SPECIFIED              |
+| ACT-VAL-011 | SESSION       | registrar red y modalidad                                  | SPECIFIED              |
+| ACT-VAL-012 | SESSION       | confirmar rollback de datos de prueba                      | SPECIFIED              |
+| ACT-VAL-013 | BODEGUERO     | ejecutar almacenamiento y ubicación                        | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-014 | BODEGUERO     | ejecutar entrada y UOM                                     | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-015 | BODEGUERO     | ejecutar retiro y transferencia                            | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-016 | BODEGUERO     | ejecutar conteo ciego                                      | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-017 | BODEGUERO     | ejecutar preparación y faltante                            | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-018 | BODEGUERO     | ejecutar excepción sin autoefecto                          | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-019 | CONDUCTOR     | ejecutar handoff de custodia                               | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-020 | CONDUCTOR     | ejecutar tránsito y entrega                                | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-021 | CONDUCTOR     | ejecutar incidente y recuperación                          | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-022 | CONDUCTOR     | verificar prohibiciones de preparación y recepción         | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-023 | RECEIVER      | ejecutar recepción completa y parcial                      | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-024 | RECEIVER      | ejecutar sobrante, daño y rechazo                          | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-025 | RECEIVER      | ejecutar cuarentena y retorno como handoff                 | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-026 | RECEIVER      | verificar receipt y siguiente responsable                  | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-027 | SECURITY      | verificar actor puntual en mutación                        | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-028 | SECURITY      | verificar cambio de actor sin herencia                     | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-029 | SECURITY      | verificar revocación y territorio                          | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-030 | SECURITY      | verificar limpieza por inactividad                         | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-031 | SECURITY      | verificar privacidad de pantalla                           | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-032 | SECURITY      | verificar ausencia de bypass por URL                       | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-033 | RESILIENCE    | probar alta latencia                                       | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-034 | RESILIENCE    | probar caída antes del envío                               | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-035 | RESILIENCE    | probar caída después del envío                             | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-036 | RESILIENCE    | probar reconexión y revalidación                           | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-037 | RESILIENCE    | probar conflicto de versión                                | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-038 | RESILIENCE    | probar resultado desconocido                               | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-039 | ACCESSIBILITY | probar portrait, landscape y zoom 200%                     | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-040 | ACCESSIBILITY | probar teclado virtual y foco                              | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-041 | ACCESSIBILITY | probar touch targets y señales múltiples                   | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-042 | ACCESSIBILITY | probar fallback de cámara y wedge                          | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-043 | EVIDENCE      | verificar paquete de evidencia completo                    | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-044 | EVIDENCE      | clasificar defectos y propietarios                         | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-045 | EVIDENCE      | ejecutar retest sin borrar historia                        | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-046 | GATE          | evaluar gates por actor sin promedio                       | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-047 | GATE          | entregar datos crudos a UX025                              | SPECIFIED_NOT_EXECUTED |
+| ACT-VAL-048 | GATE          | mantener UX025 reservada                                   | SPECIFIED_NOT_EXECUTED |
+
+#### 24. Requisitos creados
+
+Esta tarea crea `TREQ-NEXO-287` a `TREQ-NEXO-300`. El registro `04A` contiene su definición completa. No modifica, difiere, descarta ni vuelve obsoletos requisitos históricos.
+
+| ID            | Protección principal                                           |
+| ------------- | -------------------------------------------------------------- |
+| TREQ-NEXO-287 | frontera entre paquete preparado y validación humana ejecutada |
+| TREQ-NEXO-288 | perfiles y selección de bodeguero, conductor y receptores      |
+| TREQ-NEXO-289 | cobertura exacta de 56 escenarios y disposición por etapa      |
+| TREQ-NEXO-290 | guiones de bodeguero y conteo ciego                            |
+| TREQ-NEXO-291 | guion de conductor, custodia y handoff                         |
+| TREQ-NEXO-292 | guion de receptor, diferencias y rechazo                       |
+| TREQ-NEXO-293 | observación, comprensión y ayuda registrada                    |
+| TREQ-NEXO-294 | dispositivos, redes, modalidades y readiness                   |
+| TREQ-NEXO-295 | privacidad, consentimiento y evidencia reproducible            |
+| TREQ-NEXO-296 | defectos, severidad, propietario y trazabilidad                |
+| TREQ-NEXO-297 | gates independientes por actor                                 |
+| TREQ-NEXO-298 | tratamiento de etapas sin prototipo                            |
+| TREQ-NEXO-299 | retest y regresión sin borrar historia                         |
+| TREQ-NEXO-300 | 48 comprobaciones y handoff a UX025                            |
+
+#### 25. `NEXO-ACTOR-CONTINUITY-HANDOFF-001`
+
+`NEXO-UX-025` recibirá únicamente resultados reales: timestamps, errores, reintentos, ayudas, abandonos, observaciones, defectos, severidad, actor, dispositivo, red y evidencia. Esta tarea no define umbrales de tiempo, error o capacitación y no inicia el piloto.
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-023 — Probar flujos en tablets y kioscos`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo`
+
+
 ### [ ] NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo
 
 ### [ ] NEXO-UX-026 — Diseñar ciclo de vida completo de LPN

@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **569** |
+| Aprobadas | **570** |
 | En propuesta | **0** |
-| No iniciadas | **1025** |
+| No iniciadas | **1024** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **35.70% (569/1594)** |
+| Porcentaje de completamiento | **35.76% (570/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NEXO-UX-023` — Probar flujos en tablets y kioscos | ✅ APROBADA |
-| Tarea actual | `NEXO-UX-024` — Validar el prototipo con bodeguero, conductor y receptores | ⬜ NO INICIADA |
-| Siguiente reservada | `NEXO-UX-025` — Definir métricas de tiempo, error y capacitación para el piloto operativo | ⬜ NO INICIADA |
+| Última aprobada | `NEXO-UX-024` — Validar el prototipo con bodeguero, conductor y receptores | ✅ APROBADA |
+| Tarea actual | `NEXO-UX-025` — Definir métricas de tiempo, error y capacitación para el piloto operativo | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-UI-052` — Diseñar página inicial según actor | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -979,7 +979,7 @@
 | ✅ APROBADA | `NEXO-UX-021` | Mostrar solo información necesaria según etapa | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-022` | Diseñar manejo de diferencias y excepciones | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-023` | Probar flujos en tablets y kioscos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
-| ⬜ NO INICIADA | `NEXO-UX-024` | Validar el prototipo con bodeguero, conductor y receptores | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
+| ✅ APROBADA | `NEXO-UX-024` | Validar el prototipo con bodeguero, conductor y receptores | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-025` | Definir métricas de tiempo, error y capacitación para el piloto operativo | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-026` | Diseñar ciclo de vida completo de LPN | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-027` | Diseñar empaque, desempaque y consulta de contenido | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
