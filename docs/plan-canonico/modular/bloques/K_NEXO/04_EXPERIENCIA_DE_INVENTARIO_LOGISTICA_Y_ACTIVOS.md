@@ -16640,7 +16640,916 @@ No queda pendiente narrativo sin tarea, paquete o condición de salida.
 `NEXO-UX-019` deberá consumir observaciones cerradas, expected snapshots, recuentos, investigaciones, evidencia y candidatos definidos en esta tarea; decidirá el efecto cuantitativo mediante autorización y posting separados, sin reescribir el conteo original.
 
 
-### [ ] NEXO-UX-019 — Diseñar flujo completo de ajustes
+### ✅ NEXO-UX-019 — Diseñar flujo completo de ajustes
+
+---
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-018 — Diseñar flujo completo de conteos` — APROBADA
+**Tarea siguiente:** `NEXO-UX-020 — Simplificar escáner y captura` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo de ajustes cuantitativos como decisión supervisora separada, con candidato, expediente, investigación, fuente, causa, evidencia, policy, autorización, cantidad, UOM, cutoff, posting idempotente, ledger, proyecciones, costo, lotes, corrección, reversa, compatibilidad y continuidad
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Proceso propietario:** `VPROC-0026 — Contar como observación, investigar diferencias y ajustar mediante decisión separada`
+**Permiso funcional exacto consumido:** `nexo.inventory.adjustments`; `nexo.inventory.counts`, `nexo.inventory.stock` y `nexo.inventory.movements` no sustituyen la autoridad de ajustar; esta tarea no crea claves de permiso nuevas
+**Artefactos producidos:** veinticuatro contratos, catálogos, matrices y handoffs enumerados en esta tarea
+**Decisiones consumidas:** `NEXO-INVENTORY-MOVEMENT-IMPLEMENTATION-HANDOFF-001`, `NEXO-INVENTORY-COUNT-IMPLEMENTATION-HANDOFF-001`, `NEXO-INVENTORY-COUNT-ADJUSTMENT-BOUNDARY-001`, `NEXO-INVENTORY-COUNT-DISCREPANCY-INVESTIGATION-HANDOFF-001`, proceso y actores canónicos, requisitos `TREQ-NEXO-*` vigentes y evidencia técnica actual de `vento-nexo` y `vento-shell`
+**Cambios físicos autorizados:** ninguno; no modifica código, componentes, permisos, datos, Supabase, migraciones, RLS, RPC, tipos, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar de principio a fin cómo una diferencia investigada se convierte, o no, en un ajuste de inventario autorizado y publicado, sin confundir observación, causa, decisión, movimiento, proyección o reparación técnica.
+
+La regla central es:
+
+```text
+CANDIDATO TRAZABLE
++ EXPEDIENTE E INVESTIGACION
++ BALANCE Y CUTOFF REPRODUCIBLES
++ CAUSA, EVIDENCIA Y POLICY VERSIONADA
++ AUTORIDAD INDEPENDIENTE
++ DECISION RECEIPT INMUTABLE
++ POSTING IDEMPOTENTE AL LEDGER
++ PROYECCIONES POR CONSUMIDORES
+→ AJUSTE CERRADO O RESOLUCION SIN EFECTO
+```
+
+Un ajuste no es un atajo para cuadrar una pantalla. Solo corrige un balance empresarial cuando la investigación demuestra que el ledger necesita un efecto firmado y autorizado. Si el ledger es correcto y una proyección difiere, se reconstruye la proyección sin crear movimiento.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban los siguientes artefactos:
+
+|    # | Artefacto                                                            | Resultado material                                                                                                   |
+| ---: | -------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
+|   1. | `NEXO-INVENTORY-ADJUSTMENT-FLOW-CONTRACT-001`                        | fija propósito, fronteras, entrada, decisión, posting, salida y lenguaje canónico del ajuste                         |
+|   2. | `NEXO-INVENTORY-ADJUSTMENT-SOURCE-DISPOSITION-001`                   | materializa diez fuentes y decide admitir, cerrar sin efecto, delegar, reconciliar o rechazar                        |
+|   3. | `NEXO-INVENTORY-ADJUSTMENT-WORK-QUEUE-CONTRACT-001`                  | define ocho colas de candidato, investigación, revisión, autorización, posting, proyección, reconciliación y reversa |
+|   4. | `NEXO-INVENTORY-ADJUSTMENT-STATE-MACHINE-001`                        | materializa veintidós estados de expediente, decisión, posting, proyección, cierre y compensación                    |
+|   5. | `NEXO-INVENTORY-ADJUSTMENT-STEP-CATALOG-001`                         | define veinticuatro pasos de principio a fin con entradas, salidas y límites                                         |
+|   6. | `NEXO-INVENTORY-ADJUSTMENT-AUTHORIZATION-SEGREGATION-CONTRACT-001`   | separa solicitante, contador, investigador, aprobador y publicador sistémico                                         |
+|   7. | `NEXO-INVENTORY-ADJUSTMENT-CASE-CANDIDATE-CONTRACT-001`              | define expediente, candidato, versiones, referencias causales, claim, plazos y cierre                                |
+|   8. | `NEXO-INVENTORY-ADJUSTMENT-INVESTIGATION-DECISION-CONTRACT-001`      | preserva investigación, causas, alternativas, resolución y decisión inmutable                                        |
+|   9. | `NEXO-INVENTORY-ADJUSTMENT-REASON-EVIDENCE-POLICY-CONTRACT-001`      | estructura razón, evidencia, política versionada, umbrales y autoridad                                               |
+|  10. | `NEXO-INVENTORY-ADJUSTMENT-SCOPE-SUBJECT-ELIGIBILITY-CONTRACT-001`   | resuelve producto, sede, LOC, posición, presentación, lote, condición y saldo elegible                               |
+|  11. | `NEXO-INVENTORY-ADJUSTMENT-QUANTITY-UOM-SIGN-CONTRACT-001`           | fija cantidad, UOM, signo, tolerancia, precisión y ecuaciones sin sobrescritura de saldo                             |
+|  12. | `NEXO-INVENTORY-ADJUSTMENT-BALANCE-CUTOFF-CONTRACT-001`              | reconstruye balance y ventana causal desde ledger, checkpoint y secuencia autoritativa                               |
+|  13. | `NEXO-INVENTORY-ADJUSTMENT-APPROVAL-RECEIPT-CONTRACT-001`            | define decisión aprobada, rechazo, expiración, conflicto de interés y receipt de autoridad                           |
+|  14. | `NEXO-INVENTORY-ADJUSTMENT-POSTING-IDEMPOTENCY-RECEIPT-CONTRACT-001` | define intención, fingerprint, resultado desconocido, grupo, legs, outbox y receipt                                  |
+|  15. | `NEXO-INVENTORY-ADJUSTMENT-LEDGER-PROJECTION-BOUNDARY-001`           | prohíbe writes directos, read-modify-write, clamps y reparación mediante movimiento ficticio                         |
+|  16. | `NEXO-INVENTORY-ADJUSTMENT-COST-VALUATION-CONTRACT-001`              | separa cantidad de valoración y gobierna costo de incrementos mediante política propietaria                          |
+|  17. | `NEXO-INVENTORY-ADJUSTMENT-BULK-PARTIALITY-CONTRACT-001`             | elimina bucles cliente y define lotes, cobertura, atomicidad, resultados parciales y reintentos                      |
+|  18. | `NEXO-INVENTORY-ADJUSTMENT-CORRECTION-REVERSAL-CONTRACT-001`         | prohíbe mutación destructiva y exige expedientes y grupos compensatorios                                             |
+|  19. | `NEXO-INVENTORY-ADJUSTMENT-ASSET-BOUNDARY-001`                       | mantiene activos y grupos patrimoniales fuera del ledger cuantitativo consumible                                     |
+|  20. | `NEXO-INVENTORY-ADJUSTMENT-NO-EFFECT-DELEGATION-BOUNDARY-001`        | cierra sin efecto o delega transferencias, pérdidas, condición, costo y proyecciones                                 |
+|  21. | `NEXO-INVENTORY-ADJUSTMENT-ROUTE-DISPOSITION-001`                    | decide catorce superficies actuales y su convergencia objetivo                                                       |
+|  22. | `NEXO-INVENTORY-ADJUSTMENT-INTERFACE-STATE-CONTRACT-001`             | materializa treinta estados de interfaz, acciones válidas, bloqueos y éxito verificable                              |
+|  23. | `NEXO-INVENTORY-ADJUSTMENT-VALIDATION-MATRIX-001`                    | define cuarenta y ocho comprobaciones de aceptación técnica, funcional y operativa                                   |
+|  24. | `NEXO-INVENTORY-ADJUSTMENT-IMPLEMENTATION-HANDOFF-001`               | entrega arquitectura de transición, writers, migraciones, pruebas, observabilidad y rollback                         |
+
+Cobertura materializada:
+
+| Elemento                         | Total esperado | Total materializado | Faltantes | Duplicados |
+| -------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Artefactos documentales          |             24 |                  24 |         0 |          0 |
+| Fuentes y disposiciones          |             10 |                  10 |         0 |          0 |
+| Colas de trabajo                 |              8 |                   8 |         0 |          0 |
+| Estados empresariales y técnicos |             22 |                  22 |         0 |          0 |
+| Pasos de flujo                   |             24 |                  24 |         0 |          0 |
+| Superficies actuales decididas   |             14 |                  14 |         0 |          0 |
+| Estados de interfaz              |             30 |                  30 |         0 |          0 |
+| Comprobaciones de aceptación     |             48 |                  48 |         0 |          0 |
+| Requisitos de prueba nuevos      |             14 |                  14 |         0 |          0 |
+
+No se crea un writer físico ni una autoridad nueva. Se materializa el contrato objetivo que deberá consumir el paquete de implementación correspondiente.
+
+---
+
+#### 3. Alcance, entradas y salidas
+
+Incluye:
+
+- candidatos originados por conteo cerrado, investigación, corrección causal o línea base autorizada;
+- expediente versionado, claim, plazos, causa, evidencia y decisión;
+- reconstrucción de balance desde ledger, checkpoint y secuencia;
+- cantidad firmada, UOM, precisión, tolerancia y alcance físico;
+- segregación entre solicitante, contador, investigador y aprobador;
+- intención, fingerprint, secuencia, group, legs, receipt y outbox;
+- proyecciones de sede, LOC, posición y valoración como consumidores;
+- lotes, parcialidad, resultado desconocido, corrección y reversa;
+- compatibilidad de las catorce superficies actuales;
+- handoff de implementación, pruebas, observabilidad y rollback.
+
+Excluye:
+
+- captura del conteo, que permanece en `NEXO-UX-018`;
+- escaneo y captura simplificada, reservados a `NEXO-UX-020`;
+- campos por etapa, reservados a `NEXO-UX-021`;
+- pérdida, merma, daño, vencimiento, cuarentena y disposición, reservados a `NEXO-UX-022`;
+- transferencias o reubicaciones ordinarias, gobernadas por `NEXO-UX-016`;
+- correcciones de costo sin efecto cuantitativo, pertenecientes al dominio propietario de valoración;
+- ajustes patrimoniales de activos, pertenecientes al subdominio de activos;
+- código, SQL, migraciones, datos, permisos o despliegues.
+
+Entrada mínima del expediente:
+
+```text
+adjustment_case_id
+case_version
+source_type
+source_owner
+source_id
+source_version
+source_receipt_refs[]
+count_session_id?
+count_round_refs[]
+investigation_refs[]
+site_id
+location_id?
+location_position_id?
+product_id
+uom_identity
+lot_or_presentation_refs[]
+reference_cutoff_sequence
+expected_at_reference
+observed_at_reference?
+candidate_delta
+reason_code
+evidence_refs[]
+policy_snapshot_id
+requester_actor_id
+investigator_actor_id
+approver_actor_id?
+claim_version
+```
+
+Salida cerrada:
+
+```text
+resolution_type
+decision_receipt_id?
+posting_intent_id?
+movement_group_id?
+posting_receipt_id?
+projection_receipt_ids[]
+compensating_group_refs[]
+closure_digest
+remaining_actions[]
+```
+
+---
+
+#### 4. Actores, autoridad y segregación
+
+| Actor o contexto                      | Autoridad en esta tarea                                     | Límite obligatorio                                                                   |
+| ------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| `SOLICITANTE_AUTORIZADO`              | Origina expediente con referencia causal y territorio.      | No aprueba ni publica su propia solicitud.                                           |
+| `BODEGA_Y_ABASTECIMIENTO`             | Aporta evidencia física, contexto y ejecución controlada.   | No convierte una observación en decisión.                                            |
+| `CONTADOR_ASIGNADO`                   | Produce la observación de origen cuando aplica.             | No investiga ni aprueba la diferencia propia.                                        |
+| `INVESTIGADOR_ASIGNADO`               | Reconstruye hechos, movimientos, causa y propuesta.         | No reescribe conteos ni publica ledger.                                              |
+| `RESPONSABLE_ANALITICO`               | Apoya balance, patrones y reconciliación.                   | No sustituye evidencia ni autoridad.                                                 |
+| `GERENCIA_O_SUPERVISION_DE_SEDE`      | Decide dentro de territorio y policy cuando es elegible.    | No puede haber participado como solicitante, contador o investigador del mismo caso. |
+| `AUTORIDAD_FINANCIERA_CUANDO_APLIQUE` | Valida valoración o umbral económico protegido.             | No obtiene control operativo global por revisar costo.                               |
+| `SISTEMA_NEXO`                        | Persiste expediente, policy snapshot, decisión e intención. | No inventa causa, evidencia, cantidad o aprobación.                                  |
+| `SISTEMA_LEDGER_NEXO`                 | Secuencia y publica group, legs, receipt y outbox.          | No admite writes libres ni notas como fuente.                                        |
+| `CONSUMIDOR_DE_PROYECCION`            | Aplica legs a stock, ubicación y costo una sola vez.        | No genera otro ajuste para reparar la vista.                                         |
+| `DISPOSITIVO_COMPARTIDO`              | Aporta estación y periféricos.                              | No es solicitante, investigador, aprobador ni publicador.                            |
+
+Roles base elegibles, sin concesión automática de acción:
+
+```text
+propietario
+gerente_general
+gerente
+supervisor
+contador
+```
+
+Roles operativos pueden solicitar o aportar evidencia bajo permiso, función, turno y territorio, pero no reciben aprobación por su nombre de rol.
+
+```text
+SOLICITAR ≠ CONTAR ≠ INVESTIGAR ≠ APROBAR ≠ PUBLICAR ≠ PROYECTAR
+```
+
+El publicador humano no inserta movimientos. La autoridad emite una decisión; el sistema ledger consume su receipt y ejecuta el posting exacto.
+
+---
+
+#### 5. `NEXO-INVENTORY-ADJUSTMENT-SOURCE-DISPOSITION-001`
+
+| ID               | Fuente                                 | Disparador                                                                         | Disposición                             | Límite                                                                                      |
+| ---------------- | -------------------------------------- | ---------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `ADJ-SOURCE-001` | `CLOSED_COUNT_CANDIDATE`               | Conteo cerrado con cutoff, expected, observed, rondas e investigación.             | `ADMITIR_CON_EXPEDIENTE`                | No usa quantity_counted como target mutable ni aplica desde la pantalla de conteo.          |
+| `ADJ-SOURCE-002` | `INVESTIGATED_OPERATIONAL_DISCREPANCY` | Caso operativo con diferencia confirmada y evidencia.                              | `ADMITIR_CON_EXPEDIENTE`                | La causa debe excluir traslado, retiro, recepción o disposición todavía no registrados.     |
+| `ADJ-SOURCE-003` | `LEDGER_OMISSION_OR_DUPLICATE`         | Hecho real omitido o duplicado en el ledger, con receipt o evidencia autoritativa. | `ADMITIR_COMPENSACION_CAUSAL`           | Referencia el hecho y no fabrica una nota sustituta.                                        |
+| `ADJ-SOURCE-004` | `ENTRY_OR_WITHDRAWAL_CORRECTION`       | Corrección posterior a entrada o retiro ya publicado.                              | `DELEGAR_A_CORRECCION_COMPENSATORIA`    | Consume el caso del proceso propietario y conserva el original.                             |
+| `ADJ-SOURCE-005` | `REMISSION_DIFFERENCE`                 | Faltante, sobrante, rechazo o daño de remisión.                                    | `DELEGAR_A_NEXO_UX_022`                 | No fuerza coincidencia entre despacho y recepción mediante ajuste genérico.                 |
+| `ADJ-SOURCE-006` | `LOSS_WASTE_DAMAGE_EXPIRY`             | Merma, pérdida, daño, vencimiento, cuarentena o disposición.                       | `DELEGAR_A_NEXO_UX_022`                 | La causa, responsabilidad y disposición preceden cualquier efecto cuantitativo.             |
+| `ADJ-SOURCE-007` | `LOCATION_OR_POSITION_MISMATCH`        | Existencia hallada en otro LOC o posición.                                         | `DELEGAR_A_TRANSFERENCIA_O_REUBICACION` | No cambia stock total ni usa ajuste para ocultar origen y destino.                          |
+| `ADJ-SOURCE-008` | `PROJECTION_DIVERGENCE`                | Ledger y stock proyectado difieren.                                                | `RECONSTRUIR_PROYECCION_SIN_MOVIMIENTO` | Un error de proyección no es un hecho de inventario.                                        |
+| `ADJ-SOURCE-009` | `MASTER_DATA_UOM_OR_COST_ERROR`        | Identidad, UOM, conversión o costo configurado incorrectamente.                    | `BLOQUEAR_Y_DELEGAR`                    | Primero corrige la fuente propietaria; no reinterpreta historia con un ajuste libre.        |
+| `ADJ-SOURCE-010` | `AUTHORIZED_BASELINE_OR_CUTOVER`       | Línea base o transición autorizada con alcance completo y evidencia.               | `ADMITIR_BAJO_POLITICA_EXCEPCIONAL`     | Exige digest, doble control, plan de rollback y no se convierte en acceso manual ordinario. |
+
+Reconciliación:
+
+```text
+EXPECTED_ADJUSTMENT_SOURCES = 10
+MATERIALIZED_ADJUSTMENT_SOURCES = 10
+MISSING_ADJUSTMENT_SOURCES = 0
+DUPLICATE_ADJUSTMENT_SOURCES = 0
+```
+
+---
+
+#### 6. `NEXO-INVENTORY-ADJUSTMENT-NO-EFFECT-DELEGATION-BOUNDARY-001`
+
+| Hallazgo                                       | Resultado correcto                            | Prohibición                                      | Destino                            |
+| ---------------------------------------------- | --------------------------------------------- | ------------------------------------------------ | ---------------------------------- |
+| Ledger correcto y proyección divergente        | rebuild o replay idempotente de consumer      | crear `adjustment` para cuadrar la vista         | ledger/proyección de `NEXO-UX-016` |
+| Existencia en otro LOC o posición              | transferencia o reubicación con legs pareados | restar y sumar como ajustes inconexos            | `NEXO-UX-016`                      |
+| Pérdida, merma, daño, vencimiento o cuarentena | caso, autoridad y disposición                 | ajuste manual genérico                           | `NEXO-UX-022`                      |
+| Diferencia no confirmada                       | recuento o investigación                      | aplicar delta del primer conteo                  | `NEXO-UX-018`                      |
+| Error de UOM o identidad                       | corregir fuente y evaluar migración           | reinterpretar cantidades históricas              | tarea propietaria y paquete E5     |
+| Costo incorrecto sin cambio de cantidad        | corrección de valoración                      | movimiento cuantitativo cero o positivo ficticio | dominio propietario de costo       |
+| Caso sin evidencia o policy                    | bloqueo y escalamiento                        | fallback permisivo                               | `NEXO-UX-021` y paquete E5         |
+| Activo individual o grupo patrimonial          | flujo de activos                              | mezclar con stock consumible                     | `NEXO-UX-031` a `NEXO-UX-034`      |
+
+---
+
+#### 7. `NEXO-INVENTORY-ADJUSTMENT-CASE-CANDIDATE-CONTRACT-001`
+
+Un candidato es una propuesta de investigación, no un delta autorizado. El expediente conserva causalidad completa y versiones append-only.
+
+| Campo                      | Regla                                                      |
+| -------------------------- | ---------------------------------------------------------- |
+| `case_id` y `case_version` | identidad estable y versión monotónica                     |
+| `source_identity`          | owner, type, ID, versión y receipts                        |
+| `subject_identity`         | producto, UOM, sede y alcance físico exactos               |
+| `reference_balance`        | checkpoint, cutoff y secuencias usadas                     |
+| `candidate`                | expected, observed cuando exista y delta candidato         |
+| `investigation`            | claim, actor, causa, evidencia, decisiones y plazos        |
+| `proposal`                 | delta firmado, scope, policy y valoración propuesta        |
+| `decision`                 | receipt inmutable o rechazo con razón                      |
+| `posting`                  | intención, fingerprint, group, legs y receipt              |
+| `closure`                  | resolución, pendientes, digest y referencias de delegación |
+
+Reglas:
+
+- un source line no genera dos expedientes activos equivalentes;
+- una versión nueva referencia la anterior y explica el cambio;
+- claim no altera propiedad ni autoridad;
+- el expediente no contiene secretos ni documentos sin clasificación;
+- la sesión cerrada de conteo permanece inmutable y solo se referencia;
+- cerrar o delegar conserva toda la historia.
+
+---
+
+#### 8. `NEXO-INVENTORY-ADJUSTMENT-WORK-QUEUE-CONTRACT-001`
+
+| Cola                  | Contenido                                                            | Entrada mínima                                                | Salida                                             |
+| --------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------- | -------------------------------------------------- |
+| `ADJQ-CANDIDATE`      | Candidatos recibidos sin expediente completo.                        | referencia causal, sujeto, alcance, delta candidato y versión | expediente creado, cierre sin efecto o rechazo     |
+| `ADJQ-INVESTIGATION`  | Expedientes que requieren causa, ventana de movimientos o evidencia. | claim, investigador independiente, SLA y fuentes              | ready for decision, recuento, delegación o cierre  |
+| `ADJQ-REVIEW`         | Propuestas completas pendientes de control técnico y cuantitativo.   | balance reconstruido, UOM, signo, evidencia y política        | autorización solicitada o devolución               |
+| `ADJQ-AUTHORIZATION`  | Decisiones pendientes de autoridad elegible.                         | approver independiente, territorio, umbral y expiración       | receipt aprobado o rechazo                         |
+| `ADJQ-POSTING`        | Decisiones aprobadas pendientes de intención o secuencia.            | approval receipt, fingerprint y saldo elegible                | posting receipt, conflicto o resultado desconocido |
+| `ADJQ-PROJECTION`     | Legs publicados pendientes de consumidores.                          | posting receipt y outbox                                      | receipts de stock, costo y ubicación               |
+| `ADJQ-RECONCILIATION` | Timeouts, gaps, orphans o divergencias.                              | intención, secuencia, grupo, legs y errores                   | resultado recuperado, replay idempotente o caso    |
+| `ADJQ-REVERSAL`       | Solicitudes de corrección post-posting.                              | original, saldo compensable, motivo, evidencia y autoridad    | grupo compensatorio o rechazo                      |
+
+---
+
+#### 9. `NEXO-INVENTORY-ADJUSTMENT-STATE-MACHINE-001`
+
+| Estado                         | Significado                                                               | Transición permitida                                    |
+| ------------------------------ | ------------------------------------------------------------------------- | ------------------------------------------------------- |
+| `ADJUSTMENT_CANDIDATE_CREATED` | candidato recibido y todavía no validado                                  | ADJUSTMENT_CANDIDATE_BLOCKED o ADJUSTMENT_CASE_OPEN     |
+| `ADJUSTMENT_CANDIDATE_BLOCKED` | fuente, identidad, permiso o secuencia insuficiente                       | corrección de insumo, recuento, delegación o cierre     |
+| `ADJUSTMENT_CASE_OPEN`         | expediente persistido sin claim vigente                                   | ADJUSTMENT_CASE_CLAIMED o VOIDED_PRE_POST               |
+| `ADJUSTMENT_CASE_CLAIMED`      | investigador elegible posee claim temporal                                | INVESTIGATING o claim expirado                          |
+| `INVESTIGATING`                | se reconstruyen hechos, movimientos, causa y evidencia                    | READY_FOR_DECISION, CLOSED_NO_EFFECT o CLOSED_DELEGATED |
+| `READY_FOR_DECISION`           | propuesta estable y policy snapshot disponibles                           | DECISION_REJECTED o DECISION_APPROVED                   |
+| `DECISION_REJECTED`            | autoridad rechaza con motivo inmutable                                    | CLOSED_NO_EFFECT o nueva versión de propuesta           |
+| `DECISION_APPROVED`            | approval receipt vigente con delta y alcance exactos                      | POSTING_INTENT_CREATED o DECISION_EXPIRED               |
+| `DECISION_EXPIRED`             | cambió contexto, versión, policy o venció la autorización                 | READY_FOR_DECISION                                      |
+| `POSTING_INTENT_CREATED`       | intención idempotente persistida                                          | POSTING_PENDING, POSTING_UNKNOWN o VOIDED_PRE_POST      |
+| `POSTING_PENDING`              | servidor valida saldo, secuencia y unicidad                               | POSTED o POSTING_UNKNOWN                                |
+| `POSTING_UNKNOWN`              | el cliente no conoce el resultado definitivo                              | POSTED, POSTING_PENDING o reconciliación                |
+| `POSTED`                       | grupo, legs, secuencia y receipt confirmados                              | PROJECTIONS_PENDING                                     |
+| `PROJECTIONS_PENDING`          | consumidores todavía no devolvieron todos los receipts                    | PROJECTIONS_APPLIED o reconciliación                    |
+| `PROJECTIONS_APPLIED`          | stock, ubicación y valoración convergieron                                | CLOSED_POSTED                                           |
+| `CLOSED_NO_EFFECT`             | investigación concluyó que no existe efecto cuantitativo                  | terminal                                                |
+| `CLOSED_DELEGATED`             | la resolución pertenece a transferencia, excepción, costo o configuración | terminal con referencia destino                         |
+| `CLOSED_POSTED`                | ajuste y proyecciones cerrados con evidencia                              | REVERSAL_REQUESTED cuando aparece corrección posterior  |
+| `REVERSAL_REQUESTED`           | se solicita compensar un posting previo                                   | REVERSAL_APPROVED o DECISION_REJECTED                   |
+| `REVERSAL_APPROVED`            | autoridad aprobó cantidad compensable                                     | COMPENSATED                                             |
+| `COMPENSATED`                  | grupo compensatorio confirmado y original preservado                      | terminal o nueva solicitud por saldo restante           |
+| `VOIDED_PRE_POST`              | expediente o intención certificadamente no ejecutados se anulan           | terminal sin legs                                       |
+
+Estados terminales no se reabren por UPDATE. Una corrección crea expediente y grupo compensatorio nuevos.
+
+---
+
+#### 10. `NEXO-INVENTORY-ADJUSTMENT-STEP-CATALOG-001`
+
+| Paso          | Acción                            | Entrada                                                                    | Salida                                | Límite                                  |
+| ------------- | --------------------------------- | -------------------------------------------------------------------------- | ------------------------------------- | --------------------------------------- |
+| `ADJ-STEP-01` | Resolver contexto y propósito     | principal, actor, sesión, función, territorio, dispositivo y acción        | contexto válido o bloqueo             | no usa rol del cliente como autoridad   |
+| `ADJ-STEP-02` | Admitir fuente                    | source type, owner, ID, versión y referencias                              | fuente admitida, delegada o rechazada | no infiere desde nota libre             |
+| `ADJ-STEP-03` | Resolver candidato                | sujeto, observed, expected, delta o hecho causal                           | candidato versionado                  | no publica movimiento                   |
+| `ADJ-STEP-04` | Crear expediente                  | source refs, scope, prioridad, SLA y digest                                | case ID y versión                     | append-only desde su apertura           |
+| `ADJ-STEP-05` | Asignar claim                     | investigador, territorio y expiración                                      | claim vigente                         | no concede aprobación                   |
+| `ADJ-STEP-06` | Reconstruir ventana causal        | checkpoint, secuencias, receipts y movimientos                             | ventana completa o gap                | sin balance por fecha aproximada        |
+| `ADJ-STEP-07` | Resolver saldo de referencia      | ledger y alcance exacto                                                    | expected reproducible                 | no usa proyección mutable como verdad   |
+| `ADJ-STEP-08` | Clasificar causa                  | conteo, omisión, duplicado, transferencia, pérdida, dato o proyección      | causa y propietario                   | no convierte síntoma en ajuste          |
+| `ADJ-STEP-09` | Recopilar evidencia               | observaciones, documentos, fotografías, receipts y testimonios autorizados | evidence digest                       | no guarda secretos o datos innecesarios |
+| `ADJ-STEP-10` | Resolver disposición              | ajustar, cerrar, recuento, delegar o reconstruir                           | rama exacta                           | una sola rama cuantitativa              |
+| `ADJ-STEP-11` | Calcular propuesta                | delta firmado, UOM, precisión, alcance y efecto esperado                   | proposal version                      | no setea saldo directamente             |
+| `ADJ-STEP-12` | Evaluar valoración                | policy de costo y fuente económica                                         | cost instruction o bloqueo            | costo no lo inventa el operador         |
+| `ADJ-STEP-13` | Aplicar policy snapshot           | umbrales, riesgo, evidencia y autoridad                                    | ruta de decisión                      | sin fallback permisivo                  |
+| `ADJ-STEP-14` | Revisar segregación               | solicitante, contador, investigador y approver                             | approver elegible o conflicto         | sin autoaprobación                      |
+| `ADJ-STEP-15` | Emitir decisión                   | approve o reject con scope y expiración                                    | approval decision receipt             | no muta investigación                   |
+| `ADJ-STEP-16` | Crear intención                   | decision receipt, key, fingerprint y expected versions                     | posting intent                        | no inserta legs todavía                 |
+| `ADJ-STEP-17` | Revalidar antes de posting        | permiso, policy, source, saldo, secuencia y locks                          | payload ejecutable o conflicto        | no confía en cálculo cliente            |
+| `ADJ-STEP-18` | Publicar grupo y legs             | intención vigente                                                          | group, legs, sequence y receipt       | frontera atómica                        |
+| `ADJ-STEP-19` | Emitir outbox                     | posting receipt                                                            | eventos por consumidor                | no reemplaza ledger                     |
+| `ADJ-STEP-20` | Aplicar proyecciones              | legs y eventos                                                             | receipts de stock, ubicación y costo  | cada consumidor deduplica               |
+| `ADJ-STEP-21` | Verificar convergencia            | ledger, proyecciones, source y receipts                                    | balance certificado o caso            | no crea ajuste de reparación            |
+| `ADJ-STEP-22` | Cerrar expediente                 | decisión, posting y pendientes                                             | closure digest                        | no oculta proyección pendiente          |
+| `ADJ-STEP-23` | Reconciliar resultado desconocido | intención, fingerprint, sequence y receipt                                 | resultado recuperado                  | no reenvía a ciegas                     |
+| `ADJ-STEP-24` | Corregir o compensar              | original, saldo compensable, caso y autoridad                              | grupo compensatorio o rechazo         | no edita ni elimina el original         |
+
+Reconciliación:
+
+```text
+EXPECTED_ADJUSTMENT_STEPS = 24
+MATERIALIZED_ADJUSTMENT_STEPS = 24
+MISSING_ADJUSTMENT_STEPS = 0
+DUPLICATE_ADJUSTMENT_STEPS = 0
+```
+
+---
+
+#### 11. `NEXO-INVENTORY-ADJUSTMENT-INVESTIGATION-DECISION-CONTRACT-001`
+
+La investigación responde qué ocurrió y qué proceso es propietario. La decisión responde si existe un efecto cuantitativo autorizado. Ninguna reemplaza a la otra.
+
+| Resultado de investigación                    | Decisión disponible                        |
+| --------------------------------------------- | ------------------------------------------ |
+| diferencia confirmada y causalidad suficiente | aprobar o rechazar delta propuesto         |
+| movimiento legítimo en ventana                | recalcular o cerrar sin efecto             |
+| receipt omitido o duplicado                   | compensación causal referenciada           |
+| proyección divergente                         | replay sin movimiento                      |
+| ubicación distinta                            | delegar a transferencia                    |
+| pérdida o daño                                | delegar a excepción                        |
+| evidencia insuficiente                        | recuento, ampliar investigación o rechazar |
+| UOM o identidad ambigua                       | bloquear hasta corrección propietaria      |
+
+La propuesta conserva root cause, alternatives considered, selected disposition, rejected dispositions, evidence digest y actor responsable.
+
+---
+
+#### 12. `NEXO-INVENTORY-ADJUSTMENT-REASON-EVIDENCE-POLICY-CONTRACT-001`
+
+Razón y evidencia son campos estructurados, no texto utilizado para inferir permisos o movimiento.
+
+```text
+reason_code
+reason_version
+root_cause_code
+evidence_requirements[]
+evidence_refs[]
+evidence_digest
+policy_snapshot_id
+quantity_threshold_rule
+value_threshold_rule
+risk_class
+required_authority
+required_separation
+approval_ttl
+```
+
+No se inventan umbrales numéricos en esta tarea. La implementación bloqueará cuando no exista una policy versionada aplicable y no utilizará un valor predeterminado permisivo.
+
+---
+
+#### 13. `NEXO-INVENTORY-ADJUSTMENT-SCOPE-SUBJECT-ELIGIBILITY-CONTRACT-001`
+
+El sujeto se resuelve en servidor y debe permanecer estable desde decisión hasta posting:
+
+```text
+product_id
+stock_unit_code
+site_id
+location_id?
+location_position_id?
+uom_profile_id?
+presentation_identity?
+lot_identity?
+condition_identity?
+lpn_identity?
+ownership_or_custody_context?
+```
+
+Un ajuste de sede sin LOC solo es admisible cuando el ledger permite ese alcance y la policy lo autoriza. No distribuye un delta entre LOC o posiciones por inferencia. Un ajuste de posición conserva el alcance de ubicación y no produce saldos padre incoherentes.
+
+---
+
+#### 14. `NEXO-INVENTORY-ADJUSTMENT-QUANTITY-UOM-SIGN-CONTRACT-001`
+
+Ecuaciones canónicas:
+
+```text
+candidate_variance = observed_at_reference - expected_at_reference
+approved_delta = authority_approved_signed_effect
+ledger_balance_after = ledger_balance_before_posting + approved_delta
+projection_balance_after = apply_once(projection_balance_before, posted_leg)
+```
+
+Reglas:
+
+- `approved_delta` no se recalcula desde un stock mostrado por el cliente;
+- movimientos legítimos posteriores al cutoff no eliminan ni duplican la variación aprobada;
+- movimientos tardíos pertenecientes a la ventana obligan a reabrir la investigación;
+- la UOM del leg es canónica y la presentación original se conserva como evidencia;
+- cantidad positiva y negativa usan signo explícito;
+- cero no es un movimiento; cierra sin efecto o expresa una reclasificación bajo su proceso propietario;
+- precisión y tolerancia provienen de la identidad y policy;
+- un saldo resultante inválido bloquea; jamás se aplica `greatest(0, ...)`.
+
+---
+
+#### 15. `NEXO-INVENTORY-ADJUSTMENT-BALANCE-CUTOFF-CONTRACT-001`
+
+La decisión y el posting conservan dos referencias distintas:
+
+| Referencia                      | Uso                                                                                       |
+| ------------------------------- | ----------------------------------------------------------------------------------------- |
+| `reference_cutoff_sequence`     | reproduce expected y candidate en el instante investigado                                 |
+| `posting_precondition_sequence` | confirma que el ledger actual no contiene gaps, duplicados o conflictos antes de publicar |
+
+El balance se reconstruye desde checkpoint verificado más legs hasta la secuencia requerida. Fechas, vistas filtradas, `current_qty` o el valor leído al cargar el formulario no sustituyen esta reconstrucción.
+
+Conflictos que expiran la aprobación:
+
+- `source version changed`;
+- `subject identity changed`;
+- `policy changed`;
+- `approved scope changed`;
+- `new evidence changes the root cause`;
+- `sequence gap or duplicate appears`;
+- `another adjustment consumes the same causal balance`;
+- `approval TTL expired`;
+
+---
+
+#### 16. `NEXO-INVENTORY-ADJUSTMENT-APPROVAL-RECEIPT-CONTRACT-001`
+
+La aprobación produce un receipt inmutable:
+
+```text
+decision_receipt_id
+case_id
+case_version
+proposal_version
+decision = APPROVED | REJECTED
+approved_delta?
+approved_scope?
+policy_snapshot_id
+authority_actor_id
+authority_context_version
+separation_evidence
+issued_at
+expires_at?
+decision_reason
+decision_digest
+```
+
+La confirmación visual no equivale a aprobación. El servidor comprueba conflicto de interés, territorio, umbral, resource scope y vigencia. La autoridad no puede ampliar cantidad, alcance o razón sin crear una propuesta nueva.
+
+---
+
+#### 17. `NEXO-INVENTORY-ADJUSTMENT-POSTING-IDEMPOTENCY-RECEIPT-CONTRACT-001`
+
+La intención persiste antes de ejecutar:
+
+```text
+posting_intent_id
+idempotency_key
+fingerprint
+case_id and version
+decision_receipt_id
+source_refs[]
+subject and scope
+approved_delta and UOM
+posting_preconditions
+created_by_actor
+```
+
+| Reintento                                 | Resultado                                               |
+| ----------------------------------------- | ------------------------------------------------------- |
+| misma key y mismo fingerprint con receipt | devuelve el mismo receipt                               |
+| misma key y mismo fingerprint pendiente   | devuelve pending o consulta reconciliable               |
+| misma key y payload distinto              | conflicto; no ejecuta                                   |
+| timeout sin respuesta                     | consulta intención, sequence y receipt antes de repetir |
+| decision receipt ya consumido             | devuelve posting existente                              |
+| precondition cambió                       | expira intención y devuelve conflicto                   |
+
+Group, legs, sequence, posting receipt y outbox comparten una frontera lógica. No puede quedar movimiento sin receipt, receipt sin legs o costo actualizado sin stock causal.
+
+---
+
+#### 18. `NEXO-INVENTORY-ADJUSTMENT-LEDGER-PROJECTION-BOUNDARY-001`
+
+El ajuste objetivo no ejecuta:
+
+- insert directo a `inventory_movements` desde ruta, componente o RPC de conteo;
+- lectura de `current_qty` seguida de upsert manual;
+- actualizaciones separadas de sede, LOC y posición;
+- clamp, saneamiento o zeroing silencioso;
+- DELETE de posiciones o presentaciones para simular ausencia;
+- movimiento ficticio para reparar una proyección;
+- actualización de costo después de un posting parcialmente fallido.
+
+El ledger publica el hecho. Consumers idempotentes materializan stock, ubicación, presentación, disponibilidad y valoración. Una divergencia abre reconciliación y reejecuta el consumer; no publica otro ajuste.
+
+---
+
+#### 19. `NEXO-INVENTORY-ADJUSTMENT-COST-VALUATION-CONTRACT-001`
+
+| Escenario                                     | Tratamiento                                                               |
+| --------------------------------------------- | ------------------------------------------------------------------------- |
+| incremento cuantitativo con fuente valorizada | policy resuelve costo y emite instrucción de valoración correlacionada    |
+| incremento sin fuente económica suficiente    | bloquea valoración o usa policy aprobada explícita; no acepta costo libre |
+| disminución cuantitativa                      | consumer aplica método de costo vigente; el usuario no selecciona costo   |
+| corrección solo de costo                      | caso del dominio de valoración, cero legs de cantidad                     |
+| costo y cantidad en el mismo ajuste           | un posting causal, receipts coordinados y rollback lógico                 |
+| fallo del consumer de costo                   | proyección pendiente y reconciliación; no repite cantidad                 |
+
+La autoridad operacional no recibe acceso a márgenes, costos protegidos o edición de producto por participar en el ajuste.
+
+---
+
+#### 20. `NEXO-INVENTORY-ADJUSTMENT-BULK-PARTIALITY-CONTRACT-001`
+
+Un lote no es un bucle de requests desde el cliente. Debe persistir:
+
+```text
+batch_id
+scope_snapshot_id
+scope_digest
+expected_line_count
+line_ids[]
+line_versions[]
+policy_snapshot_id
+decision_strategy
+atomicity_strategy
+idempotency_key
+batch_fingerprint
+```
+
+Reglas:
+
+- “vaciar LOC” exige alcance contado completamente, ceros explícitos y digest; no usa el catálogo cargado;
+- cada línea conserva candidato, investigación y decisión;
+- la policy decide aprobación por lote o por línea;
+- atomicidad total significa cero postings si una línea falla antes de la frontera;
+- partialidad explícita devuelve receipts confirmados y saldo pendiente exacto;
+- un reintento del lote no duplica líneas ya confirmadas;
+- cero de un LOC no pone posiciones en cero por inferencia;
+- la UI muestra total, bloqueadas, aprobadas, publicadas y pendientes.
+
+---
+
+#### 21. `NEXO-INVENTORY-ADJUSTMENT-CORRECTION-REVERSAL-CONTRACT-001`
+
+Antes del posting, expediente, decisión expirada o intención certificadamente no ejecutada pueden anularse con razón y cero legs.
+
+Después del posting:
+
+- case, decision, group, legs, sequences y receipts no se editan ni eliminan;
+- una corrección abre un expediente nuevo referenciado al original;
+- se calcula saldo compensable y se impide excederlo;
+- la autoridad independiente aprueba compensación total o parcial;
+- el ledger publica un grupo compensatorio con signo y alcance opuestos cuando corresponda;
+- proyecciones y valoración consumen legs compensatorios;
+- el original, compensado y restante permanecen visibles;
+- una reversa no se representa mediante DELETE, status retroactivo o nota.
+
+---
+
+#### 22. `NEXO-INVENTORY-ADJUSTMENT-ASSET-BOUNDARY-001`
+
+Los activos individualizados y grupos patrimoniales pueden compartir expediente, evidencia, claim y decisión, pero no el ledger cuantitativo de consumibles.
+
+| Sujeto                     | Resultado                                                                         | Destino                       |
+| -------------------------- | --------------------------------------------------------------------------------- | ----------------------------- |
+| stock consumible           | adjustment group y legs de inventario bajo este contrato                          | paquete E5 NEXO               |
+| activo individual          | cambio de presencia, custodia, ubicación o condición mediante proceso patrimonial | `NEXO-UX-031` a `NEXO-UX-034` |
+| grupo de activos           | corrección de cantidad patrimonial con contrato propio                            | `NEXO-UX-033` y `NEXO-UX-034` |
+| activo hallado en otro LOC | caso y transferencia patrimonial; no ajuste consumible                            | bloque de activos             |
+
+---
+
+#### 23. `NEXO-INVENTORY-ADJUSTMENT-ROUTE-DISPOSITION-001`
+
+| Superficie                                               | Patrón actual                                         | Disposición                         | Decisión materializada                                                                    |
+| -------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------------------- |
+| `/inventory/adjust`                                      | formulario supervisor de ajuste directo               | `CONVERTIR_EN_BANDEJA_Y_EXPEDIENTE` | separa candidato, investigación, decisión y resultado; no publica por formulario          |
+| `src/features/inventory/adjust/adjust-form.tsx`          | add, remove, count, costo, evidencia y vaciado masivo | `RETIRAR_WRITER_CLIENTE`            | elimina target de saldo, costo libre, loop por producto y confirmación como autorización  |
+| `POST /api/inventory/adjust`                             | read-modify-write y múltiples upserts                 | `SUSTITUIR_POR_COMMAND_BOUNDARY`    | recibe decision receipt e intención; publica ledger atómico o devuelve conflicto          |
+| `/inventory/count-initial/session/[id]`                  | cierre y aprobación de ajustes en la misma superficie | `CONSERVAR_HANDOFF_SIN_POSTING`     | solo crea candidato y referencia expediente                                               |
+| `POST /api/inventory/count-initial/approve`              | llama apply_inventory_count_adjustments               | `RETIRAR_DEL_FLUJO`                 | no existe aprobación cuantitativa desde conteos                                           |
+| `apply_inventory_count_adjustments`                      | RPC que inserta movimientos y actualiza stock         | `RETIRAR_O_BLOQUEAR`                | ningún caller de conteo lo usa; transición auditada                                       |
+| `inventory_movements`                                    | tabla legacy usada como writer directo                | `ENCAPSULAR_BAJO_LEDGER_COMMAND`    | solo command boundary puede publicar grupo y legs                                         |
+| `inventory_stock_by_site`                                | proyección actualizada por API                        | `SOLO_PROYECCION`                   | consumer idempotente, nunca fuente autoritativa del ajuste                                |
+| `inventory_stock_by_location`                            | proyección actualizada por API                        | `SOLO_PROYECCION`                   | deriva de legs con alcance exacto                                                         |
+| `inventory_stock_by_position`                            | proyección actualizada por API                        | `SOLO_PROYECCION`                   | no se fuerza a cero sin evidencia por sujeto                                              |
+| `reconcile_zero_internal_positions_for_location_product` | pone posiciones en cero por jerarquía                 | `RESTRINGIR_A_RECONSTRUCCION`       | no crea verdad física ni reemplaza expediente y ledger                                    |
+| `products.cost y product_cost_events`                    | costo actualizado después del stock                   | `CONSUMIDOR_DE_VALORACION`          | policy propietaria y receipt; costo libre queda prohibido                                 |
+| `/inventory/movements`                                   | historial de filas y notas                            | `AMPLIAR_A_TRAZA_CAUSAL`            | muestra case, decision, group, legs, receipts, proyecciones y compensaciones              |
+| `app_permissions, role_permissions, RLS y grants`        | capability gruesa y writers amplios                   | `ENDURECER_POR_ACCION_Y_RECURSO`    | conserva la clave canónica actual; servidor aplica segregación y elimina writers directos |
+
+Reconciliación:
+
+```text
+EXPECTED_EXISTING_SURFACES = 14
+MATERIALIZED_SURFACE_DECISIONS = 14
+MISSING_SURFACE_DECISIONS = 0
+DUPLICATE_SURFACE_DECISIONS = 0
+```
+
+---
+
+#### 24. `NEXO-INVENTORY-ADJUSTMENT-INTERFACE-STATE-CONTRACT-001`
+
+| ID          | Estado visible              | Significado                                   | Acción válida                                 |
+| ----------- | --------------------------- | --------------------------------------------- | --------------------------------------------- |
+| `ADJ-UI-01` | `CANDIDATE_READY`           | candidato listo para abrir expediente         | abrir o descartar por duplicado               |
+| `ADJ-UI-02` | `CANDIDATE_BLOCKED`         | fuente, identidad o secuencia insuficiente    | corregir insumo, recuento o delegar           |
+| `ADJ-UI-03` | `CASE_UNCLAIMED`            | expediente sin investigador                   | reclamar si es elegible                       |
+| `ADJ-UI-04` | `CASE_CLAIMED`              | claim vigente por otra persona                | solo lectura o transferencia autorizada       |
+| `ADJ-UI-05` | `INVESTIGATION_IN_PROGRESS` | causa y evidencia incompletas                 | guardar versión, adjuntar o devolver          |
+| `ADJ-UI-06` | `MOVEMENT_GAP`              | falta una secuencia o receipt                 | reconciliar; no decidir                       |
+| `ADJ-UI-07` | `EVIDENCE_INCOMPLETE`       | policy exige soporte faltante                 | adjuntar o rechazar propuesta                 |
+| `ADJ-UI-08` | `NO_EFFECT_PROPOSED`        | la causa no exige delta                       | cerrar con motivo                             |
+| `ADJ-UI-09` | `DELEGATED_TRANSFER`        | la existencia está en otra ubicación          | abrir flujo propietario de transferencia      |
+| `ADJ-UI-10` | `DELEGATED_EXCEPTION`       | pérdida, daño o disposición requieren caso    | abrir handoff a UX022                         |
+| `ADJ-UI-11` | `PROJECTION_REBUILD`        | ledger correcto y vista divergente            | reprocesar consumer sin movimiento            |
+| `ADJ-UI-12` | `READY_FOR_REVIEW`          | propuesta estable y completa                  | enviar a decisión                             |
+| `ADJ-UI-13` | `POLICY_UNAVAILABLE`        | no existe policy snapshot válido              | bloquear y escalar                            |
+| `ADJ-UI-14` | `APPROVER_CONFLICT`         | approver participó en captura o investigación | seleccionar autoridad independiente           |
+| `ADJ-UI-15` | `DECISION_REJECTED`         | propuesta rechazada con motivo                | cerrar o crear versión nueva                  |
+| `ADJ-UI-16` | `DECISION_APPROVED`         | receipt aprobado y vigente                    | crear intención                               |
+| `ADJ-UI-17` | `APPROVAL_EXPIRED`          | cambió versión, saldo o venció autorización   | revisar nuevamente                            |
+| `ADJ-UI-18` | `POSTING_INTENT_CREATED`    | intención persistida                          | consultar o ejecutar una vez                  |
+| `ADJ-UI-19` | `POSTING_PENDING`           | servidor procesa                              | no repetir                                    |
+| `ADJ-UI-20` | `POSTING_UNKNOWN`           | timeout o respuesta perdida                   | consultar por key y fingerprint               |
+| `ADJ-UI-21` | `POSTED`                    | ledger confirmó group y receipt               | ver proyecciones                              |
+| `ADJ-UI-22` | `PROJECTIONS_PENDING`       | faltan consumers                              | esperar o reconciliar sin nuevo ajuste        |
+| `ADJ-UI-23` | `PROJECTION_CONFLICT`       | consumer no converge                          | abrir diagnóstico                             |
+| `ADJ-UI-24` | `CLOSED_POSTED`             | expediente completo                           | consultar evidencia y traza                   |
+| `ADJ-UI-25` | `CLOSED_NO_EFFECT`          | cerrado sin legs                              | consultar resolución                          |
+| `ADJ-UI-26` | `BULK_REVIEW`               | lote con cobertura y líneas visibles          | aprobar lote o líneas según policy            |
+| `ADJ-UI-27` | `PARTIAL_RESULT`            | algunas líneas confirmadas y otras bloqueadas | mostrar receipts y saldo pendiente exactos    |
+| `ADJ-UI-28` | `REVERSAL_REQUESTED`        | corrección post-posting solicitada            | investigar y decidir                          |
+| `ADJ-UI-29` | `OFFLINE_DRAFT`             | borrador local sin autoridad ni cutoff        | sincronizar y revalidar; no publicar          |
+| `ADJ-UI-30` | `ACCESS_REVOKED`            | contexto o claim dejaron de ser válidos       | bloquear mutación y preservar borrador seguro |
+
+Éxito verificable exige case ID, decision receipt cuando aplica, posting receipt, group ID, projection status y enlaces causales recuperables. Toast, redirect o cambio de número no demuestran posting.
+
+---
+
+#### 25. `NEXO-INVENTORY-ADJUSTMENT-VALIDATION-MATRIX-001`
+
+##### 25.1. Contexto, autoridad y segregación
+
+| ID            | Regla comprobable                                                                 | Evidencia requerida |
+| ------------- | --------------------------------------------------------------------------------- | ------------------- |
+| `ADJ-VAL-001` | Revalida principal, actor, sesión, función, territorio y recurso en cada command. | Servidor y RLS.     |
+| `ADJ-VAL-002` | `nexo.inventory.adjustments` no se sustituye por stock, counts o movements.       | Autorización.       |
+| `ADJ-VAL-003` | Solicitante, contador e investigador no aprueban el mismo expediente.             | Policy y auditoría. |
+| `ADJ-VAL-004` | El cliente no elige sede global mediante rol o parámetro manipulable.             | Integración.        |
+| `ADJ-VAL-005` | Claim expira, se transfiere y no concede decisión.                                | Concurrencia.       |
+| `ADJ-VAL-006` | Approval receipt contiene autoridad, scope, policy y expiración.                  | Contrato.           |
+| `ADJ-VAL-007` | Revocación de permiso invalida acciones posteriores sin borrar evidencia.         | Seguridad.          |
+| `ADJ-VAL-008` | Dispositivo compartido no sustituye al actor humano.                              | E2E y hardware.     |
+
+##### 25.2. Fuente, expediente e investigación
+
+| ID            | Regla comprobable                                                          | Evidencia requerida |
+| ------------- | -------------------------------------------------------------------------- | ------------------- |
+| `ADJ-VAL-009` | Las diez fuentes tienen disposición exacta y owner.                        | Contractual.        |
+| `ADJ-VAL-010` | Candidato de conteo conserva session, rounds, observed, expected y cutoff. | Integración.        |
+| `ADJ-VAL-011` | Notas libres no sustituyen source identity, receipt o causa.               | Regresión.          |
+| `ADJ-VAL-012` | Gap de secuencia bloquea decisión cuantitativa.                            | Concurrencia.       |
+| `ADJ-VAL-013` | Diferencia de proyección se reconstruye sin movimiento.                    | Base de datos.      |
+| `ADJ-VAL-014` | Transferencia, pérdida, daño y remisión se delegan al proceso propietario. | E2E.                |
+| `ADJ-VAL-015` | Expediente conserva versiones y no permite UPDATE destructivo.             | Base de datos.      |
+| `ADJ-VAL-016` | Cierre sin efecto conserva motivo, evidencia y digest.                     | Auditoría.          |
+
+##### 25.3. Cantidad, UOM, saldo y costo
+
+| ID            | Regla comprobable                                                               | Evidencia requerida     |
+| ------------- | ------------------------------------------------------------------------------- | ----------------------- |
+| `ADJ-VAL-017` | Delta aprobado usa UOM canónica y precisión válida.                             | Unitaria y contractual. |
+| `ADJ-VAL-018` | El posting aplica delta firmado; no setea saldo desde el cliente.               | Integración.            |
+| `ADJ-VAL-019` | Balance previo proviene de ledger y cutoff autoritativos.                       | Base de datos.          |
+| `ADJ-VAL-020` | Saldo resultante negativo bloquea; no existe clamp a cero.                      | Regresión.              |
+| `ADJ-VAL-021` | Alcance sede, LOC y posición permanece coherente en un solo hecho.              | Integración.            |
+| `ADJ-VAL-022` | Cero físico requiere cobertura y evidencia; no borra posiciones por inferencia. | E2E.                    |
+| `ADJ-VAL-023` | Costo de incremento proviene de policy y fuente autorizadas.                    | Contractual.            |
+| `ADJ-VAL-024` | Corrección solo de costo no crea movimiento de cantidad.                        | Regresión.              |
+
+##### 25.4. Decisión, idempotencia y posting
+
+| ID            | Regla comprobable                                                               | Evidencia requerida |
+| ------------- | ------------------------------------------------------------------------------- | ------------------- |
+| `ADJ-VAL-025` | Misma key y fingerprint devuelven el mismo resultado.                           | Idempotencia.       |
+| `ADJ-VAL-026` | Misma key con payload distinto devuelve conflicto.                              | Idempotencia.       |
+| `ADJ-VAL-027` | Timeout se resuelve consultando intención y receipt antes de repetir.           | Concurrencia.       |
+| `ADJ-VAL-028` | Decision receipt, group, legs, sequence y posting receipt son correlacionables. | Integración.        |
+| `ADJ-VAL-029` | Grupo, legs y outbox comparten frontera lógica.                                 | Base de datos.      |
+| `ADJ-VAL-030` | Ninguna API inserta movement o actualiza stock por pasos separados.             | Regresión.          |
+| `ADJ-VAL-031` | Consumers aplican cada leg una vez y devuelven receipts.                        | Integración.        |
+| `ADJ-VAL-032` | Resultado desconocido no duplica cantidad ni costo.                             | E2E.                |
+
+##### 25.5. Lotes, corrección y superficies
+
+| ID            | Regla comprobable                                                  | Evidencia requerida     |
+| ------------- | ------------------------------------------------------------------ | ----------------------- |
+| `ADJ-VAL-033` | Lote declara scope digest, líneas, versiones y policy.             | Contractual.            |
+| `ADJ-VAL-034` | Vaciado masivo no usa loop cliente ni catálogo parcial.            | Regresión.              |
+| `ADJ-VAL-035` | Resultado parcial muestra receipts confirmados y saldo pendiente.  | Interfaz.               |
+| `ADJ-VAL-036` | Pre-post void produce cero legs.                                   | Base de datos.          |
+| `ADJ-VAL-037` | Post-post correction crea grupo compensatorio y conserva original. | Regresión.              |
+| `ADJ-VAL-038` | Compensación parcial conserva original, compensado y restante.     | Integración.            |
+| `ADJ-VAL-039` | Las catorce superficies cumplen su disposición.                    | Estática.               |
+| `ADJ-VAL-040` | Los treinta estados muestran solo acciones válidas.                | Interfaz y experiencia. |
+
+##### 25.6. Compatibilidad, operación y transición
+
+| ID            | Regla comprobable                                                                | Evidencia requerida     |
+| ------------- | -------------------------------------------------------------------------------- | ----------------------- |
+| `ADJ-VAL-041` | `apply_inventory_count_adjustments` deja de tener callers de conteo.             | Estática.               |
+| `ADJ-VAL-042` | `/api/inventory/adjust` no conserva read-modify-write ni direct upserts.         | Regresión.              |
+| `ADJ-VAL-043` | RLS y grants bloquean writers directos aunque la UI se omita.                    | Seguridad.              |
+| `ADJ-VAL-044` | Migraciones Supabase se crean y ejecutan solo desde `vento-shell`.               | Migración.              |
+| `ADJ-VAL-045` | Tipos, contratos y consumidores se regeneran juntos.                             | Contractual.            |
+| `ADJ-VAL-046` | Observabilidad correlaciona case, decision, intent, group, receipt y projection. | Operación.              |
+| `ADJ-VAL-047` | Rollback no reactiva dos writers ni borra expedientes o ledger.                  | Migración.              |
+| `ADJ-VAL-048` | Piloto cubre positivo, negativo, cero, lote, timeout, reversa y conflicto.       | Manual operativa y E2E. |
+
+Reconciliación:
+
+```text
+EXPECTED_ADJUSTMENT_CHECKS = 48
+MATERIALIZED_ADJUSTMENT_CHECKS = 48
+MISSING_ADJUSTMENT_CHECKS = 0
+DUPLICATE_ADJUSTMENT_CHECKS = 0
+```
+
+---
+
+#### 26. `NEXO-INVENTORY-ADJUSTMENT-IMPLEMENTATION-HANDOFF-001`
+
+La implementación posterior deberá materializar, como mínimo:
+
+- esquema de cases, versions, claims, investigations, proposals, decisions e intentions;
+- command boundary de posting y contratos group/leg/receipt del ledger;
+- consumers idempotentes para stock de sede, LOC, posición, presentación y valoración;
+- RLS y grants por acción y recurso, sin writers directos;
+- convergencia de `/inventory/adjust`, count approve, APIs y RPC legacy;
+- retiro del loop de vaciado masivo y del costo libre;
+- reconciliación de `reconcile_zero_internal_positions_for_location_product`;
+- índices de unicidad, fingerprints, secuencias y locks;
+- outbox, métricas, trazas y alertas por case, decision, intent, group y consumer;
+- tipos generados, contratos compartidos y clientes actualizados;
+- migraciones versionadas y ejecutadas exclusivamente desde `vento-shell`;
+- pruebas `ADJ-VAL-001` a `ADJ-VAL-048`, staging y piloto.
+
+Orden de transición:
+
+```text
+SCHEMA AND AUTHORIZATION
+→ CASE AND INVESTIGATION
+→ POLICY AND DECISION RECEIPT
+→ LEDGER POSTING COMMAND
+→ PROJECTION CONSUMERS
+→ COST CONSUMER
+→ ADJUSTMENT UI
+→ COUNT HANDOFF CUTOVER
+→ LEGACY WRITER BLOCK
+→ BULK AND REVERSAL
+→ PILOT
+```
+
+Rollback:
+
+- desactivar commands nuevos por feature gate antes de reactivar una superficie legacy;
+- no ejecutar simultáneamente writer legacy y command nuevo;
+- conservar cases, decisions, intentions, groups, legs y receipts ya confirmados;
+- detener consumers nuevos de forma controlada y poder reconstruir proyecciones;
+- no restaurar aprobación desde conteos ni clamps a cero;
+- validar secuencia, unicidad, balances y costo antes y después del rollback.
+
+Handoffs:
+
+| Destino                       | Consume                                                         | Salida exigida                                     | Límite                                         |
+| ----------------------------- | --------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------------- |
+| `NEXO-UX-020`                 | estados y puntos de identificación                              | escaneo contextual de candidato, case y sujeto     | no aprueba ni publica por escanear             |
+| `NEXO-UX-021`                 | campos, evidencia y cantidades                                  | información mínima por etapa                       | no crea otra fuente de verdad                  |
+| `NEXO-UX-022`                 | casos delegados de pérdida, daño, merma, remisión y disposición | resolución y autoridad propietarias                | no usa ajuste genérico para cerrar excepciones |
+| `NEXO-UX-023` a `NEXO-UX-025` | claims, offline, result unknown y dispositivos                  | evidencia física y operativa                       | no declara validación antes del piloto         |
+| `NEXO-UX-031` a `NEXO-UX-034` | frontera patrimonial                                            | ajustes y conteos de activos separados             | no mezcla ledger consumible                    |
+| paquete E5 NEXO               | contratos, diagnóstico, matrices y requisitos                   | implementación versionada, observable y reversible | Supabase solo desde `vento-shell`              |
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-NEXO-217` a `TREQ-NEXO-230` en el registro canónico completo:
+
+| ID              | Comportamiento protegido                                                                     |
+| --------------- | -------------------------------------------------------------------------------------------- |
+| `TREQ-NEXO-217` | contexto, permiso, territorio, claim y segregación entre actores                             |
+| `TREQ-NEXO-218` | cobertura exacta de artefactos, fuentes, colas, estados, pasos, superficies y comprobaciones |
+| `TREQ-NEXO-219` | fuentes, disposiciones, cierre sin efecto y delegación al proceso propietario                |
+| `TREQ-NEXO-220` | expediente, candidato, versiones, causalidad, claim y cierre                                 |
+| `TREQ-NEXO-221` | investigación, causa, razón, evidencia, policy, umbrales y plazos                            |
+| `TREQ-NEXO-222` | sujeto, alcance, UOM, signo, cutoff, balance y no clamp                                      |
+| `TREQ-NEXO-223` | propuesta, autoridad independiente, decision receipt, rechazo y expiración                   |
+| `TREQ-NEXO-224` | intención, idempotencia, secuencia, group, legs, receipt y outbox atómicos                   |
+| `TREQ-NEXO-225` | ledger como verdad, proyecciones por consumers y ausencia de writes directos                 |
+| `TREQ-NEXO-226` | valoración separada, costo gobernado y cero movimiento para corrección solo financiera       |
+| `TREQ-NEXO-227` | lotes, cobertura, bulk zero, atomicidad, parcialidad y reintentos                            |
+| `TREQ-NEXO-228` | void pre-posting, corrección post-posting y compensación append-only                         |
+| `TREQ-NEXO-229` | treinta estados, catorce superficies, offline, resultado desconocido y éxito verificable     |
+| `TREQ-NEXO-230` | convergencia técnica, RLS, RPC, migraciones, pruebas, observabilidad, rollback y piloto      |
+
+---
+
+#### 28. Pendientes con propietario y condición de salida
+
+| Pendiente                                             | Propietario                        | Tarea de resolución                 | Condición de salida                                                         |
+| ----------------------------------------------------- | ---------------------------------- | ----------------------------------- | --------------------------------------------------------------------------- |
+| materializar campos mínimos por etapa                 | experiencia NEXO                   | `NEXO-UX-021`                       | cada estado muestra solo identidad, cantidad, evidencia y acción necesarias |
+| resolver pérdida, merma, daño, vencimiento y remisión | supervisión y proceso de excepción | `NEXO-UX-022`                       | casos tienen contención, decisión, disposición y cierre                     |
+| certificar tablet, kiosco, offline y result unknown   | operación y QA                     | `NEXO-UX-023` a `NEXO-UX-025`       | evidencia reproducible en escenarios físicos                                |
+| diseñar ajuste patrimonial                            | subdominio de activos              | `NEXO-UX-031` a `NEXO-UX-034`       | activos individualizados y grupos poseen contrato propio                    |
+| implementar schema, commands, consumers y cutover     | paquete E5 NEXO                    | paquete E5 de `NEXO-REMISSIONS-001` | writers legacy bloqueados y `ADJ-VAL-001` a `048` satisfechas               |
+| ejecutar migraciones Supabase                         | `vento-shell`                      | paquete E5 y `SHELL-CI-017`         | migraciones versionadas, aplicadas, verificadas y reversibles               |
+
+---
+
+#### 29. Criterios de aceptación
+
+1. la tarea contiene exactamente una definición canónica de `NEXO-UX-019`;
+2. los veinticuatro artefactos están enumerados y definidos;
+3. las diez fuentes poseen disposición y límite;
+4. las ocho colas, veintidós estados y veinticuatro pasos están materializados;
+5. las catorce superficies tienen una decisión explícita;
+6. los treinta estados de interfaz tienen significado y acción válida;
+7. las cuarenta y ocho comprobaciones son únicas y completas;
+8. el conteo solo entrega candidato y nunca publica adjustment;
+9. proyección divergente se reconstruye sin movimiento;
+10. transferencia, pérdida, daño, remisión, costo y activos se delegan a su propietario;
+11. solicitante, contador e investigador no aprueban el mismo expediente;
+12. la aprobación genera decision receipt inmutable y con expiración;
+13. el posting usa intención, key, fingerprint, secuencia y receipt;
+14. group, legs, receipt y outbox comparten una frontera lógica;
+15. ningún writer directo actualiza movements o stock por pasos separados;
+16. el saldo se calcula desde ledger y cutoff, no desde una vista mutable;
+17. no existe clamp a cero;
+18. cero y bulk zero requieren cobertura y evidencia explícitas;
+19. el costo no es un campo libre que otorgue autoridad financiera;
+20. corrección solo de costo produce cero legs de cantidad;
+21. pre-post void produce cero efecto;
+22. post-post correction usa grupo compensatorio y conserva original;
+23. los catorce requisitos nuevos están en el registro completo;
+24. todos los pendientes tienen propietario, tarea y condición de salida;
+25. no se ejecutan cambios físicos ni remotos;
+26. la siguiente tarea permanece reservada.
+
+---
+
+#### 30. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-018 — Diseñar flujo completo de conteos`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-019 — Diseñar flujo completo de ajustes`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-020 — Simplificar escáner y captura`
+
+`NEXO-UX-020` deberá consumir los estados, identidades y puntos de interacción definidos hasta esta tarea para simplificar escaneo y captura sin convertir una lectura de código en autorización, decisión o posting.
+
+
 ### [ ] NEXO-UX-020 — Simplificar escáner y captura
 ### [ ] NEXO-UX-021 — Mostrar solo información necesaria según etapa
 ### [ ] NEXO-UX-022 — Diseñar manejo de diferencias y excepciones

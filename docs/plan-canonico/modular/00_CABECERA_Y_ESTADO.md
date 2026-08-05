@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **564** |
+| Tareas aprobadas | **565** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1030** |
+| Tareas no iniciadas | **1029** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **35.38% (564/1594)** |
+| Porcentaje de completamiento | **35.45% (565/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NEXO-UX-018 — Diseñar flujo completo de conteos** |
-| Tarea actual | **NEXO-UX-019 — Diseñar flujo completo de ajustes** |
+| Última tarea aprobada | **NEXO-UX-019 — Diseñar flujo completo de ajustes** |
+| Tarea actual | **NEXO-UX-020 — Simplificar escáner y captura** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NEXO-UX-020 — Simplificar escáner y captura** |
+| Siguiente tarea | **NEXO-UX-021 — Mostrar solo información necesaria según etapa** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 13: NEXO_FUNCTIONAL_UX** |
-| Progreso del bloque | **CARRIL NEXO: 18 de 25 aprobadas; NEXO-UX-019 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 19 de 25 aprobadas; NEXO-UX-020 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NEXO-UX-018` — Diseñar flujo completo de conteos |
-| Tarea actual | `NEXO-UX-019` — Diseñar flujo completo de ajustes — **NO INICIADA** |
-| Siguiente tarea | `NEXO-UX-020` — Simplificar escáner y captura |
+| Última aprobada | `NEXO-UX-019` — Diseñar flujo completo de ajustes |
+| Tarea actual | `NEXO-UX-020` — Simplificar escáner y captura — **NO INICIADA** |
+| Siguiente tarea | `NEXO-UX-021` — Mostrar solo información necesaria según etapa |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 18 DE 25 APROBADAS — ACTUAL NEXO-UX-019** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 19 DE 25 APROBADAS — ACTUAL NEXO-UX-020** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NEXO-UX-018 — Diseñar flujo completo de conteos
-        ↓
-TAREA ACTUAL
 NEXO-UX-019 — Diseñar flujo completo de ajustes
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NEXO-UX-020 — Simplificar escáner y captura
         ↓
+SIGUIENTE TAREA RESERVADA
+NEXO-UX-021 — Mostrar solo información necesaria según etapa
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 18 de 25 tareas aprobadas
+CARRIL NEXO — 19 de 25 tareas aprobadas
 ```
