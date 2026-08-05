@@ -1,26 +1,15 @@
-import assert from 'node:assert/strict';
-import test from 'node:test';
+test('reconoce todos los encabezados válidos de requisitos de prueba', () => {
+  const headings = [
+    '#### 14. Requisitos de prueba derivados',
+    '#### 14. Requisitos de prueba generados',
+    '#### 14. Requisitos de prueba incorporados',
+    '#### 14. Requisitos de prueba creados',
+    '#### 14. Requisitos creados',
+  ];
 
-import {
-  extractDerivedTreqIds,
-  validateTreqRegistrySource,
-} from './validate-treq-registry.mjs';
-
-const context = {
-  tasks: new Map([
-    ['TASK-BASE-001', {
-      id: 'TASK-BASE-001',
-      state: 'APROBADA',
-      derivedIds: ['TREQ-AUTH-001'],
-    }],
-  ]),
-  expectedLatestTaskId: 'TASK-BASE-001',
-};
-
-test('reconoce requisitos derivados, generados e incorporados', () => {
-  for (const variant of ['derivados', 'generados', 'incorporados']) {
+  for (const heading of headings) {
     const body = [
-      `#### 14. Requisitos de prueba ${variant}`,
+      heading,
       '',
       'TREQ-SUPABASE-139 a TREQ-SUPABASE-141',
       '',
