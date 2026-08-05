@@ -17550,7 +17550,1163 @@ Se incorporan `TREQ-NEXO-217` a `TREQ-NEXO-230` en el registro canónico complet
 `NEXO-UX-020` deberá consumir los estados, identidades y puntos de interacción definidos hasta esta tarea para simplificar escaneo y captura sin convertir una lectura de código en autorización, decisión o posting.
 
 
-### [ ] NEXO-UX-020 — Simplificar escáner y captura
+### ✅ NEXO-UX-020 — Simplificar escáner y captura
+
+---
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-019 — Diseñar flujo completo de ajustes` — APROBADA
+**Tarea siguiente:** `NEXO-UX-021 — Mostrar solo información necesaria según etapa` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional transversal de escaneo y captura contextual, con canales, sobre de captura, identidad, resolución, ambigüedad, propuesta de intención, separación de efectos, cantidad, UOM, deduplicación, sesión, offline, dispositivos, seguridad, feedback, superficies, estados, validación y continuidad
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Procesos consumidores:** `VPROC-0023` a `VPROC-0028`; el escáner no crea un proceso empresarial nuevo ni sustituye el proceso invocante
+**Tarea transversal vinculada:** `NEXO-TASK-028 — Resolver un destino contextual`
+**Permiso funcional exacto consumido:** el permiso de la tarea invocante; `/scanner` no crea permiso autónomo, no amplía territorio y no hereda autoridad por dispositivo, URL, código leído o acceso técnico
+**Artefactos producidos:** veinticuatro contratos, catálogos, matrices y handoffs enumerados en esta tarea
+**Decisiones consumidas:** `NEXO-INVENTORY-MOVEMENT-IMPLEMENTATION-HANDOFF-001`, `NEXO-INVENTORY-PUTAWAY-IMPLEMENTATION-HANDOFF-001`, `NEXO-INVENTORY-COUNT-IMPLEMENTATION-HANDOFF-001`, `NEXO-INVENTORY-ADJUSTMENT-IMPLEMENTATION-HANDOFF-001`, rutas y tareas aprobadas de NEXO, requisitos `TREQ-NEXO-*` vigentes y evidencia técnica actual de `vento-nexo` y `vento-shell`
+**Cambios físicos autorizados:** ninguno; no modifica código, dependencias, componentes, permisos, datos, Supabase, migraciones, RLS, RPC, tipos, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar un contrato transversal y consumible para identificar recursos físicos y capturar datos dentro del paso operativo vigente, eliminando recorridos duplicados sin convertir una lectura de código en una acción empresarial.
+
+La regla central es:
+
+```text
+CONTEXTO INVOCANTE AUTORIZADO
++ CANAL DE CAPTURA EQUIVALENTE
++ ENTRADA CRUDA PRESERVADA
++ RESOLUCION DE IDENTIDAD EN SERVIDOR
++ ELEGIBILIDAD PARA EL PASO ACTUAL
++ PROPUESTA EXPLICITA AL HOST
++ CONFIRMACION Y COMANDO DEL PROCESO
+→ CAPTURA TRAZABLE SIN EFECTO IMPLICITO
+```
+
+Escanear significa capturar una señal de identidad. No significa recibir, preparar, retirar, trasladar, contar, ajustar, cerrar, aprobar, publicar, asignar custodia ni modificar stock. El proceso invocante conserva sus reglas, permisos, cantidades, UOM, versiones, confirmaciones, idempotencia y receipts.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban los siguientes artefactos:
+
+|    # | Artefacto                                                 | Resultado material                                                                                     |
+| ---: | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+|   1. | `NEXO-INVENTORY-SCAN-CAPTURE-FLOW-CONTRACT-001`           | fija propósito, fronteras, recorrido y salida del escaneo contextual                                   |
+|   2. | `NEXO-INVENTORY-SCAN-CONTEXT-INHERITANCE-CONTRACT-001`    | define el contexto que el host entrega, valida y recupera al volver                                    |
+|   3. | `NEXO-INVENTORY-SCAN-CHANNEL-CATALOG-001`                 | materializa seis canales equivalentes de captura                                                       |
+|   4. | `NEXO-INVENTORY-SCAN-PAYLOAD-ENVELOPE-001`                | define el sobre inmutable de entrada cruda, canal, tiempo, dispositivo y correlación                   |
+|   5. | `NEXO-INVENTORY-SCAN-SYMBOL-IDENTITY-CATALOG-001`         | materializa ocho clases de identidad física y sus propietarios                                         |
+|   6. | `NEXO-INVENTORY-SCAN-RESOLUTION-CONTRACT-001`             | define normalización conservadora, resolución en servidor y elegibilidad contextual                    |
+|   7. | `NEXO-INVENTORY-SCAN-AMBIGUITY-NO-MATCH-CONTRACT-001`     | gobierna ocho resultados, ambigüedad, no encontrado, formato inválido y etiqueta dañada                |
+|   8. | `NEXO-INVENTORY-SCAN-INTENT-PROPOSAL-CONTRACT-001`        | entrega una propuesta no autoritativa al proceso invocante                                             |
+|   9. | `NEXO-INVENTORY-SCAN-NO-AUTO-EFFECT-BOUNDARY-001`         | prohíbe confirmación, posting o mutación por el solo acto de capturar                                  |
+|  10. | `NEXO-INVENTORY-SCAN-STEP-CATALOG-001`                    | materializa veinticuatro pasos y correlaciona captura, actor, dispositivo, work item, sesión y retorno |
+|  11. | `NEXO-INVENTORY-CAPTURE-QUANTITY-UOM-CONTRACT-001`        | separa identidad de cantidad, presentación, UOM y conversión                                           |
+|  12. | `NEXO-INVENTORY-CAPTURE-DEBOUNCE-DEDUP-CONTRACT-001`      | evita dobles lecturas sin perder observaciones legítimas                                               |
+|  13. | `NEXO-INVENTORY-CAPTURE-IDEMPOTENCY-RECEIPT-CONTRACT-001` | separa receipt de captura de la idempotencia del comando empresarial                                   |
+|  14. | `NEXO-INVENTORY-CAPTURE-OFFLINE-DRAFT-SYNC-CONTRACT-001`  | limita offline a borradores no verificados y exige resolver nuevamente al sincronizar                  |
+|  15. | `NEXO-INVENTORY-SCAN-DEVICE-CAPABILITY-CONTRACT-001`      | modela cámara, wedge, teclado, táctil, permisos y fallback                                             |
+|  16. | `NEXO-INVENTORY-SCAN-PERMISSION-TERRITORY-CONTRACT-001`   | aplica autorización y territorio del host sin ampliaciones implícitas                                  |
+|  17. | `NEXO-INVENTORY-SCAN-SECURITY-PRIVACY-CONTRACT-001`       | limita URL, payload, telemetría, frames, secretos y datos retenidos                                    |
+|  18. | `NEXO-INVENTORY-SCAN-FEEDBACK-RECOVERY-CONTRACT-001`      | distingue lectura, resolución, propuesta, aceptación, error y recuperación accesible                   |
+|  19. | `NEXO-INVENTORY-SCAN-CONTINUOUS-BATCH-CONTRACT-001`       | define captura continua, lista temporal, duplicados y finalización explícita                           |
+|  20. | `NEXO-INVENTORY-SCAN-SOURCE-DISPOSITION-001`              | decide quince superficies y fuentes actuales sin perder sus procesos propietarios                      |
+|  21. | `NEXO-INVENTORY-SCAN-ROUTE-DISPOSITION-001`               | fija el destino de `/scanner`, deep links y rutas contextuales                                         |
+|  22. | `NEXO-INVENTORY-SCAN-INTERFACE-STATE-CONTRACT-001`        | materializa treinta estados visibles con acción válida y salida                                        |
+|  23. | `NEXO-INVENTORY-SCAN-VALIDATION-MATRIX-001`               | define cuarenta y ocho comprobaciones contractuales, técnicas y operativas                             |
+|  24. | `NEXO-INVENTORY-SCAN-IMPLEMENTATION-HANDOFF-001`          | entrega convergencia, componentes, adaptadores, transición, pruebas, observabilidad y rollback         |
+
+Cobertura materializada:
+
+| Elemento                                 | Total esperado | Total materializado | Faltantes | Duplicados |
+| ---------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Artefactos documentales                  |             24 |                  24 |         0 |          0 |
+| Canales de captura                       |              6 |                   6 |         0 |          0 |
+| Clases de identidad                      |              8 |                   8 |         0 |          0 |
+| Resultados de resolución                 |              8 |                   8 |         0 |          0 |
+| Estados empresariales y técnicos         |             22 |                  22 |         0 |          0 |
+| Pasos de flujo                           |             24 |                  24 |         0 |          0 |
+| Superficies y fuentes actuales decididas |             15 |                  15 |         0 |          0 |
+| Estados de interfaz                      |             30 |                  30 |         0 |          0 |
+| Comprobaciones de aceptación             |             48 |                  48 |         0 |          0 |
+| Requisitos de prueba nuevos              |             14 |                  14 |         0 |          0 |
+
+No se crea un lector físico, un registro maestro de códigos ni un writer empresarial durante esta tarea. Se materializa el contrato objetivo que deberán consumir los recorridos de NEXO.
+
+---
+
+#### 3. Alcance, diagnóstico actual y límites
+
+Incluye:
+
+- invocación desde un paso operativo, supervisor o de configuración autorizado;
+- cámara, lector tipo teclado, teclado manual, deep link, búsqueda asistida y selección táctil;
+- LOC, posición, producto, presentación, documento de trabajo, activo, grupo y LPN como identidades resolubles;
+- resolución única, ambigua, no encontrada, inválida, fuera de contexto, no verificada o duplicada;
+- captura única y continua;
+- separación entre identidad, cantidad, UOM, evidencia, decisión y comando;
+- retorno al host sin perder work item, sesión, paso, filtros ni borrador;
+- funcionamiento degradado y borrador offline;
+- privacidad, feedback accesible, telemetría y recuperación;
+- decisión explícita sobre quince superficies actuales;
+- handoff técnico y matriz de validación.
+
+Excluye:
+
+- decidir qué campos mínimos se muestran en cada etapa, reservado a `NEXO-UX-021`;
+- resolver excepciones empresariales, reservado a `NEXO-UX-022`;
+- certificar cámara, lectores, tablets, kioscos, rendimiento, iluminación o conectividad, reservado a `NEXO-UX-023` a `NEXO-UX-025`;
+- diseñar el ciclo completo de LPN, reservado a `NEXO-UX-026` a `NEXO-UX-029`;
+- alterar los procesos, cantidades, UOM, políticas, permisos o comandos aprobados en `NEXO-UX-009` a `NEXO-UX-019`;
+- implementar código, SQL, migraciones, permisos, datos o despliegues.
+
+Diagnóstico verificable del código actual:
+
+| Evidencia actual                               | Estado observado                                          | Brecha que esta tarea resuelve documentalmente               |
+| ---------------------------------------------- | --------------------------------------------------------- | ------------------------------------------------------------ |
+| `/scanner`                                     | redirige a `/inventory/locations`; no captura ni resuelve | no existe utilidad contextual transversal                    |
+| `/l/[code]`                                    | normaliza un código de LOC y redirige                     | deep link especializado, sin sobre común ni retorno al host  |
+| `/inventory/locations/open`                    | resuelve LOC por código y sede activa                     | resolución limitada a LOC y con redirección directa          |
+| QR de activos                                  | genera e imprime URLs propias                             | produce símbolos, pero no comparte resolutor con inventario  |
+| dependencia `barcode-detector-api-polyfill`    | declarada en `vento-nexo`                                 | capacidad técnica no materializada en un flujo canónico      |
+| formularios de conteo                          | búsqueda, tarjetas y borrador local específico            | captura duplicada y sin adaptador transversal                |
+| selectores buscables                           | búsqueda manual reusable                                  | no reciben canales de scanner ni contrato de identidad       |
+| borradores `inventory_form_drafts`             | infraestructura parcial por formulario                    | no define verificación offline ni re-resolución de identidad |
+| retiros, entradas, transferencias y remisiones | cada flujo implementa su selección y captura              | reglas de proceso correctas, interacción duplicada           |
+
+La brecha no se corrige creando una pantalla universal que posea todos los procesos. Se resuelve mediante un adaptador común que hereda el contexto del host, devuelve una propuesta y termina allí.
+
+---
+
+#### 4. `NEXO-INVENTORY-SCAN-CAPTURE-FLOW-CONTRACT-001`
+
+Recorrido canónico:
+
+```text
+HOST INVOCANTE
+→ ABRIR CAPTURA CON CONTEXTO FIRMADO O REVALIDABLE
+→ ADQUIRIR ENTRADA POR UN CANAL
+→ CREAR SOBRE DE CAPTURA
+→ CLASIFICAR FORMATO SIN ASUMIR IDENTIDAD
+→ RESOLVER EN SERVIDOR
+→ FILTRAR POR CONTEXTO, TERRITORIO Y PASO
+→ MOSTRAR RESULTADO Y PROPUESTA
+→ USUARIO ACEPTA, DESCARTA O CORRIGE
+→ DEVOLVER RESULTADO NO AUTORITATIVO AL HOST
+→ HOST VALIDA CAMPOS Y CONFIRMA SU COMANDO
+```
+
+Invariantes:
+
+1. el escáner siempre tiene un host y un propósito explícito;
+2. capturar y resolver no mutan entidades empresariales;
+3. el resultado conserva identidad, fuente, versión y contexto;
+4. la confirmación pertenece al host;
+5. el retorno no autoriza acciones distintas de las permitidas al abrir;
+6. una lectura posterior no reutiliza autoridad vencida;
+7. el host puede ofrecer búsqueda o ingreso manual sin degradar trazabilidad;
+8. cancelar devuelve al mismo contexto sin efecto.
+
+---
+
+#### 5. `NEXO-INVENTORY-SCAN-CONTEXT-INHERITANCE-CONTRACT-001`
+
+Contexto mínimo de invocación:
+
+```text
+scan_context_id
+context_version
+app_id
+process_id
+process_stage_id
+host_route_id
+return_target
+actor_id
+principal_id
+device_session_id
+site_id
+operational_area_id?
+work_item_id?
+work_item_version?
+workflow_session_id?
+expected_identity_classes[]
+allowed_proposal_types[]
+permission_requirements[]
+resource_scope
+quantity_policy_ref?
+uom_policy_ref?
+offline_policy
+expires_at
+correlation_id
+```
+
+Reglas:
+
+- `return_target` será un identificador interno permitido, no una URL abierta suministrada por el cliente;
+- el servidor reconstruirá o revalidará principal, actor, permiso, territorio, work item, estado y versión;
+- el contexto expirará al cerrar, transferir, revocar o cambiar de versión el trabajo;
+- la utilidad no podrá ampliar `expected_identity_classes` ni `allowed_proposal_types`;
+- la sede seleccionada visualmente no sustituye el territorio efectivo;
+- una captura reutilizada en otro paso deberá resolverse nuevamente;
+- el host recibirá el mismo `correlation_id` y una versión explícita del contexto.
+
+---
+
+#### 6. `NEXO-INVENTORY-SCAN-CHANNEL-CATALOG-001`
+
+| Canal               | ID                      | Entrada                          | Uso objetivo                                | Límite                                                    |
+| ------------------- | ----------------------- | -------------------------------- | ------------------------------------------- | --------------------------------------------------------- |
+| cámara              | `SCN-CHANNEL-CAMERA`    | símbolo leído de imagen en vivo  | QR y códigos compatibles                    | no retiene frame por defecto ni confirma por detección    |
+| lector tipo teclado | `SCN-CHANNEL-WEDGE`     | secuencia de teclas y terminador | operación repetitiva con periférico         | no intercepta escritura normal fuera del foco de captura  |
+| teclado manual      | `SCN-CHANNEL-MANUAL`    | código escrito y enviado         | etiqueta dañada o dispositivo sin cámara    | conserva que fue manual y exige mismas validaciones       |
+| deep link           | `SCN-CHANNEL-DEEP_LINK` | token o código de ruta interna   | etiqueta que abre NEXO desde cámara externa | la URL no concede permiso ni define destino autoritativo  |
+| búsqueda asistida   | `SCN-CHANNEL-SEARCH`    | texto y candidato elegido        | recurso sin símbolo o código desconocido    | la elección queda registrada como selección humana        |
+| selección táctil    | `SCN-CHANNEL-TOUCH`     | opción contextual visible        | lista corta o trabajo guiado                | no se trata como lectura física ni evidencia de presencia |
+
+Todos los canales producen el mismo sobre y convergen en el mismo resolutor. El proceso no podrá tener reglas cuantitativas diferentes según el canal.
+
+---
+
+#### 7. `NEXO-INVENTORY-SCAN-PAYLOAD-ENVELOPE-001`
+
+Sobre de captura:
+
+```text
+capture_event_id
+scan_context_id
+context_version
+channel_id
+captured_at_client
+received_at_server?
+raw_value
+raw_value_hash
+normalized_candidate
+symbology_hint?
+device_capability_snapshot
+operator_input_metadata
+batch_session_id?
+sequence_in_batch?
+client_event_nonce
+verification_state
+```
+
+Reglas:
+
+- `raw_value` se preserva sin correcciones ortográficas ni sustituciones ambiguas;
+- `normalized_candidate` solo podrá aplicar transformaciones deterministas y reversibles, como trim y normalización documentada de mayúsculas cuando el namespace lo permita;
+- el `symbology_hint` no define por sí mismo la clase de entidad;
+- timestamps del cliente son evidencia auxiliar; el servidor asigna tiempo autoritativo al recibir;
+- el nonce evita duplicados accidentales, pero no reemplaza la idempotencia del host;
+- el payload no incluirá fotografía, video o audio salvo una política de evidencia independiente y explícita;
+- el hash permitirá correlación y redacción de logs sin perder diagnóstico.
+
+---
+
+#### 8. `NEXO-INVENTORY-SCAN-SYMBOL-IDENTITY-CATALOG-001`
+
+| Clase                       | ID                    | Identidad autoritativa             | Namespace o símbolo                           | Proceso propietario              | Propuesta permitida                                         |
+| --------------------------- | --------------------- | ---------------------------------- | --------------------------------------------- | -------------------------------- | ----------------------------------------------------------- |
+| LOC                         | `SCN-ID-LOC`          | `inventory_location_id`            | código o enlace de ubicación                  | `VPROC-0023`                     | seleccionar origen, destino o contexto LOC                  |
+| posición                    | `SCN-ID-POSITION`     | `location_position_id`             | código jerárquico o etiqueta                  | `VPROC-0023`                     | seleccionar posición elegible                               |
+| producto                    | `SCN-ID-PRODUCT`      | `product_id`                       | SKU o código maestro                          | catálogo e inventario            | seleccionar producto sin inferir presentación               |
+| presentación                | `SCN-ID-PRESENTATION` | `presentation_id`                  | código comercial, interno o de empaque        | catálogo e inventario            | seleccionar producto, presentación y UOM declaradas         |
+| documento de trabajo        | `SCN-ID-WORK`         | `work_item_id` y versión           | código de remisión, recepción, conteo o tarea | proceso invocante                | abrir o enfocar trabajo permitido                           |
+| activo o grupo              | `SCN-ID-ASSET`        | `asset_item_id` o `asset_group_id` | QR o código patrimonial                       | `VPROC-0029` y bloque de activos | seleccionar identidad patrimonial; cero efecto cuantitativo |
+| LPN                         | `SCN-ID-LPN`          | `lpn_id`                           | etiqueta de contenedor                        | bloque LPN                       | identificar contenedor; acciones reservadas a su proceso    |
+| código legacy o desconocido | `SCN-ID-LEGACY`       | referencia no resuelta             | URL, código histórico o texto                 | propietario por investigar       | abrir resolución secundaria, nunca mapear por inferencia    |
+
+Conservación de identidades:
+
+- producto y presentación no se fusionan;
+- LOC y posición no se sustituyen entre sí;
+- documento y entidad contenida no se confunden;
+- activo, grupo y stock fungible permanecen separados;
+- LPN identifica contenedor, no confirma automáticamente su contenido;
+- un alias podrá apuntar a una identidad únicamente mediante registro versionado y no ambiguo.
+
+---
+
+#### 9. `NEXO-INVENTORY-SCAN-RESOLUTION-CONTRACT-001`
+
+El resolutor ejecutará:
+
+1. validar estructura y tamaño del payload;
+2. identificar namespaces posibles sin elegir por orden arbitrario;
+3. consultar fuentes autoritativas mediante adaptadores;
+4. devolver candidatos con tipo, identidad, estado, versión y propietario;
+5. aplicar territorio y visibilidad del actor;
+6. aplicar clases esperadas por el host;
+7. aplicar estado y elegibilidad del paso;
+8. producir exactamente uno de los ocho resultados aprobados;
+9. registrar receipt de resolución;
+10. no ejecutar ningún command empresarial.
+
+Contrato de candidato:
+
+```text
+resolved_candidate_id
+identity_class
+entity_id
+entity_version
+canonical_label
+secondary_labels[]
+source_adapter
+source_version
+site_id?
+location_id?
+state
+visibility
+eligibility
+ineligibility_reason?
+proposal_types[]
+resolution_receipt_id
+```
+
+El cliente no enviará `entity_id` como resolución autoritativa. Un ID incluido en URL o formulario se tratará como entrada que debe revalidarse.
+
+---
+
+#### 10. `NEXO-INVENTORY-SCAN-AMBIGUITY-NO-MATCH-CONTRACT-001`
+
+Resultados exactos:
+
+| Resultado               | ID                                | Significado                                         | Acción válida                                      |
+| ----------------------- | --------------------------------- | --------------------------------------------------- | -------------------------------------------------- |
+| resuelto único elegible | `SCN-RESULT-RESOLVED`             | existe un candidato visible y apto                  | mostrar propuesta y permitir aceptarla             |
+| resuelto fuera de paso  | `SCN-RESULT-INELIGIBLE`           | identidad existe, pero no aplica al paso            | explicar bloqueo y conservar contexto              |
+| ambiguo                 | `SCN-RESULT-AMBIGUOUS`            | existen varios candidatos válidos                   | pedir selección o verificación secundaria          |
+| no encontrado           | `SCN-RESULT-NOT_FOUND`            | ninguna fuente reconoce la entrada                  | permitir reintento, búsqueda o incidente           |
+| formato inválido        | `SCN-RESULT-INVALID`              | payload excede o viola el contrato                  | rechazar sin consultar fuentes innecesarias        |
+| contexto vencido        | `SCN-RESULT-CONTEXT_EXPIRED`      | host, work item o versión ya no son vigentes        | volver al host y recargar trabajo                  |
+| no verificado offline   | `SCN-RESULT-OFFLINE_UNVERIFIED`   | solo existe borrador local                          | guardar sin afirmar identidad ni elegibilidad      |
+| duplicado suprimido     | `SCN-RESULT-DUPLICATE_SUPPRESSED` | misma señal fue leída dentro de la ventana definida | mostrar supresión y permitir repetición deliberada |
+
+Etiqueta dañada o ilegible:
+
+- se cambia a canal manual, búsqueda o verificación secundaria;
+- no se completa un código por similitud silenciosa;
+- no se reutiliza el último recurso leído;
+- una discrepancia entre etiqueta y contexto abre el handoff a `NEXO-UX-022` cuando constituye excepción empresarial;
+- la reimpresión pertenece al propietario de la etiqueta y no al escáner.
+
+---
+
+#### 11. `NEXO-INVENTORY-SCAN-INTENT-PROPOSAL-CONTRACT-001`
+
+Salida hacia el host:
+
+```text
+capture_event_id
+resolution_receipt_id
+scan_context_id
+context_version
+resolved_candidate_id
+entity_id
+entity_version
+identity_class
+proposed_intent_type
+proposed_field_binding
+proposal_status
+proposal_created_at
+proposal_expires_at
+```
+
+La propuesta puede:
+
+- enfocar un trabajo;
+- seleccionar producto o presentación;
+- seleccionar LOC o posición;
+- agregar un candidato a una lista temporal;
+- sugerir origen o destino;
+- completar un campo de identidad;
+- solicitar verificación adicional.
+
+La propuesta no puede:
+
+- llenar una cantidad no expresada;
+- seleccionar una UOM distinta de la identidad resuelta;
+- confirmar recepción, retiro, traslado, conteo o ajuste;
+- cerrar una línea o sesión;
+- aprobar una excepción;
+- ejecutar posting;
+- cambiar territorio, actor, dispositivo o permiso;
+- sustituir un work item vencido.
+
+El host deberá mostrar la propuesta antes de incorporarla a su borrador, excepto cuando una política aprobada permita autoenfoque sin efecto, como enfocar una línea ya asignada. Autoenfoque nunca equivale a confirmar.
+
+---
+
+#### 12. `NEXO-INVENTORY-SCAN-NO-AUTO-EFFECT-BOUNDARY-001`
+
+Frontera obligatoria:
+
+```text
+CAPTURE RECEIPT ≠ RESOLUTION RECEIPT ≠ HOST DRAFT ≠ COMMAND RECEIPT
+```
+
+Prohibiciones:
+
+- `onScan` no llama commands de inventario;
+- un deep link no redirige a una mutación;
+- una lectura repetida no incrementa cantidad por defecto;
+- una posición leída no mueve existencias;
+- un producto leído no crea una línea publicada;
+- un documento leído no cambia su estado;
+- un activo leído no actualiza ubicación, custodia o condición;
+- un LPN leído no confirma contenido ni transferencia;
+- el escáner no inserta movimientos, observaciones de conteo, ajustes ni receipts empresariales;
+- una señal acústica de lectura no representa éxito del proceso.
+
+Excepción permitida: el host puede incorporar automáticamente una identidad a un borrador local o temporal cuando la política de ese paso lo autorice, siempre que no exista efecto empresarial, el usuario vea la incorporación y pueda deshacerla antes de confirmar.
+
+---
+
+#### 13. `NEXO-INVENTORY-SCAN-STEP-CATALOG-001`
+
+| Paso          | Nombre                | Actor principal    | Entrada                                     | Salida                     | Límite                               |
+| ------------- | --------------------- | ------------------ | ------------------------------------------- | -------------------------- | ------------------------------------ |
+| `SCN-STEP-01` | invocar utilidad      | host autorizado    | tarea, paso y propósito                     | solicitud de contexto      | no abre scanner genérico             |
+| `SCN-STEP-02` | resolver contexto     | servidor           | context ID o solicitud                      | contexto vigente           | no confía en URL ni cliente          |
+| `SCN-STEP-03` | verificar autoridad   | servidor           | actor, permiso y territorio                 | alcance permitido          | no concede permiso autónomo          |
+| `SCN-STEP-04` | verificar trabajo     | servidor           | work item y versión                         | trabajo elegible           | no reabre trabajo cerrado            |
+| `SCN-STEP-05` | evaluar dispositivo   | utilidad           | capabilities                                | canales disponibles        | no certifica físicamente el equipo   |
+| `SCN-STEP-06` | elegir canal          | operador           | canales y preferencia                       | canal activo               | no cambia reglas del host            |
+| `SCN-STEP-07` | adquirir señal        | operador y adapter | cámara, wedge, manual, link, search o touch | valor crudo                | no infiere efecto                    |
+| `SCN-STEP-08` | crear sobre           | adapter            | señal y contexto                            | capture envelope           | no altera raw value                  |
+| `SCN-STEP-09` | deduplicar señal      | adapter            | fingerprint y ventana                       | aceptada o suprimida       | no deduplica commands                |
+| `SCN-STEP-10` | validar payload       | servidor           | envelope                                    | válido o inválido          | no consulta con payload inseguro     |
+| `SCN-STEP-11` | clasificar namespaces | servidor           | candidato normalizado                       | namespaces posibles        | no elige por orden                   |
+| `SCN-STEP-12` | consultar adapters    | servidor           | namespaces y valor                          | candidatos versionados     | no fusiona propietarios              |
+| `SCN-STEP-13` | filtrar visibilidad   | servidor           | candidatos y actor                          | candidatos visibles        | no revela fuera de territorio        |
+| `SCN-STEP-14` | filtrar elegibilidad  | servidor           | host, paso y estado                         | candidatos elegibles       | no amplía intents                    |
+| `SCN-STEP-15` | emitir resultado      | servidor           | candidatos filtrados                        | uno de ocho resultados     | no ejecuta command                   |
+| `SCN-STEP-16` | mostrar feedback      | utilidad           | resultado y receipt                         | estado comprensible        | no confunde lectura con éxito        |
+| `SCN-STEP-17` | resolver ambigüedad   | operador           | candidatos distinguibles                    | selección o descarte       | no adivina identidad                 |
+| `SCN-STEP-18` | recuperar no match    | operador           | error accionable                            | reintento, búsqueda o caso | no reutiliza último recurso          |
+| `SCN-STEP-19` | construir proposal    | utilidad           | candidato elegible                          | propuesta tipada           | no llena cantidad implícita          |
+| `SCN-STEP-20` | aceptar o descartar   | operador           | proposal visible                            | draft binding o descarte   | no confirma proceso                  |
+| `SCN-STEP-21` | continuar batch       | operador           | draft bindings                              | lista temporal             | no ejecuta loop de commands          |
+| `SCN-STEP-22` | finalizar captura     | operador           | proposal o batch                            | paquete de retorno         | no publica                           |
+| `SCN-STEP-23` | retornar al host      | utilidad           | receipts y bindings                         | host restaurado            | no pierde contexto                   |
+| `SCN-STEP-24` | validar en host       | proceso invocante  | propuesta y estado actual                   | draft válido o conflicto   | command y receipt pertenecen al host |
+
+Reconciliación:
+
+```text
+EXPECTED_STEPS = 24
+MATERIALIZED_STEPS = 24
+UNIQUE_STEP_IDS = 24
+MISSING_STEPS = 0
+DUPLICATE_STEP_IDS = 0
+```
+
+Conceptos de correlación:
+
+| Concepto                | Propósito                                 | Regla                                      |
+| ----------------------- | ----------------------------------------- | ------------------------------------------ |
+| `scan_context_id`       | une host y utilidad                       | uno por invocación y versión               |
+| `capture_event_id`      | identifica la adquisición                 | único por señal aceptada por el adaptador  |
+| `batch_session_id`      | agrupa captura continua                   | no es un work item ni un command batch     |
+| `work_item_id`          | trabajo empresarial                       | lo entrega y valida el host                |
+| `workflow_session_id`   | sesión de conteo, preparación o recepción | no se crea desde el escáner                |
+| `device_session_id`     | contexto técnico del equipo               | no concede permiso                         |
+| `resolution_receipt_id` | prueba de resolución                      | expira con contexto o versión              |
+| `correlation_id`        | trazabilidad extremo a extremo            | acompaña host, captura y command posterior |
+
+Transferencia y cierre:
+
+- si el work item cambia de propietario, versión o estado, las propuestas pendientes expiran;
+- cerrar la utilidad no cierra la sesión empresarial;
+- cambiar de dispositivo exige revalidar el contexto;
+- dos dispositivos podrán capturar para un mismo trabajo solo si la política de concurrencia del host lo permite;
+- el host decide cómo fusionar borradores y resolver conflictos.
+
+Estados empresariales y técnicos:
+
+|    # | Estado                  | Significado                                       |
+| ---: | ----------------------- | ------------------------------------------------- |
+|    1 | `SCN-CONTEXT-READY`     | contexto vigente y listo                          |
+|    2 | `SCN-CONTEXT-EXPIRED`   | contexto vencido o revocado                       |
+|    3 | `SCN-DEVICE-CHECKING`   | capacidades en evaluación                         |
+|    4 | `SCN-DEVICE-READY`      | canal disponible                                  |
+|    5 | `SCN-DEVICE-DEGRADED`   | opera con fallback                                |
+|    6 | `SCN-AWAITING-CAPTURE`  | espera entrada                                    |
+|    7 | `SCN-CAPTURING`         | adquiere señal                                    |
+|    8 | `SCN-CAPTURED`          | sobre creado                                      |
+|    9 | `SCN-VALIDATING`        | valida estructura                                 |
+|   10 | `SCN-RESOLVING`         | consulta adaptadores                              |
+|   11 | `SCN-RESOLVED`          | candidato único elegible                          |
+|   12 | `SCN-AMBIGUOUS`         | varios candidatos                                 |
+|   13 | `SCN-NOT-FOUND`         | sin candidato                                     |
+|   14 | `SCN-INELIGIBLE`        | candidato no permitido en el paso                 |
+|   15 | `SCN-DUPLICATE`         | lectura suprimida                                 |
+|   16 | `SCN-PROPOSED`          | propuesta enviada al host                         |
+|   17 | `SCN-ACCEPTED-IN-DRAFT` | host la incorporó sin publicar                    |
+|   18 | `SCN-DISCARDED`         | usuario o host la descartó                        |
+|   19 | `SCN-OFFLINE-DRAFT`     | entrada no verificada pendiente                   |
+|   20 | `SCN-SYNC-CONFLICT`     | no puede revalidarse sin intervención             |
+|   21 | `SCN-CANCELLED`         | utilidad cerrada sin efecto                       |
+|   22 | `SCN-COMPLETED`         | retorno al host con receipts y cero efecto propio |
+
+---
+
+#### 14. `NEXO-INVENTORY-CAPTURE-QUANTITY-UOM-CONTRACT-001`
+
+Reglas:
+
+1. identidad y cantidad son campos distintos;
+2. un código de producto no define presentación ni factor;
+3. un código de presentación puede proponer su UOM y factor versionados, pero el host valida vigencia y elegibilidad;
+4. una lectura repetida no significa `+1` salvo política explícita del host, visible, reversible y limitada a borrador;
+5. cantidades se capturan mediante control del proceso, no mediante heurística del escáner;
+6. cero, vacío, no observado y omitido conservan significados diferentes;
+7. decimales, precisión, min, max y step pertenecen a la UOM y al paso;
+8. conversión se ejecuta en el command boundary del proceso, nunca en el adaptador de captura como fuente de verdad;
+9. una identidad incompatible con la UOM esperada queda bloqueada;
+10. lote, vencimiento, condición o serial no se infieren desde otra etiqueta.
+
+Cuando una etiqueta codifique explícitamente cantidad, peso o lote, esos elementos se entregarán como datos estructurados propuestos, con namespace y versión; el host deberá mostrarlos y validarlos antes de usarlos.
+
+---
+
+#### 15. `NEXO-INVENTORY-CAPTURE-DEBOUNCE-DEDUP-CONTRACT-001`
+
+Fingerprint de lectura:
+
+```text
+scan_context_id
+channel_id
+normalized_candidate
+identity_class_hint?
+device_session_id
+batch_session_id?
+```
+
+Reglas:
+
+- la ventana de debounce será configurable por canal y host;
+- misma señal dentro de la ventana produce `SCN-RESULT-DUPLICATE_SUPPRESSED`;
+- el usuario podrá declarar una repetición deliberada cuando el host admita múltiples unidades;
+- lecturas de recursos distintos nunca se agrupan por proximidad temporal;
+- cambiar contexto, línea, lote o posición rompe la deduplicación;
+- wedge y cámara que detecten la misma señal no crearán dos eventos aceptados;
+- el receipt conserva cuántas señales fueron suprimidas;
+- deduplicar captura no deduplica el command posterior;
+- un batch reintentado conserva sus event IDs y no regenera observaciones.
+
+---
+
+#### 16. `NEXO-INVENTORY-CAPTURE-IDEMPOTENCY-RECEIPT-CONTRACT-001`
+
+Receipt de captura:
+
+```text
+capture_receipt_id
+capture_event_id
+payload_hash
+channel_id
+accepted_at
+suppression_status
+scan_context_id
+resolution_receipt_id?
+```
+
+Receipt de resolución:
+
+```text
+resolution_receipt_id
+capture_receipt_id
+resolver_version
+source_versions[]
+result_type
+candidate_refs[]
+eligibility_snapshot
+resolved_at
+expires_at
+```
+
+Reglas:
+
+- repetir `capture_event_id` y mismo payload devuelve el mismo receipt;
+- mismo ID con payload distinto es conflicto;
+- un timeout de resolución se consulta antes de repetir;
+- receipts de captura y resolución producen cero efecto empresarial;
+- el host construye su propia idempotency key al confirmar el command;
+- el command referencia los receipts usados como evidencia de selección;
+- una propuesta expirada no puede utilizarse para publicar;
+- eliminar un borrador no elimina receipts de diagnóstico sujetos a retención.
+
+---
+
+#### 17. `NEXO-INVENTORY-CAPTURE-OFFLINE-DRAFT-SYNC-CONTRACT-001`
+
+Offline permite:
+
+- capturar `raw_value`, canal, tiempo local, nonce y contexto conocido;
+- conservar una lista temporal cifrada o protegida según el dispositivo;
+- marcar cada entrada `SCN-RESULT-OFFLINE_UNVERIFIED`;
+- editar o descartar antes de sincronizar;
+- mostrar que identidad, elegibilidad y stock no están confirmados.
+
+Offline prohíbe:
+
+- afirmar que el recurso existe o pertenece a la sede;
+- resolver con un cache como autoridad definitiva;
+- confirmar recepción, retiro, traslado, conteo, ajuste o custodia;
+- crear receipts empresariales;
+- usar permisos vencidos;
+- sincronizar silenciosamente contra otro work item.
+
+Al reconectar:
+
+1. revalidar actor, dispositivo, permiso, territorio y contexto;
+2. resolver nuevamente cada entrada contra fuentes actuales;
+3. comparar work item y entity versions;
+4. suprimir duplicados por IDs y fingerprints;
+5. presentar conflictos, no encontrados e ineligibles;
+6. entregar propuestas al host;
+7. exigir confirmación mediante el command del proceso.
+
+La infraestructura de borradores existente podrá ser un mecanismo de transición, pero no sustituye estas reglas ni convierte `localStorage` en fuente canónica.
+
+---
+
+#### 18. `NEXO-INVENTORY-SCAN-DEVICE-CAPABILITY-CONTRACT-001`
+
+Snapshot mínimo:
+
+```text
+device_session_id
+device_class
+shared_device_mode
+camera_available
+camera_permission_state
+barcode_detector_available
+wedge_available
+keyboard_available
+touch_available
+network_state
+secure_context
+preferred_channel
+fallback_channels[]
+```
+
+Matriz de comportamiento:
+
+| Condición                      | Comportamiento                                                    |
+| ------------------------------ | ----------------------------------------------------------------- |
+| cámara disponible y autorizada | ofrecer cámara sin bloquear alternativas                          |
+| permiso de cámara denegado     | explicar cómo continuar con wedge, manual o búsqueda              |
+| API de detección ausente       | cargar adaptador compatible solo si está aprobado o usar fallback |
+| lector wedge conectado         | mantener foco explícito y terminador configurable                 |
+| dispositivo compartido         | mostrar actor activo y exigir reautenticación según policy        |
+| red intermitente               | cambiar a borrador no verificado sin fingir resolución            |
+| pantalla táctil                | controles grandes, foco estable y feedback multimodal             |
+| teclado físico                 | navegación completa y envío sin depender del tacto                |
+
+La existencia de `barcode-detector-api-polyfill` en el repositorio no constituye validación de dispositivo ni autoriza su uso automático. Compatibilidad real se certificará en `NEXO-UX-023` a `NEXO-UX-025`.
+
+---
+
+#### 19. `NEXO-INVENTORY-SCAN-PERMISSION-TERRITORY-CONTRACT-001`
+
+El resolutor aplica:
+
+```text
+principal técnico
++ actor efectivo
++ fuente de autoridad
++ permiso del host
++ modalidad
++ sede y área activas
++ recurso compatible
++ work item vigente
++ estado y versión
+→ candidato visible y propuesta permitida
+```
+
+Reglas:
+
+- `/scanner` no tendrá permiso autónomo de negocio;
+- el acceso base a NEXO no concede visibilidad universal de códigos;
+- una URL con `site_id`, `loc_id`, `product_id` o `asset_id` no amplía territorio;
+- el resolutor puede revelar “no permitido” sin exponer metadatos sensibles del recurso;
+- la identidad resuelta fuera de territorio no se devuelve como candidato utilizable;
+- el cliente no decide qué adapters consultar para eludir restricciones;
+- simulación, delegación y dispositivo compartido conservan su fuente y vigencia;
+- revocación entre resolución y confirmación hará fallar el command del host;
+- lectura y mutación seguirán usando permisos distintos cuando el proceso lo exija.
+
+---
+
+#### 20. `NEXO-INVENTORY-SCAN-SECURITY-PRIVACY-CONTRACT-001`
+
+Controles:
+
+- límites de longitud y charset antes de resolver;
+- rechazo de esquemas URL externos, javascript, data URLs o redirecciones abiertas;
+- allowlist de rutas internas y namespaces;
+- queries parametrizadas y cero interpolación de entrada cruda;
+- rate limit por actor, dispositivo y contexto;
+- protección contra enumeración de códigos;
+- redacción o hash de valores en logs según clasificación;
+- no retener frames de cámara por defecto;
+- no registrar tokens, cookies, secretos o querystrings sensibles;
+- TTL para receipts y borradores según propósito;
+- auditoría de accesos a identidades sensibles;
+- content security y secure context para cámara;
+- resolución server-side y respuesta mínima;
+- saneamiento de texto visible para evitar inyección.
+
+La cámara es un canal de captura, no un sistema de vigilancia. La tarea no autoriza grabación, reconocimiento facial, analítica de personas ni almacenamiento de video.
+
+---
+
+#### 21. `NEXO-INVENTORY-SCAN-FEEDBACK-RECOVERY-CONTRACT-001`
+
+Estados de feedback distintos:
+
+```text
+LEIDO
+VALIDADO
+RESOLVIENDO
+RESUELTO
+PROPUESTO
+AGREGADO_A_BORRADOR
+CONFIRMADO_POR_HOST
+ERROR
+```
+
+Reglas:
+
+- sonido o vibración nunca serán el único indicador;
+- un tono de lectura no se reutiliza como tono de command confirmado;
+- éxito muestra identidad, contexto y acción propuesta;
+- error muestra causa accionable sin exponer datos restringidos;
+- ambigüedad muestra candidatos distinguibles y criterio de selección;
+- duplicado muestra supresión y opción deliberada cuando aplica;
+- pérdida de foco del wedge es visible;
+- cámara denegada ofrece fallback inmediato;
+- cancelar detiene cámara, limpia recursos temporales y devuelve al host;
+- reintentar conserva contexto, pero genera nuevo event ID salvo reconciliación de timeout;
+- la interfaz mantiene foco y scroll del host al volver;
+- accesibilidad se valida con teclado, lector de pantalla, contraste y targets táctiles.
+
+---
+
+#### 22. `NEXO-INVENTORY-SCAN-CONTINUOUS-BATCH-CONTRACT-001`
+
+Captura continua es una modalidad de borrador, no un command masivo.
+
+Contrato:
+
+```text
+batch_session_id
+scan_context_id
+mode
+expected_identity_classes[]
+max_items?
+duplicate_policy
+started_at
+captured_items[]
+suppressed_items[]
+error_items[]
+completed_at?
+```
+
+Reglas:
+
+- el host debe declarar que admite captura continua;
+- cada elemento conserva su propio event y resolution receipt;
+- agregar a lista no publica ni cambia cantidad;
+- la lista muestra válidos, bloqueados, ambiguos, pendientes y duplicados;
+- quitar un elemento no elimina su receipt de auditoría técnica;
+- terminar batch devuelve un borrador al host;
+- el host valida cobertura, cantidades, UOM y atomicidad;
+- no hay loop de commands por cada lectura;
+- un error no confirma los elementos anteriores por inferencia;
+- reanudar conserva IDs y versión del contexto;
+- batch expirado exige nueva resolución.
+
+---
+
+#### 23. `NEXO-INVENTORY-SCAN-SOURCE-DISPOSITION-001`
+
+| ID               | Superficie o fuente actual     | Evidencia actual                 | Disposición objetivo                        | Propietario preservado | Límite                                             |
+| ---------------- | ------------------------------ | -------------------------------- | ------------------------------------------- | ---------------------- | -------------------------------------------------- |
+| `SCN-SOURCE-001` | `/scanner`                     | redirect a ubicaciones           | `MIGRAR_A_UTILIDAD_CONTEXTUAL_OCULTA`       | transversal NEXO       | no menú, no proceso propio, no efecto              |
+| `SCN-SOURCE-002` | `/l/[code]`                    | deep link LOC                    | `CONVERTIR_EN_ADAPTADOR_DE_ENTRADA`         | `VPROC-0023`           | revalida contexto y no abre por autoridad URL      |
+| `SCN-SOURCE-003` | `/inventory/locations/open`    | resolución LOC y redirect        | `CONSUMIR_RESOLUTOR_COMUN`                  | `VPROC-0023`           | conserva guard y ambigüedad explícita              |
+| `SCN-SOURCE-004` | tablero y kiosco de LOC        | selección contextual             | `INVOCAR_CAPTURA_CON_HOST`                  | ubicación y retiro     | no mueve ni retira por lectura                     |
+| `SCN-SOURCE-005` | conteos de cantidad            | búsqueda, tarjetas y borrador    | `INTEGRAR_ADAPTADOR_DE_IDENTIDAD`           | `VPROC-0026`           | no altera ceguera, cantidad ni cierre              |
+| `SCN-SOURCE-006` | conteos de activos             | acciones por línea               | `INTEGRAR_IDENTIDAD_PATRIMONIAL`            | `VPROC-0029`           | no actualiza ubicación ni condición                |
+| `SCN-SOURCE-007` | entradas                       | selección de productos y destino | `INTEGRAR_ADAPTADOR_CONTEXTUAL`             | `VPROC-0024`           | no recibe ni valora automáticamente                |
+| `SCN-SOURCE-008` | transferencias y reubicaciones | selectores propios               | `INTEGRAR_ORIGEN_DESTINO`                   | `VPROC-0025`           | origen y destino deben ser distintos y confirmados |
+| `SCN-SOURCE-009` | retiros y kiosco               | selección de producto y posición | `INTEGRAR_ADAPTADOR_CONTEXTUAL`             | `VPROC-0025`           | no descuenta por lectura ni repetición             |
+| `SCN-SOURCE-010` | solicitud de remisión          | selección de líneas              | `INTEGRAR_BUSQUEDA_Y_CAPTURA`               | `VPROC-0028`           | no fija cantidad solicitada                        |
+| `SCN-SOURCE-011` | preparación de remisión        | workbench y líneas               | `INTEGRAR_CAPTURA_CONTINUA`                 | `VPROC-0028`           | no confirma picking ni despacho                    |
+| `SCN-SOURCE-012` | recepción de remisión          | batch shell y cantidades         | `INTEGRAR_CAPTURA_CONTINUA`                 | `VPROC-0028`           | no acepta diferencia ni recepción                  |
+| `SCN-SOURCE-013` | ajustes                        | selección manual de sujeto       | `PERMITIR_IDENTIDAD_SIN_AUTORIDAD`          | `VPROC-0026`           | no aprueba ni publica ajuste                       |
+| `SCN-SOURCE-014` | QR de activo y grupo           | impresión de URL propia          | `CONSERVAR_PRODUCTOR_Y_UNIFICAR_RESOLUCION` | activos                | no fusiona activo, grupo y stock                   |
+| `SCN-SOURCE-015` | LPN y API inicial              | identidad de contenedor parcial  | `PRESERVAR_ADAPTADOR_RESERVADO`             | bloque LPN             | ciclo y comandos permanecen en UX026–029           |
+
+Reconciliación:
+
+```text
+EXPECTED_SOURCES = 15
+MATERIALIZED_SOURCES = 15
+UNIQUE_SOURCE_IDS = 15
+MISSING_SOURCES = 0
+DUPLICATE_SOURCE_IDS = 0
+```
+
+---
+
+#### 24. `NEXO-INVENTORY-SCAN-ROUTE-DISPOSITION-001`
+
+| Ruta o patrón               | Visibilidad                                                     | Invocación                              | Salida                        | Decisión                              |
+| --------------------------- | --------------------------------------------------------------- | --------------------------------------- | ----------------------------- | ------------------------------------- |
+| `/scanner`                  | oculta                                                          | únicamente con contexto válido del host | retorno al host               | utilidad transversal, no landing page |
+| `/l/[code]`                 | pública solo como entrada autenticada o protegida según recurso | etiqueta LOC legacy                     | resolutor y host de ubicación | adaptador compatible, no bypass       |
+| `/inventory/locations/open` | contextual                                                      | código o ID de LOC                      | detalle o host permitido      | revalidación server-side              |
+| rutas de procesos           | visibles según navegación aprobada                              | botón, foco o periférico                | mismo paso                    | el host posee la captura              |
+| URLs de activo              | según política patrimonial                                      | QR impreso                              | detalle permitido o propuesta | guard y resolución común              |
+| futuros enlaces LPN         | reservados                                                      | etiqueta LPN                            | proceso LPN                   | no se anticipa su ciclo               |
+
+Parámetros de ruta permitidos serán identificadores opacos, context IDs o códigos tratados como no confiables. Quedan prohibidos `returnTo` abierto, permisos en querystring, acciones mutantes, cantidades, decisiones o estados finales codificados en URL.
+
+---
+
+#### 25. `NEXO-INVENTORY-SCAN-INTERFACE-STATE-CONTRACT-001`
+
+| ID          | Estado visible              | Mensaje o evidencia mínima     | Acción válida                       |
+| ----------- | --------------------------- | ------------------------------ | ----------------------------------- |
+| `SCN-UI-01` | abriendo contexto           | tarea y paso invocantes        | esperar o volver                    |
+| `SCN-UI-02` | contexto inválido           | razón genérica y host          | volver y recargar                   |
+| `SCN-UI-03` | comprobando dispositivo     | canales evaluados              | esperar                             |
+| `SCN-UI-04` | cámara disponible           | vista y propósito              | iniciar o elegir fallback           |
+| `SCN-UI-05` | permiso de cámara requerido | explicación                    | solicitar permiso o fallback        |
+| `SCN-UI-06` | cámara denegada             | causa y alternativas           | wedge, manual, búsqueda             |
+| `SCN-UI-07` | wedge listo                 | foco y terminador              | leer o cambiar canal                |
+| `SCN-UI-08` | foco de wedge perdido       | control afectado               | recuperar foco                      |
+| `SCN-UI-09` | ingreso manual              | campo y formato esperado       | enviar o cancelar                   |
+| `SCN-UI-10` | búsqueda asistida           | filtros contextuales           | elegir candidato                    |
+| `SCN-UI-11` | esperando lectura           | clases esperadas               | capturar                            |
+| `SCN-UI-12` | señal detectada             | indicador no final             | esperar validación                  |
+| `SCN-UI-13` | validando                   | canal y señal redactada        | esperar                             |
+| `SCN-UI-14` | resolviendo                 | progreso y cancelación segura  | esperar o cancelar                  |
+| `SCN-UI-15` | resuelto único              | identidad y contexto           | aceptar o descartar                 |
+| `SCN-UI-16` | fuera de paso               | identidad mínima y bloqueo     | volver o leer otra                  |
+| `SCN-UI-17` | ambiguo                     | candidatos distinguibles       | seleccionar o verificar             |
+| `SCN-UI-18` | no encontrado               | valor redactado                | reintentar, buscar o reportar       |
+| `SCN-UI-19` | formato inválido            | regla incumplida               | corregir                            |
+| `SCN-UI-20` | contexto vencido            | work item afectado             | volver y recargar                   |
+| `SCN-UI-21` | duplicado suprimido         | elemento y ventana             | continuar o repetir deliberadamente |
+| `SCN-UI-22` | propuesta lista             | campo que completará           | aceptar o descartar                 |
+| `SCN-UI-23` | agregado a borrador         | identidad y posición en lista  | deshacer o continuar                |
+| `SCN-UI-24` | batch activo                | válidos, errores y duplicados  | seguir o finalizar                  |
+| `SCN-UI-25` | batch para revisar          | resumen por estado             | volver, editar o entregar al host   |
+| `SCN-UI-26` | sin red                     | limitaciones visibles          | guardar borrador o cancelar         |
+| `SCN-UI-27` | borrador offline            | entradas no verificadas        | sincronizar al recuperar red        |
+| `SCN-UI-28` | conflicto de sincronización | versión y acción requerida     | resolver en host                    |
+| `SCN-UI-29` | cancelado                   | cero efecto y retorno          | volver al host                      |
+| `SCN-UI-30` | retorno completado          | receipts y propuesta entregada | continuar en host                   |
+
+Éxito del escáner termina en `SCN-UI-30`. El éxito empresarial solo podrá mostrarse después de que el host ejecute y confirme su command.
+
+---
+
+#### 26. `NEXO-INVENTORY-SCAN-VALIDATION-MATRIX-001`
+
+##### 26.1. Contexto, canales y rutas
+
+| ID            | Comprobación                                       | Resultado esperado                                 |
+| ------------- | -------------------------------------------------- | -------------------------------------------------- |
+| `SCN-VAL-001` | abrir sin host o context ID                        | falla cerrado y no muestra scanner genérico        |
+| `SCN-VAL-002` | volver después de cancelar                         | conserva ruta, work item, paso y borrador del host |
+| `SCN-VAL-003` | contexto expirado durante captura                  | invalida propuesta y obliga a recargar             |
+| `SCN-VAL-004` | cámara, wedge, manual, deep link, búsqueda y touch | producen el mismo sobre contractual                |
+| `SCN-VAL-005` | `/scanner` en navegación                           | permanece oculto y sin carril propio               |
+| `SCN-VAL-006` | deep link con retorno externo                      | se rechaza sin redirección abierta                 |
+| `SCN-VAL-007` | `/l/[code]` con LOC ambiguo                        | no elige por orden ni por último uso               |
+| `SCN-VAL-008` | cambio de host con propuesta pendiente             | expira y resuelve nuevamente                       |
+
+##### 26.2. Payload, identidad y resolución
+
+| ID            | Comprobación                         | Resultado esperado                                          |
+| ------------- | ------------------------------------ | ----------------------------------------------------------- |
+| `SCN-VAL-009` | espacios y mayúsculas permitidas     | normalización determinista con raw preservado               |
+| `SCN-VAL-010` | código parecido pero inexistente     | no aplica autocorrección ni último candidato                |
+| `SCN-VAL-011` | mismo código en namespaces distintos | resultado ambiguo o filtrado explícito por clases esperadas |
+| `SCN-VAL-012` | producto versus presentación         | conserva IDs, UOM y factores separados                      |
+| `SCN-VAL-013` | LOC versus posición                  | no sustituye una identidad por otra                         |
+| `SCN-VAL-014` | activo, grupo, LPN y stock           | mantiene propietarios y efectos separados                   |
+| `SCN-VAL-015` | ID enviado por cliente               | servidor revalida entidad, versión y visibilidad            |
+| `SCN-VAL-016` | etiqueta dañada                      | ofrece verificación secundaria sin adivinar                 |
+
+##### 26.3. Autoridad, efectos, cantidad y UOM
+
+| ID            | Comprobación                        | Resultado esperado                             |
+| ------------- | ----------------------------------- | ---------------------------------------------- |
+| `SCN-VAL-017` | leer producto en retiro             | cero descuento hasta command del host          |
+| `SCN-VAL-018` | leer posición en traslado           | cero movimiento hasta confirmación             |
+| `SCN-VAL-019` | leer remisión                       | cero cambio de estado o custodia               |
+| `SCN-VAL-020` | leer diferencia o case de ajuste    | cero aprobación y cero posting                 |
+| `SCN-VAL-021` | leer activo                         | cero cambio de ubicación, condición o custodio |
+| `SCN-VAL-022` | repetir lectura                     | no incrementa cantidad por defecto             |
+| `SCN-VAL-023` | etiqueta de presentación            | UOM propuesta se valida contra versión vigente |
+| `SCN-VAL-024` | revocar permiso después de resolver | command del host falla cerrado                 |
+
+##### 26.4. Duplicados, sesiones, batch e idempotencia
+
+| ID            | Comprobación                           | Resultado esperado                             |
+| ------------- | -------------------------------------- | ---------------------------------------------- |
+| `SCN-VAL-025` | cámara y wedge capturan la misma señal | un evento aceptado y supresión visible         |
+| `SCN-VAL-026` | misma señal fuera de ventana           | nuevo evento permitido                         |
+| `SCN-VAL-027` | repetición deliberada autorizada       | queda explícita y reversible en borrador       |
+| `SCN-VAL-028` | mismo event ID y payload               | mismo capture receipt                          |
+| `SCN-VAL-029` | mismo event ID con payload distinto    | conflicto                                      |
+| `SCN-VAL-030` | timeout de resolución                  | consulta receipt antes de repetir              |
+| `SCN-VAL-031` | batch con válidos y errores            | lista conserva cada estado sin publicar        |
+| `SCN-VAL-032` | finalizar batch                        | devuelve borrador, no ejecuta loop de commands |
+
+##### 26.5. Offline, seguridad, privacidad y accesibilidad
+
+| ID            | Comprobación                          | Resultado esperado                                  |
+| ------------- | ------------------------------------- | --------------------------------------------------- |
+| `SCN-VAL-033` | captura sin red                       | queda no verificada y sin identidad autoritativa    |
+| `SCN-VAL-034` | sincronización con work item cambiado | conflicto visible, no reasignación silenciosa       |
+| `SCN-VAL-035` | sincronización repetida               | deduplica eventos y propuestas                      |
+| `SCN-VAL-036` | payload excesivo o esquema malicioso  | rechazo temprano y seguro                           |
+| `SCN-VAL-037` | logs de cámara                        | cero frames, video o secretos retenidos por defecto |
+| `SCN-VAL-038` | código fuera de territorio            | no expone detalles ni crea candidato utilizable     |
+| `SCN-VAL-039` | feedback sin audio                    | toda condición sigue siendo comprensible            |
+| `SCN-VAL-040` | teclado y lector de pantalla          | recorrido completo sin dependencia táctil           |
+
+##### 26.6. Convergencia, compatibilidad y operación
+
+| ID            | Comprobación                    | Resultado esperado                                                        |
+| ------------- | ------------------------------- | ------------------------------------------------------------------------- |
+| `SCN-VAL-041` | superficies 001 a 015           | todas consumen contrato o conservan disposición explícita                 |
+| `SCN-VAL-042` | rutas LOC legacy                | continúan resolviendo sin bypass de autorización                          |
+| `SCN-VAL-043` | QR de activos existentes        | abren identidad patrimonial sin efecto automático                         |
+| `SCN-VAL-044` | formularios con búsqueda manual | funcionan aun sin cámara o wedge                                          |
+| `SCN-VAL-045` | host de conteo ciego            | scanner no revela expected quantity                                       |
+| `SCN-VAL-046` | remisiones, retiros y ajustes   | mantienen commands e idempotencia propios                                 |
+| `SCN-VAL-047` | feature gate y rollback         | permite volver a selectores legacy sin doble resolutor autoritativo       |
+| `SCN-VAL-048` | piloto multicanal               | evidencia separada por dispositivo, canal, actor, proceso y estado de red |
+
+Reconciliación:
+
+```text
+EXPECTED_VALIDATIONS = 48
+MATERIALIZED_VALIDATIONS = 48
+UNIQUE_VALIDATION_IDS = 48
+MISSING_VALIDATIONS = 0
+DUPLICATE_VALIDATION_IDS = 0
+```
+
+---
+
+#### 27. `NEXO-INVENTORY-SCAN-IMPLEMENTATION-HANDOFF-001`
+
+Arquitectura objetivo:
+
+```text
+HOST SCAN INVOKER
+→ CHANNEL ADAPTERS
+→ CAPTURE ENVELOPE
+→ SERVER RESOLVER
+→ DOMAIN IDENTITY ADAPTERS
+→ ELIGIBILITY FILTER
+→ RESOLUTION RECEIPT
+→ HOST PROPOSAL BINDING
+→ DOMAIN COMMAND
+```
+
+Componentes técnicos esperados:
+
+- contrato TypeScript de contexto, sobre, candidatos, resultados y receipts;
+- componente host-invoker reutilizable;
+- adapters de cámara, wedge, manual, deep link, búsqueda y touch;
+- resolutor server-side único con adapters de LOC, posición, producto, presentación, trabajo, activo y LPN;
+- allowlist de intents y field bindings por host;
+- deduplicación y batch temporal;
+- almacenamiento de borrador offline compatible con política de dispositivo;
+- telemetría redactada y métricas por canal;
+- feature gates por superficie;
+- pruebas contractuales y de integración;
+- migraciones Supabase desde `vento-shell` solo si la implementación demuestra necesidad de persistir aliases, receipts o registros nuevos.
+
+Convergencia exacta:
+
+| Elemento actual                             | Acción de implementación                            | Criterio de salida                                                             |
+| ------------------------------------------- | --------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `src/app/scanner/page.tsx`                  | dejar de redirigir genéricamente y exigir contexto  | utilidad oculta, sin acceso empresarial autónomo                               |
+| `src/app/l/[code]/page.tsx`                 | convertir en entrada al resolutor                   | LOC legacy compatible y protegido                                              |
+| `src/app/inventory/locations/open/page.tsx` | consumir adapter LOC común                          | una sola semántica de ambigüedad y territorio                                  |
+| `barcode-detector-api-polyfill`             | evaluar, encapsular y cargar mediante adapter       | cero dependencia directa en procesos                                           |
+| `SearchableSingleSelect`                    | admitir proposal bindings sin conocer scanner       | búsqueda sigue independiente y reusable                                        |
+| formularios de conteo                       | integrar identidad sin revelar expected ni publicar | contrato UX018 preservado                                                      |
+| entradas, transferencias y retiros          | integrar host invoker                               | commands actuales sustituidos posteriormente por los aprobados, no por scanner |
+| remisiones prepare y receive                | integrar captura continua                           | cero command por lectura individual                                            |
+| QR de activo y grupo                        | conservar generación y unificar resolución          | proceso patrimonial intacto                                                    |
+| borradores locales y remotos                | normalizar bajo política de draft                   | offline no simula resolución ni autoridad                                      |
+
+Observabilidad mínima:
+
+```text
+scan_context_created
+capture_received
+capture_suppressed
+resolution_started
+resolution_result
+proposal_delivered
+proposal_accepted_in_draft
+proposal_discarded
+context_expired
+offline_draft_created
+offline_sync_conflict
+scanner_cancelled
+```
+
+Métricas sin efectos empresariales:
+
+- tasa de resolución por canal y clase;
+- ambigüedad y no encontrado;
+- duplicados suprimidos;
+- tiempo captura-resolución;
+- fallback de cámara a manual;
+- conflictos offline;
+- propuestas aceptadas o descartadas;
+- errores por superficie;
+- cero commands originados directamente por scanner.
+
+Transición:
+
+1. implementar contratos y adapters detrás de feature gates;
+2. habilitar primero LOC legacy en modo observación comparativa;
+3. comparar resolución nueva y legacy sin ejecutar dos destinos;
+4. integrar búsqueda/manual como baseline;
+5. integrar cámara y wedge por dispositivo aprobado;
+6. migrar una superficie por vez;
+7. retirar resolutores duplicados cuando la paridad esté demostrada;
+8. mantener commands empresariales fuera del scanner;
+9. certificar `SCN-VAL-001` a `SCN-VAL-048`;
+10. realizar piloto en `NEXO-UX-023` a `NEXO-UX-025`.
+
+Rollback:
+
+- desactivar adapters nuevos por superficie;
+- conservar selectores y deep links legacy mientras exista compatibilidad aprobada;
+- no ejecutar simultáneamente dos resoluciones autoritativas;
+- preservar receipts y borradores ya creados;
+- invalidar contextos nuevos al desactivar;
+- no convertir proposals pendientes en commands;
+- confirmar que no existen movimientos, estados o cantidades producidos por scanner;
+- restaurar navegación al host sin exponer `/scanner` como menú.
+
+Handoffs:
+
+| Destino                       | Consume                                                              | Salida exigida                                     | Límite                                   |
+| ----------------------------- | -------------------------------------------------------------------- | -------------------------------------------------- | ---------------------------------------- |
+| `NEXO-UX-021`                 | estados, proposals y field bindings                                  | información mínima por etapa                       | no redefine resolución ni autoridad      |
+| `NEXO-UX-022`                 | ambiguos empresariales, identidad conflictiva y etiqueta discrepante | caso, contención y resolución                      | scanner no decide la excepción           |
+| `NEXO-UX-023` a `NEXO-UX-025` | canales, capabilities, offline y 48 validaciones                     | evidencia física y operativa                       | no declarar validado antes del piloto    |
+| `NEXO-UX-026` a `NEXO-UX-029` | identidad LPN reservada                                              | ciclo y commands propios                           | scanner no anticipa contenido o custodia |
+| `NEXO-UX-031` a `NEXO-UX-034` | identidad patrimonial                                                | recorridos de activos y conteos                    | no mezcla stock fungible                 |
+| paquete E5 NEXO               | contratos, diagnóstico, disposiciones y requisitos                   | implementación versionada, observable y reversible | Supabase solo desde `vento-shell`        |
+
+---
+
+#### 28. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-NEXO-231` a `TREQ-NEXO-244` en el registro canónico completo:
+
+| ID              | Comportamiento protegido                                                                          |
+| --------------- | ------------------------------------------------------------------------------------------------- |
+| `TREQ-NEXO-231` | contexto invocante, ruta oculta, retorno estable, expiración y cero autoridad autónoma            |
+| `TREQ-NEXO-232` | seis canales equivalentes y sobre de captura con entrada cruda preservada                         |
+| `TREQ-NEXO-233` | ocho clases de identidad, adapters propietarios y resolución server-side                          |
+| `TREQ-NEXO-234` | ocho resultados, ambigüedad, no match, formato inválido y etiqueta dañada                         |
+| `TREQ-NEXO-235` | propuesta al host y prohibición de efectos, confirmaciones o posting automáticos                  |
+| `TREQ-NEXO-236` | permiso, territorio, work item, versión, deep link no confiable y revocación                      |
+| `TREQ-NEXO-237` | separación de identidad, cantidad, presentación, UOM, conversión y evidencia                      |
+| `TREQ-NEXO-238` | debounce, deduplicación, repetición deliberada y captura continua                                 |
+| `TREQ-NEXO-239` | event IDs, receipts de captura y resolución e idempotencia independiente del command              |
+| `TREQ-NEXO-240` | borrador offline no verificado, re-resolución, sincronización y conflictos                        |
+| `TREQ-NEXO-241` | capabilities, fallback, dispositivo compartido y feedback accesible                               |
+| `TREQ-NEXO-242` | seguridad, privacidad, límites, logs redactados y cero retención de frames                        |
+| `TREQ-NEXO-243` | treinta estados, quince fuentes, rutas y convergencia sin resolutores autoritativos duplicados    |
+| `TREQ-NEXO-244` | implementación, adapters, feature gates, Supabase propietario, rollback, 48 validaciones y piloto |
+
+---
+
+#### 29. Pendientes con propietario y condición de salida
+
+| Pendiente                                                                       | Propietario             | Tarea de resolución                 | Condición de salida                                                       |
+| ------------------------------------------------------------------------------- | ----------------------- | ----------------------------------- | ------------------------------------------------------------------------- |
+| definir campos visibles y orden de foco por etapa                               | experiencia NEXO        | `NEXO-UX-021`                       | cada host muestra solo identidad, cantidad, evidencia y acción necesarias |
+| resolver etiqueta versus realidad, identidad conflictiva y no match empresarial | supervisión y excepción | `NEXO-UX-022`                       | casos tienen contención, evidencia, decisión y cierre                     |
+| certificar cámara, wedge, tablet, kiosco, red y accesibilidad                   | operación y QA          | `NEXO-UX-023` a `NEXO-UX-025`       | evidencia reproducible por dispositivo y canal                            |
+| diseñar acciones y contenido de LPN                                             | subdominio LPN          | `NEXO-UX-026` a `NEXO-UX-029`       | identidad, contenido, custodia y commands definidos                       |
+| diseñar captura patrimonial completa                                            | subdominio de activos   | `NEXO-UX-031` a `NEXO-UX-034`       | activos y grupos poseen recorridos propios                                |
+| implementar resolutor, adapters, receipts y transición                          | paquete E5 NEXO         | paquete E5 de `NEXO-REMISSIONS-001` | superficies convergen y `SCN-VAL-001` a `048` quedan satisfechas          |
+| crear objetos Supabase si resultan necesarios                                   | `vento-shell`           | paquete E5 y `SHELL-CI-017`         | migraciones versionadas, grants, RLS, tipos, rollback y evidencia         |
+
+---
+
+#### 30. Criterios de aceptación
+
+1. la tarea contiene exactamente una definición canónica de `NEXO-UX-020`;
+2. los veinticuatro artefactos están enumerados y definidos;
+3. los seis canales producen el mismo sobre;
+4. las ocho clases conservan identidad y propietario;
+5. los ocho resultados tienen significado y acción válida;
+6. los veintidós estados y veinticuatro pasos están materializados;
+7. las quince superficies actuales tienen disposición explícita;
+8. los treinta estados de interfaz no confunden lectura con éxito empresarial;
+9. las cuarenta y ocho comprobaciones son únicas y completas;
+10. `/scanner` permanece oculto, contextual y sin proceso o permiso autónomo;
+11. deep links son entradas no confiables y no amplían territorio;
+12. resolución ocurre en servidor con adapters y versiones;
+13. capturar, resolver y proponer producen cero efecto empresarial;
+14. el host conserva confirmación, command, idempotencia y receipt;
+15. identidad y cantidad permanecen separadas;
+16. producto y presentación conservan UOM y factores versionados;
+17. repetición no incrementa cantidad por defecto;
+18. deduplicación no elimina lecturas deliberadas ni sustituye idempotencia;
+19. captura continua devuelve borrador y no ejecuta loops de commands;
+20. offline no confirma identidad, permiso ni elegibilidad;
+21. sincronizar revalida contexto, versiones y candidatos;
+22. cámara no retiene frames por defecto;
+23. feedback es multimodal y accesible;
+24. QR de activos y futuros LPN conservan procesos propietarios;
+25. los catorce requisitos nuevos están en el registro completo;
+26. todos los pendientes tienen propietario, tarea y condición de salida;
+27. no se ejecutan cambios físicos ni remotos;
+28. la siguiente tarea permanece reservada.
+
+---
+
+#### 31. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-019 — Diseñar flujo completo de ajustes`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-020 — Simplificar escáner y captura`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-021 — Mostrar solo información necesaria según etapa`
+
+`NEXO-UX-021` deberá consumir los estados, proposals, field bindings, cantidades, UOM, evidencia y acciones aprobadas hasta esta tarea para reducir cada etapa a la información estrictamente necesaria, sin crear otra fuente de verdad ni modificar autoridad.
+
+
 ### [ ] NEXO-UX-021 — Mostrar solo información necesaria según etapa
 ### [ ] NEXO-UX-022 — Diseñar manejo de diferencias y excepciones
 ### [ ] NEXO-UX-023 — Probar flujos en tablets y kioscos
