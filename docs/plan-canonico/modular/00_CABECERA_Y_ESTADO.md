@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **559** |
+| Tareas aprobadas | **560** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1035** |
+| Tareas no iniciadas | **1034** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **35.07% (559/1594)** |
+| Porcentaje de completamiento | **35.13% (560/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NEXO-UX-013 — Diseñar flujo completo de recepción** |
-| Tarea actual | **NEXO-UX-014 — Diseñar flujo completo de entradas** |
+| Última tarea aprobada | **NEXO-UX-014 — Diseñar flujo completo de entradas** |
+| Tarea actual | **NEXO-UX-015 — Diseñar flujo completo de ubicación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NEXO-UX-015 — Diseñar flujo completo de ubicación** |
+| Siguiente tarea | **NEXO-UX-016 — Diseñar flujo completo de movimientos** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 13: NEXO_FUNCTIONAL_UX** |
-| Progreso del bloque | **CARRIL NEXO: 13 de 25 aprobadas; NEXO-UX-014 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 14 de 25 aprobadas; NEXO-UX-015 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NEXO-UX-013` — Diseñar flujo completo de recepción |
-| Tarea actual | `NEXO-UX-014` — Diseñar flujo completo de entradas — **NO INICIADA** |
-| Siguiente tarea | `NEXO-UX-015` — Diseñar flujo completo de ubicación |
+| Última aprobada | `NEXO-UX-014` — Diseñar flujo completo de entradas |
+| Tarea actual | `NEXO-UX-015` — Diseñar flujo completo de ubicación — **NO INICIADA** |
+| Siguiente tarea | `NEXO-UX-016` — Diseñar flujo completo de movimientos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 13 DE 25 APROBADAS — ACTUAL NEXO-UX-014** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 14 DE 25 APROBADAS — ACTUAL NEXO-UX-015** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NEXO-UX-013 — Diseñar flujo completo de recepción
-        ↓
-TAREA ACTUAL
 NEXO-UX-014 — Diseñar flujo completo de entradas
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NEXO-UX-015 — Diseñar flujo completo de ubicación
         ↓
+SIGUIENTE TAREA RESERVADA
+NEXO-UX-016 — Diseñar flujo completo de movimientos
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 13 de 25 tareas aprobadas
+CARRIL NEXO — 14 de 25 tareas aprobadas
 ```

@@ -10829,7 +10829,964 @@ de emergencia y reutilizar únicamente los invariantes compatibles de cantidad,
 UOM, idempotencia, evidencia y publicación sin duplicar efectos.
 
 
-### [ ] NEXO-UX-014 — Diseñar flujo completo de entradas
+### ✅ NEXO-UX-014 — Diseñar flujo completo de entradas
+
+---
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-013 — Diseñar flujo completo de recepción` — APROBADA
+**Tarea siguiente:** `NEXO-UX-015 — Diseñar flujo completo de ubicación` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo de fuentes ordinarias y excepcionales, admisión, captura, cantidades y UOM, costo protegido, publicación contable de inventario, idempotencia, proyecciones, corrección, reversa, compatibilidad y continuidad
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Proceso propietario:** `VPROC-0024 — Registrar entradas de inventario`
+**Permisos funcionales exactos:** `origo.procurement.receipts` para la fuente ordinaria y `nexo.inventory.entries_emergency` para la excepción
+**Artefactos producidos:** dieciocho contratos, catálogos, matrices y handoffs enumerados en esta tarea
+**Decisiones consumidas:** `NEXO-INVENTORY-ENTRY-FLOW-CONTRACT-001` se apoya en `NEXO-REMISSION-RECEPTION-HANDOFF-001`, `VPROC-0024-E01` a `VPROC-0024-E06`, `NEXO-ROUTE-019`, requisitos `TREQ-NEXO-*` vigentes y superficies técnicas actuales de `vento-nexo` y `vento-shell`
+**Cambios físicos autorizados:** ninguno; no modifica código, componentes, permisos, datos, Supabase, migraciones, RLS, RPC, tipos, configuración ni despliegues
+
+---
+#### 1. Propósito
+
+Diseñar de principio a fin cómo una fuente empresarial autorizada produce una
+entrada positiva de inventario sin confundir recepción física, asiento de
+inventario, proyección de stock, valoración, ubicación final o corrección.
+
+El flujo tiene dos puertas humanas legítimas:
+
+1. **entrada ordinaria**, originada por una recepción comercial válida de
+   ORIGO y consumida mediante un handoff versionado;
+2. **entrada de emergencia**, originada en NEXO solo cuando el flujo ordinario
+   no puede utilizarse y existe permiso excepcional, causa y evidencia
+   suficientes.
+
+Los demás incrementos observados —remisión interna, producción, traslado,
+ajuste y conteo— conservan sus propietarios y no se degradan a una entrada
+genérica.
+
+La regla canónica es:
+
+```text
+FUENTE EMPRESARIAL IDENTIFICADA Y VERSIONADA
++ PROPIETARIO, ACTOR, SEDE Y PERMISO EXACTOS
++ SALDO ELEGIBLE NO PUBLICADO
++ LINEAS, CANTIDADES, UOM Y COSTO SNAPSHOT
++ INTENCION IDEMPOTENTE Y VERSION ESPERADA
++ ASIENTO, ITEMS, MOVIMIENTOS Y RECEIPT AUTORITATIVOS
++ PROYECCIONES CORRELACIONADAS DE STOCK, COSTO Y FUENTE
++ HANDOFF EXPLICITO A UBICACION Y EXCEPCIONES
+→ ENTRADA TRAZABLE SIN DOBLE EFECTO
+```
+
+Fronteras obligatorias:
+
+```text
+RECEPCION COMERCIAL CONFIRMADA ≠ ENTRADA PUBLICADA
+ENTRADA DE EMERGENCIA ≠ RECEPCION ORDINARIA
+CAPTURA COMPLETA ≠ PUBLICACION CONFIRMADA
+ENTRADA PUBLICADA ≠ STOCK PROYECTADO
+STOCK DE SEDE ≠ UBICACION FINAL
+CANTIDAD RECIBIDA ≠ COSTO AUTORIZADO
+CORRECCION ≠ EDICION
+REVERSA ≠ BORRADO
+RESTOCK_IN ≠ RECEIPT_IN GENERICO
+PRODUCTION_IN ≠ ENTRADA MANUAL
+TRANSFER_IN ≠ ENTRADA ORDINARIA
+AJUSTE POSITIVO ≠ RECEPCION
+```
+
+Ninguna interfaz, alias de movimiento, nota libre o estado agregado puede
+colapsar estas fronteras.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban dieciocho artefactos documentales consumibles:
+
+| N.º | Artefacto                                               | Resultado material                                                                                                                      |
+| --- | ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| 1.  | `NEXO-INVENTORY-ENTRY-FLOW-CONTRACT-001`                | Fija propósito, fronteras, autoridad, entrada, salida y lenguaje canónico del ingreso de inventario.                                    |
+| 2.  | `NEXO-INVENTORY-ENTRY-SOURCE-DISPOSITION-001`           | Materializa ocho familias de fuente observadas y decide cuáles pertenecen al flujo ordinario, excepcional, diferenciado o incompatible. |
+| 3.  | `NEXO-INVENTORY-ENTRY-WORK-QUEUE-CONTRACT-001`          | Define ocho colas, elegibilidad, prioridad, entrada, salida y bloqueo.                                                                  |
+| 4.  | `NEXO-INVENTORY-ENTRY-STATE-MACHINE-001`                | Separa fuente, sesión, captura, intención, publicación, proyecciones, excepción, reversa y cierre.                                      |
+| 5.  | `NEXO-INVENTORY-ENTRY-STEP-CATALOG-001`                 | Materializa veintidós pasos operativos y técnicos con sus límites.                                                                      |
+| 6.  | `NEXO-INVENTORY-ENTRY-ORDINARY-HANDOFF-CONTRACT-001`    | Gobierna la entrada ordinaria correlacionada con una recepción comercial válida de ORIGO.                                               |
+| 7.  | `NEXO-INVENTORY-ENTRY-EMERGENCY-CONTRACT-001`           | Gobierna la entrada excepcional de NEXO, su causa, evidencia, permiso y condición de uso.                                               |
+| 8.  | `NEXO-INVENTORY-ENTRY-LINE-QUANTITY-UOM-CONTRACT-001`   | Define identidad, cantidad cruda, unidad, conversión, tolerancia, parcialidad y saldo.                                                  |
+| 9.  | `NEXO-INVENTORY-ENTRY-COSTING-CONTRACT-001`             | Separa costo de captura física, protege su visibilidad y fija snapshot, fuente y proyección.                                            |
+| 10. | `NEXO-INVENTORY-ENTRY-POSTING-CONTRACT-001`             | Define el asiento autoritativo, sus líneas, movimientos y receipt de publicación.                                                       |
+| 11. | `NEXO-INVENTORY-ENTRY-IDEMPOTENCY-CONTRACT-001`         | Define intención, clave, fingerprint, versiones, reintento, concurrencia y resultado desconocido.                                       |
+| 12. | `NEXO-INVENTORY-ENTRY-STOCK-PROJECTION-BOUNDARY-001`    | Separa asiento, proyección de sede, recepción física, ubicación final y disponibilidad.                                                 |
+| 13. | `NEXO-INVENTORY-ENTRY-CORRECTION-REVERSAL-CONTRACT-001` | Prohíbe editar o borrar hechos publicados y define corrección y reversa compensatorias.                                                 |
+| 14. | `NEXO-INVENTORY-ENTRY-COMPATIBILITY-CONTRACT-001`       | Hace converger aliases, tablas, permisos y escritores actuales sin doble contabilización.                                               |
+| 15. | `NEXO-INVENTORY-ENTRY-ROUTE-DISPOSITION-001`            | Decide diez superficies existentes sin crear direcciones nuevas.                                                                        |
+| 16. | `NEXO-INVENTORY-ENTRY-VALIDATION-MATRIX-001`            | Asigna cuarenta comprobaciones a momentos y resultados concretos.                                                                       |
+| 17. | `NEXO-INVENTORY-ENTRY-IMPLEMENTATION-HANDOFF-001`       | Entrega el diseño físico mínimo al paquete de implementación, con migración, rollback y pruebas.                                        |
+| 18. | `NEXO-INVENTORY-ENTRY-HANDOFF-001`                      | Entrega salidas consumibles a ubicación, movimientos, excepciones, ORIGO, FOGO y continuidad.                                           |
+
+Cobertura materializada:
+
+| Elemento                         | Total esperado | Total materializado | Faltantes | Duplicados |
+| -------------------------------- | -------------- | ------------------- | --------- | ---------- |
+| Artefactos documentales          | 18             | 18                  | 0         | 0          |
+| Pasos de entrada                 | 22             | 22                  | 0         | 0          |
+| Estados de interfaz              | 30             | 30                  | 0         | 0          |
+| Estados empresariales y técnicos | 20             | 20                  | 0         | 0          |
+| Colas `ENQ-*`                    | 8              | 8                   | 0         | 0          |
+| Familias de fuente decididas     | 8              | 8                   | 0         | 0          |
+| Comprobaciones de la matriz      | 40             | 40                  | 0         | 0          |
+| Superficies existentes decididas | 10             | 10                  | 0         | 0          |
+| Requisitos de prueba nuevos      | 14             | 14                  | 0         | 0          |
+
+Los identificadores `ENT-*`, `ENQ-*` y `ENTRY-SOURCE-*` pertenecen a este
+diseño y no crean procesos empresariales adicionales.
+
+---
+
+#### 3. Alcance, entradas y salidas
+
+Incluye:
+
+- admisión de una recepción ordinaria proveniente de ORIGO;
+- entrada excepcional NEXO con causa, evidencia y permiso exacto;
+- clasificación explícita de ocho familias de incremento observadas;
+- sesión exclusiva y versionada;
+- producto, presentación, cantidad, UOM, parcialidad y saldo elegible;
+- costo protegido, moneda, fuente y snapshot de valoración;
+- intención, posting receipt, idempotencia y control de concurrencia;
+- asiento append-only y movimientos correlacionados;
+- proyecciones de stock de sede, costo y acknowledgment de fuente;
+- handoff a ubicación, movimientos, excepciones e implementación;
+- corrección y reversa compensatorias sin editar el hecho original;
+- compatibilidad temporal con `inventory_entries`,
+  `inventory_entry_items`, aliases y consumidores actuales.
+
+Excluye:
+
+- crear, aprobar o modificar órdenes de compra, responsabilidad de ORIGO;
+- volver a publicar un receipt de remisión interna, ya resuelto por
+  `NEXO-UX-013`;
+- registrar producción de FOGO mediante un formulario NEXO;
+- diseñar ubicación definitiva, responsabilidad de `NEXO-UX-015`;
+- diseñar el ledger y consulta integral de movimientos, responsabilidad de
+  `NEXO-UX-016`;
+- diseñar conteos y ajustes, responsabilidades de `NEXO-UX-018` y
+  `NEXO-UX-019`;
+- resolver diferencias, correcciones o reversas supervisoras,
+  responsabilidad de `NEXO-UX-022`;
+- ejecutar cambios físicos o pruebas operativas.
+
+Entrada ordinaria mínima:
+
+```text
+ordinary_handoff_id
+ordinary_handoff_version
+source_app = origo
+entry_mode = normal
+purchase_order_id
+commercial_receipt_id
+supplier_id
+site_id
+currency
+invoice_reference
+accepted_lines[]
+policy_snapshot_ids
+confirmed_at
+```
+
+Entrada excepcional mínima:
+
+```text
+emergency_case_id
+source_app = nexo
+entry_mode = emergency
+site_id
+actor_id
+reason_code
+reason_text
+evidence_refs[]
+ordinary_flow_unavailable_reason
+observed_lines[]
+policy_snapshot_ids
+version
+```
+
+Salida autoritativa mínima:
+
+```text
+inventory_entry_id
+inventory_entry_item_ids[]
+posting_intent_id
+posting_receipt_id
+source_identity
+source_line_correlations[]
+inventory_movement_ids[]
+site_stock_projection_receipts[]
+cost_projection_receipts[]
+source_acknowledgment_id
+putaway_pending_line_ids[]
+exception_ids[]
+version
+confirmed_at
+```
+
+---
+
+#### 4. Actores, autoridad y segregación
+
+| Actor o contexto           | Autoridad                                                                                        | Límite obligatorio                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------- |
+| `OPERADOR_RECEPCION_ORIGO` | Confirma la recepción comercial y emite el handoff ordinario bajo su proceso.                    | No escribe directamente stock NEXO ni usa la emergencia como atajo.                                     |
+| `BODEGUERO_ENTRADA`        | Reclama trabajo atribuible, verifica datos físicos necesarios y confirma una entrada autorizada. | No crea compras, cambia costo protegido, elige políticas maestras ni resuelve excepciones supervisoras. |
+| `OPERADOR_EMERGENCIA`      | Captura un caso excepcional cuando posee permiso exacto y condición habilitante.                 | No puede convertir la excepción en flujo habitual ni omitir causa y evidencia exigibles.                |
+| `SUPERVISION`              | Observa bloqueos, divergencias y solicitudes de corrección o reversa dentro de su territorio.    | No sustituye la observación del operador ni edita hechos publicados.                                    |
+| `RESPONSABLE_DE_COSTO`     | Mantiene políticas y autoriza overrides cuando el contrato lo permita.                           | No cambia snapshots de entradas ya publicadas.                                                          |
+| `SISTEMA_NEXO`             | Valida, publica asiento y movimientos, aplica proyecciones y emite receipts y handoffs.          | No infiere autoridad desde URL, rol, alias o datos del cliente.                                         |
+| `SISTEMA_ORIGO`            | Es propietario de orden, proveedor, recepción comercial y acknowledgment ordinario.              | No publica un segundo movimiento para la misma línea.                                                   |
+| `DISPOSITIVO_COMPARTIDO`   | Aporta estación, escáner o periféricos bajo sesión humana vigente.                               | No es actor, aprobador, propietario de fuente ni escritor.                                              |
+
+Toda lectura y mutación revalida principal, actor efectivo, sesión humana,
+función, turno o check-in aplicable, dispositivo, sede, territorio, permiso,
+fuente, versión, sesión de entrada, estado y saldo elegible.
+
+`nexo.inventory.entries_emergency` no concede recepción ordinaria, ajuste,
+conteo, movimiento, ubicación, costo, resolución de excepción ni acceso global.
+`origo.procurement.receipts` no concede entrada de emergencia ni escritura
+directa sobre proyecciones NEXO.
+
+---
+
+#### 5. `NEXO-INVENTORY-ENTRY-SOURCE-DISPOSITION-001`
+
+| ID                 | Familia                            | Propietario                | Representación actual                                                                    | Disposición                    | Decisión                                                                                                                                          |
+| ------------------ | ---------------------------------- | -------------------------- | ---------------------------------------------------------------------------------------- | ------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ENTRY-SOURCE-001` | Recepción ordinaria correlacionada | ORIGO                      | `purchase_in` o compatibilidad `receipt_in` con `source_app=origo` y `entry_mode=normal` | `ADMITIR_CON_HANDOFF`          | Exige orden o recepción comercial válida, cantidades aceptadas, proveedor, documento, moneda, costo y versión; NEXO no crea ni aprueba la compra. |
+| `ENTRY-SOURCE-002` | Entrada de emergencia              | NEXO                       | `receipt_in` con `source_app=nexo` y `entry_mode=emergency`                              | `ADMITIR_COMO_EXCEPCION`       | Solo con permiso exacto, causa estructurada, explicación, evidencia aplicable y demostración de que el flujo ordinario no puede utilizarse.       |
+| `ENTRY-SOURCE-003` | Receipt genérico legacy            | Sin propietario inequívoco | `receipt` o `receipt_in` sin fuente y modo verificables                                  | `BLOQUEAR_NUEVOS_ESCRITORES`   | Debe clasificarse y migrarse; no puede originar un hecho nuevo ambiguo ni decidir costo, ubicación o propietario por inferencia.                  |
+| `ENTRY-SOURCE-004` | Recepción de remisión interna      | NEXO remisiones            | `restock_in` correlacionado con receipt de `NEXO-UX-013`                                 | `CONSERVAR_DIFERENCIADA`       | Consume el receipt y sus cantidades aceptadas; no se reexpresa como entrada ordinaria o de emergencia y no vuelve a publicar inventario.          |
+| `ENTRY-SOURCE-005` | Salida de producción               | FOGO                       | `production_in`                                                                          | `CONSERVAR_DIFERENCIADA`       | Debe provenir de lote, rendimiento y cierre productivo autorizados; NEXO consulta el movimiento y no captura de nuevo la producción.              |
+| `ENTRY-SOURCE-006` | Traslado recibido                  | NEXO movimientos           | `transfer_in`                                                                            | `CONSERVAR_PAREADA`            | Debe conservar correlación con `transfer_out`, origen, destino, custodia y cantidad; su diseño integral pertenece a `NEXO-UX-016`.                |
+| `ENTRY-SOURCE-007` | Ajuste positivo                    | NEXO control               | `adjustment` con delta positivo                                                          | `EXCLUIR_DEL_FLUJO_DE_ENTRADA` | Es efecto de investigación y autorización; pertenece a `NEXO-UX-019` y no puede presentarse como recepción ordinaria.                             |
+| `ENTRY-SOURCE-008` | Incremento derivado de conteo      | NEXO conteos               | `initial_count` o `count` con delta positivo                                             | `EXCLUIR_DEL_FLUJO_DE_ENTRADA` | Es diferencia confirmada por una sesión de conteo; pertenece a `NEXO-UX-018` y `NEXO-UX-019`, sin formulario libre de entrada.                    |
+
+Reconciliación:
+
+```text
+EXPECTED_ENTRY_SOURCE_FAMILIES = 8
+MATERIALIZED_ENTRY_SOURCE_FAMILIES = 8
+UNIQUE_ENTRY_SOURCE_FAMILIES = 8
+MISSING_ENTRY_SOURCE_FAMILIES = 0
+DUPLICATE_ENTRY_SOURCE_FAMILIES = 0
+```
+
+Solo `ENTRY-SOURCE-001` y `ENTRY-SOURCE-002` ingresan al flujo de entrada de
+`VPROC-0024`. Las demás identidades se conservan para impedir doble escritor,
+clasificación incorrecta y reutilización del formulario genérico.
+
+---
+
+#### 6. `NEXO-INVENTORY-ENTRY-WORK-QUEUE-CONTRACT-001`
+
+| Cola                     | Propósito                                                                     | Entrada                                                        | Salida                                                       | Bloqueo principal                                                                                 |
+| ------------------------ | ----------------------------------------------------------------------------- | -------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------------------- |
+| `ENQ-BLOQUEO`            | Fuente, autorización, versión, identidad, UOM, costo o estado incompatibles.  | Causa verificable detectada.                                   | Causa resuelta y contexto revalidado.                        | No permite publicar, corregir datos históricos ni elegir una fuente alternativa por conveniencia. |
+| `ENQ-ORDINARIA`          | Recepciones comerciales válidas de ORIGO pendientes de asiento.               | Handoff ordinario versionado y atribuible.                     | Entrada publicada o bloqueo transferido.                     | No admite captura libre de proveedor, precio u orden desde NEXO.                                  |
+| `ENQ-EMERGENCIA`         | Casos excepcionales en los que no puede usarse el flujo ordinario.            | Permiso exacto, causa, contexto y evidencia mínima.            | Entrada excepcional publicada o caso bloqueado.              | Nunca es acceso predeterminado ni sustituto habitual de ORIGO.                                    |
+| `ENQ-CAPTURA`            | Sesiones con líneas pendientes de observación o validación.                   | Sesión vigente y fuente admitida.                              | Captura completa, parcial guardada o bloqueo.                | No precarga como observado lo esperado ni confirma por abrir la pantalla.                         |
+| `ENQ-PUBLICACION`        | Intenciones completas pendientes de receipt de publicación.                   | Payload estable, versión y clave idempotente.                  | Mismo receipt, conflicto o resultado desconocido.            | No permite reenvío ciego ni doble movimiento.                                                     |
+| `ENQ-PROYECCION`         | Entradas publicadas con stock, costo, fuente o ubicación todavía pendientes.  | Posting receipt autoritativo.                                  | Todas las proyecciones confirmadas o saldo exacto pendiente. | Una proyección fallida no autoriza crear otro asiento.                                            |
+| `ENQ-RECONCILIACION`     | Timeout, cierre, red intermitente o divergencia entre receipt y proyecciones. | Intención, fingerprint y correlaciones conocidas.              | Resultado recuperado, reanudado o escalado.                  | No interpreta un mensaje del cliente como éxito o fracaso definitivo.                             |
+| `ENQ-CORRECCION_REVERSA` | Hecho publicado que requiere corrección o reversa autorizada.                 | Caso estructurado con original, motivo, evidencia y autoridad. | Movimiento compensatorio confirmado o caso abierto.          | No habilita UPDATE o DELETE del hecho original; la resolución pertenece a `NEXO-UX-022`.          |
+
+Reconciliación:
+
+```text
+EXPECTED_ENTRY_QUEUES = 8
+MATERIALIZED_ENTRY_QUEUES = 8
+UNIQUE_ENTRY_QUEUES = 8
+MISSING_ENTRY_QUEUES = 0
+DUPLICATE_ENTRY_QUEUES = 0
+```
+
+La prioridad es: bloqueo de autoridad o integridad, fuente ordinaria con
+vencimiento, resultado desconocido, proyección pendiente, captura y trabajo de
+corrección autorizado. La emergencia no recibe prioridad por el solo hecho de
+ser excepcional; su severidad depende del caso.
+
+---
+
+#### 7. `NEXO-INVENTORY-ENTRY-STATE-MACHINE-001`
+
+| Estado                         | Condición                                                                                    | Transición principal                                                                    | Invariante                                         |
+| ------------------------------ | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- | -------------------------------------------------- |
+| `FUENTE_IDENTIFICADA`          | Existe identidad de origen, tipo y referencia.                                               | `FUENTE_ADMITIDA` o `FUENTE_BLOQUEADA`.                                                 | No crea stock ni sesión.                           |
+| `FUENTE_ADMITIDA`              | La fuente cumple propietario, pertenencia, versión y política.                               | `SESION_ENTRADA_ABIERTA`.                                                               | La admisión no publica.                            |
+| `FUENTE_BLOQUEADA`             | La fuente es ambigua, obsoleta, duplicada o incompatible.                                    | Revalidación o cierre del bloqueo.                                                      | No se corrige silenciosamente.                     |
+| `SESION_ENTRADA_ABIERTA`       | Actor o consumidor autorizado reclama trabajo con versión.                                   | `CAPTURA_EN_CURSO`.                                                                     | Un solo reclamo activo por fuente y destino.       |
+| `CAPTURA_EN_CURSO`             | Se validan líneas, cantidades, UOM, costo y evidencia.                                       | `CAPTURA_PARCIAL` o `CAPTURA_COMPLETA`.                                                 | No modifica stock.                                 |
+| `CAPTURA_PARCIAL`              | Existen líneas guardadas sin cierre suficiente.                                              | `CAPTURA_EN_CURSO` o bloqueo.                                                           | La parcialidad permanece explícita.                |
+| `CAPTURA_COMPLETA`             | Todas las líneas elegibles tienen resultado y saldo.                                         | `INTENCION_PUBLICACION_CREADA`.                                                         | Completa no equivale a publicada.                  |
+| `INTENCION_PUBLICACION_CREADA` | Payload, versión, fingerprint y clave quedaron persistidos.                                  | `PUBLICACION_EN_CURSO`.                                                                 | La intención es recuperable.                       |
+| `PUBLICACION_EN_CURSO`         | El comando autoritativo procesa el asiento.                                                  | `ENTRADA_PUBLICADA` o `RESULTADO_DESCONOCIDO`.                                          | No se emite un segundo comando.                    |
+| `RESULTADO_DESCONOCIDO`        | No existe respuesta concluyente después del envío.                                           | Reconciliación por intención.                                                           | No se presume éxito ni fallo.                      |
+| `ENTRADA_PUBLICADA`            | Header, líneas, movimientos y posting receipt quedaron correlacionados.                      | `PROYECCIONES_PENDIENTES` o `ENTRADA_CERRADA`.                                          | El hecho es append-only.                           |
+| `PROYECCIONES_PENDIENTES`      | Una o más vistas derivadas esperan aplicación.                                               | `STOCK_SEDE_PUBLICADO`, `COSTO_PUBLICADO`, `FUENTE_CONFIRMADA` y `UBICACION_PENDIENTE`. | Conserva saldo y consumidor por proyección.        |
+| `STOCK_SEDE_PUBLICADO`         | La proyección de sede refleja cada movimiento una sola vez.                                  | Continuidad de proyecciones.                                                            | No afirma ubicación final.                         |
+| `COSTO_PUBLICADO`              | La proyección de costo aplicó la política y snapshot autorizados.                            | Continuidad de proyecciones.                                                            | No reescribe el costo histórico del asiento.       |
+| `FUENTE_CONFIRMADA`            | ORIGO o el propietario recibió acknowledgment idempotente.                                   | Continuidad de proyecciones.                                                            | No duplica cantidades recibidas.                   |
+| `UBICACION_PENDIENTE`          | La existencia publicada requiere destino físico definitivo.                                  | Handoff a `NEXO-UX-015`.                                                                | No usa la primera LOC ni una coincidencia textual. |
+| `EXCEPCION_ABIERTA`            | Existe diferencia, contradicción o proyección bloqueada.                                     | Handoff a `NEXO-UX-022`.                                                                | No borra el asiento confirmado.                    |
+| `CORRECCION_PENDIENTE`         | Caso autorizado requiere efecto compensatorio.                                               | `REVERSA_CONFIRMADA` o corrección confirmada.                                           | No edita valores publicados.                       |
+| `REVERSA_CONFIRMADA`           | Movimiento opuesto y receipt de reversa quedaron vinculados.                                 | `ENTRADA_CERRADA` o nueva excepción.                                                    | El original permanece visible.                     |
+| `ENTRADA_CERRADA`              | Asiento y proyecciones obligatorias quedaron correlacionados; handoffs permanecen trazables. | Fin del flujo.                                                                          | No cierra ubicación o excepción ajena.             |
+
+Reconciliación:
+
+```text
+EXPECTED_ENTRY_STATES = 20
+MATERIALIZED_ENTRY_STATES = 20
+UNIQUE_ENTRY_STATES = 20
+MISSING_ENTRY_STATES = 0
+DUPLICATE_ENTRY_STATES = 0
+```
+
+Los estados se derivan de hechos y receipts de servidor. Un redirect, toast,
+mensaje, mutación local o cambio visual no confirma publicación ni proyección.
+
+---
+
+#### 8. `NEXO-INVENTORY-ENTRY-STEP-CATALOG-001`
+
+| Paso     | Nombre                                          | Entrada                                                                                                                 | Salida                                        | Límite                                                         |
+| -------- | ----------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------- |
+| `ENT-01` | Resolver contexto                               | Principal, actor efectivo, sesión humana, función, sede, turno o check-in, dispositivo, territorio y permiso aplicable. | Contexto válido o bloqueo.                    | No listar fuentes antes de resolver autoridad.                 |
+| `ENT-02` | Resolver clase de fuente                        | Referencia recibida, `source_app`, `entry_mode`, tipo de movimiento y propietario.                                      | Una de las ocho disposiciones.                | No inferir desde una etiqueta o URL.                           |
+| `ENT-03` | Cargar handoff ordinario o contexto excepcional | Referencia versionada de ORIGO o caso de emergencia.                                                                    | Entrada verificable.                          | No reconstruir una recepción comercial desde campos sueltos.   |
+| `ENT-04` | Validar propietario y pertenencia               | Sede, proveedor, orden, recepción, actor, destino y versión.                                                            | Fuente admitida.                              | No ampliar cobertura por rol.                                  |
+| `ENT-05` | Comprobar no duplicidad                         | Fuente, línea, secuencia parcial y postings anteriores.                                                                 | Saldo elegible exacto.                        | No publicar dos veces la misma cantidad.                       |
+| `ENT-06` | Reclamar sesión                                 | Intención idempotente, actor, fuente y versión esperada.                                                                | Sesión exclusiva o conflicto.                 | Abrir la pantalla no reclama trabajo.                          |
+| `ENT-07` | Identificar línea                               | Producto, referencia de fuente, presentación, lote y política aplicable.                                                | Línea perteneciente.                          | Código o escaneo no concede autoridad.                         |
+| `ENT-08` | Obtener cantidad fuente                         | Cantidad aceptada de ORIGO o cantidad observada de emergencia.                                                          | Cantidad cruda trazable.                      | No precargar esperado como observado en emergencia.            |
+| `ENT-09` | Normalizar UOM                                  | Snapshot de unidad, factor, modo de medición y tolerancia.                                                              | Cantidad canónica comparable.                 | No usar configuración posterior para historia.                 |
+| `ENT-10` | Resolver saldo y parcialidad                    | Cantidad elegible, postings previos y overage autorizado.                                                               | Saldo a publicar o diferencia.                | No ocultar exceso ni saldo negativo.                           |
+| `ENT-11` | Resolver costo protegido                        | Orden, invoice, proveedor, política, moneda y autorización de visibilidad.                                              | Snapshot de costo o bloqueo.                  | El operador físico no edita costo sin capacidad.               |
+| `ENT-12` | Completar causa excepcional                     | Código de causa, explicación, fuente ordinaria no disponible y evidencia aplicable.                                     | Caso de emergencia suficiente.                | Nota libre sola no habilita publicación.                       |
+| `ENT-13` | Clasificar línea                                | Cantidad, UOM, elegibilidad, condición y diferencias.                                                                   | Línea lista, bloqueada o diferida.            | Una línea incompatible no se degrada a genérica.               |
+| `ENT-14` | Cerrar captura                                  | Todas las líneas y saldos.                                                                                              | Captura completa o parcial explícita.         | No confundir captura con asiento.                              |
+| `ENT-15` | Crear intención de publicación                  | Payload canónico, versión, fingerprint y clave idempotente.                                                             | Intención persistida.                         | Misma clave con payload distinto produce conflicto.            |
+| `ENT-16` | Publicar asiento autoritativo                   | Intención válida, fuente y sesión vigentes.                                                                             | Header, items, movimientos y posting receipt. | El núcleo se ejecuta atómicamente o no se confirma.            |
+| `ENT-17` | Publicar proyección de sede                     | Posting receipt y movimientos confirmados.                                                                              | Stock de sede idempotente.                    | No aplicar read-modify-write desde el cliente.                 |
+| `ENT-18` | Publicar costo                                  | Posting receipt, snapshot y política de costeo.                                                                         | Evento de costo idempotente.                  | No recalcular historia al cambiar proveedor.                   |
+| `ENT-19` | Confirmar fuente                                | Correlación con orden, recepción o caso excepcional.                                                                    | Acknowledgment y acumulados de origen.        | No sumar cantidades dos veces.                                 |
+| `ENT-20` | Emitir handoff de ubicación                     | Cantidades publicadas, identidad física y restricciones.                                                                | Trabajo para `NEXO-UX-015`.                   | No escoger destino final por heurística.                       |
+| `ENT-21` | Reconciliar proyecciones y resultado            | Intención, receipt, outbox, saldos y errores.                                                                           | Estado convergente o excepción estructurada.  | No crear otra entrada para reparar una proyección.             |
+| `ENT-22` | Cerrar y entregar continuidad                   | Receipts, proyecciones, diferencias y handoffs.                                                                         | Entrada cerrada y trazable.                   | No resuelve ubicación, movimientos ni excepciones posteriores. |
+
+Reconciliación:
+
+```text
+EXPECTED_ENTRY_STEPS = 22
+MATERIALIZED_ENTRY_STEPS = 22
+UNIQUE_ENTRY_STEPS = 22
+MISSING_ENTRY_STEPS = 0
+DUPLICATE_ENTRY_STEPS = 0
+```
+
+---
+
+#### 9. `NEXO-INVENTORY-ENTRY-ORDINARY-HANDOFF-CONTRACT-001`
+
+| Campo                               | Regla                                                                                    | Bloqueo                                                  |
+| ----------------------------------- | ---------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `ordinary_handoff_id` y `version`   | Identidad única, inmutable y vigente.                                                    | Falta, duplicidad o versión obsoleta.                    |
+| `purchase_order_id`                 | Debe pertenecer a ORIGO, sede y proveedor compatibles.                                   | Orden ajena, anulada o no elegible.                      |
+| `commercial_receipt_id`             | Hecho físico y comercial confirmado por el propietario.                                  | Borrador, recepción no confirmada o receipt inexistente. |
+| `accepted_lines[]`                  | Cada línea contiene producto, cantidad aceptada, UOM, costo snapshot y saldo publicable. | Línea libre, cantidad negativa o sin correlación.        |
+| `supplier_id` e `invoice_reference` | Solo lectura para NEXO y auditables.                                                     | Proveedor o documento contradictorios.                   |
+| `currency` y `cost_snapshot`        | Provienen de la fuente y política autorizadas.                                           | Moneda ausente, costo mutable o override no autorizado.  |
+| `site_id`                           | Coincide con contexto, recepción y territorio.                                           | Sede distinta o no atribuible.                           |
+| `policy_snapshot_ids`               | Gobiernan UOM, tolerancia, costo y evidencia.                                            | Política ausente o recalculada posteriormente.           |
+
+ORIGO conserva propiedad sobre compra, proveedor, documento y recepción
+comercial. NEXO publica el efecto de inventario una sola vez y devuelve un
+acknowledgment idempotente; no actualiza acumulados de ORIGO mediante una suma
+ciega ni declara una orden recibida desde el cliente.
+
+---
+
+#### 10. `NEXO-INVENTORY-ENTRY-EMERGENCY-CONTRACT-001`
+
+La emergencia exige simultáneamente:
+
+1. permiso exacto `nexo.inventory.entries_emergency`;
+2. sede, actor, sesión y función atribuibles;
+3. `reason_code` de catálogo vigente;
+4. explicación concreta;
+5. motivo verificable por el cual el flujo ordinario no está disponible;
+6. producto, cantidad cruda, UOM y condición observadas;
+7. costo derivado o protegido según política;
+8. evidencia mínima exigida por la causa;
+9. clave idempotente y versión;
+10. handoff posterior a supervisión cuando exista diferencia, override o riesgo.
+
+No son causas suficientes: rapidez, comodidad, ausencia de datos comerciales
+que sí pueden obtenerse, fallo visual sin diagnóstico o deseo de evitar ORIGO.
+La entrada excepcional publicada sigue siendo append-only y se corrige o
+revierte mediante efectos compensatorios.
+
+---
+
+#### 11. `NEXO-INVENTORY-ENTRY-LINE-QUANTITY-UOM-CONTRACT-001`
+
+| Variable               | Regla                                                                                                |
+| ---------------------- | ---------------------------------------------------------------------------------------------------- |
+| Identidad              | Producto, fuente, línea, presentación y lote aplicable permanecen correlacionados.                   |
+| Cantidad ordinaria     | Consume cantidad aceptada y saldo no publicado del handoff; NEXO no la vuelve a observar ni aceptar. |
+| Cantidad de emergencia | Conserva valor crudo observado y cantidad canónica; esperado no sustituye observado.                 |
+| UOM                    | Utiliza snapshot de unidad, factor, perfil y redondeo; una política posterior no altera historia.    |
+| Parcialidad            | Cada posting descuenta el saldo elegible por fuente y línea; acumulados se derivan del servidor.     |
+| Overage                | Se clasifica y bloquea o admite mediante política explícita; no se suma silenciosamente.             |
+| Valor nulo o cero      | No produce movimiento positivo; queda como línea bloqueada o no elegible según fuente.               |
+| Precisión              | Usa precisión canónica por unidad y conserva el valor original para auditoría.                       |
+
+Para cada línea:
+
+```text
+ELIGIBLE_BASE_QTY
+= SOURCE_ACCEPTED_OR_OBSERVED_BASE_QTY
+- PRIOR_CONFIRMED_POSTED_BASE_QTY
+- BLOCKED_OR_REVERSED_PENDING_BASE_QTY
+```
+
+La suma de postings confirmados no excede la cantidad elegible salvo una
+cantidad adicional clasificada y autorizada como hecho independiente.
+
+---
+
+#### 12. `NEXO-INVENTORY-ENTRY-COSTING-CONTRACT-001`
+
+| Aspecto            | Decisión                                                                                                              |
+| ------------------ | --------------------------------------------------------------------------------------------------------------------- |
+| Fuente ordinaria   | Costo, moneda, impuestos y referencia provienen de ORIGO o del snapshot aprobado; NEXO no recrea la lógica comercial. |
+| Fuente excepcional | Aplica política de costo vigente y fuente permitida; un valor manual exige capacidad, motivo y evidencia.             |
+| Visibilidad        | El operador físico ve costo solo cuando sea necesario para su tarea; el servidor conserva el valor protegido.         |
+| Conversión         | El costo por unidad de entrada se convierte a unidad de stock mediante el mismo snapshot de UOM.                      |
+| Valoración         | Promedio u otra política se aplica como proyección idempotente correlacionada con el posting receipt.                 |
+| Historia           | El cambio posterior de proveedor, precio, impuesto o política no reescribe el costo del asiento.                      |
+| Fallo              | Un error de costo conserva la entrada y el saldo de proyección pendiente; no crea un segundo movimiento.              |
+| Reversa            | La compensación conserva costo y vínculo con el original bajo la política aprobada.                                   |
+
+---
+
+#### 13. `NEXO-INVENTORY-ENTRY-POSTING-CONTRACT-001`
+
+El núcleo autoritativo confirma en una sola frontera lógica:
+
+```text
+posting_intent
+inventory_entry
+inventory_entry_items[]
+inventory_movements[]
+posting_receipt
+outbox_events[]
+```
+
+Propiedades obligatorias:
+
+- la intención persiste antes de ejecutar el comando;
+- `inventory_entry` conserva fuente, modo, sede, actor, versión y estado;
+- cada item conserva fuente, línea, UOM, cantidad, costo y correlación;
+- cada movimiento conserva `entry_id`, `entry_item_id`, `source_identity`,
+  sede, producto, cantidad firmada, unidad, costo y actor;
+- el posting receipt contiene ID, versión, hora de servidor y resultado;
+- el núcleo es atómico: si una parte no se confirma, no se declara publicada;
+- las proyecciones posteriores consumen el outbox o transacción equivalente;
+- el cliente no actualiza stock mediante read-modify-write;
+- una nota humana no sustituye claves estructuradas.
+
+---
+
+#### 14. `NEXO-INVENTORY-ENTRY-IDEMPOTENCY-CONTRACT-001`
+
+Identidad de intención:
+
+```text
+source_owner
+source_type
+source_id
+source_version
+source_line_id
+partial_sequence
+site_id
+actor_id
+payload_fingerprint
+idempotency_key
+```
+
+Resultados permitidos:
+
+| Situación                                           | Resultado                                   |
+| --------------------------------------------------- | ------------------------------------------- |
+| misma clave, mismo fingerprint y receipt confirmado | devolver el mismo receipt                   |
+| misma clave y fingerprint con comando en curso      | devolver estado recuperable                 |
+| misma clave con payload distinto                    | conflicto inmutable                         |
+| versión de fuente o sesión obsoleta                 | rechazar y recargar                         |
+| timeout después del envío                           | consultar intención antes de reintentar     |
+| consumidor de proyección repetido                   | devolver mismo receipt de proyección        |
+| saldo elegible agotado                              | mostrar publicación anterior, no crear otra |
+
+La clave no se genera de forma distinta en cada click. Los consumidores de
+stock, costo y acknowledgment aplican deduplicación por movement o evento.
+
+---
+
+#### 15. `NEXO-INVENTORY-ENTRY-STOCK-PROJECTION-BOUNDARY-001`
+
+| Hecho              | Fuente de verdad                                                            | Efecto permitido                      | Prohibición                                     |
+| ------------------ | --------------------------------------------------------------------------- | ------------------------------------- | ----------------------------------------------- |
+| Entrada publicada  | Posting receipt y movimientos append-only.                                  | Autoriza proyecciones.                | No afirma ubicación final.                      |
+| Stock de sede      | Suma idempotente de movimientos confirmados.                                | Incrementa saldo agregado una vez.    | No se calcula con lectura y upsert del cliente. |
+| Stock por LOC      | Handoff y confirmación de `NEXO-UX-015` o receiving LOC explícita aprobada. | Refleja ubicación física confirmada.  | No elegir primera LOC ni coincidencia textual.  |
+| Stock por posición | Putaway confirmado.                                                         | Refleja posición interna.             | No se crea durante la entrada.                  |
+| Costo              | Evento de valoración correlacionado.                                        | Actualiza proyección de costo.        | No cambia el item histórico.                    |
+| Orden o fuente     | Acknowledgment idempotente.                                                 | Actualiza acumulados del propietario. | No suma dos veces ni cierra por estado visual.  |
+
+La entrada puede cerrar con `UBICACION_PENDIENTE`. Esto no es un fallo: es el
+handoff explícito a `NEXO-UX-015`. La disponibilidad y el destino físico se
+rigen por la política de ubicación, no por el formulario de entrada.
+
+---
+
+#### 16. `NEXO-INVENTORY-ENTRY-CORRECTION-REVERSAL-CONTRACT-001`
+
+Antes de publicar, un borrador puede descartarse sin efecto de inventario.
+Después de publicar:
+
+- header, items, movimientos y receipt no se editan ni eliminan;
+- una corrección crea un caso con original, campo afectado, motivo, evidencia,
+  autoridad y efecto esperado;
+- una reversa crea movimientos opuestos correlacionados y un receipt propio;
+- una reversa parcial conserva cantidad exacta y saldo restante;
+- costo, stock, fuente y ubicación reciben proyecciones compensatorias;
+- la reversa no reabre una compra ni borra una recepción comercial;
+- el resultado original permanece visible;
+- el propietario de decisión y cierre es `NEXO-UX-022`.
+
+No existe “deshacer” como mutación destructiva. Toda compensación conserva
+causalidad y puede fallar de forma recuperable sin duplicarse.
+
+---
+
+#### 17. `NEXO-INVENTORY-ENTRY-COMPATIBILITY-CONTRACT-001`
+
+| Superficie actual                              | Disposición                                                                                   | Estado objetivo                     |
+| ---------------------------------------------- | --------------------------------------------------------------------------------------------- | ----------------------------------- |
+| `inventory_entries`                            | Conservar identidad temporal y añadir fuente, versión, intención y receipt canónicos.         | `CANONICAL_AGGREGATE_OR_PROJECTION` |
+| `inventory_entry_items`                        | Conservar líneas, eliminar mutabilidad posterior y añadir correlación de fuente.              | `APPEND_ONLY_ITEMS`                 |
+| `inventory_movements`                          | Es ledger de efectos; cada fila debe referenciar entrada, item y fuente.                      | `CANONICAL_LEDGER`                  |
+| `inventory_stock_by_site`                      | Proyección derivada de movimientos, nunca escritor independiente del cliente.                 | `DERIVED_PROJECTION`                |
+| stock por LOC y presentación                   | Consumidor idempotente o handoff de ubicación.                                                | `DERIVED_OR_DOWNSTREAM`             |
+| `product_cost_events`                          | Proyección correlacionada con posting receipt y política.                                     | `DERIVED_PROJECTION`                |
+| acumulados de purchase order                   | Acknowledgment al propietario, no suma local ciega.                                           | `SOURCE_PROJECTION`                 |
+| aliases `receipt`, `receipt_in`, `purchase_in` | Clasificar, versionar y retirar ambigüedad.                                                   | `MIGRATE_OR_MAP`                    |
+| RLS con permisos agregados                     | Separar capacidades por fuente y comando; stock no se concede por lista amplia de escritores. | `CONVERGE_TO_COMMAND`               |
+| fallback de columnas ausentes                  | Retirar cuando la migración y compatibilidad estén certificadas.                              | `BLOCK_SCHEMA_DRIFT`                |
+
+Durante convivencia, cada fuente y línea tiene un único escritor autoritativo.
+Un dual-write solo es admisible mediante la misma intención, correlación y
+prueba de cero duplicidad. Toda modificación Supabase se versiona desde
+`vento-shell`.
+
+---
+
+#### 18. Contrato de estados de interfaz
+
+| Estado                           | Condición                                                        | Respuesta obligatoria                                 |
+| -------------------------------- | ---------------------------------------------------------------- | ----------------------------------------------------- |
+| `RESOLVIENDO_CONTEXTO`           | Se resuelven actor, sesión, función, sede y permisos.            | No mostrar colas definitivas ni mutaciones.           |
+| `SIN_AUTORIZACION`               | No existe capacidad exacta para la fuente.                       | Fallar cerrado sin exponer entradas ajenas.           |
+| `SIN_SEDE_ACTIVA`                | No existe sede operativa verificable.                            | Bloquear y ofrecer regularización canónica.           |
+| `SIN_FUENTE`                     | No existe trabajo ordinario ni caso excepcional elegible.        | Vacío confirmado con hora de corte.                   |
+| `CARGANDO_FUENTE`                | Se lee el handoff o caso.                                        | No presentar datos parciales como definitivos.        |
+| `FUENTE_INVALIDA`                | Propietario, sede, versión o referencia no coinciden.            | Bloquear con causa y propietario.                     |
+| `FUENTE_AMBIGUA`                 | Alias legacy sin fuente o modo inequívocos.                      | Impedir nuevo asiento y remitir a migración.          |
+| `FUENTE_YA_PUBLICADA`            | El saldo elegible es cero por postings previos.                  | Mostrar receipt existente, no acción duplicada.       |
+| `FUENTE_PARCIALMENTE_PUBLICADA`  | Existe saldo pendiente de una fuente parcial.                    | Mostrar acumulados de servidor y saldo exacto.        |
+| `ENTRADA_ORDINARIA_LISTA`        | Handoff ORIGO válido.                                            | Permitir reclamar sesión sin editar compra.           |
+| `EMERGENCIA_OCULTA`              | No existe permiso o condición excepcional.                       | No mostrar formulario ni enlace directo.              |
+| `EMERGENCIA_LISTA`               | Permiso y contexto permiten iniciar un caso.                     | Solicitar causa y datos mínimos.                      |
+| `CAUSA_EMERGENCIA_REQUERIDA`     | Falta código o explicación suficiente.                           | Bloquear publicación.                                 |
+| `EVIDENCIA_EMERGENCIA_REQUERIDA` | La política exige evidencia.                                     | Solicitarla sin almacenar datos no autorizados.       |
+| `CONFLICTO_SESION`               | Otro actor o versión mantiene el reclamo.                        | Bloquear mutación y ofrecer actualización.            |
+| `CAPTURA_EN_CURSO`               | Existen líneas abiertas.                                         | Conservar borrador versionado.                        |
+| `LINEA_REQUERIDA`                | No existe identidad de producto o referencia.                    | No permitir confirmar.                                |
+| `PRODUCTO_INVALIDO`              | Producto inactivo, ajeno o no inventariable.                     | Bloquear línea y asignar propietario.                 |
+| `POLITICA_UOM_FALTANTE`          | No existe snapshot o factor compatible.                          | Bloquear cálculo; no usar valor por defecto.          |
+| `CANTIDAD_INVALIDA`              | Valor ausente, negativo, no finito o superior sin clasificación. | Conservar valor y mostrar causa.                      |
+| `COSTO_PROTEGIDO`                | El actor no requiere ver el costo.                               | Ocultar valor y conservar cálculo servidor.           |
+| `COSTO_REQUERIDO`                | La política exige snapshot y no existe fuente válida.            | Bloquear publicación y asignar propietario.           |
+| `CAPTURA_PARCIAL`                | No todas las líneas están completas.                             | Guardar sin afirmar publicación.                      |
+| `LISTO_PARA_PUBLICAR`            | Payload completo, estable y elegible.                            | Mostrar impacto y confirmar una vez.                  |
+| `PUBLICANDO`                     | La intención fue enviada.                                        | Deshabilitar duplicado y conservar clave.             |
+| `RESULTADO_DESCONOCIDO`          | Timeout o pérdida de respuesta.                                  | Consultar intención antes de reintentar.              |
+| `ENTRADA_PUBLICADA`              | Posting receipt confirmado.                                      | Mostrar ID, versión, hora y líneas.                   |
+| `PROYECCIONES_PENDIENTES`        | Stock, costo, fuente o ubicación esperan continuidad.            | Mostrar saldos y consumidores, no crear otro asiento. |
+| `RECONCILIACION_REQUERIDA`       | Existe divergencia verificable.                                  | Abrir caso estructurado y bloquear cierre ficticio.   |
+| `ENTRADA_COMPLETADA`             | Asiento y proyecciones obligatorias convergieron.                | Mostrar comprobantes y siguiente trabajo autorizado.  |
+
+Reconciliación:
+
+```text
+EXPECTED_INTERFACE_STATES = 30
+MATERIALIZED_INTERFACE_STATES = 30
+UNIQUE_INTERFACE_STATES = 30
+MISSING_INTERFACE_STATES = 0
+DUPLICATE_INTERFACE_STATES = 0
+```
+
+Los estados vacíos, bloqueos y conflictos no ofrecen controles que el servidor
+rechazará por diseño. La interfaz no presenta una entrada como completada
+mientras existan proyecciones obligatorias sin resultado o una intención sin
+reconciliar.
+
+---
+
+#### 19. `NEXO-INVENTORY-ENTRY-ROUTE-DISPOSITION-001`
+
+| ID               | Patrón actual                     | Disposición                   | Decisión                                                                                                                | Estado                  |
+| ---------------- | --------------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| `NEXO-ROUTE-001` | `/`                               | `PROYECTAR_COLAS_DE_ENTRADA`  | Mostrar únicamente trabajo atribuible; la emergencia no es acceso predeterminado.                                       | `ESPECIFICADO`          |
+| `NEXO-ROUTE-019` | `/inventory/entries`              | `CONTEXTUALIZAR_POR_FUENTE`   | Separar bandeja ordinaria proveniente de ORIGO y caso excepcional; eliminar el formulario libre como entrada universal. | `ESPECIFICADO`          |
+| `NEXO-ROUTE-020` | `/inventory/locations`            | `REFERENCIA_POSTERIOR`        | Consultar destinos compatibles sin elegir ni editar la ubicación dentro del asiento.                                    | `HANDOFF_A_NEXO_UX_015` |
+| `NEXO-ROUTE-022` | `/inventory/locations/[id]/board` | `CONTINUIDAD_DE_UBICACION`    | Abrir putaway solo después del posting receipt y del handoff de ubicación.                                              | `HANDOFF_A_NEXO_UX_015` |
+| `NEXO-ROUTE-029` | `/inventory/movements`            | `LEDGER_SOLO_LECTURA`         | Mostrar movimientos correlacionados con entrada, fuente y receipt sin editar ni borrar.                                 | `ESPECIFICADO`          |
+| `NEXO-ROUTE-030` | `/inventory/production-batches`   | `REFERENCIA_FOGO`             | Consultar lote productivo asociado sin convertirlo en entrada genérica ni operar FOGO.                                  | `REFERENCIA_CONTEXTUAL` |
+| `NEXO-ROUTE-037` | `/inventory/remissions/receive`   | `EXCLUIR_REPUBLICACION`       | La recepción interna conserva su receipt y posting; no redirige a una entrada ordinaria o excepcional.                  | `ESPECIFICADO`          |
+| `NEXO-ROUTE-052` | `/inventory/stock`                | `PROYECCION_POST_PUBLICACION` | Mostrar saldo solo después de la proyección confirmada y distinguir ubicación pendiente.                                | `ESPECIFICADO`          |
+| `NEXO-ROUTE-061` | `/links/[code]`                   | `IDENTIFICACION_CONTEXTUAL`   | Resolver fuente, producto o receipt dentro de la sesión; no publicar por escaneo.                                       | `UTILIDAD_CONTEXTUAL`   |
+| `NEXO-ROUTE-064` | `/scanner`                        | `HEREDAR_SESION`              | Identificar línea o fuente sin ampliar autoridad ni ejecutar una transición automática.                                 | `UTILIDAD_OCULTA`       |
+
+Reconciliación:
+
+```text
+EXPECTED_RELEVANT_SURFACES = 10
+MATERIALIZED_RELEVANT_SURFACES = 10
+UNIQUE_RELEVANT_SURFACES = 10
+MISSING_RELEVANT_SURFACES = 0
+DUPLICATE_RELEVANT_SURFACES = 0
+NEW_SURFACE_IDENTITIES = 0
+```
+
+No se crea una dirección nueva. `NEXO-ROUTE-019` debe converger a trabajo por
+fuente y sesión, mientras ORIGO conserva su propia experiencia de recepción
+comercial y NEXO consume el handoff.
+
+---
+
+#### 20. `NEXO-INVENTORY-ENTRY-VALIDATION-MATRIX-001`
+
+| ID            | Grupo        | Comprobación                                                                                                           | Momento                  | Resultado esperado                         |
+| ------------- | ------------ | ---------------------------------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------ |
+| `ENT-VAL-001` | Contexto     | Resolver principal, actor efectivo y sesión humana.                                                                    | ENT-01                   | Bloquea sin atribución.                    |
+| `ENT-VAL-002` | Contexto     | Exigir permiso `origo.procurement.receipts` para fuente ordinaria o `nexo.inventory.entries_emergency` para excepción. | ENT-01 a ENT-04          | No acepta permiso genérico como sustituto. |
+| `ENT-VAL-003` | Contexto     | Validar sede, territorio, función y dispositivo aplicables.                                                            | ENT-01 y cada mutación   | No expone trabajo ajeno.                   |
+| `ENT-VAL-004` | Contexto     | Revalidar turno o check-in cuando el contrato lo exija.                                                                | Cada mutación            | Revocación invalida la sesión.             |
+| `ENT-VAL-005` | Contexto     | Separar operador, propietario de fuente, supervisor y sistema escritor.                                                | ENT-01 a ENT-22          | No existe autoaprobación por rol.          |
+| `ENT-VAL-006` | Contexto     | Mantener coherencia entre interfaz, servidor, RPC, grants y RLS.                                                       | Cada lectura y mutación  | Divergencia falla cerrada.                 |
+| `ENT-VAL-007` | Fuente       | Clasificar exactamente una de las ocho disposiciones.                                                                  | ENT-02                   | Fuente ambigua se bloquea.                 |
+| `ENT-VAL-008` | Fuente       | Verificar identidad, propietario, versión y pertenencia de la fuente.                                                  | ENT-03 y ENT-04          | No reconstruye hechos.                     |
+| `ENT-VAL-009` | Fuente       | Exigir handoff ORIGO para entrada ordinaria.                                                                           | ENT-03                   | NEXO no crea compra libre.                 |
+| `ENT-VAL-010` | Fuente       | Exigir permiso, causa y ausencia demostrada del flujo ordinario para emergencia.                                       | ENT-03 y ENT-12          | Emergencia no sustituye ORIGO.             |
+| `ENT-VAL-011` | Fuente       | Impedir que `restock_in` vuelva a publicar el receipt de remisión.                                                     | ENT-02 y ENT-05          | Cero doble entrada.                        |
+| `ENT-VAL-012` | Fuente       | Impedir que `production_in`, `transfer_in`, ajuste o conteo entren al formulario genérico.                             | ENT-02                   | Respeta propietarios.                      |
+| `ENT-VAL-013` | Fuente       | Verificar saldo elegible contra postings anteriores por fuente y línea.                                                | ENT-05                   | Cero cantidad duplicada.                   |
+| `ENT-VAL-014` | Fuente       | Rechazar alias legacy sin `source_app`, `entry_mode` y correlación inequívocos.                                        | ENT-02                   | No crea hecho ambiguo.                     |
+| `ENT-VAL-015` | Línea y UOM  | Comprobar producto inventariable, activo y perteneciente a la fuente.                                                  | ENT-07                   | Línea ajena se bloquea.                    |
+| `ENT-VAL-016` | Línea y UOM  | Conservar referencia a orden, receipt, lote o caso excepcional.                                                        | ENT-07                   | Trazabilidad completa.                     |
+| `ENT-VAL-017` | Línea y UOM  | Capturar cantidad observada en emergencia sin copiar lo esperado.                                                      | ENT-08                   | No inventa observación.                    |
+| `ENT-VAL-018` | Línea y UOM  | Consumir cantidad aceptada inmutable en entrada ordinaria.                                                             | ENT-08                   | No reabre aceptación comercial.            |
+| `ENT-VAL-019` | Línea y UOM  | Usar snapshot de UOM y factor asociado a la fuente.                                                                    | ENT-09                   | No deriva desde catálogo mutable.          |
+| `ENT-VAL-020` | Línea y UOM  | Conservar cantidad cruda y canónica.                                                                                   | ENT-08 y ENT-09          | Conversión auditable.                      |
+| `ENT-VAL-021` | Línea y UOM  | Calcular saldo parcial sin exceder elegible.                                                                           | ENT-10                   | Sobrepublicación bloqueada.                |
+| `ENT-VAL-022` | Línea y UOM  | Clasificar overage y discrepancia antes de publicar.                                                                   | ENT-10 y ENT-13          | Exceso no se acepta por defecto.           |
+| `ENT-VAL-023` | Línea y UOM  | No exigir ni asignar ubicación final dentro del asiento.                                                               | ENT-13 y ENT-20          | Frontera con `NEXO-UX-015`.                |
+| `ENT-VAL-024` | Costo        | Resolver moneda, costo y fuente autorizada mediante snapshot.                                                          | ENT-11                   | Costo reproducible.                        |
+| `ENT-VAL-025` | Costo        | Ocultar costo a actores sin necesidad funcional.                                                                       | ENT-11                   | Minimización de datos.                     |
+| `ENT-VAL-026` | Costo        | Bloquear override manual sin capacidad y motivo.                                                                       | ENT-11                   | No altera valoración por conveniencia.     |
+| `ENT-VAL-027` | Publicación  | Persistir intención, versión, fingerprint y clave antes del comando.                                                   | ENT-15                   | Resultado recuperable.                     |
+| `ENT-VAL-028` | Publicación  | Devolver el mismo receipt para la misma clave y payload.                                                               | ENT-15 y ENT-16          | Idempotencia.                              |
+| `ENT-VAL-029` | Publicación  | Rechazar misma clave con payload distinto.                                                                             | ENT-15 y ENT-16          | Conflicto explícito.                       |
+| `ENT-VAL-030` | Publicación  | Confirmar header, items, movimientos y receipt en una frontera atómica.                                                | ENT-16                   | Sin hechos parciales confirmados.          |
+| `ENT-VAL-031` | Publicación  | Impedir UPDATE o DELETE de entrada y líneas publicadas.                                                                | Después de ENT-16        | Ledger append-only.                        |
+| `ENT-VAL-032` | Publicación  | Correlacionar cada movimiento con entrada, item, fuente, sede y actor.                                                 | ENT-16                   | Auditoría exacta.                          |
+| `ENT-VAL-033` | Proyecciones | Aplicar stock de sede una sola vez por movement ID.                                                                    | ENT-17                   | Cero doble saldo.                          |
+| `ENT-VAL-034` | Proyecciones | Eliminar read-modify-write desde cliente y controlar concurrencia en servidor.                                         | ENT-17                   | Sin actualización perdida.                 |
+| `ENT-VAL-035` | Proyecciones | Aplicar costo una sola vez y conservar evento correlacionado.                                                          | ENT-18                   | Sin doble promedio.                        |
+| `ENT-VAL-036` | Proyecciones | Confirmar ORIGO o propietario mediante acknowledgment idempotente.                                                     | ENT-19                   | Acumulados no duplicados.                  |
+| `ENT-VAL-037` | Continuidad  | Emitir handoff de ubicación sin elegir LOC heurística.                                                                 | ENT-20                   | Putaway pendiente explícito.               |
+| `ENT-VAL-038` | Continuidad  | Reconciliar resultado desconocido antes de repetir.                                                                    | ENT-21                   | No duplica asiento.                        |
+| `ENT-VAL-039` | Continuidad  | Representar fallo de proyección como saldo y consumidor pendientes.                                                    | ENT-21                   | No crea otro hecho.                        |
+| `ENT-VAL-040` | Continuidad  | Corregir o reversar mediante caso y movimiento compensatorio autorizado.                                               | ENT-22 y flujo posterior | Original inmutable y relación completa.    |
+
+Reconciliación:
+
+```text
+EXPECTED_ENTRY_VALIDATIONS = 40
+MATERIALIZED_ENTRY_VALIDATIONS = 40
+UNIQUE_ENTRY_VALIDATIONS = 40
+MISSING_ENTRY_VALIDATIONS = 0
+DUPLICATE_ENTRY_VALIDATIONS = 0
+```
+
+---
+
+#### 21. Conectividad, dispositivo y recuperación
+
+| Situación                           | Comportamiento                                            | Acción prohibida                |
+| ----------------------------------- | --------------------------------------------------------- | ------------------------------- |
+| sin conexión antes de cargar fuente | mostrar referencia cacheada como no autoritativa          | iniciar o publicar              |
+| pérdida después de crear intención  | conservar clave, fingerprint y estado pendiente           | generar otra clave              |
+| pérdida después del comando         | reconciliar por intención y receipt                       | repetir publicación             |
+| reconexión                          | revalidar actor, fuente, saldo, sesión y versiones        | sincronizar ciegamente          |
+| dispositivo compartido              | atribuir cada mutación al actor efectivo                  | atribuir al dispositivo         |
+| cambio de actor                     | cerrar sesión operativa y liberar reclamo según contrato  | heredar borrador sin aceptación |
+| escaneo duplicado                   | reconocer identidad ya capturada                          | crear segunda línea             |
+| resultado de proyección desconocido | consultar receipt del consumidor                          | crear otra entrada              |
+| contexto revocado                   | bloquear nuevas mutaciones y conservar hechos confirmados | continuar con caché             |
+| batería agotada                     | recuperar sesión, intención y receipt                     | asumir cierre                   |
+
+La operación degradada no convierte un borrador local en hecho publicado. La
+seguridad física y la continuidad humana prevalecen, pero todo efecto digital
+se confirma y reconcilia posteriormente.
+
+---
+
+#### 22. Autorización, privacidad y auditoría
+
+1. interfaz, servidor, comando, RPC, grants y RLS revalidan la capacidad exacta;
+2. fuente ordinaria y emergencia usan permisos y propietarios distintos;
+3. el rol o la sede no conceden por sí solos escritura;
+4. una URL, código, alias de movimiento o referencia visible no concede autoridad;
+5. el costo se minimiza y protege por finalidad;
+6. datos de proveedor, factura y precio no se muestran fuera del trabajo necesario;
+7. la causa de emergencia no se reduce a una nota no estructurada;
+8. cada asiento conserva actor, sesión, dispositivo, fuente, sede, versión y hora de servidor;
+9. cada movimiento conserva entrada, item, producto, cantidad, UOM, costo y correlación;
+10. claves idempotentes, códigos y datos sensibles no aparecen en logs inseguros;
+11. correction, reversal y toma administrativa conservan auditoría;
+12. UPDATE y DELETE de hechos publicados quedan prohibidos;
+13. el servicio escritor no confía en valores derivados por el cliente;
+14. las denegaciones no filtran fuentes o entradas ajenas;
+15. el outbox y consumidores conservan deduplicación y causalidad;
+16. toda modificación física de Supabase pertenece a `vento-shell`.
+
+---
+
+#### 23. Evidencia técnica actual y diagnóstico
+
+| Fuente actual                                | Evidencia verificable                                                                                                  | Estado frente al diseño           | Decisión                                                                            |
+| -------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------- |
+| `src/app/inventory/entries/page.tsx`         | presenta “Entrada de emergencia” y exige `inventory.entries_emergency`                                                 | `IMPLEMENTADO_PARCIAL`            | conservar la excepción como superficie condicionada, no como entrada universal      |
+| misma página                                 | elige una ubicación por palabras como global, almacén o bodega y, en último caso, la primera activa                    | `BRECHA_CRITICA`                  | eliminar selección heurística y emitir handoff a `NEXO-UX-015`                      |
+| misma página                                 | al precargar una orden usa el saldo pendiente como cantidad declarada y recibida                                       | `BRECHA_CRITICA`                  | separar esperado, aceptado por fuente y observado en emergencia                     |
+| misma página                                 | consulta las últimas veinticinco entradas sin filtro explícito de sede en la consulta de la superficie                 | `IMPLEMENTADO_PARCIAL`            | resolver trabajo y consulta por actor, fuente y territorio, además de RLS           |
+| `createEntry`                                | no se observó una llamada de revalidación de permiso exacto dentro de la acción; depende de sesión y políticas         | `BRECHA_DE_AUTORIZACION`          | invocar comando servidor autoritativo por fuente y capacidad                        |
+| `createEntry`                                | acepta `source_app` y `entry_mode` desde formulario y aplica fallback si faltan columnas                               | `BRECHA_DE_CONTRATO`              | derivar fuente y modo de contexto confiable y retirar fallback después de migración |
+| `createEntry`                                | inserta header, items, movimientos, stock de sede, stock por LOC, presentación, costo y orden en pasos separados       | `BRECHA_CRITICA_DE_ATOMICIDAD`    | materializar núcleo atómico y proyecciones idempotentes                             |
+| `createEntry`                                | actualiza stock de sede mediante lectura, suma y upsert por producto                                                   | `BRECHA_DE_CONCURRENCIA`          | usar ledger y consumidor transaccional con control de concurrencia                  |
+| `createEntry`                                | los movimientos `receipt_in` no incluyen en el payload observado correlación estructurada con entry item, fuente o LOC | `BRECHA_DE_TRAZABILIDAD`          | correlacionar cada movimiento con la identidad causal completa                      |
+| `createEntry`                                | permite `quantity_received >= quantity_declared` para cerrar como recibido                                             | `BRECHA_DE_DIFERENCIAS`           | separar saldo elegible, overage y excepción                                         |
+| migraciones de entradas                      | RLS mantiene permisos legacy y permite UPDATE y DELETE sobre entradas e items                                          | `BRECHA_CRITICA_DE_INMUTABILIDAD` | converger a comandos, append-only y compensación                                    |
+| migración de split de aplicaciones           | una política agregada concede escritura de movimientos y stock a múltiples capacidades de varios procesos              | `BRECHA_DE_SEGREGACION`           | separar propietarios y evitar escritura directa común sobre proyecciones            |
+| vista de movimientos                         | agrupa `receipt`, `receipt_in`, `purchase_in`, `restock_in`, `production_in` y `transfer_in` como entradas visuales    | `BRECHA_DE_CLASIFICACION`         | aplicar las ocho disposiciones sin confundir propietarios                           |
+| resultado desconocido, offline y dispositivo | no existe evidencia de piloto completo de intención, recuperación y proyecciones                                       | `PENDIENTE_DE_EVIDENCIA`          | certificar en `NEXO-UX-023` a `NEXO-UX-025`                                         |
+
+El comportamiento actual puede dejar header, items o movimientos persistidos
+antes de fallar una proyección posterior. La implementación no debe ocultar
+esta brecha mediante mensajes; debe establecer receipt, atomicidad,
+idempotencia y reconciliación verificables.
+
+---
+
+#### 24. `NEXO-INVENTORY-ENTRY-IMPLEMENTATION-HANDOFF-001`
+
+Una implementación posterior deberá, como mínimo:
+
+1. separar entrada ordinaria ORIGO y excepción NEXO;
+2. adoptar las ocho disposiciones de fuente y bloquear aliases ambiguos;
+3. crear handoff ordinario versionado y caso excepcional estructurado;
+4. materializar sesión, intención, fingerprint, receipt y outbox;
+5. crear un comando autoritativo por fuente y capacidad;
+6. hacer atómico el núcleo entry, items, movements y receipt;
+7. correlacionar cada movimiento con entrada, item y fuente;
+8. reemplazar read-modify-write de stock por consumidor idempotente;
+9. separar stock de sede, costo, acknowledgment y ubicación;
+10. retirar la selección heurística de LOC;
+11. impedir precargar cantidad recibida como observación;
+12. proteger costo y overrides por permiso y política;
+13. impedir UPDATE y DELETE de hechos publicados;
+14. implementar corrección y reversa compensatorias;
+15. hacer converger permisos legacy, RLS, grants y RPC;
+16. retirar fallback de esquema cuando la migración esté certificada;
+17. versionar migraciones y tipos desde `vento-shell`;
+18. incluir compatibilidad, backfill determinista, rollback y no duplicidad;
+19. probar concurrencia, reintentos, parciales y resultados desconocidos;
+20. emitir handoffs a `NEXO-UX-015`, `NEXO-UX-016` y `NEXO-UX-022`;
+21. conservar `restock_in`, `production_in`, `transfer_in`, ajuste y conteo bajo sus propietarios;
+22. validar operación en tablet, kiosco y red intermitente antes del piloto.
+
+##### 24.1. Compatibilidad y migración esperadas
+
+La transición deberá clasificar cada entrada histórica por fuente, modo,
+correlación y confianza. Los registros inequívocos podrán mapearse; los
+ambiguos quedarán bloqueados para investigación y no recibirán una fuente
+inventada. El backfill no generará movimientos nuevos cuando ya exista un
+hecho equivalente.
+
+##### 24.2. Rollback funcional esperado
+
+Antes de `ENTRADA_PUBLICADA`, puede cancelarse la intención si no existe receipt.
+Después de publicar, el rollback técnico detiene consumidores o vuelve a una
+versión compatible, pero no borra el asiento. El rollback funcional crea
+reversa o corrección compensatoria autorizada.
+
+---
+
+#### 25. `NEXO-INVENTORY-ENTRY-HANDOFF-001`
+
+Salidas por propietario:
+
+| Consumidor        | Payload mínimo                                                                                    | Garantía                        | Prohibición                                         |
+| ----------------- | ------------------------------------------------------------------------------------------------- | ------------------------------- | --------------------------------------------------- |
+| `NEXO-UX-015`     | posting receipt, líneas publicadas, restricciones, receiving context y `putaway_pending_line_ids` | cantidad publicada exacta       | no afirma LOC final                                 |
+| `NEXO-UX-016`     | movimientos, fuente, entry, items, cantidades, UOM, costo y correlación                           | ledger append-only              | no permite editar movimiento                        |
+| `NEXO-UX-022`     | bloqueo, diferencia, original, motivo, evidencia, autoridad y efecto pendiente                    | causalidad completa             | no cierra caso automáticamente                      |
+| ORIGO             | handoff y acknowledgment, líneas y cantidades publicadas                                          | idempotencia por fuente y línea | no duplica recibido                                 |
+| FOGO              | referencias de `production_in` solo lectura cuando corresponda                                    | propietario conservado          | no crea lote ni producción                          |
+| implementación E5 | contratos, estados, matrices, diagnóstico y requisitos                                            | diseño versionado               | no ejecutar fuera de `vento-shell` cambios Supabase |
+
+Payload canónico:
+
+```text
+inventory_entry_id
+posting_receipt_id
+source_owner
+source_type
+source_id
+source_version
+entry_item_ids[]
+source_line_ids[]
+inventory_movement_ids[]
+posted_base_qty_by_line
+stock_projection_receipt_ids[]
+cost_projection_receipt_ids[]
+source_acknowledgment_id
+putaway_pending_line_ids[]
+exception_ids[]
+version
+confirmed_at
+```
+
+El handoff no afirma ubicación final, resolución de excepción, cierre de
+movimiento integral ni aprobación de la compra.
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+Se incorporan `TREQ-NEXO-147` a `TREQ-NEXO-160` en el registro canónico
+completo:
+
+| ID              | Comportamiento protegido                                           |
+| --------------- | ------------------------------------------------------------------ |
+| `TREQ-NEXO-147` | contexto, permisos, propietarios y segregación por fuente          |
+| `TREQ-NEXO-148` | cobertura del flujo, estados, colas, fuentes, superficies y matriz |
+| `TREQ-NEXO-149` | admisión ordinaria desde ORIGO y acknowledgment                    |
+| `TREQ-NEXO-150` | entrada de emergencia condicionada y verificable                   |
+| `TREQ-NEXO-151` | sesión, saldo, concurrencia, intención e idempotencia              |
+| `TREQ-NEXO-152` | línea, cantidad, UOM, parcialidad y overage                        |
+| `TREQ-NEXO-153` | costo protegido, snapshot y valoración                             |
+| `TREQ-NEXO-154` | posting atómico, ledger, receipt y outbox                          |
+| `TREQ-NEXO-155` | stock de sede, ubicación y proyecciones separadas                  |
+| `TREQ-NEXO-156` | confirmación de fuente y acumulados sin duplicidad                 |
+| `TREQ-NEXO-157` | resultado desconocido, proyecciones fallidas y reconciliación      |
+| `TREQ-NEXO-158` | corrección y reversa append-only                                   |
+| `TREQ-NEXO-159` | compatibilidad, clasificación, superficies y estados de interfaz   |
+| `TREQ-NEXO-160` | convergencia técnica y cuarenta comprobaciones                     |
+
+No se modifica, difiere, descarta ni vuelve obsoleto un requisito histórico.
+
+---
+
+#### 27. Pendientes con propietario y condición de salida
+
+| Pendiente                                         | Estado                   | Propietario documental o técnico     | Condición de salida                                     |
+| ------------------------------------------------- | ------------------------ | ------------------------------------ | ------------------------------------------------------- |
+| comando autoritativo, intención, receipt y outbox | `ESPECIFICADO`           | paquete E5 NEXO                      | implementación, pruebas y evidencia aprobadas           |
+| handoff ordinario ORIGO–NEXO                      | `ESPECIFICADO`           | paquete de integración ORIGO–NEXO    | contrato compartido versionado y consumidor certificado |
+| migración de entradas, aliases y fuente           | `ESPECIFICADO`           | `vento-shell`                        | backfill determinista, RLS, rollback y no duplicidad    |
+| segregación de permisos y escritores              | `ESPECIFICADO`           | autorización compartida y paquete E5 | equivalencia entre servidor, grants y RLS               |
+| putaway y ubicación final                         | `ESPECIFICADO`           | `NEXO-UX-015`                        | diseño aprobado y handoff consumido                     |
+| ledger integral de movimientos                    | `ESPECIFICADO`           | `NEXO-UX-016`                        | diseño aprobado y correlación consumida                 |
+| conteos y ajustes positivos                       | `ESPECIFICADO`           | `NEXO-UX-018` y `NEXO-UX-019`        | diseños aprobados sin reutilizar entrada genérica       |
+| corrección, reversa y diferencias                 | `ESPECIFICADO`           | `NEXO-UX-022`                        | autoridad, caso y compensación aprobados                |
+| operación offline, tablet y kiosco                | `PENDIENTE_DE_EVIDENCIA` | `NEXO-UX-023` a `NEXO-UX-025`        | piloto con resultados reproducibles                     |
+
+No queda pendiente narrativo sin tarea, paquete o condición de salida.
+
+---
+
+#### 28. Criterios de aceptación
+
+1. existen exactamente dieciocho artefactos materiales;
+2. las ocho familias de fuente poseen decisión explícita;
+3. solo entrada ordinaria y emergencia pertenecen a `VPROC-0024`;
+4. el receipt de remisión interna permanece diferenciado;
+5. producción, traslado, ajuste y conteo conservan propietario;
+6. la emergencia exige permiso, causa y condición habilitante;
+7. la entrada ordinaria consume un handoff ORIGO versionado;
+8. existen exactamente ocho colas `ENQ-*`;
+9. existen exactamente veinte estados empresariales y técnicos;
+10. existen exactamente veintidós pasos `ENT-*`;
+11. existen exactamente treinta estados de interfaz;
+12. existen exactamente cuarenta comprobaciones `ENT-VAL-*`;
+13. existen exactamente diez disposiciones sobre superficies vigentes;
+14. fuente, saldo y línea impiden doble publicación;
+15. cantidad ordinaria aceptada y cantidad excepcional observada no se confunden;
+16. UOM y costo usan snapshots reproducibles;
+17. costo protegido no se expone ni edita sin capacidad;
+18. intención, fingerprint, clave y versión son obligatorios;
+19. header, items, movements y posting receipt comparten frontera atómica;
+20. cada movimiento conserva correlación causal completa;
+21. stock de sede es una proyección idempotente;
+22. ubicación final pertenece a `NEXO-UX-015`;
+23. costo y acknowledgment son proyecciones separadas;
+24. resultado desconocido se reconcilia antes de reintentar;
+25. UPDATE y DELETE de hechos publicados quedan prohibidos;
+26. corrección y reversa crean efectos compensatorios;
+27. aliases legacy se clasifican sin inventar fuente;
+28. RLS y permisos convergen hacia comandos por propietario;
+29. los catorce requisitos nuevos están incorporados al registro completo;
+30. los pendientes tienen propietario y condición de salida;
+31. no se ejecutan cambios físicos ni operaciones remotas;
+32. la siguiente tarea permanece reservada.
+
+---
+
+#### 29. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-013 — Diseñar flujo completo de recepción`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-014 — Diseñar flujo completo de entradas`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-015 — Diseñar flujo completo de ubicación`
+
+`NEXO-UX-015` deberá consumir `NEXO-INVENTORY-ENTRY-HANDOFF-001`, asignar LOC y
+posición mediante políticas y trabajo físico explícitos, conservar el posting
+receipt y no modificar cantidad, costo, fuente o movimiento de la entrada.
+
+
 ### [ ] NEXO-UX-015 — Diseñar flujo completo de ubicación
 ### [ ] NEXO-UX-016 — Diseñar flujo completo de movimientos
 ### [ ] NEXO-UX-017 — Diseñar flujo completo de retiros
