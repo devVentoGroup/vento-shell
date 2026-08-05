@@ -9933,7 +9933,902 @@ arribo, presentación o custodia como cantidades aceptadas sin su propio
 comando idempotente y evidencia verificable.
 
 
-### [ ] NEXO-UX-013 — Diseñar flujo completo de recepción
+### ✅ NEXO-UX-013 — Diseñar flujo completo de recepción
+
+---
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-012 — Diseñar flujo completo de tránsito` — APROBADA
+**Tarea siguiente:** `NEXO-UX-014 — Diseñar flujo completo de entradas` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo de admisión del handoff, sesión de recepción, verificación física, cantidades y unidades, condición, receipts parciales, diferencias, aceptación de custodia, publicación idempotente de inventario, compatibilidad y continuidad
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Proceso propietario:** `VPROC-0028 — Abastecer inventario interno de sedes y áreas`
+**Permiso funcional exacto:** `nexo.inventory.remissions.receive`
+**Artefactos producidos:** dieciocho contratos, catálogos, matrices y handoffs enumerados en esta tarea
+**Decisiones consumidas:** `NEXO-REMISSION-TRANSIT-TO-RECEPTION-HANDOFF-001`; `NEXO-RECEIVER-HOME-CONTRACT-001`; `NEXO-RECEIVER-WORK-QUEUE-CATALOG-001`; `NEXO-TASK-NAVIGATION-CONTRACT-001`; `NEXO-REMISSION-DISPATCH-TO-TRANSIT-HANDOFF-001`; `NEXO-REMISSION-TRANSIT-IDEMPOTENCY-RECEIPT-001`; `VPROC-0028-E08`; `VPROC-0028-E09`; requisitos `TREQ-NEXO-*` vigentes; código y migraciones actuales de `vento-nexo` y `vento-shell`
+**Cambios físicos autorizados:** ninguno; no modifica código, rutas, componentes, permisos, datos, Supabase, migraciones, RLS, RPC, Storage, tipos, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar de principio a fin cómo el destino admite una carga presentada, verifica
+su identidad y condición, registra cantidades observadas, clasifica cada línea,
+confirma uno o varios receipts, acepta la custodia física, publica únicamente el
+inventario aceptado y entrega diferencias o trabajo posterior a sus propietarios.
+
+La recepción consume hechos confirmados de despacho y tránsito. No reconstruye
+el shipment, no altera el dispatch receipt, no cambia la ruta recorrida y no
+convierte arribo, presentación, escaneo o custodia en cantidades aceptadas.
+
+La regla canónica es:
+
+```text
+HANDOFF DE TRANSITO VERSIONADO
++ SHIPMENT Y RECEIPTS INMUTABLES
++ DESTINO, ACTOR Y SESION AUTORIZADOS
++ VERIFICACION FISICA DE SELLO, BULTOS Y LINEAS
++ CANTIDAD OBSERVADA CON UOM Y POLITICA SNAPSHOT
++ CONDICION Y DISPOSICION EXPLICITAS
++ RECEIPTS PARCIALES APPEND-ONLY
++ DIFERENCIAS Y EVIDENCIA ESTRUCTURADAS
++ ACEPTACION BILATERAL DE CUSTODIA
++ PUBLICACION IDEMPOTENTE SOLO DE LO ACEPTADO
+→ RECEPCION TRAZABLE Y CONTINUIDAD SIN DOBLE EFECTO
+```
+
+La frontera obligatoria es:
+
+```text
+DESTINATION_ARRIVED ≠ DELIVERY_PRESENTED
+DELIVERY_PRESENTED ≠ RECEPTION_SESSION_CLAIMED
+RECEPTION_SESSION_CLAIMED ≠ LINE_OBSERVED
+LINE_OBSERVED ≠ LINE_ACCEPTED
+RECEIPT_CONFIRMED ≠ INVENTORY_PUBLISHED
+INVENTORY_PUBLISHED ≠ FINAL_PUTAWAY
+REJECTED ≠ QUARANTINED
+SHORTAGE ≠ REJECTED
+OVERAGE ≠ ACCEPTED
+CUSTODY_ACCEPTED ≠ EXCEPTION_RESOLVED
+```
+
+Ninguna frontera anterior podrá colapsarse para simplificar la interfaz o
+reutilizar el comportamiento legacy.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban dieciocho artefactos documentales consumibles:
+
+| N.º | Artefacto                                                     | Resultado material                                                                          |
+| --- | ------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| 1.  | `NEXO-REMISSION-RECEPTION-FLOW-CONTRACT-001`                  | fija frontera, autoridad, entrada, resultado y lenguaje de recepción                        |
+| 2.  | `NEXO-REMISSION-RECEPTION-STATE-MACHINE-001`                  | separa handoff, sesión, observación, clasificación, receipt, custodia, publicación y cierre |
+| 3.  | `NEXO-REMISSION-RECEPTION-STEP-CATALOG-001`                   | materializa veintidós pasos y sus decisiones                                                |
+| 4.  | `NEXO-REMISSION-RECEPTION-WORK-QUEUE-CONTRACT-001`            | consume las ocho colas RCVQ aprobadas y define elegibilidad, prioridad y continuidad        |
+| 5.  | `NEXO-REMISSION-RECEPTION-HANDOFF-ADMISSION-CONTRACT-001`     | valida el handoff proveniente de tránsito sin reinterpretar sus hechos                      |
+| 6.  | `NEXO-REMISSION-RECEPTION-SESSION-CONTRACT-001`               | gobierna reclamo, concurrencia, expiración, actor y versión de la sesión                    |
+| 7.  | `NEXO-REMISSION-RECEPTION-LINE-VERIFICATION-CONTRACT-001`     | verifica identidad física, pertenencia, sello, bulto, línea y producto                      |
+| 8.  | `NEXO-REMISSION-RECEPTION-QUANTITY-UOM-CONTRACT-001`          | define cantidades, conversiones, medición variable, conteo auxiliar y tolerancias           |
+| 9.  | `NEXO-REMISSION-RECEPTION-CONDITION-DISPOSITION-CONTRACT-001` | separa observación, condición, aceptación, rechazo, cuarentena y saldo sin resolver         |
+| 10. | `NEXO-REMISSION-MULTI-RECEIPT-CONTRACT-001`                   | permite receipts parciales acumulativos, append-only y conservativos                        |
+| 11. | `NEXO-REMISSION-RECEPTION-DIFFERENCE-CONTRACT-001`            | materializa faltante, sobrante, daño, producto incorrecto y conflicto de medición           |
+| 12. | `NEXO-REMISSION-RECEPTION-CUSTODY-CLOSURE-CONTRACT-001`       | define aceptación y cierre de custodia en el destino sin auto-recepción                     |
+| 13. | `NEXO-REMISSION-RECEPTION-INVENTORY-PUBLICATION-BOUNDARY-001` | separa receipt confirmado, publicación de inventario y ubicación final                      |
+| 14. | `NEXO-REMISSION-RECEPTION-IDEMPOTENCY-CONTRACT-001`           | define intención, versión, receipt, reconciliación y atomicidad                             |
+| 15. | `NEXO-REMISSION-RECEPTION-COMPATIBILITY-CONTRACT-001`         | hace converger shipment físico y proyección legacy bajo un escritor canónico                |
+| 16. | `NEXO-REMISSION-RECEPTION-ROUTE-DISPOSITION-001`              | decide diez superficies existentes sin inventar URLs                                        |
+| 17. | `NEXO-REMISSION-RECEPTION-VALIDATION-MATRIX-001`              | asigna cuarenta y dos validaciones a momentos y propietarios concretos                      |
+| 18. | `NEXO-REMISSION-RECEPTION-HANDOFF-001`                        | entrega salidas consumibles a ubicación, estados, excepciones, entradas e implementación    |
+
+Cobertura materializada:
+
+| Elemento                         | Total esperado | Total materializado | Faltantes | Duplicados |
+| -------------------------------- | -------------- | ------------------- | --------- | ---------- |
+| Artefactos documentales          | 18             | 18                  | 0         | 0          |
+| Pasos de recepción               | 22             | 22                  | 0         | 0          |
+| Estados de interfaz              | 30             | 30                  | 0         | 0          |
+| Estados empresariales y técnicos | 20             | 20                  | 0         | 0          |
+| Colas `RCVQ-*` heredadas         | 8              | 8                   | 0         | 0          |
+| Resultados de línea              | 12             | 12                  | 0         | 0          |
+| Validaciones                     | 42             | 42                  | 0         | 0          |
+| Rutas existentes decididas       | 10             | 10                  | 0         | 0          |
+| Requisitos de prueba nuevos      | 14             | 14                  | 0         | 0          |
+
+Las identidades se mantienen estables. Los identificadores `RCP-*` pertenecen
+exclusivamente a este diseño y no crean procesos empresariales adicionales.
+
+---
+
+#### 3. Alcance, entrada y salida
+
+Incluye:
+
+- admisión del handoff de tránsito;
+- verificación de destino, shipment, sello, bultos y líneas;
+- reclamo exclusivo y versionado de la sesión de recepción;
+- captura de cantidad cruda, unidad, peso y conteo auxiliar;
+- aplicación de snapshot de política y tolerancia;
+- recepción parcial mediante múltiples receipts;
+- condición, aceptación, rechazo, cuarentena y saldo sin resolver;
+- faltante, sobrante, daño, producto incorrecto y conflictos de medición;
+- evidencia mínima y evidencia reforzada condicionada;
+- aceptación y cierre de custodia en destino;
+- publicación idempotente de inventario aceptado en LOC explícita de recepción;
+- compatibilidad temporal entre shipment físico y modelo legacy;
+- handoffs a ubicación, estados, excepciones, entradas e implementación.
+
+Excluye:
+
+- crear o editar solicitudes, fulfillments, picks o shipments;
+- volver a descontar origen o consumir paquetes productivos;
+- reescribir receipts de despacho o tránsito;
+- resolver responsabilidad, reposición, disposición o compensación de una
+  excepción, responsabilidad de `NEXO-UX-022`;
+- ubicar definitivamente el stock, responsabilidad de `NEXO-UX-015`;
+- diseñar entradas de proveedor o emergencia, responsabilidad de `NEXO-UX-014`;
+- habilitar fotografía, firma, biometría, geolocalización o almacenamiento
+  sensible sin las decisiones propietarias;
+- ejecutar cambios físicos o validación operativa.
+
+---
+
+#### 4. Actores, autoridad y segregación
+
+| Actor o contexto          | Autoridad en esta tarea                                                  | Límite obligatorio                                                              |
+| ------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `RECEPCION_EN_SEDE`       | Reclama sesión, observa, clasifica, confirma receipts y acepta custodia. | No modifica tránsito, despacho, políticas ni resuelve excepciones supervisoras. |
+| `CONDUCTOR_LOGISTICA`     | Presenta carga y declara entrega de custodia.                            | No registra cantidades por el destino ni se auto-recibe.                        |
+| `SUPERVISION`             | Observa diferencias, vencimientos y casos dentro de su territorio.       | No sustituye al receptor ni cambia el hecho observado.                          |
+| `RESPONSABLE_DE_CATALOGO` | Mantiene políticas, UOM y clasificaciones para futuros shipments.        | No altera snapshots de shipments ya despachados.                                |
+| `SISTEMA_NEXO`            | Valida, deriva acumulados, emite receipts, movimientos y handoffs.       | No infiere aceptación ni autoridad desde la ruta.                               |
+| `DISPOSITIVO_COMPARTIDO`  | Aporta estación y periféricos bajo sesión humana vigente.                | No es actor, custodio ni aprobador.                                             |
+
+Toda lectura y mutación revalida principal, actor efectivo, sesión humana,
+función receptora, turno o check-in cuando aplique, dispositivo, destino,
+territorio, permiso exacto, handoff, shipment, estado, versión y custodia.
+
+El permiso `nexo.inventory.remissions.receive` no concede preparación, despacho,
+tránsito, configuración, ajuste, resolución de diferencias ni acceso global.
+
+---
+
+#### 5. `NEXO-REMISSION-RECEPTION-HANDOFF-ADMISSION-CONTRACT-001`
+
+| Campo                                    | Significado                                          | Regla de admisión                               |
+| ---------------------------------------- | ---------------------------------------------------- | ----------------------------------------------- |
+| `handoff_id`                             | Identidad inmutable de la transferencia a recepción. | Obligatorio y único.                            |
+| `handoff_version`                        | Versión esperada para reclamo y confirmación.        | Obligatoria; conflicto si cambia.               |
+| `journey_id` y `stop_id`                 | Viaje y parada donde ocurrió presentación.           | Deben corresponder al destino.                  |
+| `shipment_id` y líneas                   | Carga y composición inmutable.                       | No editable por recepción.                      |
+| `dispatch_receipt_id`                    | Hecho de despacho confirmado.                        | Obligatorio y verificable.                      |
+| `transit_receipt_ids`                    | Hitos e incidentes confirmados del journey.          | Solo lectura.                                   |
+| `arrival_at` y `presented_at`            | Arribo y presentación como hechos separados.         | Hora de servidor.                               |
+| `origin_site_id` y `destination_site_id` | Extremos empresariales.                              | Destino debe coincidir con la sesión.           |
+| `seal_snapshot` y `package_snapshot`     | Identidad esperada de sello y bultos.                | Base del contraste físico.                      |
+| `delivering_custodian`                   | Custodio vigente que presenta la carga.              | No se libera hasta aceptación válida.           |
+| `open_incident_ids`                      | Incidentes de tránsito todavía relevantes.           | No se borran ni resuelven al admitir.           |
+| `policy_snapshot_ids`                    | Políticas de cantidad, UOM, condición y evidencia.   | No se recalculan desde configuración posterior. |
+
+La admisión produce uno de tres resultados:
+
+```text
+ADMITIDO
+BLOQUEADO_CON_CAUSA
+RECHAZADO_POR_NO_PERTENENCIA
+```
+
+`ADMITIDO` autoriza reclamar una sesión. No confirma receipt, condición,
+aceptación, custodia de destino ni inventario.
+
+---
+
+#### 6. `NEXO-REMISSION-RECEPTION-WORK-QUEUE-CONTRACT-001`
+
+| Cola                     | Propósito                                                                         | Entrada                                                  | Salida                                                                 | Bloqueo principal                                                       | Estado         |
+| ------------------------ | --------------------------------------------------------------------------------- | -------------------------------------------------------- | ---------------------------------------------------------------------- | ----------------------------------------------------------------------- | -------------- |
+| `RCVQ-BLOQUEO`           | Handoff, identidad, autorización, versión, sello, custodia o datos incompatibles. | Causa bloqueante detectada antes o durante la recepción. | Causa resuelta y contexto revalidado.                                  | No permite captura concluyente ni publicación.                          | `ESPECIFICADO` |
+| `RCVQ-HANDOFF`           | Carga presentada que espera admisión formal por el destino.                       | Handoff de tránsito listo y atribuible al destino.       | Sesión de recepción reclamada o handoff rechazado con causa.           | No admite handoff sin receipts inmutables y versión.                    | `ESPECIFICADO` |
+| `RCVQ-ARRIBO`            | Carga arribada que requiere contraste de destino, sello y bultos.                 | Arribo y presentación confirmados por tránsito.          | Verificación física iniciada o diferencia abierta.                     | Arribo no equivale a receipt ni aceptación de cantidades.               | `ESPECIFICADO` |
+| `RCVQ-VERIFICACION`      | Líneas, cantidades, UOM y condición pendientes de observación.                    | Sesión vigente y shipment admitido.                      | Todas las líneas observadas y clasificadas o captura parcial guardada. | No permite aceptar por defecto lo despachado.                           | `ESPECIFICADO` |
+| `RCVQ-RECEPCION_PARCIAL` | Shipment con uno o más receipts confirmados y saldo pendiente.                    | Existe receipt parcial válido y remanente observable.    | Nuevo receipt, cierre con diferencias o finalización limpia.           | No borra ni reescribe receipts anteriores.                              | `ESPECIFICADO` |
+| `RCVQ-DIFERENCIA`        | Faltante, sobrante, daño, rechazo, cuarentena o conflicto.                        | Resultado por línea distinto de aceptación limpia.       | Caso transferido a excepción y contención aplicada.                    | El receptor captura; la resolución supervisora pertenece a NEXO-UX-022. | `ESPECIFICADO` |
+| `RCVQ-EVIDENCIA`         | Recepción que requiere evidencia mínima o reforzada pendiente.                    | Condición o política exige evidencia verificable.        | Evidencia vinculada o recepción bloqueada con propietario.             | No habilita fotografía o firma sin contrato de privacidad.              | `ESPECIFICADO` |
+| `RCVQ-CONTINUIDAD`       | Receipt confirmado que requiere publicación, ubicación o handoff posterior.       | Receipt limpio o con excepciones confirmado.             | Publicación idempotente y handoffs emitidos.                           | No convierte staging en ubicación final ni cierra excepciones.          | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_RECEIVER_QUEUES = 8
+MATERIALIZED_RECEIVER_QUEUES = 8
+UNIQUE_RECEIVER_QUEUES = 8
+MISSING_RECEIVER_QUEUES = 0
+DUPLICATE_RECEIVER_QUEUES = 0
+```
+
+La prioridad protege primero autorización, custodia, integridad física y
+condición; después continuidad y publicación.
+
+---
+
+#### 7. `NEXO-REMISSION-RECEPTION-STATE-MACHINE-001`
+
+| Estado                               | Condición                                                                   | Transición principal                                                | Invariante                                         |
+| ------------------------------------ | --------------------------------------------------------------------------- | ------------------------------------------------------------------- | -------------------------------------------------- |
+| `HANDOFF_LISTO`                      | Tránsito emitió handoff versionado con shipment presentado.                 | `SESION_RECEPCION_ABIERTA` o bloqueo.                               | No contiene cantidades recibidas.                  |
+| `SESION_RECEPCION_ABIERTA`           | Actor receptor reclamó la sesión con versión vigente.                       | `VERIFICACION_FISICA_EN_CURSO`.                                     | Un solo reclamo activo por shipment y destino.     |
+| `VERIFICACION_FISICA_EN_CURSO`       | Se contrastan sello, bultos, líneas y condiciones.                          | `OBSERVACION_PARCIAL` o `CAPTURA_COMPLETA`.                         | No produce inventario.                             |
+| `OBSERVACION_PARCIAL`                | Existe captura guardada sin cubrir todas las líneas.                        | `LINEA_OBSERVADA` o `RECEIPT_PARCIAL`.                              | La parcialidad permanece explícita.                |
+| `LINEA_OBSERVADA`                    | Cantidad cruda e identidad física registradas.                              | `LINEA_CLASIFICADA`.                                                | Observar no equivale a aceptar.                    |
+| `LINEA_CLASIFICADA`                  | Cantidad observada distribuida entre resultados permitidos.                 | `RECEIPT_PARCIAL` o `CAPTURA_COMPLETA`.                             | Conserva ecuación por línea.                       |
+| `RECEIPT_PARCIAL`                    | Evento append-only confirmado para parte del shipment.                      | `OBSERVACION_PARCIAL` o `CAPTURA_COMPLETA`.                         | No reabre ni modifica receipts previos.            |
+| `CAPTURA_COMPLETA`                   | Todas las líneas tienen observación y clasificación suficiente.             | `RECEIPT_CONFIRMADO_LIMPIO` o `RECEIPT_CONFIRMADO_CON_EXCEPCIONES`. | Completa no implica limpia.                        |
+| `RECEIPT_CONFIRMADO_LIMPIO`          | Todo lo observado quedó aceptado sin diferencias abiertas.                  | `CUSTODIA_DESTINO_ACEPTADA`.                                        | Receipt inmutable y trazable.                      |
+| `RECEIPT_CONFIRMADO_CON_EXCEPCIONES` | Receipt confirmado con faltante, sobrante, rechazo, cuarentena o pendiente. | `CUSTODIA_DESTINO_ACEPTADA` y `EXCEPCION_ABIERTA`.                  | La excepción no invalida el hecho recibido.        |
+| `CUSTODIA_DESTINO_ACEPTADA`          | Destino acepta físicamente la custodia de los elementos presentes.          | `CUSTODIA_DESTINO_CERRADA`.                                         | No acepta automáticamente condición ni inventario. |
+| `CUSTODIA_DESTINO_CERRADA`           | Conductor queda liberado mediante evento bilateral válido.                  | `PUBLICACION_INVENTARIO_PENDIENTE`.                                 | Preserva la cadena histórica.                      |
+| `PUBLICACION_INVENTARIO_PENDIENTE`   | Existen cantidades aceptadas sin asiento confirmado.                        | `PUBLICACION_INVENTARIO_PARCIAL` o `INVENTARIO_PUBLICADO`.          | Reintento por intención, nunca por inferencia.     |
+| `PUBLICACION_INVENTARIO_PARCIAL`     | Parte de las cantidades aceptadas fue publicada.                            | `INVENTARIO_PUBLICADO` o bloqueo.                                   | Mantiene saldo exacto por publicar.                |
+| `INVENTARIO_PUBLICADO`               | Cada cantidad aceptada tiene movimiento idempotente correlacionado.         | `UBICACION_FINAL_PENDIENTE` o `RECEPCION_CERRADA`.                  | Solo cantidades aceptadas.                         |
+| `UBICACION_FINAL_PENDIENTE`          | Stock aceptado está en LOC de recepción o staging.                          | `RECEPCION_CERRADA` y handoff a NEXO-UX-015.                        | No se presume putaway final.                       |
+| `CUARENTENA_PENDIENTE`               | Cantidad físicamente recibida quedó contenida y no disponible.              | `EXCEPCION_ABIERTA`.                                                | No suma a stock disponible.                        |
+| `RETORNO_CUSTODIA_PENDIENTE`         | Cantidad rechazada conserva destino de retorno y custodio pendiente.        | `EXCEPCION_ABIERTA`.                                                | No repone origen automáticamente.                  |
+| `EXCEPCION_ABIERTA`                  | Existe caso estructurado con cantidad, causa, evidencia y responsable.      | Resolución posterior en NEXO-UX-022.                                | Recepción captura; no resuelve autoridad ajena.    |
+| `RECEPCION_CERRADA`                  | Receipts, custodia, publicación y handoffs quedaron correlacionados.        | Fin del flujo de recepción.                                         | No cierra ubicación ni excepciones pendientes.     |
+
+Reconciliación:
+
+```text
+EXPECTED_RECEPTION_STATES = 20
+MATERIALIZED_RECEPTION_STATES = 20
+UNIQUE_RECEPTION_STATES = 20
+MISSING_RECEPTION_STATES = 0
+DUPLICATE_RECEPTION_STATES = 0
+```
+
+Las transiciones se emiten como hechos versionados. Ninguna transición se
+deriva exclusivamente de un cambio visual, navegación o actualización local.
+
+---
+
+#### 8. `NEXO-REMISSION-RECEPTION-STEP-CATALOG-001`
+
+| Paso     | Nombre                               | Entrada                                                                                 | Salida                                                       | Límite                                                                                |
+| -------- | ------------------------------------ | --------------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------------------------- |
+| `RCP-01` | Resolver contexto receptor           | Principal, actor, función, turno, check-in, dispositivo, destino, permiso y territorio. | Contexto receptor válido o bloqueo.                          | No listar trabajo amplio por rol o sede.                                              |
+| `RCP-02` | Cargar handoff de tránsito           | Handoff ID, journey, shipment, receipts, versión, presentación y custodia.              | Handoff íntegro o causa verificable.                         | No reconstruirlo desde estados sueltos.                                               |
+| `RCP-03` | Validar destino y handoff            | Destino esperado, shipment, parada, sello, custodios y versión.                         | Admisión elegible.                                           | No corregir contradicciones silenciosamente.                                          |
+| `RCP-04` | Reclamar sesión de recepción         | Intención idempotente, actor, destino y versión esperada.                               | Sesión exclusiva o conflicto.                                | No autoasignar por abrir la URL.                                                      |
+| `RCP-05` | Identificar shipment y carga         | Código, LPN o identificadores de bultos y shipment.                                     | Carga correcta vinculada.                                    | Un código no concede autoridad.                                                       |
+| `RCP-06` | Contrastar sello y bultos            | Sello esperado, sello observado y composición de bultos.                                | Coincidencia o diferencia estructurada.                      | No romper sello sin política aplicable.                                               |
+| `RCP-07` | Identificar línea                    | Shipment item, producto, presentación y referencia física.                              | Línea perteneciente al shipment.                             | No admitir línea ajena.                                                               |
+| `RCP-08` | Capturar cantidad cruda observada    | Valor medido sin corrección silenciosa.                                                 | Cantidad cruda trazable.                                     | No copiar cantidad despachada como observada.                                         |
+| `RCP-09` | Normalizar con snapshot y UOM        | Snapshot de política, unidad de stock, factor y tolerancia.                             | Cantidad comparable en unidad canónica.                      | No usar catálogo mutable posterior.                                                   |
+| `RCP-10` | Capturar conteo auxiliar o peso      | Modo de medición y campos obligatorios.                                                 | Medición completa o bloqueo.                                 | Peso variable y conteo auxiliar no se omiten.                                         |
+| `RCP-11` | Clasificar condición                 | Condición física, temperatura, integridad, calidad y evidencia.                         | Condición explícita.                                         | No asumir aptitud por presencia física.                                               |
+| `RCP-12` | Distribuir resultado por línea       | Observado coincidente.                                                                  | Aceptado, rechazado, cuarentena y sin resolver.              | La suma debe conservarse.                                                             |
+| `RCP-13` | Registrar faltante y sobrante        | Despachado acumulado, observado acumulado y remanente.                                  | Diferencias exactas y casos vinculados.                      | Sobrante no se autoacepta.                                                            |
+| `RCP-14` | Adjuntar evidencia                   | Evidencia mínima o reforzada según política.                                            | Evidencia correlacionada o bloqueo.                          | No almacenar dato sensible sin contrato.                                              |
+| `RCP-15` | Confirmar intención de línea         | Payload final, versión, fingerprint y clave idempotente.                                | Intención estable.                                           | Payload distinto con la misma clave produce conflicto.                                |
+| `RCP-16` | Confirmar receipt de línea           | Intención validada y sesión vigente.                                                    | Receipt item append-only.                                    | No actualizar un receipt previo.                                                      |
+| `RCP-17` | Recalcular acumulados                | Receipts confirmados del shipment.                                                      | Saldos recibidos, aceptados y pendientes.                    | No usar estado del cliente como fuente.                                               |
+| `RCP-18` | Determinar parcialidad o completitud | Cobertura acumulada por línea.                                                          | Captura parcial o completa.                                  | Una diferencia resuelta por clasificación puede cerrar captura sin fingir aceptación. |
+| `RCP-19` | Confirmar recepción                  | Receipts, diferencias, evidencia y versión.                                             | Receipt limpio o con excepciones.                            | No combinar confirmación con putaway final.                                           |
+| `RCP-20` | Cerrar handoff y custodia            | Declaraciones bilaterales y receipt confirmado.                                         | Custodia destino aceptada y conductor liberado.              | No liberar antes del evento válido.                                                   |
+| `RCP-21` | Publicar inventario aceptado         | Receipt confirmado, cantidad aceptada y LOC de recepción explícita.                     | Movimiento idempotente o saldo por publicar.                 | Rechazado, cuarentena y pendiente no publican disponible.                             |
+| `RCP-22` | Emitir handoffs posteriores          | Receipts, movimientos, diferencias, staging y saldos.                                   | Handoffs a ubicación, estados, excepciones e implementación. | No cerrar trabajos propietarios posteriores.                                          |
+
+Reconciliación:
+
+```text
+EXPECTED_RECEPTION_STEPS = 22
+MATERIALIZED_RECEPTION_STEPS = 22
+UNIQUE_RECEPTION_STEPS = 22
+MISSING_RECEPTION_STEPS = 0
+DUPLICATE_RECEPTION_STEPS = 0
+```
+
+Cada paso conserva actor, momento de servidor, recurso, versión, intención y
+resultado cuando produce un hecho persistente.
+
+---
+
+#### 9. `NEXO-REMISSION-RECEPTION-SESSION-CONTRACT-001`
+
+| Dimensión     | Decisión                                                                                                              |
+| ------------- | --------------------------------------------------------------------------------------------------------------------- |
+| Identidad     | `reception_session_id`, `handoff_id`, `shipment_id`, destino y actor.                                                 |
+| Reclamo       | Comando server-side con clave idempotente y versión esperada.                                                         |
+| Cardinalidad  | Máximo una sesión activa por shipment y destino; varias sesiones históricas solo mediante transferencia o expiración. |
+| Expiración    | Política explícita; expirar no confirma ni descarta capturas ya comprometidas.                                        |
+| Transferencia | Entrega y aceptación separadas entre receptores, con motivo y versión.                                                |
+| Revocación    | Cambio de actor, permiso, turno, dispositivo, destino o handoff invalida comandos posteriores.                        |
+| Borrador      | Puede guardar observaciones parciales sin producir receipt confirmado.                                                |
+| Concurrencia  | Toda confirmación compara versión de sesión, shipment, línea y acumulados.                                            |
+
+Abrir la pantalla no reclama trabajo. Un receptor no puede apropiarse de una
+carga de otro destino ni desplazar silenciosamente una sesión vigente.
+
+---
+
+#### 10. `NEXO-REMISSION-RECEPTION-LINE-VERIFICATION-CONTRACT-001`
+
+| Objeto    | Datos mínimos                                                         | Resultado                               |
+| --------- | --------------------------------------------------------------------- | --------------------------------------- |
+| Shipment  | Código, ID, origen, destino y estado de handoff.                      | Coincidencia exacta.                    |
+| Sello     | Valor esperado, observado, integridad y hora.                         | Coincidencia o diferencia estructurada. |
+| Bulto     | Identificador, tipo, conteo y relación con shipment.                  | Cada bulto observado se reconcilia.     |
+| Línea     | Shipment item, producto, presentación, lote o empaque cuando aplique. | Pertenencia exacta al shipment.         |
+| Producto  | Identidad física y snapshot de catálogo.                              | Producto incorrecto se separa.          |
+| Condición | Integridad, temperatura, calidad y evidencia aplicable.               | Clasificación obligatoria.              |
+
+Escáner, enlace o etiqueta solo identifican un objeto dentro de la sesión. No
+aceptan cantidad, transfieren custodia, publican inventario ni resuelven una
+diferencia.
+
+---
+
+#### 11. `NEXO-REMISSION-RECEPTION-QUANTITY-UOM-CONTRACT-001`
+
+Para cada línea y receipt se definen:
+
+```text
+D  = cantidad despachada acumulable
+P  = cantidad ya cubierta por receipts anteriores
+S  = max(D - P, 0)                         saldo esperado
+Oraw = cantidad cruda observada en el evento
+O  = min(Oraw, S)                          observada contra saldo
+X  = max(Oraw - S, 0)                      sobrante explícito
+A  = cantidad aceptada
+R  = cantidad rechazada
+Q  = cantidad en cuarentena
+U  = cantidad observada sin disposición final
+O  = A + R + Q + U                         conservación obligatoria
+F  = max(S - O, 0)                         faltante del evento
+```
+
+`X` no se suma a `O` ni se convierte en `A` automáticamente. Se registra como
+hecho separado con identidad, producto observado, cantidad, unidad, condición
+y caso.
+
+| Modo                 | Captura obligatoria                                   | Regla                                                      |
+| -------------------- | ----------------------------------------------------- | ---------------------------------------------------------- |
+| `fixed_presentation` | Cantidad observada en presentación o unidad definida. | No exceder saldo esperado salvo sobrante explícito.        |
+| `variable_weight`    | Peso o volumen actual obligatorio.                    | Nunca copiar cantidad solicitada o despachada como actual. |
+| `count_with_weight`  | Peso actual y conteo auxiliar obligatorios.           | Conservar ambos valores y su unidad.                       |
+| `bulk_volume`        | Volumen actual y método de medición.                  | Aplicar factor y tolerancia del snapshot.                  |
+
+El cálculo usa el snapshot de UOM y política asociado al shipment. Una política
+posterior no modifica receipts históricos. La tolerancia clasifica una
+diferencia; nunca cambia la cantidad cruda observada.
+
+---
+
+#### 12. Resultados de línea
+
+| Resultado                           | Condición                                           | Disposición inicial                 | Efecto de inventario                              |
+| ----------------------------------- | --------------------------------------------------- | ----------------------------------- | ------------------------------------------------- |
+| `RCP-LINE-EXPECTED_ACCEPTED`        | Producto y cantidad esperados, condición apta.      | Aceptación elegible.                | Publica solo tras receipt confirmado.             |
+| `RCP-LINE-SHORT`                    | Cantidad observada menor que el saldo esperado.     | Faltante estructurado.              | Abre excepción; no inventa cantidad.              |
+| `RCP-LINE-OVERAGE`                  | Cantidad cruda excede el saldo esperado.            | Sobrante separado.                  | No se autoacepta ni mezcla con la línea esperada. |
+| `RCP-LINE-DAMAGED`                  | Daño físico observable.                             | Rechazo, cuarentena o sin resolver. | Requiere cantidad afectada y evidencia.           |
+| `RCP-LINE-WRONG_PRODUCT`            | Identidad distinta de la esperada.                  | Producto incorrecto y contención.   | No se contabiliza como la línea esperada.         |
+| `RCP-LINE-REJECTED`                 | Destino no acepta la cantidad por causa válida.     | Rechazado con custodia de retorno.  | No publica inventario disponible.                 |
+| `RCP-LINE-QUARANTINED`              | Cantidad físicamente recibida queda inmovilizada.   | Cuarentena y caso abierto.          | No disponible hasta decisión autorizada.          |
+| `RCP-LINE-UOM_CONFLICT`             | Unidad o conversión no coincide con snapshot.       | Bloqueo de cálculo.                 | No corrige factor por intuición.                  |
+| `RCP-LINE-MEASUREMENT_CONFLICT`     | Falta peso, conteo auxiliar o tolerancia aplicable. | Medición incompleta.                | No confirma cantidad derivada.                    |
+| `RCP-LINE-SEAL_OR_PACKAGE_CONFLICT` | Sello o bulto asociado no coincide.                 | Diferencia de integridad.           | Bloquea aceptación compatible hasta contención.   |
+| `RCP-LINE-EVIDENCE_PENDING`         | La política exige evidencia aún no disponible.      | Pendiente de evidencia.             | No muestra confirmación final.                    |
+| `RCP-LINE-UNRESOLVED`               | Cantidad observada sin disposición suficiente.      | Saldo sin resolver.                 | No se fuerza a aceptado, rechazado o cuarentena.  |
+
+Reconciliación:
+
+```text
+EXPECTED_LINE_OUTCOMES = 12
+MATERIALIZED_LINE_OUTCOMES = 12
+UNIQUE_LINE_OUTCOMES = 12
+MISSING_LINE_OUTCOMES = 0
+DUPLICATE_LINE_OUTCOMES = 0
+```
+
+---
+
+#### 13. `NEXO-REMISSION-RECEPTION-CONDITION-DISPOSITION-CONTRACT-001`
+
+| Condición                  | Significado                           | Resultado permitido | Consecuencia                 |
+| -------------------------- | ------------------------------------- | ------------------- | ---------------------------- |
+| Apto                       | Cantidad aceptable y utilizable.      | `A`                 | Elegible para publicación.   |
+| Dañado                     | Integridad comprometida.              | `R`, `Q` o `U`      | Sin stock disponible.        |
+| Calidad dudosa             | Requiere evaluación.                  | `Q`                 | Cuarentena y caso.           |
+| Producto incorrecto        | Identidad distinta.                   | `R` o `U`           | No cumple la línea esperada. |
+| Temperatura fuera de rango | Condición térmica no conforme.        | `Q` o `R`           | Contención inmediata.        |
+| Sin evidencia suficiente   | No se puede clasificar con seguridad. | `U`                 | No publica hasta decisión.   |
+
+El receptor registra el hecho y ejecuta contención autorizada. La resolución de
+responsabilidad, reposición, liberación, disposición, compensación o cierre de
+caso pertenece a `NEXO-UX-022` y capacidades supervisoras exactas.
+
+---
+
+#### 14. `NEXO-REMISSION-MULTI-RECEIPT-CONTRACT-001`
+
+| Regla        | Decisión                                                                                           |
+| ------------ | -------------------------------------------------------------------------------------------------- |
+| Append-only  | Un receipt confirmado no se actualiza ni elimina.                                                  |
+| Acumulación  | Los totales se derivan de receipts confirmados, no del cliente.                                    |
+| Parcialidad  | Un shipment puede recibir múltiples eventos por entregas o capturas separadas.                     |
+| Capacidad    | La cobertura esperada no excede D; todo exceso se registra como X.                                 |
+| Cierre       | Captura completa significa que cada saldo quedó observado o clasificado, no que todo fue aceptado. |
+| Concurrencia | Cada evento compara versiones y acumulados actuales.                                               |
+| Reversión    | Una corrección posterior es un evento compensatorio autorizado, nunca edición histórica.           |
+| Trazabilidad | Cada receipt item conserva shipment item, producto, UOM, cantidades, condición y actor.            |
+
+Estados `received` y `partial_receipt` del shipment son proyecciones derivadas.
+No son la fuente primaria de cantidades ni sustituyen los receipts.
+
+---
+
+#### 15. `NEXO-REMISSION-RECEPTION-DIFFERENCE-CONTRACT-001`
+
+| Diferencia                 | Detección                                 | Datos mínimos                                                           | Propietario de resolución                               |
+| -------------------------- | ----------------------------------------- | ----------------------------------------------------------------------- | ------------------------------------------------------- |
+| Faltante                   | D menos cobertura observada.              | Cantidad, línea, receipt, causa preliminar y evidencia.                 | `NEXO-UX-022`                                           |
+| Sobrante                   | Oraw superior al saldo esperado.          | Producto, cantidad, UOM, condición, procedencia conocida o desconocida. | `NEXO-UX-022`                                           |
+| Daño                       | Cantidad afectada por condición física.   | Tipo, severidad, fotos solo si están autorizadas y contención.          | `NEXO-UX-022`                                           |
+| Producto incorrecto        | Identidad observada distinta.             | Identidad esperada, observada, cantidad y bulto.                        | `NEXO-UX-022`                                           |
+| Rechazo                    | Destino no acepta.                        | Motivo, cantidad, custodio y destino de retorno pendiente.              | `NEXO-UX-022`                                           |
+| Cuarentena                 | Recibido físicamente pero no disponible.  | Cantidad, LOC de cuarentena, responsable y plazo.                       | `NEXO-UX-022`                                           |
+| Conflicto UOM              | Snapshot o factor no permite comparación. | Valores crudos, unidad y política faltante.                             | `NEXO-UX-021`; paquete E5 NEXO de `NEXO-REMISSIONS-001` |
+| Conflicto de sello o bulto | Integridad o composición no coincide.     | Sello, bultos, custodios y evidencia mínima.                            | `NEXO-UX-022`                                           |
+
+Un caso de diferencia conserva relación con shipment, línea, receipt, journey,
+handoff, actores y evidencia. Confirmar recepción con excepciones no equivale a
+resolverlas.
+
+---
+
+#### 16. `NEXO-REMISSION-RECEPTION-CUSTODY-CLOSURE-CONTRACT-001`
+
+| Hecho                    | Regla                                                                                     |
+| ------------------------ | ----------------------------------------------------------------------------------------- |
+| Entrega del conductor    | Actor, shipment, sello, destino, hora y versión.                                          |
+| Aceptación del receptor  | Actor distinto o función separada, session ID, receipt y versión.                         |
+| Momento de transferencia | Solo cuando ambas declaraciones compatibles están confirmadas.                            |
+| Liberación del conductor | Después de la aceptación válida; nunca por arribo o escaneo.                              |
+| Rechazo total            | Custodia permanece o se transfiere a retorno mediante instrucción autorizada.             |
+| Recepción parcial        | La custodia se decide por unidades o bultos presentes; el remanente conserva propietario. |
+| Conflicto                | Bloquea cierre y requiere resolución autoritativa.                                        |
+
+La aceptación de custodia reconoce posesión física en destino. No afirma que la
+cantidad esté apta, aceptada, publicada, ubicada o libre de diferencias.
+
+---
+
+#### 17. `NEXO-REMISSION-RECEPTION-INVENTORY-PUBLICATION-BOUNDARY-001`
+
+| Dimensión      | Decisión                                                                   |
+| -------------- | -------------------------------------------------------------------------- |
+| Fuente         | Receipt item confirmado y cantidad `A`.                                    |
+| Destino        | LOC explícita de recepción o staging perteneciente al destino.             |
+| Movimiento     | Entrada correlacionada con receipt item, shipment y handoff.               |
+| Idempotencia   | Clave única por receipt item y efecto.                                     |
+| Disponibilidad | Solo cantidad aceptada; cuarentena usa tratamiento separado no disponible. |
+| Parcialidad    | Cada receipt puede publicar su parte sin duplicar acumulados.              |
+| Fallo          | Queda saldo exacto por publicar y estado visible; no se inventa éxito.     |
+| Putaway        | La ubicación final se ejecuta después mediante `NEXO-UX-015`.              |
+
+Queda prohibido seleccionar silenciosamente la primera LOC, una LOC por nombre,
+la ubicación preferida actual del catálogo o una ubicación derivada de la sede
+como destino definitivo. El staging debe ser explícito y compatible.
+
+---
+
+#### 18. `NEXO-REMISSION-RECEPTION-IDEMPOTENCY-CONTRACT-001`
+
+| Elemento                        | Contrato                                                                                        |
+| ------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Intención                       | `reception_intent_id` estable por comando humano.                                               |
+| Versión                         | Handoff, sesión, shipment, línea y acumulados esperados.                                        |
+| Fingerprint                     | Payload normalizado de cantidades, UOM, condición, evidencia y clasificación.                   |
+| Mismo ID y mismo fingerprint    | Devuelve el mismo receipt y efectos.                                                            |
+| Mismo ID y fingerprint distinto | Conflicto; no ejecuta efectos.                                                                  |
+| Timeout                         | Consulta ledger o receipt antes de permitir reintento.                                          |
+| Atomicidad                      | Receipt, items, casos, custodia y outbox se comprometen todo o nada según la frontera aprobada. |
+| Publicación                     | Consumidor idempotente del outbox o transacción equivalente verificable.                        |
+
+El cliente no interpreta una redirección, mensaje o cambio local como receipt
+confirmado. Todo éxito presenta identificador, versión, hora de servidor y
+resultado recuperable.
+
+---
+
+#### 19. `NEXO-REMISSION-RECEPTION-COMPATIBILITY-CONTRACT-001`
+
+| Superficie                         | Disposición                                                                         | Estado objetivo            |
+| ---------------------------------- | ----------------------------------------------------------------------------------- | -------------------------- |
+| Shipment físico                    | Fuente canónica de composición, receipts y cantidades recibidas.                    | `CANONICAL_WRITER`         |
+| `restock_requests` y líneas legacy | Proyección temporal para consumidores existentes.                                   | `COMPATIBILITY_PROJECTION` |
+| Estado legacy                      | Se deriva de receipts y excepciones; no origina un segundo hecho.                   | `DERIVED`                  |
+| Firma legacy                       | No constituye prueba obligatoria ni receipt canónico.                               | `CONDITIONAL_EVIDENCE`     |
+| Posting legacy                     | Debe converger a la publicación correlacionada con receipt item.                    | `MIGRATE_OR_ENCAPSULATE`   |
+| Dual-write                         | Solo permitido mediante una intención común, correlación y prueba de no duplicidad. | `BLOCKED_UNTIL_PROVEN`     |
+
+La compatibilidad preserva consumidores activos, pero no mantiene dos fuentes
+de verdad. El retiro o migración física se realizará en el paquete propietario,
+con cambios Supabase versionados en `vento-shell`, rollback y pruebas.
+
+---
+
+#### 20. Contrato de estados de interfaz
+
+| Estado                             | Condición                                                            | Respuesta obligatoria                                              |
+| ---------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `RESOLVIENDO_CONTEXTO`             | Se resuelven actor, sesión, función, destino, permisos y territorio. | No mostrar colas definitivas ni mutaciones.                        |
+| `SIN_JORNADA_VALIDA`               | Falta turno o check-in exigible.                                     | Bloquear operación y mostrar mecanismo canónico de regularización. |
+| `SIN_FUNCION_RECEPCION`            | La sesión no posee función receptora vigente.                        | Mostrar causa sin exponer shipments.                               |
+| `SIN_HANDOFF`                      | No existe handoff atribuible y listo.                                | Mostrar vacío confirmado con hora de corte.                        |
+| `CARGANDO_HANDOFF`                 | La entrada autoritativa está en lectura.                             | Mantener contexto y evitar datos parciales como definitivos.       |
+| `HANDOFF_INVALIDO`                 | Faltan receipts, shipment, destino, custodios o integridad.          | Bloquear y devolver a propietario.                                 |
+| `CONFLICTO_VERSION_HANDOFF`        | La versión cambió desde la carga.                                    | Rechazar intención y recargar.                                     |
+| `CONFLICTO_CUSTODIA_HANDOFF`       | No existe custodio único o transferencia elegible.                   | Bloquear recepción y escalar.                                      |
+| `CARGANDO_ENVIO`                   | Se leen shipment, líneas, snapshots y acumulados.                    | No habilitar captura concluyente.                                  |
+| `ENVIO_NO_ASIGNADO`                | El shipment no pertenece al destino o trabajo del actor.             | Fallar cerrado sin revelar detalle.                                |
+| `SESION_SIN_RECLAMAR`              | Handoff válido sin sesión activa.                                    | Ofrecer reclamar recepción con versión.                            |
+| `SESION_RECLAMADA`                 | El actor posee sesión vigente.                                       | Habilitar verificación compatible.                                 |
+| `CONFLICTO_SESION`                 | Otro actor o versión mantiene el reclamo.                            | Bloquear mutación y ofrecer actualización.                         |
+| `SELLO_NO_COINCIDE`                | Sello observado difiere.                                             | Bloquear flujo limpio y abrir diferencia.                          |
+| `BULTOS_NO_COINCIDEN`              | Conteo o identidad de bultos difiere.                                | Exigir clasificación y evidencia.                                  |
+| `ESCANEO_LINEA_REQUERIDO`          | La política exige identificación contextual.                         | Solicitar escaneo sin ejecutar transición automática.              |
+| `LINEA_AJENA_AL_ENVIO`             | El identificador no pertenece al shipment.                           | Rechazar línea y conservar evidencia mínima.                       |
+| `CANTIDAD_REQUERIDA`               | Falta cantidad observada.                                            | No permitir confirmación de línea.                                 |
+| `POLITICA_UOM_FALTANTE`            | No existe snapshot o factor aplicable.                               | Bloquear cálculo y asignar propietario.                            |
+| `CONTEO_AUXILIAR_REQUERIDO`        | El modo count_with_weight exige piezas además de peso.               | Solicitar dato adicional.                                          |
+| `CONDICION_REQUERIDA`              | La cantidad observada carece de condición.                           | Solicitar clasificación explícita.                                 |
+| `CLASIFICACION_LINEA_PENDIENTE`    | La conservación no cierra.                                           | Mostrar saldo exacto sin resolver.                                 |
+| `LINEA_GUARDADA`                   | Receipt item parcial confirmado.                                     | Mostrar receipt y acumulados de servidor.                          |
+| `RECEPCION_PARCIAL`                | Existe remanente o nuevas entregas esperadas.                        | Mantener sesión o cerrar parcial según política.                   |
+| `RECEPCION_LIMPIA_LISTA`           | Captura completa sin diferencias.                                    | Habilitar confirmación final idempotente.                          |
+| `RECEPCION_CON_EXCEPCIONES_LISTA`  | Captura completa con diferencias contenidas.                         | Habilitar confirmación con casos explícitos.                       |
+| `CONFIRMACION_PENDIENTE`           | La intención fue enviada y no hay receipt final aún.                 | Deshabilitar duplicado y consultar resultado.                      |
+| `RESULTADO_DESCONOCIDO`            | Timeout o pérdida de respuesta.                                      | Reconciliar por clave antes de reintentar.                         |
+| `PUBLICACION_INVENTARIO_PENDIENTE` | Receipt confirmado sin todos los movimientos.                        | Mostrar saldo por publicar y reintento seguro.                     |
+| `RECEPCION_COMPLETADA`             | Custodia, receipt, publicación y handoffs confirmados.               | Mostrar comprobantes y siguientes tareas propietarias.             |
+
+Reconciliación:
+
+```text
+EXPECTED_INTERFACE_STATES = 30
+MATERIALIZED_INTERFACE_STATES = 30
+UNIQUE_INTERFACE_STATES = 30
+MISSING_INTERFACE_STATES = 0
+DUPLICATE_INTERFACE_STATES = 0
+```
+
+Una solicitud enviada no equivale a receipt confirmado. Ante resultado
+desconocido, la interfaz conserva la intención y reconcilia antes de reintentar.
+
+---
+
+#### 21. `NEXO-REMISSION-RECEPTION-ROUTE-DISPOSITION-001`
+
+| Ruta             | Patrón actual                     | Disposición                                  | Decisión                                                                                  | Estado         |
+| ---------------- | --------------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------- | -------------- |
+| `NEXO-ROUTE-001` | `/`                               | `PROYECTAR_HOME_RECEPTOR`                    | Entrada por función y siguiente tarea; no lista cargas globales.                          | `ESPECIFICADO` |
+| `NEXO-ROUTE-031` | `/inventory/remissions`           | `COLA_SEPARADA_POR_ACTOR`                    | Seguimiento de recepción sin mezclar solicitud, preparación, conducción o control.        | `ESPECIFICADO` |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`      | `DETALLE_COMPARTIDO_ACCIONES_POR_ETAPA`      | Lectura común; acciones receptoras solo con handoff, sesión y versión.                    | `ESPECIFICADO` |
+| `NEXO-ROUTE-034` | `/inventory/remissions/conductor` | `EXCLUIR_AUTO_RECEPCION`                     | No enlaza la carga bajo custodia del conductor hacia una auto-recepción.                  | `ESPECIFICADO` |
+| `NEXO-ROUTE-037` | `/inventory/remissions/receive`   | `DESTINO_OPERATIVO_PRIMARIO_TRANSITORIO`     | Debe filtrar por destino, actor, handoff y trabajo asignado y adoptar receipts parciales. | `ESPECIFICADO` |
+| `NEXO-ROUTE-038` | `/inventory/remissions/transit`   | `LECTURA_DE_HANDOFF_SIN_ACCIONES_RECEPTORAS` | Tránsito entrega hechos; recepción se abre en su propia proyección.                       | `ESPECIFICADO` |
+| `NEXO-ROUTE-052` | `/inventory/stock`                | `CONTINUIDAD_POST_RECEIPT`                   | Muestra stock solo después de publicación confirmada, no desde la captura.                | `ESPECIFICADO` |
+| `NEXO-ROUTE-061` | `/links/[code]`                   | `IDENTIFICACION_CONTEXTUAL`                  | Resuelve shipment, bulto o línea dentro de la sesión; no confirma por sí sola.            | `ESPECIFICADO` |
+| `NEXO-ROUTE-062` | `/printing/jobs`                  | `UTILIDAD_CONTEXTUAL`                        | Imprime documentos o etiquetas derivados de receipts autorizados.                         | `ESPECIFICADO` |
+| `NEXO-ROUTE-064` | `/scanner`                        | `HEREDAR_SESION_Y_TAREA`                     | Escanea identidad física sin ampliar autoridad ni ejecutar transición.                    | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_RELEVANT_ROUTES = 10
+MATERIALIZED_RELEVANT_ROUTES = 10
+UNIQUE_RELEVANT_ROUTES = 10
+MISSING_RELEVANT_ROUTES = 0
+DUPLICATE_RELEVANT_ROUTES = 0
+```
+
+No se crean rutas nuevas. Cada superficie revalida contexto y autoridad en
+servidor; un enlace visible no sustituye guard, versión ni pertenencia.
+
+---
+
+#### 22. `NEXO-REMISSION-RECEPTION-VALIDATION-MATRIX-001`
+
+| ID            | Grupo                           | Validación                                                                            | Momento                   | Resultado esperado                                                 |
+| ------------- | ------------------------------- | ------------------------------------------------------------------------------------- | ------------------------- | ------------------------------------------------------------------ |
+| `RCP-VAL-001` | Contexto y autorización         | Resolver principal, actor efectivo y sesión humana vigente.                           | RCP-01                    | Bloquea sin contexto atribuible.                                   |
+| `RCP-VAL-002` | Contexto y autorización         | Exigir función de recepción y permiso exacto `nexo.inventory.remissions.receive`.     | RCP-01                    | No acepta permisos de tránsito, preparación o visibilidad general. |
+| `RCP-VAL-003` | Contexto y autorización         | Validar destino y territorio aplicables al actor.                                     | RCP-01                    | No expone shipments ajenos.                                        |
+| `RCP-VAL-004` | Contexto y autorización         | Revalidar turno, check-in y dispositivo cuando sean exigibles.                        | RCP-01 y cada mutación    | Revocación invalida la sesión.                                     |
+| `RCP-VAL-005` | Contexto y autorización         | Mantener coherencia entre interfaz, servidor, RPC, grants y RLS.                      | Cada lectura y mutación   | Divergencia produce fallo cerrado.                                 |
+| `RCP-VAL-006` | Contexto y autorización         | Separar recepción operativa de supervisión y configuración.                           | Resolución de tareas      | No concede decisiones de excepción.                                |
+| `RCP-VAL-007` | Handoff y custodia              | Verificar handoff ID, journey, shipment y receipts inmutables.                        | RCP-02                    | Entrada incompleta se bloquea.                                     |
+| `RCP-VAL-008` | Handoff y custodia              | Verificar destino, parada y presentación válidos.                                     | RCP-03                    | No admite destino distinto.                                        |
+| `RCP-VAL-009` | Handoff y custodia              | Verificar versión esperada del handoff.                                               | RCP-03 y RCP-04           | Versión obsoleta se rechaza.                                       |
+| `RCP-VAL-010` | Handoff y custodia              | Verificar custodio único y declaración de entrega.                                    | RCP-03                    | No existe auto-transferencia.                                      |
+| `RCP-VAL-011` | Handoff y custodia              | Contrastar sello y bultos antes de recepción limpia.                                  | RCP-06                    | Diferencia abre caso.                                              |
+| `RCP-VAL-012` | Handoff y custodia              | Cerrar custodia con declaraciones bilaterales separadas.                              | RCP-20                    | Conductor no se libera antes.                                      |
+| `RCP-VAL-013` | Identidad, cantidad y UOM       | Comprobar que cada línea pertenece al shipment.                                       | RCP-07                    | Línea ajena se rechaza.                                            |
+| `RCP-VAL-014` | Identidad, cantidad y UOM       | Conservar identidad de producto, fulfillment y request item.                          | RCP-07                    | No pierde trazabilidad de demanda.                                 |
+| `RCP-VAL-015` | Identidad, cantidad y UOM       | Capturar cantidad cruda sin copiar la despachada.                                     | RCP-08                    | No inventa observación.                                            |
+| `RCP-VAL-016` | Identidad, cantidad y UOM       | Usar snapshot de UOM y política vigente al despacho.                                  | RCP-09                    | No deriva desde catálogo mutable.                                  |
+| `RCP-VAL-017` | Identidad, cantidad y UOM       | Exigir cantidad actual para medición variable.                                        | RCP-10                    | No usa cantidad solicitada como actual.                            |
+| `RCP-VAL-018` | Identidad, cantidad y UOM       | Exigir conteo auxiliar en count_with_weight.                                          | RCP-10                    | No confirma solo peso.                                             |
+| `RCP-VAL-019` | Identidad, cantidad y UOM       | Aplicar tolerancia versionada sin alterar el valor observado.                         | RCP-09 y RCP-13           | Tolerancia clasifica; no reescribe.                                |
+| `RCP-VAL-020` | Identidad, cantidad y UOM       | Impedir acumulados recibidos superiores al despachado salvo sobrante separado.        | RCP-13 y RCP-17           | Exceso se clasifica como overage.                                  |
+| `RCP-VAL-021` | Clasificación y diferencias     | Cumplir O = A + R + Q + U por línea y receipt.                                        | RCP-12                    | Conservación exacta.                                               |
+| `RCP-VAL-022` | Clasificación y diferencias     | Calcular faltante desde despachado menos observado acumulado.                         | RCP-13                    | No mezcla faltante con rechazo.                                    |
+| `RCP-VAL-023` | Clasificación y diferencias     | Separar sobrante de la cantidad esperada.                                             | RCP-13                    | No autoacepta exceso.                                              |
+| `RCP-VAL-024` | Clasificación y diferencias     | Exigir condición para toda cantidad observada.                                        | RCP-11                    | No presume aptitud.                                                |
+| `RCP-VAL-025` | Clasificación y diferencias     | Mantener rechazado y cuarentena fuera de stock disponible.                            | RCP-12 y RCP-21           | Cero publicación disponible.                                       |
+| `RCP-VAL-026` | Clasificación y diferencias     | Crear caso estructurado por diferencia material.                                      | RCP-13 y RCP-14           | Cantidad, causa, evidencia y responsable.                          |
+| `RCP-VAL-027` | Clasificación y diferencias     | Transferir resolución a NEXO-UX-022 sin cierre unilateral.                            | RCP-22                    | Recepción conserva captura y contención.                           |
+| `RCP-VAL-028` | Receipt e idempotencia          | Aceptar la misma intención y payload devolviendo el mismo receipt.                    | RCP-15 y RCP-16           | Cero duplicidad.                                                   |
+| `RCP-VAL-029` | Receipt e idempotencia          | Rechazar la misma clave con payload distinto.                                         | RCP-15                    | Conflicto explícito.                                               |
+| `RCP-VAL-030` | Receipt e idempotencia          | Controlar versión de sesión, shipment, línea y acumulados.                            | Cada confirmación         | Comando obsoleto se rechaza.                                       |
+| `RCP-VAL-031` | Receipt e idempotencia          | Reconciliar timeout antes de ofrecer reintento.                                       | RCP-16 y RCP-19           | No duplica recepción.                                              |
+| `RCP-VAL-032` | Receipt e idempotencia          | Conservar receipts append-only y totales derivados de servidor.                       | RCP-17                    | No edita historial.                                                |
+| `RCP-VAL-033` | Publicación de inventario       | Publicar únicamente cantidades aceptadas.                                             | RCP-21                    | Rechazo, cuarentena y U no publican.                               |
+| `RCP-VAL-034` | Publicación de inventario       | Exigir LOC de recepción o staging explícita y válida.                                 | RCP-21                    | No selecciona ubicación heurística.                                |
+| `RCP-VAL-035` | Publicación de inventario       | Correlacionar movimiento con receipt item e intención.                                | RCP-21                    | Trazabilidad uno a uno.                                            |
+| `RCP-VAL-036` | Publicación de inventario       | Hacer idempotente cada movimiento de entrada.                                         | RCP-21                    | Reintento no duplica stock.                                        |
+| `RCP-VAL-037` | Publicación de inventario       | Separar publicación de putaway final.                                                 | RCP-22                    | Handoff a NEXO-UX-015.                                             |
+| `RCP-VAL-038` | Compatibilidad y observabilidad | Definir shipment físico como escritor canónico de recepción.                          | Convergencia              | Legacy queda como proyección compatible.                           |
+| `RCP-VAL-039` | Compatibilidad y observabilidad | Impedir doble escritura entre receipt físico y restock_request_items.                 | Convergencia              | Una sola intención y correlación.                                  |
+| `RCP-VAL-040` | Compatibilidad y observabilidad | Registrar auditoría de actor, destino, sesión, versión y receipt.                     | Cada mutación             | Evidencia reproducible.                                            |
+| `RCP-VAL-041` | Compatibilidad y observabilidad | Representar datos parciales y resultado desconocido sin éxito ficticio.               | Interfaz                  | Estado honesto y recuperable.                                      |
+| `RCP-VAL-042` | Compatibilidad y observabilidad | Validar flujo móvil, escaneo, concurrencia y red intermitente en tareas propietarias. | NEXO-UX-023 a NEXO-UX-025 | No declarar validación antes del piloto.                           |
+
+Reconciliación:
+
+```text
+EXPECTED_VALIDATIONS = 42
+MATERIALIZED_VALIDATIONS = 42
+UNIQUE_VALIDATIONS = 42
+MISSING_VALIDATIONS = 0
+DUPLICATE_VALIDATIONS = 0
+```
+
+Las validaciones documentan obligaciones. No se declaran implementadas ni
+ejecutadas por esta tarea.
+
+---
+
+#### 23. Evidencia técnica actual y diagnóstico
+
+| Superficie                                              | Evidencia permitida                                                                                     | Estado                   | Diagnóstico                                                                                                                        |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- |
+| `src/app/inventory/remissions/receive/page.tsx`         | Consulta shipments `in_transit`, muestra líneas y precarga la cantidad completa.                        | `IMPLEMENTADO_PARCIAL`   | No demuestra permiso exacto, filtro por destino o actor, handoff, sesión, parcialidad acumulativa ni clasificación por condición.  |
+| `src/app/inventory/remissions/receive/actions.ts`       | Autentica, valida forma básica y llama una RPC.                                                         | `IMPLEMENTADO_PARCIAL`   | No aporta clave idempotente, versión esperada, asignación, handoff, condición, rechazo o cuarentena.                               |
+| `confirm_remission_shipment_receipt_v1`                 | Crea receipt confirmado, líneas recibidas y faltantes; actualiza shipment.                              | `BLOQUEADO`              | Confunde observado con aceptado, exige todas las líneas, fija arribo al confirmar y no aplica versión o idempotencia del contrato. |
+| Modelo `remission_receipts` y `remission_receipt_items` | Ya contiene idempotency_key y cantidades recibidas, aceptadas, rechazadas y cuarentena.                 | `ESPECIFICADO_PARCIAL`   | La RPC actual no consume toda la capacidad del modelo ni materializa saldo sin resolver.                                           |
+| Detalle legacy de remisión                              | Actualiza cantidades recibidas y faltantes, sincroniza estado, publica inventario y crea firma.         | `IMPLEMENTADO_PARCIAL`   | Realiza múltiples escrituras separadas y conserva una verdad paralela frente a shipments físicos.                                  |
+| Publicación de inventario destino legacy                | Genera `transfer_in` y ajusta stock.                                                                    | `BLOQUEADO`              | Puede elegir ubicación por heurística y mezcla confirmación, publicación y firma en un recorrido no atómico.                       |
+| Estado `partial` legacy                                 | Mantiene faltantes abiertos hasta cierre manual.                                                        | `IMPLEMENTADO_PARCIAL`   | No distingue recepción parcial por múltiples receipts de diferencias ya clasificadas.                                              |
+| Piloto físico y offline                                 | No se observó evidencia de operación con receptor, sellos, bultos, balanza, escáner y red intermitente. | `PENDIENTE_DE_EVIDENCIA` | Pertenece a NEXO-UX-023 a NEXO-UX-025.                                                                                             |
+
+El código actual demuestra una base parcial de shipments, receipts, recepción
+legacy y posting. No demuestra el contrato completo, autorización atómica,
+concurrencia, clasificación conservativa, publicación separada, compatibilidad
+sin doble escritor ni operación física validada.
+
+---
+
+#### 24. Brechas y bloqueos preservados
+
+| Brecha                                           | Efecto                                                             | Propietario                                                           | Condición de salida                                               |
+| ------------------------------------------------ | ------------------------------------------------------------------ | --------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| cola de recepción demasiado amplia               | Puede exponer shipments de otros destinos o actores.               | paquete E5 NEXO de `NEXO-REMISSIONS-001`                              | Consulta por destino, handoff, sesión y autoridad materializada.  |
+| precarga de cantidad completa                    | La interfaz induce aceptación sin observación física.              | paquete E5 NEXO de `NEXO-REMISSIONS-001`                              | Cantidad cruda obligatoria y estados honestos implementados.      |
+| RPC autoacepta lo recibido                       | Daño, rechazo y cuarentena desaparecen.                            | paquete E5 NEXO de `NEXO-REMISSIONS-001`; NEXO-UX-022                 | Clasificación conservativa y casos estructurados.                 |
+| sin receipt parcial acumulativo completo         | Entregas múltiples pueden sobreescribir o forzar todas las líneas. | paquete E5 NEXO de `NEXO-REMISSIONS-001`                              | Receipts append-only y acumulados de servidor.                    |
+| sin idempotencia ni versión en comando actual    | Reintentos y concurrencia pueden duplicar o perder hechos.         | AUTH-SRV-001 a AUTH-SRV-005; paquete E5 NEXO de `NEXO-REMISSIONS-001` | Intención, versión, receipt y reconciliación implementados.       |
+| publicación de inventario mezclada con recepción | Fallo parcial puede dejar receipt y stock divergentes.             | paquete E5 NEXO de `NEXO-REMISSIONS-001`; SHELL-CI-017                | Outbox o transacción con receipt y movimientos idempotentes.      |
+| ubicación destino heurística                     | Stock puede publicarse en LOC incorrecta.                          | NEXO-UX-015; paquete E5 NEXO de `NEXO-REMISSIONS-001`                 | LOC de recepción explícita y putaway separado.                    |
+| dualidad legacy y shipment físico                | Dos escritores representan el mismo hecho.                         | NEXO-UX-009 a NEXO-UX-013; paquete E5 NEXO de `NEXO-REMISSIONS-001`   | Escritor canónico y proyección de compatibilidad aprobados.       |
+| evidencia sensible sin contrato completo         | Firma o fotografía puede exponerse sin finalidad y retención.      | NEXO-UX-022; NEXO-UX-023                                              | Privacidad, Storage, permisos, retención y dispositivo definidos. |
+| validación física y offline ausente              | No existe evidencia de usabilidad o seguridad real.                | NEXO-UX-023 a NEXO-UX-025                                             | Piloto controlado con actores y dispositivos reales.              |
+
+Ninguna brecha queda sin propietario o condición de salida.
+
+---
+
+#### 25. Decisiones aprobadas
+
+1. recepción inicia únicamente desde un handoff de tránsito versionado y verificable;
+2. dispatch receipt, transit receipts y shipment despachado son inmutables para recepción;
+3. arribo, presentación, reclamo, observación, aceptación, custodia, publicación y putaway son hechos separados;
+4. la audiencia primaria es `RECEPCION_EN_SEDE` con permiso exacto de recepción;
+5. la ruta o el estado `in_transit` no conceden acceso ni autoridad;
+6. existe un reclamo explícito y versionado de sesión;
+7. la sesión no se obtiene por abrir la pantalla;
+8. se conservan las ocho colas `RCVQ-*` aprobadas;
+9. se materializan exactamente veintidós pasos;
+10. se materializan exactamente veinte estados empresariales y técnicos;
+11. se materializan exactamente treinta estados de interfaz;
+12. se materializan exactamente doce resultados de línea;
+13. cantidad observada se captura y no se copia desde cantidad despachada;
+14. el snapshot de UOM y política del shipment gobierna la comparación;
+15. medición variable exige cantidad actual;
+16. `count_with_weight` exige peso y conteo auxiliar;
+17. la tolerancia clasifica y no reescribe el valor observado;
+18. observado se conserva entre aceptado, rechazado, cuarentena y sin resolver;
+19. faltante y rechazo son conceptos distintos;
+20. sobrante se registra separado y nunca se autoacepta;
+21. producto incorrecto no cumple la línea esperada;
+22. receipts confirmados son append-only;
+23. un shipment admite múltiples receipts parciales;
+24. captura completa no equivale a aceptación limpia;
+25. recepción con excepciones conserva el hecho y abre casos;
+26. el receptor captura y contiene, pero no resuelve autoridad supervisora por defecto;
+27. custodia se transfiere mediante declaraciones bilaterales;
+28. el conductor no se libera por arribo o escaneo;
+29. solo cantidades aceptadas son elegibles para publicación disponible;
+30. publicación exige LOC de recepción o staging explícita;
+31. publicación es idempotente y separada del receipt;
+32. putaway final pertenece a `NEXO-UX-015`;
+33. shipment físico es el escritor canónico y legacy es proyección temporal;
+34. dual-write queda bloqueado sin intención común y prueba de no duplicidad;
+35. se deciden diez rutas existentes sin crear URLs;
+36. se asignan cuarenta y dos validaciones;
+37. toda modificación futura de Supabase se versiona desde `vento-shell`;
+38. esta tarea no modifica código, datos ni ambientes.
+
+---
+
+#### 26. Pendientes materializados y propietarios
+
+| Pendiente                                | Estado                   | Propietario              | Tarea o puerta                                                        | Condición de salida                                                   |
+| ---------------------------------------- | ------------------------ | ------------------------ | --------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| comando canónico de recepción            | `ESPECIFICADO`           | NEXO y Data              | paquete E5 NEXO de `NEXO-REMISSIONS-001`; SHELL-CI-017                | RPC o servicio atómico, RLS, grants, idempotencia y pruebas.          |
+| reclamo de sesión y concurrencia         | `ESPECIFICADO`           | NEXO y autorización      | paquete E5 NEXO de `NEXO-REMISSIONS-001`; AUTH-SRV-001 a AUTH-SRV-005 | fuente autoritativa, expiración, versión y revocación materializadas. |
+| clasificación de condición y diferencias | `ESPECIFICADO`           | NEXO recepción           | NEXO-UX-013; NEXO-UX-022                                              | resultados por línea, contención y casos implementados.               |
+| LOC de recepción y putaway               | `ESPECIFICADO`           | NEXO inventario          | NEXO-UX-015; paquete E5 NEXO de `NEXO-REMISSIONS-001`                 | staging explícito y ubicación final independiente.                    |
+| convergencia legacy y física             | `ESPECIFICADO`           | NEXO y Data              | paquete E5 NEXO de `NEXO-REMISSIONS-001`                              | escritor canónico, compatibilidad temporal y retiro controlado.       |
+| firma, fotografía y evidencia reforzada  | `BLOQUEADO`              | UX, privacidad y Storage | NEXO-UX-022; NEXO-UX-023                                              | finalidad, minimización, retención, permisos y dispositivo aprobados. |
+| balanza, escáner y modo offline          | `PENDIENTE_DE_EVIDENCIA` | UX y dispositivos        | NEXO-UX-023; NEXO-UX-024                                              | perfiles de estación y contingencia certificados.                     |
+| métricas y piloto de recepción           | `PENDIENTE_DE_EVIDENCIA` | Operaciones y UX-QA      | NEXO-UX-025                                                           | muestra, umbrales, evidencia y aceptación operativa.                  |
+
+Ningún pendiente queda sin propietario, tarea o condición de salida.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Esta tarea crea:
+
+- `TREQ-NEXO-133`;
+- `TREQ-NEXO-134`;
+- `TREQ-NEXO-135`;
+- `TREQ-NEXO-136`;
+- `TREQ-NEXO-137`;
+- `TREQ-NEXO-138`;
+- `TREQ-NEXO-139`;
+- `TREQ-NEXO-140`;
+- `TREQ-NEXO-141`;
+- `TREQ-NEXO-142`;
+- `TREQ-NEXO-143`;
+- `TREQ-NEXO-144`;
+- `TREQ-NEXO-145`;
+- `TREQ-NEXO-146`.
+
+No modifica, difiere, descarta ni vuelve obsoleto ningún requisito histórico.
+El detalle canónico se incorpora coordinadamente al registro completo 04A.
+
+---
+
+#### 28. Criterios de aceptación
+
+La tarea se considera documentalmente completa cuando:
+
+1. el archivo contiene exclusivamente `NEXO-UX-013`;
+2. la entrada es el handoff aprobado por `NEXO-UX-012`;
+3. despacho y tránsito permanecen inmutables;
+4. el permiso exacto de recepción está separado de preparación y tránsito;
+5. las ocho colas `RCVQ-*` aparecen una sola vez;
+6. los veinte estados empresariales y técnicos aparecen una sola vez;
+7. los veintidós pasos aparecen una sola vez;
+8. los treinta estados de interfaz aparecen una sola vez;
+9. los doce resultados de línea aparecen una sola vez;
+10. el handoff se valida por destino, versión, shipment, receipts y custodia;
+11. la sesión se reclama mediante intención idempotente;
+12. una sesión concurrente produce conflicto explícito;
+13. sello y bultos se contrastan antes de recepción limpia;
+14. cada línea pertenece al shipment;
+15. la cantidad cruda observada se conserva;
+16. la UOM se deriva del snapshot del shipment;
+17. medición variable y conteo auxiliar tienen campos obligatorios;
+18. se cumple `O = A + R + Q + U`;
+19. faltante y sobrante se calculan sin inventar aceptación;
+20. rechazo y cuarentena no publican stock disponible;
+21. los receipts parciales son append-only;
+22. los acumulados se derivan del servidor;
+23. la misma intención devuelve el mismo receipt;
+24. una clave reutilizada con payload distinto falla;
+25. un timeout se reconcilia antes de reintentar;
+26. custodia se transfiere con declaraciones separadas;
+27. recepción con excepciones abre casos sin resolverlos;
+28. solo cantidades aceptadas se publican;
+29. la LOC de recepción es explícita;
+30. putaway final permanece fuera de esta tarea;
+31. shipment físico y legacy tienen disposición de compatibilidad;
+32. las diez rutas aparecen una sola vez y no se inventan URLs;
+33. las cuarenta y dos validaciones aparecen una sola vez;
+34. el diagnóstico diferencia implementación parcial, bloqueo y evidencia pendiente;
+35. los catorce requisitos nuevos están incorporados al 04A completo;
+36. todos los pendientes tienen propietario y condición de salida;
+37. no se ejecutan cambios físicos ni operaciones remotas;
+38. `NEXO-UX-014` permanece reservada.
+
+---
+
+#### 29. `NEXO-REMISSION-RECEPTION-HANDOFF-001`
+
+| Destino                                  | Entrada entregada                                                                 | Obligación                                                                                                                                        |
+| ---------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NEXO-UX-014`                            | Frontera entre recepción de traslado interno y entrada ordinaria o de emergencia. | No reutilizar un shipment receipt como entrada de proveedor; compartir solo invariantes de cantidad, UOM, idempotencia y publicación compatibles. |
+| `NEXO-UX-015`                            | Cantidades aceptadas publicadas en LOC de recepción o staging.                    | Ejecutar ubicación final sin reescribir receipt.                                                                                                  |
+| `NEXO-UX-021`                            | Estados, cantidades acumuladas, responsables, tiempos y vencimientos.             | Representación uniforme sin colapsar hechos.                                                                                                      |
+| `NEXO-UX-022`                            | Casos de faltante, sobrante, daño, rechazo, cuarentena y retorno.                 | Resolver mediante autoridad, evidencia y efectos separados.                                                                                       |
+| `NEXO-UX-023` a `NEXO-UX-025`            | Perfiles de estación, prototipo, métricas y piloto.                               | Validar balanza, escáner, móvil, concurrencia y red intermitente.                                                                                 |
+| Paquete E5 NEXO de `NEXO-REMISSIONS-001` | Contratos, matrices, rutas y diagnóstico de esta tarea.                           | Implementar servicios, migraciones, guards, componentes, pruebas, observabilidad y rollback.                                                      |
+
+Payload mínimo de salida:
+
+```text
+reception_session_id
+handoff_id
+shipment_id
+receipt_ids
+receipt_item_ids
+accepted_base_qty_by_line
+rejected_base_qty_by_line
+quarantined_base_qty_by_line
+unresolved_base_qty_by_line
+shortage_base_qty_by_line
+overage_case_ids
+exception_ids
+custody_receipt_id
+inventory_publication_receipt_ids
+inventory_pending_base_qty_by_line
+receiving_location_ids
+putaway_pending_line_ids
+policy_snapshot_ids
+version
+confirmed_at
+```
+
+El handoff no afirma ubicación final, resolución de excepción ni entrada de
+proveedor.
+
+---
+
+#### 30. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-012 — Diseñar flujo completo de tránsito`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-013 — Diseñar flujo completo de recepción`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-014 — Diseñar flujo completo de entradas`
+
+`NEXO-UX-014` deberá conservar la recepción de traslados internos como fuente
+diferenciada, no reinterpretar un receipt de shipment como entrada ordinaria o
+de emergencia y reutilizar únicamente los invariantes compatibles de cantidad,
+UOM, idempotencia, evidencia y publicación sin duplicar efectos.
+
+
 ### [ ] NEXO-UX-014 — Diseñar flujo completo de entradas
 ### [ ] NEXO-UX-015 — Diseñar flujo completo de ubicación
 ### [ ] NEXO-UX-016 — Diseñar flujo completo de movimientos
