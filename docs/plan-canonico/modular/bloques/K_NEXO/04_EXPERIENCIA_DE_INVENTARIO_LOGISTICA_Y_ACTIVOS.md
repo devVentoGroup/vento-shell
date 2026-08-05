@@ -19479,7 +19479,1063 @@ No modifica, descarta ni vuelve obsoleto ningún requisito histórico.
 `NEXO-UX-022` deberá consumir las proyecciones de observador, supervisor, decisor y ejecutor, junto con bundles de diferencia, condición, evidencia, impacto y receipt, para diseñar la resolución completa de excepciones sin reintroducir información o autoridad ajenas a cada etapa.
 
 
-### [ ] NEXO-UX-022 — Diseñar manejo de diferencias y excepciones
+### ✅ NEXO-UX-022 — Diseñar manejo de diferencias y excepciones
+
+---
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-021 — Mostrar solo información necesaria según etapa` — APROBADA
+**Tarea siguiente:** `NEXO-UX-023 — Probar flujos en tablets y kioscos` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional transversal del ciclo completo de diferencias y excepciones, con caso, clasificación, severidad, contención, evidencia, investigación, decisión, disposición, instrucción, ejecución, posting, verificación, cierre, concurrencia, offline, superficies, estados, validación y continuidad
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Procesos cubiertos:** `VPROC-0023` a `VPROC-0028`; las excepciones patrimoniales conservan propietarios posteriores de activos y mantenimiento
+**Permiso funcional consumido:** permiso exacto de reportar, contener, investigar, decidir, ejecutar, publicar o verificar según clase, recurso, territorio y etapa; ninguna lectura o etiqueta de rol concede mutación
+**Artefactos producidos:** veinticuatro contratos, catálogos, matrices y handoffs enumerados en esta tarea
+**Decisiones consumidas:** flujos `NEXO-UX-009` a `NEXO-UX-021`, contratos de autorización, contexto, UOM, ledger, movimientos, custodia, evidencia, conteo ciego, escaneo, receipts y requisitos `TREQ-NEXO-*` vigentes
+**Cambios físicos autorizados:** ninguno; no modifica código, componentes, consultas, permisos, datos, Supabase, migraciones, RLS, RPC, tipos, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar cómo Vento convierte una diferencia u observación anómala en un caso trazable, contenido, investigado, decidido, ejecutado y verificado sin permitir que la persona que detecta el hecho lo resuelva unilateralmente ni que un ajuste genérico sustituya la causalidad.
+
+La regla canónica es:
+
+```text
+HECHO OBSERVADO O RESULTADO TECNICO NO CONCLUYENTE
++ FUENTE, SUJETO, CANTIDAD, UOM, UBICACION, CUSTODIA Y VERSIONES
++ CLASIFICACION, SEVERIDAD, PRIORIDAD Y SLA
++ CONTENCION TEMPORAL CUANDO APLIQUE
++ EVIDENCIA APPEND-ONLY E INVESTIGACION
++ AUTORIDAD Y SEGREGACION DE FUNCIONES
++ DECISION VERSIONADA
++ INSTRUCCION FIRMADA
++ EJECUCION Y RECEIPT
++ POSTING PROPIETARIO CUANDO APLIQUE
++ VERIFICACION Y CIERRE
+→ EXCEPCION RESUELTA SIN BORRAR EL HECHO NI DUPLICAR EFECTOS
+```
+
+Fronteras obligatorias:
+
+```text
+REPORTAR ≠ RESOLVER
+CLASIFICAR ≠ DETERMINAR CAUSA
+CONTENER ≠ DECIDIR
+DECIDIR ≠ EJECUTAR
+EJECUTAR ≠ PUBLICAR CANTIDAD
+POSTEAR ≠ VERIFICAR
+CERRAR ≠ BORRAR
+REABRIR ≠ REESCRIBIR
+FALTANTE ≠ PERDIDA CONFIRMADA
+SOBRANTE ≠ GANANCIA DISPONIBLE
+RECHAZO ≠ RETORNO EJECUTADO
+CUARENTENA ≠ DISPOSICION FINAL
+DIFERENCIA DE CONTEO ≠ AJUSTE
+RESULTADO DESCONOCIDO ≠ ERROR DEFINITIVO
+DUPLICADO ≠ ELIMINACION DE EVIDENCIA
+ROL O URL ≠ AUTORIDAD
+```
+
+Una pantalla, RPC, política RLS, acción legacy o texto libre no puede colapsar estas fronteras.
+
+#### 2. Resultado material
+
+Se aprueban los siguientes artefactos:
+
+|    # | Artefacto                                            | Resultado material                                                                                                           |
+| ---: | ---------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+|    1 | NEXO-EXCEPTION-FLOW-CONTRACT-001                     | fija propósito, fronteras, entradas, salidas y separación entre reportar, contener, decidir, ejecutar, contabilizar y cerrar |
+|    2 | NEXO-EXCEPTION-CASE-IDENTITY-CONTRACT-001            | define identidad estable del caso, sujetos, alcance, versiones, correlaciones y relaciones sin reescribir el hecho           |
+|    3 | NEXO-EXCEPTION-SOURCE-CATALOG-001                    | materializa dieciocho fuentes de excepción heredadas de remisiones, tránsito, conteos, movimientos y condición               |
+|    4 | NEXO-EXCEPTION-CLASSIFICATION-TAXONOMY-001           | materializa dieciocho clases cerradas y reglas de clasificación sin deducir causa o responsabilidad                          |
+|    5 | NEXO-EXCEPTION-SEVERITY-PRIORITY-CONTRACT-001        | separa severidad, urgencia, impacto, plazo, escalamiento y política de parada                                                |
+|    6 | NEXO-EXCEPTION-STATE-MACHINE-001                     | materializa veintisiete estados empresariales y transiciones autorizadas                                                     |
+|    7 | NEXO-EXCEPTION-OWNERSHIP-CLAIM-SLA-CONTRACT-001      | define ocho colas, asignación, claim, sustitución, vencimiento, SLA y segregación de funciones                               |
+|    8 | NEXO-EXCEPTION-STEP-CATALOG-001                      | materializa veinticuatro pasos desde la detección hasta el archivo y reapertura                                              |
+|    9 | NEXO-EXCEPTION-EVIDENCE-CONTRACT-001                 | gobierna evidencia append-only, suficiencia, privacidad, contradicción, cadena de custodia y retención                       |
+|   10 | NEXO-EXCEPTION-CONTAINMENT-CONTRACT-001              | define contención temporal, alcance, receipt, expiración y prohibición de confundir contención con resolución                |
+|   11 | NEXO-EXCEPTION-INVESTIGATION-CAUSALITY-CONTRACT-001  | separa hechos, hipótesis, causa probable, causa confirmada, contribuyentes y responsabilidad                                 |
+|   12 | NEXO-EXCEPTION-DECISION-POLICY-CONTRACT-001          | resuelve opciones autorizadas, autoridad, independencia, versión, decisión, revocación y supersesión                         |
+|   13 | NEXO-EXCEPTION-DISPOSITION-CATALOG-001               | materializa dieciocho disposiciones con precondiciones, efectos, propietario y evidencia de salida                           |
+|   14 | NEXO-EXCEPTION-INSTRUCTION-EXECUTION-CONTRACT-001    | convierte una decisión vigente en instrucción firmada, ejecución parcial o total y receipt independiente                     |
+|   15 | NEXO-EXCEPTION-QUARANTINE-HOLD-CONTRACT-001          | gobierna hold, cuarentena, liberación, extensión, vencimiento y stock no disponible                                          |
+|   16 | NEXO-EXCEPTION-LOSS-DAMAGE-WASTE-EXPIRY-CONTRACT-001 | define tratamiento causal y cuantitativo de pérdida, merma, daño, desperdicio y vencimiento                                  |
+|   17 | NEXO-EXCEPTION-REMISSION-DIFFERENCE-CONTRACT-001     | resuelve faltante, sobrante, identidad, sello, condición, rechazo, retorno, reemplazo y reclamo de remisiones                |
+|   18 | NEXO-EXCEPTION-COUNT-ADJUSTMENT-HANDOFF-CONTRACT-001 | conecta conteo, recuento, excepción, traslado, corrección de maestro y ajuste sin auto-posting                               |
+|   19 | NEXO-EXCEPTION-IDEMPOTENCY-RECEIPT-CONTRACT-001      | define intención, fingerprint, deduplicación, concurrencia, offline, resultado desconocido y receipts por fase               |
+|   20 | NEXO-EXCEPTION-SOURCE-ROUTE-DISPOSITION-001          | decide dieciocho superficies y URLs actuales y su convergencia sin crear writers paralelos                                   |
+|   21 | NEXO-EXCEPTION-INTERFACE-STATE-CONTRACT-001          | materializa treinta estados visibles con una salida principal y lenguaje no concluyente cuando corresponda                   |
+|   22 | NEXO-EXCEPTION-VALIDATION-MATRIX-001                 | asigna cuarenta y ocho comprobaciones a contrato, integración, seguridad, concurrencia, interfaz y piloto                    |
+|   23 | NEXO-EXCEPTION-IMPLEMENTATION-HANDOFF-001            | entrega modelo, servicios, proyecciones, transición, pruebas, observabilidad y rollback al paquete autorizado                |
+|   24 | NEXO-EXCEPTION-CONTINUITY-HANDOFF-001                | entrega contratos verificables a dispositivos, validación operativa, métricas, LPN y activos sin adelantar esas tareas       |
+
+Cobertura materializada:
+
+| Elemento                              | Total esperado | Total materializado | Faltantes | Duplicados |
+| ------------------------------------- | -------------- | ------------------- | --------- | ---------- |
+| Artefactos documentales               | 24             | 24                  | 0         | 0          |
+| Fuentes de excepción                  | 18             | 18                  | 0         | 0          |
+| Clases de excepción                   | 18             | 18                  | 0         | 0          |
+| Niveles de severidad                  | 5              | 5                   | 0         | 0          |
+| Bandas de prioridad                   | 5              | 5                   | 0         | 0          |
+| Estados empresariales y técnicos      | 27             | 27                  | 0         | 0          |
+| Colas de trabajo                      | 8              | 8                   | 0         | 0          |
+| Pasos `EXC-STEP-*`                    | 24             | 24                  | 0         | 0          |
+| Disposiciones                         | 18             | 18                  | 0         | 0          |
+| Superficies y URLs actuales decididas | 18             | 18                  | 0         | 0          |
+| Estados de interfaz                   | 30             | 30                  | 0         | 0          |
+| Comprobaciones `EXC-VAL-*`            | 48             | 48                  | 0         | 0          |
+| Requisitos de prueba nuevos           | 14             | 14                  | 0         | 0          |
+
+El resultado queda `ESPECIFICADO`. No declara casos, tablas, RPC, colas, políticas, componentes, pruebas o dispositivos como `IMPLEMENTADOS` o `VALIDADOS`.
+
+#### 3. Alcance, diagnóstico y fronteras
+
+Incluye:
+
+- diferencias de cantidad, identidad, ubicación, condición, UOM, presentación, cutoff, custodia, sello, empaque, devolución y resultado técnico;
+- pérdida, merma, daño, desperdicio, vencimiento, rechazo, hold, cuarentena, liberación, retorno, reemplazo y reclamo;
+- reporte, triage, contención, asignación, claim, investigación, evidencia, decisión, instrucción, ejecución, posting, verificación, cierre y reapertura;
+- segregación de funciones, SLA, severidad, prioridad, deduplicación, concurrencia, offline y resultado desconocido;
+- handoffs hacia conteos, movimientos, ajustes, remisiones, catálogo y procesos posteriores;
+- disposición de superficies actuales, estados de interfaz, validación, transición, observabilidad y rollback.
+
+Excluye:
+
+- redefinir los flujos normales aprobados en `NEXO-UX-009` a `NEXO-UX-021`;
+- ejecutar directamente movimientos o ajustes, cuyos writers permanecen en `NEXO-UX-016` y `NEXO-UX-019`;
+- definir el ciclo completo de LPN, responsabilidad de `NEXO-UX-026` a `NEXO-UX-030`;
+- resolver identidad, mantenimiento, baja o disposición patrimonial de activos, responsabilidad de `NEXO-UX-031` a `NEXO-UX-034`;
+- certificar ergonomía o hardware, responsabilidad de `NEXO-UX-023` a `NEXO-UX-025`;
+- implementar código, SQL, migraciones, RLS, datos o despliegues.
+
+Diagnóstico verificable del código actual:
+
+| Superficie                   | Estado observado                                                                                  | Decisión documental                                                                           |
+| ---------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| recepción por lote           | selecciona por defecto líneas pendientes y captura cantidad, conteo auxiliar y notas              | separar receipt operativo de condición, diferencia, caso y disposición                        |
+| conteo inicial               | captura cantidades, UOM y posiciones                                                              | producir observación y handoff de diferencia, no caso resuelto ni posting                     |
+| ajuste                       | permite `add`, `remove` o `count` con motivo y evidencia libres, incluida operación masiva a cero | restringir ajustes causales a candidate, decisión y versión; el texto libre no reemplaza caso |
+| remisiones                   | acciones, preparación, tránsito y recepción distribuyen lógica entre componentes grandes          | converger reporte y seguimiento sobre un servicio de casos común                              |
+| stock y movimientos          | ofrecen consulta y trazabilidad parcial                                                           | proyectar holds y casos sin agregar writers                                                   |
+| escáner                      | no existe todavía un resolutor de excepciones compartido                                          | usar propuestas de identidad de `NEXO-UX-020`, nunca resolución automática                    |
+| árbol actual de `vento-nexo` | no contiene un módulo transversal propietario de casos de excepción                               | implementar posteriormente adapters y servicio común sin duplicar fuentes de verdad           |
+
+Entrada mínima de un reporte:
+
+```text
+report_intent_id
+source_type
+source_ref
+principal_id
+actor_effective_id
+permission_context
+site_id
+area_id_optional
+subject_type
+subject_ref
+raw_observation
+observed_at
+device_context
+expected_versions
+```
+
+Salida mínima:
+
+```text
+case_id
+case_code
+report_receipt_id
+classification_version
+severity
+priority
+containment_status
+owner_status
+case_version
+next_action
+```
+
+Un reporte puede quedar no concluyente. Ningún campo enviado por cliente concede autoridad, causalidad, severidad, disposición o cierre.
+
+#### 4. `NEXO-EXCEPTION-FLOW-CONTRACT-001`
+
+El flujo empresarial completo es:
+
+```text
+DETECTAR
+→ REPORTAR
+→ VALIDAR Y DEDUPLICAR
+→ CLASIFICAR
+→ PRIORIZAR
+→ CONTENER SI APLICA
+→ ASIGNAR Y RECLAMAR
+→ INVESTIGAR
+→ COMPLETAR EVIDENCIA
+→ DECIDIR
+→ EMITIR INSTRUCCION
+→ EJECUTAR
+→ PUBLICAR EFECTO CUANTITATIVO SI APLICA
+→ VERIFICAR
+→ CERRAR O REABRIR
+```
+
+Contratos por fase:
+
+| Fase          | Autoridad                              | Efecto permitido                                   | Receipt obligatorio      | Prohibición                   |
+| ------------- | -------------------------------------- | -------------------------------------------------- | ------------------------ | ----------------------------- |
+| reporte       | actor autorizado por el proceso fuente | crear hecho y caso o vincular duplicado            | report receipt           | no decidir ni ajustar         |
+| triage        | función de triage                      | clasificar, priorizar y asignar                    | triage receipt           | no inventar causa             |
+| contención    | ejecutor de contención                 | hold, cuarentena, bloqueo o preservación temporal  | containment receipt      | no disposición final          |
+| investigación | investigador                           | agregar hechos, timeline, hipótesis y dependencias | investigation checkpoint | no ejecutar efecto            |
+| decisión      | decisor con permiso atómico            | elegir una disposición autorizada                  | decision receipt         | no editar evidencia           |
+| instrucción   | servicio autoritativo                  | materializar alcance ejecutable                    | instruction receipt      | no ampliar decisión           |
+| ejecución     | ejecutor específico                    | realizar efecto físico o administrativo            | execution receipt        | no cambiar la decisión        |
+| posting       | writer propietario                     | publicar movimiento o ajuste autorizado            | posting receipt          | no cerrar caso por inferencia |
+| verificación  | verificador autorizado                 | certificar resultado o reabrir                     | verification receipt     | no borrar divergencias        |
+| cierre        | servicio de caso                       | cerrar con o sin efecto                            | closure receipt          | no eliminar historia          |
+
+El caso es el coordinador de la excepción, no el propietario universal de todos los efectos.
+
+#### 5. `NEXO-EXCEPTION-CASE-IDENTITY-CONTRACT-001`
+
+Identidad mínima del caso:
+
+| Grupo         | Campos obligatorios                                                                                                   | Regla                         |
+| ------------- | --------------------------------------------------------------------------------------------------------------------- | ----------------------------- |
+| identidad     | `case_id`, `case_code`, `case_version`, `created_at`                                                                  | inmutables salvo versión      |
+| fuente        | `source_type`, `source_ref`, `source_event_id`, `source_version`                                                      | conserva proceso propietario  |
+| reporte       | `report_intent_id`, `report_receipt_id`, `reported_by`, `reported_at`                                                 | idempotente                   |
+| sujeto        | `subject_type`, `subject_ref`, `product_id`, `presentation_id`, `batch_ref`, `lpn_ref_optional`, `asset_ref_optional` | tipos no fungibles            |
+| magnitud      | valores crudos, cantidad, UOM, precisión, expected, observed, delta y cutoff aplicables                               | no se redondea la evidencia   |
+| ubicación     | empresa, sede, área, LOC, posición, origen, destino y journey aplicables                                              | cada nivel conserva identidad |
+| custodia      | custodio anterior, actual, handoff, sello, bulto y vehículo aplicables                                                | no inferir por presencia      |
+| clasificación | clase primaria, secundarias, severidad, prioridad, impacto y política versionados                                     | recalculable con historial    |
+| workflow      | estado, cola, owner, claim, SLA, dependencias y bloqueo                                                               | no se deriva en cliente       |
+| correlación   | casos relacionados, duplicado primario, recuentos, movimientos, ajustes, remisiones, receipts y reclamos              | relaciones tipadas            |
+| cierre        | cierre con o sin efecto, verificador, versión, motivo y receipts                                                      | cierre no borra el caso       |
+
+Relaciones permitidas:
+
+- `DUPLICATE_OF`;
+- `SUPERSEDES`;
+- `REOPENED_FROM`;
+- `CAUSED_BY`;
+- `CONTRIBUTES_TO`;
+- `BLOCKS`;
+- `RELATED_TO`;
+- `RECOUNT_OF`;
+- `RETURN_OF`;
+- `REPLACEMENT_FOR`;
+- `POSTING_FOR`;
+- `EXTERNAL_CLAIM_FOR`.
+
+Una relación no fusiona cantidades, evidencia, autoridad ni estado salvo regla contractual explícita.
+
+#### 6. `NEXO-EXCEPTION-SOURCE-CATALOG-001`
+
+| ID         | Fuente                            | Disparador verificable                                                                                        | Payload mínimo                                                                    | Resultado permitido                                                            | Propietario de entrada                  |
+| ---------- | --------------------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ | --------------------------------------- |
+| EXC-SRC-01 | REMISSION_RECEIPT_SHORTAGE        | Recepción registra cantidad observada menor al saldo despachado.                                              | Remisión, shipment, línea, receipt, cantidad, UOM y versión.                      | Caso de diferencia; no descuenta ni ajusta por sí solo.                        | NEXO-UX-013                             |
+| EXC-SRC-02 | REMISSION_RECEIPT_SURPLUS         | Recepción observa cantidad superior a la esperada o sujeto no manifestado.                                    | Identidad, procedencia conocida o desconocida, cantidad, UOM y condición.         | Hold preventivo y caso; no autoacepta el excedente.                            | NEXO-UX-013                             |
+| EXC-SRC-03 | REMISSION_IDENTITY_MISMATCH       | Producto, presentación, lote, LPN futuro o línea observada no coincide con el documento.                      | Esperado, observado, canal de captura, evidencia y contexto.                      | Caso de identidad; no crea producto ni cambia maestro.                         | NEXO-UX-013; NEXO-UX-020                |
+| EXC-SRC-04 | REMISSION_CONDITION_DAMAGE        | Daño físico, empaque comprometido, contaminación o condición no apta.                                         | Cantidad afectada, condición, evidencia, ubicación temporal y actor.              | Contención y caso; no publica disponible.                                      | NEXO-UX-013                             |
+| EXC-SRC-05 | REMISSION_REJECTION               | Receptor clasifica una cantidad como rechazada bajo política aplicable.                                       | Cantidad, UOM, motivo observable, evidencia y custody handoff.                    | Caso de disposición; rechazo no equivale a retorno ejecutado.                  | NEXO-UX-013                             |
+| EXC-SRC-06 | REMISSION_QUARANTINE              | Cantidad recibida físicamente queda sin aptitud confirmada.                                                   | Cantidad, UOM, motivo, ubicación segregada, responsable y plazo.                  | Hold o cuarentena con receipt; no disponible.                                  | NEXO-UX-013                             |
+| EXC-SRC-07 | SEAL_PACKAGE_MISMATCH             | Sello, bulto, empaque o composición de carga difiere de lo esperado.                                          | Sello esperado y observado, bultos, integridad, hora y custodios.                 | Contener y preservar evidencia antes de abrir o mover.                         | NEXO-UX-011 a NEXO-UX-013               |
+| EXC-SRC-08 | TRANSIT_CUSTODY_INCIDENT          | Pérdida de custodia, accidente, apertura, demora crítica, desvío o daño en tránsito.                          | Journey, vehículo, custodios, tiempo, ubicación, sello, impacto y evidencia.      | Incidente de custodia; no altera cantidades por inferencia.                    | NEXO-UX-012                             |
+| EXC-SRC-09 | DELIVERY_FAILED_OR_RETURN         | Entrega no realizada, rechazada por destino o devuelta parcial o totalmente.                                  | Remisión, intento, motivo, cantidades, custodios, destino y retorno.              | Caso de retorno o reemplazo; no revierte automáticamente movimientos.          | NEXO-UX-012; NEXO-UX-013                |
+| EXC-SRC-10 | COUNT_POSITIVE_VARIANCE           | Observado autoritativo supera expected reconstruido en cutoff.                                                | Sesión, ronda, sujeto, posición, UOM, observed, expected, cutoff y delta.         | Caso o recuento; no publica aumento.                                           | NEXO-UX-018                             |
+| EXC-SRC-11 | COUNT_NEGATIVE_VARIANCE           | Observado autoritativo es menor que expected reconstruido en cutoff.                                          | Sesión, ronda, sujeto, posición, UOM, observed, expected, cutoff y delta.         | Caso o recuento; no publica disminución.                                       | NEXO-UX-018                             |
+| EXC-SRC-12 | COUNT_IDENTITY_MISMATCH           | Conteo encuentra sujeto inesperado o identidad diferente.                                                     | Observación, código, producto, presentación, lote, posición y evidencia.          | Caso de identidad; no alta automática.                                         | NEXO-UX-018; NEXO-UX-020                |
+| EXC-SRC-13 | COUNT_LOCATION_MISMATCH           | Sujeto válido aparece en LOC o posición distinta a la expectativa.                                            | Origen esperado, ubicación observada, custody, cutoff y movimientos concurrentes. | Investigar; posible traslado explícito, nunca ajuste compensatorio automático. | NEXO-UX-016; NEXO-UX-018                |
+| EXC-SRC-14 | COUNT_CONDITION_ANOMALY           | Conteo observa daño, vencimiento, contaminación o condición distinta.                                         | Sujeto, cantidad, condición, ubicación, evidencia y ronda.                        | Contener y abrir caso causal.                                                  | NEXO-UX-018                             |
+| EXC-SRC-15 | MOVEMENT_WINDOW_CONFLICT          | La ventana de movimientos impide atribuir una diferencia de forma estable.                                    | Cutoff, secuencias, legs, writers, versiones y reconciliación.                    | Bloqueo técnico y nueva reconstrucción; no decidir sobre snapshot stale.       | NEXO-UX-016; NEXO-UX-018                |
+| EXC-SRC-16 | UOM_CONVERSION_DATA_QUALITY       | Unidad, presentación, factor, precisión o identidad de maestro impiden comparar o ejecutar.                   | Valores crudos, perfiles UOM, versiones, origen y regla infringida.               | Corregir dato o maestro mediante propietario; no forzar conversión.            | NEXO-DOM-001; NEXO-UX-018 a NEXO-UX-021 |
+| EXC-SRC-17 | LOSS_SHRINKAGE_WASTE_EXPIRY       | Hecho operativo reporta pérdida, merma, desperdicio, daño irreversible o vencimiento.                         | Sujeto, cantidad, UOM, condición, tiempo, ubicación, actor y evidencia.           | Caso causal y disposición antes de ajuste o destrucción.                       | NEXO-UX-019                             |
+| EXC-SRC-18 | ENTRY_MOVEMENT_WITHDRAWAL_ANOMALY | Entrada, ubicación, traslado o retiro detecta cantidad, identidad, destino, custody o resultado incompatible. | Comando, receipt, líneas, versiones, actor, origen, destino y error.              | Caso correlacionado; no compensar con un writer genérico.                      | NEXO-UX-014 a NEXO-UX-017               |
+
+Las dieciocho fuentes son cerradas para este diseño. Una fuente nueva requerirá versión del catálogo, decisión de autoridad y pruebas antes de producir casos.
+
+#### 7. `NEXO-EXCEPTION-CLASSIFICATION-TAXONOMY-001`
+
+| ID         | Clase                    | Definición                                                                         | Evidencia mínima                                             | Frontera                                                           |
+| ---------- | ------------------------ | ---------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------------------ |
+| EXC-CLS-01 | QUANTITY_SHORTAGE        | Cantidad faltante respecto a documento o expected.                                 | Cantidad y UOM comparables, cutoff o saldo documental.       | No presume pérdida, hurto ni responsable.                          |
+| EXC-CLS-02 | QUANTITY_SURPLUS         | Cantidad superior o sujeto adicional.                                              | Cantidad, UOM, procedencia y condición.                      | No presume ganancia ni stock disponible.                           |
+| EXC-CLS-03 | IDENTITY_MISMATCH        | Producto, presentación, lote, documento o código no coincide.                      | Esperado y observado preservados por separado.               | No corrige maestro ni reasigna identidad.                          |
+| EXC-CLS-04 | LOCATION_MISMATCH        | Sujeto se encuentra en ubicación distinta.                                         | Ubicación esperada, observada y movimientos concurrentes.    | Puede requerir traslado; no se corrige con delta doble.            |
+| EXC-CLS-05 | CONDITION_DAMAGE         | Integridad física o empaque comprometidos.                                         | Cantidad afectada, condición y evidencia.                    | Exige contención si puede propagarse.                              |
+| EXC-CLS-06 | QUALITY_DOUBT            | Aptitud o calidad no concluyente.                                                  | Criterio observado, política y evidencia disponible.         | Permanece no disponible hasta decisión.                            |
+| EXC-CLS-07 | TEMPERATURE_ENVIRONMENT  | Temperatura, humedad, exposición o ambiente fuera de política.                     | Lectura, instrumento, hora, tolerancia y cadena de custodia. | No inventa medición ausente.                                       |
+| EXC-CLS-08 | EXPIRY_OR_SHELF_LIFE     | Vencimiento, vida útil insuficiente o fecha inconsistente.                         | Lote, fechas, política y cantidad afectada.                  | No destruye ni ajusta sin disposición.                             |
+| EXC-CLS-09 | LOSS_OR_SHRINKAGE        | Existencia no localizada o pérdida material reportada.                             | Hecho, búsqueda, custodia, cutoff y alcance.                 | No atribuye dolo ni responsabilidad automática.                    |
+| EXC-CLS-10 | WASTE_OR_DESTRUCTION     | Material inutilizado, consumido indebidamente o destinado a destrucción.           | Cantidad, UOM, causa, autorización y evidencia.              | Destruir requiere instrucción y receipt.                           |
+| EXC-CLS-11 | REJECTION_OR_RETURN      | Destino no acepta total o parcialmente.                                            | Motivo, cantidades, custodia y destino posterior.            | Rechazo no ejecuta retorno.                                        |
+| EXC-CLS-12 | QUARANTINE_OR_HOLD       | Disponibilidad suspendida temporalmente.                                           | Alcance, motivo, responsable, plazo y ubicación.             | Hold no es decisión final.                                         |
+| EXC-CLS-13 | SEAL_PACKAGE_CUSTODY     | Sello, bulto, empaque o custody no coinciden.                                      | Valores esperados y observados, custodios y tiempos.         | Preserva evidencia antes de manipular.                             |
+| EXC-CLS-14 | UOM_CONVERSION           | Unidad, presentación, factor o precisión impiden equivalencia.                     | Valores crudos, perfil, versión y tolerancia.                | No redondea silenciosamente.                                       |
+| EXC-CLS-15 | MOVEMENT_CONCURRENCY     | Movimientos concurrentes, versión stale o resultado desconocido.                   | Secuencia, intención, receipt y versiones.                   | Reconciliar antes de decidir.                                      |
+| EXC-CLS-16 | MASTER_OR_DATA_QUALITY   | Maestro, referencia, relación o dato técnico es inválido o incompleto.             | Campo, fuente, propietario y versión.                        | No usa caso como editor libre de configuración.                    |
+| EXC-CLS-17 | EVIDENCE_GAP             | No existe evidencia mínima para afirmar el hecho o la causa.                       | Lista explícita de faltantes y fuentes intentadas.           | Mantiene estado no concluyente.                                    |
+| EXC-CLS-18 | TECHNICAL_RESULT_UNKNOWN | Timeout, desconexión o respuesta parcial impiden saber si una fase produjo efecto. | Intención, fingerprint, correlación y consulta por receipt.  | Nunca se trata como éxito o fracaso definitivo sin reconciliación. |
+
+Reglas de clasificación:
+
+1. el hecho conserva su lenguaje original y la clasificación se añade como capa versionada;
+2. puede existir una clase primaria y varias secundarias, todas justificadas;
+3. severidad, causalidad, responsabilidad y disposición no se deducen de la clase;
+4. una clasificación cambiada crea nueva versión y no reescribe la anterior;
+5. clases no soportadas fallan cerradas como `DATA_QUALITY_OR_MASTER` o `TECHNICAL_RESULT_UNKNOWN` según el hecho, sin fallback genérico permisivo.
+
+#### 8. `NEXO-EXCEPTION-SEVERITY-PRIORITY-CONTRACT-001`
+
+Severidad:
+
+| ID        | Nivel      | Criterio                                                                                                      | Respuesta mínima                                                                  | Frontera                                                               |
+| --------- | ---------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+| EXC-SEV-1 | BAJA       | Sin riesgo de seguridad, condición, custodia o propagación; impacto local y reversible.                       | Cola ordinaria; plazo definido por política.                                      | No habilita cierre automático.                                         |
+| EXC-SEV-2 | MODERADA   | Impacto operativo limitado o diferencia material sin riesgo inmediato.                                        | Atención prioritaria dentro del turno o ventana aprobada.                         | Puede exigir supervisor según clase.                                   |
+| EXC-SEV-3 | ALTA       | Afecta disponibilidad, custodia, servicio, valor relevante, recurrencia o más de un sujeto.                   | Atención urgente, contención obligatoria cuando aplique y escalamiento.           | Decisión independiente obligatoria.                                    |
+| EXC-SEV-4 | CRITICA    | Riesgo de seguridad, inocuidad, contaminación, pérdida de custodia, fraude plausible o propagación multisede. | Atención inmediata, stop-work o hold y notificación autoritativa.                 | No admite ejecución offline ordinaria.                                 |
+| EXC-SEV-5 | EMERGENCIA | Amenaza actual a personas, producto, instalación o evidencia crítica.                                         | Contención de emergencia por política explícita y revisión posterior obligatoria. | La emergencia no autoriza ajustar, destruir o cerrar sin trazabilidad. |
+
+Prioridad de trabajo:
+
+| ID        | Banda           | Regla                                                               |
+| --------- | --------------- | ------------------------------------------------------------------- |
+| EXC-PRI-1 | ORDINARIA       | Sin vencimiento próximo ni riesgo de propagación.                   |
+| EXC-PRI-2 | PROGRAMADA      | Tiene SLA o dependencia operativa concreta.                         |
+| EXC-PRI-3 | URGENTE         | Bloquea trabajo, recepción, despacho o disponibilidad.              |
+| EXC-PRI-4 | INMEDIATA       | Requiere contención, custodia o decisión en curso.                  |
+| EXC-PRI-5 | DETENER_TRABAJO | Continuar puede agravar seguridad, condición, custodia o evidencia. |
+
+La severidad mide impacto potencial o confirmado; la prioridad ordena el trabajo según urgencia, vencimiento y dependencia. No son equivalentes.
+
+Factores autoritativos de severidad:
+
+- seguridad de personas;
+- inocuidad, contaminación o condición;
+- pérdida de custodia o evidencia;
+- propagación entre productos, ubicaciones o sedes;
+- cantidad, materialidad y valor solo dentro de política;
+- interrupción de servicio;
+- recurrencia o patrón;
+- obligación contractual, regulatoria o de aseguramiento;
+- reversibilidad;
+- evidencia ausente o perecedera.
+
+El SLA comienza con el report receipt. Solo se pausa en `WAITING_EXTERNAL` mediante razón, propietario, referencia y fecha límite. Reasignar, reclasificar o reabrir no borra tiempos anteriores.
+
+#### 9. `NEXO-EXCEPTION-STATE-MACHINE-001`
+
+| ID        | Estado                | Condición                                                                                  | Transición siguiente permitida                                            |
+| --------- | --------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------- |
+| EXC-ST-01 | REPORTED              | Reporte persistido con receipt; clasificación inicial puede ser provisional.               | TRIAGE_PENDING                                                            |
+| EXC-ST-02 | TRIAGE_PENDING        | Fuente, sujeto, clase, duplicidad, severidad y contención requieren validación.            | CONTAINMENT_REQUIRED, ASSIGNMENT_PENDING o CANCELLED_INVALID              |
+| EXC-ST-03 | CONTAINMENT_REQUIRED  | Continuar sin control temporal puede agravar el impacto.                                   | CONTAINED o EXECUTION_BLOCKED                                             |
+| EXC-ST-04 | CONTAINED             | Control temporal confirmado mediante receipt y alcance vigente.                            | ASSIGNMENT_PENDING                                                        |
+| EXC-ST-05 | ASSIGNMENT_PENDING    | No existe propietario humano o funcional vigente.                                          | CLAIMED                                                                   |
+| EXC-ST-06 | CLAIMED               | Responsable autorizado aceptó el trabajo con versión y vencimiento.                        | INVESTIGATING                                                             |
+| EXC-ST-07 | INVESTIGATING         | Hechos, evidencia, timeline, movimientos y políticas están en análisis.                    | EVIDENCE_REQUIRED, WAITING_EXTERNAL, RECOUNT_REQUIRED o AWAITING_DECISION |
+| EXC-ST-08 | EVIDENCE_REQUIRED     | Falta evidencia mínima explícita.                                                          | INVESTIGATING o WAITING_EXTERNAL                                          |
+| EXC-ST-09 | WAITING_EXTERNAL      | Existe dependencia identificada de tercero o proceso propietario.                          | INVESTIGATING o AWAITING_DECISION                                         |
+| EXC-ST-10 | RECOUNT_REQUIRED      | La política exige nueva observación independiente.                                         | INVESTIGATING                                                             |
+| EXC-ST-11 | AWAITING_DECISION     | Expediente suficiente y opciones autorizadas calculadas.                                   | DECIDED                                                                   |
+| EXC-ST-12 | DECIDED               | Decisión versionada y receipt emitido.                                                     | INSTRUCTION_ISSUED, AWAITING_POSTING o CLOSED_NO_EFFECT                   |
+| EXC-ST-13 | INSTRUCTION_ISSUED    | Existe instrucción firmada, vigente, ejecutable y con alcance exacto.                      | EXECUTING o EXECUTION_BLOCKED                                             |
+| EXC-ST-14 | EXECUTING             | Ejecutor autorizado realiza la instrucción sin alterar su decisión.                        | PARTIALLY_EXECUTED, EXECUTED o EXECUTION_BLOCKED                          |
+| EXC-ST-15 | EXECUTION_BLOCKED     | Falta recurso, permiso, condición, versión, dispositivo o dependencia.                     | INSTRUCTION_ISSUED, INVESTIGATING o REOPENED                              |
+| EXC-ST-16 | PARTIALLY_EXECUTED    | Solo parte del alcance tiene receipt de ejecución.                                         | EXECUTING, EXECUTION_BLOCKED o AWAITING_POSTING                           |
+| EXC-ST-17 | EXECUTED              | La instrucción completa tiene receipt; efecto cuantitativo puede seguir pendiente.         | AWAITING_POSTING, AWAITING_VERIFICATION o CLOSED_NO_EFFECT                |
+| EXC-ST-18 | AWAITING_POSTING      | Existe candidato cuantitativo autorizado y separado.                                       | POSTED o EXECUTION_BLOCKED                                                |
+| EXC-ST-19 | POSTED                | Movimiento o ajuste correlacionado tiene receipt autoritativo.                             | AWAITING_VERIFICATION                                                     |
+| EXC-ST-20 | AWAITING_VERIFICATION | Un verificador autorizado contrasta hechos, decisión, ejecución y efectos.                 | VERIFIED o REOPENED                                                       |
+| EXC-ST-21 | VERIFIED              | Resultado final cumple decisión, receipts y evidencia.                                     | CLOSED_NO_EFFECT o CLOSED_WITH_EFFECT                                     |
+| EXC-ST-22 | CLOSED_NO_EFFECT      | Caso cerrado sin mutación cuantitativa; hechos e investigación permanecen.                 | REOPENED                                                                  |
+| EXC-ST-23 | CLOSED_WITH_EFFECT    | Caso cerrado con receipts de ejecución y, si aplica, posting.                              | REOPENED                                                                  |
+| EXC-ST-24 | CANCELLED_INVALID     | Reporte inválido, fuera de alcance o creado por error con motivo y receipt.                | REOPENED solo mediante autoridad                                          |
+| EXC-ST-25 | DUPLICATE_LINKED      | Reporte preservado y vinculado a caso primario; no se elimina.                             | REOPENED o seguimiento del primario                                       |
+| EXC-ST-26 | VOIDED                | Decisión o instrucción anulada por autoridad sin borrar historia.                          | INVESTIGATING o AWAITING_DECISION                                         |
+| EXC-ST-27 | REOPENED              | Nueva evidencia, incumplimiento, recurrencia o efecto divergente reabre una versión nueva. | TRIAGE_PENDING o INVESTIGATING                                            |
+
+Invariantes:
+
+```text
+CLOSED_WITH_EFFECT REQUIERE EXECUTION RECEIPT
+CLOSED_WITH_EFFECT CON EFECTO CUANTITATIVO REQUIERE POSTING RECEIPT
+CLOSED_NO_EFFECT REQUIERE JUSTIFICACION Y VERIFICACION SEGUN POLITICA
+DECIDED NO IMPLICA EXECUTED
+EXECUTED NO IMPLICA POSTED
+POSTED NO IMPLICA VERIFIED
+DUPLICATE_LINKED CONSERVA EL REPORTE
+REOPENED CREA NUEVA VERSION
+VOIDED CONSERVA LA DECISION O INSTRUCCION ANULADA
+```
+
+Transiciones no enumeradas se rechazan. El cliente no puede enviar el estado final como autoridad.
+
+#### 10. `NEXO-EXCEPTION-OWNERSHIP-CLAIM-SLA-CONTRACT-001`
+
+| Cola               | Contenido                                                           | Actor elegible                                           | Salida                                                        | Prioridad                                                       |
+| ------------------ | ------------------------------------------------------------------- | -------------------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------------- |
+| EXCQ-TRIAGE        | Reportes nuevos, duplicados candidatos o clasificación provisional. | Triage autorizado.                                       | Clasificación, severidad, contención y propietario resueltos. | Antigüedad del reporte; riesgo potencial; evidencia perecedera. |
+| EXCQ-CONTAINMENT   | Casos con riesgo de propagación o disponibilidad indebida.          | Ejecutor de contención autorizado.                       | Receipt de hold, cuarentena, bloqueo o preservación.          | Seguridad y custodia antes que valor o cantidad.                |
+| EXCQ-INVESTIGATION | Casos reclamados con hechos por reconstruir.                        | Investigador autorizado e independiente cuando aplique.  | Expediente suficiente o dependencia explícita.                | Severidad, vencimiento, recurrencia y alcance.                  |
+| EXCQ-EVIDENCE      | Casos con evidencia faltante o contradictoria.                      | Recolector o custodio de evidencia autorizado.           | Evidencia agregada o imposibilidad certificada.               | Perecibilidad, cadena de custodia y plazo.                      |
+| EXCQ-DECISION      | Expedientes listos con opciones calculadas.                         | Decisor con permiso atómico, territorio e independencia. | Decisión receipt o devolución motivada.                       | SLA, impacto, bloqueo de operación y severidad.                 |
+| EXCQ-EXECUTION     | Instrucciones vigentes listas para ejecutar.                        | Ejecutor autorizado para el efecto específico.           | Receipt total, parcial o bloqueo explícito.                   | Vencimiento, seguridad, disponibilidad y secuencia.             |
+| EXCQ-POSTING       | Candidatos cuantitativos autorizados.                               | Writer propietario de movimiento o ajuste.               | Receipt de posting o conflicto.                               | Versión, idempotencia y riesgo de doble efecto.                 |
+| EXCQ-VERIFICATION  | Casos ejecutados pendientes de control final.                       | Verificador autorizado e independiente según política.   | Verified, reopened o cierre.                                  | Severidad, materialidad, plazo y recurrencia.                   |
+
+Funciones separadas:
+
+| Función                | Puede                                   | No puede por esa función             |
+| ---------------------- | --------------------------------------- | ------------------------------------ |
+| reportero              | registrar hecho y evidencia propia      | decidir, ajustar o cerrar            |
+| ejecutor de contención | aplicar hold o control temporal         | elegir disposición final             |
+| investigador           | reconstruir hechos y proponer hipótesis | ejecutar o postear                   |
+| decisor                | elegir disposición permitida            | alterar el hecho o simular ejecución |
+| ejecutor               | cumplir instrucción vigente             | cambiar causa, alcance o cantidad    |
+| writer propietario     | publicar movimiento o ajuste            | determinar causalidad                |
+| verificador            | contrastar resultado y reabrir          | borrar evidencia o receipts          |
+| auditor                | consultar proyección autorizada         | ejecutar writers                     |
+
+Claim mínimo:
+
+```text
+case_id
+case_version
+queue_id
+actor_effective_id
+authority_source
+permission_id
+territory_scope
+claimed_at
+claim_expires_at
+device_session
+```
+
+Un claim vencido, revocado o de otra versión impide guardar decisiones o ejecución. La sustitución conserva actor anterior, motivo, tiempo y receipt.
+
+#### 11. `NEXO-EXCEPTION-STEP-CATALOG-001`
+
+| Paso        | Nombre                                  | Entrada                                                              | Salida                                                       | Frontera                                                               |
+| ----------- | --------------------------------------- | -------------------------------------------------------------------- | ------------------------------------------------------------ | ---------------------------------------------------------------------- |
+| EXC-STEP-01 | Detectar y preservar el hecho           | Evento, observación o resultado técnico.                             | Hecho crudo con fuente y tiempo.                             | No deducir causa, responsable ni efecto.                               |
+| EXC-STEP-02 | Crear intención de reporte              | Actor, contexto, fuente y nonce.                                     | Intención estable y fingerprint.                             | No crear caso duplicado por reintento.                                 |
+| EXC-STEP-03 | Validar fuente y alcance                | Proceso propietario, recurso, territorio y versión.                  | Fuente admitida o denegación.                                | La URL o el rol visible no conceden autoridad.                         |
+| EXC-STEP-04 | Normalizar sujeto y cantidades          | Identidades, cantidades, UOM y valores crudos.                       | Subject refs y magnitudes comparables o conflicto.           | No corregir maestro silenciosamente.                                   |
+| EXC-STEP-05 | Clasificar provisionalmente             | Hecho, fuente y taxonomía.                                           | Clase primaria y secundarias justificadas.                   | Clasificar no determina causalidad.                                    |
+| EXC-STEP-06 | Calcular severidad y prioridad          | Impactos, políticas, propagación, plazos y evidencia.                | Severidad, prioridad y SLA versionados.                      | Cantidad o valor por sí solos no bastan.                               |
+| EXC-STEP-07 | Evaluar necesidad de contención         | Clase, condición, custodia y riesgo.                                 | Contención requerida o no requerida con razón.               | No resolver el caso en esta etapa.                                     |
+| EXC-STEP-08 | Ejecutar contención                     | Instrucción temporal y alcance.                                      | Receipt de contención.                                       | No ajustar, destruir o cerrar.                                         |
+| EXC-STEP-09 | Asignar propietario                     | Clase, territorio, función, independencia y carga.                   | Asignación autoritativa.                                     | No derivar del cargo nominal.                                          |
+| EXC-STEP-10 | Reclamar trabajo                        | Actor, versión, SLA y dispositivo.                                   | Claim con vencimiento.                                       | No permite decisión o ejecución implícita.                             |
+| EXC-STEP-11 | Inventariar evidencia                   | Evidencia existente, requerida, contradictoria y faltante.           | Checklist versionado.                                        | No ocultar ausencia de evidencia.                                      |
+| EXC-STEP-12 | Reconstruir timeline                    | Eventos, receipts, movimientos, custody y versiones.                 | Secuencia causal verificable.                                | No ordenar por hora cliente cuando existe secuencia autoritativa.      |
+| EXC-STEP-13 | Investigar hipótesis                    | Hechos y políticas.                                                  | Hipótesis confirmada, probable, descartada o no concluyente. | No confundir correlación con causa.                                    |
+| EXC-STEP-14 | Resolver dependencias                   | Recuento, tercero, configuración, laboratorio o proceso propietario. | Handoff y estado de espera explícitos.                       | No pausar SLA sin política.                                            |
+| EXC-STEP-15 | Calcular opciones permitidas            | Clase, severidad, política, territorio, impacto y estado.            | Opciones autorizadas con consecuencias.                      | El cliente no fabrica opciones.                                        |
+| EXC-STEP-16 | Validar segregación y autoridad         | Actor decisor, participación previa, permiso atómico y vigencia.     | Decisor elegible o bloqueo.                                  | No autoaprobar el propio hecho cuando la política exige independencia. |
+| EXC-STEP-17 | Emitir decisión                         | Expediente congelado, opción y justificación.                        | Decision receipt versionado.                                 | No reescribir decisiones anteriores.                                   |
+| EXC-STEP-18 | Emitir instrucción                      | Decisión vigente, ejecutor, alcance y plazo.                         | Instrucción firmada.                                         | El ejecutor no cambia causa, cantidad ni disposición.                  |
+| EXC-STEP-19 | Ejecutar efecto físico o administrativo | Instrucción vigente y recursos.                                      | Receipt total, parcial o bloqueo.                            | No afirmar éxito por envío.                                            |
+| EXC-STEP-20 | Crear candidato cuantitativo            | Ejecución, cantidad, UOM, cuenta, ubicación y decisión.              | Handoff a movimiento o ajuste.                               | No postear desde el caso.                                              |
+| EXC-STEP-21 | Reconciliar posting y receipts          | Intenciones, receipts y versiones.                                   | Efecto confirmado o resultado desconocido.                   | Consultar antes de reintentar.                                         |
+| EXC-STEP-22 | Verificar resultado                     | Hecho, decisión, instrucción, ejecución y posting.                   | Verificación aprobada o reapertura.                          | Verificador no altera evidencia.                                       |
+| EXC-STEP-23 | Cerrar o reabrir                        | Criterios de cierre, SLA, evidencia y efectos.                       | Cierre con o sin efecto o versión reabierta.                 | Cerrar no borra el hecho.                                              |
+| EXC-STEP-24 | Archivar y retroalimentar               | Caso completo, clasificación y recurrencia.                          | Registro consultable y señales agregadas.                    | Analytics no contiene datos sensibles crudos.                          |
+
+#### 12. `NEXO-EXCEPTION-EVIDENCE-CONTRACT-001`
+
+Tipos de evidencia:
+
+| Tipo                  | Ejemplos                                                       | Reglas                                                      |
+| --------------------- | -------------------------------------------------------------- | ----------------------------------------------------------- |
+| observación humana    | descripción, selección de condición, cantidad, firma funcional | actor, tiempo, contexto y versión                           |
+| medición              | peso, temperatura, conteo auxiliar, lectura instrumental       | instrumento, unidad, precisión y calibración cuando aplique |
+| imagen o documento    | foto autorizada, acta, guía, sello, remisión                   | finalidad, minimización, hash, acceso y retención           |
+| evento de sistema     | comando, receipt, secuencia, versión, error, timeout           | fuente autoritativa y correlación                           |
+| evidencia de custodia | handoff, sello, bultos, vehículo, ubicación                    | cadena de custodia y no repudio aplicable                   |
+| investigación         | timeline, consulta, recuento, comparación, hipótesis           | separa hecho de interpretación                              |
+| evidencia externa     | proveedor, transportista, laboratorio, asegurador              | referencia, emisor, fecha, autenticidad y SLA               |
+
+Estados de evidencia:
+
+- `PRESENT_VERIFIED`;
+- `PRESENT_UNVERIFIED`;
+- `CONTRADICTORY`;
+- `REQUIRED_MISSING`;
+- `NOT_RECOVERABLE`;
+- `REDACTED`;
+- `SUPERSEDED`;
+- `INVALIDATED`.
+
+Reglas:
+
+1. la evidencia es append-only; corregir crea nueva versión o anotación;
+2. metadatos mínimos incluyen actor, origen, timestamp, hash, caso, versión y finalidad;
+3. fotos o archivos no son obligatorios por defecto; la política define cuándo se requieren;
+4. evidencia sensible se minimiza y no se replica a logs o analytics;
+5. ausencia o contradicción se muestra al decisor;
+6. la imposibilidad de recuperar evidencia puede ser un hecho válido, no una excusa para inventarla;
+7. una decisión no elimina evidencia contraria;
+8. exportación e impresión aplican la misma proyección de `NEXO-UX-021`.
+
+#### 13. `NEXO-EXCEPTION-CONTAINMENT-CONTRACT-001`
+
+Contenciones permitidas:
+
+| Acción temporal                | Uso                                       | Efecto                                        | Receipt                    | Salida                                |
+| ------------------------------ | ----------------------------------------- | --------------------------------------------- | -------------------------- | ------------------------------------- |
+| `HOLD_AVAILABILITY`            | impedir uso, picking o despacho           | cantidad o sujeto no disponible               | hold receipt               | liberar, cuarentena o disposición     |
+| `QUARANTINE_PHYSICAL`          | separar condición dudosa                  | ubicación y estado segregados                 | quarantine receipt         | liberar, retornar, usar o disponer    |
+| `STOP_MOVEMENT`                | preservar ubicación o custody             | bloquea movimientos incompatibles             | stop receipt               | levantar o reemplazar por instrucción |
+| `PRESERVE_SEAL_OR_PACKAGE`     | evitar pérdida de evidencia               | limita apertura o manipulación                | custody receipt            | inspección autorizada                 |
+| `ISOLATE_SCOPE`                | posible propagación                       | bloquea lote, posición, LOC o conjunto exacto | isolation receipt          | revisión y liberación por alcance     |
+| `STOP_WORK`                    | riesgo crítico o emergencia               | suspende paso operativo relacionado           | stop-work receipt          | autoridad levanta con versión         |
+| `RESERVE_EVIDENCE`             | evidencia perecedera                      | preserva fuente, archivo o dispositivo        | evidence custody receipt   | incorporación o liberación            |
+| `TEMPORARY_CUSTODY_ASSIGNMENT` | custodio actual no es seguro o disponible | asigna custodio temporal                      | custody assignment receipt | handoff definitivo o retorno          |
+
+Toda contención exige:
+
+- caso y versión;
+- alcance exacto;
+- motivo;
+- actor y autoridad;
+- inicio y vencimiento;
+- condiciones de revisión;
+- efecto sobre disponibilidad, movimiento y UI;
+- receipt recuperable.
+
+La expiración no libera automáticamente. Produce revisión, escalamiento o extensión versionada.
+
+#### 14. `NEXO-EXCEPTION-INVESTIGATION-CAUSALITY-CONTRACT-001`
+
+Capas separadas:
+
+| Capa            | Pregunta                               | Valores permitidos                                               |
+| --------------- | -------------------------------------- | ---------------------------------------------------------------- |
+| hecho           | ¿qué se observó?                       | evidencia y valores crudos                                       |
+| mecanismo       | ¿cómo pudo producirse?                 | hipótesis versionadas                                            |
+| causa           | ¿qué explica mejor el hecho?           | `CONFIRMED`, `PROBABLE`, `POSSIBLE`, `UNDETERMINED`, `DISPROVED` |
+| contribuyente   | ¿qué condiciones aumentaron el riesgo? | lista tipada y evidencia                                         |
+| responsabilidad | ¿quién debe responder o ejecutar?      | solo mediante proceso y autoridad aplicables                     |
+| recurrencia     | ¿existe patrón verificable?            | casos relacionados y criterio temporal                           |
+| prevención      | ¿qué cambio reduce repetición?         | handoff a propietario con condición de salida                    |
+
+Checklist mínimo de investigación:
+
+1. validar identidad y alcance;
+2. reconstruir documentos y versiones;
+3. reconciliar movimientos, receipts y cutoff;
+4. contrastar cantidades y UOM;
+5. reconstruir custody y handoffs;
+6. revisar condición y contención;
+7. identificar evidencia faltante o contradictoria;
+8. ejecutar recuento o consulta propietaria cuando aplique;
+9. documentar hipótesis y descarte;
+10. declarar causa en nivel soportado, incluida `UNDETERMINED`.
+
+No se atribuye responsabilidad personal desde una diferencia, una foto, una ubicación, un turno o una correlación.
+
+#### 15. `NEXO-EXCEPTION-DECISION-POLICY-CONTRACT-001`
+
+Entrada de decisión:
+
+```text
+case_id
+case_version
+classification_version
+severity_version
+evidence_digest
+containment_version
+investigation_version
+policy_snapshot_ids
+decision_actor
+authority_source
+permission_id
+territory_scope
+segregation_result
+allowed_dispositions
+expected_versions
+decision_intent_id
+```
+
+Salida:
+
+```text
+decision_receipt_id
+decision_code
+selected_disposition
+justification
+approved_scope
+quantity_and_uom_optional
+instruction_requirements
+posting_requirements
+verification_requirements
+expires_at_optional
+supersedes_decision_id_optional
+```
+
+Reglas:
+
+1. las opciones se calculan en servidor; el cliente solo selecciona una opción recibida;
+2. la decisión se vincula al expediente congelado y falla si cambia una versión;
+3. el decisor requiere permiso atómico, territorio y relación con el caso;
+4. participación previa se evalúa contra política de independencia;
+5. una decisión puede devolver el caso a investigación con motivo y evidencia requerida;
+6. cambiar una decisión crea supersesión; nunca actualización destructiva;
+7. revocar o vencer una decisión invalida instrucciones no ejecutadas;
+8. una decisión no afirma ejecución, posting o cierre.
+
+#### 16. `NEXO-EXCEPTION-DISPOSITION-CATALOG-001`
+
+| ID         | Disposición                  | Precondición                                                                            | Resultado                                              | Propietario                                   | Evidencia de salida                         |
+| ---------- | ---------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------ | --------------------------------------------- | ------------------------------------------- |
+| EXC-DSP-01 | CLOSE_NO_ISSUE               | Hecho reconciliado sin diferencia material y evidencia suficiente.                      | Cierre sin efecto.                                     | Decisor o verificador autorizado.             | Case closure receipt.                       |
+| EXC-DSP-02 | REQUEST_MORE_EVIDENCE        | Falta evidencia concreta recuperable.                                                   | Lista de evidencia y plazo.                            | Investigador o decisor.                       | Evidence request receipt.                   |
+| EXC-DSP-03 | RECOUNT                      | Diferencia cuantitativa o de ubicación requiere observación independiente.              | Nueva ronda de conteo.                                 | Supervisor de conteo.                         | Count work item y receipt.                  |
+| EXC-DSP-04 | CORRECT_IDENTITY             | Identidad fue capturada o vinculada incorrectamente y existe propietario de corrección. | Corrección versionada o handoff de maestro.            | Propietario del dato o proceso.               | Correction receipt; no borra captura.       |
+| EXC-DSP-05 | TRANSFER_OR_REPOSITION       | Sujeto válido está en ubicación incorrecta y es movible.                                | Instrucción de traslado pareado.                       | Propietario de movimientos.                   | Movement receipt.                           |
+| EXC-DSP-06 | CORRECT_UOM_OR_MASTER        | Perfil UOM o maestro impide operar correctamente.                                       | Handoff de configuración versionada.                   | Propietario de catálogo/configuración.        | Config change receipt y revalidación.       |
+| EXC-DSP-07 | HOLD                         | Se suspende temporalmente disponibilidad o movimiento.                                  | Hold con alcance y vencimiento.                        | Autoridad de contención.                      | Hold receipt.                               |
+| EXC-DSP-08 | QUARANTINE                   | Condición exige segregación física y lógica.                                            | Ubicación de cuarentena, responsable y revisión.       | Autoridad de calidad/operación definida.      | Quarantine receipt.                         |
+| EXC-DSP-09 | RELEASE                      | Evidencia y decisión levantan hold o cuarentena.                                        | Liberación explícita.                                  | Decisor autorizado distinto cuando aplique.   | Release receipt.                            |
+| EXC-DSP-10 | ACCEPT_WITH_EXCEPTION        | Se acepta custodia o uso bajo condición documentada sin ocultar la diferencia.          | Aceptación condicionada y seguimiento.                 | Decisor autorizado.                           | Conditional acceptance receipt.             |
+| EXC-DSP-11 | REJECT                       | Cantidad o sujeto no se acepta para disponibilidad o uso.                               | Rechazo y custodia posterior pendiente.                | Decisor autorizado.                           | Rejection receipt.                          |
+| EXC-DSP-12 | RETURN_TO_ORIGIN             | Existe origen, custodia, ruta y capacidad de retorno.                                   | Instrucción de retorno.                                | Propietario de remisiones/transporte.         | Return receipts de salida y llegada.        |
+| EXC-DSP-13 | REPLACE_OR_RESHIP            | La obligación debe cumplirse mediante reemplazo o nuevo envío.                          | Nueva solicitud o shipment correlacionado.             | Propietario de fulfillment/remisión.          | Replacement reference y receipts.           |
+| EXC-DSP-14 | USE_UNDER_AUTHORIZATION      | Política permite uso excepcional controlado.                                            | Alcance, cantidad, condiciones y vencimiento.          | Decisor con permiso específico.               | Use authorization receipt.                  |
+| EXC-DSP-15 | DISPOSE_OR_DESTROY           | Material no puede conservarse ni devolverse y existe política de disposición.           | Instrucción física, testigos/evidencia cuando aplique. | Autoridad de disposición y ejecutor separado. | Destruction/disposal receipt.               |
+| EXC-DSP-16 | WRITE_OFF_OR_LOSS            | Hecho causal y disposición autorizan reconocer pérdida.                                 | Candidato de ajuste negativo.                          | Decisor causal; posting por NEXO-UX-019.      | Decision receipt más adjustment receipt.    |
+| EXC-DSP-17 | ADJUSTMENT_CANDIDATE         | Diferencia cuantitativa confirmada requiere posting.                                    | Payload versionado a ajuste.                           | NEXO-UX-019.                                  | Adjustment candidate y posting receipt.     |
+| EXC-DSP-18 | EXTERNAL_CLAIM_OR_ESCALATION | Proveedor, transportista, asegurador, autoridad o tercero debe responder.               | Caso externo correlacionado sin cerrar el interno.     | Propietario contractual autorizado.           | External reference, SLA y evidence receipt. |
+
+Las dieciocho disposiciones son explícitas y versionadas. Combinarlas requiere una secuencia declarada; por ejemplo, `QUARANTINE` puede preceder `RELEASE`, `RETURN_TO_ORIGIN`, `USE_UNDER_AUTHORIZATION` o `DISPOSE_OR_DESTROY`, pero nunca implica una de ellas.
+
+#### 17. `NEXO-EXCEPTION-INSTRUCTION-EXECUTION-CONTRACT-001`
+
+Instrucción mínima:
+
+```text
+instruction_id
+instruction_version
+decision_receipt_id
+case_id
+case_version
+disposition
+executor_function
+executor_actor_optional
+permission_id
+territory_scope
+subject_refs
+quantity
+uom
+origin
+destination
+handling_rules
+evidence_required
+starts_at
+expires_at
+expected_versions
+execution_intent_id
+```
+
+Resultados de ejecución:
+
+- `NOT_STARTED`;
+- `IN_PROGRESS`;
+- `PARTIAL`;
+- `COMPLETED`;
+- `BLOCKED`;
+- `FAILED_NO_EFFECT`;
+- `RESULT_UNKNOWN`;
+- `VOIDED`.
+
+El receipt de ejecución conserva cantidad, UOM, alcance realmente ejecutado, actor, dispositivo, tiempo, evidencia, versiones, diferencias e intención. Una ejecución parcial crea remanente explícito; no marca completa la instrucción. Un bloqueo devuelve causa, propietario y salida. Un resultado desconocido se consulta por intención antes de reintentar.
+
+#### 18. `NEXO-EXCEPTION-QUARANTINE-HOLD-CONTRACT-001`
+
+Estados de disponibilidad excepcional:
+
+| Estado                    | Disponibilidad           | Movimiento                                       | Acción permitida                                 |
+| ------------------------- | ------------------------ | ------------------------------------------------ | ------------------------------------------------ |
+| `HOLD_PENDING`            | no concluyente           | solo contención segura                           | confirmar o cancelar con receipt                 |
+| `ON_HOLD`                 | no disponible            | bloqueado salvo instrucción                      | investigar, extender o disponer                  |
+| `QUARANTINED`             | no disponible            | solo a ubicación de cuarentena o por instrucción | inspeccionar, liberar, retornar, usar o disponer |
+| `RELEASE_PENDING`         | no disponible            | bloqueado                                        | validar decisión y versiones                     |
+| `RELEASED`                | según receipt y política | normal tras revalidación                         | continuar proceso propietario                    |
+| `EXPIRED_REVIEW_REQUIRED` | no disponible            | bloqueado                                        | revisar, extender o escalar                      |
+| `SUPERSEDED`              | según estado sucesor     | según instrucción sucesora                       | consultar nueva versión                          |
+
+La cantidad contenida conserva producto, presentación, lote, LPN futuro o sujeto aplicable, cantidad, UOM, ubicación, motivo y case reference. No puede participar en disponibilidad, fulfillment, picking, despacho, retiro o consumo mientras el hold siga vigente.
+
+Liberar exige decisión, receipt, verificación de condición y versión actual. Mover a cuarentena no equivale a aceptar, rechazar o ajustar.
+
+#### 19. `NEXO-EXCEPTION-LOSS-DAMAGE-WASTE-EXPIRY-CONTRACT-001`
+
+| Hecho           | Evidencia mínima                                      | Contención                                       | Decisiones posibles                                                             | Efecto cuantitativo                             |
+| --------------- | ----------------------------------------------------- | ------------------------------------------------ | ------------------------------------------------------------------------------- | ----------------------------------------------- |
+| pérdida o merma | búsqueda, custody, cutoff, cantidad y UOM             | hold del alcance cuando la causa puede persistir | recuento, investigación adicional, write-off, reclamo o cierre sin efecto       | solo mediante candidate a `NEXO-UX-019`         |
+| daño            | condición, cantidad afectada, ubicación y evidencia   | aislar o cuarentena                              | usar bajo autorización, retornar, reparar por propietario, disponer o write-off | después de ejecución y receipt                  |
+| desperdicio     | evento operativo, causa, cantidad, UOM y autorización | preservar evidencia y evitar mezcla              | aceptar desperdicio documentado, investigar, disponer o ajustar                 | writer propietario, no desde formulario de caso |
+| vencimiento     | lote, fechas, política, cantidad y condición          | hold o cuarentena                                | liberar por corrección soportada, retornar, usar autorizado o disponer          | posting posterior a disposición                 |
+| destrucción     | instrucción vigente, cantidad, UOM, método y ejecutor | custodia hasta ejecución                         | completar, bloquear o reabrir                                                   | candidate solo después de receipt físico        |
+
+La clase causal y la disposición se conservan separadas del código contable. Una cantidad dañada puede terminar liberada, retornada, usada bajo excepción o destruida; no se convierte automáticamente en pérdida.
+
+#### 20. `NEXO-EXCEPTION-REMISSION-DIFFERENCE-CONTRACT-001`
+
+Matriz por diferencia:
+
+| Diferencia          | Hecho preservado                                         | Contención inicial                          | Decisiones                                                               | Handoff                                              |
+| ------------------- | -------------------------------------------------------- | ------------------------------------------- | ------------------------------------------------------------------------ | ---------------------------------------------------- |
+| faltante            | despachado, observado, receipts acumulados, UOM y cutoff | preservar custody y documentos              | recuento, cierre no concluyente, reemplazo, reclamo o pérdida confirmada | fulfillment, transporte, ajuste si termina en efecto |
+| sobrante            | esperado, observado adicional, procedencia y condición   | hold del excedente                          | aceptar con excepción, retornar, corregir identidad o claim              | recepción, origen, catálogo o ajuste                 |
+| producto incorrecto | identidad esperada y observada                           | separar y no publicar                       | retornar, reemplazar, aceptar autorizado o corregir documento            | remisión y fulfillment                               |
+| daño o condición    | cantidad afectada, evidencia y custody                   | cuarentena o hold                           | liberar, usar autorizado, retornar, disponer o claim                     | calidad/operación, transporte, ajuste                |
+| rechazo             | motivo, cantidad y custodio                              | no disponible y custody explícita           | retorno, reemplazo, claim o disposición                                  | transporte y origen                                  |
+| sello o bulto       | esperado, observado, integridad, hora y custodios        | preservar sin manipulación incompatible     | inspeccionar, aceptar con excepción, claim o escalamiento                | despacho, tránsito y recepción                       |
+| entrega fallida     | intento, destino, motivo, custody y cantidades           | mantener custody y disponibilidad bloqueada | reintentar, retornar, redirigir autorizado o cancelar                    | tránsito y fulfillment                               |
+| retorno             | salida, journey, recepción de retorno y condición        | custody continua                            | aceptar retorno, cuarentena, disponer o reemplazar                       | origen y ajuste si aplica                            |
+
+Invariantes:
+
+```text
+RECEIPT CON EXCEPCIONES ES UN HECHO VALIDO
+CONFIRMAR RECEPCION NO RESUELVE EL CASO
+RECHAZAR NO CREA RETORNO
+RETORNAR REQUIERE RECEIPTS DE CUSTODIA
+REEMPLAZAR CREA UNA NUEVA OBLIGACION CORRELACIONADA
+FALTANTE NO SE COMPENSA CON SOBRANTE SIN DECISION EXPLICITA
+```
+
+#### 21. `NEXO-EXCEPTION-COUNT-ADJUSTMENT-HANDOFF-CONTRACT-001`
+
+Flujo cuantitativo:
+
+```text
+OBSERVACION DE CONTEO
+→ EXPECTED RECONSTRUIDO EN CUTOFF
+→ DIFERENCIA
+→ RECUENTO O CASO
+→ INVESTIGACION Y DECISION
+→ CANDIDATO DE AJUSTE VERSIONADO
+→ POSTING DE NEXO-UX-019
+→ RECEIPT
+→ VERIFICACION DEL CASO
+```
+
+Matriz de handoff:
+
+| Resultado investigado            | Propietario siguiente  | Payload mínimo                                          | Prohibición                        |
+| -------------------------------- | ---------------------- | ------------------------------------------------------- | ---------------------------------- |
+| error de observación             | conteo                 | nueva ronda y relación                                  | no sobrescribir ronda              |
+| sujeto en otra ubicación         | movimientos            | sujeto, origen, destino, cantidad y UOM                 | no usar dos ajustes compensatorios |
+| UOM o maestro inválido           | catálogo/configuración | valores crudos, perfil, versión y error                 | no forzar factor                   |
+| movimiento faltante o duplicado  | movimiento propietario | intención, receipt, secuencia y versión                 | no parchear saldo                  |
+| pérdida, merma o daño confirmado | ajuste                 | case, decisión, quantity, UOM, scope y expected version | no postear sin candidate           |
+| diferencia no concluyente        | excepción              | evidencia faltante y siguiente revisión                 | no cerrar como cero                |
+| sin diferencia material          | caso                   | verificación y justificación                            | no crear posting                   |
+
+Candidate mínimo de ajuste:
+
+```text
+adjustment_candidate_id
+case_id
+case_version
+decision_receipt_id
+subject_ref
+scope_ref
+current_authoritative_qty
+target_or_delta
+uom
+reason_code
+causal_class
+expected_ledger_version
+idempotency_key
+expires_at
+```
+
+`NEXO-UX-019` conserva autoridad del posting. El caso solo consume su receipt.
+
+#### 22. `NEXO-EXCEPTION-IDEMPOTENCY-RECEIPT-CONTRACT-001`
+
+Intenciones separadas:
+
+- `report_intent_id`;
+- `containment_intent_id`;
+- `claim_intent_id`;
+- `decision_intent_id`;
+- `instruction_intent_id`;
+- `execution_intent_id`;
+- `posting_intent_id`;
+- `verification_intent_id`;
+- `closure_intent_id`.
+
+Cada fase usa fingerprint normalizado, expected version y receipt propio. Reutilizar una intención con payload distinto produce conflicto; repetirla con el mismo payload devuelve el mismo receipt.
+
+Concurrencia:
+
+| Conflicto                     | Resolución                                                       |
+| ----------------------------- | ---------------------------------------------------------------- |
+| dos reportes del mismo hecho  | crear caso primario y relación de duplicado solo tras validación |
+| dos claims                    | gana compare-and-set autoritativo; el otro recibe conflicto      |
+| evidencia simultánea          | append-only; no se pierde ninguna adición válida                 |
+| dos decisiones                | expected case version; una sola puede quedar vigente             |
+| instrucción stale             | rechazar y recalcular desde decisión vigente                     |
+| ejecución repetida            | misma intención devuelve receipt; payload distinto falla         |
+| posting repetido              | writer propietario aplica idempotencia y versión de ledger       |
+| cierre contra nueva evidencia | conflicto o reapertura, nunca cierre silencioso                  |
+
+Offline:
+
+- puede existir borrador local de reporte y evidencia no sensible autorizada;
+- no se afirma case ID, autoridad, clasificación final, contención, decisión, ejecución o cierre hasta sincronizar;
+- al reconectar se revalidan actor, contexto, fuente, sujeto, versiones y duplicidad;
+- decisiones, liberaciones, destrucciones, write-offs y postings no operan offline por defecto;
+- una política de emergencia puede permitir contención física mínima, pero exige receipt diferido, revisión y no concede posting;
+- resultado desconocido se reconcilia por intención.
+
+#### 23. `NEXO-EXCEPTION-SOURCE-ROUTE-DISPOSITION-001`
+
+| ID          | Superficie                        | Fuente actual                                | Decisión         | Resultado objetivo                                                                                       | Propietario               |
+| ----------- | --------------------------------- | -------------------------------------------- | ---------------- | -------------------------------------------------------------------------------------------------------- | ------------------------- |
+| EXC-SURF-01 | Detalle de remisión               | `src/app/inventory/remissions/[id]/page.tsx` | ADAPTAR          | Mostrar diferencias como casos correlacionados; no resolverlas con acciones ocultas del detalle.         | NEXO-REMISSIONS-001       |
+| EXC-SURF-02 | Recepción por lote                | `receive-batch-shell.tsx`                    | DIVIDIR          | Separar receipt de captura, clasificación de condición, reporte de diferencia y confirmación.            | NEXO-UX-013               |
+| EXC-SURF-03 | Acciones de detalle de remisión   | `detail-actions.ts`                          | ENCAPSULAR       | Los writers actuales deberán delegar creación de caso y receipts; no mutar caso desde parámetros libres. | NEXO-REMISSIONS-001       |
+| EXC-SURF-04 | Preparación de remisión           | `prepare-workbench.tsx`                      | INTEGRAR         | Faltantes, sustituciones y condición generan reporte o bloqueo, no cierre local.                         | NEXO-UX-010               |
+| EXC-SURF-05 | Despacho                          | detalle y acciones de liberación             | INTEGRAR         | Sello, bultos, carga y custody pueden abrir caso; despacho no lo resuelve.                               | NEXO-UX-011               |
+| EXC-SURF-06 | Tránsito y checklist de conductor | `remissions/transit` y checklist             | INTEGRAR         | Incidentes de custody conservan ubicación, tiempo, sello y contención; no cambian cantidades.            | NEXO-UX-012               |
+| EXC-SURF-07 | Recepción dedicada                | `remissions/receive`                         | CONVERGER        | Debe usar la misma sesión, taxonomía y caso; no mantener flujo reducido paralelo.                        | NEXO-UX-013               |
+| EXC-SURF-08 | Fulfillment                       | `remissions/fulfillment`                     | REFERENCIAR      | Puede ver bloqueo y decisión pertinente; no ejecutar disposición ajena.                                  | NEXO-UX-009; NEXO-UX-010  |
+| EXC-SURF-09 | Conteo inicial y sesiones         | `count-initial`                              | INTEGRAR         | Delta confirmado crea recuento o caso, nunca posting automático.                                         | NEXO-UX-018               |
+| EXC-SURF-10 | Conteo de activos                 | `inventory/assets/counts`                    | PRESERVAR_LIMITE | Podrá consumir caso común, pero identidad y disposición patrimonial permanecen en NEXO-UX-031 a 034.     | NEXO-UX-031 a NEXO-UX-034 |
+| EXC-SURF-11 | Ajuste                            | `inventory/adjust` y `adjust-form.tsx`       | RESTRINGIR       | Un caso delegado debe mostrar decisión y candidate; free-text no sustituye causalidad ni autoridad.      | NEXO-UX-019               |
+| EXC-SURF-12 | API de ajuste                     | `api/inventory/adjust`                       | ENCAPSULAR       | Posting exige permiso, expected version, idempotencia y case reference cuando la fuente lo requiere.     | NEXO-UX-019               |
+| EXC-SURF-13 | Entradas                          | `inventory/entries`                          | INTEGRAR         | Anomalías de identidad, cantidad, condición o documento generan caso; entrada limpia conserva su flujo.  | NEXO-UX-014               |
+| EXC-SURF-14 | Traslados y ubicaciones           | `inventory/transfers` y superficies LOC      | INTEGRAR         | Location mismatch puede producir instrucción de traslado; no compensación cuantitativa.                  | NEXO-UX-015; NEXO-UX-016  |
+| EXC-SURF-15 | Retiros y quiosco                 | `inventory/withdraw` y kiosk-withdraw        | INTEGRAR         | Resultado incompatible o condición observada abre caso sin conceder ajuste al operador.                  | NEXO-UX-017               |
+| EXC-SURF-16 | Stock y movimientos               | `inventory/stock` y `inventory/movements`    | SOLO_LECTURA     | Proyectar hold, caso y receipts pertinentes; ningún writer nuevo desde consulta.                         | NEXO-UX-021               |
+| EXC-SURF-17 | Escáner                           | `scanner` y resolutores de código            | PROPUESTA        | Solo aporta identidad o contexto a un reporte; no clasifica, decide ni ejecuta.                          | NEXO-UX-020               |
+| EXC-SURF-18 | Inicio y cola supervisora         | `src/app/page.tsx`                           | PROYECTAR        | Priorizar excepciones por cola autoritativa y mostrar una acción principal.                              | NEXO-UX-007; NEXO-UX-021  |
+
+Reglas de convergencia:
+
+1. no se crea un writer de excepción distinto por superficie;
+2. cada URL revalida actor, función, territorio, caso, etapa y versión;
+3. los adapters traducen payloads legacy al contrato común sin inventar evidencia;
+4. acciones ocultas por CSS o componentes sin render no permanecen como bypass;
+5. enlaces directos solo abren una proyección autorizada;
+6. exportación, impresión, notificación y analytics consumen la misma minimización;
+7. LPN y activos pueden referenciar `case_id`, pero conservan su modelo propietario posterior;
+8. no se incorpora ninguna superficie física durante esta tarea documental.
+
+#### 24. `NEXO-EXCEPTION-INTERFACE-STATE-CONTRACT-001`
+
+| Estado    | Nombre                | Condición                                                    | Salida visible                                     |
+| --------- | --------------------- | ------------------------------------------------------------ | -------------------------------------------------- |
+| EXC-UI-01 | CONTEXT_RESOLVING     | Actor, territorio, caso o recurso aún no están resueltos.    | Skeleton sin datos concluyentes.                   |
+| EXC-UI-02 | CONTEXT_DENIED        | Falta permiso, relación, territorio o independencia.         | Causa canónica y retorno seguro.                   |
+| EXC-UI-03 | QUEUE_LOADING         | Cola o caso están cargando.                                  | Progreso sin conteos definitivos.                  |
+| EXC-UI-04 | QUEUE_EMPTY           | No existe trabajo elegible.                                  | Vacío honesto y única acción segura.               |
+| EXC-UI-05 | REPORT_DRAFT          | Reporte en captura local o servidor.                         | Hechos y campos mínimos; etiqueta no enviado.      |
+| EXC-UI-06 | REPORT_VALIDATING     | Servidor valida fuente, sujeto, UOM y duplicidad.            | Bloquear confirmación.                             |
+| EXC-UI-07 | REPORT_CONFIRMED      | Report receipt recuperable.                                  | Mostrar reportado, no resuelto.                    |
+| EXC-UI-08 | TRIAGE_REQUIRED       | Clasificación, severidad o propietario pendientes.           | Continuar triage.                                  |
+| EXC-UI-09 | CONTAINMENT_REQUIRED  | Riesgo exige control temporal.                               | Acción de contención autorizada.                   |
+| EXC-UI-10 | CONTAINMENT_EXECUTING | Contención enviada sin resultado final.                      | Esperar o reconciliar receipt.                     |
+| EXC-UI-11 | CONTAINED             | Hold o cuarentena confirmados.                               | Continuar investigación.                           |
+| EXC-UI-12 | ASSIGNMENT_PENDING    | Caso sin responsable elegible.                               | Asignar o escalar.                                 |
+| EXC-UI-13 | CLAIMED               | Trabajo reclamado por actor vigente.                         | Abrir investigación.                               |
+| EXC-UI-14 | EVIDENCE_MISSING      | Faltan elementos concretos.                                  | Solicitar o certificar imposibilidad.              |
+| EXC-UI-15 | INVESTIGATING         | Timeline, movimientos e hipótesis en análisis.               | Guardar hallazgo o resolver dependencia.           |
+| EXC-UI-16 | WAITING_EXTERNAL      | Dependencia externa identificada.                            | Ver referencia, SLA y retorno.                     |
+| EXC-UI-17 | RECOUNT_REQUIRED      | Se exige observación independiente.                          | Crear o abrir work item de recuento.               |
+| EXC-UI-18 | READY_FOR_DECISION    | Expediente suficiente y opciones calculadas.                 | Revisar decisión.                                  |
+| EXC-UI-19 | DECISION_CONFLICT     | Versión, autoridad o segregación cambiaron.                  | Recargar y reevaluar.                              |
+| EXC-UI-20 | DECIDED               | Decision receipt vigente.                                    | Emitir o consultar instrucción.                    |
+| EXC-UI-21 | INSTRUCTION_READY     | Instrucción firmada y vigente.                               | Ejecutar efecto permitido.                         |
+| EXC-UI-22 | EXECUTING             | Ejecución en curso.                                          | Registrar progreso sin cambiar decisión.           |
+| EXC-UI-23 | EXECUTION_BLOCKED     | Recurso, condición o permiso impiden continuar.              | Resolver bloqueo o reabrir.                        |
+| EXC-UI-24 | PARTIAL_EXECUTION     | Parte del alcance tiene receipt.                             | Continuar, bloquear o escalar.                     |
+| EXC-UI-25 | RESULT_UNKNOWN        | Timeout o desconexión impiden conocer el resultado.          | Consultar por intención; no reintentar ciegamente. |
+| EXC-UI-26 | POSTING_PENDING       | Efecto físico confirmado y candidato cuantitativo pendiente. | Abrir posting propietario.                         |
+| EXC-UI-27 | VERIFICATION_REQUIRED | Ejecución o posting requieren control independiente.         | Verificar o reabrir.                               |
+| EXC-UI-28 | CLOSED_NO_EFFECT      | Caso cerrado sin efecto cuantitativo.                        | Consultar receipt e historial.                     |
+| EXC-UI-29 | CLOSED_WITH_EFFECT    | Caso cerrado con receipts completos.                         | Consultar correlaciones y efecto.                  |
+| EXC-UI-30 | REOPENED              | Nueva evidencia o divergencia creó una versión nueva.        | Retomar triage o investigación.                    |
+
+Reglas de interfaz:
+
+- mostrar siempre la etapa real: reportado, contenido, decidido, ejecutado, posteado o cerrado;
+- separar hecho, evidencia, decisión, instrucción y receipts en bloques distintos;
+- mostrar una pregunta y una acción principal por estado;
+- explicar qué falta y quién puede continuar, sin exponer datos fuera de permiso;
+- no usar color, sonido o vibración como único indicador;
+- conservar significado y acción en móvil, tablet, quiosco y escritorio;
+- un estado de error o desconexión no afirma que el efecto no ocurrió;
+- cierre muestra correlación, siguiente responsable y posibilidad de reapertura autorizada.
+
+#### 25. `NEXO-EXCEPTION-VALIDATION-MATRIX-001`
+
+| ID          | Grupo                | Comprobación                                                                           | Evidencia esperada                                                                |
+| ----------- | -------------------- | -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| EXC-VAL-001 | AUTHORITY            | resolver actor, función, territorio, permiso y relación antes de exponer el caso       | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-002 | AUTHORITY            | negar decisión cuando el actor participó en el hecho y la política exige independencia | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-003 | AUTHORITY            | negar ejecución cuando la instrucción expiró, fue revocada o cambió de versión         | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-004 | AUTHORITY            | evitar que rol, URL, dispositivo o sede seleccionada concedan autoridad                | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-005 | AUTHORITY            | limitar lectura y mutación al alcance exacto del caso                                  | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-006 | AUTHORITY            | separar reportero, investigador, decisor, ejecutor y verificador según severidad       | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-007 | AUTHORITY            | registrar fuente exacta de autoridad y vigencia en cada receipt                        | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-008 | AUTHORITY            | revocar claims y sesiones cuando cambia actor, turno, contexto o dispositivo           | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-009 | CASE_IDENTITY        | crear una sola identidad de caso por intención idempotente                             | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-010 | CASE_IDENTITY        | preservar reportes duplicados mediante relación sin eliminarlos                        | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-011 | CASE_IDENTITY        | conservar sujeto, fuente, cantidades, UOM, ubicación y versiones crudas                | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-012 | CASE_IDENTITY        | impedir mezclar producto, presentación, activo, LPN futuro y documento                 | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-013 | CASE_IDENTITY        | validar dieciocho fuentes y dieciocho clases sin fallback permisivo                    | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-014 | CASE_IDENTITY        | recalcular severidad y prioridad solo mediante política versionada                     | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-015 | CASE_IDENTITY        | preservar decisiones, instrucciones y cierres superseded                               | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-016 | CASE_IDENTITY        | reabrir mediante nueva versión sin reescribir el cierre anterior                       | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-017 | EVIDENCE_CONTAINMENT | almacenar evidencia append-only con actor, tiempo, fuente y hash                       | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-018 | EVIDENCE_CONTAINMENT | etiquetar evidencia faltante, contradictoria, sensible o no verificable                | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-019 | EVIDENCE_CONTAINMENT | aplicar minimización, retención y redacción a fotos, documentos y logs                 | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-020 | EVIDENCE_CONTAINMENT | exigir cadena de custodia cuando la evidencia pueda alterarse                          | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-021 | EVIDENCE_CONTAINMENT | crear receipt separado para hold, cuarentena, liberación y extensión                   | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-022 | EVIDENCE_CONTAINMENT | mantener stock contenido fuera de disponibilidad, picking y despacho                   | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-023 | EVIDENCE_CONTAINMENT | expirar o escalar contención sin liberación silenciosa                                 | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-024 | EVIDENCE_CONTAINMENT | demostrar que contener no ajusta, destruye, acepta ni cierra                           | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-025 | DECISION_EXECUTION   | calcular opciones permitidas en servidor desde clase, severidad y política             | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-026 | DECISION_EXECUTION   | congelar expediente y versiones antes de decidir                                       | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-027 | DECISION_EXECUTION   | emitir decision receipt inmutable y permitir supersesión explícita                     | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-028 | DECISION_EXECUTION   | firmar instrucción con sujeto, cantidad, UOM, alcance, ejecutor y plazo                | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-029 | DECISION_EXECUTION   | impedir al ejecutor cambiar causa, decisión, cantidad o disposición                    | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-030 | DECISION_EXECUTION   | representar ejecución parcial, bloqueada y resultado desconocido                       | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-031 | DECISION_EXECUTION   | separar receipt de ejecución de receipt de posting                                     | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-032 | DECISION_EXECUTION   | exigir verificación independiente para severidad alta, crítica o emergencia            | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-033 | INTEGRATIONS         | recepción conserva O = A + R + Q + U y abre casos sin autoaceptar                      | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-034 | INTEGRATIONS         | faltante o sobrante de remisión no produce ajuste directo                              | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-035 | INTEGRATIONS         | conteo crea recuento o caso y mantiene expected oculto hasta cierre de observación     | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-036 | INTEGRATIONS         | location mismatch usa traslado pareado cuando corresponde                              | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-037 | INTEGRATIONS         | pérdida, merma, daño, desperdicio y vencimiento exigen disposición causal              | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-038 | INTEGRATIONS         | ajuste consume candidate versionado y no cierra el caso por inferencia                 | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-039 | INTEGRATIONS         | UOM o maestro inválidos se transfieren al propietario sin forzar conversión            | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-040 | INTEGRATIONS         | scanner y offline solo crean propuestas o borradores no concluyentes                   | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-041 | TECHNICAL_PILOT      | reconciliar timeouts por intención antes de cualquier reintento                        | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-042 | TECHNICAL_PILOT      | resolver concurrencia de claim, decisión, instrucción y posting con expected version   | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-043 | TECHNICAL_PILOT      | validar los veintisiete estados y transiciones autorizadas                             | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-044 | TECHNICAL_PILOT      | validar treinta estados de interfaz y una salida principal                             | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-045 | TECHNICAL_PILOT      | probar las dieciocho superficies sin writers paralelos ni bypass por URL               | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-046 | TECHNICAL_PILOT      | registrar telemetría sin evidencia sensible cruda ni identidad innecesaria             | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-047 | TECHNICAL_PILOT      | probar feature gates, migración, compatibilidad y rollback sin pérdida de receipts     | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+| EXC-VAL-048 | TECHNICAL_PILOT      | recoger evidencia de piloto por actor, clase, severidad, dispositivo, red y resultado  | prueba automatizada o evidencia controlada según la naturaleza del comportamiento |
+
+Ninguna comprobación física, remota, operativa o de dispositivo queda satisfecha por este diseño documental.
+
+#### 26. `NEXO-EXCEPTION-IMPLEMENTATION-HANDOFF-001`
+
+El paquete de implementación deberá:
+
+1. crear contratos versionados para caso, fuente, clase, severidad, estado, evidencia, decisión, instrucción y receipts;
+2. crear servicio autoritativo de casos y adapters para las dieciocho superficies;
+3. implementar autorización por función, permiso atómico, territorio, relación y segregación;
+4. implementar colas, claim, SLA, escalamiento y expected versions;
+5. mantener evidencia append-only, minimización, hashes, retención y cadena de custodia;
+6. implementar hold y cuarentena integrados con disponibilidad, movimientos, picking, despacho y retiro;
+7. mantener writers de movimientos y ajustes en sus propietarios y consumir sus receipts;
+8. versionar cualquier cambio Supabase exclusivamente desde `vento-shell`, con migraciones, RLS, grants, funciones, triggers, tipos y rollback;
+9. migrar acciones legacy mediante feature gates y adapters, sin eliminar receipts históricos;
+10. implementar pruebas contractuales, seguridad, concurrencia, idempotencia, E2E, offline y regresión;
+11. observar tiempos, bloqueos, reaperturas, recurrencia y resultados desconocidos sin registrar evidencia sensible cruda;
+12. ejecutar piloto por actor, clase, severidad, superficie, dispositivo y red.
+
+Modelo físico mínimo futuro, sujeto a la fase autorizada:
+
+- casos y versiones;
+- reportes e intenciones;
+- clasificación y severidad versionadas;
+- evidencia y relaciones;
+- contenciones;
+- asignaciones y claims;
+- investigación y dependencias;
+- decisiones y supersesiones;
+- instrucciones y ejecución;
+- correlations con movimientos, ajustes, remisiones y externos;
+- verificaciones, cierres y reaperturas;
+- outbox o mecanismo equivalente para handoffs idempotentes.
+
+Rollback:
+
+- detener creación de nuevas versiones mediante gate;
+- conservar lectura de casos y receipts ya creados;
+- volver temporalmente a superficies anteriores solo si no reactiva writers inseguros;
+- reconciliar intenciones pendientes antes de revertir adapters;
+- nunca borrar casos, evidencia, decisiones, instrucciones o receipts para revertir.
+
+#### 27. `NEXO-EXCEPTION-CONTINUITY-HANDOFF-001`
+
+| Destino                       | Consume                                                                | Resultado exigido                                                | Límite                                     |
+| ----------------------------- | ---------------------------------------------------------------------- | ---------------------------------------------------------------- | ------------------------------------------ |
+| `NEXO-UX-023`                 | treinta estados, colas, acciones, contención y resultado desconocido   | pruebas reproducibles en tablets y quioscos                      | no declarar hardware validado por diseño   |
+| `NEXO-UX-024`                 | flujos de reportero, bodeguero, conductor, receptor y supervisor       | validación con actores operativos                                | no cambiar autoridad sin hallazgo trazable |
+| `NEXO-UX-025`                 | tiempos de triage, contención, decisión, ejecución, error y reapertura | métricas de piloto y capacitación                                | no capturar evidencia sensible             |
+| `NEXO-UX-026` a `NEXO-UX-030` | referencias de sujeto y caso aplicables a LPN                          | integración futura sin redefinir ciclo LPN aquí                  | no anticipar identidad o estados LPN       |
+| `NEXO-UX-031` a `NEXO-UX-034` | caso, evidencia y decisión para activos                                | integrar mantenimiento, custodia, baja y disposición patrimonial | no tratar activo como stock fungible       |
+| paquete E5 NEXO               | contratos, matrices, adapters y validaciones                           | implementación versionada y verificable                          | Supabase únicamente desde `vento-shell`    |
+
+No queda pendiente narrativo sin tarea, paquete o condición de salida.
+
+#### 28. Requisitos de prueba
+
+Esta tarea crea catorce requisitos nuevos:
+
+- `TREQ-NEXO-259`;
+- `TREQ-NEXO-260`;
+- `TREQ-NEXO-261`;
+- `TREQ-NEXO-262`;
+- `TREQ-NEXO-263`;
+- `TREQ-NEXO-264`;
+- `TREQ-NEXO-265`;
+- `TREQ-NEXO-266`;
+- `TREQ-NEXO-267`;
+- `TREQ-NEXO-268`;
+- `TREQ-NEXO-269`;
+- `TREQ-NEXO-270`;
+- `TREQ-NEXO-271`;
+- `TREQ-NEXO-272`.
+
+No modifica, descarta ni vuelve obsoleto ningún requisito histórico.
+
+#### 29. Criterios de aceptación documentales
+
+1. los veinticuatro artefactos están definidos y referenciados;
+2. las dieciocho fuentes y dieciocho clases tienen identidad, entrada, resultado y frontera explícitos;
+3. cinco niveles de severidad y cinco bandas de prioridad se resuelven por política versionada;
+4. los veintisiete estados y transiciones no permiten autoajuste, autocierre ni reescritura;
+5. las ocho colas conservan propietario, entrada, salida, prioridad, claim y SLA;
+6. los veinticuatro pasos separan reporte, contención, investigación, decisión, instrucción, ejecución, posting y verificación;
+7. las dieciocho disposiciones tienen precondición, propietario y evidencia de salida;
+8. remisiones, conteos, movimientos, ajustes, UOM y datos tienen handoffs explícitos;
+9. las dieciocho superficies y treinta interfaces tienen decisión materializada;
+10. las cuarenta y ocho comprobaciones y catorce requisitos nuevos son únicos, contiguos y resolubles;
+11. no se modifica código, datos, permisos, Supabase ni continuidad posterior;
+12. ningún resultado físico, remoto, operativo o de dispositivo se presenta como validado.
+
+#### 30. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-021 — Mostrar solo información necesaria según etapa`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-022 — Diseñar manejo de diferencias y excepciones`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-023 — Probar flujos en tablets y kioscos`
+
+`NEXO-UX-023` deberá consumir los estados, colas, acciones, contenciones, decisiones, instrucciones, resultados desconocidos y receipts definidos aquí para comprobar que la experiencia conserva significado, autoridad, seguridad y continuidad en tablets y quioscos reales.
+
+
 ### [ ] NEXO-UX-023 — Probar flujos en tablets y kioscos
 ### [ ] NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores
 ### [ ] NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo

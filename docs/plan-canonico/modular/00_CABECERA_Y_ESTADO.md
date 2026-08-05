@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **567** |
+| Tareas aprobadas | **568** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1027** |
+| Tareas no iniciadas | **1026** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **35.57% (567/1594)** |
+| Porcentaje de completamiento | **35.63% (568/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NEXO-UX-021 — Mostrar solo información necesaria según etapa** |
-| Tarea actual | **NEXO-UX-022 — Diseñar manejo de diferencias y excepciones** |
+| Última tarea aprobada | **NEXO-UX-022 — Diseñar manejo de diferencias y excepciones** |
+| Tarea actual | **NEXO-UX-023 — Probar flujos en tablets y kioscos** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NEXO-UX-023 — Probar flujos en tablets y kioscos** |
+| Siguiente tarea | **NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 13: NEXO_FUNCTIONAL_UX** |
-| Progreso del bloque | **CARRIL NEXO: 21 de 25 aprobadas; NEXO-UX-022 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 22 de 25 aprobadas; NEXO-UX-023 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NEXO-UX-021` — Mostrar solo información necesaria según etapa |
-| Tarea actual | `NEXO-UX-022` — Diseñar manejo de diferencias y excepciones — **NO INICIADA** |
-| Siguiente tarea | `NEXO-UX-023` — Probar flujos en tablets y kioscos |
+| Última aprobada | `NEXO-UX-022` — Diseñar manejo de diferencias y excepciones |
+| Tarea actual | `NEXO-UX-023` — Probar flujos en tablets y kioscos — **NO INICIADA** |
+| Siguiente tarea | `NEXO-UX-024` — Validar el prototipo con bodeguero, conductor y receptores |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 21 DE 25 APROBADAS — ACTUAL NEXO-UX-022** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 22 DE 25 APROBADAS — ACTUAL NEXO-UX-023** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NEXO-UX-021 — Mostrar solo información necesaria según etapa
-        ↓
-TAREA ACTUAL
 NEXO-UX-022 — Diseñar manejo de diferencias y excepciones
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NEXO-UX-023 — Probar flujos en tablets y kioscos
         ↓
+SIGUIENTE TAREA RESERVADA
+NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 21 de 25 tareas aprobadas
+CARRIL NEXO — 22 de 25 tareas aprobadas
 ```
