@@ -11787,7 +11787,1062 @@ posición mediante políticas y trabajo físico explícitos, conservar el postin
 receipt y no modificar cantidad, costo, fuente o movimiento de la entrada.
 
 
-### [ ] NEXO-UX-015 — Diseñar flujo completo de ubicación
+### ✅ NEXO-UX-015 — Diseñar flujo completo de ubicación
+
+---
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-014 — Diseñar flujo completo de entradas` — APROBADA
+**Tarea siguiente:** `NEXO-UX-016 — Diseñar flujo completo de movimientos` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo de admisión de trabajo de putaway, selección y validación de LOC y posición, conservación cuantitativa, identidad física, sesión, idempotencia, receipt, disponibilidad, parcialidad, excepciones, compatibilidad y continuidad
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Procesos propietarios:** `VPROC-0023 — Gobernar sedes, LOC, zonas, posiciones y condiciones de almacenamiento`; `VPROC-0024 — Registrar ingreso, ubicación y reubicación mediante movimientos correlacionados`
+**Permisos funcionales vigentes consumidos:** `nexo.inventory.locations` para configuración de estructura y `nexo.inventory.stock` para operación de stock; esta tarea no crea identificadores de permiso nuevos
+**Artefactos producidos:** veinte contratos, catálogos, matrices y handoffs enumerados en esta tarea
+**Decisiones consumidas:** `NEXO-INVENTORY-ENTRY-HANDOFF-001`; `NEXO-REMISSION-RECEPTION-HANDOFF-001`; `NEXO-REMISSION-RECEPTION-INVENTORY-PUBLICATION-BOUNDARY-001`; `VPROC-0023-E01` a `VPROC-0023-E05`; `VPROC-0024-E04` y `VPROC-0024-E05`; inventario canónico de rutas `NEXO-ROUTE-*`; requisitos `TREQ-NEXO-*` vigentes; código y migraciones actuales de `vento-nexo` y `vento-shell`
+**Cambios físicos autorizados:** ninguno; no modifica código, rutas, componentes, permisos, datos, Supabase, migraciones, RLS, RPC, Storage, tipos, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar de principio a fin cómo una cantidad de inventario ya publicada y físicamente presente en una sede se convierte en existencia ubicada de forma verificable en un LOC y, cuando la política lo exija, en una posición interna, sin duplicar el total de sede, alterar la fuente original ni confundir configuración con operación.
+
+El flujo consume cantidades aceptadas o publicadas por sus propietarios. No crea una entrada, receipt de recepción, producción, transferencia, ajuste o conteo. Su responsabilidad empieza cuando existe un saldo exacto pendiente de ubicación y termina cuando cada fracción posee un receipt de putaway, un destino físico coherente y una condición de disponibilidad explícita.
+
+La regla canónica es:
+
+```text
+HANDOFF DE UBICACION VERSIONADO
++ CANTIDAD PUBLICADA Y SALDO PENDIENTE EXACTOS
++ ACTOR, SEDE, SESION Y TRABAJO ATRIBUIBLES
++ IDENTIDAD FISICA Y POLITICA SNAPSHOT
++ LOC ACTIVO, ELEGIBLE Y CON CAPACIDAD
++ POSICION ACTIVA Y COMPATIBLE CUANDO APLIQUE
++ COLOCACION FISICA OBSERVADA
++ INTENCION IDEMPOTENTE Y VERSION ESPERADA
++ RECEIPT APPEND-ONLY Y PROYECCIONES CORRELACIONADAS
++ DISPONIBILIDAD EXPLICITA
+→ PUTAWAY TRAZABLE SIN CAMBIO DEL TOTAL DE SEDE
+```
+
+Fronteras obligatorias:
+
+```text
+STOCK_PUBLICADO_EN_SEDE ≠ UBICACION_FISICA_CONFIRMADA
+LOC_SELECCIONADO ≠ LOC_ELEGIBLE
+LOC_ELEGIBLE ≠ COLOCACION_CONFIRMADA
+LOC_CONFIRMADO ≠ POSICION_CONFIRMADA
+POSICION_CONFIGURADA ≠ PUTAWAY_EJECUTADO
+ESCANEO ≠ AUTORIDAD
+ESCANEO ≠ RECEIPT
+RECEIVING_O_STAGING ≠ DESTINO_FINAL
+PUTAWAY ≠ REUBICACION_LIBRE
+PUTAWAY_RECEIPT ≠ MOVIMIENTO_DE_ENTRADA
+PUTAWAY_CONFIRMADO ≠ DISPONIBILIDAD_AUTOMATICA
+CONFIGURAR_UBICACION ≠ OPERAR_UBICACION
+```
+
+Ninguna frontera podrá colapsarse por conveniencia de interfaz, por reutilización de un RPC actual o por ausencia de una entidad física todavía pendiente de implementación.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban veinte artefactos documentales consumibles:
+
+| N.º | Artefacto                                                   | Resultado material                                                                                              |
+| --- | ----------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- |
+| 1.  | `NEXO-INVENTORY-PUTAWAY-FLOW-CONTRACT-001`                  | fija propósito, fronteras, autoridad, entrada, salida y lenguaje canónico del putaway                           |
+| 2.  | `NEXO-INVENTORY-PUTAWAY-SOURCE-DISPOSITION-001`             | decide ocho familias de fuente de trabajo sin convertirlas en una entrada genérica                              |
+| 3.  | `NEXO-INVENTORY-PUTAWAY-WORK-QUEUE-CONTRACT-001`            | define ocho colas, elegibilidad, prioridad, entrada, salida y bloqueo                                           |
+| 4.  | `NEXO-INVENTORY-PUTAWAY-STATE-MACHINE-001`                  | separa handoff, trabajo, sesión, destino, colocación, receipt, proyección, disponibilidad y cierre              |
+| 5.  | `NEXO-INVENTORY-PUTAWAY-STEP-CATALOG-001`                   | materializa veintidós pasos operativos y técnicos con límites explícitos                                        |
+| 6.  | `NEXO-INVENTORY-PUTAWAY-HANDOFF-ADMISSION-CONTRACT-001`     | valida el saldo pendiente proveniente de entrada, recepción u otra fuente autorizada                            |
+| 7.  | `NEXO-INVENTORY-PUTAWAY-WORK-ITEM-CONTRACT-001`             | gobierna creación, atribución, prioridad, reclamo, expiración y cierre del trabajo                              |
+| 8.  | `NEXO-INVENTORY-LOCATION-ELIGIBILITY-CONTRACT-001`          | decide elegibilidad, compatibilidad, capacidad, restricciones y bloqueo del destino                             |
+| 9.  | `NEXO-INVENTORY-LOCATION-HIERARCHY-CONTRACT-001`            | fija sede, área, LOC, árbol de posiciones y separación entre configuración y operación                          |
+| 10. | `NEXO-INVENTORY-PUTAWAY-QUANTITY-CONSERVATION-CONTRACT-001` | conserva cantidades pendientes, ubicadas, bloqueadas y parciales sin cambiar el total de sede                   |
+| 11. | `NEXO-INVENTORY-PUTAWAY-IDENTITY-CONTRACT-001`              | conserva producto, fuente, lote, presentación, UOM, LPN, condición y etiquetas físicas                          |
+| 12. | `NEXO-INVENTORY-PUTAWAY-SESSION-CONTRACT-001`               | define sesión exclusiva, actor, dispositivo, versión, transferencia y revocación                                |
+| 13. | `NEXO-INVENTORY-PUTAWAY-IDEMPOTENCY-RECEIPT-CONTRACT-001`   | define intención, fingerprint, receipt, reintento, concurrencia y resultado desconocido                         |
+| 14. | `NEXO-INVENTORY-PUTAWAY-AVAILABILITY-BOUNDARY-001`          | separa saldo publicado, staging, ubicación final, pickability, cuarentena y disponibilidad                      |
+| 15. | `NEXO-INVENTORY-PUTAWAY-EXCEPTION-CONTRACT-001`             | materializa incompatibilidad, capacidad, identidad, daño, bloqueo, etiqueta y conflicto                         |
+| 16. | `NEXO-INVENTORY-PUTAWAY-COMPATIBILITY-CONTRACT-001`         | hace converger saldos por sede, LOC y posición y los RPC actuales bajo un único escritor autoritativo           |
+| 17. | `NEXO-INVENTORY-PUTAWAY-ROUTE-DISPOSITION-001`              | decide catorce superficies existentes sin crear direcciones nuevas                                              |
+| 18. | `NEXO-INVENTORY-PUTAWAY-VALIDATION-MATRIX-001`              | asigna cuarenta y cuatro comprobaciones a pasos, propietarios y resultados concretos                            |
+| 19. | `NEXO-INVENTORY-PUTAWAY-IMPLEMENTATION-HANDOFF-001`         | entrega diseño físico mínimo, migración, compatibilidad, rollback y pruebas al paquete de implementación        |
+| 20. | `NEXO-INVENTORY-PUTAWAY-HANDOFF-001`                        | entrega receipts y movimientos consumibles a movimientos, excepciones, escáner, métricas y validación operativa |
+
+Cobertura materializada:
+
+| Elemento                         | Total esperado | Total materializado | Faltantes | Duplicados |
+| -------------------------------- | -------------- | ------------------- | --------- | ---------- |
+| Artefactos documentales          | 20             | 20                  | 0         | 0          |
+| Pasos de putaway                 | 22             | 22                  | 0         | 0          |
+| Estados de interfaz              | 30             | 30                  | 0         | 0          |
+| Estados empresariales y técnicos | 20             | 20                  | 0         | 0          |
+| Colas `PUTQ-*`                   | 8              | 8                   | 0         | 0          |
+| Familias de fuente decididas     | 8              | 8                   | 0         | 0          |
+| Resultados de destino            | 12             | 12                  | 0         | 0          |
+| Comprobaciones de la matriz      | 44             | 44                  | 0         | 0          |
+| Superficies existentes decididas | 14             | 14                  | 0         | 0          |
+| Requisitos de prueba nuevos      | 14             | 14                  | 0         | 0          |
+
+Los identificadores `PUT-*`, `PUTQ-*`, `PUT-SOURCE-*` y `PUT-OUTCOME-*` pertenecen exclusivamente a este diseño y no crean procesos empresariales adicionales.
+
+---
+
+#### 3. Alcance, entradas y salidas
+
+Incluye:
+
+- admisión del handoff de ubicación proveniente de una fuente autorizada;
+- creación de trabajo exacto por línea, cantidad y sede;
+- atribución a función, actor, estación y territorio;
+- separación de configuración de sede, área, LOC y posición frente a putaway operativo;
+- validación de LOC activo, área, zona, tipo, capacidad y restricciones;
+- validación de posición interna activa, jerarquía y compatibilidad;
+- conservación de producto, lote, presentación, UOM, condición y LPN cuando exista;
+- putaway parcial y división explícita entre varios destinos;
+- traslado desde saldo sin LOC o desde receiving/staging hacia destino final;
+- receipt de putaway append-only, versión e idempotencia;
+- proyección idempotente por LOC, posición y presentación;
+- publicación explícita de disponibilidad o mantenimiento de bloqueo;
+- recuperación ante timeout, red intermitente, sesión revocada y resultado desconocido;
+- handoffs a movimientos, escáner, excepciones, métricas e implementación.
+
+Excluye:
+
+- crear o modificar una entrada, recepción, producción, transferencia, ajuste o conteo;
+- cambiar cantidad publicada, costo, fuente, moneda, impuesto o movimiento original;
+- crear, editar, desactivar o eliminar sedes, áreas, LOC, zonas o posiciones durante una tarea operativa;
+- diseñar el ledger integral, reclasificación o reubicación libre, responsabilidad de `NEXO-UX-016`;
+- definir el ciclo completo de LPN, responsabilidad de `NEXO-UX-026` a `NEXO-UX-029`;
+- resolver diferencias o liberar bloqueos de autoridad, responsabilidad de `NEXO-UX-022`;
+- simplificar el escáner o captura física, responsabilidad de `NEXO-UX-020`;
+- validar físicamente tablets, kioscos, escáneres o operación, responsabilidad de `NEXO-UX-023` a `NEXO-UX-025`;
+- ejecutar cambios físicos, SQL, migraciones, configuración o despliegues.
+
+Entrada mínima:
+
+```text
+putaway_handoff_id
+putaway_handoff_version
+source_owner
+source_type
+source_id
+source_version
+source_receipt_ids[]
+site_id
+putaway_pending_line_ids[]
+product_identity_by_line
+published_base_qty_by_line
+already_putaway_base_qty_by_line
+blocked_base_qty_by_line
+source_location_id_by_line
+receiving_or_staging_context
+uom_and_presentation_snapshot_ids
+lot_batch_lpn_refs_by_line
+condition_and_restriction_refs_by_line
+policy_snapshot_ids
+exception_ids[]
+confirmed_at
+```
+
+Salida mínima:
+
+```text
+putaway_work_item_id
+putaway_session_id
+putaway_intent_id
+putaway_receipt_id
+putaway_receipt_item_ids[]
+source_handoff_id
+source_line_ids[]
+destination_location_ids[]
+destination_position_ids[]
+placed_base_qty_by_destination
+remaining_base_qty_by_line
+location_projection_receipt_ids[]
+position_projection_receipt_ids[]
+presentation_projection_receipt_ids[]
+availability_receipt_ids[]
+technical_movement_ids[]
+exception_ids[]
+version
+confirmed_at
+```
+
+---
+
+#### 4. Actores, autoridad y segregación
+
+| Actor o contexto             | Autoridad en esta tarea                                                                        | Límite obligatorio                                                                        |
+| ---------------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `BODEGUERO_PUTAWAY`          | reclama trabajo, identifica existencia, selecciona destino elegible y confirma colocación      | no configura estructura, cambia cantidad publicada, costo, fuente o excepción supervisora |
+| `RECEPTOR_EN_STAGING`        | entrega físicamente al flujo de ubicación y conserva contexto de recepción                     | no decide destino por conveniencia ni vuelve a confirmar receipt de entrada o remisión    |
+| `SUPERVISION_DE_INVENTARIO`  | observa bloqueos, capacidad, envejecimiento y excepciones dentro de su territorio              | no sustituye la colocación observada ni edita receipts confirmados                        |
+| `ADMINISTRADOR_DE_UBICACION` | configura sedes, áreas, LOC, zonas, posiciones y políticas mediante capacidad de configuración | no ejecuta putaway operativo bajo la misma acción ni altera trabajo ya versionado         |
+| `RESPONSABLE_DE_CALIDAD`     | mantiene restricciones y decide liberaciones cuando el proceso lo autorice                     | no confirma ubicación física ni convierte cuarentena en disponible por inspección visual  |
+| `SISTEMA_NEXO`               | valida, deriva saldos, emite receipts, aplica proyecciones y handoffs                          | no infiere destino, autoridad, capacidad o disponibilidad desde la interfaz               |
+| `DISPOSITIVO_COMPARTIDO`     | aporta estación, lector, balanza o impresión bajo sesión humana vigente                        | no es actor, custodio, configurador ni aprobador                                          |
+| `CONSUMIDOR_DOWNSTREAM`      | consume receipt y movimientos idempotentes                                                     | no vuelve a escribir la colocación ni recalcula el saldo desde datos parciales            |
+
+Toda lectura y mutación revalida principal, actor efectivo, sesión humana, función, turno o check-in cuando aplique, dispositivo, sede, territorio, permiso, handoff, trabajo, cantidad, destino, versión y estado.
+
+La configuración usa `nexo.inventory.locations`. La operación actual usa `nexo.inventory.stock`, pero siempre restringida a trabajo, recurso y comando de putaway; una vista de stock o una capacidad de configuración no concede por sí sola autoridad para confirmar colocación. La tarea no crea una nueva clave de permiso.
+
+---
+
+#### 5. `NEXO-INVENTORY-PUTAWAY-SOURCE-DISPOSITION-001`
+
+| ID               | Familia de fuente                                | Propietario            | Disposición                   | Decisión                                                                                                               |
+| ---------------- | ------------------------------------------------ | ---------------------- | ----------------------------- | ---------------------------------------------------------------------------------------------------------------------- |
+| `PUT-SOURCE-001` | entrada ordinaria o excepcional publicada        | NEXO entradas          | `ADMITIR_CON_HANDOFF`         | consume `NEXO-INVENTORY-ENTRY-HANDOFF-001`, cantidades publicadas y saldo pendiente; no reabre entrada ni costo        |
+| `PUT-SOURCE-002` | recepción de remisión interna aceptada           | NEXO remisiones        | `ADMITIR_CON_HANDOFF`         | consume receipt y cantidades aceptadas; si ya existe receiving LOC, conserva origen físico para traslado a destino     |
+| `PUT-SOURCE-003` | producción terminada y publicada                 | FOGO y proyección NEXO | `ADMITIR_SI_EXISTE_RECEIPT`   | exige lote, rendimiento, cantidad y publicación confirmados; no crea ni cierra producción                              |
+| `PUT-SOURCE-004` | transferencia recibida                           | NEXO movimientos       | `ADMITIR_PAREADA`             | exige identidad de transferencia, origen, destino, cantidad y recepción; no sustituye el contrato integral de traslado |
+| `PUT-SOURCE-005` | saldo inicial publicado por conteo autorizado    | NEXO conteos y ajustes | `ADMITIR_SI_ESTA_PUBLICADO`   | solo después del efecto autorizado; el putaway no aprueba conteo ni ajuste                                             |
+| `PUT-SOURCE-006` | saldo de sede legacy sin LOC                     | migración NEXO         | `ADMITIR_COMO_RECONCILIACION` | requiere caso de migración, línea base, cantidad verificable y cero doble asignación                                   |
+| `PUT-SOURCE-007` | saldo confirmado en LOC sin posición obligatoria | NEXO ubicación         | `ADMITIR_A_POSICION`          | permite completar detalle interno sin cambiar total de LOC; conserva origen y cantidad no posicionada                  |
+| `PUT-SOURCE-008` | reubicación de stock ya ubicado                  | NEXO movimientos       | `EXCLUIR_DEL_PUTAWAY_INICIAL` | pertenece a `NEXO-UX-016`; deberá usar movimiento origen-destino y no un saldo artificialmente “sin LOC”               |
+
+Reconciliación:
+
+```text
+EXPECTED_PUTAWAY_SOURCE_FAMILIES = 8
+MATERIALIZED_PUTAWAY_SOURCE_FAMILIES = 8
+UNIQUE_PUTAWAY_SOURCE_FAMILIES = 8
+MISSING_PUTAWAY_SOURCE_FAMILIES = 0
+DUPLICATE_PUTAWAY_SOURCE_FAMILIES = 0
+```
+
+Cada fuente conserva su propietario, receipt y causalidad. Una etiqueta visual como “sin área”, “pendiente” o “en bodega” no constituye una fuente autoritativa.
+
+---
+
+#### 6. `NEXO-INVENTORY-PUTAWAY-HANDOFF-ADMISSION-CONTRACT-001`
+
+| Campo                                | Regla de admisión                                                                  | Bloqueo                                                           |
+| ------------------------------------ | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `putaway_handoff_id` y versión       | identidad única, inmutable y vigente                                               | ausencia, duplicidad, conflicto o versión obsoleta                |
+| propietario, tipo, fuente y receipts | deben corresponder a una de las disposiciones admitidas                            | fuente genérica, receipt inexistente o propietario contradictorio |
+| `site_id`                            | coincide con fuente, existencia física, actor y territorio                         | sede distinta, no atribuible o cambio silencioso                  |
+| `putaway_pending_line_ids[]`         | cada línea posee cantidad publicada, saldo y estado                                | línea libre, saldo negativo o sin correlación                     |
+| identidad física y snapshots         | producto, UOM, presentación, lote, LPN, condición y política permanecen vinculados | identidad mutable, etiqueta ajena o snapshot faltante             |
+| `source_location_id_by_line`         | nulo para saldo no ubicado o receiving/staging explícito                           | origen ambiguo, LOC ajeno o cantidad no disponible en origen      |
+| cantidades acumuladas                | postings y receipts previos derivan saldo exacto de servidor                       | cálculo exclusivo del cliente o suma superior a lo publicado      |
+| excepciones y restricciones          | se conservan como solo lectura y gobiernan elegibilidad                            | bloqueo crítico ignorado o condición degradada                    |
+
+Resultados permitidos:
+
+```text
+ADMITIDO_PARA_CREAR_TRABAJO
+BLOQUEADO_CON_CAUSA_Y_PROPIETARIO
+RECHAZADO_POR_NO_PERTENENCIA
+YA_COMPLETADO_CON_RECEIPT_EXISTENTE
+```
+
+Admitir el handoff no reclama sesión, no elige destino, no confirma colocación y no publica disponibilidad.
+
+---
+
+#### 7. `NEXO-INVENTORY-PUTAWAY-WORK-QUEUE-CONTRACT-001`
+
+| Cola                      | Propósito                                                                  | Entrada                                           | Salida                                                       | Bloqueo principal                                              |
+| ------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------- |
+| `PUTQ-BLOQUEO`            | autoridad, fuente, identidad, cantidad, política o destino incompatibles   | causa verificable                                 | causa resuelta y contexto revalidado                         | no permite colocar ni corregir historia                        |
+| `PUTQ-PENDIENTE_LOC`      | saldo publicado todavía sin LOC confirmado                                 | handoff admitido con cantidad pendiente           | LOC confirmado o excepción abierta                           | no presenta la primera LOC como destino predeterminado         |
+| `PUTQ-PENDIENTE_POSICION` | cantidad confirmada en LOC que exige posición                              | saldo no posicionado y política aplicable         | posición confirmada o excepción                              | no inventa posición ni crea configuración durante la operación |
+| `PUTQ-STAGING`            | existencia en receiving o staging que espera destino final                 | receipt y origen físico explícitos                | traslado final confirmado o bloqueo                          | staging no equivale a disponible ni destino final              |
+| `PUTQ-ASIGNADA`           | trabajo atribuido y todavía no reclamado                                   | work item vigente                                 | sesión reclamada, transferida o expirada                     | abrir una URL no reclama trabajo                               |
+| `PUTQ-EJECUCION`          | sesión activa con colocación parcial o pendiente                           | actor, trabajo, destino y cantidad vigentes       | receipt parcial o completo                                   | no permite confirmar cantidades no observadas                  |
+| `PUTQ-RECONCILIACION`     | intención enviada, proyección pendiente o resultado desconocido            | intención, receipt parcial o error correlacionado | resultado recuperado, consumidor reintentado o caso escalado | no crea otro putaway para reparar una proyección               |
+| `PUTQ-EXCEPCION`          | capacidad, restricción, identidad, daño, etiqueta o destino sin resolución | caso estructurado                                 | contención y handoff a propietario                           | el bodeguero captura y contiene; no resuelve autoridad ajena   |
+
+Reconciliación:
+
+```text
+EXPECTED_PUTAWAY_QUEUES = 8
+MATERIALIZED_PUTAWAY_QUEUES = 8
+UNIQUE_PUTAWAY_QUEUES = 8
+MISSING_PUTAWAY_QUEUES = 0
+DUPLICATE_PUTAWAY_QUEUES = 0
+```
+
+La prioridad protege primero seguridad, condición, identidad, autoridad y tiempo de permanencia en receiving o staging; después capacidad, recorrido y continuidad.
+
+---
+
+#### 8. `NEXO-INVENTORY-PUTAWAY-STATE-MACHINE-001`
+
+| Estado                           | Condición                                                                  | Transición principal                                        | Invariante                                             |
+| -------------------------------- | -------------------------------------------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------ |
+| `HANDOFF_UBICACION_LISTO`        | existe saldo versionado pendiente de ubicación                             | `TRABAJO_PUTAWAY_CREADO` o bloqueo                          | no modifica stock                                      |
+| `TRABAJO_PUTAWAY_CREADO`         | línea, cantidad, prioridad y restricciones quedaron materializadas         | `TRABAJO_PUTAWAY_RECLAMADO`                                 | un saldo no produce dos trabajos activos incompatibles |
+| `TRABAJO_PUTAWAY_RECLAMADO`      | actor y sesión poseen el trabajo vigente                                   | `DESTINO_LOC_PENDIENTE`                                     | reclamo no confirma colocación                         |
+| `DESTINO_LOC_PENDIENTE`          | no existe LOC final confirmado                                             | `DESTINO_LOC_ELEGIBLE` o excepción                          | no usa heurística                                      |
+| `DESTINO_LOC_ELEGIBLE`           | LOC activo cumple política, capacidad, territorio y restricciones          | `DESTINO_POSICION_PENDIENTE` o `EJECUCION_PUTAWAY_EN_CURSO` | elegible no equivale a colocado                        |
+| `DESTINO_POSICION_PENDIENTE`     | el contrato exige posición interna                                         | `DESTINO_POSICION_ELEGIBLE` o excepción                     | LOC permanece fuente de verdad de su total             |
+| `DESTINO_POSICION_ELEGIBLE`      | posición activa pertenece al LOC y cumple restricciones                    | `EJECUCION_PUTAWAY_EN_CURSO`                                | posición no concede capacidad adicional                |
+| `EJECUCION_PUTAWAY_EN_CURSO`     | identidad, origen, destino y cantidad se contrastan físicamente            | `COLOCACION_PARCIAL` o `LINEA_COLOCADA`                     | no publica receipt antes de observar                   |
+| `COLOCACION_PARCIAL`             | se colocó una fracción y queda saldo                                       | nuevo receipt parcial o continuidad                         | parcialidad explícita                                  |
+| `LINEA_COLOCADA`                 | una fracción quedó físicamente en destino                                  | `PUTAWAY_CONFIRMACION_PENDIENTE`                            | colocación local no es hecho confirmado                |
+| `PUTAWAY_CONFIRMACION_PENDIENTE` | intención estable enviada y receipt todavía no recuperado                  | `PUTAWAY_CONFIRMADO` o `RESULTADO_DESCONOCIDO`              | no se repite el comando                                |
+| `RESULTADO_DESCONOCIDO`          | timeout, desconexión o cierre sin respuesta concluyente                    | reconciliación por intención                                | no presume éxito ni fallo                              |
+| `PUTAWAY_CONFIRMADO`             | receipt append-only contiene origen, destino, cantidad y versión           | proyecciones                                                | no cambia total de sede                                |
+| `STOCK_LOC_PROYECTADO`           | saldo por LOC refleja receipt una sola vez                                 | posición o disponibilidad                                   | la suma por LOC no supera el total elegible            |
+| `STOCK_POSICION_PROYECTADO`      | posición refleja receipt y permanece subordinada al LOC                    | disponibilidad                                              | no cambia total del LOC                                |
+| `DISPONIBILIDAD_PENDIENTE`       | ubicación confirmada todavía requiere regla de pickability o liberación    | `DISPONIBILIDAD_PUBLICADA` o excepción                      | ubicación no implica aptitud                           |
+| `DISPONIBILIDAD_PUBLICADA`       | política permite usar la cantidad en su destino                            | cierre o continuidad parcial                                | cuarentena y bloqueo permanecen fuera                  |
+| `EXCEPCION_UBICACION_ABIERTA`    | existe incompatibilidad, daño, capacidad, identidad o conflicto            | handoff a `NEXO-UX-022`                                     | no borra receipts confirmados                          |
+| `PUTAWAY_PARCIAL`                | existe uno o más receipts y saldo pendiente                                | nuevo trabajo o cierre parcial                              | acumulados de servidor                                 |
+| `PUTAWAY_CERRADO`                | cantidades, receipts, proyecciones, disponibilidad y handoffs convergieron | fin del flujo                                               | no cierra reubicaciones ni excepciones ajenas          |
+
+Reconciliación:
+
+```text
+EXPECTED_PUTAWAY_STATES = 20
+MATERIALIZED_PUTAWAY_STATES = 20
+UNIQUE_PUTAWAY_STATES = 20
+MISSING_PUTAWAY_STATES = 0
+DUPLICATE_PUTAWAY_STATES = 0
+```
+
+Todo estado se deriva de hechos, receipts y proyecciones del servidor. Un redirect, toast, selección, escaneo o actualización local no produce transición empresarial.
+
+---
+
+#### 9. `NEXO-INVENTORY-PUTAWAY-STEP-CATALOG-001`
+
+| Paso     | Nombre                              | Entrada                                                               | Salida                                     | Límite                                             |
+| -------- | ----------------------------------- | --------------------------------------------------------------------- | ------------------------------------------ | -------------------------------------------------- |
+| `PUT-01` | Resolver contexto                   | principal, actor, sesión humana, función, sede, territorio y permisos | contexto válido o bloqueo                  | no listar trabajo amplio por rol                   |
+| `PUT-02` | Cargar handoff                      | handoff, fuente, receipts, líneas, saldos y versión                   | entrada íntegra o causa                    | no reconstruir desde saldos sueltos                |
+| `PUT-03` | Clasificar fuente                   | propietario, tipo, origen físico y receipts                           | una de ocho disposiciones                  | no inferir desde texto o movimiento genérico       |
+| `PUT-04` | Crear o cargar work item            | línea, saldo, prioridad, restricciones y SLA                          | trabajo único y versionado                 | no agrupar identidades incompatibles               |
+| `PUT-05` | Reclamar sesión                     | actor, trabajo, versión e intención idempotente                       | sesión exclusiva o conflicto               | abrir pantalla no reclama                          |
+| `PUT-06` | Identificar existencia física       | producto, lote, presentación, LPN o referencia de línea               | identidad perteneciente                    | código no concede autoridad                        |
+| `PUT-07` | Confirmar origen físico             | saldo sin LOC o receiving/staging explícito                           | origen elegible                            | no inventar ubicación de origen                    |
+| `PUT-08` | Cargar snapshot de política         | producto, condición, fuente, área, almacenamiento y versión           | restricciones reproducibles                | no usar configuración posterior para historia      |
+| `PUT-09` | Enumerar LOC elegibles              | sede, área, zona, tipo, capacidad, compatibilidad y bloqueo           | conjunto explícito                         | no ordenar como decisión automática                |
+| `PUT-10` | Seleccionar o escanear LOC          | trabajo y candidato                                                   | LOC identificado                           | escaneo no confirma colocación                     |
+| `PUT-11` | Validar elegibilidad y capacidad    | LOC, política, cantidad, ocupación y restricciones                    | LOC elegible o excepción                   | no degradar faltantes a advertencia                |
+| `PUT-12` | Resolver necesidad de posición      | política, LOC y producto                                              | posición requerida o LOC suficiente        | no crear posición durante operación                |
+| `PUT-13` | Seleccionar o escanear posición     | árbol activo y candidato                                              | posición identificada                      | debe pertenecer al LOC                             |
+| `PUT-14` | Validar posición                    | jerarquía, capacidad, mezcla, acceso y compatibilidad                 | posición elegible o excepción              | no hereda capacidad ilimitada del LOC              |
+| `PUT-15` | Capturar cantidad colocada          | cantidad física y UOM snapshot                                        | valor crudo y canónico                     | no copiar saldo como observación obligatoria       |
+| `PUT-16` | Dividir parcial o multidestino      | saldo, capacidades y destinos                                         | fracciones conservativas                   | no pierde ni duplica cantidad                      |
+| `PUT-17` | Revisar impacto                     | origen, destinos, cantidades, disponibilidad y excepciones            | payload estable                            | no cambia fuente ni costo                          |
+| `PUT-18` | Crear intención de confirmación     | payload, fingerprint, versiones y clave                               | intención persistida                       | misma clave con payload distinto produce conflicto |
+| `PUT-19` | Confirmar putaway                   | intención, sesión, trabajo, saldos y destinos vigentes                | receipt append-only                        | núcleo atómico o sin confirmación                  |
+| `PUT-20` | Aplicar proyecciones físicas        | receipt confirmado                                                    | LOC, posición y presentación convergentes  | no modifica total de sede                          |
+| `PUT-21` | Resolver disponibilidad y remanente | política, condición, receipt, saldo y bloqueos                        | disponible, pendiente, parcial o excepción | ubicación no auto-libera cuarentena                |
+| `PUT-22` | Cerrar y emitir continuidad         | receipts, proyecciones, saldos y casos                                | cierre y handoffs                          | no resuelve movimientos o excepciones posteriores  |
+
+Reconciliación:
+
+```text
+EXPECTED_PUTAWAY_STEPS = 22
+MATERIALIZED_PUTAWAY_STEPS = 22
+UNIQUE_PUTAWAY_STEPS = 22
+MISSING_PUTAWAY_STEPS = 0
+DUPLICATE_PUTAWAY_STEPS = 0
+```
+
+---
+
+#### 10. `NEXO-INVENTORY-PUTAWAY-WORK-ITEM-CONTRACT-001`
+
+Cada trabajo materializa una obligación física, no una consulta agregada:
+
+```text
+putaway_work_item_id
+putaway_handoff_id
+source_owner
+source_type
+source_id
+source_line_id
+site_id
+source_location_id
+product_id
+lot_batch_ref
+uom_profile_id
+lpn_id
+eligible_base_qty
+already_putaway_base_qty
+blocked_base_qty
+remaining_base_qty
+priority
+restriction_refs[]
+policy_snapshot_ids[]
+assigned_function
+assigned_actor_id
+claim_version
+expires_at
+status
+```
+
+Reglas:
+
+1. una línea puede producir varios trabajos solo cuando la división conserva una clave de partición y saldos exactos;
+2. un trabajo activo no se duplica por refrescar, escanear o abrir otra superficie;
+3. la asignación se basa en función, territorio, carga, equipo, prioridad y disponibilidad, no solo en rol;
+4. reclamar exige versión y crea sesión separada;
+5. transferencia exige entrega, aceptación, motivo y versión;
+6. expiración libera el reclamo, no modifica receipts ni cantidades;
+7. revocación de actor, turno, dispositivo o territorio bloquea nuevas mutaciones;
+8. cierre requiere saldo cero o remanente explícitamente transferido, bloqueado o diferido con propietario.
+
+---
+
+#### 11. `NEXO-INVENTORY-PUTAWAY-SESSION-CONTRACT-001`
+
+Identidad mínima:
+
+```text
+putaway_session_id
+putaway_work_item_id
+actor_id
+human_session_id
+device_id
+site_id
+station_context
+claim_intent_id
+claim_version
+started_at
+last_activity_at
+expires_at
+status
+transfer_receipt_id
+```
+
+Cardinalidad y concurrencia:
+
+- un work item mantiene como máximo una sesión mutante activa;
+- la misma intención de reclamo devuelve la misma sesión;
+- una segunda intención incompatible produce conflicto sin revelar datos ajenos;
+- un supervisor puede observar, pero no hereda la sesión del bodeguero;
+- cambiar actor en dispositivo compartido cierra o suspende el contexto operativo;
+- la captura local sin red no confirma sesión ni putaway;
+- toda mutación compara versión de handoff, work item, sesión, saldo, LOC y posición;
+- el servidor ordena hechos y conserva la hora observada por separado.
+
+---
+
+#### 12. `NEXO-INVENTORY-LOCATION-ELIGIBILITY-CONTRACT-001`
+
+Un destino es elegible únicamente cuando todas las dimensiones aplicables son verificables:
+
+| Dimensión                | Regla                                                                          | Resultado ante ausencia o conflicto        |
+| ------------------------ | ------------------------------------------------------------------------------ | ------------------------------------------ |
+| pertenencia              | LOC pertenece a la sede y área autorizadas                                     | bloqueo por alcance                        |
+| actividad                | LOC y posición están activos, no cerrados y no retirados                       | bloqueo de uso                             |
+| finalidad                | tipo, zona y uso operacional aceptan la familia de producto                    | destino excluido                           |
+| condición                | temperatura, limpieza, seguridad alimentaria, riesgo y calidad son compatibles | cuarentena, staging controlado o excepción |
+| producto permitido       | allowlist, denylist o política aplicable es vigente                            | no se infiere permiso por ausencia         |
+| presentación y LPN       | tamaño, forma, unidad de manejo, contenedor y anidamiento son compatibles      | destino excluido o trabajo especializado   |
+| lote y rotación          | FIFO, FEFO, caducidad, lote, segregación y mezcla cumplen política             | destino distinto o bloqueo                 |
+| capacidad                | volumen, peso, unidades, slots o límite operativo conservan margen suficiente  | cantidad parcial o destino alterno         |
+| ocupación                | mezcla de productos, lotes o estados es permitida                              | bloqueo o split                            |
+| acceso y equipo          | actor, estación, altura, equipo, horario y seguridad permiten ejecución        | reasignación o espera                      |
+| disponibilidad operativa | flags y controles vigentes permiten recepción o putaway                        | no usar LOC únicamente porque existe       |
+| versión                  | política y estructura coinciden con las versiones revisadas                    | conflicto y recarga                        |
+
+El conjunto de candidatos puede recomendarse y ordenarse, pero la recomendación no constituye confirmación. Toda puntuación conserva razones y no oculta destinos excluidos cuando el actor necesita conocer el bloqueo.
+
+---
+
+#### 13. `NEXO-INVENTORY-LOCATION-HIERARCHY-CONTRACT-001`
+
+Jerarquía autorizada:
+
+```text
+SITE
+└── AREA
+    └── LOC
+        └── POSITION
+            └── CHILD_POSITION cuando la estructura lo permita
+```
+
+Invariantes:
+
+1. cada LOC pertenece a una sola sede y una sola área activa;
+2. el área pertenece a la misma sede;
+3. toda posición pertenece a un LOC y hereda su sede;
+4. una posición padre pertenece al mismo LOC;
+5. la operación no cambia `site_id`, `area_id`, `location_id`, parent, code, kind ni capacidad maestra;
+6. crear, editar, desactivar o eliminar estructura requiere `nexo.inventory.locations` y una tarea de configuración separada;
+7. confirmar putaway requiere `nexo.inventory.stock`, trabajo, recurso, cantidad, sesión y versión;
+8. una posición es detalle del LOC: asignarla no modifica el total del LOC;
+9. un LOC de receiving, staging, cuarentena, devolución o destino final conserva finalidad explícita;
+10. cerrar o desactivar un destino con stock o trabajo pendiente exige plan de transición, no eliminación directa;
+11. códigos y descripciones sirven para identificación humana, pero los receipts usan IDs inmutables;
+12. la jerarquía histórica se conserva mediante snapshots suficientes aunque cambien nombres futuros.
+
+---
+
+#### 14. `NEXO-INVENTORY-PUTAWAY-QUANTITY-CONSERVATION-CONTRACT-001`
+
+Por cada línea:
+
+```text
+P = cantidad publicada elegible para ubicación
+A = cantidad acumulada con putaway confirmado
+B = cantidad bloqueada o contenida que no puede ubicarse normalmente
+R = max(P - A - B, 0)
+C = cantidad colocada en una intención actual
+```
+
+Invariantes:
+
+```text
+0 < C <= R
+P = A + B + R
+A = suma de cantidades de receipt items confirmados y no compensados
+```
+
+Efectos por origen:
+
+| Origen físico                      | Efecto confirmado                                                           | Total de sede |
+| ---------------------------------- | --------------------------------------------------------------------------- | ------------- |
+| saldo publicado sin LOC            | incrementa destino LOC y reduce el saldo derivado sin LOC                   | no cambia     |
+| receiving o staging LOC            | decrementa origen LOC e incrementa destino LOC en una misma frontera lógica | no cambia     |
+| LOC sin posición                   | incrementa posición y reduce saldo derivado no posicionado                  | no cambia LOC |
+| split entre LOC o posiciones       | suma de fracciones igual a `C`                                              | no cambia     |
+| cantidad bloqueada o en cuarentena | permanece en destino controlado o saldo bloqueado según receipt             | no disponible |
+
+También deberá cumplirse:
+
+```text
+LOC_BASE_QTY = UNPOSITIONED_WITHIN_LOC_BASE_QTY + SUM(POSITION_BASE_QTY)
+SUM(CONFIRMED_DESTINATION_BASE_QTY) <= P - B
+```
+
+Un error de red, reintento o consumidor no puede incrementar `A` dos veces. Una compensación futura crea receipt y movimiento opuestos; no edita el original.
+
+---
+
+#### 15. `NEXO-INVENTORY-PUTAWAY-IDENTITY-CONTRACT-001`
+
+Cada receipt item conserva:
+
+- producto y referencia de fuente;
+- entrada, receipt, shipment, lote productivo, transferencia o caso de origen;
+- línea de fuente y secuencia parcial;
+- cantidad cruda y canónica;
+- unidad de stock, unidad de captura, perfil de presentación y factor snapshot;
+- lote, batch, vencimiento y condición cuando apliquen;
+- LPN, empaque o contenedor existente cuando aplique;
+- origen físico y destino físico;
+- LOC, posición y rutas de jerarquía snapshot;
+- actor, sesión, dispositivo y estación;
+- política y restricciones aplicadas;
+- intención, versión y hora de servidor.
+
+Escanear un código resuelve una identidad dentro de la sesión. No crea LPN, no reetiqueta, no acepta una línea ajena, no cambia producto o presentación y no confirma cantidad. El ciclo completo de LPN permanece reservado a `NEXO-UX-026` a `NEXO-UX-029`.
+
+---
+
+#### 16. Resultados de destino
+
+| ID                | Resultado                             | Significado                                              | Continuidad                              |
+| ----------------- | ------------------------------------- | -------------------------------------------------------- | ---------------------------------------- |
+| `PUT-OUTCOME-001` | `LOC_FINAL_CONFIRMADO`                | cantidad colocada en LOC final y posición no exigida     | disponibilidad según política            |
+| `PUT-OUTCOME-002` | `POSICION_FINAL_CONFIRMADA`           | cantidad colocada en posición final                      | disponibilidad según política            |
+| `PUT-OUTCOME-003` | `STAGING_CONFIRMADO`                  | cantidad permanece en destino temporal autorizado        | nuevo trabajo de putaway final           |
+| `PUT-OUTCOME-004` | `CUARENTENA_CONFIRMADA`               | cantidad contenida en destino controlado                 | caso de excepción; no disponible         |
+| `PUT-OUTCOME-005` | `MULTI_LOC_CONFIRMADO`                | una línea se dividió entre LOC elegibles                 | receipts parciales acumulativos          |
+| `PUT-OUTCOME-006` | `MULTI_POSICION_CONFIRMADO`           | una línea se dividió entre posiciones compatibles        | receipts parciales acumulativos          |
+| `PUT-OUTCOME-007` | `PARCIAL_CON_SALDO`                   | parte colocada y remanente exacto pendiente              | nueva continuidad del mismo trabajo      |
+| `PUT-OUTCOME-008` | `SIN_CAPACIDAD`                       | ningún candidato admite toda la cantidad                 | split, espera o excepción                |
+| `PUT-OUTCOME-009` | `SIN_DESTINO_ELEGIBLE`                | política excluye todos los candidatos                    | propietario de configuración o excepción |
+| `PUT-OUTCOME-010` | `IDENTIDAD_INCOMPATIBLE`              | producto, lote, presentación, LPN o etiqueta no coincide | bloqueo y evidencia mínima               |
+| `PUT-OUTCOME-011` | `DESTINO_CAMBIO_DURANTE_CONFIRMACION` | versión o estado del destino cambió                      | rechazar intención y recargar            |
+| `PUT-OUTCOME-012` | `RESULTADO_DESCONOCIDO`               | no existe respuesta concluyente después del envío        | reconciliar por intención                |
+
+Reconciliación:
+
+```text
+EXPECTED_DESTINATION_OUTCOMES = 12
+MATERIALIZED_DESTINATION_OUTCOMES = 12
+UNIQUE_DESTINATION_OUTCOMES = 12
+MISSING_DESTINATION_OUTCOMES = 0
+DUPLICATE_DESTINATION_OUTCOMES = 0
+```
+
+---
+
+#### 17. `NEXO-INVENTORY-PUTAWAY-IDEMPOTENCY-RECEIPT-CONTRACT-001`
+
+Identidad de intención:
+
+```text
+putaway_work_item_id
+putaway_session_id
+source_owner
+source_type
+source_id
+source_version
+source_line_id
+partial_sequence
+source_location_id
+destination_location_id
+destination_position_id
+base_qty
+payload_fingerprint
+expected_versions
+idempotency_key
+```
+
+Resultados:
+
+| Situación                                           | Resultado                               |
+| --------------------------------------------------- | --------------------------------------- |
+| misma clave, mismo fingerprint y receipt confirmado | devuelve el mismo receipt               |
+| misma clave y fingerprint con comando en curso      | devuelve estado recuperable             |
+| misma clave con payload distinto                    | conflicto inmutable                     |
+| saldo, sesión, LOC o posición con versión obsoleta  | rechaza sin efecto y obliga a recargar  |
+| timeout después del envío                           | consulta intención antes de reintentar  |
+| proyección repetida                                 | devuelve el mismo receipt de consumidor |
+| saldo agotado                                       | muestra receipts previos y no crea otro |
+
+El núcleo autoritativo confirma en una sola frontera lógica:
+
+```text
+putaway_intent
+putaway_receipt
+putaway_receipt_items[]
+technical_inventory_movements[]
+outbox_events[]
+work_item_version_transition
+```
+
+El receipt es append-only, recuperable y contiene IDs, origen, destinos, cantidades, versiones, actor, hora de servidor, resultados y saldos posteriores.
+
+---
+
+#### 18. `NEXO-INVENTORY-PUTAWAY-AVAILABILITY-BOUNDARY-001`
+
+| Estado físico o lógico                      | Disponibilidad permitida                                         | Prohibición                                                |
+| ------------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------- |
+| publicado sin LOC                           | no pickable salvo política explícita de uso inmediato controlado | tratar saldo agregado de sede como físicamente localizable |
+| receiving o staging                         | no disponible por defecto                                        | presentar tránsito temporal como destino final             |
+| LOC final sin posición requerida            | puede quedar disponible después del receipt y política           | liberar antes de confirmar                                 |
+| LOC final con posición obligatoria          | permanece pendiente hasta posición                               | usar total de LOC como ubicación suficiente                |
+| posición final confirmada                   | puede quedar disponible si condición y política lo permiten      | ignorar cuarentena, lote o vencimiento                     |
+| cuarentena o quality hold                   | no disponible                                                    | liberar por escaneo o cambio visual                        |
+| excepción de identidad o capacidad          | no disponible en el destino propuesto                            | ocultar el saldo pendiente                                 |
+| receipt confirmado con proyección pendiente | conserva hecho y muestra consumidor pendiente                    | emitir otro putaway                                        |
+
+La disponibilidad se publica mediante receipt o evento correlacionado. El putaway no cambia costo ni cantidad publicada y no resuelve una condición de calidad ajena.
+
+---
+
+#### 19. Parcialidad y múltiples destinos
+
+1. un work item puede cerrarse parcialmente sin perder su identidad;
+2. cada fracción confirmada produce receipt item propio;
+3. el acumulado se deriva exclusivamente de receipts confirmados;
+4. un split conserva suma exacta, UOM, lote, presentación y restricciones;
+5. un destino sin capacidad puede recibir una fracción permitida y dejar remanente;
+6. una misma línea no mezcla disponible y cuarentena sin resultados separados;
+7. la secuencia parcial es monotónica y forma parte de la idempotencia;
+8. un saldo cero devuelve el receipt existente y no muestra una nueva acción;
+9. cerrar una sesión no cierra el trabajo si existe remanente;
+10. cancelar una intención sin receipt no altera el saldo;
+11. una compensación futura no reescribe el receipt inicial;
+12. los handoffs posteriores conservan cada destino y su estado de disponibilidad.
+
+---
+
+#### 20. `NEXO-INVENTORY-PUTAWAY-EXCEPTION-CONTRACT-001`
+
+| Familia                             | Datos mínimos                                                  | Contención inmediata                             | Propietario de resolución             |
+| ----------------------------------- | -------------------------------------------------------------- | ------------------------------------------------ | ------------------------------------- |
+| handoff o saldo contradictorio      | fuente, línea, receipts, cantidades, versiones                 | bloquear trabajo                                 | propietario de fuente y `NEXO-UX-022` |
+| identidad o etiqueta no coincidente | producto, lote, presentación, LPN, código observado            | separar físicamente y conservar evidencia mínima | `NEXO-UX-022`; apoyo de `NEXO-UX-020` |
+| LOC o posición no elegible          | destino, política, razón, versión                              | excluir destino                                  | configuración y `NEXO-UX-022`         |
+| capacidad insuficiente              | capacidad, ocupación, cantidad y alternativas                  | split o espera                                   | operación y supervisión               |
+| daño o condición alterada           | cantidad, condición, destino, evidencia y custodio             | cuarentena o staging controlado                  | calidad y `NEXO-UX-022`               |
+| destino cambia o se desactiva       | versión previa y actual, trabajo afectado                      | rechazar confirmación                            | configuración y supervisión           |
+| cantidad física no coincide         | saldo esperado, cantidad observada, UOM y fuente               | no ajustar silenciosamente                       | `NEXO-UX-022`                         |
+| dispositivo, red o sesión falla     | intención, actor, dispositivo, hora observada y última versión | resultado desconocido y reconciliación           | sistema y soporte                     |
+| etiqueta dañada o ilegible          | identidad alternativa, motivo y evidencia mínima               | verificación secundaria                          | `NEXO-UX-020` y operación             |
+| recorrido o equipo inseguro         | destino, condición de acceso, equipo y riesgo                  | detener y reasignar                              | operación y SST aplicable             |
+
+Confirmar putaway con una excepción contenida no resuelve responsabilidad, corrección, disposición, liberación o cierre supervisor. El caso conserva propietario, plazo y condición de salida.
+
+---
+
+#### 21. Contrato de estados de interfaz
+
+| Estado                          | Condición                                                      | Respuesta obligatoria                             |
+| ------------------------------- | -------------------------------------------------------------- | ------------------------------------------------- |
+| `RESOLVIENDO_CONTEXTO`          | actor, sesión, función, sede y permisos en resolución          | no mostrar colas definitivas ni mutaciones        |
+| `SIN_AUTORIZACION`              | capacidad o territorio insuficientes                           | fallar cerrado sin revelar trabajo ajeno          |
+| `SIN_JORNADA_VALIDA`            | turno o check-in exigible ausente                              | bloquear y mostrar regularización canónica        |
+| `SIN_TRABAJO_UBICACION`         | no existe work item atribuible                                 | vacío confirmado con hora de corte                |
+| `CARGANDO_HANDOFF`              | se leen fuente, receipts, saldos y snapshots                   | no presentar datos parciales como definitivos     |
+| `HANDOFF_INVALIDO`              | identidad, fuente, saldo o versión incompatibles               | bloquear con causa y propietario                  |
+| `FUENTE_DUPLICADA`              | saldo agotado o receipt previo suficiente                      | mostrar resultado existente                       |
+| `TRABAJO_SIN_RECLAMAR`          | work item vigente sin sesión                                   | ofrecer reclamo versionado                        |
+| `TRABAJO_RECLAMADO`             | sesión propia activa                                           | habilitar pasos compatibles                       |
+| `CONFLICTO_SESION`              | otro actor o versión posee reclamo                             | bloquear mutación y actualizar                    |
+| `IDENTIDAD_REQUERIDA`           | falta contraste de producto, lote, presentación o LPN          | solicitar identificación contextual               |
+| `IDENTIDAD_NO_COINCIDE`         | código o existencia no pertenece al trabajo                    | rechazar y conservar evidencia mínima             |
+| `DESTINO_LOC_REQUERIDO`         | saldo sin LOC final                                            | mostrar únicamente candidatos elegibles           |
+| `SIN_LOC_ELEGIBLE`              | ningún LOC cumple política                                     | abrir bloqueo con razones                         |
+| `LOC_NO_ELEGIBLE`               | candidato falla una regla                                      | impedir selección concluyente                     |
+| `CAPACIDAD_INSUFICIENTE`        | candidato no admite toda la cantidad                           | permitir split autorizado o alternativa           |
+| `POSICION_REQUERIDA`            | política exige detalle interno                                 | mostrar posiciones elegibles                      |
+| `SIN_POSICION_ELEGIBLE`         | ninguna posición es compatible                                 | mantener cantidad en LOC controlado o bloquear    |
+| `POSICION_NO_ELEGIBLE`          | posición no pertenece, está inactiva o es incompatible         | impedir confirmación                              |
+| `CANTIDAD_REQUERIDA`            | no existe valor físico válido                                  | solicitar cantidad                                |
+| `CANTIDAD_SUPERA_SALDO`         | cantidad excede remanente o capacidad                          | mostrar límites de servidor                       |
+| `COLOCACION_PARCIAL`            | una fracción fue observada o confirmada                        | mostrar acumulado y remanente                     |
+| `LISTO_PARA_CONFIRMAR`          | origen, destino, cantidad y versiones son estables             | mostrar impacto y confirmar una vez               |
+| `CONFIRMANDO`                   | intención enviada                                              | deshabilitar duplicado                            |
+| `RESULTADO_DESCONOCIDO`         | timeout o pérdida de respuesta                                 | reconciliar por intención                         |
+| `PROYECCION_LOC_PENDIENTE`      | receipt confirmado sin proyección de LOC completa              | mostrar consumidor y saldo                        |
+| `PROYECCION_POSICION_PENDIENTE` | receipt confirmado sin detalle interno completo                | no declarar posición confirmada                   |
+| `DISPONIBILIDAD_PENDIENTE`      | ubicación confirmada sin liberación aplicable                  | mostrar causa y propietario                       |
+| `EXCEPCION_UBICACION`           | caso estructurado abierto                                      | contener y transferir                             |
+| `UBICACION_COMPLETADA`          | receipts, proyecciones, disponibilidad y handoffs convergieron | mostrar comprobantes y siguiente tarea autorizada |
+
+Reconciliación:
+
+```text
+EXPECTED_INTERFACE_STATES = 30
+MATERIALIZED_INTERFACE_STATES = 30
+UNIQUE_INTERFACE_STATES = 30
+MISSING_INTERFACE_STATES = 0
+DUPLICATE_INTERFACE_STATES = 0
+```
+
+Los estados de error y vacío no ofrecen controles que el servidor rechazará. Un éxito siempre presenta receipt, versión, hora de servidor, destinos y saldos recuperables.
+
+---
+
+#### 22. `NEXO-INVENTORY-PUTAWAY-ROUTE-DISPOSITION-001`
+
+| ID               | Patrón actual                         | Disposición                           | Decisión                                                                                                       | Estado                  |
+| ---------------- | ------------------------------------- | ------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ----------------------- |
+| `NEXO-ROUTE-001` | `/`                                   | `PROYECTAR_COLAS_DE_PUTAWAY`          | mostrar trabajo atribuible y prioridad, no un tablero global                                                   | `ESPECIFICADO`          |
+| `NEXO-ROUTE-020` | `/inventory/locations`                | `SEPARAR_CONFIGURACION_Y_REFERENCIA`  | consultar estructura en operación; crear, editar o retirar solo bajo capacidad de configuración                | `ESPECIFICADO`          |
+| `NEXO-ROUTE-021` | `/inventory/locations/[id]`           | `DETALLE_CONTEXTUAL`                  | mostrar destino, restricciones y stock autorizado sin confirmar putaway por abrir                              | `ESPECIFICADO`          |
+| `NEXO-ROUTE-022` | `/inventory/locations/[id]/board`     | `SUPERFICIE_OPERATIVA_CONTEXTUAL`     | continuar work item y mostrar receipt; no mezclar retiro, limpieza o configuración como misma acción           | `ESPECIFICADO`          |
+| `NEXO-ROUTE-024` | `/inventory/locations/[id]/positions` | `DIVIDIR_CONFIGURACION_Y_ASIGNACION`  | configuración usa `nexo.inventory.locations`; putaway a posición usa trabajo, sesión y `nexo.inventory.stock`  | `ESPECIFICADO`          |
+| `NEXO-ROUTE-025` | `/inventory/locations/open`           | `RESOLUTOR_CONTEXTUAL`                | resolver LOC y retornar al trabajo; código no concede autoridad ni confirma                                    | `ESPECIFICADO`          |
+| `NEXO-ROUTE-026` | `/inventory/locations/zone`           | `OPERACION_DE_ZONA`                   | mostrar trabajo y destinos de zona autorizada sin editar su estructura                                         | `ESPECIFICADO`          |
+| `NEXO-ROUTE-027` | `/inventory/locations/zones`          | `CONFIGURACION_EXCLUIDA_DE_OPERACION` | mantener administración de zonas fuera del putaway                                                             | `REFERENCIA`            |
+| `NEXO-ROUTE-052` | `/inventory/stock`                    | `PROYECCION_Y_CONTINUIDAD`            | distinguir saldo sin LOC, staging, final, posición y disponibilidad                                            | `ESPECIFICADO`          |
+| `NEXO-ROUTE-053` | `/inventory/stock/assign-location`    | `CONVERGER_A_WORK_ITEMS`              | retirar asignación genérica por producto y sede; consumir handoff, línea, saldo, política, intención y receipt | `ESPECIFICADO`          |
+| `NEXO-ROUTE-057` | `/kiosk/[slug]`                       | `RESOLUTOR_DE_ESTACION`               | resolver estación o LOC declarado; no actuar como sesión humana ni confirmar                                   | `UTILIDAD_CONTEXTUAL`   |
+| `NEXO-ROUTE-058` | `/l/[code]`                           | `DEEP_LINK_DE_IDENTIFICACION`         | normalizar código y abrir trabajo compatible, sin ampliar autoridad                                            | `UTILIDAD_CONTEXTUAL`   |
+| `NEXO-ROUTE-029` | `/inventory/movements`                | `LEDGER_DE_SOLO_LECTURA`              | mostrar eventos técnicos y receipts correlacionados sin editar, borrar ni repetir el putaway                   | `REFERENCIA_CONTEXTUAL` |
+| `NEXO-ROUTE-064` | `/scanner`                            | `HEREDAR_SESION_Y_TAREA`              | identificar origen, destino o posición; no ejecutar transición automática                                      | `UTILIDAD_OCULTA`       |
+
+Reconciliación:
+
+```text
+EXPECTED_RELEVANT_SURFACES = 14
+MATERIALIZED_RELEVANT_SURFACES = 14
+UNIQUE_RELEVANT_SURFACES = 14
+MISSING_RELEVANT_SURFACES = 0
+DUPLICATE_RELEVANT_SURFACES = 0
+NEW_SURFACE_IDENTITIES = 0
+```
+
+No se crea una dirección nueva. Las superficies existentes convergen sobre una única fuente de work item, sesión, receipt, saldo y política.
+
+---
+
+#### 23. `NEXO-INVENTORY-PUTAWAY-VALIDATION-MATRIX-001`
+
+| ID            | Grupo                         | Comprobación                                                                               | Momento                        | Resultado esperado              |
+| ------------- | ----------------------------- | ------------------------------------------------------------------------------------------ | ------------------------------ | ------------------------------- |
+| `PUT-VAL-001` | Contexto y autoridad          | resolver principal, actor efectivo y sesión humana                                         | PUT-01                         | bloquea sin atribución          |
+| `PUT-VAL-002` | Contexto y autoridad          | exigir `nexo.inventory.stock` para putaway y `nexo.inventory.locations` para configuración | cada lectura y mutación        | no intercambia capacidades      |
+| `PUT-VAL-003` | Contexto y autoridad          | validar sede, territorio, función, turno y dispositivo                                     | PUT-01 y cada mutación         | no expone trabajo ajeno         |
+| `PUT-VAL-004` | Contexto y autoridad          | separar operador, supervisor, configurador y consumidor                                    | PUT-01 a PUT-22                | no existe autoaprobación        |
+| `PUT-VAL-005` | Contexto y autoridad          | revalidar contexto al reclamar, seleccionar y confirmar                                    | PUT-05, PUT-10, PUT-13, PUT-19 | revocación bloquea              |
+| `PUT-VAL-006` | Contexto y autoridad          | mantener equivalencia entre interfaz, servidor, RPC, grants y RLS                          | transversal                    | divergencia falla cerrada       |
+| `PUT-VAL-007` | Handoff y fuente              | clasificar exactamente una de ocho fuentes                                                 | PUT-03                         | fuente ambigua se bloquea       |
+| `PUT-VAL-008` | Handoff y fuente              | verificar handoff, propietario, fuente, receipts y versión                                 | PUT-02                         | no reconstruye hechos           |
+| `PUT-VAL-009` | Handoff y fuente              | verificar sede y origen físico                                                             | PUT-02 y PUT-07                | no inventa origen               |
+| `PUT-VAL-010` | Handoff y fuente              | derivar saldo pendiente desde cantidades y receipts confirmados                            | PUT-02 y PUT-04                | saldo exacto                    |
+| `PUT-VAL-011` | Handoff y fuente              | impedir que reubicación ya colocada use putaway inicial                                    | PUT-03                         | se transfiere a NEXO-UX-016     |
+| `PUT-VAL-012` | Handoff y fuente              | devolver receipt existente cuando el saldo está agotado                                    | PUT-02 y PUT-19                | cero duplicidad                 |
+| `PUT-VAL-013` | Destino y política            | validar pertenencia LOC–área–sede                                                          | PUT-09 a PUT-11                | no cruza territorio             |
+| `PUT-VAL-014` | Destino y política            | exigir LOC activo y finalidad compatible                                                   | PUT-11                         | destino inválido excluido       |
+| `PUT-VAL-015` | Destino y política            | aplicar snapshot de política                                                               | PUT-08 y PUT-11                | historia reproducible           |
+| `PUT-VAL-016` | Destino y política            | comprobar producto permitido, condición y segregación                                      | PUT-11                         | no mezcla incompatible          |
+| `PUT-VAL-017` | Destino y política            | comprobar capacidad antes y durante confirmación                                           | PUT-11 y PUT-19                | split o conflicto               |
+| `PUT-VAL-018` | Destino y política            | comprobar rotación, lote, vencimiento y mezcla                                             | PUT-11                         | FIFO o FEFO según política      |
+| `PUT-VAL-019` | Destino y política            | exigir posición cuando la política lo indique                                              | PUT-12                         | LOC no se trata como suficiente |
+| `PUT-VAL-020` | Destino y política            | validar posición activa, jerarquía, capacidad y pertenencia                                | PUT-13 y PUT-14                | posición ajena se rechaza       |
+| `PUT-VAL-021` | Identidad y cantidad          | conservar producto, fuente, línea, presentación, lote y LPN                                | PUT-06                         | trazabilidad completa           |
+| `PUT-VAL-022` | Identidad y cantidad          | tratar escáner y enlace únicamente como identificación                                     | PUT-06, PUT-10, PUT-13         | no concede autoridad            |
+| `PUT-VAL-023` | Identidad y cantidad          | usar UOM, factor y precisión snapshot                                                      | PUT-15                         | no recalcula historia           |
+| `PUT-VAL-024` | Identidad y cantidad          | capturar cantidad física cuando la política lo requiera                                    | PUT-15                         | no copia saldo como observación |
+| `PUT-VAL-025` | Identidad y cantidad          | cumplir `P = A + B + R`                                                                    | PUT-16 y PUT-21                | conservación exacta             |
+| `PUT-VAL-026` | Identidad y cantidad          | impedir `C > R`                                                                            | PUT-15 y PUT-19                | no sobreubica                   |
+| `PUT-VAL-027` | Identidad y cantidad          | conservar suma exacta en split multidestino                                                | PUT-16                         | cero pérdida o duplicidad       |
+| `PUT-VAL-028` | Identidad y cantidad          | mantener `LOC = no posicionado + suma posiciones`                                          | PUT-20                         | posición no altera LOC          |
+| `PUT-VAL-029` | Receipt e idempotencia        | crear intención antes del comando                                                          | PUT-18                         | resultado recuperable           |
+| `PUT-VAL-030` | Receipt e idempotencia        | misma clave y payload devuelven mismo receipt                                              | PUT-19                         | cero doble receipt              |
+| `PUT-VAL-031` | Receipt e idempotencia        | misma clave con payload distinto produce conflicto                                         | PUT-19                         | no sobrescribe                  |
+| `PUT-VAL-032` | Receipt e idempotencia        | comparar versiones de trabajo, sesión, saldo y destino                                     | PUT-19                         | intención obsoleta rechazada    |
+| `PUT-VAL-033` | Receipt e idempotencia        | confirmar receipt, items, movimientos y transición de work item atómicamente               | PUT-19                         | sin éxito parcial               |
+| `PUT-VAL-034` | Receipt e idempotencia        | reconciliar timeout antes de reintentar                                                    | PUT-19 y PUT-21                | no reenvío ciego                |
+| `PUT-VAL-035` | Receipt e idempotencia        | conservar receipts append-only y compensar sin editar                                      | posterior a PUT-19             | causalidad completa             |
+| `PUT-VAL-036` | Proyección y disponibilidad   | putaway no modifica total de sede                                                          | PUT-20                         | suma de sede estable            |
+| `PUT-VAL-037` | Proyección y disponibilidad   | trasladar staging a final con débito y crédito correlacionados                             | PUT-20                         | cero doble stock                |
+| `PUT-VAL-038` | Proyección y disponibilidad   | deduplicar proyecciones de LOC, posición y presentación                                    | PUT-20                         | mismo receipt por consumidor    |
+| `PUT-VAL-039` | Proyección y disponibilidad   | separar ubicación de disponibilidad                                                        | PUT-21                         | no auto-libera                  |
+| `PUT-VAL-040` | Proyección y disponibilidad   | mantener cuarentena, bloqueo y excepción fuera de stock utilizable                         | PUT-21                         | disponibilidad segura           |
+| `PUT-VAL-041` | Compatibilidad y recuperación | retirar asignación por producto sin fuente, trabajo o receipt                              | convergencia                   | un escritor autoritativo        |
+| `PUT-VAL-042` | Compatibilidad y recuperación | impedir que RPC y escrituras directas produzcan el mismo hecho                             | transición                     | cero dual-write                 |
+| `PUT-VAL-043` | Compatibilidad y recuperación | recuperar sesión, intención y remanente tras red intermitente o cambio de actor            | PUT-05 a PUT-21                | no hereda contexto inválido     |
+| `PUT-VAL-044` | Compatibilidad y recuperación | conservar bloqueos y transferir resolución a propietario                                   | PUT-21 y PUT-22                | no cierre ficticio              |
+
+Reconciliación:
+
+```text
+EXPECTED_PUTAWAY_VALIDATIONS = 44
+MATERIALIZED_PUTAWAY_VALIDATIONS = 44
+UNIQUE_PUTAWAY_VALIDATIONS = 44
+MISSING_PUTAWAY_VALIDATIONS = 0
+DUPLICATE_PUTAWAY_VALIDATIONS = 0
+```
+
+---
+
+#### 24. Evidencia técnica actual y diagnóstico
+
+| Fuente actual                                                | Evidencia verificable                                                                                            | Estado frente al diseño       | Decisión                                                                                        |
+| ------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- | ----------------------------- | ----------------------------------------------------------------------------------------------- |
+| `/inventory/stock/assign-location`                           | deriva saldo sin LOC como total de sede menos suma por LOC activo y permite elegir cualquier LOC activo          | `IMPLEMENTADO_PARCIAL`        | consumir work item, fuente, saldo, política, sesión, versión e intención                        |
+| Server Action de asignación                                  | exige `inventory.stock` y llama directamente `assign_inventory_stock_to_location`                                | `BRECHA_DE_AUTORIZACION`      | revalidar recurso y comando de putaway, no solo permiso amplio                                  |
+| `assign_inventory_stock_to_location`                         | valida sede, producto, LOC activo y saldo agregado; inserta `stock_assign_location` e incrementa stock por LOC   | `IMPLEMENTADO_PARCIAL`        | añadir correlación, intención, receipt, versiones, política, capacidad y escritor único         |
+| cálculo actual de saldo sin LOC                              | suma únicamente LOC activos; un LOC desactivado con saldo puede desaparecer del cálculo                          | `BRECHA_DE_CONSERVACION`      | derivar saldos desde receipts y conservar destinos históricos aunque estén inactivos            |
+| `/inventory/locations/[id]/positions`                        | mezcla creación y edición de posiciones con asignación operativa bajo `inventory.stock`                          | `BRECHA_DE_SEGREGACION`       | configuración bajo `inventory.locations`; operación bajo work item y `inventory.stock`          |
+| `assign_inventory_stock_to_position`                         | usa bloqueo consultivo y controla saldo no posicionado, pero no conserva fuente, work item, receipt ni versiones | `IMPLEMENTADO_PARCIAL`        | adoptar intención, receipt, jerarquía, capacidad, política y correlación                        |
+| movimiento `stock_assign_location`                           | se registra como movimiento positivo aunque el total de sede no cambia                                           | `AMBIGUEDAD_DE_LEDGER`        | clasificar como evento técnico neutral con origen y destino; entregar semántica a `NEXO-UX-016` |
+| movimiento `stock_assign_position`                           | registra cantidad positiva sin IDs de LOC o posición en el movimiento inspeccionado                              | `BRECHA_CRITICA`              | conservar origen, destino, receipt item y neutralidad explícita                                 |
+| `inventory_stock_by_location`                                | tabla mutable y helper accesible por varias capacidades de dominio                                               | `DOBLE_ESCRITOR_POTENCIAL`    | convertirla en proyección consumida por comando idempotente                                     |
+| `inventory_stock_by_position`                                | concede políticas de escritura amplias y la migración inspeccionada declaró grants extensos                      | `BRECHA_DE_MINIMO_PRIVILEGIO` | restringir escritura a comando autorizado, con RLS y grants versionados                         |
+| `inventory_entry_items.location_id`                          | permite acoplar entrada y ubicación mediante un campo mutable                                                    | `COMPATIBILIDAD_REQUERIDA`    | conservar historia mediante handoff y receipts; no tratar el campo como prueba única            |
+| página de ubicaciones                                        | combina consulta, configuración, flags operativos y acciones de creación, edición o eliminación                  | `BRECHA_DE_SUPERFICIE`        | separar affordances, capacidades y consecuencias                                                |
+| board de LOC                                                 | combina consulta de stock, posiciones, presentaciones, retiro y limpieza de filas de saldo cero                  | `BRECHA_DE_RESPONSABILIDAD`   | presentar acciones por tarea y no usar borrado de proyección como putaway o corrección          |
+| work item, sesión e intención de putaway                     | no se observó entidad o comando completo                                                                         | `NO_IMPLEMENTADO`             | materializar en paquete E5 NEXO                                                                 |
+| validación de capacidad y compatibilidad                     | no se observó contrato autoritativo completo                                                                     | `NO_IMPLEMENTADO`             | materializar snapshots, reglas y razones                                                        |
+| prueba física con tablet, kiosco, escáner y red intermitente | no existe evidencia reproducible                                                                                 | `PENDIENTE_DE_EVIDENCIA`      | validar en `NEXO-UX-023` a `NEXO-UX-025`                                                        |
+
+El comportamiento actual conserva parte de la aritmética, pero no demuestra el hecho físico, su causalidad ni su idempotencia. La implementación deberá retirar el doble uso de “asignar” como simple mutación de proyección y convertirlo en putaway trazable.
+
+---
+
+#### 25. `NEXO-INVENTORY-PUTAWAY-COMPATIBILITY-CONTRACT-001`
+
+| Superficie o dato actual             | Disposición                                                                       | Estado objetivo                   |
+| ------------------------------------ | --------------------------------------------------------------------------------- | --------------------------------- |
+| `inventory_stock_by_site`            | conservar como proyección agregada de movimientos autoritativos                   | `DERIVED_SITE_PROJECTION`         |
+| `inventory_stock_by_location`        | conservar como proyección física derivada de receipts y movimientos técnicos      | `DERIVED_LOCATION_PROJECTION`     |
+| `inventory_stock_by_position`        | conservar como subproyección de LOC                                               | `DERIVED_POSITION_PROJECTION`     |
+| `inventory_stock_by_uom_profile`     | correlacionar con receipt item, LOC, posición y presentación                      | `DERIVED_PRESENTATION_PROJECTION` |
+| `inventory_entry_items.location_id`  | mantener temporalmente como proyección o referencia compatible                    | `COMPATIBILITY_PROJECTION`        |
+| RPC de asignación a LOC              | encapsular o reemplazar por comando autoritativo de putaway                       | `MIGRATE_OR_ENCAPSULATE`          |
+| RPC de asignación a posición         | encapsular o reemplazar por comando autoritativo de putaway                       | `MIGRATE_OR_ENCAPSULATE`          |
+| movimientos técnicos actuales        | mapear a receipt y origen-destino; no presentarlos como entrada o incremento real | `CANONICAL_TECHNICAL_EVENT`       |
+| configuración de posición bajo stock | separar capacidad y superficie                                                    | `SPLIT_CONFIGURATION_OPERATION`   |
+| dual-write de proyección y comando   | prohibido salvo intención común y prueba de cero duplicidad                       | `BLOCKED_UNTIL_PROVEN`            |
+
+Cada cantidad tiene un único escritor autoritativo de putaway. Las proyecciones pueden reconstruirse desde receipts y eventos; un saldo mutable aislado no reemplaza el ledger causal.
+
+---
+
+#### 26. `NEXO-INVENTORY-PUTAWAY-IMPLEMENTATION-HANDOFF-001`
+
+Una implementación posterior deberá, como mínimo:
+
+1. materializar work items, sesiones, intenciones, receipts e items de putaway;
+2. adoptar los handoffs de entradas, remisiones y fuentes autorizadas;
+3. derivar saldos pendientes por fuente y línea, no solo por diferencia agregada;
+4. modelar origen sin LOC, receiving, staging, cuarentena y destino final;
+5. materializar políticas y snapshots de elegibilidad, capacidad y disponibilidad;
+6. conservar jerarquía sede–área–LOC–posición y versiones;
+7. ejecutar putaway parcial y multidestino conservativo;
+8. confirmar receipt, movimientos técnicos y transición de trabajo en una frontera atómica;
+9. deduplicar proyecciones de LOC, posición, presentación y disponibilidad;
+10. mantener total de sede y total de LOC invariantes según el nivel;
+11. separar configuración de estructura y operación de putaway;
+12. retirar o encapsular los RPC y escrituras directas actuales;
+13. restringir grants, RLS y funciones privilegiadas a comandos y recursos exactos;
+14. generar contratos y tipos compartidos cuando cambie el esquema;
+15. versionar toda modificación Supabase desde `vento-shell`;
+16. incluir migración determinista de saldos sin LOC, sin posición y destinos inactivos;
+17. incluir rollback, observabilidad, reconciliación y reparación de proyecciones;
+18. impedir dual-write durante convivencia;
+19. probar concurrencia, idempotencia, capacidad, parcialidad, offline y revocación;
+20. certificar tablets, kioscos, escáneres, etiquetas y operación antes de habilitar capacidades condicionadas.
+
+Rollback funcional:
+
+- antes de receipt, una intención puede cancelarse sin efecto;
+- después de receipt, no se edita ni elimina el hecho;
+- una corrección crea receipt compensatorio y movimientos origen-destino opuestos;
+- una proyección puede reconstruirse sin borrar receipts;
+- un rollback de despliegue conserva compatibilidad de lectura y bloquea nuevos escritores incompatibles;
+- una migración fallida no inventa ubicación para saldos ambiguos: los conserva en reconciliación con propietario.
+
+---
+
+#### 27. `NEXO-INVENTORY-PUTAWAY-HANDOFF-001`
+
+| Consumidor                    | Payload mínimo                                                                                    | Garantía                         | Prohibición                                 |
+| ----------------------------- | ------------------------------------------------------------------------------------------------- | -------------------------------- | ------------------------------------------- |
+| `NEXO-UX-016`                 | receipts, movimientos técnicos, origen, destinos, cantidades, UOM, actor, versiones y correlación | ledger append-only y neutralidad | no editar putaway                           |
+| `NEXO-UX-020`                 | sesión, work item, identidades escaneables, contexto y resultados                                 | escaneo contextual               | no confirmar automáticamente                |
+| `NEXO-UX-021`                 | estados, campos y acciones estrictamente necesarios por paso                                      | minimización de interfaz         | no ocultar bloqueos materiales              |
+| `NEXO-UX-022`                 | caso, fuente, trabajo, cantidad, destino, política, evidencia, autoridad y efecto pendiente       | causalidad y contención          | no cerrar caso                              |
+| `NEXO-UX-023` a `NEXO-UX-025` | recorrido, dispositivos, tiempos, errores, reintentos, receipts y criterios físicos               | base reproducible para piloto    | no declarar validación sin evidencia        |
+| implementación E5             | contratos, estados, matrices, diagnóstico, migración, rollback y requisitos                       | diseño versionado                | no ejecutar Supabase fuera de `vento-shell` |
+
+Payload canónico:
+
+```text
+putaway_work_item_id
+putaway_session_id
+putaway_receipt_id
+putaway_receipt_item_ids[]
+source_owner
+source_type
+source_id
+source_version
+source_receipt_ids[]
+source_line_ids[]
+source_location_ids[]
+destination_location_ids[]
+destination_position_ids[]
+placed_base_qty_by_destination
+remaining_base_qty_by_line
+technical_movement_ids[]
+location_projection_receipt_ids[]
+position_projection_receipt_ids[]
+presentation_projection_receipt_ids[]
+availability_receipt_ids[]
+exception_ids[]
+policy_snapshot_ids[]
+version
+confirmed_at
+```
+
+El handoff no redefine la fuente, costo, cantidad publicada, receipt de entrada o recepción, ciclo de LPN, resolución de excepción ni semántica integral de movimientos.
+
+---
+
+#### 28. Requisitos de prueba derivados
+
+Se incorporan `TREQ-NEXO-161` a `TREQ-NEXO-174` en el registro canónico completo:
+
+| ID              | Comportamiento protegido                                                        |
+| --------------- | ------------------------------------------------------------------------------- |
+| `TREQ-NEXO-161` | contexto, permisos y segregación entre configuración y operación                |
+| `TREQ-NEXO-162` | cobertura de artefactos, pasos, estados, colas, fuentes, resultados y rutas     |
+| `TREQ-NEXO-163` | admisión del handoff, propietario, fuente, receipts y saldo                     |
+| `TREQ-NEXO-164` | work item, asignación, sesión, reclamo, transferencia y revocación              |
+| `TREQ-NEXO-165` | elegibilidad, compatibilidad, capacidad y snapshot de destino                   |
+| `TREQ-NEXO-166` | jerarquía sede, área, LOC, posición y separación de configuración               |
+| `TREQ-NEXO-167` | conservación cuantitativa entre sede, LOC, posición, parcialidad y split        |
+| `TREQ-NEXO-168` | identidad, UOM, presentación, lote, LPN, condición y escaneo contextual         |
+| `TREQ-NEXO-169` | intención, versión, concurrencia, receipt, idempotencia y resultado desconocido |
+| `TREQ-NEXO-170` | receiving, staging, destino final, cuarentena y disponibilidad                  |
+| `TREQ-NEXO-171` | putaway parcial, multidestino, saldos y cierre acumulativo                      |
+| `TREQ-NEXO-172` | excepciones, capacidad, identidad, etiqueta, seguridad y contención             |
+| `TREQ-NEXO-173` | compatibilidad, RPC actuales, proyecciones, grants, RLS y escritor único        |
+| `TREQ-NEXO-174` | convergencia técnica y cuarenta y cuatro comprobaciones                         |
+
+No se modifica, difiere, descarta ni vuelve obsoleto un requisito histórico.
+
+---
+
+#### 29. Pendientes con propietario y condición de salida
+
+| Pendiente                                    | Estado                   | Propietario documental o técnico     | Condición de salida                                                     |
+| -------------------------------------------- | ------------------------ | ------------------------------------ | ----------------------------------------------------------------------- |
+| work items, sesiones, intenciones y receipts | `ESPECIFICADO`           | paquete E5 NEXO                      | implementación, pruebas y evidencia aprobadas                           |
+| políticas de elegibilidad y capacidad        | `ESPECIFICADO`           | configuración NEXO y paquete E5      | snapshots versionados y razones verificables                            |
+| migración de saldos sin LOC o posición       | `ESPECIFICADO`           | `vento-shell`                        | backfill determinista, reconciliación, rollback y cero doble asignación |
+| segregación de permisos, grants y RLS        | `ESPECIFICADO`           | autorización compartida y paquete E5 | equivalencia entre servidor, RPC, grants y RLS                          |
+| convergencia de RPC de asignación actuales   | `ESPECIFICADO`           | paquete E5 NEXO y `vento-shell`      | un escritor autoritativo y pruebas de no duplicidad                     |
+| ledger integral y reubicaciones posteriores  | `ESPECIFICADO`           | `NEXO-UX-016`                        | diseño aprobado consumiendo receipts y movimientos                      |
+| escáner y etiquetas dañadas                  | `ESPECIFICADO`           | `NEXO-UX-020`                        | contrato de captura e identificación aprobado                           |
+| diferencias y liberaciones                   | `ESPECIFICADO`           | `NEXO-UX-022`                        | autoridad, caso, compensación y cierre aprobados                        |
+| ciclo completo de LPN                        | `ESPECIFICADO`           | `NEXO-UX-026` a `NEXO-UX-029`        | contratos de identidad, contenido y movimiento aprobados                |
+| tablet, kiosco, escáner y red intermitente   | `PENDIENTE_DE_EVIDENCIA` | `NEXO-UX-023` a `NEXO-UX-025`        | piloto con resultados reproducibles                                     |
+
+No queda pendiente narrativo sin tarea, paquete o condición de salida.
+
+---
+
+#### 30. Criterios de aceptación
+
+1. existen exactamente veinte artefactos documentales materiales;
+2. las ocho familias de fuente tienen decisión explícita;
+3. reubicación de stock ya ubicado permanece en `NEXO-UX-016`;
+4. existen exactamente ocho colas `PUTQ-*`;
+5. existen exactamente veinte estados empresariales y técnicos;
+6. existen exactamente veintidós pasos `PUT-*`;
+7. existen exactamente doce resultados `PUT-OUTCOME-*`;
+8. existen exactamente treinta estados de interfaz;
+9. existen exactamente cuarenta y cuatro comprobaciones `PUT-VAL-*`;
+10. existen exactamente catorce disposiciones sobre superficies vigentes;
+11. no se crea una dirección de aplicación nueva;
+12. el handoff conserva fuente, receipts, cantidades, UOM y restricciones;
+13. el trabajo es único, versionado y atribuible;
+14. abrir una superficie no reclama trabajo;
+15. configuración y operación usan capacidades y acciones separadas;
+16. LOC, área y sede conservan pertenencia exacta;
+17. posición y padre pertenecen al mismo LOC;
+18. política, capacidad, condición y compatibilidad gobiernan elegibilidad;
+19. no existe primera LOC, primera posición o coincidencia textual como decisión silenciosa;
+20. se cumple `P = A + B + R`;
+21. `C` nunca excede `R`;
+22. el total de sede no cambia por putaway;
+23. asignar posición no cambia el total del LOC;
+24. staging a destino final usa débito y crédito correlacionados;
+25. producto, presentación, lote, LPN, UOM y condición conservan identidad;
+26. escanear identifica, pero no autoriza ni confirma;
+27. receipts son append-only, versionados e idempotentes;
+28. resultado desconocido se reconcilia antes de reintentar;
+29. parcialidad y split conservan saldos exactos;
+30. ubicación y disponibilidad son decisiones separadas;
+31. cuarentena y bloqueos no se vuelven disponibles;
+32. los RPC y proyecciones actuales convergen a un escritor autoritativo;
+33. grants, RLS y funciones privilegiadas se restringen en implementación;
+34. los catorce requisitos nuevos están incorporados al registro completo;
+35. todos los pendientes tienen propietario y condición de salida;
+36. no se ejecutan cambios físicos ni operaciones remotas;
+37. la siguiente tarea permanece reservada.
+
+---
+
+#### 31. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-014 — Diseñar flujo completo de entradas`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-015 — Diseñar flujo completo de ubicación`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-016 — Diseñar flujo completo de movimientos`
+
+`NEXO-UX-016` deberá consumir `NEXO-INVENTORY-PUTAWAY-HANDOFF-001`, conservar receipts y causalidad de origen-destino, diferenciar eventos técnicos neutrales de entradas o salidas reales y diseñar reubicación, traslado y consulta del ledger sin editar hechos de putaway.
+
+
 ### [ ] NEXO-UX-016 — Diseñar flujo completo de movimientos
 ### [ ] NEXO-UX-017 — Diseñar flujo completo de retiros
 ### [ ] NEXO-UX-018 — Diseñar flujo completo de conteos
