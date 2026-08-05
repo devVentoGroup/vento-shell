@@ -3305,7 +3305,705 @@ Ningún destino anterior se inicia mediante esta tarea.
 `NEXO-UX-006 — Diseñar inicio para receptor`
 
 
-### [ ] NEXO-UX-006 — Diseñar inicio para receptor
+### ✅ NEXO-UX-006 — Diseñar inicio para receptor
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-005 — Diseñar inicio para conductor` — APROBADA
+**Tarea siguiente:** `NEXO-UX-007 — Diseñar inicio para supervisor` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo del inicio operativo del receptor, trabajo entrante, handoff, verificación física, recepción parcial o completa, diferencias, composición de capacidades, estados, autorización, decisiones por etapa y ruta, y handoff de implementación
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Artefactos producidos:** `NEXO-RECEIVER-HOME-CONTRACT-001`, `NEXO-RECEIVER-HOME-INFORMATION-ARCHITECTURE-001`, `NEXO-RECEIVER-WORK-QUEUE-CATALOG-001`, `NEXO-RECEIVER-CAPABILITY-COMPOSITION-CONTRACT-001`, `NEXO-RECEIVER-STAGE-PROJECTION-MATRIX-001`, `NEXO-RECEIVER-ROUTE-DISPOSITION-001`, `NEXO-RECEIVER-HOME-STATE-CONTRACT-001` y `NEXO-RECEIVER-HOME-HANDOFF-001`
+**Decisiones consumidas:** `NEXO-UX-LANE-CONTRACT-001`; `NEXO-REQUESTER-HOME-CONTRACT-001`; `NEXO-WAREHOUSE-HOME-CONTRACT-001`; `NEXO-DRIVER-HOME-CONTRACT-001`; `NEXO-DRIVER-CAPABILITY-COMPOSITION-CONTRACT-001`; `AUTH-RBAC-008` a `AUTH-RBAC-019`; `PROC-BASE-ROLE-APPLICABILITY-MATRIX-001`; `PROC-OPERATIONAL-ROLE-APPLICABILITY-MATRIX-001`; `PROC-PROCESS-RACI-MATRIX-001`; `VPROC-0028`; inventario `NEXO-ROUTE-001` a `NEXO-ROUTE-064`; requisitos `TREQ-*` vigentes; código, migraciones y contratos actuales de `vento-nexo` y `vento-shell`
+**Cambios físicos autorizados:** ninguno; no modifica código, rutas, permisos, datos, remisiones, receipts, stock, movimientos, Supabase, migraciones, RLS, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar el inicio operativo de NEXO para la función empresarial
+`RECEPCION_EN_SEDE`, de modo que la persona autorizada identifique qué carga
+está por llegar, cuál se encuentra en handoff, qué recepción física debe
+continuar y qué diferencia requiere evidencia, sin convertir la recepción en
+solicitud, preparación, conducción, supervisión, ajuste, disposición o
+configuración.
+
+La regla canónica es:
+
+```text
+ACTOR HUMANO EFECTIVO
++
+TURNO Y CHECK-IN VIGENTES CUANDO APLIQUEN
++
+FUNCION RECEPCION_EN_SEDE RESUELTA
++
+SEDE Y AREA DESTINO AUTORIZADAS
++
+PERMISO EXACTO nexo.inventory.remissions.receive
++
+REMISION O SHIPMENT RELACIONADO CON EL DESTINO
++
+HANDOFF, CUSTODIA, ETAPA Y VERSION VIGENTES
++
+PRIORIDAD OPERATIVA AUTORITATIVA
+→
+INICIO DEL RECEPTOR
+```
+
+La proyección visual no concede autoridad. El nombre del cargo, trabajar en la
+sede destino, haber solicitado la remisión, conocer la URL, recibir físicamente
+un bulto, escanear un código o usar un dispositivo de la sede no autorizan por
+sí solos consultar, aceptar custodia, registrar cantidades, confirmar una
+recepción, resolver diferencias, ajustar inventario ni cerrar el caso.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban ocho artefactos documentales consumibles:
+
+1. `NEXO-RECEIVER-HOME-CONTRACT-001`, que define audiencia, fuentes de
+   habilitación, contexto, relación con el destino, custodia y límites;
+2. `NEXO-RECEIVER-HOME-INFORMATION-ARCHITECTURE-001`, que materializa ocho
+   secciones y una única acción primaria;
+3. `NEXO-RECEIVER-WORK-QUEUE-CATALOG-001`, que define ocho colas de arribo,
+   handoff, verificación, recepción parcial, diferencia, evidencia,
+   continuidad y bloqueo;
+4. `NEXO-RECEIVER-CAPABILITY-COMPOSITION-CONTRACT-001`, que resuelve siete
+   casos de composición entre receptor, solicitante, bodeguero, conductor,
+   supervisor y concesión individual;
+5. `NEXO-RECEIVER-STAGE-PROJECTION-MATRIX-001`, que decide las nueve etapas de
+   `VPROC-0028` para esta proyección;
+6. `NEXO-RECEIVER-ROUTE-DISPOSITION-001`, que decide dieciséis rutas existentes
+   sin inventar URLs ni convertir navegación en permiso;
+7. `NEXO-RECEIVER-HOME-STATE-CONTRACT-001`, que define catorce estados de
+   contexto, carga, vacío, handoff, custodia, concurrencia, autorización y
+   conectividad;
+8. `NEXO-RECEIVER-HOME-HANDOFF-001`, que separa diseño, detalle de recepción,
+   resolución de diferencias, implementación, pruebas y certificación.
+
+Cobertura materializada:
+
+| Elemento                                  | Total esperado | Total materializado | Faltantes | Duplicados |
+| ----------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Procesos canónicos reconciliados          |              1 |                   1 |         0 |          0 |
+| Etapas canónicas decididas                |              9 |                   9 |         0 |          0 |
+| Clases de cola del receptor               |              8 |                   8 |         0 |          0 |
+| Casos de composición de capacidades       |              7 |                   7 |         0 |          0 |
+| Rutas relevantes decididas                |             16 |                  16 |         0 |          0 |
+| Secciones obligatorias                    |              8 |                   8 |         0 |          0 |
+| Acciones primarias                        |              1 |                   1 |         0 |          0 |
+| Estados de interfaz                       |             14 |                  14 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados |              7 |                   7 |         0 |          0 |
+
+La tarea deja el diseño en estado `ESPECIFICADO`. No declara el inicio dedicado
+`IMPLEMENTADO` ni `VALIDADO`.
+
+---
+
+#### 3. Alcance funcional
+
+##### 3.1. Incluido
+
+- inicio del receptor resuelto por función, permiso y relación con el destino;
+- entregas próximas, cargas en tránsito y arribos confirmados;
+- handoff físico entre custodio de transporte y receptor autorizado;
+- contraste de remisión o shipment, manifiesto, bultos, LPN, sellos, origen,
+  destino, cantidades y versión;
+- apertura y continuación de verificación física por línea;
+- registro de recepción parcial o completa mediante una acción exacta;
+- visibilidad de faltantes, sobrantes, producto incorrecto, daño, rechazo,
+  cuarentena o evidencia pendiente sin resolverlos por inferencia;
+- prioridad y desempate autoritativos;
+- estados vacíos, revocación, conflicto, datos parciales y red intermitente;
+- composición entre recepción, solicitud y bodega para una misma persona;
+- decisión explícita por etapa y ruta relevante;
+- diagnóstico de las superficies, contratos y modelos actuales de
+  `vento-nexo`.
+
+##### 3.2. Excluido
+
+- creación o edición de solicitudes desde la función receptora;
+- asignación de origen, fulfillment, preparador, conductor, ruta o vehículo;
+- preparación, picking, empaque, sellado o modificación del manifiesto;
+- aceptación de custodia por el conductor en nombre del receptor;
+- recepción concedida por trabajar en la sede destino o por haber solicitado;
+- resolución supervisora de faltantes, sobrantes, daños, rechazos o
+  devoluciones;
+- ajuste de inventario, merma, disposición, liberación de cuarentena o cierre
+  administrativo;
+- ubicación o putaway concedidos por el solo hecho de confirmar recepción;
+- recepción de proveedores de ORIGO como si fuera la misma acción;
+- configuración de productos, políticas, rutas, ubicaciones o unidades;
+- monitoreo global de transporte o desempeño;
+- diseño detallado de captura por línea y evidencia, que pertenece a
+  `NEXO-UX-013` y `NEXO-UX-022`;
+- cambios en código, datos, permisos o Supabase;
+- validación operativa, física, tablet, kiosco u offline.
+
+---
+
+#### 4. `NEXO-RECEIVER-HOME-CONTRACT-001`
+
+##### 4.1. Audiencia funcional
+
+La audiencia primaria es `RECEPCION_EN_SEDE`, identidad empresarial aprobada
+como ejecutor y aceptante de `VPROC-0028`. No constituye un rol base nuevo ni
+un permiso implícito para todos los trabajadores de la sede destino.
+
+Las fuentes ordinarias actualmente aprobadas para habilitar la función son:
+
+| Fuente de capacidad                                 | Condición de aplicación                                                                                                       | Decisión                                                              |
+| --------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `operador_integral_satelite`                        | sede integrada activa, turno, check-in, área compatible, destino de la remisión y permiso `nexo.inventory.remissions.receive` | puede consumir la proyección receptora ordinaria de la sede integrada |
+| `bodeguero`                                         | bodega activa como destino autorizado, turno, check-in, área `warehouse`, recurso relacionado y permiso exacto                | puede consumir la proyección receptora de bodega                      |
+| concesión individual o asignación temporal canónica | actor, vigencia, alcance, motivo, permiso exacto y recurso compatibles                                                        | puede consumir únicamente la cobertura concedida y revocable          |
+
+No habilitan automáticamente la recepción:
+
+```text
+cajero_satelite
+barista_satelite
+cocinero_satelite
+servicio_salon
+mostrador_satelite
+produccion_cocina
+produccion_panaderia
+produccion_reposteria
+conductor_logistica
+gerencia_operativa
+```
+
+La aplicabilidad de un rol a `VPROC-0028`, la consulta de remisiones o la
+pertenencia al destino no sustituyen la concesión exacta de recepción.
+
+##### 4.2. Contexto obligatorio
+
+El inicio deberá resolver como mínimo:
+
+| Componente                 | Regla                                                                |
+| -------------------------- | -------------------------------------------------------------------- |
+| principal técnico          | identidad autenticada y vigente                                      |
+| actor efectivo             | persona empresarial atribuible a la recepción                        |
+| función activa             | participación vigente como `RECEPCION_EN_SEDE`                       |
+| turno y check-in           | vigentes cuando el permiso y la estación los exijan                  |
+| sede destino               | extremo exacto autorizado de la remisión o shipment                  |
+| área destino               | área operativa compatible con la carga y la función                  |
+| permiso                    | `nexo.inventory.remissions.receive` o su versión canónica vigente    |
+| relación                   | destino, asignación receptora o acción atribuida al actor            |
+| recurso                    | remisión, shipment, líneas, bultos y manifiesto relacionados         |
+| handoff y custodia         | custodio actual, actor que entrega, estado y transferencia pendiente |
+| versión                    | estado, manifiesto, cantidades y versión esperada del recurso        |
+| dispositivo y conectividad | contexto técnico sin autoridad propia y condición de reconciliación  |
+
+Toda ausencia, revocación, incompatibilidad o conflicto falla cerrado.
+
+##### 4.3. Alcance de datos
+
+Una entrega solo puede aparecer cuando exista al menos una relación
+autoritativa:
+
+```text
+DESTINO_AUTORIZADO_DE_LA_REMISION
+ACTOR_RECEPTOR_ASIGNADO
+ACTOR_CON_ACCION_DE_RECEPCION_ATRIBUIDA
+ACTOR_RECEPTOR_DE_HANDOFF_VIGENTE
+ACTOR_QUE_REGISTRO_UN_RECEIPT_DENTRO_DE_SU_ALCANCE
+```
+
+No bastan la misma empresa, sede, área nominal, fecha, ruta, estado,
+identificador, URL, dispositivo, solicitud propia o conocimiento físico de la
+carga.
+
+##### 4.4. Carril funcional
+
+El inicio pertenece al carril `OPERACION`. Puede mostrar referencias de solo
+lectura necesarias para verificar la entrega, pero excluye:
+
+- control, priorización global y resolución de `SUPERVISION`;
+- maestros y políticas de `CONFIGURACION`;
+- custodia de transporte como si fuera recepción;
+- putaway, traslado o ajuste como efectos implícitos;
+- utilidades sin una tarea receptora invocante.
+
+##### 4.5. Regla de handoff y aceptación
+
+La recepción empieza después de un handoff verificable o de una condición de
+arribo equivalente aprobada. Como mínimo deberá conservar:
+
+- actor que entrega o custodio anterior;
+- actor que recibe;
+- remisión o shipment;
+- versión de manifiesto;
+- bultos, LPN y sellos observados;
+- origen y destino;
+- cantidades despachadas y recibidas por línea;
+- estado y condición física observados;
+- fecha y hora de servidor;
+- estado anterior y posterior;
+- evidencia y diferencias abiertas;
+- clave idempotente y versión esperada.
+
+Aceptar físicamente una carga no equivale a aprobar administrativamente una
+diferencia, ubicar inventario, ajustar saldo, liberar cuarentena, disponer un
+producto ni cerrar el proceso.
+
+---
+
+#### 5. `NEXO-RECEIVER-HOME-INFORMATION-ARCHITECTURE-001`
+
+##### 5.1. Orden obligatorio
+
+| Orden | Sección                            | Propósito                                                                                                          | Acción permitida                                                   |
+| ----: | ---------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------ |
+|     1 | Contexto receptor                  | mostrar actor, función, turno, sede, área, estación y condición de recepción                                       | cambiar contexto solo mediante el selector canónico autorizado     |
+|     2 | Siguiente tarea                    | presentar una única prioridad autoritativa                                                                         | `CONTINUAR_SIGUIENTE_TAREA`                                        |
+|     3 | Próximas entregas                  | mostrar cargas asignadas en tránsito o dentro de una ventana confirmada                                            | abrir seguimiento mínimo de la entrega propia                      |
+|     4 | Listas para recibir                | mostrar cargas arribadas o con handoff disponible                                                                  | abrir verificación física autorizada                               |
+|     5 | Recepciones en curso               | continuar verificaciones parciales, líneas pendientes o recibos no confirmados                                     | retomar la acción exacta vigente                                   |
+|     6 | Diferencias y evidencia            | destacar faltantes, sobrantes, daños, producto incorrecto, rechazo o evidencia requerida                           | aportar o corregir evidencia permitida sin resolver el caso        |
+|     7 | Recibidas recientes y continuidad  | mostrar el resultado confirmado y la siguiente función separada                                                    | consultar receipt o cambiar a putaway solo con capacidad adicional |
+|     8 | Funciones adicionales y utilidades | acceso separado a solicitud, bodega u otra función realmente concedida, además de escaneo e impresión contextuales | cambiar de función o invocar utilidad sin mezclar comandos         |
+
+Las secciones pueden estar vacías, pero no se sustituyen por indicadores
+supervisores, configuración, trabajo de otros destinos ni métricas de
+productividad.
+
+##### 5.2. Acción primaria
+
+La única acción primaria es:
+
+```text
+CONTINUAR_SIGUIENTE_TAREA
+```
+
+Se habilita solo cuando el servidor devuelve una tarea vigente con actor,
+función receptora, destino, área, permiso, relación, handoff, etapa, versión y
+custodia compatibles. La acción no recibe del cliente la prioridad, el rol, la
+sede, el estado, las cantidades ni el resultado como autoridad.
+
+##### 5.3. Tarjeta mínima
+
+Cada entrega o tarea visible muestra como mínimo:
+
+| Campo                    | Regla                                                                |
+| ------------------------ | -------------------------------------------------------------------- |
+| identificador humano     | código estable de remisión, shipment, receipt o tarea                |
+| origen y destino         | extremos necesarios y destino receptor autorizado                    |
+| transportador o custodio | función o actor mínimo necesario para el handoff                     |
+| ventana o arribo         | hora confirmada y último hito verificable                            |
+| manifiesto               | versión y resumen de bultos, LPN, sellos y líneas                    |
+| etapa y estado           | valores derivados de hechos canónicos                                |
+| verificación             | avance por líneas, sin presentar una recepción incompleta como total |
+| diferencia               | tipo, cantidad afectada y estado de evidencia cuando exista          |
+| handoff y custodia       | condición actual de transferencia al destino                         |
+| siguiente acción         | una transición exacta o acceso de solo lectura                       |
+| última actualización     | fecha y hora del último hecho confirmado                             |
+
+##### 5.4. Prioridad
+
+La prioridad se resuelve en este orden:
+
+```text
+1. SEGURIDAD_CONDICION_O_CUSTODIA_BLOQUEANTE_EN_HANDOFF_ACTIVO
+2. HANDOFF_PRESENTE_QUE_REQUIERE_RESPUESTA_DEL_RECEPTOR
+3. CARGA_ARRIBADA_DENTRO_DE_VENTANA_CONFIRMADA
+4. RECEPCION_INICIADA_CON_LINEAS_PENDIENTES
+5. DIFERENCIA_QUE_REQUIERE_EVIDENCIA_O_CORRECCION_DEL_RECEPTOR
+6. CARGA_ASIGNADA_LISTA_PARA_RECIBIR
+7. CONTINUIDAD_POSTERIOR_CON_CAPACIDAD_ADICIONAL
+8. OTRA_FUNCION_ADICIONAL_AUTORIZADA
+```
+
+Los desempates usan, en orden: riesgo confirmado, ventana, antigüedad del
+handoff o de la acción atribuida, fecha de arribo y un identificador estable.
+El cliente no puede elevar prioridad mediante parámetros, orden local o
+modificación visual.
+
+---
+
+#### 6. `NEXO-RECEIVER-WORK-QUEUE-CATALOG-001`
+
+| Cola                     | Criterio de inclusión                                                                          | Acción propia del receptor                                                                  | Límite obligatorio                                                                        | Estado         |
+| ------------------------ | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | -------------- |
+| `RCVQ-BLOQUEO`           | sello, bulto, destino, custodio, seguridad, condición o versión incompatibles                  | inspeccionar la causa, rechazar el comando obsoleto y escalar mediante la acción disponible | no ajusta, cancela, dispone ni resuelve por inferencia                                    | `ESPECIFICADO` |
+| `RCVQ-HANDOFF`           | carga presentada por el custodio y transferencia pendiente                                     | contrastar identidad, manifiesto, bultos y condición antes de abrir recepción               | el receptor no representa al conductor ni altera el manifiesto                            | `ESPECIFICADO` |
+| `RCVQ-ARRIBO`            | carga asignada en tránsito, arribada o dentro de ventana confirmada                            | consultar último hito y preparar la estación receptora                                      | no registra llegada, recepción o custodia por anticipación                                | `ESPECIFICADO` |
+| `RCVQ-VERIFICACION`      | handoff válido y líneas disponibles para comprobación física                                   | abrir o continuar captura de cantidades y condición por línea                               | el detalle completo pertenece a `NEXO-UX-013`; el home no confirma en masa por inferencia | `ESPECIFICADO` |
+| `RCVQ-RECEPCION_PARCIAL` | existe recepción iniciada, líneas pendientes o resultado parcial confirmado                    | continuar únicamente las líneas y cantidades todavía recibibles                             | no convierte parcial en completa ni sobrescribe un receipt confirmado                     | `ESPECIFICADO` |
+| `RCVQ-DIFERENCIA`        | faltante, sobrante, daño, producto incorrecto, rechazo, devolución o cuarentena abierta        | consultar, aportar explicación o corregir captura todavía editable                          | reportar no equivale a resolver, ajustar, aceptar pérdida o cerrar                        | `ESPECIFICADO` |
+| `RCVQ-EVIDENCIA`         | una recepción o diferencia exige nota, firma, fotografía, código u otra evidencia aprobada     | aportar la evidencia exacta cuando exista contrato atómico disponible                       | una brecha no implementada se muestra bloqueada y no como acción ejecutable               | `ESPECIFICADO` |
+| `RCVQ-CONTINUIDAD`       | recepción confirmada y existe una acción posterior separada para bodega, putaway o seguimiento | consultar receipt y cambiar a la función adicional autorizada                               | confirmar recepción no ubica, mueve, ajusta ni cierra automáticamente                     | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_RECEIVER_QUEUES = 8
+MATERIALIZED_RECEIVER_QUEUES = 8
+UNIQUE_RECEIVER_QUEUES = 8
+MISSING_RECEIVER_QUEUES = 0
+DUPLICATE_RECEIVER_QUEUES = 0
+```
+
+Una misma entrega puede aportar señales a varias colas, pero tendrá una única
+tarea primaria, resuelta en servidor. Una fila visual no crea un segundo
+comando ni un receipt adicional.
+
+---
+
+#### 7. `NEXO-RECEIVER-CAPABILITY-COMPOSITION-CONTRACT-001`
+
+##### 7.1. Principio
+
+```text
+MISMA PERSONA
+≠
+MISMA FUNCION
+≠
+MISMO PERMISO
+≠
+MISMA ETAPA
+≠
+MISMO COMANDO
+```
+
+La composición agrega accesos a funciones vigentes; nunca fusiona permisos,
+colas, transiciones, auditoría o custodia.
+
+##### 7.2. Casos materializados
+
+| Caso           | Capacidades de la persona                               | Proyección resultante                                                                   | Regla obligatoria                                                                                       | Estado         |
+| -------------- | ------------------------------------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- | -------------- |
+| `RCV-COMP-001` | `operador_integral_satelite` con recepción vigente      | home receptor de la sede integrada, además de sus funciones propias                     | la concesión se limita al destino, turno, área y recurso autorizados                                    | `ESPECIFICADO` |
+| `RCV-COMP-002` | `bodeguero` y receptor de bodega                        | home receptor cuando la bodega activa es destino; home de bodega como función adicional | recibir no concede preparar, ajustar ni disponer; el contexto determina el extremo                      | `ESPECIFICADO` |
+| `RCV-COMP-003` | solicitante y receptor                                  | ambas proyecciones disponibles por separado                                             | haber solicitado no autoriza recibir; la recepción exige permiso, handoff y etapa propios               | `ESPECIFICADO` |
+| `RCV-COMP-004` | receptor y bodeguero con putaway                        | recepción primero; putaway después mediante cambio de función                           | el receipt confirmado no crea movimiento ni ubicación automáticamente                                   | `ESPECIFICADO` |
+| `RCV-COMP-005` | receptor y autoridad supervisora o base                 | recepción bajo función operativa; control bajo carril supervisor separado               | el actor no aprueba su propia diferencia, ajuste, devolución o disposición sensible                     | `ESPECIFICADO` |
+| `RCV-COMP-006` | conductor y receptor                                    | para la misma carga, el custodio no puede auto-entregarse ni auto-recibirse             | otro receptor autorizado debe aceptar el handoff; una carga ajena exige contexto receptor independiente | `ESPECIFICADO` |
+| `RCV-COMP-007` | receptor por concesión individual o asignación temporal | home receptor limitado a recursos y vigencia de la concesión                            | no crea rol permanente, alcance de sede completo ni acceso posterior a revocación                       | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_COMPOSITION_CASES = 7
+MATERIALIZED_COMPOSITION_CASES = 7
+UNIQUE_COMPOSITION_CASES = 7
+MISSING_COMPOSITION_CASES = 0
+DUPLICATE_COMPOSITION_CASES = 0
+```
+
+##### 7.3. Secuencia obligatoria de handoff y recepción
+
+```text
+CARGA_EN_TRANSITO_O_ARRIBADA
+→
+CUSTODIO_PRESENTA_CARGA
+→
+RECEPTOR_CONTRASTA_IDENTIDAD_Y_MANIFIESTO
+→
+HANDOFF_ACEPTABLE
+→
+VERIFICACION_FISICA_POR_LINEA
+→
+RECEPCION_PARCIAL_O_COMPLETA_CONFIRMADA
+→
+DIFERENCIAS_ABIERTAS_O_CONTINUIDAD_SEPARADA
+```
+
+No se permite convertir `CARGA_ARRIBADA` directamente en
+`RECEPCION_COMPLETA`. El mismo actor puede haber solicitado la carga o ejecutar
+putaway después, pero cada función conserva permiso, etapa, comando, versión,
+fecha, evidencia y efecto independientes.
+
+---
+
+#### 8. `NEXO-RECEIVER-STAGE-PROJECTION-MATRIX-001`
+
+| Etapa            | Nombre canónico                                                 | Proyección                                       | Acción del receptor                                                                                                           | Límite                                                                                                           | Estado         |
+| ---------------- | --------------------------------------------------------------- | ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | -------------- |
+| `VPROC-0028-E01` | Crear solicitud interna                                         | `REFERENCIA_SI_EXISTE_RELACION_CON_DESTINO`      | Ninguna acción de creación desde la función receptora.                                                                        | Si la misma persona solicitó, usa el home de solicitante y un comando separado.                                  | `ESPECIFICADO` |
+| `VPROC-0028-E02` | Aplicar ruta, producto y política de solicitud                  | `RESULTADO_APLICABLE_EN_SOLO_LECTURA`            | Consultar restricciones necesarias para interpretar entrega, unidad o condición.                                              | No configura rutas, productos, mínimos, presentaciones ni políticas.                                             | `ESPECIFICADO` |
+| `VPROC-0028-E03` | Crear origen y fulfillment por línea                            | `REFERENCIA_DE_CARGA_ESPERADA`                   | Consultar origen, líneas, cantidades esperadas y responsable funcional.                                                       | No crea fulfillment, reasigna origen ni decide disponibilidad.                                                   | `ESPECIFICADO` |
+| `VPROC-0028-E04` | Elegir LOC, posición y cantidad de picking                      | `RESUMEN_DE_PREPARACION_EN_SOLO_LECTURA`         | Consultar únicamente el resultado necesario para contrastar la carga.                                                         | No consulta stock sensible, elige origen, reserva ni confirma picking.                                           | `ESPECIFICADO` |
+| `VPROC-0028-E05` | Preparar, dejar listo o registrar faltante                      | `ENTREGA_PROXIMA_Y_NOVEDAD_DE_ORIGEN`            | Ver cantidades preparadas, faltantes declarados y estado de disponibilidad.                                                   | No prepara, sustituye, declara listo ni modifica el manifiesto.                                                  | `ESPECIFICADO` |
+| `VPROC-0028-E06` | Cargar, sellar y despachar                                      | `PRERREQUISITO_DE_HANDOFF`                       | Consultar manifiesto, bultos, LPN, sellos, origen, destino y versión que deberán contrastarse.                                | No carga, sella, despacha, acepta custodia de transporte ni inicia tránsito.                                     | `ESPECIFICADO` |
+| `VPROC-0028-E07` | Transportar y confirmar tránsito                                | `ARRIBO_Y_HANDOFF_ENTRANTE`                      | Consultar último hito confirmado, ventana y custodio; abrir recepción solo cuando el handoff sea válido.                      | No monitorea rutas globales, registra hitos del conductor ni anticipa recepción.                                 | `ESPECIFICADO` |
+| `VPROC-0028-E08` | Recibir parcial o totalmente                                    | `TRABAJO_PRIMARIO_DEL_RECEPTOR`                  | Contrastar carga, capturar cantidades y condición por línea y confirmar recepción parcial o completa mediante comando exacto. | No autoacepta desde el arribo, no excede despachado, no duplica receipt y no ejecuta putaway o ajuste implícito. | `ESPECIFICADO` |
+| `VPROC-0028-E09` | Resolver faltante, sobrante, daño, rechazo, devolución o cierre | `CAPTURA_Y_EVIDENCIA_SIN_RESOLUCION_SUPERVISORA` | Aportar evidencia, explicación o corrección todavía permitida y consultar la decisión.                                        | No aprueba su propia diferencia, ajusta saldo, dispone producto, cancela ni cierra unilateralmente.              | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_PROCESS_STAGES = 9
+MATERIALIZED_PROCESS_STAGES = 9
+UNIQUE_PROCESS_STAGES = 9
+MISSING_PROCESS_STAGES = 0
+DUPLICATE_PROCESS_STAGES = 0
+```
+
+---
+
+#### 9. `NEXO-RECEIVER-ROUTE-DISPOSITION-001`
+
+| Ruta             | Patrón actual                             | Disposición                                  | Decisión materializada                                                                                                                  | Estado         |
+| ---------------- | ----------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `NEXO-ROUTE-001` | `/`                                       | `PROYECTAR_HOME_RECEPTOR`                    | Inicio por destino, handoff, recepción pendiente y siguiente tarea; no conserva el cockpit por tipo de sede como autoridad.             | `ESPECIFICADO` |
+| `NEXO-ROUTE-031` | `/inventory/remissions`                   | `LISTA_ACOTADA_A_DESTINO_Y_FUNCION`          | Muestra únicamente remisiones relacionadas con la sede, área, actor o acción receptora vigentes.                                        | `ESPECIFICADO` |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`              | `DETALLE_COMPARTIDO_CON_ACCIONES_RECEPTORAS` | Expone detalle mínimo, progreso y comandos de recepción por etapa; otras funciones revalidan capacidades independientes.                | `ESPECIFICADO` |
+| `NEXO-ROUTE-033` | `/inventory/remissions/[id]/edit`         | `EXCLUIR_DE_LA_FUNCION_RECEPTORA`            | El receptor no edita solicitud, origen, destino, política ni cantidades solicitadas.                                                    | `ESPECIFICADO` |
+| `NEXO-ROUTE-034` | `/inventory/remissions/conductor`         | `EXCLUIR_CUSTODIA_DE_TRANSPORTE`             | Pertenece al conductor; el receptor solo observa el handoff y último hito necesarios desde su propia tarea.                             | `ESPECIFICADO` |
+| `NEXO-ROUTE-035` | `/inventory/remissions/fulfillment`       | `REFERENCIA_DE_CARGA_ESPERADA`               | Presenta únicamente el resultado por línea necesario para verificar lo despachado; no permite reasignar fulfillment.                    | `ESPECIFICADO` |
+| `NEXO-ROUTE-036` | `/inventory/remissions/prepare`           | `REFERENCIA_O_FUNCION_SEPARADA`              | Como receptor solo consulta el resultado confirmado; una capacidad adicional de bodega abre su propia proyección.                       | `ESPECIFICADO` |
+| `NEXO-ROUTE-037` | `/inventory/remissions/receive`           | `DESTINO_OPERATIVO_PRIMARIO_TRANSITORIO`     | Concentra cargas físicas por recibir, pero deberá adoptar filtro por destino, función, handoff, versión, concurrencia e idempotencia.   | `ESPECIFICADO` |
+| `NEXO-ROUTE-038` | `/inventory/remissions/transit`           | `PROYECTAR_SOLO_ARRIBO_RELACIONADO`          | Muestra último hito y ventana de cargas del destino; monitoreo global y acciones de conductor permanecen fuera.                         | `ESPECIFICADO` |
+| `NEXO-ROUTE-041` | `/inventory/settings/fulfillment-routes`  | `EXCLUIR_CONFIGURACION`                      | El receptor consume el resultado publicado; no modifica fulfillment ni rutas.                                                           | `ESPECIFICADO` |
+| `NEXO-ROUTE-045` | `/inventory/settings/remissions`          | `EXCLUIR_CONFIGURACION`                      | No expone parámetros generales de remisiones.                                                                                           | `ESPECIFICADO` |
+| `NEXO-ROUTE-046` | `/inventory/settings/remissions/products` | `EXCLUIR_CONFIGURACION`                      | No modifica elegibilidad, presentación, tolerancia ni comportamiento de productos.                                                      | `ESPECIFICADO` |
+| `NEXO-ROUTE-047` | `/inventory/settings/request-policies`    | `MOSTRAR_SOLO_RESULTADO_APLICABLE`           | Puede explicar cantidad, unidad o restricción aplicada sin abrir controles de política.                                                 | `ESPECIFICADO` |
+| `NEXO-ROUTE-050` | `/inventory/settings/supply-routes`       | `MOSTRAR_VENTANA_Y_ORIGEN_EN_SOLO_LECTURA`   | Expone únicamente ruta y ventana necesarias para la entrega del destino; no configura ni reordena.                                      | `ESPECIFICADO` |
+| `NEXO-ROUTE-062` | `/printing/jobs`                          | `UTILIDAD_CONTEXTUAL_PROPIA`                 | Solo accede a comprobantes, etiquetas o trabajos originados por la recepción propia; no a la cola global ni a plantillas.               | `ESPECIFICADO` |
+| `NEXO-ROUTE-064` | `/scanner`                                | `HEREDAR_TAREA_RECEPTORA`                    | Identifica remisión, shipment, bulto, LPN, sello o línea dentro de la tarea invocante; no confirma handoff ni recepción por inferencia. | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_RELEVANT_ROUTES = 16
+MATERIALIZED_RELEVANT_ROUTES = 16
+UNIQUE_RELEVANT_ROUTES = 16
+MISSING_RELEVANT_ROUTES = 0
+DUPLICATE_RELEVANT_ROUTES = 0
+```
+
+Toda ruta revalida en servidor actor, función, destino, área, permiso, relación,
+handoff, etapa, versión y custodia. La navegación visible no sustituye el
+guard de lectura ni el comando de mutación.
+
+---
+
+#### 10. `NEXO-RECEIVER-HOME-STATE-CONTRACT-001`
+
+| Estado de interfaz         | Condición                                                                                                 | Respuesta obligatoria                                                                       |
+| -------------------------- | --------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- |
+| `RESOLVIENDO_CONTEXTO`     | Se están resolviendo actor, turno, check-in, sede, área, función, permisos, relaciones y custodia.        | No mostrar colas definitivas ni habilitar mutaciones.                                       |
+| `SIN_FUNCION_RECEPTORA`    | La sesión es válida, pero no existe capacidad receptora vigente para el destino.                          | Mostrar causa sin exponer cargas y ofrecer solo cambio de función o contexto autorizado.    |
+| `CARGANDO_TRABAJO`         | La consulta autoritativa de entregas y tareas está en curso.                                              | Mantener contexto visible y evitar conteos parciales como definitivos.                      |
+| `TRABAJO_DISPONIBLE`       | Existe al menos una tarea válida y atribuida al receptor.                                                 | Habilitar solo `CONTINUAR_SIGUIENTE_TAREA` sobre la prioridad resuelta.                     |
+| `SIN_ENTREGAS_POR_RECIBIR` | La consulta completa no devuelve arribos, handoffs o recepciones pendientes.                              | Mostrar vacío confirmado y hora de actualización, sin exponer trabajo de otros destinos.    |
+| `HANDOFF_NO_CONFIRMADO`    | La carga figura arribada, pero faltan custodio, entrega, manifiesto, bultos o condición de transferencia. | No abrir confirmación final; dirigir a `RCVQ-HANDOFF` o `RCVQ-BLOQUEO`.                     |
+| `CUSTODIA_EN_CONFLICTO`    | El custodio vigente no coincide, existe auto-handoff o la transferencia quedó incompleta.                 | Bloquear recepción y exigir resolución autoritativa.                                        |
+| `RECEPCION_EN_CONFLICTO`   | Otro actor inició o confirmó receipt, cambió la versión o las cantidades ya fueron materializadas.        | Rechazar el comando obsoleto y recargar estado, líneas y receipt vigentes.                  |
+| `DATOS_PARCIALES`          | Una fuente secundaria falló o la proyección de manifiesto, líneas o evidencia es incompleta.              | Etiquetar parcialidad; no inferir ausencia, igualdad ni recepción completa.                 |
+| `ERROR_RECUPERABLE`        | La lectura o preparación del comando falló sin resultado confirmado.                                      | Permitir reintento después de revalidar contexto, versión e idempotencia.                   |
+| `SIN_AUTORIZACION`         | Falta permiso, destino, área, relación, etapa o condición de la acción.                                   | Fallar cerrado y explicar la razón sin revelar datos protegidos.                            |
+| `CONTEXTO_REVOCADO`        | Cambió turno, check-in, rol operativo, permiso, destino, área, asignación o custodia.                     | Invalidar colas y comandos; resolver nuevamente desde servidor.                             |
+| `CONECTIVIDAD_INCIERTA`    | No se conoce el resultado de una mutación o la red está intermitente.                                     | No repetir a ciegas ni mostrar éxito; reconciliar por receipt, versión y clave idempotente. |
+| `TAREA_CAMBIADA`           | La etapa, versión, prioridad, handoff o actor responsable cambió desde la carga de la vista.              | Rechazar el comando obsoleto y recargar la siguiente acción válida.                         |
+
+Reconciliación:
+
+```text
+EXPECTED_INTERFACE_STATES = 14
+MATERIALIZED_INTERFACE_STATES = 14
+UNIQUE_INTERFACE_STATES = 14
+MISSING_INTERFACE_STATES = 0
+DUPLICATE_INTERFACE_STATES = 0
+```
+
+Una petición enviada no equivale a handoff aceptado, cantidad recibida,
+receipt confirmado, inventario publicado, diferencia resuelta o cierre. Ante
+resultado desconocido, el cliente reconcilia el hecho antes de ofrecer otro
+intento.
+
+---
+
+#### 11. Reglas de estación, escaneo, evidencia y conectividad
+
+1. el dispositivo personal, tablet, kiosco o estación de recepción no es el
+   actor empresarial;
+2. un dispositivo compartido exige sesión humana vigente antes de mostrar
+   información protegida o mutar;
+3. el escaneo identifica un recurso y hereda la tarea; no confirma handoff,
+   cantidad, condición ni recepción;
+4. la captura masiva puede reducir pasos, pero no asumir que todo llegó ni
+   ocultar líneas que requieren cantidad real, conteo auxiliar o condición;
+5. cada mutación usa clave idempotente, versión esperada y hora de servidor;
+6. una operación offline queda pendiente de reconciliación y no se representa
+   como exitosa;
+7. si cambió el handoff, receipt, versión o custodia durante la desconexión, el
+   comando obsoleto se rechaza;
+8. fotografías, firmas, códigos o evidencia sensible requieren permiso,
+   finalidad, retención y contrato atómico antes de habilitarse;
+9. impresión y comprobantes se limitan a la recepción propia y no conceden
+   acceso a la cola global;
+10. la falta de evidencia no autoriza convertir una diferencia en recepción
+    completa ni resolverla por silencio;
+11. la recepción en un dispositivo compartido conserva actor, dispositivo,
+    turno, sede, área, recurso y claves de correlación;
+12. la pérdida de conexión no habilita saltar handoff, verificación, diferencia
+    o decisión posterior.
+
+---
+
+#### 12. Evidencia técnica actual y diagnóstico
+
+| Superficie o capacidad actual                          | Evidencia permitida                                                                                                                                                                                                   | Estado                   | Destino                                                       |
+| ------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ------------------------------------------------------------- |
+| Inicio raíz `src/app/page.tsx`                         | Organiza acciones principalmente por tipo de sede y combina solicitar y recibir en el foco satélite; no resuelve una proyección dedicada por función receptora.                                                       | `IMPLEMENTADO_PARCIAL`   | Paquete de implementación NEXO                                |
+| `NEXO-ROUTE-031` y hub de remisiones                   | Filtra por destino y alcance operativo de área en el flujo satélite, pero mezcla creación, seguimiento, recepción y acciones de otros carriles en una superficie extensa.                                             | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-008; NEXO-UX-013; implementación NEXO                 |
+| `NEXO-ROUTE-032` y detalle legacy                      | Usa `access.canReceive`, estados `in_transit` y `partial`, cantidades recibidas y faltantes, y diferencia recepción parcial de completa.                                                                              | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-013; NEXO-UX-021; NEXO-UX-022                         |
+| `ReceiveBatchShell`                                    | Permite selección por líneas y exige cantidad real o conteo auxiliar según medición, pero es un workbench de detalle y no un home de receptor.                                                                        | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-013; NEXO-UX-023                                      |
+| `NEXO-ROUTE-037` y página de shipments                 | Consulta shipments `in_transit`, captura cantidad por línea y confirma por RPC; la superficie por sí sola no demuestra filtro visible por función, destino, asignación o handoff.                                     | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-013; implementación NEXO                              |
+| RPC `confirm_remission_shipment_receipt`               | Bloquea el shipment, exige estado `in_transit`, valida líneas y cantidades, crea receipt y faltantes; no recibe clave idempotente ni versión esperada y acepta cada cantidad recibida como aceptada.                  | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-013; AUTH-SRV-001 a AUTH-SRV-005; implementación NEXO |
+| Modelo físico de receipts                              | Existen receipts, líneas, cantidades recibidas, aceptadas, rechazadas, en cuarentena, diferencias e índice opcional de idempotencia; la migración declara publicación de inventario destino para una etapa posterior. | `ESPECIFICADO`           | NEXO-UX-013; NEXO-UX-022; paquete de implementación NEXO      |
+| Inicio dedicado por actor, destino, handoff y receipt  | No existe una superficie única que materialice el contrato aprobado de esta tarea.                                                                                                                                    | `NO_IMPLEMENTADO`        | Paquete de implementación NEXO                                |
+| Coexistencia de `restock_requests` y shipments físicos | Ambos modelos representan recepción con estructuras y estados distintos; su coexistencia no prueba adopción, equivalencia ni conciliación única.                                                                      | `BLOQUEADO`              | NEXO-UX-009 a NEXO-UX-013                                     |
+| Validación física, tablet, kiosco y offline            | No se ejecutó piloto con receptores, conductores, bultos, sellos, diferencias ni conectividad intermitente.                                                                                                           | `PENDIENTE_DE_EVIDENCIA` | NEXO-UX-023 a NEXO-UX-025                                     |
+
+El código y las migraciones actuales demuestran superficies, contratos y
+transiciones parciales. No demuestran el home completo, su priorización,
+composición de capacidades, handoff físico, adopción única ni validación con
+receptores reales.
+
+---
+
+#### 13. Brechas y bloqueos preservados
+
+| Brecha                                                              | Efecto en el inicio                                                                   | Propietario documental                                       | Condición de salida                                                   |
+| ------------------------------------------------------------------- | ------------------------------------------------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------- |
+| home dedicado inexistente                                           | el receptor entra por un inicio general o un hub mixto                                | paquete de implementación NEXO                               | proyección por función, destino y tarea materializada                 |
+| coexistencia legacy y shipments                                     | una entrega puede tener dos representaciones no conciliadas                           | `NEXO-UX-009` a `NEXO-UX-013`                                | modelo de compatibilidad, precedencia y adopción aprobado             |
+| handoff ordinario no materializado como comando independiente       | arribo, entrega física y recepción pueden confundirse                                 | `NEXO-UX-012`; `NEXO-UX-013`                                 | actores, estado, custodia, versión y evidencia del handoff definidos  |
+| RPC sin clave idempotente ni versión esperada en su contrato actual | un reintento o vista obsoleta puede requerir reconciliación externa                   | `NEXO-UX-013`; AUTH-SRV-001 a AUTH-SRV-005                   | comando idempotente y control optimista materializados                |
+| cantidad recibida aceptada automáticamente en RPC físico            | condición, rechazo y cuarentena no tienen decisión visible separada en esa superficie | `NEXO-UX-013`; `NEXO-UX-022`                                 | captura y decisión por línea diferenciadas                            |
+| publicación de inventario destino diferida                          | receipt no demuestra saldo disponible ni ubicación                                    | `NEXO-UX-013`; `NEXO-UX-015`; paquete de implementación NEXO | asiento de inventario y putaway separados, idempotentes y conciliados |
+| evidencia sensible sin contrato completo                            | fotografía, firma o código no se muestran como disponibles por inferencia             | `NEXO-UX-022`; `NEXO-UX-023`                                 | permiso, finalidad, retención, storage y comando aprobados            |
+| validación física y offline pendiente                               | no existe evidencia de seguridad o usabilidad en la estación real                     | `NEXO-UX-023` a `NEXO-UX-025`                                | piloto con actores, dispositivos, handoffs y diferencias reales       |
+
+Ningún bloqueo queda sin tarea responsable.
+
+---
+
+#### 14. Decisiones aprobadas
+
+1. el inicio se resuelve por función `RECEPCION_EN_SEDE`, destino, permiso y
+   relación, no por cargo ni presencia física en la sede;
+2. existe una sola acción primaria: `CONTINUAR_SIGUIENTE_TAREA`;
+3. las ocho colas representan arribo, handoff, verificación, recepción,
+   diferencia, evidencia, continuidad y bloqueo;
+4. la prioridad protege primero seguridad, custodia y handoffs activos;
+5. el receptor ve únicamente cargas relacionadas con su destino y función;
+6. `operador_integral_satelite` y `bodeguero` son fuentes ordinarias aprobadas
+   dentro de sus contextos exactos;
+7. caja, barra, cocina, salón, mostrador, producción, conductor y gerencia no
+   reciben la función por inferencia;
+8. una concesión individual conserva vigencia y alcance exactos;
+9. haber solicitado no concede recepción, aunque una misma persona pueda
+   ejercer ambas funciones;
+10. el conductor no se auto-entrega ni auto-recibe la misma carga;
+11. handoff, verificación física y confirmación son hechos separados;
+12. recepción parcial no se presenta como completa;
+13. reportar diferencia no equivale a resolverla ni ajustar inventario;
+14. recibir no ejecuta putaway, traslado, publicación de saldo o cierre por
+    inferencia;
+15. una función adicional se abre como proyección separada;
+16. las dieciséis rutas existentes conservan identidad y disposición;
+17. los catorce estados fallan cerrados y no inventan éxito;
+18. los modelos legacy y físico permanecen reconocidos sin declarar adopción
+    única;
+19. las superficies actuales son evidencia parcial y no validación;
+20. no se modifica código, Supabase, permisos, datos ni operación;
+21. `NEXO-UX-007` permanece reservada.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+Se crean exactamente siete requisitos:
+
+| Requisito       | Cobertura                                                                                                |
+| --------------- | -------------------------------------------------------------------------------------------------------- |
+| `TREQ-NEXO-069` | resolución autoritativa de actor, función receptora, destino, área, permiso, relación, handoff y versión |
+| `TREQ-NEXO-070` | ocho secciones, acción primaria única, ocho colas y prioridad de servidor                                |
+| `TREQ-NEXO-071` | decisión de las nueve etapas y separación entre handoff, recepción, diferencia, putaway y ajuste         |
+| `TREQ-NEXO-072` | composición de siete casos y prohibición de auto-handoff o auto-recepción del conductor                  |
+| `TREQ-NEXO-073` | disposición de dieciséis rutas con revalidación y fallo cerrado                                          |
+| `TREQ-NEXO-074` | receipt, cantidades, condición, concurrencia, versión, idempotencia y coexistencia de modelos            |
+| `TREQ-NEXO-075` | catorce estados y representación honesta de parcialidad, brechas y resultado desconocido                 |
+
+No se modifica, difiere, descarta ni vuelve obsoleto ningún requisito histórico.
+
+---
+
+#### 16. Criterios de aceptación
+
+- [ ] El archivo contiene exclusivamente `NEXO-UX-006`.
+- [ ] La audiencia se define como `RECEPCION_EN_SEDE`, no como un rol universal.
+- [ ] Se materializan exactamente tres fuentes de habilitación receptora.
+- [ ] Se enumeran las funciones que no reciben permiso por inferencia.
+- [ ] El contexto obligatorio contiene actor, turno, sede, área, permiso,
+      relación, recurso, handoff, custodia, versión, dispositivo y conectividad.
+- [ ] Existen exactamente ocho secciones y una acción primaria.
+- [ ] Existen exactamente ocho colas únicas `RCVQ-*`.
+- [ ] Existen exactamente siete casos únicos `RCV-COMP-*`.
+- [ ] La misma persona puede solicitar y recibir solo mediante capacidades
+      separadas.
+- [ ] El conductor no puede auto-entregarse ni auto-recibirse la misma carga.
+- [ ] Recepción y putaway permanecen separados.
+- [ ] Las nueve etapas de `VPROC-0028` aparecen una sola vez.
+- [ ] `VPROC-0028-E08` es el trabajo primario del receptor.
+- [ ] `VPROC-0028-E09` permite captura y evidencia, no resolución unilateral.
+- [ ] Las dieciséis rutas aparecen una sola vez y no se inventan URLs.
+- [ ] `NEXO-ROUTE-037` se conserva como destino transitorio, no como prueba de
+      home completo.
+- [ ] Escaneo e impresión heredan la tarea y no conceden autoridad.
+- [ ] Se materializan exactamente catorce estados únicos.
+- [ ] Handoff, recepción parcial, conflicto, revocación y conectividad incierta
+      no se muestran como éxito.
+- [ ] El diagnóstico distingue código, migración, diseño, implementación y
+      evidencia operativa.
+- [ ] La coexistencia de los dos modelos queda reconocida y asignada.
+- [ ] Se crean exactamente `TREQ-NEXO-069` a `TREQ-NEXO-075`.
+- [ ] No se modifica ningún requisito histórico.
+- [ ] No se modifica código, Supabase, permisos, datos ni despliegues.
+- [ ] `NEXO-UX-007` permanece reservada y no iniciada.
+
+---
+
+#### 17. `NEXO-RECEIVER-HOME-HANDOFF-001`
+
+| Resultado o brecha                                  | Estado actual                        | Tarea responsable              | Condición de salida                                                   |
+| --------------------------------------------------- | ------------------------------------ | ------------------------------ | --------------------------------------------------------------------- |
+| navegación por tarea receptora                      | `ESPECIFICADO`                       | `NEXO-UX-008`                  | inicio y navegación consumen tarea, función y contexto autoritativos  |
+| detalle de recepción, cantidades y condition        | `ESPECIFICADO`                       | `NEXO-UX-013`                  | captura por línea, handoff, receipt, idempotencia y efectos definidos |
+| ubicación posterior y putaway                       | `ESPECIFICADO` como función separada | `NEXO-UX-015`                  | receipt y movimiento de ubicación se correlacionan sin duplicarse     |
+| escaneo contextual                                  | `ESPECIFICADO`                       | `NEXO-UX-020`                  | código identifica recurso y propone acción sin ejecutarla             |
+| estados, cantidades y responsable visibles          | `ESPECIFICADO`                       | `NEXO-UX-021`                  | etapa, cantidad y siguiente acción se representan uniformemente       |
+| diferencias, daño, rechazo, cuarentena y devolución | `BLOQUEADO`                          | `NEXO-UX-022`                  | captura, contención, decisión, resolución y cierre separados          |
+| tablet, kiosco, periféricos y red intermitente      | `PENDIENTE_DE_EVIDENCIA`             | `NEXO-UX-023`                  | perfil de estación y contingencia certificados                        |
+| prototipo con receptores                            | `PENDIENTE_DE_EVIDENCIA`             | `NEXO-UX-024`                  | recorridos prioritarios probados con actores y escenarios reales      |
+| métricas y piloto                                   | `PENDIENTE_DE_EVIDENCIA`             | `NEXO-UX-025`                  | umbrales y evidencia operativa aprobados                              |
+| implementación del home                             | `NO_IMPLEMENTADO`                    | paquete de implementación NEXO | componentes, consultas, guards, comandos y pruebas materializados     |
+
+Esta tarea no inicia ninguno de esos trabajos.
+
+---
+
+#### 18. Continuidad canónica
+
+**ÚLTIMA TAREA APROBADA**
+
+`NEXO-UX-005 — Diseñar inicio para conductor`
+
+**TAREA ACTUAL APROBADA**
+
+`NEXO-UX-006 — Diseñar inicio para receptor`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`NEXO-UX-007 — Diseñar inicio para supervisor`
+
+
 ### [ ] NEXO-UX-007 — Diseñar inicio para supervisor
 ### [ ] NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas
 ### [ ] NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión
