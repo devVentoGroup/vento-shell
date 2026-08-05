@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **566** |
+| Aprobadas | **567** |
 | En propuesta | **0** |
-| No iniciadas | **1028** |
+| No iniciadas | **1027** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **35.51% (566/1594)** |
+| Porcentaje de completamiento | **35.57% (567/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NEXO-UX-020` — Simplificar escáner y captura | ✅ APROBADA |
-| Tarea actual | `NEXO-UX-021` — Mostrar solo información necesaria según etapa | ⬜ NO INICIADA |
-| Siguiente reservada | `NEXO-UX-022` — Diseñar manejo de diferencias y excepciones | ⬜ NO INICIADA |
+| Última aprobada | `NEXO-UX-021` — Mostrar solo información necesaria según etapa | ✅ APROBADA |
+| Tarea actual | `NEXO-UX-022` — Diseñar manejo de diferencias y excepciones | ⬜ NO INICIADA |
+| Siguiente reservada | `NEXO-UX-023` — Probar flujos en tablets y kioscos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -976,7 +976,7 @@
 | ✅ APROBADA | `NEXO-UX-018` | Diseñar flujo completo de conteos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-019` | Diseñar flujo completo de ajustes | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-020` | Simplificar escáner y captura | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
-| ⬜ NO INICIADA | `NEXO-UX-021` | Mostrar solo información necesaria según etapa | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
+| ✅ APROBADA | `NEXO-UX-021` | Mostrar solo información necesaria según etapa | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-022` | Diseñar manejo de diferencias y excepciones | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-023` | Probar flujos en tablets y kioscos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-024` | Validar el prototipo con bodeguero, conductor y receptores | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |

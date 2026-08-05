@@ -18707,7 +18707,778 @@ Se incorporan `TREQ-NEXO-231` a `TREQ-NEXO-244` en el registro canónico complet
 `NEXO-UX-021` deberá consumir los estados, proposals, field bindings, cantidades, UOM, evidencia y acciones aprobadas hasta esta tarea para reducir cada etapa a la información estrictamente necesaria, sin crear otra fuente de verdad ni modificar autoridad.
 
 
-### [ ] NEXO-UX-021 — Mostrar solo información necesaria según etapa
+### ✅ NEXO-UX-021 — Mostrar solo información necesaria según etapa
+
+---
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-020 — Simplificar escáner y captura` — APROBADA
+**Tarea siguiente:** `NEXO-UX-022 — Diseñar manejo de diferencias y excepciones` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional transversal de minimización y divulgación progresiva por etapa, con bundles, tiers, resolución, contexto, acciones, cantidades, UOM, ubicaciones, custodia, evidencia, excepciones, conteo ciego, escaneo, offline, dispositivos, superficies, rutas, estados, validación y continuidad
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Procesos cubiertos:** `VPROC-0023` a `VPROC-0028`, con decisión explícita para sus cuarenta etapas aprobadas
+**Tareas de navegación cubiertas:** veintiuna tareas directamente aplicables de `NEXO-NAVIGATION-TASK-CATALOG-001`; ocho tareas de LPN, activos, referencias e impresión conservan sus propietarios posteriores
+**Permiso funcional consumido:** el permiso exacto de la tarea, acción, recurso y etapa; mostrar u ocultar información no crea, amplía ni sustituye autoridad
+**Artefactos producidos:** veinticuatro contratos, catálogos, matrices y handoffs enumerados en esta tarea
+**Decisiones consumidas:** `NEXO-UX-LANE-CONTRACT-001`, `NEXO-NAVIGATION-TASK-CATALOG-001`, flujos `NEXO-UX-009` a `NEXO-UX-020`, contratos de autorización, contexto, UOM, ledger, evidencia, dispositivos y requisitos `TREQ-NEXO-*` vigentes
+**Cambios físicos autorizados:** ninguno; no modifica código, componentes, consultas, permisos, datos, Supabase, migraciones, RLS, RPC, tipos, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Definir qué información debe ver una persona en cada etapa de inventario y logística para reconocer el trabajo, tomar la decisión permitida y verificar su resultado sin cargar la interfaz con datos de otras etapas, carriles o autoridades.
+
+La regla canónica es:
+
+```text
+TAREA, ETAPA Y RECURSO AUTORITATIVOS
++ ACTOR, FUNCION, TERRITORIO Y DISPOSITIVO VIGENTES
++ PAQUETES DE INFORMACION PERTINENTES
++ MINIMIZACION Y RESTRICCION EN SERVIDOR
++ UNA PREGUNTA Y UNA ACCION PRINCIPAL
++ DETALLE PROGRESIVO BAJO DEMANDA
++ REVISION COMPLETA ANTES DEL EFECTO
++ RECEIPT VERIFICABLE DESPUES DEL EFECTO
+→ PROYECCION SUFICIENTE SIN SOBRECARGA NI AUTORIDAD IMPLICITA
+```
+
+Información mínima no significa información incompleta. Los valores necesarios para decidir, confirmar o auditar un efecto se muestran completos en el momento correcto. Los datos ajenos al paso se excluyen; no se ocultan solamente con presentación visual.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban los siguientes artefactos:
+
+|    # | Artefacto                                               | Resultado material                                                                                 |
+| ---: | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+|   1. | `NEXO-STAGE-INFORMATION-FLOW-CONTRACT-001`              | fija propósito, autoridad, entrada, salida y frontera de la proyección mínima por etapa            |
+|   2. | `NEXO-STAGE-INFORMATION-BUNDLE-CATALOG-001`             | materializa catorce paquetes de información con semántica y propietario                            |
+|   3. | `NEXO-STAGE-VISIBILITY-TIER-CONTRACT-001`               | define siete niveles cerrados de exposición sin fallback permisivo                                 |
+|   4. | `NEXO-STAGE-PROJECTION-RESOLUTION-CONTRACT-001`         | resuelve la proyección mediante actor, función, etapa, recurso, territorio, dispositivo y frescura |
+|   5. | `NEXO-STAGE-IDENTITY-CONTEXT-CONTRACT-001`              | define identidad humana, contexto operativo y trabajo que siempre deben reconocerse                |
+|   6. | `NEXO-STAGE-PRIMARY-ACTION-CONTRACT-001`                | limita cada proyección a una pregunta y una acción principal compatibles con la etapa              |
+|   7. | `NEXO-STAGE-QUANTITY-UOM-DISCLOSURE-CONTRACT-001`       | gobierna cantidad, presentación, UOM, conversión y valores decisorios                              |
+|   8. | `NEXO-STAGE-LOCATION-CUSTODY-DISCLOSURE-CONTRACT-001`   | gobierna sede, LOC, posición, ruta, custodia y condición física                                    |
+|   9. | `NEXO-STAGE-EVIDENCE-EXCEPTION-DISCLOSURE-CONTRACT-001` | separa observación, evidencia, excepción, decisión e instrucción de ejecución                      |
+|  10. | `NEXO-STAGE-SENSITIVE-TECHNICAL-DATA-BOUNDARY-001`      | excluye datos sensibles, técnicos y de diagnóstico que no pertenecen al paso                       |
+|  11. | `NEXO-STAGE-PROCESS-PROJECTION-MATRIX-001`              | decide explícitamente la información de las cuarenta etapas canónicas                              |
+|  12. | `NEXO-STAGE-TASK-PROJECTION-MATRIX-001`                 | decide veintiuna tareas de navegación aplicables y conserva ocho propietarios posteriores          |
+|  13. | `NEXO-STAGE-STEP-INFORMATION-CONTRACT-001`              | materializa veinticuatro pasos del resolutor y renderizado de información                          |
+|  14. | `NEXO-STAGE-REVIEW-CONFIRMATION-RECEIPT-CONTRACT-001`   | define la información completa que reaparece antes y después de una mutación                       |
+|  15. | `NEXO-STAGE-BLIND-COUNT-DISCLOSURE-BOUNDARY-001`        | protege conteos ciegos y separación entre observación, diferencia y ajuste                         |
+|  16. | `NEXO-STAGE-SCANNER-CAPTURE-PROJECTION-CONTRACT-001`    | integra proposals de escaneo sin convertirlos en identidad o acción confirmadas                    |
+|  17. | `NEXO-STAGE-OFFLINE-STALE-CONFLICT-CONTRACT-001`        | representa datos parciales, offline, obsolescencia, conflicto y resultado desconocido              |
+|  18. | `NEXO-STAGE-DEVICE-RESPONSIVE-INFORMATION-CONTRACT-001` | conserva significado y prioridad en móvil, tablet, quiosco y escritorio                            |
+|  19. | `NEXO-STAGE-SOURCE-DISPOSITION-001`                     | decide dieciséis superficies actuales y su convergencia                                            |
+|  20. | `NEXO-STAGE-ROUTE-DISPOSITION-001`                      | decide dieciséis rutas actuales sin crear identidad ni autoridad por URL                           |
+|  21. | `NEXO-STAGE-INTERFACE-STATE-CONTRACT-001`               | materializa treinta estados visibles y su única salida válida                                      |
+|  22. | `NEXO-STAGE-VALIDATION-MATRIX-001`                      | define cuarenta y ocho comprobaciones contractuales, técnicas y operativas                         |
+|  23. | `NEXO-STAGE-IMPLEMENTATION-HANDOFF-001`                 | entrega contratos, proyecciones, transición, pruebas, telemetría y rollback                        |
+|  24. | `NEXO-STAGE-CONTINUITY-HANDOFF-001`                     | entrega a diferencias, dispositivos y piloto sin diferir el resultado actual                       |
+
+Cobertura materializada:
+
+| Elemento                                     | Total esperado | Total materializado | Faltantes | Duplicados |
+| -------------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Artefactos documentales                      |             24 |                  24 |         0 |          0 |
+| Paquetes de información                      |             14 |                  14 |         0 |          0 |
+| Niveles de exposición                        |              7 |                   7 |         0 |          0 |
+| Etapas canónicas decididas                   |             40 |                  40 |         0 |          0 |
+| Tareas de navegación directamente aplicables |             21 |                  21 |         0 |          0 |
+| Tareas con propietario posterior preservado  |              8 |                   8 |         0 |          0 |
+| Pasos del resolutor                          |             24 |                  24 |         0 |          0 |
+| Superficies actuales decididas               |             16 |                  16 |         0 |          0 |
+| Rutas actuales decididas                     |             16 |                  16 |         0 |          0 |
+| Estados de interfaz                          |             30 |                  30 |         0 |          0 |
+| Comprobaciones de aceptación                 |             48 |                  48 |         0 |          0 |
+| Requisitos de prueba nuevos                  |             14 |                  14 |         0 |          0 |
+
+El resultado queda `ESPECIFICADO`. No declara componentes, queries, guards, payloads, pruebas, dispositivos ni proyecciones desplegadas como `IMPLEMENTADOS` o `VALIDADOS`.
+
+---
+
+#### 3. Alcance, diagnóstico y fronteras
+
+Incluye:
+
+- decisión por las cuarenta etapas canónicas de inventario y abastecimiento;
+- paquetes de información, niveles de exposición, orden visual y acción primaria;
+- minimización server-side, progressive disclosure y datos restringidos;
+- cantidad, presentación, UOM, ubicación, custodia, condición, evidencia y receipt;
+- conteo ciego, escaneo contextual, offline, stale, conflicto y resultado desconocido;
+- disposición de superficies y rutas actuales;
+- estados, validación, transición técnica, observabilidad y rollback.
+
+Excluye:
+
+- resolver faltantes, sobrantes, daños, rechazos, devoluciones, cuarentena o disposición, responsabilidad de `NEXO-UX-022`;
+- certificar tablets, quioscos, lectores, red o ergonomía física, responsabilidad de `NEXO-UX-023` a `NEXO-UX-025`;
+- redefinir LPN, activos, referencias internas o impresión, cuyos propietarios posteriores permanecen vigentes;
+- cambiar procesos, estados, cantidades, UOM, permisos, rutas o comandos aprobados;
+- implementar código, consultas, migraciones, RLS, datos o despliegues.
+
+Diagnóstico verificable del código actual:
+
+| Superficie                             | Estado observado                                                                           | Decisión documental                                                                                              |
+| -------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `src/app/page.tsx`                     | secciones Operar, Verificar, Configurar y Utilidades con múltiples tarjetas                | `REEMPLAZAR_POR_PROYECCION_DE_TAREA`: una tarea primaria; referencias y administración separadas                 |
+| solicitud de remisión                  | formulario y resumen de líneas                                                             | `ADAPTAR_POR_PASO`: necesidad y líneas primero; ruta y detalle técnico expandibles                               |
+| `prepare-workbench.tsx`                | asignación, disponibilidad, LOC, posición, UOM, empaque y faltante en un componente grande | `DIVIDIR_POR_ETAPA`: plan, ejecución, remanente y revisión como proyecciones distintas                           |
+| detalle y despacho de remisión         | detalle completo y acciones superiores                                                     | `SEPARAR_LECTURA_Y_COMANDO`: carga, checklist, sello y consecuencia visibles solo al despachar                   |
+| `conductor-transit-checklist-form.tsx` | producto, cantidad, solicitado, ubicación y nota por línea                                 | `SIMPLIFICAR_PARA_CUSTODIA`: manifiesto y manejo primarios; ubicación detallada expandible                       |
+| `receive-batch-shell.tsx`              | selección por defecto, cantidad real, conteo auxiliar, trazas y confirmación               | `ADAPTAR_POR_MEDICION`: solo campos exigidos por modo; revisión explícita antes de recepción                     |
+| `entries-form.tsx` y líneas            | proveedor, fecha, emergencia, documentos, productos, cantidad, costo y ubicación           | `DIVIDIR_CONTEXT0_CAPTURA_REVISION`: opcionales colapsados; costo restringido; consecuencia visible al confirmar |
+| asignación de ubicación                | listas de LOC y posiciones                                                                 | `FILTRAR_POR_ELEGIBILIDAD`: solo destinos compatibles y contexto de capacidad pertinente                         |
+| transferencias                         | origen, destino y líneas                                                                   | `ADAPTAR_A_EFECTO_PAREADO`: ocultar saldos y ubicaciones no relacionadas                                         |
+| `withdraw-form.tsx`                    | origen, modo, lista completa, disponibilidad, cantidad, UOM y notas                        | `PRODUCTO_PRIMERO_Y_REVISION`: mostrar disponibilidad solo de la línea activa; quitar indicadores globales       |
+| conteo por ubicación y tarjetas        | todos los productos, estados, UOM y posiciones                                             | `ADAPTAR_A_CONTEO_CIEGO`: ocultar expected y diferencia; mantener progreso de cobertura                          |
+| `adjust-form.tsx`                      | add, remove, count, stock de múltiples alcances, costo, quick zero y bulk zero             | `REEMPLAZAR_POR_CASO_SUPERVISOR`: mostrar caso, evidencia, decisión y efecto; retirar writers directos           |
+| `stock-table-client.tsx`               | resúmenes, totales, estados, distribución y selector de unidad                             | `SEPARAR_CONSULTA_Y_CONTROL`: consulta enfocada; agregados solo para supervisión autorizada                      |
+| `inventory/movements/page.tsx`         | filtros, agrupaciones, cantidades, actores, notas y exportación                            | `PROYECCION_DE_TRAZABILIDAD`: evento humano primario; detalle técnico y exportación restringidos                 |
+| scanner, `/l/[code]` y apertura de LOC | resolución y redirección contextual                                                        | `CONSUMIR_PROPOSAL_UX020`: solo propuesta y elegibilidad; host decide campos y acción                            |
+| tablero y quiosco de ubicación         | stock, acciones y estado del LOC                                                           | `PROYECCION_POR_TAREA`: operación mínima en quiosco; supervisión y configuración fuera del flujo                 |
+
+La brecha no se resuelve con una pantalla universal ni con ocultamiento CSS. Se resuelve mediante proyecciones mínimas calculadas antes de consultar y serializar, consumidas por componentes de etapa.
+
+---
+
+#### 4. `NEXO-STAGE-INFORMATION-FLOW-CONTRACT-001`
+
+Cada entrada a una tarea ejecuta el siguiente contrato:
+
+```text
+RESOLVER AUTORIDAD Y ETAPA
+→ RESOLVER POLITICA DE PROYECCION
+→ SELECCIONAR BUNDLES Y CAMPOS
+→ EXCLUIR DATOS NO PERTINENTES O NO AUTORIZADOS
+→ CONSULTAR SOLO FUENTES NECESARIAS
+→ ORDENAR PREGUNTA, ACCION Y APOYO
+→ REVISAR VALORES DECISORIOS
+→ CONFIRMAR MEDIANTE COMANDO PROPIETARIO
+→ MOSTRAR RECEIPT Y CONTINUIDAD
+```
+
+Invariantes:
+
+1. La proyección no es fuente de verdad; consume identidades, estados y versiones de sus propietarios.
+2. La visibilidad no concede permiso y la ausencia visual no sustituye autorización de servidor.
+3. Una etapa operativa no recibe configuración o tableros globales como contenido primario.
+4. Una etapa supervisora no recibe writers operativos por conveniencia.
+5. Una etapa de configuración no ejecuta un caso operativo concreto.
+6. El detalle expandible no cambia actor, permiso, etapa, recurso ni acción disponible.
+7. Revisión y receipt pueden mostrar más información que la captura cuando esa información es necesaria para comprender el efecto.
+8. No se obtiene un modelo completo para ocultarlo en cliente.
+
+---
+
+#### 5. `NEXO-STAGE-INFORMATION-BUNDLE-CATALOG-001`
+
+| Bundle          | Nombre                        | Contenido                                                                               | Fuente propietaria                         |
+| --------------- | ----------------------------- | --------------------------------------------------------------------------------------- | ------------------------------------------ |
+| `INF-BUNDLE-01` | `TAREA_Y_ETAPA`               | Tarea humana, etapa empresarial, estado y siguiente resultado permitido                 | resolutor de tarea y proceso               |
+| `INF-BUNDLE-02` | `ACTOR_Y_CONTEXTO`            | Actor efectivo, función activa, sede, área, turno y modo de dispositivo                 | autorización y contexto activo             |
+| `INF-BUNDLE-03` | `TRABAJO_Y_VERSION`           | Work item, claim, versión, prioridad, propietario y vencimiento                         | proceso propietario                        |
+| `INF-BUNDLE-04` | `SUJETO_FISICO`               | Producto, presentación, lote, LPN, activo o documento de trabajo según aplique          | maestro o proceso propietario              |
+| `INF-BUNDLE-05` | `UBICACION`                   | Sede, LOC, posición, staging, origen y destino necesarios para el paso                  | ubicaciones y proceso propietario          |
+| `INF-BUNDLE-06` | `CANTIDAD_Y_UOM`              | Valor original, presentación, UOM, factor, cantidad base y saldo pertinente             | contratos UOM y proceso propietario        |
+| `INF-BUNDLE-07` | `DISPONIBILIDAD`              | Saldo pertinente, reserva, disponible, cobertura y frescura cuando la etapa lo requiere | ledger y proyecciones autorizadas          |
+| `INF-BUNDLE-08` | `CONDICION`                   | Estado físico, temperatura, aptitud, sello, empaque o liberación                        | proceso y política de condición            |
+| `INF-BUNDLE-09` | `EVIDENCIA`                   | Observaciones, fotos, lecturas, firmas, escaneos y referencias necesarias               | evidencia del proceso                      |
+| `INF-BUNDLE-10` | `CUSTODIA_Y_RUTA`             | Custodio, vehículo, ruta, parada, handoff y sello cuando la etapa los requiere          | contrato de custodia y tránsito            |
+| `INF-BUNDLE-11` | `DIFERENCIA_Y_EXCEPCION`      | Diferencia observada, causa conocida, bloqueo, impacto y responsable                    | caso de excepción; decisión en NEXO-UX-022 |
+| `INF-BUNDLE-12` | `CONSECUENCIA_Y_CONFIRMACION` | Efecto exacto, objetos afectados, irreversibilidad, fingerprint y confirmación          | comando empresarial propietario            |
+| `INF-BUNDLE-13` | `RECEIPT_Y_CONTINUIDAD`       | Resultado real, correlación, versión, siguiente responsable y acción segura             | receipt del proceso                        |
+| `INF-BUNDLE-14` | `AUDITORIA_Y_DIAGNOSTICO`     | Identificadores técnicos, trazas, secuencias, payloads y datos de soporte               | observabilidad y soporte autorizado        |
+
+Cada bundle es una agrupación semántica. La decisión final se toma por campo y etapa; un bundle permitido no autoriza automáticamente todos sus campos.
+
+---
+
+#### 6. `NEXO-STAGE-VISIBILITY-TIER-CONTRACT-001`
+
+| Tier          | Estado                      | Regla                                                                                        |
+| ------------- | --------------------------- | -------------------------------------------------------------------------------------------- |
+| `INF-TIER-01` | `SIEMPRE_REQUERIDO`         | Visible en la proyección porque evita actuar sobre actor, tarea o contexto equivocados.      |
+| `INF-TIER-02` | `PRIMARIO_DE_ETAPA`         | Visible y prioritario porque responde la pregunta principal del paso.                        |
+| `INF-TIER-03` | `APOYO_CONTEXTUAL`          | Visible solo cuando ayuda a completar o verificar el paso sin distraer.                      |
+| `INF-TIER-04` | `DETALLE_EXPANDIBLE`        | Oculto por defecto y accesible deliberadamente sin cambiar de autoridad.                     |
+| `INF-TIER-05` | `RESTRINGIDO_POR_AUTORIDAD` | No se solicita ni serializa sin permiso, función, recurso y finalidad compatibles.           |
+| `INF-TIER-06` | `OCULTO_NO_PERTINENTE`      | No aparece ni se entrega al cliente porque pertenece a otra etapa o carril.                  |
+| `INF-TIER-07` | `NO_APLICA`                 | El dato no existe para la identidad o proceso y no se sustituye con un placeholder engañoso. |
+
+Precedencia:
+
+```text
+NO_APLICA
+→ OCULTO_NO_PERTINENTE
+→ RESTRINGIDO_POR_AUTORIDAD
+→ DETALLE_EXPANDIBLE
+→ APOYO_CONTEXTUAL
+→ PRIMARIO_DE_ETAPA
+→ SIEMPRE_REQUERIDO
+```
+
+La precedencia no permite elevar un dato. Sirve para seleccionar la disposición más restrictiva cuando confluyen reglas.
+
+---
+
+#### 7. `NEXO-STAGE-PROJECTION-RESOLUTION-CONTRACT-001`
+
+Entrada mínima:
+
+```text
+principal_id
+actor_id y actor_source
+active_function y lane
+task_key y task_instance_id
+process_id y stage_id
+resource_type, resource_id y resource_version
+site_id, area_id y territory_version
+shift_id, check_in_id y device_mode cuando apliquen
+permission_decision_id y authorization_version
+projection_policy_version
+```
+
+Resolución cerrada:
+
+| Resultado                | Comportamiento                                                     |
+| ------------------------ | ------------------------------------------------------------------ |
+| `PROJECTION_ALLOWED`     | construir únicamente bundles y campos permitidos                   |
+| `PROJECTION_EMPTY`       | mostrar vacío honesto sin consultar datos no necesarios            |
+| `PROJECTION_PARTIAL`     | marcar fuentes incompletas y bloquear conclusiones                 |
+| `PROJECTION_STALE`       | invalidar revisión y exigir recarga                                |
+| `PROJECTION_CONFLICT`    | comparar versión y no sobrescribir                                 |
+| `PROJECTION_DENIED`      | fallar cerrado y no serializar datos empresariales                 |
+| `PROJECTION_REVOKED`     | limpiar contenido sensible y volver a resolver                     |
+| `PROJECTION_UNSUPPORTED` | bloquear una combinación no definida; nunca usar fallback completo |
+
+---
+
+#### 8. `NEXO-STAGE-IDENTITY-CONTEXT-CONTRACT-001`
+
+Toda proyección permite responder sin ambigüedad:
+
+- ¿Qué tarea estoy realizando?
+- ¿En qué etapa y estado está el trabajo?
+- ¿Sobre qué recurso o carga actúo?
+- ¿Con qué función, sede, área y dispositivo?
+- ¿Qué valor o hecho debo capturar, verificar o decidir?
+- ¿Cuál es la única acción permitida ahora?
+- ¿Qué resultado real produjo la acción?
+
+Los nombres humanos son primarios. UUID, slug, nombre de tabla, RPC, secuencia, payload y fingerprint pertenecen a `INF-BUNDLE-14` y solo se exponen en soporte autorizado.
+
+---
+
+#### 9. `NEXO-STAGE-PRIMARY-ACTION-CONTRACT-001`
+
+Una proyección contiene:
+
+1. una pregunta principal;
+2. una acción primaria;
+3. cero o más acciones secundarias de navegación, corrección o detalle;
+4. prerequisitos visibles junto al dato que bloquea;
+5. ninguna acción de otro carril.
+
+Las acciones secundarias nunca compiten visualmente con confirmar, continuar, guardar observación, emitir decisión o ejecutar instrucción.
+
+---
+
+#### 10. `NEXO-STAGE-QUANTITY-UOM-DISCLOSURE-CONTRACT-001`
+
+| Momento      | Información obligatoria                                                    | Información no pertinente                  |
+| ------------ | -------------------------------------------------------------------------- | ------------------------------------------ |
+| Captura      | valor original, UOM o presentación elegida y ayuda de conversión           | agregados globales y costos no autorizados |
+| Validación   | cantidad base, regla de mínimo, paso, fracción y disponibilidad pertinente | historial completo de stock                |
+| Revisión     | valor original, UOM, factor, cantidad base, alcance y efecto exacto        | campos técnicos que no cambian la decisión |
+| Confirmación | valores congelados y consecuencia                                          | edición simultánea                         |
+| Receipt      | cantidad realmente aceptada, versión y correlación                         | suposiciones sobre etapas posteriores      |
+
+Las cantidades decisorias se muestran completas. Un valor oculto, redondeado de forma no contractual o convertido sin trazabilidad bloquea la confirmación.
+
+---
+
+#### 11. `NEXO-STAGE-LOCATION-CUSTODY-DISCLOSURE-CONTRACT-001`
+
+Reglas:
+
+1. Solo se consultan sedes, LOC, posiciones, rutas o custodias compatibles con el recurso y territorio.
+2. La ubicación recomendada se distingue de la ubicación confirmada.
+3. La posición interna solo aparece cuando la etapa puede elegirla o verificarla.
+4. Ruta, vehículo, custodio y sello aparecen en carga, despacho y tránsito, no en solicitud.
+5. El receptor ve origen y custodia para verificar el handoff, pero no obtiene acciones de conductor.
+6. El historial global de ubicaciones permanece expandible o en una tarea de investigación.
+
+---
+
+#### 12. `NEXO-STAGE-EVIDENCE-EXCEPTION-DISCLOSURE-CONTRACT-001`
+
+| Función                 | Ve                                                                       | No ve o no puede hacer                      |
+| ----------------------- | ------------------------------------------------------------------------ | ------------------------------------------- |
+| Observador operativo    | sujeto, condición, lugar, momento y evidencia necesaria                  | decisión final o ajuste automático          |
+| Supervisor investigador | hechos, evidencia, diferencia, impacto, políticas y opciones autorizadas | ejecución física implícita                  |
+| Decisor autorizado      | expediente, alternativas, consecuencias y segregación requerida          | hechos ocultos o evidence gap no reconocido |
+| Ejecutor                | instrucción firmada, alcance, cantidad, origen, destino y manejo         | cambiar causa, decisión o alcance           |
+| Auditor                 | hechos, decisiones, receipts y correlación según permiso                 | writers operativos                          |
+
+`NEXO-UX-022` conserva la resolución empresarial. Esta tarea define la información que cada función recibe antes, durante y después de esa resolución.
+
+---
+
+#### 13. `NEXO-STAGE-SENSITIVE-TECHNICAL-DATA-BOUNDARY-001`
+
+Se excluyen por defecto:
+
+- datos personales no necesarios para la etapa;
+- costos, precios o referencias financieras sin finalidad y permiso exactos;
+- UUID, storage paths, tokens, cookies, firmas, payloads y secretos;
+- tablas, RPC, RLS, secuencias, logs y stack traces;
+- datos de otras sedes, áreas, actores, claims o casos;
+- campos completos obtenidos solo para esconderlos en cliente.
+
+Un dato restringido no se sustituye con un placeholder que revele su existencia cuando esa existencia también sea sensible. El servidor devuelve una decisión tipada de ausencia, restricción o no aplicación.
+
+---
+
+#### 14. `NEXO-STAGE-PROCESS-PROJECTION-MATRIX-001`
+
+Reconciliación heredada:
+
+| Métrica                | Resultado |
+| ---------------------- | --------: |
+| Etapas esperadas       |    **40** |
+| Etapas materializadas  |    **40** |
+| Identificadores únicos |    **40** |
+| Faltantes              |     **0** |
+| Duplicados             |     **0** |
+| OPERACION              |    **22** |
+| SUPERVISION            |     **9** |
+| CONFIGURACION          |     **4** |
+| SEPARACION_EXPLICITA   |     **5** |
+
+| Etapa            | Carril                 | Trabajo                                                         | Información primaria                                                                              | Apoyo o detalle                         | Oculto o restringido                                   | Acción primaria                        | Estado         | Bloqueo o propietario                     |
+| ---------------- | ---------------------- | --------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------- | ------------------------------------------------------ | -------------------------------------- | -------------- | ----------------------------------------- |
+| `VPROC-0023-E01` | `CONFIGURACION`        | Crear o editar LOC                                              | INF-BUNDLE-01, 02, 04 y 05: sede, identidad LOC, tipo, estado y atributos editables               | jerarquía, versiones y dependencias     | saldos, movimientos, conteos y acciones operativas     | Guardar versión de LOC                 | `ESPECIFICADO` | implementación: paquete E5 NEXO           |
+| `VPROC-0023-E02` | `CONFIGURACION`        | Crear zonas, niveles y posiciones                               | INF-BUNDLE-01, 02 y 05: jerarquía, padre, código, tipo, orden y estado                            | mapa, capacidad e historial             | saldos detallados y trabajo operativo                  | Guardar estructura física              | `ESPECIFICADO` | implementación: paquete E5 NEXO           |
+| `VPROC-0023-E03` | `CONFIGURACION`        | Definir productos permitidos por ubicación                      | INF-BUNDLE-01, 02, 04 y 05: alcance, producto, regla, vigencia y estado                           | versión de política y conflictos        | stock operativo y movimientos                          | Publicar elegibilidad                  | `ESPECIFICADO` | implementación: paquete E5 NEXO           |
+| `VPROC-0023-E04` | `SUPERVISION`          | Consultar stock por sede, LOC o posición                        | INF-BUNDLE-01, 02, 04, 05, 06 y 07: saldo, UOM, distribución y frescura                           | historial y movimientos correlacionados | mutaciones, configuración y costo sin permiso          | Investigar o abrir tarea relacionada   | `ESPECIFICADO` | evidencia operativa: NEXO-UX-023 a 025    |
+| `VPROC-0023-E05` | `OPERACION`            | Abrir una ubicación mediante tablero, kiosco o código           | INF-BUNDLE-01, 02, 03 y 05: ubicación resuelta, trabajo vigente y estado                          | existencia local pertinente             | tableros globales, configuración y otras sedes         | Continuar tarea contextual             | `ESPECIFICADO` | scanner: NEXO-UX-020; piloto: NEXO-UX-023 |
+| `VPROC-0024-E01` | `OPERACION`            | Registrar una entrada de emergencia                             | INF-BUNDLE-01 a 06, 08, 09 y 12: fuente, razón, producto, cantidad, condición y destino           | evidencia y valoración autorizada       | maestro, stock global y costo sin permiso              | Revisar entrada de emergencia          | `ESPECIFICADO` | excepciones: NEXO-UX-022                  |
+| `VPROC-0024-E02` | `OPERACION`            | Registrar una entrada correlacionada con orden de compra        | INF-BUNDLE-01 a 06, 08, 09 y 12: orden, esperado, recibido, UOM y condición                       | documento y diferencias por línea       | condiciones comerciales no necesarias y otras órdenes  | Revisar recepción contra orden         | `ESPECIFICADO` | integración propietaria de compra         |
+| `VPROC-0024-E03` | `OPERACION`            | Capturar producto, cantidad, unidad y costo                     | INF-BUNDLE-03, 04, 06, 08 y 09: producto, valor original, UOM, conversión y condición             | fuente de costo cuando está autorizada  | editor maestro, márgenes y costo histórico completo    | Agregar línea recibida                 | `ESPECIFICADO` | costo restringido por autoridad           |
+| `VPROC-0024-E04` | `OPERACION`            | Asignar LOC de almacenamiento                                   | INF-BUNDLE-03 a 08: existencia recibida, cantidad y LOC elegibles                                 | capacidad y compatibilidad              | LOC de otras sedes e inventario no relacionado         | Confirmar LOC destino                  | `ESPECIFICADO` | ubicación: NEXO-UX-015                    |
+| `VPROC-0024-E05` | `OPERACION`            | Asignar posición interna                                        | INF-BUNDLE-03 a 08: LOC elegido, posiciones elegibles y cantidad                                  | jerarquía y ocupación pertinente        | posiciones ajenas y editor de estructura               | Confirmar posición                     | `ESPECIFICADO` | ubicación: NEXO-UX-015                    |
+| `VPROC-0024-E06` | `SEPARACION_EXPLICITA` | Publicar, corregir o reversar la entrada                        | INF-BUNDLE-01 a 06, 09, 11, 12 y 13 según función: hecho, impacto, evidencia y receipt            | historial inmutable y relaciones        | acción supervisora en vista operativa y writer directo | Publicar o decidir caso según carril   | `ESPECIFICADO` | resolución empresarial: NEXO-UX-022       |
+| `VPROC-0025-E01` | `OPERACION`            | Identificar sede, LOC, posición y producto                      | INF-BUNDLE-01 a 05: tarea, origen y sujeto exactos                                                | availability local pertinente           | stock global y configuración                           | Aceptar identidad propuesta            | `ESPECIFICADO` | scanner: NEXO-UX-020                      |
+| `VPROC-0025-E02` | `OPERACION`            | Elegir presentación o unidad de medida                          | INF-BUNDLE-04 y 06: opciones elegibles, factor y cantidad base                                    | explicación de conversión               | edición de perfiles UOM                                | Elegir UOM                             | `ESPECIFICADO` | UOM canónica                              |
+| `VPROC-0025-E03` | `OPERACION`            | Verificar disponibilidad y alcance                              | INF-BUNDLE-03 a 07: saldo pertinente, reserva, cobertura y frescura                               | distribución local                      | otras sedes y detalle financiero                       | Continuar o corregir alcance           | `ESPECIFICADO` | ledger y proyección autorizada            |
+| `VPROC-0025-E04` | `OPERACION`            | Consumir stock general                                          | INF-BUNDLE-01 a 06, 09 y 12: propósito, receptor, producto, cantidad y origen                     | evidencia opcional autorizada           | ajustes, movimientos globales y configuración          | Revisar retiro                         | `ESPECIFICADO` | retiro: NEXO-UX-017                       |
+| `VPROC-0025-E05` | `OPERACION`            | Consumir desde posición o kiosco                                | INF-BUNDLE-01 a 07, 09 y 12: posición, producto, disponible y cantidad                            | detalle de ubicación                    | supervisión y administración                           | Confirmar retiro físico                | `ESPECIFICADO` | retiro: NEXO-UX-017                       |
+| `VPROC-0025-E06` | `OPERACION`            | Transferir entre LOC conservando historial                      | INF-BUNDLE-01 a 06, 09, 12 y 13: origen, destino, cantidad, UOM y efecto pareado                  | historial correlacionado                | movimientos no relacionados y ajuste libre             | Revisar traslado                       | `ESPECIFICADO` | movimientos: NEXO-UX-016                  |
+| `VPROC-0026-E01` | `SUPERVISION`          | Abrir sesión de conteo                                          | INF-BUNDLE-01 a 05: tipo, alcance, responsable, agenda y política ciega                           | historial y criterio de cobertura       | expected detallado cuando el conteo es ciego           | Abrir sesión                           | `ESPECIFICADO` | conteo: NEXO-UX-018                       |
+| `VPROC-0026-E02` | `SUPERVISION`          | Congelar alcance y stock de apertura                            | INF-BUNDLE-01, 03, 05, 07 y 14: coverage digest, cutoff, secuencia y estado                       | detalle de snapshot autorizado          | mutación de stock y observaciones futuras              | Certificar snapshot                    | `ESPECIFICADO` | conteo: NEXO-UX-018                       |
+| `VPROC-0026-E03` | `OPERACION`            | Registrar observación por producto                              | INF-BUNDLE-01 a 06 y 09: producto, posición, UOM, captura y evidencia                             | presentaciones o posiciones adicionales | expected, diferencia y decisiones si es ciego          | Guardar observación                    | `ESPECIFICADO` | frontera ciega obligatoria                |
+| `VPROC-0026-E04` | `OPERACION`            | Registrar múltiples presentaciones o posiciones                 | INF-BUNDLE-03 a 06 y 09: desglose y conversión por observación                                    | total observado propio                  | expected y delta antes de liberación                   | Agregar desglose                       | `ESPECIFICADO` | conteo: NEXO-UX-018                       |
+| `VPROC-0026-E05` | `SUPERVISION`          | Calcular diferencia                                             | INF-BUNDLE-03 a 07, 09 y 11: expected, observed, delta, cutoff y evidencia                        | movimientos del intervalo               | writer de ajuste y edición de observación certificada  | Abrir investigación                    | `ESPECIFICADO` | ajuste: NEXO-UX-019                       |
+| `VPROC-0026-E06` | `SEPARACION_EXPLICITA` | Aplicar reconciliación o ajuste autorizado                      | INF-BUNDLE-01 a 07, 09, 11 a 13 según actor: caso, decisión, efecto y receipt                     | historial y posting técnico             | decisión y ejecución en una autoridad ambigua          | Decidir o ejecutar instrucción         | `ESPECIFICADO` | ajuste: NEXO-UX-019                       |
+| `VPROC-0026-E07` | `SUPERVISION`          | Cerrar sesión y conservar historial                             | INF-BUNDLE-01, 03, 05, 09, 11 y 13: cobertura, recuentos, casos abiertos y receipt                | historial completo                      | edición destructiva y ajuste implícito                 | Cerrar sesión                          | `ESPECIFICADO` | conteo: NEXO-UX-018                       |
+| `VPROC-0027-E01` | `SEPARACION_EXPLICITA` | Detectar alerta, daño, pérdida, merma o vencimiento             | INF-BUNDLE-01 a 05, 08, 09 y 11: sujeto, lugar, condición, tiempo y fuente                        | evidencia ampliada                      | decisión final y movimiento de stock                   | Reportar observación                   | `ESPECIFICADO` | resolución: NEXO-UX-022                   |
+| `VPROC-0027-E02` | `OPERACION`            | Identificar producto, existencia, lote, LOC y condición         | INF-BUNDLE-03 a 06, 08 y 09: identidad y cantidad afectada                                        | trazabilidad pertinente                 | inventario no afectado y decisión final                | Confirmar sujeto afectado              | `ESPECIFICADO` | resolución: NEXO-UX-022                   |
+| `VPROC-0027-E03` | `SEPARACION_EXPLICITA` | Poner en cuarentena o bloquear                                  | INF-BUNDLE-01 a 06, 08, 09, 11 y 12 según actor: base y alcance del bloqueo                       | política y evidencia                    | liberación para actor operativo y bypass supervisor    | Imponer o ejecutar bloqueo             | `ESPECIFICADO` | autoridad: NEXO-UX-022                    |
+| `VPROC-0027-E04` | `SUPERVISION`          | Evaluar condición, temperatura y aptitud                        | INF-BUNDLE-03 a 06, 08, 09 y 11: mediciones, umbrales, evidencia e impacto                        | historial de condición                  | datos financieros y ejecución física                   | Registrar evaluación                   | `ESPECIFICADO` | resolución: NEXO-UX-022                   |
+| `VPROC-0027-E05` | `SUPERVISION`          | Decidir liberación, merma, pérdida, rechazo o disposición       | INF-BUNDLE-01 a 06, 08, 09, 11 y 12: opciones, impacto, evidencia y autoridad                     | historial y políticas                   | ejecución física mezclada y decisión no autorizada     | Emitir decisión                        | `ESPECIFICADO` | resolución: NEXO-UX-022                   |
+| `VPROC-0027-E06` | `OPERACION`            | Ejecutar movimiento físico y efecto de stock                    | INF-BUNDLE-01 a 06, 08, 09, 12 y 13: instrucción autorizada, origen, destino y cantidad           | evidencia de ejecución                  | cambiar decisión, causa o alcance                      | Ejecutar instrucción                   | `ESPECIFICADO` | resolución: NEXO-UX-022                   |
+| `VPROC-0027-E07` | `SUPERVISION`          | Conservar evidencia y cerrar caso                               | INF-BUNDLE-01, 03, 09, 11 y 13: resolución, receipts y pendientes                                 | expediente completo                     | reescritura de hechos publicados                       | Cerrar caso                            | `ESPECIFICADO` | resolución: NEXO-UX-022                   |
+| `VPROC-0028-E01` | `OPERACION`            | Crear solicitud interna                                         | INF-BUNDLE-01 a 06: necesidad, destino, producto, cantidad, UOM y fecha requerida                 | ruta resuelta explicable                | stock detallado, picking y configuración               | Revisar solicitud                      | `ESPECIFICADO` | solicitud: NEXO-UX-009                    |
+| `VPROC-0028-E02` | `CONFIGURACION`        | Aplicar ruta, producto y política de solicitud                  | Configurador: INF-BUNDLE-01 a 06 y 14; operación: resultado vigente y explicación                 | versiones y alcance                     | editor maestro dentro de solicitud                     | Publicar política o aceptar resolución | `ESPECIFICADO` | solicitud: NEXO-UX-009                    |
+| `VPROC-0028-E03` | `SUPERVISION`          | Crear origen y fulfillment por línea                            | INF-BUNDLE-01 a 07 y 11: fuente, modo, cantidad, prioridad, estado y bloqueo                      | snapshots y trazabilidad                | picking físico y configuración                         | Asignar o investigar fulfillment       | `ESPECIFICADO` | preparación: NEXO-UX-010                  |
+| `VPROC-0028-E04` | `OPERACION`            | Elegir LOC, posición y cantidad de picking                      | INF-BUNDLE-01 a 07 y 09: producto, remanente, ubicaciones elegibles y UOM                         | availability local y detalle de pick    | stock global, costo y rutas maestras                   | Agregar pick                           | `ESPECIFICADO` | preparación: NEXO-UX-010                  |
+| `VPROC-0028-E05` | `OPERACION`            | Preparar, dejar listo o registrar faltante                      | INF-BUNDLE-01 a 09, 11 y 12: lista, cantidad real, empaque, staging y remanente                   | evidencia y trazabilidad                | despacho, custodia y resolución supervisora            | Revisar preparación                    | `ESPECIFICADO` | preparación: NEXO-UX-010                  |
+| `VPROC-0028-E06` | `OPERACION`            | Cargar, sellar y despachar                                      | INF-BUNDLE-01 a 06, 08 a 10 y 12: carga, bultos, sello, vehículo, custodio y checklist            | detalle de líneas y evidencia           | solicitud editable, picking y configuración            | Confirmar despacho                     | `ESPECIFICADO` | despacho: NEXO-UX-011                     |
+| `VPROC-0028-E07` | `OPERACION`            | Transportar y confirmar tránsito                                | INF-BUNDLE-01 a 05, 08 a 10 y 11: ruta, parada, ETA, custodia, sello e incidentes                 | manifiesto y manejo                     | costos, stock global y recepción                       | Registrar hito de tránsito             | `ESPECIFICADO` | tránsito: NEXO-UX-012                     |
+| `VPROC-0028-E08` | `OPERACION`            | Recibir parcial o totalmente                                    | INF-BUNDLE-01 a 06, 08 a 12: esperado, actual, condición, sello, evidencia y diferencia           | trazabilidad de empaque                 | configuración y resolución supervisora                 | Revisar recepción                      | `ESPECIFICADO` | recepción: NEXO-UX-013                    |
+| `VPROC-0028-E09` | `SEPARACION_EXPLICITA` | Resolver faltante, sobrante, daño, rechazo, devolución o cierre | INF-BUNDLE-01 a 13 según función: diferencia, evidencia, impacto, decisión, instrucción y receipt | expediente completo                     | autoajuste, autocierre y decisión para actor operativo | Decidir o ejecutar resolución          | `ESPECIFICADO` | resolución empresarial: NEXO-UX-022       |
+
+No existe una fila “heredada por defecto”. Cada etapa tiene una decisión materializada y conserva el carril aprobado en `NEXO-UX-002`.
+
+---
+
+#### 15. `NEXO-STAGE-TASK-PROJECTION-MATRIX-001`
+
+Las veintiuna tareas siguientes impactan directamente los procesos `VPROC-0023` a `VPROC-0028`:
+
+| Tarea           | Etiqueta                         | Información primaria                                     | Ocultamiento obligatorio                      | Acción primaria                                    | Estado         |
+| --------------- | -------------------------------- | -------------------------------------------------------- | --------------------------------------------- | -------------------------------------------------- | -------------- |
+| `NEXO-TASK-001` | Ir al inicio                     | Siguiente tarea, contexto activo y cambios relevantes    | módulos, utilidades y métricas no accionables | Continuar siguiente tarea                          | `ESPECIFICADO` |
+| `NEXO-TASK-002` | Gestionar abastecimiento interno | Función activa, etapa y trabajo vigente                  | acciones de otras funciones                   | Resolver función y continuar                       | `ESPECIFICADO` |
+| `NEXO-TASK-003` | Solicitar abastecimiento         | Necesidad, líneas, destino, cantidad y UOM               | picking, stock sensible y configuración       | Revisar solicitud                                  | `ESPECIFICADO` |
+| `NEXO-TASK-004` | Preparar abastecimiento          | Fulfillment, picks, cantidad real, staging y faltante    | despacho, custodia y configuración            | Revisar preparación                                | `ESPECIFICADO` |
+| `NEXO-TASK-005` | Transportar abastecimiento       | Carga asignada, ruta, custodia, sello y siguiente parada | stock global y recepción                      | Registrar hito                                     | `ESPECIFICADO` |
+| `NEXO-TASK-006` | Recibir abastecimiento           | Carga esperada, cantidad real, condición y diferencia    | configuración y decisión supervisora          | Revisar recepción                                  | `ESPECIFICADO` |
+| `NEXO-TASK-007` | Registrar una entrada            | Fuente, producto, cantidad, UOM, condición y destino     | maestro y movimientos globales                | Revisar entrada                                    | `ESPECIFICADO` |
+| `NEXO-TASK-008` | Ubicar existencias               | Existencia pendiente, LOC y posición elegibles           | stock no relacionado                          | Confirmar ubicación                                | `ESPECIFICADO` |
+| `NEXO-TASK-009` | Mover existencias                | Origen, destino, producto, cantidad y UOM                | ajuste y configuración                        | Revisar movimiento                                 | `ESPECIFICADO` |
+| `NEXO-TASK-010` | Registrar un retiro              | Origen, propósito, receptor, producto, cantidad y UOM    | supervisión y configuración                   | Revisar retiro                                     | `ESPECIFICADO` |
+| `NEXO-TASK-011` | Contar inventario                | Alcance, producto, UOM, posición y observación           | expected y delta si es ciego                  | Guardar observación o cerrar control según función | `ESPECIFICADO` |
+| `NEXO-TASK-012` | Controlar la operación           | Casos, diferencias, prioridad, impacto y evidencia       | mutaciones operativas no autorizadas          | Abrir caso prioritario                             | `ESPECIFICADO` |
+| `NEXO-TASK-013` | Consultar existencias            | Producto, saldo, UOM, ubicación y frescura               | writer, configuración y costo restringido     | Investigar saldo                                   | `ESPECIFICADO` |
+| `NEXO-TASK-014` | Investigar movimientos           | Evento, fecha, producto, cantidad, actor y correlación   | movimientos técnicos irrelevantes y writer    | Abrir trazabilidad                                 | `ESPECIFICADO` |
+| `NEXO-TASK-015` | Consultar ubicaciones            | LOC, posición, contenido y estado                        | configuración salvo capacidad exacta          | Abrir ubicación                                    | `ESPECIFICADO` |
+| `NEXO-TASK-021` | Administrar NEXO                 | Capacidades de configuración disponibles                 | trabajo operativo y supervisión               | Abrir capacidad exacta                             | `ESPECIFICADO` |
+| `NEXO-TASK-022` | Administrar productos y unidades | Identidad, UOM, presentaciones, vigencia y dependencias  | saldos operativos salvo impacto               | Editar maestro                                     | `ESPECIFICADO` |
+| `NEXO-TASK-023` | Administrar ubicaciones          | Estructura, elegibilidad, estado y dependencias          | trabajo operativo                             | Editar ubicación                                   | `ESPECIFICADO` |
+| `NEXO-TASK-024` | Configurar abastecimiento        | Políticas, rutas, fuentes, vigencia y conflictos         | solicitudes concretas salvo impacto           | Publicar configuración                             | `ESPECIFICADO` |
+| `NEXO-TASK-028` | Resolver un destino contextual   | Entrada cruda, propuesta, clase, elegibilidad y retorno  | autoridad, cantidad y comando empresarial     | Aceptar propuesta                                  | `ESPECIFICADO` |
+| `NEXO-TASK-029` | Resolver acceso                  | Sesión, bloqueo, causa y retorno seguro                  | datos empresariales antes de autorizar        | Resolver acceso                                    | `ESPECIFICADO` |
+
+Tareas preservadas sin redefinición:
+
+| Tareas                            | Dominio              | Propietario                                   | Decisión                                               |
+| --------------------------------- | -------------------- | --------------------------------------------- | ------------------------------------------------------ |
+| `NEXO-TASK-016`                   | LPN                  | `NEXO-UX-026` a `NEXO-UX-029`                 | conservar identidad y no anticipar su matriz de campos |
+| `NEXO-TASK-017` a `NEXO-TASK-020` | activos              | `NEXO-UX-030` a `NEXO-UX-036` y `NEXO-UX-039` | conservar identidad y no anticipar su matriz de campos |
+| `NEXO-TASK-025`                   | referencias internas | tareas financieras propietarias               | conservar identidad y no anticipar su matriz de campos |
+| `NEXO-TASK-026` y `NEXO-TASK-027` | impresión            | `NEXO-UX-037` y `NEXO-UX-038`                 | conservar identidad y no anticipar su matriz de campos |
+
+Reconciliación: 21 tareas aplicables más 8 preservadas equivalen a las 29 tareas del catálogo, sin faltantes ni duplicados.
+
+---
+
+#### 16. `NEXO-STAGE-STEP-INFORMATION-CONTRACT-001`
+
+| Paso          | Acción                                                          | Salida                                  |
+| ------------- | --------------------------------------------------------------- | --------------------------------------- |
+| `INF-STEP-01` | Recibir task_key, work item y retorno del host                  | decisión versionada o bloqueo explícito |
+| `INF-STEP-02` | Resolver principal, actor efectivo y fuente de autoridad        | decisión versionada o bloqueo explícito |
+| `INF-STEP-03` | Resolver función, proceso, etapa y carril                       | decisión versionada o bloqueo explícito |
+| `INF-STEP-04` | Resolver sede, área, territorio, turno y dispositivo            | decisión versionada o bloqueo explícito |
+| `INF-STEP-05` | Revalidar recurso, relación, claim y versiones                  | decisión versionada o bloqueo explícito |
+| `INF-STEP-06` | Seleccionar política de proyección versionada                   | decisión versionada o bloqueo explícito |
+| `INF-STEP-07` | Calcular bundles candidatos por etapa                           | decisión versionada o bloqueo explícito |
+| `INF-STEP-08` | Aplicar permiso, finalidad, territorio y sensibilidad por campo | decisión versionada o bloqueo explícito |
+| `INF-STEP-09` | Eliminar bundles no pertinentes antes de consultar              | decisión versionada o bloqueo explícito |
+| `INF-STEP-10` | Consultar fuentes autoritativas mínimas                         | decisión versionada o bloqueo explícito |
+| `INF-STEP-11` | Marcar frescura, parcialidad, offline y conflicto               | decisión versionada o bloqueo explícito |
+| `INF-STEP-12` | Construir identidad humana y contexto reconocible               | decisión versionada o bloqueo explícito |
+| `INF-STEP-13` | Resolver pregunta principal de la etapa                         | decisión versionada o bloqueo explícito |
+| `INF-STEP-14` | Resolver una acción primaria y sus prerequisitos                | decisión versionada o bloqueo explícito |
+| `INF-STEP-15` | Ordenar información primaria, apoyo y detalle expandible        | decisión versionada o bloqueo explícito |
+| `INF-STEP-16` | Aplicar presentación responsive sin cambiar significado         | decisión versionada o bloqueo explícito |
+| `INF-STEP-17` | Recibir captura o proposal de UX020 cuando aplique              | decisión versionada o bloqueo explícito |
+| `INF-STEP-18` | Validar campos y mostrar corrección junto a su origen           | decisión versionada o bloqueo explícito |
+| `INF-STEP-19` | Congelar valores decisorios y construir revisión                | decisión versionada o bloqueo explícito |
+| `INF-STEP-20` | Exigir confirmación explícita cuando exista efecto              | decisión versionada o bloqueo explícito |
+| `INF-STEP-21` | Enviar comando idempotente del proceso propietario              | decisión versionada o bloqueo explícito |
+| `INF-STEP-22` | Reconciliar timeout o resultado desconocido                     | decisión versionada o bloqueo explícito |
+| `INF-STEP-23` | Mostrar receipt y siguiente responsable                         | decisión versionada o bloqueo explícito |
+| `INF-STEP-24` | Cerrar, limpiar o transferir proyección según continuidad       | decisión versionada o bloqueo explícito |
+
+Reconciliación: `INF-STEP-01` a `INF-STEP-24`, veinticuatro pasos, cero faltantes y cero duplicados.
+
+---
+
+#### 17. `NEXO-STAGE-REVIEW-CONFIRMATION-RECEIPT-CONTRACT-001`
+
+La revisión reúne todos los valores que cambian el efecto:
+
+- tarea, etapa, actor y recurso;
+- cantidad original, UOM, conversión y cantidad base;
+- origen, destino, posición, custodia o condición cuando apliquen;
+- evidencia y excepción vinculadas;
+- consecuencia empresarial y objetos afectados;
+- versiones, intención y fingerprint de revisión.
+
+Cualquier cambio material invalida la revisión. El receipt muestra únicamente lo que el servidor confirmó, junto con correlación, versión, siguiente responsable y acción segura; nunca infiere preparación, despacho, tránsito, recepción, ajuste o cierre posteriores.
+
+---
+
+#### 18. `NEXO-STAGE-BLIND-COUNT-DISCLOSURE-BOUNDARY-001`
+
+```text
+CONTADOR: SUJETO + POSICION + UOM + CAPTURA + COBERTURA
+SUPERVISOR: EXPECTED + OBSERVED + DELTA + CUTOFF + EVIDENCIA
+DECISOR DE AJUSTE: CASO + CAUSA + IMPACTO + AUTORIZACION
+POSTER: INSTRUCCION + IDEMPOTENCIA + RECEIPT
+```
+
+Expected, delta, alertas derivadas, valor y movimiento sugerido permanecen fuera de la proyección del contador cuando la política es ciega. La liberación posterior no modifica la observación original.
+
+---
+
+#### 19. `NEXO-STAGE-SCANNER-CAPTURE-PROJECTION-CONTRACT-001`
+
+El resultado de `NEXO-UX-020` entra como:
+
+```text
+proposal_id
+resolved_identity_type
+resolved_identity_id
+display_snapshot
+eligibility_for_current_step
+resolution_version
+capture_receipt_id
+```
+
+La etapa muestra la identidad propuesta y una acción `ACEPTAR` o `DESCARTAR`. Cantidad, UOM, condición, decisión y comando permanecen en el host. Un proposal ambiguo, stale, offline o fuera de contexto nunca se incorpora silenciosamente.
+
+---
+
+#### 20. `NEXO-STAGE-OFFLINE-STALE-CONFLICT-CONTRACT-001`
+
+| Condición        | Se puede mostrar                               | Se prohíbe afirmar                        | Salida                                     |
+| ---------------- | ---------------------------------------------- | ----------------------------------------- | ------------------------------------------ |
+| `OFFLINE_DRAFT`  | valor crudo, tiempo, canal y contexto conocido | identidad, permiso, elegibilidad o efecto | sincronizar y revalidar                    |
+| `PARTIAL_DATA`   | alcance conocido y fuente faltante             | totales o ausencia definitiva             | reintentar o continuar sin acción riesgosa |
+| `STALE_DATA`     | valor anterior y cambio detectado              | revisión vigente                          | recargar y revisar                         |
+| `CONFLICT`       | versiones y campos en conflicto                | sobrescritura automática                  | elegir recarga o resolución permitida      |
+| `RESULT_UNKNOWN` | intención, fingerprint y correlación           | fracaso o éxito                           | consultar receipt antes de reintentar      |
+
+---
+
+#### 21. `NEXO-STAGE-DEVICE-RESPONSIVE-INFORMATION-CONTRACT-001`
+
+| Medio        | Prioridad                                     | Regla                                                    |
+| ------------ | --------------------------------------------- | -------------------------------------------------------- |
+| móvil        | pregunta, sujeto, cantidad y acción           | una columna; detalle en sheet o expansión                |
+| tablet       | trabajo y captura paralelos cuando sea seguro | dos paneles como máximo; controles táctiles              |
+| quiosco      | actor, tarea, recurso y acción                | sin administración, datos sensibles ni multitarea        |
+| escritorio   | cola o referencia junto a tarea               | densidad adicional solo para supervisión y configuración |
+| lector wedge | foco y proposal                               | la lectura no dispara submit                             |
+| cámara       | visor temporal y feedback                     | sin retener frames o video                               |
+
+El orden semántico, los campos decisorios y la autoridad son idénticos en todos los medios.
+
+---
+
+#### 22. `NEXO-STAGE-SOURCE-DISPOSITION-001`
+
+| Fuente     | Superficie actual                      | Estado observado                                                                           | Disposición                        | Proyección objetivo                                                         |
+| ---------- | -------------------------------------- | ------------------------------------------------------------------------------------------ | ---------------------------------- | --------------------------------------------------------------------------- |
+| SRC-INF-01 | `src/app/page.tsx`                     | secciones Operar, Verificar, Configurar y Utilidades con múltiples tarjetas                | REEMPLAZAR_POR_PROYECCION_DE_TAREA | una tarea primaria; referencias y administración separadas                  |
+| SRC-INF-02 | solicitud de remisión                  | formulario y resumen de líneas                                                             | ADAPTAR_POR_PASO                   | necesidad y líneas primero; ruta y detalle técnico expandibles              |
+| SRC-INF-03 | `prepare-workbench.tsx`                | asignación, disponibilidad, LOC, posición, UOM, empaque y faltante en un componente grande | DIVIDIR_POR_ETAPA                  | plan, ejecución, remanente y revisión como proyecciones distintas           |
+| SRC-INF-04 | detalle y despacho de remisión         | detalle completo y acciones superiores                                                     | SEPARAR_LECTURA_Y_COMANDO          | carga, checklist, sello y consecuencia visibles solo al despachar           |
+| SRC-INF-05 | `conductor-transit-checklist-form.tsx` | producto, cantidad, solicitado, ubicación y nota por línea                                 | SIMPLIFICAR_PARA_CUSTODIA          | manifiesto y manejo primarios; ubicación detallada expandible               |
+| SRC-INF-06 | `receive-batch-shell.tsx`              | selección por defecto, cantidad real, conteo auxiliar, trazas y confirmación               | ADAPTAR_POR_MEDICION               | solo campos exigidos por modo; revisión explícita antes de recepción        |
+| SRC-INF-07 | `entries-form.tsx` y líneas            | proveedor, fecha, emergencia, documentos, productos, cantidad, costo y ubicación           | DIVIDIR_CONTEXT0_CAPTURA_REVISION  | opcionales colapsados; costo restringido; consecuencia visible al confirmar |
+| SRC-INF-08 | asignación de ubicación                | listas de LOC y posiciones                                                                 | FILTRAR_POR_ELEGIBILIDAD           | solo destinos compatibles y contexto de capacidad pertinente                |
+| SRC-INF-09 | transferencias                         | origen, destino y líneas                                                                   | ADAPTAR_A_EFECTO_PAREADO           | ocultar saldos y ubicaciones no relacionadas                                |
+| SRC-INF-10 | `withdraw-form.tsx`                    | origen, modo, lista completa, disponibilidad, cantidad, UOM y notas                        | PRODUCTO_PRIMERO_Y_REVISION        | mostrar disponibilidad solo de la línea activa; quitar indicadores globales |
+| SRC-INF-11 | conteo por ubicación y tarjetas        | todos los productos, estados, UOM y posiciones                                             | ADAPTAR_A_CONTEO_CIEGO             | ocultar expected y diferencia; mantener progreso de cobertura               |
+| SRC-INF-12 | `adjust-form.tsx`                      | add, remove, count, stock de múltiples alcances, costo, quick zero y bulk zero             | REEMPLAZAR_POR_CASO_SUPERVISOR     | mostrar caso, evidencia, decisión y efecto; retirar writers directos        |
+| SRC-INF-13 | `stock-table-client.tsx`               | resúmenes, totales, estados, distribución y selector de unidad                             | SEPARAR_CONSULTA_Y_CONTROL         | consulta enfocada; agregados solo para supervisión autorizada               |
+| SRC-INF-14 | `inventory/movements/page.tsx`         | filtros, agrupaciones, cantidades, actores, notas y exportación                            | PROYECCION_DE_TRAZABILIDAD         | evento humano primario; detalle técnico y exportación restringidos          |
+| SRC-INF-15 | scanner, `/l/[code]` y apertura de LOC | resolución y redirección contextual                                                        | CONSUMIR_PROPOSAL_UX020            | solo propuesta y elegibilidad; host decide campos y acción                  |
+| SRC-INF-16 | tablero y quiosco de ubicación         | stock, acciones y estado del LOC                                                           | PROYECCION_POR_TAREA               | operación mínima en quiosco; supervisión y configuración fuera del flujo    |
+
+---
+
+#### 23. `NEXO-STAGE-ROUTE-DISPOSITION-001`
+
+| ID                  | Ruta actual                           | Disposición                  | Regla                                                        | Estado         |
+| ------------------- | ------------------------------------- | ---------------------------- | ------------------------------------------------------------ | -------------- |
+| `NEXO-INF-ROUTE-01` | `/`                                   | `RESOLVER_TAREA_ACTUAL`      | no mostrar catálogo técnico ni utilidades globales           | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-02` | `/inventory/remissions`               | `PROYECTAR_COLA_POR_FUNCION` | mostrar solo estados y acciones de la función activa         | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-03` | `/inventory/remissions/[id]`          | `PROYECTAR_ETAPA_Y_RECURSO`  | detalle expandible; una acción principal                     | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-04` | `/inventory/remissions/prepare`       | `PROYECTAR_PREPARACION`      | cola y tarea, no configuración ni despacho                   | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-05` | `/inventory/remissions/transit`       | `PROYECTAR_CUSTODIA`         | ruta y carga asignada, no stock global                       | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-06` | `/inventory/remissions/receive`       | `PROYECTAR_RECEPCION`        | entregas elegibles y campos de medición pertinentes          | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-07` | `/inventory/entries`                  | `PROYECTAR_ENTRADA`          | contexto, captura y revisión por pasos                       | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-08` | `/inventory/stock/assign-location`    | `PROYECTAR_UBICACION`        | existencia pendiente y destinos elegibles                    | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-09` | `/inventory/transfers`                | `PROYECTAR_MOVIMIENTO`       | origen, destino, líneas y efecto pareado                     | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-10` | `/inventory/withdraw`                 | `PROYECTAR_RETIRO`           | producto, cantidad, UOM, propósito y revisión                | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-11` | `/inventory/count-initial` y sesión   | `PROYECTAR_CONTEO`           | captura ciega u operación supervisora según etapa            | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-12` | `/inventory/adjust`                   | `PROYECTAR_CASO_DE_AJUSTE`   | sin formulario directo ni bulk writer                        | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-13` | `/inventory/stock`                    | `PROYECTAR_CONSULTA`         | alcance y agregados según lectura autorizada                 | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-14` | `/inventory/movements`                | `PROYECTAR_TRAZABILIDAD`     | evento humano y detalle técnico expandible                   | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-15` | `/inventory/locations/[id]` y quiosco | `PROYECTAR_TAREA_CONTEXTUAL` | información del LOC necesaria para la acción vigente         | `ESPECIFICADO` |
+| `NEXO-INF-ROUTE-16` | `/scanner` y `/l/[code]`              | `UTILIDAD_OCULTA`            | resolver y volver al host; nunca navegación global o permiso | `ESPECIFICADO` |
+
+La URL es binding físico. Toda entrada directa revalida actor, función, tarea, etapa, recurso, territorio, versión y permiso antes de calcular la proyección.
+
+---
+
+#### 24. `NEXO-STAGE-INTERFACE-STATE-CONTRACT-001`
+
+| Estado      | Nombre                   | Condición                                         | Salida visible                                |
+| ----------- | ------------------------ | ------------------------------------------------- | --------------------------------------------- |
+| `INF-UI-01` | `CONTEXT_RESOLVING`      | actor, función, etapa y recurso aún no resueltos  | skeleton sin datos definitivos                |
+| `INF-UI-02` | `CONTEXT_DENIED`         | falta autoridad o territorio                      | causa canónica y retorno seguro               |
+| `INF-UI-03` | `WORK_LOADING`           | contexto válido y trabajo en carga                | progreso sin conteos definitivos              |
+| `INF-UI-04` | `WORK_EMPTY`             | no existe trabajo elegible                        | vacío honesto y única acción permitida        |
+| `INF-UI-05` | `STAGE_READY`            | proyección mínima vigente                         | pregunta y acción primaria                    |
+| `INF-UI-06` | `PRIMARY_ACTION_BLOCKED` | falta un requisito visible                        | bloqueo junto al dato responsable             |
+| `INF-UI-07` | `CAPTURE_EDITING`        | captura en curso                                  | solo campos del paso                          |
+| `INF-UI-08` | `SCAN_ACQUIRING`         | canal de captura activo                           | señal de captura, sin éxito empresarial       |
+| `INF-UI-09` | `SCAN_PROPOSAL`          | identidad resuelta por UX020                      | aceptar o descartar proposal                  |
+| `INF-UI-10` | `VALIDATING`             | servidor revalida valores y versiones             | bloquear confirmación                         |
+| `INF-UI-11` | `READY_FOR_REVIEW`       | campos impeditivos completos                      | abrir revisión                                |
+| `INF-UI-12` | `REVIEWING`              | valores decisorios congelados                     | volver a editar o continuar                   |
+| `INF-UI-13` | `CONFIRMATION_REQUIRED`  | consecuencia lista                                | gesto explícito del actor                     |
+| `INF-UI-14` | `SUBMITTING`             | comando en curso                                  | sin doble acción                              |
+| `INF-UI-15` | `RESULT_UNKNOWN`         | sin receipt concluyente                           | reconciliar por intención                     |
+| `INF-UI-16` | `RECEIPT_CONFIRMED`      | resultado verificable                             | mostrar correlación y siguiente responsable   |
+| `INF-UI-17` | `DETAIL_EXPANDED`        | actor solicita contexto adicional                 | detalle autorizado, sin cambiar acción        |
+| `INF-UI-18` | `RESTRICTED_REDACTED`    | dato existe pero no está autorizado               | no serializar; explicación cuando corresponda |
+| `INF-UI-19` | `PARTIAL_DATA`           | fuente incompleta o degradada                     | marcar alcance y prohibir inferencia          |
+| `INF-UI-20` | `STALE_DATA`             | snapshot o versión obsoletos                      | recargar y revisar cambios                    |
+| `INF-UI-21` | `CONFLICT`               | otra versión o actor cambió el trabajo            | comparar y recargar                           |
+| `INF-UI-22` | `OFFLINE_DRAFT`          | captura local no verificada                       | guardar como borrador sin afirmar identidad   |
+| `INF-UI-23` | `SYNC_RESOLVING`         | reconexión y revalidación                         | resolver entradas y conflictos                |
+| `INF-UI-24` | `EXCEPTION_OBSERVED`     | diferencia capturada                              | mostrar evidencia y responsable, no decidir   |
+| `INF-UI-25` | `SUPERVISOR_DECISION`    | actor supervisor elegible                         | opciones, impacto y autoridad                 |
+| `INF-UI-26` | `OPERATOR_INSTRUCTION`   | decisión ya emitida                               | instrucción exacta, sin editar decisión       |
+| `INF-UI-27` | `CONTEXT_REVOKED`        | actor, turno o dispositivo dejaron de ser válidos | limpiar datos sensibles y volver a resolver   |
+| `INF-UI-28` | `TASK_CHANGED`           | la siguiente tarea autoritativa cambió            | cerrar proyección anterior y redirigir        |
+| `INF-UI-29` | `RECOVERABLE_ERROR`      | fallo reintentable sin efecto confirmado          | reintento controlado o retorno                |
+| `INF-UI-30` | `FATAL_ERROR`            | no puede continuarse con seguridad                | preservar correlación y escalar               |
+
+Reconciliación: treinta estados únicos, `INF-UI-01` a `INF-UI-30`, sin estado genérico de éxito, error o carga que oculte la condición real.
+
+---
+
+#### 25. `NEXO-STAGE-VALIDATION-MATRIX-001`
+
+| ID            | Grupo          | Comprobación                                                                               | Evidencia exigida                                                          |
+| ------------- | -------------- | ------------------------------------------------------------------------------------------ | -------------------------------------------------------------------------- |
+| `INF-VAL-001` | `COVERAGE`     | las cuarenta etapas existen una vez y conservan proceso, carril y trabajo aprobados        | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-002` | `COVERAGE`     | las veintiuna tareas aplicables existen una vez y las ocho delegadas conservan propietario | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-003` | `COVERAGE`     | los catorce bundles y siete tiers tienen identidad única y significado cerrado             | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-004` | `COVERAGE`     | las dieciséis superficies y dieciséis rutas tienen disposición explícita                   | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-005` | `COVERAGE`     | los veinticuatro pasos y treinta estados son contiguos y no duplicados                     | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-006` | `CONTRACT`     | cada etapa define información primaria, expandible, oculta, acción, estado y bloqueo       | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-007` | `CONTRACT`     | ninguna proyección usa rol, URL o control visible como autoridad                           | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-008` | `CONTRACT`     | visibilidad y permiso permanecen decisiones separadas                                      | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-009` | `CONTRACT`     | no existe fallback allow-by-default ni bundle genérico completo                            | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-010` | `CONTRACT`     | las identidades heredadas no cambian nombre, cantidad ni propietario                       | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-011` | `CONTRACT`     | cada pendiente tiene tarea responsable y condición de salida                               | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-012` | `CONTRACT`     | la tarea siguiente permanece reservada sin contenido desarrollado                          | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-013` | `MINIMIZATION` | el servidor selecciona campos autorizados antes de serializar                              | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-014` | `MINIMIZATION` | los campos ocultos no quedan en DOM, props, caché, logs o analytics                        | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-015` | `MINIMIZATION` | identificadores técnicos no sustituyen nombres humanos                                     | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-016` | `MINIMIZATION` | costo, datos personales y diagnósticos requieren finalidad y permiso exactos               | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-017` | `MINIMIZATION` | una vista operativa no recibe tableros globales ni configuración                           | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-018` | `MINIMIZATION` | una vista supervisora no obtiene writers operativos implícitos                             | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-019` | `MINIMIZATION` | una vista de configuración no recibe trabajo operativo concreto salvo impacto autorizado   | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-020` | `MINIMIZATION` | detalle expandible conserva la misma autoridad y acción primaria                           | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-021` | `MINIMIZATION` | no se repite el mismo dato contradictorio en cabecera, cuerpo y pie                        | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-022` | `MINIMIZATION` | datos parciales, stale u offline se etiquetan antes de mostrarse                           | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-023` | `MINIMIZATION` | exportación, impresión y notificación aplican la misma proyección                          | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-024` | `MINIMIZATION` | cambio de actor o contexto limpia datos de la proyección anterior                          | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-025` | `PROCESS`      | solicitud no expone picking, stock sensible ni configuración                               | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-026` | `PROCESS`      | preparación no expone despacho, custodia ni recepción como acción                          | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-027` | `PROCESS`      | despacho muestra carga, sello, vehículo, custodio y efecto antes de confirmar              | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-028` | `PROCESS`      | tránsito limita detalle de producto al manejo y custodia requeridos                        | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-029` | `PROCESS`      | recepción solicita cantidad o conteo auxiliar solo cuando la política lo exige             | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-030` | `PROCESS`      | entrada restringe costo y separa contexto, líneas y revisión                               | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-031` | `PROCESS`      | ubicación solo muestra destinos elegibles para la existencia                               | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-032` | `PROCESS`      | movimiento muestra efecto pareado y no permite ajuste libre                                | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-033` | `PROCESS`      | retiro muestra disponibilidad pertinente y revisión explícita                              | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-034` | `PROCESS`      | conteo ciego oculta expected y delta al contador                                           | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-035` | `PROCESS`      | diferencia de conteo no publica ajuste automáticamente                                     | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-036` | `PROCESS`      | ajuste muestra caso, decisión, posting y receipt como pasos separados                      | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-037` | `PROCESS`      | excepción separa observador, decisor y ejecutor                                            | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-038` | `PROCESS`      | consulta de stock distingue saldo, UOM, alcance y frescura                                 | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-039` | `PROCESS`      | movimientos ocultan eventos técnicos irrelevantes por defecto                              | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-040` | `PROCESS`      | scanner devuelve proposal y nunca confirma cantidad o comando                              | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-041` | `TECHNICAL`    | contratos TypeScript validan bundles, tiers, estados y versiones                           | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-042` | `TECHNICAL`    | pruebas de payload demuestran ausencia de campos no autorizados                            | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-043` | `TECHNICAL`    | pruebas E2E verifican una acción primaria por proyección                                   | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-044` | `TECHNICAL`    | concurrencia invalida revisión cuando cambia la versión                                    | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-045` | `TECHNICAL`    | resultado desconocido reconcilia por intención antes de reintentar                         | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-046` | `TECHNICAL`    | telemetría registra etapa y decisión sin datos sensibles crudos                            | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-047` | `TECHNICAL`    | feature gates y rollback restauran superficies anteriores sin perder trazabilidad          | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+| `INF-VAL-048` | `TECHNICAL`    | piloto separa evidencia por actor, etapa, dispositivo, red y tarea                         | prueba automatizada o evidencia controlada según el tipo de comportamiento |
+
+Ninguna comprobación física, remota o de dispositivo queda satisfecha por este diseño documental.
+
+---
+
+#### 26. `NEXO-STAGE-IMPLEMENTATION-HANDOFF-001`
+
+El paquete de implementación deberá:
+
+1. definir contratos TypeScript versionados para contexto, bundles, tiers, estados y receipts;
+2. crear un resolutor server-side que seleccione campos antes de consultar y serializar;
+3. migrar las dieciséis superficies mediante adapters y feature gates;
+4. eliminar writers directos o proyecciones paralelas identificadas por las tareas propietarias;
+5. conservar rutas legacy protegidas y búsqueda manual durante la transición;
+6. implementar pruebas de ausencia de campos, no solo snapshots visuales;
+7. aplicar la misma decisión a UI, API, RPC, exportación, impresión, notificación, logs y analytics;
+8. versionar toda modificación Supabase desde `vento-shell` con RLS, grants, tipos y rollback;
+9. medir errores de etapa, expansiones, bloqueos, reintentos y datos no disponibles sin capturar contenido sensible;
+10. probar móvil, tablet, quiosco, escritorio, lector, cámara, red intermitente y cambio de actor.
+
+Rollback: mantener el resolutor anterior detrás de un gate por tarea, conservar contratos y receipts nuevos sin pérdida, y revertir binding de superficie cuando una proyección objetivo impida completar el trabajo. Rollback no autoriza reactivar writers inseguros retirados por tareas propietarias.
+
+---
+
+#### 27. `NEXO-STAGE-CONTINUITY-HANDOFF-001`
+
+| Destino         | Consume                                                        | Resultado exigido                               | Límite                                                      |
+| --------------- | -------------------------------------------------------------- | ----------------------------------------------- | ----------------------------------------------------------- |
+| `NEXO-UX-022`   | bundles de diferencia, condición, evidencia, impacto y función | caso, autoridad, decisión, instrucción y cierre | no cambiar matriz de información de etapas no excepcionales |
+| `NEXO-UX-023`   | estados, orden responsive y fallbacks                          | pruebas reproducibles en tablet y quiosco       | no declarar validación por diseño                           |
+| `NEXO-UX-024`   | proyecciones por solicitante, bodeguero, conductor y receptor  | validación con actores reales                   | no alterar contratos sin hallazgo trazable                  |
+| `NEXO-UX-025`   | pregunta, acción, expansión, error y bloqueo por etapa         | métricas de tiempo, error y capacitación        | no capturar contenido sensible                              |
+| paquete E5 NEXO | matrices, contratos, disposiciones y validaciones              | implementación versionada y verificable         | Supabase únicamente desde `vento-shell`                     |
+
+No queda pendiente narrativo sin tarea, paquete o condición de salida.
+
+---
+
+#### 28. Requisitos de prueba
+
+Esta tarea crea catorce requisitos nuevos:
+
+- `TREQ-NEXO-245`;
+- `TREQ-NEXO-246`;
+- `TREQ-NEXO-247`;
+- `TREQ-NEXO-248`;
+- `TREQ-NEXO-249`;
+- `TREQ-NEXO-250`;
+- `TREQ-NEXO-251`;
+- `TREQ-NEXO-252`;
+- `TREQ-NEXO-253`;
+- `TREQ-NEXO-254`;
+- `TREQ-NEXO-255`;
+- `TREQ-NEXO-256`;
+- `TREQ-NEXO-257`;
+- `TREQ-NEXO-258`;
+
+No modifica, descarta ni vuelve obsoleto ningún requisito histórico.
+
+---
+
+#### 29. Criterios de aceptación documentales
+
+1. los veinticuatro artefactos están definidos y referenciados;
+2. las cuarenta etapas conservan identidad y carril y tienen decisión explícita;
+3. las veintiuna tareas aplicables y ocho preservadas reconcilian el catálogo completo;
+4. los catorce bundles y siete tiers no contienen fallback permisivo;
+5. cada etapa identifica información primaria, apoyo, ocultamiento, acción, estado y propietario;
+6. conteo ciego, escaneo, offline, stale, conflicto y receipt tienen fronteras explícitas;
+7. las dieciséis superficies y rutas tienen disposición;
+8. los treinta estados y cuarenta y ocho validaciones son únicos y contiguos;
+9. los catorce requisitos nuevos tienen origen, riesgo, prueba, responsable, paquete, ambiente, estado y relaciones;
+10. no se modifica código, datos, permisos, Supabase ni continuidad posterior.
+
+---
+
+#### 30. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-020 — Simplificar escáner y captura`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-021 — Mostrar solo información necesaria según etapa`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-022 — Diseñar manejo de diferencias y excepciones`
+
+`NEXO-UX-022` deberá consumir las proyecciones de observador, supervisor, decisor y ejecutor, junto con bundles de diferencia, condición, evidencia, impacto y receipt, para diseñar la resolución completa de excepciones sin reintroducir información o autoridad ajenas a cada etapa.
+
+
 ### [ ] NEXO-UX-022 — Diseñar manejo de diferencias y excepciones
 ### [ ] NEXO-UX-023 — Probar flujos en tablets y kioscos
 ### [ ] NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores
