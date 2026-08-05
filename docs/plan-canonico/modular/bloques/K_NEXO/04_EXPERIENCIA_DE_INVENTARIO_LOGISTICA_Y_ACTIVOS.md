@@ -21649,7 +21649,488 @@ Esta tarea crea `TREQ-NEXO-287` a `TREQ-NEXO-300`. El registro `04A` contiene su
 **SIGUIENTE TAREA RESERVADA:** `NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo`
 
 
-### [ ] NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo
+### ✅ NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores` — APROBADA
+**Tarea siguiente:** `AUTH-UI-052 — Diseñar página inicial según actor` — RESERVADA
+**Tipo de tarea:** documental; marco materializado de medición del piloto operativo con catálogo de métricas, eventos, fórmulas, denominadores, segmentación, calidad de datos, baseline, objetivos, scorecards, gates y handoff de certificación
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Fase:** exclusivamente documental; no autoriza instrumentación, código, migraciones, Supabase, datos productivos, reclutamiento, ejecución de piloto ni publicación de desempeño
+**Cambios físicos autorizados:** ninguno
+
+---
+
+#### 1. Propósito
+
+Definir de forma completa, calculable y auditable cómo se medirán tiempo, error y capacitación en el piloto operativo de NEXO. La tarea transforma las cincuenta y seis identidades de escenario de `NEXO-UX-024` en un marco de medición consumible, sin convertir ausencia de datos en cero, storyboard en desempeño ni rapidez en sustituto de seguridad, autorización, integridad o custodia.
+
+La regla central es:
+
+```text
+EVENTO OBSERVABLE + FÓRMULA VERSIONADA + DENOMINADOR ELEGIBLE
++ ACTOR + ESCENARIO + DISPOSITIVO + RED + VERSIÓN + EVIDENCIA
+→ MÉTRICA REPRODUCIBLE
+```
+
+Una métrica queda definida cuando tiene identidad, unidad, fórmula, eventos, población, denominador, exclusiones, segmentación, estado y propietario. No queda validada hasta contar con ejecuciones reales y evidencia reproducible.
+
+#### 2. Resultado material
+
+Se aprueban veinticuatro artefactos documentales:
+
+1. `NEXO-PILOT-METRIC-GOVERNANCE-CONTRACT-001` — governa finalidad, autoridad, versionado y prohibición de fabricar métricas.
+2. `NEXO-PILOT-METRIC-IDENTITY-CATALOG-001` — materializa treinta métricas estables con unidad, fórmula, denominador y estado.
+3. `NEXO-PILOT-METRIC-STATE-CONTRACT-001` — define estados de dato, baseline, objetivo, publicación e invalidación.
+4. `NEXO-PILOT-OBSERVATION-EVENT-CONTRACT-001` — define eventos y timestamps mínimos para reconstruir cada medición.
+5. `NEXO-PILOT-TIME-METRIC-CATALOG-001` — define diez métricas de tiempo y separa trabajo, espera, ayuda y recuperación.
+6. `NEXO-PILOT-ERROR-METRIC-CATALOG-001` — define diez métricas de error con oportunidades y tasas comparables.
+7. `NEXO-PILOT-ERROR-TAXONOMY-001` — separa clase, fuente, detección, efecto, severidad y atribución sin culpar por inferencia.
+8. `NEXO-PILOT-TRAINING-METRIC-CATALOG-001` — define diez métricas de capacitación, autonomía, retención y transferencia.
+9. `NEXO-PILOT-ASSISTANCE-INTERVENTION-CONTRACT-001` — clasifica ayudas, prompts, rescates y pausas y evita ocultarlos como desempeño autónomo.
+10. `NEXO-PILOT-LEARNING-PROGRESSION-CONTRACT-001` — define estados de aprendizaje y condiciones de progresión o reentrenamiento.
+11. `NEXO-PILOT-POPULATION-SAMPLING-CONTRACT-001` — define población, cohortes, suficiencia de muestra y reporte obligatorio de n.
+12. `NEXO-PILOT-SEGMENTATION-CONTRACT-001` — fija segmentación por actor, escenario, dispositivo, red, modalidad, versión y contexto.
+13. `NEXO-PILOT-DATA-QUALITY-EXCLUSION-CONTRACT-001` — decide elegibilidad, exclusiones, datos faltantes, bloqueados, parciales e inválidos.
+14. `NEXO-PILOT-STAGE-METRIC-MATRIX-001` — asigna métricas y regla de inclusión a las cuarenta etapas canónicas.
+15. `NEXO-PILOT-CROSS-CUTTING-METRIC-MATRIX-001` — asigna métricas y regla de inclusión a los dieciséis escenarios transversales.
+16. `NEXO-PILOT-BASELINE-TARGET-CONTRACT-001` — gobierna baseline y objetivos sin inventar valores antes de evidencia y aprobación.
+17. `NEXO-PILOT-AGGREGATION-REPORTING-CONTRACT-001` — define agregaciones, percentiles, intervalos, comparabilidad y lenguaje de resultados.
+18. `NEXO-PILOT-PRIVACY-FAIRNESS-CONTRACT-001` — prohíbe vigilancia punitiva, ranking individual y exposición innecesaria de participantes.
+19. `NEXO-PILOT-SCORECARD-CONTRACT-001` — define scorecard por actor, calidad, seguridad, tiempo, error y capacitación.
+20. `NEXO-PILOT-ACCEPTANCE-GATE-001` — define gates independientes y prevalencia de seguridad e integridad sobre velocidad.
+21. `NEXO-PILOT-TRACEABILITY-MATRIX-001` — vincula métricas, escenarios, eventos, TREQ, evidencia, defectos y decisiones.
+22. `NEXO-PILOT-VALIDATION-MATRIX-001` — materializa cuarenta y ocho comprobaciones documentales y futuras del piloto.
+23. `NEXO-PILOT-IMPLEMENTATION-HANDOFF-001` — entrega contratos, eventos, datos, pruebas, observabilidad y rollback al paquete autorizado.
+24. `NEXO-PILOT-CERTIFICATION-HANDOFF-001` — cierra documentalmente el carril NEXO y entrega el handoff a AUTH-UI-052 sin certificar un piloto no ejecutado.
+
+Cobertura materializada:
+
+| Elemento                      | Esperado | Materializado | Faltantes | Duplicados |
+| ----------------------------- | -------: | ------------: | --------: | ---------: |
+| Familias métricas             |        3 |             3 |         0 |          0 |
+| Métricas de tiempo            |       10 |            10 |         0 |          0 |
+| Métricas de error             |       10 |            10 |         0 |          0 |
+| Métricas de capacitación      |       10 |            10 |         0 |          0 |
+| Métricas totales              |       30 |            30 |         0 |          0 |
+| Etapas heredadas              |       40 |            40 |         0 |          0 |
+| Escenarios transversales      |       16 |            16 |         0 |          0 |
+| Escenarios totales            |       56 |            56 |         0 |          0 |
+| Funciones participantes       |        3 |             3 |         0 |          0 |
+| Comprobaciones                |       48 |            48 |         0 |          0 |
+| Sesiones humanas ejecutadas   |        0 |             0 |         0 |          0 |
+| Valores métricos observados   |        0 |             0 |         0 |          0 |
+| Baselines aprobados           |        0 |             0 |         0 |          0 |
+| Objetivos numéricos aprobados |        0 |             0 |         0 |          0 |
+| Requisitos nuevos             |       14 |            14 |         0 |          0 |
+
+#### 3. `NEXO-PILOT-METRIC-GOVERNANCE-CONTRACT-001`
+
+1. La métrica no concede autoridad ni modifica el proceso observado.
+2. Velocidad nunca compensa error crítico, actor incorrecto, pérdida de integridad, custodia ambigua, doble efecto o privacidad vulnerada.
+3. `NOT_RUN`, dato faltante, ejecución bloqueada y escenario sin prototipo no se convierten en cero.
+4. Bodeguero, conductor y receptores se reportan por separado; un actor no compensa a otro.
+5. Todo valor publicado conserva fórmula y versión, escenario, commit, actor anonimizado, dispositivo, red, evidencia y regla de inclusión.
+6. Ningún valor individual se usa como ranking laboral, sanción o inferencia de productividad fuera del propósito consentido del piloto.
+7. Una mejora de tiempo solo es válida si los guardrails de seguridad, autorización, exactitud, custodia e idempotencia permanecen satisfechos.
+8. Las fórmulas se versionan; una modificación no reescribe resultados históricos y obliga a recalcular una nueva vista comparable.
+
+#### 4. `NEXO-PILOT-METRIC-STATE-CONTRACT-001`
+
+| Estado                 | Significado                                                                 | Publicación permitida         |
+| ---------------------- | --------------------------------------------------------------------------- | ----------------------------- |
+| `NOT_COLLECTED`        | no existe ejecución válida                                                  | no                            |
+| `COLLECTING`           | existen datos, todavía sin cierre de calidad                                | solo diagnóstico interno      |
+| `DATA_QUALITY_BLOCKED` | faltan eventos, evidencia o comparabilidad                                  | no                            |
+| `BASELINE_PROVISIONAL` | datos válidos insuficientes para decisión definitiva                        | sí, marcado como exploratorio |
+| `BASELINE_APPROVED`    | baseline revisado y aprobado con cobertura y calidad                        | sí                            |
+| `TARGET_PROPOSED`      | umbral propuesto con fundamento y propietario                               | no como compromiso vigente    |
+| `TARGET_APPROVED`      | objetivo aprobado, versionado y con fecha de vigencia                       | sí                            |
+| `MONITORING`           | medición vigente contra objetivo aprobado                                   | sí                            |
+| `INVALIDATED`          | cambió fórmula, versión, proceso, dispositivo o población de forma material | no hasta nueva baseline       |
+
+Estado inicial de las treinta métricas: `NOT_COLLECTED`. Estado inicial de baseline: `NOT_COLLECTED`. Estado inicial de objetivos numéricos: `NOT_SET`.
+
+#### 5. `NEXO-PILOT-OBSERVATION-EVENT-CONTRACT-001`
+
+| Evento     | Marca mínima                                | Regla                                                   |
+| ---------- | ------------------------------------------- | ------------------------------------------------------- |
+| EVT-MET-01 | `scenario_presented`                        | inicio aceptado del escenario, no apertura de la sesión |
+| EVT-MET-02 | `first_meaningful_action`                   | primera acción dirigida al objetivo                     |
+| EVT-MET-03 | `active_start / active_stop`                | intervalos de trabajo activo, anidamiento prohibido     |
+| EVT-MET-04 | `system_wait_start / system_wait_stop`      | espera atribuible a respuesta técnica                   |
+| EVT-MET-05 | `assistance_start / assistance_stop`        | ayuda clasificada y atribuida                           |
+| EVT-MET-06 | `error_detected`                            | momento de detección y clase provisional                |
+| EVT-MET-07 | `safe_recovery`                             | retorno a estado seguro o corrección verificada         |
+| EVT-MET-08 | `review_opened`                             | snapshot decisivo visible y congelado                   |
+| EVT-MET-09 | `command_submitted`                         | intención enviada una sola vez                          |
+| EVT-MET-10 | `receipt_verified`                          | resultado autoritativo leído y comprendido              |
+| EVT-MET-11 | `handoff_offered`                           | custodia o responsabilidad ofrecida                     |
+| EVT-MET-12 | `handoff_accepted`                          | siguiente actor acepta con receipt                      |
+| EVT-MET-13 | `training_intro_start / training_intro_end` | intervalo de inducción                                  |
+| EVT-MET-14 | `independent_qualified_completion`          | completación autónoma sin condición descalificante      |
+
+Todos los timestamps usarán reloj monotónico para duraciones y fecha UTC para correlación. Pausa, abandono, background, reconexión y cierre se registran explícitamente; no se reconstruyen desde impresiones del observador.
+
+#### 6. `NEXO-PILOT-METRIC-IDENTITY-CATALOG-001`
+
+Cada métrica contiene `metric_id`, `metric_version`, nombre, familia, unidad, fórmula, eventos, población, denominador, exclusiones, segmentos, owner, estado de baseline, estado de objetivo y vigencia. Los identificadores siguientes son estables:
+
+Las familias se materializan mediante `NEXO-PILOT-TIME-METRIC-CATALOG-001`, `NEXO-PILOT-ERROR-METRIC-CATALOG-001` y `NEXO-PILOT-TRAINING-METRIC-CATALOG-001`.
+
+| ID         | Métrica                                      | Unidad               | Fórmula                                                                                                              | Elegibilidad                                 | Exclusión principal                                |
+| ---------- | -------------------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------- |
+| MET-TIM-01 | Latencia de inicio                           | segundos             | primer evento de acción significativa menos `scenario_presented`                                                     | ejecución iniciada                           | preparación del moderador y espera previa          |
+| MET-TIM-02 | Tiempo activo de ejecución                   | segundos             | suma de intervalos `active_start` a `active_stop`                                                                    | escenario ejecutable                         | espera de sistema, ayuda y pausas externas         |
+| MET-TIM-03 | Tiempo de espera del sistema                 | segundos             | suma de intervalos `system_wait_start` a `system_wait_stop`                                                          | interacción con respuesta técnica            | espera humana no causada por el sistema            |
+| MET-TIM-04 | Tiempo de ayuda                              | segundos             | suma de intervalos `assistance_start` a `assistance_stop`                                                            | sesión con intervención registrada           | prompt neutral inicial                             |
+| MET-TIM-05 | Tiempo de recuperación                       | segundos             | `safe_recovery` menos `error_detected` por evento recuperable                                                        | error o conflicto detectado                  | errores no detectados durante la sesión            |
+| MET-TIM-06 | Tiempo de revisión y confirmación            | segundos             | `command_submitted` menos `review_opened`                                                                            | flujo con review y comando                   | tiempo de carga posterior al envío                 |
+| MET-TIM-07 | Tiempo de handoff                            | segundos             | `handoff_accepted` menos `handoff_offered`                                                                           | transferencia entre actores o etapas         | espera fuera del alcance del handoff identificado  |
+| MET-TIM-08 | Tiempo de reconciliación                     | segundos             | `receipt_verified` menos inicio de reconexión o resultado desconocido                                                | offline, conflicto o resultado desconocido   | reintentos ciegos no autorizados                   |
+| MET-TIM-09 | Tiempo total de ciclo                        | segundos             | estado terminal verificable menos `scenario_presented`                                                               | escenario ejecutado con estado terminal      | escenario bloqueado sin ejecución                  |
+| MET-TIM-10 | Tiempo a primera ejecución independiente     | minutos              | duración acumulada de aprendizaje hasta `independent_qualified_completion`                                           | actor y escenario con entrenamiento          | storyboard y comprensión sin ejecución             |
+| MET-ERR-01 | Error de identidad o sujeto                  | tasa por oportunidad | eventos de identidad incorrecta divididos por oportunidades elegibles por cien                                       | selección o propuesta de sujeto              | mismatch prevenido antes de selección              |
+| MET-ERR-02 | Error de cantidad o UOM                      | tasa por oportunidad | eventos de cantidad, presentación, conversión o UOM incorrecta divididos por oportunidades elegibles por cien        | captura o revisión cuantitativa              | diferencia empresarial correcta                    |
+| MET-ERR-03 | Error de ubicación o territorio              | tasa por oportunidad | eventos de LOC, posición, sede o alcance incorrecto divididos por oportunidades elegibles por cien                   | selección territorial                        | bloqueo correcto del sistema                       |
+| MET-ERR-04 | Error de estado o secuencia                  | tasa por oportunidad | transiciones o interpretación de estado incorrectas divididas por oportunidades elegibles por cien                   | flujo con estados                            | paso prohibido rechazado correctamente             |
+| MET-ERR-05 | Error de actor o autoridad                   | tasa por oportunidad | acciones intentadas o atribuidas al actor incorrecto divididas por oportunidades elegibles por cien                  | mutación o acceso protegido                  | denegación correcta                                |
+| MET-ERR-06 | Error de custodia, condición o evidencia     | tasa por oportunidad | eventos de custody, sello, condición o evidencia incorrecta divididos por oportunidades elegibles por cien           | handoff, recepción o excepción               | observación sin efecto empresarial                 |
+| MET-ERR-07 | Error de duplicado o idempotencia            | tasa por oportunidad | efectos o intentos duplicados inseguros divididos por oportunidades de reenvío por cien                              | submit, retry, refresh o wedge               | duplicado deduplicado y vinculado                  |
+| MET-ERR-08 | Error de recuperación degradada              | tasa por oportunidad | recuperaciones inseguras ante offline, stale, conflicto o resultado desconocido divididas por oportunidades por cien | estado degradado inducido                    | bloqueo seguro sin efecto                          |
+| MET-ERR-09 | Omisión o clasificación errónea de excepción | tasa por oportunidad | excepciones omitidas o mal clasificadas divididas por oportunidades de excepción por cien                            | diferencia o anomalía presentada             | caso correctamente escalado                        |
+| MET-ERR-10 | Error silencioso postarea                    | tasa por ejecución   | errores descubiertos después del supuesto cierre divididos por ejecuciones auditadas por cien                        | ejecución con auditoría o receipt            | defecto visible y reconocido durante la tarea      |
+| MET-TRN-01 | Duración de inducción                        | minutos              | `training_intro_end` menos `training_intro_start`                                                                    | actor y módulo de entrenamiento              | pausas ajenas a la formación                       |
+| MET-TRN-02 | Intentos guiados                             | conteo               | número de intentos con guía antes del primer intento independiente                                                   | actor y escenario                            | demostración sin intento del participante          |
+| MET-TRN-03 | Tasa de intentos asistidos                   | porcentaje           | intentos con ayuda divididos por intentos elegibles por cien                                                         | escenario ejecutado                          | prompt neutral que no revela solución              |
+| MET-TRN-04 | Éxito independiente al primer intento        | porcentaje           | primeros intentos independientes calificados divididos por primeros intentos elegibles por cien                      | escenario ejecutable                         | éxito con ayuda, corrección oculta o error crítico |
+| MET-TRN-05 | Tasa de ejecución independiente              | porcentaje           | completaciones independientes calificadas divididas por completaciones elegibles por cien                            | escenario ejecutable                         | storyboard o límite sin ejecución                  |
+| MET-TRN-06 | Comprensión de estado y consecuencia         | porcentaje           | puntos obtenidos divididos por puntos aplicables de la rúbrica por cien                                              | check de comprensión                         | pregunta no aplicable documentada                  |
+| MET-TRN-07 | Retención en reevaluación                    | porcentaje           | reevaluaciones independientes calificadas divididas por reevaluaciones elegibles por cien                            | checkpoint configurado y comparable          | reevaluación sin intervalo o versión comparable    |
+| MET-TRN-08 | Transferencia a variante o dispositivo       | porcentaje           | éxitos independientes en contexto nuevo divididos por intentos de transferencia elegibles por cien                   | variante, red, modalidad o dispositivo nuevo | repetición idéntica del entrenamiento              |
+| MET-TRN-09 | Recurrencia de error                         | porcentaje           | repeticiones de la misma clase de error divididas por oportunidades comparables posteriores por cien                 | actor con intento posterior                  | error de clase distinta                            |
+| MET-TRN-10 | Esfuerzo de reentrenamiento                  | minutos e intentos   | suma de tiempo de ayuda y nuevos intentos desde trigger hasta recuperación de autonomía                              | trigger documentado                          | entrenamiento inicial                              |
+
+#### 7. `NEXO-PILOT-ERROR-TAXONOMY-001`
+
+Todo evento de error conserva dimensiones separadas:
+
+| Dimensión        | Valores canónicos                                                                                                                 |
+| ---------------- | --------------------------------------------------------------------------------------------------------------------------------- |
+| Clase            | `MET-ERR-01` a `MET-ERR-10`                                                                                                       |
+| Fuente observada | `PARTICIPANT_ACTION`, `INTERFACE_INDUCED`, `SYSTEM`, `DATA_CONFIG`, `TRAINING_GAP`, `PROCESS_POLICY`, `ENVIRONMENT`, `UNRESOLVED` |
+| Detección        | `PRE_COMMIT`, `CLIENT_VALIDATION`, `SERVER_REJECTION`, `RECEIPT`, `POST_TASK_AUDIT`                                               |
+| Resultado        | `PREVENTED`, `RECOVERED_NO_EFFECT`, `RECOVERED_WITH_CORRECTION`, `UNRECOVERED`, `RESULT_UNKNOWN`                                  |
+| Severidad        | `ACT-SEV-0`, `ACT-SEV-1`, `ACT-SEV-2`, `ACT-SEV-3`                                                                                |
+| Atribución       | `OBSERVED`, `SUPPORTED`, `CONFIRMED`, `DISPUTED`, `UNKNOWN`                                                                       |
+
+Una diferencia, rechazo del servidor o preferencia del participante no se clasifica automáticamente como error. La causa y la responsabilidad no se infieren desde la clase observada.
+
+#### 8. `NEXO-PILOT-ASSISTANCE-INTERVENTION-CONTRACT-001`
+
+| Tipo                      | Definición                                          | Descalifica autonomía                                                   |
+| ------------------------- | --------------------------------------------------- | ----------------------------------------------------------------------- |
+| `NEUTRAL_PROMPT`          | repite el objetivo sin revelar interfaz ni solución | no                                                                      |
+| `CLARIFICATION`           | aclara dato del escenario no visible por diseño     | no, si queda documentado                                                |
+| `NAVIGATION_HINT`         | indica dónde encontrar una acción                   | sí                                                                      |
+| `PROCEDURAL_HINT`         | indica orden o decisión                             | sí                                                                      |
+| `CORRECTIVE_INTERVENTION` | evita o corrige un error                            | sí                                                                      |
+| `SAFETY_STOP`             | detiene por riesgo de seguridad, datos o operación  | sí; además bloquea el intento                                           |
+| `TECHNICAL_RESCUE`        | restablece ambiente, dispositivo o fixture          | no se atribuye al actor; invalida comparabilidad si altera el escenario |
+
+Ayuda, pausa y rescate se temporizan por separado. Una completación asistida puede demostrar comprensión parcial, pero no cuenta como ejecución independiente ni first-pass success.
+
+#### 9. `NEXO-PILOT-LEARNING-PROGRESSION-CONTRACT-001`
+
+| Estado                         | Condición                                                              |
+| ------------------------------ | ---------------------------------------------------------------------- |
+| `NOT_EXPOSED`                  | no recibió inducción ni ejecutó el escenario                           |
+| `INTRODUCED`                   | recibió explicación inicial                                            |
+| `GUIDED`                       | ejecuta con ayuda procedural                                           |
+| `SUPERVISED`                   | ejecuta sin ayuda procedural, con observación activa                   |
+| `INDEPENDENT_PENDING_EVIDENCE` | completa de forma autónoma, falta cobertura suficiente                 |
+| `PROFICIENT`                   | satisface criterios aprobados por rol y escenario con evidencia        |
+| `RETRAINING_REQUIRED`          | error recurrente, cambio material o gate fallido exige nueva formación |
+| `BLOCKED_NO_PROTOTYPE`         | no existe superficie ejecutable; no se asigna competencia              |
+
+La competencia es específica de actor, escenario, versión y contexto. Cambios materiales de autorización, UOM, proceso, dispositivo o interfaz pueden invalidarla. Confianza declarada se conserva como señal complementaria, nunca como sustituto de ejecución.
+
+#### 10. `NEXO-PILOT-POPULATION-SAMPLING-CONTRACT-001`
+
+El piloto conserva al menos dos participantes por función como mínimo de cobertura heredado de `NEXO-UX-024`; no convierte ese mínimo en suficiencia estadística. Cada informe mostrará participantes únicos, sesiones, intentos, escenarios, oportunidades, exclusiones y datos faltantes. La regla de suficiencia de muestra deberá aprobarse antes de presentar percentiles como compromiso o comparar sedes, cohortes o versiones.
+
+Quedan prohibidos:
+
+- mezclar intentos repetidos como si fueran participantes independientes;
+- publicar promedio sin distribución, `n` y denominador;
+- excluir fallos, abandonos o bloqueos para mejorar el resultado;
+- comparar cohortes con escenario, versión, dispositivo o red materialmente distintos sin estratificación;
+- usar datos de administrador, diseñador o demostrador como sustituto de actor operacional.
+
+#### 11. `NEXO-PILOT-SEGMENTATION-CONTRACT-001`
+
+Toda métrica se podrá segmentar por: función, participante anonimizado, scenario id, proceso, etapa, criticidad, intento, cohorte de entrenamiento, experiencia operacional, sede o territorio autorizado, commit, feature gate, dispositivo, SO, navegador, viewport, orientación, modalidad de entrada, red, fixture, accesibilidad, estado de excepción y resultado. El reporte por participante se restringe a investigación consentida; el scorecard de decisión usa agregados por función y escenario.
+
+#### 12. `NEXO-PILOT-DATA-QUALITY-EXCLUSION-CONTRACT-001`
+
+| Estado de observación               | Inclusión                    | Regla                                                       |
+| ----------------------------------- | ---------------------------- | ----------------------------------------------------------- |
+| `VALID_COMPLETE`                    | sí                           | eventos, evidencia, denominador y contexto completos        |
+| `VALID_PARTIAL`                     | solo métricas compatibles    | falta una dimensión no decisiva y queda declarada           |
+| `NOT_RUN`                           | no                           | no equivale a cero                                          |
+| `BLOCKED_NO_PROTOTYPE`              | solo cobertura               | no produce tiempo, error operativo ni éxito                 |
+| `BLOCKED_PRECONDITION`              | solo readiness               | conserva causa, propietario y condición de salida           |
+| `INTERRUPTED`                       | no en tiempo de completación | conserva duración censurada y causa                         |
+| `INVALID_EVIDENCE`                  | no                           | evidencia insuficiente o no atribuible                      |
+| `TECHNICAL_RESCUE_CHANGED_SCENARIO` | no comparable                | el rescate alteró materialmente el escenario                |
+| `RESULT_UNKNOWN`                    | solo resiliencia             | no se cuenta como éxito ni error final hasta reconciliación |
+
+Toda exclusión conserva `exclusion_reason`, actor que la aplicó, timestamp y regla. El informe muestra incluidos y excluidos; nunca borra la observación original.
+
+#### 13. `NEXO-PILOT-STAGE-METRIC-MATRIX-001`
+
+| Etapa               | Actividad                                                  | Actor     | Disposición heredada         | Tiempo                             | Error                                          | Capacitación                       | Regla de inclusión                                                |
+| ------------------- | ---------------------------------------------------------- | --------- | ---------------------------- | ---------------------------------- | ---------------------------------------------- | ---------------------------------- | ----------------------------------------------------------------- |
+| VPROC-0023::ASIS-01 | crear o editar LOC por sede y área                         | BODEGUERO | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-01; MET-ERR-03; MET-ERR-05             | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0023::ASIS-02 | crear zonas, niveles y posiciones internas                 | BODEGUERO | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-01; MET-ERR-03; MET-ERR-05             | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0023::ASIS-03 | definir productos permitidos por ubicación                 | BODEGUERO | BLOCKED_NO_PROTOTYPE         | —                                  | —                                              | MET-TRN-06                         | CAPACITY_GAP_ONLY; no tiempo, error operativo ni éxito            |
+| VPROC-0023::ASIS-04 | consultar stock por sede, LOC y posición                   | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-01; MET-TIM-02; MET-TIM-09 | MET-ERR-01; MET-ERR-03; MET-ERR-05             | MET-TRN-04; MET-TRN-05; MET-TRN-06 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0023::ASIS-05 | abrir ubicación mediante board, quiosco o código           | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-01; MET-TIM-02; MET-TIM-09 | MET-ERR-01; MET-ERR-03; MET-ERR-05             | MET-TRN-04; MET-TRN-05; MET-TRN-06 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0024::ASIS-01 | iniciar entrada excepcional                                | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-06; MET-TIM-09 | MET-ERR-01; MET-ERR-02; MET-ERR-03; MET-ERR-04 | MET-TRN-04; MET-TRN-05; MET-TRN-09 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0024::ASIS-02 | iniciar entrada normal correlacionada                      | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-06; MET-TIM-09 | MET-ERR-01; MET-ERR-02; MET-ERR-03; MET-ERR-04 | MET-TRN-04; MET-TRN-05; MET-TRN-09 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0024::ASIS-03 | capturar producto, cantidad, presentación, unidad y costo  | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-06; MET-TIM-09 | MET-ERR-01; MET-ERR-02; MET-ERR-03; MET-ERR-04 | MET-TRN-04; MET-TRN-05; MET-TRN-09 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0024::ASIS-04 | asignar LOC de destino                                     | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-06; MET-TIM-09 | MET-ERR-01; MET-ERR-02; MET-ERR-03; MET-ERR-04 | MET-TRN-04; MET-TRN-05; MET-TRN-09 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0024::ASIS-05 | asignar posición interna                                   | BODEGUERO | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-01; MET-ERR-02; MET-ERR-03; MET-ERR-04 | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0024::ASIS-06 | publicar, corregir o revertir entrada                      | BODEGUERO | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-01; MET-ERR-02; MET-ERR-03; MET-ERR-04 | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0025::ASIS-01 | identificar sede, LOC, posición y producto de origen       | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-06; MET-TIM-09 | MET-ERR-02; MET-ERR-03; MET-ERR-05; MET-ERR-07 | MET-TRN-04; MET-TRN-05; MET-TRN-08 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0025::ASIS-02 | escoger presentación o unidad de captura                   | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-06; MET-TIM-09 | MET-ERR-02; MET-ERR-03; MET-ERR-05; MET-ERR-07 | MET-TRN-04; MET-TRN-05; MET-TRN-08 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0025::ASIS-03 | verificar disponibilidad y alcance                         | BODEGUERO | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-02; MET-ERR-03; MET-ERR-05; MET-ERR-07 | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0025::ASIS-04 | consumir o retirar desde stock general                     | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-06; MET-TIM-09 | MET-ERR-02; MET-ERR-03; MET-ERR-05; MET-ERR-07 | MET-TRN-04; MET-TRN-05; MET-TRN-08 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0025::ASIS-05 | consumir o retirar desde posición o quiosco                | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-06; MET-TIM-09 | MET-ERR-02; MET-ERR-03; MET-ERR-05; MET-ERR-07 | MET-TRN-04; MET-TRN-05; MET-TRN-08 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0025::ASIS-06 | transferir entre LOC y conservar historial                 | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-06; MET-TIM-09 | MET-ERR-02; MET-ERR-03; MET-ERR-05; MET-ERR-07 | MET-TRN-04; MET-TRN-05; MET-TRN-08 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0026::ASIS-01 | abrir sesión de conteo con sede y LOC                      | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-05; MET-TIM-09 | MET-ERR-02; MET-ERR-04; MET-ERR-05; MET-ERR-09 | MET-TRN-05; MET-TRN-06; MET-TRN-09 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0026::ASIS-02 | congelar alcance y stock de apertura                       | BODEGUERO | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-02; MET-ERR-04; MET-ERR-05; MET-ERR-09 | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0026::ASIS-03 | registrar observación por producto                         | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-05; MET-TIM-09 | MET-ERR-02; MET-ERR-04; MET-ERR-05; MET-ERR-09 | MET-TRN-05; MET-TRN-06; MET-TRN-09 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0026::ASIS-04 | capturar varias presentaciones o posiciones                | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-05; MET-TIM-09 | MET-ERR-02; MET-ERR-04; MET-ERR-05; MET-ERR-09 | MET-TRN-05; MET-TRN-06; MET-TRN-09 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0026::ASIS-05 | calcular diferencia sin sobrescribir observación           | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-05; MET-TIM-09 | MET-ERR-02; MET-ERR-04; MET-ERR-05; MET-ERR-09 | MET-TRN-05; MET-TRN-06; MET-TRN-09 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0026::ASIS-06 | aplicar reconciliación o ajuste autorizado                 | BODEGUERO | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-02; MET-ERR-04; MET-ERR-05; MET-ERR-09 | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0026::ASIS-07 | cerrar sesión y conservar historial                        | BODEGUERO | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-02; MET-ERR-04; MET-ERR-05; MET-ERR-09 | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0027::ASIS-01 | detectar alerta, daño, pérdida, merma o vencimiento        | BODEGUERO | BLOCKED_NO_PROTOTYPE         | —                                  | —                                              | MET-TRN-06                         | CAPACITY_GAP_ONLY; no tiempo, error operativo ni éxito            |
+| VPROC-0027::ASIS-02 | identificar producto, existencia, lote, LOC y condición    | BODEGUERO | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-01; MET-ERR-06; MET-ERR-09             | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0027::ASIS-03 | bloquear o poner en cuarentena                             | BODEGUERO | BLOCKED_NO_PROTOTYPE         | —                                  | —                                              | MET-TRN-06                         | CAPACITY_GAP_ONLY; no tiempo, error operativo ni éxito            |
+| VPROC-0027::ASIS-04 | evaluar condición, temperatura y aptitud                   | BODEGUERO | BLOCKED_NO_PROTOTYPE         | —                                  | —                                              | MET-TRN-06                         | CAPACITY_GAP_ONLY; no tiempo, error operativo ni éxito            |
+| VPROC-0027::ASIS-05 | decidir liberación, merma, pérdida, rechazo o disposición  | BODEGUERO | BLOCKED_NO_PROTOTYPE         | —                                  | —                                              | MET-TRN-06                         | CAPACITY_GAP_ONLY; no tiempo, error operativo ni éxito            |
+| VPROC-0027::ASIS-06 | ejecutar movimiento físico y efecto de stock               | BODEGUERO | BLOCKED_NO_PROTOTYPE         | —                                  | —                                              | MET-TRN-06                         | CAPACITY_GAP_ONLY; no tiempo, error operativo ni éxito            |
+| VPROC-0027::ASIS-07 | conservar evidencia y cerrar caso                          | BODEGUERO | BLOCKED_NO_PROTOTYPE         | —                                  | —                                              | MET-TRN-06                         | CAPACITY_GAP_ONLY; no tiempo, error operativo ni éxito            |
+| VPROC-0028::ASIS-01 | crear solicitud por sede, área, producto, cantidad y fecha | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-07; MET-TIM-09 | MET-ERR-02; MET-ERR-04; MET-ERR-06; MET-ERR-09 | MET-TRN-04; MET-TRN-05; MET-TRN-08 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0028::ASIS-02 | aplicar ruta, elegibilidad y política                      | BODEGUERO | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-02; MET-ERR-04; MET-ERR-06; MET-ERR-09 | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0028::ASIS-03 | crear fuente o fulfillment por línea                       | BODEGUERO | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-02; MET-ERR-04; MET-ERR-06; MET-ERR-09 | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0028::ASIS-04 | escoger LOC, posición y cantidad real de picking           | BODEGUERO | BLOCKED_NO_PROTOTYPE         | —                                  | —                                              | MET-TRN-06                         | CAPACITY_GAP_ONLY; no tiempo, error operativo ni éxito            |
+| VPROC-0028::ASIS-05 | preparar y declarar listo o faltante                       | BODEGUERO | READY_FOR_ACTOR_SESSION      | MET-TIM-02; MET-TIM-07; MET-TIM-09 | MET-ERR-02; MET-ERR-04; MET-ERR-06; MET-ERR-09 | MET-TRN-04; MET-TRN-05; MET-TRN-08 | PILOT_ELIGIBLE cuando exista ejecución y evidencia válida         |
+| VPROC-0028::ASIS-06 | cargar, sellar y despachar envío físico                    | CONDUCTOR | BLOCKED_NO_PROTOTYPE         | —                                  | —                                              | MET-TRN-06                         | CAPACITY_GAP_ONLY; no tiempo, error operativo ni éxito            |
+| VPROC-0028::ASIS-07 | transportar y confirmar tránsito                           | CONDUCTOR | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-02; MET-ERR-04; MET-ERR-06; MET-ERR-09 | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0028::ASIS-08 | recibir cantidades parciales o completas                   | RECEPTOR  | VALIDATE_AS_LIMIT_OR_HANDOFF | MET-TIM-01; MET-TIM-07             | MET-ERR-02; MET-ERR-04; MET-ERR-06; MET-ERR-09 | MET-TRN-06; MET-TRN-08             | LIMIT_OR_HANDOFF_ONLY; no baseline de velocidad de tarea completa |
+| VPROC-0028::ASIS-09 | registrar diferencia, rechazo, retorno y cierre            | RECEPTOR  | BLOCKED_NO_PROTOTYPE         | —                                  | —                                              | MET-TRN-06                         | CAPACITY_GAP_ONLY; no tiempo, error operativo ni éxito            |
+
+Reconciliación:
+
+```text
+EXPECTED_STAGE_IDS = 40
+MATERIALIZED_STAGE_IDS = 40
+UNIQUE_STAGE_IDS = 40
+MISSING_STAGE_IDS = 0
+DUPLICATE_STAGE_IDS = 0
+```
+
+#### 14. `NEXO-PILOT-CROSS-CUTTING-METRIC-MATRIX-001`
+
+| Escenario   | Prueba                    | Actor     | Tiempo                 | Error                              | Capacitación           | Regla de inclusión          | Estado inicial |
+| ----------- | ------------------------- | --------- | ---------------------- | ---------------------------------- | ---------------------- | --------------------------- | -------------- |
+| DVC-XCUT-01 | propósito fijo de quiosco | BODEGUERO | MET-TIM-01             | MET-ERR-04; MET-ERR-05             | MET-TRN-06             | GUARDRAIL_AND_COMPREHENSION | NOT_RUN        |
+| DVC-XCUT-02 | firma de actor compartido | BODEGUERO | MET-TIM-06             | MET-ERR-05                         | MET-TRN-04; MET-TRN-06 | SECURITY_GUARDRAIL          | NOT_RUN        |
+| DVC-XCUT-03 | inactividad y limpieza    | BODEGUERO | MET-TIM-05             | MET-ERR-04; MET-ERR-05             | MET-TRN-08             | RESILIENCE_ELIGIBLE         | NOT_RUN        |
+| DVC-XCUT-04 | revocación y territorio   | BODEGUERO | MET-TIM-05             | MET-ERR-03; MET-ERR-05             | MET-TRN-06             | SECURITY_GUARDRAIL          | NOT_RUN        |
+| DVC-XCUT-05 | portrait-landscape        | BODEGUERO | MET-TIM-02; MET-TIM-05 | MET-ERR-04; MET-ERR-07             | MET-TRN-08             | DEVICE_TRANSFER_ELIGIBLE    | NOT_RUN        |
+| DVC-XCUT-06 | teclado virtual           | BODEGUERO | MET-TIM-02             | MET-ERR-01; MET-ERR-02             | MET-TRN-08             | ACCESSIBILITY_ELIGIBLE      | NOT_RUN        |
+| DVC-XCUT-07 | objetivos táctiles        | BODEGUERO | MET-TIM-02             | MET-ERR-01; MET-ERR-04             | MET-TRN-08             | ACCESSIBILITY_ELIGIBLE      | NOT_RUN        |
+| DVC-XCUT-08 | cámara denegada           | BODEGUERO | MET-TIM-05             | MET-ERR-01; MET-ERR-08             | MET-TRN-08             | RECOVERY_ELIGIBLE           | NOT_RUN        |
+| DVC-XCUT-09 | wedge repetido            | BODEGUERO | MET-TIM-05             | MET-ERR-07                         | MET-TRN-09             | IDEMPOTENCY_GUARDRAIL       | NOT_RUN        |
+| DVC-XCUT-10 | borrador offline          | BODEGUERO | MET-TIM-08             | MET-ERR-04; MET-ERR-08             | MET-TRN-06; MET-TRN-08 | OFFLINE_GUARDRAIL           | NOT_RUN        |
+| DVC-XCUT-11 | reconexión                | CONDUCTOR | MET-TIM-08             | MET-ERR-03; MET-ERR-05; MET-ERR-08 | MET-TRN-08             | RECONCILIATION_ELIGIBLE     | NOT_RUN        |
+| DVC-XCUT-12 | background y resume       | CONDUCTOR | MET-TIM-05             | MET-ERR-04; MET-ERR-08             | MET-TRN-08             | STALE_GUARDRAIL             | NOT_RUN        |
+| DVC-XCUT-13 | resultado desconocido     | CONDUCTOR | MET-TIM-08             | MET-ERR-07; MET-ERR-08; MET-ERR-10 | MET-TRN-06; MET-TRN-09 | RESULT_UNKNOWN_GUARDRAIL    | NOT_RUN        |
+| DVC-XCUT-14 | privacidad de pantalla    | RECEPTOR  | —                      | MET-ERR-05; MET-ERR-06             | MET-TRN-06             | PRIVACY_GUARDRAIL_ONLY      | NOT_RUN        |
+| DVC-XCUT-15 | accesibilidad y zoom      | RECEPTOR  | MET-TIM-02             | MET-ERR-01; MET-ERR-04             | MET-TRN-08             | ACCESSIBILITY_ELIGIBLE      | NOT_RUN        |
+| DVC-XCUT-16 | carga y capacidad         | RECEPTOR  | MET-TIM-03; MET-TIM-09 | MET-ERR-08; MET-ERR-10             | MET-TRN-08             | CAPACITY_ELIGIBLE           | NOT_RUN        |
+
+Reconciliación:
+
+```text
+EXPECTED_CROSS_CUTTING_IDS = 16
+MATERIALIZED_CROSS_CUTTING_IDS = 16
+UNIQUE_CROSS_CUTTING_IDS = 16
+MISSING_CROSS_CUTTING_IDS = 0
+DUPLICATE_CROSS_CUTTING_IDS = 0
+TOTAL_SCENARIO_IDS = 56
+```
+
+#### 15. `NEXO-PILOT-BASELINE-TARGET-CONTRACT-001`
+
+El baseline se obtiene únicamente de observaciones `VALID_COMPLETE` o `VALID_PARTIAL` compatibles, segmentadas y revisadas. El objetivo se propone después del baseline, con fundamento, owner, riesgo, fecha de vigencia y regla de invalidación. Esta tarea no inventa valores numéricos.
+
+| Decisión                 | Estado inicial  | Condición de salida                                |
+| ------------------------ | --------------- | -------------------------------------------------- |
+| Baseline de tiempo       | `NOT_COLLECTED` | cobertura, calidad y comparabilidad aprobadas      |
+| Baseline de error        | `NOT_COLLECTED` | oportunidades y errores clasificados con evidencia |
+| Baseline de capacitación | `NOT_COLLECTED` | intentos, ayudas y checkpoints válidos             |
+| Objetivo de tiempo       | `NOT_SET`       | baseline aprobado y guardrails preservados         |
+| Objetivo de error        | `NOT_SET`       | baseline aprobado y severidad separada             |
+| Objetivo de capacitación | `NOT_SET`       | baseline aprobado por actor y escenario            |
+
+Cambiar proceso, fórmula, población, versión, dispositivo o política de forma material produce `INVALIDATED` y exige nueva baseline o puente de comparabilidad aprobado.
+
+#### 16. `NEXO-PILOT-AGGREGATION-REPORTING-CONTRACT-001`
+
+- Duraciones: reportar `n`, mediana y distribución; p75 y p90 solo cuando la regla de suficiencia lo permita. La media nunca se presenta sola.
+- Errores: reportar conteo, oportunidades, tasa, severidad, fuente, detección y resultado; una tasa sin denominador es inválida.
+- Capacitación: reportar participantes, intentos, ayudas, autonomía, retención y transferencia por función y escenario.
+- Datos parciales: usar `NO_DATA`, `INSUFFICIENT_SAMPLE`, `NOT_COMPARABLE` o `DATA_QUALITY_BLOCKED`; nunca rellenar con cero.
+- Comparaciones: conservar misma fórmula y versión o declarar puente; no mezclar storyboard, límite y ejecución completa.
+- Intervalos y redondeo: calcular con valor crudo, mostrar precisión definida por unidad y conservar el valor original.
+
+#### 17. `NEXO-PILOT-PRIVACY-FAIRNESS-CONTRACT-001`
+
+Los participantes se identifican con pseudónimo de estudio. El acceso a trazas individuales se limita a moderación, seguridad y análisis autorizado. No se publican PIN, documentos, audio, video, pantallas sensibles, secretos ni datos personales innecesarios. No se crean leaderboards, rankings de productividad ni decisiones laborales automatizadas. Diferencias por experiencia, accesibilidad, dispositivo o red se investigan como contexto; no se presentan como defecto personal por inferencia.
+
+#### 18. `NEXO-PILOT-SCORECARD-CONTRACT-001`
+
+| Bloque                 | Contenido obligatorio                                                        | Estado inicial |
+| ---------------------- | ---------------------------------------------------------------------------- | -------------- |
+| Cobertura              | escenarios, actores, dispositivos, redes, ejecutados, bloqueados y excluidos | NOT_COLLECTED  |
+| Seguridad e integridad | ACT-SEV-0, autoridad, territorio, idempotencia, custodia y privacidad        | NOT_COLLECTED  |
+| Tiempo                 | diez métricas con distribución, n y segmentación                             | NOT_COLLECTED  |
+| Error                  | diez métricas con oportunidades, severidad, fuente y resultado               | NOT_COLLECTED  |
+| Capacitación           | diez métricas con ayudas, autonomía, retención y transferencia               | NOT_COLLECTED  |
+| Calidad de datos       | completitud, exclusiones, comparabilidad y evidencia                         | NOT_COLLECTED  |
+| Decisión               | gate por actor, riesgos, owner, mitigación y próxima revisión                | NOT_EVALUABLE  |
+
+El scorecard contiene un panel por función y un consolidado que no permite compensación. El consolidado hereda el peor gate crítico abierto.
+
+#### 19. `NEXO-PILOT-ACCEPTANCE-GATE-001`
+
+| Gate            | Condición                                                                                   | Regla                                           | Estado inicial |
+| --------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------- | -------------- |
+| `PILOT-GATE-00` | readiness, consentimiento, fixtures, rollback y evidencia                                   | condición previa                                | NOT_EVALUABLE  |
+| `PILOT-GATE-01` | cero ACT-SEV-0 abierto; sin actor, territorio, integridad, custodia o doble efecto inseguro | bloqueante absoluto                             | NOT_EVALUABLE  |
+| `PILOT-GATE-02` | cobertura crítica por bodeguero, conductor y receptores                                     | no compensable                                  | NOT_EVALUABLE  |
+| `PILOT-GATE-03` | calidad y comparabilidad de datos                                                           | requisito para baseline                         | NOT_EVALUABLE  |
+| `PILOT-GATE-04` | error dentro de objetivo aprobado por severidad y escenario                                 | exige baseline y target                         | NOT_EVALUABLE  |
+| `PILOT-GATE-05` | tiempo dentro de objetivo aprobado sin degradar gates anteriores                            | subordinado a calidad                           | NOT_EVALUABLE  |
+| `PILOT-GATE-06` | capacitación y autonomía dentro de objetivo aprobado por función                            | exige retención y transferencia cuando apliquen | NOT_EVALUABLE  |
+| `PILOT-GATE-07` | defectos, retests, riesgos y owners cerrados o aceptados explícitamente                     | cierre auditable                                | NOT_EVALUABLE  |
+
+La aprobación documental de esta tarea deja los gates definidos, no superados. Ningún gate puede declararse `PASS` sin evidencia real.
+
+#### 20. `NEXO-PILOT-TRACEABILITY-MATRIX-001`
+
+| Familia      | Escenarios                                                                                                     | Evidencia de origen                      | Requisitos base                              |
+| ------------ | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------- | -------------------------------------------- |
+| Tiempo       | 40 etapas y 16 transversales según elegibilidad                                                                | eventos EVT-MET, timestamps y receipts   | TREQ-NEXO-283; TREQ-NEXO-286; TREQ-NEXO-300  |
+| Error        | oportunidades de identidad, UOM, ubicación, estado, autoridad, custodia, idempotencia, resiliencia y excepción | defectos, rechazos, receipts y auditoría | TREQ-NEXO-296; TREQ-NEXO-297; TREQ-NEXO-300  |
+| Capacitación | intentos, ayudas, comprensión, autonomía, retención y transferencia por actor                                  | rúbrica, sesiones y checkpoints          | TREQ-NEXO-288; TREQ-NEXO-290 a TREQ-NEXO-293 |
+| Cobertura    | 56 identidades append-only                                                                                     | registro de resultados de UX024          | TREQ-NEXO-289; TREQ-NEXO-298; TREQ-NEXO-300  |
+| Guardrails   | todos los escenarios con mutación, custodia, datos o sesión compartida                                         | evidencia de seguridad y severidad       | TREQ-NEXO-284; TREQ-NEXO-295; TREQ-NEXO-297  |
+
+#### 21. `NEXO-PILOT-VALIDATION-MATRIX-001`
+
+| ID          | Categoría | Comprobación                                                     | Estado documental      |
+| ----------- | --------- | ---------------------------------------------------------------- | ---------------------- |
+| MET-VAL-001 | SCOPE     | confirmar tres familias y treinta métricas únicas                | SPECIFIED              |
+| MET-VAL-002 | SCOPE     | confirmar cuarenta etapas y dieciséis escenarios transversales   | SPECIFIED              |
+| MET-VAL-003 | SCOPE     | confirmar tres funciones sin compensación                        | SPECIFIED              |
+| MET-VAL-004 | SCOPE     | confirmar cero valores, baselines y objetivos inventados         | SPECIFIED              |
+| MET-VAL-005 | IDENTITY  | validar IDs, versiones, unidades y owners                        | SPECIFIED              |
+| MET-VAL-006 | IDENTITY  | validar fórmula, eventos, población y denominador                | SPECIFIED              |
+| MET-VAL-007 | IDENTITY  | validar estados de dato, baseline y objetivo                     | SPECIFIED              |
+| MET-VAL-008 | IDENTITY  | validar trazabilidad hacia TREQ y escenario                      | SPECIFIED              |
+| MET-VAL-009 | TIME      | reconstruir latencia de inicio desde eventos                     | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-010 | TIME      | separar trabajo activo y espera de sistema                       | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-011 | TIME      | separar ayuda y pausas externas                                  | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-012 | TIME      | calcular recuperación por error                                  | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-013 | TIME      | calcular review y confirmación                                   | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-014 | TIME      | calcular handoff entre actores                                   | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-015 | TIME      | calcular reconciliación sin retry ciego                          | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-016 | TIME      | calcular ciclo y tiempo a independencia                          | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-017 | ERROR     | clasificar identidad y sujeto                                    | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-018 | ERROR     | clasificar cantidad y UOM                                        | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-019 | ERROR     | clasificar ubicación y territorio                                | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-020 | ERROR     | clasificar estado y secuencia                                    | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-021 | ERROR     | clasificar actor y autoridad                                     | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-022 | ERROR     | clasificar custodia, condición y evidencia                       | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-023 | ERROR     | clasificar duplicado y recuperación degradada                    | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-024 | ERROR     | detectar excepción omitida y error silencioso                    | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-025 | TRAINING  | medir duración e intentos guiados                                | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-026 | TRAINING  | medir ayudas sin ocultarlas                                      | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-027 | TRAINING  | medir first-pass independiente                                   | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-028 | TRAINING  | medir ejecución independiente                                    | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-029 | TRAINING  | medir comprensión de estado y consecuencia                       | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-030 | TRAINING  | medir retención en checkpoint comparable                         | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-031 | TRAINING  | medir transferencia a variante o dispositivo                     | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-032 | TRAINING  | medir recurrencia y reentrenamiento                              | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-033 | DATA      | verificar reloj monotónico y UTC                                 | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-034 | DATA      | verificar completitud del evento y evidencia                     | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-035 | DATA      | verificar exclusión sin borrar observación                       | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-036 | DATA      | verificar NOT_RUN y bloqueado no convertidos en cero             | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-037 | DATA      | verificar comparabilidad de fórmula y versión                    | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-038 | DATA      | verificar n, oportunidades e incluidos/excluidos                 | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-039 | SEGMENT   | segmentar por actor y escenario                                  | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-040 | SEGMENT   | segmentar por dispositivo, red y modalidad                       | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-041 | PRIVACY   | verificar pseudonimización y minimización                        | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-042 | PRIVACY   | verificar ausencia de ranking punitivo                           | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-043 | GATE      | evaluar guardrails antes de tiempo                               | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-044 | GATE      | evaluar error y capacitación por función                         | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-045 | GATE      | aprobar baseline antes de target                                 | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-046 | GATE      | emitir scorecard con estado NOT_EVALUABLE cuando falte evidencia | SPECIFIED_NOT_EXECUTED |
+| MET-VAL-047 | HANDOFF   | entregar contratos e instrumentación al paquete autorizado       | SPECIFIED              |
+| MET-VAL-048 | HANDOFF   | entregar cierre documental a AUTH-UI-052 sin certificar piloto   | SPECIFIED              |
+
+#### 22. Requisitos creados
+
+Esta tarea crea `TREQ-NEXO-301` a `TREQ-NEXO-314`. El registro `04A` contiene su definición completa. No modifica, difiere, descarta ni vuelve obsoletos requisitos históricos.
+
+| ID            | Protección principal                                         |
+| ------------- | ------------------------------------------------------------ |
+| TREQ-NEXO-301 | identidad, fórmula, unidad, versión y estado de cada métrica |
+| TREQ-NEXO-302 | eventos y timestamps reproducibles                           |
+| TREQ-NEXO-303 | descomposición exacta del tiempo                             |
+| TREQ-NEXO-304 | taxonomía, denominador y atribución de errores               |
+| TREQ-NEXO-305 | elegibilidad, exclusión y datos faltantes                    |
+| TREQ-NEXO-306 | métricas de capacitación y autonomía                         |
+| TREQ-NEXO-307 | ayuda, retención, transferencia y reentrenamiento            |
+| TREQ-NEXO-308 | población, muestra y segmentación sin compensación           |
+| TREQ-NEXO-309 | cobertura métrica exacta de 56 escenarios                    |
+| TREQ-NEXO-310 | baseline y objetivos sin valores fabricados                  |
+| TREQ-NEXO-311 | calidad, comparabilidad y preservación histórica             |
+| TREQ-NEXO-312 | privacidad, equidad y prohibición de ranking punitivo        |
+| TREQ-NEXO-313 | scorecard y gates subordinados a guardrails                  |
+| TREQ-NEXO-314 | 48 comprobaciones y handoff de cierre del carril             |
+
+#### 23. `NEXO-PILOT-IMPLEMENTATION-HANDOFF-001`
+
+El paquete de implementación autorizado deberá crear contratos versionados de métricas y eventos; instrumentación que no exponga secretos; almacenamiento append-only; validadores de fórmula, denominador y estado; scorecards reproducibles; pruebas unitarias, contractuales, integración y E2E; observabilidad de datos faltantes; feature gates; rollback de instrumentación y documentación de compatibilidad. Toda modificación de Supabase perteneciente a VENTO se versionará desde `vento-shell`. Esta tarea no ejecuta ese paquete.
+
+#### 24. `NEXO-PILOT-CERTIFICATION-HANDOFF-001`
+
+El carril `NEXO_FUNCTIONAL_UX` queda documentalmente cerrado con métricas calculables, escenarios íntegros, gates y requisitos trazables. No queda certificado un piloto operativo: sesiones, valores, baselines, objetivos y gates permanecen pendientes de evidencia. La continuidad activa entrega el siguiente trabajo a `AUTH-UI-052 — Diseñar página inicial según actor` sin iniciar ni modificar esa tarea.
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo`
+
+**SIGUIENTE TAREA RESERVADA:** `AUTH-UI-052 — Diseñar página inicial según actor`
+
 
 ### [ ] NEXO-UX-026 — Diseñar ciclo de vida completo de LPN
 ### [ ] NEXO-UX-027 — Diseñar empaque, desempaque y consulta de contenido
