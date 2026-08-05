@@ -4004,7 +4004,777 @@ Esta tarea no inicia ninguno de esos trabajos.
 `NEXO-UX-007 — Diseñar inicio para supervisor`
 
 
-### [ ] NEXO-UX-007 — Diseñar inicio para supervisor
+### ✅ NEXO-UX-007 — Diseñar inicio para supervisor
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-006 — Diseñar inicio para receptor` — APROBADA
+**Tarea siguiente:** `NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo del inicio de supervisión de NEXO, alcance territorial, colas de control, diferencias, excepciones, cumplimiento, autorizaciones atómicas, vencimientos, cierres, composición de capacidades, estados, decisiones por etapa y ruta, y handoff de implementación
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Artefactos producidos:** `NEXO-SUPERVISOR-HOME-CONTRACT-001`, `NEXO-SUPERVISOR-HOME-INFORMATION-ARCHITECTURE-001`, `NEXO-SUPERVISOR-WORK-QUEUE-CATALOG-001`, `NEXO-SUPERVISOR-CAPABILITY-COMPOSITION-CONTRACT-001`, `NEXO-SUPERVISOR-STAGE-PROJECTION-MATRIX-001`, `NEXO-SUPERVISOR-ROUTE-DISPOSITION-001`, `NEXO-SUPERVISOR-HOME-STATE-CONTRACT-001` y `NEXO-SUPERVISOR-HOME-HANDOFF-001`
+**Decisiones consumidas:** `NEXO-UX-LANE-CONTRACT-001`; `NEXO-REQUESTER-HOME-CONTRACT-001`; `NEXO-WAREHOUSE-HOME-CONTRACT-001`; `NEXO-DRIVER-HOME-CONTRACT-001`; `NEXO-RECEIVER-HOME-CONTRACT-001`; `AUTH-RBAC-001` a `AUTH-RBAC-004`; `AUTH-RBAC-019`; `PROC-PROCESS-RACI-MATRIX-001`; `VPROC-0023` a `VPROC-0028`; inventario `NEXO-ROUTE-001` a `NEXO-ROUTE-064`; requisitos `TREQ-*` vigentes; código, migraciones y contratos actuales de `vento-nexo` y `vento-shell`
+**Cambios físicos autorizados:** ninguno; no modifica código, rutas, permisos, roles, datos, stock, movimientos, conteos, remisiones, ajustes, Supabase, migraciones, RLS, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar el inicio de NEXO para la función de `SUPERVISION`, de modo que una
+persona con autoridad territorial y permiso exactos pueda identificar el caso
+de control más urgente, investigar hechos, vigilar vencimientos, revisar
+cumplimiento, ejecutar únicamente decisiones atómicas realmente concedidas y
+cerrar controles con evidencia, sin convertirse por inferencia en solicitante,
+bodeguero, conductor, receptor, configurador ni aprobador general de
+excepciones.
+
+La regla canónica es:
+
+```text
+PRINCIPAL TECNICO VIGENTE
++
+ACTOR EMPRESARIAL EFECTIVO
++
+FUNCION SUPERVISORA O CAPACIDAD BASE EXACTA
++
+SEDES Y AREAS ACTIVAMENTE ASIGNADAS
++
+RECURSO LOCAL O RELACIONAL COMPATIBLE
++
+PERMISO ATOMICO DE CONSULTA O DECISION
++
+HECHO OPERATIVO ORIGINAL INMUTABLE
++
+EVIDENCIA, RESPONSABLE, VENCIMIENTO Y VERSION VIGENTES
++
+PRIORIDAD DE CONTROL AUTORITATIVA
+→
+INICIO DEL SUPERVISOR
+```
+
+La proyección visual no concede autoridad. El nombre del cargo, aparecer como
+rol administrativo, pertenecer a una sede, seleccionar otra sede, conocer la
+URL, observar una diferencia o tener acceso de lectura no habilitan por sí
+solos registrar ajustes, aprobar variaciones, cancelar remisiones, ejecutar
+conteos, mutar inventario, resolver excepciones sensibles ni operar en nombre
+de otro actor.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban ocho artefactos documentales consumibles:
+
+1. `NEXO-SUPERVISOR-HOME-CONTRACT-001`, que define audiencia, autoridad,
+   territorio, recursos, evidencia, segregación y límites;
+2. `NEXO-SUPERVISOR-HOME-INFORMATION-ARCHITECTURE-001`, que materializa ocho
+   secciones y una única acción primaria;
+3. `NEXO-SUPERVISOR-WORK-QUEUE-CATALOG-001`, que define ocho colas de bloqueo,
+   vencimiento, excepción, diferencia, autorización, cumplimiento, cierre y
+   continuidad;
+4. `NEXO-SUPERVISOR-CAPABILITY-COMPOSITION-CONTRACT-001`, que resuelve siete
+   casos de composición entre supervisión, solicitud, bodega, conducción,
+   recepción, autoridad superior y concesión individual;
+5. `NEXO-SUPERVISOR-STAGE-PROJECTION-MATRIX-001`, que decide doce etapas de
+   control pertenecientes a `VPROC-0023`, `VPROC-0024`, `VPROC-0026`,
+   `VPROC-0027` y `VPROC-0028`;
+6. `NEXO-SUPERVISOR-ROUTE-DISPOSITION-001`, que decide dieciocho rutas
+   existentes sin inventar URLs ni convertir navegación en permiso;
+7. `NEXO-SUPERVISOR-HOME-STATE-CONTRACT-001`, que define catorce estados de
+   contexto, carga, vacío, evidencia, conflicto, versión, autorización y
+   resultado desconocido;
+8. `NEXO-SUPERVISOR-HOME-HANDOFF-001`, que separa diseño, navegación, flujos de
+   control, implementación, pruebas y certificación.
+
+Cobertura materializada:
+
+| Elemento                                  | Total esperado | Total materializado | Faltantes | Duplicados |
+| ----------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Procesos canónicos reconciliados          |              5 |                   5 |         0 |          0 |
+| Etapas canónicas decididas                |             12 |                  12 |         0 |          0 |
+| Clases de cola supervisora                |              8 |                   8 |         0 |          0 |
+| Casos de composición de capacidades       |              7 |                   7 |         0 |          0 |
+| Rutas relevantes decididas                |             18 |                  18 |         0 |          0 |
+| Secciones obligatorias                    |              8 |                   8 |         0 |          0 |
+| Acciones primarias                        |              1 |                   1 |         0 |          0 |
+| Estados de interfaz                       |             14 |                  14 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados |              7 |                   7 |         0 |          0 |
+
+La tarea deja el diseño en estado `ESPECIFICADO`. No declara el inicio dedicado
+`IMPLEMENTADO` ni `VALIDADO`.
+
+---
+
+#### 3. Alcance funcional
+
+##### 3.1. Incluido
+
+- inicio supervisor resuelto por actor, cobertura territorial, recurso y
+  permiso exactos;
+- colas de control sobre inventario, ubicaciones, conteos, condición,
+  remisiones, logística, activos relacionados e impresión operativa;
+- diferencias, excepciones, riesgos, vencimientos y casos sin responsable;
+- evidencia del hecho original, historial, actor, fecha, versión y correlación;
+- investigación y comparación entre stock, movimientos, conteos, remisiones,
+  receipts, LPN, ubicaciones y lotes visibles dentro del alcance;
+- decisiones atómicas cuando exista permiso canónico específico;
+- escalamiento cuando el catálogo no conceda la decisión al supervisor;
+- seguimiento de responsable, fecha objetivo, SLA o vencimiento aprobado;
+- cierre de control separado del hecho operativo y de la mutación correctiva;
+- prioridad y desempate autoritativos;
+- composición entre rol base supervisor y funciones operativas adicionales;
+- decisión explícita por etapa y ruta relevante;
+- diagnóstico de las superficies y comandos actuales de `vento-nexo`.
+
+##### 3.2. Excluido
+
+- acceso global derivado del rol o de la selección visual de sede;
+- operación física por el solo hecho de supervisar;
+- solicitud, preparación, conducción o recepción de remisiones sin capacidad
+  operativa independiente;
+- ejecución de conteos, entradas, retiros, transferencias o validaciones de
+  stock mediante el rol base;
+- registro de ajustes por el rol base `supervisor`;
+- aprobación o resolución general de variaciones internas;
+- cancelación sensible de remisiones;
+- modificación estructural de productos, ubicaciones, rutas, políticas,
+  plantillas o permisos;
+- reescritura, eliminación o sustitución del hecho operativo original;
+- cierre sin evidencia, responsable, decisión y resultado verificables;
+- autoridad financiera completa, márgenes o valores internos protegidos;
+- diseño detallado de cada flujo de conteo, ajuste, condición o excepción,
+  asignado a `NEXO-UX-018`, `NEXO-UX-019` y `NEXO-UX-022`;
+- cambios en código, datos, permisos o Supabase;
+- validación operativa, física, tablet, kiosco u offline.
+
+---
+
+#### 4. `NEXO-SUPERVISOR-HOME-CONTRACT-001`
+
+##### 4.1. Audiencia funcional
+
+La audiencia primaria es el rol base `supervisor` dentro de las sedes y áreas
+activamente asignadas. Esta identidad representa autoridad administrativa
+local limitada y subordinada a la gerencia; no constituye administración
+integral de sede, aprobación general de excepciones, configuración estructural
+ni acceso operativo automático.
+
+También podrá consumir una proyección supervisora una persona distinta cuando
+posea una concesión base o individual explícita que otorgue la capacidad exacta
+sobre el territorio y recurso correspondientes. El nombre `propietario`,
+`gerente_general`, `gerente`, `gerencia_operativa` o cualquier otro cargo no
+sustituye la evaluación de su matriz, permiso, alcance y recurso.
+
+La matriz base vigente del supervisor concede, entre otras, consultas sobre:
+
+```text
+nexo.inventory.adjustments.view
+nexo.inventory.entries.view
+nexo.inventory.locations.view
+nexo.inventory.lpns.view
+nexo.inventory.movements.view
+nexo.inventory.stock.view
+nexo.inventory.production_batches.view
+nexo.inventory.transfers.view
+nexo.inventory.withdrawals.view
+nexo.inventory.zones.view
+nexo.inventory.storage_positions.view
+nexo.inventory.warehouse_operations.view
+nexo.inventory.stock_counts.view
+nexo.inventory.initial_counts.view
+nexo.inventory.remissions.view
+nexo.logistics.operations_board.view
+nexo.logistics.operations.view
+nexo.logistics.driver_operations.view
+nexo.logistics.fulfillment.view
+nexo.printing.jobs.view
+```
+
+La misma matriz no concede por defecto:
+
+```text
+nexo.inventory.adjustments.register
+nexo.inventory.entries.register
+nexo.inventory.entries.override
+nexo.inventory.transfers.create
+nexo.inventory.withdrawals.register
+nexo.inventory.stock_validations.perform
+nexo.inventory.stock_counts.perform
+nexo.inventory.remissions.request
+nexo.inventory.remissions.prepare
+nexo.inventory.remissions.dispatch
+nexo.inventory.remissions.receive
+nexo.inventory.remissions.cancel
+nexo.finance.internal_variances.approve
+nexo.finance.internal_variances.resolve
+```
+
+La ausencia de una capacidad de decisión no se corrige mostrando un botón más
+amplio. El caso permanece informativo, bloqueado o escalado hasta que exista
+una autoridad canónica aplicable.
+
+##### 4.2. Contexto obligatorio
+
+El inicio deberá resolver como mínimo:
+
+| Componente                 | Regla                                                                     |
+| -------------------------- | ------------------------------------------------------------------------- |
+| principal técnico          | identidad autenticada y vigente                                           |
+| actor efectivo             | persona empresarial atribuible a cada lectura y decisión                  |
+| carril                     | `SUPERVISION`, separado de funciones operativas y configuración           |
+| rol o concesión            | fuente exacta de la capacidad supervisora                                 |
+| territorio                 | unión explícita de sedes `AS` y áreas `AA`, nunca global implícito        |
+| recurso                    | entidad local o relacional cuyo contrato satisface el alcance             |
+| permiso de lectura         | clave exacta necesaria para observar el caso y su evidencia               |
+| permiso de decisión        | clave atómica independiente cuando la acción muta o resuelve              |
+| hecho original             | evento, observación, movimiento, receipt, sesión o diferencia preservados |
+| evidencia                  | fuentes disponibles, completitud, integridad y restricciones              |
+| responsable                | actor o función dueña de la siguiente acción                              |
+| vencimiento                | fecha, ventana, SLA o condición temporal aprobada                         |
+| versión                    | estado, política, recurso y versión esperada del caso                     |
+| dispositivo y conectividad | contexto técnico sin autoridad propia y condición de reconciliación       |
+
+Las capacidades base del supervisor no exigen turno ni check-in, pero sí
+empleado activo, asignaciones territoriales vigentes, recurso resoluble,
+permiso activo y ausencia de denegaciones. Cuando la misma persona cambia a
+una función operativa, esa función sí resuelve sus propios prerrequisitos de
+turno, check-in, sede, área, estación y recurso.
+
+##### 4.3. Alcance territorial y de recurso
+
+Un caso solo puede aparecer cuando la lectura autorizada coincida con al menos
+una relación verificable:
+
+```text
+RECURSO_LOCAL_EN_SEDE_ASIGNADA
+RECURSO_DE_AREA_ASIGNADA
+RECURSO_RELACIONAL_CON_EXTREMO_ASIGNADO
+CASO_FORMALMENTE_ASIGNADO_AL_SUPERVISOR
+DECISION_ATRIBUIDA_MEDIANTE_CONCESION_EXPLICITA
+CASO_CREADO_POR_UN_PROCESO_DENTRO_DE_SU_COBERTURA
+```
+
+La visibilidad de un extremo de una remisión o traslado no concede autoridad
+sobre el otro extremo. Una sede elegida en un filtro no amplía la cobertura.
+Una unión de varias sedes asignadas no se transforma en alcance global.
+
+##### 4.4. Contrato de hecho y decisión
+
+Toda tarjeta supervisora conserva dos planos independientes:
+
+```text
+HECHO_OPERATIVO_ORIGINAL
++
+EVIDENCIA_Y_VERSION
+→
+CASO_DE_CONTROL
+
+CASO_DE_CONTROL
++
+AUTORIDAD_ATOMICA
++
+MOTIVO_Y_RESULTADO
+→
+DECISION_SUPERVISORA_AUDITABLE
+```
+
+La decisión no borra ni reescribe el hecho. Cuando requiera una mutación de
+inventario, remisión, condición o estado, deberá emitir o autorizar una
+transición explícita ejecutada por el actor y comando correspondientes.
+
+##### 4.5. Segregación y conflicto de interés
+
+La misma persona puede tener rol base supervisor y una función operativa, pero
+no puede usar esa composición para:
+
+- aprobar su propia captura, diferencia o excepción sensible;
+- confirmar su propio conteo y aplicar el ajuste derivado sin una separación
+  canónica;
+- recibir una carga y resolver unilateralmente su faltante, daño o rechazo;
+- conducir una carga y cerrar su propia ruptura de custodia;
+- preparar una remisión y declarar resuelto su propio faltante;
+- registrar un ajuste y aprobarlo desde la misma atribución;
+- ejecutar y certificar la misma acción cuando la política exija independencia.
+
+El servidor detecta actor real, actor efectivo, autores del hecho, responsables,
+participantes y decisiones previas antes de ofrecer una acción.
+
+---
+
+#### 5. `NEXO-SUPERVISOR-HOME-INFORMATION-ARCHITECTURE-001`
+
+##### 5.1. Orden obligatorio
+
+| Orden | Sección                            | Propósito                                                                                               | Acción permitida                                                       |
+| ----: | ---------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- |
+|     1 | Contexto supervisor                | mostrar actor, fuente de autoridad, sedes, áreas, filtros, hora de corte y calidad de datos             | cambiar alcance solo mediante selector canónico dentro de la cobertura |
+|     2 | Siguiente control                  | presentar una única prioridad autoritativa                                                              | `CONTINUAR_SIGUIENTE_TAREA`                                            |
+|     3 | Riesgos y vencimientos             | destacar seguridad, custodia, condición, SLA y acciones vencidas o próximas                             | abrir el caso exacto sin resolverlo por inferencia                     |
+|     4 | Diferencias e investigación        | reunir discrepancias de stock, conteo, remisión, receipt, ubicación, condición o documento              | abrir evidencia, historial y comparación                               |
+|     5 | Autorizaciones y escalamiento      | mostrar decisiones pendientes y autoridad requerida                                                     | decidir solo con permiso atómico o escalar al actor competente         |
+|     6 | Cumplimiento y seguimiento         | vigilar responsables, etapas, cantidades, tiempos y compromisos                                         | registrar seguimiento permitido sin mutar el hecho                     |
+|     7 | Cierres y resultados recientes     | presentar controles listos para cierre y decisiones confirmadas                                         | cerrar únicamente con evidencia y permiso exactos                      |
+|     8 | Funciones adicionales y utilidades | acceso separado a funciones operativas realmente concedidas, búsqueda, escaneo e impresión contextuales | cambiar de función o invocar utilidad sin fusionar carriles            |
+
+Las secciones pueden estar vacías. No se rellenan con trabajo de territorios no
+autorizados, indicadores sin fuente, configuración reutilizable ni acciones
+operativas concedidas por conveniencia.
+
+##### 5.2. Acción primaria
+
+La única acción primaria es:
+
+```text
+CONTINUAR_SIGUIENTE_TAREA
+```
+
+Se habilita solo cuando el servidor devuelve un caso vigente con actor,
+territorio, recurso, permiso de lectura, acción atribuida, evidencia mínima,
+responsable, vencimiento, estado, versión y ausencia de conflicto compatibles.
+El cliente no envía como autoridad el rol, territorio, prioridad, severidad,
+estado, decisión, actor responsable ni resultado.
+
+##### 5.3. Tarjeta mínima
+
+Cada caso visible muestra como mínimo:
+
+| Campo               | Regla                                                                            |
+| ------------------- | -------------------------------------------------------------------------------- |
+| identificador       | código estable del caso y del recurso origen                                     |
+| categoría           | bloqueo, vencimiento, excepción, diferencia, autorización, cumplimiento o cierre |
+| territorio          | sede, área y extremos relacionales autorizados                                   |
+| hecho original      | evento, observación o estado que originó el control                              |
+| evidencia           | fuentes, completitud y última actualización                                      |
+| impacto             | inventario, custodia, condición, continuidad, servicio o cumplimiento afectado   |
+| severidad           | valor derivado de reglas vigentes, no editado libremente por el cliente          |
+| responsable         | actor o función de la siguiente acción                                           |
+| vencimiento         | fecha, ventana o condición temporal aplicable                                    |
+| autoridad requerida | permiso atómico y segregación exigidos                                           |
+| versión             | estado y versión esperada del caso y recurso                                     |
+| siguiente acción    | transición exacta, escalamiento o acceso de solo lectura                         |
+
+##### 5.4. Prioridad
+
+La prioridad se resuelve en este orden:
+
+```text
+1. SEGURIDAD_CUSTODIA_O_CONDICION_BLOQUEANTE
+2. CASO_VENCIDO_CON_IMPACTO_OPERATIVO
+3. EXCEPCION_CRITICA_SIN_RESPONSABLE_O_SIN_CONTENCION
+4. DIFERENCIA_CON_RIESGO_DE_PROPAGACION_O_DOBLE_EFECTO
+5. AUTORIZACION_ATOMICA_QUE_DESBLOQUEA_TRABAJO
+6. INCUMPLIMIENTO_ACTIVO_DE_ETAPA_CANTIDAD_O_TIEMPO
+7. CASO_COMPLETO_LISTO_PARA_CIERRE
+8. CONTINUIDAD_O_SEGUIMIENTO_NO_URGENTE
+```
+
+Los desempates usan, en orden: severidad canónica, vencimiento, antigüedad del
+caso, alcance afectado, fecha del último hecho y un identificador estable. El
+cliente no puede elevar prioridad mediante filtros, orden local o parámetros.
+
+---
+
+#### 6. `NEXO-SUPERVISOR-WORK-QUEUE-CATALOG-001`
+
+| Cola                | Criterio de inclusión                                                                                | Acción supervisora                                                                          | Límite obligatorio                                                      | Estado         |
+| ------------------- | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | -------------- |
+| `SUPQ-BLOQUEO`      | seguridad, custodia, condición, territorio, integridad, versión o dependencia impiden continuar      | inspeccionar causa, confirmar contención visible y dirigir al propietario exacto            | no levanta cuarentena, ajusta, cancela ni libera sin permiso atómico    | `ESPECIFICADO` |
+| `SUPQ-VENCIMIENTO`  | SLA, ventana, inspección, conteo, recepción, evidencia o acción responsable vencidos o próximos      | priorizar, asignar seguimiento permitido y escalar                                          | no altera fechas, políticas o hechos para ocultar incumplimiento        | `ESPECIFICADO` |
+| `SUPQ-EXCEPCION`    | daño, pérdida, ruptura de custodia, rechazo, devolución, error de impresión u otra excepción abierta | investigar, clasificar dentro del catálogo aprobado y contener mediante acciones concedidas | no inventa resolución ni aplica efectos de inventario o disposición     | `ESPECIFICADO` |
+| `SUPQ-DIFERENCIA`   | diferencia entre observación, stock, conteo, movimiento, remisión, receipt, ubicación o documento    | comparar fuentes, solicitar evidencia y determinar la siguiente autoridad                   | calcular o observar no equivale a ajustar ni aprobar                    | `ESPECIFICADO` |
+| `SUPQ-AUTORIZACION` | una transición requiere decisión atómica y existe actor competente identificable                     | decidir cuando el permiso exacto y la segregación coincidan, o escalar                      | el rol supervisor no recibe aprobación general ni capacidades denegadas | `ESPECIFICADO` |
+| `SUPQ-CUMPLIMIENTO` | etapa, cantidad, responsable, tiempo, evidencia o secuencia se apartan del contrato esperado         | hacer seguimiento, solicitar corrección operativa y registrar estado de control             | no reescribe el hecho ni ejecuta en nombre del responsable              | `ESPECIFICADO` |
+| `SUPQ-CIERRE`       | evidencia, decisiones y efectos requeridos están completos y conciliados                             | cerrar el caso de control con motivo, resultado y versión                                   | cerrar control no borra diferencia, movimiento, receipt o historial     | `ESPECIFICADO` |
+| `SUPQ-CONTINUIDAD`  | caso resuelto, seguimiento programado o función adicional autorizada                                 | consultar resultado, programar seguimiento permitido o cambiar de función                   | no crea trabajo ficticio ni mantiene casos cerrados como pendientes     | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_SUPERVISOR_QUEUES = 8
+MATERIALIZED_SUPERVISOR_QUEUES = 8
+UNIQUE_SUPERVISOR_QUEUES = 8
+MISSING_SUPERVISOR_QUEUES = 0
+DUPLICATE_SUPERVISOR_QUEUES = 0
+```
+
+Un mismo hecho puede originar señales en varias colas, pero tendrá un caso
+primario y una siguiente acción autoritativos. La deduplicación conserva
+correlación, no oculta impactos distintos ni crea decisiones duplicadas.
+
+---
+
+#### 7. `NEXO-SUPERVISOR-CAPABILITY-COMPOSITION-CONTRACT-001`
+
+##### 7.1. Principio
+
+```text
+MISMA PERSONA
+≠
+MISMA FUNCION
+≠
+MISMO TERRITORIO
+≠
+MISMO PERMISO
+≠
+MISMA ETAPA
+≠
+MISMA DECISION
+```
+
+La composición agrega accesos vigentes; nunca fusiona permisos, colas,
+transiciones, autoría, segregación ni auditoría.
+
+##### 7.2. Casos materializados
+
+| Caso           | Capacidades de la persona                                 | Proyección resultante                                                                  | Regla obligatoria                                                                        | Estado         |
+| -------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- | -------------- |
+| `SUP-COMP-001` | rol base `supervisor` sin función operativa adicional     | home supervisor limitado a `AS`, `AA`, recursos compatibles y permisos base concedidos | no muestra ni ejecuta capacidades `OPERATIONAL_ONLY` o `BASE_AND_OPERATIONAL` denegadas  | `ESPECIFICADO` |
+| `SUP-COMP-002` | supervisor y solicitante                                  | supervisión y solicitud como proyecciones separadas                                    | no prioriza, corrige ni aprueba su propia solicitud mediante el carril supervisor        | `ESPECIFICADO` |
+| `SUP-COMP-003` | supervisor y bodeguero                                    | control local y operación de bodega separados                                          | conteo, picking, movimiento o captura propios no se convierten en decisión independiente | `ESPECIFICADO` |
+| `SUP-COMP-004` | supervisor y conductor                                    | monitoreo supervisor y custodia de transporte separados                                | no cierra su propia ruptura, retraso, entrega o retorno cuando se exige independencia    | `ESPECIFICADO` |
+| `SUP-COMP-005` | supervisor y receptor                                     | recepción y control de diferencias separados                                           | no aprueba su propio faltante, daño, rechazo, devolución, cuarentena o ajuste            | `ESPECIFICADO` |
+| `SUP-COMP-006` | supervisor y autoridad superior con permisos adicionales  | cada acción usa la fuente de autoridad y alcance exactos                               | la capacidad superior no se presume por jerarquía ni convierte el home en global         | `ESPECIFICADO` |
+| `SUP-COMP-007` | capacidad supervisora por concesión individual o temporal | proyección limitada a permiso, territorio, recurso, vigencia y motivo                  | no crea rol permanente, herencia, acceso global ni autoridad posterior a revocación      | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_COMPOSITION_CASES = 7
+MATERIALIZED_COMPOSITION_CASES = 7
+UNIQUE_COMPOSITION_CASES = 7
+MISSING_COMPOSITION_CASES = 0
+DUPLICATE_COMPOSITION_CASES = 0
+```
+
+##### 7.3. Secuencia obligatoria de control
+
+```text
+HECHO_OPERATIVO_CONFIRMADO
+→
+CASO_DE_CONTROL_CORRELACIONADO
+→
+ALCANCE_Y_EVIDENCIA_RESUELTOS
+→
+INVESTIGACION_SIN_MUTACION_SILENCIOSA
+→
+DECISION_ATOMICA_O_ESCALAMIENTO
+→
+EFECTO_SEPARADO_EJECUTADO_POR_COMANDO_AUTORIZADO
+→
+CONCILIACION_DE_RESULTADO
+→
+CIERRE_DE_CONTROL_AUDITABLE
+```
+
+No se permite saltar del hallazgo al ajuste, cancelación, disposición o cierre.
+La persona que originó el hecho puede aportar evidencia, pero la independencia
+exigida se conserva antes de decidir o certificar.
+
+---
+
+#### 8. `NEXO-SUPERVISOR-STAGE-PROJECTION-MATRIX-001`
+
+| Etapa            | Nombre canónico                                                 | Proyección supervisora                 | Acción permitida                                                                                  | Límite                                                                 | Estado         |
+| ---------------- | --------------------------------------------------------------- | -------------------------------------- | ------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------- | -------------- |
+| `VPROC-0023-E04` | Consultar stock por sede, LOC o posición                        | `CONTROL_DE_EXISTENCIAS_Y_UBICACION`   | consultar consolidado, anomalías y trazabilidad dentro del alcance                                | no configura ubicación ni mueve stock por inferencia                   | `ESPECIFICADO` |
+| `VPROC-0024-E06` | Publicar, corregir o reversar entrada                           | `SEPARACION_DE_HECHO_Y_DECISION`       | investigar entrada, evidencia y efecto; decidir o escalar mediante permiso atómico                | no registra ni reversa por el solo rol supervisor                      | `ESPECIFICADO` |
+| `VPROC-0026-E01` | Abrir sesión de conteo                                          | `CONTROL_DE_APERTURA`                  | definir o revisar alcance, responsable y propósito cuando exista autoridad exacta                 | abrir control no concede ejecución del conteo                          | `ESPECIFICADO` |
+| `VPROC-0026-E02` | Congelar alcance y stock de apertura                            | `LINEA_BASE_DE_CONTROL`                | verificar corte, universo, versión y exclusiones                                                  | no altera el stock inicial para acomodar resultados                    | `ESPECIFICADO` |
+| `VPROC-0026-E05` | Calcular diferencia                                             | `INVESTIGACION_DE_DIFERENCIA`          | comparar observación, línea base, movimientos y evidencia                                         | la diferencia calculada no muta saldo                                  | `ESPECIFICADO` |
+| `VPROC-0026-E06` | Aplicar reconciliación o ajuste autorizado                      | `DECISION_Y_EFECTO_SEPARADOS`          | autorizar o escalar solo con capacidad atómica; verificar efecto posterior                        | el rol base no recibe `nexo.inventory.adjustments.register`            | `ESPECIFICADO` |
+| `VPROC-0026-E07` | Cerrar sesión y conservar historial                             | `CIERRE_DE_CONTROL`                    | comprobar completitud, decisiones, efectos y evidencia antes del cierre                           | no elimina observaciones ni diferencias históricas                     | `ESPECIFICADO` |
+| `VPROC-0027-E04` | Evaluar condición, temperatura y aptitud                        | `EVALUACION_DE_CONDICION`              | revisar evidencia, política aplicable, riesgo y contención                                        | no libera, dispone ni reclasifica sin autoridad exacta                 | `ESPECIFICADO` |
+| `VPROC-0027-E05` | Decidir liberación, merma, pérdida, rechazo o disposición       | `DECISION_SENSIBLE_ATOMICA`            | decidir solo con permiso específico y segregación; de lo contrario escalar                        | supervisión no equivale a aprobación general                           | `ESPECIFICADO` |
+| `VPROC-0027-E07` | Conservar evidencia y cerrar caso                               | `CIERRE_DE_EXCEPCION`                  | conciliar decisión, efecto, responsable y evidencia                                               | cerrar no borra condición, movimiento ni documento                     | `ESPECIFICADO` |
+| `VPROC-0028-E03` | Crear origen y fulfillment por línea                            | `CONTROL_DE_ASIGNACION_Y_CUMPLIMIENTO` | consultar responsabilidad, disponibilidad y faltantes; corregir solo campos ordinarios permitidos | no prepara, despacha ni reasigna por inferencia                        | `ESPECIFICADO` |
+| `VPROC-0028-E09` | Resolver faltante, sobrante, daño, rechazo, devolución o cierre | `RESOLUCION_SEGREGADA_DE_DIFERENCIA`   | investigar, atribuir, decidir o escalar y conciliar el resultado                                  | no autoaprueba hechos creados por una función propia ni duplica efecto | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_SUPERVISOR_STAGES = 12
+MATERIALIZED_SUPERVISOR_STAGES = 12
+UNIQUE_SUPERVISOR_STAGES = 12
+MISSING_SUPERVISOR_STAGES = 0
+DUPLICATE_SUPERVISOR_STAGES = 0
+```
+
+Las demás etapas de `VPROC-0023` a `VPROC-0028` permanecen operativas,
+configurativas o de solo referencia. No adquieren carácter supervisor por
+aparecer en una investigación.
+
+---
+
+#### 9. `NEXO-SUPERVISOR-ROUTE-DISPOSITION-001`
+
+| Ruta             | Patrón actual                           | Disposición                                           | Decisión materializada                                                                                                                  | Estado         |
+| ---------------- | --------------------------------------- | ----------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `NEXO-ROUTE-001` | `/`                                     | `PROYECTAR_HOME_SUPERVISOR`                           | reemplazar el cockpit administrativo genérico por contexto, siguiente control y colas territoriales                                     | `ESPECIFICADO` |
+| `NEXO-ROUTE-002` | `/inventory/adjust`                     | `SEPARAR_INVESTIGACION_DE_REGISTRO`                   | consultar causa y evidencia; registrar ajuste solo mediante capacidad independiente no concedida por defecto al supervisor              | `ESPECIFICADO` |
+| `NEXO-ROUTE-003` | `/inventory/assets`                     | `RESUMEN_SUPERVISOR_DE_SOLO_LECTURA`                  | consultar condición, custodia y casos dentro del alcance; el subdominio se conserva para tareas posteriores                             | `ESPECIFICADO` |
+| `NEXO-ROUTE-004` | `/inventory/assets/counts`              | `COLA_DE_CONTROL_DE_ACTIVOS`                          | consultar sesiones, diferencias y vencimientos; ejecución y decisiones sensibles se separan                                             | `ESPECIFICADO` |
+| `NEXO-ROUTE-005` | `/inventory/assets/counts/[id]`         | `DIVIDIR_CAPTURA_Y_DECISION`                          | mostrar observaciones, investigación, decisión y cierre como affordances independientes                                                 | `ESPECIFICADO` |
+| `NEXO-ROUTE-006` | `/inventory/assets/groups/[id]`         | `REFERENCIA_DE_CONDICION_Y_COMPLETITUD`               | consultar composición, faltantes, custodias y casos relacionados                                                                        | `ESPECIFICADO` |
+| `NEXO-ROUTE-007` | `/inventory/assets/items/[id]`          | `REFERENCIA_DE_HISTORIAL_Y_CUSTODIA`                  | consultar identidad, condición, historial, documentos y casos vinculados                                                                | `ESPECIFICADO` |
+| `NEXO-ROUTE-017` | `/inventory/count-initial`              | `CONTROL_DE_SESIONES`                                 | abrir o consultar sesiones únicamente según permiso atómico, alcance y segregación                                                      | `ESPECIFICADO` |
+| `NEXO-ROUTE-018` | `/inventory/count-initial/session/[id]` | `DIVIDIR_OBSERVACION_INVESTIGACION_DECISION_Y_CIERRE` | separar captura operativa, diferencia, aprobación de efecto y cierre                                                                    | `ESPECIFICADO` |
+| `NEXO-ROUTE-020` | `/inventory/locations`                  | `CONSULTA_SUPERVISORA`                                | consultar estructura, capacidad, bloqueos y anomalías; edición permanece en configuración                                               | `ESPECIFICADO` |
+| `NEXO-ROUTE-021` | `/inventory/locations/[id]`             | `DETALLE_SUPERVISOR_DE_UBICACION`                     | consultar stock, posiciones, diferencias, movimientos y casos del recurso                                                               | `ESPECIFICADO` |
+| `NEXO-ROUTE-028` | `/inventory/lpns`                       | `CONSULTA_SUPERVISORA_DE_IDENTIDAD`                   | consultar estado, custodia, contenido y excepciones de LPN dentro del alcance                                                           | `ESPECIFICADO` |
+| `NEXO-ROUTE-029` | `/inventory/movements`                  | `LEDGER_DE_INVESTIGACION`                             | filtrar y correlacionar movimientos sin editar, eliminar ni compensar silenciosamente                                                   | `ESPECIFICADO` |
+| `NEXO-ROUTE-030` | `/inventory/production-batches`         | `EVIDENCIA_DE_LOTE_EN_SOLO_LECTURA`                   | consumir identidad y trazabilidad necesarias sin asumir propiedad de FOGO                                                               | `ESPECIFICADO` |
+| `NEXO-ROUTE-031` | `/inventory/remissions`                 | `COLA_SUPERVISORA_SEPARADA`                           | mostrar cumplimiento, diferencias y casos relacionados con sedes autorizadas; no mezclar solicitud, preparación, conducción o recepción | `ESPECIFICADO` |
+| `NEXO-ROUTE-038` | `/inventory/remissions/transit`         | `SEPARAR_CUSTODIA_Y_MONITOREO`                        | el conductor conserva acciones de custodia; supervisión observa retrasos, rupturas y excepciones                                        | `ESPECIFICADO` |
+| `NEXO-ROUTE-052` | `/inventory/stock`                      | `RESUMEN_DE_CONTROL_E_INVESTIGACION`                  | consultar saldo, ubicación, diferencias, antigüedad y trazabilidad dentro del territorio                                                | `ESPECIFICADO` |
+| `NEXO-ROUTE-062` | `/printing/jobs`                        | `MONITOREO_TERRITORIAL_DE_TRABAJOS`                   | consultar fallos, reintentos y correlación de trabajos autorizados; plantillas permanecen fuera                                         | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_RELEVANT_ROUTES = 18
+MATERIALIZED_RELEVANT_ROUTES = 18
+UNIQUE_RELEVANT_ROUTES = 18
+MISSING_RELEVANT_ROUTES = 0
+DUPLICATE_RELEVANT_ROUTES = 0
+```
+
+Toda ruta revalida en servidor principal, actor, fuente de autoridad, territorio,
+recurso, permiso de lectura, permiso de decisión, autores del hecho, estado y
+versión. El enlace visible, el filtro o la ruta alcanzable no sustituyen el
+guard ni el contrato de mutación.
+
+---
+
+#### 10. `NEXO-SUPERVISOR-HOME-STATE-CONTRACT-001`
+
+| Estado de interfaz        | Condición                                                                             | Respuesta obligatoria                                                         |
+| ------------------------- | ------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| `RESOLVIENDO_CONTEXTO`    | se están resolviendo actor, autoridad, territorios, permisos, recursos y denegaciones | no mostrar colas definitivas ni habilitar decisiones                          |
+| `SIN_FUNCION_SUPERVISORA` | la sesión es válida, pero no existe capacidad supervisora aplicable                   | mostrar causa sin exponer casos y ofrecer solo cambio de función autorizado   |
+| `CARGANDO_CONTROL`        | la consulta autoritativa de casos está en curso                                       | mantener contexto visible y evitar métricas parciales como definitivas        |
+| `CONTROL_DISPONIBLE`      | existe al menos una tarea supervisora válida y atribuida                              | habilitar solo `CONTINUAR_SIGUIENTE_TAREA` sobre la prioridad resuelta        |
+| `SIN_CASOS_ABIERTOS`      | la consulta completa no devuelve casos pendientes dentro del alcance                  | mostrar vacío confirmado, hora de corte y filtros aplicados                   |
+| `ALCANCE_INVALIDO`        | sede, área, extremo relacional o recurso no pertenecen a la cobertura                 | fallar cerrado y restablecer el último alcance válido                         |
+| `EVIDENCIA_INSUFICIENTE`  | faltan fuentes obligatorias o existe contradicción material entre ellas               | permitir investigación o solicitud de evidencia, no decisión final            |
+| `CONFLICTO_DE_INTERES`    | el actor participó en el hecho y la política exige independencia                      | bloquear decisión propia y escalar a otro actor competente                    |
+| `CONFLICTO_DE_VERSION`    | cambió el caso, recurso, política, estado, responsable o efecto esperado              | rechazar el comando obsoleto y recargar hechos y versión vigentes             |
+| `DATOS_PARCIALES`         | una fuente secundaria falló o el agregado está incompleto                             | etiquetar parcialidad; no inferir ausencia, igualdad, cumplimiento o cierre   |
+| `ERROR_RECUPERABLE`       | la lectura o preparación del comando falló sin resultado confirmado                   | permitir reintento después de revalidar contexto y versión                    |
+| `SIN_AUTORIZACION`        | existe lectura o caso, pero falta el permiso atómico de la acción                     | mantener solo la vista autorizada y ofrecer escalamiento, sin botón ficticio  |
+| `CONTEXTO_REVOCADO`       | cambió empleado, asignación, permiso, concesión, territorio o denegación              | invalidar colas y comandos y resolver nuevamente desde servidor               |
+| `RESULTADO_DESCONOCIDO`   | no se conoce el resultado de una decisión o mutación correlacionada                   | no repetir a ciegas ni mostrar éxito; reconciliar caso, efecto e idempotencia |
+
+Reconciliación:
+
+```text
+EXPECTED_INTERFACE_STATES = 14
+MATERIALIZED_INTERFACE_STATES = 14
+UNIQUE_INTERFACE_STATES = 14
+MISSING_INTERFACE_STATES = 0
+DUPLICATE_INTERFACE_STATES = 0
+```
+
+Una decisión enviada no equivale a ajuste aplicado, remisión cancelada,
+condición liberada, variación resuelta ni caso cerrado. Ante resultado
+incompleto o desconocido, la interfaz conserva el hecho y reconcilia el efecto
+antes de ofrecer otra acción.
+
+---
+
+#### 11. Reglas de filtros, indicadores, evidencia y conectividad
+
+1. los filtros solo reducen un territorio ya autorizado; nunca lo amplían;
+2. los indicadores se calculan desde casos y hechos trazables, con hora de
+   corte, definición y estado de completitud;
+3. un cero derivado de datos parciales no se presenta como ausencia confirmada;
+4. severidad, prioridad, vencimiento y cumplimiento se derivan de reglas
+   publicadas y conservan versión;
+5. la búsqueda no expone identificadores o recursos fuera de la cobertura;
+6. escaneo e impresión heredan el caso supervisor invocante y no conceden
+   permiso de decisión;
+7. cada decisión usa actor, motivo, permiso, versión esperada, correlación,
+   clave idempotente y fecha de servidor;
+8. una operación offline queda pendiente de reconciliación y no se representa
+   como exitosa;
+9. evidencia sensible aplica finalidad, minimización, retención y permisos
+   antes de mostrarse o adjuntarse;
+10. el cierre exige que decisiones, efectos y responsables obligatorios estén
+    resueltos o formalmente transferidos;
+11. el seguimiento no puede editar el hecho para hacer coincidir un indicador;
+12. el acceso en dispositivo compartido conserva actor humano, estación,
+    territorio, caso y trazabilidad, sin convertir el dispositivo en supervisor;
+13. las métricas agregadas no habilitan acceso al detalle cuando falta permiso;
+14. una brecha de contrato se muestra como bloqueo con propietario y condición
+    de salida, no como función ejecutable.
+
+---
+
+#### 12. Evidencia técnica actual y diagnóstico
+
+| Superficie o capacidad actual                           | Evidencia permitida                                                                                                                                                                                                                                                   | Estado                   | Destino                                               |
+| ------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------------------------------------------------- |
+| Inicio raíz `src/app/page.tsx`                          | Identifica algunos roles administrativos mediante una lista literal, organiza accesos en `operate`, `verify`, `configure` y `utilities`, y mezcla acciones según tipo de sede; no resuelve un home supervisor por permisos, territorio, casos y conflicto de interés. | `IMPLEMENTADO_PARCIAL`   | paquete de implementación NEXO                        |
+| comprobación de permisos del inicio                     | Consulta varias claves actuales y combina rol, override, sede y permisos, pero la etiqueta `isManagementRole` influye en el modo visual y no materializa la función supervisora canónica.                                                                             | `IMPLEMENTADO_PARCIAL`   | AUTH-UI-052; paquete de implementación NEXO           |
+| `NEXO-ROUTE-002` y formulario de ajustes                | La página exige una capacidad amplia y permite seleccionar sede y registrar diferencia con motivo; no separa de forma visible investigación, autorización y ejecución atómica.                                                                                        | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-019; paquete de implementación NEXO           |
+| API actual de ajustes                                   | Autentica al usuario, lee saldos y escribe movimientos y saldos; la ruta no revalida explícitamente una capacidad canónica diferenciada de consulta y registro, ni presenta caso, aprobador, versión esperada o clave idempotente.                                    | `BLOQUEADO`              | AUTH-SRV-001 a AUTH-SRV-005; NEXO-UX-019              |
+| `NEXO-ROUTE-017` y sesiones de conteo                   | Existen superficies para iniciar, capturar y consultar sesiones, pero no constituyen una bandeja supervisora unificada.                                                                                                                                               | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-018; NEXO-UX-019                              |
+| API actual de aprobación de conteo inicial              | Autentica, exige sesión `closed` y ejecuta `apply_inventory_count_adjustments`; la ruta no muestra una revalidación explícita de permiso atómico, territorio, segregación, versión o idempotencia.                                                                    | `BLOQUEADO`              | AUTH-SRV-001 a AUTH-SRV-005; NEXO-UX-018; NEXO-UX-019 |
+| `NEXO-ROUTE-029` y `NEXO-ROUTE-052`                     | Movimientos y stock ofrecen fuentes útiles para investigación, pero son consultas independientes y no casos correlacionados con responsable, evidencia, vencimiento y cierre.                                                                                         | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-008; implementación NEXO                      |
+| `NEXO-ROUTE-031`                                        | El hub de remisiones reúne solicitud, preparación, conducción, recepción y seguimiento; no separa una cola supervisora de diferencias, cumplimiento y cierre.                                                                                                         | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-008 a NEXO-UX-013                             |
+| `NEXO-ROUTE-038`                                        | La página se presenta como vista de conductor y contiene acciones de custodia; no materializa monitoreo supervisor separado de retrasos, rupturas y excepciones.                                                                                                      | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-012; implementación NEXO                      |
+| `NEXO-ROUTE-062`                                        | Existe consulta de trabajos de impresión, pero la incorporación de fallos como casos supervisores territoriales no está demostrada.                                                                                                                                   | `IMPLEMENTADO_PARCIAL`   | NEXO-UX-037; implementación NEXO                      |
+| inicio dedicado con casos correlacionados               | No existe una superficie única que materialice territorio, colas, evidencia, autoridad atómica, conflicto, vencimiento y cierre conforme a esta tarea.                                                                                                                | `NO_IMPLEMENTADO`        | paquete de implementación NEXO                        |
+| validación operativa, tablet, kiosco y red intermitente | No se ejecutó piloto con supervisores, operadores, diferencias, decisiones, revocación y resultados desconocidos.                                                                                                                                                     | `PENDIENTE_DE_EVIDENCIA` | NEXO-UX-023 a NEXO-UX-025                             |
+
+El código actual demuestra consultas y mutaciones parciales, no el contrato del
+home supervisor ni una autorización suficiente para cada decisión sensible.
+Una pantalla alcanzable o una API autenticada no demuestran segregación,
+idempotencia, alcance territorial ni aprobación canónica.
+
+---
+
+#### 13. Brechas y bloqueos preservados
+
+| Brecha                                                 | Efecto en el inicio                                                                                                | Propietario documental                                    | Condición de salida                                                           |
+| ------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------- | ----------------------------------------------------------------------------- |
+| home supervisor inexistente                            | la autoridad local entra por un cockpit genérico y debe reconstruir prioridades manualmente                        | paquete de implementación NEXO                            | proyección por actor, territorio, caso y siguiente control materializada      |
+| permisos amplios o legacy en superficies actuales      | lectura, investigación y mutación pueden aparecer bajo una misma capacidad técnica                                 | AUTH-CAT-022; AUTH-SRV-001 a AUTH-SRV-005                 | claves atómicas adoptadas por guards y comandos                               |
+| ajuste actual sin caso y aprobación separada           | una mutación puede ejecutarse sin materializar investigación, segregación y versión del caso                       | `NEXO-UX-019`                                             | flujo de diferencia, decisión, efecto y auditoría implementado                |
+| aprobación de conteo sin revalidación visible completa | un usuario autenticado puede alcanzar un comando sensible sin que la ruta demuestre autoridad atómica y territorio | `NEXO-UX-018`; `NEXO-UX-019`; AUTH-SRV-001 a AUTH-SRV-005 | guard, segregación, versión, idempotencia y pruebas implementados             |
+| catálogo no concede aprobación general al supervisor   | algunos casos pueden verse, pero no resolverse por este rol base                                                   | AUTH-CAT-022; tareas funcionales propietarias             | capacidad atómica creada y evaluada, o escalamiento definitivo aprobado       |
+| hechos y casos no están correlacionados uniformemente  | stock, movimiento, conteo, remisión y receipt deben investigarse en superficies separadas                          | `NEXO-UX-008`; `NEXO-UX-021`; `NEXO-UX-022`               | contrato de caso, relaciones y estados materializado                          |
+| vencimientos y SLA sin fuente unificada                | la prioridad temporal podría ser subjetiva o visual                                                                | `NEXO-UX-021`; `NEXO-UX-025`                              | reglas, eventos, umbrales y evidencia operativa aprobados                     |
+| validación multicanal pendiente                        | no existe evidencia de seguridad o usabilidad en operación real                                                    | `NEXO-UX-023` a `NEXO-UX-025`                             | piloto con actores, dispositivos, revocación, concurrencia y red intermitente |
+
+Ningún bloqueo queda sin tarea responsable.
+
+---
+
+#### 14. Decisiones aprobadas
+
+1. el inicio se resuelve por autoridad, territorio, recurso y permiso exactos,
+   no por nombre del cargo ni sede seleccionada;
+2. el rol base `supervisor` conserva alcance local limitado `AS`, `AA`,
+   `ORG-LOCAL` o `AS-REL`, nunca global implícito;
+3. existe una sola acción primaria: `CONTINUAR_SIGUIENTE_TAREA`;
+4. las ocho colas representan bloqueo, vencimiento, excepción, diferencia,
+   autorización, cumplimiento, cierre y continuidad;
+5. la prioridad protege primero seguridad, custodia, condición y casos vencidos;
+6. el hecho original y la decisión supervisora permanecen separados;
+7. observar una diferencia no concede ajustar, aprobar, cancelar o disponer;
+8. el supervisor base no recibe capacidades operativas ni
+   `BASE_AND_OPERATIONAL` denegadas;
+9. la falta de permiso atómico produce vista de solo lectura o escalamiento,
+   no un botón ficticio;
+10. la misma persona puede supervisar y operar solo mediante funciones,
+    permisos y contextos separados;
+11. no se permite autoaprobación cuando el actor participó en el hecho y la
+    política exige independencia;
+12. los casos conservan evidencia, responsable, vencimiento, versión y
+    trazabilidad;
+13. cerrar un control no borra ni reescribe el hecho operativo;
+14. los filtros reducen territorio y nunca lo amplían;
+15. las doce etapas conservan fronteras entre observación, investigación,
+    decisión, efecto y cierre;
+16. las dieciocho rutas existentes conservan identidad y disposición;
+17. los catorce estados fallan cerrados y no inventan éxito;
+18. ajustes y aprobación de conteos actuales se reconocen como bloqueos de
+    autorización y segregación, no como diseño terminado;
+19. las superficies actuales son evidencia parcial y no validación;
+20. no se modifica código, Supabase, permisos, datos ni operación;
+21. `NEXO-UX-008` permanece reservada.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+Se crean exactamente siete requisitos:
+
+| Requisito       | Cobertura                                                                                                         |
+| --------------- | ----------------------------------------------------------------------------------------------------------------- |
+| `TREQ-NEXO-076` | resolución autoritativa de actor, fuente de autoridad, territorio, recurso, permisos, autores del hecho y versión |
+| `TREQ-NEXO-077` | ocho secciones, acción primaria única, ocho colas y prioridad de control resuelta en servidor                     |
+| `TREQ-NEXO-078` | decisión de doce etapas y separación entre hecho, investigación, decisión, efecto y cierre                        |
+| `TREQ-NEXO-079` | composición de siete casos, segregación y prohibición de autoaprobación                                           |
+| `TREQ-NEXO-080` | disposición de dieciocho rutas con revalidación territorial y de permisos atómicos                                |
+| `TREQ-NEXO-081` | integridad de casos, evidencia, responsable, vencimiento, versión, idempotencia, decisión y cierre                |
+| `TREQ-NEXO-082` | catorce estados y representación honesta de parcialidad, conflicto y resultado desconocido                        |
+
+No se modifica, difiere, descarta ni vuelve obsoleto ningún requisito histórico.
+
+---
+
+#### 16. Criterios de aceptación
+
+- [ ] El archivo contiene exclusivamente `NEXO-UX-007`.
+- [ ] La audiencia primaria es el rol base `supervisor` con alcance territorial
+      limitado, no una autoridad global.
+- [ ] Se distinguen permisos de lectura, decisión y operación.
+- [ ] Se enumeran capacidades relevantes concedidas y denegadas por defecto.
+- [ ] El contexto contiene actor, carril, fuente, territorio, recurso,
+      permisos, hecho, evidencia, responsable, vencimiento y versión.
+- [ ] Existen exactamente ocho secciones y una acción primaria.
+- [ ] Existen exactamente ocho colas únicas `SUPQ-*`.
+- [ ] Existen exactamente siete casos únicos `SUP-COMP-*`.
+- [ ] La misma persona puede supervisar y operar solo mediante capacidades
+      separadas.
+- [ ] Se detecta y bloquea conflicto de interés cuando la política exige
+      independencia.
+- [ ] Las doce etapas aparecen una sola vez.
+- [ ] Diferencia, decisión, efecto y cierre permanecen separados.
+- [ ] Las dieciocho rutas aparecen una sola vez y no se inventan URLs.
+- [ ] Ajustes y aprobación de conteos no se presentan como autoridad ya
+      resuelta.
+- [ ] Los filtros nunca amplían sedes, áreas o extremos relacionales.
+- [ ] Se materializan exactamente catorce estados únicos.
+- [ ] Datos parciales, conflicto de versión, revocación y resultado desconocido
+      no se muestran como éxito.
+- [ ] El diagnóstico distingue código, diseño, implementación y evidencia
+      operativa.
+- [ ] Cada brecha conserva propietario y condición de salida.
+- [ ] Se crean exactamente `TREQ-NEXO-076` a `TREQ-NEXO-082`.
+- [ ] No se modifica ningún requisito histórico.
+- [ ] No se modifica código, Supabase, permisos, datos ni despliegues.
+- [ ] `NEXO-UX-008` permanece reservada y no iniciada.
+
+---
+
+#### 17. `NEXO-SUPERVISOR-HOME-HANDOFF-001`
+
+| Resultado o brecha                                    | Estado actual            | Tarea responsable                         | Condición de salida                                                                    |
+| ----------------------------------------------------- | ------------------------ | ----------------------------------------- | -------------------------------------------------------------------------------------- |
+| navegación por tarea y carril supervisor              | `ESPECIFICADO`           | `NEXO-UX-008`                             | inicio y navegación consumen función, caso, territorio y siguiente tarea autoritativos |
+| flujo completo de conteos                             | `ESPECIFICADO`           | `NEXO-UX-018`                             | apertura, línea base, captura, diferencia y cierre materializados                      |
+| investigación y ajustes                               | `BLOQUEADO`              | `NEXO-UX-019`                             | diferencia, autorización, efecto, idempotencia y auditoría separados                   |
+| escaneo contextual                                    | `ESPECIFICADO`           | `NEXO-UX-020`                             | código identifica recurso y caso sin ejecutar decisión                                 |
+| estados, cantidades, responsable y vencimiento        | `ESPECIFICADO`           | `NEXO-UX-021`                             | representación uniforme y fuente temporal aprobadas                                    |
+| excepciones, condición, cuarentena, daño y devolución | `BLOQUEADO`              | `NEXO-UX-022`                             | captura, contención, decisión, efecto y cierre separados                               |
+| tablet, kiosco, periféricos y red intermitente        | `PENDIENTE_DE_EVIDENCIA` | `NEXO-UX-023`                             | perfil de estación y contingencia certificados                                         |
+| prototipo con supervisores y operadores               | `PENDIENTE_DE_EVIDENCIA` | `NEXO-UX-024`                             | recorridos, conflictos y escalamiento probados con actores reales                      |
+| métricas y piloto                                     | `PENDIENTE_DE_EVIDENCIA` | `NEXO-UX-025`                             | umbrales, SLA y evidencia operativa aprobados                                          |
+| permisos atómicos y guards de servidor                | `BLOQUEADO`              | AUTH-CAT-022; AUTH-SRV-001 a AUTH-SRV-005 | claves, alcance, segregación y contratos ejecutables adoptados                         |
+| implementación del home                               | `NO_IMPLEMENTADO`        | paquete de implementación NEXO            | componentes, consultas, casos, guards, comandos y pruebas materializados               |
+
+Esta tarea no inicia ninguno de esos trabajos.
+
+---
+
+#### 18. Continuidad canónica
+
+**ÚLTIMA TAREA APROBADA**
+
+`NEXO-UX-006 — Diseñar inicio para receptor`
+
+**TAREA ACTUAL APROBADA**
+
+`NEXO-UX-007 — Diseñar inicio para supervisor`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas`
+
+
 ### [ ] NEXO-UX-008 — Organizar navegación por tareas y no por rutas técnicas
 ### [ ] NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión
 ### [ ] NEXO-UX-010 — Diseñar flujo completo de preparación
