@@ -6292,7 +6292,1339 @@ No se modifica ningún requisito histórico.
 `NEXO-UX-010 — Diseñar flujo completo de preparación y despacho`
 
 
-### [ ] NEXO-UX-010 — Diseñar flujo completo de preparación
+### ✅ NEXO-UX-010 — Diseñar flujo completo de preparación
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión` — APROBADA
+**Tarea siguiente:** `NEXO-UX-011 — Diseñar flujo completo de despacho` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo de la preparación de abastecimiento interno, cola y reclamo de trabajo, ramas de stock y producción, picking, cantidades reales, parciales, faltantes, empaque, evidencia, confirmación idempotente, receipt y handoff a despacho
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Proceso propietario:** `VPROC-0028 — Abastecer inventario interno de sedes y áreas`
+**Etapas propietarias:** `VPROC-0028-E03`, `VPROC-0028-E04` y `VPROC-0028-E05`
+**Tarea de navegación consumida:** `NEXO-TASK-004 — PREPARAR_ABASTECIMIENTO`
+**Colas consumidas:** `WHQ-PREPARACION` y `WHQ-BLOQUEO`
+**Permiso exacto de mutación:** `nexo.inventory.remissions.prepare`
+**Artefactos producidos:** `NEXO-REMISSION-PREPARATION-FLOW-CONTRACT-001`, `NEXO-REMISSION-PREPARATION-STATE-MACHINE-001`, `NEXO-REMISSION-PREPARATION-STEP-CATALOG-001`, `NEXO-REMISSION-PREPARATION-WORK-QUEUE-CONTRACT-001`, `NEXO-REMISSION-PREPARATION-TASK-LINE-CONTRACT-001`, `NEXO-REMISSION-PREPARATION-STOCK-BRANCH-001`, `NEXO-REMISSION-PREPARATION-PRODUCTION-BRANCH-001`, `NEXO-REMISSION-PREPARATION-PICK-PACK-CONTRACT-001`, `NEXO-REMISSION-PREPARATION-EXCEPTION-CONTRACT-001`, `NEXO-REMISSION-PREPARATION-IDEMPOTENCY-RECEIPT-001`, `NEXO-REMISSION-PREPARATION-TO-DISPATCH-HANDOFF-001`, `NEXO-REMISSION-PREPARATION-ROUTE-DISPOSITION-001` y `NEXO-REMISSION-PREPARATION-IMPLEMENTATION-HANDOFF-001`
+**Decisiones consumidas:** `UX-BASE-001` a `UX-BASE-005`; `UX-STATION-010` a `UX-STATION-012`; `NEXO-DOM-001`; `NEXO-UX-001` a `NEXO-UX-009`; `NEXO-WAREHOUSE-HOME-CONTRACT-001`; `NEXO-WAREHOUSE-WORK-QUEUE-CATALOG-001`; `NEXO-WAREHOUSE-STAGE-PROJECTION-MATRIX-001`; `NEXO-TASK-NAVIGATION-CONTRACT-001`; `NEXO-NAVIGATION-TASK-CATALOG-001`; `NEXO-ROUTE-TO-TASK-REGISTRY-001`; `NEXO-REMISSION-REQUEST-HANDOFF-001`; contratos de autorización, contexto activo, productos, UOM, políticas de solicitud, rutas de fulfillment, LOC, posiciones, producción, firma de dispositivo compartido y requisitos `TREQ-*` vigentes
+**Cambios físicos autorizados:** ninguno; no modifica código, tablas, RPC, migraciones, RLS, permisos, datos, navegación desplegada, configuración, inventario real ni ambientes remotos
+
+---
+
+#### 1. Propósito
+
+Definir de extremo a extremo cómo una persona o área autorizada transforma una necesidad de abastecimiento en cantidades físicamente preparadas y verificables, sin confundir ese resultado con despacho, salida de inventario, custodia, tránsito o recepción.
+
+La preparación deberá consumir una solicitud inmutable y versionada, resolver trabajo por sede y área responsable, ejecutar la rama correcta de abastecimiento, registrar cantidades reales y excepciones, y producir un handoff consumible por despacho.
+
+La regla canónica es:
+
+```text
+SOLICITUD REQUESTED Y VERSIONADA
++ FULFILLMENT ASIGNADO AL ORIGEN Y AREA RESPONSABLE
++ ACTOR Y CONTEXTO AUTORIZADOS
++ RAMA DE STOCK O PRODUCCION RESUELTA
++ TRABAJO FISICO EJECUTADO
++ CANTIDADES, UBICACIONES, PRESENTACIONES Y EVIDENCIA RECONCILIADAS
++ PARCIALES Y EXCEPCIONES EXPLICITAS
++ CONFIRMACION ATOMICA E IDEMPOTENTE
++ RECEIPT VERIFICABLE
+→ CANTIDAD READY O PARTIALLY_READY PARA DESPACHO
+```
+
+La regla de frontera es:
+
+```text
+PREPARADO ≠ DESPACHADO
+READY_BASE_QTY ≠ SHIPPED_BASE_QTY
+UBICADO PARA SALIDA ≠ DESCONTADO DE INVENTARIO
+EMPAQUE PREPARADO ≠ CARGA SELLADA
+ACTOR PREPARADOR ≠ CUSTODIO O CONDUCTOR
+```
+
+---
+
+#### 2. Resultado material
+
+Se aprueban trece artefactos documentales consumibles:
+
+1. `NEXO-REMISSION-PREPARATION-FLOW-CONTRACT-001`, que fija frontera, autoridad, lenguaje y resultado empresarial;
+2. `NEXO-REMISSION-PREPARATION-STATE-MACHINE-001`, que separa interfaz, reclamo, fulfillment, ejecución física y despacho;
+3. `NEXO-REMISSION-PREPARATION-STEP-CATALOG-001`, que materializa catorce pasos y sus transiciones;
+4. `NEXO-REMISSION-PREPARATION-WORK-QUEUE-CONTRACT-001`, que define elegibilidad, orden, reclamo, reanudación y concurrencia;
+5. `NEXO-REMISSION-PREPARATION-TASK-LINE-CONTRACT-001`, que conserva identidad, versión, cantidades y snapshots por tarea y línea;
+6. `NEXO-REMISSION-PREPARATION-STOCK-BRANCH-001`, que define selección de LOC, posición, presentación y picks físicos;
+7. `NEXO-REMISSION-PREPARATION-PRODUCTION-BRANCH-001`, que define la frontera NEXO–FOGO y el consumo de producto terminado liberado;
+8. `NEXO-REMISSION-PREPARATION-PICK-PACK-CONTRACT-001`, que define picks múltiples, unidades preparadas, empaque y evidencia;
+9. `NEXO-REMISSION-PREPARATION-EXCEPTION-CONTRACT-001`, que trata faltantes, daños, bloqueos, sustituciones, sobrantes y cambios de ruta;
+10. `NEXO-REMISSION-PREPARATION-IDEMPOTENCY-RECEIPT-001`, que impide resultados parciales, duplicados y reintentos ciegos;
+11. `NEXO-REMISSION-PREPARATION-TO-DISPATCH-HANDOFF-001`, que entrega cantidades listas, no asignadas y versionadas a despacho;
+12. `NEXO-REMISSION-PREPARATION-ROUTE-DISPOSITION-001`, que decide las rutas existentes relacionadas sin inventar URLs;
+13. `NEXO-REMISSION-PREPARATION-IMPLEMENTATION-HANDOFF-001`, que separa el contrato aprobado de los cambios físicos posteriores.
+
+| Elemento                                  | Total esperado | Total materializado | Faltantes | Duplicados |
+| ----------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Pasos del flujo                           |             14 |                  14 |         0 |          0 |
+| Estados de interfaz                       |             20 |                  20 |         0 |          0 |
+| Estados de fulfillment reconciliados      |             10 |                  10 |         0 |          0 |
+| Ramas operativas                          |              2 |                   2 |         0 |          0 |
+| Validaciones materializadas               |             30 |                  30 |         0 |          0 |
+| Disposiciones de rutas relacionadas       |              9 |                   9 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados |             10 |                  10 |         0 |          0 |
+
+El resultado queda `ESPECIFICADO`. No declara el flujo `IMPLEMENTADO`, `VALIDADO` ni desplegado.
+
+---
+
+#### 3. Alcance
+
+##### 3.1. Incluido
+
+- entrada desde `NEXO-TASK-004`, el home del bodeguero y una referencia opaca de tarea;
+- resolución de actor, sede origen, área preparadora, turno, dispositivo y permiso;
+- cola por fulfillment, no por encabezado completo de solicitud;
+- reclamo, reanudación, liberación y pérdida de reclamo;
+- consumo del snapshot y versión aprobados en `NEXO-UX-009`;
+- resolución automática de la rama `stock` o `production`;
+- selección física de LOC, posición, presentación y cantidades cuando la rama sea stock;
+- consumo de producción liberada y LOC de producto listo cuando la rama sea producción;
+- picks múltiples por línea sin reescribir la intención solicitada;
+- cantidades solicitadas, reservadas cuando exista contrato, preparadas, listas, asignadas y pendientes;
+- preparación parcial, faltante, bloqueo, daño, calidad, sustitución propuesta y ruta obsoleta;
+- empaque y agrupación física previa al despacho sin crear carga ni custodia;
+- revisión, confirmación, idempotencia, concurrencia, receipt y recuperación de resultado desconocido;
+- handoff inmutable a `NEXO-UX-011`;
+- diagnóstico del código, esquema y migraciones actuales.
+
+##### 3.2. Excluido
+
+- crear o modificar la solicitud original;
+- aprobar una necesidad comercial o productiva;
+- cambiar producto, política, UOM, ruta o fuente sin una transición autorizada;
+- ejecutar receta, consumo productivo, lote o liberación de calidad dentro de NEXO;
+- descontar inventario por transferencia de salida durante preparación;
+- crear envío, viaje, carga, sello, documento de despacho o asignación a conductor;
+- transferir custodia o iniciar tránsito;
+- recibir, aceptar, rechazar o ubicar en destino;
+- conciliar diferencias posteriores al despacho;
+- crear el modelo canónico de LPN, contenedores o etiquetas reservado a tareas posteriores;
+- implementar componentes, tablas, RPC, migraciones, RLS, eventos o pruebas;
+- ejecutar DDL, DML, backfills, despliegues o cambios remotos.
+
+---
+
+#### 4. `NEXO-REMISSION-PREPARATION-FLOW-CONTRACT-001`
+
+##### 4.1. Nombre humano y efecto empresarial
+
+La experiencia utilizará como términos principales:
+
+```text
+PREPARAR ABASTECIMIENTO
+CANTIDAD LISTA
+PREPARACION PARCIAL
+FALTANTE O BLOQUEO
+```
+
+No utilizará “despachado”, “enviado” o “en tránsito” antes de que `NEXO-UX-011` confirme el hecho correspondiente.
+
+El efecto exitoso ordinario es uno de estos dos:
+
+```text
+PREPARATION_CONFIRMED
+fulfillment_status = ready
+```
+
+```text
+PREPARATION_CONFIRMED
+fulfillment_status = partially_ready
+remaining_work = pending_or_blocked
+```
+
+Una preparación con cero cantidad lista solo puede terminar en `blocked`, `reassigned` o `cancelled` mediante causa y autoridad explícitas; nunca se presenta como éxito completo.
+
+##### 4.2. Actor autorizado
+
+El actor ordinario participa como preparador en `VPROC-0028`, pertenece al territorio de la sede origen y área responsable, y posee `nexo.inventory.remissions.prepare` en el contexto operativo vigente.
+
+La elegibilidad exige conjuntamente:
+
+- principal autenticado y actor efectivo identificable;
+- función preparadora vigente;
+- sede origen coincidente con el fulfillment;
+- área activa coincidente con `preparing_area_kind`;
+- turno o check-in cuando aplique;
+- dispositivo permitido;
+- permiso exacto;
+- tarea vigente, asignable y no terminal;
+- versión esperada de solicitud y fulfillment;
+- ruta y dependencias todavía válidas.
+
+El rol `bodeguero`, la visibilidad de una ruta, un identificador enviado por cliente o el acceso global de lectura no conceden por sí solos autoridad de preparación.
+
+##### 4.3. Segregación de funciones
+
+El preparador puede:
+
+- consultar su cola autorizada;
+- reclamar o continuar una tarea compatible;
+- ejecutar picks o consumir una liberación productiva válida;
+- registrar cantidad lista, parcial y bloqueo;
+- documentar evidencia y dejar unidades preparadas;
+- confirmar la preparación y producir receipt.
+
+No puede por esta participación:
+
+- alterar la intención solicitada;
+- autorizar sustituciones materiales;
+- ejecutar producción propietaria de FOGO;
+- asignar una cantidad lista a un envío;
+- descontar `transfer_out`;
+- sellar carga;
+- asumir custodia;
+- iniciar tránsito;
+- registrar recepción;
+- cerrar diferencias.
+
+##### 4.4. Iniciadores admitidos
+
+| Iniciador                  | Entrada                                                    | Decisión                                                                |
+| -------------------------- | ---------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `WAREHOUSE_QUEUE`          | fila elegible de `WHQ-PREPARACION`                         | abre el fulfillment exacto después de revalidarlo                       |
+| `RESUME_CLAIMED_TASK`      | tarea reclamada por el mismo actor                         | reanuda la última versión autoritativa                                  |
+| `OPAQUE_TASK_REFERENCE`    | referencia opaca desde seguimiento o supervisión           | resuelve recurso y permiso sin confiar en parámetros de contexto        |
+| `SCANNER_CONTEXT`          | código de LOC, posición, producto o tarea dentro del flujo | completa contexto permitido; nunca muta por escanear                    |
+| `SHARED_DEVICE_ENTRY`      | cola en estación compartida                                | exige actor efectivo y firma para confirmar                             |
+| `PRODUCTION_RELEASE_EVENT` | producto terminado liberado para una tarea                 | actualiza disponibilidad de la rama producción; no confirma por sí solo |
+
+---
+
+#### 5. `NEXO-REMISSION-PREPARATION-STATE-MACHINE-001`
+
+##### 5.1. Máquinas de estado separadas
+
+```text
+ESTADO DE INTERFAZ
+≠ ESTADO DE RECLAMO
+≠ ESTADO DE FULFILLMENT
+≠ ESTADO DE PICK O PRODUCCION
+≠ ESTADO DE ENVIO
+```
+
+La interfaz describe la experiencia actual. El reclamo describe quién puede continuar. El fulfillment describe cumplimiento de una necesidad. Los picks y liberaciones prueban cantidades físicas. El envío pertenece a `NEXO-UX-011`.
+
+##### 5.2. Estados de fulfillment reconciliados
+
+| Estado            | Significado canónico                                                         | Puede establecerlo preparación                       | Tratamiento                                               |
+| ----------------- | ---------------------------------------------------------------------------- | ---------------------------------------------------- | --------------------------------------------------------- |
+| `pending`         | tarea creada y todavía no iniciada                                           | sí, como estado de entrada                           | aparece en cola elegible                                  |
+| `reserved`        | existe una reserva explícita y vigente                                       | solo si la implementación posee un ledger de reserva | no equivale a pick ni cantidad lista                      |
+| `preparing`       | ejecución física iniciada                                                    | sí                                                   | conserva actor, versión y tiempo de inicio                |
+| `partially_ready` | existe cantidad lista menor que la solicitada                                | sí                                                   | el remanente sigue pendiente o bloqueado                  |
+| `ready`           | toda la cantidad todavía exigible está lista                                 | sí                                                   | queda disponible para asignación de despacho              |
+| `blocked`         | existe impedimento estructurado                                              | sí                                                   | requiere causa, cantidad afectada y siguiente responsable |
+| `reassigned`      | otra tarea o fuente reemplaza el cumplimiento                                | solo por transición autorizada                       | conserva vínculo y motivo                                 |
+| `cancelled`       | la obligación de preparar fue cancelada por autoridad válida                 | no como acción ordinaria                             | terminal y auditable                                      |
+| `allocated`       | cantidad lista fue asignada a una carga                                      | no                                                   | estado de despacho, solo lectura aquí                     |
+| `released`        | cantidad salió del carril de preparación por despacho o liberación posterior | no                                                   | estado posterior, solo lectura aquí                       |
+
+Reglas:
+
+- preparación nunca cambia directamente a `allocated` o `released`;
+- `ready` no cambia `restock_requests` a `in_transit`;
+- `partially_ready` no cierra el remanente;
+- `blocked` no borra cantidad ya lista;
+- `reserved` no se inferirá desde `prepared_quantity` ni desde una nota;
+- un estado legacy deberá mapearse explícitamente, no reinterpretarse por etiqueta.
+
+##### 5.3. Estados de interfaz
+
+| Estado                    | Condición                                       | Comportamiento obligatorio                                                  |
+| ------------------------- | ----------------------------------------------- | --------------------------------------------------------------------------- |
+| `PREP_CONTEXT_RESOLVING`  | resolución de actor y contexto                  | no muestra controles operables                                              |
+| `PREP_CONTEXT_BLOCKED`    | falta sede, área, turno, dispositivo o permiso  | explica la condición sin bypass                                             |
+| `PREP_QUEUE_LOADING`      | se consulta trabajo autoritativo                | no muestra conteos como definitivos                                         |
+| `PREP_QUEUE_EMPTY`        | no existe trabajo elegible                      | muestra ausencia honesta y retorno                                          |
+| `PREP_QUEUE_READY`        | existen tareas elegibles                        | ordena y presenta la siguiente acción                                       |
+| `PREP_TASK_CLAIMING`      | se intenta reclamar                             | bloquea doble envío y espera resultado                                      |
+| `PREP_TASK_ACTIVE`        | reclamo y versiones vigentes                    | permite ejecutar la tarea                                                   |
+| `PREP_STOCK_PLANNING`     | rama stock requiere plan físico                 | guía LOC, posición, UOM y cantidad                                          |
+| `PREP_PRODUCTION_WAITING` | rama producción espera resultado liberado       | muestra dependencia y responsable                                           |
+| `PREP_EXECUTING`          | trabajo físico en curso                         | conserva progreso sin afirmar resultado                                     |
+| `PREP_PARTIAL`            | existe cantidad lista y remanente               | diferencia listo, pendiente y bloqueado                                     |
+| `PREP_BLOCKED`            | no puede continuar una parte o toda la tarea    | muestra causa y handoff de resolución                                       |
+| `PREP_REVIEW`             | plan ejecutado listo para confirmar             | congela fingerprint y consecuencias                                         |
+| `PREP_SUBMITTING`         | comando de confirmación en curso                | impide nueva intención                                                      |
+| `PREP_RESULT_UNKNOWN`     | se perdió el resultado del comando              | reconcilia por intención                                                    |
+| `PREP_CONFIRMED`          | receipt autoritativo recuperado                 | muestra cantidades y siguiente carril                                       |
+| `PREP_CONFLICTED`         | cambió tarea, stock, ruta, versión o reclamo    | impide sobrescritura y exige recarga                                        |
+| `PREP_CONTEXT_REVOKED`    | autorización o actor cambió                     | cierra controles y vuelve a un punto seguro                                 |
+| `PREP_OFFLINE_LIMITED`    | no pueden revalidarse autoridad o stock         | permite solo consulta o captura local no empresarial cuando exista política |
+| `PREP_FATAL_ERROR`        | no es posible recuperar contexto o consistencia | no muestra éxito ni permite mutación                                        |
+
+##### 5.4. Reclamo de trabajo
+
+El reclamo es una entidad separada del fulfillment y deberá conservar:
+
+```text
+claim_id
+fulfillment_id
+actor_id
+site_id
+area_id
+claimed_at
+expires_at
+claim_version
+status
+released_at
+release_reason
+```
+
+Un fulfillment admite como máximo un reclamo operativo activo por vez. Una sesión expirada, un cambio de actor, una revocación o una liberación explícita termina el reclamo sin alterar cantidades listas ya confirmadas.
+
+---
+
+#### 6. `NEXO-REMISSION-PREPARATION-WORK-QUEUE-CONTRACT-001`
+
+##### 6.1. Unidad de trabajo
+
+La fila de cola es un `fulfillment_id`, no el encabezado completo de una solicitud. Una solicitud con líneas para varias áreas, fuentes o modos produce tareas separadas y cada una conserva su propia autoridad y estado.
+
+Identidad mínima de fila:
+
+```text
+fulfillment_id
+request_id
+request_version
+request_line_id
+fulfillment_version
+source_site_id
+preparing_area_kind
+supply_mode
+product_id
+requested_base_qty
+ready_base_qty
+allocated_base_qty
+remaining_base_qty
+status
+need_by_at
+priority_class
+blocking_code
+```
+
+##### 6.2. Elegibilidad
+
+Una fila aparece cuando:
+
+- pertenece a la sede origen activa;
+- su `preparing_area_kind` coincide con el área autorizada, salvo supervisión global expresamente permitida;
+- su estado es `pending`, `reserved`, `preparing`, `partially_ready`, `ready` o `blocked` según la vista;
+- el actor posee permiso y territorio;
+- la solicitud y la tarea no están canceladas, sustituidas ni obsoletas;
+- la ruta snapshot es consumible o el bloqueo debe ser visible al responsable autorizado.
+
+Una vista “todas las sedes” es de supervisión o configuración y no concede mutación hasta resolver una sede y área operativas exactas.
+
+##### 6.3. Orden de trabajo
+
+Orden canónico:
+
+1. tarea reclamada por el actor que necesita reanudación;
+2. bloqueo crítico con acción atribuida al área actual;
+3. fecha requerida vencida;
+4. fecha requerida más próxima;
+5. prioridad empresarial autorizada;
+6. tareas parcialmente listas con remanente;
+7. antigüedad de creación;
+8. clave estable `fulfillment_id`.
+
+El navegador no puede elevar prioridad mediante parámetros, orden local o nombre del rol.
+
+##### 6.4. Reclamo y concurrencia
+
+Antes de reclamar o mutar se comprueba:
+
+```text
+ACTOR_ACTUAL
++ TAREA_TODAVIA_ELEGIBLE
++ CLAIM_VERSION_ESPERADA
++ REQUEST_VERSION_ESPERADA
++ FULFILLMENT_VERSION_ESPERADA
++ ESTADO_COMPATIBLE
++ TERRITORIO_Y_AREA_COMPATIBLES
++ COMANDO_IDEMPOTENTE
+```
+
+Si otra persona reclama, modifica, bloquea, asigna a despacho o cancela la tarea, la interfaz cambia a `PREP_CONFLICTED` y no conserva controles obsoletos.
+
+##### 6.5. Vistas permitidas
+
+| Vista                  | Contenido                                 | Autoridad                                 |
+| ---------------------- | ----------------------------------------- | ----------------------------------------- |
+| `MI_TAREA_ACTIVA`      | reclamo vigente del actor                 | mutación según etapa                      |
+| `PENDIENTES`           | tareas elegibles sin reclamo incompatible | reclamar                                  |
+| `PARCIALMENTE_LISTAS`  | cantidad lista con remanente              | continuar o revisar bloqueo               |
+| `ESPERANDO_PRODUCCION` | dependencia productiva no liberada        | consulta y handoff, no inventar salida    |
+| `BLOQUEADAS`           | causas estructuradas del área             | resolver únicamente acciones atribuidas   |
+| `LISTAS_PARA_DESPACHO` | cantidades ready no totalmente allocated  | consulta; asignación pertenece a despacho |
+
+---
+
+#### 7. `NEXO-REMISSION-PREPARATION-TASK-LINE-CONTRACT-001`
+
+##### 7.1. Handoff de entrada
+
+La tarea consume de `NEXO-UX-009`:
+
+```text
+request_id
+request_version
+request_line_id
+human_code
+business_status = requested
+source_site_id
+destination_site_id
+requesting_area_kind
+preparing_area_kind
+route_id
+route_version_or_snapshot
+supply_mode
+production_execution_mode
+source_location_id
+ready_location_id
+product_snapshot
+request_policy_snapshot
+requested_input_qty
+requested_input_unit_code
+requested_base_qty
+stock_unit_code
+need_by_at
+created_by_actor_id
+```
+
+##### 7.2. Snapshot y mutabilidad
+
+Preparación no edita:
+
+- producto solicitado;
+- política utilizada;
+- cantidad original;
+- conversión aprobada;
+- sede solicitante;
+- área solicitante;
+- fuente resuelta;
+- receipt de solicitud.
+
+Las correcciones crean una nueva versión, una reasignación o una transición compensatoria vinculada. Nunca se cambia silenciosamente el snapshot consumido.
+
+##### 7.3. Campos de ejecución
+
+Cada fulfillment deberá poder representar:
+
+```text
+fulfillment_id
+fulfillment_version
+claim_id
+status
+reserved_base_qty
+ready_base_qty
+allocated_base_qty
+cancelled_base_qty
+remaining_base_qty
+started_at
+started_by_actor_id
+available_at
+blocking_code
+blocking_detail
+exception_refs[]
+preparation_receipt_refs[]
+```
+
+Cada pick de stock deberá representar:
+
+```text
+pick_id
+fulfillment_id
+request_line_id
+product_id
+source_location_id
+source_position_id
+uom_profile_id
+presentation_qty
+base_qty
+lot_or_batch_ref_when_required
+condition_code
+scan_evidence_ref
+prepared_unit_ref
+```
+
+Cada aporte de producción deberá representar:
+
+```text
+production_supply_ref
+fulfillment_id
+production_order_or_task_ref
+batch_ref
+release_event_ref
+product_id
+released_base_qty
+ready_location_id
+released_at
+quality_status
+```
+
+##### 7.4. Versiones esperadas
+
+Todo comando material incluye como mínimo:
+
+- `request_version`;
+- `fulfillment_version`;
+- `claim_version` cuando existe reclamo;
+- `stock_snapshot_version` o evidencia equivalente para picks;
+- `route_snapshot_fingerprint`;
+- `preparation_intent_id`;
+- `payload_fingerprint`.
+
+Un cambio en cualquiera de estas autoridades invalida la revisión anterior.
+
+---
+
+#### 8. `NEXO-REMISSION-PREPARATION-STEP-CATALOG-001`
+
+| Paso | Identificador                        | Entrada                         | Acción principal                                                | Salida                          | Recuperación                            |
+| ---: | ------------------------------------ | ------------------------------- | --------------------------------------------------------------- | ------------------------------- | --------------------------------------- |
+|    1 | `PREP-STEP-01-RESOLVE-CONTEXT`       | entrada a `NEXO-TASK-004`       | resolver actor, sede, área, turno, dispositivo y permiso        | contexto autorizado o bloqueo   | volver al inicio seguro                 |
+|    2 | `PREP-STEP-02-LOAD-QUEUE`            | contexto autorizado             | cargar fulfillments elegibles                                   | cola, vacío o datos parciales   | reintentar sin inventar trabajo         |
+|    3 | `PREP-STEP-03-CLAIM-OR-RESUME`       | fulfillment elegido             | reclamar o reanudar con versión esperada                        | reclamo activo                  | informar conflicto y recargar           |
+|    4 | `PREP-STEP-04-REVALIDATE-HANDOFF`    | reclamo activo                  | validar solicitud, línea, fulfillment, ruta y snapshots         | tarea vigente o bloqueo         | liberar reclamo si no es consumible     |
+|    5 | `PREP-STEP-05-RESOLVE-BRANCH`        | handoff válido                  | derivar `stock` o `production` desde snapshot                   | rama exacta                     | no permitir selección manual de modo    |
+|    6 | `PREP-STEP-06-BUILD-EXECUTION-PLAN`  | rama resuelta                   | construir picks o dependencia productiva                        | plan de ejecución               | conservar borrador operativo versionado |
+|    7 | `PREP-STEP-07-VALIDATE-DEPENDENCIES` | plan preliminar                 | comprobar LOC, posición, UOM, stock o liberación productiva     | plan ejecutable o bloqueo       | mostrar responsable y causa             |
+|    8 | `PREP-STEP-08-EXECUTE-PHYSICAL-WORK` | plan ejecutable                 | recoger, medir, contar o tomar terminado liberado               | evidencia física en curso       | pausar sin declarar listo               |
+|    9 | `PREP-STEP-09-CAPTURE-ACTUALS`       | trabajo físico                  | registrar picks, liberaciones y cantidades reales               | cantidades reconciliadas        | detectar cambios y recargar             |
+|   10 | `PREP-STEP-10-PACK-AND-STAGE`        | cantidad físicamente disponible | agrupar, empacar y dejar en zona lista                          | unidades preparadas             | separar daño o condición no apta        |
+|   11 | `PREP-STEP-11-RESOLVE-REMAINDER`     | solicitado frente a listo       | registrar parcial, faltante, bloqueo o propuesta de sustitución | remanente explícito             | escalar sin cerrar silenciosamente      |
+|   12 | `PREP-STEP-12-REVIEW`                | plan ejecutado                  | revisar cantidades, ubicaciones, evidencia y consecuencia       | fingerprint de revisión         | cualquier edición invalida revisión     |
+|   13 | `PREP-STEP-13-CONFIRM`               | revisión vigente                | ejecutar comando atómico e idempotente                          | receipt o resultado desconocido | reconciliar por intención               |
+|   14 | `PREP-STEP-14-HANDOFF`               | receipt confirmado              | publicar cantidad lista para despacho y retornar a trabajo      | handoff versionado              | conservar remanente y bloqueos          |
+
+Reconciliación:
+
+```text
+EXPECTED_PREPARATION_STEPS = 14
+MATERIALIZED_PREPARATION_STEPS = 14
+MISSING_PREPARATION_STEPS = 0
+DUPLICATE_PREPARATION_STEPS = 0
+```
+
+---
+
+#### 9. `NEXO-REMISSION-PREPARATION-STOCK-BRANCH-001`
+
+##### 9.1. Entrada
+
+La rama se activa exclusivamente cuando el snapshot declara:
+
+```text
+supply_mode = stock
+```
+
+El actor no puede cambiarla a producción para evitar un faltante ni elegir otra sede de origen.
+
+##### 9.2. Plan físico
+
+El plan permite múltiples picks para una misma línea:
+
+```text
+UNA LINEA SOLICITADA
+→ UNO O MAS LOC
+→ CERO O UNA POSICION POR PICK
+→ CERO O UNA PRESENTACION FISICA POR PICK
+→ CANTIDAD BASE POR PICK
+```
+
+No se parte ni reescribe la línea original para representar múltiples ubicaciones. Los picks se agregan bajo el mismo `request_line_id` y `fulfillment_id`.
+
+##### 9.3. LOC y posición
+
+Cada pick exige:
+
+- LOC activo de la sede origen;
+- LOC permitido por la ruta snapshot o transición autorizada;
+- posición activa perteneciente al LOC cuando se especifique;
+- producto habilitado y stock compatible;
+- condición física apta;
+- cantidad no negativa y superior a cero;
+- trazabilidad de actor y momento.
+
+Una recomendación de LOC no es autoridad final. El servidor revalida existencia, pertenencia y saldo al confirmar.
+
+##### 9.4. Presentaciones y unidades
+
+Cuando existe presentación física:
+
+- `uom_profile_id` pertenece al producto y está activo;
+- `presentation_qty > 0`;
+- `base_qty` coincide con el factor vigente o snapshot autorizado;
+- la suma de picks se reconcilia en unidad base;
+- peso variable, conteo más peso y granel conservan sus mediciones reales;
+- una presentación agotada no permite inventar otra conversión.
+
+##### 9.5. Stock y reservas
+
+La preparación consulta stock por sede, LOC y posición. No descuenta `current_qty` ni publica `transfer_out`.
+
+Si se implementa reserva, deberá existir como ledger explícito, versionado y reversible. No se inferirá una reserva desde:
+
+- `prepared_quantity`;
+- un estado visual;
+- una nota;
+- un pick sin confirmación;
+- una disminución anticipada del saldo real.
+
+##### 9.6. Cambios durante la ejecución
+
+Si el stock cambia entre plan y confirmación:
+
+- se rechaza el comando obsoleto;
+- no se borran picks confirmados anteriores;
+- se presenta `PREP_CONFLICTED`;
+- el actor recarga y reconcilia;
+- no se reduce silenciosamente la cantidad para lograr éxito.
+
+---
+
+#### 10. `NEXO-REMISSION-PREPARATION-PRODUCTION-BRANCH-001`
+
+##### 10.1. Entrada
+
+La rama se activa exclusivamente cuando:
+
+```text
+supply_mode = production
+production_execution_mode in (simple, recipe)
+ready_location_id is not null
+```
+
+Una ruta incompleta produce `blocked`, no un formulario libre de cantidad lista.
+
+##### 10.2. Propiedad funcional
+
+FOGO conserva la autoridad sobre:
+
+- orden o tarea de producción;
+- receta y versión;
+- lote;
+- consumos;
+- rendimiento;
+- controles de calidad;
+- liberación del terminado;
+- empaque productivo cuando aplique.
+
+NEXO conserva:
+
+- la necesidad de abastecimiento;
+- el fulfillment vinculado;
+- la cantidad liberada consumible;
+- el LOC donde queda listo el terminado;
+- el handoff físico a despacho.
+
+Por tanto:
+
+```text
+NEXO NO FABRICA UN LOTE
+NEXO NO DECLARA CALIDAD APROBADA
+NEXO NO CONSUME RECETA
+NEXO CONSUME UN RESULTADO PRODUCTIVO LIBERADO Y CORRELACIONADO
+```
+
+##### 10.3. Producción simple
+
+`production_execution_mode = simple` no autoriza escribir una cantidad arbitraria. Requiere un hecho de producción identificado, actor autorizado, producto, cantidad, momento, LOC listo y evidencia mínima. La implementación podrá usar un flujo simplificado de FOGO, pero la autoridad del hecho sigue siendo productiva.
+
+##### 10.4. Producción por receta
+
+`production_execution_mode = recipe` exige:
+
+- orden o tarea FOGO vinculada;
+- receta y versión;
+- lote o batch;
+- cantidad terminada;
+- control y liberación aplicables;
+- evento idempotente de liberación;
+- `ready_location_id` coincidente;
+- saldo liberado no consumido por otro fulfillment.
+
+##### 10.5. Cantidad lista
+
+La cantidad ready de producción no puede superar:
+
+- la cantidad solicitada todavía exigible;
+- la cantidad liberada y no asignada;
+- la cantidad físicamente presente en el LOC listo cuando exista inventario real por ubicación.
+
+Una orden iniciada, una estimación de rendimiento o un lote no liberado no cuentan como cantidad lista.
+
+##### 10.6. Fallos y replanificación
+
+Si producción no puede completar:
+
+- conserva cualquier cantidad liberada válida;
+- registra remanente y causa;
+- crea o vincula excepción;
+- identifica responsable y condición de salida;
+- no cambia automáticamente a stock;
+- una reasignación crea una transición versionada y conserva el vínculo histórico.
+
+---
+
+#### 11. Cantidades e invariantes
+
+##### 11.1. Variables
+
+| Campo                          | Significado                                          | Propietario        |
+| ------------------------------ | ---------------------------------------------------- | ------------------ |
+| `requested_base_qty`           | cantidad confirmada por solicitud                    | solicitud          |
+| `reserved_base_qty`            | cantidad reservada mediante ledger explícito         | reserva, si existe |
+| `picked_base_qty`              | suma de picks físicos confirmados                    | preparación stock  |
+| `released_production_base_qty` | cantidad productiva liberada y vinculada             | FOGO / integración |
+| `ready_base_qty`               | cantidad apta, empacada o dispuesta para despacho    | preparación        |
+| `allocated_base_qty`           | parte de ready asignada a una carga                  | despacho           |
+| `dispatched_base_qty`          | cantidad cuya salida fue confirmada                  | despacho           |
+| `cancelled_base_qty`           | cantidad cuya obligación fue cancelada con autoridad | control autorizado |
+| `blocked_base_qty`             | cantidad temporalmente impedida                      | excepción          |
+| `remaining_base_qty`           | cantidad todavía exigible y no lista                 | derivada           |
+
+##### 11.2. Invariantes
+
+```text
+0 <= allocated_base_qty <= ready_base_qty
+0 <= ready_base_qty
+0 <= cancelled_base_qty
+ready_base_qty + cancelled_base_qty <= requested_base_qty
+remaining_base_qty = requested_base_qty - ready_base_qty - cancelled_base_qty
+```
+
+Para stock:
+
+```text
+ready_base_qty <= SUM(confirmed_pick.base_qty)
+```
+
+Para producción:
+
+```text
+ready_base_qty <= SUM(unconsumed_released_production.base_qty)
+```
+
+Para cualquier rama:
+
+- una cantidad bloqueada puede solaparse conceptualmente con el remanente, pero no se suma como cumplida;
+- una cantidad allocated continúa siendo ready hasta que despacho confirme la salida;
+- una cantidad despachada no se escribe durante preparación;
+- un sobrante físico no amplía la solicitud;
+- las comparaciones usan precisión y redondeo canónicos por unidad.
+
+##### 11.3. Preparación parcial
+
+Una tarea puede confirmar `partially_ready` cuando:
+
+- `ready_base_qty > 0`;
+- `ready_base_qty < requested_base_qty - cancelled_base_qty`;
+- el remanente tiene estado, causa y siguiente acción;
+- no se presenta como preparación completa;
+- la cantidad lista queda disponible para despacho sin borrar el remanente.
+
+##### 11.4. Líneas múltiples
+
+Cada fulfillment se confirma de forma independiente. Una solicitud puede contener simultáneamente líneas `ready`, `partially_ready`, `preparing` y `blocked`. El encabezado no se reduce a un único estado que oculte esta distribución.
+
+---
+
+#### 12. `NEXO-REMISSION-PREPARATION-PICK-PACK-CONTRACT-001`
+
+##### 12.1. Picks
+
+Cada pick es un hecho físico trazable. No se sustituye por una cantidad agregada sin origen.
+
+Reglas:
+
+1. un pick pertenece a un único fulfillment y producto;
+2. puede usar LOC y posición exactos;
+3. puede usar una presentación física compatible;
+4. conserva cantidad de presentación y cantidad base;
+5. puede registrar lote o batch cuando el producto lo requiera;
+6. puede corregirse antes de confirmar la revisión;
+7. después de confirmar, una corrección crea reversa o nueva versión, no edición silenciosa;
+8. la suma de picks no supera la cantidad exigible;
+9. dos picks no consumen la misma unidad física identificada;
+10. el escaneo aporta evidencia, no autoridad por sí solo.
+
+##### 12.2. Unidades preparadas
+
+La preparación puede agrupar picks en una o más unidades físicas de preparación con referencia opaca:
+
+```text
+prepared_unit_ref
+fulfillment_refs[]
+product_and_qty_summary[]
+package_kind
+seal_required = false_or_reserved_for_dispatch
+staging_location_id
+condition
+weight_or_count_when_required
+evidence_refs[]
+```
+
+`prepared_unit_ref` no se declara LPN canónico por esta tarea. Si existe un LPN autorizado, podrá vincularse; el modelo definitivo de contenedores y etiquetas permanece en sus tareas propietarias.
+
+##### 12.3. Empaque
+
+El empaque de preparación:
+
+- protege y agrupa la cantidad lista;
+- conserva compatibilidad de producto, condición y destino;
+- no crea envío;
+- no asigna conductor;
+- no sella una carga logística;
+- no cambia custodia;
+- no descuenta inventario;
+- puede exigir peso, conteo, temperatura o foto según política publicada.
+
+##### 12.4. Zona de listo
+
+La unidad queda en un LOC de staging o `ready_location_id` autorizado. Una zona de listo no equivale a vehículo, muelle de salida, carga o tránsito.
+
+##### 12.5. Evidencia mínima
+
+La evidencia se determina por riesgo y producto. Puede incluir:
+
+- escaneo de tarea, producto, LOC o posición;
+- medición de cantidad;
+- presentación o empaque;
+- lote o batch;
+- condición;
+- foto cuando la política lo exija;
+- actor y dispositivo;
+- fecha y correlación.
+
+No se capturan secretos, PIN, credenciales ni datos personales innecesarios.
+
+---
+
+#### 13. `NEXO-REMISSION-PREPARATION-EXCEPTION-CONTRACT-001`
+
+| Código                           | Situación                                        | Tratamiento                                             | Acción prohibida                   |
+| -------------------------------- | ------------------------------------------------ | ------------------------------------------------------- | ---------------------------------- |
+| `PREP-EXC-STOCK_SHORTAGE`        | stock insuficiente en sede, LOC o posición       | conservar cantidad lista, registrar afectada y causa    | reducir solicitado silenciosamente |
+| `PREP-EXC-LOC_INVALID`           | LOC inactivo, ajeno o no permitido               | bloquear picks afectados y escalar ruta o configuración | escoger otro LOC sin autoridad     |
+| `PREP-EXC-POSITION_INVALID`      | posición inexistente o incompatible              | recargar estructura y corregir plan                     | ignorar la posición enviada        |
+| `PREP-EXC-UOM_UNAVAILABLE`       | presentación agotada o incompatible              | proponer alternativa autorizable                        | convertir con factor improvisado   |
+| `PREP-EXC-DAMAGE`                | producto dañado durante preparación              | separar, registrar cantidad y evidencia                 | incluirlo como ready               |
+| `PREP-EXC-QUALITY_HOLD`          | condición o calidad no liberada                  | aislar y esperar decisión propietaria                   | declarar aptitud desde NEXO        |
+| `PREP-EXC-PRODUCTION_DELAY`      | producción no liberó a tiempo                    | conservar dependencia y responsable                     | registrar estimación como lista    |
+| `PREP-EXC-SUBSTITUTION_PROPOSED` | se propone otro producto o presentación material | crear propuesta vinculada para decisión                 | sustituir silenciosamente          |
+| `PREP-EXC-ROUTE_STALE`           | cambió o fue retirada la ruta                    | mantener snapshot y solicitar transición                | mutar la fuente original           |
+| `PREP-EXC-REQUEST_CHANGED`       | nueva versión invalida la tarea                  | detener y reconciliar                                   | continuar contra versión obsoleta  |
+| `PREP-EXC-CLAIM_LOST`            | otro actor o sesión posee reclamo válido         | cerrar controles y recargar                             | sobrescribir trabajo concurrente   |
+| `PREP-EXC-OVERAGE`               | existe cantidad física superior                  | dejar excedente en inventario y registrar observación   | ampliar ready sobre solicitado     |
+
+##### 13.1. Faltante
+
+Un faltante requiere:
+
+```text
+exception_id
+fulfillment_id
+affected_base_qty
+reason_code
+description
+observed_at
+observed_by_actor_id
+evidence_refs[]
+responsible_lane
+resolution_condition
+status
+```
+
+Una nota libre como `FALTANTE ORIGEN` no es el contrato final y no puede ser la única fuente de estado.
+
+##### 13.2. Sustitución
+
+La preparación solo propone. Una sustitución aprobada deberá:
+
+- identificar quién autorizó;
+- conservar producto y cantidad originales;
+- crear línea o fulfillment de reemplazo vinculado;
+- conservar equivalencia de unidad y política;
+- invalidar revisiones anteriores;
+- no modificar historia ni receipt de solicitud.
+
+##### 13.3. Reasignación
+
+Una reasignación de fuente, área o modo crea una nueva versión o fulfillment. El fulfillment anterior pasa a `reassigned`, conserva cantidad ya lista o la transfiere mediante comando explícito, y registra el sucesor.
+
+---
+
+#### 14. Catálogo de validaciones
+
+| ID             | Momento            | Regla                                                                                    | Respuesta segura                               |
+| -------------- | ------------------ | ---------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| `PREP-VAL-001` | entrada            | principal y actor efectivo válidos                                                       | bloquear sin revelar trabajo                   |
+| `PREP-VAL-002` | entrada            | contexto operativo vigente                                                               | volver a inicio seguro                         |
+| `PREP-VAL-003` | entrada y mutación | permiso exacto de preparación                                                            | denegar server-side                            |
+| `PREP-VAL-004` | carga              | sede origen coincide con contexto                                                        | no cargar la tarea                             |
+| `PREP-VAL-005` | carga              | área preparadora coincide con alcance                                                    | excluir o mostrar solo a supervisor autorizado |
+| `PREP-VAL-006` | carga              | solicitud, línea y fulfillment existen                                                   | error no recuperable o recarga                 |
+| `PREP-VAL-007` | reclamo            | versiones esperadas coinciden                                                            | conflicto, no sobrescribir                     |
+| `PREP-VAL-008` | reclamo            | estado admite preparación                                                                | retirar control obsoleto                       |
+| `PREP-VAL-009` | reclamo            | no existe reclamo incompatible                                                           | informar propietario o expiración              |
+| `PREP-VAL-010` | apertura           | snapshot de ruta es íntegro                                                              | bloquear con causa estructurada                |
+| `PREP-VAL-011` | apertura           | `supply_mode` pertenece a la rama permitida                                              | no permitir cambio manual                      |
+| `PREP-VAL-012` | plan               | producto coincide con solicitud y fulfillment                                            | rechazar payload                               |
+| `PREP-VAL-013` | plan               | cantidad solicitada e invariantes son válidas                                            | bloquear inconsistencia                        |
+| `PREP-VAL-014` | stock              | LOC activo, del origen y permitido                                                       | rechazar pick                                  |
+| `PREP-VAL-015` | stock              | posición activa y perteneciente al LOC                                                   | rechazar pick                                  |
+| `PREP-VAL-016` | stock              | UOM profile activo y del producto                                                        | rechazar presentación                          |
+| `PREP-VAL-017` | stock              | conversión presentación-base coincide                                                    | rechazar factor divergente                     |
+| `PREP-VAL-018` | stock              | stock por sede, LOC y posición cubre picks                                               | conflicto y recarga                            |
+| `PREP-VAL-019` | stock              | picks no duplican unidad física identificada                                             | rechazar duplicado                             |
+| `PREP-VAL-020` | agregado           | suma de picks o liberaciones no supera exigible                                          | rechazar exceso                                |
+| `PREP-VAL-021` | producción         | orden, tarea o evento productivo correlacionado                                          | mantener espera                                |
+| `PREP-VAL-022` | producción         | lote o salida liberados cuando aplica                                                    | no contar cantidad no liberada                 |
+| `PREP-VAL-023` | producción         | LOC listo coincide con snapshot                                                          | bloquear handoff incorrecto                    |
+| `PREP-VAL-024` | excepción          | parcial o cero exige causa y cantidad afectada                                           | no confirmar resultado ambiguo                 |
+| `PREP-VAL-025` | excepción          | sustitución posee autorización vinculada                                                 | conservar como propuesta                       |
+| `PREP-VAL-026` | condición          | daño o calidad no apta se excluyen de ready                                              | crear excepción                                |
+| `PREP-VAL-027` | revisión           | ready cubre allocated y no supera solicitado                                             | invalidar revisión                             |
+| `PREP-VAL-028` | confirmación       | firma de actor compartido válida cuando aplica                                           | rechazar y no guardar PIN                      |
+| `PREP-VAL-029` | confirmación       | intención, fingerprint y versiones son coherentes                                        | devolver mismo receipt o conflicto             |
+| `PREP-VAL-030` | persistencia       | picks, cantidades, estados, excepciones, evidencia y receipt se comprometen atómicamente | rollback total y resultado no exitoso          |
+
+Reconciliación:
+
+```text
+EXPECTED_PREPARATION_VALIDATIONS = 30
+MATERIALIZED_PREPARATION_VALIDATIONS = 30
+MISSING_PREPARATION_VALIDATIONS = 0
+DUPLICATE_PREPARATION_VALIDATIONS = 0
+```
+
+La validación cliente mejora la experiencia. La validación servidor es la autoridad.
+
+---
+
+#### 15. Revisión, confirmación, idempotencia y receipt
+
+##### 15.1. Revisión
+
+Antes de confirmar, la interfaz muestra una proyección congelada con:
+
+- solicitud, destino y fecha requerida;
+- sede y área preparadoras;
+- rama de abastecimiento;
+- producto, política y unidad;
+- cantidad solicitada;
+- picks o liberaciones productivas;
+- cantidad lista;
+- cantidad ya asignada, si existe;
+- remanente;
+- excepciones;
+- unidades preparadas y LOC de staging;
+- evidencia obligatoria;
+- consecuencia: “dejar disponible para despacho”.
+
+No muestra “enviar”, “poner en tránsito” ni “descontar inventario”.
+
+##### 15.2. Fingerprint
+
+La revisión produce un fingerprint sobre:
+
+```text
+request_version
+fulfillment_version
+claim_version
+route_snapshot
+product_and_policy_snapshot
+picks_or_production_release_refs
+ready_base_qty
+remaining_base_qty
+exception_refs
+prepared_unit_refs
+evidence_refs
+```
+
+Cualquier cambio invalida la confirmación.
+
+##### 15.3. Comando objetivo
+
+El comando lógico `CONFIRM_PREPARATION` recibe:
+
+```text
+preparation_intent_id
+payload_fingerprint
+expected_request_version
+expected_fulfillment_version
+expected_claim_version
+actor_signature_ref
+fulfillment_id
+confirmed_picks[]
+production_release_refs[]
+prepared_units[]
+ready_base_qty
+exceptions[]
+evidence_refs[]
+```
+
+La persistencia es una sola unidad transaccional. Debe:
+
+1. bloquear o comparar las versiones autoritativas;
+2. revalidar permiso, contexto y reclamo;
+3. revalidar stock o liberaciones productivas;
+4. insertar o versionar picks;
+5. registrar unidades y evidencia;
+6. registrar excepciones;
+7. actualizar cantidades y estado de fulfillment;
+8. conservar la solicitud original;
+9. registrar auditoría y firma;
+10. producir un receipt único;
+11. publicar el handoff a despacho;
+12. comprometer todo o nada.
+
+##### 15.4. Idempotencia
+
+- una intención con el mismo fingerprint devuelve el mismo receipt;
+- la misma intención con payload distinto falla;
+- doble clic, retry, dos pestañas o reconexión no duplican picks, cantidades, evidencia ni excepciones;
+- un fallo no deja picks nuevos con estado anterior o ready sin receipt;
+- el servidor no borra primero el plan confirmado para luego intentar reconstruirlo;
+- las correcciones posteriores usan una intención nueva y una operación versionada.
+
+##### 15.5. Receipt
+
+El receipt mínimo contiene:
+
+```text
+preparation_receipt_id
+preparation_intent_id
+request_id
+request_version
+fulfillment_id
+fulfillment_version
+actor_id
+source_site_id
+preparing_area_kind
+supply_mode
+requested_base_qty
+ready_base_qty
+allocated_base_qty
+remaining_base_qty
+pick_count
+production_release_refs[]
+prepared_unit_refs[]
+exception_refs[]
+fulfillment_status
+available_at
+next_lane = DISPATCH
+server_correlation_id
+created_at
+```
+
+##### 15.6. Resultado desconocido
+
+Si se pierde la respuesta:
+
+1. la interfaz entra en `PREP_RESULT_UNKNOWN`;
+2. conserva intención y fingerprint;
+3. consulta por `preparation_intent_id`;
+4. si existe, devuelve el receipt original;
+5. si el servidor certifica ausencia, permite reintentar la misma intención;
+6. si no puede certificarlo, no crea otra intención ni muestra cantidad lista.
+
+---
+
+#### 16. `NEXO-REMISSION-PREPARATION-TO-DISPATCH-HANDOFF-001`
+
+##### 16.1. Salida consumible
+
+Despacho recibe únicamente cantidades confirmadas:
+
+```text
+fulfillment_id
+fulfillment_version
+request_id
+request_version
+request_line_id
+product_snapshot
+source_site_id
+destination_site_id
+source_location_or_ready_location_id
+preparing_area_kind
+supply_mode
+ready_base_qty
+allocated_base_qty
+available_unallocated_base_qty
+stock_unit_code
+request_policy_snapshot
+prepared_unit_refs[]
+condition_and_evidence_refs[]
+exception_refs[]
+available_at
+preparation_receipt_id
+```
+
+##### 16.2. Disponibilidad para despacho
+
+```text
+available_unallocated_base_qty = ready_base_qty - allocated_base_qty
+```
+
+Solo una cantidad positiva puede asignarse a una carga. La asignación deberá bloquear concurrentemente el fulfillment y pertenece a `NEXO-UX-011`.
+
+##### 16.3. Frontera obligatoria
+
+Preparación no:
+
+- crea `remission_shipment`;
+- crea `remission_shipment_item`;
+- cambia estado a `loading`, `sealed` o `in_transit`;
+- escribe `shipped_quantity` como copia de lo preparado;
+- aplica `transfer_out`;
+- consume empaque productivo por despacho;
+- asigna conductor o vehículo;
+- transfiere custodia.
+
+##### 16.4. Cambios posteriores
+
+Si una cantidad ready cambia antes de ser allocated:
+
+- se crea una nueva versión de preparación;
+- la versión anterior se conserva;
+- despacho ve el nuevo saldo disponible.
+
+Si ya existe cantidad allocated:
+
+- preparación no puede reducir ready por debajo de allocated;
+- cualquier corrección exige liberar o compensar la asignación mediante el flujo de despacho;
+- no se modifica silenciosamente una carga existente.
+
+##### 16.5. Handoff a `NEXO-UX-011`
+
+La siguiente tarea recibe:
+
+- cantidades ready y partially_ready;
+- saldo no asignado;
+- unidades preparadas;
+- LOC de staging;
+- evidencia;
+- excepciones visibles;
+- origen y destino;
+- versión de fulfillment y receipt;
+- prohibición de cargar cantidad no confirmada.
+
+`NEXO-UX-011` decidirá selección para carga, asignación concurrente, agrupación por destino, envío físico, sellado, documentos, salida de inventario, custodia y transición logística. Esta tarea no anticipa esas decisiones.
+
+---
+
+#### 17. `NEXO-REMISSION-PREPARATION-ROUTE-DISPOSITION-001`
+
+| Ruta             | Patrón actual                            | Disposición                         | Uso en preparación                                                            | Estado                  |
+| ---------------- | ---------------------------------------- | ----------------------------------- | ----------------------------------------------------------------------------- | ----------------------- |
+| `NEXO-ROUTE-001` | `/`                                      | entrada desde home                  | resolver `NEXO-TASK-004` cuando exista trabajo compatible                     | `ESPECIFICADO`          |
+| `NEXO-ROUTE-031` | `/inventory/remissions`                  | resolutor compartido                | dirigir a la tarea preparadora sin mezclar solicitud, conducción o recepción  | `ESPECIFICADO`          |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`             | detalle existente                   | mostrar contexto de solicitud y preparación autorizada; conservar retorno     | `ESPECIFICADO`          |
+| `NEXO-ROUTE-035` | `/inventory/remissions/fulfillment`      | superficie de fulfillment existente | cola por área y rama; debe separar preparación de creación de cargas          | `ESPECIFICADO`          |
+| `NEXO-ROUTE-036` | `/inventory/remissions/prepare`          | entrada de preparación existente    | conservar como entrada task-first o alias convergente, sin segunda verdad     | `ESPECIFICADO`          |
+| `NEXO-ROUTE-030` | `/inventory/production-batches`          | referencia productiva               | consulta contextual de lote o resultado liberado; no ejecutar FOGO desde NEXO | `REFERENCIA_CONTEXTUAL` |
+| `NEXO-ROUTE-064` | `/scanner`                               | utilidad contextual                 | escanear tarea, LOC, posición o producto y retornar al mismo paso             | `UTILIDAD_OCULTA`       |
+| `NEXO-ROUTE-041` | `/inventory/settings/fulfillment-routes` | configuración excluida              | preparación consume el snapshot; no edita la ruta                             | `FUERA_DE_ALCANCE`      |
+| `NEXO-ROUTE-050` | `/inventory/settings/supply-routes`      | configuración excluida              | preparación no selecciona ni corrige fuentes                                  | `FUERA_DE_ALCANCE`      |
+
+Reconciliación:
+
+```text
+EXPECTED_RELATED_ROUTES = 9
+MATERIALIZED_RELATED_ROUTES = 9
+MISSING_RELATED_ROUTES = 0
+DUPLICATE_RELATED_ROUTES = 0
+NEW_ROUTE_IDENTITIES = 0
+```
+
+Las rutas `035` y `036` no podrán mantener modelos empresariales divergentes. La implementación deberá convergerlas sobre los mismos fulfillments, estados, comandos y receipts.
+
+---
+
+#### 18. Conectividad, dispositivos y recuperación
+
+| Situación                         | Comportamiento                                                               | Acción prohibida                              |
+| --------------------------------- | ---------------------------------------------------------------------------- | --------------------------------------------- |
+| sin conexión antes de reclamar    | mostrar trabajo cacheado solo como no autoritativo                           | crear reclamo empresarial                     |
+| sin conexión durante captura      | conservar borrador operativo local si la política del dispositivo lo permite | confirmar ready offline por defecto           |
+| reconexión                        | revalidar actor, reclamo, versiones, stock y dependencias                    | sincronizar sin detectar conflicto            |
+| dispositivo compartido            | identificar actor efectivo para toda mutación                                | atribuir trabajo a la sesión técnica          |
+| cambio de actor                   | cerrar o transferir explícitamente el borrador operativo                     | heredar picks del actor anterior sin revisión |
+| escaneo duplicado                 | detectar la misma identidad y cantidad                                       | agregar un pick duplicado silenciosamente     |
+| resultado de confirmación perdido | consultar por intención                                                      | repetir con una intención nueva               |
+| contexto revocado                 | bloquear controles y liberar reclamo según política                          | permitir terminar con permiso anterior        |
+| batería o cierre abrupto          | reanudar desde estado autoritativo y borrador compatible                     | asumir que la última acción fue confirmada    |
+
+No existe preparación empresarial offline por defecto. Una futura política offline deberá definir firma, límites, reconciliación, conflictos y evidencia antes de habilitar confirmación diferida.
+
+---
+
+#### 19. Autorización, seguridad y privacidad
+
+1. el servidor revalida actor, contexto, permiso, recurso, estado y versión en carga, reclamo, guardado y confirmación;
+2. una persona ve solo fulfillments de su sede y área, salvo permiso global explícito de supervisión;
+3. el permiso global de lectura no se convierte en permiso operativo de mutación;
+4. IDs de solicitud, fulfillment, LOC, posición, producto, UOM, batch o prepared unit enviados por cliente son no confiables;
+5. la firma de dispositivo compartido se vincula al comando y receipt, no a una nota;
+6. PIN, credenciales y secretos no se guardan en picks, evidencia, logs o analytics;
+7. el detalle de stock por posición se minimiza al contexto necesario;
+8. una denegación no revela cantidades ni rutas fuera del territorio;
+9. la evidencia visual respeta minimización y retención;
+10. toda mutación conserva actor humano, dispositivo, correlación y timestamp;
+11. la UI no concede autoridad por mostrar botones o campos;
+12. una Server Action, API o RPC no confía en filtros o validaciones del navegador;
+13. la integración NEXO–FOGO verifica identidad, versión, procedencia e idempotencia del evento;
+14. ningún código escaneado ejecuta una mutación sin confirmación y permiso.
+
+---
+
+#### 20. Evidencia técnica actual y diagnóstico
+
+| Fuente actual                                         | Evidencia verificable                                                                                                                 | Estado frente al diseño    | Decisión                                                                                              |
+| ----------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `src/app/inventory/remissions/prepare/page.tsx`       | proyecta solicitudes legacy `pending` y `preparing`, calcula alertas de stock y LOC y ofrece acceso al detalle                        | `IMPLEMENTADO_PARCIAL`     | conservar como superficie compatible, pero migrar de encabezados a fulfillments y área responsable    |
+| `src/app/inventory/remissions/fulfillment/page.tsx`   | consulta `restock_item_fulfillments`, separa `stock` y `production`, filtra por sede y área y muestra estados hasta `allocated`       | `IMPLEMENTADO_PARCIAL`     | usar como base task-first; separar controles preparadores de creación de carga                        |
+| `src/app/inventory/remissions/fulfillment/actions.ts` | `markFulfillmentReady` permite escribir `ready_base_qty` para stock o producción con validaciones de sede, área y rango               | `BRECHA_CONFIRMADA`        | exigir evidencia de picks o liberación productiva; una cantidad digitada no basta                     |
+| `src/app/inventory/remissions/fulfillment/actions.ts` | `createShipmentFromReady` comparte superficie con preparación y requiere permiso de tránsito                                          | `COMPATIBILIDAD_REQUERIDA` | trasladar la decisión completa de carga y despacho a `NEXO-UX-011` sin duplicar fulfillment           |
+| `src/app/inventory/remissions/[id]/detail-actions.ts` | `commitPreparationDraft` valida picks contra stock, pero elimina todos los picks y luego inserta los nuevos por operaciones separadas | `BRECHA_CRITICA`           | confirmar mediante comando atómico, versionado e idempotente                                          |
+| `src/app/inventory/remissions/[id]/detail-actions.ts` | al confirmar preparación actualiza `prepared_quantity` y también `shipped_quantity` con la misma cantidad                             | `BRECHA_CRITICA`           | dejar `shipped` exclusivamente al despacho                                                            |
+| `src/app/inventory/remissions/[id]/detail-actions.ts` | el fallback de líneas puede partir `restock_request_items` mediante `split_restock_request_item`                                      | `BRECHA_CONFIRMADA`        | representar multi-LOC con picks bajo una línea inmutable, no reescribir la intención                  |
+| `restock_request_item_picks`                          | permite varios picks por línea, LOC, posición y UOM; valida pertenencia física                                                        | `IMPLEMENTADO_PARCIAL`     | conservar la granularidad y añadir versionado, intención, evidencia y atomicidad                      |
+| `restock_item_fulfillments`                           | separa cantidad solicitada, ready, allocated, estados y rama de abastecimiento                                                        | `IMPLEMENTADO_PARCIAL`     | convertirlo en unidad autoritativa de preparación y reconciliar su lifecycle                          |
+| snapshot de ruta en fulfillment                       | conserva `supply_mode`, modo productivo y `ready_location_id`                                                                         | `IMPLEMENTADO_PARCIAL`     | consumir el snapshot y bloquear tareas incompletas; no releer una ruta mutable como historia          |
+| `apply_restock_shipment_from_picks`                   | valida y descuenta stock al aplicar salida desde picks                                                                                | `FUERA_DE_PREPARACION`     | invocarlo únicamente desde despacho autorizado, no al marcar ready                                    |
+| estados legacy de `restock_requests`                  | sincronizan `pending`, `preparing`, `in_transit`, `partial` y `received` desde cantidades                                             | `COMPATIBILIDAD_REQUERIDA` | no usar el encabezado como única máquina de estado; derivar proyección desde fulfillments y shipments |
+| rama producción actual                                | la cola reconoce `simple` y `recipe`, pero el comando inspeccionado no exige una liberación FOGO para marcar ready                    | `BRECHA_CRITICA`           | materializar contrato de producción liberada y correlacionada                                         |
+| receipt actual de preparación                         | las acciones revalidan rutas o redirigen, pero no existe evidencia inspeccionada de receipt recuperable por intención                 | `NO_IMPLEMENTADO`          | crear receipt, consulta por intención y recuperación determinista                                     |
+
+No se modifica código en esta tarea. El diagnóstico define el comportamiento objetivo y las incompatibilidades que el paquete de implementación deberá resolver.
+
+---
+
+#### 21. Decisiones aprobadas
+
+1. `NEXO-UX-010` diseña solo preparación; despacho permanece en `NEXO-UX-011`;
+2. la unidad de cola es el fulfillment por línea, fuente y área, no el encabezado de solicitud;
+3. existen exactamente catorce pasos y veinte estados de interfaz;
+4. se reconciliaron diez estados de fulfillment, de los cuales `allocated` y `released` son posteriores y solo lectura;
+5. el permiso exacto es `nexo.inventory.remissions.prepare` dentro del contexto vigente;
+6. el reclamo de trabajo es separado del estado empresarial y admite una única instancia activa;
+7. la rama se deriva del snapshot `supply_mode` y no se selecciona manualmente;
+8. stock y producción son ramas distintas con la misma salida contractual `ready_base_qty`;
+9. la rama stock admite múltiples picks por línea, LOC, posición y presentación;
+10. multi-LOC no requiere partir ni reescribir la línea solicitada;
+11. la preparación no descuenta inventario ni publica `transfer_out`;
+12. una reserva futura requiere ledger explícito y no se infiere de cantidades preparadas;
+13. FOGO conserva receta, lote, consumo, rendimiento, calidad y liberación;
+14. NEXO consume únicamente producción liberada y correlacionada;
+15. `production_execution_mode = simple` no autoriza una cantidad arbitraria;
+16. ready, allocated, shipped y received son cantidades y hechos distintos;
+17. una preparación parcial conserva cantidad lista y remanente visible;
+18. faltantes y bloqueos usan excepciones estructuradas, no solo notas libres;
+19. sustitución y cambio de ruta requieren transición autorizada y versionada;
+20. el empaque de preparación no crea envío, sello, custodia ni LPN canónico;
+21. treinta validaciones se ejecutarán en los momentos definidos;
+22. la revisión completa precede la confirmación y cualquier cambio invalida el fingerprint;
+23. el comando de confirmación es atómico, idempotente y devuelve receipt recuperable;
+24. la misma intención no puede producir payloads diferentes;
+25. un timeout se reconcilia antes de reintentar;
+26. preparación nunca copia automáticamente `ready` a `shipped`;
+27. la cantidad ready no puede reducirse por debajo de lo ya allocated;
+28. el handoff a despacho conserva versiones, evidencia, prepared units y saldo no asignado;
+29. las rutas existentes se reutilizan y `035`/`036` deben converger sobre una sola verdad;
+30. toda modificación futura de Supabase se crea y versiona desde `vento-shell`.
+
+---
+
+#### 22. Pendientes materializados y propietarios
+
+| Pendiente                              | Estado                   | Propietario                     | Tarea o puerta                        | Condición de salida                                             |
+| -------------------------------------- | ------------------------ | ------------------------------- | ------------------------------------- | --------------------------------------------------------------- |
+| implementar claim operativo            | `ESPECIFICADO`           | paquete E5 NEXO                 | implementación de `NEXO-TASK-004`     | unicidad, expiración, liberación y pruebas concurrentes         |
+| comando atómico de preparación         | `ESPECIFICADO`           | `vento-shell` y paquete E5 NEXO | migración/RPC de preparación          | todo o nada, idempotencia y rollback probados                   |
+| separar `prepared` de `shipped`        | `ESPECIFICADO`           | paquete E5 NEXO                 | convergencia del modelo legacy        | despacho sea único escritor del hecho enviado                   |
+| integrar liberación de producción      | `ESPECIFICADO`           | FOGO, NEXO e integración        | contrato e implementación E5/X        | evento versionado, idempotente y con lote/LOC                   |
+| receipt y reconciliación por intención | `ESPECIFICADO`           | paquete E5 NEXO                 | implementación de confirmación        | recuperación determinista ante timeout                          |
+| política de reservas                   | `PENDIENTE_DE_EVIDENCIA` | NEXO/Data                       | diseño e implementación de inventario | ledger explícito aprobado o decisión documentada de no reservar |
+| LPN y contenedores                     | `FUERA_DE_ALCANCE`       | tareas NEXO propietarias        | `NEXO-UX-026` a `NEXO-UX-029`         | contrato canónico de identidad y lifecycle                      |
+| despacho                               | `RESERVADO`              | `NEXO-UX-011`                   | siguiente tarea                       | flujo de carga, salida, custodia y documento especificado       |
+| pruebas operativas en dispositivos     | `PENDIENTE_DE_EVIDENCIA` | UX-QA y paquete E5 NEXO         | piloto autorizado                     | evidencia reproducible en tablet, compartido y escáner          |
+
+Ningún pendiente queda sin propietario, tarea o condición de salida.
+
+---
+
+#### 23. Requisitos de prueba creados
+
+Esta tarea crea:
+
+- `TREQ-NEXO-101`;
+- `TREQ-NEXO-102`;
+- `TREQ-NEXO-103`;
+- `TREQ-NEXO-104`;
+- `TREQ-NEXO-105`;
+- `TREQ-NEXO-106`;
+- `TREQ-NEXO-107`;
+- `TREQ-NEXO-108`;
+- `TREQ-NEXO-109`;
+- `TREQ-NEXO-110`.
+
+No modifica ni obsoleta requisitos históricos. El detalle canónico reside en el registro completo 04A actualizado coordinadamente con esta tarea.
+
+---
+
+#### 24. Criterios de aceptación
+
+La tarea se considera documentalmente completa cuando:
+
+1. existe una frontera inequívoca entre solicitud, preparación y despacho;
+2. los catorce pasos están materializados sin faltantes ni duplicados;
+3. los veinte estados de interfaz poseen condición y comportamiento seguro;
+4. los diez estados de fulfillment están reconciliados y se distingue quién puede escribirlos;
+5. la cola opera por fulfillment, sede y área responsable;
+6. reclamo, reanudación y concurrencia poseen versiones esperadas;
+7. las ramas stock y producción tienen entrada, autoridad, evidencia y salida explícitas;
+8. la rama stock soporta picks múltiples sin alterar la línea solicitada;
+9. la rama producción exige resultado liberado por la autoridad productiva;
+10. las cantidades e invariantes impiden mezclar ready, allocated, shipped y received;
+11. parciales, faltantes, daños, calidad, sustitución y reasignación tienen tratamiento estructurado;
+12. el empaque y staging no crean despacho ni custodia;
+13. las treinta validaciones están asignadas a momentos concretos;
+14. la revisión, fingerprint, intención, atomicidad y receipt están definidos;
+15. el handoff a `NEXO-UX-011` contiene únicamente cantidades confirmadas y no asignadas;
+16. las nueve rutas relacionadas tienen una disposición explícita y no se crean identidades nuevas;
+17. el diagnóstico técnico distingue implementación parcial, brecha y fuera de alcance;
+18. los diez requisitos nuevos están incorporados al 04A completo;
+19. no se ejecutan cambios físicos ni operaciones remotas;
+20. la siguiente tarea permanece reservada.
+
+---
+
+#### 25. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-009 — Diseñar flujo completo de solicitud de remisión`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-010 — Diseñar flujo completo de preparación`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-011 — Diseñar flujo completo de despacho`
+
+`NEXO-UX-011` deberá consumir `NEXO-REMISSION-PREPARATION-TO-DISPATCH-HANDOFF-001`, preservar la separación entre ready, allocated y shipped, y no reabrir las decisiones de preparación aquí aprobadas salvo contradicción canónica comprobada.
+
+
 ### [ ] NEXO-UX-011 — Diseñar flujo completo de despacho
 ### [ ] NEXO-UX-012 — Diseñar flujo completo de tránsito
 ### [ ] NEXO-UX-013 — Diseñar flujo completo de recepción
