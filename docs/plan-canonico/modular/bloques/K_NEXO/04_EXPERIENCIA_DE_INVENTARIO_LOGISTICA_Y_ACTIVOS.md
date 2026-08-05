@@ -7625,7 +7625,1034 @@ La tarea se considera documentalmente completa cuando:
 `NEXO-UX-011` deberá consumir `NEXO-REMISSION-PREPARATION-TO-DISPATCH-HANDOFF-001`, preservar la separación entre ready, allocated y shipped, y no reabrir las decisiones de preparación aquí aprobadas salvo contradicción canónica comprobada.
 
 
-### [ ] NEXO-UX-011 — Diseñar flujo completo de despacho
+### ✅ NEXO-UX-011 — Diseñar flujo completo de despacho
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-010 — Diseñar flujo completo de preparación` — APROBADA
+**Tarea siguiente:** `NEXO-UX-012 — Diseñar flujo completo de tránsito` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo de asignación de cantidad lista, armado de carga, verificación física, sellado, liberación de inventario, transferencia de custodia, confirmación idempotente de despacho, receipt y handoff a tránsito
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Proceso propietario:** `VPROC-0028 — Abastecer inventario interno de sedes y áreas`
+**Permiso exacto de despacho:** `nexo.inventory.remissions.dispatch`
+**Permiso posterior de transporte:** `nexo.inventory.remissions.transit`
+**Artefactos producidos:** `NEXO-REMISSION-DISPATCH-FLOW-CONTRACT-001`, `NEXO-REMISSION-DISPATCH-STATE-MACHINE-001`, `NEXO-REMISSION-DISPATCH-STEP-CATALOG-001`, `NEXO-REMISSION-DISPATCH-WORK-QUEUE-CONTRACT-001`, `NEXO-REMISSION-DISPATCH-ALLOCATION-CONTRACT-001`, `NEXO-REMISSION-DISPATCH-LOADING-CHECKLIST-001`, `NEXO-REMISSION-DISPATCH-SEAL-CUSTODY-CONTRACT-001`, `NEXO-REMISSION-DISPATCH-DEPARTURE-COMMAND-001`, `NEXO-REMISSION-DISPATCH-EXCEPTION-CONTRACT-001`, `NEXO-REMISSION-DISPATCH-IDEMPOTENCY-RECEIPT-001`, `NEXO-REMISSION-DISPATCH-TO-TRANSIT-HANDOFF-001`, `NEXO-REMISSION-DISPATCH-ROUTE-DISPOSITION-001` y `NEXO-REMISSION-DISPATCH-IMPLEMENTATION-HANDOFF-001`
+**Decisiones consumidas:** `UX-BASE-001` a `UX-BASE-005`; `UX-STATION-010` a `UX-STATION-012`; `NEXO-DOM-001`; `NEXO-UX-001` a `NEXO-UX-010`; `NEXO-TASK-NAVIGATION-CONTRACT-001`; `NEXO-NAVIGATION-TASK-CATALOG-001`; `NEXO-ROUTE-TO-TASK-REGISTRY-001`; `NEXO-REMISSION-REQUEST-HANDOFF-001`; `NEXO-REMISSION-PREPARATION-TO-DISPATCH-HANDOFF-001`; contratos de autorización, contexto activo, productos, UOM, fulfillment, LOC, posiciones, producción, dispositivos compartidos, impresión y requisitos `TREQ-*` vigentes
+**Cambios físicos autorizados:** ninguno; no modifica código, tablas, RPC, migraciones, RLS, permisos, datos, navegación desplegada, configuración, inventario real ni ambientes remotos
+
+---
+
+#### 1. Propósito
+
+Definir de extremo a extremo cómo una sede origen convierte cantidades confirmadas como listas en una carga física despachada, trazable y entregable al proceso de tránsito, sin confundir selección, asignación, carga, sellado, salida de inventario, custodia y desplazamiento.
+
+El flujo deberá consumir exclusivamente fulfillments versionados con saldo listo no asignado, permitir consolidación controlada por origen y destino, preservar la relación con cada solicitud y unidad preparada, revalidar el estado físico al momento crítico, y confirmar la salida mediante un único comando atómico e idempotente.
+
+La regla canónica es:
+
+```text
+CANTIDAD READY CONFIRMADA Y NO ASIGNADA
++ ORIGEN Y DESTINO UNICOS PARA EL ENVIO
++ ACTOR Y CONTEXTO DE DESPACHO AUTORIZADOS
++ ASIGNACION CONCURRENTE DE CANTIDAD
++ CARGA FISICA VERIFICADA
++ EMPAQUES, LOC, POSICIONES, UOM Y LOTES RECONCILIADOS
++ SELLO Y CUSTODIA DOCUMENTADOS
++ INVENTARIO Y PAQUETES REVALIDADOS
++ CONFIRMACION ATOMICA E IDEMPOTENTE
++ RECEIPT DE DESPACHO
+→ ENVIO DESPACHADO Y HANDOFF CONSUMIBLE POR TRANSITO
+```
+
+La frontera obligatoria es:
+
+```text
+READY ≠ ALLOCATED
+ALLOCATED ≠ LOADED
+LOADED ≠ SEALED
+SEALED ≠ DISPATCHED
+DISPATCHED ≠ IN_TRANSIT OBSERVADO
+SELECCIONAR ≠ DESCONTAR INVENTARIO
+ASIGNAR CONDUCTOR ≠ TRANSFERIR CUSTODIA
+GENERAR CODIGO ≠ CONFIRMAR SALIDA
+```
+
+---
+
+#### 2. Resultado material
+
+Se aprueban trece artefactos documentales consumibles:
+
+1. `NEXO-REMISSION-DISPATCH-FLOW-CONTRACT-001`, que fija frontera, autoridad, lenguaje, entrada y efecto empresarial;
+2. `NEXO-REMISSION-DISPATCH-STATE-MACHINE-001`, que separa fulfillment, asignación, carga, shipment, sello, custodia, despacho y tránsito;
+3. `NEXO-REMISSION-DISPATCH-STEP-CATALOG-001`, que materializa dieciocho pasos y sus transiciones;
+4. `NEXO-REMISSION-DISPATCH-WORK-QUEUE-CONTRACT-001`, que define elegibilidad, agrupación, prioridad, reclamo y concurrencia;
+5. `NEXO-REMISSION-DISPATCH-ALLOCATION-CONTRACT-001`, que gobierna cantidad lista, cantidad asignada, liberación y consolidación;
+6. `NEXO-REMISSION-DISPATCH-LOADING-CHECKLIST-001`, que define verificación física de carga, cantidades, UOM, paquetes, lote, LOC y evidencia;
+7. `NEXO-REMISSION-DISPATCH-SEAL-CUSTODY-CONTRACT-001`, que separa cierre físico, sello, responsable de origen y aceptación de custodia;
+8. `NEXO-REMISSION-DISPATCH-DEPARTURE-COMMAND-001`, que define el único punto autoritativo de salida de inventario y despacho;
+9. `NEXO-REMISSION-DISPATCH-EXCEPTION-CONTRACT-001`, que trata faltantes de carga, daño, ruptura de sello, cambio de vehículo, rechazo de custodia y conflicto de stock;
+10. `NEXO-REMISSION-DISPATCH-IDEMPOTENCY-RECEIPT-001`, que impide duplicidad, doble descuento y resultados desconocidos;
+11. `NEXO-REMISSION-DISPATCH-TO-TRANSIT-HANDOFF-001`, que entrega un envío despachado y no un viaje ficticio;
+12. `NEXO-REMISSION-DISPATCH-ROUTE-DISPOSITION-001`, que decide las superficies existentes relacionadas sin inventar URLs;
+13. `NEXO-REMISSION-DISPATCH-IMPLEMENTATION-HANDOFF-001`, que separa el contrato aprobado de los cambios físicos posteriores.
+
+| Elemento                                       | Total esperado | Total materializado | Faltantes | Duplicados |
+| ---------------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Pasos del flujo                                |             18 |                  18 |         0 |          0 |
+| Estados de interfaz                            |             24 |                  24 |         0 |          0 |
+| Estados empresariales y técnicos reconciliados |             13 |                  13 |         0 |          0 |
+| Familias de excepción                          |             12 |                  12 |         0 |          0 |
+| Validaciones materializadas                    |             34 |                  34 |         0 |          0 |
+| Disposiciones de rutas relacionadas            |             10 |                  10 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados      |             10 |                  10 |         0 |          0 |
+
+El resultado queda `ESPECIFICADO`. No declara el flujo `IMPLEMENTADO`, `VALIDADO` ni desplegado.
+
+---
+
+#### 3. Alcance
+
+##### 3.1. Incluido
+
+- entrada desde trabajo listo entregado por `NEXO-UX-010`;
+- resolución de actor, sede origen, contexto operativo y permiso exacto de despacho;
+- cola de cantidades listas no asignadas por origen, destino, prioridad y ventana;
+- creación o selección de una salida logística compatible;
+- creación de shipment y asignación concurrente de cantidades listas;
+- consolidación de varias solicitudes en un shipment cuando comparten origen y destino;
+- división de una solicitud o fulfillment entre varios shipments sin alterar la demanda original;
+- verificación de unidad preparada, picks, paquete, UOM, lote, ubicación y evidencia;
+- carga física, conteo, pesaje o lectura auxiliar cuando la política lo exija;
+- revisión de capacidad, vehículo, conductor o custodio sin convertirlos en autoridad automática;
+- sellado, reapertura controlada y auditoría de cambios;
+- transferencia de custodia con aceptación verificable cuando aplique;
+- confirmación final de despacho, salida de inventario y consumo de paquetes productivos;
+- idempotencia, control de versión, receipt y recuperación ante resultado desconocido;
+- handoff a `NEXO-UX-012` con envío, custodia, sello y cantidades efectivamente despachadas;
+- diagnóstico del código, esquema y migraciones actuales.
+
+##### 3.2. Excluido
+
+- crear, modificar o aprobar la solicitud original;
+- preparar físicamente el producto o marcarlo listo;
+- ejecutar producción, receta, lote o liberación de calidad;
+- cambiar producto, origen, destino o política sin transición autorizada;
+- planear rutas geográficas, secuencias de paradas o navegación vehicular;
+- iniciar seguimiento GPS, registrar hitos de carretera o gestionar incidentes en movimiento;
+- recibir, aceptar, rechazar, poner en cuarentena o ubicar mercancía en destino;
+- cerrar diferencias de recepción o conciliación económica;
+- diseñar el modelo canónico completo de vehículos, LPN, contenedores o impresión reservado a tareas propietarias;
+- implementar componentes, tablas, RPC, migraciones, RLS, eventos, tipos o pruebas;
+- ejecutar DDL, DML, backfills, despliegues o cambios remotos.
+
+---
+
+#### 4. `NEXO-REMISSION-DISPATCH-FLOW-CONTRACT-001`
+
+##### 4.1. Lenguaje humano
+
+La experiencia utilizará:
+
+```text
+ARMAR CARGA
+CANTIDAD ASIGNADA
+CARGA VERIFICADA
+SELLAR CARGA
+CONFIRMAR DESPACHO
+ENTREGAR A TRANSITO
+```
+
+No utilizará “en tránsito”, “entregado” o “recibido” antes del evento correspondiente.
+
+El efecto exitoso es:
+
+```text
+DISPATCH_CONFIRMED
++ shipment_id
++ dispatch_receipt_id
++ dispatched_at
++ dispatched_by
++ custody_handoff
++ inventory_postings
++ immutable_shipment_snapshot
+```
+
+##### 4.2. Actor y autoridad
+
+El actor ordinario de despacho deberá:
+
+- estar autenticado y vinculado a un actor laboral vigente;
+- operar en la sede origen del shipment;
+- tener contexto operativo activo cuando aplique;
+- poseer `nexo.inventory.remissions.dispatch` en ese territorio;
+- usar un dispositivo permitido;
+- actuar sobre un shipment vigente, no terminal y versionado;
+- confirmar una intención cuya identidad no haya sido consumida con otro payload.
+
+`nexo.inventory.remissions.prepare` permite producir cantidad lista, pero no despacharla. `nexo.inventory.remissions.transit` permite asumir y operar el transporte dentro de su alcance, pero no sustituye la autoridad de despacho de origen.
+
+##### 4.3. Segregación de funciones
+
+| Capacidad                         | Preparador                     | Despachador                | Custodio o conductor        | Receptor |
+| --------------------------------- | ------------------------------ | -------------------------- | --------------------------- | -------- |
+| marcar cantidad lista             | sí, con permiso de preparación | no por defecto             | no                          | no       |
+| asignar cantidad lista a shipment | no por defecto                 | sí                         | consulta                    | no       |
+| verificar carga                   | apoyo autorizado               | sí                         | puede cotejar               | no       |
+| sellar o reabrir                  | no por defecto                 | sí, según permiso y estado | puede observar              | no       |
+| confirmar salida de inventario    | no                             | sí                         | no por sí solo              | no       |
+| aceptar custodia                  | no                             | registra entrega           | sí, con identidad propia    | no       |
+| operar tránsito                   | no                             | no por defecto             | sí, con permiso de tránsito | no       |
+| registrar recepción               | no                             | no                         | no                          | sí       |
+
+La misma persona puede ejercer más de una función únicamente si posee cada capacidad exacta, el contexto las permite y cada acción queda registrada con intención y etapa independientes.
+
+---
+
+#### 5. Entidades canónicas y decisiones por identidad
+
+| Entidad             | Identidad estable                          | Propiedad                           | Decisión en despacho              | Prohibición                            |
+| ------------------- | ------------------------------------------ | ----------------------------------- | --------------------------------- | -------------------------------------- |
+| solicitud           | `request_id`                               | necesidad de abastecimiento         | referencia histórica              | no se reescribe                        |
+| línea solicitada    | `request_item_id`                          | producto y cantidad solicitada      | correlación obligatoria           | no se parte para ocultar consolidación |
+| fulfillment         | `fulfillment_id`                           | cumplimiento por fuente y área      | fuente de cantidad ready          | no se sobreasigna                      |
+| unidad preparada    | `prepared_unit_id` o identidad equivalente | evidencia física de preparación     | se verifica y asigna              | no se duplica entre shipments activos  |
+| pick                | `pick_id`                                  | origen físico, UOM y cantidad       | sustenta la salida                | no se altera después de sellar         |
+| salida logística    | `dispatch_run_id`                          | ventana, vehículo y custodio        | agrupa shipments compatibles      | no sustituye shipment                  |
+| shipment            | `shipment_id`                              | carga física por origen y destino   | unidad sellable y despachable     | no mezcla destinos                     |
+| línea de shipment   | `shipment_item_id`                         | cantidad asignada de un fulfillment | snapshot de carga                 | no excede saldo ready                  |
+| sello               | `seal_record_id`                           | cierre físico y evidencia           | inmoviliza payload                | no es un texto libre                   |
+| handoff de custodia | `custody_handoff_id`                       | transferencia entre actores         | evidencia de entrega y aceptación | no se presume por asignación           |
+| intención           | `dispatch_intent_id`                       | comando idempotente                 | controla confirmación             | no se reutiliza con otro payload       |
+| receipt             | `dispatch_receipt_id`                      | resultado verificable               | prueba del despacho               | no se reconstruye desde la UI          |
+| excepción           | `dispatch_exception_id`                    | novedad estructurada                | bloquea o cambia el flujo         | no se resuelve solo con nota           |
+
+Cada identidad conserva correlación, versión, actor, timestamps y estado. Un código visual o URL es una representación, no la identidad empresarial.
+
+---
+
+#### 6. Entrada contractual desde preparación
+
+Un fulfillment es elegible únicamente cuando el handoff contiene:
+
+- `request_id`, `request_item_id` y `fulfillment_id`;
+- versiones esperadas de solicitud, línea, fulfillment y preparación;
+- `from_site_id` y `to_site_id`;
+- producto, política, UOM base y snapshots aplicables;
+- `ready_base_qty` y `allocated_base_qty`;
+- `available_to_allocate = ready_base_qty - allocated_base_qty` mayor que cero;
+- unidades preparadas, picks o liberaciones productivas correlacionadas;
+- LOC o zona de staging autorizada;
+- lote, paquete o presentación cuando aplique;
+- evidencia mínima completa;
+- excepciones abiertas y su efecto sobre la cantidad;
+- fingerprint de preparación;
+- timestamp de disponibilidad;
+- ausencia de cancelación, revocación o bloqueo terminal.
+
+El despacho no corrige preparación silenciosamente. Ante una inconsistencia devuelve la cantidad o unidad a una excepción con propietario y conserva la evidencia original.
+
+---
+
+#### 7. `NEXO-REMISSION-DISPATCH-WORK-QUEUE-CONTRACT-001`
+
+##### 7.1. Unidad y agrupación
+
+La cola opera sobre saldo ready no asignado, no sobre la solicitud completa.
+
+Orden recomendado:
+
+1. shipments en carga que el actor puede continuar;
+2. cantidades listas asociadas a una ventana de salida vigente;
+3. prioridades críticas autorizadas;
+4. antigüedad de `available_at`;
+5. compatibilidad de origen, destino, vehículo y capacidad;
+6. vencimiento, frío, calidad o restricciones de producto;
+7. saldo parcial que completa un shipment existente;
+8. trabajo ordinario.
+
+Los filtros solo reducen el territorio ya autorizado. No amplían permisos ni cambian la sede origen.
+
+##### 7.2. Tarjeta de cola
+
+Cada agrupación muestra:
+
+- origen y destino;
+- ventana de salida;
+- shipment existente o propuesta de nueva carga;
+- cantidad de fulfillments y solicitudes correlacionadas;
+- unidades o paquetes listos;
+- peso, volumen o conteo disponible cuando exista dato confiable;
+- restricciones de frío, calidad, manipulación o vehículo;
+- saldo ready, saldo asignado y saldo no asignado;
+- prioridad y antigüedad;
+- bloqueos y excepciones;
+- siguiente acción autorizada.
+
+##### 7.3. Reclamo y concurrencia
+
+Un shipment en `loading` admite un único coordinador de edición activo por defecto. Otras personas pueden ejecutar verificaciones físicas concurrentes solo si el contrato de checklist divide responsabilidades sin permitir sobrescritura.
+
+El reclamo posee:
+
+- identidad propia;
+- actor y dispositivo;
+- versión;
+- inicio, expiración y renovación;
+- liberación explícita;
+- motivo de toma administrativa;
+- referencia al shipment.
+
+Perder el reclamo no revierte automáticamente asignaciones ya confirmadas. Bloquea nuevas mutaciones hasta resolver el conflicto.
+
+---
+
+#### 8. `NEXO-REMISSION-DISPATCH-ALLOCATION-CONTRACT-001`
+
+##### 8.1. Invariantes
+
+Para cada fulfillment:
+
+```text
+0 <= dispatched_base_qty
+0 <= allocated_base_qty
+0 <= ready_base_qty
+allocated_base_qty <= ready_base_qty
+released_base_qty <= allocated_base_qty
+available_to_allocate = ready_base_qty - allocated_base_qty
+```
+
+Para cada shipment item:
+
+```text
+shipment_item.base_qty > 0
+SUM(active shipment items by fulfillment) = allocated_base_qty
+SUM(dispatched shipment items by fulfillment) <= ready_base_qty
+```
+
+##### 8.2. Asignación
+
+Asignar significa reservar cantidad ready para un shipment específico. No significa descontar inventario ni marcarla enviada.
+
+La operación deberá:
+
+1. bloquear o versionar los fulfillments seleccionados;
+2. comprobar origen y destino homogéneos;
+3. comprobar saldo ready no asignado;
+4. crear o reutilizar un shipment compatible;
+5. crear líneas de shipment con snapshots;
+6. incrementar `allocated_base_qty` exactamente una vez;
+7. devolver receipt de asignación;
+8. conservar saldo no asignado para futuras cargas.
+
+##### 8.3. Parciales y consolidación
+
+- un fulfillment puede aportar cantidades a varios shipments;
+- un shipment puede contener líneas de varias solicitudes;
+- toda consolidación exige mismo origen y destino;
+- una línea de shipment conserva `request_item_id` y `fulfillment_id`;
+- la cantidad no asignada permanece visible;
+- una cancelación de shipment libera solo cantidad no despachada;
+- una cantidad despachada nunca vuelve a ready por edición simple;
+- la desasignación exige estado anterior al sello y operación auditada.
+
+##### 8.4. Prohibiciones de consolidación
+
+No se mezclan en el mismo shipment:
+
+- sedes origen distintas;
+- sedes destino distintas;
+- mercancía incompatible por calidad, temperatura o seguridad;
+- unidades con excepción bloqueante;
+- productos cuya política prohíba co-carga;
+- cantidades ya asignadas a otro shipment activo;
+- snapshots o versiones incompatibles sin reconciliación explícita.
+
+---
+
+#### 9. `NEXO-REMISSION-DISPATCH-STEP-CATALOG-001`
+
+| Paso     | Nombre                   | Entrada                  | Acción principal                            | Salida                         | Escritura autorizada                     |
+| -------- | ------------------------ | ------------------------ | ------------------------------------------- | ------------------------------ | ---------------------------------------- |
+| `DSP-01` | resolver contexto        | entrada task-first       | resolver actor, sede, permiso y dispositivo | contexto válido o denegación   | ninguna                                  |
+| `DSP-02` | cargar cola              | contexto válido          | consultar saldo ready no asignado           | cola versionada                | ninguna                                  |
+| `DSP-03` | elegir destino o salida  | cola                     | seleccionar agrupación compatible           | alcance de carga               | borrador local                           |
+| `DSP-04` | crear o abrir shipment   | alcance                  | reclamar shipment o crear borrador          | shipment editable              | shipment draft y claim                   |
+| `DSP-05` | seleccionar cantidades   | shipment editable        | proponer fulfillments y cantidades          | plan de asignación             | borrador local                           |
+| `DSP-06` | confirmar asignación     | plan válido              | asignar atómicamente saldo ready            | shipment loading               | shipment items y allocated               |
+| `DSP-07` | localizar unidades       | shipment loading         | resolver staging, paquetes y picks          | mapa físico                    | evidencia operativa                      |
+| `DSP-08` | cargar físicamente       | mapa físico              | mover unidades al vehículo o zona de carga  | carga física provisional       | checklist                                |
+| `DSP-09` | verificar cantidades     | carga provisional        | contar, pesar o escanear según política     | cantidades verificadas         | checklist y evidencia                    |
+| `DSP-10` | verificar compatibilidad | cantidades verificadas   | validar vehículo, capacidad y restricciones | carga compatible               | checklist                                |
+| `DSP-11` | resolver diferencias     | hallazgo                 | corregir asignación o abrir excepción       | carga reconciliada o bloqueada | excepción o desasignación                |
+| `DSP-12` | revisar resumen          | carga reconciliada       | comparar shipment, evidencia y snapshots    | fingerprint de carga           | borrador de confirmación                 |
+| `DSP-13` | sellar carga             | resumen válido           | cerrar contenido y registrar sello          | shipment sealed                | sello y versión                          |
+| `DSP-14` | identificar custodia     | sealed                   | resolver custodio, conductor y vehículo     | handoff preparado              | asignaciones de custodia                 |
+| `DSP-15` | aceptar custodia         | handoff preparado        | registrar aceptación o rechazo              | custodia aceptada o excepción  | handoff de custodia                      |
+| `DSP-16` | confirmar despacho       | sealed y custodia válida | ejecutar comando autoritativo               | despacho confirmado            | inventario, paquetes, shipment y receipt |
+| `DSP-17` | recuperar resultado      | timeout o desconexión    | consultar intención y receipt               | resultado conocido             | ninguna o reanudación segura             |
+| `DSP-18` | entregar a tránsito      | receipt válido           | proyectar handoff a `NEXO-UX-012`           | entrada de tránsito            | evento y proyección autorizada           |
+
+Ningún paso puede omitirse mediante una ruta legacy. Una implementación puede combinar pantallas, pero debe conservar las decisiones y evidencias de los dieciocho pasos.
+
+---
+
+#### 10. `NEXO-REMISSION-DISPATCH-STATE-MACHINE-001`
+
+##### 10.1. Estados reconciliados
+
+| Estado canónico         | Entidad          | Significado                               | Escritor autorizado      | Transición siguiente                             |
+| ----------------------- | ---------------- | ----------------------------------------- | ------------------------ | ------------------------------------------------ |
+| `READY_AVAILABLE`       | fulfillment      | existe saldo listo no asignado            | preparación              | asignación o excepción                           |
+| `PARTIALLY_ALLOCATED`   | fulfillment      | parte de ready está en shipments          | despacho                 | más asignación, liberación o despacho            |
+| `ALLOCATED`             | fulfillment      | todo el saldo ready está asignado         | despacho                 | liberación o salida confirmada                   |
+| `DRAFT`                 | shipment         | carga creada sin asignación confirmada    | despacho                 | loading o cancelled                              |
+| `LOADING`               | shipment         | contiene asignaciones editables           | despacho                 | load_verified, cancelled o exception             |
+| `LOAD_VERIFIED`         | shipment         | contenido físico reconciliado             | despacho                 | sealed o loading                                 |
+| `SEALED`                | shipment         | payload inmovilizado y sello vigente      | despacho                 | custody_pending, reopened o cancelled controlado |
+| `CUSTODY_PENDING`       | handoff          | entrega preparada sin aceptación final    | despacho y custodio      | accepted o rejected                              |
+| `CUSTODY_ACCEPTED`      | handoff          | custodio identificado aceptó el contenido | custodio autorizado      | dispatch_confirmed                               |
+| `DISPATCH_CONFIRMED`    | evento/receipt   | salida física e inventario comprometidos  | comando de despacho      | transit_handoff_ready                            |
+| `TRANSIT_HANDOFF_READY` | proyección       | `NEXO-UX-012` puede iniciar seguimiento   | sistema                  | tránsito                                         |
+| `EXCEPTION`             | shipment o línea | novedad bloqueante o investigable         | actor autorizado         | resolución o cancelación                         |
+| `CANCELLED`             | shipment         | carga anulada antes del despacho          | autoridad de cancelación | terminal con liberación                          |
+
+##### 10.2. Compatibilidad con estados actuales
+
+Los estados existentes `draft`, `loading`, `sealed`, `in_transit`, `arrived`, `partial_receipt`, `received`, `exception`, `cancelled` y `closed` son evidencia técnica, no sustituyen esta semántica. La implementación deberá decidir una proyección compatible sin colapsar `SEALED`, `CUSTODY_ACCEPTED`, `DISPATCH_CONFIRMED` e inicio real de tránsito en un único cambio opaco.
+
+`in_transit` pertenece al handoff y seguimiento de `NEXO-UX-012`; un despacho confirmado puede proyectar una entrada pendiente de inicio o un estado inicial compatible, pero no inventar ubicación, movimiento o avance del vehículo.
+
+---
+
+#### 11. `NEXO-REMISSION-DISPATCH-LOADING-CHECKLIST-001`
+
+##### 11.1. Checklist por shipment
+
+| Grupo              | Comprobación                               | Evidencia mínima                  | Bloquea despacho            |
+| ------------------ | ------------------------------------------ | --------------------------------- | --------------------------- |
+| identidad          | shipment, origen, destino y versión        | lectura de identidad              | sí                          |
+| línea              | fulfillment y request item correlacionados | vínculo autoritativo              | sí                          |
+| producto           | producto y variante correctos              | escaneo o verificación controlada | sí                          |
+| cantidad           | base qty cargada coincide con asignada     | conteo, peso o medición           | sí                          |
+| UOM                | presentación y conversión vigentes         | perfil y cantidad                 | sí cuando aplica            |
+| LOC/posición       | unidad proviene del origen preparado       | picks y staging                   | sí                          |
+| lote/calidad       | lote liberado y vigente                    | batch y liberación                | sí cuando aplica            |
+| paquete productivo | empaque disponible y no consumido          | package id y saldo                | sí cuando aplica            |
+| integridad         | daño, fuga, temperatura o sello interno    | resultado y evidencia             | sí según política           |
+| vehículo           | capacidad y compatibilidad                 | vehículo y capacidad              | sí cuando aplica            |
+| custodia           | actor receptor identificado                | aceptación o excepción            | sí según política           |
+| documentos         | snapshot y referencias disponibles         | receipt preliminar                | sí si la política los exige |
+
+##### 11.2. Medición variable
+
+Los productos de peso o volumen variable deben registrar la cantidad real de despacho y, cuando la política lo exija, conteo auxiliar. La tolerancia no autoriza superar la cantidad ready ni convertir una diferencia en ajuste automático.
+
+Si la medición real difiere de la cantidad asignada:
+
+- antes del sello puede corregirse la línea mediante una operación de reasignación versionada;
+- después del sello exige reapertura controlada;
+- después de confirmar despacho exige excepción y proceso posterior, no edición del receipt.
+
+##### 11.3. Escaneo
+
+El escáner puede identificar shipment, unidad preparada, producto, paquete, lote, LOC, posición, vehículo o sello. Cada lectura se interpreta dentro del paso vigente; nunca ejecuta por sí sola una mutación irreversible.
+
+---
+
+#### 12. Carga, vehículo y capacidad
+
+La salida logística puede agrupar shipments del mismo origen. Cada shipment conserva un único destino. La capacidad del vehículo se evalúa sobre datos disponibles y confiables:
+
+```text
+SUM(weight_confirmed) <= vehicle_capacity_weight
+SUM(volume_confirmed) <= vehicle_capacity_volume
+restricted_compatibility = satisfied
+```
+
+Cuando peso o volumen no estén disponibles, la interfaz declara `DATOS_DE_CAPACIDAD_INSUFICIENTES`; no presume capacidad.
+
+La asignación de vehículo o conductor:
+
+- no concede permiso de despacho;
+- no confirma carga;
+- no descuenta inventario;
+- no prueba aceptación de custodia;
+- puede cambiar antes del sello mediante versión;
+- después del sello exige reapertura o excepción;
+- queda incluida en el snapshot del receipt.
+
+---
+
+#### 13. `NEXO-REMISSION-DISPATCH-SEAL-CUSTODY-CONTRACT-001`
+
+##### 13.1. Sello
+
+Sellar significa inmovilizar el manifiesto de carga y registrar:
+
+- shipment y versión;
+- fingerprint de líneas, cantidades y unidades;
+- identificador de sello físico cuando exista;
+- tipo de sello o mecanismo de cierre;
+- actor, dispositivo, fecha y lugar;
+- evidencia mínima;
+- estado de checklist;
+- vehículo y custodio previstos.
+
+El sello no descuenta inventario y no confirma despacho.
+
+##### 13.2. Reapertura
+
+Solo se permite antes del despacho, con:
+
+- permiso exacto;
+- motivo estructurado;
+- actor y aprobador cuando la política lo exija;
+- conservación del sello anterior;
+- nueva versión;
+- invalidación de fingerprint y aceptación de custodia previos;
+- retorno a `LOADING`;
+- nueva verificación y nuevo sello.
+
+##### 13.3. Custodia
+
+La transferencia de custodia separa dos declaraciones:
+
+```text
+ORIGEN ENTREGA
+CUSTODIO ACEPTA
+```
+
+La aceptación incluye:
+
+- identidad del custodio o conductor;
+- shipment, sello y versión observados;
+- vehículo o medio de transporte;
+- timestamp;
+- observaciones y excepciones;
+- firma o mecanismo permitido por dispositivo;
+- correlación con el despacho.
+
+Un rechazo mantiene el shipment sin despachar y abre una excepción. La asignación administrativa de un conductor no equivale a aceptación.
+
+---
+
+#### 14. Punto autoritativo de salida de inventario
+
+La única transición que materializa salida física es `DISPATCH_CONFIRMED`.
+
+Antes de ese punto:
+
+- `ready_base_qty` permanece preparado;
+- `allocated_base_qty` permanece reservado al shipment;
+- los picks y paquetes permanecen físicamente presentes;
+- no existe `transfer_out` autoritativo;
+- no se incrementa `shipped_quantity`;
+- no se marca el shipment en tránsito.
+
+En el comando final se ejecutan conjuntamente:
+
+1. revalidación de actor, permiso, contexto y versiones;
+2. bloqueo de shipment, líneas, fulfillments, picks, paquetes y saldos afectados;
+3. verificación de estado sellado y custodia;
+4. validación de fingerprint de carga;
+5. validación final de stock por sede, LOC, posición y presentación;
+6. consumo de paquete productivo cuando aplique;
+7. creación de movimientos de salida correlacionados;
+8. actualización de cantidades despachadas o released;
+9. actualización de shipment y handoff;
+10. creación del receipt y evento outbox;
+11. commit único.
+
+Un fallo revierte todo. No puede existir inventario descontado con shipment no despachado, ni shipment despachado sin movimientos y receipt.
+
+---
+
+#### 15. `NEXO-REMISSION-DISPATCH-DEPARTURE-COMMAND-001`
+
+##### 15.1. Entrada mínima
+
+```text
+dispatch_intent_id
+shipment_id
+expected_shipment_version
+expected_seal_version
+expected_custody_version
+expected_fulfillment_versions[]
+load_fingerprint
+actor_context
+client_observed_at
+```
+
+Los IDs enviados por cliente son no confiables y deben resolverse en servidor.
+
+##### 15.2. Salida mínima
+
+```text
+dispatch_receipt_id
+shipment_id
+shipment_code
+dispatch_intent_id
+dispatched_at
+dispatched_by
+origin_site_id
+destination_site_id
+custody_handoff_id
+seal_record_id
+shipment_snapshot
+inventory_movement_ids[]
+production_package_effects[]
+fulfillment_effects[]
+transit_handoff_version
+```
+
+##### 15.3. Semántica transaccional
+
+- una intención nueva ejecuta como máximo una vez;
+- la misma intención y mismo payload devuelve el mismo receipt;
+- la misma intención con payload distinto devuelve conflicto;
+- un shipment despachado no admite segundo comando;
+- la transacción bloquea cantidades y saldos antes de descontar;
+- toda escritura Supabase futura se versiona desde `vento-shell`;
+- el comando no confía en estado calculado por navegador;
+- el receipt es persistente y consultable por intención.
+
+---
+
+#### 16. Validaciones obligatorias
+
+| ID            | Momento      | Validación                                                      | Resultado ante fallo             |
+| ------------- | ------------ | --------------------------------------------------------------- | -------------------------------- |
+| `DSP-VAL-001` | entrada      | principal autenticado y actor efectivo vigente                  | denegación segura                |
+| `DSP-VAL-002` | entrada      | sede origen dentro del territorio                               | denegación                       |
+| `DSP-VAL-003` | entrada      | permiso exacto `nexo.inventory.remissions.dispatch`             | denegación                       |
+| `DSP-VAL-004` | entrada      | turno, check-in o contexto cuando aplique                       | bloqueo contextual               |
+| `DSP-VAL-005` | entrada      | dispositivo permitido e identidad verificable                   | bloqueo                          |
+| `DSP-VAL-006` | cola         | fulfillment no terminal ni bloqueado                            | excluir de cola                  |
+| `DSP-VAL-007` | cola         | saldo ready no asignado mayor que cero                          | excluir de cola                  |
+| `DSP-VAL-008` | cola         | versiones de preparación vigentes                               | refrescar                        |
+| `DSP-VAL-009` | creación     | origen distinto de destino                                      | rechazo                          |
+| `DSP-VAL-010` | creación     | shipment o run pertenece al origen                              | rechazo                          |
+| `DSP-VAL-011` | asignación   | origen y destino homogéneos                                     | rechazo                          |
+| `DSP-VAL-012` | asignación   | estado de fulfillment cargable                                  | conflicto                        |
+| `DSP-VAL-013` | asignación   | cantidad solicitada mayor que cero                              | rechazo                          |
+| `DSP-VAL-014` | asignación   | cantidad no supera ready menos allocated                        | conflicto concurrente            |
+| `DSP-VAL-015` | asignación   | no existe asignación duplicada de unidad física                 | conflicto                        |
+| `DSP-VAL-016` | asignación   | snapshot de producto y UOM compatible                           | bloqueo                          |
+| `DSP-VAL-017` | carga        | unidad, paquete o pick pertenece a la línea                     | rechazo de lectura               |
+| `DSP-VAL-018` | carga        | LOC y posición pertenecen al origen                             | bloqueo                          |
+| `DSP-VAL-019` | carga        | cantidad física coincide con línea de shipment                  | diferencia estructurada          |
+| `DSP-VAL-020` | carga        | política de medición y conteo auxiliar satisfecha               | bloqueo                          |
+| `DSP-VAL-021` | carga        | lote y calidad vigentes                                         | bloqueo de calidad               |
+| `DSP-VAL-022` | carga        | paquete productivo disponible y no consumido                    | conflicto                        |
+| `DSP-VAL-023` | vehículo     | capacidad y compatibilidad conocidas y suficientes              | bloqueo o aprobación excepcional |
+| `DSP-VAL-024` | revisión     | checklist completo y sin excepción bloqueante                   | impedir sello                    |
+| `DSP-VAL-025` | sello        | fingerprint coincide con payload observado                      | conflicto de versión             |
+| `DSP-VAL-026` | sello        | identificador de sello no duplicado cuando aplique              | rechazo                          |
+| `DSP-VAL-027` | custodia     | custodio identificado y habilitado                              | bloqueo                          |
+| `DSP-VAL-028` | custodia     | sello y shipment aceptados en la misma versión                  | rechazo o excepción              |
+| `DSP-VAL-029` | confirmación | intención válida y no usada con otro payload                    | conflicto idempotente            |
+| `DSP-VAL-030` | confirmación | shipment continúa sellado y no despachado                       | conflicto                        |
+| `DSP-VAL-031` | confirmación | stock actual cubre todos los movimientos                        | rollback y excepción             |
+| `DSP-VAL-032` | confirmación | cantidades agregadas por fulfillment no exceden ready           | rollback                         |
+| `DSP-VAL-033` | confirmación | movimientos, paquetes, shipment y receipt se comprometen juntos | rollback total                   |
+| `DSP-VAL-034` | recuperación | timeout se reconcilia por intención antes de reintentar         | resultado conocido o bloqueo     |
+
+Las treinta y cuatro validaciones son acumulativas. Una validación de interfaz no sustituye su equivalente en servidor o base de datos.
+
+---
+
+#### 17. `NEXO-REMISSION-DISPATCH-EXCEPTION-CONTRACT-001`
+
+| Excepción              | Momento           | Efecto                              | Resolución permitida               | Propietario            |
+| ---------------------- | ----------------- | ----------------------------------- | ---------------------------------- | ---------------------- |
+| `READY_CHANGED`        | asignación        | bloquea cantidad afectada           | recargar y reasignar               | despacho y preparación |
+| `OVER_ALLOCATION`      | asignación        | rechaza operación                   | reducir o usar otro saldo          | despacho               |
+| `UNIT_NOT_FOUND`       | carga             | mantiene shipment loading           | localizar o desasignar             | origen                 |
+| `LOAD_SHORTAGE`        | carga             | diferencia entre asignado y cargado | reducir antes del sello            | despacho               |
+| `LOAD_SURPLUS`         | carga             | unidad no autorizada                | retirar o crear transición válida  | despacho               |
+| `DAMAGE_AT_LOADING`    | carga             | bloquea unidad                      | excluir y registrar daño           | origen y supervisión   |
+| `QUALITY_HOLD`         | carga             | bloquea producto o lote             | liberar por autoridad de calidad   | calidad/FOGO           |
+| `VEHICLE_INCOMPATIBLE` | revisión          | impide sello                        | cambiar vehículo                   | logística              |
+| `SEAL_BROKEN`          | después del sello | invalida sello y custodia           | reapertura controlada              | despacho y supervisión |
+| `CUSTODY_REJECTED`     | handoff           | impide despacho                     | corregir o reasignar custodio      | despacho/logística     |
+| `STOCK_CHANGED`        | confirmación      | rollback total                      | volver a preparación o reconciliar | inventario             |
+| `RESULT_UNKNOWN`       | confirmación      | bloquea nuevo comando               | consultar intención y receipt      | sistema                |
+
+Toda excepción conserva tipo, etapa, cantidad afectada, evidencia, actor, responsable, plazo, estado y resolución. Una nota libre puede complementar, nunca sustituir esos campos.
+
+---
+
+#### 18. Cancelación, desasignación y reapertura
+
+##### 18.1. Antes del sello
+
+Se puede:
+
+- reducir o retirar una línea de shipment;
+- liberar `allocated_base_qty`;
+- cancelar un shipment vacío;
+- cambiar vehículo o ventana;
+- corregir medición mediante nueva versión;
+- conservar historial de cada asignación y liberación.
+
+##### 18.2. Después del sello y antes del despacho
+
+Toda modificación exige reapertura controlada, invalida el sello y cualquier aceptación de custodia, y retorna a `LOADING`.
+
+##### 18.3. Después del despacho
+
+No se edita ni cancela el receipt. Daño, pérdida, retorno, error de carga o destino incorrecto se manejan como excepciones y procesos posteriores con movimientos compensatorios autorizados. Nunca se borra el movimiento original.
+
+---
+
+#### 19. `NEXO-REMISSION-DISPATCH-IDEMPOTENCY-RECEIPT-001`
+
+##### 19.1. Fingerprints
+
+Existen fingerprints separados:
+
+- preparación consumida;
+- asignación de shipment;
+- carga verificada;
+- sello;
+- custodia;
+- confirmación final.
+
+Cualquier cambio material invalida los fingerprints posteriores.
+
+##### 19.2. Resultado desconocido
+
+Ante timeout, cierre de aplicación o pérdida de conexión:
+
+1. la interfaz conserva `dispatch_intent_id`;
+2. consulta el estado autoritativo de la intención;
+3. si existe receipt, lo muestra sin ejecutar de nuevo;
+4. si la intención está pendiente, espera o reconcilia;
+5. si falló sin efectos, permite corregir y usar una nueva intención;
+6. si el payload difiere, bloquea el reintento;
+7. nunca asume éxito por un mensaje local.
+
+##### 19.3. Receipt
+
+El receipt conserva el snapshot completo del despacho, los efectos de inventario, las cantidades por fulfillment, los paquetes productivos consumidos, el sello, la custodia y la versión entregada a tránsito.
+
+---
+
+#### 20. Estados de interfaz
+
+| Estado                             | Condición                 | Mensaje o comportamiento    | Acción segura                  |
+| ---------------------------------- | ------------------------- | --------------------------- | ------------------------------ |
+| `RESOLVIENDO_CONTEXTO`             | entrada inicial           | validar actor y sede        | esperar                        |
+| `SIN_AUTORIZACION`                 | permiso ausente           | explicar sin filtrar datos  | volver                         |
+| `CONTEXTO_INACTIVO`                | turno o check-in inválido | bloquear mutaciones         | resolver contexto              |
+| `SIN_SEDE_ORIGEN`                  | no existe sede operativa  | no cargar cola              | seleccionar contexto permitido |
+| `CARGANDO_COLA`                    | consulta vigente          | skeleton estable            | esperar                        |
+| `COLA_VACIA`                       | no hay saldo ready        | indicar ausencia de trabajo | refrescar                      |
+| `COLA_DISPONIBLE`                  | hay trabajo               | mostrar prioridades         | abrir agrupación               |
+| `SHIPMENT_DRAFT`                   | carga nueva               | permitir plan inicial       | seleccionar cantidades         |
+| `SHIPMENT_RECLAMADO`               | actor posee claim         | habilitar edición           | continuar                      |
+| `SHIPMENT_RECLAMADO_POR_OTRO`      | claim ajeno               | solo lectura                | actualizar                     |
+| `ASIGNANDO_CANTIDADES`             | plan en curso             | mostrar saldo y límites     | confirmar asignación           |
+| `CONFLICTO_DE_ASIGNACION`          | saldo cambió              | no sobrescribir             | recargar                       |
+| `CARGANDO_FISICAMENTE`             | shipment loading          | checklist por unidad        | escanear o verificar           |
+| `DIFERENCIA_DE_CARGA`              | físico no coincide        | abrir excepción             | corregir antes de sellar       |
+| `CARGA_VERIFICADA`                 | checklist completo        | resumen y fingerprint       | sellar                         |
+| `DATOS_DE_CAPACIDAD_INSUFICIENTES` | falta peso o volumen      | declarar incertidumbre      | completar o escalar            |
+| `CARGA_SELLADA`                    | sello vigente             | bloquear edición ordinaria  | preparar custodia              |
+| `REAPERTURA_REQUERIDA`             | cambio material           | invalidar sello             | solicitar reapertura           |
+| `CUSTODIA_PENDIENTE`               | sin aceptación            | no despachar                | identificar y aceptar          |
+| `CUSTODIA_RECHAZADA`               | custodio no acepta        | abrir excepción             | corregir handoff               |
+| `LISTO_PARA_DESPACHAR`             | sello y custodia válidos  | mostrar impacto final       | confirmar despacho             |
+| `CONFIRMANDO_DESPACHO`             | comando enviado           | bloquear doble clic         | esperar o reconciliar          |
+| `RESULTADO_DESCONOCIDO`            | timeout                   | consultar intención         | recuperar receipt              |
+| `DESPACHO_CONFIRMADO`              | receipt válido            | mostrar resumen inmutable   | entregar a tránsito            |
+
+Los estados vacíos, errores y bloqueos no ofrecen controles que el servidor rechazará por diseño.
+
+---
+
+#### 21. `NEXO-REMISSION-DISPATCH-TO-TRANSIT-HANDOFF-001`
+
+El handoff contiene:
+
+```text
+shipment_id
+shipment_code
+dispatch_receipt_id
+dispatch_intent_id
+origin_site_id
+destination_site_id
+dispatched_at
+dispatched_by
+seal_record_id
+seal_fingerprint
+custody_handoff_id
+custodian_actor_id
+vehicle_snapshot
+shipment_items[]
+fulfillment_effects[]
+package_and_batch_refs[]
+inventory_movement_refs[]
+open_nonblocking_exceptions[]
+transit_handoff_version
+```
+
+Garantías:
+
+- las cantidades son las efectivamente despachadas;
+- el inventario de origen ya refleja la salida;
+- el contenido del shipment es inmutable;
+- el sello y la custodia están correlacionados;
+- cada línea conserva solicitud y fulfillment;
+- no se afirma ubicación, avance, llegada ni recepción;
+- `NEXO-UX-012` no vuelve a descontar inventario ni consume paquetes;
+- una excepción posterior no reescribe el receipt.
+
+`NEXO-UX-012` será propietario de inicio operativo del viaje, seguimiento, hitos, incidentes en tránsito y llegada. El despacho entrega un hecho consumible; no ejecuta esas etapas.
+
+---
+
+#### 22. `NEXO-REMISSION-DISPATCH-ROUTE-DISPOSITION-001`
+
+| Ruta             | Patrón actual                       | Disposición               | Uso en despacho                                                                 | Estado                  |
+| ---------------- | ----------------------------------- | ------------------------- | ------------------------------------------------------------------------------- | ----------------------- |
+| `NEXO-ROUTE-001` | `/`                                 | entrada desde home        | resolver trabajo de despacho compatible sin exponer una URL técnica             | `ESPECIFICADO`          |
+| `NEXO-ROUTE-031` | `/inventory/remissions`             | resolutor compartido      | dirigir a despacho, preparación, tránsito o recepción según función e instancia | `ESPECIFICADO`          |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`        | detalle existente         | consultar solicitud y shipment correlacionados conservando retorno              | `ESPECIFICADO`          |
+| `NEXO-ROUTE-035` | `/inventory/remissions/fulfillment` | superficie existente      | separar la cola preparadora de la asignación y armado de carga                  | `ESPECIFICADO`          |
+| `NEXO-ROUTE-036` | `/inventory/remissions/prepare`     | entrada de preparación    | entregar únicamente cantidades ready al despacho                                | `REFERENCIA_ANTERIOR`   |
+| `NEXO-ROUTE-034` | `/inventory/remissions/conductor`   | entrada de transporte     | recibir handoff después del despacho; no crear ni confirmar la carga            | `HANDOFF_POSTERIOR`     |
+| `NEXO-ROUTE-038` | `/inventory/remissions/transit`     | paso de transporte        | consumir shipment despachado en `NEXO-UX-012`                                   | `HANDOFF_POSTERIOR`     |
+| `NEXO-ROUTE-037` | `/inventory/remissions/receive`     | entrada de recepción      | permanecer downstream y no recibir shipment no despachado                       | `FUERA_DE_ALCANCE`      |
+| `NEXO-ROUTE-052` | `/inventory/stock`                  | referencia de existencias | consulta contextual; no corregir stock dentro del despacho                      | `REFERENCIA_CONTEXTUAL` |
+| `NEXO-ROUTE-064` | `/scanner`                          | utilidad contextual       | escanear shipment, unidad, producto, sello o vehículo y retornar al paso        | `UTILIDAD_OCULTA`       |
+
+Reconciliación:
+
+```text
+EXPECTED_RELATED_ROUTES = 10
+MATERIALIZED_RELATED_ROUTES = 10
+MISSING_RELATED_ROUTES = 0
+DUPLICATE_RELATED_ROUTES = 0
+NEW_ROUTE_IDENTITIES = 0
+```
+
+No se crea una URL nueva por esta tarea. La implementación deberá converger la creación de shipment actualmente alojada en fulfillment con una experiencia de despacho separada semánticamente, aunque reutilice componentes o rutas existentes.
+
+---
+
+#### 23. Conectividad, dispositivo y recuperación
+
+| Situación                          | Comportamiento                                | Acción prohibida              |
+| ---------------------------------- | --------------------------------------------- | ----------------------------- |
+| sin conexión antes de asignar      | mostrar datos cacheados solo como referencia  | asignar cantidad              |
+| pérdida durante carga              | conservar checklist local permitido           | afirmar carga verificada      |
+| reconexión                         | revalidar shipment, claim, versiones y saldos | sincronizar ciegamente        |
+| dispositivo compartido             | identificar actor efectivo en cada mutación   | atribuir al dispositivo       |
+| cambio de actor                    | transferir claim y revisar carga              | heredar confirmación final    |
+| escaneo duplicado                  | detectar identidad ya procesada               | sumar cantidad de nuevo       |
+| timeout de asignación              | consultar receipt de asignación               | crear segundo shipment        |
+| timeout de despacho                | consultar intención final                     | repetir descuento             |
+| contexto revocado                  | bloquear y conservar estado autoritativo      | terminar con permiso anterior |
+| fallo de batería después del sello | recuperar shipment sealed y claim             | asumir despacho confirmado    |
+
+No existe despacho offline por defecto. Una futura política offline deberá garantizar firma, límite de riesgo, inventario reservado, reconciliación, idempotencia y evidencia antes de habilitar una confirmación diferida.
+
+---
+
+#### 24. Autorización, seguridad y privacidad
+
+1. el servidor revalida actor, contexto, permiso, recurso, estado y versión en creación, asignación, sello, custodia y despacho;
+2. el permiso global de lectura no concede mutación;
+3. `prepare` no sustituye `dispatch`, y `transit` no sustituye `dispatch`;
+4. los parámetros de URL, campos ocultos y botones visibles no conceden autoridad;
+5. IDs de shipment, fulfillment, pick, unidad, paquete, lote, sello, vehículo y actor son no confiables;
+6. RLS, grants y RPC deberán reproducir la misma frontera exacta;
+7. la firma de dispositivo compartido se vincula al actor humano, intención y receipt;
+8. PIN, credenciales y secretos no aparecen en evidencia o logs;
+9. una denegación no revela stock, rutas ni cargas de otro territorio;
+10. el manifiesto minimiza datos personales y muestra solo lo necesario para custodia;
+11. toda reapertura, cancelación, desasignación y toma de claim conserva auditoría;
+12. el receipt es inmutable y no se elimina por corrección posterior;
+13. el evento de integración a tránsito usa outbox e idempotencia;
+14. ninguna integración puede volver a aplicar la salida de inventario.
+
+---
+
+#### 25. Evidencia técnica actual y diagnóstico
+
+| Fuente actual                                         | Evidencia verificable                                                                                                                     | Estado frente al diseño    | Decisión                                                                                      |
+| ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | --------------------------------------------------------------------------------------------- |
+| `src/app/inventory/remissions/fulfillment/page.tsx`   | combina “Preparar necesidades y armar envíos” en una misma superficie y agrupa saldo ready por destino                                    | `IMPLEMENTADO_PARCIAL`     | conservar la verdad de fulfillment, pero separar intención preparadora de despacho            |
+| `src/app/inventory/remissions/fulfillment/actions.ts` | `createShipmentFromReady` exige permiso de tránsito, consulta saldo ready y llama a un RPC de asignación                                  | `BRECHA_DE_AUTORIZACION`   | usar permiso exacto de despacho y revalidación equivalente en todas las capas                 |
+| `create_remission_shipment_from_fulfillments`         | crea shipment `loading`, bloquea fulfillments, asigna cantidades y evita sobreasignación mediante `for update`                            | `IMPLEMENTADO_PARCIAL`     | conservar atomicidad de asignación y añadir versión, intención, receipt y snapshots completos |
+| `create_remission_shipment_from_fulfillments`         | autoriza `all_sites`, `transit` o `prepare`, mientras la Server Action exige `transit`                                                    | `BRECHA_CRITICA`           | eliminar divergencia UI-servidor-RPC y exigir la capacidad aprobada                           |
+| `create_remission_shipment_from_fulfillments`         | recibe `p_dispatch_run_id`, pero la acción inspeccionada siempre envía `null`                                                             | `IMPLEMENTADO_PARCIAL`     | integrar salida logística, vehículo y custodio cuando sean aplicables                         |
+| `remission_dispatch_runs`                             | representa draft, loading, sealed, departed, cancelled y closed                                                                           | `IMPLEMENTADO_PARCIAL`     | separar run de shipment y preservar versión y eventos                                         |
+| `remission_shipments`                                 | representa draft, loading, sealed, in_transit, arrived, partial_receipt, received, exception, cancelled y closed                          | `COMPATIBILIDAD_REQUERIDA` | proyectar estados sin colapsar sello, custodia, despacho y tránsito                           |
+| `remission_shipment_items`                            | conserva fulfillment, request item, producto, origen, destino y cantidad                                                                  | `IMPLEMENTADO_PARCIAL`     | añadir snapshot físico, versión y vínculo a prepared units o picks                            |
+| `src/app/inventory/remissions/[id]/detail-actions.ts` | `submitTransitChecklist` puede pasar directamente de `preparing` a `in_transit`                                                           | `BRECHA_CRITICA`           | interponer shipment, sello, custodia y receipt de despacho                                    |
+| `src/app/inventory/remissions/[id]/detail-actions.ts` | la misma acción aplica salida de stock y consumo de paquetes productivos al iniciar tránsito                                              | `COMPATIBILIDAD_REQUERIDA` | mover el efecto autoritativo al comando de despacho y prohibir doble aplicación en tránsito   |
+| `apply_restock_shipment_from_picks`                   | valida stock y evita una segunda `transfer_out` por request                                                                               | `IMPLEMENTADO_PARCIAL`     | operar por shipment y líneas, no por encabezado completo, con intención y receipt             |
+| modelo legacy de `restock_request_items`              | `prepared_quantity` y `shipped_quantity` pueden permanecer acoplados                                                                      | `BRECHA_CRITICA`           | despacho será el único escritor del hecho enviado                                             |
+| sello y custodia actuales                             | las tablas inspeccionadas contienen timestamps y estados, pero no evidencian contrato completo de sello versionado y aceptación bilateral | `NO_IMPLEMENTADO_COMPLETO` | crear identidades, versiones, evidencia y transiciones auditables                             |
+| receipt de despacho                                   | no existe evidencia inspeccionada de receipt persistente consultable por intención para la salida                                         | `NO_IMPLEMENTADO`          | crear ledger de intención y receipt atómico                                                   |
+
+No se modifica código en esta tarea. El diagnóstico define el comportamiento objetivo y las incompatibilidades que el paquete de implementación deberá resolver.
+
+---
+
+#### 26. `NEXO-REMISSION-DISPATCH-IMPLEMENTATION-HANDOFF-001`
+
+Una implementación posterior deberá, como mínimo:
+
+1. separar permisos `prepare`, `dispatch` y `transit` en interfaz, Server Actions, APIs, RPC y RLS;
+2. conservar fulfillments y shipments existentes sin inventar una segunda verdad;
+3. añadir control de versión e intención idempotente a asignación, sello, custodia y despacho;
+4. materializar identidad y evidencia de sello;
+5. materializar handoff de custodia con entrega y aceptación;
+6. convertir el comando final en transacción única para stock, paquetes, cantidades, shipment, receipt y outbox;
+7. mover el efecto de salida fuera del inicio de tránsito legacy;
+8. evitar doble descuento durante convivencia de rutas;
+9. preservar snapshots de UOM, lote, paquete, LOC, posición, vehículo y actor;
+10. implementar liberación de asignación y cancelación antes del despacho;
+11. mantener receipt inmutable y movimientos compensatorios posteriores;
+12. generar tipos y contratos compartidos cuando el esquema cambie;
+13. versionar toda modificación Supabase desde `vento-shell`;
+14. incluir rollback, compatibilidad, RLS, grants, pruebas y despliegue autorizado.
+
+##### 26.1. Rollback funcional esperado
+
+Antes del despacho confirmado, el rollback puede liberar asignaciones y cancelar un shipment mediante eventos auditados. Después del despacho, el rollback técnico no borra hechos; exige transición compensatoria y conciliación.
+
+##### 26.2. Compatibilidad
+
+Durante migración:
+
+- una solicitud legacy puede proyectarse a fulfillments y shipments, pero no disparar ambos carriles;
+- cada request o shipment tendrá un único escritor autoritativo de salida;
+- los flags temporales serán explícitos, versionados y observables;
+- los receipts permiten distinguir operaciones nuevas de efectos legacy;
+- la desactivación del carril anterior requiere reconciliación de datos y pruebas de no duplicidad.
+
+---
+
+#### 27. Decisiones aprobadas
+
+1. `NEXO-UX-011` diseña despacho; tránsito permanece en `NEXO-UX-012`;
+2. despacho consume saldo ready confirmado y no reabre la solicitud;
+3. existen exactamente dieciocho pasos y veinticuatro estados de interfaz;
+4. se reconciliaron trece estados empresariales y técnicos;
+5. el permiso exacto es `nexo.inventory.remissions.dispatch`;
+6. preparación, despacho y tránsito son capacidades distintas;
+7. la cola opera por saldo ready no asignado, origen y destino;
+8. asignar cantidad no descuenta inventario;
+9. un fulfillment puede dividirse entre varios shipments;
+10. un shipment puede consolidar varias solicitudes con un único origen y destino;
+11. la consolidación conserva identidad por línea y no reescribe demanda;
+12. la sobreasignación se evita de forma atómica y concurrente;
+13. carga física, carga verificada, sello, custodia y despacho son hechos separados;
+14. el sello inmoviliza el payload, pero no confirma salida;
+15. toda reapertura invalida sello, fingerprint y aceptación de custodia;
+16. asignar conductor no equivale a aceptación de custodia;
+17. la custodia registra entrega y aceptación separadas;
+18. el punto autoritativo de salida es `DISPATCH_CONFIRMED`;
+19. el descuento de stock y consumo de paquetes ocurren solo en el comando final;
+20. el comando final es atómico, idempotente y recuperable por intención;
+21. un fallo revierte shipment, cantidades, paquetes, movimientos y receipt;
+22. el receipt es inmutable y conserva el snapshot completo;
+23. se materializaron treinta y cuatro validaciones;
+24. doce familias de excepción tienen efecto y propietario;
+25. un cambio posterior al despacho se corrige con excepción o movimiento compensatorio;
+26. el handoff a tránsito no inventa ubicación ni avance;
+27. tránsito no vuelve a descontar inventario;
+28. las rutas actuales se reutilizan y no se crean URLs;
+29. fulfillment y detalle legacy deben converger sobre un único escritor de salida;
+30. toda modificación futura de Supabase se crea y versiona desde `vento-shell`.
+
+---
+
+#### 28. Pendientes materializados y propietarios
+
+| Pendiente                                | Estado                   | Propietario                     | Tarea o puerta                   | Condición de salida                                         |
+| ---------------------------------------- | ------------------------ | ------------------------------- | -------------------------------- | ----------------------------------------------------------- |
+| permiso atómico de despacho              | `ESPECIFICADO`           | autorización y NEXO             | implementación E5                | catálogo, grants, RLS y pruebas coherentes                  |
+| receipt de asignación                    | `ESPECIFICADO`           | NEXO/Data                       | implementación de shipment       | intención, versión y recuperación probadas                  |
+| identidad de sello                       | `ESPECIFICADO`           | NEXO                            | implementación E5                | entidad, evidencia, unicidad y reapertura                   |
+| handoff bilateral de custodia            | `ESPECIFICADO`           | NEXO y logística                | implementación E5                | entrega, aceptación, rechazo y firma válidos                |
+| comando atómico de despacho              | `ESPECIFICADO`           | `vento-shell` y paquete E5 NEXO | migración/RPC                    | stock, paquetes, shipment y receipt todo o nada             |
+| separación del inicio de tránsito legacy | `ESPECIFICADO`           | paquete E5 NEXO                 | convergencia de carriles         | un único escritor de salida y cero doble descuento          |
+| modelo de vehículo y capacidad completo  | `PENDIENTE_DE_EVIDENCIA` | NEXO/Activos                    | tareas propietarias de activos   | identidad, disponibilidad y capacidad aprobadas             |
+| impresión de manifiesto o etiqueta       | `FUERA_DE_ALCANCE`       | impresión NEXO                  | tareas propietarias de impresión | contrato de plantilla, dispositivo y reimpresión            |
+| tránsito                                 | `RESERVADO`              | `NEXO-UX-012`                   | siguiente tarea                  | seguimiento e incidentes especificados                      |
+| pruebas operativas en dispositivo        | `PENDIENTE_DE_EVIDENCIA` | UX-QA y paquete E5 NEXO         | piloto autorizado                | evidencia reproducible con escáner y dispositivo compartido |
+
+Ningún pendiente queda sin propietario, tarea o condición de salida.
+
+---
+
+#### 29. Requisitos de prueba creados
+
+Esta tarea crea:
+
+- `TREQ-NEXO-111`;
+- `TREQ-NEXO-112`;
+- `TREQ-NEXO-113`;
+- `TREQ-NEXO-114`;
+- `TREQ-NEXO-115`;
+- `TREQ-NEXO-116`;
+- `TREQ-NEXO-117`;
+- `TREQ-NEXO-118`;
+- `TREQ-NEXO-119`;
+- `TREQ-NEXO-120`.
+
+No modifica ni obsoleta requisitos históricos. El detalle canónico reside en el registro completo 04A actualizado coordinadamente con esta tarea.
+
+---
+
+#### 30. Criterios de aceptación
+
+La tarea se considera documentalmente completa cuando:
+
+1. existe una frontera inequívoca entre preparación, despacho y tránsito;
+2. los dieciocho pasos están materializados sin faltantes ni duplicados;
+3. los veinticuatro estados de interfaz poseen condición y acción segura;
+4. los trece estados empresariales y técnicos están reconciliados;
+5. la cola opera por saldo ready no asignado, origen y destino;
+6. el permiso de despacho está separado de preparación y tránsito;
+7. asignación, liberación y cancelación preservan cantidades e historia;
+8. la consolidación admite varias solicitudes sin mezclar origen o destino;
+9. la carga física se verifica contra unidad, pick, UOM, lote, paquete y LOC;
+10. la medición variable no excede ready ni crea ajustes silenciosos;
+11. vehículo, capacidad y compatibilidad tienen tratamiento explícito;
+12. sello, reapertura y custodia tienen identidades y versiones;
+13. el descuento de inventario ocurre solo al confirmar despacho;
+14. stock, paquetes, fulfillment, shipment, receipt y outbox son atómicos;
+15. las treinta y cuatro validaciones están asignadas a momentos concretos;
+16. las doce excepciones tienen efecto, resolución y propietario;
+17. idempotencia y recuperación impiden doble descuento;
+18. el handoff a `NEXO-UX-012` contiene un shipment inmutable y despachado;
+19. las diez rutas relacionadas tienen disposición explícita;
+20. el diagnóstico diferencia implementación parcial, brecha y fuera de alcance;
+21. los diez requisitos nuevos están incorporados al 04A completo;
+22. no se ejecutan cambios físicos ni operaciones remotas;
+23. la siguiente tarea permanece reservada.
+
+---
+
+#### 31. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-010 — Diseñar flujo completo de preparación`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-011 — Diseñar flujo completo de despacho`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-012 — Diseñar flujo completo de tránsito`
+
+`NEXO-UX-012` deberá consumir `NEXO-REMISSION-DISPATCH-TO-TRANSIT-HANDOFF-001`, preservar el receipt de despacho y no volver a descontar inventario, consumir paquetes productivos, editar el shipment sellado ni reinterpretar la custodia aquí confirmada salvo contradicción canónica comprobada.
+
+
 ### [ ] NEXO-UX-012 — Diseñar flujo completo de tránsito
 ### [ ] NEXO-UX-013 — Diseñar flujo completo de recepción
 ### [ ] NEXO-UX-014 — Diseñar flujo completo de entradas
