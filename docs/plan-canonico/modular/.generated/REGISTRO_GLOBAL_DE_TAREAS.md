@@ -978,8 +978,8 @@
 | ✅ APROBADA | `NEXO-UX-020` | Simplificar escáner y captura | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-021` | Mostrar solo información necesaria según etapa | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-022` | Diseñar manejo de diferencias y excepciones | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
-| ✅ APROBADA | `NEXO-UX-023` | Probar flujos en tablets y kioscos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
-| ✅ APROBADA | `NEXO-UX-024` | Validar el prototipo con bodeguero, conductor y receptores | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
+| ✅ APROBADA | `NEXO-UX-023` | Diseñar la suite de pruebas para tablets y kioscos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
+| ✅ APROBADA | `NEXO-UX-024` | Diseñar la validación del prototipo con bodeguero, conductor y receptores | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-025` | Definir métricas de tiempo, error y capacitación para el piloto operativo | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-026` | Diseñar ciclo de vida completo de LPN | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-027` | Diseñar empaque, desempaque y consulta de contenido | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |

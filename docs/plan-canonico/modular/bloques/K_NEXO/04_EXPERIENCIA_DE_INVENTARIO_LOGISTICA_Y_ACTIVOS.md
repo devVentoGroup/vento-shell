@@ -645,27 +645,27 @@ No se implementa integración en esta tarea.
 
 Cada brecha queda vinculada con una tarea exacta:
 
-| Handoff  | Hallazgo material                                                    | Tarea responsable             | Condición de salida                                                                 |
-| -------- | -------------------------------------------------------------------- | ----------------------------- | ----------------------------------------------------------------------------------- |
-| `HX-001` | operación, supervisión y configuración conviven en familias próximas | `NEXO-UX-002`                 | cada superficie y acción queda clasificada sin cambiar identidad de proceso         |
-| `HX-002` | cada rol requiere punto de entrada distinto                          | `NEXO-UX-003` a `NEXO-UX-007` | homes por rol consumen el inventario sin duplicar procesos                          |
-| `HX-003` | navegación actual se organiza parcialmente por módulos y rutas       | `NEXO-UX-008`                 | navegación se organiza por tareas reales y handoffs                                 |
-| `HX-004` | solicitud legacy mezcla política, catálogo, cantidad y estado        | `NEXO-UX-009`                 | solicitud tiene captura simple, origen, destino, fecha y cantidad inequívocos       |
-| `HX-005` | preparación tiene fulfillments bloqueados y cero picks               | `NEXO-UX-010`                 | preparación separa asignación, pick, cantidad real, faltante y listo                |
-| `HX-006` | conductor opera sobre estado legacy sin shipment físico              | `NEXO-UX-011`                 | conductor recibe unidades de custodia identificables y acciones limitadas           |
-| `HX-007` | despacho, tránsito y handoff no tienen evidencia física nueva        | `NEXO-UX-012`                 | despacho conserva carga, salida, custodia y aceptación del transportador            |
-| `HX-008` | recepción legacy no materializa receipts ni excepciones nuevas       | `NEXO-UX-013`                 | recepción conserva recibido, aceptado, faltante, sobrante, daño y rechazo por línea |
-| `HX-009` | entrada ordinaria y emergencia comparten soporte parcial             | `NEXO-UX-014`                 | flujo normal y excepción quedan inequívocos y correlacionados                       |
-| `HX-010` | solo dos líneas de entrada tienen LOC y ninguna posición             | `NEXO-UX-015`                 | destino exige LOC y posición válidas según el contexto                              |
-| `HX-011` | historial mezcla tipos de movimiento sin narrativa por proceso       | `NEXO-UX-016`                 | cada hecho muestra causa, origen, destino, cantidad, actor y correlación            |
-| `HX-012` | retiro usa variantes general, posición y kiosco                      | `NEXO-UX-017`                 | selección de presentación, unidad y cantidad permanece estable por recorrido        |
-| `HX-013` | conteo, investigación y ajuste no están completamente segregados     | `NEXO-UX-018`; `NEXO-UX-019`  | observación, diferencia, decisión y movimiento quedan separados                     |
-| `HX-014` | escaneo no es contrato común de las etapas físicas                   | `NEXO-UX-020`                 | escaneo identifica recurso y propone acción sin ejecutar por inferencia             |
-| `HX-015` | bloqueos y cantidades por etapa no están visibles de forma uniforme  | `NEXO-UX-021`                 | cada etapa muestra estado, cantidad, responsable y siguiente acción válida          |
-| `HX-016` | VPROC-0027 y excepciones de remisión carecen de recorrido completo   | `NEXO-UX-022`                 | excepciones conservan causa, contención, decisión, resolución y cierre              |
-| `HX-017` | tablet, kiosco, periféricos y red intermitente no están certificados | `NEXO-UX-023`                 | perfil de dispositivo y contingencia se definen por estación                        |
-| `HX-018` | no existe prototipo operativo validado con actores                   | `NEXO-UX-024`                 | recorridos prioritarios se prueban con actores y escenarios reales                  |
-| `HX-019` | no existen métricas de éxito de experiencia ni piloto completo       | `NEXO-UX-025`                 | se aprueban métricas, umbrales y evidencia de piloto                                |
+| Handoff  | Hallazgo material                                                    | Tarea responsable             | Condición de salida                                                                                                                   |
+| -------- | -------------------------------------------------------------------- | ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
+| `HX-001` | operación, supervisión y configuración conviven en familias próximas | `NEXO-UX-002`                 | cada superficie y acción queda clasificada sin cambiar identidad de proceso                                                           |
+| `HX-002` | cada rol requiere punto de entrada distinto                          | `NEXO-UX-003` a `NEXO-UX-007` | homes por rol consumen el inventario sin duplicar procesos                                                                            |
+| `HX-003` | navegación actual se organiza parcialmente por módulos y rutas       | `NEXO-UX-008`                 | navegación se organiza por tareas reales y handoffs                                                                                   |
+| `HX-004` | solicitud legacy mezcla política, catálogo, cantidad y estado        | `NEXO-UX-009`                 | solicitud tiene captura simple, origen, destino, fecha y cantidad inequívocos                                                         |
+| `HX-005` | preparación tiene fulfillments bloqueados y cero picks               | `NEXO-UX-010`                 | preparación separa asignación, pick, cantidad real, faltante y listo                                                                  |
+| `HX-006` | conductor opera sobre estado legacy sin shipment físico              | `NEXO-UX-011`                 | conductor recibe unidades de custodia identificables y acciones limitadas                                                             |
+| `HX-007` | despacho, tránsito y handoff no tienen evidencia física nueva        | `NEXO-UX-012`                 | despacho conserva carga, salida, custodia y aceptación del transportador                                                              |
+| `HX-008` | recepción legacy no materializa receipts ni excepciones nuevas       | `NEXO-UX-013`                 | recepción conserva recibido, aceptado, faltante, sobrante, daño y rechazo por línea                                                   |
+| `HX-009` | entrada ordinaria y emergencia comparten soporte parcial             | `NEXO-UX-014`                 | flujo normal y excepción quedan inequívocos y correlacionados                                                                         |
+| `HX-010` | solo dos líneas de entrada tienen LOC y ninguna posición             | `NEXO-UX-015`                 | destino exige LOC y posición válidas según el contexto                                                                                |
+| `HX-011` | historial mezcla tipos de movimiento sin narrativa por proceso       | `NEXO-UX-016`                 | cada hecho muestra causa, origen, destino, cantidad, actor y correlación                                                              |
+| `HX-012` | retiro usa variantes general, posición y kiosco                      | `NEXO-UX-017`                 | selección de presentación, unidad y cantidad permanece estable por recorrido                                                          |
+| `HX-013` | conteo, investigación y ajuste no están completamente segregados     | `NEXO-UX-018`; `NEXO-UX-019`  | observación, diferencia, decisión y movimiento quedan separados                                                                       |
+| `HX-014` | escaneo no es contrato común de las etapas físicas                   | `NEXO-UX-020`                 | escaneo identifica recurso y propone acción sin ejecutar por inferencia                                                               |
+| `HX-015` | bloqueos y cantidades por etapa no están visibles de forma uniforme  | `NEXO-UX-021`                 | cada etapa muestra estado, cantidad, responsable y siguiente acción válida                                                            |
+| `HX-016` | VPROC-0027 y excepciones de remisión carecen de recorrido completo   | `NEXO-UX-022`                 | excepciones conservan causa, contención, decisión, resolución y cierre                                                                |
+| `HX-017` | tablet, kiosco, periféricos y red intermitente no están certificados | `NEXO-UX-023`                 | perfil de dispositivo y contingencia se definen por estación                                                                          |
+| `HX-018` | no existe prototipo operativo validado con actores                   | `NEXO-UX-024`                 | se diseña el paquete ejecutable para probar recorridos prioritarios con actores y escenarios reales, sin declarar sesiones ejecutadas |
+| `HX-019` | no existen métricas de éxito de experiencia ni piloto completo       | `NEXO-UX-025`                 | se aprueban métricas, reglas para definir umbrales y contrato de evidencia del piloto, sin declarar ejecución ni resultados           |
 
 No se crea una tarea nueva. Todos los hallazgos tienen propietario existente.
 
@@ -3937,7 +3937,7 @@ No se modifica, difiere, descarta ni vuelve obsoleto ningún requisito históric
 
 #### 16. Criterios de aceptación
 
-- [ ] El archivo contiene exclusivamente `NEXO-UX-006`.
+- [ ] La sección comprendida entre el encabezado de `NEXO-UX-006` y el encabezado de la tarea siguiente contiene exclusivamente contenido de `NEXO-UX-006`.
 - [ ] La audiencia se define como `RECEPCION_EN_SEDE`, no como un rol universal.
 - [ ] Se materializan exactamente tres fuentes de habilitación receptora.
 - [ ] Se enumeran las funciones que no reciben permiso por inferencia.
@@ -4707,7 +4707,7 @@ No se modifica, difiere, descarta ni vuelve obsoleto ningún requisito históric
 
 #### 16. Criterios de aceptación
 
-- [ ] El archivo contiene exclusivamente `NEXO-UX-007`.
+- [ ] La sección comprendida entre el encabezado de `NEXO-UX-007` y el encabezado de la tarea siguiente contiene exclusivamente contenido de `NEXO-UX-007`.
 - [ ] La audiencia primaria es el rol base `supervisor` con alcance territorial
       limitado, no una autoridad global.
 - [ ] Se distinguen permisos de lectura, decisión y operación.
@@ -10733,7 +10733,7 @@ El detalle canónico se incorpora coordinadamente al registro completo 04A.
 
 La tarea se considera documentalmente completa cuando:
 
-1. el archivo contiene exclusivamente `NEXO-UX-013`;
+1. la sección comprendida entre el encabezado de `NEXO-UX-013` y el encabezado de la tarea siguiente contiene exclusivamente contenido de `NEXO-UX-013`;
 2. la entrada es el handoff aprobado por `NEXO-UX-012`;
 3. despacho y tránsito permanecen inmutables;
 4. el permiso exacto de recepción está separado de preparación y tránsito;
@@ -19484,7 +19484,7 @@ No modifica, descarta ni vuelve obsoleto ningún requisito histórico.
 ---
 **Estado:** APROBADA
 **Tarea anterior:** `NEXO-UX-021 — Mostrar solo información necesaria según etapa` — APROBADA
-**Tarea siguiente:** `NEXO-UX-023 — Probar flujos en tablets y kioscos` — RESERVADA
+**Tarea siguiente:** `NEXO-UX-023 — Diseñar la suite de pruebas para tablets y kioscos` — RESERVADA
 **Tipo de tarea:** documental; diseño funcional transversal del ciclo completo de diferencias y excepciones, con caso, clasificación, severidad, contención, evidencia, investigación, decisión, disposición, instrucción, ejecución, posting, verificación, cierre, concurrencia, offline, superficies, estados, validación y continuidad
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
@@ -20531,19 +20531,19 @@ No modifica, descarta ni vuelve obsoleto ningún requisito histórico.
 
 **TAREA ACTUAL APROBADA:** `NEXO-UX-022 — Diseñar manejo de diferencias y excepciones`
 
-**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-023 — Probar flujos en tablets y kioscos`
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-023 — Diseñar la suite de pruebas para tablets y kioscos`
 
-`NEXO-UX-023` deberá consumir los estados, colas, acciones, contenciones, decisiones, instrucciones, resultados desconocidos y receipts definidos aquí para comprobar que la experiencia conserva significado, autoridad, seguridad y continuidad en tablets y quioscos reales.
+`NEXO-UX-023` deberá consumir los estados, colas, acciones, contenciones, decisiones, instrucciones, resultados desconocidos y receipts definidos aquí para diseñar cómo se comprobarán significado, autoridad, seguridad y continuidad en tablets y quioscos reales, sin declarar ejecución física.
 
 
-### ✅ NEXO-UX-023 — Probar flujos en tablets y kioscos
+### ✅ NEXO-UX-023 — Diseñar la suite de pruebas para tablets y kioscos
 
 ---
 
 **Estado:** APROBADA
 **Tarea anterior:** `NEXO-UX-022 — Diseñar manejo de diferencias y excepciones` — APROBADA
-**Tarea siguiente:** `NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores` — RESERVADA
-**Tipo de tarea:** documental; suite de prueba materializada para tablets y quioscos, diagnóstico estático de preparación por etapa, perfiles lógicos de dispositivo, contextos de ejecución, modalidades de entrada, responsive, accesibilidad, sesión compartida, seguridad, conectividad, idempotencia, excepciones, evidencia y continuidad
+**Tarea siguiente:** `NEXO-UX-024 — Diseñar la validación del prototipo con bodeguero, conductor y receptores` — RESERVADA
+**Tipo de tarea:** documental; diseño de suite de pruebas para tablets y quioscos, diagnóstico estático de preparación por etapa, perfiles lógicos de dispositivo, contextos de ejecución, modalidades de entrada, responsive, accesibilidad, sesión compartida, seguridad, conectividad, idempotencia, excepciones, evidencia y continuidad
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
 **Repositorio de aplicación inspeccionado:** `vento-nexo`
@@ -20555,9 +20555,9 @@ No modifica, descarta ni vuelve obsoleto ningún requisito histórico.
 
 #### 1. Propósito
 
-Probar documentalmente la preparación de los flujos aprobados para tablets y
+Diseñar y documentar la preparación de los flujos aprobados para tablets y
 quioscos mediante una suite completa y una decisión estática por cada etapa,
-sin presentar inspección de código como validación física.
+sin presentar inspección de código como validación física ni como ejecución en dispositivo.
 
 La regla de esta tarea es:
 
@@ -21231,22 +21231,22 @@ La tarea queda documentalmente completa porque:
 
 **ÚLTIMA TAREA APROBADA:** `NEXO-UX-022 — Diseñar manejo de diferencias y excepciones`
 
-**TAREA ACTUAL APROBADA:** `NEXO-UX-023 — Probar flujos en tablets y kioscos`
+**TAREA ACTUAL APROBADA:** `NEXO-UX-023 — Diseñar la suite de pruebas para tablets y kioscos`
 
-**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores`
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-024 — Diseñar la validación del prototipo con bodeguero, conductor y receptores`
 
 `NEXO-UX-024` deberá usar los cincuenta y seis escenarios, los ocho perfiles y
-el paquete de evidencia definidos aquí para ejecutar validación con actores,
+el paquete de evidencia definidos aquí para diseñar y dejar ejecutable una validación posterior con actores,
 sin reinterpretar como aprobadas las etapas bloqueadas ni las comprobaciones no
 ejecutadas.
 
 
-### ✅ NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores
+### ✅ NEXO-UX-024 — Diseñar la validación del prototipo con bodeguero, conductor y receptores
 
 **Estado:** APROBADA
-**Tarea anterior:** `NEXO-UX-023 — Probar flujos en tablets y kioscos` — APROBADA
+**Tarea anterior:** `NEXO-UX-023 — Diseñar la suite de pruebas para tablets y kioscos` — APROBADA
 **Tarea siguiente:** `NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo` — RESERVADA
-**Tipo de tarea:** documental; paquete materializado de validación operativa con actores, cobertura de escenarios, guiones, evidencia, defectos, gates y registro verificable de ejecuciones
+**Tipo de tarea:** documental; diseño y preparación de un paquete ejecutable de validación operativa con actores, cobertura de escenarios, guiones, evidencia, defectos, gates y registro verificable de ejecuciones futuras
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
 **Repositorio de aplicación inspeccionado:** `vento-nexo`
@@ -21257,14 +21257,14 @@ ejecutadas.
 
 #### 1. Propósito
 
-Convertir la suite de dispositivo de `NEXO-UX-023` en un paquete ejecutable y auditable de validación con tres funciones operativas reales: bodeguero, conductor y receptores. La tarea decide qué debe ejecutar cada actor, qué observar, qué evidencia conservar, cómo clasificar defectos y qué condiciones permiten o impiden declarar aceptación.
+Diseñar y materializar, a partir de la suite de dispositivo de `NEXO-UX-023`, un paquete ejecutable y auditable para una validación posterior con tres funciones operativas reales: bodeguero, conductor y receptores. La tarea decide qué deberá ejecutar cada actor, qué observar, qué evidencia conservar, cómo clasificar defectos y qué condiciones permitirán o impedirán declarar aceptación.
 
 La regla central es:
 
 ```text
 CONTRATO CANÓNICO + PROTOTIPO IDENTIFICADO + ACTOR REAL + DISPOSITIVO REAL
 + ESCENARIO CONTROLADO + RESULTADO OBSERVABLE + EVIDENCIA REPRODUCIBLE
-→ VALIDACIÓN OPERATIVA
+→ PAQUETE EJECUTABLE DE VALIDACIÓN OPERATIVA
 ```
 
 Una especificación, ruta, screenshot, demostración del diseñador o diagnóstico estático no equivale a validación con usuarios. En el corte documental de esta tarea no se ejecutaron sesiones con participantes; por tanto, los resultados humanos permanecen `NOT_RUN` y `PENDIENTE_DE_EVIDENCIA`.
@@ -21296,7 +21296,7 @@ Se aprueban veinticuatro artefactos documentales:
 21. `NEXO-ACTOR-NO-PROTOTYPE-DISPOSITION-001` — decide tratamiento de las diez etapas sin superficie.
 22. `NEXO-ACTOR-RETEST-REGRESSION-CONTRACT-001` — define corrección, retest, regresión y cierre de defectos.
 23. `NEXO-ACTOR-VALIDATION-MATRIX-001` — materializa cuarenta y ocho comprobaciones de preparación y ejecución.
-24. `NEXO-ACTOR-CONTINUITY-HANDOFF-001` — entrega resultados y métricas crudas a NEXO-UX-025 sin iniciarla.
+24. `NEXO-ACTOR-CONTINUITY-HANDOFF-001` — entrega identidades de escenario, estructura de resultados y mediciones crudas futuras a NEXO-UX-025 sin iniciarla.
 
 Cobertura materializada:
 
@@ -21640,11 +21640,11 @@ Esta tarea crea `TREQ-NEXO-287` a `TREQ-NEXO-300`. El registro `04A` contiene su
 
 #### 25. `NEXO-ACTOR-CONTINUITY-HANDOFF-001`
 
-`NEXO-UX-025` recibirá únicamente resultados reales: timestamps, errores, reintentos, ayudas, abandonos, observaciones, defectos, severidad, actor, dispositivo, red y evidencia. Esta tarea no define umbrales de tiempo, error o capacitación y no inicia el piloto.
+`NEXO-UX-025` consumirá, cuando existan, únicamente resultados reales: timestamps, errores, reintentos, ayudas, abandonos, observaciones, defectos, severidad, actor, dispositivo, red y evidencia. Para su definición documental inicial recibe solo las identidades de escenario, el esquema de resultados, las reglas de elegibilidad y el contrato de evidencia; no recibe ni asume datos observados inexistentes. Esta tarea no define umbrales de tiempo, error o capacitación y no inicia el piloto.
 
-**ÚLTIMA TAREA APROBADA:** `NEXO-UX-023 — Probar flujos en tablets y kioscos`
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-023 — Diseñar la suite de pruebas para tablets y kioscos`
 
-**TAREA ACTUAL APROBADA:** `NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores`
+**TAREA ACTUAL APROBADA:** `NEXO-UX-024 — Diseñar la validación del prototipo con bodeguero, conductor y receptores`
 
 **SIGUIENTE TAREA RESERVADA:** `NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo`
 
@@ -21652,7 +21652,7 @@ Esta tarea crea `TREQ-NEXO-287` a `TREQ-NEXO-300`. El registro `04A` contiene su
 ### ✅ NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo
 
 **Estado:** APROBADA
-**Tarea anterior:** `NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores` — APROBADA
+**Tarea anterior:** `NEXO-UX-024 — Diseñar la validación del prototipo con bodeguero, conductor y receptores` — APROBADA
 **Tarea siguiente:** `AUTH-UI-052 — Diseñar página inicial según actor` — RESERVADA
 **Tipo de tarea:** documental; marco materializado de medición del piloto operativo con catálogo de métricas, eventos, fórmulas, denominadores, segmentación, calidad de datos, baseline, objetivos, scorecards, gates y handoff de certificación
 **Repositorio propietario:** `vento-shell`
@@ -21681,7 +21681,7 @@ Una métrica queda definida cuando tiene identidad, unidad, fórmula, eventos, p
 
 Se aprueban veinticuatro artefactos documentales:
 
-1. `NEXO-PILOT-METRIC-GOVERNANCE-CONTRACT-001` — governa finalidad, autoridad, versionado y prohibición de fabricar métricas.
+1. `NEXO-PILOT-METRIC-GOVERNANCE-CONTRACT-001` — gobierna finalidad, autoridad, versionado y prohibición de fabricar métricas.
 2. `NEXO-PILOT-METRIC-IDENTITY-CATALOG-001` — materializa treinta métricas estables con unidad, fórmula, denominador y estado.
 3. `NEXO-PILOT-METRIC-STATE-CONTRACT-001` — define estados de dato, baseline, objetivo, publicación e invalidación.
 4. `NEXO-PILOT-OBSERVATION-EVENT-CONTRACT-001` — define eventos y timestamps mínimos para reconstruir cada medición.
@@ -21746,6 +21746,7 @@ Cobertura materializada:
 | `DATA_QUALITY_BLOCKED` | faltan eventos, evidencia o comparabilidad                                  | no                            |
 | `BASELINE_PROVISIONAL` | datos válidos insuficientes para decisión definitiva                        | sí, marcado como exploratorio |
 | `BASELINE_APPROVED`    | baseline revisado y aprobado con cobertura y calidad                        | sí                            |
+| `NOT_SET`              | todavía no existe objetivo numérico definido                                | no                            |
 | `TARGET_PROPOSED`      | umbral propuesto con fundamento y propietario                               | no como compromiso vigente    |
 | `TARGET_APPROVED`      | objetivo aprobado, versionado y con fecha de vigencia                       | sí                            |
 | `MONITORING`           | medición vigente contra objetivo aprobado                                   | sí                            |
@@ -21755,24 +21756,37 @@ Estado inicial de las treinta métricas: `NOT_COLLECTED`. Estado inicial de base
 
 #### 5. `NEXO-PILOT-OBSERVATION-EVENT-CONTRACT-001`
 
-| Evento     | Marca mínima                                | Regla                                                   |
-| ---------- | ------------------------------------------- | ------------------------------------------------------- |
-| EVT-MET-01 | `scenario_presented`                        | inicio aceptado del escenario, no apertura de la sesión |
-| EVT-MET-02 | `first_meaningful_action`                   | primera acción dirigida al objetivo                     |
-| EVT-MET-03 | `active_start / active_stop`                | intervalos de trabajo activo, anidamiento prohibido     |
-| EVT-MET-04 | `system_wait_start / system_wait_stop`      | espera atribuible a respuesta técnica                   |
-| EVT-MET-05 | `assistance_start / assistance_stop`        | ayuda clasificada y atribuida                           |
-| EVT-MET-06 | `error_detected`                            | momento de detección y clase provisional                |
-| EVT-MET-07 | `safe_recovery`                             | retorno a estado seguro o corrección verificada         |
-| EVT-MET-08 | `review_opened`                             | snapshot decisivo visible y congelado                   |
-| EVT-MET-09 | `command_submitted`                         | intención enviada una sola vez                          |
-| EVT-MET-10 | `receipt_verified`                          | resultado autoritativo leído y comprendido              |
-| EVT-MET-11 | `handoff_offered`                           | custodia o responsabilidad ofrecida                     |
-| EVT-MET-12 | `handoff_accepted`                          | siguiente actor acepta con receipt                      |
-| EVT-MET-13 | `training_intro_start / training_intro_end` | intervalo de inducción                                  |
-| EVT-MET-14 | `independent_qualified_completion`          | completación autónoma sin condición descalificante      |
+| Evento     | Marca mínima                                | Regla                                                                              |
+| ---------- | ------------------------------------------- | ---------------------------------------------------------------------------------- |
+| EVT-MET-01 | `scenario_presented`                        | inicio aceptado del escenario, no apertura de la sesión                            |
+| EVT-MET-02 | `first_meaningful_action`                   | primera acción dirigida al objetivo                                                |
+| EVT-MET-03 | `active_start / active_stop`                | intervalos de trabajo activo, anidamiento prohibido                                |
+| EVT-MET-04 | `system_wait_start / system_wait_stop`      | espera atribuible a respuesta técnica                                              |
+| EVT-MET-05 | `assistance_start / assistance_stop`        | ayuda clasificada y atribuida                                                      |
+| EVT-MET-06 | `error_detected`                            | momento de detección y clase provisional                                           |
+| EVT-MET-07 | `safe_recovery`                             | retorno a estado seguro o corrección verificada                                    |
+| EVT-MET-08 | `review_opened`                             | snapshot decisivo visible y congelado                                              |
+| EVT-MET-09 | `command_submitted`                         | intención enviada una sola vez                                                     |
+| EVT-MET-10 | `receipt_verified`                          | resultado autoritativo leído y comprendido                                         |
+| EVT-MET-11 | `handoff_offered`                           | custodia o responsabilidad ofrecida                                                |
+| EVT-MET-12 | `handoff_accepted`                          | siguiente actor acepta con receipt                                                 |
+| EVT-MET-13 | `training_intro_start / training_intro_end` | intervalo de inducción                                                             |
+| EVT-MET-14 | `independent_qualified_completion`          | completación autónoma sin condición descalificante                                 |
+| EVT-MET-15 | `reconciliation_started`                    | inicio explícito de recuperación, reconexión o resolución de resultado desconocido |
+| EVT-MET-16 | `terminal_state_verified`                   | estado terminal autoritativo confirmado con receipt                                |
+| EVT-MET-17 | `attempt_started / attempt_completed`       | identidad, ordinal, asistencia y resultado de cada intento                         |
+| EVT-MET-18 | `error_opportunity_presented`               | oportunidad elegible y clase de error evaluable                                    |
+| EVT-MET-19 | `error_classified`                          | error observado, clase, severidad, detección y resultado                           |
+| EVT-MET-20 | `post_task_audit_completed`                 | auditoría posterior y error silencioso identificado                                |
+| EVT-MET-21 | `comprehension_scored`                      | puntos obtenidos, puntos aplicables y rúbrica versionada                           |
+| EVT-MET-22 | `reevaluation_completed`                    | checkpoint comparable de retención y resultado                                     |
+| EVT-MET-23 | `transfer_attempt_completed`                | intento en variante, modalidad o dispositivo nuevo                                 |
+| EVT-MET-24 | `retraining_triggered / autonomy_recovered` | inicio de reentrenamiento y recuperación autónoma                                  |
+| EVT-MET-25 | `session_interrupted / session_resumed`     | pausa, background o interrupción con causa y duración                              |
+| EVT-MET-26 | `scenario_abandoned`                        | abandono explícito, causa y último estado seguro                                   |
+| EVT-MET-27 | `session_closed`                            | cierre de sesión, limpieza y estado final de evidencia                             |
 
-Todos los timestamps usarán reloj monotónico para duraciones y fecha UTC para correlación. Pausa, abandono, background, reconexión y cierre se registran explícitamente; no se reconstruyen desde impresiones del observador.
+Todos los timestamps usarán reloj monotónico para duraciones y fecha UTC para correlación. Pausa, abandono, background, reconexión y cierre usan los eventos anteriores y códigos de causa versionados; no se reconstruyen desde impresiones del observador.
 
 #### 6. `NEXO-PILOT-METRIC-IDENTITY-CATALOG-001`
 
@@ -21780,38 +21794,75 @@ Cada métrica contiene `metric_id`, `metric_version`, nombre, familia, unidad, f
 
 Las familias se materializan mediante `NEXO-PILOT-TIME-METRIC-CATALOG-001`, `NEXO-PILOT-ERROR-METRIC-CATALOG-001` y `NEXO-PILOT-TRAINING-METRIC-CATALOG-001`.
 
-| ID         | Métrica                                      | Unidad               | Fórmula                                                                                                              | Elegibilidad                                 | Exclusión principal                                |
-| ---------- | -------------------------------------------- | -------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------- |
-| MET-TIM-01 | Latencia de inicio                           | segundos             | primer evento de acción significativa menos `scenario_presented`                                                     | ejecución iniciada                           | preparación del moderador y espera previa          |
-| MET-TIM-02 | Tiempo activo de ejecución                   | segundos             | suma de intervalos `active_start` a `active_stop`                                                                    | escenario ejecutable                         | espera de sistema, ayuda y pausas externas         |
-| MET-TIM-03 | Tiempo de espera del sistema                 | segundos             | suma de intervalos `system_wait_start` a `system_wait_stop`                                                          | interacción con respuesta técnica            | espera humana no causada por el sistema            |
-| MET-TIM-04 | Tiempo de ayuda                              | segundos             | suma de intervalos `assistance_start` a `assistance_stop`                                                            | sesión con intervención registrada           | prompt neutral inicial                             |
-| MET-TIM-05 | Tiempo de recuperación                       | segundos             | `safe_recovery` menos `error_detected` por evento recuperable                                                        | error o conflicto detectado                  | errores no detectados durante la sesión            |
-| MET-TIM-06 | Tiempo de revisión y confirmación            | segundos             | `command_submitted` menos `review_opened`                                                                            | flujo con review y comando                   | tiempo de carga posterior al envío                 |
-| MET-TIM-07 | Tiempo de handoff                            | segundos             | `handoff_accepted` menos `handoff_offered`                                                                           | transferencia entre actores o etapas         | espera fuera del alcance del handoff identificado  |
-| MET-TIM-08 | Tiempo de reconciliación                     | segundos             | `receipt_verified` menos inicio de reconexión o resultado desconocido                                                | offline, conflicto o resultado desconocido   | reintentos ciegos no autorizados                   |
-| MET-TIM-09 | Tiempo total de ciclo                        | segundos             | estado terminal verificable menos `scenario_presented`                                                               | escenario ejecutado con estado terminal      | escenario bloqueado sin ejecución                  |
-| MET-TIM-10 | Tiempo a primera ejecución independiente     | minutos              | duración acumulada de aprendizaje hasta `independent_qualified_completion`                                           | actor y escenario con entrenamiento          | storyboard y comprensión sin ejecución             |
-| MET-ERR-01 | Error de identidad o sujeto                  | tasa por oportunidad | eventos de identidad incorrecta divididos por oportunidades elegibles por cien                                       | selección o propuesta de sujeto              | mismatch prevenido antes de selección              |
-| MET-ERR-02 | Error de cantidad o UOM                      | tasa por oportunidad | eventos de cantidad, presentación, conversión o UOM incorrecta divididos por oportunidades elegibles por cien        | captura o revisión cuantitativa              | diferencia empresarial correcta                    |
-| MET-ERR-03 | Error de ubicación o territorio              | tasa por oportunidad | eventos de LOC, posición, sede o alcance incorrecto divididos por oportunidades elegibles por cien                   | selección territorial                        | bloqueo correcto del sistema                       |
-| MET-ERR-04 | Error de estado o secuencia                  | tasa por oportunidad | transiciones o interpretación de estado incorrectas divididas por oportunidades elegibles por cien                   | flujo con estados                            | paso prohibido rechazado correctamente             |
-| MET-ERR-05 | Error de actor o autoridad                   | tasa por oportunidad | acciones intentadas o atribuidas al actor incorrecto divididas por oportunidades elegibles por cien                  | mutación o acceso protegido                  | denegación correcta                                |
-| MET-ERR-06 | Error de custodia, condición o evidencia     | tasa por oportunidad | eventos de custody, sello, condición o evidencia incorrecta divididos por oportunidades elegibles por cien           | handoff, recepción o excepción               | observación sin efecto empresarial                 |
-| MET-ERR-07 | Error de duplicado o idempotencia            | tasa por oportunidad | efectos o intentos duplicados inseguros divididos por oportunidades de reenvío por cien                              | submit, retry, refresh o wedge               | duplicado deduplicado y vinculado                  |
-| MET-ERR-08 | Error de recuperación degradada              | tasa por oportunidad | recuperaciones inseguras ante offline, stale, conflicto o resultado desconocido divididas por oportunidades por cien | estado degradado inducido                    | bloqueo seguro sin efecto                          |
-| MET-ERR-09 | Omisión o clasificación errónea de excepción | tasa por oportunidad | excepciones omitidas o mal clasificadas divididas por oportunidades de excepción por cien                            | diferencia o anomalía presentada             | caso correctamente escalado                        |
-| MET-ERR-10 | Error silencioso postarea                    | tasa por ejecución   | errores descubiertos después del supuesto cierre divididos por ejecuciones auditadas por cien                        | ejecución con auditoría o receipt            | defecto visible y reconocido durante la tarea      |
-| MET-TRN-01 | Duración de inducción                        | minutos              | `training_intro_end` menos `training_intro_start`                                                                    | actor y módulo de entrenamiento              | pausas ajenas a la formación                       |
-| MET-TRN-02 | Intentos guiados                             | conteo               | número de intentos con guía antes del primer intento independiente                                                   | actor y escenario                            | demostración sin intento del participante          |
-| MET-TRN-03 | Tasa de intentos asistidos                   | porcentaje           | intentos con ayuda divididos por intentos elegibles por cien                                                         | escenario ejecutado                          | prompt neutral que no revela solución              |
-| MET-TRN-04 | Éxito independiente al primer intento        | porcentaje           | primeros intentos independientes calificados divididos por primeros intentos elegibles por cien                      | escenario ejecutable                         | éxito con ayuda, corrección oculta o error crítico |
-| MET-TRN-05 | Tasa de ejecución independiente              | porcentaje           | completaciones independientes calificadas divididas por completaciones elegibles por cien                            | escenario ejecutable                         | storyboard o límite sin ejecución                  |
-| MET-TRN-06 | Comprensión de estado y consecuencia         | porcentaje           | puntos obtenidos divididos por puntos aplicables de la rúbrica por cien                                              | check de comprensión                         | pregunta no aplicable documentada                  |
-| MET-TRN-07 | Retención en reevaluación                    | porcentaje           | reevaluaciones independientes calificadas divididas por reevaluaciones elegibles por cien                            | checkpoint configurado y comparable          | reevaluación sin intervalo o versión comparable    |
-| MET-TRN-08 | Transferencia a variante o dispositivo       | porcentaje           | éxitos independientes en contexto nuevo divididos por intentos de transferencia elegibles por cien                   | variante, red, modalidad o dispositivo nuevo | repetición idéntica del entrenamiento              |
-| MET-TRN-09 | Recurrencia de error                         | porcentaje           | repeticiones de la misma clase de error divididas por oportunidades comparables posteriores por cien                 | actor con intento posterior                  | error de clase distinta                            |
-| MET-TRN-10 | Esfuerzo de reentrenamiento                  | minutos e intentos   | suma de tiempo de ayuda y nuevos intentos desde trigger hasta recuperación de autonomía                              | trigger documentado                          | entrenamiento inicial                              |
+| ID         | Métrica                                      | Unidad               | Fórmula                                                                                                                     | Elegibilidad                                 | Exclusión principal                                |
+| ---------- | -------------------------------------------- | -------------------- | --------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------- | -------------------------------------------------- |
+| MET-TIM-01 | Latencia de inicio                           | segundos             | primer evento de acción significativa menos `scenario_presented`                                                            | ejecución iniciada                           | preparación del moderador y espera previa          |
+| MET-TIM-02 | Tiempo activo de ejecución                   | segundos             | suma de intervalos `active_start` a `active_stop`                                                                           | escenario ejecutable                         | espera de sistema, ayuda y pausas externas         |
+| MET-TIM-03 | Tiempo de espera del sistema                 | segundos             | suma de intervalos `system_wait_start` a `system_wait_stop`                                                                 | interacción con respuesta técnica            | espera humana no causada por el sistema            |
+| MET-TIM-04 | Tiempo de ayuda                              | segundos             | suma de intervalos `assistance_start` a `assistance_stop`                                                                   | sesión con intervención registrada           | prompt neutral inicial                             |
+| MET-TIM-05 | Tiempo de recuperación                       | segundos             | `safe_recovery` menos `error_detected` por evento recuperable                                                               | error o conflicto detectado                  | errores no detectados durante la sesión            |
+| MET-TIM-06 | Tiempo de revisión y confirmación            | segundos             | `command_submitted` menos `review_opened`                                                                                   | flujo con review y comando                   | tiempo de carga posterior al envío                 |
+| MET-TIM-07 | Tiempo de handoff                            | segundos             | `handoff_accepted` menos `handoff_offered`                                                                                  | transferencia entre actores o etapas         | espera fuera del alcance del handoff identificado  |
+| MET-TIM-08 | Tiempo de reconciliación                     | segundos             | `receipt_verified` menos `reconciliation_started`                                                                           | offline, conflicto o resultado desconocido   | reintentos ciegos no autorizados                   |
+| MET-TIM-09 | Tiempo total de ciclo                        | segundos             | `terminal_state_verified` menos `scenario_presented`                                                                        | escenario ejecutado con estado terminal      | escenario bloqueado sin ejecución                  |
+| MET-TIM-10 | Tiempo a primera ejecución independiente     | minutos              | duración acumulada de aprendizaje hasta `independent_qualified_completion`                                                  | actor y escenario con entrenamiento          | storyboard y comprensión sin ejecución             |
+| MET-ERR-01 | Error de identidad o sujeto                  | tasa por oportunidad | eventos de identidad incorrecta divididos por oportunidades elegibles por cien                                              | selección o propuesta de sujeto              | mismatch prevenido antes de selección              |
+| MET-ERR-02 | Error de cantidad o UOM                      | tasa por oportunidad | eventos de cantidad, presentación, conversión o UOM incorrecta divididos por oportunidades elegibles por cien               | captura o revisión cuantitativa              | diferencia empresarial correcta                    |
+| MET-ERR-03 | Error de ubicación o territorio              | tasa por oportunidad | eventos de LOC, posición, sede o alcance incorrecto divididos por oportunidades elegibles por cien                          | selección territorial                        | bloqueo correcto del sistema                       |
+| MET-ERR-04 | Error de estado o secuencia                  | tasa por oportunidad | transiciones o interpretación de estado incorrectas divididas por oportunidades elegibles por cien                          | flujo con estados                            | paso prohibido rechazado correctamente             |
+| MET-ERR-05 | Error de actor o autoridad                   | tasa por oportunidad | acciones intentadas o atribuidas al actor incorrecto divididas por oportunidades elegibles por cien                         | mutación o acceso protegido                  | denegación correcta                                |
+| MET-ERR-06 | Error de custodia, condición o evidencia     | tasa por oportunidad | eventos de custody, sello, condición o evidencia incorrecta divididos por oportunidades elegibles por cien                  | handoff, recepción o excepción               | observación sin efecto empresarial                 |
+| MET-ERR-07 | Error de duplicado o idempotencia            | tasa por oportunidad | efectos o intentos duplicados inseguros divididos por oportunidades de reenvío por cien                                     | submit, retry, refresh o wedge               | duplicado deduplicado y vinculado                  |
+| MET-ERR-08 | Error de recuperación degradada              | tasa por oportunidad | recuperaciones inseguras ante offline, stale, conflicto o resultado desconocido divididas por oportunidades por cien        | estado degradado inducido                    | bloqueo seguro sin efecto                          |
+| MET-ERR-09 | Omisión o clasificación errónea de excepción | tasa por oportunidad | excepciones omitidas o mal clasificadas divididas por oportunidades de excepción por cien                                   | diferencia o anomalía presentada             | caso correctamente escalado                        |
+| MET-ERR-10 | Error silencioso postarea                    | tasa por ejecución   | `error_classified` descubiertos en `post_task_audit_completed` divididos por ejecuciones auditadas por cien                 | ejecución con auditoría o receipt            | defecto visible y reconocido durante la tarea      |
+| MET-TRN-01 | Duración de inducción                        | minutos              | `training_intro_end` menos `training_intro_start`                                                                           | actor y módulo de entrenamiento              | pausas ajenas a la formación                       |
+| MET-TRN-02 | Intentos guiados                             | conteo               | conteo de `attempt_completed` asistidos antes del primer intento independiente                                              | actor y escenario                            | demostración sin intento del participante          |
+| MET-TRN-03 | Tasa de intentos asistidos                   | porcentaje           | `attempt_completed` con ayuda divididos por intentos elegibles por cien                                                     | escenario ejecutado                          | prompt neutral que no revela solución              |
+| MET-TRN-04 | Éxito independiente al primer intento        | porcentaje           | primeros `attempt_completed` independientes y calificados divididos por primeros intentos elegibles por cien                | escenario ejecutable                         | éxito con ayuda, corrección oculta o error crítico |
+| MET-TRN-05 | Tasa de ejecución independiente              | porcentaje           | `independent_qualified_completion` divididas por completaciones elegibles por cien                                          | escenario ejecutable                         | storyboard o límite sin ejecución                  |
+| MET-TRN-06 | Comprensión de estado y consecuencia         | porcentaje           | puntos de `comprehension_scored` divididos por puntos aplicables por cien                                                   | check de comprensión                         | pregunta no aplicable documentada                  |
+| MET-TRN-07 | Retención en reevaluación                    | porcentaje           | `reevaluation_completed` independientes y calificadas divididas por reevaluaciones elegibles por cien                       | checkpoint configurado y comparable          | reevaluación sin intervalo o versión comparable    |
+| MET-TRN-08 | Transferencia a variante o dispositivo       | porcentaje           | `transfer_attempt_completed` exitosos e independientes divididos por intentos de transferencia elegibles por cien           | variante, red, modalidad o dispositivo nuevo | repetición idéntica del entrenamiento              |
+| MET-TRN-09 | Recurrencia de error                         | porcentaje           | `error_classified` repetidos de la misma clase divididos por `error_opportunity_presented` comparables posteriores por cien | actor con intento posterior                  | error de clase distinta                            |
+| MET-TRN-10 | Esfuerzo de reentrenamiento                  | minutos e intentos   | suma de ayuda e intentos entre `retraining_triggered` y `autonomy_recovered`                                                | trigger documentado                          | entrenamiento inicial                              |
+
+##### 6.1. Metadatos contractuales completos por métrica
+
+La identidad completa no se infiere desde el nombre. Todas las métricas usan `metric_version = 1.0.0`, owner funcional `COORDINACION_DE_OPERACIONES`, estado inicial de baseline `NOT_COLLECTED`, estado inicial de objetivo `NOT_SET` y vigencia documental desde la aprobación de esta tarea. Su uso operativo permanece inactivo hasta que exista piloto autorizado, instrumentación versionada y evidencia elegible.
+
+| ID         | Eventos obligatorios               | Población / denominador                                                    | Segmentos obligatorios                               | Owner                       | Baseline      | Objetivo | Vigencia                                 |
+| ---------- | ---------------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------- | --------------------------- | ------------- | -------- | ---------------------------------------- |
+| MET-TIM-01 | EVT-MET-01; EVT-MET-02             | ejecuciones iniciadas; una duración por ejecución                          | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TIM-02 | EVT-MET-03                         | escenarios ejecutables; suma de intervalos válidos por ejecución           | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TIM-03 | EVT-MET-04                         | interacciones técnicas; suma de esperas válidas por ejecución              | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TIM-04 | EVT-MET-05                         | sesiones con intervención; suma de ayudas por ejecución                    | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TIM-05 | EVT-MET-06; EVT-MET-07             | errores recuperables; una duración por recuperación                        | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TIM-06 | EVT-MET-08; EVT-MET-09             | flujos con revisión; una duración por comando                              | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TIM-07 | EVT-MET-11; EVT-MET-12             | handoffs elegibles; una duración por transferencia                         | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TIM-08 | EVT-MET-15; EVT-MET-10             | resultados desconocidos o reconexiones; una duración por reconciliación    | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TIM-09 | EVT-MET-01; EVT-MET-16             | escenarios con terminal verificable; una duración por ejecución            | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TIM-10 | EVT-MET-13; EVT-MET-14; EVT-MET-17 | actores en entrenamiento; tiempo acumulado hasta primera autonomía         | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-ERR-01 | EVT-MET-18; EVT-MET-19             | oportunidades de identidad; oportunidades elegibles de la clase            | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-ERR-02 | EVT-MET-18; EVT-MET-19             | oportunidades cuantitativas; oportunidades elegibles de la clase           | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-ERR-03 | EVT-MET-18; EVT-MET-19             | oportunidades territoriales; oportunidades elegibles de la clase           | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-ERR-04 | EVT-MET-18; EVT-MET-19             | oportunidades de estado; oportunidades elegibles de la clase               | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-ERR-05 | EVT-MET-18; EVT-MET-19             | oportunidades de autoridad; oportunidades elegibles de la clase            | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-ERR-06 | EVT-MET-18; EVT-MET-19             | oportunidades de custodia o evidencia; oportunidades elegibles de la clase | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-ERR-07 | EVT-MET-18; EVT-MET-19             | oportunidades de reenvío; oportunidades elegibles de la clase              | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-ERR-08 | EVT-MET-18; EVT-MET-19             | estados degradados inducidos; oportunidades elegibles de la clase          | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-ERR-09 | EVT-MET-18; EVT-MET-19             | oportunidades de excepción; oportunidades elegibles de la clase            | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-ERR-10 | EVT-MET-20; EVT-MET-19             | ejecuciones auditadas; ejecuciones con auditoría posterior                 | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TRN-01 | EVT-MET-13                         | actores con inducción; una duración por módulo                             | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TRN-02 | EVT-MET-17; EVT-MET-05             | actores y escenarios; intentos previos al primero independiente            | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TRN-03 | EVT-MET-17; EVT-MET-05             | intentos elegibles; total de intentos elegibles                            | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TRN-04 | EVT-MET-17; EVT-MET-14             | primeros intentos elegibles; primeros intentos independientes              | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TRN-05 | EVT-MET-17; EVT-MET-14             | completaciones elegibles; total de completaciones elegibles                | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TRN-06 | EVT-MET-21                         | checks de comprensión; puntos aplicables de rúbrica                        | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TRN-07 | EVT-MET-22; EVT-MET-14             | reevaluaciones comparables; reevaluaciones elegibles                       | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TRN-08 | EVT-MET-23; EVT-MET-14             | intentos de transferencia; intentos elegibles                              | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TRN-09 | EVT-MET-18; EVT-MET-19; EVT-MET-17 | oportunidades posteriores comparables; oportunidades elegibles             | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
+| MET-TRN-10 | EVT-MET-24; EVT-MET-05; EVT-MET-17 | actores con trigger; tiempo e intentos hasta recuperar autonomía           | actor; escenario; dispositivo; red; versión; intento | COORDINACION_DE_OPERACIONES | NOT_COLLECTED | NOT_SET  | definición vigente; medición no iniciada |
 
 #### 7. `NEXO-PILOT-ERROR-TAXONOMY-001`
 
@@ -22123,9 +22174,9 @@ El paquete de implementación autorizado deberá crear contratos versionados de 
 
 #### 24. `NEXO-PILOT-CERTIFICATION-HANDOFF-001`
 
-El carril `NEXO_FUNCTIONAL_UX` queda documentalmente cerrado con métricas calculables, escenarios íntegros, gates y requisitos trazables. No queda certificado un piloto operativo: sesiones, valores, baselines, objetivos y gates permanecen pendientes de evidencia. La continuidad activa entrega el siguiente trabajo a `AUTH-UI-052 — Diseñar página inicial según actor` sin iniciar ni modificar esa tarea.
+El carril `NEXO_FUNCTIONAL_UX` queda cerrado únicamente como definición documental del paquete: métricas calculables, escenarios íntegros, gates y requisitos trazables. Este cierre no equivale a prueba en dispositivo, validación con actores, baseline, objetivo aprobado ni certificación de piloto. Sesiones, valores, baselines, objetivos y evaluación de gates permanecen sin ejecutar y no se presentan como cumplimiento. La continuidad activa entrega el siguiente trabajo a `AUTH-UI-052 — Diseñar página inicial según actor` sin iniciar ni modificar esa tarea.
 
-**ÚLTIMA TAREA APROBADA:** `NEXO-UX-024 — Validar el prototipo con bodeguero, conductor y receptores`
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-024 — Diseñar la validación del prototipo con bodeguero, conductor y receptores`
 
 **TAREA ACTUAL APROBADA:** `NEXO-UX-025 — Definir métricas de tiempo, error y capacitación para el piloto operativo`
 
