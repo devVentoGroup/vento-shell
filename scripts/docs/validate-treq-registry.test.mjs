@@ -1,3 +1,22 @@
+import assert from 'node:assert/strict';
+import test from 'node:test';
+
+import {
+  extractDerivedTreqIds,
+  validateTreqRegistrySource,
+} from './validate-treq-registry.mjs';
+
+const context = {
+  tasks: new Map([
+    ['TASK-BASE-001', {
+      id: 'TASK-BASE-001',
+      state: 'APROBADA',
+      derivedIds: ['TREQ-AUTH-001'],
+    }],
+  ]),
+  expectedLatestTaskId: 'TASK-BASE-001',
+};
+
 test('reconoce todos los encabezados válidos de requisitos de prueba', () => {
   const headings = [
     '#### 14. Requisitos de prueba derivados',
