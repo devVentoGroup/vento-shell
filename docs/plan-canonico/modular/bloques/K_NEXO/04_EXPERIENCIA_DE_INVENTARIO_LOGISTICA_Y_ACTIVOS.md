@@ -8653,7 +8653,1286 @@ La tarea se considera documentalmente completa cuando:
 `NEXO-UX-012` deberá consumir `NEXO-REMISSION-DISPATCH-TO-TRANSIT-HANDOFF-001`, preservar el receipt de despacho y no volver a descontar inventario, consumir paquetes productivos, editar el shipment sellado ni reinterpretar la custodia aquí confirmada salvo contradicción canónica comprobada.
 
 
-### [ ] NEXO-UX-012 — Diseñar flujo completo de tránsito
+### ✅ NEXO-UX-012 — Diseñar flujo completo de tránsito
+
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-011 — Diseñar flujo completo de despacho` — APROBADA
+**Tarea siguiente:** `NEXO-UX-013 — Diseñar flujo completo de recepción` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo del inicio operativo del viaje, trabajo asignado, secuencia de paradas, hitos de tránsito, continuidad de custodia, observaciones de ubicación, incidentes, entrega fallida, retorno, arribo, prueba de presentación, transferencia de custodia en destino, idempotencia y handoff a recepción
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Proceso propietario:** `VPROC-0028 — Abastecer inventario interno de sedes y áreas`
+**Permiso exacto de tránsito:** `nexo.inventory.remissions.transit`
+**Artefactos producidos:** `NEXO-REMISSION-TRANSIT-FLOW-CONTRACT-001`, `NEXO-REMISSION-TRANSIT-STATE-MACHINE-001`, `NEXO-REMISSION-TRANSIT-STEP-CATALOG-001`, `NEXO-REMISSION-TRANSIT-WORK-QUEUE-CONTRACT-001`, `NEXO-REMISSION-TRANSIT-JOURNEY-ASSIGNMENT-CONTRACT-001`, `NEXO-REMISSION-TRANSIT-START-COMMAND-001`, `NEXO-REMISSION-TRANSIT-STOP-PROGRESS-CONTRACT-001`, `NEXO-REMISSION-TRANSIT-LOCATION-OBSERVATION-CONTRACT-001`, `NEXO-REMISSION-TRANSIT-CUSTODY-CONTINUITY-CONTRACT-001`, `NEXO-REMISSION-TRANSIT-INCIDENT-CONTRACT-001`, `NEXO-REMISSION-TRANSIT-FAILED-DELIVERY-RETURN-CONTRACT-001`, `NEXO-REMISSION-TRANSIT-ARRIVAL-PROOF-CONTRACT-001`, `NEXO-REMISSION-TRANSIT-TO-RECEPTION-HANDOFF-001`, `NEXO-REMISSION-TRANSIT-IDEMPOTENCY-RECEIPT-001`, `NEXO-REMISSION-TRANSIT-ROUTE-DISPOSITION-001` y `NEXO-REMISSION-TRANSIT-IMPLEMENTATION-HANDOFF-001`
+**Decisiones consumidas:** `UX-BASE-001` a `UX-BASE-005`; `UX-STATION-010` a `UX-STATION-012`; `NEXO-DOM-001`; `NEXO-UX-001` a `NEXO-UX-011`; `NEXO-DRIVER-HOME-CONTRACT-001`; `NEXO-DRIVER-WORK-QUEUE-CATALOG-001`; `NEXO-DRIVER-STAGE-PROJECTION-MATRIX-001`; `NEXO-TASK-NAVIGATION-CONTRACT-001`; `NEXO-ROUTE-TO-TASK-REGISTRY-001`; `NEXO-REMISSION-DISPATCH-TO-TRANSIT-HANDOFF-001`; `NEXO-REMISSION-DISPATCH-IDEMPOTENCY-RECEIPT-001`; contratos de autorización, contexto activo, dispositivos compartidos, evidencia, impresión y requisitos `TREQ-*` vigentes
+**Cambios físicos autorizados:** ninguno; no modifica código, rutas, tablas, RPC, migraciones, RLS, permisos, datos, inventario, paquetes, shipments, receipts, navegación desplegada, configuración ni ambientes remotos
+
+---
+
+#### 1. Propósito
+
+Definir de extremo a extremo cómo una carga ya despachada y bajo custodia se
+convierte en un viaje operativo trazable, progresa por una secuencia autorizada,
+trata incidentes sin perder la cadena de custodia y llega al destino con un
+handoff consumible por recepción.
+
+El tránsito consume un despacho confirmado. No vuelve a materializar la salida
+de inventario, no cambia el contenido del shipment, no consume paquetes
+productivos y no registra cantidades recibidas.
+
+La regla canónica es:
+
+```text
+SHIPMENT DESPACHADO E INMUTABLE
++ RECEIPT DE DESPACHO VERIFICABLE
++ SELLO Y CUSTODIA VIGENTES
++ ACTOR, VEHICULO Y VIAJE ASIGNADOS
++ RUTA Y PARADAS VERSIONADAS
++ INICIO OPERATIVO IDEMPOTENTE
++ HITOS ORDENADOS Y TRAZABLES
++ INCIDENTES E INSTRUCCIONES ESTRUCTURADOS
++ ARRIBO Y PRESENTACION EN DESTINO
++ TRANSFERENCIA DE CUSTODIA DOCUMENTADA
+→ HANDOFF CONSUMIBLE POR RECEPCION
+```
+
+La frontera obligatoria es:
+
+```text
+DISPATCH_CONFIRMED ≠ TRANSIT_STARTED
+TRANSIT_STARTED ≠ VEHICLE_MOVING
+GPS_OBSERVED ≠ STOP_ARRIVED
+STOP_ARRIVED ≠ STOP_COMPLETED
+DESTINATION_ARRIVED ≠ DELIVERY_PRESENTED
+DELIVERY_PRESENTED ≠ DESTINATION_CUSTODY_ACCEPTED
+DESTINATION_CUSTODY_ACCEPTED ≠ INVENTORY_RECEIVED
+INCIDENT_REPORTED ≠ INCIDENT_RESOLVED
+RETURN_AUTHORIZED ≠ RETURN_RECEIVED
+```
+
+`DISPATCH_CONFIRMED` conserva la salida logística e inventarial aprobada en
+`NEXO-UX-011`. `TRANSIT_STARTED` activa el seguimiento operativo del viaje y
+su secuencia; no vuelve a descontar inventario ni altera el receipt de despacho.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban dieciséis artefactos documentales consumibles:
+
+1. `NEXO-REMISSION-TRANSIT-FLOW-CONTRACT-001`, que fija frontera, autoridad,
+   entrada, resultado y lenguaje del tránsito;
+2. `NEXO-REMISSION-TRANSIT-STATE-MACHINE-001`, que separa journey, shipment,
+   parada, incidente, custodia, arribo y handoff;
+3. `NEXO-REMISSION-TRANSIT-STEP-CATALOG-001`, que materializa veinte pasos y
+   sus decisiones;
+4. `NEXO-REMISSION-TRANSIT-WORK-QUEUE-CONTRACT-001`, que consume las ocho
+   colas `DRVQ-*` aprobadas y define elegibilidad, prioridad y reclamo;
+5. `NEXO-REMISSION-TRANSIT-JOURNEY-ASSIGNMENT-CONTRACT-001`, que gobierna
+   actor, vehículo, dispatch run, shipments, ruta, paradas y versiones;
+6. `NEXO-REMISSION-TRANSIT-START-COMMAND-001`, que define el inicio operativo
+   autoritativo e idempotente sin efectos de inventario;
+7. `NEXO-REMISSION-TRANSIT-STOP-PROGRESS-CONTRACT-001`, que materializa
+   llegada, resultado y salida de cada parada en orden;
+8. `NEXO-REMISSION-TRANSIT-LOCATION-OBSERVATION-CONTRACT-001`, que separa
+   observación geográfica de autoridad empresarial;
+9. `NEXO-REMISSION-TRANSIT-CUSTODY-CONTINUITY-CONTRACT-001`, que conserva la
+   cadena de custodia y sus transferencias explícitas;
+10. `NEXO-REMISSION-TRANSIT-INCIDENT-CONTRACT-001`, que define catorce
+    familias de incidente, severidad, bloqueo, escalamiento y propietario;
+11. `NEXO-REMISSION-TRANSIT-FAILED-DELIVERY-RETURN-CONTRACT-001`, que gobierna
+    receptor ausente, rechazo, espera, reintento, retorno y destino alterno;
+12. `NEXO-REMISSION-TRANSIT-ARRIVAL-PROOF-CONTRACT-001`, que separa arribo,
+    presentación, prueba mínima y aceptación de custodia;
+13. `NEXO-REMISSION-TRANSIT-TO-RECEPTION-HANDOFF-001`, que entrega a
+    `NEXO-UX-013` un shipment presentado y una custodia de destino verificable;
+14. `NEXO-REMISSION-TRANSIT-IDEMPOTENCY-RECEIPT-001`, que impide hitos,
+    transferencias e incidentes duplicados y permite recuperar resultados;
+15. `NEXO-REMISSION-TRANSIT-ROUTE-DISPOSITION-001`, que decide diez
+    superficies existentes sin inventar URLs;
+16. `NEXO-REMISSION-TRANSIT-IMPLEMENTATION-HANDOFF-001`, que separa el diseño
+    aprobado de los cambios físicos posteriores.
+
+| Elemento                                       | Total esperado | Total materializado | Faltantes | Duplicados |
+| ---------------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Pasos del flujo                                |             20 |                  20 |         0 |          0 |
+| Estados de interfaz                            |             28 |                  28 |         0 |          0 |
+| Estados empresariales y técnicos reconciliados |             18 |                  18 |         0 |          0 |
+| Colas de trabajo heredadas                     |              8 |                   8 |         0 |          0 |
+| Familias de incidente                          |             14 |                  14 |         0 |          0 |
+| Validaciones materializadas                    |             36 |                  36 |         0 |          0 |
+| Disposiciones de rutas relacionadas            |             10 |                  10 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados      |             12 |                  12 |         0 |          0 |
+
+El resultado queda `ESPECIFICADO`. No declara el flujo `IMPLEMENTADO`,
+`VALIDADO`, desplegado ni probado en ruta real.
+
+---
+
+#### 3. Alcance
+
+##### 3.1. Incluido
+
+- consumo del handoff aprobado por `NEXO-UX-011`;
+- resolución de actor, sesión, turno, check-in, dispositivo, permiso, custodia,
+  vehículo, dispatch run, journey, ruta y shipments asignados;
+- cola del conductor limitada a trabajo propio y vigente;
+- agrupación de uno o más shipments despachados en un journey compatible;
+- secuencia finita y versionada de paradas;
+- inicio operativo idempotente del tránsito;
+- llegada, resultado y salida de cada parada;
+- observaciones eventuales de ubicación y geocerca sin convertirlas en
+  autorización ni prueba única;
+- continuidad y transferencia explícita de custodia;
+- reporte de incidentes, severidad, bloqueo y escalamiento;
+- instrucciones autorizadas de espera, continuación, transferencia, retorno o
+  destino alterno;
+- arribo al destino, presentación de carga, verificación de sello y prueba
+  mínima;
+- aceptación de custodia por el destino como hecho separado de recepción;
+- handoff a `NEXO-UX-013` sin registrar inventario recibido;
+- idempotencia, control de versión, receipts y recuperación ante resultado
+  desconocido;
+- diagnóstico del código, esquema y migraciones actuales.
+
+##### 3.2. Excluido
+
+- crear o modificar la solicitud original;
+- preparar, asignar, cargar, sellar o despachar mercancía;
+- volver a aplicar movimientos de salida, consumo de paquetes o cantidades
+  despachadas;
+- cambiar producto, cantidad, UOM, lote, paquete, origen, destino o contenido
+  del shipment;
+- configurar rutas maestras, vehículos o políticas logísticas;
+- decidir unilateralmente la resolución supervisora de un incidente;
+- registrar cantidades recibidas, aceptadas, rechazadas o en cuarentena;
+- publicar inventario en destino o ejecutar putaway;
+- cerrar diferencias económicas, reclamaciones o responsabilidades;
+- habilitar seguimiento continuo de ubicación sin controles de finalidad,
+  retención y dispositivo;
+- implementar componentes, tablas, RPC, migraciones, RLS, eventos, tipos o
+  pruebas;
+- ejecutar DDL, DML, backfills, despliegues o cambios remotos.
+
+---
+
+#### 4. `NEXO-REMISSION-TRANSIT-FLOW-CONTRACT-001`
+
+##### 4.1. Lenguaje humano
+
+La experiencia utilizará:
+
+```text
+INICIAR RUTA
+SIGUIENTE PARADA
+CONFIRMAR LLEGADA
+REGISTRAR NOVEDAD
+CONTINUAR RUTA
+LLEGUE AL DESTINO
+PRESENTAR CARGA
+ENTREGAR CUSTODIA
+ENTREGAR A RECEPCION
+```
+
+No utilizará “recibido”, “aceptado en inventario”, “ubicado”, “diferencia
+cerrada” o “ruta completada” antes del hecho correspondiente.
+
+El resultado exitoso del tránsito es:
+
+```text
+RECEPTION_HANDOFF_READY
++ transit_journey_id
++ transit_receipt_id
++ shipment_ids[]
++ destination_arrival
++ proof_records[]
++ destination_custody_handoff
++ open_incidents[]
++ immutable_dispatch_receipts[]
++ reception_handoff_version
+```
+
+##### 4.2. Actor y autoridad
+
+El actor ordinario deberá:
+
+- estar autenticado y vinculado a un actor laboral vigente;
+- tener sesión personal o identificación humana vigente en dispositivo
+  compartido;
+- poseer `nexo.inventory.remissions.transit` para el journey y territorio
+  aplicables;
+- estar asignado al journey o recibir una transferencia de custodia válida;
+- operar un vehículo o medio compatible cuando la política lo exija;
+- tener turno, check-in y contexto operativo vigentes cuando apliquen;
+- actuar sobre shipments ya `DISPATCH_CONFIRMED`;
+- usar intenciones no consumidas con otro payload;
+- revalidar autoridad, asignación, custodia, estado y versión en cada mutación.
+
+El permiso de tránsito no concede despacho, recepción, ajuste, configuración,
+resolución supervisora, cambio de ruta maestra ni acceso a journeys ajenos.
+
+##### 4.3. Autoridad por etapa
+
+| Hecho                                  | Conductor o custodio          | Despacho origen              | Supervisor                  | Receptor destino             |
+| -------------------------------------- | ----------------------------- | ---------------------------- | --------------------------- | ---------------------------- |
+| consultar receipt de despacho asignado | sí                            | consulta                     | consulta territorial        | consulta mínima al presentar |
+| iniciar journey                        | sí, con asignación y custodia | no por defecto               | toma autorizada excepcional | no                           |
+| confirmar parada                       | sí                            | no                           | monitorea                   | no                           |
+| registrar incidente                    | sí                            | puede complementar en origen | sí, investiga y decide      | puede reportar al presentar  |
+| resolver incidente                     | no por defecto                | según causa                  | sí, con permiso exacto      | según causa y etapa          |
+| cambiar ruta o destino                 | no                            | no                           | solo instrucción autorizada | no                           |
+| presentar carga                        | sí                            | no                           | monitorea                   | coteja                       |
+| aceptar custodia de destino            | entrega                       | no                           | no por defecto              | sí, con identidad propia     |
+| registrar recepción                    | no                            | no                           | no por tránsito             | sí, en `NEXO-UX-013`         |
+
+La misma persona puede poseer más de una función, pero cada función revalida su
+permiso y contexto. Por defecto no puede auto-recibir una carga que permanece
+bajo su propia custodia.
+
+---
+
+#### 5. Entidades canónicas y decisiones por identidad
+
+| Entidad                  | Identidad estable                | Propiedad                          | Decisión en tránsito         | Prohibición                             |
+| ------------------------ | -------------------------------- | ---------------------------------- | ---------------------------- | --------------------------------------- |
+| receipt de despacho      | `dispatch_receipt_id`            | salida e inventario origen         | entrada inmutable            | no se recalcula ni modifica             |
+| shipment                 | `shipment_id`                    | contenido físico por destino       | carga transportada           | no se editan líneas ni cantidades       |
+| dispatch run             | `dispatch_run_id`                | agrupación logística de origen     | referencia de salida         | no sustituye journey                    |
+| journey                  | `transit_journey_id`             | viaje operativo versionado         | unidad de seguimiento        | no se infiere de una URL o estado       |
+| asignación               | `transit_assignment_id`          | actor, vehículo y vigencia         | habilita trabajo propio      | no concede permisos por sí sola         |
+| parada                   | `transit_stop_id`                | secuencia y destino finitos        | unidad de progreso           | no es texto libre ni geocerca solamente |
+| evento de tránsito       | `transit_event_id`               | hito de journey o parada           | evidencia de progreso        | no se reescribe                         |
+| intención                | `transit_intent_id`              | comando idempotente                | controla cada mutación       | no se reutiliza con otro payload        |
+| receipt de tránsito      | `transit_receipt_id`             | resultado de inicio o evento       | prueba consultable           | no se reconstruye desde la interfaz     |
+| observación de ubicación | `location_observation_id`        | dato contextual                    | evidencia auxiliar           | no ejecuta transiciones                 |
+| incidente                | `transit_incident_id`            | novedad estructurada               | bloquea, escala o condiciona | no se resuelve con nota libre           |
+| entrada de custodia      | `custody_chain_entry_id`         | actor, etapa y transferencia       | preserva cadena              | no se presume por proximidad            |
+| prueba de presentación   | `proof_record_id`                | evidencia mínima de entrega física | sustenta handoff             | no equivale a recepción                 |
+| handoff de destino       | `destination_custody_handoff_id` | entrega y aceptación bilaterales   | transfiere custodia          | no publica inventario                   |
+| handoff a recepción      | `reception_handoff_id`           | entrada consumible por receptor    | cierra tránsito funcional    | no resuelve cantidades recibidas        |
+
+Cada identidad conserva versión, actor, dispositivo, timestamps de servidor,
+correlación y estado. Un código visual, coordenada, fotografía o URL es una
+representación, no la identidad empresarial.
+
+---
+
+#### 6. Entrada contractual desde despacho
+
+El tránsito solo admite un shipment cuando el handoff contiene o permite
+resolver de forma autoritativa:
+
+- `shipment_id`, `shipment_code` y versión inmutable;
+- `dispatch_receipt_id` y `dispatch_intent_id`;
+- origen, destino y `dispatched_at`;
+- actor de despacho;
+- sello, fingerprint y versión;
+- handoff de custodia aceptado y custodio vigente;
+- vehículo o medio de transporte observado;
+- líneas y cantidades efectivamente despachadas;
+- efectos de fulfillment, paquetes, lotes y movimientos ya consumados;
+- excepciones abiertas no bloqueantes;
+- `transit_handoff_version`;
+- ausencia de revocación, duplicidad o conflicto terminal.
+
+La asignación de journey, ruta y paradas se resuelve como proyección separada.
+No se modifica el payload aprobado por `NEXO-UX-011`. Si no existe una
+asignación inequívoca y vigente, el shipment queda en `ASSIGNMENT_PENDING` y no
+puede iniciar seguimiento operativo.
+
+El tránsito no corrige un handoff incompleto. Devuelve un bloqueo estructurado
+al propietario correspondiente y conserva el receipt original.
+
+---
+
+#### 7. `NEXO-REMISSION-TRANSIT-WORK-QUEUE-CONTRACT-001`
+
+Se consumen exactamente las ocho colas aprobadas en
+`NEXO-DRIVER-WORK-QUEUE-CATALOG-001`:
+
+| Cola                    | Elegibilidad en esta tarea                                 | Acción primaria                          | Resultado                       |
+| ----------------------- | ---------------------------------------------------------- | ---------------------------------------- | ------------------------------- |
+| `DRVQ-RECOGIDA`         | shipment despachado, asignación vigente y handoff completo | revisar carga asignada                   | listo para iniciar o bloqueo    |
+| `DRVQ-ACEPTAR_CUSTODIA` | transferencia pendiente antes del inicio                   | aceptar o rechazar custodia              | custodia vigente o excepción    |
+| `DRVQ-TRANSITO`         | journey iniciado bajo custodia del actor                   | continuar siguiente tarea                | parada, incidente o arribo      |
+| `DRVQ-PARADA`           | existe siguiente parada vigente                            | confirmar llegada, resultado o salida    | progreso versionado             |
+| `DRVQ-ENTREGA`          | destino alcanzado y carga presentada                       | entregar custodia                        | handoff aceptado o fallido      |
+| `DRVQ-INCIDENTE`        | incidente abierto relacionado con trabajo propio           | completar evidencia o seguir instrucción | bloqueo, continuación o retorno |
+| `DRVQ-RETORNO`          | existe instrucción autorizada de retorno                   | continuar retorno                        | arribo y handoff de retorno     |
+| `DRVQ-BLOQUEO`          | conflicto de versión, custodia, seguridad o conectividad   | reconciliar                              | causa resuelta o escalada       |
+
+Orden recomendado:
+
+1. seguridad personal, accidente, pérdida o ruptura de custodia;
+2. incidentes críticos y journeys bloqueados;
+3. handoffs de destino pendientes con el actor presente;
+4. siguiente parada de un journey activo;
+5. journeys listos para iniciar dentro de su ventana;
+6. retornos autorizados;
+7. documentación o evidencia incompleta;
+8. trabajo ordinario por ventana y antigüedad.
+
+La cola muestra únicamente trabajo relacionado con el actor, custodia,
+asignación, vehículo o journey vigentes. Una sede autorizada no concede acceso
+a todas las rutas de esa sede.
+
+El reclamo de una tarea posee actor, dispositivo, versión, inicio, expiración,
+renovación y toma administrativa auditada. Perder el reclamo no transfiere la
+custodia ni revierte un evento confirmado.
+
+---
+
+#### 8. `NEXO-REMISSION-TRANSIT-JOURNEY-ASSIGNMENT-CONTRACT-001`
+
+##### 8.1. Composición
+
+Un journey puede transportar uno o más shipments cuando:
+
+- todos están `DISPATCH_CONFIRMED`;
+- comparten custodio y vehículo compatibles;
+- pertenecen al dispatch run o asignación autorizada;
+- cada shipment conserva un único destino;
+- la secuencia de paradas contiene todos los destinos exactamente una vez o
+  mediante una relación explícita cuando varias cargas comparten parada;
+- ninguna carga aparece en otro journey activo;
+- no existe incidente bloqueante ni transferencia de custodia incompleta.
+
+##### 8.2. Campos mínimos
+
+```text
+transit_journey_id
+journey_version
+transit_assignment_id
+assigned_actor_id
+vehicle_ref
+origin_site_id
+route_plan_id
+route_plan_version
+shipment_ids[]
+stop_ids[]
+planned_start_at
+valid_from
+valid_until
+assignment_state
+```
+
+`vehicle_ref` deberá resolverse contra la identidad canónica disponible en el
+subdominio propietario. Una etiqueta libre puede mostrarse como snapshot, pero
+no prueba por sí sola el vehículo físico.
+
+##### 8.3. Ruta y paradas
+
+Cada parada declara:
+
+```text
+transit_stop_id
+sequence_number
+stop_kind
+site_id_or_typed_physical_point
+shipment_ids[]
+planned_window
+required_actions[]
+stop_version
+```
+
+Reglas:
+
+- la secuencia es finita, única y versionada;
+- el cliente no puede insertar, eliminar, reordenar o sustituir paradas;
+- una geocerca no sustituye la identidad de sede o punto físico;
+- una parada de destino solo relaciona shipments cuyo destino coincide;
+- un cambio crea una nueva versión y revalida actor, vehículo, custodia,
+  ventanas e incidentes;
+- un cambio posterior al inicio exige instrucción autorizada y conserva la
+  versión anterior;
+- una parada futura no concede acceso a datos ajenos a los shipments asignados.
+
+##### 8.4. Reasignación
+
+Antes de `TRANSIT_STARTED`, una asignación puede cancelarse o sustituirse sin
+cambiar el receipt de despacho. Después del inicio, todo cambio de actor o
+vehículo exige:
+
+- motivo estructurado;
+- autoridad competente;
+- cierre de la asignación anterior;
+- transferencia explícita de custodia;
+- nueva versión de journey;
+- invalidación de caché, reclamos e intenciones pendientes;
+- confirmación del actor receptor de custodia;
+- conservación de la cadena histórica.
+
+---
+
+#### 9. `NEXO-REMISSION-TRANSIT-STEP-CATALOG-001`
+
+| Paso     | Nombre                     | Entrada                     | Acción principal                                                              | Salida                             | Escritura autorizada                |
+| -------- | -------------------------- | --------------------------- | ----------------------------------------------------------------------------- | ---------------------------------- | ----------------------------------- |
+| `TRN-01` | resolver contexto          | entrada task-first          | resolver actor, sesión, permiso, dispositivo y territorio                     | contexto válido o denegación       | ninguna                             |
+| `TRN-02` | cargar trabajo asignado    | contexto válido             | consultar journeys, shipments y colas propias                                 | cola versionada                    | ninguna                             |
+| `TRN-03` | abrir handoff              | trabajo elegido             | cargar shipment y receipt de despacho                                         | handoff observable                 | ninguna                             |
+| `TRN-04` | reconciliar despacho       | handoff                     | verificar contenido, sello, efectos y versión                                 | handoff válido o bloqueo           | evidencia de revisión               |
+| `TRN-05` | resolver journey           | handoff válido              | cargar asignación, vehículo, ruta y paradas                                   | journey asignado                   | claim operativo                     |
+| `TRN-06` | reconciliar custodia       | journey asignado            | cotejar custodio, actor, vehículo y sello                                     | custodia vigente o conflicto       | aceptación o rechazo cuando aplique |
+| `TRN-07` | revisar inicio             | custodia vigente            | mostrar ruta, cargas, paradas, ventanas e incidentes                          | fingerprint de inicio              | borrador local                      |
+| `TRN-08` | iniciar tránsito           | revisión válida             | ejecutar comando autoritativo                                                 | `TRANSIT_STARTED` y receipt        | journey, evento, receipt y outbox   |
+| `TRN-09` | cargar siguiente parada    | journey activo              | resolver parada vigente y acciones requeridas                                 | tarea de parada                    | ninguna                             |
+| `TRN-10` | confirmar llegada          | parada vigente              | registrar arribo con evidencia mínima                                         | `STOP_ARRIVED`                     | evento idempotente                  |
+| `TRN-11` | verificar parada           | llegada confirmada          | cotejar identidad, shipments, sello y contexto                                | parada compatible o incidente      | evidencia de parada                 |
+| `TRN-12` | registrar resultado        | parada compatible           | registrar acción realizada o imposibilidad                                    | `STOP_COMPLETED` o incidente       | evento y evidencia                  |
+| `TRN-13` | confirmar salida           | resultado válido            | cerrar permanencia y avanzar secuencia                                        | `STOP_DEPARTED`                    | evento idempotente                  |
+| `TRN-14` | continuar journey          | salida confirmada           | resolver siguiente parada o destino final                                     | nueva tarea                        | ninguna                             |
+| `TRN-15` | reportar incidente         | hallazgo en cualquier etapa | clasificar, contener y escalar                                                | incidente abierto                  | incidente y evidencia               |
+| `TRN-16` | ejecutar instrucción       | incidente con decisión      | esperar, continuar, transferir, retornar o ir a destino alterno               | journey reanudado o retorno        | instrucción y nueva versión         |
+| `TRN-17` | confirmar arribo a destino | parada final                | registrar llegada sin recepción                                               | `DESTINATION_ARRIVED`              | evento idempotente                  |
+| `TRN-18` | presentar carga            | arribo válido               | cotejar shipment, sello, receptor y prueba mínima                             | `DELIVERY_PRESENTED`               | prueba de presentación              |
+| `TRN-19` | transferir custodia        | presentación válida         | registrar entrega y aceptación o rechazo                                      | custodia destino o entrega fallida | handoff bilateral                   |
+| `TRN-20` | entregar a recepción       | custodia aceptada           | emitir handoff consumible por `NEXO-UX-013` y recuperar resultados pendientes | `RECEPTION_HANDOFF_READY`          | receipt y proyección autorizada     |
+
+Una implementación puede combinar pantallas, pero debe conservar las veinte
+decisiones, identidades y evidencias. Ninguna ruta legacy puede omitir el
+receipt de despacho, la asignación, la custodia o la idempotencia.
+
+---
+
+#### 10. `NEXO-REMISSION-TRANSIT-STATE-MACHINE-001`
+
+| Estado canónico                | Entidad               | Significado                                             | Escritor autorizado           | Transición siguiente                |
+| ------------------------------ | --------------------- | ------------------------------------------------------- | ----------------------------- | ----------------------------------- |
+| `HANDOFF_READY`                | proyección            | despacho entregó shipment y receipt consumibles         | despacho                      | asignación o bloqueo                |
+| `ASSIGNMENT_PENDING`           | journey               | falta actor, vehículo, ruta o relación inequívoca       | logística autorizada          | assigned                            |
+| `ASSIGNED`                     | journey               | actor, vehículo, shipments y ruta están vinculados      | asignación autorizada         | start_ready o reasignación          |
+| `START_READY`                  | journey               | handoff, custodia, ruta y contexto fueron reconciliados | conductor                     | transit_started                     |
+| `TRANSIT_STARTED`              | journey               | seguimiento operativo inició con receipt                | comando de inicio             | en_route                            |
+| `EN_ROUTE`                     | journey               | viaje activo entre paradas                              | eventos de tránsito           | stop_pending, exception o destino   |
+| `STOP_PENDING`                 | stop                  | parada siguiente resuelta y no alcanzada                | sistema                       | stop_arrived                        |
+| `STOP_ARRIVED`                 | stop                  | actor confirmó llegada a parada exacta                  | conductor                     | stop_completed o exception          |
+| `STOP_COMPLETED`               | stop                  | acciones requeridas quedaron registradas                | conductor                     | stop_departed                       |
+| `STOP_DEPARTED`                | stop                  | salida de la parada quedó confirmada                    | conductor                     | siguiente parada o destino          |
+| `DESTINATION_ARRIVED`          | journey/shipment      | carga llegó físicamente al destino                      | conductor                     | delivery_presented                  |
+| `DELIVERY_PRESENTED`           | handoff               | carga y sello fueron presentados al receptor            | conductor                     | custody pending                     |
+| `DESTINATION_CUSTODY_PENDING`  | handoff               | origen entregó, destino aún no acepta                   | conductor y receptor          | accepted o failed delivery          |
+| `DESTINATION_CUSTODY_ACCEPTED` | handoff               | receptor identificado aceptó custodia física            | receptor autorizado           | reception handoff ready             |
+| `EXCEPTION_OPEN`               | journey/shipment/stop | incidente activo condiciona el recorrido                | actor autorizado              | instrucción, continuación o retorno |
+| `RETURN_AUTHORIZED`            | journey               | existe instrucción versionada de retorno                | supervisor o autoridad exacta | return in progress                  |
+| `RETURN_IN_PROGRESS`           | journey               | carga continúa bajo custodia hacia destino autorizado   | conductor                     | arribo y handoff de retorno         |
+| `RECEPTION_HANDOFF_READY`      | proyección            | recepción puede iniciar su flujo independiente          | sistema                       | `NEXO-UX-013`                       |
+
+Los estados actuales `preparing`, `in_transit`, `partial`, `arrived`,
+`partial_receipt`, `received`, `exception` y `closed` son evidencia técnica y
+no sustituyen esta semántica. La implementación deberá proyectarlos sin
+colapsar despacho, journey, parada, arribo, custodia y recepción.
+
+`in_transit` no autoriza por sí mismo a un actor, no demuestra una ruta activa,
+no prueba movimiento y no permite aplicar nuevamente inventario.
+
+---
+
+#### 11. `NEXO-REMISSION-TRANSIT-START-COMMAND-001`
+
+##### 11.1. Entrada mínima
+
+```text
+transit_intent_id
+transit_journey_id
+expected_journey_version
+dispatch_receipt_ids[]
+expected_transit_handoff_versions[]
+expected_custody_versions[]
+route_plan_version
+actor_context
+client_observed_at
+```
+
+Los identificadores enviados por cliente son no confiables y deben resolverse
+en servidor.
+
+##### 11.2. Salida mínima
+
+```text
+transit_receipt_id
+transit_journey_id
+journey_version
+started_at
+started_by
+vehicle_snapshot
+shipment_ids[]
+dispatch_receipt_ids[]
+active_stop_id
+route_plan_version
+custody_chain_version
+outbox_event_id
+```
+
+##### 11.3. Semántica
+
+- una intención nueva ejecuta como máximo una vez;
+- la misma intención y mismo payload devuelve el mismo receipt;
+- la misma intención con payload distinto produce conflicto;
+- el journey debe estar `START_READY` y no tener otro inicio confirmado;
+- cada shipment debe conservar un único journey activo;
+- el comando revalida actor, permiso, asignación, vehículo, receipt, sello,
+  custodia, ruta, paradas, versiones e incidentes;
+- el comando crea el evento de inicio, receipt y outbox en una transacción;
+- el comando no actualiza cantidades, stock, paquetes, picks ni movimientos;
+- un fallo revierte todo el inicio operativo;
+- el receipt se consulta por intención y permanece inmutable.
+
+`TRANSIT_STARTED` puede ocurrir inmediatamente después del despacho, pero sigue
+siendo un hecho distinto y recuperable.
+
+---
+
+#### 12. `NEXO-REMISSION-TRANSIT-STOP-PROGRESS-CONTRACT-001`
+
+##### 12.1. Eventos permitidos
+
+```text
+STOP_ARRIVE
+STOP_COMPLETE
+STOP_DEPART
+DESTINATION_ARRIVE
+```
+
+Cada comando incluye intención, journey, parada, versión esperada, actor,
+acción requerida, hora observada, hora de servidor y evidencia mínima.
+
+##### 12.2. Orden
+
+Para cada parada:
+
+```text
+STOP_PENDING
+→ STOP_ARRIVED
+→ STOP_COMPLETED
+→ STOP_DEPARTED
+```
+
+Reglas:
+
+- no se puede confirmar una parada que no sea la siguiente;
+- `STOP_COMPLETE` exige `STOP_ARRIVED` confirmado;
+- `STOP_DEPART` exige resultado registrado o excepción con instrucción;
+- una parada no se completa dos veces;
+- un reintento idempotente devuelve el mismo receipt;
+- un cambio de secuencia invalida intenciones no ejecutadas;
+- la hora del cliente se conserva como observación y la del servidor ordena los
+  hechos;
+- una demora no reordena automáticamente la ruta;
+- el progreso no cambia custodia, inventario ni recepción por inferencia.
+
+##### 12.3. Resultado de parada
+
+| Resultado            | Significado                                 | Efecto                          |
+| -------------------- | ------------------------------------------- | ------------------------------- |
+| `COMPLETED`          | acciones requeridas cumplidas               | permite salida                  |
+| `SKIPPED_AUTHORIZED` | autoridad aprobó omisión concreta           | conserva motivo y nueva versión |
+| `FAILED`             | no fue posible cumplir                      | abre incidente                  |
+| `WAITING`            | espera autorizada                           | mantiene parada abierta         |
+| `TRANSFERRED`        | carga o custodia se transfirió expresamente | exige cadena de custodia        |
+| `RETURN_DIRECTED`    | existe instrucción de retorno               | cambia journey a retorno        |
+
+---
+
+#### 13. `NEXO-REMISSION-TRANSIT-LOCATION-OBSERVATION-CONTRACT-001`
+
+La ubicación es evidencia auxiliar. No es una decisión empresarial.
+
+Campos mínimos:
+
+```text
+location_observation_id
+transit_journey_id
+transit_stop_id_optional
+actor_id
+device_id
+observed_at_client
+received_at_server
+latitude
+longitude
+accuracy_meters
+source
+consent_or_policy_version
+```
+
+Reglas:
+
+1. una coordenada no inicia tránsito ni confirma una parada;
+2. una geocerca no sustituye `site_id` ni `transit_stop_id`;
+3. una observación imprecisa, antigua, simulada o ausente no produce un hecho
+   positivo automático;
+4. la interfaz puede sugerir la parada compatible, pero el actor confirma la
+   acción y el servidor revalida;
+5. la ubicación no amplía territorio, permisos ni custodia;
+6. se minimiza la precisión y frecuencia según finalidad;
+7. no se registra seguimiento continuo por defecto;
+8. telemetría continua permanece deshabilitada hasta que `NEXO-UX-023`
+   materialice dispositivo, consentimiento, retención, contingencia y piloto;
+9. una falla de GPS no autoriza saltar identidad, sello, custodia o evidencia;
+10. las observaciones no se exponen fuera del alcance autorizado.
+
+---
+
+#### 14. `NEXO-REMISSION-TRANSIT-CUSTODY-CONTINUITY-CONTRACT-001`
+
+##### 14.1. Invariante
+
+Desde el handoff de despacho hasta la aceptación de destino debe existir una
+cadena continua y no ambigua:
+
+```text
+exactly_one_active_custodian_per_shipment = true
+```
+
+La custodia se resuelve por shipment aunque varios shipments compartan journey.
+
+##### 14.2. Eventos
+
+```text
+ORIGIN_CUSTODY_ACCEPTED
+TRANSIT_CUSTODY_CONFIRMED
+CUSTODY_TRANSFER_OFFERED
+CUSTODY_TRANSFER_ACCEPTED
+CUSTODY_TRANSFER_REJECTED
+CUSTODY_SUSPENDED_BY_INCIDENT
+DESTINATION_CUSTODY_ACCEPTED
+RETURN_CUSTODY_ACCEPTED
+```
+
+Cada entrada conserva actor que entrega, actor que recibe, shipment, journey,
+sello, vehículo, motivo, lugar, timestamp, versión, evidencia e incidente
+relacionado cuando aplique.
+
+##### 14.3. Transferencia
+
+Una transferencia exige dos declaraciones separadas:
+
+```text
+CUSTODIO ACTUAL ENTREGA
+NUEVO CUSTODIO ACEPTA
+```
+
+Hasta la aceptación, el custodio anterior conserva responsabilidad. Un cambio
+de conductor, dispositivo, vehículo, ruta o turno no transfiere custodia por sí
+solo.
+
+Si el mismo humano posee función de conductor y receptor, no puede auto-aceptar
+el destino por defecto. Se requiere otro receptor autorizado o una excepción
+expresa, segregada y auditada definida por la política correspondiente.
+
+---
+
+#### 15. `NEXO-REMISSION-TRANSIT-INCIDENT-CONTRACT-001`
+
+| Incidente                | Severidad mínima | Efecto inicial                      | Acción inmediata                            | Propietario de decisión    |
+| ------------------------ | ---------------- | ----------------------------------- | ------------------------------------------- | -------------------------- |
+| `ROUTE_DELAY`            | media            | journey continúa condicionado       | registrar causa y estimación                | supervisión logística      |
+| `VEHICLE_BREAKDOWN`      | alta             | bloquea movimiento                  | asegurar carga y escalar                    | logística y supervisión    |
+| `ACCIDENT_OR_SAFETY`     | crítica          | bloquea journey                     | proteger personas y activar protocolo       | SST y supervisión          |
+| `ROAD_BLOCKED`           | alta             | bloquea siguiente parada            | esperar o solicitar desvío                  | supervisión logística      |
+| `CONNECTIVITY_LOSS`      | media            | bloquea mutaciones no reconciliadas | conservar intenciones y operar contingencia | sistema y supervisión      |
+| `SEAL_TAMPERED`          | crítica          | suspende custodia normal            | no abrir, preservar evidencia y escalar     | supervisión y seguridad    |
+| `LOAD_DAMAGE`            | alta             | bloquea shipment afectado           | contener sin alterar contenido registrado   | supervisión y calidad      |
+| `LOAD_LOSS`              | crítica          | bloquea journey                     | asegurar remanente y escalar                | supervisión y seguridad    |
+| `TEMPERATURE_OR_QUALITY` | crítica          | bloquea carga afectada              | preservar condición y escalar               | calidad y supervisión      |
+| `CUSTODY_CONFLICT`       | crítica          | bloquea mutaciones                  | conservar cadena y resolver actor           | supervisión y autorización |
+| `WRONG_DESTINATION`      | alta             | impide presentación                 | detener y solicitar instrucción             | supervisión logística      |
+| `RECIPIENT_UNAVAILABLE`  | media            | mantiene custodia                   | esperar, reintentar o escalar               | supervisión y destino      |
+| `DELIVERY_REJECTED`      | alta             | impide handoff                      | registrar rechazo y evidencia               | receptor y supervisión     |
+| `RETURN_REQUIRED`        | alta             | exige instrucción formal            | conservar custodia y esperar destino        | supervisión logística      |
+
+Cada incidente conserva tipo, severidad, etapa, shipment, journey, parada,
+cantidad o unidades afectadas cuando aplique, sello, custodia, evidencia,
+actor, propietario, plazo, estado, instrucción y resolución.
+
+Estados:
+
+```text
+OPEN
+ACKNOWLEDGED
+INVESTIGATING
+ACTION_REQUIRED
+CONTAINED
+RESOLVED
+CANCELLED
+```
+
+El conductor reporta y ejecuta instrucciones dentro de su capacidad. No ajusta
+inventario, cambia cantidades, declara pérdida resuelta, levanta calidad ni
+cierra responsabilidad unilateralmente.
+
+---
+
+#### 16. `NEXO-REMISSION-TRANSIT-FAILED-DELIVERY-RETURN-CONTRACT-001`
+
+##### 16.1. Entrega fallida
+
+Una entrega puede fallar por receptor ausente, rechazo, destino inaccesible,
+sello en conflicto, shipment incorrecto, ventana vencida, incidente de
+seguridad o instrucción autorizada.
+
+El resultado no se expresa como “no recibido” dentro del receipt de inventario.
+Se registra un incidente y una decisión de tránsito.
+
+##### 16.2. Instrucciones permitidas
+
+| Instrucción                        | Condición                                  | Efecto                             |
+| ---------------------------------- | ------------------------------------------ | ---------------------------------- |
+| `WAIT_AT_DESTINATION`              | espera segura y ventana definida           | mantiene custodia y parada abierta |
+| `RETRY_SAME_DESTINATION`           | nuevo intento autorizado                   | crea nueva ventana y versión       |
+| `CONTINUE_NEXT_STOP`               | ruta multi-parada y carga permanece segura | conserva shipment pendiente        |
+| `TRANSFER_TO_AUTHORIZED_CUSTODIAN` | custodio alterno identificado              | exige handoff bilateral            |
+| `RETURN_TO_ORIGIN`                 | origen apto y autorizado                   | crea ruta de retorno               |
+| `RETURN_TO_AUTHORIZED_SITE`        | destino alterno explícito                  | crea parada y versión nuevas       |
+| `HOLD_AT_SECURE_POINT`             | punto seguro tipado y autorizado           | mantiene custodia bajo control     |
+
+No se permite cambiar el destino empresarial del shipment por una selección del
+cliente. El destino alterno es una instrucción de custodia o retorno, no una
+reescritura del pedido.
+
+##### 16.3. Retorno
+
+El retorno conserva:
+
+- shipment y receipt de despacho originales;
+- motivo e incidente;
+- autoridad y versión de instrucción;
+- destino de retorno exacto;
+- custodio y vehículo;
+- nueva secuencia de paradas;
+- estado del sello y carga;
+- timestamps y evidencia;
+- handoff final al origen o sitio autorizado.
+
+El retorno no repone inventario automáticamente. Su recepción y cualquier
+movimiento compensatorio pertenecen a `NEXO-UX-013` y `NEXO-UX-022`.
+
+---
+
+#### 17. `NEXO-REMISSION-TRANSIT-ARRIVAL-PROOF-CONTRACT-001`
+
+##### 17.1. Hechos separados
+
+```text
+DESTINATION_ARRIVED
+→ DELIVERY_PRESENTED
+→ DESTINATION_CUSTODY_ACCEPTED
+→ RECEPTION_HANDOFF_READY
+→ RECEPCION EN NEXO-UX-013
+```
+
+Arribar no prueba que el receptor vio la carga. Presentar no prueba que aceptó
+custodia. Aceptar custodia no registra cantidades recibidas ni condición.
+
+##### 17.2. Prueba mínima obligatoria
+
+La prueba mínima incluye:
+
+- journey, parada, shipment y receipt de despacho;
+- actor conductor y receptor identificado;
+- destino y timestamp de servidor;
+- verificación de sello y versión;
+- manifestación de entrega del custodio;
+- aceptación, rechazo o ausencia del receptor;
+- observaciones estructuradas;
+- correlación con incidente cuando exista.
+
+Modos permitidos:
+
+| Modo                 | Uso                               | Autoridad                                        |
+| -------------------- | --------------------------------- | ------------------------------------------------ |
+| `MANIFEST_SCAN`      | identifica shipment o documento   | no confirma entrega por sí solo                  |
+| `SEAL_CHECK`         | coteja sello y estado             | no acepta custodia por sí solo                   |
+| `RECIPIENT_IDENTITY` | resuelve receptor autorizado      | no registra recepción por sí solo                |
+| `BILATERAL_ACK`      | entrega y aceptación separadas    | transfiere custodia física                       |
+| `SIGNATURE`          | evidencia reforzada               | condicionada a privacidad y retención            |
+| `PHOTO`              | evidencia contextual              | condicionada a finalidad, minimización y Storage |
+| `ONE_TIME_CODE`      | prueba de presencia o aceptación  | secreto no persistente ni reutilizable           |
+| `DEVICE_ATTESTATION` | evidencia técnica del dispositivo | no sustituye actor humano                        |
+
+`MANIFEST_SCAN`, `SEAL_CHECK`, `RECIPIENT_IDENTITY` y `BILATERAL_ACK` forman el
+mínimo funcional. Firma, fotografía y código de un solo uso permanecen
+condicionados a los controles de evidencia, sensibilidad, retención y
+dispositivo materializados por `NEXO-UX-022` y `NEXO-UX-023`.
+
+##### 17.3. Privacidad
+
+- no se almacena el código de un solo uso en claro;
+- firma y fotografía no se incluyen en logs ni respuestas generales;
+- la evidencia se minimiza al shipment y finalidad;
+- el receptor solo ve datos necesarios para cotejar la carga;
+- una denegación no revela rutas, cargas o actores ajenos;
+- la revocación de contexto invalida accesos temporales a evidencia;
+- el almacenamiento futuro deberá usar referencias protegidas y auditables.
+
+---
+
+#### 18. `NEXO-REMISSION-TRANSIT-TO-RECEPTION-HANDOFF-001`
+
+El handoff contiene:
+
+```text
+reception_handoff_id
+reception_handoff_version
+transit_journey_id
+transit_receipt_id
+shipment_id
+shipment_code
+dispatch_receipt_id
+origin_site_id
+destination_site_id
+destination_arrived_at
+delivery_presented_at
+destination_custody_handoff_id
+destination_custodian_actor_id
+seal_record_id
+seal_status
+shipment_snapshot
+proof_record_refs[]
+route_and_stop_snapshot
+open_incidents[]
+return_or_exception_context_optional
+```
+
+Garantías:
+
+- el shipment y su contenido coinciden con el receipt de despacho;
+- no se reaplicó inventario de origen ni consumo de paquetes;
+- la ruta y los hitos conservan versiones;
+- el destino fue alcanzado y la carga presentada;
+- la custodia de destino fue aceptada o el handoff queda bloqueado;
+- el sello y los incidentes están declarados;
+- el conductor dejó de ser custodio solo después de aceptación válida;
+- no se declaran cantidades recibidas, aceptadas, rechazadas o en cuarentena;
+- `NEXO-UX-013` inicia una recepción independiente e idempotente;
+- un incidente o retorno no reescribe los receipts históricos.
+
+Si la custodia no fue aceptada, no se genera `RECEPTION_HANDOFF_READY`; se
+mantiene entrega fallida, espera, transferencia o retorno.
+
+---
+
+#### 19. `NEXO-REMISSION-TRANSIT-IDEMPOTENCY-RECEIPT-001`
+
+Existen intenciones y receipts separados para:
+
+- inicio de journey;
+- llegada a parada;
+- resultado de parada;
+- salida de parada;
+- incidente;
+- instrucción de continuidad o retorno;
+- arribo a destino;
+- prueba de presentación;
+- transferencia de custodia;
+- handoff a recepción.
+
+Reglas:
+
+1. la misma intención con igual payload devuelve el mismo resultado;
+2. la misma intención con payload distinto produce conflicto;
+3. cada intención se vincula a actor, dispositivo, journey, etapa y versión;
+4. un timeout se reconcilia antes de habilitar reintento;
+5. un evento confirmado no se elimina ni sobrescribe;
+6. una corrección crea evento compensatorio o incidente;
+7. las versiones posteriores invalidan intenciones pendientes incompatibles;
+8. el cliente no asume éxito por estado local, navegación o mensaje optimista;
+9. los receipts son consultables por intención y correlación;
+10. outbox e integraciones no aplican un mismo evento dos veces.
+
+Ante desconexión:
+
+```text
+CONSERVAR INTENCION
+→ CONSULTAR ESTADO AUTORITATIVO
+→ MOSTRAR RECEIPT SI EXISTE
+→ REANUDAR SI SIGUE PENDIENTE
+→ NUEVA INTENCION SOLO SI FALLO SIN EFECTOS
+```
+
+No existe confirmación offline irreversible por defecto.
+
+---
+
+#### 20. Validaciones obligatorias
+
+| ID            | Momento      | Validación                                                          | Resultado ante fallo       |
+| ------------- | ------------ | ------------------------------------------------------------------- | -------------------------- |
+| `TRN-VAL-001` | entrada      | principal autenticado y actor efectivo vigente                      | denegación segura          |
+| `TRN-VAL-002` | entrada      | permiso exacto `nexo.inventory.remissions.transit`                  | denegación                 |
+| `TRN-VAL-003` | entrada      | turno, check-in y contexto aplicables vigentes                      | bloqueo contextual         |
+| `TRN-VAL-004` | entrada      | dispositivo permitido e identidad humana verificable                | bloqueo                    |
+| `TRN-VAL-005` | cola         | journey o shipment está asignado al actor o custodia                | excluir de cola            |
+| `TRN-VAL-006` | cola         | asignación vigente, única y no revocada                             | bloqueo                    |
+| `TRN-VAL-007` | handoff      | dispatch receipt existe y es inmutable                              | bloqueo crítico            |
+| `TRN-VAL-008` | handoff      | shipment está despachado y no terminal                              | bloqueo                    |
+| `TRN-VAL-009` | handoff      | efectos de inventario y paquetes ya están correlacionados           | devolver a despacho        |
+| `TRN-VAL-010` | handoff      | sello, fingerprint y versión coinciden                              | incidente o bloqueo        |
+| `TRN-VAL-011` | handoff      | custodio activo coincide con actor o transferencia válida           | conflicto de custodia      |
+| `TRN-VAL-012` | asignación   | vehículo y medio son compatibles                                    | bloqueo                    |
+| `TRN-VAL-013` | asignación   | shipment no pertenece a otro journey activo                         | conflicto concurrente      |
+| `TRN-VAL-014` | asignación   | ruta y paradas tienen versión vigente                               | refrescar                  |
+| `TRN-VAL-015` | asignación   | todos los destinos están cubiertos por paradas exactas              | rechazo                    |
+| `TRN-VAL-016` | inicio       | intención no fue usada con otro payload                             | conflicto idempotente      |
+| `TRN-VAL-017` | inicio       | journey continúa `START_READY`                                      | conflicto de estado        |
+| `TRN-VAL-018` | inicio       | no existe incidente bloqueante                                      | impedir inicio             |
+| `TRN-VAL-019` | inicio       | versions de journey, handoff, sello y custodia coinciden            | conflicto                  |
+| `TRN-VAL-020` | inicio       | comando no contiene ni produce efectos de inventario                | rollback                   |
+| `TRN-VAL-021` | progreso     | actor conserva asignación, permiso y custodia                       | bloqueo                    |
+| `TRN-VAL-022` | progreso     | parada es la siguiente de la secuencia vigente                      | rechazo                    |
+| `TRN-VAL-023` | progreso     | evento anterior requerido está confirmado                           | rechazo                    |
+| `TRN-VAL-024` | progreso     | intención y versión de parada son vigentes                          | conflicto                  |
+| `TRN-VAL-025` | progreso     | hora de servidor mantiene orden causal                              | rechazo o ajuste observado |
+| `TRN-VAL-026` | ubicación    | coordenada y geocerca solo se usan como evidencia                   | no ejecutar transición     |
+| `TRN-VAL-027` | parada       | resultado y acciones requeridas están completos                     | mantener parada abierta    |
+| `TRN-VAL-028` | incidente    | tipo, severidad, etapa, evidencia y responsable existen             | rechazo estructurado       |
+| `TRN-VAL-029` | incidente    | incidente crítico bloquea avance incompatible                       | bloqueo                    |
+| `TRN-VAL-030` | instrucción  | autoridad, motivo, destino y versión son válidos                    | rechazo                    |
+| `TRN-VAL-031` | custodia     | entrega y aceptación son bilaterales y correlacionadas              | mantener custodio anterior |
+| `TRN-VAL-032` | arribo       | destino y parada coinciden con shipment                             | incidente                  |
+| `TRN-VAL-033` | presentación | sello, manifest, receptor y prueba mínima son coherentes            | entrega fallida            |
+| `TRN-VAL-034` | handoff      | arribo y custodia no registran recepción ni inventario              | rollback                   |
+| `TRN-VAL-035` | retorno      | instrucción y destino de retorno son exactos y autorizados          | bloqueo                    |
+| `TRN-VAL-036` | recuperación | resultado desconocido se consulta por intención antes de reintentar | receipt o bloqueo          |
+
+Las treinta y seis validaciones son acumulativas. Una validación visual o GPS
+no sustituye servidor, RPC, RLS, integridad, custodia o idempotencia.
+
+---
+
+#### 21. Estados de interfaz
+
+| Estado                       | Condición                                 | Mensaje o comportamiento                       | Acción segura                 |
+| ---------------------------- | ----------------------------------------- | ---------------------------------------------- | ----------------------------- |
+| `RESOLVIENDO_CONTEXTO`       | entrada inicial                           | validar actor, sesión y trabajo                | esperar                       |
+| `SIN_AUTORIZACION`           | permiso o relación ausente                | explicar sin filtrar datos                     | volver                        |
+| `SIN_JORNADA_VALIDA`         | turno o check-in inválido                 | bloquear mutaciones                            | resolver contexto             |
+| `SIN_ASIGNACION`             | no hay journey, vehículo o custodia       | no mostrar trabajo general                     | actualizar o escalar          |
+| `CARGANDO_TRABAJO`           | consulta vigente                          | skeleton estable                               | esperar                       |
+| `COLA_VACIA`                 | no hay trabajo propio                     | vacío confirmado                               | refrescar                     |
+| `TRABAJO_ASIGNADO`           | journey atribuible                        | mostrar siguiente tarea                        | abrir                         |
+| `HANDOFF_INCOMPLETO`         | falta receipt, sello o versión            | bloquear inicio                                | devolver a despacho           |
+| `MANIFIESTO_NO_COINCIDE`     | carga observada difiere                   | no aceptar ni iniciar                          | abrir bloqueo                 |
+| `CUSTODIA_EN_CONFLICTO`      | custodio ambiguo o ajeno                  | bloquear mutaciones                            | reconciliar                   |
+| `LISTO_PARA_INICIAR`         | contexto y ruta válidos                   | mostrar impacto del inicio                     | confirmar                     |
+| `INICIANDO_TRANSITO`         | comando enviado                           | impedir doble acción                           | esperar o reconciliar         |
+| `RESULTADO_DESCONOCIDO`      | timeout o cierre                          | consultar intención                            | recuperar receipt             |
+| `EN_TRANSITO`                | journey activo                            | mostrar siguiente parada                       | continuar                     |
+| `CARGANDO_RUTA`              | se resuelve versión vigente               | no mostrar secuencia parcial como final        | esperar                       |
+| `PROXIMA_PARADA`             | parada pendiente                          | mostrar ventana y acciones                     | navegar o confirmar llegada   |
+| `LLEGADA_PENDIENTE`          | proximidad observada sin evento           | sugerir confirmación                           | revisar identidad             |
+| `PARADA_CONFIRMADA`          | llegada idempotente válida                | mostrar acciones requeridas                    | completar parada              |
+| `PARADA_COMPLETADA`          | resultado registrado                      | habilitar salida                               | confirmar salida              |
+| `INCIDENCIA_ABIERTA`         | novedad registrada                        | mostrar severidad y propietario                | completar evidencia o esperar |
+| `TRANSITO_BLOQUEADO`         | incidente crítico o instrucción pendiente | impedir avance incompatible                    | escalar                       |
+| `SIN_CONECTIVIDAD`           | red intermitente                          | conservar datos mínimos y estado no confirmado | reconciliar                   |
+| `RETORNO_AUTORIZADO`         | instrucción válida                        | mostrar destino y motivo                       | iniciar retorno               |
+| `RETORNO_EN_CURSO`           | journey de retorno activo                 | conservar custodia y paradas                   | continuar                     |
+| `ARRIBO_DESTINO`             | parada final confirmada                   | no mostrar recibido                            | presentar carga               |
+| `ENTREGA_PRESENTADA`         | carga y sello cotejados                   | esperar aceptación de destino                  | transferir custodia           |
+| `CUSTODIA_DESTINO_PENDIENTE` | entrega registrada sin aceptación         | conductor sigue responsable                    | esperar, rechazar o escalar   |
+| `HANDOFF_A_RECEPCION_LISTO`  | custodia destino aceptada                 | mostrar resumen inmutable                      | abrir recepción               |
+
+Los estados vacíos, errores, retornos y bloqueos no ofrecen controles que el
+servidor rechazará por diseño.
+
+---
+
+#### 22. `NEXO-REMISSION-TRANSIT-ROUTE-DISPOSITION-001`
+
+| Ruta             | Patrón actual                       | Disposición                | Uso en tránsito                                            | Estado                  |
+| ---------------- | ----------------------------------- | -------------------------- | ---------------------------------------------------------- | ----------------------- |
+| `NEXO-ROUTE-001` | `/`                                 | entrada task-first         | resolver jornada, journey y siguiente tarea propia         | `ESPECIFICADO`          |
+| `NEXO-ROUTE-031` | `/inventory/remissions`             | resolutor compartido       | mostrar solo trabajo relacionado con asignación o custodia | `ESPECIFICADO`          |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`        | detalle compartido         | consultar shipment y receipts con acciones por etapa       | `ESPECIFICADO`          |
+| `NEXO-ROUTE-034` | `/inventory/remissions/conductor`   | entrada operativa primaria | converger a journeys asignados, no a todos los shipments   | `ESPECIFICADO`          |
+| `NEXO-ROUTE-037` | `/inventory/remissions/receive`     | downstream                 | abrir solo después de handoff de custodia válido           | `HANDOFF_POSTERIOR`     |
+| `NEXO-ROUTE-038` | `/inventory/remissions/transit`     | superficie de tránsito     | separar operación del conductor de monitoreo supervisor    | `ESPECIFICADO`          |
+| `NEXO-ROUTE-050` | `/inventory/settings/supply-routes` | referencia de solo lectura | consumir ruta publicada sin configurarla ni reordenarla    | `REFERENCIA_CONTEXTUAL` |
+| `NEXO-ROUTE-052` | `/inventory/stock`                  | referencia de inventario   | consultar evidencia autorizada sin ajustar ni repostear    | `REFERENCIA_CONTEXTUAL` |
+| `NEXO-ROUTE-062` | `/printing/jobs`                    | utilidad contextual        | consultar documentos propios del journey                   | `UTILIDAD_CONTEXTUAL`   |
+| `NEXO-ROUTE-064` | `/scanner`                          | utilidad contextual        | identificar shipment, sello, parada o handoff y retornar   | `UTILIDAD_OCULTA`       |
+
+Reconciliación:
+
+```text
+EXPECTED_RELATED_ROUTES = 10
+MATERIALIZED_RELATED_ROUTES = 10
+MISSING_RELATED_ROUTES = 0
+DUPLICATE_RELATED_ROUTES = 0
+NEW_ROUTE_IDENTITIES = 0
+```
+
+No se crea una URL nueva. Las rutas `conductor` y `transit` deberán converger
+sobre una única fuente de journey, asignación, custodia, estado y receipts sin
+fusionar operación con supervisión.
+
+---
+
+#### 23. Conectividad, dispositivo y recuperación
+
+| Situación                           | Comportamiento                                            | Acción prohibida                |
+| ----------------------------------- | --------------------------------------------------------- | ------------------------------- |
+| sin conexión antes del inicio       | mostrar datos cacheados solo como referencia              | iniciar journey                 |
+| pérdida después de enviar intención | conservar intención y estado pendiente                    | repetir comando                 |
+| reconexión                          | revalidar actor, assignment, custody, journey y versiones | sincronizar ciegamente          |
+| dispositivo compartido              | identificar actor efectivo en cada mutación               | atribuir al dispositivo         |
+| cambio de actor                     | cerrar sesión operativa y revalidar custodia              | heredar journey                 |
+| cambio de vehículo                  | exigir instrucción y transferencia cuando aplique         | editar snapshot silenciosamente |
+| escaneo duplicado                   | reconocer identidad ya procesada                          | crear segundo evento            |
+| GPS ausente o impreciso             | permitir evidencia alternativa autorizada                 | inventar llegada                |
+| parada confirmada con timeout       | consultar intención                                       | confirmar nuevamente            |
+| contexto revocado                   | bloquear y conservar hechos autoritativos                 | continuar con caché             |
+| batería agotada                     | recuperar journey y siguiente evento                      | asumir progreso                 |
+| incidente sin red                   | conservar borrador de emergencia y prioridad humana       | marcar incidente resuelto       |
+
+La seguridad de personas prevalece sobre la captura digital. La contingencia no
+convierte un evento local en hecho confirmado; toda mutación pendiente se
+reconcilia cuando existe conectividad.
+
+---
+
+#### 24. Autorización, seguridad y privacidad
+
+1. interfaz, servidor, RPC y RLS revalidan actor, permiso, asignación, journey,
+   shipment, parada, custodia, estado y versión;
+2. una sede asignada no concede lectura de todos los journeys de la sede;
+3. `dispatch`, `transit` y `receive` son capacidades distintas;
+4. una URL, botón, código, coordenada o estado visible no concede autoridad;
+5. actor técnico, vehículo y dispositivo no sustituyen al humano efectivo;
+6. los datos del cliente no deciden ruta, destino, parada, custodia o estado;
+7. el servidor ordena eventos y conserva la hora observada por separado;
+8. las denegaciones no revelan rutas, cargas, incidentes o receptores ajenos;
+9. evidencia de ubicación, firma, fotografía y receptor se minimiza por
+   finalidad y alcance;
+10. secretos, PIN y códigos de un solo uso no aparecen en logs ni receipts;
+11. toda transferencia, reasignación, incidente, instrucción y toma
+    administrativa conserva auditoría;
+12. los receipts de despacho y tránsito son inmutables;
+13. outbox y consumidores aplican idempotencia;
+14. tránsito no puede ejecutar movimientos de inventario de origen o destino;
+15. el receptor solo accede a la carga presentada y al contexto mínimo;
+16. supervisión observa y decide dentro de su territorio sin apropiarse de la
+    custodia operativa.
+
+---
+
+#### 25. Evidencia técnica actual y diagnóstico
+
+| Fuente actual                                       | Evidencia verificable                                                                                                                          | Estado frente al diseño    | Decisión                                                                     |
+| --------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------- | ---------------------------------------------------------------------------- |
+| `src/app/inventory/remissions/transit/page.tsx`     | consulta `restock_requests` de centros autorizados en `preparing`, `in_transit` y `partial`; no filtra por journey, actor, vehículo o custodia | `IMPLEMENTADO_PARCIAL`     | sustituir la cola amplia por trabajo propio y versionado                     |
+| `src/app/inventory/remissions/transit/page.tsx`     | mezcla “listas para despacho”, “en tránsito” y “parciales” en una vista denominada conductor                                                   | `BRECHA_DE_ETAPA`          | separar despacho, tránsito y recepción parcial                               |
+| `src/app/inventory/remissions/conductor/page.tsx`   | consulta shipments `draft`, `loading`, `sealed` e `in_transit` sin demostrar asignación territorial o de custodio                              | `BRECHA_DE_AUTORIZACION`   | mostrar solo journeys y shipments atribuibles                                |
+| `src/app/inventory/remissions/conductor/page.tsx`   | cualquier shipment no `in_transit` aparece como pendiente de salida y un shipment en tránsito enlaza directamente a recepción                  | `BRECHA_CRITICA`           | exigir despacho confirmado, journey, hitos y handoff antes de recepción      |
+| `src/app/inventory/remissions/conductor/actions.ts` | con sesión autenticada cambia `draft`, `loading` o `sealed` directamente a `in_transit`                                                        | `BRECHA_CRITICA`           | retirar el bypass y consumir el comando de despacho e inicio separados       |
+| `src/app/inventory/remissions/conductor/actions.ts` | no evidencia permiso exacto, asignación, custodia, route plan, versión, intención, receipt ni outbox                                           | `NO_IMPLEMENTADO_COMPLETO` | materializar comando de inicio autoritativo                                  |
+| `submitTransitChecklist` en el detalle legacy       | desde `preparing` aplica movimientos, consume paquetes y luego cambia la solicitud a `in_transit`                                              | `DOBLE_FRONTERA_CRITICA`   | mover efectos de salida exclusivamente al despacho y prohibirlos en tránsito |
+| `submitTransitChecklist` en el detalle legacy       | escribe notas libres de conductor por línea y ejecuta varias mutaciones separadas                                                              | `BRECHA_DE_ATOMICIDAD`     | usar incidente, evento, intención y receipt estructurados                    |
+| `remission_dispatch_runs` y `remission_shipments`   | representan salida, vehículo y estados parciales, pero no journey, paradas, eventos, cadena de custodia o receipts de tránsito completos       | `IMPLEMENTADO_PARCIAL`     | conservar identidades útiles y añadir proyección compatible                  |
+| `remission_exceptions`                              | admite etapa `transit` y algunos tipos, pero no cubre las catorce familias, instrucciones y estados aprobados                                  | `IMPLEMENTADO_PARCIAL`     | ampliar contrato sin perder historial                                        |
+| progreso de ruta y paradas                          | no se observó entidad ni comando idempotente completo                                                                                          | `NO_IMPLEMENTADO`          | materializar journey, stops, events e intenciones                            |
+| prueba de presentación y handoff de destino         | no se observó contrato bilateral completo separado de receipt                                                                                  | `NO_IMPLEMENTADO`          | materializar prueba mínima y transferencia de custodia                       |
+| validación móvil, offline y física                  | no existe evidencia de piloto con actor, vehículo, paradas, incidentes y red intermitente                                                      | `PENDIENTE_DE_EVIDENCIA`   | validar en `NEXO-UX-023` a `NEXO-UX-025`                                     |
+
+La coexistencia actual permite que dos superficies distintas produzcan
+`in_transit` con semánticas incompatibles. La implementación deberá establecer
+un único escritor autoritativo para despacho y otro para inicio/progreso de
+tránsito, sin doble contabilización.
+
+---
+
+#### 26. `NEXO-REMISSION-TRANSIT-IMPLEMENTATION-HANDOFF-001`
+
+Una implementación posterior deberá, como mínimo:
+
+1. adoptar `NEXO-REMISSION-DISPATCH-TO-TRANSIT-HANDOFF-001` como entrada única;
+2. impedir que tránsito aplique stock, paquetes o cantidades despachadas;
+3. retirar o encapsular los dos bypasses actuales hacia `in_transit`;
+4. materializar journey, asignación, paradas, eventos, intenciones, receipts,
+   cadena de custodia, incidentes, instrucciones, prueba y handoff de destino;
+5. filtrar toda consulta por actor, asignación, custodia y territorio;
+6. separar operación del conductor y monitoreo supervisor;
+7. implementar comandos idempotentes de inicio y progreso;
+8. conservar orden causal, control optimista y recuperación por intención;
+9. implementar transferencia bilateral de custodia;
+10. materializar las catorce familias de incidente y sus bloqueos;
+11. impedir que arribo o custodia publiquen inventario recibido;
+12. entregar a recepción un payload versionado e inmutable;
+13. generar contratos y tipos compartidos cuando cambie el esquema;
+14. versionar toda modificación Supabase desde `vento-shell`;
+15. incluir RLS, grants, índices, concurrencia, outbox, compatibilidad y
+    observabilidad;
+16. incluir rollback, migración de estados legacy y pruebas de no duplicidad;
+17. impedir que rutas legacy y nuevas escriban el mismo hecho durante la
+    convivencia;
+18. certificar dispositivo, red intermitente, ubicación y evidencia antes de
+    habilitar capacidades condicionadas.
+
+##### 26.1. Rollback funcional esperado
+
+Antes de `TRANSIT_STARTED`, puede cancelarse o reasignarse el journey sin
+alterar despacho. Después del inicio, el rollback no borra eventos: crea
+instrucción, transferencia, retorno o corrección compensatoria. Ningún rollback
+restaura inventario por sí mismo.
+
+##### 26.2. Compatibilidad
+
+Durante la transición:
+
+- cada shipment tendrá un único journey activo;
+- cada hecho tendrá un único escritor autoritativo;
+- `restock_requests.status` será una proyección compatible, no la única verdad;
+- `remission_shipments.status` no sustituirá paradas, custodia o receipts;
+- los flags temporales serán explícitos, versionados y observables;
+- los receipts distinguirán operaciones nuevas de transiciones legacy;
+- la desactivación de bypasses exigirá reconciliación y prueba de cero doble
+  descuento y cero doble evento.
+
+---
+
+#### 27. Decisiones aprobadas
+
+1. `NEXO-UX-012` diseña tránsito; recepción permanece en `NEXO-UX-013`;
+2. tránsito consume un shipment ya despachado e inmutable;
+3. despacho e inicio operativo del journey son hechos distintos;
+4. tránsito nunca vuelve a descontar inventario ni consumir paquetes;
+5. existen exactamente veinte pasos y veintiocho estados de interfaz;
+6. se reconciliaron dieciocho estados empresariales y técnicos;
+7. se consumen exactamente las ocho colas `DRVQ-*` aprobadas;
+8. el permiso exacto es `nexo.inventory.remissions.transit`;
+9. una sede autorizada no concede todos los journeys de esa sede;
+10. el trabajo se filtra por asignación, actor, custodia y vehículo;
+11. un journey puede transportar varios shipments compatibles;
+12. cada shipment conserva un único destino y un único journey activo;
+13. la ruta y las paradas son finitas, exactas y versionadas;
+14. el cliente no reordena ni inventa paradas;
+15. `TRANSIT_STARTED` usa intención y receipt propios;
+16. los hitos de parada son llegada, resultado y salida separados;
+17. GPS y geocerca son observaciones, no autoridad;
+18. no existe seguimiento continuo por defecto;
+19. cada shipment tiene exactamente un custodio activo;
+20. cambiar actor o vehículo no transfiere custodia automáticamente;
+21. toda transferencia exige entrega y aceptación separadas;
+22. se materializaron catorce familias de incidente;
+23. el conductor reporta, pero no resuelve decisiones supervisoras por defecto;
+24. una entrega fallida mantiene custodia y abre una decisión estructurada;
+25. retorno no equivale a reposición de inventario;
+26. arribo, presentación, aceptación de custodia y recepción son hechos distintos;
+27. la prueba mínima no requiere fotografía ni firma;
+28. evidencia reforzada queda condicionada a privacidad, Storage y dispositivo;
+29. el handoff a recepción no contiene cantidades recibidas;
+30. cada mutación usa intención, versión y receipt;
+31. resultado desconocido se reconcilia antes de reintentar;
+32. no se crean nuevas URLs;
+33. las rutas de conductor y tránsito convergen sin mezclar supervisión;
+34. los dos bypasses actuales a `in_transit` deben retirarse o encapsularse;
+35. toda modificación futura de Supabase se crea y versiona desde `vento-shell`;
+36. esta tarea no modifica código, datos ni ambientes.
+
+---
+
+#### 28. Pendientes materializados y propietarios
+
+| Pendiente                                 | Estado                   | Propietario                  | Tarea o puerta                                | Condición de salida                                                            |
+| ----------------------------------------- | ------------------------ | ---------------------------- | --------------------------------------------- | ------------------------------------------------------------------------------ |
+| fuente física de vehículo                 | `PENDIENTE_DE_EVIDENCIA` | NEXO y logística             | `NEXO-UX-012`; `NEXO-UX-023`; paquete E5 NEXO | identidad, disponibilidad, custodia y compatibilidad materializadas y probadas |
+| comandos de journey y paradas             | `ESPECIFICADO`           | NEXO y Data                  | paquete E5 NEXO; `SHELL-CI-017`               | esquema, RPC, RLS, idempotencia y pruebas materializados                       |
+| separación de doble escritor `in_transit` | `ESPECIFICADO`           | NEXO                         | paquete E5 NEXO                               | un escritor por hecho y pruebas de no duplicidad                               |
+| resolución supervisora de incidentes      | `ESPECIFICADO`           | supervisión NEXO             | `NEXO-UX-007`; `NEXO-UX-022`                  | permisos, estados, instrucciones y cierres separados                           |
+| fotografía, firma y código de un solo uso | `BLOQUEADO`              | evidencia y UX NEXO          | `NEXO-UX-022`; `NEXO-UX-023`                  | finalidad, Storage, retención, privacidad y dispositivo aprobados              |
+| recepción y cantidades en destino         | `RESERVADO`              | receptor NEXO                | `NEXO-UX-013`                                 | receipt, líneas, condición, diferencias y publicación especificados            |
+| retorno recibido y compensación           | `ESPECIFICADO`           | recepción y supervisión      | `NEXO-UX-013`; `NEXO-UX-022`                  | handoff, decisión y movimientos compensatorios aprobados                       |
+| seguimiento continuo de ubicación         | `BLOQUEADO`              | UX, privacidad y dispositivo | `NEXO-UX-023`                                 | finalidad, frecuencia, consentimiento, retención y piloto aprobados            |
+| validación móvil y offline                | `PENDIENTE_DE_EVIDENCIA` | UX-QA NEXO                   | `NEXO-UX-023`; `NEXO-UX-024`                  | pruebas con dispositivo, revocación, batería y red intermitente                |
+| métricas y piloto de ruta real            | `PENDIENTE_DE_EVIDENCIA` | Operaciones y UX-QA          | `NEXO-UX-025`                                 | umbrales, muestra, evidencia y aceptación operativa                            |
+
+Ningún pendiente queda sin propietario, tarea o condición de salida.
+
+---
+
+#### 29. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Esta tarea crea:
+
+- `TREQ-NEXO-121`;
+- `TREQ-NEXO-122`;
+- `TREQ-NEXO-123`;
+- `TREQ-NEXO-124`;
+- `TREQ-NEXO-125`;
+- `TREQ-NEXO-126`;
+- `TREQ-NEXO-127`;
+- `TREQ-NEXO-128`;
+- `TREQ-NEXO-129`;
+- `TREQ-NEXO-130`;
+- `TREQ-NEXO-131`;
+- `TREQ-NEXO-132`.
+
+No modifica, difiere, descarta ni vuelve obsoleto ningún requisito histórico.
+El detalle canónico reside en el registro completo 04A actualizado
+coordinadamente con esta tarea.
+
+---
+
+#### 30. Criterios de aceptación
+
+La tarea se considera documentalmente completa cuando:
+
+1. existe una frontera inequívoca entre despacho, tránsito y recepción;
+2. el handoff de `NEXO-UX-011` se consume sin modificarlo;
+3. los veinte pasos están materializados sin faltantes ni duplicados;
+4. los veintiocho estados de interfaz tienen condición y acción segura;
+5. los dieciocho estados empresariales y técnicos están reconciliados;
+6. las ocho colas `DRVQ-*` conservan identidad y propósito;
+7. el permiso exacto de tránsito está separado de despacho y recepción;
+8. la cola muestra únicamente journeys y shipments atribuibles al actor;
+9. journey, assignment, route, stops, events, intentions y receipts tienen
+   identidades estables;
+10. un shipment no pertenece a dos journeys activos;
+11. la secuencia de paradas es finita, exacta y versionada;
+12. el inicio del tránsito es atómico e idempotente;
+13. el inicio no produce ningún movimiento de inventario;
+14. llegada, resultado y salida de parada permanecen separados;
+15. la ubicación es evidencia auxiliar y no autoridad;
+16. la cadena de custodia no presenta vacíos ni ambigüedad;
+17. una transferencia exige entrega y aceptación independientes;
+18. las catorce familias de incidente tienen severidad, efecto y propietario;
+19. un incidente crítico bloquea avance incompatible;
+20. espera, reintento, transferencia, retorno y destino alterno requieren
+    instrucción autorizada;
+21. el retorno conserva el hecho original y no repone inventario;
+22. arribo, presentación, custodia destino y recepción son hechos separados;
+23. la prueba mínima puede operar sin fotografía o firma;
+24. evidencia sensible permanece condicionada a controles explícitos;
+25. el handoff a `NEXO-UX-013` no declara cantidades recibidas;
+26. las treinta y seis validaciones están asignadas a momentos concretos;
+27. las diez rutas relacionadas tienen disposición explícita;
+28. el diagnóstico diferencia implementación parcial, brecha y ausencia;
+29. los doce requisitos nuevos están incorporados al 04A completo;
+30. todos los pendientes tienen propietario y condición de salida;
+31. no se ejecutan cambios físicos ni operaciones remotas;
+32. la siguiente tarea permanece reservada.
+
+---
+
+#### 31. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-011 — Diseñar flujo completo de despacho`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-012 — Diseñar flujo completo de tránsito`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-013 — Diseñar flujo completo de recepción`
+
+`NEXO-UX-013` deberá consumir
+`NEXO-REMISSION-TRANSIT-TO-RECEPTION-HANDOFF-001`, conservar los receipts de
+despacho y tránsito, iniciar una recepción independiente y no reinterpretar
+arribo, presentación o custodia como cantidades aceptadas sin su propio
+comando idempotente y evidencia verificable.
+
+
 ### [ ] NEXO-UX-013 — Diseñar flujo completo de recepción
 ### [ ] NEXO-UX-014 — Diseñar flujo completo de entradas
 ### [ ] NEXO-UX-015 — Diseñar flujo completo de ubicación
