@@ -14287,7 +14287,1167 @@ No queda pendiente narrativo sin tarea, paquete o condición de salida.
 `NEXO-UX-017` deberá consumir `NEXO-INVENTORY-MOVEMENT-IMPLEMENTATION-HANDOFF-001`, definir el flujo humano y empresarial de retiro, conservar origen físico, cantidad, UOM, motivo, autorización e identidad, y producir un receipt outbound idempotente que el ledger publique mediante legs negativos sin insertar movimientos o actualizar stock directamente.
 
 
-### [ ] NEXO-UX-017 — Diseñar flujo completo de retiros
+### ✅ NEXO-UX-017 — Diseñar flujo completo de retiros
+
+---
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-016 — Diseñar flujo completo de movimientos` — APROBADA
+**Tarea siguiente:** `NEXO-UX-018 — Diseñar flujo completo de conteos` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo de retiros, consumos y entregas desde inventario controlado, con clasificación, autorización, trabajo, sesión, fuente física, cantidad, UOM, receptor, propósito, parcialidad, receipt outbound, ledger, proyecciones, excepciones, compatibilidad y continuidad
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Proceso propietario:** `VPROC-0025 — Retirar, consumir o trasladar existencias conservando unidad, conversión, origen y destino`
+**Permiso funcional exacto consumido:** `nexo.inventory.withdraw`; `nexo.inventory.transfers` permanece propietario de traslados y `nexo.inventory.movements` permanece consulta del ledger
+**Artefactos producidos:** veintitrés contratos, catálogos, matrices y handoffs enumerados en esta tarea
+**Decisiones consumidas:** `NEXO-INVENTORY-MOVEMENT-IMPLEMENTATION-HANDOFF-001`, `NEXO-INVENTORY-PUTAWAY-HANDOFF-001`, contratos aprobados de preparación, despacho, tránsito y recepción, catálogo canónico de rutas NEXO, requisitos `TREQ-NEXO-*` vigentes y evidencia técnica actual de `vento-nexo` y `vento-shell`
+**Cambios físicos autorizados:** ninguno; no modifica código, componentes, permisos, datos, Supabase, migraciones, RLS, RPC, tipos, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar de principio a fin cómo una persona autorizada retira, consume o entrega existencias desde un origen físico controlado, conservando propósito, receptor, cantidad, unidad, conversión, identidad, autorización y causalidad hasta un receipt outbound idempotente consumible por el ledger aprobado en `NEXO-UX-016`.
+
+El flujo no es un formulario genérico de cantidades negativas. Antes de ejecutar debe determinar si la intención es realmente un retiro o pertenece a otro proceso:
+
+```text
+INTENCION OPERATIVA
++ CONTEXTO AUTORIZADO
++ ORIGEN FISICO
++ DESTINO DE USO O RECEPTOR
++ PROPOSITO Y POLITICA
+↓
+RETIRO REAL
+O TRASLADO
+O FUENTE AUTOMATICA
+O EXCEPCION
+O EVENTO SIN EFECTO DE INVENTARIO
+```
+
+Regla canónica:
+
+```text
+SOLICITUD O CAPTURA ESPONTANEA VERSIONADA
++ AUTORIZACION EFECTIVA Y APROBACION CONDICIONAL CUANDO APLIQUE
++ WORK ITEM Y SESION HUMANA
++ FUENTE UTILIZABLE Y ASIGNACION FISICA EXPLICITA
++ CANTIDAD, UOM, PRESENTACION, LOTE, CONDICION Y RECEPTOR
++ INTENCION IDEMPOTENTE
++ RECEIPT OUTBOUND Y POSTING DEL LEDGER
++ PROYECCIONES DEDUPLICADAS
+→ RETIRO TRAZABLE SIN STOCK NEGATIVO, DOBLE EFECTO NI DESTINO FICTICIO
+```
+
+Fronteras obligatorias:
+
+```text
+RETIRO ≠ TRASLADO ENTRE LOC
+RETIRO ≠ DESPACHO DE REMISION
+RETIRO ≠ CONSUMO AUTOMATICO DE PRODUCCION
+RETIRO ≠ SALIDA POR VENTA
+RETIRO ≠ MERMA, PERDIDA O DISPOSICION
+RETIRO ≠ AJUSTE
+RETIRO ≠ EVENTO OPERATIVO SIN INVENTARIO
+EJECUTOR ≠ RECEPTOR
+RECEPTOR ≠ APROBADOR
+PERMISO ≠ APROBACION
+CAPTURA ≠ SALIDA CONFIRMADA
+HEURISTICA TECNICA ≠ POLITICA FISICA
+NOTA LIBRE ≠ PROPOSITO
+STOCK VISIBLE ≠ STOCK UTILIZABLE
+RECEIPT OUTBOUND ≠ PROYECCION YA CONVERGENTE
+CANCELACION ≠ REVERSA
+```
+
+Ninguna etiqueta, asignación técnica de empleado, nota o flag visual puede cambiar estas fronteras silenciosamente.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban veintitrés artefactos documentales consumibles:
+
+|  N.º | Artefacto                                                                | Resultado material                                                                                                                         |
+| ---: | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------ |
+|   1. | `NEXO-INVENTORY-WITHDRAWAL-FLOW-CONTRACT-001`                            | fija propósito, frontera, autoridad, entrada, salida y lenguaje canónico del retiro                                                        |
+|   2. | `NEXO-INVENTORY-WITHDRAWAL-DISPOSITION-MATRIX-001`                       | clasifica diez familias operativas y evita convertir traslados, producción, ventas, remisiones, mermas o eventos sin inventario en retiros |
+|   3. | `NEXO-INVENTORY-WITHDRAWAL-WORK-QUEUE-CONTRACT-001`                      | materializa ocho colas de trabajo, autorización, ejecución, parcialidad, reconciliación y excepción                                        |
+|   4. | `NEXO-INVENTORY-WITHDRAWAL-STATE-MACHINE-001`                            | separa veintidós estados empresariales y técnicos del estado visual                                                                        |
+|   5. | `NEXO-INVENTORY-WITHDRAWAL-STEP-CATALOG-001`                             | materializa veinticuatro pasos desde contexto hasta cierre                                                                                 |
+|   6. | `NEXO-INVENTORY-WITHDRAWAL-AUTHORIZATION-SEGREGATION-CONTRACT-001`       | aplica autorización efectiva y aprobación condicional sin autoaprobación                                                                   |
+|   7. | `NEXO-INVENTORY-WITHDRAWAL-REQUEST-WORK-ITEM-CONTRACT-001`               | define solicitud, líneas, trabajo espontáneo o derivado y versiones esperadas                                                              |
+|   8. | `NEXO-INVENTORY-WITHDRAWAL-SESSION-CLAIM-CONTRACT-001`                   | gobierna reclamo, sesión humana, dispositivo compartido, expiración y transferencia                                                        |
+|   9. | `NEXO-INVENTORY-WITHDRAWAL-PURPOSE-REASON-POLICY-CONTRACT-001`           | estructura propósito, razón, política snapshot, umbrales y evidencia                                                                       |
+|  10. | `NEXO-INVENTORY-WITHDRAWAL-SOURCE-ELIGIBILITY-CONTRACT-001`              | define stock utilizable, reservas, condición, lote, vencimiento y bloqueos                                                                 |
+|  11. | `NEXO-INVENTORY-WITHDRAWAL-ALLOCATION-PICK-CONTRACT-001`                 | materializa asignaciones físicas por LOC, posición, presentación, lote y cantidad                                                          |
+|  12. | `NEXO-INVENTORY-WITHDRAWAL-QUANTITY-UOM-IDENTITY-CONTRACT-001`           | conserva entrada, conversión, unidad base, precisión e identidad física                                                                    |
+|  13. | `NEXO-INVENTORY-WITHDRAWAL-RECIPIENT-USE-CUSTODY-CONTRACT-001`           | separa actor ejecutor, receptor, área, destino de uso y transferencia de custodia                                                          |
+|  14. | `NEXO-INVENTORY-WITHDRAWAL-PARTIALITY-REMAINDER-CONTRACT-001`            | gobierna retiros parciales, splits, remanentes, faltantes y cierre de líneas                                                               |
+|  15. | `NEXO-INVENTORY-WITHDRAWAL-IDEMPOTENCY-OUTBOUND-RECEIPT-CONTRACT-001`    | define intención, fingerprint, comando, receipt outbound, posting y resultado desconocido                                                  |
+|  16. | `NEXO-INVENTORY-WITHDRAWAL-LEDGER-PROJECTION-BOUNDARY-001`               | consume el ledger de movimientos sin insertar filas ni actualizar proyecciones directamente                                                |
+|  17. | `NEXO-INVENTORY-WITHDRAWAL-NO-INVENTORY-EFFECT-BOUNDARY-001`             | separa uso operativo sin inventario de un retiro cuantitativo real                                                                         |
+|  18. | `NEXO-INVENTORY-WITHDRAWAL-EXCEPTION-CANCELLATION-REVERSAL-CONTRACT-001` | define cancelación previa, caso posterior, compensación y propietarios                                                                     |
+|  19. | `NEXO-INVENTORY-WITHDRAWAL-COMPATIBILITY-CONTRACT-001`                   | hace converger formulario general, quiosco, RPC, movimientos y proyecciones legacy                                                         |
+|  20. | `NEXO-INVENTORY-WITHDRAWAL-ROUTE-DISPOSITION-001`                        | decide catorce superficies existentes sin crear rutas                                                                                      |
+|  21. | `NEXO-INVENTORY-WITHDRAWAL-INTERFACE-STATE-CONTRACT-001`                 | materializa treinta estados de interfaz sin éxito ficticio                                                                                 |
+|  22. | `NEXO-INVENTORY-WITHDRAWAL-VALIDATION-MATRIX-001`                        | asigna cuarenta y ocho comprobaciones a momentos y propietarios concretos                                                                  |
+|  23. | `NEXO-INVENTORY-WITHDRAWAL-IMPLEMENTATION-HANDOFF-001`                   | entrega modelo físico, transición, pruebas, observabilidad, rollback y continuidad a conteos, ajustes, excepciones y E5                    |
+
+Cobertura materializada:
+
+| Elemento                         | Total esperado | Total materializado | Faltantes | Duplicados |
+| -------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Artefactos documentales          |             23 |                  23 |         0 |          0 |
+| Pasos `WDR-STEP-*`               |             24 |                  24 |         0 |          0 |
+| Estados empresariales y técnicos |             22 |                  22 |         0 |          0 |
+| Estados de interfaz              |             30 |                  30 |         0 |          0 |
+| Colas `WDRQ-*`                   |              8 |                   8 |         0 |          0 |
+| Familias de disposición          |             10 |                  10 |         0 |          0 |
+| Superficies existentes decididas |             14 |                  14 |         0 |          0 |
+| Comprobaciones `WDR-VAL-*`       |             48 |                  48 |         0 |          0 |
+| Requisitos de prueba nuevos      |             14 |                  14 |         0 |          0 |
+
+Los identificadores `WDR-*` pertenecen exclusivamente a este diseño y no crean procesos, permisos, roles, rutas ni objetos físicos adicionales.
+
+---
+
+#### 3. Alcance, entradas y salidas
+
+Incluye:
+
+- retiro ordinario para consumo o uso inmediato;
+- entrega a persona, área no inventariada o tarea identificada;
+- retiro excepcional sujeto a política y aprobación separada;
+- trabajo espontáneo o derivado de una solicitud;
+- origen por sede, LOC, posición, presentación, lote, condición o LPN aplicable;
+- cantidades crudas, UOM, conversiones, parciales y remanentes;
+- claim, sesión humana, dispositivo compartido y concurrencia;
+- receipt outbound, grupo y legs del ledger mediante la frontera de `NEXO-UX-016`;
+- evento de uso sin efecto de inventario cuando no existe saldo autoritativo;
+- compatibilidad temporal con formulario general, quiosco, RPC y proyecciones actuales.
+
+Excluye:
+
+- traslado a otro LOC controlado, responsabilidad de `NEXO-UX-016`;
+- consumo productivo publicado por FOGO;
+- salida por venta publicada por PULSO;
+- despacho de remisión publicado por `NEXO-UX-011`;
+- conteos, responsabilidad de `NEXO-UX-018`;
+- ajustes, responsabilidad de `NEXO-UX-019`;
+- resolución de merma, pérdida, cuarentena, disposición, diferencia o reversa supervisora, responsabilidad de `NEXO-UX-022`;
+- decisiones completas de escaneo, campos, validación física y offline, responsabilidad de `NEXO-UX-020`, `NEXO-UX-021` y `NEXO-UX-023` a `NEXO-UX-025`;
+- cambios físicos o evidencia operativa.
+
+Entrada mínima:
+
+```text
+principal_id
+actor_effective_id
+site_id
+area_id
+shift_or_checkin_ref
+device_context
+permission_context
+entry_surface
+source_location_ref
+request_or_work_ref_optional
+recipient_or_use_ref
+purpose_candidate
+product_lines[]
+```
+
+Salida material:
+
+```text
+withdrawal_request_id
+withdrawal_work_item_id
+withdrawal_session_id
+policy_snapshot_id
+authorization_decision_ref_when_required
+withdrawal_intent_id
+outbound_receipt_id
+movement_group_id
+movement_leg_ids[]
+posting_receipt_id
+projection_receipts[]
+recipient_handoff_id
+remaining_lines[]
+exception_refs[]
+```
+
+---
+
+#### 4. Actores, autoridad y segregación
+
+| Actor o contexto                 | Autoridad en esta tarea                                                     | Límite obligatorio                                             |
+| -------------------------------- | --------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `AREA_SOLICITANTE`               | Inicia necesidad ordinaria o identifica destino de uso.                     | No autoriza excepción por iniciar.                             |
+| `EQUIPO_OPERATIVO_DEL_AREA`      | Ejecuta retiro dentro de función, turno, LOC y política.                    | No cambia fuente, umbral ni propósito para evitar control.     |
+| `BODEGA_Y_ABASTECIMIENTO`        | Ejecuta, prepara o entrega desde stock autorizado.                          | No aprueba su propio retiro excepcional.                       |
+| `RESPONSABLE_PRODUCTIVO`         | Inicia o recibe consumo relacionado con trabajo productivo no automatizado. | No duplica consumos ya publicados por FOGO.                    |
+| `CAJA_MOSTRADOR_O_SERVICIO`      | Inicia o recibe uso ordinario dentro de su territorio.                      | No crea salida de venta paralela a PULSO.                      |
+| `LOGISTICA_Y_TRANSPORTE`         | Ejecuta o recibe material para tarea logística autorizada.                  | No convierte retiro en remisión o traslado intersede.          |
+| `GERENCIA_O_SUPERVISION_DE_SEDE` | Supervisa y decide excepciones dentro de territorio.                        | No sustituye ejecución física ni aprueba sin política vigente. |
+| `RECEPTOR_DE_USO`                | Acepta entrega personal o de área cuando aplique.                           | No se convierte en actor ejecutor por ser seleccionado.        |
+| `SISTEMA_NEXO`                   | Resuelve políticas, versiones, receipts, ledger y proyecciones.             | No infiere propósito, receptor o aceptación desde notas.       |
+| `DISPOSITIVO_COMPARTIDO`         | Aporta estación y periféricos bajo sesión humana.                           | No es actor, receptor, custodio ni aprobador.                  |
+
+Roles operativos aplicables, sin concesión automática de permiso:
+
+```text
+cajero_satelite
+barista_satelite
+cocinero_satelite
+servicio_salon
+mostrador_satelite
+operador_integral_satelite
+produccion_cocina
+produccion_panaderia
+produccion_reposteria
+bodeguero
+conductor_logistica
+gerencia_operativa
+```
+
+Un retiro ordinario autorizado no agrega aprobación artificial. La aprobación separada se activa únicamente por política: excepción, fuera de alcance, umbral, horario, condición, destinatario o finalidad no estándar.
+
+---
+
+#### 5. `NEXO-INVENTORY-WITHDRAWAL-DISPOSITION-MATRIX-001`
+
+| ID             | Familia                          | Clasificación                   | Criterio                                                            | Efecto                                                     |
+| -------------- | -------------------------------- | ------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `WDR-DISP-001` | `CONSUMO_OPERATIVO_INMEDIATO`    | Retiro real                     | Uso ordinario dentro de política, sin LOC destino.                  | Sí, receipt outbound y legs negativos.                     |
+| `WDR-DISP-002` | `ENTREGA_A_PERSONA`              | Retiro real                     | Entrega a receptor identificado para uso, no para stock controlado. | Sí, con receptor y custodia de uso.                        |
+| `WDR-DISP-003` | `ENTREGA_A_AREA_NO_INVENTARIADA` | Retiro real                     | Área de uso sin LOC controlado y propósito válido.                  | Sí, con área y finalidad.                                  |
+| `WDR-DISP-004` | `CONSUMO_POR_TAREA`              | Retiro real                     | Trabajo, mantenimiento, limpieza, servicio o tarea identificada.    | Sí, con work reference.                                    |
+| `WDR-DISP-005` | `MUESTRA_O_PRUEBA_AUTORIZADA`    | Retiro excepcional              | Salida de prueba o muestra bajo política y evidencia.               | Sí, tras autorización condicional.                         |
+| `WDR-DISP-006` | `RETIRO_EXCEPCIONAL`             | Retiro excepcional              | Fuera de umbral, horario, territorio o patrón ordinario.            | Sí, tras aprobación distinta del ejecutor.                 |
+| `WDR-DISP-007` | `DESTINO_CON_LOC`                | No es retiro                    | La cantidad conserva inventario controlado en otro LOC.             | Delegar a traslado de NEXO-UX-016.                         |
+| `WDR-DISP-008` | `FUENTE_AUTOMATICA`              | No es retiro manual             | Producción, venta o remisión ya tienen proceso propietario.         | Consumir receipt del productor; no duplicar UI.            |
+| `WDR-DISP-009` | `MERMA_PERDIDA_DISPOSICION`      | No es retiro ordinario          | Condición, pérdida, cuarentena o disposición requieren caso.        | Delegar a NEXO-UX-022 y ajuste autorizado cuando aplique.  |
+| `WDR-DISP-010` | `USO_SIN_INVENTARIO_CONTROLADO`  | Evento sin efecto de inventario | La sede o LOC no mantiene saldo autoritativo.                       | Registrar evento de uso separado; cero legs de inventario. |
+
+Reglas:
+
+- la clasificación ocurre en servidor y se conserva en el snapshot;
+- el usuario puede declarar intención, pero no escoger libremente el efecto contable;
+- una asignación de destino del trabajador no convierte automáticamente un retiro en traslado;
+- si existe LOC destino, la operación se delega conscientemente a `NEXO-INVENTORY-INTERNAL-TRANSFER-CONTRACT-001`;
+- `stock_consume_position` no será la salida canónica de una operación sin inventario;
+- una fuente automática conserva su receipt y productor original.
+
+---
+
+#### 6. `NEXO-INVENTORY-WITHDRAWAL-WORK-QUEUE-CONTRACT-001`
+
+| Cola                          | Propósito                                                                         | Entrada                                      | Salida                                          | Invariante                                                   |
+| ----------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------- | ----------------------------------------------- | ------------------------------------------------------------ |
+| `WDRQ-BLOQUEO`                | Contexto, identidad, fuente, autorización o política incompatible.                | Causa bloqueante estructurada.               | Causa resuelta y contexto revalidado.           | No permite ejecución física concluyente ni posting.          |
+| `WDRQ-PENDIENTE_AUTORIZACION` | Retiro excepcional o fuera de política que exige decisión separada.               | Solicitud y snapshot vigentes.               | Aprobación, rechazo o expiración.               | Ejecutor y receptor no se autoaprueban.                      |
+| `WDRQ-PENDIENTE`              | Trabajo autorizado y todavía no reclamado.                                        | Solicitud o captura espontánea admitida.     | Reclamo operativo vigente.                      | No reserva ni descuenta por aparecer en cola.                |
+| `WDRQ-RECLAMADA`              | Trabajo con sesión humana exclusiva.                                              | Claim vigente.                               | Ejecución, liberación o expiración.             | Un solo claim operativo activo.                              |
+| `WDRQ-EJECUCION`              | Selección, asignación y retiro físico en curso.                                   | Fuente y política revalidadas.               | Revisión, parcial o bloqueo.                    | Captura no equivale a salida confirmada.                     |
+| `WDRQ-PARCIAL`                | Existe cantidad retirada menor que la exigible.                                   | Actual confirmado o capturado con remanente. | Continuación, cierre parcial autorizado o caso. | No borra el saldo pendiente.                                 |
+| `WDRQ-RECONCILIACION`         | Resultado desconocido, posting o proyección pendiente.                            | Intención persistida o receipt recuperable.  | Mismo receipt, conflicto o caso.                | Nunca repetir antes de consultar la intención.               |
+| `WDRQ-EXCEPCION`              | Faltante, identidad, condición, autorización, evidencia o reversa requieren caso. | Causa y cantidad afectada.                   | Contención y handoff a propietario.             | Retiro captura y contiene; no resuelve disposición o ajuste. |
+
+Orden canónico:
+
+1. trabajo reclamado por el actor y todavía recuperable;
+2. bloqueo crítico atribuible al área actual;
+3. retiro autorizado con fecha requerida vencida;
+4. retiro autorizado con fecha requerida más próxima;
+5. prioridad empresarial autorizada;
+6. parcial con remanente exigible;
+7. antigüedad de creación;
+8. clave estable `withdrawal_work_item_id`.
+
+El navegador no puede elevar prioridad mediante query params, orden local, nombre del rol o estación.
+
+---
+
+#### 7. `NEXO-INVENTORY-WITHDRAWAL-STATE-MACHINE-001`
+
+| Estado                        | Significado                                                 | Transición principal                             | Invariante                                  |
+| ----------------------------- | ----------------------------------------------------------- | ------------------------------------------------ | ------------------------------------------- |
+| `BORRADOR`                    | Solicitud o captura creada sin efecto cuantitativo.         | `POLITICA_PENDIENTE` o rama compatible.          | No produce efecto cuantitativo por sí solo. |
+| `POLITICA_PENDIENTE`          | Falta resolver propósito, razón, umbral o evidencia.        | `AUTORIZACION_PENDIENTE` o rama compatible.      | No produce efecto cuantitativo por sí solo. |
+| `AUTORIZACION_PENDIENTE`      | La política exige decisión separada.                        | `AUTORIZADO` o rama compatible.                  | No produce efecto cuantitativo por sí solo. |
+| `AUTORIZADO`                  | Autoridad y snapshot vigentes habilitan ejecución.          | `RECLAMABLE` o rama compatible.                  | No produce efecto cuantitativo por sí solo. |
+| `RECLAMABLE`                  | Trabajo autorizado y elegible para claim.                   | `RECLAMADO` o rama compatible.                   | No produce efecto cuantitativo por sí solo. |
+| `RECLAMADO`                   | Sesión humana exclusiva vigente.                            | `EN_EJECUCION` o rama compatible.                | No produce efecto cuantitativo por sí solo. |
+| `EN_EJECUCION`                | Selección y retiro físico en curso.                         | `PARCIAL` o rama compatible.                     | No produce efecto cuantitativo por sí solo. |
+| `PARCIAL`                     | Existe actual confirmado o capturado menor que el exigible. | `LISTO_PARA_REVISION` o rama compatible.         | No produce efecto cuantitativo por sí solo. |
+| `LISTO_PARA_REVISION`         | Actuales, asignaciones y consecuencias están congelables.   | `CONFIRMANDO` o rama compatible.                 | No produce efecto cuantitativo por sí solo. |
+| `CONFIRMANDO`                 | Comando material en curso.                                  | `RECEIPT_OUTBOUND_CONFIRMADO` o rama compatible. | No produce efecto cuantitativo por sí solo. |
+| `RECEIPT_OUTBOUND_CONFIRMADO` | Hecho de salida autoritativo persistido.                    | `LEDGER_PUBLICADO` o rama compatible.            | Conserva receipt y causalidad.              |
+| `LEDGER_PUBLICADO`            | Grupo y legs negativos recuperables por receipt.            | `PROYECCION_PENDIENTE` o rama compatible.        | Conserva receipt y causalidad.              |
+| `PROYECCION_PENDIENTE`        | Ledger confirmado y consumidor todavía no convergente.      | `COMPLETADO` o rama compatible.                  | Conserva receipt y causalidad.              |
+| `COMPLETADO`                  | Receipt, posting y handoff consumible confirmados.          | `BLOQUEADO` o rama compatible.                   | Conserva receipt y causalidad.              |
+| `BLOQUEADO`                   | Impedimento estructurado evita continuar.                   | `CONFLICTO` o rama compatible.                   | No borra hechos confirmados.                |
+| `CONFLICTO`                   | Cambió autoridad, fuente, versión, stock, claim o política. | `RESULTADO_DESCONOCIDO` o rama compatible.       | No borra hechos confirmados.                |
+| `RESULTADO_DESCONOCIDO`       | Se perdió la respuesta después de persistir intención.      | `CANCELADO_PRE_POSTING` o rama compatible.       | No borra hechos confirmados.                |
+| `CANCELADO_PRE_POSTING`       | Trabajo cancelado antes de crear receipt outbound.          | `EXPIRADO` o rama compatible.                    | No borra hechos confirmados.                |
+| `EXPIRADO`                    | Claim, autorización o vigencia terminó.                     | `REVOCADO` o rama compatible.                    | No borra hechos confirmados.                |
+| `REVOCADO`                    | Actor, contexto o permiso dejó de ser válido.               | `COMPENSACION_REQUERIDA` o rama compatible.      | No borra hechos confirmados.                |
+| `COMPENSACION_REQUERIDA`      | Hecho publicado requiere caso y movimiento compensatorio.   | `REVERSADO` o rama compatible.                   | No borra hechos confirmados.                |
+| `REVERSADO`                   | Compensación confirmada sin borrar el original.             | `TERMINAL` o rama compatible.                    | No borra hechos confirmados.                |
+
+Transiciones prohibidas:
+
+- `BORRADOR` a `COMPLETADO` sin política, claim, revisión e intención;
+- `AUTORIZACION_PENDIENTE` a ejecución por quien solicitó;
+- `EN_EJECUCION` a `LEDGER_PUBLICADO` sin receipt outbound;
+- `RESULTADO_DESCONOCIDO` a un segundo comando nuevo;
+- `PROYECCION_PENDIENTE` a otro movimiento de reparación;
+- cualquier estado publicado a edición o eliminación;
+- `CANCELADO_PRE_POSTING` a reversa;
+- `COMPENSACION_REQUERIDA` a borrado del original.
+
+---
+
+#### 8. `NEXO-INVENTORY-WITHDRAWAL-STEP-CATALOG-001`
+
+| Paso | Identificador                             | Entrada                     | Acción principal                                                                  | Salida                           | Recuperación                             |
+| ---: | ----------------------------------------- | --------------------------- | --------------------------------------------------------------------------------- | -------------------------------- | ---------------------------------------- |
+|    1 | `WDR-STEP-01-RESOLVE-CONTEXT`             | entrada a retiro            | resolver principal, actor, función, sede, área, turno, dispositivo y permiso      | contexto autorizado o bloqueo    | volver al punto seguro                   |
+|    2 | `WDR-STEP-02-ADMIT-SURFACE`               | contexto resuelto           | validar ruta, LOC, QR, return target y recurso                                    | entrada admitida                 | rechazar parámetros no autorizados       |
+|    3 | `WDR-STEP-03-CLASSIFY-OPERATION`          | intención operativa         | clasificar retiro, traslado, fuente automática, excepción o evento sin inventario | familia exacta                   | delegar al proceso propietario           |
+|    4 | `WDR-STEP-04-CREATE-OR-RESUME-WORK`       | familia retiro              | crear o reanudar solicitud, líneas y work item versionados                        | trabajo vigente                  | no crear efecto de stock                 |
+|    5 | `WDR-STEP-05-RESOLVE-POLICY`              | trabajo vigente             | resolver propósito, razón, umbral, evidencia y vigencia                           | snapshot de política             | bloquear configuración ausente           |
+|    6 | `WDR-STEP-06-RESOLVE-AUTHORIZATION`       | snapshot vigente            | determinar NO_APLICA ordinario o aprobación condicional                           | autorización vigente             | rechazar o expirar sin ejecutar          |
+|    7 | `WDR-STEP-07-CLAIM-SESSION`               | trabajo autorizado          | reclamar sesión humana exclusiva                                                  | claim vigente                    | mostrar conflicto o liberar claim        |
+|    8 | `WDR-STEP-08-LOAD-SOURCE`                 | claim vigente               | cargar LOC, posiciones, presentaciones, lotes, reservas y balances                | fuente observable                | no inferir desde notas                   |
+|    9 | `WDR-STEP-09-DEFINE-RECIPIENT-AND-USE`    | fuente cargada              | separar ejecutor, receptor, área, tarea y destino de uso                          | destino semántico                | delegar si existe LOC destino            |
+|   10 | `WDR-STEP-10-CAPTURE-LINES-UOM`           | propósito resuelto          | capturar producto, cantidad cruda, UOM, perfil y precisión                        | líneas normalizadas              | rechazar conversión ambigua              |
+|   11 | `WDR-STEP-11-PLAN-ALLOCATIONS`            | líneas normalizadas         | asignar cantidades a LOC, posición, lote, presentación o LPN                      | plan físico                      | no aplicar heurística invisible          |
+|   12 | `WDR-STEP-12-VALIDATE-IDENTITY-CONDITION` | plan físico                 | verificar producto, condición, vencimiento, reserva, lote y elegibilidad          | plan elegible                    | contener diferencia                      |
+|   13 | `WDR-STEP-13-REVALIDATE-AVAILABILITY`     | plan elegible               | comparar versiones y cantidad utilizable bajo bloqueo o control de concurrencia   | plan ejecutable                  | recargar sin sobreescribir               |
+|   14 | `WDR-STEP-14-EXECUTE-PHYSICAL-PICK`       | plan ejecutable             | retirar, medir, contar o abrir presentación según política                        | actuales físicos                 | pausar sin confirmar salida              |
+|   15 | `WDR-STEP-15-CAPTURE-ACTUALS-EVIDENCE`    | trabajo físico              | registrar cantidades reales, identidad, receptor y evidencia exigida              | actuales reconciliados           | marcar faltante o bloqueo                |
+|   16 | `WDR-STEP-16-RESOLVE-PARTIALITY`          | actuales reconciliados      | calcular confirmado, pendiente, cancelado y bloqueado por línea                   | remanente explícito              | no cerrar silenciosamente                |
+|   17 | `WDR-STEP-17-REVIEW-CONSEQUENCES`         | líneas listas               | mostrar origen, receptor, propósito, cantidades, UOM, identidad y efecto          | revisión vigente                 | edición invalida revisión                |
+|   18 | `WDR-STEP-18-FREEZE-INTENT`               | revisión vigente            | crear intention id, idempotency key y payload fingerprint                         | intención persistida             | mismo payload recuperable                |
+|   19 | `WDR-STEP-19-CONFIRM-WITHDRAWAL`          | intención persistida        | ejecutar comando autoritativo con versiones esperadas                             | receipts o resultado desconocido | no repetir a ciegas                      |
+|   20 | `WDR-STEP-20-RECONCILE-UNKNOWN`           | timeout o respuesta perdida | consultar intención, outbound receipt y posting receipt                           | resultado autoritativo           | mantener bloqueo si no es concluyente    |
+|   21 | `WDR-STEP-21-RECOVER-RECEIPTS`            | confirmación disponible     | recuperar receipt outbound, grupo, legs y secuencia                               | efecto causal                    | no reconstruir desde saldo               |
+|   22 | `WDR-STEP-22-VERIFY-PROJECTIONS`          | ledger publicado            | verificar consumers de sede, LOC, posición, presentación y disponibilidad         | convergencia o pendiente         | abrir reconciliación, no otro movimiento |
+|   23 | `WDR-STEP-23-HANDOFF-RECIPIENT`           | efecto confirmado           | emitir entrega de uso o custodia y conservar receptor                             | handoff versionado               | no convertir en LOC implícito            |
+|   24 | `WDR-STEP-24-CLOSE-AND-CONTINUE`          | receipts recuperados        | cerrar trabajo, conservar remanentes y volver a cola                              | siguiente trabajo seguro         | no iniciar conteo o ajuste               |
+
+Reconciliación:
+
+```text
+EXPECTED_WITHDRAWAL_STEPS = 24
+MATERIALIZED_WITHDRAWAL_STEPS = 24
+MISSING_WITHDRAWAL_STEPS = 0
+DUPLICATE_WITHDRAWAL_STEPS = 0
+```
+
+---
+
+#### 9. `NEXO-INVENTORY-WITHDRAWAL-REQUEST-WORK-ITEM-CONTRACT-001`
+
+Solicitud mínima:
+
+```text
+withdrawal_request_id
+request_version
+source_kind = spontaneous | requested | task_derived
+requesting_actor_id
+requesting_area_id
+site_id
+need_by_at
+priority_class
+purpose_candidate
+status
+created_at
+```
+
+Línea mínima:
+
+```text
+withdrawal_line_id
+line_version
+product_id
+requested_input_qty
+requested_input_unit_code
+requested_base_qty
+stock_unit_code
+recipient_or_use_ref
+purpose_ref
+required_condition
+required_lot_or_batch_ref
+remaining_base_qty
+status
+```
+
+Work item mínimo:
+
+```text
+withdrawal_work_item_id
+work_version
+request_id
+line_refs[]
+source_location_id
+area_id
+claim_id
+policy_snapshot_id
+approval_ref
+status
+blocking_code
+created_at
+```
+
+Una captura espontánea crea primero solicitud y trabajo; no salta directamente a una inserción de movimiento.
+
+---
+
+#### 10. `NEXO-INVENTORY-WITHDRAWAL-SESSION-CLAIM-CONTRACT-001`
+
+```text
+withdrawal_session_id
+work_item_id
+actor_id
+principal_id
+site_id
+area_id
+device_id
+claimed_at
+expires_at
+claim_version
+status
+released_at
+release_reason
+```
+
+Reglas:
+
+- máximo un claim operativo activo por work item;
+- el receptor seleccionado no reemplaza al actor autenticado;
+- cambio de actor, sede, área, turno, dispositivo o permiso revoca la sesión;
+- expiración libera trabajo sin alterar cantidades confirmadas;
+- transferencia de claim exige autoridad y versión;
+- el quiosco conserva una sesión humana identificada y no una cuenta impersonal como ejecutor final.
+
+---
+
+#### 11. `NEXO-INVENTORY-WITHDRAWAL-PURPOSE-REASON-POLICY-CONTRACT-001`
+
+Todo retiro persiste:
+
+```text
+purpose_code
+reason_code
+purpose_snapshot
+policy_id
+policy_version
+policy_fingerprint
+ordinary_or_exceptional
+approval_requirement
+quantity_thresholds
+allowed_recipient_kinds[]
+allowed_source_conditions[]
+evidence_requirements[]
+valid_from
+valid_until
+```
+
+La nota libre es complementaria. No sustituye propósito, razón, receptor, tarea, aprobación ni evidencia.
+
+Resultado de política:
+
+```text
+ORDINARY_AUTHORIZED
+APPROVAL_REQUIRED
+BLOCKED_BY_POLICY
+NOT_A_WITHDRAWAL
+POLICY_UNAVAILABLE
+```
+
+No se inventa un permiso nuevo. La implementación deberá vincular la decisión excepcional con el catálogo vigente y `AUTH-UI-052` antes de habilitarla.
+
+---
+
+#### 12. `NEXO-INVENTORY-WITHDRAWAL-SOURCE-ELIGIBILITY-CONTRACT-001`
+
+Cantidad utilizable:
+
+```text
+usable_qty
+= on_hand_confirmed
+- reserved_qty
+- blocked_qty
+- quarantine_qty
+- allocated_elsewhere_qty
+- expired_or_ineligible_qty
+```
+
+Un origen es elegible cuando:
+
+- pertenece a la sede y territorio efectivos;
+- LOC y posición están activos;
+- el producto está habilitado para inventario real;
+- condición, lote, batch y vencimiento cumplen política;
+- la cantidad utilizable cubre el plan o admite parcialidad;
+- no existe bloqueo de seguridad, calidad, conteo o conciliación;
+- se conservan versiones de saldo y configuración.
+
+`current_qty` visible no equivale a `usable_qty`.
+
+---
+
+#### 13. `NEXO-INVENTORY-WITHDRAWAL-ALLOCATION-PICK-CONTRACT-001`
+
+Asignación mínima:
+
+```text
+withdrawal_allocation_id
+withdrawal_line_id
+source_location_id
+source_position_id
+product_id
+lot_or_batch_ref
+condition_code
+lpn_ref
+uom_profile_id
+presentation_qty
+base_qty
+allocation_policy_snapshot
+stock_version
+status
+```
+
+Reglas:
+
+- una línea admite múltiples asignaciones físicas;
+- una asignación pertenece a un único origen exacto;
+- el sistema puede sugerir FIFO, FEFO u otra política aprobada, pero muestra la regla y devuelve las identidades exactas;
+- `smallest_position_stock_first` no se considera política empresarial por existir técnicamente;
+- si la identidad física importa, el operador confirma posición, lote, presentación o LPN;
+- una asignación automática de bajo riesgo debe ser determinista, versionada y visible en el receipt;
+- un cambio de stock invalida el plan antes del posting.
+
+---
+
+#### 14. `NEXO-INVENTORY-WITHDRAWAL-QUANTITY-UOM-IDENTITY-CONTRACT-001`
+
+Cada línea y asignación conserva:
+
+```text
+input_qty
+input_unit_code
+input_uom_profile_id
+conversion_factor_to_stock
+stock_unit_code
+base_qty
+precision_scale
+rounding_rule
+product_snapshot
+presentation_snapshot
+lot_or_batch_snapshot
+condition_snapshot
+position_snapshot
+lpn_snapshot
+```
+
+Ecuaciones:
+
+```text
+base_qty = normalized_input_qty × conversion_factor_to_stock
+confirmed_base_qty = sum(confirmed_allocations.base_qty)
+remaining_base_qty = requested_base_qty - confirmed_base_qty - cancelled_base_qty
+```
+
+No se permite conversión implícita cuando unidad, perfil o factor son ambiguos.
+
+Apertura de presentación:
+
+```text
+PRESENTACION_MAYOR ABIERTA
+→ CANTIDAD CONSUMIDA
++ SOBRANTE FISICO IDENTIFICADO
++ MISMO RECEIPT Y POLITICA
+```
+
+El sobrante no nace por DELETE y UPSERT independientes; forma parte del mismo comando causal.
+
+---
+
+#### 15. `NEXO-INVENTORY-WITHDRAWAL-RECIPIENT-USE-CUSTODY-CONTRACT-001`
+
+Receptor permitido:
+
+```text
+SELF
+ACTOR
+AREA_WITHOUT_CONTROLLED_LOC
+WORK_ITEM
+EXTERNAL_USE_AUTHORIZED
+NONE_FOR_IMMEDIATE_CONSUMPTION
+```
+
+Campos mínimos:
+
+```text
+executed_by_actor_id
+received_by_actor_id_or_null
+recipient_area_id_or_null
+use_work_ref_or_null
+use_purpose_ref
+accepted_at_or_null
+custody_handoff_id_or_null
+```
+
+Si el destino es un LOC activo, no existe retiro: se delega a traslado. Una entrega a persona o área no inventariada conserva receptor y finalidad sin crear un LOC ficticio.
+
+---
+
+#### 16. `NEXO-INVENTORY-WITHDRAWAL-PARTIALITY-REMAINDER-CONTRACT-001`
+
+Por línea:
+
+```text
+requested_base_qty
+approved_base_qty
+picked_base_qty
+confirmed_base_qty
+cancelled_base_qty
+blocked_base_qty
+remaining_base_qty
+```
+
+Invariante:
+
+```text
+requested
+= confirmed
++ cancelled
++ blocked
++ remaining
+```
+
+Un retiro parcial:
+
+- conserva receipts acumulativos o un receipt con líneas parciales explícitas;
+- no reabre cantidades ya confirmadas;
+- no borra faltantes;
+- exige razón para cancelación del remanente;
+- mantiene la tarea abierta cuando el saldo sigue exigible;
+- permite múltiples orígenes solo mediante asignaciones explícitas.
+
+---
+
+#### 17. `NEXO-INVENTORY-WITHDRAWAL-IDEMPOTENCY-OUTBOUND-RECEIPT-CONTRACT-001`
+
+Intención mínima:
+
+```text
+withdrawal_intent_id
+idempotency_key
+producer = nexo.inventory.withdrawal
+request_id
+work_item_id
+request_version
+work_version
+claim_version
+policy_fingerprint
+stock_versions[]
+payload_fingerprint
+created_by_actor_id
+created_at
+```
+
+Receipt outbound mínimo:
+
+```text
+outbound_receipt_id
+withdrawal_intent_id
+withdrawal_request_id
+withdrawal_work_item_id
+confirmed_lines[]
+source_allocations[]
+recipient_and_use_snapshot
+policy_snapshot_ref
+authorization_ref
+movement_group_id
+posting_receipt_id
+server_sequence_range
+confirmed_at
+```
+
+Resultados idempotentes:
+
+| Situación                              | Resultado                                        |
+| -------------------------------------- | ------------------------------------------------ |
+| misma clave y mismo fingerprint        | devolver el mismo receipt                        |
+| misma clave y fingerprint distinto     | conflicto sin nuevo efecto                       |
+| versión obsoleta                       | conflicto recuperable                            |
+| timeout después de persistir intención | `RESULTADO_DESCONOCIDO` y consulta por intención |
+| receipt ya publicado                   | devolver receipt y estado de proyecciones        |
+| stock cambió antes del posting         | conflicto sin salida parcial                     |
+
+---
+
+#### 18. `NEXO-INVENTORY-WITHDRAWAL-LEDGER-PROJECTION-BOUNDARY-001`
+
+El comando de retiro no deberá:
+
+- insertar directamente en `inventory_movements`;
+- actualizar directamente `inventory_stock_by_site`;
+- actualizar directamente `inventory_stock_by_location`;
+- actualizar o eliminar directamente stock por posición o presentación;
+- crear un movimiento técnico separado para consumir posiciones;
+- calcular saldo con read-modify-write en la aplicación;
+- aplicar `max(0)` para ocultar insuficiencia.
+
+Deberá producir:
+
+```text
+WITHDRAWAL OUTBOUND RECEIPT
+→ MOVEMENT GROUP
+→ NEGATIVE LEGS AT SOURCE SCOPES
+→ OUTBOX
+→ IDEMPOTENT PROJECTIONS
+```
+
+El éxito empresarial se apoya en receipts recuperables. Una proyección pendiente se informa y reconcilia; no se crea otro retiro.
+
+---
+
+#### 19. `NEXO-INVENTORY-WITHDRAWAL-NO-INVENTORY-EFFECT-BOUNDARY-001`
+
+Cuando la política confirma que un LOC no mantiene inventario autoritativo:
+
+```text
+USAGE EVENT
++ ACTOR
++ AREA
++ PRODUCT OR MATERIAL REF
++ QUANTITY AND UOM
++ PURPOSE
++ TIME
+→ ZERO INVENTORY LEGS
+→ ZERO STOCK PROJECTION MUTATION
+```
+
+Este evento:
+
+- no usa `consumption` ni `stock_consume_position` como movimiento de inventario;
+- no presenta un saldo falso;
+- no habilita retiro de productos controlados;
+- conserva su clasificación `NO_INVENTORY_EFFECT`;
+- puede alimentar analítica solo con contrato y trazabilidad propios.
+
+El modo se resuelve desde configuración y fuente autoritativas; no es un interruptor libre del formulario.
+
+---
+
+#### 20. `NEXO-INVENTORY-WITHDRAWAL-EXCEPTION-CANCELLATION-REVERSAL-CONTRACT-001`
+
+Antes del posting:
+
+- borrador, solicitud, claim o plan pueden cancelarse con razón;
+- la cancelación libera trabajo y reservas aplicables;
+- no crea movimiento ni receipt cuantitativo.
+
+Después del posting:
+
+- no se actualiza ni elimina el retiro;
+- una corrección abre caso con original, cantidad, motivo, evidencia y autoridad;
+- `NEXO-UX-022` decide resolución y responsabilidad;
+- el ledger crea grupo compensatorio conforme a `NEXO-INVENTORY-MOVEMENT-CORRECTION-REVERSAL-CONTRACT-001`;
+- el original permanece visible.
+
+Casos mínimos:
+
+```text
+INSUFFICIENT_USABLE_STOCK
+SOURCE_IDENTITY_MISMATCH
+RECIPIENT_MISMATCH
+POLICY_OR_APPROVAL_EXPIRED
+CONDITION_OR_EXPIRY_BLOCK
+UOM_OR_PRESENTATION_CONFLICT
+CLAIM_OR_VERSION_CONFLICT
+RESULT_UNKNOWN
+PROJECTION_DIVERGENCE
+PHYSICAL_PICK_DIFFERENCE
+```
+
+---
+
+#### 21. `NEXO-INVENTORY-WITHDRAWAL-COMPATIBILITY-CONTRACT-001`
+
+| Superficie técnica actual                | Diagnóstico verificado                                      | Disposición objetivo                                               |
+| ---------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------ |
+| `/inventory/withdraw`                    | multi-write por línea; movement, LOC y site separados       | reemplazar por command boundary y receipt                          |
+| `WithdrawForm`                           | propósito y receptor ausentes; UOM usa contexto de remisión | consumir contrato de retiro y política propia                      |
+| `inventory_real_enabled`                 | decide entre stock real y pseudo-movimiento                 | resolver clasificación en servidor; evento sin inventario separado |
+| `manual_withdraw_enabled`                | flag operativo por LOC                                      | conservar como gate, no como autorización completa                 |
+| `consume_inventory_stock_from_positions` | heurística smallest-stock-first e inserción técnica         | separar asignación, posting y proyección                           |
+| `stock_consume_position`                 | tipo neutral usado para traza negativa                      | retirar como salida canónica y migrar sin inventar causalidad      |
+| quiosco de retiro                        | receptor seleccionado y traslado implícito por assignment   | separar actor, receptor y decisión explícita de traslado           |
+| `inventory_transfers`                    | header nace completed y múltiples writes                    | consumir contrato de traslado de `NEXO-UX-016`                     |
+| stock por presentación                   | DELETE, UPSERT y apertura fuera de frontera atómica         | convertir a consumer del ledger y receipt físico                   |
+| stock de sede                            | read-modify-write y clamp a cero                            | proyección idempotente desde legs                                  |
+| RLS y grants                             | permiso de retiro escribe movements y proyecciones          | restringir a comando propietario y lectura necesaria               |
+
+Migración:
+
+1. introducir comando y receipts sin retirar lectores;
+2. dual-read controlado y comparación de saldos;
+3. migrar formulario principal;
+4. migrar quiosco y delegación de traslado;
+5. retirar writers directos;
+6. clasificar históricos con evidencia disponible;
+7. conservar `UNKNOWN_LEGACY_CONTEXT` cuando falte receptor, propósito o asignación;
+8. prohibir backfill inventado;
+9. verificar rollback antes de retirar compatibilidad.
+
+---
+
+#### 22. `NEXO-INVENTORY-WITHDRAWAL-ROUTE-DISPOSITION-001`
+
+| ID               | Ruta                                       | Disposición           | Decisión                                                                                   |
+| ---------------- | ------------------------------------------ | --------------------- | ------------------------------------------------------------------------------------------ |
+| `NEXO-ROUTE-001` | `/`                                        | `ENTRADA_OPERATIVA`   | Puede enlazar al trabajo elegible; no ejecuta retiro.                                      |
+| `NEXO-ROUTE-021` | `/inventory/locations/[id]`                | `CONTEXTO_LOC`        | Expone acciones permitidas y abre retiro con LOC explícito.                                |
+| `NEXO-ROUTE-022` | `/inventory/locations/[id]/board`          | `TABLERO_LOC`         | Muestra estado y entrada contextual; no descuenta desde el tablero.                        |
+| `NEXO-ROUTE-023` | `/inventory/locations/[id]/kiosk-withdraw` | `FLUJO_QUIOSCO`       | Flujo dedicado; separa ejecutor de receptor y delega a traslado cuando existe LOC destino. |
+| `NEXO-ROUTE-026` | `/inventory/locations/zone`                | `VISTA_ZONA`          | Permite seleccionar contexto autorizado; no agrega efecto por sí sola.                     |
+| `NEXO-ROUTE-029` | `/inventory/movements`                     | `LECTURA_LEDGER`      | Muestra receipt, grupo y legs read-only; no corrige ni repite.                             |
+| `NEXO-ROUTE-030` | `/inventory/production-batches`            | `FUENTE_PRODUCTIVA`   | Producción publica su propio consumo; no usa retiro manual para duplicarlo.                |
+| `NEXO-ROUTE-036` | `/inventory/remissions/prepare`            | `FUENTE_REMISION`     | Preparación y despacho publican sus receipts; no se convierten en retiro.                  |
+| `NEXO-ROUTE-052` | `/inventory/stock`                         | `CONSULTA_Y_LANZADOR` | Puede abrir retiro con producto y LOC válidos; el saldo no autoriza por sí solo.           |
+| `NEXO-ROUTE-054` | `/inventory/transfers`                     | `FLUJO_TRASLADO`      | Propietaria cuando hay LOC destino y el stock sigue controlado.                            |
+| `NEXO-ROUTE-056` | `/inventory/withdraw`                      | `FLUJO_PRINCIPAL`     | Cola y ejecución de retiros reales o eventos sin inventario clasificados por servidor.     |
+| `NEXO-ROUTE-057` | `/kiosk/[slug]`                            | `RESOLUCION_QUIOSCO`  | Resuelve estación y contexto; no representa actor ni permiso.                              |
+| `NEXO-ROUTE-058` | `/l/[code]`                                | `DEEP_LINK_LOC`       | Resuelve LOC y conserva revalidación completa.                                             |
+| `NEXO-ROUTE-064` | `/scanner`                                 | `ALIAS_REDIRECT`      | Redirige a ubicaciones; no ejecuta comandos de retiro.                                     |
+
+Reconciliación:
+
+```text
+EXPECTED_WITHDRAWAL_SURFACES = 14
+MATERIALIZED_WITHDRAWAL_SURFACES = 14
+MISSING_WITHDRAWAL_SURFACES = 0
+DUPLICATE_WITHDRAWAL_SURFACES = 0
+NEW_ROUTES_CREATED = 0
+```
+
+---
+
+#### 23. `NEXO-INVENTORY-WITHDRAWAL-INTERFACE-STATE-CONTRACT-001`
+
+| Estado                        | Condición                                                         | Comportamiento obligatorio                   |
+| ----------------------------- | ----------------------------------------------------------------- | -------------------------------------------- |
+| `WDR_CONTEXT_RESOLVING`       | Se resuelven actor, contexto y territorio.                        | No muestra controles operables.              |
+| `WDR_CONTEXT_BLOCKED`         | Falta sede, área, turno, dispositivo o permiso.                   | Explica causa sin bypass.                    |
+| `WDR_MODE_RESOLVING`          | Se clasifica retiro, traslado, fuente automática o no inventario. | No permite elegir un efecto contradictorio.  |
+| `WDR_NOT_WITHDRAWAL_REDIRECT` | La intención pertenece a otro flujo.                              | Conserva contexto y abre propietario válido. |
+| `WDR_QUEUE_LOADING`           | Se consulta trabajo elegible.                                     | No afirma conteos definitivos.               |
+| `WDR_QUEUE_EMPTY`             | No existe trabajo reclamable.                                     | Muestra vacío honesto y retorno.             |
+| `WDR_QUEUE_READY`             | Existen tareas elegibles.                                         | Ordena por prioridad autorizada.             |
+| `WDR_WORK_CREATING`           | Se crea trabajo espontáneo.                                       | Impide doble creación.                       |
+| `WDR_WORK_CLAIMING`           | Se intenta reclamar.                                              | Bloquea doble envío.                         |
+| `WDR_WORK_ACTIVE`             | Claim y versiones vigentes.                                       | Permite continuar.                           |
+| `WDR_SOURCE_LOADING`          | Se cargan balances e identidad física.                            | No usa datos obsoletos como definitivos.     |
+| `WDR_SOURCE_BLOCKED`          | Fuente no elegible o incompleta.                                  | Muestra causa y propietario.                 |
+| `WDR_ITEM_SELECTING`          | Se capturan líneas y UOM.                                         | Conserva validaciones por producto.          |
+| `WDR_ALLOCATION_PLANNING`     | Se asigna origen físico exacto.                                   | Muestra política y alternativas.             |
+| `WDR_PHYSICAL_EXECUTING`      | Trabajo físico en curso.                                          | No declara salida confirmada.                |
+| `WDR_PARTIAL`                 | Existe cantidad retirada y remanente.                             | Distingue confirmado, pendiente y bloqueado. |
+| `WDR_APPROVAL_REQUIRED`       | La política exige autoridad separada.                             | No habilita ejecución final.                 |
+| `WDR_APPROVAL_PENDING`        | Decisión todavía no emitida.                                      | Mantiene solicitud sin efecto.               |
+| `WDR_APPROVAL_DENIED`         | Autoridad rechazó o expiró.                                       | Cierra controles y conserva evidencia.       |
+| `WDR_REVIEW`                  | Actuales listos para confirmar.                                   | Congela fingerprint y consecuencias.         |
+| `WDR_SUBMITTING`              | Comando material en curso.                                        | Impide intención adicional.                  |
+| `WDR_RESULT_UNKNOWN`          | Se perdió el resultado.                                           | Reconcilia por intención.                    |
+| `WDR_CONFIRMED`               | Receipts autoritativos recuperados.                               | Muestra cantidades, receptor y causalidad.   |
+| `WDR_PROJECTION_PENDING`      | Ledger confirmado, proyección pendiente.                          | No presenta saldo como convergente.          |
+| `WDR_CONFLICTED`              | Cambió stock, claim, política o versión.                          | Exige recarga.                               |
+| `WDR_CONTEXT_REVOKED`         | Cambió actor o autorización.                                      | Cierra controles y vuelve a punto seguro.    |
+| `WDR_OFFLINE_LIMITED`         | No puede revalidarse autoridad o stock.                           | Solo captura borrador local permitido.       |
+| `WDR_EXCEPTION`               | Existe caso estructurado.                                         | Muestra contención y handoff.                |
+| `WDR_CANCELLED`               | Cancelación previa al posting confirmada.                         | Cero efecto cuantitativo.                    |
+| `WDR_FATAL_ERROR`             | No puede recuperarse consistencia.                                | No muestra éxito ni mutación.                |
+
+Reconciliación:
+
+```text
+EXPECTED_WITHDRAWAL_UI_STATES = 30
+MATERIALIZED_WITHDRAWAL_UI_STATES = 30
+MISSING_WITHDRAWAL_UI_STATES = 0
+DUPLICATE_WITHDRAWAL_UI_STATES = 0
+```
+
+---
+
+#### 24. `NEXO-INVENTORY-WITHDRAWAL-VALIDATION-MATRIX-001`
+
+##### 24.1. Contexto y autorización
+
+| ID            | Regla                                                      | Momento                    | Propietario          |
+| ------------- | ---------------------------------------------------------- | -------------------------- | -------------------- |
+| `WDR-VAL-001` | Principal y actor efectivo vigentes.                       | Antes de mostrar trabajo.  | Servidor y RLS.      |
+| `WDR-VAL-002` | Sede, área, turno, dispositivo y territorio compatibles.   | Carga y confirmación.      | Servidor.            |
+| `WDR-VAL-003` | Permiso exacto `nexo.inventory.withdraw` sobre el recurso. | Lectura mutable y comando. | Servidor y RLS.      |
+| `WDR-VAL-004` | Ejecutor, receptor y aprobador no se colapsan.             | Plan y confirmación.       | Servidor.            |
+| `WDR-VAL-005` | Aprobación condicional solo para excepción.                | Resolución de política.    | Servidor.            |
+| `WDR-VAL-006` | Aprobador distinto cuando es obligatoria.                  | Decisión y posting.        | Servidor.            |
+| `WDR-VAL-007` | Revocación cierra controles y claim.                       | Durante toda la sesión.    | Servidor y interfaz. |
+| `WDR-VAL-008` | Dispositivo compartido no actúa como persona.              | Contexto y auditoría.      | Servidor.            |
+
+##### 24.2. Clasificación y política
+
+| ID            | Regla                                                    | Momento              | Propietario          |
+| ------------- | -------------------------------------------------------- | -------------------- | -------------------- |
+| `WDR-VAL-009` | La intención cae en una de diez disposiciones.           | Admisión.            | Servidor.            |
+| `WDR-VAL-010` | Destino con LOC delega a traslado.                       | Clasificación.       | Servidor e interfaz. |
+| `WDR-VAL-011` | Producción, venta y remisión conservan productor.        | Clasificación.       | Contrato.            |
+| `WDR-VAL-012` | Merma, pérdida y disposición abren caso.                 | Clasificación.       | Servidor.            |
+| `WDR-VAL-013` | Evento sin inventario crea cero legs.                    | Confirmación.        | Servidor y ledger.   |
+| `WDR-VAL-014` | Propósito y razón estructurados, no solo nota.           | Creación y revisión. | Servidor.            |
+| `WDR-VAL-015` | Snapshot de política no se recalcula después.            | Creación y posting.  | Base de datos.       |
+| `WDR-VAL-016` | Umbral u horario excepcional produce autoridad separada. | Política.            | Servidor.            |
+
+##### 24.3. Fuente, cantidad e identidad
+
+| ID            | Regla                                                      | Momento               | Propietario          |
+| ------------- | ---------------------------------------------------------- | --------------------- | -------------------- |
+| `WDR-VAL-017` | LOC activo y perteneciente a la sede autorizada.           | Plan y posting.       | Servidor y RLS.      |
+| `WDR-VAL-018` | Cantidad utilizable excluye reserva, bloqueo y cuarentena. | Plan y posting.       | Servidor.            |
+| `WDR-VAL-019` | Producto, lote, condición y vencimiento compatibles.       | Asignación.           | Servidor.            |
+| `WDR-VAL-020` | Cantidad cruda, UOM, factor y base son reproducibles.      | Captura y receipt.    | Unitaria y contrato. |
+| `WDR-VAL-021` | Posición, presentación y LPN no se infieren desde nota.    | Asignación y posting. | Servidor.            |
+| `WDR-VAL-022` | Política de asignación es visible y versionada.            | Plan y revisión.      | Interfaz y servidor. |
+| `WDR-VAL-023` | Apertura de presentación conserva sobrante e identidad.    | Ejecución y posting.  | Base de datos.       |
+| `WDR-VAL-024` | Nunca se recorta saldo a cero para ocultar insuficiencia.  | Posting.              | Base de datos.       |
+
+##### 24.4. Trabajo, concurrencia e idempotencia
+
+| ID            | Regla                                                             | Momento                | Propietario    |
+| ------------- | ----------------------------------------------------------------- | ---------------------- | -------------- |
+| `WDR-VAL-025` | Un solo claim operativo activo por work item.                     | Claim.                 | Concurrencia.  |
+| `WDR-VAL-026` | Versiones de solicitud, línea, claim, stock y política esperadas. | Revisión y posting.    | Servidor.      |
+| `WDR-VAL-027` | Disponibilidad se revalida bajo control de concurrencia.          | Posting.               | Base de datos. |
+| `WDR-VAL-028` | Multi-línea confirma todo o nada por receipt lógico.              | Posting.               | Integración.   |
+| `WDR-VAL-029` | Misma clave y payload devuelven mismo receipt.                    | Reintento.             | Idempotencia.  |
+| `WDR-VAL-030` | Misma clave y payload distinto produce conflicto.                 | Reintento.             | Idempotencia.  |
+| `WDR-VAL-031` | Timeout se consulta por intention id.                             | Resultado desconocido. | Integración.   |
+| `WDR-VAL-032` | Receipt outbound, grupo, legs y outbox comparten frontera lógica. | Posting.               | Base de datos. |
+
+##### 24.5. Parcialidad, experiencia y rutas
+
+| ID            | Regla                                                       | Momento             | Propietario          |
+| ------------- | ----------------------------------------------------------- | ------------------- | -------------------- |
+| `WDR-VAL-033` | Parcial conserva solicitado, actual, pendiente y bloqueado. | Ejecución y cierre. | Servidor e interfaz. |
+| `WDR-VAL-034` | Cancelación previa crea cero efecto.                        | Cancelación.        | Servidor.            |
+| `WDR-VAL-035` | Después del posting solo existe compensación.               | Corrección.         | Servidor.            |
+| `WDR-VAL-036` | Treinta estados de interfaz tienen condición única.         | Renderizado.        | Interfaz.            |
+| `WDR-VAL-037` | Catorce superficies tienen disposición explícita.           | Navegación.         | Contractual.         |
+| `WDR-VAL-038` | Return target se limita a rutas locales admitidas.          | Entrada y salida.   | Servidor.            |
+| `WDR-VAL-039` | Offline no confirma stock ni autorización.                  | Desconexión.        | E2E.                 |
+| `WDR-VAL-040` | Éxito exige receipts recuperables.                          | Resultado.          | Interfaz y E2E.      |
+
+##### 24.6. Compatibilidad, migración y operación
+
+| ID            | Regla                                                                             | Momento           | Propietario             |
+| ------------- | --------------------------------------------------------------------------------- | ----------------- | ----------------------- |
+| `WDR-VAL-041` | Formulario general deja de escribir tablas directamente.                          | Migración.        | Integración.            |
+| `WDR-VAL-042` | Quiosco no decide traslado por asignación silenciosa.                             | Migración.        | E2E.                    |
+| `WDR-VAL-043` | `stock_consume_position` deja de representar retiro real o evento sin inventario. | Migración.        | Contractual.            |
+| `WDR-VAL-044` | RPC de posiciones no inserta movimiento técnico independiente.                    | Migración.        | Base de datos.          |
+| `WDR-VAL-045` | Proyecciones se actualizan desde ledger una sola vez.                             | Posting y replay. | Integración.            |
+| `WDR-VAL-046` | Backfill no inventa receptor, propósito, lote o posición.                         | Migración.        | Base de datos.          |
+| `WDR-VAL-047` | Rollback detiene writers nuevos sin borrar receipts.                              | Cutover.          | Migración.              |
+| `WDR-VAL-048` | Piloto prueba QR, quiosco, parcial, conflicto, timeout y revocación.              | Piloto.           | E2E y manual operativa. |
+
+Reconciliación:
+
+```text
+EXPECTED_WITHDRAWAL_VALIDATIONS = 48
+MATERIALIZED_WITHDRAWAL_VALIDATIONS = 48
+MISSING_WITHDRAWAL_VALIDATIONS = 0
+DUPLICATE_WITHDRAWAL_VALIDATIONS = 0
+```
+
+---
+
+#### 25. `NEXO-INVENTORY-WITHDRAWAL-IMPLEMENTATION-HANDOFF-001`
+
+Repositorio de aplicación:
+
+```text
+vento-nexo
+```
+
+Repositorio propietario de toda migración Supabase:
+
+```text
+vento-shell
+```
+
+Cambios mínimos esperados durante el paquete autorizado:
+
+- command boundary de retiro con contexto y recurso exactos;
+- entidades de solicitud, línea, work item, sesión, política, aprobación, intención y receipt;
+- integración con groups, legs, sequence, posting receipts y outbox de `NEXO-UX-016`;
+- consumers idempotentes de sede, LOC, posición, presentación y disponibilidad;
+- flujo principal y flujo de quiosco bajo el mismo contrato;
+- delegación explícita al traslado cuando existe LOC destino;
+- evento separado para operación sin inventario;
+- eliminación de writers directos y clamps de saldo;
+- RLS, grants, funciones y tipos regenerados desde `vento-shell`;
+- observabilidad de intentos, conflictos, timeouts, receipts y divergencias;
+- rollback que preserve hechos y permita volver a lectores legacy sin reactivar doble escritura.
+
+Orden de implementación:
+
+```text
+SCHEMA AND CONTRACTS
+→ COMMAND AND RECEIPTS
+→ LEDGER POSTING
+→ PROJECTION CONSUMERS
+→ MAIN WITHDRAWAL FLOW
+→ KIOSK FLOW
+→ COMPATIBILITY READS
+→ CUTOVER OF WRITERS
+→ PILOT
+→ LEGACY RETIREMENT
+```
+
+Rollback:
+
+- desactivar writers nuevos por feature gate;
+- conservar receipts, groups y legs ya confirmados;
+- detener consumers antes de reactivar un writer legacy;
+- comparar saldos y secuencias;
+- no borrar hechos para volver atrás;
+- no permitir dos writers simultáneos sobre la misma fuente.
+
+Handoffs:
+
+| Destino                       | Consume                                             | Salida exigida                               | Límite                                     |
+| ----------------------------- | --------------------------------------------------- | -------------------------------------------- | ------------------------------------------ |
+| `NEXO-UX-018`                 | balances, identidades, LOC y estados de bloqueo     | observación de conteo sin posting automático | no convertir diferencia en retiro          |
+| `NEXO-UX-019`                 | caso, original, cantidad y causalidad               | ajuste autorizado separado                   | no usar ajuste para ocultar retiro erróneo |
+| `NEXO-UX-020`                 | estados y puntos de captura                         | observación por etapa                        | no cambiar reglas cuantitativas            |
+| `NEXO-UX-021`                 | contratos de datos mínimos                          | campos obligatorios por etapa                | no crear otra fuente de verdad             |
+| `NEXO-UX-022`                 | excepciones, faltantes, condición y compensación    | caso, autoridad y resolución                 | retiro contiene; excepción resuelve        |
+| `NEXO-UX-023` a `NEXO-UX-025` | QR, quiosco, escaneo, conflicto, offline y receipts | evidencia física y de dispositivo            | no declarar validación antes del piloto    |
+| paquete E5 NEXO               | contratos, matrices, diagnóstico y requisitos       | implementación versionada y verificable      | Supabase solo desde `vento-shell`          |
+
+---
+
+#### 26. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-NEXO-189` a `TREQ-NEXO-202` en el registro canónico completo:
+
+| ID              | Comportamiento protegido                                                                              |
+| --------------- | ----------------------------------------------------------------------------------------------------- |
+| `TREQ-NEXO-189` | contexto, permiso, territorio, sesión, dispositivo y segregación entre ejecutor, receptor y aprobador |
+| `TREQ-NEXO-190` | cobertura exacta de artefactos, pasos, estados, colas, disposiciones, rutas y comprobaciones          |
+| `TREQ-NEXO-191` | clasificación exhaustiva entre retiro, traslado, fuente automática, excepción y evento sin inventario |
+| `TREQ-NEXO-192` | solicitud, work item, sesión, claim, expiración, transferencia y versiones                            |
+| `TREQ-NEXO-193` | propósito, razón, política snapshot, umbral, evidencia y aprobación condicional                       |
+| `TREQ-NEXO-194` | elegibilidad de fuente, reservas, condición, lote, vencimiento y stock utilizable                     |
+| `TREQ-NEXO-195` | cantidad, UOM, presentación, apertura, posición, LPN y asignación física reproducible                 |
+| `TREQ-NEXO-196` | receptor, área, uso, tarea y custodia separados del actor ejecutor                                    |
+| `TREQ-NEXO-197` | parcialidad, splits, remanentes, faltantes, cancelación de saldo y cierre de líneas                   |
+| `TREQ-NEXO-198` | intención, fingerprint, receipt outbound, posting, concurrencia y resultado desconocido               |
+| `TREQ-NEXO-199` | evento operativo sin inventario con cero legs y cero mutación de proyecciones                         |
+| `TREQ-NEXO-200` | cancelación previa, caso posterior, compensación, reversa y preservación del original                 |
+| `TREQ-NEXO-201` | treinta estados de interfaz, catorce rutas, quiosco, QR, offline, conflicto y éxito verificable       |
+| `TREQ-NEXO-202` | convergencia técnica, migración, RLS, RPC, writers, rollback y cuarenta y ocho comprobaciones         |
+
+No se modifica, difiere, descarta ni vuelve obsoleto un requisito histórico.
+
+---
+
+#### 27. Pendientes con propietario y condición de salida
+
+| Pendiente                             | Estado                   | Propietario                                                 | Condición de salida                                               |
+| ------------------------------------- | ------------------------ | ----------------------------------------------------------- | ----------------------------------------------------------------- |
+| comando, receipts y entidades físicas | `ESPECIFICADO`           | paquete E5 NEXO y `vento-shell`                             | migración, RLS, tipos y pruebas aprobadas                         |
+| autoridad exacta para excepción       | `ESPECIFICADO`           | `AUTH-UI-052` y paquete E5 NEXO                             | catálogo, servidor, RLS y UI convergentes sin permiso inventado   |
+| transición del formulario general     | `ESPECIFICADO`           | paquete E5 NEXO                                             | cero writer directo y receipts recuperables                       |
+| transición del quiosco                | `ESPECIFICADO`           | paquete E5 NEXO                                             | actor y receptor separados; traslado delegado conscientemente     |
+| históricos sin receptor o propósito   | `ESPECIFICADO`           | paquete E5 NEXO y `SHELL-CI-017`                            | clasificación conservadora y `UNKNOWN_LEGACY_CONTEXT` verificable |
+| conteos                               | `ESPECIFICADO`           | `NEXO-UX-018`                                               | diseño aprobado sin posting por observación                       |
+| ajustes                               | `ESPECIFICADO`           | `NEXO-UX-019`                                               | diseño aprobado con decisión separada                             |
+| excepciones y compensaciones          | `ESPECIFICADO`           | `NEXO-UX-022`                                               | caso, autoridad, receipt compensatorio y cierre                   |
+| escaneo, campos y dispositivos        | `PENDIENTE_DE_EVIDENCIA` | `NEXO-UX-020`, `NEXO-UX-021`, `NEXO-UX-023` a `NEXO-UX-025` | diseño aprobado y piloto reproducible                             |
+
+No queda pendiente narrativo sin tarea, paquete o condición de salida.
+
+---
+
+#### 28. Criterios de aceptación
+
+1. existen exactamente veintitrés artefactos materiales;
+2. existen exactamente diez disposiciones exhaustivas;
+3. existen exactamente ocho colas `WDRQ-*`;
+4. existen exactamente veintidós estados empresariales y técnicos;
+5. existen exactamente veinticuatro pasos `WDR-STEP-*`;
+6. existen exactamente treinta estados de interfaz;
+7. existen exactamente catorce superficies decididas y cero rutas nuevas;
+8. existen exactamente cuarenta y ocho comprobaciones `WDR-VAL-*`;
+9. `VPROC-0025` permanece proceso propietario;
+10. `nexo.inventory.withdraw` no se convierte en writer genérico del ledger;
+11. destino con LOC se delega a traslado;
+12. producción, venta y remisión conservan sus productores;
+13. merma, pérdida y disposición no usan retiro ordinario;
+14. operación sin inventario crea cero legs y cero mutación de stock;
+15. ejecutor, receptor y aprobador son identidades separadas;
+16. aprobación condicional no se aplica a todo retiro ordinario;
+17. propósito y razón son estructurados;
+18. política, umbral y evidencia quedan snapshot;
+19. stock utilizable excluye reservas y bloqueos;
+20. cantidad y UOM son reproducibles;
+21. asignación física conserva LOC, posición, lote, presentación y LPN aplicables;
+22. la política de selección es visible y versionada;
+23. no se usa smallest-stock-first como regla empresarial implícita;
+24. apertura de presentación conserva sobrante en la misma causalidad;
+25. work item y claim son versionados;
+26. multi-línea no deja efectos parciales;
+27. misma intención devuelve mismo receipt;
+28. resultado desconocido se reconcilia antes de reintentar;
+29. receipt outbound y posting del ledger son correlacionados;
+30. no existe inserción directa en `inventory_movements`;
+31. no existe actualización directa de proyecciones desde la UI;
+32. no se aplica clamp a cero;
+33. parcialidad conserva saldo exacto;
+34. cancelación previa produce cero efecto;
+35. reversa posterior conserva original y crea compensación;
+36. return target se limita a rutas locales admitidas;
+37. offline no confirma stock ni autoridad;
+38. éxito exige receipts recuperables;
+39. proyección pendiente se muestra como pendiente;
+40. el quiosco no infiere traslado desde assignment sin decisión explícita;
+41. el empleado seleccionado es receptor, no actor autenticado;
+42. los catorce requisitos nuevos están en el registro completo;
+43. todos los pendientes tienen propietario y condición de salida;
+44. no se ejecutan cambios físicos ni remotos;
+45. la siguiente tarea permanece reservada.
+
+---
+
+#### 29. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-016 — Diseñar flujo completo de movimientos`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-017 — Diseñar flujo completo de retiros`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-018 — Diseñar flujo completo de conteos`
+
+`NEXO-UX-018` deberá consumir balances, identidades físicas, bloqueos, receipts y proyecciones definidos hasta esta tarea; diseñará el conteo como observación independiente y no publicará un retiro o ajuste por el solo hecho de detectar una diferencia.
+
+
 ### [ ] NEXO-UX-018 — Diseñar flujo completo de conteos
 ### [ ] NEXO-UX-019 — Diseñar flujo completo de ajustes
 ### [ ] NEXO-UX-020 — Simplificar escáner y captura

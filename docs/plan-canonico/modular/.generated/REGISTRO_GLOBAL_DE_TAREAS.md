@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **562** |
+| Aprobadas | **563** |
 | En propuesta | **0** |
-| No iniciadas | **1032** |
+| No iniciadas | **1031** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **35.26% (562/1594)** |
+| Porcentaje de completamiento | **35.32% (563/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NEXO-UX-016` — Diseñar flujo completo de movimientos | ✅ APROBADA |
-| Tarea actual | `NEXO-UX-017` — Diseñar flujo completo de retiros | ⬜ NO INICIADA |
-| Siguiente reservada | `NEXO-UX-018` — Diseñar flujo completo de conteos | ⬜ NO INICIADA |
+| Última aprobada | `NEXO-UX-017` — Diseñar flujo completo de retiros | ✅ APROBADA |
+| Tarea actual | `NEXO-UX-018` — Diseñar flujo completo de conteos | ⬜ NO INICIADA |
+| Siguiente reservada | `NEXO-UX-019` — Diseñar flujo completo de ajustes | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -972,7 +972,7 @@
 | ✅ APROBADA | `NEXO-UX-014` | Diseñar flujo completo de entradas | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-015` | Diseñar flujo completo de ubicación | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-016` | Diseñar flujo completo de movimientos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
-| ⬜ NO INICIADA | `NEXO-UX-017` | Diseñar flujo completo de retiros | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
+| ✅ APROBADA | `NEXO-UX-017` | Diseñar flujo completo de retiros | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-018` | Diseñar flujo completo de conteos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-019` | Diseñar flujo completo de ajustes | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-020` | Simplificar escáner y captura | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
