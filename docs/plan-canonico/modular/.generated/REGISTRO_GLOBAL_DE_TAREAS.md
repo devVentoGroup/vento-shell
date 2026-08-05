@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **561** |
+| Aprobadas | **562** |
 | En propuesta | **0** |
-| No iniciadas | **1033** |
+| No iniciadas | **1032** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **35.19% (561/1594)** |
+| Porcentaje de completamiento | **35.26% (562/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NEXO-UX-015` — Diseñar flujo completo de ubicación | ✅ APROBADA |
-| Tarea actual | `NEXO-UX-016` — Diseñar flujo completo de movimientos | ⬜ NO INICIADA |
-| Siguiente reservada | `NEXO-UX-017` — Diseñar flujo completo de retiros | ⬜ NO INICIADA |
+| Última aprobada | `NEXO-UX-016` — Diseñar flujo completo de movimientos | ✅ APROBADA |
+| Tarea actual | `NEXO-UX-017` — Diseñar flujo completo de retiros | ⬜ NO INICIADA |
+| Siguiente reservada | `NEXO-UX-018` — Diseñar flujo completo de conteos | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -971,7 +971,7 @@
 | ✅ APROBADA | `NEXO-UX-013` | Diseñar flujo completo de recepción | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-014` | Diseñar flujo completo de entradas | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ✅ APROBADA | `NEXO-UX-015` | Diseñar flujo completo de ubicación | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
-| ⬜ NO INICIADA | `NEXO-UX-016` | Diseñar flujo completo de movimientos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
+| ✅ APROBADA | `NEXO-UX-016` | Diseñar flujo completo de movimientos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-017` | Diseñar flujo completo de retiros | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-018` | Diseñar flujo completo de conteos | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |
 | ⬜ NO INICIADA | `NEXO-UX-019` | Diseñar flujo completo de ajustes | `bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md` |

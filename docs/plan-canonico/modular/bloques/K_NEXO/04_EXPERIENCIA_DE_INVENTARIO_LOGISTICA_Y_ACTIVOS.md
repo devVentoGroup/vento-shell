@@ -12843,7 +12843,1450 @@ No queda pendiente narrativo sin tarea, paquete o condición de salida.
 `NEXO-UX-016` deberá consumir `NEXO-INVENTORY-PUTAWAY-HANDOFF-001`, conservar receipts y causalidad de origen-destino, diferenciar eventos técnicos neutrales de entradas o salidas reales y diseñar reubicación, traslado y consulta del ledger sin editar hechos de putaway.
 
 
-### [ ] NEXO-UX-016 — Diseñar flujo completo de movimientos
+### ✅ NEXO-UX-016 — Diseñar flujo completo de movimientos
+
+---
+**Estado:** APROBADA
+**Tarea anterior:** `NEXO-UX-015 — Diseñar flujo completo de ubicación` — APROBADA
+**Tarea siguiente:** `NEXO-UX-017 — Diseñar flujo completo de retiros` — RESERVADA
+**Tipo de tarea:** documental; diseño funcional completo del ledger append-only, clasificación de fuentes y familias, grupos y legs, conservación por alcance, reubicación, traslados internos e intersede, idempotencia, secuencia, receipts, proyecciones, conciliación, consulta, exportación, corrección, reversa, compatibilidad y continuidad
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/K_NEXO/04_EXPERIENCIA_DE_INVENTARIO_LOGISTICA_Y_ACTIVOS.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Proceso propietario:** `VPROC-0024 — Registrar ingreso, ubicación y reubicación mediante movimientos correlacionados`
+**Permisos funcionales exactos consumidos:** `nexo.inventory.movements` para consulta y auditoría; `nexo.inventory.transfers` para traslado operativo; las fuentes conservan sus permisos propietarios y no obtienen escritura genérica por consumir el ledger
+**Artefactos producidos:** veintiún contratos, catálogos, matrices y handoffs enumerados en esta tarea
+**Decisiones consumidas:** `NEXO-INVENTORY-ENTRY-HANDOFF-001`, `NEXO-INVENTORY-PUTAWAY-HANDOFF-001`, contratos aprobados de solicitud, preparación, despacho, tránsito y recepción de remisiones, catálogo canónico de rutas NEXO, requisitos `TREQ-NEXO-*` vigentes y evidencia técnica actual de `vento-nexo` y `vento-shell`
+**Cambios físicos autorizados:** ninguno; no modifica código, componentes, permisos, datos, Supabase, migraciones, RLS, RPC, tipos, configuración ni despliegues
+
+---
+
+#### 1. Propósito
+
+Diseñar de principio a fin cómo Vento registra, consulta y reconcilia todo efecto de inventario mediante un ledger causal, inmutable y ordenado, sin confundir:
+
+- el proceso empresarial que origina un hecho;
+- el comando que solicita publicarlo;
+- el grupo de movimiento que conserva su causalidad;
+- los legs cuantitativos que afectan cada alcance;
+- las proyecciones de stock;
+- la ubicación física;
+- la custodia en tránsito;
+- la disponibilidad;
+- la corrección o reversa posterior.
+
+El ledger no es un formulario universal. Cada movimiento nace de un receipt o comando autoritativo de su proceso propietario, salvo las dos operaciones humanas diseñadas expresamente en esta tarea:
+
+1. reubicar existencia ya confirmada entre LOC o posiciones compatibles dentro de una sede;
+2. trasladar existencia entre sedes mediante una transferencia correlacionada con despacho, tránsito y recepción.
+
+La regla canónica es:
+
+```text
+FUENTE EMPRESARIAL AUTORITATIVA Y VERSIONADA
++ COMANDO O RECEIPT IDEMPOTENTE
++ GRUPO DE MOVIMIENTO INMUTABLE
++ UNO O MAS LEGS CON SIGNO, ALCANCE, ORIGEN Y DESTINO EXPLICITOS
++ CANTIDAD, UOM, IDENTIDAD FISICA Y COSTO SNAPSHOT
++ SECUENCIA DE SERVIDOR Y RECEIPT DE POSTING
++ PROYECCIONES DEDUPLICADAS Y RECONCILIABLES
++ CONSULTA QUE NO RECONSTRUYE HISTORIA DESDE UNA VENTANA PARCIAL
+→ LEDGER TRAZABLE SIN DOBLE EFECTO NI SALDOS FANTASMA
+```
+
+Fronteras obligatorias:
+
+```text
+PROCESO ORIGEN ≠ LEDGER
+COMANDO ≠ MOVIMIENTO CONFIRMADO
+GRUPO DE MOVIMIENTO ≠ LEG
+MOVIMIENTO DE SEDE ≠ MOVIMIENTO DE LOC
+MOVIMIENTO DE LOC ≠ MOVIMIENTO DE POSICION
+REUBICACION INTERNA ≠ ENTRADA O SALIDA DE SEDE
+DESPACHO INTERSEDE ≠ RECEPCION INTERSEDE
+CUSTODIA EN TRANSITO ≠ STOCK DISPONIBLE EN DESTINO
+CONTEO ≠ MOVIMIENTO
+DIFERENCIA DE CONTEO APROBADA ≠ OBSERVACION
+AJUSTE ≠ RECEPCION
+CORRECCION ≠ EDICION
+REVERSA ≠ BORRADO
+NOTA LIBRE ≠ IDENTIDAD DE FUENTE
+FECHA DE CREACION ≠ SECUENCIA CONTABLE
+VISTA FILTRADA ≠ HISTORIA COMPLETA
+```
+
+Ningún alias, texto libre, color, signo inferido o etiqueta visual puede colapsar estas fronteras.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban veintiún artefactos documentales consumibles:
+
+| N.º | Artefacto                                                                | Resultado material                                                                                                                   |
+| --- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| 1.  | `NEXO-INVENTORY-MOVEMENT-FLOW-CONTRACT-001`                              | fija propósito, fronteras, autoridad, entrada, salida y lenguaje canónico del ledger                                                 |
+| 2.  | `NEXO-INVENTORY-MOVEMENT-SOURCE-DISPOSITION-001`                         | decide doce familias de fuente y conserva un único escritor por hecho                                                                |
+| 3.  | `NEXO-INVENTORY-MOVEMENT-TAXONOMY-001`                                   | define doce familias semánticas sin derivar signo o alcance desde nombres legacy                                                     |
+| 4.  | `NEXO-INVENTORY-MOVEMENT-GROUP-LEG-CONTRACT-001`                         | separa grupo causal, legs cuantitativos, identidad, secuencia y receipt                                                              |
+| 5.  | `NEXO-INVENTORY-MOVEMENT-STATE-MACHINE-001`                              | materializa veintidós estados de fuente, posting, pairing, proyección, conciliación y reversa                                        |
+| 6.  | `NEXO-INVENTORY-MOVEMENT-WORK-QUEUE-CONTRACT-001`                        | define ocho colas de posting, pairing, proyección, balance, reversa y auditoría                                                      |
+| 7.  | `NEXO-INVENTORY-MOVEMENT-STEP-CATALOG-001`                               | materializa veinticuatro pasos operativos y técnicos                                                                                 |
+| 8.  | `NEXO-INVENTORY-MOVEMENT-SCOPE-CONSERVATION-CONTRACT-001`                | conserva cantidades entre sede, LOC, posición, presentación y custodia                                                               |
+| 9.  | `NEXO-INVENTORY-RELOCATION-CONTRACT-001`                                 | gobierna reubicación física confirmada dentro de una sede                                                                            |
+| 10. | `NEXO-INVENTORY-INTERNAL-TRANSFER-CONTRACT-001`                          | gobierna traslados entre LOC de una misma sede sin alterar su total                                                                  |
+| 11. | `NEXO-INVENTORY-INTERSITE-TRANSFER-LEDGER-BOUNDARY-001`                  | define legs emparejados de salida, custodia y entrada sin rediseñar remisiones                                                       |
+| 12. | `NEXO-INVENTORY-MOVEMENT-SOURCE-POSTING-CONTRACT-001`                    | admite receipts propietarios, valida saldo elegible y publica una sola vez                                                           |
+| 13. | `NEXO-INVENTORY-MOVEMENT-IDEMPOTENCY-SEQUENCE-RECEIPT-CONTRACT-001`      | define intención, fingerprint, secuencia estable, receipt y resultado desconocido                                                    |
+| 14. | `NEXO-INVENTORY-MOVEMENT-BALANCE-PROJECTION-RECONCILIATION-CONTRACT-001` | gobierna checkpoints, proyecciones, outbox, reconstrucción y reparación                                                              |
+| 15. | `NEXO-INVENTORY-MOVEMENT-CORRECTION-REVERSAL-CONTRACT-001`               | prohíbe mutación destructiva y exige grupos compensatorios                                                                           |
+| 16. | `NEXO-INVENTORY-MOVEMENT-QUERY-EXPORT-CONTRACT-001`                      | define consulta causal, filtros, detalle, balances, exportación y minimización                                                       |
+| 17. | `NEXO-INVENTORY-MOVEMENT-COMPATIBILITY-CONTRACT-001`                     | hace converger aliases, tablas, RPC, permisos y escritores actuales                                                                  |
+| 18. | `NEXO-INVENTORY-MOVEMENT-ROUTE-DISPOSITION-001`                          | decide diecinueve superficies existentes sin crear direcciones nuevas                                                                |
+| 19. | `NEXO-INVENTORY-MOVEMENT-INTERFACE-STATE-CONTRACT-001`                   | materializa treinta estados de interfaz sin éxito ficticio                                                                           |
+| 20. | `NEXO-INVENTORY-MOVEMENT-VALIDATION-MATRIX-001`                          | asigna cuarenta y ocho comprobaciones a pasos, fuentes y resultados concretos                                                        |
+| 21. | `NEXO-INVENTORY-MOVEMENT-IMPLEMENTATION-HANDOFF-001`                     | entrega modelo físico, transición, pruebas, rollback y salidas consumibles a retiros, conteos, ajustes, excepciones e implementación |
+
+Cobertura materializada:
+
+| Elemento                          | Total esperado | Total materializado | Faltantes | Duplicados |
+| --------------------------------- | -------------- | ------------------- | --------- | ---------- |
+| Artefactos documentales           | 21             | 21                  | 0         | 0          |
+| Pasos `MOV-STEP-*`                | 24             | 24                  | 0         | 0          |
+| Estados de interfaz               | 30             | 30                  | 0         | 0          |
+| Estados empresariales y técnicos  | 22             | 22                  | 0         | 0          |
+| Colas `MOVQ-*`                    | 8              | 8                   | 0         | 0          |
+| Familias de fuente decididas      | 12             | 12                  | 0         | 0          |
+| Familias semánticas de movimiento | 12             | 12                  | 0         | 0          |
+| Comprobaciones de la matriz       | 48             | 48                  | 0         | 0          |
+| Superficies existentes decididas  | 19             | 19                  | 0         | 0          |
+| Requisitos de prueba nuevos       | 14             | 14                  | 0         | 0          |
+
+Los identificadores `MOV-*`, `MOVQ-*`, `MOV-SOURCE-*` y `MOV-FAMILY-*` pertenecen exclusivamente a este diseño y no crean procesos empresariales adicionales.
+
+---
+
+#### 3. Alcance, entradas y salidas
+
+Incluye:
+
+- admisión de receipts y comandos de procesos propietarios;
+- clasificación explícita de doce fuentes y doce familias semánticas;
+- grupo causal con uno o más legs append-only;
+- signo, dirección y alcance explícitos por leg;
+- identidad de sede, LOC, posición, presentación, lote, batch, condición y LPN cuando aplique;
+- cantidad cruda, UOM, factor y cantidad base mediante snapshot;
+- reubicación dentro de una sede y traslado interno entre LOC;
+- frontera contable de despacho, custodia y recepción intersede;
+- intención idempotente, fingerprint, secuencia de servidor y posting receipt;
+- proyecciones de sede, LOC, posición, presentación, costo, disponibilidad y fuente;
+- pairing, checkpoints, reconstrucción, conciliación y reparación de proyecciones;
+- consulta por causalidad, fuente, producto, actor, origen, destino y rango temporal;
+- exportación autorizada y territorialmente acotada;
+- corrección y reversa mediante grupos compensatorios;
+- compatibilidad temporal con `inventory_movements`, `inventory_transfers`, `inventory_transfer_items`, catálogos legacy, RPC y consumidores actuales;
+- handoffs a retiros, conteos, ajustes, diferencias, escáner, métricas e implementación.
+
+Excluye:
+
+- diseñar el flujo humano de retiro, responsabilidad de `NEXO-UX-017`;
+- diseñar sesiones de conteo, responsabilidad de `NEXO-UX-018`;
+- decidir y aprobar ajustes, responsabilidad de `NEXO-UX-019`;
+- simplificar captura o escáner, responsabilidad de `NEXO-UX-020`;
+- resolver diferencias, correcciones o excepciones supervisoras, responsabilidad de `NEXO-UX-022`;
+- definir ciclo de LPN, empaque o contenedores, responsabilidad de `NEXO-UX-026` a `NEXO-UX-029`;
+- recrear compras ORIGO, producción FOGO, ventas PULSO o remisiones NEXO desde un formulario de movimientos;
+- alterar receipts aprobados de entrada, putaway, despacho, tránsito o recepción;
+- ejecutar cambios físicos, SQL, migraciones, configuración o despliegues.
+
+Entrada mínima de una fuente propietaria:
+
+```text
+source_owner
+source_type
+source_id
+source_version
+source_line_id
+source_receipt_id
+posting_intent_id
+payload_fingerprint
+product_identity
+raw_qty
+input_unit_code
+uom_snapshot
+base_qty
+movement_family
+scope_effects[]
+actor_context
+occurred_at_when_known
+```
+
+Salida autoritativa mínima:
+
+```text
+movement_group_id
+movement_group_version
+movement_ids[]
+server_sequence_from
+server_sequence_to
+posting_receipt_id
+source_identity
+correlation_id
+causation_id
+legs[]
+projection_receipt_ids[]
+pairing_status
+reconciliation_status
+checkpoint_refs[]
+exception_ids[]
+confirmed_at
+```
+
+---
+
+#### 4. Actores, autoridad y segregación
+
+| Actor o sistema             | Autoridad                                                                               | Límite obligatorio                                                                        |
+| --------------------------- | --------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- |
+| `OPERADOR_REUBICACION`      | Ejecuta una tarea física atribuible entre origen y destino compatibles.                 | No crea entradas, retiros, ajustes, conteos, costo ni fuentes empresariales.              |
+| `OPERADOR_TRASLADO_INTERNO` | Confirma traslado entre LOC de una sede bajo permiso y sesión vigentes.                 | No declara despacho intersede ni recepción en destino.                                    |
+| `OPERADOR_PROCESO_ORIGEN`   | Confirma el hecho dentro de ORIGO, FOGO, PULSO, remisiones, retiros, conteos o ajustes. | No inserta legs libres ni cambia la taxonomía del ledger.                                 |
+| `CONSULTA_MOVIMIENTOS`      | Lee movimientos dentro de su territorio y capacidad.                                    | No obtiene mutación, costo protegido, notas sensibles ni datos fuera de alcance.          |
+| `AUDITORIA_MOVIMIENTOS`     | Consulta causalidad, secuencias, receipts, reversas y conciliación autorizadas.         | No corrige hechos ni amplía territorio por exportar.                                      |
+| `SUPERVISION`               | Observa divergencias y solicita resolución dentro de su alcance.                        | No edita grupos publicados ni sustituye al actor que originó el hecho.                    |
+| `SISTEMA_PRODUCTOR`         | Emite un receipt versionado y una intención idempotente desde el proceso propietario.   | No escribe proyecciones ni reintenta con una intención distinta después de un timeout.    |
+| `SISTEMA_LEDGER_NEXO`       | Valida, secuencia, publica grupos y legs, emite receipts, outbox y checkpoints.         | No inventa fuente, signo, origen, destino, costo, actor o autorización desde texto libre. |
+| `CONSUMIDOR_DE_PROYECCION`  | Aplica cada leg una vez a su proyección y devuelve receipt.                             | No crea otro movimiento para reparar una proyección.                                      |
+| `DISPOSITIVO_COMPARTIDO`    | Aporta estación, escáner y periféricos bajo sesión humana vigente.                      | No es actor, fuente, aprobador ni propietario del movimiento.                             |
+
+Toda lectura y mutación revalida principal, actor efectivo, sesión humana, función, sede, área, turno o check-in aplicable, dispositivo, territorio, permiso exacto, fuente, recurso, versión, intención y estado.
+
+Reglas de autorización:
+
+1. `nexo.inventory.movements` concede consulta dentro del territorio resuelto; no concede insertar, corregir, revertir, transferir ni exportar por sí solo;
+2. `nexo.inventory.transfers` concede la operación dedicada de traslado compatible; no concede escritura genérica en `inventory_movements`;
+3. cada proceso productor conserva su permiso exacto y llama un comando canónico del ledger;
+4. exportar requiere capacidad explícita, no un nombre de rol hardcodeado;
+5. costo, proveedor, cliente, notas sensibles, evidencia y datos personales se minimizan por campo;
+6. una URL, un filtro o un ID enviado por cliente nunca amplían alcance;
+7. RLS, RPC, Server Actions, route handlers e interfaz deberán producir la misma denegación efectiva.
+
+---
+
+#### 5. `NEXO-INVENTORY-MOVEMENT-SOURCE-DISPOSITION-001`
+
+| ID               | Fuente empresarial                       | Representación actual principal                                            | Propietario                | Disposición                     | Decisión                                                                                                                      |
+| ---------------- | ---------------------------------------- | -------------------------------------------------------------------------- | -------------------------- | ------------------------------- | ----------------------------------------------------------------------------------------------------------------------------- |
+| `MOV-SOURCE-001` | recepción ordinaria de compra            | `purchase_in`, `receipt_in` o alias `receipt`                              | ORIGO                      | `ADMITIR_POR_RECEIPT`           | consume el posting receipt de entrada; NEXO no reconstruye compra, proveedor ni costo desde una nota                          |
+| `MOV-SOURCE-002` | entrada excepcional                      | `receipt_in` con fuente NEXO y modo emergencia                             | NEXO entradas              | `ADMITIR_POR_RECEIPT`           | exige caso excepcional y posting receipt de `NEXO-UX-014`; no admite inserción manual equivalente                             |
+| `MOV-SOURCE-003` | despacho de remisión intersede           | `restock_out`, `transfer_out`                                              | NEXO remisiones            | `ADMITIR_POR_RECEIPT`           | consume cantidades despachadas confirmadas y crea salida de origen más custodia correlacionada                                |
+| `MOV-SOURCE-004` | recepción de remisión intersede          | `restock_in`, `transfer_in`                                                | NEXO remisiones            | `ADMITIR_POR_RECEIPT`           | consume cantidades aceptadas de receipts acumulativos y reduce custodia sin duplicar el despacho                              |
+| `MOV-SOURCE-005` | consumo productivo                       | `production_out`                                                           | FOGO                       | `ADMITIR_POR_RECEIPT`           | consume lote, fórmula, componentes y cantidades confirmadas; no usa un retiro libre                                           |
+| `MOV-SOURCE-006` | salida productiva                        | `production_in`                                                            | FOGO                       | `ADMITIR_POR_RECEIPT`           | consume outputs liberados y conserva batch, rendimiento, UOM y costo snapshot                                                 |
+| `MOV-SOURCE-007` | venta o consumo comercial                | `sale_out`                                                                 | PULSO                      | `ADMITIR_POR_RECEIPT`           | consume posting comercial idempotente; no expone cliente ni pago innecesariamente                                             |
+| `MOV-SOURCE-008` | retiro, consumo interno, merma o pérdida | `consumption`, `issue_internal`, `waste`, `shrink`                         | NEXO retiros y excepciones | `RESERVAR_FLUJO_PROPIETARIO`    | la semántica humana pertenece a `NEXO-UX-017` y `NEXO-UX-022`; el ledger solo admite su receipt                               |
+| `MOV-SOURCE-009` | traslado o reubicación en una sede       | `transfer_internal`                                                        | NEXO movimientos           | `DISEÑAR_EN_ESTA_TAREA`         | exige origen, destino, legs pareados, sesión, intención y receipt; no es una fila positiva neutral sin dirección              |
+| `MOV-SOURCE-010` | putaway y posición técnica               | `stock_assign_location`, `stock_assign_position`, `stock_consume_position` | NEXO ubicación             | `CONSUMIR_HANDOFF_APROBADO`     | conserva receipts de `NEXO-UX-015`; los legs técnicos se muestran dentro del grupo causal y no como entrada o salida real     |
+| `MOV-SOURCE-011` | diferencia aprobada de conteo            | `initial_count`, `count`                                                   | NEXO conteos y ajustes     | `RESERVAR_FLUJO_PROPIETARIO`    | observar no mueve stock; solo la diferencia aprobada emite un posting con signo explícito desde `NEXO-UX-018` y `NEXO-UX-019` |
+| `MOV-SOURCE-012` | ajuste, corrección o reversa             | `adjustment` y movimientos compensatorios                                  | NEXO ajustes y excepciones | `RESERVAR_DECISION_PROPIETARIA` | consume caso, autoridad y receipt de `NEXO-UX-019` o `NEXO-UX-022`; nunca se usa para editar historia                         |
+
+Reconciliación:
+
+```text
+EXPECTED_MOVEMENT_SOURCE_FAMILIES = 12
+MATERIALIZED_MOVEMENT_SOURCE_FAMILIES = 12
+UNIQUE_MOVEMENT_SOURCE_FAMILIES = 12
+MISSING_MOVEMENT_SOURCE_FAMILIES = 0
+DUPLICATE_MOVEMENT_SOURCE_FAMILIES = 0
+```
+
+Cada fuente posee un solo productor autoritativo. El permiso amplio para insertar una fila de movimiento no sustituye el command boundary ni la validación del receipt propietario.
+
+---
+
+#### 6. `NEXO-INVENTORY-MOVEMENT-TAXONOMY-001`
+
+| ID               | Familia semántica                        | Efecto en sede             | Efecto físico o secundario                                   | Regla de clasificación                                                                             |
+| ---------------- | ---------------------------------------- | -------------------------- | ------------------------------------------------------------ | -------------------------------------------------------------------------------------------------- |
+| `MOV-FAMILY-001` | `EXTERNAL_INBOUND`                       | positivo                   | puede iniciar en receiving, staging o ubicación pendiente    | requiere fuente externa o empresarial que aumente existencia de sede                               |
+| `MOV-FAMILY-002` | `EXTERNAL_OUTBOUND`                      | negativo                   | reduce LOC, posición, presentación o disponibilidad          | requiere fuente que consuma o entregue existencia fuera de la sede                                 |
+| `MOV-FAMILY-003` | `INTERSITE_DISPATCH`                     | negativo en origen         | aumenta custodia en tránsito                                 | siempre correlacionado con shipment, despacho y journey                                            |
+| `MOV-FAMILY-004` | `INTERSITE_RECEIPT`                      | positivo en destino        | disminuye custodia en tránsito                               | solo por cantidad aceptada y receipt de destino                                                    |
+| `MOV-FAMILY-005` | `SAME_SITE_LOCATION_RELOCATION`          | cero                       | origen LOC negativo y destino LOC positivo                   | suma de legs de LOC igual a cero                                                                   |
+| `MOV-FAMILY-006` | `SAME_LOCATION_POSITION_RELOCATION`      | cero                       | origen posición negativo y destino posición positivo         | suma de legs de posición igual a cero y LOC estable                                                |
+| `MOV-FAMILY-007` | `PUTAWAY_ASSIGNMENT`                     | cero                       | saldo sin LOC o receiving disminuye y destino aumenta        | consume receipt y saldo pendiente de `NEXO-UX-015`                                                 |
+| `MOV-FAMILY-008` | `PRODUCTION_CONSUMPTION`                 | negativo                   | reduce componentes y conserva batch                          | fuente exclusiva FOGO                                                                              |
+| `MOV-FAMILY-009` | `PRODUCTION_OUTPUT`                      | positivo                   | incorpora output liberado y conserva batch                   | fuente exclusiva FOGO                                                                              |
+| `MOV-FAMILY-010` | `SALE_OR_OPERATIONAL_ISSUE`              | negativo                   | conserva venta, retiro, consumo, merma o pérdida clasificada | cada subtipo conserva su propietario y causa                                                       |
+| `MOV-FAMILY-011` | `COUNT_OR_ADJUSTMENT_POSTING`            | signo explícito            | aplica diferencia aprobada                                   | el catálogo no impone signo positivo; debe provenir de decisión versionada                         |
+| `MOV-FAMILY-012` | `REVERSAL_OR_TECHNICAL_RECLASSIFICATION` | cero o signo compensatorio | revierte grupo original o reclasifica sin inventar cantidad  | referencia obligatoria al original o al receipt técnico; no se deduce desde `affects_stock` legacy |
+
+Reconciliación:
+
+```text
+EXPECTED_MOVEMENT_FAMILIES = 12
+MATERIALIZED_MOVEMENT_FAMILIES = 12
+UNIQUE_MOVEMENT_FAMILIES = 12
+MISSING_MOVEMENT_FAMILIES = 0
+DUPLICATE_MOVEMENT_FAMILIES = 0
+```
+
+El código legacy puede conservar temporalmente aliases, pero todo nuevo posting debe persistir familia, código, signo y alcance de forma inequívoca. `movement_type` no decide por sí solo el balance.
+
+---
+
+#### 7. `NEXO-INVENTORY-MOVEMENT-GROUP-LEG-CONTRACT-001`
+
+##### 7.1. Grupo causal
+
+Un hecho empresarial produce un grupo inmutable:
+
+```text
+movement_group_id
+movement_group_version
+source_owner
+source_type
+source_id
+source_version
+source_line_ids[]
+source_receipt_ids[]
+posting_intent_id
+posting_receipt_id
+movement_family
+business_reason_code
+correlation_id
+causation_id
+actor_id
+site_context_id
+device_context_id
+occurred_at
+recorded_at
+server_sequence_from
+server_sequence_to
+status
+original_group_id_when_compensating
+```
+
+El grupo no contiene un saldo editable. Describe causalidad, autoridad, intención, familia y frontera de confirmación.
+
+##### 7.2. Leg cuantitativo
+
+Cada efecto material se representa por un leg:
+
+```text
+movement_id
+movement_group_id
+leg_sequence
+movement_code
+effect_class
+scope
+site_id
+location_id
+position_id
+uom_profile_id
+lpn_id
+product_id
+lot_or_batch_ref
+expiry_ref
+condition_code
+raw_qty
+input_unit_code
+conversion_factor_to_stock
+stock_unit_code
+base_qty
+signed_base_delta
+currency_when_authorized
+unit_cost_snapshot_when_authorized
+source_line_id
+counterpart_movement_id
+original_movement_id_when_compensating
+created_by
+recorded_at
+server_sequence
+```
+
+Valores mínimos de `scope`:
+
+```text
+SITE
+LOCATION
+POSITION
+PRESENTATION
+CUSTODY
+```
+
+Valores mínimos de `effect_class`:
+
+```text
+QUANTITY
+CUSTODY
+TECHNICAL_ALLOCATION
+COMPENSATION
+```
+
+Una transición de disponibilidad o condición que no altera cantidad se publica como evento o proyección correlacionada y no como leg cuantitativo ficticio.
+
+##### 7.3. Invariantes
+
+1. cada leg pertenece exactamente a un grupo;
+2. cada grupo publicado posee al menos un leg o un evento técnico permitido expresamente;
+3. signo y alcance son campos, no inferencias de nombre;
+4. origen y destino se modelan con legs separados y contraparte explícita;
+5. una nota no reemplaza source, receipt, origen, destino, razón ni relación de reversa;
+6. `occurred_at` conserva el hecho empresarial y `recorded_at` la confirmación del servidor;
+7. `server_sequence` resuelve orden estable aun con la misma fecha;
+8. costo protegido puede existir en servidor sin quedar visible para el lector;
+9. grupo y legs publicados no admiten UPDATE ni DELETE;
+10. toda compensación conserva original, causalidad y saldo restante.
+
+---
+
+#### 8. `NEXO-INVENTORY-MOVEMENT-STATE-MACHINE-001`
+
+| Estado                     | Condición                                                                               | Transición principal                                 | Invariante                               |
+| -------------------------- | --------------------------------------------------------------------------------------- | ---------------------------------------------------- | ---------------------------------------- |
+| `SOURCE_RECEIPT_AVAILABLE` | existe receipt propietario versionado y saldo elegible                                  | `POSTING_INTENT_CREATED` o `SOURCE_RECEIPT_REJECTED` | no crea legs                             |
+| `SOURCE_RECEIPT_REJECTED`  | fuente ajena, obsoleta, ambigua, duplicada o fuera de territorio                        | cierre del bloqueo o nueva versión propietaria       | no inventa mapping                       |
+| `POSTING_INTENT_CREATED`   | clave, fingerprint y versión quedaron persistidos                                       | `POSTING_VALIDATING`                                 | intención recuperable                    |
+| `POSTING_VALIDATING`       | servidor revalida fuente, permiso, saldo, UOM, alcance y conservación                   | `POSTING_IN_PROGRESS` o `BLOCKED`                    | cliente no decide autoridad              |
+| `POSTING_IN_PROGRESS`      | grupo y legs se procesan en la frontera autoritativa                                    | `GROUP_POSTED` o `RESULT_UNKNOWN`                    | no existe segundo comando                |
+| `RESULT_UNKNOWN`           | el cliente perdió respuesta después del envío                                           | consulta por intención                               | no presume éxito ni fallo                |
+| `GROUP_POSTED`             | grupo, legs y receipt quedaron confirmados                                              | `PROJECTIONS_PENDING`, `PAIR_PENDING` o `CLOSED`     | hecho append-only                        |
+| `LEGS_POSTED`              | todos los legs del grupo poseen secuencia y correlación                                 | continuidad de pairing y proyecciones                | no hay leg huérfano                      |
+| `PAIR_PENDING`             | movimiento requiere contraparte todavía no confirmada                                   | `PAIR_COMPLETE` o `RECONCILIATION_REQUIRED`          | saldo de custodia permanece explícito    |
+| `PAIR_COMPLETE`            | origen, destino o custodia quedaron correlacionados                                     | `PROJECTIONS_PENDING` o `CLOSED`                     | no duplica cantidad                      |
+| `PROJECTIONS_PENDING`      | una o más vistas derivadas esperan aplicación                                           | `PROJECTIONS_APPLIED` o `PARTIALLY_RECONCILED`       | no crea otro grupo                       |
+| `PROJECTIONS_APPLIED`      | consumidores obligatorios devolvieron receipts idempotentes                             | `CLOSED`                                             | cada leg aplicado una vez                |
+| `PARTIALLY_RECONCILED`     | algunas proyecciones convergieron y otras conservan saldo pendiente                     | `PROJECTIONS_APPLIED` o `RECONCILIATION_REQUIRED`    | pending exacto por consumidor            |
+| `RECONCILIATION_REQUIRED`  | existe orphan, pairing incompleto, timeout, error o divergencia                         | reparación de proyección o caso a `NEXO-UX-022`      | no modifica hechos                       |
+| `BALANCE_DIVERGENCE`       | ledger y una proyección no coinciden en un alcance                                      | reconstrucción, comparación y caso                   | ledger prevalece tras validar integridad |
+| `SEQUENCE_GAP`             | falta una secuencia esperada o el checkpoint no cubre continuidad                       | relectura autoritativa o escalamiento                | no calcula saldo parcial como definitivo |
+| `ORPHAN_SOURCE`            | grupo o leg no puede vincularse con receipt productor                                   | clasificación de compatibilidad o bloqueo            | no completa causalidad con texto libre   |
+| `BLOCKED`                  | autorización, fuente, cantidad, alcance, UOM o conservación fallan                      | revalidación o cierre con propietario                | no produce receipt de éxito              |
+| `REVERSAL_PENDING`         | caso autorizado solicita compensación de grupo o legs                                   | `PARTIALLY_REVERSED` o `FULLY_REVERSED`              | original visible                         |
+| `PARTIALLY_REVERSED`       | solo parte de los legs o cantidades quedó compensada                                    | nueva compensación autorizada o `CLOSED`             | saldo restante exacto                    |
+| `FULLY_REVERSED`           | efectos cuantitativos quedaron compensados completamente                                | `CLOSED`                                             | original no se borra                     |
+| `CLOSED`                   | receipt, pairing y proyecciones obligatorias convergieron o quedaron delegados con caso | fin del flujo                                        | cierre no resuelve tareas ajenas         |
+
+Reconciliación:
+
+```text
+EXPECTED_MOVEMENT_STATES = 22
+MATERIALIZED_MOVEMENT_STATES = 22
+UNIQUE_MOVEMENT_STATES = 22
+MISSING_MOVEMENT_STATES = 0
+DUPLICATE_MOVEMENT_STATES = 0
+```
+
+Los estados se derivan de receipts, secuencias, legs, consumers y casos. Un redirect, toast, nota, status mutable o cambio visual no confirma un movimiento.
+
+---
+
+#### 9. `NEXO-INVENTORY-MOVEMENT-WORK-QUEUE-CONTRACT-001`
+
+| Cola                  | Propósito                                                                        | Entrada                                                       | Salida                                                    | Bloqueo principal                                                                 |
+| --------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `MOVQ-SOURCE`         | receipts productores pendientes, rechazados o sin saldo inequívoco               | identidad y versión de fuente                                 | intención admisible o bloqueo                             | no permite crear una fuente alternativa ni completar correlación desde notas      |
+| `MOVQ-POSTING`        | intenciones completas pendientes de secuencia y receipt                          | payload estable, permiso, versión y fingerprint               | grupo publicado, conflicto o resultado desconocido        | no permite doble envío ni inserción directa de legs                               |
+| `MOVQ-PAIRING`        | traslados y legs que requieren contraparte origen-destino o custodia             | grupo publicado con pairing pendiente                         | contraparte confirmada o caso estructurado                | no cierra tránsito por tiempo, status visual o recepción esperada                 |
+| `MOVQ-PROJECTION`     | legs publicados pendientes de stock, costo, ubicación, presentación o fuente     | posting receipt y outbox                                      | receipts de consumidor o saldo pendiente exacto           | no crea otro movimiento para reparar una vista                                    |
+| `MOVQ-RECONCILIATION` | timeouts, orphans, correlaciones incompletas o consumidores fallidos             | intención, secuencia, receipt, group y errores                | resultado recuperado, proyección reconstruida o excepción | no edita ledger ni elimina evidencia                                              |
+| `MOVQ-BALANCE`        | gaps de secuencia, checkpoints vencidos o divergencias entre ledger y proyección | rango, alcance, producto, checkpoint y secuencias             | balance certificado o caso                                | no usa una ventana filtrada como saldo definitivo                                 |
+| `MOVQ-REVERSAL`       | solicitudes autorizadas de corrección o reversa                                  | caso, original, motivo, autoridad, cantidad y efecto esperado | grupo compensatorio confirmado o caso bloqueado           | no ofrece UPDATE, DELETE ni “deshacer” destructivo                                |
+| `MOVQ-AUDIT`          | consultas, exportaciones y análisis causal de alto volumen                       | actor, territorio, filtros, campos y propósito autorizado     | vista o archivo reproducible                              | no amplía acceso por nombre de rol, parámetro, CSV ni consulta de todas las sedes |
+
+Reconciliación:
+
+```text
+EXPECTED_MOVEMENT_QUEUES = 8
+MATERIALIZED_MOVEMENT_QUEUES = 8
+UNIQUE_MOVEMENT_QUEUES = 8
+MISSING_MOVEMENT_QUEUES = 0
+DUPLICATE_MOVEMENT_QUEUES = 0
+```
+
+Prioridad: integridad y autorización; resultado desconocido; gap de secuencia; pairing y custodia; divergencia de balance; proyección pendiente; reversa autorizada; consulta y exportación.
+
+---
+
+#### 10. `NEXO-INVENTORY-MOVEMENT-STEP-CATALOG-001`
+
+| Paso          | Nombre                           | Entrada                                                              | Salida                                       | Límite                                               |
+| ------------- | -------------------------------- | -------------------------------------------------------------------- | -------------------------------------------- | ---------------------------------------------------- |
+| `MOV-STEP-01` | Resolver contexto                | principal, actor, sesión, función, sede, área, dispositivo y permiso | contexto válido o bloqueo                    | no carga ledger ajeno                                |
+| `MOV-STEP-02` | Resolver propósito               | consulta, exportación, posting, reubicación, traslado o reversa      | rama exacta                                  | no usa una misma mutación para todos los fines       |
+| `MOV-STEP-03` | Admitir fuente                   | owner, type, ID, versión, receipt y línea                            | fuente admitida o rechazada                  | no infiere desde nota o alias                        |
+| `MOV-STEP-04` | Comprobar no duplicidad          | receipts, postings, partial sequence e intención                     | saldo elegible exacto                        | no publica dos veces                                 |
+| `MOV-STEP-05` | Clasificar familia               | fuente y consecuencia empresarial                                    | una de doce familias                         | el nombre legacy no decide signo                     |
+| `MOV-STEP-06` | Resolver alcance                 | sede, LOC, posición, presentación, custodia y disponibilidad         | scopes afectados                             | no mezcla niveles                                    |
+| `MOV-STEP-07` | Resolver identidad física        | producto, lote, batch, condición, presentación y LPN                 | identidad trazable                           | no sustituye identidad con texto                     |
+| `MOV-STEP-08` | Normalizar cantidad y UOM        | cantidad cruda y snapshot de conversión                              | cantidad base reproducible                   | no recalcula historia                                |
+| `MOV-STEP-09` | Construir grupo causal           | fuente, actor, razón, correlación y causalidad                       | header de grupo                              | no contiene saldo mutable                            |
+| `MOV-STEP-10` | Construir legs                   | scopes, origen, destino, signo y cantidad                            | legs pareados o bloqueados                   | no crea fila neutral sin dirección                   |
+| `MOV-STEP-11` | Validar conservación             | grupo y legs                                                         | ecuaciones satisfechas                       | no tolera pérdida, creación o doble custodia         |
+| `MOV-STEP-12` | Validar disponibilidad de origen | ledger, proyección, reservas, condición y versión                    | cantidad ejecutable o conflicto              | no confía en stock leído por el cliente              |
+| `MOV-STEP-13` | Reclamar sesión física           | tarea de reubicación o traslado y versión esperada                   | sesión exclusiva                             | consultar no reclama                                 |
+| `MOV-STEP-14` | Capturar origen y destino reales | escaneo o selección dentro del trabajo                               | evidencia física verificable                 | un algoritmo no reemplaza observación                |
+| `MOV-STEP-15` | Revisar impacto                  | grupo preliminar, legs, cantidades, UOM y consecuencias              | fingerprint de revisión                      | editar invalida revisión                             |
+| `MOV-STEP-16` | Crear intención                  | payload estable, versiones y clave                                   | intención persistida                         | misma clave con payload distinto es conflicto        |
+| `MOV-STEP-17` | Publicar grupo y legs            | intención vigente                                                    | grupo, legs, secuencias y receipt            | frontera atómica                                     |
+| `MOV-STEP-18` | Emitir outbox                    | posting receipt                                                      | eventos por consumidor                       | no sustituye el ledger                               |
+| `MOV-STEP-19` | Aplicar proyecciones             | legs y eventos                                                       | receipts de stock, costo, ubicación y fuente | cada consumidor deduplica                            |
+| `MOV-STEP-20` | Emparejar traslado o custodia    | dispatch, journey y receipt destino                                  | pair completo o saldo en tránsito            | no inventa recepción                                 |
+| `MOV-STEP-21` | Actualizar checkpoint            | secuencia continua y proyecciones confirmadas                        | checkpoint verificable                       | no omite gaps                                        |
+| `MOV-STEP-22` | Consultar o exportar             | filtros autorizados y límites                                        | resultado causal y reproducible              | filtros no alteran aritmética                        |
+| `MOV-STEP-23` | Reconciliar o compensar          | resultado desconocido, divergencia o caso autorizado                 | convergencia o grupo compensatorio           | no modifica original                                 |
+| `MOV-STEP-24` | Cerrar y emitir handoffs         | receipts, pairs, proyecciones, pendientes y casos                    | cierre trazable                              | no ejecuta retiro, conteo, ajuste o excepción ajenos |
+
+Reconciliación:
+
+```text
+EXPECTED_MOVEMENT_STEPS = 24
+MATERIALIZED_MOVEMENT_STEPS = 24
+UNIQUE_MOVEMENT_STEPS = 24
+MISSING_MOVEMENT_STEPS = 0
+DUPLICATE_MOVEMENT_STEPS = 0
+```
+
+---
+
+#### 11. `NEXO-INVENTORY-MOVEMENT-SCOPE-CONSERVATION-CONTRACT-001`
+
+##### 11.1. Ecuaciones por alcance
+
+Para un grupo confirmado:
+
+```text
+SITE_DELTA
+= SUM(SIGNED_BASE_DELTA WHERE SCOPE = SITE)
+
+LOCATION_DELTA_BY_SITE
+= SUM(SIGNED_BASE_DELTA WHERE SCOPE = LOCATION AND SITE_ID = X)
+
+POSITION_DELTA_BY_LOCATION
+= SUM(SIGNED_BASE_DELTA WHERE SCOPE = POSITION AND LOCATION_ID = Y)
+
+CUSTODY_DELTA_BY_JOURNEY
+= SUM(SIGNED_BASE_DELTA WHERE SCOPE = CUSTODY AND CORRELATION_ID = Z)
+```
+
+Conservación obligatoria:
+
+| Operación                         | Sede                                | LOC                                                  | Posición                                                | Custodia                                  |
+| --------------------------------- | ----------------------------------- | ---------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------- |
+| entrada externa                   | `+Q`                                | `+Q` en receiving, staging o destino confirmado      | `+Q` solo si posición quedó físicamente confirmada      | `0`                                       |
+| salida externa                    | `-Q`                                | `-Q` desde origen confirmado                         | `-Q` desde posición confirmada o distribución explícita | `0`                                       |
+| reubicación LOC en misma sede     | `0`                                 | `-Q` origen y `+Q` destino                           | según origen y destino reales                           | `0`                                       |
+| reubicación posición en mismo LOC | `0`                                 | `0`                                                  | `-Q` origen y `+Q` destino                              | `0`                                       |
+| despacho intersede                | `-Q` origen                         | `-Q` origen                                          | reducción física de origen                              | `+Q` journey                              |
+| recepción intersede aceptada      | `+Q` destino                        | `+Q` receiving o destino                             | solo si fue colocada                                    | `-Q` journey                              |
+| rechazo o saldo no recibido       | `0` en destino                      | `0` en destino                                       | `0`                                                     | permanece en journey o caso según receipt |
+| putaway posterior a stock de sede | `0`                                 | redistribución o asignación técnica sin cambiar sede | asignación confirmada                                   | `0`                                       |
+| ajuste aprobado                   | signo explícito                     | efecto correlacionado si existe ubicación exacta     | efecto correlacionado si aplica                         | solo si el caso afecta custodia           |
+| reversa                           | suma opuesta al original autorizado | legs opuestos correlacionados                        | legs opuestos correlacionados                           | contraparte opuesta cuando aplique        |
+
+##### 11.2. Reglas cuantitativas
+
+1. `base_qty` es no negativa; el signo vive en `signed_base_delta`;
+2. el valor crudo se conserva para auditoría;
+3. la suma de legs origen-destino de una reubicación es cero en el alcance superior;
+4. una cantidad no puede existir simultáneamente como stock disponible en origen, custodia y destino;
+5. receipts parciales consumen solo su saldo elegible;
+6. rechazado, bloqueado, cuarentena y no resuelto no aumentan disponibilidad;
+7. una presentación o posición no puede sumar más que su LOC;
+8. las proyecciones no corrigen el ledger mediante diferencias silenciosas;
+9. toda tolerancia se aplica en el proceso propietario antes de emitir el receipt;
+10. la precisión y el redondeo provienen del snapshot de UOM.
+
+---
+
+#### 12. `NEXO-INVENTORY-RELOCATION-CONTRACT-001`
+
+Una reubicación mueve existencia ya confirmada dentro de una sede. Se inicia desde una tarea atribuible, un hallazgo operativo autorizado o la continuidad explícita de `NEXO-UX-015`; nunca desde una fila libre de movimientos.
+
+Entrada mínima:
+
+```text
+relocation_work_item_id
+relocation_version
+site_id
+product_id
+source_location_id
+source_position_id_when_known
+destination_location_id
+destination_position_id_when_required
+requested_base_qty
+uom_snapshot
+physical_identity
+reason_code
+actor_id
+idempotency_key
+```
+
+Flujo:
+
+1. revalidar actor, sede, permiso y work item;
+2. comprobar que origen y destino están activos, pertenecen a la sede y son distintos en el nivel pertinente;
+3. verificar cantidad ledger/proyección y cualquier reserva o bloqueo;
+4. capturar origen físico real, no una deducción automática;
+5. validar política, capacidad, condición, lote, presentación y destino;
+6. construir legs pareados;
+7. revisar impacto y fingerprint;
+8. publicar grupo, receipt y outbox atómicos;
+9. aplicar proyecciones y devolver saldo restante;
+10. cerrar, continuar parcial o abrir excepción.
+
+Resultados permitidos:
+
+```text
+RELOCATED_FULL
+RELOCATED_PARTIAL
+RELOCATION_BLOCKED
+RELOCATION_CONFLICTED
+RELOCATION_RESULT_UNKNOWN
+```
+
+No existe reubicación offline confirmada por defecto. Una captura local exige revalidación completa antes de producir un hecho empresarial.
+
+---
+
+#### 13. `NEXO-INVENTORY-INTERNAL-TRANSFER-CONTRACT-001`
+
+El traslado entre LOC de una misma sede es una especialización de reubicación con encabezado, líneas, sesión, revisión y receipt propios.
+
+Contrato mínimo:
+
+```text
+internal_transfer_id
+internal_transfer_version
+site_id
+source_location_id
+destination_location_id
+status
+line_ids[]
+source_position_plan[]
+destination_position_plan[]
+intent_id
+payload_fingerprint
+movement_group_ids[]
+posting_receipt_id
+projection_receipt_ids[]
+created_by
+confirmed_by
+confirmed_at
+```
+
+Estados permitidos:
+
+```text
+DRAFT
+CLAIMED
+IN_PROGRESS
+REVIEWED
+POSTING
+RESULT_UNKNOWN
+CONFIRMED
+PARTIALLY_CONFIRMED
+BLOCKED
+CANCELLED_BEFORE_POSTING
+REVERSAL_PENDING
+REVERSED
+```
+
+Reglas:
+
+- `completed` no se persiste al crear el encabezado;
+- header, líneas y movimiento no se escriben mediante una secuencia multi-write sin frontera de confirmación;
+- el stock de origen se bloquea o valida bajo concurrencia antes de publicar;
+- el consumo desde posiciones requiere plan físico o política explícita, no “menor stock primero” silencioso;
+- cada línea genera legs de origen y destino correlacionados;
+- el total de sede permanece idéntico;
+- un fallo parcial no deja encabezado completado con proyecciones incompletas;
+- después del receipt, header, líneas y legs son append-only;
+- una cancelación posterior es reversa, no DELETE;
+- la pantalla muestra cantidades, origen, destino, receipts y saldo pendiente, no solo status.
+
+---
+
+#### 14. `NEXO-INVENTORY-INTERSITE-TRANSFER-LEDGER-BOUNDARY-001`
+
+La experiencia humana de solicitud, preparación, despacho, tránsito y recepción permanece en `NEXO-UX-009` a `NEXO-UX-013`. Esta tarea define únicamente cómo sus receipts afectan el ledger.
+
+##### 14.1. Despacho
+
+Por cada cantidad despachada confirmada:
+
+```text
+ORIGIN_SITE_LEG = -Q
+ORIGIN_LOCATION_LEG = -Q
+ORIGIN_POSITION_LEGS = -Q WHEN KNOWN
+TRANSIT_CUSTODY_LEG = +Q
+```
+
+El grupo referencia request, fulfillment, pick, prepared unit, shipment, dispatch receipt, journey y actor custodio cuando existan.
+
+##### 14.2. Tránsito
+
+Los hitos de tránsito no vuelven a mover cantidad. Actualizan custodia, incidente, ETA o estado mediante eventos correlacionados. Una transferencia de custodia entre personas no crea stock.
+
+##### 14.3. Recepción
+
+Por cada cantidad aceptada en un receipt confirmado:
+
+```text
+TRANSIT_CUSTODY_LEG = -Q
+DESTINATION_SITE_LEG = +Q
+DESTINATION_RECEIVING_LOCATION_LEG = +Q
+DESTINATION_POSITION_LEG = +Q ONLY AFTER CONFIRMED PUTAWAY
+```
+
+Faltante, rechazo, cuarentena, sobrante y saldo sin resolver permanecen bajo sus receipts y casos. No se ajustan automáticamente para forzar que salida y entrada coincidan.
+
+##### 14.4. Pairing
+
+Identidad de pairing:
+
+```text
+shipment_id
+shipment_line_id
+dispatch_receipt_id
+journey_id
+receipt_id
+receipt_line_id
+partial_sequence
+product_id
+base_qty
+```
+
+El pairing puede estar parcial. La suma aceptada y rechazada no borra el saldo todavía en custodia o en investigación.
+
+---
+
+#### 15. `NEXO-INVENTORY-MOVEMENT-SOURCE-POSTING-CONTRACT-001`
+
+Cada productor entrega un payload estable al command boundary. El ledger ejecuta:
+
+```text
+ADMIT_SOURCE
+→ VERIFY_OWNER_AND_VERSION
+→ VERIFY_ELIGIBLE_BALANCE
+→ CLASSIFY_FAMILY_AND_SCOPE
+→ BUILD_GROUP_AND_LEGS
+→ VALIDATE_CONSERVATION
+→ PERSIST_INTENT
+→ POST_GROUP_LEGS_SEQUENCE_RECEIPT_OUTBOX
+→ RETURN_OR_RECOVER_SAME_RECEIPT
+```
+
+Propiedades:
+
+1. el productor nunca inserta directamente una fila genérica para “dejar registro”;
+2. receipt y línea de fuente poseen unicidad contra la cantidad publicada;
+3. posting parcial usa `partial_sequence` y saldo servidor;
+4. un source receipt puede originar varios grupos únicamente cuando la separación por línea, parcialidad o alcance está definida;
+5. un grupo no consume más cantidad que el saldo elegible;
+6. el command boundary revalida permiso del productor y pertenencia del recurso;
+7. source owner y movement family deben ser compatibles por catálogo;
+8. costo se consume de la fuente o política, no de la UI de movimientos;
+9. el resultado devuelve el mismo receipt ante reintento equivalente;
+10. la fuente recibe acknowledgment idempotente cuando corresponda.
+
+---
+
+#### 16. `NEXO-INVENTORY-MOVEMENT-IDEMPOTENCY-SEQUENCE-RECEIPT-CONTRACT-001`
+
+Identidad mínima de intención:
+
+```text
+producer_id
+source_owner
+source_type
+source_id
+source_version
+source_line_id
+partial_sequence
+movement_family
+payload_fingerprint
+idempotency_key
+```
+
+Resultados permitidos:
+
+| Situación                                           | Resultado                                          |
+| --------------------------------------------------- | -------------------------------------------------- |
+| misma clave, mismo fingerprint y receipt confirmado | devolver el mismo receipt                          |
+| misma clave y fingerprint con comando en curso      | devolver estado recuperable                        |
+| misma clave con payload distinto                    | conflicto inmutable                                |
+| source version o work item obsoleto                 | rechazar y recargar                                |
+| timeout después del envío                           | consultar por intención antes de reintentar        |
+| receipt de fuente ya agotado                        | mostrar postings existentes y saldo cero           |
+| consumidor repetido                                 | devolver mismo receipt de proyección               |
+| secuencia faltante                                  | bloquear balance definitivo y abrir reconciliación |
+
+Secuencia:
+
+- cada leg recibe `server_sequence` monotónica dentro de la partición canónica definida en implementación;
+- `leg_sequence` ordena legs dentro del grupo;
+- `recorded_at` no sustituye la secuencia;
+- un checkpoint declara rango inicial y final cubiertos;
+- exportaciones y reconstrucciones ordenan por secuencia y usan ID como desempate estable únicamente cuando el contrato lo permita;
+- una reejecución no genera nueva secuencia si ya existe receipt equivalente.
+
+Posting receipt mínimo:
+
+```text
+posting_receipt_id
+posting_intent_id
+movement_group_id
+movement_ids[]
+server_sequence_from
+server_sequence_to
+source_identity
+payload_fingerprint
+pairing_status
+projection_status
+version
+confirmed_at
+```
+
+---
+
+#### 17. `NEXO-INVENTORY-MOVEMENT-BALANCE-PROJECTION-RECONCILIATION-CONTRACT-001`
+
+##### 17.1. Fuente de verdad y proyecciones
+
+| Resultado consultado        | Fuente de verdad                         | Proyección permitida                                      | Prohibición                                 |
+| --------------------------- | ---------------------------------------- | --------------------------------------------------------- | ------------------------------------------- |
+| existencia por sede         | legs `SITE` confirmados                  | `inventory_stock_by_site`                                 | read-modify-write del cliente               |
+| existencia por LOC          | legs `LOCATION` confirmados              | `inventory_stock_by_location`                             | asignación positiva sin leg origen o fuente |
+| existencia por posición     | legs `POSITION` confirmados              | `inventory_stock_by_position`                             | suma superior al LOC                        |
+| existencia por presentación | legs y receipts físicos aplicables       | `inventory_stock_by_uom_profile`                          | conversión posterior que reescriba historia |
+| custodia en tránsito        | legs `CUSTODY` y pairing                 | vista de custody por shipment o journey                   | mostrar como stock disponible de destino    |
+| costo                       | legs cuantitativos y snapshot autorizado | eventos y proyección de costo                             | usar el precio actual para historia         |
+| fuente empresarial          | source receipt y acknowledgment          | acumulados de orden, producción, venta, remisión o retiro | suma ciega sin deduplicación                |
+| disponibilidad y condición  | receipts y eventos correlacionados       | vistas de available, staging, quarantine o blocked        | convertir un estado visual en delta         |
+
+##### 17.2. Checkpoints
+
+Un checkpoint no reemplaza el ledger. Acelera reconstrucción y conserva:
+
+```text
+checkpoint_id
+scope
+partition_key
+product_id
+sequence_from
+sequence_to
+opening_balance
+net_delta
+closing_balance
+movement_count
+source_digest
+created_at
+verified_at
+```
+
+Reglas:
+
+- solo cubre una secuencia continua;
+- su digest permite detectar deriva;
+- puede reconstruirse desde legs sin modificar movimientos;
+- un gap invalida el saldo definitivo posterior;
+- la consulta combina checkpoint verificado más legs posteriores completos;
+- filtros de UI se aplican después de resolver el saldo, no antes.
+
+##### 17.3. Reconciliación
+
+Reconciliar compara:
+
+```text
+LEDGER_BALANCE
+vs
+SITE_PROJECTION
+vs
+LOCATION_SUM
+vs
+POSITION_SUM
+vs
+PRESENTATION_SUM_WHEN_APPLICABLE
+vs
+CUSTODY_OPEN_BALANCE
+```
+
+Una diferencia produce diagnóstico con alcance, producto, rango de secuencia, expected, actual, delta, receipts y consumidor responsable. La reparación reejecuta proyecciones idempotentes o abre un caso; no inserta un movimiento de ajuste automático.
+
+---
+
+#### 18. `NEXO-INVENTORY-MOVEMENT-CORRECTION-REVERSAL-CONTRACT-001`
+
+Antes del posting, un borrador o intención certificadamente no ejecutada puede cancelarse. Después del posting:
+
+- grupo, legs, secuencias y receipt no se editan ni eliminan;
+- una corrección no textual exige caso, original, campo, motivo, evidencia, autoridad y efecto;
+- una reversa crea un grupo nuevo con legs opuestos y relaciones a grupo y legs originales;
+- una reversa parcial conserva cantidad original, compensada y restante;
+- el pairing de un traslado se compensa en todos los alcances afectados;
+- costo, stock, ubicación, posición, presentación, fuente y custodia reciben proyecciones compensatorias;
+- un error de etiqueta o descripción sin efecto cuantitativo puede producir una anotación versionada, nunca reescribir el hecho;
+- el proceso propietario puede solicitar la compensación, pero la resolución supervisora pertenece a `NEXO-UX-022`;
+- un ajuste de `NEXO-UX-019` no puede utilizarse para ocultar una reversa que exige causalidad;
+- el original permanece visible en consulta, exportación y auditoría.
+
+Contrato mínimo:
+
+```text
+movement_case_id
+original_group_id
+original_movement_ids[]
+requested_effect
+requested_base_qty
+reason_code
+evidence_refs[]
+requested_by
+approved_by_when_required
+compensating_intent_id
+compensating_group_id
+compensating_receipt_id
+remaining_unreversed_base_qty
+status
+```
+
+---
+
+#### 19. `NEXO-INVENTORY-MOVEMENT-QUERY-EXPORT-CONTRACT-001`
+
+##### 19.1. Vistas funcionales
+
+| Vista                   | Propósito                                                               | Datos mínimos                                                                                | Límite                                                   |
+| ----------------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------- |
+| `MOVEMENTS_TIMELINE`    | secuencia cronológica dentro del territorio                             | sequence, fecha de hecho, fecha de registro, tipo, producto, cantidad, sede y fuente         | no reconstruye balance desde filas visibles              |
+| `MOVEMENT_GROUP_DETAIL` | explicar una causalidad completa                                        | source, receipts, group, legs, origen, destino, actor, UOM, pairing, proyecciones y reversas | no expone campos protegidos sin capacidad                |
+| `PRODUCT_TRACE`         | rastrear producto por alcance y periodo                                 | grupos y legs completos, checkpoints y balances de frontera                                  | no omite legs técnicos relevantes para la causalidad     |
+| `SOURCE_TRACE`          | responder qué efecto produjo una compra, lote, venta, retiro o remisión | source identity, posting receipt, groups, legs y acknowledgments                             | no depende de buscar UUID dentro de nota                 |
+| `RELOCATION_TRACE`      | explicar de dónde a dónde se movió físicamente                          | work item, origen, destino, cantidades, actor, receipt y proyecciones                        | no presenta la reubicación como entrada o salida de sede |
+| `TRANSIT_TRACE`         | explicar despacho, custodia y recepción                                 | shipment, journey, dispatch, receipt, pairing, pendientes y casos                            | no declara recibido un saldo todavía en custodia         |
+| `RECONCILIATION_VIEW`   | mostrar orphans, gaps, divergencias y consumidores pendientes           | sequence ranges, expected, actual, delta, receipt y propietario                              | solo para capacidad autorizada                           |
+| `EXPORT_REPRODUCIBLE`   | producir evidencia fuera de pantalla                                    | parámetros, zona horaria, secuencia, campos, versión de esquema, actor solicitante y digest  | no usa roles hardcodeados ni amplía sedes                |
+
+##### 19.2. Filtros
+
+Filtros permitidos según capacidad:
+
+```text
+site_id
+location_id
+position_id
+product_id
+movement_family
+movement_code
+source_owner
+source_type
+source_id
+actor_id
+movement_group_id
+posting_receipt_id
+correlation_id
+causation_id
+original_group_id
+sequence_from
+sequence_to
+occurred_from
+occurred_to
+recorded_from
+recorded_to
+pairing_status
+projection_status
+reconciliation_status
+```
+
+Un filtro de producto, fecha o tipo produce una vista parcial. La interfaz debe marcarla como parcial y no calcular opening o closing con `current_stock - movimientos_visibles`.
+
+##### 19.3. Balance en consulta
+
+El balance se muestra únicamente cuando:
+
+1. existe checkpoint verificado anterior al rango o se lee el ledger completo necesario;
+2. no existe gap de secuencia;
+3. se incluyen todos los legs cuantitativos del alcance;
+4. la zona horaria y límites temporales están resueltos por servidor;
+5. se distingue opening, delta del rango y closing.
+
+De lo contrario se muestra `BALANCE_UNAVAILABLE` con causa, no un número estimado.
+
+##### 19.4. Exportación
+
+- requiere una capability exacta de exportación o auditoría definida en autorización compartida;
+- el servidor revalida territorio y campos;
+- el CSV o formato autorizado incluye fuente, group, leg, signo, scope, origen, destino, UOM, actor, secuencia, receipts y reversa según permiso;
+- volúmenes superiores al límite síncrono se entregan mediante job trazable del servicio transversal cuando quede implementado en el paquete E5 NEXO;
+- el archivo conserva parámetros, fecha de generación, versión y digest;
+- no exporta secretos, tokens, PIN, evidencia binaria ni notas sensibles no necesarias;
+- una generación repetida no crea movimientos ni cambia estado.
+
+---
+
+#### 20. `NEXO-INVENTORY-MOVEMENT-COMPATIBILITY-CONTRACT-001`
+
+| Superficie actual                                  | Hallazgo técnico verificable                                                                                      | Disposición                                                                                             |
+| -------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `inventory_movements`                              | mezcla fuente, tipo, cantidad y nota; varios productores insertan directamente                                    | evolucionar a ledger de groups y legs o compatibilidad versionada con correlación explícita             |
+| `inventory_movement_types`                         | `affects_stock` único no representa signo por leg, alcance ni pairing; count y adjustment aparecen como positivos | conservar alias para lectura, añadir familia, scopes y reglas; no reescribir historia por inferencia    |
+| `inventory_transfers`                              | nace con `status=completed`, admite UPDATE y DELETE y no posee intención, receipt ni versión                      | convertir a aggregate append-only después de confirmar y mantener cancelación previa separada           |
+| `inventory_transfer_items`                         | líneas mutables y eliminables por cascada                                                                         | conservar snapshots y bloquear mutación posterior al posting                                            |
+| acción actual de transfers                         | ejecuta header, items, movimiento, consumo de posiciones y dos proyecciones mediante operaciones secuenciales     | converger a comando transaccional e idempotente con legs pareados, outbox y receipt                     |
+| movimiento `transfer_internal`                     | una fila positiva neutral de sede; origen y destino están dentro de nota                                          | producir grupo con legs de LOC y posición y referencias estructuradas                                   |
+| `stock_assign_location` y `stock_assign_position`  | se modelan como movimientos positivos aunque el total superior no cambia                                          | clasificar como legs técnicos neutrales consumiendo receipts de `NEXO-UX-015`                           |
+| `stock_consume_position`                           | se oculta de la vista ordinaria                                                                                   | mantener ocultamiento resumido, pero hacerlo visible dentro del detalle causal y auditoría              |
+| pantalla `/inventory/movements`                    | consulta 200 filas, filtra técnicos y reconstruye balances desde stock actual menos la ventana visible            | usar secuencia, groups, legs, checkpoints y balance autoritativo; no estimar desde resultados truncados |
+| filtros actuales                                   | sede, tipo, producto y fecha de registro                                                                          | conservar compatibilidad y añadir causalidad, alcance, receipt, secuencia, origen, destino y estados    |
+| export actual                                      | autoriza por strings de rol, limita 5000, omite actor, causalidad, origen, destino, receipt, secuencia y reversa  | proteger por capability y territorio, versionar esquema y producir evidencia reproducible               |
+| RLS de movimientos                                 | concede INSERT directo a una lista amplia de permisos de procesos                                                 | converger a comandos por productor; `nexo.inventory.movements` permanece consulta, no writer genérico   |
+| stock por sede, LOC y posición                     | varios escritores y RPC aplican deltas directamente                                                               | convertir en proyecciones consumidoras idempotentes del ledger                                          |
+| notas con UUID y textos                            | la UI sanea o interpreta texto para mostrar detalle                                                               | migrar referencias estructuradas; conservar nota únicamente como contexto humano no autoritativo        |
+| aliases `receipt`, `receipt_in`, `purchase_in`     | pueden representar entradas con semántica incompleta                                                              | clasificar por source receipt y owner; bloquear nuevos hechos ambiguos                                  |
+| aliases `transfer_out`, `transfer_in`, `restock_*` | remisiones y traslados pueden solaparse                                                                           | mantener mapping versionado por fuente y evitar doble posting                                           |
+| aliases `initial_count`, `count`, `adjustment`     | el catálogo no distingue observación, decisión, signo ni compensación                                             | conservar historia; nuevos postings provienen de UX018, UX019 o UX022 con signo y caso                  |
+
+Compatibilidad:
+
+1. los IDs legacy se conservan como referencias cuando sean inequívocos;
+2. ningún backfill inventa origen, destino, receipt, owner o signo;
+3. filas ambiguas quedan clasificadas como legacy no reconciliado con propietario;
+4. dual-write exige una intención común y prueba de cero duplicidad;
+5. las proyecciones pueden reconstruirse después de certificar el ledger;
+6. toda modificación Supabase se crea y versiona desde `vento-shell`;
+7. rollback conserva lectura legacy y bloquea nuevos writers incompatibles;
+8. RLS, grants, funciones, tipos y consumidores se migran coordinadamente.
+
+---
+
+#### 21. `NEXO-INVENTORY-MOVEMENT-INTERFACE-STATE-CONTRACT-001`
+
+| Estado                        | Condición                                                | Respuesta obligatoria                                                   |
+| ----------------------------- | -------------------------------------------------------- | ----------------------------------------------------------------------- |
+| `MOV_CONTEXT_RESOLVING`       | se resuelven actor, función, sede, territorio y permisos | no mostrar ledger ni mutaciones definitivas                             |
+| `MOV_CONTEXT_BLOCKED`         | falta contexto o capacidad                               | fallar cerrado y explicar condición                                     |
+| `MOV_LEDGER_LOADING`          | se leen groups, legs, checkpoints o proyecciones         | no mostrar conteos parciales como definitivos                           |
+| `MOV_LEDGER_EMPTY`            | no existen movimientos en el alcance                     | vacío confirmado con rango y hora de corte                              |
+| `MOV_LEDGER_READY`            | existen resultados completos para la consulta            | mostrar secuencia y causalidad                                          |
+| `MOV_FILTERED_VIEW`           | existen filtros que reducen historia                     | marcar vista parcial y separar balance autoritativo                     |
+| `MOV_DETAIL_LOADING`          | se carga grupo, legs y relaciones                        | no presentar una nota como detalle suficiente                           |
+| `MOV_DETAIL_READY`            | causalidad y relaciones obligatorias están disponibles   | mostrar source, legs, receipts, pairing y proyecciones                  |
+| `MOV_SOURCE_UNAVAILABLE`      | no puede resolverse receipt o propietario                | mostrar bloqueo y propietario, no inventar vínculo                      |
+| `MOV_GROUP_INCOMPLETE`        | falta un leg obligatorio o correlación                   | bloquear cierre y enviar a reconciliación                               |
+| `MOV_PAIR_PENDING`            | traslado o custodia espera contraparte                   | mostrar saldo pendiente sin declarar destino recibido                   |
+| `MOV_PROJECTION_PENDING`      | el ledger está confirmado y una vista derivada no        | mostrar receipts y consumidor, no crear nuevo movimiento                |
+| `MOV_RECONCILIATION_REQUIRED` | existe orphan, divergencia o resultado incierto          | abrir diagnóstico estructurado                                          |
+| `MOV_BALANCE_UNAVAILABLE`     | faltan secuencias, checkpoint o cobertura                | omitir cifra y mostrar causa                                            |
+| `MOV_SEQUENCE_GAP`            | la secuencia consultada no es continua                   | impedir balance definitivo                                              |
+| `MOV_EXPORT_HIDDEN`           | no existe capability exacta                              | no mostrar control ni aceptar endpoint directo                          |
+| `MOV_EXPORT_READY`            | capability, territorio y campos resueltos                | mostrar alcance y parámetros                                            |
+| `MOV_EXPORT_BUILDING`         | se genera evidencia                                      | mostrar job o progreso recuperable                                      |
+| `MOV_EXPORT_RESULT_UNKNOWN`   | el cliente perdió el resultado                           | consultar job o intención, no duplicar                                  |
+| `MOV_RELOCATION_READY`        | work item y origen-destino son elegibles                 | permitir iniciar sesión                                                 |
+| `MOV_RELOCATION_EXECUTING`    | existe sesión y captura física                           | conservar progreso sin afirmar posting                                  |
+| `MOV_TRANSFER_REVIEW`         | grupo preliminar satisface conservación                  | congelar fingerprint y mostrar consecuencias                            |
+| `MOV_TRANSFER_SUBMITTING`     | intención enviada                                        | bloquear doble envío                                                    |
+| `MOV_TRANSFER_RESULT_UNKNOWN` | timeout después de enviar                                | reconciliar por intención                                               |
+| `MOV_TRANSFER_CONFIRMED`      | receipt de posting confirmado                            | mostrar group, legs, saldos y proyecciones                              |
+| `MOV_CONFLICTED`              | cambió versión, stock, sesión, fuente o destino          | bloquear sobrescritura y recargar                                       |
+| `MOV_CONTEXT_REVOKED`         | cambió actor, turno, sede, permiso o dispositivo         | cerrar controles y volver a punto seguro                                |
+| `MOV_OFFLINE_LIMITED`         | no pueden revalidarse autoridad, stock o secuencia       | consulta cacheada marcada o captura no empresarial; nunca éxito offline |
+| `MOV_FATAL_ERROR`             | no puede recuperarse consistencia                        | no mostrar éxito ni permitir una nueva intención ciega                  |
+| `MOV_CORRECTION_READ_ONLY`    | se consulta un hecho publicado o revertido               | mostrar original y compensaciones; dirigir la solicitud a `NEXO-UX-022` |
+
+Reconciliación:
+
+```text
+EXPECTED_MOVEMENT_INTERFACE_STATES = 30
+MATERIALIZED_MOVEMENT_INTERFACE_STATES = 30
+UNIQUE_MOVEMENT_INTERFACE_STATES = 30
+MISSING_MOVEMENT_INTERFACE_STATES = 0
+DUPLICATE_MOVEMENT_INTERFACE_STATES = 0
+```
+
+La interfaz jamás transforma una ausencia de detalle, una ventana truncada o una proyección pendiente en un movimiento completo.
+
+---
+
+#### 22. `NEXO-INVENTORY-MOVEMENT-ROUTE-DISPOSITION-001`
+
+| Superficie       | Patrón actual                           | Disposición                          | Decisión                                                                                                                          | Estado                      |
+| ---------------- | --------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------- | --------------------------- |
+| `NEXO-ROUTE-029` | `/inventory/movements`                  | `LEDGER_PRIMARIO_DE_SOLO_LECTURA`    | alojar timeline, filtros, grupos, legs, pairing, balances autoritativos, proyecciones, reversas y conciliación sin mutación libre | `ESPECIFICADO`              |
+| `NEXO-ROUTE-054` | `/inventory/transfers`                  | `OPERACION_DE_TRASLADO_DEDICADA`     | converger a work item, sesión, revisión, intención y receipt; no crear movimientos mediante secuencia multi-write                 | `ESPECIFICADO`              |
+| `NEXO-ROUTE-052` | `/inventory/stock`                      | `PROYECCION_CON_TRAZA`               | mostrar saldo derivado y enlace contextual al ledger, sin convertirse en fuente de movimiento                                     | `ESPECIFICADO`              |
+| `NEXO-ROUTE-020` | `/inventory/locations`                  | `CONTEXTO_DE_ORIGEN_DESTINO`         | seleccionar o consultar LOC dentro de autoridad; configuración no se mezcla con posting                                           | `REFERENCIA_CONTEXTUAL`     |
+| `NEXO-ROUTE-021` | `/inventory/locations/[id]`             | `DETALLE_DE_LOC_CON_TRAZA`           | mostrar saldo y movimientos del LOC sin mutación genérica                                                                         | `REFERENCIA_CONTEXTUAL`     |
+| `NEXO-ROUTE-022` | `/inventory/locations/[id]/board`       | `VISTA_OPERATIVA_CON_LEDGER`         | consumir proyecciones y abrir movimientos relacionados; no ocultar técnicos cuando se consulta causalidad                         | `REFERENCIA_CONTEXTUAL`     |
+| `NEXO-ROUTE-024` | `/inventory/locations/[id]/positions`   | `CONTEXTO_DE_POSICION`               | conservar asignación y consulta interna, pero publicar por comando de reubicación                                                 | `HANDOFF_DE_COMPATIBILIDAD` |
+| `NEXO-ROUTE-019` | `/inventory/entries`                    | `FUENTE_DE_ENTRADA`                  | mostrar posting receipt y enlace al grupo; no recrear movimientos                                                                 | `FUENTE_SOLO_LECTURA`       |
+| `NEXO-ROUTE-030` | `/inventory/production-batches`         | `FUENTE_FOGO`                        | consultar grupos productivos correlacionados sin operar producción desde NEXO                                                     | `FUENTE_SOLO_LECTURA`       |
+| `NEXO-ROUTE-031` | `/inventory/remissions`                 | `FUENTE_DE_REMISION`                 | mostrar resumen de grupos de despacho, custodia y recepción correlacionados                                                       | `FUENTE_SOLO_LECTURA`       |
+| `NEXO-ROUTE-032` | `/inventory/remissions/[id]`            | `TRAZA_DE_REMISION`                  | mostrar receipts, pairing y movimientos sin editar el ledger                                                                      | `FUENTE_SOLO_LECTURA`       |
+| `NEXO-ROUTE-036` | `/inventory/remissions/prepare`         | `PRODUCTOR_DE_PICK`                  | conserva preparación; sus receipts alimentan el ledger mediante contrato propietario                                              | `PRODUCTOR_CONTEXTUAL`      |
+| `NEXO-ROUTE-037` | `/inventory/remissions/receive`         | `PRODUCTOR_DE_RECEIPT`               | conserva recepción; solo cantidades aceptadas publican entrada                                                                    | `PRODUCTOR_CONTEXTUAL`      |
+| `NEXO-ROUTE-038` | `/inventory/remissions/transit`         | `CONTEXTO_DE_CUSTODIA`               | hitos e incidentes no crean stock; enlazar saldo en custodia                                                                      | `PRODUCTOR_CONTEXTUAL`      |
+| `NEXO-ROUTE-056` | `/inventory/withdraw`                   | `HANDOFF_A_RETIROS`                  | el flujo humano pertenece a `NEXO-UX-017`; esta tarea define exclusivamente el receipt consumible por ledger                      | `HANDOFF_A_NEXO_UX_017`     |
+| `NEXO-ROUTE-002` | `/inventory/adjust`                     | `HANDOFF_A_AJUSTES`                  | la decisión pertenece a `NEXO-UX-019`; no permitir ajuste libre desde movimientos                                                 | `HANDOFF_A_NEXO_UX_019`     |
+| `NEXO-ROUTE-017` | `/inventory/count-initial`              | `HANDOFF_A_CONTEOS`                  | observar no mueve stock; posting solo después de decisión autorizada                                                              | `HANDOFF_A_NEXO_UX_018_019` |
+| `NEXO-ROUTE-018` | `/inventory/count-initial/session/[id]` | `DETALLE_DE_CONTEO`                  | mostrar diferencias y postings derivados sin confundir sesión con movimiento                                                      | `HANDOFF_A_NEXO_UX_018_019` |
+| `NEXO-API-007`   | `/api/inventory/movements/export`       | `EXPORTACION_PROTEGIDA_Y_VERSIONADA` | reemplazar autorización por rol con capability y territorio; incluir causalidad y reproducibilidad                                | `ESPECIFICADO`              |
+
+Reconciliación:
+
+```text
+EXPECTED_RELEVANT_MOVEMENT_SURFACES = 19
+MATERIALIZED_RELEVANT_MOVEMENT_SURFACES = 19
+UNIQUE_RELEVANT_MOVEMENT_SURFACES = 19
+MISSING_RELEVANT_MOVEMENT_SURFACES = 0
+DUPLICATE_RELEVANT_MOVEMENT_SURFACES = 0
+NEW_SURFACE_IDENTITIES = 0
+```
+
+No se crea una dirección nueva. El detalle de grupo se compone dentro de `NEXO-ROUTE-029` mediante estado o panel contextual hasta que una tarea canónica futura autorice otra identidad de pantalla.
+
+---
+
+#### 23. `NEXO-INVENTORY-MOVEMENT-VALIDATION-MATRIX-001`
+
+| ID            | Grupo          | Comprobación                                                                                                                        | Momento                        | Resultado esperado                           |
+| ------------- | -------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------ | -------------------------------------------- |
+| `MOV-VAL-001` | Contexto       | resolver principal, actor efectivo y sesión humana                                                                                  | MOV-STEP-01                    | bloquea sin atribución                       |
+| `MOV-VAL-002` | Contexto       | exigir `nexo.inventory.movements` para consulta y `nexo.inventory.transfers` para traslado                                          | MOV-STEP-01 a 02               | no acepta permiso genérico                   |
+| `MOV-VAL-003` | Contexto       | revalidar sede, área, territorio, turno, check-in y dispositivo cuando apliquen                                                     | cada lectura y mutación        | no expone ni muta trabajo ajeno              |
+| `MOV-VAL-004` | Contexto       | comprobar capability exacta antes de exportar                                                                                       | MOV-STEP-22                    | un rol hardcodeado no concede exportación    |
+| `MOV-VAL-005` | Contexto       | mantener equivalencia entre interfaz, Server Action, API, RPC, grants y RLS                                                         | todas las superficies          | divergencia falla cerrada                    |
+| `MOV-VAL-006` | Contexto       | minimizar costo, datos personales, notas y evidencia por actor                                                                      | consulta y exportación         | no filtra campos protegidos                  |
+| `MOV-VAL-007` | Fuente         | clasificar exactamente una de las doce fuentes                                                                                      | MOV-STEP-03                    | fuente ambigua se bloquea                    |
+| `MOV-VAL-008` | Fuente         | validar owner, type, ID, versión, receipt y línea                                                                                   | MOV-STEP-03                    | no reconstruye desde nota                    |
+| `MOV-VAL-009` | Fuente         | verificar saldo elegible contra postings previos                                                                                    | MOV-STEP-04                    | cero doble publicación                       |
+| `MOV-VAL-010` | Fuente         | impedir que entrada, producción, venta, retiro, conteo o ajuste usen formulario genérico                                            | MOV-STEP-02 a 05               | conserva propietario                         |
+| `MOV-VAL-011` | Fuente         | consumir `NEXO-INVENTORY-PUTAWAY-HANDOFF-001` sin editar putaway                                                                    | MOV-STEP-03                    | técnicos correlacionados                     |
+| `MOV-VAL-012` | Fuente         | conservar receipts de despacho, tránsito y recepción como hechos distintos                                                          | MOV-STEP-03 y 20               | no duplica remisión                          |
+| `MOV-VAL-013` | Grupo y leg    | crear un grupo por causalidad estable                                                                                               | MOV-STEP-09                    | grupo único y versionado                     |
+| `MOV-VAL-014` | Grupo y leg    | exigir al menos un leg o evento técnico permitido                                                                                   | MOV-STEP-10                    | no hay grupo vacío                           |
+| `MOV-VAL-015` | Grupo y leg    | persistir signo y scope por leg                                                                                                     | MOV-STEP-10                    | no infiere desde movement type               |
+| `MOV-VAL-016` | Grupo y leg    | vincular cada leg con source, group, product y actor                                                                                | MOV-STEP-09 a 10               | cero leg huérfano                            |
+| `MOV-VAL-017` | Grupo y leg    | conservar origin, destination y counterpart de reubicaciones                                                                        | MOV-STEP-10                    | causalidad completa                          |
+| `MOV-VAL-018` | Grupo y leg    | asignar `leg_sequence` y `server_sequence` estables                                                                                 | MOV-STEP-17                    | orden reproducible                           |
+| `MOV-VAL-019` | Grupo y leg    | separar `occurred_at` y `recorded_at`                                                                                               | MOV-STEP-17                    | no pierde tiempo empresarial                 |
+| `MOV-VAL-020` | Grupo y leg    | prohibir UPDATE y DELETE después de receipt                                                                                         | posting y persistencia         | ledger append-only                           |
+| `MOV-VAL-021` | Cantidad y UOM | validar cantidad cruda, unidad, factor, cantidad base y precisión                                                                   | MOV-STEP-08                    | conversión reproducible                      |
+| `MOV-VAL-022` | Cantidad y UOM | impedir valor no finito, factor inválido o signo contradictorio                                                                     | MOV-STEP-08 a 10               | payload bloqueado                            |
+| `MOV-VAL-023` | Conservación   | comprobar suma cero de reubicación en alcance superior                                                                              | MOV-STEP-11                    | no cambia total de sede o LOC                |
+| `MOV-VAL-024` | Conservación   | comprobar salida de origen y custodia positiva al despachar                                                                         | MOV-STEP-11 y 20               | no crea stock fantasma                       |
+| `MOV-VAL-025` | Conservación   | comprobar custodia negativa y entrada aceptada al recibir                                                                           | MOV-STEP-11 y 20               | no recibe más de lo aceptado                 |
+| `MOV-VAL-026` | Conservación   | impedir doble presencia en origen, tránsito y destino                                                                               | MOV-STEP-11 y reconciliación   | cantidad única                               |
+| `MOV-VAL-027` | Conservación   | impedir que posición o presentación excedan su LOC                                                                                  | proyección                     | jerarquía cuantitativa consistente           |
+| `MOV-VAL-028` | Conservación   | validar stock, reservas, condición y versión bajo concurrencia                                                                      | MOV-STEP-12                    | no produce saldo negativo no autorizado      |
+| `MOV-VAL-029` | Posting        | persistir intención antes de ejecutar                                                                                               | MOV-STEP-16                    | resultado recuperable                        |
+| `MOV-VAL-030` | Posting        | misma clave y fingerprint devuelve mismo receipt                                                                                    | MOV-STEP-16 a 17               | idempotencia                                 |
+| `MOV-VAL-031` | Posting        | misma clave con payload distinto produce conflicto                                                                                  | MOV-STEP-16                    | no muta intención                            |
+| `MOV-VAL-032` | Posting        | confirmar grupo, legs, secuencias, receipt y outbox en una frontera lógica                                                          | MOV-STEP-17 a 18               | cero posting parcial                         |
+| `MOV-VAL-033` | Proyecciones   | aplicar cada leg una vez por consumidor                                                                                             | MOV-STEP-19                    | cero doble stock                             |
+| `MOV-VAL-034` | Proyecciones   | conservar saldo exacto de consumidores pendientes                                                                                   | MOV-STEP-19 y 23               | no crea otro grupo                           |
+| `MOV-VAL-035` | Reconciliación | consultar intención antes de reintentar tras timeout                                                                                | MOV-STEP-23                    | no duplica resultado desconocido             |
+| `MOV-VAL-036` | Reconciliación | detectar orphan, pairing pendiente, sequence gap y balance divergence                                                               | MOV-STEP-20 a 23               | caso estructurado                            |
+| `MOV-VAL-037` | Balance        | reconstruir desde checkpoint verificado más secuencia continua                                                                      | consulta                       | opening y closing autoritativos              |
+| `MOV-VAL-038` | Balance        | impedir cálculo desde stock actual menos filas visibles                                                                             | consulta                       | no muestra balance estimado                  |
+| `MOV-VAL-039` | Consulta       | marcar filtros como vista parcial                                                                                                   | MOV-STEP-22                    | no confunde muestra con universo             |
+| `MOV-VAL-040` | Consulta       | incluir source, group, legs, receipts, pairing, proyecciones y reversas en detalle                                                  | MOV-STEP-22                    | explicación causal completa                  |
+| `MOV-VAL-041` | Exportación    | revalidar capability, territorio, parámetros y campos                                                                               | MOV-STEP-22                    | no exporta datos ajenos                      |
+| `MOV-VAL-042` | Exportación    | conservar secuencia, esquema, parámetros, fecha y digest                                                                            | MOV-STEP-22                    | archivo reproducible                         |
+| `MOV-VAL-043` | Compatibilidad | clasificar aliases legacy sin inventar fuente, signo, origen o destino                                                              | migración                      | ambiguos quedan en reconciliación            |
+| `MOV-VAL-044` | Compatibilidad | convertir traslado actual multi-write en comando atómico                                                                            | paquete E5 NEXO                | no deja header o stock parcial               |
+| `MOV-VAL-045` | Compatibilidad | retirar autorización de exportación por strings de rol                                                                              | paquete E5 NEXO                | capability exacta                            |
+| `MOV-VAL-046` | Compatibilidad | converger writers directos de movements y stock a comandos y proyecciones                                                           | paquete E5 NEXO                | un escritor por fuente                       |
+| `MOV-VAL-047` | Reversa        | crear legs compensatorios con original, motivo, autoridad y cantidad                                                                | MOV-STEP-23                    | no edita ni borra                            |
+| `MOV-VAL-048` | Implementación | validar migración, RLS, grants, RPC, tipos, rollback, concurrencia, offline, dispositivos y regresión de las diecinueve superficies | paquete E5 NEXO y SHELL-CI-017 | evidencia reproducible sin pérdida histórica |
+
+Reconciliación:
+
+```text
+EXPECTED_MOVEMENT_VALIDATIONS = 48
+MATERIALIZED_MOVEMENT_VALIDATIONS = 48
+UNIQUE_MOVEMENT_VALIDATIONS = 48
+MISSING_MOVEMENT_VALIDATIONS = 0
+DUPLICATE_MOVEMENT_VALIDATIONS = 0
+```
+
+---
+
+#### 24. Evidencia técnica actual y diagnóstico
+
+| Fuente actual                          | Evidencia verificable                                                                                                                | Estado frente al diseño      | Decisión                                                                                              |
+| -------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- | ----------------------------------------------------------------------------------------------------- |
+| `src/app/inventory/movements/page.tsx` | agrupa aliases por entrada, salida, ajuste y traslado; trata `transfer_internal` como neutral de sede                                | `IMPLEMENTADO_PARCIAL`       | conservar lectura simple, pero derivar semántica desde groups, legs, source y scope                   |
+| consulta de historial actual           | limita a 200 filas y ordena por `created_at`; no selecciona source receipt, origin, destination, group, sequence, pairing o reversal | `BRECHA_CONFIRMADA`          | incorporar secuencia estable, causalidad, detalle y paginación autoritativa                           |
+| cálculo de balance actual              | parte del stock actual y retrocede usando solamente movimientos visibles, filtrados y truncados                                      | `BRECHA_CRITICA`             | usar checkpoint verificado más legs completos; ocultar balance cuando no exista cobertura             |
+| movimientos técnicos actuales          | `stock_consume_position` se oculta de la vista ordinaria                                                                             | `IMPLEMENTADO_PARCIAL`       | mantener resumen no técnico, pero mostrar legs técnicos dentro del grupo causal y auditoría           |
+| detalle actual                         | interpreta y sanea notas para explicar entradas, traslados y retiros                                                                 | `BRECHA_CONFIRMADA`          | migrar UUID, fuente, origen, destino, receipt, motivo y relaciones a campos estructurados             |
+| `/api/inventory/movements/export`      | autoriza por strings `gerente_general` y `propietario`, limita 5000 y exporta campos mínimos                                         | `BRECHA_DE_AUTORIZACION`     | capability exacta, territorio, esquema versionado, secuencia, causalidad y digest                     |
+| `src/app/inventory/transfers/page.tsx` | crea header completado, items, una fila neutral, consumo de posiciones y deltas LOC mediante operaciones secuenciales                | `BRECHA_CRITICA`             | sustituir por sesión, intención, grupo, legs, receipt, outbox y proyecciones atómicos                 |
+| selección de posiciones en traslado    | delega consumo a política técnica “menor stock primero” sin capturar origen físico en el flujo                                       | `BRECHA_CONFIRMADA`          | exigir plan de posición o política explícita visible y auditable; no fingir observación               |
+| `inventory_transfers` e items          | permiten UPDATE y DELETE; el encabezado usa `completed` como estado inicial                                                          | `COMPATIBILIDAD_REQUERIDA`   | separar borrador, confirmación y reversa; bloquear mutación destructiva después del receipt           |
+| `inventory_movement_types`             | `affects_stock` único marca `adjustment`, `count` e `initial_count` como positivos y no representa scope ni signo por leg            | `MODELO_INSUFICIENTE`        | añadir taxonomía versionada y signo explícito; preservar historia sin reinterpretación automática     |
+| RLS actual de movimientos              | el INSERT se concede a una lista amplia de permisos productores                                                                      | `BRECHA_DE_ESCRITOR`         | retirar writer genérico y exponer comandos propietarios; `nexo.inventory.movements` permanece lectura |
+| stock por sede, LOC y posición         | múltiples acciones y RPC actualizan proyecciones directamente                                                                        | `BRECHA_DE_FUENTE_DE_VERDAD` | convertir proyecciones en consumidores idempotentes del ledger                                        |
+| remisiones legacy                      | `transfer_out`, `transfer_in`, `restock_out` y `restock_in` pueden convivir                                                          | `COMPATIBILIDAD_REQUERIDA`   | mapear por receipt, source owner y línea; impedir doble posting                                       |
+| entradas legacy                        | `receipt`, `receipt_in` y `purchase_in` pueden carecer de fuente inequívoca                                                          | `COMPATIBILIDAD_REQUERIDA`   | bloquear nuevos hechos ambiguos y clasificar los históricos sin inventar información                  |
+
+No se modifica código en esta tarea. El diagnóstico fija el comportamiento esperado y las brechas que el paquete de implementación deberá cerrar.
+
+---
+
+#### 25. `NEXO-INVENTORY-MOVEMENT-IMPLEMENTATION-HANDOFF-001`
+
+##### 25.1. Modelo físico mínimo
+
+La implementación deberá materializar, mediante diseño físico aprobado en `vento-shell`, equivalentes canónicos para:
+
+```text
+movement_sources_or_receipts
+movement_posting_intents
+movement_groups
+movement_legs
+movement_posting_receipts
+movement_pairings
+movement_outbox
+movement_projection_receipts
+movement_checkpoints
+movement_reconciliation_cases
+movement_reversal_cases
+```
+
+El nombre físico y esquema definitivo pertenecen a la arquitectura Supabase vigente; esta tarea define responsabilidades e invariantes, no impone nombres de tablas sin revisar el diseño E3.
+
+##### 25.2. Migración y transición
+
+1. inventariar columnas, constraints, índices, RLS, grants, funciones, triggers y consumidores de `inventory_movements`, transfers y stocks;
+2. añadir identidad de grupo, source, receipt, scope, signo, secuencia y correlación sin romper lectores vigentes;
+3. clasificar filas históricas solo cuando exista evidencia estructurada;
+4. conservar filas ambiguas como legacy no reconciliado;
+5. migrar transferencias con origen y destino verificables a grupos y legs sin duplicar stock;
+6. introducir command boundary y bloquear nuevos inserts directos incompatibles;
+7. migrar proyecciones a consumidores del outbox;
+8. crear checkpoints después de validar continuidad y balances;
+9. mantener vista compatible para lectores legacy durante transición;
+10. versionar tipos generados y contratos compartidos;
+11. retirar aliases o writer legacy únicamente después de evidencia de consumidores cero;
+12. documentar cutover, observabilidad, conciliación y rollback.
+
+##### 25.3. Atomicidad y concurrencia
+
+- intención, grupo, legs, secuencias, receipt y outbox comparten una frontera transaccional o patrón equivalente certificado;
+- el stock de origen se valida bajo lock o serialización pertinente;
+- la misma fuente y parcialidad no producen dos postings;
+- el mismo traslado no produce dos grupos ni dos pares;
+- consumidores se deduplican por movement, event y receipt;
+- un timeout se reconcilia por intención;
+- el pairing intersede tolera receipts parciales sin perder custodia;
+- un gap de secuencia dispara alarma y bloquea balances definitivos.
+
+##### 25.4. Seguridad
+
+- comando, RPC o función revalida principal, actor, contexto, permiso, source owner, recurso y versión;
+- `security definer` usa `search_path` seguro, grants mínimos y autorización interna;
+- `inventory_movements` publicado queda sin UPDATE ni DELETE para clientes;
+- las proyecciones no aceptan escritura cliente fuera de comandos autorizados;
+- exportación usa capability exacta, alcance y minimización de campos;
+- notas y evidencias se sanitizan sin convertirlas en autoridad;
+- service role no se expone a aplicaciones cliente;
+- todas las migraciones Supabase se crean y ejecutan desde `vento-shell`.
+
+##### 25.5. Observabilidad
+
+Métricas mínimas:
+
+```text
+movement_posting_success_total
+movement_posting_conflict_total
+movement_posting_unknown_total
+movement_duplicate_prevented_total
+movement_projection_pending_total
+movement_projection_failure_total
+movement_pairing_pending_total
+movement_orphan_source_total
+movement_sequence_gap_total
+movement_balance_divergence_total
+movement_reconciliation_age_seconds
+movement_export_failure_total
+```
+
+Logs y trazas usan correlation, causation, source, intent, group, receipt, sequence range y consumer sin registrar secretos ni datos personales innecesarios.
+
+##### 25.6. Pruebas obligatorias del paquete
+
+El paquete implementador materializará `TREQ-NEXO-175` a `TREQ-NEXO-188`, las cuarenta y ocho comprobaciones `MOV-VAL-*` y regresión de todas las fuentes y superficies relacionadas. Incluye unitarias, contractuales, integración, base de datos, migración, RLS, RPC, seguridad, concurrencia, idempotencia, E2E, interfaz, experiencia, operación manual controlada y hardware cuando aplique.
+
+##### 25.7. Rollback
+
+Rollback técnico:
+
+- desactivar nuevos comandos incompatibles sin eliminar grupos publicados;
+- conservar vista de lectura compatible;
+- reanudar consumers desde receipts y outbox;
+- reconstruir proyecciones desde ledger y checkpoints verificados;
+- revertir despliegue de aplicación sin retirar columnas requeridas por datos ya publicados;
+- impedir que un writer legacy vuelva a procesar fuentes ya consumidas;
+- conservar filas ambiguas en reconciliación.
+
+Rollback funcional:
+
+- antes del receipt, cancelar intención certificadamente no ejecutada;
+- después del receipt, usar grupo compensatorio autorizado;
+- una proyección fallida se reejecuta, no se compensa con ajuste;
+- un traslado parcialmente confirmado conserva legs y saldo pendiente;
+- una exportación fallida se regenera sin efecto empresarial.
+
+---
+
+#### 26. Handoffs y continuidad funcional
+
+| Consumidor                    | Payload mínimo                                                                                                                      | Garantía                              | Prohibición                                      |
+| ----------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------- | ------------------------------------------------ |
+| `NEXO-UX-017`                 | source contract, withdrawal receipt boundary, signed outbound legs, source LOC/position requirements, UOM, intent and reversal refs | retiro publicable sin writer genérico | no diseñar conteo o ajuste dentro de retiro      |
+| `NEXO-UX-018`                 | count observation boundary, checkpoints, sequence, current projected balance and no-movement rule                                   | observar no mueve stock               | no convertir captura en delta                    |
+| `NEXO-UX-019`                 | variance and adjustment posting contract, original balance, signed delta, case and approval requirements                            | ajuste causal con signo explícito     | no usar `adjustment` para ocultar reversa        |
+| `NEXO-UX-020`                 | work item, session, source/destination identities, scan targets and non-authoritative capture                                       | escaneo contextual                    | no publicar por leer un código                   |
+| `NEXO-UX-021`                 | states, protected fields, causal summary and step-specific actions                                                                  | información mínima suficiente         | no ocultar gaps, pairing o proyección pendientes |
+| `NEXO-UX-022`                 | orphan, divergence, original group, legs, balance, reason, evidence, authority and compensating effect                              | caso completo para resolución         | no editar ledger                                 |
+| `NEXO-UX-023` a `NEXO-UX-025` | flows, timings, conflicts, offline limits, receipts, sequence and reconciliation evidence                                           | base de piloto reproducible           | no declarar validación física sin evidencia      |
+| implementación E5 NEXO        | contracts, taxonomy, states, queues, validation matrix, diagnosis, migration and requirements                                       | diseño versionado                     | no modificar Supabase fuera de `vento-shell`     |
+
+Payload canónico hacia `NEXO-UX-017`:
+
+```text
+movement_source_contract_version
+withdrawal_source_owner = nexo
+allowed_outbound_families[]
+required_source_location_fields[]
+required_source_position_fields[]
+quantity_uom_contract
+posting_intent_contract
+movement_group_contract
+outbound_leg_contract
+posting_receipt_contract
+balance_and_projection_contract
+correction_reversal_contract
+reconciliation_contract
+permission_boundary
+```
+
+Esta tarea no predefine motivos, actores, aprobaciones, evidencia ni experiencia completa del retiro. Entrega solamente la frontera que un retiro autorizado deberá consumir para publicar su efecto sin romper el ledger.
+
+---
+
+#### 27. Requisitos de prueba derivados
+
+**Resultado:** GENERA REQUISITOS DE PRUEBA
+
+Se incorporan `TREQ-NEXO-175` a `TREQ-NEXO-188` en el registro canónico completo:
+
+| ID              | Comportamiento protegido                                                                 |
+| --------------- | ---------------------------------------------------------------------------------------- |
+| `TREQ-NEXO-175` | contexto, permisos, territorio, segregación, privacidad y exportación                    |
+| `TREQ-NEXO-176` | cobertura completa de artefactos, pasos, estados, colas, fuentes, familias y superficies |
+| `TREQ-NEXO-177` | admisión de fuentes, receipts, owner, saldo elegible y escritor único                    |
+| `TREQ-NEXO-178` | grupo, legs, source, scope, signo, causalidad, secuencia y append-only                   |
+| `TREQ-NEXO-179` | conservación entre sede, LOC, posición, presentación y custodia                          |
+| `TREQ-NEXO-180` | reubicación y traslado interno físicos, atómicos, parciales e idempotentes               |
+| `TREQ-NEXO-181` | despacho, custodia, recepción y pairing intersede sin stock fantasma                     |
+| `TREQ-NEXO-182` | cantidad, UOM, identidad física, condición y costo snapshot                              |
+| `TREQ-NEXO-183` | intención, fingerprint, concurrencia, secuencia, receipt y resultado desconocido         |
+| `TREQ-NEXO-184` | outbox, proyecciones, consumers, pairing y conciliación                                  |
+| `TREQ-NEXO-185` | checkpoints, reconstrucción, balances, filtros y consulta exacta                         |
+| `TREQ-NEXO-186` | corrección y reversa compensatorias sin editar ni borrar                                 |
+| `TREQ-NEXO-187` | estados de interfaz, rutas, detalle, exportación y compatibilidad de lectura             |
+| `TREQ-NEXO-188` | convergencia técnica, migración, RLS, RPC, rollback y cuarenta y ocho comprobaciones     |
+
+No se modifica, difiere, descarta ni vuelve obsoleto un requisito histórico.
+
+---
+
+#### 28. Pendientes con propietario y condición de salida
+
+| Pendiente                                                   | Estado                   | Propietario documental o técnico                             | Condición de salida                                                          |
+| ----------------------------------------------------------- | ------------------------ | ------------------------------------------------------------ | ---------------------------------------------------------------------------- |
+| command boundary, groups, legs, sequence, receipts y outbox | `ESPECIFICADO`           | paquete E5 NEXO de `NEXO-REMISSIONS-001` y `vento-shell`     | migración aplicada, pruebas aprobadas y cero writer directo incompatible     |
+| transición de movimientos y transfers legacy                | `ESPECIFICADO`           | paquete E5 NEXO y `SHELL-CI-017`                             | backfill verificable, lectores compatibles, no duplicidad y rollback probado |
+| consumidores de stock, ubicación, posición, costo y fuente  | `ESPECIFICADO`           | paquete E5 NEXO                                              | receipts idempotentes, observabilidad y reconstrucción certificada           |
+| capability exacta de exportación                            | `ESPECIFICADO`           | autorización compartida y paquete E5 NEXO                    | catálogo, servidor, RLS y UI convergentes                                    |
+| flujo completo de retiro                                    | `ESPECIFICADO`           | `NEXO-UX-017`                                                | diseño aprobado consumiendo el handoff de esta tarea                         |
+| observación y sesión de conteo                              | `ESPECIFICADO`           | `NEXO-UX-018`                                                | diseño aprobado sin publicar por observar                                    |
+| decisión y posting de ajuste                                | `ESPECIFICADO`           | `NEXO-UX-019`                                                | diseño aprobado con signo, caso y autoridad                                  |
+| resolución de orphans, divergencias y reversas supervisoras | `ESPECIFICADO`           | `NEXO-UX-022`                                                | caso, autoridad, compensación y cierre aprobados                             |
+| escaneo, campos por etapa y validación física               | `PENDIENTE_DE_EVIDENCIA` | `NEXO-UX-020`, `NEXO-UX-021` y `NEXO-UX-023` a `NEXO-UX-025` | diseños aprobados y piloto con evidencia reproducible                        |
+| ciclo de LPN, contenedores y empaques                       | `ESPECIFICADO`           | `NEXO-UX-026` a `NEXO-UX-029`                                | contratos aprobados sin alterar identidades históricas                       |
+
+No queda pendiente narrativo sin tarea, paquete o condición de salida.
+
+---
+
+#### 29. Criterios de aceptación
+
+1. existen exactamente veintiún artefactos materiales;
+2. las doce familias de fuente poseen disposición explícita;
+3. las doce familias semánticas poseen signo, alcance y propietario definidos;
+4. ningún proceso productor usa un formulario genérico de movimientos;
+5. grupo y leg están separados y correlacionados;
+6. cada leg persiste scope y signed delta explícitos;
+7. source, receipt, origin, destination, actor, correlation y causation son estructurados;
+8. existen exactamente veintidós estados empresariales y técnicos;
+9. existen exactamente ocho colas `MOVQ-*`;
+10. existen exactamente veinticuatro pasos `MOV-STEP-*`;
+11. existen exactamente treinta estados de interfaz;
+12. existen exactamente cuarenta y ocho comprobaciones `MOV-VAL-*`;
+13. existen exactamente diecinueve disposiciones de superficies vigentes;
+14. no se crea una dirección nueva;
+15. reubicación LOC conserva total de sede;
+16. reubicación de posición conserva total de LOC;
+17. traslado interno usa legs origen-destino y no una fila neutral ambigua;
+18. despacho intersede disminuye origen y aumenta custodia;
+19. recepción intersede disminuye custodia y aumenta solo cantidad aceptada en destino;
+20. una cantidad no existe simultáneamente en origen, custodia y destino;
+21. count e initial_count no publican por observar;
+22. adjustment no impone signo positivo ni sustituye reversa;
+23. cantidad, UOM, precisión e identidad usan snapshots;
+24. costo protegido no se deriva de la UI;
+25. intención, fingerprint, versión y receipt son obligatorios;
+26. group, legs, sequence, receipt y outbox comparten frontera atómica;
+27. mismo reintento devuelve mismo receipt;
+28. timeout se reconcilia antes de reintentar;
+29. cada proyección consume un leg una sola vez;
+30. una proyección fallida no crea otro movimiento;
+31. checkpoints cubren secuencia continua y pueden reconstruirse;
+32. filtros no alteran el cálculo de balances;
+33. una ventana truncada no produce opening o closing estimados;
+34. exportación exige capability y territorio exactos;
+35. exportación conserva secuencia, esquema, parámetros y digest;
+36. hechos publicados son append-only;
+37. corrección y reversa crean grupos compensatorios;
+38. transfers dejan de nacer completados antes del posting;
+39. se elimina el multi-write no atómico de traslado en implementación;
+40. técnicos ocultos del resumen permanecen visibles en detalle causal;
+41. aliases legacy se clasifican sin inventar datos;
+42. writers directos convergen a comandos propietarios;
+43. proyecciones convergen a consumers del ledger;
+44. los catorce requisitos nuevos se incorporan al registro completo;
+45. los pendientes tienen propietario y condición de salida;
+46. no se ejecutan cambios físicos ni operaciones remotas;
+47. la siguiente tarea permanece reservada.
+
+---
+
+#### 30. Continuidad
+
+**ÚLTIMA TAREA APROBADA:** `NEXO-UX-015 — Diseñar flujo completo de ubicación`
+
+**TAREA ACTUAL APROBADA:** `NEXO-UX-016 — Diseñar flujo completo de movimientos`
+
+**SIGUIENTE TAREA RESERVADA:** `NEXO-UX-017 — Diseñar flujo completo de retiros`
+
+`NEXO-UX-017` deberá consumir `NEXO-INVENTORY-MOVEMENT-IMPLEMENTATION-HANDOFF-001`, definir el flujo humano y empresarial de retiro, conservar origen físico, cantidad, UOM, motivo, autorización e identidad, y producir un receipt outbound idempotente que el ledger publique mediante legs negativos sin insertar movimientos o actualizar stock directamente.
+
+
 ### [ ] NEXO-UX-017 — Diseñar flujo completo de retiros
 ### [ ] NEXO-UX-018 — Diseñar flujo completo de conteos
 ### [ ] NEXO-UX-019 — Diseñar flujo completo de ajustes
