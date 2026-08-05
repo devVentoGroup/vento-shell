@@ -103,7 +103,7 @@ function expandTreqReferences(value) {
 
 export function extractDerivedTreqIds(body) {
   const derivedMatch = body.match(
-    /^####(?:\s+\d+\.)?\s+Requisitos de prueba (?:derivados|generados|incorporados)\s*$/m
+    /^####(?:\s+\d+\.)?\s+(?:Requisitos de prueba (?:derivados|generados|incorporados|creados)|Requisitos creados)\s*$/m
   );
   if (derivedMatch?.index === undefined) {
     return [];
