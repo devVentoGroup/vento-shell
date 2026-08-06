@@ -97,7 +97,8 @@ test('difiere AUTH-UI-058 a 060 hasta certificación posterior a implementación
 });
 
 test('proyecta el mismo diferimiento en el orden visible', () => {
-  const rendered = renderPriorityLaneOrderSection({ lanes: [lane] }, selector);
+  const canonicalLane = { ...lane, lane_id: 'NEXO-REMISSIONS-001' };
+  const rendered = renderPriorityLaneOrderSection({ lanes: [canonicalLane] }, selector);
 
   assert.match(
     rendered,
