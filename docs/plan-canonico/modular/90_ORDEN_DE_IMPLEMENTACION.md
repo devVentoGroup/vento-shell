@@ -286,7 +286,8 @@ y decisiones de continuidad se conservan en su etapa propietaria.
 <!-- NEXO-REMISSIONS-ORDER:START -->
 #### Orden ejecutable de NEXO-REMISSIONS-001
 
-Esta tabla se genera automáticamente desde `priority-delivery-lanes.json`.
+Esta tabla se genera automáticamente desde `priority-delivery-lanes.json` y
+la selección vigente de `execution-route.json`.
 Las etapas son secuenciales y no se avanza mientras la anterior carezca
 de resultado y evidencia. Las tareas de diseño terminan antes de E5.
 Ninguna tarea de implementación, migración o cambio físico comienza antes
@@ -307,7 +308,7 @@ de `E5-GATE-008::NEXO-REMISSIONS-001`.
 | 11 | `AUTHORIZATION_ERRORS` | `AUTH-ERR-001` a `AUTH-ERR-020` | contrato completo de razones y mensajes de bloqueo, sin filtrar información sensible |
 | 12 | `NEXO_INVENTORY_CLASSIFICATION` | `NEXO-DOM-001` | clasificación canónica de consumibles, stock por cantidad, reutilizables, activos, repuestos, kits y contenedores antes de diseñar o implementar inventario y remisiones |
 | 13 | `NEXO_FUNCTIONAL_UX` | `NEXO-UX-001` a `NEXO-UX-025` | inventario, navegación por actor, flujo completo de remisiones, movimientos, excepciones, prototipos y métricas de piloto |
-| 14 | `NEXO_UI_VALIDATION` | `AUTH-UI-052` a `AUTH-UI-060` | diseño, prototipos, validación con usuarios y aprobación de pantallas NEXO antes de implementar |
+| 14 | `NEXO_UI_VALIDATION` | `AUTH-UI-052` a `AUTH-UI-057` | diseño, prototipos, validación interna y criterios de usabilidad completos antes de implementar; la prueba con usuarios, el registro de problemas y la aprobación final quedan diferidos |
 | 15 | `CONDITIONAL_DESIGN_ARTIFACTS` | Evaluar la matriz condicional de diseño mostrada debajo | cada grupo queda completado o justificado como no aplicable antes de DELIV-PKG |
 | 16 | `CONDITIONAL_IMPLEMENTATION_SCOPE` | Evaluar la matriz condicional de implementación mostrada debajo | cada grupo de implementación queda incluido o excluido expresamente en DELIV-PKG antes de E5-GATE-008 |
 | 17 | `PACKAGE_DEFINITION` | `DELIV-PKG-001` a `DELIV-PKG-025` | paquete ejecutable, verificable y reversible |
@@ -320,12 +321,12 @@ de `E5-GATE-008::NEXO-REMISSIONS-001`.
 | 24 | `IMPLEMENTATION_START` | `SHELL-CI-020::NEXO-REMISSIONS-001` | Iniciar la implementación y el despliegue únicamente del paquete aprobado. |
 | 25 | `H_SHARED_CONTRACTS` | `SHELL-CON-*` (familia canónica completa) | paquetes de contratos compartidos e integraciones implementados y versionados |
 | 26 | `H_AUTH_CONTEXT_BASE` | `SHELL-AUTH-001`; `SHELL-CTX-001` | núcleo único de autorización y contexto disponible antes del backend autoritativo |
-| 27 | `R0_DATABASE_SAFETY` | `AUTH-DB-015`; `AUTH-DB-027`; `AUTH-DB-028`; `AUTH-DB-029`; `AUTH-DB-001`; `AUTH-DB-002`; `AUTH-DB-003`; `AUTH-DB-004`; `AUTH-DB-005` | migraciones gobernadas, harness, drift, respaldo, rollback y contención inicial de exposición ejecutados bajo el paquete aprobado |
-| 28 | `R1_AUTH_PHYSICAL_CORE` | `AUTH-DB-016`; `AUTH-DB-018`; `AUTH-DB-017`; `AUTH-DB-019`; `AUTH-DB-033`; `AUTH-DB-035`; `AUTH-DB-034`; `AUTH-DB-032`; `AUTH-DB-012`; `AUTH-DB-013`; `AUTH-DB-014` | esquemas, Data API, identidad, contexto, frescura, autorización y auditoría canónicos implementados |
-| 29 | `H_AUTH_CONTEXT_CONVERGENCE` | `SHELL-CTX-002`; `SHELL-CTX-003`; `SHELL-CTX-004`; `SHELL-CTX-005`; `SHELL-CTX-006`; `SHELL-AUTH-002`; `SHELL-AUTH-003`; `SHELL-AUTH-004` | contexto completo, adapters, scope por solicitud y gates contra legacy implementados |
+| 27 | `R0_DATABASE_SAFETY` | `AUTH-DB-015`; `AUTH-DB-027` a `AUTH-DB-029`; `AUTH-DB-001` a `AUTH-DB-005` | migraciones gobernadas, harness, drift, respaldo, rollback y contención inicial de exposición ejecutados bajo el paquete aprobado |
+| 28 | `R1_AUTH_PHYSICAL_CORE` | `AUTH-DB-016`; `AUTH-DB-018`; `AUTH-DB-017`; `AUTH-DB-019`; `AUTH-DB-033`; `AUTH-DB-035`; `AUTH-DB-034`; `AUTH-DB-032`; `AUTH-DB-012` a `AUTH-DB-014` | esquemas, Data API, identidad, contexto, frescura, autorización y auditoría canónicos implementados |
+| 29 | `H_AUTH_CONTEXT_CONVERGENCE` | `SHELL-CTX-002` a `SHELL-CTX-006`; `SHELL-AUTH-002` a `SHELL-AUTH-004` | contexto completo, adapters, scope por solicitud y gates contra legacy implementados |
 | 30 | `H_SHARED_REMAINING` | `SHELL-NORM-*` (familia canónica completa); `SHELL-DB-*` (familia canónica completa); `SHELL-UI-*` (familia canónica completa); `SHELL-MIG-*` (familia canónica completa); `SHELL-NATIVE-*` (familia canónica completa); `SHELL-APP-*` (familia canónica completa) | normalización compartida, acceso a datos, componentes web, migración reversible de consumidores, compatibilidad nativa y experiencia del Hub disponibles antes de consumidores finales |
 | 31 | `CONDITIONAL_IMPLEMENTATION_EXECUTION` | Ejecutar la matriz condicional de implementación aprobada en DELIV-PKG | todos los grupos aplicables ejecutados bajo el mismo package_id; cada no aplicable conserva su justificación aprobada |
-| 32 | `R2_NEXO_DATABASE_PACKAGE` | `AUTH-DB-020`; `AUTH-DB-006`; `AUTH-DB-007`; `AUTH-DB-008`; `AUTH-DB-009`; `AUTH-DB-010`; `AUTH-DB-021`; `AUTH-DB-011`; `AUTH-DB-022`; `AUTH-DB-023`; `AUTH-DB-024`; `AUTH-DB-025`; `AUTH-DB-026` | migración NEXO con RPC, RLS, grants, constraints, Storage, Realtime, automatizaciones, índices y tipos ejecutada bajo el package_id |
+| 32 | `R2_NEXO_DATABASE_PACKAGE` | `AUTH-DB-020`; `AUTH-DB-006` a `AUTH-DB-010`; `AUTH-DB-021`; `AUTH-DB-011`; `AUTH-DB-022` a `AUTH-DB-026` | migración NEXO con RPC, RLS, grants, constraints, Storage, Realtime, automatizaciones, índices y tipos ejecutada bajo el package_id |
 | 33 | `SERVER_ACTIONS_COMPLETE` | `AUTH-SRV-001` a `AUTH-SRV-018` | Server Actions, API routes y RPC inventariados, protegidos y migrados al contrato compartido |
 | 34 | `SHARED_DEVICE_IMPLEMENTATION` | `AUTH-DEV-007` a `AUTH-DEV-014` | identificación del trabajador, límites efectivos, auditoría, revocación, sesión y pruebas de tablets NEXO implementados |
 | 35 | `SIMULATION_IMPLEMENTATION` | `AUTH-SIM-007` a `AUTH-SIM-014` | visibilidad, auditoría, restricciones, solo lectura y validación integral de simulación implementadas |
@@ -333,7 +334,7 @@ de `E5-GATE-008::NEXO-REMISSIONS-001`.
 | 37 | `AUTH_UI_ENFORCEMENT` | `AUTH-UI-040` a `AUTH-UI-051` | protección de navegación, URL, acciones y estados transversales implementada |
 | 38 | `H_FINAL_AUTH_ADOPTION` | `SHELL-AUTH-005` | consumidores migrados y certificados al SDK compartido después de backend, adapters, UI y protecciones |
 | 39 | `U_AUTHORIZATION_CERTIFICATION` | `AUTH-QA-001` a `AUTH-QA-030` | autorización, territorio, contexto, dispositivo, simulación, servidor, RPC, rollback, auditoría y regresión certificadas |
-| 40 | `U_NEXO_EXPERIENCE_CERTIFICATION` | `UX-QA-001` a `UX-QA-020`; `UX-QA-024` | experiencia transversal y NEXO probadas con actores, dispositivos, conectividad, seguridad e idempotencia |
+| 40 | `U_NEXO_EXPERIENCE_CERTIFICATION` | `AUTH-UI-058` a `AUTH-UI-060`; `UX-QA-001` a `UX-QA-020`; `UX-QA-024` | AUTH-UI-058 a AUTH-UI-060 se ejecutan después de implementar las pantallas NEXO. Las pantallas implementadas y utilizables son la superficie de prueba; el prototipo visual y el cuestionario aprobado se conservan únicamente como línea base e instrumento de recolección. experiencia transversal y NEXO probadas con actores, dispositivos, conectividad, seguridad e idempotencia |
 | 41 | `READINESS` | `SHELL-CI-021::NEXO-REMISSIONS-001` | Validar readiness técnico y operativo. |
 | 42 | `PILOT` | `SHELL-CI-022::NEXO-REMISSIONS-001` | Ejecutar piloto controlado y conservar evidencia. |
 | 43 | `HYPERCARE` | `SHELL-CI-023::NEXO-REMISSIONS-001` | Estabilizar, conciliar y resolver defectos del alcance. |
@@ -375,8 +376,8 @@ paquete. Regresan al flujo normal en su fase propietaria.
 
 | Orden | Tareas preservadas | Motivo |
 | ----: | ------------------ | ------ |
-| 1 | `AUTH-DB-030`; `AUTH-DB-031` | R3 es cierre global posterior a adopción comprobada de todos los consumidores y no puede bloquear el primer paquete NEXO. |
-| 2 | `AUTH-DEV-015`; `AUTH-DEV-016` | Las pruebas físicas específicas de PULSO y FOGO permanecen en sus fases propietarias. |
+| 1 | `AUTH-DB-030` a `AUTH-DB-031` | R3 es cierre global posterior a adopción comprobada de todos los consumidores y no puede bloquear el primer paquete NEXO. |
+| 2 | `AUTH-DEV-015` a `AUTH-DEV-016` | Las pruebas físicas específicas de PULSO y FOGO permanecen en sus fases propietarias. |
 | 3 | `NEXO-DOM-002` a `NEXO-DOM-038`; `NEXO-AUTH-021` a `NEXO-AUTH-032`; `NEXO-UX-026` a `NEXO-UX-048` | LPN, contenedores avanzados, activos, reutilizables, repuestos, flota, mantenimiento e instalaciones continúan en el cierre completo de SUBBLOQUE K2; NEXO-DOM-001 sí es prerrequisito del paquete base. |
 
 Los artefactos del carril no cambian por sí solos el marcador de una tarea

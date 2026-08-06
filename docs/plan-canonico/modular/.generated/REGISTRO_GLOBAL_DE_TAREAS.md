@@ -21,8 +21,8 @@
 | Relación | Tarea | Estado |
 | --- | --- | --- |
 | Última aprobada | `AUTH-UI-057` — Definir criterio de usabilidad por pantalla | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-058` — Probar con usuarios reales | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-UI-059` — Registrar problemas encontrados | ⬜ NO INICIADA |
+| Tarea actual | `NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS` — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS | ⬜ NO INICIADA |
+| Siguiente reservada | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE | ⬜ NO INICIADA |
 
 ## Registro completo
 

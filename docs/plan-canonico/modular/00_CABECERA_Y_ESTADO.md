@@ -29,11 +29,11 @@
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
 | Última tarea aprobada | **AUTH-UI-057 — Definir criterio de usabilidad por pantalla** |
-| Tarea actual | **AUTH-UI-058 — Probar con usuarios reales** |
+| Tarea actual | **NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-059 — Registrar problemas encontrados** |
-| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 14: NEXO_UI_VALIDATION** |
-| Progreso del bloque | **CARRIL NEXO: 6 de 9 aprobadas; AUTH-UI-058 pendiente** |
+| Siguiente tarea | **NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE** |
+| Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
+| Progreso del bloque | **CARRIL NEXO: 0 de 1 aprobadas; NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
@@ -41,8 +41,8 @@
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
 | Última aprobada | `AUTH-UI-057` — Definir criterio de usabilidad por pantalla |
-| Tarea actual | `AUTH-UI-058` — Probar con usuarios reales — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-059` — Registrar problemas encontrados |
+| Tarea actual | `NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS` — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS — **NO INICIADA** |
+| Siguiente tarea | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 6 DE 9 APROBADAS — ACTUAL AUTH-UI-058** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 1 APROBADAS — ACTUAL NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -91,11 +91,11 @@
 AUTH-UI-057 — Definir criterio de usabilidad por pantalla
         ↓
 TAREA ACTUAL
-AUTH-UI-058 — Probar con usuarios reales
+NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS
         ↓
 SIGUIENTE TAREA RESERVADA
-AUTH-UI-059 — Registrar problemas encontrados
+NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE
         ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 6 de 9 tareas aprobadas
+CARRIL NEXO — 0 de 1 tareas aprobadas
 ```
