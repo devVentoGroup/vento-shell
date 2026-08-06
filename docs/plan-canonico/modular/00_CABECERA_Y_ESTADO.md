@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **577** |
+| Tareas aprobadas | **578** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1017** |
+| Tareas no iniciadas | **1016** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **36.20% (577/1594)** |
+| Porcentaje de completamiento | **36.26% (578/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS** |
-| Tarea actual | **INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones** |
+| Última tarea aprobada | **INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones** |
+| Tarea actual | **PRINT-ARC-001 — Inventariar impresoras por empresa, sede, área y punto operativo** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PRINT-ARC-001 — Inventariar impresoras por empresa, sede, área y punto operativo** |
+| Siguiente tarea | **PRINT-ARC-002 — Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 1 de 157 aprobadas; INT-PROD-005 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 2 de 157 aprobadas; PRINT-ARC-001 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS` — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS |
-| Tarea actual | `INT-PROD-005` — Definir tratamiento de producción insuficiente para remisiones — **NO INICIADA** |
-| Siguiente tarea | `PRINT-ARC-001` — Inventariar impresoras por empresa, sede, área y punto operativo |
+| Última aprobada | `INT-PROD-005` — Definir tratamiento de producción insuficiente para remisiones |
+| Tarea actual | `PRINT-ARC-001` — Inventariar impresoras por empresa, sede, área y punto operativo — **NO INICIADA** |
+| Siguiente tarea | `PRINT-ARC-002` — Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 1 DE 157 APROBADAS — ACTUAL INT-PROD-005** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 2 DE 157 APROBADAS — ACTUAL PRINT-ARC-001** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS
-        ↓
-TAREA ACTUAL
 INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PRINT-ARC-001 — Inventariar impresoras por empresa, sede, área y punto operativo
         ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-002 — Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 1 de 157 tareas aprobadas
+CARRIL NEXO — 2 de 157 tareas aprobadas
 ```

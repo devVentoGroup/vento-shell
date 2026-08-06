@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **577** |
+| Aprobadas | **578** |
 | En propuesta | **0** |
-| No iniciadas | **1017** |
+| No iniciadas | **1016** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **36.20% (577/1594)** |
+| Porcentaje de completamiento | **36.26% (578/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS` — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS | ✅ APROBADA |
-| Tarea actual | `INT-PROD-005` — Definir tratamiento de producción insuficiente para remisiones | ⬜ NO INICIADA |
-| Siguiente reservada | `PRINT-ARC-001` — Inventariar impresoras por empresa, sede, área y punto operativo | ⬜ NO INICIADA |
+| Última aprobada | `INT-PROD-005` — Definir tratamiento de producción insuficiente para remisiones | ✅ APROBADA |
+| Tarea actual | `PRINT-ARC-001` — Inventariar impresoras por empresa, sede, área y punto operativo | ⬜ NO INICIADA |
+| Siguiente reservada | `PRINT-ARC-002` — Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1468,7 +1468,7 @@
 | ⬜ NO INICIADA | `INT-PROD-002` | Definir contrato para que NEXO registre el consumo | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-PROD-003` | Definir contrato para que FOGO finalice el lote | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-PROD-004` | Definir contrato para que NEXO registre el producto terminado | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
-| ⬜ NO INICIADA | `INT-PROD-005` | Definir tratamiento de producción insuficiente para remisiones | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
+| ✅ APROBADA | `INT-PROD-005` | Definir tratamiento de producción insuficiente para remisiones | `bloques/X_INTEGRACIONES/05_PRODUCCION_E_INVENTARIO.md` |
 | ⬜ NO INICIADA | `INT-POS-001` | Auditar documentación, endpoints, webhooks y límites del POS vigente | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-002` | Confirmar información disponible mediante API | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
 | ⬜ NO INICIADA | `INT-POS-003` | Definir al POS vigente como fuente temporal del hecho de venta | `bloques/X_INTEGRACIONES/06_TRANSICION_DEL_POS_EXTERNO.md` |
