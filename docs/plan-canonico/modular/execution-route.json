@@ -3,6 +3,7 @@
   "selected_route_id": "NEXO-REMISSIONS-001",
   "normal_route_id": "NORMAL-CANONICAL-FLOW-001",
   "priority_entry_task_id": "SHELL-PKG-008",
+  "latest_treq_task_id": "NEXO-UX-025",
   "return_policy": "RETURN_TO_NORMAL_AFTER_PRIORITY_CERTIFICATION",
   "selection_basis": "Prioridad empresarial explícita: completar remisiones NEXO como primer paquete vertical.",
   "selected_explicitly": true,
@@ -12,5 +13,5 @@
     "AUTH-UI-060"
   ],
   "deferred_to_stage_id": "U_NEXO_EXPERIENCE_CERTIFICATION",
-  "deferred_reason": "Las pruebas con usuarios, el registro de problemas y la aprobación final de pantallas se ejecutan únicamente después de que las pantallas NEXO estén implementadas y utilizables."
+  "deferred_reason": "AUTH-UI-058 a AUTH-UI-060 se ejecutan después de implementar las pantallas NEXO. Las pantallas implementadas y utilizables son la superficie de prueba; el prototipo visual y el cuestionario aprobado se conservan únicamente como línea base e instrumento de recolección."
 }
