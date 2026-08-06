@@ -3,9 +3,20 @@
   "route_id": "NEXO-REMISSIONS-001",
   "conditional_scopes": {
     "CONDITIONAL_DESIGN_ARTIFACTS": {
-      "decision_state": "NO INICIADA",
-      "applicable_groups": [],
-      "not_applicable_groups": []
+      "decision_state": "APROBADA",
+      "applicable_groups": [
+        "PRODUCTION_CONDITIONAL",
+        "PRINTING_CONDITIONAL",
+        "EVIDENCE_CONDITIONAL",
+        "NOTIFICATIONS_CONDITIONAL",
+        "TECHNOLOGY_SUPPORT_CONDITIONAL",
+        "INFORMATION_GOVERNANCE_CONDITIONAL",
+        "MASTER_DATA_ANALYTICS_CONDITIONAL",
+        "CONTINUITY_CONDITIONAL"
+      ],
+      "not_applicable_groups": [
+        "QUEUE_CONDITIONAL"
+      ]
     },
     "CONDITIONAL_IMPLEMENTATION_SCOPE": {
       "decision_state": "NO INICIADA",
