@@ -3427,7 +3427,402 @@ PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas
 La aprobación de `PRINT-ARC-009` no inicia, desarrolla ni aprueba `PRINT-ARC-010`.
 
 
-### [ ] PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas
+### ✅ PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-009 — Definir estado de impresora y heartbeat` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-011 — Definir reintentos automáticos y cola de fallos` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de identidad de intención, huella semántica, admisión atómica, deduplicación y tratamiento de colisiones para las cincuenta salidas imprimibles
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Cambios físicos autorizados:** ninguno; no implementa tablas, restricciones, RPC, colas, workers, adaptadores, reintentos, envíos, migraciones, configuración ni cambios en Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir una identidad estable para cada intención de copia, impedir que concurrencia, doble toque, callback repetido, timeout, reconexión, fallback o una clave nueva creen una segunda copia no autorizada, y separar reintento de reimpresión.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-010` queda cerrada documentalmente con:
+
+- un contrato `VENTO-PRINT-IDEMPOTENCY` versión `1.0.0`;
+- una clave de idempotencia determinista por copia legítima;
+- una huella semántica independiente que impide evadir deduplicación mediante una clave distinta;
+- un registro de admisión append-only con decisión atómica;
+- seis decisiones normalizadas de admisión;
+- cuatro perfiles familiares y cinco perfiles especializados para comandas;
+- cincuenta decisiones materializadas, una por cada identidad `IMP-*`;
+- una regla explícita para múltiples copias autorizadas mediante `copy_slot_id`;
+- una frontera cerrada entre reenvío técnico, nuevo intento empresarial y reimpresión;
+- cero claves, jobs, receipts, intentos o impresiones ejecutados;
+- cero cambios de identidad, nombre, propietaria, plantilla, versión, perfil físico, ruta, política objetivo o puerta de salud heredada.
+
+La idempotencia se aplica antes de crear una segunda instancia de trabajo. Un fallo, timeout, cambio de dispositivo o cambio de canal no libera la identidad ni autoriza otra copia.
+
+---
+
+#### 2. Diagnóstico técnico actual
+
+La superficie vigente de impresión de NEXO conserva una cola textual en `localStorage`, elimina únicamente líneas exactamente iguales durante una operación de append y envía ZPL directamente mediante `device.send`.
+
+| Superficie                                  | Comportamiento observado                                                                            | Brecha frente a esta tarea                                                                                                         | Clasificación                        |
+| ------------------------------------------- | --------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `vento-nexo/src/app/printing/jobs/page.tsx` | Persiste texto local bajo `vento-nexo:printing:queue:v1`.                                           | No existe intención durable, identidad de copia, versión empresarial ni registro autoritativo compartido.                          | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION` |
+| `vento-nexo/src/app/printing/jobs/page.tsx` | Un `Set` evita solo añadir una línea textual idéntica en el estado local actual.                    | No protege doble toque, concurrencia, otro navegador, otra estación, reconexión, nueva clave o payload semánticamente equivalente. | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION` |
+| `vento-nexo/src/app/printing/jobs/page.tsx` | `sendZpl` invoca directamente `device.send` y muestra `Impresión enviada.` en el callback de éxito. | No existe idempotency key, huella semántica, receipt durable, consulta de resultado ni barrera contra un segundo envío.            | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION` |
+
+El comportamiento observado no se declara defectuoso por sí solo dentro de esta fase documental; se registra como brecha de implementación frente al contrato objetivo.
+
+---
+
+#### 3. Fronteras e invariantes
+
+```text
+INTENCION EMPRESARIAL AUTORIZADA
+→ SNAPSHOT INMUTABLE VENTO-PRINT-JOB
+→ IDENTIDAD SEMANTICA DE COPIA
+→ ADMISION IDEMPOTENTE ATOMICA
+→ JOB NUEVO O JOB EXISTENTE
+→ PRINT-ARC-011: INTENTOS Y REINTENTOS
+→ PRINT-ARC-012: RECEIPTS Y CONFIRMACIONES
+→ PRINT-ARC-014: REIMPRESION EXPLICITA
+```
+
+Reglas obligatorias:
+
+1. Una intención empresarial produce como máximo un `job_id` por copia legítima.
+2. Repetir la misma solicitud con la misma clave y la misma huella devuelve el mismo `job_id`; no crea trabajo ni envío adicional.
+3. Reutilizar una clave con contenido diferente se rechaza; nunca se actualiza el trabajo anterior.
+4. Presentar una clave nueva con la misma huella semántica de copia se trata como duplicado semántico, no como intención nueva.
+5. Un timeout, callback perdido, cierre del navegador o resultado desconocido conserva la clave y bloquea una segunda intención hasta conciliación.
+6. El estado fallido, cancelado, expirado o bloqueado no libera la clave ni la huella histórica.
+7. Un cambio de impresora, canal, heartbeat, agente, intento, posición de cola o receipt no cambia la identidad de la copia.
+8. Una nueva versión empresarial, una modificación autorizada o una cancelación documentada puede producir otra salida porque cambia la identidad empresarial gobernada.
+9. Varias copias originales solo son legítimas cuando el contrato propietario declara su cantidad y materializa `copy_slot_id` distintos antes de admitir trabajos.
+10. La reimpresión no reutiliza ni libera la identidad original; deberá crear una acción separada vinculada conforme a `PRINT-ARC-014`.
+11. Los lotes agrupan trabajos, pero no sustituyen la deduplicación individual de cada copia.
+12. La deduplicación es autoritativa en servidor o almacenamiento compartido; una caché o `localStorage` solo puede optimizar y nunca decidir unicidad.
+13. La admisión debe ser atómica frente a concurrencia: no se permite comprobar y crear en operaciones separadas sin restricción de unicidad.
+14. La respuesta idempotente conserva el resultado conocido; no transforma un receipt técnico en evidencia física.
+15. Ningún hash utiliza datos personales legibles como clave pública; las representaciones se minimizan y se almacenan como digests.
+
+---
+
+#### 4. Contrato `VENTO-PRINT-IDEMPOTENCY` `1.0.0`
+
+##### 4.1 Estructura normativa
+
+```json
+{
+  "idempotency_contract_id": "VENTO-PRINT-IDEMPOTENCY",
+  "idempotency_contract_version": "1.0.0",
+  "intent_id": "<uuid>",
+  "job_id": "<uuid|null>",
+  "output_id": "<IMP-*>",
+  "owner_app": "<aplicacion-propietaria-heredada>",
+  "source": {
+    "resource_type": "<tipo-estable>",
+    "resource_id": "<id-estable>",
+    "resource_version": "<version-o-secuencia-estable>"
+  },
+  "render_snapshot": {
+    "template_id": "<TPL-IMP-*>",
+    "template_version": "<semver>",
+    "payload_hash": "sha256:<hex>"
+  },
+  "copy_identity": {
+    "copy_role": "ORIGINAL",
+    "copy_slot_id": "<entero-positivo-o-id-estable>",
+    "logical_destination": "<sede-area-punto-o-destinatario-logico>"
+  },
+  "semantic_fingerprint": "sha256:<hex>",
+  "idempotency_key": "vpi_1_<base64url>",
+  "admission": {
+    "decision": "<ACCEPT_NEW|RETURN_EXISTING|REJECT_KEY_CONFLICT|REJECT_SEMANTIC_DUPLICATE|BLOCK_RESULT_UNKNOWN|REJECT_INVALID_IDENTITY>",
+    "existing_job_id": "<uuid|null>",
+    "decided_at": "<RFC3339>",
+    "reason_code": "<PRINT_IDEMPOTENCY_* >"
+  },
+  "trace": {
+    "correlation_id": "<id-estable>",
+    "causation_id": "<id-estable>",
+    "batch_id": "<uuid|null>",
+    "original_job_id": null
+  }
+}
+```
+
+La estructura es normativa. No declara tablas, endpoints ni tecnología de persistencia.
+
+##### 4.2 Campos que componen la huella semántica
+
+La huella se calcula sobre JSON canónico UTF-8 con claves ordenadas, arrays en orden empresarial, números y moneda normalizados, timestamps RFC 3339 y ausencia de campos volátiles.
+
+```text
+semantic_fingerprint = SHA-256(
+  contract_version
+  + owner_app
+  + output_id
+  + source.resource_type
+  + source.resource_id
+  + source.resource_version
+  + template_id
+  + template_version
+  + payload_hash
+  + copy_role
+  + copy_slot_id
+  + logical_destination
+)
+```
+
+`idempotency_key` deriva de la huella y del namespace `vpi_1`. El servicio autoritativo recalcula ambos valores y rechaza discrepancias.
+
+##### 4.3 Campos excluidos de la identidad
+
+No forman parte de la huella ni de la clave:
+
+- `device_ref`;
+- `channel_id`;
+- `health_profile_id`;
+- estado o edad del heartbeat;
+- número de intento;
+- worker o agente;
+- posición de cola;
+- timestamps de envío o recepción;
+- receipt del adaptador;
+- mensaje de error;
+- usuario que reintenta la misma intención.
+
+Excluirlos garantiza que fallback, reconexión o retry conserven una sola copia lógica.
+
+---
+
+#### 5. Canonicalización y hash de payload
+
+1. El `payload_hash` se calcula sobre el snapshot validado de `VENTO-PRINT-JOB`, no sobre HTML, ZPL, PDF o bytes específicos del adaptador.
+2. Las claves de objeto se ordenan lexicográficamente.
+3. Los arrays conservan el orden empresarial aprobado; no se reordenan ítems de una comanda o documento.
+4. `null`, ausencia de campo y string vacío permanecen distintos cuando el contrato de payload los diferencia.
+5. Los valores monetarios incluyen moneda y precisión canónica.
+6. Los timestamps se expresan en RFC 3339 con offset o UTC verificable.
+7. Los identificadores se conservan exactamente; no se normalizan mayúsculas o espacios por inferencia.
+8. Los campos de diagnóstico, UI, heartbeat, intento y receipt se excluyen.
+9. Un cambio de snapshot exige nueva versión empresarial o nueva intención autorizada; no se sobrescribe el hash previo.
+10. El render generado puede tener su propio hash técnico en `PRINT-ARC-018`, pero no reemplaza el `payload_hash` empresarial.
+
+---
+
+#### 6. Decisión atómica de admisión
+
+| Condición                                       | Decisión                    | Efecto permitido                                                                        |
+| ----------------------------------------------- | --------------------------- | --------------------------------------------------------------------------------------- |
+| Identidad completa; clave y huella inexistentes | `ACCEPT_NEW`                | Crear exactamente un `job_id` y un registro de admisión.                                |
+| Misma clave y misma huella                      | `RETURN_EXISTING`           | Retornar el `job_id`, estado y referencias existentes sin crear intento.                |
+| Misma clave y huella diferente                  | `REJECT_KEY_CONFLICT`       | Rechazar y auditar reutilización incompatible.                                          |
+| Clave diferente y huella original existente     | `REJECT_SEMANTIC_DUPLICATE` | Retornar referencia al trabajo existente y exigir reimpresión explícita si corresponde. |
+| Trabajo existente en resultado desconocido      | `BLOCK_RESULT_UNKNOWN`      | Consultar y conciliar; prohibido crear otra intención o envío.                          |
+| Falta identidad, versión, hash, destino o slot  | `REJECT_INVALID_IDENTITY`   | No crear trabajo; devolver campos faltantes tipados.                                    |
+
+La decisión y la creación del trabajo deberán ocurrir en una única transacción o mecanismo equivalente con unicidad sobre `idempotency_key` y sobre la huella de copia original.
+
+---
+
+#### 7. Copias múltiples, lotes y documentos versionados
+
+##### 7.1 Copias múltiples autorizadas
+
+Una cantidad `N` de copias originales se materializa antes de la admisión como `N` slots estables:
+
+```text
+copy_slot_id = 1 ... N
+```
+
+Cada slot posee una huella distinta y admite un solo trabajo. Aumentar `N` después del envío requiere una nueva decisión empresarial o una reimpresión autorizada; no se inventan slots durante retry.
+
+##### 7.2 Lotes
+
+`batch_id` agrupa trabajos para operación o transporte. No es clave de deduplicación y no permite que un único resultado o receipt cierre todos los trabajos.
+
+##### 7.3 Modificación y cancelación documentales
+
+Una modificación, adición o cancelación tiene su propio identificador y versión de recurso. No reutiliza la identidad de la comanda original, pero conserva correlación y destino lógico original.
+
+##### 7.4 Reimpresión
+
+Una reimpresión futura deberá usar:
+
+- `copy_role = REPRINT`;
+- `original_job_id` obligatorio;
+- `reprint_action_id` generado por `PRINT-ARC-014`;
+- actor, motivo y autorización;
+- nueva huella y nueva clave derivadas de esa acción.
+
+Esta tarea no autoriza ni ejecuta reimpresiones.
+
+---
+
+#### 8. Matriz materializada de las cincuenta salidas
+
+Las denominaciones y propietarias permanecen exactamente como fueron aprobadas. Esta matriz materializa exclusivamente el perfil de identidad y deduplicación.
+
+| Salida       | Perfil de idempotencia              | Identidad empresarial mínima                       | Ámbito de copia legítima                        | Resultado documental                 |
+| ------------ | ----------------------------------- | -------------------------------------------------- | ----------------------------------------------- | ------------------------------------ |
+| `IMP-LBL-01` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-02` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-03` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-04` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-05` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-06` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-07` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-08` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-09` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-10` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-11` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-12` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-13` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-14` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-15` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-LBL-16` | `IDP-RESOURCE-VERSION`              | `resource_type + resource_id + resource_version`   | `logical_destination + copy_slot_id`            | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CMD-01` | `IDP-ORDER-VERSION-DESTINATION`     | `pedido_id + version_orden`                        | `preparation_destination + copy_slot_id`        | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CMD-02` | `IDP-ORDER-VERSION-DESTINATION`     | `pedido_id + version_orden`                        | `preparation_destination + copy_slot_id`        | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CMD-03` | `IDP-ORDER-VERSION-DESTINATION`     | `pedido_id + version_orden`                        | `preparation_destination + copy_slot_id`        | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CMD-04` | `IDP-PREPARATION-REQUEST-VERSION`   | `solicitud_preparacion_id + resource_version`      | `execution_destination + copy_slot_id`          | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CMD-05` | `IDP-FULFILLMENT-SNAPSHOT`          | `pedido_id + fulfillment_snapshot_version`         | `pickup_or_dispatch_destination + copy_slot_id` | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CMD-06` | `IDP-REPLENISHMENT-REQUEST-VERSION` | `reposicion_id + resource_version`                 | `receiving_destination + copy_slot_id`          | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CMD-07` | `IDP-ORDER-MODIFICATION`            | `modificacion_id + version_orden`                  | `original_command_destination + copy_slot_id`   | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CMD-08` | `IDP-ORDER-CANCELLATION`            | `cancelacion_id + version_orden`                   | `original_command_destination + copy_slot_id`   | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CMD-09` | `IDP-PRODUCTION-REQUEST-VERSION`    | `solicitud_produccion_id + resource_version`       | `production_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CLI-01` | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `business_document_id + business_document_version` | `delivery_destination + copy_slot_id`           | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CLI-02` | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `business_document_id + business_document_version` | `delivery_destination + copy_slot_id`           | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CLI-03` | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `business_document_id + business_document_version` | `delivery_destination + copy_slot_id`           | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CLI-04` | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `business_document_id + business_document_version` | `delivery_destination + copy_slot_id`           | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CLI-05` | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `business_document_id + business_document_version` | `delivery_destination + copy_slot_id`           | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CLI-06` | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `business_document_id + business_document_version` | `delivery_destination + copy_slot_id`           | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CLI-07` | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `business_document_id + business_document_version` | `delivery_destination + copy_slot_id`           | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CLI-08` | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `business_document_id + business_document_version` | `delivery_destination + copy_slot_id`           | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-CLI-09` | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `business_document_id + business_document_version` | `delivery_destination + copy_slot_id`           | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-01` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-02` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-03` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-04` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-05` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-06` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-07` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-08` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-09` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-10` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-11` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-12` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-13` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-14` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-15` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+| `IMP-DOC-16` | `IDP-DOCUMENT-SNAPSHOT`             | `document_or_report_id + snapshot_version`         | `authorized_destination + copy_slot_id`         | `ESPECIFICADO / DEDUP_SCOPE_CERRADO` |
+
+**Control de cobertura:** 50 esperadas, 50 materializadas, 50 identificadores únicos, 0 faltantes y 0 duplicados.
+
+---
+
+#### 9. Códigos de resultado
+
+| Código                                 | Significado                                                    |
+| -------------------------------------- | -------------------------------------------------------------- |
+| `PRINT_IDEMPOTENCY_ACCEPTED_NEW`       | La copia legítima fue admitida y recibió un único trabajo.     |
+| `PRINT_IDEMPOTENCY_RETURN_EXISTING`    | La repetición coincide y recibe el trabajo existente.          |
+| `PRINT_IDEMPOTENCY_KEY_CONFLICT`       | La misma clave fue presentada con otra huella.                 |
+| `PRINT_IDEMPOTENCY_SEMANTIC_DUPLICATE` | Otra clave intenta crear la misma copia original.              |
+| `PRINT_IDEMPOTENCY_RESULT_UNKNOWN`     | Existe trabajo sin resultado resuelto; se bloquea duplicación. |
+| `PRINT_IDEMPOTENCY_INVALID_IDENTITY`   | Faltan campos obligatorios para calcular identidad.            |
+| `PRINT_IDEMPOTENCY_REPRINT_REQUIRED`   | La copia adicional debe tramitarse como reimpresión separada.  |
+
+---
+
+#### 10. Requisitos existentes consumidos
+
+Esta tarea especializa sin modificar requisitos vigentes sobre:
+
+- resultado desconocido y consulta por clave y receipt;
+- conservación de la misma clave durante retries;
+- separación entre intención, routing, receipt, aceptación y evidencia física;
+- estados independientes de periférico y conciliación;
+- identidad, payload hash, intento, cola y receipt del trabajo físico;
+- deduplicación de toques, callbacks y retries repetidos.
+
+Referencias consumidas: `TREQ-PROC-278`, `TREQ-PROC-279`, `TREQ-PROC-284`, `TREQ-PROC-444`, `TREQ-PROC-446` y `TREQ-PROC-611`.
+
+---
+
+#### 11. Destinos documentales de implementación y evidencia
+
+| Elemento no ejecutado en esta tarea                                                  | Propietario                                             | Condición de salida                                                                                                                          |
+| ------------------------------------------------------------------------------------ | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------- |
+| Persistencia autoritativa, constraints, transacción de admisión y consulta por clave | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | El alcance de implementación identifica repositorio, modelo físico, consumidores, migración en `vento-shell`, rollback y pruebas aplicables. |
+| Política de intentos, backoff y cola de fallos                                       | `PRINT-ARC-011`                                         | Cada estado admitido tiene reglas de intento sin crear otra intención ni liberar la clave.                                                   |
+| Receipts y confirmaciones diferenciadas                                              | `PRINT-ARC-012`                                         | Envío, aceptación, impresión física y entrega conservan evidencias separadas y correlacionadas.                                              |
+| Cancelación y expiración                                                             | `PRINT-ARC-013`                                         | Se definen límites de transición sin reutilizar identidades ni ocultar resultados desconocidos.                                              |
+| Reimpresión separada                                                                 | `PRINT-ARC-014`                                         | Existe acción con actor, motivo, autorización, vínculo original y nueva identidad.                                                           |
+| Integración con adaptadores                                                          | `PRINT-ARC-018`                                         | Cada adaptador propaga job, intento, clave, huella y receipt sin reinterpretarlos.                                                           |
+| Validación física de ausencia de duplicados                                          | `PRINT-ARC-020`                                         | Escenarios concurrentes, timeout, callback perdido y recuperación demuestran una sola copia o una conciliación explícita.                    |
+
+No quedan pendientes narrativos sin tarea propietaria ni condición de salida.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el contrato documental especializa comportamientos de idempotencia, deduplicación, resultado desconocido y periféricos que ya están registrados en requisitos canónicos vigentes. No se crea ni modifica comportamiento ejecutable, prueba, estado del registro ni evidencia en esta fase.
+
+---
+
+#### 12. Criterios de aceptación
+
+- [x] define contrato y versión estables;
+- [x] distingue intención, trabajo, intento, receipt y copia física;
+- [x] define clave de idempotencia y huella semántica independientes;
+- [x] impide evasión mediante una clave nueva;
+- [x] define canonicalización y hash del snapshot empresarial;
+- [x] excluye impresora, canal, heartbeat e intento de la identidad de copia;
+- [x] define admisión atómica y seis decisiones cerradas;
+- [x] conserva identidad después de fallo, timeout, cancelación o expiración;
+- [x] materializa slots para copias múltiples legítimas;
+- [x] separa retry de reimpresión;
+- [x] materializa las cincuenta salidas una sola vez;
+- [x] conserva 16 etiquetas, 9 comandas, 9 comprobantes y 16 documentos;
+- [x] reporta 0 faltantes y 0 duplicados;
+- [x] asigna toda implementación y evidencia a tareas existentes con salida verificable;
+- [x] declara cero cambios de requisitos con justificación concreta;
+- [x] no modifica código, SQL, migraciones, datos, configuración ni Supabase;
+- [x] mantiene `PRINT-ARC-011` como única tarea siguiente reservada.
+
+---
+
+#### 13. Handoff cerrado hacia `PRINT-ARC-011`
+
+`PRINT-ARC-011` recibe:
+
+- `VENTO-PRINT-IDEMPOTENCY` `1.0.0`;
+- cincuenta perfiles de deduplicación materializados;
+- `idempotency_key`, `semantic_fingerprint`, `job_id`, `intent_id` y `copy_slot_id` estables;
+- decisiones `ACCEPT_NEW`, `RETURN_EXISTING`, `REJECT_KEY_CONFLICT`, `REJECT_SEMANTIC_DUPLICATE`, `BLOCK_RESULT_UNKNOWN` y `REJECT_INVALID_IDENTITY`;
+- la regla de que retry conserva intención, trabajo, clave y huella;
+- la prohibición de liberar una identidad por fallo o timeout;
+- la frontera que reserva toda copia adicional legítima para `PRINT-ARC-014`.
+
+`PRINT-ARC-011` podrá definir intentos automáticos y cola de fallos sin crear otra intención, otro trabajo o una segunda copia lógica.
+
+```text
+TAREA ACTUAL DESARROLLADA EN ARTEFACTO APROBADA
+PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas
+        ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-011 — Definir reintentos automáticos y cola de fallos
+```
+
+La preparación de este artefacto no inicia, desarrolla ni aprueba `PRINT-ARC-011`.
+
+
 ### [ ] PRINT-ARC-011 — Definir reintentos automáticos y cola de fallos
 ### [ ] PRINT-ARC-012 — Definir confirmación de envío, impresión y entrega cuando sea verificable
 ### [ ] PRINT-ARC-013 — Definir cancelación y expiración
