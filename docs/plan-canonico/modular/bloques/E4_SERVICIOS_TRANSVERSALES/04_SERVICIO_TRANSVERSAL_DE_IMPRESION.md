@@ -5301,7 +5301,530 @@ Esta tarea especializa esas reglas para impresión sin cambiar su alcance, propi
 La aprobación de `PRINT-ARC-013` no inicia, desarrolla ni aprueba `PRINT-ARC-014`.
 
 
-### [ ] PRINT-ARC-014 — Definir reimpresión como acción separada y auditable
+### ✅ PRINT-ARC-014 — Definir reimpresión como acción separada y auditable
+
+**Estado:** APROBADA
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-014` queda cerrada documentalmente con:
+
+- el contrato `VENTO-PRINT-REPRINT` versión `1.0.0`;
+- una acción de reimpresión deliberada, independiente y auditable;
+- una identidad nueva por solicitud, trabajo, copia y ejecución;
+- nueve estados de reimpresión y nueve decisiones normalizadas;
+- ocho causas admitidas y seis señales expresamente no admitidas como causa;
+- siete perfiles de tratamiento más un bloqueo transversal de despacho;
+- una decisión materializada para las cincuenta salidas canónicas;
+- controles de idempotencia, concurrencia, autorización, marcación, handoff y disposición física;
+- separación cerrada frente a retry, replay, deduplicación, cancelación, expiración, reroute y cambio de versión;
+- cero implementación física, cero migraciones, cero cambios de Supabase y cero evidencia operativa inventada.
+
+El contrato gobierna una **copia física adicional legítima**. No autoriza a repetir un envío incierto, ocultar un duplicado, emitir un nuevo documento empresarial, reescribir la copia anterior ni convertir un fallo técnico en una nueva intención.
+
+---
+
+#### 2. Alcance y contratos heredados
+
+Esta tarea conserva sin modificación las identidades, propietarias, nombres, rutas, políticas objetivo, perfiles físicos, salud, prioridades y decisiones de las cincuenta salidas. Consume:
+
+| Contrato                              | Versión | Uso en esta tarea                                                      |
+| ------------------------------------- | ------- | ---------------------------------------------------------------------- |
+| `VENTO-PRINT-JOB`                     | `1.0.0` | Identidad y snapshot del trabajo original.                             |
+| `VENTO-PRINT-ROUTE-TARGET`            | `1.0.0` | Revalidación de destino y restricciones territoriales.                 |
+| `VENTO-PRINT-DEVICE-HEALTH`           | `1.0.0` | Elegibilidad del dispositivo antes del nuevo despacho.                 |
+| `VENTO-PRINT-IDEMPOTENCY`             | `1.0.0` | Admisión atómica de una nueva copia legítima sin duplicar solicitudes. |
+| `VENTO-PRINT-RETRY-QUEUE`             | `1.0.0` | Retry técnico dentro de la misma copia reimpresa.                      |
+| `VENTO-PRINT-CONFIRMATION`            | `1.0.0` | Resolución previa de la copia original y confirmación de la nueva.     |
+| `VENTO-PRINT-CANCELLATION-EXPIRATION` | `1.0.0` | Tratamiento de cancelación, expiración y efectos tardíos.              |
+
+La reimpresión no altera el contrato empresarial del recurso impreso. Cuando el contenido, la versión, las cantidades, el destinatario, el periodo, el precio, la identidad fiscal o cualquier dato material cambian, corresponde un nuevo trabajo documental o empresarial; no una reimpresión.
+
+---
+
+#### 3. Definiciones y fronteras obligatorias
+
+| Concepto            | Definición                                                                                                           | Identidad conservada o nueva                                                           |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `RETRY`             | Nuevo intento técnico para completar la misma copia.                                                                 | Conserva trabajo, intención, copia y clave idempotente; crea intento técnico.          |
+| `REPLAY`            | Repetición idéntica de un comando ya admitido.                                                                       | Devuelve o reconcilia el resultado anterior.                                           |
+| `DUPLICATE`         | Solicitud equivalente sin autorización para copia adicional.                                                         | Se suprime o se rechaza; no crea copia.                                                |
+| `REPRINT`           | Comando deliberado para producir una copia física adicional del mismo snapshot, después de resolver la copia previa. | Crea solicitud, trabajo, copia, secuencia y ejecuciones nuevas, enlazadas al original. |
+| `REROUTE`           | Cambio autorizado de destino técnico para una copia todavía no resuelta.                                             | Conserva la copia; no crea reimpresión.                                                |
+| `CHANNEL_SWITCH`    | Cambio USB, LAN, Wi-Fi u otro canal del mismo dispositivo para la misma copia.                                       | Conserva la copia; crea intento técnico.                                               |
+| `CANCEL`            | Detención del trabajo futuro permitido por el estado real.                                                           | No crea copia ni deshace una impresión.                                                |
+| `EXPIRE`            | Cierre por vencimiento de una ventana autorizada.                                                                    | No crea copia ni demuestra ausencia de impresión.                                      |
+| `CORRECTED_VERSION` | Documento o contenido materialmente cambiado.                                                                        | Crea versión y trabajo nuevos; no se etiqueta como reimpresión.                        |
+
+Invariantes:
+
+1. Toda reimpresión es una nueva copia; ningún retry es una reimpresión.
+2. `RESULT_UNKNOWN`, timeout, callback perdido, dead-letter o agotamiento de retries bloquean la reimpresión hasta conciliar la copia previa.
+3. Una copia impresa no se deshace por cancelar, expirar o reimprimir.
+4. Una reimpresión no emite otra venta, pago, factura, nota, movimiento, lote, remisión, cierre o hecho empresarial.
+5. El snapshot reimpreso debe ser exactamente el mismo; cualquier cambio material crea un trabajo nuevo.
+6. La copia original permanece inmutable y consultable.
+7. La reimpresión requiere causa, alcance, cantidad, actor o principal, autorización, timestamp y vínculo causal.
+8. La salud recuperada, el heartbeat o el cambio de ruta nunca crean una reimpresión automática.
+9. La reimpresión no se autoriza por nombre de rol, aplicación, sede, dispositivo o posesión del documento.
+10. Ningún estado técnico se presenta como evidencia de impresión física sin el nivel de confirmación aplicable.
+
+---
+
+#### 4. Contrato `VENTO-PRINT-REPRINT` `1.0.0`
+
+##### 4.1 Estructura normativa
+
+```json
+{
+  "reprint_contract_id": "VENTO-PRINT-REPRINT",
+  "reprint_contract_version": "1.0.0",
+  "reprint_request_id": "<uuid>",
+  "reprint_sequence": "<integer>=1",
+  "root_print_job_id": "<uuid>",
+  "parent_print_job_id": "<uuid>",
+  "original_copy_id": "<uuid>",
+  "prior_confirmation_record_id": "<uuid>",
+  "prior_reconciliation_ref": "<string|null>",
+  "new_print_job_id": "<uuid>",
+  "new_intent_id": "<string>",
+  "new_copy_id": "<uuid>",
+  "new_copy_slot_id": "<string>",
+  "output_id": "<IMP-*>",
+  "owner_app": "<FOGO|NEXO|PULSO|NUMERA|ORIGO>",
+  "resource_ref": "<type:id>",
+  "resource_version": "<string>",
+  "render_snapshot_hash": "<sha256>",
+  "template_id": "<string>",
+  "template_version": "<string>",
+  "reason_code": "<RPR_REASON_*>",
+  "reason_note_ref": "<string|null>",
+  "requested_copy_count": "<integer>=1",
+  "copy_ordinal_from": "<integer>=2",
+  "requester": {
+    "principal_id": "<uuid>",
+    "effective_actor_id": "<uuid|null>",
+    "application_id": "<string>",
+    "site_id": "<string|null>",
+    "area_id": "<string|null>",
+    "device_id": "<string|null>",
+    "context_version": "<string>"
+  },
+  "authorization": {
+    "permission_id": "<string>",
+    "decision_id": "<uuid>",
+    "decision": "ALLOW",
+    "approved_by_actor_id": "<uuid|null>",
+    "segregation_mode": "<NONE|REQUIRED>",
+    "authorized_copy_count": "<integer>"
+  },
+  "state": "<REQUESTED|AWAITING_ORIGINAL_RECONCILIATION|REJECTED|AUTHORIZED|DISPATCHED|COMPLETED|CANCELLED|EXPIRED|FAILED_RECONCILIATION_REQUIRED>",
+  "decision": "<RPR_*>",
+  "created_at": "<RFC3339>",
+  "authorized_at": "<RFC3339|null>",
+  "dispatch_deadline_at": "<RFC3339|null>",
+  "completed_at": "<RFC3339|null>",
+  "correlation_id": "<string>",
+  "causation_id": "<string>",
+  "audit_event_refs": ["<string>"],
+  "physical_disposition_ref": "<string|null>"
+}
+```
+
+##### 4.2 Identidades no reutilizables
+
+Cada reimpresión crea valores nuevos para:
+
+- `reprint_request_id`;
+- `new_print_job_id`;
+- `new_intent_id`;
+- `new_copy_id`;
+- `new_copy_slot_id`;
+- cada `queue_entry_id`, lease e `attempt_id`;
+- cada registro de confirmación, cancelación, expiración o disposición propio de la nueva copia.
+
+Queda prohibido reutilizar `print_job_id`, `intent_id`, `copy_id`, `copy_slot_id`, `execution_id`, `attempt_id`, `queue_entry_id`, `confirmation_record_id` o `cancellation_request_id` de la copia previa.
+
+La relación se conserva mediante `root_print_job_id`, `parent_print_job_id`, `original_copy_id`, `correlation_id`, `causation_id`, el snapshot y la secuencia de reimpresión.
+
+---
+
+#### 5. Condiciones de admisión
+
+Una solicitud solo puede avanzar a `AUTHORIZED` cuando se cumplen conjuntamente:
+
+1. `output_id`, propietaria, recurso y versión son resolubles.
+2. La copia original existe y su identidad es íntegra.
+3. El snapshot original y su hash están disponibles sin reconstrucción ambigua.
+4. El estado de la copia previa fue conciliado por `VENTO-PRINT-CONFIRMATION`.
+5. No existe `RESULT_UNKNOWN`, envío activo, retry pendiente, conciliación pendiente ni evento tardío sin clasificar sobre la copia previa.
+6. La causa pertenece al catálogo admitido y es coherente con la evidencia disponible.
+7. El solicitante y, cuando aplica, el aprobador están identificados y autorizados por permiso exacto.
+8. La cantidad solicitada es positiva, explícita y no supera la cantidad autorizada.
+9. El destino, ruta, dispositivo, canal y salud se revalidan para el nuevo despacho.
+10. La ventana de despacho de la nueva copia permanece vigente.
+11. No existe un claim concurrente incompatible sobre el mismo original, alcance y secuencia.
+12. El tratamiento del perfil aplicable está disponible; si requiere controles de sensibilidad aún no definidos, queda bloqueado.
+
+La ausencia de cualquier dato obligatorio produce denegación o espera tipada; nunca un `ALLOW` por defecto.
+
+---
+
+#### 6. Catálogo de causas
+
+##### 6.1 Causas admitidas
+
+| Código                                     | Uso                                                                   | Evidencia mínima                                              |
+| ------------------------------------------ | --------------------------------------------------------------------- | ------------------------------------------------------------- |
+| `RPR_REASON_ORIGINAL_NOT_RECEIVED`         | La copia confirmada no llegó al destinatario o punto requerido.       | Resultado de entrega o conciliación y destinatario aplicable. |
+| `RPR_REASON_ORIGINAL_DAMAGED`              | La copia quedó físicamente dañada.                                    | Observación controlada o referencia de disposición.           |
+| `RPR_REASON_ORIGINAL_ILLEGIBLE`            | La impresión existe, pero no cumple legibilidad.                      | Evidencia o verificación controlada de legibilidad.           |
+| `RPR_REASON_ORIGINAL_LOST`                 | La copia confirmada se extravió bajo custodia conocida.               | Última custodia y registro del extravío.                      |
+| `RPR_REASON_ORIGINAL_DESTROYED_CONTROLLED` | La copia fue destruida mediante disposición autorizada.               | Referencia de disposición y actor.                            |
+| `RPR_REASON_ADDITIONAL_OPERATIONAL_COPY`   | Se requiere una copia adicional para operación permitida.             | Propósito, punto de uso y cantidad autorizada.                |
+| `RPR_REASON_ADDITIONAL_CUSTOMER_COPY`      | El destinatario solicita una copia adicional permitida.               | Relación, destinatario y handoff revalidado.                  |
+| `RPR_REASON_LEGAL_OR_AUDIT_COPY`           | Se requiere copia para obligación legal, fiscal, auditoría o control. | Finalidad, autoridad y alcance.                               |
+
+##### 6.2 Señales que no constituyen causa de reimpresión
+
+| Señal             | Tratamiento correcto                                        |
+| ----------------- | ----------------------------------------------------------- |
+| `RESULT_UNKNOWN`  | Conciliar la copia previa; no crear intención nueva.        |
+| `RETRY_EXHAUSTED` | Dead-letter o conciliación; no crear copia automáticamente. |
+| `CONTENT_CHANGED` | Crear nueva versión y nuevo trabajo empresarial.            |
+| `VERSION_CHANGED` | Crear nuevo trabajo; no denominarlo reimpresión.            |
+| `ROUTE_CHANGED`   | Revalidar o reroutear la misma copia cuando sea seguro.     |
+| `DEVICE_CHANGED`  | Crear otro intento o reroute de la misma copia.             |
+
+---
+
+#### 7. Estados y decisiones
+
+##### 7.1 Estados de la acción
+
+| Estado                             | Significado                                                                 | Puede despachar                       |
+| ---------------------------------- | --------------------------------------------------------------------------- | ------------------------------------- |
+| `REQUESTED`                        | Solicitud registrada, todavía no evaluada.                                  | No.                                   |
+| `AWAITING_ORIGINAL_RECONCILIATION` | La copia previa no tiene resultado autoritativo suficiente.                 | No.                                   |
+| `REJECTED`                         | La solicitud no cumple identidad, causa, autorización, cantidad o política. | No.                                   |
+| `AUTHORIZED`                       | Solicitud válida, con copia nueva y alcance congelados.                     | Sí, si ruta y salud siguen elegibles. |
+| `DISPATCHED`                       | La nueva copia comenzó ejecución técnica.                                   | Ya iniciado; aplica confirmación.     |
+| `COMPLETED`                        | La nueva copia alcanzó su nivel terminal exigido.                           | No aplica.                            |
+| `CANCELLED`                        | La nueva copia fue cancelada conforme a su estado real.                     | No.                                   |
+| `EXPIRED`                          | La nueva copia venció antes del despacho permitido o en su handoff.         | No.                                   |
+| `FAILED_RECONCILIATION_REQUIRED`   | Falló o quedó incierta y exige conciliación; no habilita otra reimpresión.  | No.                                   |
+
+##### 7.2 Decisiones normalizadas
+
+| Decisión                            | Resultado                                                 |
+| ----------------------------------- | --------------------------------------------------------- |
+| `RPR_ACCEPT_NEW_COPY`               | Admite una copia nueva legítima.                          |
+| `RPR_RETURN_EXISTING_REQUEST`       | Repite la respuesta de la misma solicitud idempotente.    |
+| `RPR_BLOCK_ORIGINAL_RESULT_UNKNOWN` | Bloquea hasta resolver la copia previa.                   |
+| `RPR_REJECT_NOT_A_REPRINT`          | El contenido o versión cambió; corresponde trabajo nuevo. |
+| `RPR_REJECT_REASON`                 | Causa ausente, inválida o incompatible.                   |
+| `RPR_REJECT_AUTHORIZATION`          | Falta permiso, alcance o segregación.                     |
+| `RPR_REJECT_QUANTITY`               | Cantidad inválida o superior a la autorizada.             |
+| `RPR_REJECT_CONCURRENCY`            | Existe claim o solicitud incompatible en curso.           |
+| `RPR_BLOCK_POLICY_OR_DEVICE`        | La política, sensibilidad, ruta o salud impiden despacho. |
+
+---
+
+#### 8. Idempotencia y concurrencia
+
+1. `reprint_request_id` es la clave de repetición de la solicitud; repetirlo con el mismo contenido devuelve el resultado existente.
+2. El mismo identificador con contenido incompatible produce conflicto auditable.
+3. La huella semántica incluye original, output, snapshot, causa, cantidad, alcance, destinatario, propósito y versión contractual.
+4. Dos solicitudes distintas con huella equivalente compiten por un claim atómico sobre original, alcance y siguiente secuencia.
+5. Solo una puede crear la misma secuencia; la otra devuelve conflicto o la solicitud existente.
+6. Copias adicionales independientes requieren cantidad y autorización explícitas; no se crean mediante múltiples solicitudes concurrentes.
+7. Cada copia autorizada recibe ordinal propio y estado propio.
+8. La deduplicación no puede suprimir una reimpresión legítima porque la nueva acción declara causa, autorización y secuencia distintas.
+9. La reimpresión no libera ni recicla la clave de la copia original.
+10. Un retry de la copia reimpresa conserva su nuevo trabajo, intención, copia y clave; solo crea otro intento.
+
+---
+
+#### 9. Autorización, segregación y cantidad
+
+- La aplicación propietaria determina el permiso exacto y el alcance.
+- La interfaz no puede inferir autorización desde rol, cargo, sede, dispositivo, punto de venta o posesión del impreso.
+- El servidor revalida principal, actor efectivo, contexto, territorio, recurso, estado, causa, cantidad y vigencia.
+- `requested_copy_count` y `authorized_copy_count` son obligatorios; cada unidad genera una identidad de copia individual.
+- El sistema registra `copy_ordinal_from` y `reprint_sequence`; quedan prohibidos lotes físicos anónimos.
+- Para documentos financieros, fiscales, legales, de caja, sensibles o de control, puede exigirse aprobador distinto del solicitante.
+- La política detallada por sensibilidad pertenece a `PRINT-ARC-015`; hasta su aprobación, cualquier caso que requiera una clasificación adicional queda `RPR_BLOCK_POLICY_OR_DEVICE`.
+- La aprobación nunca corrige un snapshot inválido ni convierte una versión cambiada en reimpresión.
+
+---
+
+#### 10. Marcación, handoff y disposición física
+
+| Perfil                     | Marcación mínima                                                                | Regla material                                                                                                      |
+| -------------------------- | ------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `RPR-LABEL-CONTROLLED`     | `REIMPRESIÓN #n`, referencia original y timestamp cuando el formato lo permita. | Si ambas etiquetas existen, debe decidirse cuál permanece válida y registrar disposición o coexistencia autorizada. |
+| `RPR-POINT-OPERATIONAL`    | `REIMPRESIÓN #n`, hora y referencia de comanda o tiquete.                       | Mantiene el destino original; no crea otra orden ni duplica preparación.                                            |
+| `RPR-CUSTOMER-HANDOFF`     | `COPIA` o `REIMPRESIÓN #n`.                                                     | Revalida destinatario, canal y entrega; imprimir y entregar siguen siendo hechos separados.                         |
+| `RPR-FINANCIAL-CONTROLLED` | `COPIA` o equivalente legal permitido, con secuencia.                           | Conserva identidad fiscal, económica y transaccional original; no genera otra operación.                            |
+| `RPR-CASH-CONTROLLED`      | `COPIA DE CONTROL #n`.                                                          | Conserva turno, caja, cierre, periodo y propósito; no modifica valores.                                             |
+| `RPR-A4-CONTROLLED`        | `COPIA` o `REIMPRESIÓN #n`, referencia y versión.                               | Conserva snapshot, periodo y firmas originales según aplicabilidad.                                                 |
+| `RPR-SENSITIVITY-GATED`    | La definida por la política de sensibilidad aplicable.                          | Bloquea hasta contar con clasificación, minimización, custodia, retención y disposición suficientes.                |
+| `RPR-BLOCKED-NO-DISPATCH`  | No aplica.                                                                      | No se crea ejecución cuando no existe dispositivo, ruta, salud o política habilitante.                              |
+
+Reglas de disposición:
+
+1. La aparición posterior de la copia original no borra ni invalida silenciosamente la reimpresión.
+2. Ambas copias se reconcilian por identidad y custodia.
+3. Si una copia debe destruirse, se registra actor, motivo, método, momento y evidencia proporcional.
+4. Una copia vencida, cancelada o sensible no puede abandonarse en bandeja, estación o dispositivo compartido.
+5. La disposición física no altera el hecho de que la copia fue impresa.
+
+---
+
+#### 11. Ruta, retry y confirmación de la nueva copia
+
+```text
+COPIA ORIGINAL RESUELTA
+→ SOLICITUD DE REIMPRESIÓN
+→ IDEMPOTENCIA Y CLAIM ATÓMICO
+→ AUTORIZACIÓN Y CANTIDAD
+→ NUEVO TRABAJO Y NUEVA COPIA
+→ RUTA, OBJETIVO Y SALUD REVALIDADOS
+→ RETRY-QUEUE DE LA NUEVA COPIA
+→ INTENTOS TÉCNICOS
+→ CONFIRMACIÓN DE LA NUEVA COPIA
+→ HANDOFF O DISPOSICIÓN CUANDO APLIQUE
+```
+
+- Un cambio de canal dentro del mismo dispositivo conserva la nueva copia.
+- Un reroute permitido conserva la nueva copia y su secuencia.
+- Ningún reroute se ejecuta cuando la copia original o la nueva copia están en `RESULT_UNKNOWN` y el cambio puede producir duplicidad.
+- El callback de adaptador solo acredita el nivel tipado que realmente demuestre.
+- `PRINTED_VERIFIED` y `DELIVERED_VERIFIED` permanecen separados.
+- Cancelar o expirar la reimpresión aplica el contrato de `PRINT-ARC-013` sobre esta nueva copia; no modifica la original.
+- Agotar retries de la reimpresión no autoriza otra reimpresión encadenada.
+
+---
+
+#### 12. Auditoría append-only
+
+Cada acción conserva, sin sobrescritura:
+
+- identidad de solicitud, raíz, padre, copia original y copia nueva;
+- `output_id`, propietaria, recurso, versión, plantilla y hash del snapshot;
+- causa, cantidad solicitada, cantidad autorizada y ordinales;
+- principal, actor efectivo, aplicación, dispositivo, sede, área y versión de contexto;
+- permiso, decisión de autorización, aprobador y segregación;
+- confirmación y conciliación de la copia original;
+- ruta, política objetivo, dispositivo, canal, cola, leases e intentos de la copia nueva;
+- timestamps de solicitud, autorización, despacho, confirmación, entrega, cancelación, expiración y disposición;
+- correlación, causalidad, resultado, conflictos y eventos tardíos;
+- referencia de handoff o disposición física cuando corresponda.
+
+La auditoría usa referencias y allowlists. No copia payloads, documentos, PIN, firmas, datos personales o contenido sensible innecesario.
+
+---
+
+#### 13. Diagnóstico del código vigente
+
+La superficie actual de impresión NEXO:
+
+- conserva una cola de texto en almacenamiento local;
+- construye ZPL desde presets o layouts;
+- selecciona una impresora BrowserPrint;
+- invoca directamente `send`;
+- muestra estados locales de envío y error.
+
+No materializa todavía:
+
+- `reprint_request_id`;
+- linaje entre copia original y copia nueva;
+- causa, cantidad u ordinal de reimpresión;
+- autorización server-side ni segregación;
+- confirmación previa de la copia original;
+- claim de concurrencia;
+- auditoría append-only;
+- marcación canónica por perfil;
+- disposición física o handoff reconciliado.
+
+Este diagnóstico no modifica código ni declara implementación.
+
+---
+
+#### 14. Matriz materializada de las cincuenta salidas
+
+| Salida       | Nombre                                                    | Propietaria | Perfil                     | Marcación                      | Condición de autoridad                                                     | Resultado o bloqueo vigente                                    |
+| ------------ | --------------------------------------------------------- | ----------- | -------------------------- | ------------------------------ | -------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | `FOGO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | `FOGO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | `FOGO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | `FOGO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | `FOGO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | `FOGO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | `ORIGO`     | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | `NEXO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | `NEXO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | `NEXO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | `PULSO`     | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | `NEXO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | `FOGO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | `FOGO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | `FOGO`      | `RPR-LABEL-CONTROLLED`     | REIMPRESIÓN #n + ref. original | Permiso exacto; original conciliado; control de coexistencia y disposición | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-CMD-01` | Comanda de cocina                                         | `PULSO`     | `RPR-POINT-OPERATIONAL`    | REIMPRESIÓN #n + hora          | Permiso exacto; razón; mismo destino y snapshot; original conciliado       | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías                           | `PULSO`     | `RPR-POINT-OPERATIONAL`    | REIMPRESIÓN #n + hora          | Permiso exacto; razón; mismo destino y snapshot; original conciliado       | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes             | `PULSO`     | `RPR-POINT-OPERATIONAL`    | REIMPRESIÓN #n + hora          | Permiso exacto; razón; mismo destino y snapshot; original conciliado       | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-04` | Comanda de preparación o mise en place                    | `FOGO`      | `RPR-POINT-OPERATIONAL`    | REIMPRESIÓN #n + hora          | Permiso exacto; razón; mismo destino y snapshot; original conciliado       | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL; VP_BLOQUEADO_SIN_80MM` |
+| `IMP-CMD-05` | Tiquete de expedición o recogida                          | `PULSO`     | `RPR-POINT-OPERATIONAL`    | REIMPRESIÓN #n + hora          | Permiso exacto; razón; mismo destino y snapshot; original conciliado       | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-06` | Solicitud interna de reposición                           | `NEXO`      | `RPR-POINT-OPERATIONAL`    | REIMPRESIÓN #n + hora          | Permiso exacto; razón; mismo destino y snapshot; original conciliado       | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL; VP_BLOQUEADO_SIN_80MM` |
+| `IMP-CMD-07` | Modificación o adición de comanda                         | `PULSO`     | `RPR-POINT-OPERATIONAL`    | REIMPRESIÓN #n + hora          | Permiso exacto; razón; mismo destino y snapshot; original conciliado       | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-08` | Cancelación o anulación de comanda                        | `PULSO`     | `RPR-POINT-OPERATIONAL`    | REIMPRESIÓN #n + hora          | Permiso exacto; razón; mismo destino y snapshot; original conciliado       | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia                 | `FOGO`      | `RPR-POINT-OPERATIONAL`    | REIMPRESIÓN #n + hora          | Permiso exacto; razón; mismo destino y snapshot; original conciliado       | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL; VP_BLOQUEADO_SIN_80MM` |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente                         | `PULSO`     | `RPR-CUSTOMER-HANDOFF`     | COPIA / REIMPRESIÓN #n         | Permiso exacto; destinatario y handoff revalidados                         | `ESPECIFICADO / ENTREGA_SEPARADA`                              |
+| `IMP-CLI-02` | Confirmación de pedido                                    | `PULSO`     | `RPR-CUSTOMER-HANDOFF`     | COPIA / REIMPRESIÓN #n         | Permiso exacto; destinatario y handoff revalidados                         | `ESPECIFICADO / ENTREGA_SEPARADA`                              |
+| `IMP-CLI-03` | Comprobante de pago                                       | `NUMERA`    | `RPR-FINANCIAL-CONTROLLED` | COPIA / REIMPRESIÓN #n         | Permiso financiero exacto; no crea otra transacción ni identidad fiscal    | `ESPECIFICADO / HANDOFF_REVALIDADO`                            |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente               | `NUMERA`    | `RPR-FINANCIAL-CONTROLLED` | COPIA / REIMPRESIÓN #n         | Permiso financiero exacto; no crea otra transacción ni identidad fiscal    | `ESPECIFICADO / HANDOFF_REVALIDADO`                            |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito      | `NUMERA`    | `RPR-FINANCIAL-CONTROLLED` | COPIA / REIMPRESIÓN #n         | Permiso financiero exacto; no crea otra transacción ni identidad fiscal    | `ESPECIFICADO / HANDOFF_REVALIDADO`                            |
+| `IMP-CLI-06` | Resumen de recogida o entrega                             | `PULSO`     | `RPR-CUSTOMER-HANDOFF`     | COPIA / REIMPRESIÓN #n         | Permiso exacto; destinatario y handoff revalidados                         | `ESPECIFICADO / ENTREGA_SEPARADA`                              |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo                         | `PULSO`     | `RPR-CUSTOMER-HANDOFF`     | COPIA / REIMPRESIÓN #n         | Permiso exacto; destinatario y handoff revalidados                         | `ESPECIFICADO / ENTREGA_SEPARADA`                              |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                     | `PULSO`     | `RPR-CUSTOMER-HANDOFF`     | COPIA / REIMPRESIÓN #n         | Permiso exacto; destinatario y handoff revalidados                         | `ESPECIFICADO / ENTREGA_SEPARADA`                              |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja         | `NUMERA`    | `RPR-CASH-CONTROLLED`      | COPIA DE CONTROL #n            | Permiso de caja exacto; turno/cierre y propósito auditados                 | `ESPECIFICADO / CONTROL_LOCAL`                                 |
+| `IMP-DOC-01` | Remisión o nota de despacho                               | `NEXO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-02` | Manifiesto de traslado interno                            | `NEXO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-03` | Hoja de conteo de inventario                              | `NEXO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario            | `NEXO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-05` | Orden de compra                                           | `ORIGO`     | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-06` | Acta o comprobante de recepción                           | `ORIGO`     | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-07` | Devolución a proveedor                                    | `ORIGO`     | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-08` | Orden de producción o ficha de lote                       | `FOGO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica                     | `FOGO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-10` | Registro de calidad o no conformidad                      | `FOGO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-11` | Orden de mantenimiento                                    | `NEXO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo          | `NEXO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico                    | `NEXO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo       | `FOGO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación              | `NUMERA`    | `RPR-FINANCIAL-CONTROLLED` | COPIA / REIMPRESIÓN #n         | Permiso financiero exacto; snapshot y periodo inmutables                   | `ESPECIFICADO / ADMIN_LOCAL_CONFIRMABLE`                       |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales           | `NEXO`      | `RPR-A4-CONTROLLED`        | COPIA / REIMPRESIÓN #n         | Permiso exacto; snapshot y propósito; ruta revalidada                      | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+
+**Control de cobertura:** 50 esperadas, 50 materializadas, 50 identificadores únicos, 0 faltantes y 0 duplicados.
+
+##### 14.1 Reconciliación cuantitativa
+
+| Grupo                           | Esperadas | Materializadas | Faltantes | Duplicadas |
+| ------------------------------- | --------: | -------------: | --------: | ---------: |
+| Etiquetas `IMP-LBL-*`           |        16 |             16 |         0 |          0 |
+| Comandas y tiquetes `IMP-CMD-*` |         9 |              9 |         0 |          0 |
+| Comprobantes `IMP-CLI-*`        |         9 |              9 |         0 |          0 |
+| Documentos `IMP-DOC-*`          |        16 |             16 |         0 |          0 |
+| **Total**                       |    **50** |         **50** |     **0** |      **0** |
+
+| Propietaria | Cantidad heredada | Cantidad materializada | Diferencia |
+| ----------- | ----------------: | ---------------------: | ---------: |
+| FOGO        |                15 |                     15 |          0 |
+| NEXO        |                14 |                     14 |          0 |
+| PULSO       |                12 |                     12 |          0 |
+| NUMERA      |                 5 |                      5 |          0 |
+| ORIGO       |                 4 |                      4 |          0 |
+| **Total**   |            **50** |                 **50** |      **0** |
+
+##### 14.2 Reconciliación por perfil principal
+
+| Perfil                     | Salidas |
+| -------------------------- | ------: |
+| `RPR-LABEL-CONTROLLED`     |      16 |
+| `RPR-POINT-OPERATIONAL`    |       9 |
+| `RPR-CUSTOMER-HANDOFF`     |       5 |
+| `RPR-FINANCIAL-CONTROLLED` |       4 |
+| `RPR-CASH-CONTROLLED`      |       1 |
+| `RPR-A4-CONTROLLED`        |      15 |
+| **Total**                  |  **50** |
+
+`RPR-SENSITIVITY-GATED` y `RPR-BLOCKED-NO-DISPATCH` operan como controles transversales; no sustituyen el perfil principal ni alteran el conteo de identidades.
+
+---
+
+#### 15. Cobertura canónica de prueba existente
+
+La política se encuentra cubierta por requisitos vigentes que ya protegen:
+
+- `TREQ-PROC-065`: cancelación distinta de efectos ya ejecutados;
+- `TREQ-PROC-279`: una intención nueva requiere acción y clave nuevas;
+- `TREQ-PROC-284`: separación de intención, routing, receipts y efecto físico sin copias duplicadas;
+- `TREQ-PROC-292`: cancelación, expiración y efectos tardíos conciliados;
+- `TREQ-PROC-309`: resultado desconocido bloquea una intención nueva;
+- `TREQ-PROC-314`: estados separados entre backend, integración y periférico;
+- `TREQ-PROC-361`: hechos nuevos enlazados, historia no destructiva e idempotencia;
+- `TREQ-PROC-362`: correlación y causalidad extremo a extremo;
+- `TREQ-PROC-363`: replay idempotente y conflicto de contenido;
+- `TREQ-PROC-366`: auditoría de impresión y acceso sensible;
+- `TREQ-INTEGRATION-171`: cancelación, nulidad y sustitución no se reinterpretan como compensación automática.
+
+La especialización de esas reglas para reimpresión no cambia su comportamiento protegido, responsables, estado ni evidencia requerida.
+
+---
+
+#### 16. Bloqueos y carryovers con propietario
+
+| ID                  | Bloqueo o brecha                                                                                              | Propietario                                                                                         | Condición de salida                                                                                                         |
+| ------------------- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------- |
+| `BLK-PRINT-014-001` | El código vigente no persiste solicitudes, linaje, autorización, cantidad, causa ni auditoría de reimpresión. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete propietario de impresión.         | Implementar contrato, almacenamiento, autorización, API, tipos, pruebas e interfaz sin alterar las decisiones documentales. |
+| `BLK-PRINT-014-002` | El callback BrowserPrint vigente no constituye receipt canónico ni prueba impresión física.                   | Paquete de adaptador; `PRINT-ARC-018`; `PRINT-ARC-020`.                                             | Emitir receipts tipados, observar capacidades reales y completar prueba física controlada.                                  |
+| `BLK-PRINT-014-003` | La Zebra ZD230 está almacenada y sin canal activo; las dieciséis etiquetas no pueden despacharse.             | Paquete de habilitación física definido en `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`. | Desplegar dispositivo, configurar canal, validar salud y ejecutar prueba correlacionada.                                    |
+| `BLK-PRINT-014-004` | La Epson L5590 de Vento Producción requiere mantenimiento.                                                    | Paquete de mantenimiento e implementación aplicable.                                                | Cerrar mantenimiento, validar salud y ejecutar prueba A4 correlacionada.                                                    |
+| `BLK-PRINT-014-005` | Vento Producción no tiene impresora 80 mm compatible activa.                                                  | Paquete de incorporación de activo definido en el alcance de implementación.                        | Incorporar dispositivo, actualizar ruta y salud, y ejecutar prueba controlada.                                              |
+| `BLK-PRINT-014-006` | Los controles detallados para documentos sensibles aún no están definidos.                                    | `PRINT-ARC-015`.                                                                                    | Aprobar clasificación, autorización reforzada, minimización, custodia, retención y disposición por sensibilidad.            |
+| `BLK-PRINT-014-007` | Las superficies y evidencias de handoff, custodia y disposición física no están implementadas.                | `EVID-ARC-001` a `EVID-ARC-010` y paquete de implementación aplicable.                              | Implementar evidencia proporcional, identidad del actor, integridad, retención y reconciliación.                            |
+| `BLK-PRINT-014-008` | No existen observaciones reales ni validación física de reimpresión.                                          | `PRINT-ARC-018`, `PRINT-ARC-020` y paquete E5 correspondiente.                                      | Ejecutar escenarios autorizados en hardware representativo y conservar evidencia reproducible.                              |
+
+Ningún bloqueo inicia por sí mismo la tarea responsable ni autoriza cambios físicos.
+
+---
+
+#### 17. Criterios de aceptación
+
+`PRINT-ARC-014` queda documentalmente satisfecha cuando:
+
+- [x] existe un contrato consumible de reimpresión;
+- [x] reimpresión, retry, replay, duplicado, reroute, cancelación, expiración y nueva versión están separados;
+- [x] cada reimpresión crea identidades nuevas y linaje resoluble;
+- [x] el resultado de la copia previa debe conciliarse antes de una copia adicional;
+- [x] existe catálogo cerrado de causas admitidas y señales no admitidas;
+- [x] se definen estados, decisiones, cantidad, ordinales y concurrencia;
+- [x] la autorización usa permiso exacto y segregación cuando aplica;
+- [x] se definen marcación, handoff y disposición física;
+- [x] una copia financiera o fiscal no crea otra transacción o identidad documental;
+- [x] cada una de las cincuenta salidas tiene decisión explícita;
+- [x] los totales y propietarias heredados concilian sin diferencias;
+- [x] los bloqueos tienen propietario y condición de salida;
+- [x] no se declara código, Supabase, despliegue ni evidencia física ejecutados;
+- [x] el tratamiento detallado de sensibilidad queda reservado exclusivamente a la siguiente tarea.
+
+---
+
+#### 18. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: el registro canónico vigente ya protege la acción nueva e idempotente, la separación entre intención, retry y efecto físico, la prohibición de crear otra intención con resultado desconocido, la historia enlazada y no destructiva, la correlación, la auditoría y el tratamiento de cancelación o expiración. Esta tarea especializa esas reglas para la copia física adicional sin crear comportamiento de prueba nuevo ni cambiar responsables o estados. En consecuencia, crea 0, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0 requisitos.
+
+---
+
+#### 19. Handoff cerrado hacia `PRINT-ARC-015`
+
+`PRINT-ARC-015` recibe:
+
+- `VENTO-PRINT-REPRINT` `1.0.0`;
+- nueve estados y nueve decisiones de reimpresión;
+- ocho causas admitidas y seis señales excluidas;
+- seis perfiles principales y dos controles transversales;
+- linaje obligatorio entre copia original y copia nueva;
+- marcación y disposición base por familia;
+- matriz completa de cincuenta salidas;
+- el bloqueo `RPR-SENSITIVITY-GATED` para especialización.
+
+`PRINT-ARC-015` queda **RESERVADA** para definir tratamiento de documentos sensibles. No se desarrolla ni modifica desde esta tarea.
+
+
 ### [ ] PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración
 ### [ ] PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles
 ### [ ] PRINT-ARC-017 — Definir operación offline y contingencia manual

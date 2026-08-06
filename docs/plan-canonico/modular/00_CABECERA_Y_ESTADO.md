@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **591** |
+| Tareas aprobadas | **592** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1003** |
+| Tareas no iniciadas | **1002** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **37.08% (591/1594)** |
+| Porcentaje de completamiento | **37.14% (592/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PRINT-ARC-013 — Definir cancelación y expiración** |
-| Tarea actual | **PRINT-ARC-014 — Definir reimpresión como acción separada y auditable** |
+| Última tarea aprobada | **PRINT-ARC-014 — Definir reimpresión como acción separada y auditable** |
+| Tarea actual | **PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración** |
+| Siguiente tarea | **PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 15 de 157 aprobadas; PRINT-ARC-014 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 16 de 157 aprobadas; PRINT-ARC-015 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PRINT-ARC-013` — Definir cancelación y expiración |
-| Tarea actual | `PRINT-ARC-014` — Definir reimpresión como acción separada y auditable — **NO INICIADA** |
-| Siguiente tarea | `PRINT-ARC-015` — Definir permisos de impresión, reimpresión y administración |
+| Última aprobada | `PRINT-ARC-014` — Definir reimpresión como acción separada y auditable |
+| Tarea actual | `PRINT-ARC-015` — Definir permisos de impresión, reimpresión y administración — **NO INICIADA** |
+| Siguiente tarea | `PRINT-ARC-016` — Definir privacidad y ocultamiento de datos sensibles |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 15 DE 157 APROBADAS — ACTUAL PRINT-ARC-014** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 16 DE 157 APROBADAS — ACTUAL PRINT-ARC-015** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PRINT-ARC-013 — Definir cancelación y expiración
-        ↓
-TAREA ACTUAL
 PRINT-ARC-014 — Definir reimpresión como acción separada y auditable
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración
         ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 15 de 157 tareas aprobadas
+CARRIL NEXO — 16 de 157 tareas aprobadas
 ```

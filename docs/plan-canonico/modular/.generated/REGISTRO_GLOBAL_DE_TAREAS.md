@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **591** |
+| Aprobadas | **592** |
 | En propuesta | **0** |
-| No iniciadas | **1003** |
+| No iniciadas | **1002** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **37.08% (591/1594)** |
+| Porcentaje de completamiento | **37.14% (592/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PRINT-ARC-013` — Definir cancelación y expiración | ✅ APROBADA |
-| Tarea actual | `PRINT-ARC-014` — Definir reimpresión como acción separada y auditable | ⬜ NO INICIADA |
-| Siguiente reservada | `PRINT-ARC-015` — Definir permisos de impresión, reimpresión y administración | ⬜ NO INICIADA |
+| Última aprobada | `PRINT-ARC-014` — Definir reimpresión como acción separada y auditable | ✅ APROBADA |
+| Tarea actual | `PRINT-ARC-015` — Definir permisos de impresión, reimpresión y administración | ⬜ NO INICIADA |
+| Siguiente reservada | `PRINT-ARC-016` — Definir privacidad y ocultamiento de datos sensibles | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -501,7 +501,7 @@
 | ✅ APROBADA | `PRINT-ARC-011` | Definir reintentos automáticos y cola de fallos | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-012` | Definir confirmación de envío, impresión y entrega cuando sea verificable | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-013` | Definir cancelación y expiración | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
-| ⬜ NO INICIADA | `PRINT-ARC-014` | Definir reimpresión como acción separada y auditable | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
+| ✅ APROBADA | `PRINT-ARC-014` | Definir reimpresión como acción separada y auditable | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-015` | Definir permisos de impresión, reimpresión y administración | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-016` | Definir privacidad y ocultamiento de datos sensibles | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-017` | Definir operación offline y contingencia manual | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
