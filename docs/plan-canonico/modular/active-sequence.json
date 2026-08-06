@@ -205,7 +205,7 @@
     "sequence_id": "PHASE-02-X-INTEGRATION-CONTRACTS",
     "first_pending_task_id": "INT-EXT-001",
     "covered_tasks": 1594,
-    "pending_tasks": 1010,
+    "pending_tasks": 1009,
     "deferred_pending_tasks": 11,
     "total_stages": 32,
     "active_stage": 5

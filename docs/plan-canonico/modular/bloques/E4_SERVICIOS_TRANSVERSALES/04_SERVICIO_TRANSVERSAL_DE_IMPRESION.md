@@ -2083,7 +2083,462 @@ PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispo
 La aprobación de `PRINT-ARC-006` no inicia, desarrolla ni aprueba `PRINT-ARC-007`.
 
 
-### [ ] PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispositivo
+### ✅ PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispositivo
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-008 — Definir impresora principal, alternativas y fallback` — RESERVADA
+**Tipo de tarea:** documental; contrato de resolución y matriz materializada de destinos elegibles para las cincuenta salidas y los nueve dispositivos inventariados
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Cambios físicos autorizados:** ninguno; no configura impresoras, direcciones, colas, adaptadores, bridges, código, SQL, migraciones ni Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir cómo un `VENTO-PRINT-JOB` validado se resuelve hacia una sede de producción física, un área, un punto, un conjunto no ordenado de canales y un conjunto no ordenado de dispositivos elegibles, preservando la separación entre el sitio del hecho empresarial, el sitio de consumo y el sitio donde se produce la copia.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-007` queda cerrada documentalmente con:
+
+- un contrato de resolución `VENTO-PRINT-ROUTE` versión `1.0.0`;
+- 5 sedes de enrutamiento identificadas;
+- 7 áreas y 9 puntos operativos o condiciones físicas referenciados;
+- 9 referencias estables de dispositivo, reconciliadas una a una con `PRINT-ARC-001` y `PRINT-ARC-002`;
+- 7 clases de canal, incluidas las condiciones sin canal activo;
+- 11 perfiles de ruta;
+- 8 perfiles routables o routables con distribución manual;
+- 3 perfiles bloqueados por estado físico o ausencia de capacidad;
+- una matriz de 50 salidas con decisión explícita de rutas elegibles;
+- 50 identidades recibidas y 50 materializadas;
+- 0 faltantes, 0 duplicadas y 0 cambios de propietaria, plantilla, versión o perfil;
+- 0 selección de impresora principal, alternativa o fallback;
+- 0 implementación y 0 evidencia operativa declarada.
+
+Todas las decisiones quedan en estado `ESPECIFICADO`. Un perfil bloqueado es una decisión de ruta completa y verificable; no equivale a una omisión ni autoriza a sustituir el perfil físico.
+
+---
+
+#### 2. Fronteras canónicas del enrutamiento
+
+El enrutamiento ocurre únicamente después de que el candidato haya sido validado y materializado como `VENTO-PRINT-JOB` `1.0.0`.
+
+```text
+DOCUMENTO EMPRESARIAL AUTORIZADO
+→ VENTO-PRINT-JOB INMUTABLE
+→ VENTO-PRINT-ROUTE
+→ PRINT-ARC-008: PRIORIDAD, ALTERNATIVAS Y FALLBACK
+→ PRINT-ARC-018: ADAPTADOR FÍSICO
+→ RESULTADO Y AUDITORÍA
+```
+
+Reglas obligatorias:
+
+1. El enrutamiento no autoriza, crea, corrige, cancela ni reversiona el hecho empresarial.
+2. `document.sede_id` conserva la sede del hecho. No se reemplaza por la sede de la impresora.
+3. El sitio de consumo identifica dónde se necesita la copia física.
+4. El sitio de producción identifica dónde se encuentra el dispositivo que generará la copia.
+5. La impresión central solo se permite mediante un perfil que declare `CENTRAL_PRINT_AND_DISTRIBUTE`.
+6. La distribución física posterior a una impresión central no es un envío de impresión y queda fuera del resultado técnico de esta tarea.
+7. El conjunto de dispositivos y canales elegibles no tiene orden. `PRINT-ARC-008` definirá principal, alternativas y fallback.
+8. Una ruta no puede cambiar `salida_id`, propietaria, plantilla, versión, perfil ni hash del trabajo.
+9. Un perfil físico solo puede dirigirse a un dispositivo compatible con su familia.
+10. Cero candidatos elegibles produce un resultado bloqueado explícito; no se busca una impresora de otro tamaño por aproximación.
+11. Los estados `ALMACENADA` y `REQUIERE_MANTENIMIENTO` impiden declarar el dispositivo como routable.
+12. Un mismo trabajo recibe una sola decisión de ruta vigente; un cambio posterior deberá conservar historial y no mutar la decisión anterior.
+
+---
+
+#### 3. Contrato `VENTO-PRINT-ROUTE` `1.0.0`
+
+##### 3.1 Estructura normativa
+
+```json
+{
+  "routing_contract_id": "VENTO-PRINT-ROUTE",
+  "routing_contract_version": "1.0.0",
+  "route_decision_id": "<uuid>",
+  "job_id": "<uuid-de-VENTO-PRINT-JOB>",
+  "resolved_at": "<RFC3339>",
+  "requested_destination": {
+    "consumption_site_id": "<SITE-*>",
+    "consumption_area_id": "<AREA-*>",
+    "consumption_point_id": "<POINT-*|null>",
+    "distribution_mode": "<LOCAL|CENTRAL_PRINT_AND_DISTRIBUTE>"
+  },
+  "resolved_route": {
+    "route_profile_id": "<RTE-*>",
+    "production_site_id": "<SITE-*>",
+    "production_area_id": "<AREA-*>",
+    "production_point_id": "<POINT-*|SIN_PUNTO_COMPATIBLE>",
+    "eligible_channel_ids": ["<CH-*>"],
+    "eligible_device_refs": ["<PRN-*>"],
+    "candidate_set_ordered": false,
+    "route_state": "<ROUTABLE|ROUTABLE_WITH_MANUAL_DISTRIBUTION|BLOQUEADA_*>",
+    "reason_code": "<código-normalizado>"
+  },
+  "trace": {
+    "correlation_id": "<identificador-estable>",
+    "source_route_ref": "<referencia-o-null>"
+  }
+}
+```
+
+La estructura es normativa y no representa una ejecución real.
+
+##### 3.2 Diccionario de campos
+
+| Campo | Obligación | Fuente | Regla |
+| --- | --- | --- | --- |
+| `routing_contract_id` | requerida | catálogo transversal | Debe ser `VENTO-PRINT-ROUTE`. |
+| `routing_contract_version` | requerida | catálogo transversal | Debe ser `1.0.0` en esta versión. |
+| `route_decision_id` | requerida | futuro servicio de enrutamiento | Identidad inmutable de la decisión. |
+| `job_id` | requerida | `PRINT-ARC-006` | Debe referenciar un trabajo válido e inmutable. |
+| `resolved_at` | requerida | futuro servicio de enrutamiento | Marca RFC 3339 posterior a la creación del trabajo. |
+| `requested_destination.*` | requerida | aplicación solicitante autorizada | No se infiere desde la impresora ni desde el actor. |
+| `resolved_route.route_profile_id` | requerida | matriz de esta tarea | Debe ser compatible con la salida y el destino solicitado. |
+| `production_site_id` | requerida | perfil de ruta | Identifica la sede física de la impresora. |
+| `production_area_id` | requerida | perfil de ruta | Identifica el área física de producción de la copia. |
+| `production_point_id` | requerida | perfil de ruta | Puede representar una condición bloqueada explícita. |
+| `eligible_channel_ids` | requerida | perfil de ruta | Conjunto no ordenado; no constituye selección de adaptador. |
+| `eligible_device_refs` | requerida | perfil de ruta | Conjunto no ordenado; puede quedar vacío solo en un perfil bloqueado. |
+| `candidate_set_ordered` | requerida | contrato transversal | Debe ser `false` hasta `PRINT-ARC-008`. |
+| `route_state` | requerida | resolución | Distingue ruta utilizable, distribución manual o bloqueo. |
+| `reason_code` | requerida | resolución | Explica de forma tipada la decisión. |
+| `trace.correlation_id` | requerida | trabajo original | Debe conservar la correlación de `PRINT-ARC-006`. |
+| `trace.source_route_ref` | condicional | trabajo relacionado | Para modificación o cancelación de comanda referencia la ruta original. |
+
+---
+
+#### 4. Catálogo de sedes, áreas y puntos de ruta
+
+##### 4.1 Sedes
+
+| ID de sede | Nombre canónico conservado |
+| --- | --- |
+| SITE-VENTO-PRODUCCION | Vento Producción — Centro de Producción y Distribución |
+| SITE-VENTO-ADMIN | Sede administrativa de Vento Group |
+| SITE-VENTO-CAFE | Vento Café — único local físico activo |
+| SITE-MOLKA | Molka — único local físico activo |
+| SITE-SAUDO | Saudo — único local físico activo |
+
+##### 4.2 Áreas y puntos
+
+| ID de área | Sede | Nombre canónico conservado | Puntos de ruta |
+| --- | --- | --- | --- |
+| AREA-VP-PRODUCCION-DISTRIBUCION | SITE-VENTO-PRODUCCION | Producción y distribución | POINT-VP-ZEBRA-ALMACENADA / POINT-VP-EPSON-FUERA-OPERACION |
+| AREA-ADMIN-COMPARTIDA | SITE-VENTO-ADMIN | Administración compartida | POINT-ADMIN-OFICINA |
+| AREA-MOLKA-INTEGRADA | SITE-MOLKA | Punto integrado de caja, mostrador y barra | POINT-MOLKA-CAJA |
+| AREA-SAUDO-INTEGRADA | SITE-SAUDO | Punto integrado de caja, mostrador y barra | POINT-SAUDO-CAJA |
+| AREA-VC-SERVICIO-SALON | SITE-VENTO-CAFE | Servicio / Salón | POINT-VC-CAJA-MOSTRADOR |
+| AREA-VC-BARRA | SITE-VENTO-CAFE | Barra | POINT-VC-BARRA-CALIENTES / POINT-VC-BAR-FRIAS |
+| AREA-VC-COCINA | SITE-VENTO-CAFE | Cocina | POINT-VC-COCINA |
+
+Los identificadores anteriores son referencias estables del contrato de impresión. No sustituyen los identificadores maestros empresariales; su enlace físico corresponde a `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y deberá conservar nombres, relaciones y alcance.
+
+---
+
+#### 5. Catálogo de dispositivos y canales
+
+##### 5.1 Referencias estables de dispositivo
+
+| Dispositivo | Sede | Punto | Modelo | Estado físico | Familia compatible |
+| --- | --- | --- | --- | --- | --- |
+| PRN-VP-ZD230-01 | SITE-VENTO-PRODUCCION | POINT-VP-ZEBRA-ALMACENADA | Zebra ZD230 | ALMACENADA | Etiquetas |
+| PRN-VP-L5590-01 | SITE-VENTO-PRODUCCION | POINT-VP-EPSON-FUERA-OPERACION | Epson EcoTank L5590 | REQUIERE_MANTENIMIENTO | A4 |
+| PRN-ADMIN-L4260-01 | SITE-VENTO-ADMIN | POINT-ADMIN-OFICINA | Epson EcoTank L4260 | OPERATIVA | A4 |
+| PRN-MOLKA-DIGE200I-01 | SITE-MOLKA | POINT-MOLKA-CAJA | Digital POS DIG-E200I | OPERATIVA | Tiquete 80 mm |
+| PRN-SAUDO-DIGE200I-01 | SITE-SAUDO | POINT-SAUDO-CAJA | Digital POS DIG-E200I | OPERATIVA | Tiquete 80 mm |
+| PRN-VC-CAJA-DIGE200I-01 | SITE-VENTO-CAFE | POINT-VC-CAJA-MOSTRADOR | Digital POS DIG-E200I | OPERATIVA | Tiquete 80 mm |
+| PRN-VC-BARRA-DIGE200I-01 | SITE-VENTO-CAFE | POINT-VC-BARRA-CALIENTES | Digital POS DIG-E200I | OPERATIVA | Tiquete 80 mm |
+| PRN-VC-BAR-DIGE200I-01 | SITE-VENTO-CAFE | POINT-VC-BAR-FRIAS | Digital POS DIG-E200I | OPERATIVA | Tiquete 80 mm |
+| PRN-VC-COCINA-DIGE200I-01 | SITE-VENTO-CAFE | POINT-VC-COCINA | Digital POS DIG-E200I | OPERATIVA | Tiquete 80 mm |
+
+##### 5.2 Canales
+
+| Canal | Clase | Dispositivo o conjunto | Estado | Regla |
+| --- | --- | --- | --- | --- |
+| CH-ZEBRA-SIN-CONEXION | Sin canal activo | PRN-VP-ZD230-01 | BLOQUEADO | La unidad está almacenada y su variante física no está confirmada. |
+| CH-EPSON-L5590-SIN-CONEXION | Sin canal operativo | PRN-VP-L5590-01 | BLOQUEADO | La unidad requiere mantenimiento antes de definir conexión utilizable. |
+| CH-EPSON-L4260-USB | USB mediante host o puente local | PRN-ADMIN-L4260-01 | ELEGIBLE | Conexión USB confirmada; adaptador se materializa en PRINT-ARC-018. |
+| CH-EPSON-L4260-WIFI | Wi-Fi mediante red de la sede | PRN-ADMIN-L4260-01 | ELEGIBLE | Conexión Wi-Fi confirmada; protocolo y adaptador se materializan en PRINT-ARC-018. |
+| CH-DIGE200I-USB | USB mediante host o puente local ESC/POS | PRN-MOLKA-DIGE200I-01; PRN-SAUDO-DIGE200I-01; PRN-VC-CAJA-DIGE200I-01 | ELEGIBLE | Conexiones USB confirmadas. |
+| CH-DIGE200I-LAN | Red local ESC/POS | PRN-VC-BARRA-DIGE200I-01; PRN-VC-BAR-DIGE200I-01; PRN-VC-COCINA-DIGE200I-01 | ELEGIBLE | Conexiones por red local confirmadas. |
+| CH-SIN-DISPOSITIVO-COMPATIBLE | Sin canal por ausencia de dispositivo compatible | NINGUNO | BLOQUEADO | Vento Producción no dispone de impresora activa compatible con PERF-TKT-80-V. |
+
+Las referencias de canal expresan elegibilidad documental. No declaran controlador, puerto, IP, bridge o adaptador implementado; esas decisiones pertenecen a `PRINT-ARC-018`.
+
+---
+
+#### 6. Perfiles materializados de ruta
+
+| Perfil | Aplicación | Sede de producción | Área | Punto | Canal elegible | Dispositivo elegible | Distribución | Estado |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| RTE-LBL-VP-CENTRAL | Etiquetas de cualquier operación | SITE-VENTO-PRODUCCION | AREA-VP-PRODUCCION-DISTRIBUCION | POINT-VP-ZEBRA-ALMACENADA | CH-ZEBRA-SIN-CONEXION | PRN-VP-ZD230-01 | CENTRAL_PRINT_AND_DISTRIBUTE | BLOQUEADA_DISPOSITIVO_ALMACENADO |
+| RTE-TKT-MOLKA-CAJA | Tiquetes consumidos en Molka | SITE-MOLKA | AREA-MOLKA-INTEGRADA | POINT-MOLKA-CAJA | CH-DIGE200I-USB | PRN-MOLKA-DIGE200I-01 | LOCAL | ROUTABLE |
+| RTE-TKT-SAUDO-CAJA | Tiquetes consumidos en Saudo | SITE-SAUDO | AREA-SAUDO-INTEGRADA | POINT-SAUDO-CAJA | CH-DIGE200I-USB | PRN-SAUDO-DIGE200I-01 | LOCAL | ROUTABLE |
+| RTE-TKT-VC-CAJA | Tiquetes de caja, cliente, expedición o reposición en caja | SITE-VENTO-CAFE | AREA-VC-SERVICIO-SALON | POINT-VC-CAJA-MOSTRADOR | CH-DIGE200I-USB | PRN-VC-CAJA-DIGE200I-01 | LOCAL | ROUTABLE |
+| RTE-TKT-VC-BARRA | Tiquetes de bebidas calientes o trabajo de barra | SITE-VENTO-CAFE | AREA-VC-BARRA | POINT-VC-BARRA-CALIENTES | CH-DIGE200I-LAN | PRN-VC-BARRA-DIGE200I-01 | LOCAL | ROUTABLE |
+| RTE-TKT-VC-BAR | Tiquetes de bebidas frías o trabajo de bar | SITE-VENTO-CAFE | AREA-VC-BARRA | POINT-VC-BAR-FRIAS | CH-DIGE200I-LAN | PRN-VC-BAR-DIGE200I-01 | LOCAL | ROUTABLE |
+| RTE-TKT-VC-COCINA | Tiquetes de cocina o preparación | SITE-VENTO-CAFE | AREA-VC-COCINA | POINT-VC-COCINA | CH-DIGE200I-LAN | PRN-VC-COCINA-DIGE200I-01 | LOCAL | ROUTABLE |
+| RTE-TKT-VP-SIN-CAPACIDAD | Tiquetes de producción requeridos en Vento Producción | SITE-VENTO-PRODUCCION | AREA-VP-PRODUCCION-DISTRIBUCION | SIN_PUNTO_COMPATIBLE | CH-SIN-DISPOSITIVO-COMPATIBLE | NINGUNO | LOCAL | BLOQUEADA_SIN_DISPOSITIVO_COMPATIBLE |
+| RTE-A4-VP-LOCAL | Documentos A4 consumidos en Vento Producción | SITE-VENTO-PRODUCCION | AREA-VP-PRODUCCION-DISTRIBUCION | POINT-VP-EPSON-FUERA-OPERACION | CH-EPSON-L5590-SIN-CONEXION | PRN-VP-L5590-01 | LOCAL | BLOQUEADA_MANTENIMIENTO |
+| RTE-A4-ADMIN-LOCAL | Documentos A4 consumidos en la sede administrativa | SITE-VENTO-ADMIN | AREA-ADMIN-COMPARTIDA | POINT-ADMIN-OFICINA | CH-EPSON-L4260-USB; CH-EPSON-L4260-WIFI | PRN-ADMIN-L4260-01 | LOCAL | ROUTABLE |
+| RTE-A4-ADMIN-CENTRAL | Documentos A4 de otras operaciones impresos centralmente | SITE-VENTO-ADMIN | AREA-ADMIN-COMPARTIDA | POINT-ADMIN-OFICINA | CH-EPSON-L4260-USB; CH-EPSON-L4260-WIFI | PRN-ADMIN-L4260-01 | CENTRAL_PRINT_AND_DISTRIBUTE | ROUTABLE_WITH_MANUAL_DISTRIBUTION |
+
+Reglas de los perfiles:
+
+1. `RTE-LBL-VP-CENTRAL` es la única ruta compatible con los perfiles de etiqueta aprobados. Permanece bloqueada mientras la Zebra esté almacenada y sin canal activo.
+2. Las seis rutas térmicas operativas utilizan exclusivamente DIG-E200I de 80 mm.
+3. `RTE-TKT-VP-SIN-CAPACIDAD` formaliza que Vento Producción no tiene actualmente un dispositivo compatible con `PERF-TKT-80-V`.
+4. `RTE-A4-VP-LOCAL` permanece bloqueada mientras la Epson L5590 requiera mantenimiento.
+5. `RTE-A4-ADMIN-LOCAL` y `RTE-A4-ADMIN-CENTRAL` comparten la Epson L4260, pero expresan destinos de consumo diferentes.
+6. Una impresión central exige que la aplicación solicitante declare el modo de distribución; el resolver no lo activa por conveniencia.
+7. Ningún perfil de esta tarea establece preferencia entre canales o dispositivos.
+
+---
+
+#### 7. Matriz materializada de las cincuenta salidas
+
+| Salida | Nombre | Propietaria | Perfil físico | Perfiles de ruta elegibles | Regla de selección | Estado / bloqueo |
+| --- | --- | --- | --- | --- | --- | --- |
+
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado | `FOGO` | `PERF-LBL-100X50-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado | `FOGO` | `PERF-LBL-100X50-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place | `FOGO` | `PERF-LBL-75X50-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque | `FOGO` | `PERF-LBL-75X50-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial | `FOGO` | `PERF-LBL-100X75-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado | `FOGO` | `PERF-LBL-100X75-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor | `ORIGO` | `PERF-LBL-100X50-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona | `NEXO` | `PERF-LBL-100X50-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU | `NEXO` | `PERF-LBL-75X50-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho | `NEXO` | `PERF-LBL-100X75-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente | `PULSO` | `PERF-LBL-100X75-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo | `NEXO` | `PERF-LBL-100X50-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO` | `PERF-LBL-100X75-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización | `FOGO` | `PERF-LBL-75X50-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba | `FOGO` | `PERF-LBL-75X50-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición | `FOGO` | `PERF-LBL-75X50-H` | RTE-LBL-VP-CENTRAL | Impresión central de etiquetas; el sitio de consumo permanece en el payload o contexto de distribución. | ESPECIFICADO / RUTA_CENTRAL_BLOQUEADA |
+| `IMP-CMD-01` | Comanda de cocina | `PULSO` | `PERF-TKT-80-V` | RTE-TKT-VC-COCINA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar por sede; en Vento Café el punto es cocina. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías | `PULSO` | `PERF-TKT-80-V` | RTE-TKT-VC-BAR; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar por sede; en Vento Café el punto es bar de bebidas frías. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes | `PULSO` | `PERF-TKT-80-V` | RTE-TKT-VC-BARRA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar por sede; en Vento Café el punto es barra de bebidas calientes. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CMD-04` | Comanda de preparación o mise en place | `FOGO` | `PERF-TKT-80-V` | RTE-TKT-VC-COCINA; RTE-TKT-VC-BARRA; RTE-TKT-VC-BAR; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA; RTE-TKT-VP-SIN-CAPACIDAD | Seleccionar la sede y el área que ejecutará la preparación. | ESPECIFICADO / VP_BLOQUEADO_SIN_CAPACIDAD |
+| `IMP-CMD-05` | Tiquete de expedición o recogida | `PULSO` | `PERF-TKT-80-V` | RTE-TKT-VC-CAJA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar el punto de entrega o recogida asociado al pedido. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CMD-06` | Solicitud interna de reposición | `NEXO` | `PERF-TKT-80-V` | RTE-TKT-VC-CAJA; RTE-TKT-VC-BARRA; RTE-TKT-VC-BAR; RTE-TKT-VC-COCINA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA; RTE-TKT-VP-SIN-CAPACIDAD | Seleccionar el punto receptor de la reposición. | ESPECIFICADO / VP_BLOQUEADO_SIN_CAPACIDAD |
+| `IMP-CMD-07` | Modificación o adición de comanda | `PULSO` | `PERF-TKT-80-V` | RTE-TKT-VC-COCINA; RTE-TKT-VC-BARRA; RTE-TKT-VC-BAR; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Resolver al mismo punto de la comanda original; no se permite cambiar de área por inferencia. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CMD-08` | Cancelación o anulación de comanda | `PULSO` | `PERF-TKT-80-V` | RTE-TKT-VC-COCINA; RTE-TKT-VC-BARRA; RTE-TKT-VC-BAR; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Resolver al mismo punto de la comanda original; no se permite cambiar de área por inferencia. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia | `FOGO` | `PERF-TKT-80-V` | RTE-TKT-VP-SIN-CAPACIDAD | El destino es Vento Producción; no existe dispositivo compatible activo. | ESPECIFICADO / BLOQUEADO_SIN_CAPACIDAD |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente | `PULSO` | `PERF-TKT-80-V` | RTE-TKT-VC-CAJA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar la caja de la sede comercial del documento. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CLI-02` | Confirmación de pedido | `PULSO` | `PERF-TKT-80-V` | RTE-TKT-VC-CAJA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar la caja de la sede comercial del documento. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CLI-03` | Comprobante de pago | `NUMERA` | `PERF-TKT-80-V` | RTE-TKT-VC-CAJA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar la caja de la sede comercial del documento. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente | `NUMERA` | `PERF-TKT-80-V` | RTE-TKT-VC-CAJA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar la caja de la sede comercial del documento. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito | `NUMERA` | `PERF-TKT-80-V` | RTE-TKT-VC-CAJA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar la caja de la sede comercial del documento. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CLI-06` | Resumen de recogida o entrega | `PULSO` | `PERF-TKT-80-V` | RTE-TKT-VC-CAJA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar la caja de la sede comercial del documento. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo | `PULSO` | `PERF-TKT-80-V` | RTE-TKT-VC-CAJA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar la caja de la sede comercial del documento. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio | `PULSO` | `PERF-TKT-80-V` | RTE-TKT-VC-CAJA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar la caja de la sede comercial del documento. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja | `NUMERA` | `PERF-TKT-80-V` | RTE-TKT-VC-CAJA; RTE-TKT-MOLKA-CAJA; RTE-TKT-SAUDO-CAJA | Seleccionar la caja de la sede comercial del documento. | ESPECIFICADO / RUTAS_OPERATIVAS |
+| `IMP-DOC-01` | Remisión o nota de despacho | `NEXO` | `PERF-A4-P` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-LOCAL; RTE-A4-ADMIN-CENTRAL | Destino local de la operación o impresión central explícita. | ESPECIFICADO / ADMIN_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-02` | Manifiesto de traslado interno | `NEXO` | `PERF-A4-P` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-LOCAL; RTE-A4-ADMIN-CENTRAL | Destino local de la operación o impresión central explícita. | ESPECIFICADO / ADMIN_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-03` | Hoja de conteo de inventario | `NEXO` | `PERF-A4-L` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-LOCAL; RTE-A4-ADMIN-CENTRAL | Seleccionar el lugar del conteo; la impresión central exige distribución manual. | ESPECIFICADO / ADMIN_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario | `NEXO` | `PERF-A4-L` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-LOCAL; RTE-A4-ADMIN-CENTRAL | Seleccionar el lugar de revisión o impresión central explícita. | ESPECIFICADO / ADMIN_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-05` | Orden de compra | `ORIGO` | `PERF-A4-P` | RTE-A4-ADMIN-LOCAL; RTE-A4-VP-LOCAL; RTE-A4-ADMIN-CENTRAL | Administración para emisión; producción cuando la copia acompaña recepción. | ESPECIFICADO / ADMIN_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-06` | Acta o comprobante de recepción | `ORIGO` | `PERF-A4-P` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-LOCAL; RTE-A4-ADMIN-CENTRAL | Lugar de recepción o impresión central explícita. | ESPECIFICADO / ADMIN_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-07` | Devolución a proveedor | `ORIGO` | `PERF-A4-P` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-LOCAL; RTE-A4-ADMIN-CENTRAL | Lugar de despacho de la devolución o impresión central explícita. | ESPECIFICADO / ADMIN_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-08` | Orden de producción o ficha de lote | `FOGO` | `PERF-A4-P` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-CENTRAL | Consumo en producción; la opción central exige distribución manual. | ESPECIFICADO / ADMIN_CENTRAL_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica | `FOGO` | `PERF-A4-P` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-CENTRAL | Consumo en producción u operación; la opción central exige distribución manual. | ESPECIFICADO / ADMIN_CENTRAL_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-10` | Registro de calidad o no conformidad | `FOGO` | `PERF-A4-P` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-CENTRAL | Lugar del control o impresión central explícita. | ESPECIFICADO / ADMIN_CENTRAL_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-11` | Orden de mantenimiento | `NEXO` | `PERF-A4-P` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-LOCAL; RTE-A4-ADMIN-CENTRAL | Lugar del activo o administración; otras sedes usan impresión central. | ESPECIFICADO / ADMIN_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo | `NEXO` | `PERF-A4-P` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-LOCAL; RTE-A4-ADMIN-CENTRAL | Lugar de la transferencia o impresión central explícita. | ESPECIFICADO / ADMIN_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico | `NEXO` | `PERF-A4-P` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-LOCAL; RTE-A4-ADMIN-CENTRAL | Administración o lugar del activo; otras sedes usan impresión central. | ESPECIFICADO / ADMIN_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo | `FOGO` | `PERF-A4-P` | RTE-A4-VP-LOCAL; RTE-A4-ADMIN-CENTRAL | Lugar del control; sin A4 local se usa impresión central y distribución manual. | ESPECIFICADO / ADMIN_CENTRAL_ROUTABLE; VP_BLOQUEADO |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación | `NUMERA` | `PERF-A4-L` | RTE-A4-ADMIN-LOCAL | La salida se consume en administración compartida. | ESPECIFICADO / RUTA_OPERATIVA |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales | `NEXO` | `PERF-A4-L` | RTE-A4-ADMIN-LOCAL | La salida se consume en administración compartida. | ESPECIFICADO / RUTA_OPERATIVA |
+
+---
+
+#### 8. Algoritmo de resolución determinista
+
+El resolver documental aplica este orden:
+
+1. verificar `VENTO-PRINT-JOB` `1.0.0`;
+2. leer `document.salida_id` y `template.perfil_id`;
+3. validar `requested_destination`;
+4. obtener exclusivamente los perfiles declarados para la fila;
+5. filtrar por sitio, área, punto y modo de distribución;
+6. verificar compatibilidad exacta de perfil físico;
+7. conservar solo canales y dispositivos declarados en el perfil;
+8. devolver el conjunto no ordenado de candidatos;
+9. devolver el estado bloqueado tipado cuando no exista candidato utilizable;
+10. rechazar la resolución cuando más de un perfil sobreviva sin que el contexto permita diferenciarlos.
+
+Códigos mínimos:
+
+| Código | Resultado |
+| --- | --- |
+| `PRINT_ROUTE_OK` | Existe un perfil routable y un conjunto elegible no ordenado. |
+| `PRINT_ROUTE_CENTRAL_DISTRIBUTION_REQUIRED` | La copia se produce centralmente y requiere distribución física posterior. |
+| `PRINT_ROUTE_DEVICE_STORED` | El único dispositivo compatible está almacenado. |
+| `PRINT_ROUTE_DEVICE_MAINTENANCE` | El dispositivo local compatible está fuera de operación. |
+| `PRINT_ROUTE_NO_COMPATIBLE_DEVICE` | No existe dispositivo compatible con el perfil en el contexto solicitado. |
+| `PRINT_ROUTE_DESTINATION_NOT_ALLOWED` | La salida no admite la sede, área o punto solicitado. |
+| `PRINT_ROUTE_PROFILE_MISMATCH` | El perfil del trabajo no coincide con la familia del dispositivo. |
+| `PRINT_ROUTE_AMBIGUOUS` | El contexto no permite resolver un único perfil de ruta. |
+| `PRINT_ROUTE_UNKNOWN_JOB` | El trabajo no existe o no cumple `PRINT-ARC-006`. |
+
+El resolver no envía datos a una impresora y no crea un intento de impresión.
+
+---
+
+#### 9. Reconciliación cuantitativa
+
+##### 9.1 Cobertura de salidas
+
+| Familia | Esperadas | Materializadas | Faltantes | Duplicadas |
+| --- | ---: | ---: | ---: | ---: |
+| Etiquetas | 16 | 16 | 0 | 0 |
+| Comandas y tiquetes operativos | 9 | 9 | 0 | 0 |
+| Comprobantes para cliente y caja | 9 | 9 | 0 | 0 |
+| Documentos convencionales | 16 | 16 | 0 | 0 |
+| **Total** | **50** | **50** | **0** | **0** |
+
+##### 9.2 Infraestructura de ruta
+
+| Concepto | Cantidad |
+| --- | ---: |
+| Sedes | 5 |
+| Áreas | 7 |
+| Puntos o condiciones físicas | 9 |
+| Dispositivos físicos referenciados | 9 |
+| Canales definidos | 7 |
+| Perfiles de ruta | 11 |
+| Perfiles routables | 7 |
+| Perfiles routables con distribución manual | 1 |
+| Perfiles bloqueados | 3 |
+| Salidas sin decisión de ruta | 0 |
+
+##### 9.3 Integridad
+
+```text
+SALIDAS RECIBIDAS DE PRINT-ARC-006: 50
+SALIDAS MATERIALIZADAS: 50
+IDENTIFICADORES IMP-* UNICOS: 50
+DISPOSITIVOS HEREDADOS: 9
+DISPOSITIVOS REFERENCIADOS: 9
+PERFILES DE RUTA UNICOS: 11
+SALIDAS SIN RUTA: 0
+CAMBIOS DE PROPIEDAD: 0
+CAMBIOS DE PLANTILLA: 0
+CAMBIOS DE VERSION: 0
+CAMBIOS DE PERFIL FISICO: 0
+SELECCIONES PRINCIPALES REALIZADAS: 0
+DECISIONES ABIERTAS DENTRO DE PRINT-ARC-007: 0
+```
+
+---
+
+#### 10. Diagnóstico técnico actual
+
+La superficie actual de NEXO permite que una persona seleccione un dispositivo BrowserPrint y envíe ZPL directamente desde el navegador. No existe todavía un resolver transversal que consuma `VENTO-PRINT-JOB`, valide sede, área, punto y perfil, o produzca `VENTO-PRINT-ROUTE`.
+
+Por tanto:
+
+- el código actual no se presenta como implementación de esta tarea;
+- las selecciones manuales existentes no constituyen una política canónica;
+- `localStorage`, parámetros de URL y selección de `uid` no sustituyen el contrato de ruta;
+- no se modifica `vento-nexo` durante esta fase documental.
+
+---
+
+#### 11. Bloqueos cerrados y tratamiento obligatorio en `PRINT-ARC-008`
+
+| Bloqueo materializado | Alcance | Decisión exigida en `PRINT-ARC-008` |
+| --- | --- | --- |
+| Zebra almacenada y sin canal activo | 16 salidas de etiqueta | No declarar principal routable hasta que exista dispositivo desplegado y canal elegible; si se mantiene el alcance, generar una tarea explícita de incorporación o despliegue antes del piloto. |
+| Epson L5590 en mantenimiento | Rutas A4 locales de Vento Producción | No declararla principal routable mientras conserve el estado físico actual; decidir alternativa o generar tarea explícita de recuperación del activo. |
+| Sin impresora de 80 mm en Vento Producción | `IMP-CMD-04`, `IMP-CMD-06` e `IMP-CMD-09` cuando el consumo sea local | Definir alternativa compatible o generar una tarea explícita de incorporación de capacidad; queda prohibido degradar a A4 o etiqueta. |
+
+Estos bloqueos no dejan incompleta `PRINT-ARC-007`: la ruta, causa, alcance y puerta siguiente están materializados. `PRINT-ARC-008` no podrá ocultarlos asignando como principal un dispositivo incompatible.
+
+---
+
+#### 12. Requisitos de prueba
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: esta tarea define el contrato documental y las decisiones objetivo de enrutamiento, pero no implementa resolver, persistencia, productores, consumidores, adaptadores ni configuración contra los que ejecutar una prueba reproducible. La implementación autorizada deberá convertir estos invariantes en pruebas contractuales, de integración y de hardware sin declarar evidencia antes de existir el componente ejecutable.
+
+```text
+TREQ creados: 0
+TREQ modificados: 0
+TREQ diferidos: 0
+TREQ descartados: 0
+TREQ obsoletos: 0
+```
+
+No se genera copia de `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` porque el registro permanece sin cambios.
+
+---
+
+#### 13. Criterios de aceptación
+
+`PRINT-ARC-007` queda documentalmente satisfecha porque:
+
+- [x] consume `VENTO-PRINT-JOB` sin modificar su sobre inmutable;
+- [x] diferencia sede del hecho, sede de consumo y sede de producción física;
+- [x] define contrato, campos y reglas de resolución;
+- [x] conserva las cinco operaciones o sedes del inventario;
+- [x] materializa referencias estables para los nueve dispositivos;
+- [x] conserva modelo, punto, estado y conexión conocidos;
+- [x] define canales elegibles y condiciones sin canal activo;
+- [x] define once perfiles de ruta;
+- [x] materializa una decisión de ruta para cada una de las cincuenta salidas;
+- [x] conserva las cincuenta identidades, nombres, propietarias y perfiles físicos;
+- [x] reporta 50 esperadas, 50 materializadas, 0 faltantes y 0 duplicadas;
+- [x] evita enrutar perfiles de etiqueta, tiquete o A4 a dispositivos incompatibles;
+- [x] representa de forma explícita los tres bloqueos de capacidad actuales;
+- [x] no elige impresora principal, alternativa ni fallback;
+- [x] no define heartbeat, idempotencia, reintentos, confirmación, cancelación, reimpresión, permisos, privacidad, contingencia, adaptadores, monitoreo ni piloto;
+- [x] no modifica código, SQL, migraciones, configuración ni Supabase;
+- [x] declara cero cambios `TREQ-*` con justificación concreta;
+- [x] mantiene `PRINT-ARC-008` como única tarea siguiente reservada.
+
+---
+
+#### 14. Handoff cerrado hacia `PRINT-ARC-008`
+
+`PRINT-ARC-008` recibe:
+
+- 50 salidas con perfiles de ruta explícitos;
+- 11 perfiles de ruta;
+- 9 dispositivos con estado y compatibilidad;
+- 7 canales;
+- conjuntos de candidatos no ordenados;
+- 3 bloqueos de capacidad con alcance y decisión obligatoria.
+
+Deberá definir principal, alternativas y fallback sin:
+
+- cambiar sede, área, punto o perfiles elegibles;
+- usar un dispositivo incompatible;
+- volver routable un dispositivo almacenado o en mantenimiento;
+- degradar el perfil físico;
+- convertir impresión central en fallback silencioso;
+- modificar el trabajo original;
+- declarar implementación o evidencia inexistente.
+
+```text
+TAREA ANTERIOR APROBADA
+PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión
+        ↓
+TAREA ACTUAL DESARROLLADA EN ARTEFACTO APROBADA
+PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispositivo
+        ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-008 — Definir impresora principal, alternativas y fallback
+```
+
+La aprobación de `PRINT-ARC-007` no inicia, desarrolla ni aprueba `PRINT-ARC-008`.
+
 ### [ ] PRINT-ARC-008 — Definir impresora principal, alternativas y fallback
 ### [ ] PRINT-ARC-009 — Definir estado de impresora y heartbeat
 ### [ ] PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas
