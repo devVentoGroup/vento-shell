@@ -7,21 +7,64 @@ const END_MARKER = '<!-- NEXO-REMISSIONS-ORDER:END -->';
 const CONDITIONAL_IMPLEMENTATION_TOKEN = 'CONDITIONAL_IMPLEMENTATION_ARTIFACTS';
 
 function mapById(artifacts = []) {
-  return new Map(
-    artifacts.map((artifact) => [artifact.artifact_group_id, artifact]),
+  return new Map(artifacts.map((artifact) => [artifact.artifact_group_id, artifact]));
+}
+
+function range(prefix, from, to) {
+  return Array.from(
+    { length: to - from + 1 },
+    (_, index) => `${prefix}-${String(from + index).padStart(3, '0')}`,
   );
+}
+
+function artifactTaskIds(artifact = {}) {
+  return [
+    ...(artifact.task_refs ?? []),
+    ...(artifact.task_ranges ?? []).flatMap(({ prefix, from, to }) => range(prefix, from, to)),
+  ];
+}
+
+function compactTaskNotation(ids = []) {
+  if (ids.length === 0) return '';
+  const parts = [];
+  let start = 0;
+  while (start < ids.length) {
+    const first = ids[start];
+    const match = first.match(/^(.*)-(\d{3})$/u);
+    let end = start;
+    if (match) {
+      const prefix = match[1];
+      let number = Number(match[2]);
+      while (end + 1 < ids.length) {
+        const next = ids[end + 1].match(/^(.*)-(\d{3})$/u);
+        if (!next || next[1] !== prefix || Number(next[2]) !== number + 1) break;
+        end += 1;
+        number += 1;
+      }
+    }
+    parts.push(end === start ? `\`${first}\`` : `\`${first}\` a \`${ids[end]}\``);
+    start = end + 1;
+  }
+  return parts.join('; ');
+}
+
+function taskNotation(artifact) {
+  return [
+    ...compactTaskNotation(artifactTaskIds(artifact)).split('; ').filter(Boolean),
+    ...(artifact.task_family_refs ?? []).map(
+      (prefix) => `\`${prefix}-*\` (familia canónica completa)`,
+    ),
+  ].join('; ');
 }
 
 function deriveOrderedExecutionStages(lane) {
   const stages = [];
-  const add = (stageId, taskSource, rule) => {
-    stages.push({
-      order: stages.length + 1,
-      stage_id: stageId,
-      task_source: taskSource,
-      rule,
-    });
-  };
+  const add = (stageId, taskSource, rule) => stages.push({
+    order: stages.length + 1,
+    stage_id: stageId,
+    task_source: taskSource,
+    rule,
+  });
 
   for (const artifact of lane.required_task_artifacts ?? []) {
     add(
@@ -58,7 +101,6 @@ function deriveOrderedExecutionStages(lane) {
       'Completar el plan en el orden declarado antes de certificar la infraestructura y solicitar las puertas E5.',
     );
   }
-
   for (const artifact of lane.execution_prerequisite_artifacts ?? []) {
     add(
       artifact.artifact_group_id,
@@ -66,7 +108,6 @@ function deriveOrderedExecutionStages(lane) {
       'Completar y certificar el habilitador antes de ejecutar E5-GATE-001 a E5-GATE-008.',
     );
   }
-
   if (entryGateArtifact) {
     add(
       entryGateArtifact.artifact_group_id,
@@ -75,12 +116,7 @@ function deriveOrderedExecutionStages(lane) {
     );
   }
 
-  add(
-    'PACKAGE_GATE',
-    'package_gate',
-    'Aprobar E5-GATE-008::NEXO-REMISSIONS-001 sin cerrar E5 completo.',
-  );
-
+  add('PACKAGE_GATE', 'package_gate', 'Aprobar E5-GATE-008::NEXO-REMISSIONS-001 sin cerrar E5 completo.');
   add(
     'IMPLEMENTATION_START',
     `execution_cycle.${lane.execution_cycle[0]}`,
@@ -98,9 +134,7 @@ function deriveOrderedExecutionStages(lane) {
       continue;
     }
     if (!implementationById.has(groupId)) {
-      throw new Error(
-        `implementation_execution_order referencia un grupo inexistente: ${groupId}.`,
-      );
+      throw new Error(`implementation_execution_order referencia un grupo inexistente: ${groupId}.`);
     }
     add(
       groupId,
@@ -117,78 +151,65 @@ function deriveOrderedExecutionStages(lane) {
     );
   }
 
-  const remainingStageIds = [
-    'READINESS',
-    'PILOT',
-    'HYPERCARE',
-    'CERTIFICATION',
-  ];
+  const remainingStageIds = ['READINESS', 'PILOT', 'HYPERCARE', 'CERTIFICATION'];
   const remainingRules = [
     'Validar readiness técnico y operativo.',
     'Ejecutar piloto controlado y conservar evidencia.',
     'Estabilizar, conciliar y resolver defectos del alcance.',
     'Certificar únicamente el paquete de remisiones NEXO.',
   ];
-  lane.execution_cycle.slice(1).forEach((taskId, index) => {
-    add(
-      remainingStageIds[index],
-      `execution_cycle.${taskId}`,
-      remainingRules[index],
-    );
-  });
-
+  lane.execution_cycle.slice(1).forEach((taskId, index) => add(
+    remainingStageIds[index],
+    `execution_cycle.${taskId}`,
+    remainingRules[index],
+  ));
   return stages;
 }
 
 function syncPriorityLaneSource({ root, check }) {
-  const sourcePath = path.join(
-    root,
-    'docs/plan-canonico/modular/priority-delivery-lanes.json',
-  );
-  const source = fs.readFileSync(sourcePath, 'utf8');
-  const data = JSON.parse(source);
-  const lane = data.lanes.find(
-    ({ lane_id: laneId }) => laneId === 'NEXO-REMISSIONS-001',
-  );
+  const sourcePath = path.join(root, 'docs/plan-canonico/modular/priority-delivery-lanes.json');
+  const data = JSON.parse(fs.readFileSync(sourcePath, 'utf8'));
+  const lane = data.lanes.find(({ lane_id: laneId }) => laneId === 'NEXO-REMISSIONS-001');
   if (!lane) throw new Error('Falta el carril NEXO-REMISSIONS-001.');
-
   const expectedStages = deriveOrderedExecutionStages(lane);
-  if (
-    JSON.stringify(lane.ordered_execution_stages)
-    === JSON.stringify(expectedStages)
-  ) {
+  if (JSON.stringify(lane.ordered_execution_stages) === JSON.stringify(expectedStages)) {
     return { changed: false, data };
   }
   if (check) {
-    throw new Error(
-      'ordered_execution_stages está desactualizado frente a sus grupos y orden de implementación.',
-    );
+    throw new Error('ordered_execution_stages está desactualizado frente a sus grupos y orden de implementación.');
   }
   lane.ordered_execution_stages = expectedStages;
   fs.writeFileSync(sourcePath, `${JSON.stringify(data, null, 2)}\n`, 'utf8');
   return { changed: true, data };
 }
 
-function taskNotation(artifact) {
-  return [
-    ...(artifact.task_refs ?? []).map((taskId) => `\`${taskId}\``),
-    ...(artifact.task_ranges ?? []).map(({ prefix, from, to }) => {
-      const first = `${prefix}-${String(from).padStart(3, '0')}`;
-      const last = `${prefix}-${String(to).padStart(3, '0')}`;
-      return from === to ? `\`${first}\`` : `\`${first}\` a \`${last}\``;
-    }),
-    ...(artifact.task_family_refs ?? []).map(
-      (prefix) => `\`${prefix}-*\` (familia canónica completa)`,
-    ),
-  ].join('; ');
+function resolveDeferral(routeSelector, lane) {
+  const ids = routeSelector?.deferred_task_ids ?? [];
+  if (!Array.isArray(ids)) throw new Error('execution-route.json: deferred_task_ids debe ser una lista.');
+  if (ids.length === 0) return { ids: [], idSet: new Set(), targetStageId: null, reason: null };
+  if (ids.some((id) => typeof id !== 'string') || new Set(ids).size !== ids.length) {
+    throw new Error('execution-route.json: deferred_task_ids contiene valores inválidos o duplicados.');
+  }
+  const targetStageId = routeSelector.deferred_to_stage_id;
+  const targetStage = lane.ordered_execution_stages.find(({ stage_id: id }) => id === targetStageId);
+  if (!targetStage?.task_source.startsWith('post_implementation_artifacts.')) {
+    throw new Error(`execution-route.json: ${targetStageId} debe ser una etapa posterior a la implementación.`);
+  }
+  const priorIds = new Set((lane.required_task_artifacts ?? []).flatMap(artifactTaskIds));
+  for (const id of ids) {
+    if (!priorIds.has(id)) {
+      throw new Error(`execution-route.json: ${id} no pertenece a un grupo previo a implementación.`);
+    }
+  }
+  const reason = routeSelector.deferred_reason?.trim();
+  if (!reason) throw new Error('execution-route.json: falta deferred_reason.');
+  return { ids, idSet: new Set(ids), targetStageId, reason };
 }
 
-export function renderPriorityLaneOrderSection(data) {
-  const lane = data.lanes.find(
-    ({ lane_id: laneId }) => laneId === 'NEXO-REMISSIONS-001',
-  );
+export function renderPriorityLaneOrderSection(data, routeSelector = {}) {
+  const lane = data.lanes.find(({ lane_id: laneId }) => laneId === 'NEXO-REMISSIONS-001');
   if (!lane) throw new Error('Falta el carril NEXO-REMISSIONS-001.');
-
+  const deferred = resolveDeferral(routeSelector, lane);
   const requiredById = mapById(lane.required_task_artifacts);
   const prerequisitesById = mapById(lane.execution_prerequisite_artifacts);
   const implementationById = mapById(lane.implementation_artifacts);
@@ -198,14 +219,16 @@ export function renderPriorityLaneOrderSection(data) {
   const rows = lane.ordered_execution_stages.map((stage) => {
     let tasks;
     let result;
-
     if (stage.task_source.startsWith('required_task_artifacts.')) {
-      const groupId = stage.task_source.slice(
-        'required_task_artifacts.'.length,
-      );
+      const groupId = stage.task_source.slice('required_task_artifacts.'.length);
       const artifact = requiredById.get(groupId);
-      tasks = taskNotation(artifact);
+      const allIds = artifactTaskIds(artifact);
+      const effectiveIds = allIds.filter((id) => !deferred.idSet.has(id));
+      tasks = deferred.ids.length > 0 ? compactTaskNotation(effectiveIds) : taskNotation(artifact);
       result = artifact.required_scope;
+      if (effectiveIds.length !== allIds.length) {
+        result = 'diseño, prototipos, validación interna y criterios de usabilidad completos antes de implementar; la prueba con usuarios, el registro de problemas y la aprobación final quedan diferidos';
+      }
     } else if (stage.task_source === 'conditional_artifacts') {
       tasks = 'Evaluar la matriz condicional de diseño mostrada debajo';
       result = 'cada grupo queda completado o justificado como no aplicable antes de DELIV-PKG';
@@ -216,74 +239,56 @@ export function renderPriorityLaneOrderSection(data) {
       tasks = '`DELIV-PKG-001` a `DELIV-PKG-025`';
       result = 'paquete ejecutable, verificable y reversible';
     } else if (stage.task_source.startsWith('post_package_artifacts.')) {
-      const groupId = stage.task_source.slice(
-        'post_package_artifacts.'.length,
-      );
-      const artifact = postPackageById.get(groupId);
+      const artifact = postPackageById.get(stage.task_source.slice('post_package_artifacts.'.length));
       tasks = taskNotation(artifact);
       result = artifact.required_scope;
     } else if (stage.task_source === 'package_gate') {
       tasks = '`E5-GATE-008::NEXO-REMISSIONS-001`';
       result = 'autorización explícita del paquete, todavía sin despliegue ni cambio físico';
-    } else if (
-      stage.task_source.startsWith('execution_prerequisite_artifacts.')
-    ) {
-      const groupId = stage.task_source.slice(
-        'execution_prerequisite_artifacts.'.length,
-      );
-      const artifact = prerequisitesById.get(groupId);
+    } else if (stage.task_source.startsWith('execution_prerequisite_artifacts.')) {
+      const artifact = prerequisitesById.get(stage.task_source.slice('execution_prerequisite_artifacts.'.length));
       tasks = taskNotation(artifact);
       result = artifact.required_scope;
     } else if (stage.task_source.startsWith('implementation_artifacts.')) {
-      const groupId = stage.task_source.slice(
-        'implementation_artifacts.'.length,
-      );
-      const artifact = implementationById.get(groupId);
+      const artifact = implementationById.get(stage.task_source.slice('implementation_artifacts.'.length));
       tasks = taskNotation(artifact);
       result = artifact.required_scope;
-    } else if (
-      stage.task_source === 'conditional_implementation_artifacts'
-    ) {
+    } else if (stage.task_source === 'conditional_implementation_artifacts') {
       tasks = 'Ejecutar la matriz condicional de implementación aprobada en DELIV-PKG';
       result = 'todos los grupos aplicables ejecutados bajo el mismo package_id; cada no aplicable conserva su justificación aprobada';
-    } else if (
-      stage.task_source.startsWith('post_implementation_artifacts.')
-    ) {
-      const groupId = stage.task_source.slice(
-        'post_implementation_artifacts.'.length,
-      );
-      const artifact = postImplementationById.get(groupId);
-      tasks = taskNotation(artifact);
-      result = artifact.required_scope;
+    } else if (stage.task_source.startsWith('post_implementation_artifacts.')) {
+      const artifact = postImplementationById.get(stage.task_source.slice('post_implementation_artifacts.'.length));
+      const baseTasks = taskNotation(artifact);
+      tasks = stage.stage_id === deferred.targetStageId
+        ? [compactTaskNotation(deferred.ids), baseTasks].filter(Boolean).join('; ')
+        : baseTasks;
+      result = stage.stage_id === deferred.targetStageId
+        ? `${deferred.reason} ${artifact.required_scope}`
+        : artifact.required_scope;
     } else {
       const taskId = stage.task_source.slice('execution_cycle.'.length);
       tasks = `\`${taskId}::NEXO-REMISSIONS-001\``;
       result = stage.rule;
     }
-
     return `| ${stage.order} | \`${stage.stage_id}\` | ${tasks} | ${result} |`;
   });
 
   const conditionalDesignRows = (lane.conditional_artifacts ?? []).map(
-    (artifact, index) =>
-      `| ${index + 1} | \`${artifact.artifact_group_id}\` | ${artifact.condition} | ${taskNotation(artifact)} |`,
+    (artifact, index) => `| ${index + 1} | \`${artifact.artifact_group_id}\` | ${artifact.condition} | ${taskNotation(artifact)} |`,
   );
-  const conditionalImplementationRows = (
-    lane.conditional_implementation_artifacts ?? []
-  ).map(
-    (artifact, index) =>
-      `| ${index + 1} | \`${artifact.artifact_group_id}\` | ${artifact.condition} | ${taskNotation(artifact)} |`,
+  const conditionalImplementationRows = (lane.conditional_implementation_artifacts ?? []).map(
+    (artifact, index) => `| ${index + 1} | \`${artifact.artifact_group_id}\` | ${artifact.condition} | ${taskNotation(artifact)} |`,
   );
   const deferredRows = (lane.deferred_but_preserved ?? []).map(
-    (artifact, index) =>
-      `| ${index + 1} | ${taskNotation(artifact)} | ${artifact.reason} |`,
+    (artifact, index) => `| ${index + 1} | ${taskNotation(artifact)} | ${artifact.reason} |`,
   );
 
   return [
     START_MARKER,
     '#### Orden ejecutable de NEXO-REMISSIONS-001',
     '',
-    'Esta tabla se genera automáticamente desde `priority-delivery-lanes.json`.',
+    'Esta tabla se genera automáticamente desde `priority-delivery-lanes.json` y',
+    'la selección vigente de `execution-route.json`.',
     'Las etapas son secuenciales y no se avanza mientras la anterior carezca',
     'de resultado y evidencia. Las tareas de diseño terminan antes de E5.',
     'Ninguna tarea de implementación, migración o cambio físico comienza antes',
@@ -328,50 +333,34 @@ export function renderPriorityLaneOrderSection(data) {
   ].join('\n');
 }
 
-export function syncPriorityLaneOrderDocument({
-  root = process.cwd(),
-  check = false,
-} = {}) {
+export function syncPriorityLaneOrderDocument({ root = process.cwd(), check = false } = {}) {
   const modularRoot = path.join(root, 'docs', 'plan-canonico', 'modular');
   const sourceSync = syncPriorityLaneSource({ root, check });
-  const data = sourceSync.data;
-  const documentPath = path.join(
-    modularRoot,
-    '90_ORDEN_DE_IMPLEMENTACION.md',
+  const routeSelector = JSON.parse(
+    fs.readFileSync(path.join(modularRoot, 'execution-route.json'), 'utf8'),
   );
+  const documentPath = path.join(modularRoot, '90_ORDEN_DE_IMPLEMENTACION.md');
   const source = fs.readFileSync(documentPath, 'utf8');
   const start = source.indexOf(START_MARKER);
   const end = source.indexOf(END_MARKER);
-  if (start < 0 || end < start) {
-    throw new Error('Faltan los marcadores de orden ejecutable del carril.');
-  }
-  const expected = renderPriorityLaneOrderSection(data);
+  if (start < 0 || end < start) throw new Error('Faltan los marcadores de orden ejecutable del carril.');
+  const expected = renderPriorityLaneOrderSection(sourceSync.data, routeSelector);
   const current = source.slice(start, end + END_MARKER.length);
   if (current === expected) return { changed: sourceSync.changed };
-  if (check) {
-    throw new Error(
-      'El orden visible de NEXO-REMISSIONS-001 está desactualizado.',
-    );
-  }
-  const updated =
-    source.slice(0, start) + expected + source.slice(end + END_MARKER.length);
+  if (check) throw new Error('El orden visible de NEXO-REMISSIONS-001 está desactualizado.');
+  const updated = source.slice(0, start) + expected + source.slice(end + END_MARKER.length);
   fs.writeFileSync(documentPath, updated, 'utf8');
   return { changed: true };
 }
 
-const isCli =
-  process.argv[1]
+const isCli = process.argv[1]
   && path.resolve(process.argv[1]) === fileURLToPath(import.meta.url);
 if (isCli) {
   try {
-    const result = syncPriorityLaneOrderDocument({
-      check: process.argv.includes('--check'),
-    });
-    console.log(
-      result.changed
-        ? 'OK: orden visible del carril actualizado.'
-        : 'OK: orden visible del carril vigente.',
-    );
+    const result = syncPriorityLaneOrderDocument({ check: process.argv.includes('--check') });
+    console.log(result.changed
+      ? 'OK: orden visible del carril actualizado.'
+      : 'OK: orden visible del carril vigente.');
   } catch (error) {
     console.error(`ERROR: ${error.message}`);
     process.exit(1);
