@@ -20,9 +20,9 @@
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-057` — Definir criterio de usabilidad por pantalla | ✅ APROBADA |
-| Tarea actual | `NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS` — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS | ⬜ NO INICIADA |
-| Siguiente reservada | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE | ⬜ NO INICIADA |
+| Última aprobada | `NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS` — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS | ✅ APROBADA |
+| Tarea actual | `INT-PROD-005` — Definir tratamiento de producción insuficiente para remisiones | ⬜ NO INICIADA |
+| Siguiente reservada | `PRINT-ARC-001` — Inventariar impresoras por empresa, sede, área y punto operativo | ⬜ NO INICIADA |
 
 ## Registro completo
 

@@ -28,21 +28,21 @@
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-057 — Definir criterio de usabilidad por pantalla** |
-| Tarea actual | **NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS** |
+| Última tarea aprobada | **NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS** |
+| Tarea actual | **INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE** |
+| Siguiente tarea | **PRINT-ARC-001 — Inventariar impresoras por empresa, sede, área y punto operativo** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 0 de 1 aprobadas; NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 1 de 157 aprobadas; INT-PROD-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-057` — Definir criterio de usabilidad por pantalla |
-| Tarea actual | `NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS` — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS — **NO INICIADA** |
-| Siguiente tarea | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE |
+| Última aprobada | `NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS` — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS |
+| Tarea actual | `INT-PROD-005` — Definir tratamiento de producción insuficiente para remisiones — **NO INICIADA** |
+| Siguiente tarea | `PRINT-ARC-001` — Inventariar impresoras por empresa, sede, área y punto operativo |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 0 DE 1 APROBADAS — ACTUAL NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 1 DE 157 APROBADAS — ACTUAL INT-PROD-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-057 — Definir criterio de usabilidad por pantalla
-        ↓
-TAREA ACTUAL
 NEXO-REMISSIONS-001::CONDITIONAL_DESIGN_ARTIFACTS — Resolver y aprobar CONDITIONAL_DESIGN_ARTIFACTS
         ↓
+TAREA ACTUAL
+INT-PROD-005 — Definir tratamiento de producción insuficiente para remisiones
+        ↓
 SIGUIENTE TAREA RESERVADA
-NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE — Resolver y aprobar CONDITIONAL_IMPLEMENTATION_SCOPE
+PRINT-ARC-001 — Inventariar impresoras por empresa, sede, área y punto operativo
         ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 0 de 1 tareas aprobadas
+CARRIL NEXO — 1 de 157 tareas aprobadas
 ```
