@@ -3208,7 +3208,530 @@ Ningún destino anterior se inicia mediante esta tarea.
 `AUTH-UI-057 — Definir criterio de usabilidad por pantalla`
 
 
-### [ ] AUTH-UI-057 — Definir criterio de usabilidad por pantalla
+### ✅ AUTH-UI-057 — Definir criterio de usabilidad por pantalla
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-UI-056 — Validar prototipo antes de implementar` — APROBADA
+**Tarea siguiente:** `AUTH-UI-058 — Probar con usuarios reales` — RESERVADA
+**Tipo de tarea:** documental; definición materializada de criterios, umbrales, evidencia y reglas de decisión de usabilidad para los ocho prototipos de NEXO, sin ejecución con usuarios ni cambios físicos
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Ruta prioritaria:** `NEXO-REMISSIONS-001`
+**Etapa prioritaria:** `NEXO_UI_VALIDATION`
+**Superficie propietaria:** `NEXO-ROUTE-001` — `/`
+**Cambios físicos autorizados:** ninguno; no modifica código, componentes, rutas, permisos, roles, funciones, procesos, datos, Supabase, migraciones, RLS, configuración, telemetría ni despliegues
+
+---
+
+#### 1. Propósito
+
+Definir criterios de usabilidad medibles y aplicables a cada uno de los ocho
+prototipos documentales de NEXO antes de ejecutar pruebas con usuarios reales.
+
+Los criterios deben permitir decidir, con evidencia reproducible, si cada
+proyección:
+
+- permite reconocer el contexto y la función activa;
+- permite localizar la acción principal y la siguiente tarea;
+- conserva únicamente opciones relevantes;
+- comunica estado, efecto, bloqueo y recuperación;
+- reduce carga cognitiva sin ocultar información obligatoria;
+- funciona con tacto, teclado y tecnologías de asistencia;
+- evita errores de custodia, segregación, autorización o privacidad;
+- puede avanzar a corrección y aprobación sin autorizar implementación.
+
+La tarea define el instrumento de evaluación. No ejecuta sesiones, no inventa
+resultados y no declara que los prototipos sean usables, accesibles o aprobados.
+
+---
+
+#### 2. Resultado material
+
+Se materializan ocho artefactos documentales consumibles:
+
+1. `NEXO-SCREEN-USABILITY-CRITERIA-CONTRACT-001`, que define alcance, unidad de
+   evaluación, estados y precedencia de criterios;
+2. `NEXO-SCREEN-USABILITY-DIMENSION-CATALOG-001`, que define diez dimensiones
+   medibles y su evidencia mínima;
+3. `NEXO-SCREEN-USABILITY-THRESHOLD-MATRIX-001`, que asigna criterios y umbrales
+   explícitos a los ocho prototipos;
+4. `NEXO-SCREEN-USABILITY-STATE-CRITERIA-MATRIX-001`, que define aceptación para
+   los diez estados transversales;
+5. `NEXO-SCREEN-USABILITY-SCENARIO-REGISTER-001`, que materializa dieciséis
+   escenarios de evaluación, dos por prototipo;
+6. `NEXO-SCREEN-USABILITY-EVIDENCE-CONTRACT-001`, que define datos, registros y
+   límites de evidencia;
+7. `NEXO-SCREEN-USABILITY-SCORING-GATE-001`, que determina cuándo una pantalla
+   queda conforme, requiere corrección o permanece bloqueada;
+8. `NEXO-SCREEN-USABILITY-HANDOFF-001`, que entrega criterios ejecutables a
+   `AUTH-UI-058` sin iniciar pruebas.
+
+Cobertura materializada:
+
+| Elemento evaluable                        | Esperado | Materializado | Faltantes | Duplicados |
+| ----------------------------------------- | -------: | ------------: | --------: | ---------: |
+| Superficies físicas nuevas                |        0 |             0 |         0 |          0 |
+| Prototipos documentales                   |        8 |             8 |         0 |          0 |
+| Proyecciones funcionales principales      |        6 |             6 |         0 |          0 |
+| Composiciones especiales                  |        2 |             2 |         0 |          0 |
+| Dimensiones comunes de usabilidad         |       10 |            10 |         0 |          0 |
+| Estados transversales                     |       10 |            10 |         0 |          0 |
+| Escenarios mínimos de evaluación          |       16 |            16 |         0 |          0 |
+| Decisiones individualizadas por prototipo |        8 |             8 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados |        0 |             0 |         0 |          0 |
+
+El resultado queda `ESPECIFICADO`. La ejecución y la evidencia real permanecen
+asignadas a `AUTH-UI-058`.
+
+---
+
+#### 3. Entradas y decisiones preservadas
+
+La tarea consume sin modificar:
+
+- `NEXO-ACTOR-PROTOTYPE-CONTRACT-001`;
+- `NEXO-ACTOR-PROTOTYPE-VISUAL-GRAMMAR-001`;
+- `NEXO-ACTOR-PROTOTYPE-CATALOG-001`;
+- `NEXO-ACTOR-PROTOTYPE-WIREFRAME-SET-001`;
+- `NEXO-PROTOTYPE-TASK-TRACEABILITY-REGISTER-001`;
+- `NEXO-ACTOR-PROTOTYPE-STATE-MATRIX-001`;
+- `NEXO-ACTOR-PROTOTYPE-RESPONSIVE-INTERACTION-CONTRACT-001`;
+- `NEXO-PROTOTYPE-PREIMPLEMENTATION-VALIDATION-CONTRACT-001`;
+- `NEXO-PROTOTYPE-VALIDATION-SUMMARY-001`;
+- `NEXO-PROTOTYPE-VARIANT-VALIDATION-MATRIX-001`;
+- `NEXO-PROTOTYPE-ZONE-VALIDATION-MATRIX-001`;
+- `NEXO-PROTOTYPE-TASK-VALIDATION-REGISTER-001`;
+- `NEXO-PROTOTYPE-STATE-VALIDATION-MATRIX-001`;
+- `NEXO-PROTOTYPE-FINDING-REGISTER-001`;
+- los contratos de inicio, navegación, relevancia, contexto, dispositivo,
+  seguridad, accesibilidad, tacto, densidad y estados aprobados;
+- los requisitos vigentes asociados a identificación de tarea, comprensión,
+  recuperación, foco, accesibilidad, ergonomía, seguridad y validación humana.
+
+Se preservan estas decisiones:
+
+1. la ruta continúa siendo `/`;
+2. la pantalla presenta una sola proyección activa;
+3. visibilidad, relevancia y frecuencia no conceden autoridad;
+4. una persona multifunción no recibe una mezcla de funciones;
+5. el dispositivo compartido no sustituye al actor humano;
+6. el supervisor no adquiere ejecución, aprobación o ajuste universal;
+7. configuración permanece separada de ejecución física;
+8. las pruebas con usuarios no se sustituyen por inspección documental;
+9. la implementación permanece prohibida durante esta etapa;
+10. `AUTH-UI-058`, `AUTH-UI-059` y `AUTH-UI-060` permanecen obligatorias.
+
+---
+
+#### 4. Alcance y límites
+
+##### 4.1. Incluido
+
+- criterios medibles por prototipo;
+- criterios comunes y criterios específicos por función;
+- umbrales de éxito, tiempo, errores, ayuda, comprensión y recuperación;
+- criterios de tacto, teclado, lector, reflow y lenguaje;
+- criterios de seguridad, segregación, privacidad y custodia;
+- diez estados con comportamiento esperado y salida segura;
+- dieciséis escenarios mínimos de prueba;
+- reglas para consolidar evidencia y registrar resultados;
+- reglas de aprobación, corrección y bloqueo.
+
+##### 4.2. Excluido
+
+- ejecutar sesiones con trabajadores;
+- reclutar participantes;
+- fabricar datos de prueba productivos;
+- modificar los prototipos aprobados;
+- cambiar tareas, identidades, familias o disposiciones;
+- implementar componentes o telemetría;
+- medir producción, desempeño laboral o productividad individual;
+- autorizar implementación, despliegue o retiro de pantallas legacy;
+- corregir el orden documental de `AUTH-UI-055`;
+- iniciar `AUTH-UI-058` a `AUTH-UI-060`.
+
+---
+
+#### 5. `NEXO-SCREEN-USABILITY-CRITERIA-CONTRACT-001`
+
+##### 5.1. Unidad de evaluación
+
+La unidad mínima será:
+
+```text
+PROTOTYPE_ID
++
+ACTOR Y FUNCIÓN ACTIVA
++
+DISPOSITIVO Y MODALIDAD
++
+ESCENARIO
++
+ESTADO INICIAL
++
+RESULTADO ESPERADO
++
+CRITERIO
++
+EVIDENCIA
+```
+
+No se combinarán resultados de prototipos, funciones o dispositivos para ocultar
+un fallo particular.
+
+##### 5.2. Estados de cada criterio
+
+| Estado             | Significado                                                                   | Efecto                           |
+| ------------------ | ----------------------------------------------------------------------------- | -------------------------------- |
+| `NOT_RUN`          | no existe ejecución con evidencia                                             | no permite decisión              |
+| `PASS`             | el umbral se alcanzó con evidencia completa                                   | conserva el criterio             |
+| `FAIL`             | el umbral no se alcanzó o ocurrió una violación observable                    | genera problema en `AUTH-UI-059` |
+| `BLOCKED`          | el escenario no pudo ejecutarse por prototipo, dispositivo, datos o acceso    | exige resolver bloqueo y repetir |
+| `NOT_APPLICABLE`   | el criterio no corresponde al prototipo y existe justificación explícita      | no entra al denominador          |
+| `INVALID_EVIDENCE` | falta trazabilidad, existe contaminación o el registro no permite reconstruir | obliga a repetir                 |
+
+##### 5.3. Precedencia
+
+Los criterios se evalúan en este orden:
+
+```text
+SEGURIDAD Y AUTORIDAD
+→
+PRIVACIDAD Y CUSTODIA
+→
+ÉXITO CORRECTO
+→
+COMPRENSIÓN
+→
+RECUPERACIÓN
+→
+ACCESIBILIDAD Y TACTO
+→
+TIEMPO Y ESFUERZO
+→
+PREFERENCIA
+```
+
+Una mejora de velocidad o preferencia no compensa un fallo de autorización,
+privacidad, custodia, segregación, accesibilidad crítica o resultado correcto.
+
+---
+
+#### 6. `NEXO-SCREEN-USABILITY-DIMENSION-CATALOG-001`
+
+| ID            | Dimensión                           | Definición medible                                                                                             | Evidencia mínima                                                                             | Regla común                                                                       |
+| ------------- | ----------------------------------- | -------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| `USAB-DIM-01` | éxito correcto                      | la persona alcanza el resultado esperado sin acción prohibida, omisión material ni resultado ficticio          | resultado del escenario, recorrido, errores y estado final                                   | mínimo 90 %; 100 % cuando afecte autorización, custodia o privacidad              |
+| `USAB-DIM-02` | localización                        | tiempo desde presentación estable hasta identificar e iniciar la acción o tarea correcta                       | marca de inicio, primer objetivo elegido, tiempo y aperturas incorrectas                     | mediana dentro del umbral específico y máximo una apertura incorrecta             |
+| `USAB-DIM-03` | comprensión de contexto             | capacidad de explicar actor, función, sede o territorio, estado y objeto antes de actuar                       | respuesta posterior a lectura y antes del primer comando                                     | mínimo 90 % de respuestas correctas                                               |
+| `USAB-DIM-04` | comprensión de efecto               | capacidad de explicar qué ocurrirá, qué no ocurrirá y cuándo existe confirmación autoritativa                  | respuesta previa, expectativa y comparación con estado mostrado                              | mínimo 90 %; 100 % en custodia, recepción, ajuste o acción sensible               |
+| `USAB-DIM-05` | relevancia y carga cognitiva        | proporción de participantes que identifica la opción correcta sin confundir funciones ni requerir exploración  | selecciones, retrocesos, dudas, ayuda y escala de dificultad de 1 a 7                        | mínimo 90 % sin confusión crítica y mediana de dificultad igual o menor a 3       |
+| `USAB-DIM-06` | recuperación                        | capacidad de continuar o salir de forma segura ante vacío, parcialidad, revocación, retiro, denegación o fallo | punto seguro, acción de recuperación, repetición, pérdida y estado final                     | mínimo 90 % sin pérdida; 100 % sin duplicación ni efecto indebido                 |
+| `USAB-DIM-07` | asistencia                          | necesidad de intervención del moderador para entender o completar                                              | número, momento, clase y motivo de ayudas                                                    | máximo 10 % de escenarios con ayuda; cero ayuda para reconocer actor y contexto   |
+| `USAB-DIM-08` | tacto y ergonomía                   | activación correcta, alcance, separación, estabilidad, postura y ausencia de toque accidental                  | dispositivo, orientación, postura, mano, toque fallido, objetivo vecino y observación física | cero activaciones críticas vecinas; objetivos conforme al contrato táctil vigente |
+| `USAB-DIM-09` | accesibilidad                       | operación y comprensión mediante teclado, lector, zoom, reflow, foco y señales no cromáticas                   | recorrido de foco, nombres, estados, anuncios, zoom, reflow y tecnología de asistencia       | 100 % del camino crítico operable; cero bloqueo de foco o control sin nombre      |
+| `USAB-DIM-10` | seguridad, segregación y privacidad | ausencia de función indebida, dato de otro actor, autoaprobación, autocustodia o persistencia incompatible     | controles visibles, datos expuestos, acciones disponibles, limpieza y resultado              | cero violaciones permitidas                                                       |
+
+Los porcentajes se calculan sobre escenarios válidos y aplicables. Un criterio
+crítico no puede aprobarse por promedio cuando existe una sola violación real.
+
+---
+
+#### 7. Umbrales comunes
+
+| Criterio                                           | Umbral de aceptación                                    |
+| -------------------------------------------------- | ------------------------------------------------------- |
+| éxito correcto ordinario                           | al menos 90 %                                           |
+| acción con autorización, custodia o privacidad     | 100 % sin violaciones                                   |
+| comprensión de actor y función activa              | al menos 95 %                                           |
+| comprensión de estado y efecto                     | al menos 90 %; 100 % para efecto sensible               |
+| apertura incorrecta antes del objetivo             | máximo una por escenario; tasa agregada máxima de 10 %  |
+| ayuda del moderador                                | máximo 10 % de escenarios; cero para reconocer contexto |
+| dificultad percibida                               | mediana igual o menor a 3 en escala de 1 a 7            |
+| recuperación sin pérdida                           | al menos 90 %                                           |
+| doble efecto, repetición destructiva o falso éxito | cero casos                                              |
+| control crítico inaccesible                        | cero casos                                              |
+| foco atrapado o perdido sin recuperación           | cero casos                                              |
+| activación táctil vecina crítica                   | cero casos                                              |
+| mezcla de funciones o datos entre actores          | cero casos                                              |
+| dato sensible no necesario                         | cero casos                                              |
+
+Los umbrales temporales se aplican después de que la pantalla alcance un estado
+estable. El tiempo de carga técnica se registra por separado y no se atribuye a
+la persona.
+
+---
+
+#### 8. `NEXO-SCREEN-USABILITY-THRESHOLD-MATRIX-001`
+
+| Prototipo        | Proyección                              | Objetivo principal evaluado                          |  Tiempo máximo mediano de localización | Comprensión obligatoria                                             | Recuperación obligatoria                                                             | Invariantes críticos                                                            | Estado inicial |
+| ---------------- | --------------------------------------- | ---------------------------------------------------- | -------------------------------------: | ------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- | -------------- |
+| `PROTO-NEXO-001` | solicitante                             | crear o continuar solicitud propia                   |                                   10 s | solicitud propia, origen, destino, estado y siguiente paso          | volver a solicitud vigente sin duplicar ni perder borrador                           | cero preparación, conducción, recepción, supervisión o configuración disponible | `NOT_RUN`      |
+| `PROTO-NEXO-002` | bodega                                  | continuar la siguiente tarea de bodega               |                                    8 s | tarea, recurso, sede, etapa, cantidad y efecto                      | recuperar tarea cambiada, parcial o bloqueada sin ejecutar dos veces                 | cero conducción, autoaprobación, ajuste o configuración ordinaria               | `NOT_RUN`      |
+| `PROTO-NEXO-003` | conductor                               | abrir transporte asignado                            |                                    8 s | origen, destino, vehículo o ruta, custodia y estado                 | conservar custodia y retornar a punto seguro ante revocación o fallo                 | cero auto-recepción, reasignación o cierre no autorizado                        | `NOT_RUN`      |
+| `PROTO-NEXO-004` | receptor                                | iniciar recepción válida                             |                                    8 s | origen, destino, handoff, diferencias y confirmación                | tratar parcialidad o retiro sin inventar recepción completa                          | cero auto-resolución, ajuste o decisión supervisora                             | `NOT_RUN`      |
+| `PROTO-NEXO-005` | supervisor                              | abrir el caso de control prioritario                 |                                   12 s | hecho, territorio, severidad, evidencia, autoridad y efecto         | salir de conflicto, evidencia insuficiente o versión obsoleta sin mutación indebida  | cero autoaprobación, fabricación de hechos o acción fuera de cobertura          | `NOT_RUN`      |
+| `PROTO-NEXO-006` | configuración                           | abrir la capacidad administrativa prioritaria        |                                   15 s | capacidad, cobertura, versión, consumidores e impacto               | cancelar o volver sin afectar operación ni guardar cambios no confirmados            | cero cola física, ejecución de remisión o administración global implícita       | `NOT_RUN`      |
+| `PROTO-NEXO-007` | persona multifunción                    | reconocer función activa y cambiarla de forma segura | 12 s para reconocer; 15 s para cambiar | función activa, efecto del cambio y retirada de datos incompatibles | resolver nueva proyección sin conservar tareas, recientes o borradores incompatibles | cero mezcla de funciones, autoaprobación o herencia de autoridad                | `NOT_RUN`      |
+| `PROTO-NEXO-008` | dispositivo compartido con actor activo | continuar trabajo compatible y cambiar actor         |      10 s para tarea; 15 s para relevo | dispositivo, actor, jornada, territorio, función y limitaciones     | limpiar datos, tareas y referencias del actor anterior antes de nueva proyección     | cero acción atribuible sin actor y cero persistencia personal entre relevos     | `NOT_RUN`      |
+
+##### 8.1. Criterios específicos adicionales
+
+| Prototipo        | Criterio específico                                                                                    | Umbral                                           |
+| ---------------- | ------------------------------------------------------------------------------------------------------ | ------------------------------------------------ |
+| `PROTO-NEXO-001` | distingue solicitud propia de operación de bodega                                                      | mínimo 95 %                                      |
+| `PROTO-NEXO-002` | elige correctamente entre preparar, registrar entrada, ubicar, mover, retirar o contar según escenario | mínimo 90 %                                      |
+| `PROTO-NEXO-003` | identifica quién conserva la custodia antes y después del handoff                                      | 100 %                                            |
+| `PROTO-NEXO-004` | distingue recepción completa, parcial, bloqueada y resultado desconocido                               | mínimo 95 %                                      |
+| `PROTO-NEXO-005` | distingue observar, investigar, decidir, aplicar efecto y cerrar                                       | mínimo 90 %; cero efecto sin autoridad           |
+| `PROTO-NEXO-006` | distingue configuración de ejecución y reconoce alcance administrativo                                 | mínimo 95 %                                      |
+| `PROTO-NEXO-007` | reconoce siempre cuál función está activa antes de actuar                                              | mínimo 95 %; cero acción bajo función equivocada |
+| `PROTO-NEXO-008` | confirma actor humano activo y ausencia de datos del actor anterior                                    | 100 %                                            |
+
+---
+
+#### 9. `NEXO-SCREEN-USABILITY-STATE-CRITERIA-MATRIX-001`
+
+| Estado                           | Comprensión exigida                                                   | Acción o recuperación esperada                       | Criterio crítico                                       | Estado de evidencia |
+| -------------------------------- | --------------------------------------------------------------------- | ---------------------------------------------------- | ------------------------------------------------------ | ------------------- |
+| `RESOLVIENDO_RELEVANCIA`         | entiende que todavía no existe decisión estable ni trabajo confirmado | esperar o cancelar sin acceder a datos empresariales | cero acción material habilitada                        | `NOT_RUN`           |
+| `OPCIONES_LISTAS`                | identifica contexto, acción principal y tareas relevantes             | iniciar únicamente una opción autorizada             | cero duplicado y cero opción de otra función           | `NOT_RUN`           |
+| `ACCION_PRIMARIA_AUSENTE`        | entiende que la proyección es válida pero no existe comando principal | usar navegación secundaria autorizada o salir        | no fabricar CTA ni presentar bloqueo como vacío        | `NOT_RUN`           |
+| `VACIO_VALIDO`                   | distingue ausencia real de fallo, denegación o carga                  | cambiar contexto autorizado o salir                  | no crear, configurar o escalar sin fundamento          | `NOT_RUN`           |
+| `SOLO_DESCUBRIMIENTO_SECUNDARIO` | entiende que no hay trabajo destacado y sí tareas secundarias         | abrir una tarea secundaria autorizada                | no promover una opción por relleno                     | `NOT_RUN`           |
+| `DATOS_PARCIALES`                | identifica qué dato es confirmado, cuál falta y su frescura           | lectura segura o reintento                           | cero decisión material basada en dato incompleto       | `NOT_RUN`           |
+| `CONTEXTO_CAMBIADO_O_REVOCADO`   | identifica qué dimensión cambió y qué quedó retirado                  | resolver nuevamente actor, función o contexto        | retiro inmediato de datos y acciones anteriores        | `NOT_RUN`           |
+| `OPCION_CAMBIADA_O_RETIRADA`     | comprende que la tarea dejó de ser relevante o vigente                | volver a la proyección actualizada                   | cero ejecución mediante control o enlace obsoleto      | `NOT_RUN`           |
+| `ACCESO_DIRECTO_DENEGADO`        | comprende que no puede continuar y recibe recuperación segura         | volver a inicio o tarea autorizada                   | cero revelación de datos, opciones o razones sensibles | `NOT_RUN`           |
+| `FALLO_TECNICO`                  | distingue fallo técnico de vacío, denegación y resultado desconocido  | reintentar solo cuando sea seguro o salir            | cero falso éxito y cero repetición destructiva         | `NOT_RUN`           |
+
+Cada estado se evaluará al menos una vez en una proyección compatible durante
+`AUTH-UI-058`. Los estados críticos de revocación, denegación, parcialidad y
+fallo deberán cubrir además dispositivo compartido o una proyección operativa.
+
+---
+
+#### 10. `NEXO-SCREEN-USABILITY-SCENARIO-REGISTER-001`
+
+| Escenario      | Prototipo        | Tipo         | Objetivo                                  | Estado o perturbación               | Resultado esperado                                            | Estado    |
+| -------------- | ---------------- | ------------ | ----------------------------------------- | ----------------------------------- | ------------------------------------------------------------- | --------- |
+| `USAB-SCN-001` | `PROTO-NEXO-001` | ordinario    | crear o continuar solicitud propia        | opciones listas                     | localiza acción, comprende destino y conserva solo su trabajo | `NOT_RUN` |
+| `USAB-SCN-002` | `PROTO-NEXO-001` | recuperación | continuar solicitud retirada o cambiada   | opción retirada                     | vuelve a proyección vigente sin duplicar solicitud            | `NOT_RUN` |
+| `USAB-SCN-003` | `PROTO-NEXO-002` | ordinario    | continuar tarea prioritaria de bodega     | opciones listas                     | selecciona tarea correcta y explica recurso y efecto          | `NOT_RUN` |
+| `USAB-SCN-004` | `PROTO-NEXO-002` | recuperación | tratar datos parciales o tarea revocada   | datos parciales o contexto revocado | detiene acción y recupera sin doble efecto                    | `NOT_RUN` |
+| `USAB-SCN-005` | `PROTO-NEXO-003` | ordinario    | iniciar transporte asignado               | opciones listas                     | identifica origen, destino y custodia                         | `NOT_RUN` |
+| `USAB-SCN-006` | `PROTO-NEXO-003` | recuperación | perder asignación o conectividad          | opción retirada o fallo técnico     | no conserva custodia ficticia ni reenvía acción               | `NOT_RUN` |
+| `USAB-SCN-007` | `PROTO-NEXO-004` | ordinario    | recibir remisión válida                   | opciones listas                     | identifica handoff, diferencias y confirmación                | `NOT_RUN` |
+| `USAB-SCN-008` | `PROTO-NEXO-004` | recuperación | tratar recepción parcial                  | datos parciales                     | conserva diferencia y no declara recepción completa           | `NOT_RUN` |
+| `USAB-SCN-009` | `PROTO-NEXO-005` | ordinario    | abrir caso supervisor prioritario         | opciones listas                     | diferencia observación, decisión y efecto                     | `NOT_RUN` |
+| `USAB-SCN-010` | `PROTO-NEXO-005` | recuperación | conflicto de evidencia, interés o versión | acción ausente o dato parcial       | bloquea efecto, explica causa y ofrece salida segura          | `NOT_RUN` |
+| `USAB-SCN-011` | `PROTO-NEXO-006` | ordinario    | abrir configuración prioritaria           | opciones listas                     | reconoce capacidad, alcance e impacto                         | `NOT_RUN` |
+| `USAB-SCN-012` | `PROTO-NEXO-006` | recuperación | cancelar cambio no confirmado             | opción retirada o fallo técnico     | retorna sin alterar operación ni perder comprensión           | `NOT_RUN` |
+| `USAB-SCN-013` | `PROTO-NEXO-007` | ordinario    | reconocer y usar función activa           | opciones listas                     | actúa solo dentro de la función visible                       | `NOT_RUN` |
+| `USAB-SCN-014` | `PROTO-NEXO-007` | recuperación | cambiar de función                        | contexto cambiado                   | limpia proyección anterior y resuelve una nueva               | `NOT_RUN` |
+| `USAB-SCN-015` | `PROTO-NEXO-008` | ordinario    | continuar tarea compatible en estación    | opciones listas                     | reconoce dispositivo, actor y contexto                        | `NOT_RUN` |
+| `USAB-SCN-016` | `PROTO-NEXO-008` | recuperación | cambiar actor                             | contexto cambiado                   | limpia datos y exige nueva atribución antes de actuar         | `NOT_RUN` |
+
+Reconciliación:
+
+```text
+EXPECTED_SCENARIOS = 16
+MATERIALIZED_SCENARIOS = 16
+UNIQUE_SCENARIO_IDS = 16
+MISSING_SCENARIOS = 0
+DUPLICATE_SCENARIOS = 0
+ORDINARY_SCENARIOS = 8
+RECOVERY_SCENARIOS = 8
+```
+
+---
+
+#### 11. `NEXO-SCREEN-USABILITY-EVIDENCE-CONTRACT-001`
+
+Cada ejecución válida deberá registrar:
+
+- `scenario_id` y `prototype_id`;
+- variante, actor objetivo y función activa;
+- dispositivo, orientación, modalidad y tecnología de asistencia;
+- contexto inicial y estado presentado;
+- tarea solicitada y resultado esperado;
+- instante de presentación estable;
+- primer objetivo seleccionado;
+- tiempo de localización e inicio;
+- aperturas incorrectas, retrocesos y cambios de foco;
+- resultado alcanzado y estado final;
+- errores, ayudas, dudas y abandonos;
+- respuesta de comprensión de contexto y efecto;
+- dificultad percibida de 1 a 7;
+- recuperación, pérdida, repetición o resultado desconocido;
+- observaciones de tacto, postura, foco, lector, teclado y reflow;
+- cualquier exposición indebida, mezcla de funciones o violación de custodia;
+- evidencia disponible y referencia no sensible;
+- evaluador y fecha.
+
+La evidencia no incluirá secretos, credenciales, datos personales innecesarios,
+identificadores productivos ni grabaciones sin autorización.
+
+##### 11.1. Evidencia inválida
+
+Queda inválida una ejecución cuando:
+
+- no puede vincularse a un escenario y prototipo;
+- el moderador explicó la solución antes de medir localización o comprensión;
+- se reutilizó el resultado de otra función o dispositivo;
+- faltan estado inicial, resultado o criterio evaluado;
+- se contó navegación como efecto empresarial;
+- se declaró éxito sin confirmación observable;
+- se mezclaron sesiones de actores distintos;
+- se usó un prototipo diferente sin registrar la versión;
+- el participante no representa la función evaluada y no existe justificación;
+- se sustituyó evidencia real por opinión del equipo de diseño.
+
+---
+
+#### 12. `NEXO-SCREEN-USABILITY-SCORING-GATE-001`
+
+##### 12.1. Clasificación por criterio
+
+Cada criterio conserva su estado individual. Los promedios se usan únicamente
+para dimensiones no críticas y nunca eliminan un fallo observado.
+
+##### 12.2. Clasificación por prototipo
+
+| Estado del prototipo     | Condición                                                                                                                                                                            |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `CONFORME_PARA_CIERRE`   | todos los criterios críticos en `PASS`, al menos 90 % de criterios no críticos en `PASS`, cero evidencia inválida pendiente y cero problema abierto de severidad crítica o alta      |
+| `REQUIERE_CORRECCION`    | existe un `FAIL` no crítico, un umbral agregado incumplido o un problema corregible sin violación crítica                                                                            |
+| `BLOQUEADO`              | existe violación de autoridad, privacidad, custodia, segregación, accesibilidad crítica, falso éxito, doble efecto, evidencia inválida material o escenario obligatorio no ejecutado |
+| `PENDIENTE_DE_EVIDENCIA` | uno o más criterios obligatorios permanecen `NOT_RUN`                                                                                                                                |
+
+##### 12.3. Decisión del conjunto
+
+Los ocho prototipos solo podrán entregarse a `AUTH-UI-060` cuando:
+
+1. los dieciséis escenarios obligatorios tengan evidencia válida;
+2. cada prototipo tenga una decisión individual;
+3. cada estado transversal tenga al menos una ejecución aplicable;
+4. todos los fallos estén registrados en `AUTH-UI-059`;
+5. los fallos críticos y altos estén cerrados y repetidos;
+6. los umbrales se calculen por prototipo y no únicamente de forma agregada;
+7. la evidencia diferencie dispositivo, función y contexto;
+8. no exista implementación o despliegue presentado como validación;
+9. el hallazgo documental de `AUTH-UI-055` esté corregido antes del cierre final;
+10. `AUTH-UI-060` realice la decisión final sin inferir aprobación automática.
+
+La aprobación de esta tarea no declara ninguno de estos resultados como
+alcanzado.
+
+---
+
+#### 13. Protección contra uso indebido de métricas
+
+Las métricas de usabilidad:
+
+- evalúan diseño, proceso, estación y condiciones;
+- no califican desempeño laboral individual;
+- no se usarán para sancionar velocidad, discapacidad, familiaridad o solicitud
+  de ayuda;
+- se interpretarán con complejidad, formación, dispositivo, ambiente y calidad
+  del prototipo;
+- no incentivarán omitir evidencia, confirmaciones, segregación o controles;
+- no justificarán retirar una función necesaria por baja frecuencia;
+- no convertirán preferencia subjetiva en autoridad para cambiar contratos;
+- no permitirán aprobar una pantalla por promedio cuando existe un fallo
+  crítico.
+
+---
+
+#### 14. Hallazgos y pendientes con propietario
+
+| ID                             | Elemento                          | Estado                        | Propietario                 | Condición de salida                                                                                                        |
+| ------------------------------ | --------------------------------- | ----------------------------- | --------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `NEXO-USABILITY-CARRYOVER-001` | orden documental de `AUTH-UI-055` | `BLOQUEADO_PARA_CIERRE_FINAL` | corrección de `AUTH-UI-055` | ubicar `Requisitos de prueba derivados` antes de `Criterios de aceptación`, sin cambiar decisiones, antes de `AUTH-UI-060` |
+| `NEXO-USABILITY-CARRYOVER-002` | resultados de los ocho prototipos | `PENDIENTE_DE_EVIDENCIA`      | `AUTH-UI-058`               | ejecutar escenarios con usuarios y dispositivos representativos y registrar evidencia válida                               |
+| `NEXO-USABILITY-CARRYOVER-003` | problemas observados              | `PENDIENTE_DE_EVIDENCIA`      | `AUTH-UI-059`               | registrar severidad, contexto, evidencia, propietario, corrección y repetición                                             |
+| `NEXO-USABILITY-CARRYOVER-004` | aprobación final de pantallas     | `BLOQUEADO`                   | `AUTH-UI-060`               | decidir con evidencia completa, criterios satisfechos y problemas cerrados                                                 |
+
+No existen pendientes sin tarea responsable ni condición de salida.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea no introduce comportamiento ejecutable ni modifica
+las reglas funcionales, autorizativas, de seguridad, accesibilidad, tacto,
+privacidad, contexto o navegación vigentes. Materializa umbrales y criterios de
+evidencia para verificar comportamientos ya protegidos por el registro canónico
+vigente. No crea, modifica, difiere, descarta ni declara obsoleto ningún
+requisito histórico; por tanto, el Registro Canónico de Requisitos de Prueba no
+cambia.
+
+---
+
+#### 16. Criterios de aceptación
+
+La tarea se considera documentalmente completa cuando se confirme que:
+
+- existen exactamente ocho prototipos con decisión individualizada;
+- existen diez dimensiones de usabilidad con definición, evidencia y umbral;
+- existen dieciséis escenarios únicos, ocho ordinarios y ocho de recuperación;
+- cada prototipo tiene tiempo, comprensión, recuperación e invariantes críticos;
+- solicitante no recibe controles de bodega, conducción, recepción, supervisión
+  ni configuración;
+- bodega selecciona trabajo sin conducción, autoaprobación ni configuración;
+- conductor comprende y conserva custodia sin auto-recepción;
+- receptor distingue handoff, parcialidad y confirmación sin auto-resolución;
+- supervisor distingue observación, investigación, decisión, efecto y cierre;
+- configuración permanece separada de ejecución física;
+- multifunción conserva una sola función activa y limpia la proyección anterior;
+- dispositivo compartido exige actor humano y limpia datos entre relevos;
+- los diez estados tienen criterio de comprensión, recuperación y seguridad;
+- autorización, privacidad, custodia, segregación y accesibilidad crítica usan
+  tolerancia cero;
+- los promedios no ocultan fallos críticos;
+- las métricas no se usan para sancionar desempeño individual;
+- la evidencia exige trazabilidad por prototipo, escenario, dispositivo y
+  contexto;
+- las ejecuciones inválidas se repiten y no entran al denominador;
+- los pendientes tienen propietario y condición de salida exactos;
+- no se ejecutan pruebas con usuarios ni se inventa evidencia;
+- no se implementa código, datos, telemetría, migraciones ni Supabase;
+- no se crean o modifican requisitos `TREQ-*`;
+- `AUTH-UI-058` permanece únicamente reservada.
+
+---
+
+#### 17. `NEXO-SCREEN-USABILITY-HANDOFF-001`
+
+| Destino                        | Handoff aprobado                                                                                                                                                                                         |
+| ------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AUTH-UI-058`                  | ejecutar los dieciséis escenarios mínimos con usuarios y dispositivos representativos, completar los estados de criterios y conservar evidencia sin presentar simulación o inspección como prueba humana |
+| `AUTH-UI-059`                  | registrar cada fallo o bloqueo con prototipo, escenario, criterio, severidad, evidencia, causa, propietario, corrección y condición de repetición                                                        |
+| `AUTH-UI-060`                  | decidir la aprobación de cada pantalla únicamente con evidencia válida, umbrales satisfechos y problemas críticos y altos cerrados                                                                       |
+| paquete de implementación NEXO | consumir exclusivamente pantallas aprobadas después de `AUTH-UI-060`; esta tarea no autoriza componentes, consultas, telemetría, datos, migraciones ni despliegue                                        |
+
+Ningún destino anterior se inicia mediante esta tarea.
+
+---
+
+#### 18. Continuidad canónica
+
+**ÚLTIMA TAREA APROBADA**
+
+`AUTH-UI-056 — Validar prototipo antes de implementar`
+
+**TAREA ACTUAL APROBADA**
+
+`AUTH-UI-057 — Definir criterio de usabilidad por pantalla`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`AUTH-UI-058 — Probar con usuarios reales`
+
+
 ### [ ] AUTH-UI-058 — Probar con usuarios reales
 ### [ ] AUTH-UI-059 — Registrar problemas encontrados
 ### [ ] AUTH-UI-060 — Aprobar la pantalla antes de retirarla del roadmap

@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **576** |
+| Tareas aprobadas | **577** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1018** |
+| Tareas no iniciadas | **1017** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **36.14% (576/1594)** |
+| Porcentaje de completamiento | **36.20% (577/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **AUTH-UI-056 — Validar prototipo antes de implementar** |
-| Tarea actual | **AUTH-UI-057 — Definir criterio de usabilidad por pantalla** |
+| Última tarea aprobada | **AUTH-UI-057 — Definir criterio de usabilidad por pantalla** |
+| Tarea actual | **AUTH-UI-058 — Probar con usuarios reales** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **AUTH-UI-058 — Probar con usuarios reales** |
+| Siguiente tarea | **AUTH-UI-059 — Registrar problemas encontrados** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 14: NEXO_UI_VALIDATION** |
-| Progreso del bloque | **CARRIL NEXO: 5 de 9 aprobadas; AUTH-UI-057 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 6 de 9 aprobadas; AUTH-UI-058 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `AUTH-UI-056` — Validar prototipo antes de implementar |
-| Tarea actual | `AUTH-UI-057` — Definir criterio de usabilidad por pantalla — **NO INICIADA** |
-| Siguiente tarea | `AUTH-UI-058` — Probar con usuarios reales |
+| Última aprobada | `AUTH-UI-057` — Definir criterio de usabilidad por pantalla |
+| Tarea actual | `AUTH-UI-058` — Probar con usuarios reales — **NO INICIADA** |
+| Siguiente tarea | `AUTH-UI-059` — Registrar problemas encontrados |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 5 DE 9 APROBADAS — ACTUAL AUTH-UI-057** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 6 DE 9 APROBADAS — ACTUAL AUTH-UI-058** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-AUTH-UI-056 — Validar prototipo antes de implementar
-        ↓
-TAREA ACTUAL
 AUTH-UI-057 — Definir criterio de usabilidad por pantalla
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 AUTH-UI-058 — Probar con usuarios reales
         ↓
+SIGUIENTE TAREA RESERVADA
+AUTH-UI-059 — Registrar problemas encontrados
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 5 de 9 tareas aprobadas
+CARRIL NEXO — 6 de 9 tareas aprobadas
 ```

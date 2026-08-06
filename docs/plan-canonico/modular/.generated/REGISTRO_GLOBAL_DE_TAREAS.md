@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **576** |
+| Aprobadas | **577** |
 | En propuesta | **0** |
-| No iniciadas | **1018** |
+| No iniciadas | **1017** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **36.14% (576/1594)** |
+| Porcentaje de completamiento | **36.20% (577/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `AUTH-UI-056` — Validar prototipo antes de implementar | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-057` — Definir criterio de usabilidad por pantalla | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-UI-058` — Probar con usuarios reales | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-057` — Definir criterio de usabilidad por pantalla | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-058` — Probar con usuarios reales | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-UI-059` — Registrar problemas encontrados | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -863,7 +863,7 @@
 | ✅ APROBADA | `AUTH-UI-054` | Reducir opciones irrelevantes | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ✅ APROBADA | `AUTH-UI-055` | Crear prototipo por rol | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ✅ APROBADA | `AUTH-UI-056` | Validar prototipo antes de implementar | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
-| ⬜ NO INICIADA | `AUTH-UI-057` | Definir criterio de usabilidad por pantalla | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
+| ✅ APROBADA | `AUTH-UI-057` | Definir criterio de usabilidad por pantalla | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-058` | Probar con usuarios reales | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-059` | Registrar problemas encontrados | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-060` | Aprobar la pantalla antes de retirarla del roadmap | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
