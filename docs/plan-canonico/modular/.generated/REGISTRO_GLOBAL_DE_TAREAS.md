@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **588** |
+| Aprobadas | **589** |
 | En propuesta | **0** |
-| No iniciadas | **1006** |
+| No iniciadas | **1005** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **36.89% (588/1594)** |
+| Porcentaje de completamiento | **36.95% (589/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PRINT-ARC-010` — Definir idempotencia y prevención de impresiones duplicadas | ✅ APROBADA |
-| Tarea actual | `PRINT-ARC-011` — Definir reintentos automáticos y cola de fallos | ⬜ NO INICIADA |
-| Siguiente reservada | `PRINT-ARC-012` — Definir confirmación de envío, impresión y entrega cuando sea verificable | ⬜ NO INICIADA |
+| Última aprobada | `PRINT-ARC-011` — Definir reintentos automáticos y cola de fallos | ✅ APROBADA |
+| Tarea actual | `PRINT-ARC-012` — Definir confirmación de envío, impresión y entrega cuando sea verificable | ⬜ NO INICIADA |
+| Siguiente reservada | `PRINT-ARC-013` — Definir cancelación y expiración | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -498,7 +498,7 @@
 | ✅ APROBADA | `PRINT-ARC-008` | Definir impresora principal, alternativas y fallback | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-009` | Definir estado de impresora y heartbeat | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-010` | Definir idempotencia y prevención de impresiones duplicadas | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
-| ⬜ NO INICIADA | `PRINT-ARC-011` | Definir reintentos automáticos y cola de fallos | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
+| ✅ APROBADA | `PRINT-ARC-011` | Definir reintentos automáticos y cola de fallos | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-012` | Definir confirmación de envío, impresión y entrega cuando sea verificable | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-013` | Definir cancelación y expiración | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-014` | Definir reimpresión como acción separada y auditable | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |

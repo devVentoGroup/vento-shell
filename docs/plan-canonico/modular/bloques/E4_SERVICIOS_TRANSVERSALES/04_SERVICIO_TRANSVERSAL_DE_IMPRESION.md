@@ -3823,7 +3823,499 @@ PRINT-ARC-011 — Definir reintentos automáticos y cola de fallos
 La preparación de este artefacto no inicia, desarrolla ni aprueba `PRINT-ARC-011`.
 
 
-### [ ] PRINT-ARC-011 — Definir reintentos automáticos y cola de fallos
+### ✅ PRINT-ARC-011 — Definir reintentos automáticos y cola de fallos
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-012 — Definir confirmación de envío, impresión y entrega cuando sea verificable` — RESERVADA
+**Tipo de tarea:** documental; contrato de reintento seguro, ciclo de intento, clasificación de fallos, programación determinista, carriles lógicos de trabajo, dead-letter y matriz materializada para cincuenta salidas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Cambios físicos autorizados:** ninguno; no crea workers, tablas, colas persistentes, endpoints, adaptadores, migraciones, configuración, despliegues ni cambios en Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir cuándo una impresión puede reintentarse automáticamente, cuándo debe bloquearse por resultado desconocido, cuándo termina en cola de fallos y cómo se conserva una sola intención empresarial durante todos los intentos técnicos.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-011` queda cerrada documentalmente con:
+
+- el contrato `VENTO-PRINT-RETRY-QUEUE` versión `1.0.0`;
+- una separación normativa entre trabajo, entrada de cola, lease de ejecución, intento técnico, recepción del adaptador, posible aceptación del periférico, resultado desconocido, reintento programado y fallo terminal;
+- 11 estados de intento y 6 estados de entrada de cola;
+- 8 clases canónicas de fallo y una decisión determinista para cada clase;
+- 6 perfiles de reintento materializados;
+- 5 carriles lógicos del servicio de impresión;
+- una partición de despacho con concurrencia inicial máxima de una ejecución por dispositivo y canal;
+- 50 salidas con perfil, prioridad e identidad de deduplicación preservados;
+- 16 etiquetas, 9 comandas o tiquetes operativos, 9 comprobantes para cliente o caja y 16 documentos convencionales;
+- distribución propietaria intacta: FOGO 15, NEXO 14, PULSO 12, NUMERA 5 y ORIGO 4;
+- cero nuevos trabajos creados por reintento, cero liberaciones de idempotencia por timeout y cero replays automáticos desde dead-letter;
+- cero implementación y cero evidencia operativa o física declarada.
+
+La cola definida aquí es un componente lógico interno del servicio transversal de impresión. No activa ni presupone el grupo general `QUEUE_CONDITIONAL`, que permanece fuera del alcance de esta etapa prioritaria.
+
+---
+
+#### 2. Diagnóstico técnico actual
+
+La superficie vigente de impresión en NEXO conserva una cola de texto en `localStorage`, construye ZPL y llama directamente `device.send`. El callback exitoso presenta “Impresión enviada” y el callback de error muestra el mensaje recibido.
+
+| Superficie                                  | Comportamiento observado                                                          | Brecha frente a esta tarea                                                                                                                | Clasificación                        |
+| ------------------------------------------- | --------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `vento-nexo/src/app/printing/jobs/page.tsx` | Conserva líneas locales bajo `vento-nexo:printing:queue:v1`.                      | No existe entrada canónica de cola, lease, intento numerado, deadline, programación ni dead-letter.                                       | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION` |
+| `vento-nexo/src/app/printing/jobs/page.tsx` | Evita repetir una línea idéntica únicamente durante la operación local de append. | La comparación textual local no sustituye la idempotencia transversal ni sobrevive entre actores, dispositivos o aplicaciones.            | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION` |
+| `vento-nexo/src/app/printing/jobs/page.tsx` | Invoca `device.send` con callback de éxito o error.                               | No distingue rechazo anterior al envío, aceptación del adaptador, posible aceptación del periférico, timeout ambiguo ni resultado físico. | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION` |
+| Superficie transversal                      | No existe worker o registro persistente de fallos verificado.                     | No hay reintento automático seguro, presupuesto, backoff, conciliación ni cola de fallos consultable.                                     | `NO_IMPLEMENTADO`                    |
+
+El comportamiento actual no se presenta como conforme. Esta tarea define el objetivo documental consumible por el alcance de implementación posterior.
+
+---
+
+#### 3. Frontera e invariantes
+
+```text
+VENTO-PRINT-JOB VALIDADO
+→ RUTA, POLITICA OBJETIVO Y SALUD RESUELTAS
+→ VENTO-PRINT-IDEMPOTENCY ADMITIDA
+→ VENTO-PRINT-RETRY-QUEUE ENCOLADA
+→ LEASE EXCLUSIVO
+→ INTENTO TECNICO
+→ RECEIPT O RESULTADO DESCONOCIDO
+→ REINTENTO SEGURO, CONCILIACION O COLA DE FALLOS
+→ PRINT-ARC-012: CONFIRMACIONES Y RECEIPTS
+```
+
+Reglas obligatorias:
+
+1. Un reintento conserva exactamente `job_id`, `intent_id`, `copy_slot_id`, `idempotency_key` y `semantic_fingerprint`.
+2. Un reintento no cambia payload, hash, plantilla, versión, perfil físico ni destino lógico.
+3. El dispositivo o canal físico puede cambiar únicamente si la política y el fallback ya aprobados lo permiten; ese cambio no crea una copia nueva.
+4. Cada envío técnico utiliza un `attempt_id` único y un `attempt_number` entero, monotónico y sin reutilización.
+5. El contador de intentos aumenta al entrar en `DISPATCHING`, no al esperar salud, adquirir un lease o permanecer bloqueado antes del envío.
+6. Un bloqueo de ruta, salud, dispositivo almacenado, mantenimiento o ausencia de capacidad no consume intentos.
+7. Solo se reintenta automáticamente cuando existe evidencia de que el comando no pudo haber sido aceptado, o cuando el periférico emitió un rechazo explícito y seguro.
+8. Si el comando pudo haber sido aceptado, la pérdida de callback, timeout o desconexión produce `RESULT_UNKNOWN`; queda prohibido el reintento ciego.
+9. `ADAPTER_ACCEPTED` y `PERIPHERAL_ACCEPTED` son hitos técnicos, no prueba de impresión física correcta.
+10. El presupuesto automático pertenece al trabajo y no se reinicia por reinicio de proceso, reconexión, cambio de worker, cambio de dispositivo permitido o intervención manual.
+11. La expiración de un lease anterior a `DISPATCHING` permite reclamar la misma entrada sin consumir intento. Después de `DISPATCHING`, una expiración sin resultado produce `RESULT_UNKNOWN`.
+12. Solo puede existir un lease activo por `job_id` y una ejecución `DISPATCHING` por partición física.
+13. La partición inicial es `device_ref + channel_id`; su concurrencia canónica inicial es uno.
+14. La prioridad no puede violar causalidad, adelantar una cancelación antes de la comanda relacionada ni enviar una versión obsoleta después de una versión posterior confirmada.
+15. Un fallo de contrato o payload no se corrige mutando el trabajo. La corrección exige una nueva versión empresarial y un nuevo trabajo.
+16. Un fallo de autorización no se reintenta automáticamente; exige una nueva acción autorizada.
+17. Una entrada en dead-letter no se reproduce sola. Toda salida requiere decisión explícita, razón, actor y trazabilidad.
+18. El replay manual de un trabajo fallido conserva su identidad y no equivale a reimpresión.
+19. Una copia adicional legítima posterior al resultado físico pertenece a `PRINT-ARC-014` y debe crear la identidad de copia autorizada correspondiente.
+20. Cancelación y expiración pertenecen a `PRINT-ARC-013`; esta tarea conserva sus puntos de integración sin definir sus reglas finales.
+21. Confirmación de envío, aceptación, impresión y entrega pertenece a `PRINT-ARC-012`; esta tarea no inventa receipts o evidencia todavía inexistentes.
+22. La implementación física, adaptadores y workers permanece condicionada por `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`.
+
+---
+
+#### 4. Contrato `VENTO-PRINT-RETRY-QUEUE` `1.0.0`
+
+##### 4.1 Estructura normativa
+
+```json
+{
+  "retry_contract_id": "VENTO-PRINT-RETRY-QUEUE",
+  "retry_contract_version": "1.0.0",
+  "queue_entry_id": "<uuid>",
+  "queue_lane": "<PRINT_READY|PRINT_DELAYED|PRINT_BLOCKED|PRINT_RECONCILIATION_REQUIRED|PRINT_DEAD_LETTER>",
+  "queue_state": "<QUEUED|LEASED|BLOCKED|RETRY_SCHEDULED|RECONCILIATION_REQUIRED|DEAD_LETTERED>",
+  "identity": {
+    "job_id": "<uuid>",
+    "intent_id": "<string>",
+    "copy_slot_id": "<string>",
+    "idempotency_key": "<sha256>",
+    "semantic_fingerprint": "<sha256>"
+  },
+  "document": {
+    "output_id": "<IMP-*>",
+    "owner_application": "<FOGO|NEXO|PULSO|NUMERA|ORIGO>",
+    "payload_hash": "<sha256>",
+    "template_id": "<TPL-*>",
+    "template_version": "<semver>",
+    "logical_destination": "<destino-logico>"
+  },
+  "policy": {
+    "retry_profile_id": "<RTP-*>",
+    "priority": "<P0_URGENT|P1_HIGH|P2_STANDARD|P3_BACKGROUND>",
+    "max_attempts": 4,
+    "retry_delays_seconds": [5, 15, 45],
+    "retry_window_seconds": 120,
+    "lease_seconds": 30
+  },
+  "execution": {
+    "attempt_count": 0,
+    "next_attempt_at": "<RFC3339|null>",
+    "retry_window_expires_at": "<RFC3339>",
+    "causal_key": "<string>",
+    "dispatch_partition_key": "<device_ref+channel_id|null>",
+    "selected_target_policy_id": "<TGT-*|null>",
+    "device_ref": "<PRN-*|null>",
+    "channel_id": "<CH-*|null>"
+  },
+  "lease": {
+    "lease_id": "<uuid|null>",
+    "worker_id": "<string|null>",
+    "acquired_at": "<RFC3339|null>",
+    "expires_at": "<RFC3339|null>"
+  },
+  "last_failure": {
+    "failure_code": "<PRINT_RETRY_*|null>",
+    "failure_class": "<SAFE_TRANSIENT|RECOVERABLE_DEVICE|RESULT_UNKNOWN|TERMINAL_CONTRACT|TERMINAL_AUTHORIZATION|TERMINAL_COMPATIBILITY|BUDGET_EXHAUSTED|PRE_DISPATCH_BLOCK|null>",
+    "failure_phase": "<PRE_DISPATCH|DISPATCH|ADAPTER|PERIPHERAL|POST_ACCEPTANCE|null>",
+    "command_may_have_been_accepted": false,
+    "observed_at": "<RFC3339|null>"
+  },
+  "timestamps": {
+    "created_at": "<RFC3339>",
+    "updated_at": "<RFC3339>",
+    "first_dispatched_at": "<RFC3339|null>",
+    "last_dispatched_at": "<RFC3339|null>",
+    "dead_lettered_at": "<RFC3339|null>"
+  },
+  "trace": {
+    "correlation_id": "<string>",
+    "causation_id": "<string|null>",
+    "batch_id": "<string|null>"
+  }
+}
+```
+
+##### 4.2 Registro inmutable de intento
+
+Cada entrada en `DISPATCHING` genera un registro append-only:
+
+```json
+{
+  "attempt_id": "<uuid>",
+  "job_id": "<uuid>",
+  "attempt_number": 1,
+  "lease_id": "<uuid>",
+  "worker_id": "<string>",
+  "target_policy_id": "<TGT-*>",
+  "device_ref": "<PRN-*>",
+  "channel_id": "<CH-*>",
+  "payload_hash": "<sha256>",
+  "started_at": "<RFC3339>",
+  "finished_at": "<RFC3339|null>",
+  "attempt_state": "<DISPATCHING|ADAPTER_ACCEPTED|PERIPHERAL_ACCEPTED|RESULT_UNKNOWN|SUCCEEDED|FAILED_RETRYABLE|FAILED_TERMINAL|DEAD_LETTERED>",
+  "receipt_ref": "<string|null>",
+  "failure_code": "<string|null>"
+}
+```
+
+El registro no se sobrescribe. Los cambios de estado se conservan como eventos o revisiones ordenadas; la proyección vigente debe poder reconstruirse.
+
+---
+
+#### 5. Estados y transiciones
+
+##### 5.1 Estados de entrada de cola
+
+| Estado                    | Significado                                                                | Transiciones permitidas                                                                  |
+| ------------------------- | -------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `QUEUED`                  | Trabajo admitido y listo para evaluar ruta, salud y lease.                 | `LEASED`, `BLOCKED`, `DEAD_LETTERED` por fallo terminal previo al envío.                 |
+| `LEASED`                  | Un worker posee temporalmente el derecho exclusivo de evaluar y despachar. | `QUEUED` si expira antes del envío; `BLOCKED`; `RETRY_SCHEDULED`; inicio de intento.     |
+| `BLOCKED`                 | Falta una precondición previa al envío. No existe intento activo.          | `QUEUED` cuando cambia la evidencia; `DEAD_LETTERED` si la condición se vuelve terminal. |
+| `RETRY_SCHEDULED`         | Existe fallo seguro y un `next_attempt_at` dentro del presupuesto.         | `QUEUED` al vencer el delay; `DEAD_LETTERED` al expirar ventana o presupuesto.           |
+| `RECONCILIATION_REQUIRED` | El comando pudo haber sido aceptado y no existe resultado autoritativo.    | Resultado definido por `PRINT-ARC-012`; nunca vuelve automáticamente a `QUEUED`.         |
+| `DEAD_LETTERED`           | El trabajo agotó presupuesto o tiene fallo terminal.                       | Solo revisión y decisión explícita; sin replay automático.                               |
+
+##### 5.2 Estados de intento
+
+| Estado                | Significado                                                                               | Regla                                                                           |
+| --------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------- |
+| `READY`               | Entrada elegible antes de asignar intento.                                                | No consume intento.                                                             |
+| `LEASED`              | Worker seleccionado antes del envío.                                                      | No consume intento.                                                             |
+| `DISPATCHING`         | Se inició la operación de envío.                                                          | Asigna `attempt_id` y aumenta `attempt_number`.                                 |
+| `ADAPTER_ACCEPTED`    | El adaptador aceptó el comando.                                                           | No demuestra aceptación del periférico ni impresión.                            |
+| `PERIPHERAL_ACCEPTED` | Existe acuse técnico verificable del periférico.                                          | No demuestra resultado físico correcto.                                         |
+| `RESULT_UNKNOWN`      | El comando pudo producir efecto, pero el resultado no es conocido.                        | Bloquea reintento y exige conciliación.                                         |
+| `RETRY_SCHEDULED`     | El intento terminó con fallo seguro y existe presupuesto.                                 | Conserva la identidad completa del trabajo.                                     |
+| `SUCCEEDED`           | Existe la confirmación que `PRINT-ARC-012` defina como suficiente para cerrar el intento. | No equivale por anticipado a entrega física; depende del nivel de confirmación. |
+| `FAILED_RETRYABLE`    | Fallo clasificado como seguro para reintento.                                             | Programa el delay del perfil.                                                   |
+| `FAILED_TERMINAL`     | Contrato, autorización o compatibilidad impiden continuar.                                | Pasa a dead-letter.                                                             |
+| `DEAD_LETTERED`       | No quedan intentos automáticos o existe fallo terminal.                                   | Requiere intervención explícita.                                                |
+
+---
+
+#### 6. Taxonomía de fallos y decisión determinista
+
+| Clase                    | Ejemplos canónicos                                                                                                                 |                                              ¿Consume intento? | Decisión automática                                                            | Carril resultante                     |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------: | ------------------------------------------------------------------------------ | ------------------------------------- |
+| `PRE_DISPATCH_BLOCK`     | Ruta sin dispositivo, salud no fresca, equipo almacenado, mantenimiento, lease ocupado.                                            |                                                             No | Esperar cambio de evidencia; no usar backoff de envío.                         | `PRINT_BLOCKED`                       |
+| `SAFE_TRANSIENT`         | Adaptador no disponible antes de transmitir, conexión rechazada antes de enviar bytes, worker interrumpido antes de `DISPATCHING`. |                             Sí solo si ya inició `DISPATCHING` | Reintentar según perfil cuando esté demostrado que el comando no fue aceptado. | `PRINT_DELAYED`                       |
+| `RECOVERABLE_DEVICE`     | Rechazo explícito por papel, tapa, atasco o condición recuperable antes de aceptar el trabajo.                                     |                                                             Sí | Esperar salud recuperada y reintentar con la misma identidad.                  | `PRINT_DELAYED` o `PRINT_BLOCKED`     |
+| `RESULT_UNKNOWN`         | Timeout tras posible envío, callback perdido, lease vencido después de `DISPATCHING`, desconexión después de aceptación.           |                                                             Sí | Prohibido reintentar; solicitar conciliación.                                  | `PRINT_RECONCILIATION_REQUIRED`       |
+| `TERMINAL_CONTRACT`      | Payload, hash, plantilla, versión o esquema inválidos.                                                                             | No si se detecta antes de envío; sí si aparece durante intento | No mutar el trabajo; exigir nueva versión empresarial y nuevo trabajo.         | `PRINT_DEAD_LETTER`                   |
+| `TERMINAL_AUTHORIZATION` | Actor, permiso o referencia de autorización inválidos o vencidos.                                                                  |                                No si se detecta antes de envío | No reintentar; exigir nueva acción autorizada.                                 | `PRINT_DEAD_LETTER`                   |
+| `TERMINAL_COMPATIBILITY` | Formato, medio, resolución, lenguaje o destino incompatibles sin candidato aprobado.                                               |                                No si se detecta antes de envío | Bloqueo o dead-letter según permanencia; no degradar formato.                  | `PRINT_BLOCKED` o `PRINT_DEAD_LETTER` |
+| `BUDGET_EXHAUSTED`       | Se alcanzó `max_attempts` o venció `retry_window_expires_at`.                                                                      |                                               Ya contabilizado | Finalizar reintento automático.                                                | `PRINT_DEAD_LETTER`                   |
+
+##### 6.1 Códigos mínimos
+
+| Código                               | Clase                    | Condición                                                    |
+| ------------------------------------ | ------------------------ | ------------------------------------------------------------ |
+| `PRINT_RETRY_ADAPTER_UNAVAILABLE`    | `SAFE_TRANSIENT`         | Adaptador no disponible antes de transmitir.                 |
+| `PRINT_RETRY_CONNECTION_REFUSED`     | `SAFE_TRANSIENT`         | Conexión rechazada con evidencia de cero aceptación.         |
+| `PRINT_RETRY_DEVICE_RECOVERABLE`     | `RECOVERABLE_DEVICE`     | Periférico rechaza explícitamente por condición recuperable. |
+| `PRINT_RETRY_RESULT_UNKNOWN`         | `RESULT_UNKNOWN`         | Posible aceptación sin resultado autoritativo.               |
+| `PRINT_RETRY_PAYLOAD_INVALID`        | `TERMINAL_CONTRACT`      | Datos o hash incompatibles con el trabajo.                   |
+| `PRINT_RETRY_TEMPLATE_INVALID`       | `TERMINAL_CONTRACT`      | Plantilla o versión no válida.                               |
+| `PRINT_RETRY_UNAUTHORIZED`           | `TERMINAL_AUTHORIZATION` | Falta autoridad vigente.                                     |
+| `PRINT_RETRY_FORMAT_INCOMPATIBLE`    | `TERMINAL_COMPATIBILITY` | No existe destino compatible aprobado.                       |
+| `PRINT_RETRY_BUDGET_EXHAUSTED`       | `BUDGET_EXHAUSTED`       | Se agotaron intentos o ventana.                              |
+| `PRINT_RETRY_MANUAL_REVIEW_REQUIRED` | terminal o desconocido   | La clasificación automática no es suficiente.                |
+
+Un código no puede cambiar de clase por conveniencia del worker. Los mapeos de error de cada adaptador deberán versionarse en `PRINT-ARC-018`.
+
+---
+
+#### 7. Perfiles canónicos de reintento
+
+Los delays se calculan desde la finalización del intento anterior. `max_attempts` incluye el intento inicial. No se aplica jitter aleatorio: la programación debe ser reproducible. Los trabajos que comparten timestamp se ordenan por causalidad, `next_attempt_at`, prioridad, `created_at` y `job_id`.
+
+| Perfil                | Alcance                                        | Prioridad       | Intentos máximos | Delays posteriores    | Ventana total | Lease | Resultado al agotar |
+| --------------------- | ---------------------------------------------- | --------------- | ---------------: | --------------------- | ------------: | ----: | ------------------- |
+| `RTP-LBL-STANDARD`    | Etiquetas `IMP-LBL-*`.                         | `P2_STANDARD`   |                3 | 15 s, 60 s            |         300 s |  60 s | `PRINT_DEAD_LETTER` |
+| `RTP-CMD-PREPARATION` | Comandas de preparación y ejecución.           | `P1_HIGH`       |                4 | 5 s, 15 s, 45 s       |         120 s |  30 s | `PRINT_DEAD_LETTER` |
+| `RTP-CMD-LOGISTICS`   | Expedición, reposición y solicitud productiva. | `P1_HIGH`       |                4 | 10 s, 30 s, 60 s      |         300 s |  45 s | `PRINT_DEAD_LETTER` |
+| `RTP-CMD-CORRECTIVE`  | Modificación y cancelación de comanda.         | `P0_URGENT`     |                5 | 3 s, 10 s, 30 s, 60 s |         180 s |  30 s | `PRINT_DEAD_LETTER` |
+| `RTP-CLI-RECEIPT`     | Comprobantes para cliente y caja.              | `P2_STANDARD`   |                3 | 10 s, 30 s            |         300 s |  45 s | `PRINT_DEAD_LETTER` |
+| `RTP-DOC-A4`          | Documentos convencionales A4.                  | `P3_BACKGROUND` |                3 | 30 s, 120 s           |         900 s | 120 s | `PRINT_DEAD_LETTER` |
+
+Los valores son objetivos documentales iniciales. Su ajuste posterior exige versión nueva del contrato y evidencia operativa; una implementación no puede cambiarlos mediante constantes locales silenciosas.
+
+---
+
+#### 8. Carriles lógicos, orden y concurrencia
+
+| Carril                          | Contenido                                                                      | Regla de entrada                                               | Regla de salida                                                    |
+| ------------------------------- | ------------------------------------------------------------------------------ | -------------------------------------------------------------- | ------------------------------------------------------------------ |
+| `PRINT_READY`                   | Entradas cuya hora de ejecución llegó y cuyas precondiciones pueden evaluarse. | Idempotencia admitida y `next_attempt_at <= now`.              | Lease o bloqueo documentado.                                       |
+| `PRINT_DELAYED`                 | Reintentos seguros pendientes de backoff.                                      | Fallo `SAFE_TRANSIENT` o `RECOVERABLE_DEVICE` con presupuesto. | Pasa a `PRINT_READY` en `next_attempt_at`.                         |
+| `PRINT_BLOCKED`                 | Trabajos sin precondición de ruta, salud, dispositivo o capacidad.             | Bloqueo previo al envío.                                       | Solo al cambiar evidencia o decisión canónica aplicable.           |
+| `PRINT_RECONCILIATION_REQUIRED` | Trabajos con posible efecto físico y resultado desconocido.                    | `command_may_have_been_accepted = true`.                       | Únicamente por resultado autoritativo definido en `PRINT-ARC-012`. |
+| `PRINT_DEAD_LETTER`             | Fallos terminales o presupuesto agotado.                                       | Clasificación terminal o agotamiento.                          | Revisión explícita; nunca replay automático.                       |
+
+Reglas de scheduling:
+
+1. Un predecesor causal no resuelto bloquea sus dependientes.
+2. Dentro de una misma `causal_key`, se conserva orden de versión y creación.
+3. La prioridad solo ordena entradas causalmente elegibles.
+4. Entre entradas de igual prioridad, se usa `next_attempt_at`, luego `created_at` y finalmente `job_id` ascendente.
+5. Una entrada antigua ya elegible no puede ser desplazada por otra más nueva de la misma prioridad.
+6. La partición `device_ref + channel_id` permite una sola ejecución simultánea por defecto.
+7. El cambio de USB a Wi-Fi de la misma Epson L4260 conserva el trabajo y genera un nuevo intento solo cuando el envío anterior terminó con fallo seguro.
+8. La falta de capacidad en Vento Producción no activa polling agresivo ni consume presupuesto; permanece en `PRINT_BLOCKED`.
+
+---
+
+#### 9. Cola de fallos y dead-letter
+
+Cada entrada de dead-letter conserva como mínimo:
+
+| Campo                       | Obligación                                                                                                            |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `failure_record_id`         | Identidad inmutable del registro.                                                                                     |
+| Identidad completa          | `job_id`, `intent_id`, `copy_slot_id`, clave y huella semántica.                                                      |
+| Contexto documental         | Salida, propietaria, payload hash, plantilla, versión y destino lógico.                                               |
+| Contexto de ejecución       | Perfil, intentos usados, primer y último intento, target, dispositivo y canal.                                        |
+| Clasificación               | Código, clase, fase y marca de posible aceptación.                                                                    |
+| Evidencia                   | Receipts, errores estructurados y referencias de observación disponibles; nunca datos inventados.                     |
+| Próxima acción              | Conciliar, corregir contrato mediante nueva versión, restaurar dispositivo, obtener autorización o cerrar sin replay. |
+| Actor y razón               | Obligatorios para cualquier decisión manual.                                                                          |
+| Owner y condición de salida | Tarea o componente responsable y evidencia concreta requerida.                                                        |
+
+Reglas:
+
+- dead-letter es un estado terminal del presupuesto automático, no eliminación;
+- no se elimina el trabajo ni se libera su clave de idempotencia;
+- un replay manual no reinicia el contador automático y registra `manual_replay_count` por separado;
+- un replay manual seguro conserva la misma identidad del trabajo;
+- si cambia payload, plantilla o versión empresarial, se crea un trabajo nuevo y el anterior permanece trazable;
+- si el resultado es desconocido, el replay manual también está prohibido hasta conciliación;
+- cerrar una entrada como no reproducible exige actor, razón, evidencia y estado final, sin declarar impresión fallida o exitosa por inferencia.
+
+---
+
+#### 10. Matriz materializada de las cincuenta salidas
+
+Las denominaciones, propietarias e identidades de deduplicación permanecen intactas. La matriz asigna únicamente política de reintento y prioridad.
+
+| Salida       | Nombre                                                    | Propietaria | Perfil de idempotencia heredado     | Perfil de reintento   | Prioridad       | Resultado documental                 |
+| ------------ | --------------------------------------------------------- | ----------- | ----------------------------------- | --------------------- | --------------- | ------------------------------------ |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | `FOGO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | `FOGO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | `FOGO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | `FOGO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | `FOGO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | `FOGO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | `ORIGO`     | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | `NEXO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | `NEXO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | `NEXO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | `PULSO`     | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | `NEXO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | `FOGO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | `FOGO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | `FOGO`      | `IDP-RESOURCE-VERSION`              | `RTP-LBL-STANDARD`    | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CMD-01` | Comanda de cocina                                         | `PULSO`     | `IDP-ORDER-VERSION-DESTINATION`     | `RTP-CMD-PREPARATION` | `P1_HIGH`       | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías                           | `PULSO`     | `IDP-ORDER-VERSION-DESTINATION`     | `RTP-CMD-PREPARATION` | `P1_HIGH`       | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes             | `PULSO`     | `IDP-ORDER-VERSION-DESTINATION`     | `RTP-CMD-PREPARATION` | `P1_HIGH`       | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CMD-04` | Comanda de preparación o mise en place                    | `FOGO`      | `IDP-PREPARATION-REQUEST-VERSION`   | `RTP-CMD-PREPARATION` | `P1_HIGH`       | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CMD-05` | Tiquete de expedición o recogida                          | `PULSO`     | `IDP-FULFILLMENT-SNAPSHOT`          | `RTP-CMD-LOGISTICS`   | `P1_HIGH`       | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CMD-06` | Solicitud interna de reposición                           | `NEXO`      | `IDP-REPLENISHMENT-REQUEST-VERSION` | `RTP-CMD-LOGISTICS`   | `P1_HIGH`       | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CMD-07` | Modificación o adición de comanda                         | `PULSO`     | `IDP-ORDER-MODIFICATION`            | `RTP-CMD-CORRECTIVE`  | `P0_URGENT`     | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CMD-08` | Cancelación o anulación de comanda                        | `PULSO`     | `IDP-ORDER-CANCELLATION`            | `RTP-CMD-CORRECTIVE`  | `P0_URGENT`     | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia                 | `FOGO`      | `IDP-PRODUCTION-REQUEST-VERSION`    | `RTP-CMD-LOGISTICS`   | `P1_HIGH`       | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente                         | `PULSO`     | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `RTP-CLI-RECEIPT`     | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CLI-02` | Confirmación de pedido                                    | `PULSO`     | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `RTP-CLI-RECEIPT`     | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CLI-03` | Comprobante de pago                                       | `NUMERA`    | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `RTP-CLI-RECEIPT`     | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente               | `NUMERA`    | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `RTP-CLI-RECEIPT`     | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito      | `NUMERA`    | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `RTP-CLI-RECEIPT`     | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CLI-06` | Resumen de recogida o entrega                             | `PULSO`     | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `RTP-CLI-RECEIPT`     | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo                         | `PULSO`     | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `RTP-CLI-RECEIPT`     | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                     | `PULSO`     | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `RTP-CLI-RECEIPT`     | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja         | `NUMERA`    | `IDP-CUSTOMER-DOCUMENT-VERSION`     | `RTP-CLI-RECEIPT`     | `P2_STANDARD`   | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-01` | Remisión o nota de despacho                               | `NEXO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-02` | Manifiesto de traslado interno                            | `NEXO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-03` | Hoja de conteo de inventario                              | `NEXO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario            | `NEXO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-05` | Orden de compra                                           | `ORIGO`     | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-06` | Acta o comprobante de recepción                           | `ORIGO`     | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-07` | Devolución a proveedor                                    | `ORIGO`     | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-08` | Orden de producción o ficha de lote                       | `FOGO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica                     | `FOGO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-10` | Registro de calidad o no conformidad                      | `FOGO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-11` | Orden de mantenimiento                                    | `NEXO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo          | `NEXO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico                    | `NEXO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo       | `FOGO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación              | `NUMERA`    | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales           | `NEXO`      | `IDP-DOCUMENT-SNAPSHOT`             | `RTP-DOC-A4`          | `P3_BACKGROUND` | `ESPECIFICADO / RETRY_SCOPE_CERRADO` |
+
+**Control de cobertura:** 50 esperadas, 50 materializadas, 50 identificadores únicos, 0 faltantes y 0 duplicados.
+
+##### 10.1 Reconciliación cuantitativa
+
+| Dimensión                        | Resultado |
+| -------------------------------- | --------: |
+| Etiquetas                        |        16 |
+| Comandas y tiquetes operativos   |         9 |
+| Comprobantes para cliente y caja |         9 |
+| Documentos convencionales        |        16 |
+| **Total**                        |    **50** |
+
+| Propietaria | Cantidad |
+| ----------- | -------: |
+| `FOGO`      |       15 |
+| `NEXO`      |       14 |
+| `PULSO`     |       12 |
+| `NUMERA`    |        5 |
+| `ORIGO`     |        4 |
+| **Total**   |   **50** |
+
+| Perfil de reintento   | Cantidad |
+| --------------------- | -------: |
+| `RTP-LBL-STANDARD`    |       16 |
+| `RTP-CMD-PREPARATION` |        4 |
+| `RTP-CMD-LOGISTICS`   |        3 |
+| `RTP-CMD-CORRECTIVE`  |        2 |
+| `RTP-CLI-RECEIPT`     |        9 |
+| `RTP-DOC-A4`          |       16 |
+| **Total**             |   **50** |
+
+---
+
+#### 11. Tratamiento de bloqueos heredados
+
+| Bloqueo                                               | Tratamiento en esta tarea                                           | Propietario de resolución                                                                                                                | Condición de salida                                                                                       |
+| ----------------------------------------------------- | ------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| Zebra ZD230 almacenada para las 16 etiquetas          | `PRINT_BLOCKED`; cero intentos y cero backoff de envío.             | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`, con materialización técnica en `PRINT-ARC-018` y validación en `PRINT-ARC-020`. | Dispositivo desplegado, estado administrativo habilitado, adaptador disponible y salud elegible.          |
+| Epson L5590 en mantenimiento                          | `PRINT_BLOCKED`; no intentar el destino local de Vento Producción.  | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`; comprobación física en `PRINT-ARC-020`.                                         | Reparación completada, estado administrativo actualizado y prueba física aprobada.                        |
+| Sin impresora compatible de 80 mm en Vento Producción | `PRINT_BLOCKED`; no degradar a A4 ni usar otra sede por inferencia. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`.                                                                                 | Dispositivo compatible aprobado o nueva decisión canónica de ruta y target.                               |
+| Heartbeat `LATE`, `STALE` o `NEVER_OBSERVED`          | Bloqueo previo al envío; no consume intento.                        | Implementación de health/adaptador en `PRINT-ARC-018`; observabilidad en `PRINT-ARC-019`.                                                | Observación `FRESH` y estado elegible según `PRINT-ARC-009`.                                              |
+| Resultado de envío ambiguo                            | `PRINT_RECONCILIATION_REQUIRED`; no reintentar.                     | `PRINT-ARC-012`.                                                                                                                         | Receipt o consulta autoritativa que determine resultado conocido.                                         |
+| Presupuesto agotado                                   | `PRINT_DEAD_LETTER`; sin replay automático.                         | Operación autorizada conforme a `PRINT-ARC-015`, soporte y monitoreo de `PRINT-ARC-019`.                                                 | Causa resuelta, decisión explícita, actor, razón y evidencia; si es copia nueva, aplicar `PRINT-ARC-014`. |
+
+---
+
+#### 12. Responsabilidades reservadas y condición de salida
+
+| Decisión reservada                                                 | Tarea propietaria                                       | Condición de salida                                                                 |
+| ------------------------------------------------------------------ | ------------------------------------------------------- | ----------------------------------------------------------------------------------- |
+| Semántica de receipts y niveles de confirmación                    | `PRINT-ARC-012`                                         | Contrato que determine qué evidencia cierra envío, aceptación, impresión o entrega. |
+| Cancelación, expiración y carreras con trabajos en curso           | `PRINT-ARC-013`                                         | Estados, precedencia y efectos definidos sin liberar identidad incorrectamente.     |
+| Reimpresión y copia adicional legítima                             | `PRINT-ARC-014`                                         | Contrato de razón, actor, copia y relación con el original.                         |
+| Permisos para replay, conciliación y administración de dead-letter | `PRINT-ARC-015`                                         | Capacidades y alcance autorizativo definidos.                                       |
+| Privacidad del payload, errores y evidencias                       | `PRINT-ARC-016`                                         | Política de minimización, acceso y retención aplicada.                              |
+| Persistencia offline, reconexión y drenaje local                   | `PRINT-ARC-017`                                         | Política offline por operación y mecanismo de reanudación definido.                 |
+| Mapeo de errores, adaptadores, workers y leases físicos            | `PRINT-ARC-018`                                         | Implementación seleccionada y contratos de adaptador materializados.                |
+| Métricas, alertas, backlog, edad y dead-letter                     | `PRINT-ARC-019`                                         | Señales y umbrales operativos definidos e implementables.                           |
+| Evidencia física de no duplicación y recuperación                  | `PRINT-ARC-020`                                         | Piloto controlado con dispositivos reales y resultados reproducibles.               |
+| Autorización del paquete físico de implementación                  | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | Decisión explícita de repositorios, componentes, Supabase, hardware y despliegue.   |
+
+---
+
+#### 13. Criterios de aceptación
+
+`PRINT-ARC-011` queda documentalmente satisfecha cuando:
+
+- [x] existe un contrato versionado de reintento y cola de fallos;
+- [x] trabajo, entrada de cola, lease e intento tienen identidades separadas;
+- [x] cada reintento conserva la identidad completa definida en `PRINT-ARC-010`;
+- [x] el contador solo aumenta cuando empieza un envío técnico;
+- [x] los bloqueos previos al envío no consumen intentos;
+- [x] se impide reintentar automáticamente un resultado desconocido;
+- [x] se distinguen fallos seguros, recuperables, desconocidos y terminales;
+- [x] existen presupuestos, delays, ventanas y leases explícitos para seis perfiles;
+- [x] dead-letter no elimina trabajos ni libera idempotencia;
+- [x] replay manual y reimpresión permanecen diferenciados;
+- [x] se materializan las 50 salidas sin faltantes ni duplicados;
+- [x] se conservan nombres, propietarias y perfiles de idempotencia;
+- [x] la distribución 15/14/12/5/4 permanece intacta;
+- [x] se preservan los bloqueos de dispositivo y salud heredados;
+- [x] cada decisión posterior tiene tarea propietaria y condición de salida;
+- [x] no se declara worker, cola persistente, envío, retry, receipt, conciliación ni prueba física implementados.
+
+---
+
+#### 14. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+La tarea especializa documentalmente comportamientos ya cubiertos por el registro canónico vigente: preservación de identidad durante reintentos, resultado desconocido, orden causal, dead-letter, observabilidad de backlog y separación entre acuse técnico y efecto físico. No implementa cola, worker, adaptador, persistencia, scheduler, receipt o dispositivo contra los cuales producir evidencia nueva. Por ello crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0.
+
+---
+
+#### 15. Handoff cerrado hacia `PRINT-ARC-012`
+
+`PRINT-ARC-012` recibe:
+
+- `VENTO-PRINT-RETRY-QUEUE` `1.0.0`;
+- 50 salidas con perfil de reintento y prioridad materializados;
+- seis perfiles con presupuestos y delays deterministas;
+- once estados de intento y seis estados de cola;
+- cinco carriles lógicos;
+- separación entre `ADAPTER_ACCEPTED`, `PERIPHERAL_ACCEPTED`, `RESULT_UNKNOWN` y resultado exitoso todavía no definido;
+- prohibición de reintento ciego ante posible aceptación;
+- obligación de resolver `PRINT_RECONCILIATION_REQUIRED` mediante evidencia autoritativa;
+- dead-letter inmutable y sin replay automático;
+- bloqueos heredados que no consumen intento.
+
+`PRINT-ARC-012` deberá definir qué receipt o evidencia es suficiente para cada nivel de confirmación, cómo se consulta el resultado autoritativo y cómo se cierra o reconcilia una entrada sin inventar impresión física ni entrega.
+
+La aprobación de `PRINT-ARC-011` no inicia, desarrolla ni aprueba `PRINT-ARC-012`.
+
+
 ### [ ] PRINT-ARC-012 — Definir confirmación de envío, impresión y entrega cuando sea verificable
 ### [ ] PRINT-ARC-013 — Definir cancelación y expiración
 ### [ ] PRINT-ARC-014 — Definir reimpresión como acción separada y auditable
