@@ -303,7 +303,7 @@ export function resolvePriorityRoute({ selector, lanes, progress, taskMap }) {
     block_code: `CARRIL ${lane.owner_application.toUpperCase()}`,
     block_title: `${lane.title} — etapa ${active.order}: ${active.stage_id}`,
     previous_task_id: previousId,
-    latest_treq_task_id: 'SUPA-TRANS-006',
+    latest_treq_task_id: selector.latest_treq_task_id ?? 'SUPA-TRANS-006',
     handoff_task_id: handoff?.tasks[0].id ?? null,
     handoff_sequence_id: handoff
       ? `PRIORITY-${lane.lane_id}-STAGE-${String(handoff.order).padStart(3, '0')}`
