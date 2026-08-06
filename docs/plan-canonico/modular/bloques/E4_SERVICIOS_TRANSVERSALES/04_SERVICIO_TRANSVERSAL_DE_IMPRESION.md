@@ -1608,7 +1608,481 @@ PRINT-ARC-006 — Definir tiempo de vida y reglas de retención
 La aprobación de `PRINT-ARC-005` no inicia, desarrolla ni aprueba `PRINT-ARC-006`.
 
 
-### [ ] PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión
+### ✅ PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispositivo` — RESERVADA
+**Tipo de tarea:** documental; contrato materializado, versionado y consumible para representar solicitudes atómicas de impresión sobre las cincuenta identidades aprobadas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Cambios físicos autorizados:** ninguno; no implementa persistencia, API, colas, rutas, adaptadores, renderizadores, código, SQL, migraciones ni cambios en Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir la forma canónica, inmutable y versionada de un trabajo de impresión, sus campos obligatorios, fuentes autorizadas, reglas de validación, atomicidad, trazabilidad y límites frente a enrutamiento, dispositivo y ejecución, materializando su aplicación para las cincuenta salidas heredadas.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-006` queda cerrada documentalmente con:
+
+- un contrato raíz `VENTO-PRINT-JOB` versión `1.0.0`;
+- una unidad atómica de trabajo definida;
+- un sobre inmutable de solicitud, documento, plantilla, payload y trazabilidad;
+- una matriz individual para las 50 identidades `IMP-*`;
+- 50 referencias exactas a plantilla `TPL-IMP-*` versión `1.0.0`;
+- 50 referencias al contrato de datos aprobado en `PRINT-ARC-005`;
+- una política de validación previa al enrutamiento;
+- una política de versionamiento del contrato;
+- cero decisiones de ruta, impresora, fallback, heartbeat, reintento, confirmación, cancelación, reimpresión, permiso, privacidad, contingencia, adaptador, monitoreo o piloto;
+- cero cambios de aplicación propietaria, plantilla, perfil físico o datos requeridos;
+- cero implementación y cero evidencia operativa declarada.
+
+Todas las filas quedan en estado `ESPECIFICADO`. El contrato es objetivo documental y todavía no existe como servicio transversal implementado.
+
+---
+
+#### 2. Determinación canónica del alcance y contradicción heredada
+
+Las fuentes vigentes que gobiernan la continuidad —`00_CABECERA_Y_ESTADO.md`, `active-sequence.json`, el marcador propietario y la secuencia histórica anterior a la incorporación de `PRINT-ARC-005`— coinciden en que la tarea actual es:
+
+```text
+PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión
+```
+
+El bloque aprobado de `PRINT-ARC-005` contiene dos referencias incompatibles que describen `PRINT-ARC-006` como definición de vida útil o retención. Esa descripción no coincide con el identificador y título canónicos y no se adopta como alcance de esta tarea.
+
+| Inconsistencia                                                               | Estado                               | Propietario documental | Condición de salida                                                                                                                                                                                 |
+| ---------------------------------------------------------------------------- | ------------------------------------ | ---------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Título y handoff incorrectos de la siguiente tarea dentro de `PRINT-ARC-005` | `PENDIENTE_DE_CORRECCION_DOCUMENTAL` | `PRINT-ARC-005`        | Sustituir las referencias a vida útil o retención por el título exacto `PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión`, sin modificar las decisiones sustantivas de plantillas. |
+
+La inconsistencia no impide materializar este contrato porque la identidad y el título de la tarea actual son unívocos en el estado activo y en el marcador propietario. Sí impide declarar coherencia documental integral del bloque hasta corregir `PRINT-ARC-005`.
+
+---
+
+#### 3. Diagnóstico técnico actual verificable
+
+La superficie existente de impresión no constituye todavía el contrato canónico definido aquí:
+
+| Superficie actual                                                                      | Estado observado                                                                                                                     | Brecha frente al contrato objetivo                                                                                            | Tratamiento                                                                  |
+| -------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| `vento-nexo/src/app/printing/jobs/page.tsx`                                            | Construye una cola local desde parámetros y `localStorage`, interpreta líneas libres y envía ZPL directamente mediante BrowserPrint. | No existe `job_id`, contrato versionado, documento canónico, payload inmutable, hash ni persistencia transversal del trabajo. | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION`; se conserva sin cambios en esta tarea. |
+| `vento-nexo/src/app/printing/jobs/_lib/types.ts`                                       | Modela dispositivos, presets y ajustes locales.                                                                                      | No modela el trabajo canónico ni sus fronteras con documento, plantilla, ruta y resultado.                                    | Entrada para la implementación posterior.                                    |
+| `vento-nexo/src/app/printing/designer/_lib/types.ts`                                   | Modela layouts de etiqueta con dimensiones y elementos.                                                                              | La plantilla no incluye `salida_id`, versión canónica, propietaria ni contrato de datos aprobado.                             | No se corrige en fase documental.                                            |
+| `vento-nexo/src/app/api/printing/layouts/route.ts` y `public.printing_label_templates` | Persisten layouts personales de NEXO como JSON.                                                                                      | No persisten trabajos de impresión y no representan el catálogo transversal de cincuenta plantillas.                          | No se altera API, tabla, RLS ni migración.                                   |
+
+Por tanto, ningún envío actual por BrowserPrint se presenta como evidencia de conformidad con `VENTO-PRINT-JOB` `1.0.0`.
+
+---
+
+#### 4. Identidad, atomicidad y fronteras del trabajo
+
+##### 4.1 Unidad atómica
+
+Un trabajo canónico representa exactamente:
+
+```text
+UNA INSTANCIA DOCUMENTAL
++ UNA SALIDA IMP-*
++ UNA PLANTILLA Y VERSION EXPLICITAS
++ UN PERFIL FISICO
++ UN SNAPSHOT INMUTABLE DE DATOS
++ UNA CANTIDAD DE COPIAS IDENTICAS
+```
+
+Reglas:
+
+1. Un trabajo no mezcla dos `salida_id`, dos `documento_id`, dos plantillas ni dos versiones.
+2. Varias copias idénticas del mismo snapshot pertenecen al mismo trabajo mediante `request.copies`.
+3. Varias instancias documentales forman trabajos separados, incluso si el adaptador posterior puede agruparlas en una transmisión física.
+4. Un lote se representa mediante `trace.batch_id`; el lote agrupa trabajos, pero no sustituye sus identidades, hashes ni auditorías individuales.
+5. Un documento multipágina continúa siendo un solo trabajo si conserva un único `documento_id`, plantilla, versión y snapshot.
+6. La existencia del trabajo no autoriza ni modifica el hecho empresarial. La autorización debe existir antes de crear el trabajo.
+7. La creación del trabajo no significa que fue enrutado, enviado, impreso, entregado o aceptado.
+
+##### 4.2 Separación obligatoria
+
+```text
+DOCUMENTO EMPRESARIAL AUTORIZADO
+→ CANDIDATO DE TRABAJO
+→ VALIDACION DE CONTRATO
+→ TRABAJO CANONICO INMUTABLE
+→ PRINT-ARC-007: ENRUTAMIENTO
+→ TAREAS POSTERIORES: EJECUCION Y RESULTADO
+```
+
+No forman parte del sobre inmutable definido aquí:
+
+- sede o estación de impresión;
+- canal de transporte;
+- impresora principal o alternativa;
+- dispositivo o adaptador;
+- estado técnico de impresora;
+- clave de idempotencia;
+- intento, reintento o cola de fallos;
+- confirmación de envío, impresión o entrega;
+- expiración o cancelación;
+- relación de reimpresión;
+- decisión de permiso;
+- política de privacidad o enmascaramiento;
+- contingencia offline;
+- telemetría o diagnóstico;
+- evidencia del piloto.
+
+---
+
+#### 5. Contrato raíz `VENTO-PRINT-JOB` `1.0.0`
+
+##### 5.1 Estructura normativa
+
+```json
+{
+  "contract_id": "VENTO-PRINT-JOB",
+  "contract_version": "1.0.0",
+  "job_id": "<uuid>",
+  "created_at": "<RFC3339>",
+  "source": {
+    "application_id": "<FOGO|NEXO|PULSO|NUMERA|ORIGO>",
+    "actor_type": "<USER|SYSTEM>",
+    "actor_id": "<identificador-estable>",
+    "authorization_ref": "<referencia-opaca>",
+    "process_ref": "<proceso-o-paso-canónico>"
+  },
+  "document": {
+    "salida_id": "<IMP-*>",
+    "documento_id": "<identificador-estable>",
+    "documento_revision": "<version-o-null>",
+    "aplicacion_propietaria": "<FOGO|NEXO|PULSO|NUMERA|ORIGO>",
+    "empresa_id": "<identificador-estable>",
+    "sede_id": "<sede-del-hecho>",
+    "estado_documento": "<estado-empresarial>",
+    "emitido_en": "<RFC3339>"
+  },
+  "template": {
+    "plantilla_id": "<TPL-IMP-*>",
+    "plantilla_version": "1.0.0",
+    "perfil_id": "<PERF-*>",
+    "locale": "es-CO",
+    "timezone": "America/Bogota"
+  },
+  "payload": {
+    "contract_ref": "PRINT-ARC-005::<IMP-*>::1.0.0",
+    "data": {},
+    "hash_algorithm": "SHA-256",
+    "hash": "<64-hex>"
+  },
+  "request": {
+    "operation": "PRINT",
+    "copies": 1,
+    "requested_at": "<RFC3339>"
+  },
+  "trace": {
+    "correlation_id": "<identificador-estable>",
+    "causation_id": "<identificador-o-null>",
+    "source_event_id": "<identificador-o-null>",
+    "batch_id": "<identificador-o-null>"
+  }
+}
+```
+
+El ejemplo anterior es una estructura normativa con marcadores tipados; no representa una ejecución ni evidencia real.
+
+##### 5.2 Diccionario materializado de campos
+
+| Ruta                              | Tipo                         | Obligación  | Fuente autorizada                      | Mutabilidad | Regla                                                                                  |
+| --------------------------------- | ---------------------------- | ----------- | -------------------------------------- | ----------- | -------------------------------------------------------------------------------------- |
+| `contract_id`                     | string literal               | requerida   | catálogo transversal                   | inmutable   | Debe ser `VENTO-PRINT-JOB`.                                                            |
+| `contract_version`                | SemVer                       | requerida   | catálogo transversal                   | inmutable   | Debe ser una versión publicada y soportada.                                            |
+| `job_id`                          | UUID                         | requerida   | servicio transversal de impresión      | inmutable   | Identidad única del trabajo; no es `documento_id`.                                     |
+| `created_at`                      | RFC 3339                     | requerida   | servicio transversal de impresión      | inmutable   | Momento de materialización posterior a validación.                                     |
+| `source.application_id`           | enum                         | requerida   | aplicación solicitante                 | inmutable   | Identifica quién solicita, no transfiere propiedad documental.                         |
+| `source.actor_type`               | enum `USER` o `SYSTEM`       | requerida   | contexto autorizado                    | inmutable   | Todo actor de sistema debe tener identidad estable.                                    |
+| `source.actor_id`                 | string estable               | requerida   | contexto autorizado                    | inmutable   | No admite actor anónimo.                                                               |
+| `source.authorization_ref`        | string opaco                 | requerida   | decisión previa de autorización        | inmutable   | Su presencia no sustituye la validación que definirá `PRINT-ARC-015`.                  |
+| `source.process_ref`              | string estable               | requerida   | catálogo de procesos y pasos           | inmutable   | Identifica el origen funcional del trabajo.                                            |
+| `document.salida_id`              | enum de 50 `IMP-*`           | requerida   | `PRINT-ARC-003`                        | inmutable   | Debe existir una sola vez en la matriz vigente.                                        |
+| `document.documento_id`           | string estable               | requerida   | aplicación propietaria                 | inmutable   | Identifica la instancia empresarial representada.                                      |
+| `document.documento_revision`     | string o `null`              | condicional | aplicación propietaria                 | inmutable   | Se exige cuando el dominio versiona el documento; el hash siempre congela el snapshot. |
+| `document.aplicacion_propietaria` | enum                         | requerida   | `PRINT-ARC-004`                        | inmutable   | Debe coincidir con la propietaria aprobada para `salida_id`.                           |
+| `document.empresa_id`             | string estable               | requerida   | contexto del hecho                     | inmutable   | No se infiere desde la impresora.                                                      |
+| `document.sede_id`                | string estable               | requerida   | contexto del hecho                     | inmutable   | Es la sede empresarial del documento, no la sede de destino de impresión.              |
+| `document.estado_documento`       | string tipado                | requerida   | aplicación propietaria                 | inmutable   | El servicio de impresión no lo cambia.                                                 |
+| `document.emitido_en`             | RFC 3339                     | requerida   | aplicación propietaria                 | inmutable   | Momento de emisión de la representación empresarial.                                   |
+| `template.plantilla_id`           | enum `TPL-IMP-*`             | requerida   | `PRINT-ARC-005`                        | inmutable   | Debe ser exactamente `TPL-<salida_id>`.                                                |
+| `template.plantilla_version`      | SemVer                       | requerida   | `PRINT-ARC-005`                        | inmutable   | No se permite resolver silenciosamente la última versión.                              |
+| `template.perfil_id`              | enum `PERF-*`                | requerida   | `PRINT-ARC-005`                        | inmutable   | Debe coincidir con la fila materializada.                                              |
+| `template.locale`                 | string literal               | requerida   | `PRINT-ARC-005`                        | inmutable   | Debe ser `es-CO` en la versión inicial.                                                |
+| `template.timezone`               | string literal               | requerida   | `PRINT-ARC-005`                        | inmutable   | Debe ser `America/Bogota` en la versión inicial.                                       |
+| `payload.contract_ref`            | string estable               | requerida   | `PRINT-ARC-005`                        | inmutable   | Forma `PRINT-ARC-005::<salida_id>::1.0.0`.                                             |
+| `payload.data`                    | objeto JSON                  | requerida   | fuentes autorizadas de `PRINT-ARC-005` | inmutable   | Debe contener todos los campos obligatorios de la fila y ningún valor inventado.       |
+| `payload.hash_algorithm`          | string literal               | requerida   | contrato transversal                   | inmutable   | Debe ser `SHA-256`.                                                                    |
+| `payload.hash`                    | hexadecimal de 64 caracteres | requerida   | productor del snapshot                 | inmutable   | Se calcula sobre el JSON canónico de `payload.data`.                                   |
+| `request.operation`               | string literal               | requerida   | solicitante                            | inmutable   | Debe ser `PRINT`; la reimpresión se define en `PRINT-ARC-014`.                         |
+| `request.copies`                  | entero positivo              | requerida   | solicitante autorizado                 | inmutable   | Todas las copias deben ser idénticas al mismo snapshot.                                |
+| `request.requested_at`            | RFC 3339                     | requerida   | solicitante                            | inmutable   | Momento en que se solicitó la impresión.                                               |
+| `trace.correlation_id`            | string estable               | requerida   | aplicación o capa transversal          | inmutable   | Agrupa el trabajo con el proceso sin reemplazar `job_id`.                              |
+| `trace.causation_id`              | string o `null`              | opcional    | aplicación solicitante                 | inmutable   | Identifica la causa inmediata cuando exista.                                           |
+| `trace.source_event_id`           | string o `null`              | opcional    | aplicación solicitante                 | inmutable   | No crea por sí mismo un evento canónico nuevo.                                         |
+| `trace.batch_id`                  | string o `null`              | opcional    | solicitante o capa transversal         | inmutable   | Agrupa trabajos atómicos sin fusionarlos.                                              |
+
+---
+
+#### 6. Canonicalización e inmutabilidad
+
+1. `payload.data` se canonicaliza en UTF-8, con claves de objeto en orden lexicográfico, sin espacios insignificantes y conservando el orden de los arreglos.
+2. El hash se calcula después de validar tipos, campos obligatorios y fuentes autorizadas.
+3. Después de crear el trabajo no se modifican `source`, `document`, `template`, `payload`, `request` ni `trace`.
+4. Una corrección de datos o plantilla no altera un trabajo existente; deberá producir una nueva solicitud conforme a las reglas que definan `PRINT-ARC-010`, `PRINT-ARC-013` y `PRINT-ARC-014`.
+5. El enrutamiento y la ejecución se registrarán en estructuras separadas y no mutarán el sobre original.
+6. Un adaptador puede transformar el trabajo validado a ZPL, ESC/POS, PDF u otro lenguaje soportado, pero no puede cambiar datos empresariales ni versión de plantilla.
+7. La representación binaria o el comando de dispositivo no sustituye el contrato canónico ni se convierte en fuente de verdad.
+
+---
+
+#### 7. Validación previa al enrutamiento
+
+Un candidato solo se convierte en trabajo canónico cuando supera, en este orden:
+
+1. versión de contrato conocida;
+2. `salida_id` existente;
+3. propietaria coincidente con `PRINT-ARC-004`;
+4. plantilla, versión y perfil coincidentes con `PRINT-ARC-005`;
+5. campos obligatorios presentes y tipados;
+6. fuentes de datos permitidas;
+7. hash reproducible del payload;
+8. actor, autorización y proceso de origen identificados;
+9. cantidad de copias entera y positiva;
+10. identificadores y tiempos con formato válido.
+
+Motivos documentales mínimos de rechazo:
+
+| Código                           | Condición                                                                |
+| -------------------------------- | ------------------------------------------------------------------------ |
+| `PRINT_JOB_UNSUPPORTED_CONTRACT` | `contract_id` o versión no soportada.                                    |
+| `PRINT_JOB_UNKNOWN_OUTPUT`       | `salida_id` inexistente.                                                 |
+| `PRINT_JOB_OWNER_MISMATCH`       | propietaria distinta de `PRINT-ARC-004`.                                 |
+| `PRINT_JOB_TEMPLATE_MISMATCH`    | plantilla, versión o perfil distintos de `PRINT-ARC-005`.                |
+| `PRINT_JOB_PAYLOAD_INVALID`      | datos faltantes, mal tipados o provenientes de una fuente no autorizada. |
+| `PRINT_JOB_HASH_MISMATCH`        | hash ausente o no reproducible.                                          |
+| `PRINT_JOB_ORIGIN_INVALID`       | actor, autorización o proceso de origen no identificados.                |
+| `PRINT_JOB_COPIES_INVALID`       | cantidad de copias no entera o menor que uno.                            |
+| `PRINT_JOB_IDENTITY_INVALID`     | identificadores o marcas de tiempo inválidos.                            |
+
+El rechazo contractual no crea un trabajo, no envía datos a enrutamiento y no modifica el documento empresarial.
+
+---
+
+#### 8. Versionamiento del contrato
+
+1. `contract_version` usa SemVer.
+2. `MAJOR` cambia al eliminar, renombrar o reinterpretar un campo obligatorio, cambiar atomicidad o romper compatibilidad de validación.
+3. `MINOR` cambia al agregar campos opcionales o capacidades compatibles.
+4. `PATCH` cambia por aclaraciones documentales que no alteran el objeto aceptado.
+5. Cada trabajo conserva su versión exacta durante toda su vida técnica.
+6. Los consumidores no pueden aceptar una versión desconocida por aproximación.
+7. La versión del contrato de trabajo, la versión de plantilla y la revisión del documento son identidades distintas y no se sustituyen entre sí.
+
+---
+
+#### 9. Matriz materializada de cobertura
+
+| Salida       | Nombre                                                    | Propietaria | Plantilla                | Perfil              | Contrato de trabajo       | Contrato de payload                | Estado / bloqueo                          |
+| ------------ | --------------------------------------------------------- | ----------- | ------------------------ | ------------------- | ------------------------- | ---------------------------------- | ----------------------------------------- |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | `FOGO`      | `TPL-IMP-LBL-01` `1.0.0` | `PERF-LBL-100X50-H` | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-01::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | `FOGO`      | `TPL-IMP-LBL-02` `1.0.0` | `PERF-LBL-100X50-H` | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-02::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | `FOGO`      | `TPL-IMP-LBL-03` `1.0.0` | `PERF-LBL-75X50-H`  | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-03::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | `FOGO`      | `TPL-IMP-LBL-04` `1.0.0` | `PERF-LBL-75X50-H`  | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-04::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | `FOGO`      | `TPL-IMP-LBL-05` `1.0.0` | `PERF-LBL-100X75-H` | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-05::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | `FOGO`      | `TPL-IMP-LBL-06` `1.0.0` | `PERF-LBL-100X75-H` | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-06::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | `ORIGO`     | `TPL-IMP-LBL-07` `1.0.0` | `PERF-LBL-100X50-H` | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-07::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | `NEXO`      | `TPL-IMP-LBL-08` `1.0.0` | `PERF-LBL-100X50-H` | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-08::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | `NEXO`      | `TPL-IMP-LBL-09` `1.0.0` | `PERF-LBL-75X50-H`  | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-09::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | `NEXO`      | `TPL-IMP-LBL-10` `1.0.0` | `PERF-LBL-100X75-H` | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-10::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | `PULSO`     | `TPL-IMP-LBL-11` `1.0.0` | `PERF-LBL-100X75-H` | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-11::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | `NEXO`      | `TPL-IMP-LBL-12` `1.0.0` | `PERF-LBL-100X50-H` | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-12::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO`      | `TPL-IMP-LBL-13` `1.0.0` | `PERF-LBL-100X75-H` | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-13::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | `FOGO`      | `TPL-IMP-LBL-14` `1.0.0` | `PERF-LBL-75X50-H`  | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-14::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | `FOGO`      | `TPL-IMP-LBL-15` `1.0.0` | `PERF-LBL-75X50-H`  | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-15::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | `FOGO`      | `TPL-IMP-LBL-16` `1.0.0` | `PERF-LBL-75X50-H`  | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-LBL-16::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-01` | Comanda de cocina                                         | `PULSO`     | `TPL-IMP-CMD-01` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CMD-01::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías                           | `PULSO`     | `TPL-IMP-CMD-02` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CMD-02::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes             | `PULSO`     | `TPL-IMP-CMD-03` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CMD-03::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-04` | Comanda de preparación o mise en place                    | `FOGO`      | `TPL-IMP-CMD-04` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CMD-04::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-05` | Tiquete de expedición o recogida                          | `PULSO`     | `TPL-IMP-CMD-05` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CMD-05::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-06` | Solicitud interna de reposición                           | `NEXO`      | `TPL-IMP-CMD-06` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CMD-06::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-07` | Modificación o adición de comanda                         | `PULSO`     | `TPL-IMP-CMD-07` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CMD-07::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-08` | Cancelación o anulación de comanda                        | `PULSO`     | `TPL-IMP-CMD-08` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CMD-08::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia                 | `FOGO`      | `TPL-IMP-CMD-09` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CMD-09::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente                         | `PULSO`     | `TPL-IMP-CLI-01` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CLI-01::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-02` | Confirmación de pedido                                    | `PULSO`     | `TPL-IMP-CLI-02` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CLI-02::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-03` | Comprobante de pago                                       | `NUMERA`    | `TPL-IMP-CLI-03` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CLI-03::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente               | `NUMERA`    | `TPL-IMP-CLI-04` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CLI-04::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito      | `NUMERA`    | `TPL-IMP-CLI-05` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CLI-05::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-06` | Resumen de recogida o entrega                             | `PULSO`     | `TPL-IMP-CLI-06` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CLI-06::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo                         | `PULSO`     | `TPL-IMP-CLI-07` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CLI-07::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                     | `PULSO`     | `TPL-IMP-CLI-08` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CLI-08::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja         | `NUMERA`    | `TPL-IMP-CLI-09` `1.0.0` | `PERF-TKT-80-V`     | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-CLI-09::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-01` | Remisión o nota de despacho                               | `NEXO`      | `TPL-IMP-DOC-01` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-01::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-02` | Manifiesto de traslado interno                            | `NEXO`      | `TPL-IMP-DOC-02` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-02::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-03` | Hoja de conteo de inventario                              | `NEXO`      | `TPL-IMP-DOC-03` `1.0.0` | `PERF-A4-L`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-03::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario            | `NEXO`      | `TPL-IMP-DOC-04` `1.0.0` | `PERF-A4-L`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-04::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-05` | Orden de compra                                           | `ORIGO`     | `TPL-IMP-DOC-05` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-05::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-06` | Acta o comprobante de recepción                           | `ORIGO`     | `TPL-IMP-DOC-06` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-06::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-07` | Devolución a proveedor                                    | `ORIGO`     | `TPL-IMP-DOC-07` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-07::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-08` | Orden de producción o ficha de lote                       | `FOGO`      | `TPL-IMP-DOC-08` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-08::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica                     | `FOGO`      | `TPL-IMP-DOC-09` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-09::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-10` | Registro de calidad o no conformidad                      | `FOGO`      | `TPL-IMP-DOC-10` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-10::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-11` | Orden de mantenimiento                                    | `NEXO`      | `TPL-IMP-DOC-11` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-11::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo          | `NEXO`      | `TPL-IMP-DOC-12` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-12::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico                    | `NEXO`      | `TPL-IMP-DOC-13` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-13::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo       | `FOGO`      | `TPL-IMP-DOC-14` `1.0.0` | `PERF-A4-P`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-14::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación              | `NUMERA`    | `TPL-IMP-DOC-15` `1.0.0` | `PERF-A4-L`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-15::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales           | `NEXO`      | `TPL-IMP-DOC-16` `1.0.0` | `PERF-A4-L`         | `VENTO-PRINT-JOB` `1.0.0` | `PRINT-ARC-005::IMP-DOC-16::1.0.0` | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+
+---
+
+#### 10. Reconciliación cuantitativa
+
+##### 10.1 Cobertura por familia
+
+| Familia                          | Esperadas | Materializadas | Sin contrato | Sin payload | Faltantes | Duplicadas | Estado        |
+| -------------------------------- | --------: | -------------: | -----------: | ----------: | --------: | ---------: | ------------- |
+| Etiquetas                        |        16 |             16 |            0 |           0 |         0 |          0 | `CERRADA`     |
+| Comandas y tiquetes operativos   |         9 |              9 |            0 |           0 |         0 |          0 | `CERRADA`     |
+| Comprobantes para cliente y caja |         9 |              9 |            0 |           0 |         0 |          0 | `CERRADA`     |
+| Documentos convencionales        |        16 |             16 |            0 |           0 |         0 |          0 | `CERRADA`     |
+| **Total**                        |    **50** |         **50** |        **0** |       **0** |     **0** |      **0** | **`CERRADA`** |
+
+##### 10.2 Distribución por aplicación propietaria
+
+| Aplicación | Trabajos cubiertos |
+| ---------- | -----------------: |
+| `FOGO`     |                 15 |
+| `NEXO`     |                 14 |
+| `PULSO`    |                 12 |
+| `NUMERA`   |                  5 |
+| `ORIGO`    |                  4 |
+| **Total**  |             **50** |
+
+##### 10.3 Integridad
+
+```text
+IDENTIDADES RECIBIDAS DE PRINT-ARC-005: 50
+IDENTIDADES MATERIALIZADAS: 50
+CONTRATOS RAIZ: 1
+VERSIONES DE CONTRATO: 1
+REFERENCIAS DE PLANTILLA: 50
+REFERENCIAS DE PAYLOAD: 50
+IDENTIFICADORES IMP-* UNICOS: 50
+IDENTIDADES SIN CONTRATO: 0
+IDENTIDADES SIN PLANTILLA: 0
+IDENTIDADES SIN PERFIL: 0
+IDENTIDADES SIN PAYLOAD: 0
+IDENTIDADES DUPLICADAS: 0
+CAMBIOS DE PROPIEDAD: 0
+DECISIONES DE ENRUTAMIENTO: 0
+DECISIONES ABIERTAS DENTRO DE PRINT-ARC-006: 0
+```
+
+---
+
+#### 11. Reservas obligatorias para las tareas posteriores
+
+| Alcance reservado                                     | Tarea propietaria                                       | Entrada recibida de esta tarea            | Condición de salida                                                       |
+| ----------------------------------------------------- | ------------------------------------------------------- | ----------------------------------------- | ------------------------------------------------------------------------- |
+| sede, área, documento, canal y dispositivo de destino | `PRINT-ARC-007`                                         | trabajo válido y contexto empresarial     | ruta determinista sin alterar el sobre inmutable                          |
+| principal, alternativas y fallback                    | `PRINT-ARC-008`                                         | ruta y perfil                             | selección explícita por escenario                                         |
+| estado y heartbeat de impresora                       | `PRINT-ARC-009`                                         | identidad de dispositivo                  | estado técnico verificable y fechado                                      |
+| idempotencia y duplicados                             | `PRINT-ARC-010`                                         | `job_id`, documento, plantilla y hash     | reglas de identidad y deduplicación                                       |
+| reintentos y fallos                                   | `PRINT-ARC-011`                                         | mismo trabajo inmutable                   | política de intentos y cola de fallo                                      |
+| confirmaciones                                        | `PRINT-ARC-012`                                         | trabajo, ruta y ejecución                 | evidencias diferenciadas de envío, impresión y entrega                    |
+| cancelación y expiración                              | `PRINT-ARC-013`                                         | trabajo y estado de ejecución             | transiciones y límites temporales                                         |
+| reimpresión                                           | `PRINT-ARC-014`                                         | trabajo original y auditoría              | nueva acción separada y vinculada                                         |
+| permisos                                              | `PRINT-ARC-015`                                         | actor, autorización y contexto            | decisiones de impresión, reimpresión y administración                     |
+| privacidad                                            | `PRINT-ARC-016`                                         | payload y plantilla                       | minimización y ocultamiento por salida                                    |
+| operación offline                                     | `PRINT-ARC-017`                                         | trabajo canónico y contexto local         | contingencia reconciliable                                                |
+| adaptadores                                           | `PRINT-ARC-018`                                         | trabajo validado, ruta y dispositivo      | transformación reproducible a lenguaje físico                             |
+| monitoreo                                             | `PRINT-ARC-019`                                         | trabajos, dispositivos e intentos         | diagnóstico por sede con evidencia                                        |
+| piloto                                                | `PRINT-ARC-020`                                         | contrato implementado y tareas anteriores | aceptación física y operativa                                             |
+| decisión de implementación del paquete                | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | contrato y brechas actuales               | repositorios, componentes, migraciones, pruebas y despliegues autorizados |
+
+---
+
+#### 12. Requisitos de prueba
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: esta tarea materializa íntegramente el contrato documental objetivo, pero no implementa un validador, persistencia de trabajos, API, productor, consumidor, enrutador ni adaptador contra el cual ejecutar una prueba reproducible. Los futuros requisitos deberán originarse en la tarea que autorice y materialice la implementación del contrato y en las tareas `PRINT-ARC-010` a `PRINT-ARC-020`, conservando como reglas protegidas los invariantes aquí definidos. Registrar ahora requisitos como implementados o planificados produciría evidencia ficticia y asignaciones técnicas todavía no autorizadas.
+
+```text
+TREQ creados: 0
+TREQ modificados: 0
+TREQ diferidos: 0
+TREQ descartados: 0
+TREQ obsoletos: 0
+```
+
+No se genera copia de `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` porque el registro permanece sin cambios.
+
+---
+
+#### 13. Criterios de aceptación
+
+`PRINT-ARC-006` queda documentalmente satisfecha porque:
+
+- [x] define un contrato raíz estable y versionado;
+- [x] define una unidad atómica de trabajo;
+- [x] diferencia trabajo, documento, plantilla, payload, ruta, dispositivo y resultado;
+- [x] materializa campos, tipos, fuentes, obligatoriedad y mutabilidad;
+- [x] define canonicalización, hash e inmutabilidad;
+- [x] define validación previa al enrutamiento y motivos mínimos de rechazo;
+- [x] conserva las cincuenta identidades, propietarias, plantillas, versiones y perfiles aprobados;
+- [x] materializa una decisión de contrato y payload por cada identidad;
+- [x] reporta 50 esperadas, 50 materializadas, 0 faltantes y 0 duplicadas;
+- [x] reconcilia 15 salidas de `FOGO`, 14 de `NEXO`, 12 de `PULSO`, 5 de `NUMERA` y 4 de `ORIGO`;
+- [x] documenta el estado técnico actual sin presentarlo como implementación canónica;
+- [x] identifica la contradicción heredada y le asigna propietario y condición de salida;
+- [x] asigna cada decisión posterior a una tarea concreta;
+- [x] no define enrutamiento, impresora, fallback, heartbeat, idempotencia, reintentos, confirmación, cancelación, reimpresión, permisos, privacidad, contingencia, adaptadores, monitoreo ni piloto;
+- [x] no modifica código, SQL, migraciones, configuración ni Supabase;
+- [x] declara cero cambios `TREQ-*` con justificación concreta;
+- [x] mantiene `PRINT-ARC-007` como única tarea siguiente reservada.
+
+---
+
+#### 14. Handoff cerrado hacia `PRINT-ARC-007`
+
+`PRINT-ARC-007` recibe:
+
+- `VENTO-PRINT-JOB` `1.0.0`;
+- cincuenta filas con `salida_id`, propietaria, plantilla, versión, perfil y contrato de payload;
+- contexto empresarial de empresa y sede del documento;
+- separación entre sobre inmutable y datos futuros de ejecución;
+- trazabilidad mediante `job_id`, `correlation_id` y `batch_id`.
+
+Deberá definir enrutamiento por sede, área, documento, canal y dispositivo sin:
+
+- modificar el sobre original;
+- cambiar propietaria, `salida_id`, plantilla, versión, perfil o payload;
+- convertir la ruta en autorización empresarial;
+- decidir todavía principal, alternativas o fallback;
+- declarar implementación o evidencia inexistente.
+
+```text
+TAREA ANTERIOR APROBADA
+PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos
+        ↓
+TAREA ACTUAL DESARROLLADA EN ARTEFACTO APROBADA
+PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión
+        ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispositivo
+```
+
+La aprobación de `PRINT-ARC-006` no inicia, desarrolla ni aprueba `PRINT-ARC-007`.
+
+
 ### [ ] PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispositivo
 ### [ ] PRINT-ARC-008 — Definir impresora principal, alternativas y fallback
 ### [ ] PRINT-ARC-009 — Definir estado de impresora y heartbeat
