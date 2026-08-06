@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **571** |
+| Aprobadas | **572** |
 | En propuesta | **0** |
-| No iniciadas | **1023** |
+| No iniciadas | **1022** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **35.82% (571/1594)** |
+| Porcentaje de completamiento | **35.88% (572/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NEXO-UX-025` — Definir métricas de tiempo, error y capacitación para el piloto operativo | ✅ APROBADA |
-| Tarea actual | `AUTH-UI-052` — Diseñar página inicial según actor | ⬜ NO INICIADA |
-| Siguiente reservada | `AUTH-UI-053` — Diseñar navegación según tareas frecuentes | ⬜ NO INICIADA |
+| Última aprobada | `AUTH-UI-052` — Diseñar página inicial según actor | ✅ APROBADA |
+| Tarea actual | `AUTH-UI-053` — Diseñar navegación según tareas frecuentes | ⬜ NO INICIADA |
+| Siguiente reservada | `AUTH-UI-054` — Reducir opciones irrelevantes | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -858,7 +858,7 @@
 | ⬜ NO INICIADA | `AUTH-UI-049` | Estandarizar estados de carga | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-050` | Estandarizar estados vacíos | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-051` | Estandarizar errores recuperables | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
-| ⬜ NO INICIADA | `AUTH-UI-052` | Diseñar página inicial según actor | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
+| ✅ APROBADA | `AUTH-UI-052` | Diseñar página inicial según actor | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-053` | Diseñar navegación según tareas frecuentes | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-054` | Reducir opciones irrelevantes | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
 | ⬜ NO INICIADA | `AUTH-UI-055` | Crear prototipo por rol | `bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md` |
