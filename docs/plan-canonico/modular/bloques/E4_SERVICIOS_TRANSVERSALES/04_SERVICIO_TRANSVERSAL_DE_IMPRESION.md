@@ -211,7 +211,7 @@ La ausencia de custodio nominal se registra como condición operativa actual y n
 10. La responsabilidad vigente es colectiva entre los trabajadores de cada punto.
 11. No se asigna un custodio individual ficticio.
 12. Los modelos, seriales y capacidades faltantes no invalidan este inventario; corresponden a `PRINT-ARC-002`.
-13. Los documentos exactos que debe producir cada dispositivo se cerrarán en `PRINT-ARC-003`.
+13. Las necesidades exactas de salida imprimible por operación se cerrarán en `PRINT-ARC-003`; su asignación a dispositivos corresponde a tareas posteriores.
 
 ---
 
@@ -592,7 +592,7 @@ Una unidad con USB y Wi-Fi se cuenta una sola vez como dispositivo con conectivi
 | Controlador, versión y puerto lógico instalados                     | Epson y DIG-E200I                              | `PENDIENTE_DE_EVIDENCIA_FISICA` | `PRINT-ARC-018`; adaptador y configuración de host documentados.                         |
 | Papel o etiqueta realmente cargados                                 | 9                                              | `PENDIENTE_DE_EVIDENCIA_FISICA` | `PRINT-ARC-005`; plantilla, versión y tamaño aprobados para cada documento.              |
 | Prueba de impresión, corte y legibilidad                            | 9                                              | `PENDIENTE_DE_EVIDENCIA_FISICA` | `PRINT-ARC-020`; piloto ejecutado con evidencia y criterio de aceptación.                |
-| Documento exacto por punto                                          | 9                                              | `RESERVADO`                     | `PRINT-ARC-003`; inventario de documentos materializado.                                 |
+| Necesidades de salida imprimible por operación                      | Operaciones y puntos pendientes                | `RESERVADO`                     | `PRINT-ARC-003`; inventario de necesidades y evidencia, sin asignación de dispositivo.   |
 
 Cada punto pendiente tiene bloqueo, propietario documental y condición de salida explícitos.
 
@@ -636,20 +636,20 @@ TREQ obsoletos: 0
 
 ---
 
-#### 11. Handoff hacia documentos imprimibles
+#### 11. Handoff hacia necesidades imprimibles
 
-`PRINT-ARC-003` deberá consumir exactamente estas nueve identidades y definir, por cada una:
+`PRINT-ARC-003` deberá utilizar las nueve identidades técnicas únicamente como contexto de capacidad existente y levantar, por operación:
 
-- documentos actualmente impresos;
-- documentos deseados;
-- documento autorizado frente a documento meramente posible;
-- proceso empresarial originador;
-- aplicación propietaria;
-- punto de emisión;
-- copia, original o reimpresión;
-- necesidad de datos fiscales, operativos, de producción o de trazabilidad.
+- salidas actualmente impresas y evidencia disponible;
+- necesidades futuras confirmadas por la operación;
+- nombre provisional y propósito de cada salida;
+- familia documental general;
+- candidatos pendientes de confirmar, fusionar o descartar;
+- puntos cuyo uso documental todavía no ha sido levantado.
 
-La capacidad técnica no autoriza un documento. Que una impresora pueda producir texto, códigos o etiquetas no decide qué debe imprimirse.
+`PRINT-ARC-003` no definirá aplicación propietaria, datos, plantilla, punto de emisión, impresora, original, copia o reimpresión. Esas decisiones pertenecen respectivamente a `PRINT-ARC-004`, `PRINT-ARC-005`, `PRINT-ARC-007`, `PRINT-ARC-008` y `PRINT-ARC-014`.
+
+La capacidad técnica no autoriza un documento. Que una impresora pueda producir texto, códigos o etiquetas no demuestra qué necesita imprimir la operación.
 
 ---
 
@@ -672,305 +672,284 @@ PRINT-ARC-003 — Inventariar documentos, etiquetas, comandas y comprobantes imp
 **Estado:** APROBADA
 **Tarea anterior:** `PRINT-ARC-002 — Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión` — APROBADA
 **Tarea siguiente:** `PRINT-ARC-004 — Definir aplicación propietaria de cada documento` — RESERVADA
-**Tipo de tarea:** documental; inventario materializado del portafolio actual y objetivo de salidas imprimibles, con identidad, propósito, proceso originador previsto, familia de dispositivo, estado, bloqueo y destino documental
+**Tipo de tarea:** documental; inventario canónico materializado de las clases de salidas físicas que debe soportar el ecosistema Vento, con identidad estable, familia, propósito operativo, procesos relacionados y estado documental por registro
 **Repositorio propietario:** `vento-shell`
 **Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
-**Cambios físicos autorizados:** ninguno; no compra, instala, conecta, repara, configura ni prueba impresoras
-- Requisitos de prueba creados o modificados: 0
+**Cambios físicos autorizados:** ninguno; no compra, instala, conecta, repara, configura, asigna ni prueba impresoras
+**Requisitos de prueba creados o modificados:** 0
 
-**Qué se hace:** definir qué debe poder imprimir el ecosistema ideal de aplicaciones Vento, incluyendo el uso futuro de la Zebra para todas las familias de etiquetas, las comandas por estación, los comprobantes para clientes y los documentos operativos y administrativos, sin limitar el diseño a los usos actuales.
-
----
-
-#### 1. Objetivo
-
-Establecer el inventario canónico de salidas imprimibles que deberá soportar el servicio transversal de impresión, separando:
-
-- lo que existe físicamente;
-- lo que hoy puede estar siendo impreso sin integración canónica demostrada;
-- lo que la solución objetivo deberá generar;
-- la familia de dispositivo adecuada para cada salida;
-- las capacidades adicionales requeridas para operar el modelo futuro;
-- las decisiones que corresponden a tareas posteriores sobre propiedad, plantilla, contrato, enrutamiento, permisos, privacidad, contingencia, adaptadores y piloto.
-
-La tarea no reproduce únicamente la situación actual. Define el portafolio objetivo que deben habilitar las aplicaciones de Vento y conserva como evidencia separada aquello que todavía no está implementado o validado.
+**Qué se hace:** cerrar el inventario documental de **qué salidas físicas debe poder producir la operación y para qué propósito**, sin decidir todavía la aplicación propietaria, los datos, la plantilla, el tamaño, la impresora, el enrutamiento ni la implementación.
 
 ---
 
-#### 2. Definiciones canónicas
+#### 1. Resultado sustantivo
 
-| Término                       | Definición                                                                                                                                 |
-| ----------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------ |
-| `SALIDA_IMPRIMIBLE`           | Representación física generada a partir de una operación empresarial ya autorizada. Puede ser etiqueta, comanda, comprobante o documento.  |
-| `IDENTIDAD_DE_DOCUMENTO`      | Código estable asignado en esta tarea a una clase de salida imprimible. No equivale a plantilla, versión ni trabajo de impresión.          |
-| `PORTAFOLIO_OBJETIVO`         | Conjunto completo de salidas que el ecosistema ideal deberá poder producir, aunque hoy no exista integración o dispositivo activo.         |
-| `SITUACION_ACTUAL`            | Evidencia disponible sobre la impresión vigente. La ausencia de evidencia no se convierte en afirmación de implementación.                 |
-| `DOMINIO_ORIGINADOR_PREVISTO` | Dominio funcional que probablemente origina la operación. La propiedad canónica de aplicación se decide exclusivamente en `PRINT-ARC-004`. |
-| `FAMILIA_DE_SALIDA`           | `ETIQUETA`, `COMANDA`, `CLIENTE_CAJA` o `DOCUMENTO_A4`.                                                                                    |
-| `CAPACIDAD_ADICIONAL`         | Recurso físico todavía inexistente o no incorporado al inventario aprobado, pero requerido por el modelo objetivo.                         |
-| `ESPECIFICADO`                | La identidad, propósito y destino técnico objetivo quedan definidos documentalmente; no implica implementación.                            |
-| `IMPLEMENTADO`                | Existe integración técnica materializada. Esta tarea no atribuye este estado sin evidencia técnica.                                        |
-| `VALIDADO`                    | Existe prueba operativa o física verificable. Esta tarea no atribuye este estado.                                                          |
-| `BLOQUEADO`                   | La ejecución física objetivo depende de un insumo concreto todavía no disponible.                                                          |
-| `PENDIENTE_DE_EVIDENCIA`      | Puede existir uso actual, pero no hay evidencia suficiente para declararlo implementado o validado.                                        |
+`PRINT-ARC-003` queda cerrada con un inventario canónico de cincuenta identidades de salida imprimible:
+
+- 16 etiquetas;
+- 9 comandas o tiquetes operativos;
+- 9 comprobantes para cliente o caja;
+- 16 documentos convencionales operativos o administrativos.
+
+Cada identidad queda materializada con:
+
+- identificador único y estable;
+- nombre de la salida;
+- propósito operativo;
+- procesos relacionados;
+- familia documental;
+- estado documental explícito;
+- ausencia de bloqueo dentro del alcance de esta tarea.
+
+El inventario define el alcance documental vigente. No afirma que las cincuenta salidas estén implementadas, que se impriman actualmente, que deban usar un dispositivo determinado ni que representen el universo perpetuo de necesidades futuras. Una necesidad nueva deberá incorporarse mediante una corrección o tarea canónica posterior, sin alterar silenciosamente estas identidades.
+
+---
+
+#### 2. Regla de separación entre inventario y diseño
+
+Esta tarea responde exclusivamente:
+
+```text
+¿QUÉ SALIDA FÍSICA DEBE SOPORTAR EL ECOSISTEMA Y PARA QUÉ?
+```
+
+Las siguientes preguntas pertenecen a tareas posteriores y no constituyen brechas de `PRINT-ARC-003`:
+
+| Decisión                                                                               | Tarea propietaria                 |
+| -------------------------------------------------------------------------------------- | --------------------------------- |
+| Aplicación propietaria, originadores y consumidores                                    | `PRINT-ARC-004`                   |
+| Datos, plantilla, versión, formato, tamaño e idioma                                    | `PRINT-ARC-005`                   |
+| Contrato canónico del trabajo de impresión                                             | `PRINT-ARC-006`                   |
+| Sede, punto, canal, estación y destino                                                 | `PRINT-ARC-007`                   |
+| Dispositivo principal, alternativas, fallback y capacidad física                       | `PRINT-ARC-008`                   |
+| Estado, heartbeat, idempotencia, reintentos, confirmaciones, cancelación y reimpresión | `PRINT-ARC-009` a `PRINT-ARC-014` |
+| Permisos, privacidad y operación offline                                               | `PRINT-ARC-015` a `PRINT-ARC-017` |
+| Adaptadores, conexión, monitoreo y diagnóstico                                         | `PRINT-ARC-018` y `PRINT-ARC-019` |
+| Alcance, métricas y aceptación del piloto                                              | `PRINT-ARC-020`                   |
 
 Regla obligatoria:
 
 ```text
-DOCUMENTO INVENTARIADO
-≠
-PLANTILLA APROBADA
+SALIDA INVENTARIADA
 ≠
 APLICACION PROPIETARIA
 ≠
-TRABAJO DE IMPRESION IMPLEMENTADO
+DATOS O PLANTILLA
 ≠
-IMPRESION FISICA VALIDADA
+PUNTO O IMPRESORA
+≠
+TRABAJO IMPLEMENTADO
+≠
+IMPRESION VALIDADA
 ```
 
 ---
 
-#### 3. Alcance y límites
+#### 3. Definiciones canónicas
 
-Esta tarea:
-
-- inventaría todas las clases de salida objetivo identificadas para producción, inventario, activos, compras, ventas, caja, servicio, calidad, mantenimiento y administración;
-- asigna una identidad estable a cada salida;
-- define su propósito y proceso originador previsto;
-- indica la familia de impresora adecuada;
-- distingue situación actual y estado objetivo;
-- materializa la necesidad de dos puntos térmicos adicionales para resúmenes de cuenta y comprobantes de clientes en Vento Café;
-- conserva las nueve impresoras aprobadas en `PRINT-ARC-001` y perfiladas en `PRINT-ARC-002`;
-- registra bloqueo, propietario documental y condición de salida para cada brecha.
-
-Esta tarea no:
-
-- decide la aplicación propietaria definitiva;
-- define campos, diseño, tamaño exacto, versión, marca gráfica o idioma de cada plantilla;
-- autoriza operaciones empresariales;
-- define cuándo se genera cada trabajo;
-- decide impresora principal, alternativa o fallback;
-- configura colas, IP, controladores, adaptadores o puertos;
-- ejecuta compras, mantenimiento, instalación o pruebas físicas;
-- define permisos, privacidad, retención, reimpresión o contingencia;
-- modifica código, configuración, datos, migraciones o Supabase.
-
-Esas decisiones permanecen en las tareas `PRINT-ARC-004` a `PRINT-ARC-020` según su alcance canónico.
+| Término                  | Definición                                                                                                                                              |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `SALIDA_IMPRIMIBLE`      | Clase estable de representación física requerida por una operación empresarial autorizada.                                                              |
+| `IDENTIDAD_DE_SALIDA`    | Código `IMP-*` único que identifica una salida dentro del servicio transversal de impresión.                                                            |
+| `ETIQUETA`               | Salida física destinada principalmente a identificación, trazabilidad, estado o advertencia sobre un objeto, lote, ubicación o material.                |
+| `COMANDA_TIQUETE`        | Salida física destinada a comunicar o controlar una acción operativa de preparación, expedición, reposición, modificación o cancelación.                |
+| `CLIENTE_CAJA`           | Salida física destinada a informar, confirmar o dejar constancia de una operación de cliente, venta, pago, entrega, beneficio o caja.                   |
+| `DOCUMENTO_CONVENCIONAL` | Salida física operativa o administrativa que conserva información estructurada de una operación, control, autorización, reporte o seguimiento.          |
+| `INVENTARIADA`           | La identidad, el nombre, el propósito y la relación funcional quedan aprobados dentro de esta tarea. No equivale a implementación ni validación física. |
+| `ACTUAL_Y_OBJETIVO`      | Existe evidencia de uso actual para la clase general de salida y, además, forma parte del inventario objetivo.                                          |
+| `OBJETIVO_CANONICO`      | La salida forma parte del inventario objetivo aprobado, independientemente de que exista uso actual demostrado.                                         |
+| `SIN_BLOQUEO_DOCUMENTAL` | La identidad está completamente decidida para el alcance de `PRINT-ARC-003` y puede pasar a la tarea propietaria siguiente.                             |
 
 ---
 
-#### 4. Decisiones
+#### 4. Fuentes y decisiones heredadas
 
-1. El servicio de impresión se diseña sobre un portafolio objetivo y no sobre la fotografía operativa actual.
-2. La Zebra ZD230 queda destinada como plataforma principal de etiquetas para producción, inventario, logística, activos, mantenimiento, calidad y pedidos, una vez sea desplegada y validada.
-3. Las seis DIG-E200I existentes constituyen la base de comandas y comprobantes térmicos de 80 mm.
-4. Las impresoras de barra, bar y cocina de Vento Café se orientan a comandas por estación.
-5. Las impresoras de caja de Molka, Saudo y Vento Café se orientan a salidas de cliente y caja, sin impedir que el enrutamiento posterior defina usos auxiliares autorizados.
-6. Vento Café requiere dos puntos térmicos adicionales para entregar resúmenes de cuenta, comprobantes y copias de atención al cliente sin depender de una sola impresora de caja.
-7. Las dos capacidades adicionales no se presentan como equipos existentes; su ubicación exacta, modelo, compra, conexión y alta en inventario son prerrequisitos del piloto.
-8. La Epson L4260 de oficina se orienta a documentación administrativa y operativa A4.
-9. La Epson L5590 del Centro de Producción se orienta a documentación A4 de producción, calidad, recepción y despacho una vez sea reparada y validada.
-10. Ninguna salida se considera implementada o validada por quedar inventariada.
-11. `PRINT-ARC-004` deberá decidir la aplicación propietaria de cada identidad sin alterar el inventario aquí aprobado, salvo corrección explícita.
-12. `PRINT-ARC-005` deberá decidir plantilla, versión, tamaño y datos requeridos por identidad.
+La tarea conserva y consume:
+
+1. las nueve identidades de impresoras aprobadas en `PRINT-ARC-001`, únicamente como contexto de existencia del servicio;
+2. los perfiles técnicos aprobados en `PRINT-ARC-002`, sin convertir capacidad técnica en asignación documental;
+3. la impresión actual de facturas informada para Molka y Saudo;
+4. la necesidad de habilitar comandas informada para Molka y Saudo;
+5. las identidades `IMP-*`, nombres y relaciones de proceso ya materializadas en la versión aprobada de `PRINT-ARC-003`;
+6. la corrección de alcance que separa el inventario documental de la propiedad, plantilla, enrutamiento, dispositivos, capacidad y piloto.
+
+Decisiones consolidadas:
+
+- se conservan las cincuenta identidades `IMP-*`;
+- todas quedan aprobadas como salidas del inventario objetivo vigente;
+- ninguna identidad se asigna a una marca, modelo, sede, punto o impresora;
+- no se crean capacidades físicas adicionales ni obligaciones de compra;
+- no se define un total objetivo de puntos de impresión;
+- no se bloquea el piloto por adquisiciones no aprobadas;
+- no se declara implementación o validación física;
+- no quedan preguntas sustantivas abiertas dentro del alcance de esta tarea.
 
 ---
 
-#### 5. Inventario materializado de salidas imprimibles
+#### 5. Inventario canónico materializado
 
-##### 5.1 Etiquetas objetivo
+##### 5.1 Etiquetas
 
-Las dieciséis identidades de esta familia se orientan principalmente a la Zebra ZD230. Su ejecución permanece `BLOQUEADO` hasta que el equipo sea desplegado, conectado mediante el adaptador definido en `PRINT-ARC-018` y validado en `PRINT-ARC-020`.
+| ID           | Salida inventariada                                       | Propósito operativo                                                                                          | Procesos relacionados              | Condición documental | Estado / bloqueo                          |
+| ------------ | --------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------ | ---------------------------------- | -------------------- | ----------------------------------------- |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | Identificar el producto terminado y conservar la trazabilidad del lote, las fechas y la condición de salida. | VPROC-0034, VPROC-0035, VPROC-0024 | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | Mantener identidad y trazabilidad entre etapas de producción.                                                | VPROC-0034, VPROC-0024             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | Identificar la preparación, la fecha de elaboración y su ventana operativa de uso.                           | VPROC-0033, VPROC-0034, VPROC-0035 | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | Registrar una apertura, fraccionamiento, reempaque o cambio de condición de conservación.                    | VPROC-0034, VPROC-0037, VPROC-0024 | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | Advertir riesgos, restricciones y condiciones especiales de manipulación.                                    | VPROC-0033, VPROC-0038             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | Hacer visible el estado de calidad y prevenir el uso no autorizado.                                          | VPROC-0038, VPROC-0024             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | Vincular una recepción física con el proveedor, el lote y la condición recibida.                             | VPROC-0012, VPROC-0021, VPROC-0037 | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | Identificar ubicaciones físicas utilizadas por inventario, almacenamiento y reposición.                      | VPROC-0021, VPROC-0023             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | Identificar una referencia, unidad logística o insumo controlado.                                            | VPROC-0021, VPROC-0023             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | Vincular un paquete físico con su movimiento, traslado o despacho autorizado.                                | VPROC-0021                         | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | Identificar un paquete, pedido u orden durante la recogida o entrega.                                        | VPROC-0018, VPROC-0021             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | Asignar una identidad física visible a un activo o equipo.                                                   | VPROC-0022, VPROC-0057             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | Comunicar el estado técnico, la inspección o la restricción de uso de un activo.                             | VPROC-0022, VPROC-0057             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | Comunicar la ejecución y vigencia de una limpieza o sanitización.                                            | VPROC-0036, VPROC-0038             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | Conservar la identidad y trazabilidad de una muestra o prueba.                                               | VPROC-0038, VPROC-0024             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | Identificar material retirado, su causa y su destino.                                                        | VPROC-0036, VPROC-0024             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
 
-| ID           | Salida imprimible                                         | Propósito objetivo                                                      | Dominio originador previsto | Proceso relacionado                | Dispositivo o familia objetivo | Situación actual                                                     | Estado objetivo / destino                                                                                                           |
-| ------------ | --------------------------------------------------------- | ----------------------------------------------------------------------- | --------------------------- | ---------------------------------- | ------------------------------ | -------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------- |
-| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | Identificar producto, lote, fecha, vencimiento y trazabilidad de salida | FOGO / NEXO                 | VPROC-0034, VPROC-0035, VPROC-0024 | Zebra ZD230                    | La Zebra está almacenada y no existe integración canónica demostrada | `ESPECIFICADO`; ejecución física `BLOQUEADA`; propiedad en `PRINT-ARC-004`, plantilla en `PRINT-ARC-005`, piloto en `PRINT-ARC-020` |
-| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | Mantener identidad y trazabilidad entre etapas de producción            | FOGO / NEXO                 | VPROC-0034, VPROC-0024             | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; mismas condiciones de salida de la familia                                            |
-| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | Identificar preparación, responsable, fecha y ventana de uso            | FOGO                        | VPROC-0033, VPROC-0034, VPROC-0035 | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; plantilla y datos en `PRINT-ARC-005`                                                  |
-| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | Registrar apertura, reempaque y nueva condición de conservación         | FOGO / NEXO                 | VPROC-0034, VPROC-0037, VPROC-0024 | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; regla de generación en tareas de contrato y enrutamiento                              |
-| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | Advertir riesgos, restricciones y condiciones de uso                    | FOGO                        | VPROC-0033, VPROC-0038             | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; datos sensibles y advertencias en `PRINT-ARC-005` y `PRINT-ARC-016`                   |
-| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | Evidenciar estado de calidad y evitar uso no autorizado                 | FOGO / NEXO                 | VPROC-0038, VPROC-0024             | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; permisos y estado autorizado en `PRINT-ARC-015`                                       |
-| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | Vincular recepción, proveedor, lote, fecha y condición                  | ORIGO / NEXO                | VPROC-0012, VPROC-0021, VPROC-0037 | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; propiedad en `PRINT-ARC-004`                                                          |
-| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | Identificar ubicaciones físicas para inventario y reposición            | NEXO                        | VPROC-0021, VPROC-0023             | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; códigos y tamaño en `PRINT-ARC-005`                                                   |
-| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | Identificar unidad logística o referencia de inventario                 | NEXO                        | VPROC-0021, VPROC-0023             | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; contrato de datos en `PRINT-ARC-005` y `PRINT-ARC-006`                                |
-| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | Vincular paquete físico con traslado o remisión autorizada              | NEXO                        | VPROC-0021                         | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; enrutamiento por sede en `PRINT-ARC-007`                                              |
-| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | Identificar paquete, orden y condición de entrega                       | PULSO / NEXO                | VPROC-0018, VPROC-0021             | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; privacidad en `PRINT-ARC-016`                                                         |
-| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | Asignar identidad física visible y código escaneable a equipos          | NEXO                        | VPROC-0022, VPROC-0057             | Zebra ZD230                    | No existe impresión canónica demostrada para activos                 | `ESPECIFICADO`; ejecución física `BLOQUEADA`; datos mínimos en `PRINT-ARC-005`                                                      |
-| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | Mostrar estado técnico y restricción de uso del equipo                  | NEXO                        | VPROC-0022, VPROC-0057             | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; permisos y vigencia en `PRINT-ARC-015` y `PRINT-ARC-005`                              |
-| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | Mostrar estado, fecha, responsable y próxima intervención               | FOGO / NEXO                 | VPROC-0036, VPROC-0038             | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; plantilla en `PRINT-ARC-005`                                                          |
-| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | Mantener identidad y cadena de trazabilidad de muestras                 | FOGO / NEXO                 | VPROC-0038, VPROC-0024             | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; privacidad y retención en `PRINT-ARC-016`                                             |
-| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | Identificar material retirado, causa y destino                          | FOGO / NEXO                 | VPROC-0036, VPROC-0024             | Zebra ZD230                    | Sin impresión integrada verificada                                   | `ESPECIFICADO`; ejecución física `BLOQUEADA`; datos y autorización en tareas posteriores                                            |
+##### 5.2 Comandas y tiquetes operativos
 
-##### 5.2 Comandas y tiquetes operativos objetivo
+| ID           | Salida inventariada                           | Propósito operativo                                                                                     | Procesos relacionados  | Condición documental                                                                      | Estado / bloqueo                          |
+| ------------ | --------------------------------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `IMP-CMD-01` | Comanda de cocina                             | Comunicar productos, cantidades, observaciones y prioridad al punto de preparación de cocina.           | VPROC-0035             | `OBJETIVO_CANONICO`; la necesidad general de comandas está confirmada para Molka y Saudo. | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías               | Comunicar bebidas frías, cantidades y modificaciones al punto de preparación correspondiente.           | VPROC-0035             | `OBJETIVO_CANONICO`                                                                       | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes | Comunicar bebidas calientes, tamaños y personalizaciones al punto de preparación correspondiente.       | VPROC-0035             | `OBJETIVO_CANONICO`                                                                       | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-04` | Comanda de preparación o mise en place        | Solicitar producción previa, preparación interna o reposición operativa.                                | VPROC-0034, VPROC-0035 | `OBJETIVO_CANONICO`                                                                       | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-05` | Tiquete de expedición o recogida              | Consolidar los ítems listos para entrega, retiro o expedición.                                          | VPROC-0018, VPROC-0035 | `OBJETIVO_CANONICO`                                                                       | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-06` | Solicitud interna de reposición               | Comunicar una solicitud de insumos o producto entre áreas operativas.                                   | VPROC-0021, VPROC-0037 | `OBJETIVO_CANONICO`                                                                       | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-07` | Modificación o adición de comanda             | Comunicar un cambio posterior sin sustituir silenciosamente la versión anterior.                        | VPROC-0035             | `OBJETIVO_CANONICO`                                                                       | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-08` | Cancelación o anulación de comanda            | Comunicar una cancelación autorizada y auditable.                                                       | VPROC-0035             | `OBJETIVO_CANONICO`                                                                       | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia     | Comunicar un faltante que requiere activar producción conforme a la decisión de insuficiencia aprobada. | VPROC-0021, VPROC-0034 | `OBJETIVO_CANONICO`                                                                       | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
 
-Las nueve identidades de esta familia se orientan a las DIG-E200I de cocina, bar, barra, caja o apoyo según la regla que se apruebe en `PRINT-ARC-007`. La presencia física de impresoras no demuestra integración con la aplicación.
+##### 5.3 Comprobantes para cliente y caja
 
-| ID           | Salida imprimible                             | Propósito objetivo                                                    | Dominio originador previsto | Proceso relacionado    | Punto o familia objetivo                                                           | Situación actual                                                                                                   | Estado objetivo / destino                                                    |
-| ------------ | --------------------------------------------- | --------------------------------------------------------------------- | --------------------------- | ---------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------- |
-| `IMP-CMD-01` | Comanda de cocina                             | Enviar productos, cantidades, observaciones y prioridad a cocina      | PULSO / FOGO                | VPROC-0035             | DIG-E200I de cocina Vento Café y caja integrada de Molka o Saudo según sede        | En Molka y Saudo la comanda es capacidad deseada; en Vento Café la integración y el contenido no están verificados | `ESPECIFICADO`; contrato en `PRINT-ARC-006`, enrutamiento en `PRINT-ARC-007` |
-| `IMP-CMD-02` | Comanda de bar de bebidas frías               | Enviar bebidas y modificaciones al bar                                | PULSO / FOGO                | VPROC-0035             | DIG-E200I de bar Vento Café y caja integrada de Molka o Saudo cuando corresponda   | En Molka y Saudo es capacidad deseada; en Vento Café la integración no está verificada                             | `ESPECIFICADO`; mismas condiciones de la familia                             |
-| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes | Enviar bebidas calientes, tamaños y personalizaciones                 | PULSO / FOGO                | VPROC-0035             | DIG-E200I de barra Vento Café y caja integrada de Molka o Saudo cuando corresponda | En Molka y Saudo es capacidad deseada; en Vento Café la integración no está verificada                             | `ESPECIFICADO`; mismas condiciones de la familia                             |
-| `IMP-CMD-04` | Comanda de preparación o mise en place        | Solicitar producción previa o reposición interna                      | FOGO                        | VPROC-0034, VPROC-0035 | DIG-E200I de cocina o estación autorizada                                          | Uso actual no confirmado                                                                                           | `ESPECIFICADO`; regla y destino en `PRINT-ARC-007`                           |
-| `IMP-CMD-05` | Tiquete de expedición o recogida              | Consolidar ítems listos para entrega o retiro                         | PULSO / FOGO                | VPROC-0018, VPROC-0035 | DIG-E200I de expedición o caja                                                     | Uso actual no confirmado                                                                                           | `ESPECIFICADO`; punto definitivo en `PRINT-ARC-007`                          |
-| `IMP-CMD-06` | Solicitud interna de reposición               | Pedir insumos o producto a otra estación o almacén                    | FOGO / NEXO                 | VPROC-0021, VPROC-0037 | DIG-E200I de estación receptora                                                    | Uso actual no confirmado                                                                                           | `ESPECIFICADO`; autorización y trazabilidad en tareas posteriores            |
-| `IMP-CMD-07` | Modificación o adición de comanda             | Comunicar cambio posterior sin ocultar la versión anterior            | PULSO / FOGO                | VPROC-0035             | Misma estación de la comanda original                                              | No existe evidencia de versionado impreso                                                                          | `ESPECIFICADO`; idempotencia y versión en `PRINT-ARC-010`                    |
-| `IMP-CMD-08` | Cancelación o anulación de comanda            | Comunicar cancelación autorizada y auditable                          | PULSO / FOGO                | VPROC-0035             | Misma estación de la comanda original                                              | No existe evidencia de cancelación impresa                                                                         | `ESPECIFICADO`; cancelación en `PRINT-ARC-013`, permisos en `PRINT-ARC-015`  |
-| `IMP-CMD-09` | Solicitud de producción por insuficiencia     | Activar producción por faltante detectado en una remisión u operación | NEXO / FOGO                 | VPROC-0021, VPROC-0034 | Estación o Centro de Producción definido por enrutamiento                          | No existe integración de impresión demostrada                                                                      | `ESPECIFICADO`; debe respetar `INT-PROD-005`, contrato en `PRINT-ARC-006`    |
+| ID           | Salida inventariada                                  | Propósito operativo                                                                                    | Procesos relacionados              | Condición documental                                                                   | Estado / bloqueo                          |
+| ------------ | ---------------------------------------------------- | ------------------------------------------------------------------------------------------------------ | ---------------------------------- | -------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente                    | Mostrar consumos, cantidades, descuentos, impuestos y total antes del cierre del pago.                 | VPROC-0018, VPROC-0020             | `OBJETIVO_CANONICO`                                                                    | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-02` | Confirmación de pedido                               | Entregar un resumen identificable de la orden, el canal y la condición de entrega.                     | VPROC-0018                         | `OBJETIVO_CANONICO`                                                                    | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-03` | Comprobante de pago                                  | Confirmar el medio, el valor, la fecha, la referencia y el estado de un pago.                          | VPROC-0020, VPROC-0060             | `OBJETIVO_CANONICO`                                                                    | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente          | Entregar la constancia física autorizada de una venta sin sustituir la emisión fiscal que corresponda. | VPROC-0020, VPROC-0060             | `ACTUAL_Y_OBJETIVO`; la impresión actual de facturas está confirmada en Molka y Saudo. | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito | Entregar constancia de un ajuste, reverso o devolución autorizados.                                    | VPROC-0020, VPROC-0060             | `OBJETIVO_CANONICO`                                                                    | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-06` | Resumen de recogida o entrega                        | Identificar el pedido, el receptor y la condición de una recogida o entrega.                           | VPROC-0018, VPROC-0021             | `OBJETIVO_CANONICO`                                                                    | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo                    | Confirmar una reserva, un anticipo y el saldo asociado.                                                | VPROC-0018, VPROC-0060             | `OBJETIVO_CANONICO`                                                                    | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                | Entregar constancia de un beneficio autorizado y controlable.                                          | VPROC-0018                         | `OBJETIVO_CANONICO`                                                                    | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja    | Dejar constancia operativa de un turno y de sus totales de caja.                                       | VPROC-0019, VPROC-0020, VPROC-0060 | `OBJETIVO_CANONICO`                                                                    | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
 
-##### 5.3 Comprobantes para clientes y caja objetivo
+##### 5.4 Documentos convencionales operativos y administrativos
 
-Las nueve identidades de esta familia deben estar disponibles en Molka, Saudo y Vento Café según el proceso que las origine. En Vento Café, el modelo objetivo requiere dos capacidades térmicas adicionales para atención al cliente, además de la DIG-E200I ya inventariada en caja.
-
-| ID           | Salida imprimible                                    | Propósito objetivo                                                         | Dominio originador previsto | Proceso relacionado                | Punto o familia objetivo                                           | Situación actual                                                                                                                       | Estado objetivo / destino                                                                    |
-| ------------ | ---------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------- | ---------------------------------- | ------------------------------------------------------------------ | -------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- |
-| `IMP-CLI-01` | Resumen de cuenta para el cliente                    | Mostrar consumos, cantidades, descuentos, impuestos y total antes del pago | PULSO / NUMERA              | VPROC-0018, VPROC-0020             | DIG-E200I de caja y dos capacidades adicionales en Vento Café      | Impresión actual no documentada de forma canónica                                                                                      | `ESPECIFICADO`; prioridad del modelo objetivo solicitado por operación                       |
-| `IMP-CLI-02` | Confirmación de pedido                               | Entregar resumen de orden, canal, entrega y referencia                     | PULSO                       | VPROC-0018                         | DIG-E200I de caja o punto de atención                              | Uso actual no confirmado                                                                                                               | `ESPECIFICADO`; datos y versión en `PRINT-ARC-005`                                           |
-| `IMP-CLI-03` | Comprobante de pago                                  | Confirmar medio, valor, fecha, referencia y estado de pago                 | NUMERA / PULSO              | VPROC-0020, VPROC-0060             | DIG-E200I de caja o punto de atención                              | Uso actual no confirmado                                                                                                               | `ESPECIFICADO`; privacidad y datos fiscales en tareas posteriores                            |
-| `IMP-CLI-04` | Representación impresa de factura electrónica        | Entregar copia legible de un documento fiscal ya emitido                   | NUMERA                      | VPROC-0020, VPROC-0060             | DIG-E200I o Epson según formato aprobado                           | La impresión actual de facturas está confirmada en Molka y Saudo; aplicación, plantilla y validez fiscal no se verifican en esta tarea | `ESPECIFICADO`; no sustituye emisión fiscal; plantilla en `PRINT-ARC-005`                    |
-| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito | Entregar constancia de ajuste autorizado                                   | NUMERA / PULSO              | VPROC-0020, VPROC-0060             | DIG-E200I de caja                                                  | Uso actual no confirmado                                                                                                               | `ESPECIFICADO`; permisos en `PRINT-ARC-015`                                                  |
-| `IMP-CLI-06` | Resumen de recogida o entrega                        | Identificar pedido, receptor, ventana y estado de entrega                  | PULSO / NEXO                | VPROC-0018, VPROC-0021             | DIG-E200I de atención o expedición                                 | Uso actual no confirmado                                                                                                               | `ESPECIFICADO`; privacidad en `PRINT-ARC-016`                                                |
-| `IMP-CLI-07` | Comprobante de reserva o anticipo                    | Confirmar reserva, anticipo y saldo esperado                               | PULSO / NUMERA              | VPROC-0018, VPROC-0060             | DIG-E200I de atención                                              | Uso actual no confirmado                                                                                                               | `ESPECIFICADO`; datos y vigencia en `PRINT-ARC-005`                                          |
-| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                | Entregar beneficio autorizado con vigencia y condiciones                   | PULSO                       | VPROC-0018                         | DIG-E200I de atención                                              | Uso actual no confirmado                                                                                                               | `ESPECIFICADO`; autorización y prevención de duplicados en `PRINT-ARC-010` y `PRINT-ARC-015` |
-| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja    | Dejar constancia operativa del turno y sus totales                         | NUMERA                      | VPROC-0019, VPROC-0020, VPROC-0060 | DIG-E200I de caja y Epson para copia administrativa cuando aplique | Uso actual no confirmado                                                                                                               | `ESPECIFICADO`; acceso restringido en `PRINT-ARC-015` y privacidad en `PRINT-ARC-016`        |
-
-##### 5.4 Documentos A4 operativos y administrativos objetivo
-
-Las dieciséis identidades de esta familia se orientan a la Epson L4260 de oficina y, para procesos de producción, recepción, calidad y despacho, a la Epson L5590 una vez sea reparada.
-
-| ID           | Salida imprimible                                   | Propósito objetivo                                               | Dominio originador previsto  | Proceso relacionado                | Dispositivo objetivo                       | Situación actual                       | Estado objetivo / destino                                                                  |
-| ------------ | --------------------------------------------------- | ---------------------------------------------------------------- | ---------------------------- | ---------------------------------- | ------------------------------------------ | -------------------------------------- | ------------------------------------------------------------------------------------------ |
-| `IMP-DOC-01` | Remisión o nota de despacho                         | Acompañar una salida o entrega autorizada                        | NEXO                         | VPROC-0021                         | Epson L5590; L4260 como alternativa futura | Tipos impresos actuales no confirmados | `ESPECIFICADO`; enrutamiento y fallback en `PRINT-ARC-007` y `PRINT-ARC-008`               |
-| `IMP-DOC-02` | Manifiesto de traslado interno                      | Consolidar artículos, cantidades, origen, destino y responsables | NEXO                         | VPROC-0021                         | Epson L5590                                | L5590 fuera de servicio                | `ESPECIFICADO`; ejecución física `BLOQUEADA`; mantenimiento y piloto físico                |
-| `IMP-DOC-03` | Hoja de conteo de inventario                        | Facilitar conteo controlado y conciliación                       | NEXO                         | VPROC-0021, VPROC-0023             | Epson L4260 o L5590                        | Uso actual no confirmado               | `ESPECIFICADO`; privacidad y versión en tareas posteriores                                 |
-| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario      | Documentar variaciones y aprobación del ajuste                   | NEXO                         | VPROC-0021                         | Epson L4260                                | Uso actual no confirmado               | `ESPECIFICADO`; permisos en `PRINT-ARC-015`                                                |
-| `IMP-DOC-05` | Orden de compra                                     | Formalizar compra autorizada para proveedor                      | ORIGO                        | VPROC-0012, VPROC-0069             | Epson L4260                                | Uso actual no confirmado               | `ESPECIFICADO`; propiedad final en `PRINT-ARC-004`                                         |
-| `IMP-DOC-06` | Acta o comprobante de recepción                     | Registrar recepción, cantidades, condición y diferencias         | ORIGO / NEXO                 | VPROC-0012, VPROC-0021             | Epson L5590                                | L5590 fuera de servicio                | `ESPECIFICADO`; ejecución física `BLOQUEADA`; reparación y piloto                          |
-| `IMP-DOC-07` | Devolución a proveedor                              | Registrar artículos, causa, autorización y entrega               | ORIGO / NEXO                 | VPROC-0012, VPROC-0021             | Epson L4260 o L5590                        | Uso actual no confirmado               | `ESPECIFICADO`; enrutamiento por sede en `PRINT-ARC-007`                                   |
-| `IMP-DOC-08` | Orden de producción o ficha de lote                 | Autorizar y documentar una ejecución de producción               | FOGO                         | VPROC-0034, VPROC-0035             | Epson L5590                                | L5590 fuera de servicio                | `ESPECIFICADO`; ejecución física `BLOQUEADA`; reparación y piloto                          |
-| `IMP-DOC-09` | Receta, ficha técnica o guía práctica               | Proveer instrucciones versionadas de elaboración                 | FOGO                         | VPROC-0031, VPROC-0032, VPROC-0033 | Epson L5590 o L4260                        | Uso actual no confirmado               | `ESPECIFICADO`; versión y datos en `PRINT-ARC-005`                                         |
-| `IMP-DOC-10` | Registro de calidad o no conformidad                | Documentar hallazgo, decisión, responsable y seguimiento         | FOGO / NEXO                  | VPROC-0038, VPROC-0024             | Epson L5590                                | L5590 fuera de servicio                | `ESPECIFICADO`; ejecución física `BLOQUEADA`; mantenimiento y piloto                       |
-| `IMP-DOC-11` | Orden de mantenimiento                              | Autorizar diagnóstico, intervención y cierre de un activo        | NEXO                         | VPROC-0022, VPROC-0057             | Epson L4260 o L5590                        | Uso actual no confirmado               | `ESPECIFICADO`; propiedad en `PRINT-ARC-004`                                               |
-| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo    | Evidenciar custodia, condición y ubicación del activo            | NEXO                         | VPROC-0022, VPROC-0057             | Epson L4260                                | Uso actual no confirmado               | `ESPECIFICADO`; firmas y privacidad se deciden después                                     |
-| `IMP-DOC-13` | Reporte de incidente o soporte técnico              | Documentar falla, impacto, diagnóstico y resolución              | NEXO / ANIMA                 | VPROC-0039, VPROC-0057             | Epson L4260                                | Uso actual no confirmado               | `ESPECIFICADO`; información sensible en `PRINT-ARC-016`                                    |
-| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo | Guiar y registrar controles periódicos                           | FOGO / NEXO                  | VPROC-0036, VPROC-0038             | Epson L5590                                | L5590 fuera de servicio                | `ESPECIFICADO`; ejecución física `BLOQUEADA`; mantenimiento y plantilla en `PRINT-ARC-005` |
-| `IMP-DOC-15` | Reporte contable, conciliación o liquidación        | Presentar información financiera autorizada                      | NUMERA                       | VPROC-0020, VPROC-0060             | Epson L4260                                | Uso actual no confirmado               | `ESPECIFICADO`; permisos y privacidad en `PRINT-ARC-015` y `PRINT-ARC-016`                 |
-| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales     | Facilitar seguimiento y toma de decisiones                       | NUMERA / NEXO / FOGO / PULSO | VPROC-0014, VPROC-0050             | Epson L4260                                | Uso actual no confirmado               | `ESPECIFICADO`; origen y versión se deciden en tareas posteriores                          |
+| ID           | Salida inventariada                                 | Propósito operativo                                                                   | Procesos relacionados              | Condición documental | Estado / bloqueo                          |
+| ------------ | --------------------------------------------------- | ------------------------------------------------------------------------------------- | ---------------------------------- | -------------------- | ----------------------------------------- |
+| `IMP-DOC-01` | Remisión o nota de despacho                         | Acompañar una salida, traslado o entrega autorizada.                                  | VPROC-0021                         | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-02` | Manifiesto de traslado interno                      | Consolidar artículos, cantidades, origen, destino y responsables de un traslado.      | VPROC-0021                         | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-03` | Hoja de conteo de inventario                        | Facilitar un conteo controlado y su conciliación posterior.                           | VPROC-0021, VPROC-0023             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario      | Documentar variaciones de inventario y la decisión sobre su ajuste.                   | VPROC-0021                         | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-05` | Orden de compra                                     | Formalizar una compra autorizada para un proveedor.                                   | VPROC-0012, VPROC-0069             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-06` | Acta o comprobante de recepción                     | Registrar cantidades, condición y diferencias de una recepción.                       | VPROC-0012, VPROC-0021             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-07` | Devolución a proveedor                              | Registrar artículos, causa, autorización y entrega de una devolución.                 | VPROC-0012, VPROC-0021             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-08` | Orden de producción o ficha de lote                 | Autorizar y documentar una ejecución de producción.                                   | VPROC-0034, VPROC-0035             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica               | Proveer instrucciones versionadas de elaboración u operación.                         | VPROC-0031, VPROC-0032, VPROC-0033 | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-10` | Registro de calidad o no conformidad                | Documentar un hallazgo, su decisión y el seguimiento asociado.                        | VPROC-0038, VPROC-0024             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-11` | Orden de mantenimiento                              | Autorizar y documentar el diagnóstico o la intervención de un activo.                 | VPROC-0022, VPROC-0057             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo    | Evidenciar custodia, condición y ubicación de un activo.                              | VPROC-0022, VPROC-0057             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico              | Documentar una falla, su impacto, diagnóstico y resolución.                           | VPROC-0039, VPROC-0057             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo | Guiar y registrar controles periódicos de limpieza, sanitización u operación.         | VPROC-0036, VPROC-0038             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación        | Presentar información financiera autorizada para control y conciliación.              | VPROC-0020, VPROC-0060             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales     | Facilitar el seguimiento y la toma de decisiones mediante una salida física resumida. | VPROC-0014, VPROC-0050             | `OBJETIVO_CANONICO`  | `INVENTARIADA` / `SIN_BLOQUEO_DOCUMENTAL` |
 
 ---
 
 #### 6. Reconciliación cuantitativa
 
-##### 6.1 Cobertura del portafolio
+##### 6.1 Cobertura por familia
 
-| Familia                           | Identidades esperadas | Identidades materializadas | Faltantes | Duplicadas |
-| --------------------------------- | --------------------: | -------------------------: | --------: | ---------: |
-| Etiquetas                         |                    16 |                         16 |         0 |          0 |
-| Comandas y tiquetes operativos    |                     9 |                          9 |         0 |          0 |
-| Comprobantes para clientes y caja |                     9 |                          9 |         0 |          0 |
-| Documentos A4                     |                    16 |                         16 |         0 |          0 |
-| **Total**                         |                **50** |                     **50** |     **0** |      **0** |
+| Familia                          | Esperadas por el alcance aprobado | Materializadas | Faltantes | Duplicadas | Estado        |
+| -------------------------------- | --------------------------------: | -------------: | --------: | ---------: | ------------- |
+| Etiquetas                        |                                16 |             16 |         0 |          0 | `CERRADA`     |
+| Comandas y tiquetes operativos   |                                 9 |              9 |         0 |          0 | `CERRADA`     |
+| Comprobantes para cliente y caja |                                 9 |              9 |         0 |          0 | `CERRADA`     |
+| Documentos convencionales        |                                16 |             16 |         0 |          0 | `CERRADA`     |
+| **Total**                        |                            **50** |         **50** |     **0** |      **0** | **`CERRADA`** |
 
-##### 6.2 Estado documental y bloqueos físicos
-
-| Estado documental        | Cantidad | Interpretación                                                                                     |
-| ------------------------ | -------: | -------------------------------------------------------------------------------------------------- |
-| `ESPECIFICADO`           |       50 | Identidad y propósito objetivo definidos; implementación y prueba pertenecen a tareas posteriores. |
-| `IMPLEMENTADO`           |        0 | Esta tarea no recibió evidencia técnica suficiente para declarar integración.                      |
-| `VALIDADO`               |        0 | Esta tarea no ejecuta pruebas físicas u operativas.                                                |
-| **Total del portafolio** |   **50** |                                                                                                    |
-
-| Bloqueo físico asociado                                  | Identidades afectadas | Condición de salida                                                                                                                                           |
-| -------------------------------------------------------- | --------------------: | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
-| Zebra ZD230 almacenada y sin integración                 |                    16 | Despliegue, adaptador, conexión y piloto aprobados.                                                                                                           |
-| Epson L5590 fuera de servicio                            |                     5 | Mantenimiento cerrado y prueba satisfactoria.                                                                                                                 |
-| Capacidad adicional de atención al cliente en Vento Café |                     9 | Dos térmicas adicionales incorporadas antes del piloto; las salidas pueden conservar temporalmente el punto de caja existente según el enrutamiento aprobado. |
-
-Una identidad puede estar documentalmente `ESPECIFICADA` y, al mismo tiempo, tener su ejecución física `BLOQUEADA`. Estos ejes no se suman entre sí.
-
-##### 6.3 Cobertura de dispositivos existentes y capacidad futura
-
-| Recurso                     | Estado                               | Portafolio objetivo asociado                                                         | Decisión                                                                                               |
-| --------------------------- | ------------------------------------ | ------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------ |
-| Zebra ZD230                 | Existente, almacenada                | 16 etiquetas                                                                         | Debe convertirse en impresora principal de etiquetas tras conexión y piloto.                           |
-| Epson L5590                 | Existente, requiere mantenimiento    | 7 documentos A4 de producción, recepción, calidad y despacho                         | Debe repararse antes de declararse disponible.                                                         |
-| Epson L4260                 | Existente, operativa por USB y Wi-Fi | Documentos A4 administrativos y alternativa futura                                   | Debe conservar ambas vías y recibir enrutamiento controlado.                                           |
-| DIG-E200I Molka caja        | Existente, operativa por USB         | Facturas y comprobantes actuales; comandas del punto integrado en el modelo objetivo | Uso exacto y fallback se decide en `PRINT-ARC-007` y `PRINT-ARC-008`.                                  |
-| DIG-E200I Saudo caja        | Existente, operativa por USB         | Facturas y comprobantes actuales; comandas del punto integrado en el modelo objetivo | Uso exacto y fallback se decide en tareas posteriores.                                                 |
-| DIG-E200I Vento Café caja   | Existente, operativa por USB         | Comprobantes de cliente y caja de Vento Café                                         | No debe ser el único punto de salida de resúmenes de cuenta.                                           |
-| DIG-E200I Vento Café barra  | Existente, operativa por red         | Comandas de cafés y bebidas calientes                                                | Estación objetivo definida; reglas posteriores.                                                        |
-| DIG-E200I Vento Café bar    | Existente, operativa por red         | Comandas de bebidas frías                                                            | Estación objetivo definida; reglas posteriores.                                                        |
-| DIG-E200I Vento Café cocina | Existente, operativa por red         | Comandas de cocina, preparación y solicitudes internas                               | Estación objetivo definida; reglas posteriores.                                                        |
-| `CAPACIDAD-VENTO-CLIENTE-A` | Requerida, no existente              | Resúmenes de cuenta y comprobantes de atención                                       | Debe incorporarse como térmica de 80 mm antes del piloto. Ubicación exacta en `PRINT-ARC-007`.         |
-| `CAPACIDAD-VENTO-CLIENTE-B` | Requerida, no existente              | Resúmenes de cuenta y comprobantes de atención                                       | Debe incorporarse como segunda térmica de 80 mm antes del piloto. Ubicación exacta en `PRINT-ARC-007`. |
-
-Reconciliación:
+##### 6.2 Integridad de identidades
 
 ```text
-IMPRESORAS EXISTENTES HEREDADAS: 9
-IMPRESORAS EXISTENTES MATERIALIZADAS: 9
-IDENTIDADES EXISTENTES FALTANTES: 0
-IDENTIDADES EXISTENTES DUPLICADAS: 0
-CAPACIDADES FISICAS ADICIONALES REQUERIDAS: 2
-TOTAL DE PUNTOS DE IMPRESION DEL MODELO OBJETIVO: 11
+IDENTIDADES ESPERADAS POR EL ALCANCE APROBADO: 50
+IDENTIDADES MATERIALIZADAS: 50
+IDENTIFICADORES UNICOS: 50
+IDENTIFICADORES DUPLICADOS: 0
+IDENTIDADES FALTANTES: 0
+IDENTIDADES SIN PROPOSITO: 0
+IDENTIDADES SIN ESTADO: 0
+IDENTIDADES CON BLOQUEO DOCUMENTAL: 0
 ```
 
-Las dos capacidades adicionales no reciben marca, modelo, serial, conexión ni ubicación física inventados. La condición de salida es que `PRINT-ARC-020` no inicie el piloto de comprobantes de cliente en Vento Café hasta que existan dos equipos térmicos adicionales inventariados, conectados y asociados al enrutamiento aprobado.
+La completitud se declara respecto del alcance documental aprobado en esta tarea. No se deduce de la cantidad de impresoras ni impide que una necesidad nueva sea incorporada mediante control de cambios.
 
 ---
 
-#### 7. Brechas, responsables y condiciones de salida
+#### 7. Correcciones consolidadas frente a la versión anterior
 
-| Brecha                                                   | Estado                   | Responsable documental                     | Condición de salida                                                                    |
-| -------------------------------------------------------- | ------------------------ | ------------------------------------------ | -------------------------------------------------------------------------------------- |
-| Aplicación propietaria de cada una de las 50 identidades | `ESPECIFICADO`           | `PRINT-ARC-004`                            | Cada identidad tiene una aplicación dueña y consumidores definidos.                    |
-| Plantilla, versión, tamaño y datos                       | `ESPECIFICADO`           | `PRINT-ARC-005`                            | Cada identidad tiene contrato visual y de datos aprobado.                              |
-| Contrato de trabajo de impresión                         | `ESPECIFICADO`           | `PRINT-ARC-006`                            | Cada salida puede convertirse en un trabajo idempotente y auditable.                   |
-| Enrutamiento por sede, estación y documento              | `ESPECIFICADO`           | `PRINT-ARC-007`                            | Cada identidad tiene destino principal según operación.                                |
-| Principal, alternativas y fallback                       | `ESPECIFICADO`           | `PRINT-ARC-008`                            | Se conoce qué ocurre cuando el destino principal no está disponible.                   |
-| Zebra ZD230 sin despliegue                               | `BLOQUEADO`              | `PRINT-ARC-018` y `PRINT-ARC-020`          | Adaptador seleccionado, conexión materializada y etiquetas piloto legibles.            |
-| Epson L5590 fuera de servicio                            | `BLOQUEADO`              | Mantenimiento del activo y `PRINT-ARC-020` | Reparación cerrada y prueba satisfactoria con documentos A4 objetivo.                  |
-| Dos térmicas adicionales en Vento Café                   | `BLOQUEADO`              | `PRINT-ARC-020`                            | Dos equipos disponibles, inventariados, conectados y listos para el piloto de cliente. |
-| Uso actual de cada documento                             | `PENDIENTE_DE_EVIDENCIA` | `PRINT-ARC-020`                            | Prueba por identidad priorizada y por punto operativo con evidencia.                   |
-| Permisos y privacidad                                    | `ESPECIFICADO`           | `PRINT-ARC-015` y `PRINT-ARC-016`          | Acciones y datos sensibles quedan protegidos por rol y contexto.                       |
-| Operación offline y contingencia                         | `ESPECIFICADO`           | `PRINT-ARC-017`                            | Existe procedimiento y comportamiento degradado aprobado.                              |
-
-No queda una brecha sin propietario documental o condición de salida.
+1. Se conserva el inventario de cincuenta identidades sin tratarlas como asignaciones de hardware.
+2. Se elimina la designación anticipada de una impresora específica para cada familia.
+3. Se elimina la obligación de incorporar dos impresoras térmicas adicionales.
+4. Se elimina el total objetivo de once puntos de impresión.
+5. Se elimina cualquier prerrequisito de compra atribuido al piloto.
+6. Se elimina la asignación anticipada de aplicación propietaria.
+7. Se elimina la definición anticipada de tamaño, papel, plantilla, datos, ruta y fallback.
+8. Se conserva únicamente la relación funcional necesaria para explicar qué se imprime y para qué.
+9. Todas las identidades quedan cerradas documentalmente y sin preguntas internas de `PRINT-ARC-003`.
+10. Las decisiones posteriores se entregan a su tarea propietaria como alcance reservado, no como omisiones o bloqueos de esta tarea.
 
 ---
 
-#### 8. Handoff
+#### 8. Handoff cerrado hacia `PRINT-ARC-004`
 
-`PRINT-ARC-004` deberá consumir las cincuenta identidades sin reducirlas ni fusionarlas silenciosamente y decidir, para cada una:
+`PRINT-ARC-004` recibe exactamente cincuenta identidades aprobadas y deberá materializar una decisión de propiedad por cada una, sin reducirlas, fusionarlas, renombrarlas ni descartarlas silenciosamente.
 
-- aplicación propietaria;
-- aplicación o dominio originador;
-- aplicaciones consumidoras;
-- actor que autoriza la operación;
-- actor que solicita la impresión;
-- separación entre documento empresarial y copia física;
-- tratamiento cuando la salida representa información fiscal, financiera, personal, operacional o de trazabilidad.
+Por cada identidad recibe:
 
-Las dos capacidades térmicas adicionales de Vento Café permanecen como requisito de capacidad del portafolio, no como dispositivos ya adquiridos.
+- código estable `IMP-*`;
+- nombre de la salida;
+- familia documental;
+- propósito operativo;
+- procesos relacionados;
+- condición documental;
+- estado `INVENTARIADA`;
+- bloqueo documental `SIN_BLOQUEO_DOCUMENTAL`.
+
+No recibe decisiones sobre:
+
+- aplicación propietaria o consumidores;
+- estructura de datos;
+- plantilla, versión, tamaño o idioma;
+- punto, sede, estación, canal o impresora;
+- principal, alternativa o fallback;
+- cantidad de equipos;
+- adaptadores o conexión;
+- implementación, prueba o piloto.
 
 ---
 
 #### 9. Criterios de aceptación
 
-`PRINT-ARC-003` queda documentalmente satisfecha cuando:
+`PRINT-ARC-003` queda documentalmente satisfecha porque:
 
-- [x] define un portafolio objetivo y no se limita a la situación actual;
-- [x] materializa 50 identidades imprimibles con códigos únicos;
-- [x] materializa 16 etiquetas, 9 comandas, 9 comprobantes de cliente y caja, y 16 documentos A4;
-- [x] asigna propósito, dominio originador previsto, proceso y familia de dispositivo por identidad;
-- [x] incluye etiquetas de producción, lotes, inventario, activos, mantenimiento, calidad y pedidos;
-- [x] incluye comandas diferenciadas para cocina, bar y barra;
-- [x] incluye resúmenes de cuenta y comprobantes para clientes;
-- [x] conserva las nueve impresoras existentes sin faltantes ni duplicados;
-- [x] define dos capacidades térmicas adicionales para Vento Café sin presentarlas como equipos existentes;
-- [x] distingue especificación documental, implementación y validación;
-- [x] asigna cada bloqueo y pendiente a una tarea o propietario con condición de salida;
-- [x] reserva propiedad de aplicación para `PRINT-ARC-004`;
-- [x] no ejecuta compras, instalación, configuración, mantenimiento o pruebas físicas.
+- [x] responde qué salidas físicas debe soportar el ecosistema y para qué propósito;
+- [x] materializa cincuenta identidades únicas y estables;
+- [x] materializa 16 etiquetas, 9 comandas o tiquetes, 9 salidas de cliente o caja y 16 documentos convencionales;
+- [x] asigna nombre, propósito, procesos relacionados, condición documental, estado y bloqueo por identidad;
+- [x] reporta 50 esperadas, 50 materializadas, 0 faltantes y 0 duplicadas;
+- [x] no asigna aplicaciones propietarias;
+- [x] no define campos, plantilla, tamaño, idioma ni versión;
+- [x] no asigna impresoras, sedes, puntos, canales o estaciones;
+- [x] no crea obligaciones de compra ni capacidades físicas adicionales;
+- [x] no define enrutamiento, principal, alternativa o fallback;
+- [x] no declara implementación ni validación física;
+- [x] no deja preguntas, decisiones o bloqueos dentro de su alcance;
+- [x] entrega un handoff completo y consumible a `PRINT-ARC-004`;
+- [x] mantiene `PRINT-ARC-004` como única tarea siguiente reservada.
 
 ---
 
@@ -978,7 +957,7 @@ Las dos capacidades térmicas adicionales de Vento Café permanecen como requisi
 
 **NO GENERA REQUISITOS DE PRUEBA.**
 
-La tarea crea identidades documentales y define el portafolio objetivo, pero no incorpora todavía comportamiento ejecutable, disparadores, permisos, plantillas, contratos de trabajo, enrutamiento, reintentos, privacidad, operación offline ni criterios de éxito físico. Esas obligaciones verificables pertenecen a las tareas posteriores que materialicen cada decisión.
+La tarea materializa un inventario documental de identidades y propósitos. No introduce comportamiento ejecutable, eventos, permisos, datos, plantillas, contratos de trabajo, enrutamiento, reintentos, obligaciones de infraestructura ni criterios físicos de aceptación que requieran crear o modificar requisitos `TREQ-*`.
 
 ```text
 TREQ creados: 0
@@ -990,18 +969,20 @@ TREQ obsoletos: 0
 
 ---
 
-#### 11. Continuidad
+#### 11. Cierre y continuidad
 
 ```text
-ÚLTIMA TAREA APROBADA
+TAREA ANTERIOR APROBADA
 PRINT-ARC-002 — Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión
         ↓
-TAREA ACTUAL APROBADA
+TAREA CORREGIDA Y APROBADA
 PRINT-ARC-003 — Inventariar documentos, etiquetas, comandas y comprobantes imprimibles
         ↓
 SIGUIENTE TAREA RESERVADA
 PRINT-ARC-004 — Definir aplicación propietaria de cada documento
 ```
+
+La corrección de `PRINT-ARC-003` no inicia, desarrolla ni aprueba `PRINT-ARC-004` y no modifica la secuencia posterior.
 
 
 ### [ ] PRINT-ARC-004 — Definir aplicación propietaria de cada documento
