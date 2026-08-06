@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **582** |
+| Tareas aprobadas | **583** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1012** |
+| Tareas no iniciadas | **1011** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **36.51% (582/1594)** |
+| Porcentaje de completamiento | **36.57% (583/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PRINT-ARC-004 — Definir aplicación propietaria de cada documento** |
-| Tarea actual | **PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos** |
+| Última tarea aprobada | **PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos** |
+| Tarea actual | **PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión** |
+| Siguiente tarea | **PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispositivo** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 6 de 157 aprobadas; PRINT-ARC-005 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 7 de 157 aprobadas; PRINT-ARC-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PRINT-ARC-004` — Definir aplicación propietaria de cada documento |
-| Tarea actual | `PRINT-ARC-005` — Definir plantilla, versión, tamaño y datos requeridos — **NO INICIADA** |
-| Siguiente tarea | `PRINT-ARC-006` — Definir contrato canónico de trabajo de impresión |
+| Última aprobada | `PRINT-ARC-005` — Definir plantilla, versión, tamaño y datos requeridos |
+| Tarea actual | `PRINT-ARC-006` — Definir contrato canónico de trabajo de impresión — **NO INICIADA** |
+| Siguiente tarea | `PRINT-ARC-007` — Definir enrutamiento por sede, área, documento, canal y dispositivo |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 6 DE 157 APROBADAS — ACTUAL PRINT-ARC-005** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 7 DE 157 APROBADAS — ACTUAL PRINT-ARC-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PRINT-ARC-004 — Definir aplicación propietaria de cada documento
-        ↓
-TAREA ACTUAL
 PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión
         ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispositivo
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 6 de 157 tareas aprobadas
+CARRIL NEXO — 7 de 157 tareas aprobadas
 ```

@@ -1282,7 +1282,332 @@ PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos
 La aprobación de `PRINT-ARC-004` no inicia, desarrolla ni aprueba `PRINT-ARC-005` y no modifica la secuencia posterior.
 
 
-### [ ] PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos
+### ✅ PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-004 — Definir aplicación propietaria de cada documento` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-006 — Definir tiempo de vida y reglas de retención` — RESERVADA
+**Tipo de tarea:** documental; catálogo materializado de plantillas, versiones, perfiles físicos y contratos mínimos de datos para las cincuenta identidades imprimibles aprobadas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Cambios físicos autorizados:** ninguno; no implementa renderizadores, adaptadores, rutas, colas, configuración de impresoras, código, SQL, migraciones ni cambios en Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar una plantilla versionada, un perfil físico objetivo y un contrato mínimo de datos para cada una de las cincuenta salidas aprobadas, conservando identidad, nombre y aplicación propietaria sin anticipar enrutamiento, retención, eventos, reintentos, permisos, privacidad, adaptadores o piloto.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-005` queda cerrada con cincuenta definiciones individuales y consumibles:
+
+- 50 identidades recibidas de `PRINT-ARC-004`;
+- 50 identidades materializadas;
+- 50 identificadores únicos de plantilla;
+- 50 versiones iniciales `1.0.0`;
+- 6 perfiles físicos normalizados;
+- 50 contratos de datos requeridos;
+- 50 mínimos visibles obligatorios;
+- 0 identidades sin plantilla;
+- 0 identidades sin tamaño;
+- 0 identidades sin datos requeridos;
+- 0 faltantes;
+- 0 duplicadas;
+- 0 cambios de propiedad funcional;
+- 0 preguntas sustantivas abiertas dentro del alcance documental.
+
+Todas las definiciones quedan en estado `ESPECIFICADO`. Esta tarea no declara plantillas implementadas, impresiones ejecutadas ni evidencia física validada.
+
+---
+
+#### 2. Contrato canónico de plantilla y versión
+
+Cada salida utiliza un identificador de plantilla estable con la forma `TPL-<ID-SALIDA>`; por ejemplo, `IMP-LBL-01` utiliza `TPL-IMP-LBL-01`.
+
+Reglas obligatorias:
+
+1. La versión inicial de las cincuenta plantillas es `1.0.0`.
+2. La versión usa SemVer documental `MAJOR.MINOR.PATCH`.
+3. `MAJOR` cambia cuando se elimina, renombra o reinterpreta un dato obligatorio, cambia el significado empresarial o se rompe compatibilidad de lectura.
+4. `MINOR` cambia cuando se agrega información compatible, una sección opcional o una mejora de composición que conserva todos los datos obligatorios.
+5. `PATCH` cambia por correcciones tipográficas, espaciado o ajustes visuales sin cambio semántico ni de tamaño objetivo.
+6. Una versión publicada es inmutable; una corrección crea una nueva versión.
+7. La solicitud de impresión deberá referenciar `salida_id`, `plantilla_id` y `plantilla_version` de forma explícita; no se permite resolver silenciosamente “la última”.
+8. La aplicación propietaria gobierna los datos empresariales. El servicio de impresión solo valida presencia, compone y representa; no inventa, corrige ni completa hechos.
+9. Un dato ausente no se sustituye por texto ficticio. Los campos condicionales se omiten o se marcan como no aplicables únicamente cuando el contrato de la fila lo permite.
+10. El contenido se representa en español `es-CO`; las marcas de tiempo se transportan en formato RFC 3339 y se muestran en `America/Bogota`; los importes incluyen valor decimal y moneda, normalmente `COP` cuando el documento financiero así lo indique.
+11. Todo texto dinámico debe envolver líneas sin invadir márgenes, códigos o campos adyacentes. No se autoriza truncar identificadores, cantidades, fechas, estados, totales, alérgenos, advertencias ni notas operativas obligatorias.
+
+---
+
+#### 3. Sobre común de datos `BASE-IMP-001`
+
+Todas las filas de la matriz incluyen, además de sus datos empresariales específicos, este sobre obligatorio:
+
+| Campo                    | Fuente autorizada                                | Regla                                                                            | Visible                                                    |
+| ------------------------ | ------------------------------------------------ | -------------------------------------------------------------------------------- | ---------------------------------------------------------- |
+| `salida_id`              | catálogo canónico de impresión                   | Debe coincidir exactamente con el `IMP-*` solicitado.                            | No necesariamente; sí en metadatos de trazabilidad.        |
+| `plantilla_id`           | catálogo canónico de impresión                   | Debe ser `TPL-<salida_id>`.                                                      | No necesariamente; sí en metadatos de trazabilidad.        |
+| `plantilla_version`      | catálogo canónico de impresión                   | Debe existir y corresponder al contrato aprobado.                                | Sí, como texto compacto o metadato legible.                |
+| `documento_id`           | aplicación propietaria                           | Identificador estable de la instancia empresarial representada.                  | Sí o codificado de forma legible por máquina en etiquetas. |
+| `aplicacion_propietaria` | `PRINT-ARC-004`                                  | Debe coincidir con la propietaria de la fila.                                    | No necesariamente; obligatorio en metadatos.               |
+| `empresa_id`             | contexto canónico de la aplicación propietaria   | No puede inferirse desde el dispositivo.                                         | No necesariamente.                                         |
+| `sede_id`                | contexto canónico de la aplicación propietaria   | Debe representar la sede del hecho, no la ubicación de la impresora.             | Sí cuando sea operacionalmente relevante.                  |
+| `emitido_en`             | aplicación propietaria                           | Marca de tiempo RFC 3339 de creación de la representación.                       | Sí.                                                        |
+| `emitido_por_actor_id`   | contexto autorizado de la aplicación propietaria | Actor o principal que autorizó la emisión; admite actor de sistema identificado. | Nombre o referencia visible cuando la fila lo exige.       |
+| `estado_documento`       | aplicación propietaria                           | Estado empresarial vigente al momento de emitir.                                 | Sí cuando exista estado de negocio.                        |
+| `correlation_id`         | aplicación propietaria o capa transversal        | Correlación técnica estable para auditoría; no reemplaza `documento_id`.         | No; permanece en metadatos o código de trazabilidad.       |
+
+Para etiquetas, `codigo_maquina` representa un código de barras o código 2D que contiene como mínimo `salida_id`, `documento_id` y una referencia verificable a la instancia canónica; no debe contener datos sensibles completos.
+
+---
+
+#### 4. Perfiles físicos normalizados
+
+Los perfiles son objetivos documentales y no asignan impresora principal, sede, estación, ruta ni fallback. Las dimensiones de etiquetas no exceden 100 mm de ancho para permanecer dentro de la capacidad física inventariada de 104 mm; la compatibilidad real con medio cargado se valida posteriormente.
+
+| Perfil              | Familia física                | Tamaño objetivo                   | Reglas de composición                                                                                  |
+| ------------------- | ----------------------------- | --------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `PERF-LBL-100X50-H` | Etiqueta horizontal           | 100 × 50 mm                       | Una cara; margen de seguridad mínimo de 2 mm; contenido crítico en texto y código legible por máquina. |
+| `PERF-LBL-75X50-H`  | Etiqueta horizontal compacta  | 75 × 50 mm                        | Una cara; margen de seguridad mínimo de 2 mm; sin reducción automática de campos obligatorios.         |
+| `PERF-LBL-100X75-H` | Etiqueta horizontal de alerta | 100 × 75 mm                       | Una cara; estado o advertencia en primera jerarquía visual; margen de seguridad mínimo de 2 mm.        |
+| `PERF-TKT-80-V`     | Tiquete vertical              | Rollo de 80 mm; longitud variable | Una cara; crecimiento vertical; no cortar texto, ítems, totales ni notas obligatorias.                 |
+| `PERF-A4-P`         | Documento A4 vertical         | 210 × 297 mm                      | Márgenes mínimos de 10 mm; encabezado repetible; paginación obligatoria cuando exceda una página.      |
+| `PERF-A4-L`         | Documento A4 horizontal       | 297 × 210 mm                      | Márgenes mínimos de 10 mm; encabezado repetible; paginación obligatoria cuando exceda una página.      |
+
+#### 5. Estructura mínima de las plantillas
+
+##### 5.1 Etiquetas
+
+- zona de identidad: nombre, referencia empresarial y código;
+- zona de estado: condición vigente, advertencia o restricción cuando aplique;
+- zona temporal: elaboración, emisión, vigencia o vencimiento según la fila;
+- zona de trazabilidad: identificador humano y `codigo_maquina`;
+- ningún dato crítico puede depender exclusivamente de color.
+
+##### 5.2 Comandas y tiquetes operativos
+
+- encabezado: tipo de salida, número o referencia, versión y fecha/hora;
+- cuerpo: ítems o instrucciones en orden determinista, sin omitir modificadores, notas ni alertas;
+- cierre: estado, responsable o autorización cuando aplique y versión de plantilla;
+- la longitud crece verticalmente; no se permite cortar contenido obligatorio.
+
+##### 5.3 Comprobantes para cliente y caja
+
+- encabezado de identificación del documento y referencia comercial o financiera;
+- detalle completo de conceptos, valores y estados aplicables;
+- totales y moneda con jerarquía visual superior al detalle;
+- referencias de validación o documento origen cuando apliquen;
+- los datos fiscales o financieros provienen de `NUMERA`; la plantilla no recalcula impuestos, saldos o totales.
+
+##### 5.4 Documentos convencionales
+
+- encabezado: tipo, número, fecha, empresa, sede y estado;
+- referencias de origen y partes involucradas;
+- cuerpo tabular o secciones completas sin pérdida de filas;
+- responsables, aprobaciones, aceptaciones o espacios de captura definidos por la fila;
+- pie con `documento_id`, versión de plantilla, fecha de emisión y paginación `página n de m`.
+
+---
+
+#### 6. Matriz materializada de las cincuenta plantillas
+
+La notación `APLICACION:{campo_1, campo_2}` identifica simultáneamente el dato requerido y su fuente funcional autorizada. `CAPTURA_FISICA` identifica espacios que deben existir en la plantilla para diligenciamiento controlado posterior y no datos inventados al emitir.
+
+| ID de salida | Salida                                                    | Propietaria | Plantilla        | Versión | Perfil / tamaño     | Datos requeridos y fuente                                                                                                                                                                                                                                                                                       | Visible obligatorio                                                                                                                                                                    | Estado / bloqueo                          |
+| ------------ | --------------------------------------------------------- | ----------- | ---------------- | ------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------- |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | `FOGO`      | `TPL-IMP-LBL-01` | `1.0.0` | `PERF-LBL-100X50-H` | BASE-IMP-001 + FOGO:{lote_id, producto_id, producto_nombre, producto_sku, fecha_produccion, fecha_vencimiento, estado_lote, cantidad, unidad}; NEXO:{ubicacion_codigo}                                                                                                                                          | producto_nombre; producto_sku; lote_id; fecha_produccion; fecha_vencimiento; estado_lote; cantidad_unidad; ubicacion_codigo; codigo_maquina                                            | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | `FOGO`      | `TPL-IMP-LBL-02` | `1.0.0` | `PERF-LBL-100X50-H` | BASE-IMP-001 + FOGO:{lote_id, producto_intermedio_id, producto_intermedio_nombre, producto_sku, fecha_elaboracion, fecha_limite_uso, estado_lote, cantidad, unidad}; NEXO:{ubicacion_codigo}                                                                                                                    | producto_intermedio_nombre; producto_sku; lote_id; fecha_elaboracion; fecha_limite_uso; estado_lote; cantidad_unidad; ubicacion_codigo; codigo_maquina                                 | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | `FOGO`      | `TPL-IMP-LBL-03` | `1.0.0` | `PERF-LBL-75X50-H`  | BASE-IMP-001 + FOGO:{preparacion_id, preparacion_nombre, fecha_hora_elaboracion, fecha_hora_limite_uso, responsable_nombre, estado, alergenos_resumen}; NEXO:{ubicacion_codigo}                                                                                                                                 | preparacion_nombre; preparacion_id; fecha_hora_elaboracion; fecha_hora_limite_uso; responsable_nombre; estado; alergenos_resumen; ubicacion_codigo                                     | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | `FOGO`      | `TPL-IMP-LBL-04` | `1.0.0` | `PERF-LBL-75X50-H`  | BASE-IMP-001 + FOGO:{transformacion_id, producto_id, producto_nombre, lote_origen, fecha_hora_apertura, fecha_hora_limite_uso, cantidad, unidad, responsable_nombre}; NEXO:{contenedor_id, ubicacion_codigo}                                                                                                    | producto_nombre; lote_origen; transformacion_id; fecha_hora_apertura; fecha_hora_limite_uso; cantidad_unidad; responsable_nombre; contenedor_id                                        | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | `FOGO`      | `TPL-IMP-LBL-05` | `1.0.0` | `PERF-LBL-100X75-H` | BASE-IMP-001 + FOGO:{objeto_id, objeto_tipo, nombre, alergenos, restricciones_manipulacion, riesgo_contacto_cruzado, estado, aprobado_por}                                                                                                                                                                      | nombre; objeto_id; alergenos; restricciones_manipulacion; riesgo_contacto_cruzado; estado; aprobado_por; codigo_maquina                                                                | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | `FOGO`      | `TPL-IMP-LBL-06` | `1.0.0` | `PERF-LBL-100X75-H` | BASE-IMP-001 + FOGO:{objeto_id, objeto_tipo, estado_calidad, motivo, decision_en, decidido_por, restriccion_operativa}; NEXO:{ubicacion_codigo}                                                                                                                                                                 | estado_calidad; objeto_tipo; objeto_id; motivo; decision_en; decidido_por; restriccion_operativa; ubicacion_codigo; codigo_maquina                                                     | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | `ORIGO`     | `TPL-IMP-LBL-07` | `1.0.0` | `PERF-LBL-100X50-H` | BASE-IMP-001 + ORIGO:{recepcion_id, proveedor_id, proveedor_nombre, orden_compra_ref, fecha_recepcion, lote_proveedor, producto_nombre, cantidad, unidad}; NEXO:{articulo_sku, ubicacion_destino_codigo}                                                                                                        | producto_nombre; articulo_sku; lote_proveedor; proveedor_nombre; recepcion_id; fecha_recepcion; cantidad_unidad; ubicacion_destino_codigo; codigo_maquina                              | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | `NEXO`      | `TPL-IMP-LBL-08` | `1.0.0` | `PERF-LBL-100X50-H` | BASE-IMP-001 + NEXO:{ubicacion_id, ubicacion_codigo, ubicacion_nombre, tipo_ubicacion, sede_codigo, capacidad_o_restriccion, estado}                                                                                                                                                                            | ubicacion_codigo; ubicacion_nombre; tipo_ubicacion; sede_codigo; capacidad_o_restriccion; estado; codigo_maquina                                                                       | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | `NEXO`      | `TPL-IMP-LBL-09` | `1.0.0` | `PERF-LBL-75X50-H`  | BASE-IMP-001 + NEXO:{articulo_id, sku, articulo_nombre, unidad_base, tipo_articulo, estado}                                                                                                                                                                                                                     | articulo_nombre; sku; articulo_id; unidad_base; tipo_articulo; estado; codigo_maquina                                                                                                  | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | `NEXO`      | `TPL-IMP-LBL-10` | `1.0.0` | `PERF-LBL-100X75-H` | BASE-IMP-001 + NEXO:{bulto_id, movimiento_id, origen_codigo, destino_codigo, contenido_resumen, cantidad_unidades, estado}; PULSO/FOGO/ORIGO:{documento_origen_ref}                                                                                                                                             | bulto_id; movimiento_id; origen_codigo; destino_codigo; contenido_resumen; cantidad_unidades; estado; documento_origen_ref; codigo_maquina                                             | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | `PULSO`     | `TPL-IMP-LBL-11` | `1.0.0` | `PERF-LBL-100X75-H` | BASE-IMP-001 + PULSO:{pedido_id, numero_orden, cliente_alias, canal, modalidad_entrega, fecha_hora_prometida, estado, cantidad_bultos}; NEXO:{punto_entrega_codigo}                                                                                                                                             | numero_orden; pedido_id; cliente_alias; modalidad_entrega; fecha_hora_prometida; estado; cantidad_bultos; punto_entrega_codigo; codigo_maquina                                         | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | `NEXO`      | `TPL-IMP-LBL-12` | `1.0.0` | `PERF-LBL-100X50-H` | BASE-IMP-001 + NEXO:{activo_id, codigo_activo, activo_nombre, categoria, numero_serie_si_existe, sede_codigo, ubicacion_codigo, estado}                                                                                                                                                                         | codigo_activo; activo_nombre; categoria; numero_serie_si_existe; sede_codigo; ubicacion_codigo; estado; codigo_maquina                                                                 | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO`      | `TPL-IMP-LBL-13` | `1.0.0` | `PERF-LBL-100X75-H` | BASE-IMP-001 + NEXO:{activo_id, codigo_activo, estado_tecnico, tipo_intervencion, restriccion_uso, fecha_inicio, fecha_proxima_revision, responsable_o_proveedor}                                                                                                                                               | estado_tecnico; codigo_activo; tipo_intervencion; restriccion_uso; fecha_inicio; fecha_proxima_revision; responsable_o_proveedor; codigo_maquina                                       | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | `FOGO`      | `TPL-IMP-LBL-14` | `1.0.0` | `PERF-LBL-75X50-H`  | BASE-IMP-001 + FOGO:{control_id, objeto_o_area, procedimiento, fecha_hora_ejecucion, fecha_hora_vigencia, resultado, responsable_nombre}; NEXO:{activo_o_ubicacion_id}                                                                                                                                          | objeto_o_area; procedimiento; fecha_hora_ejecucion; fecha_hora_vigencia; resultado; responsable_nombre; activo_o_ubicacion_id; codigo_maquina                                          | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | `FOGO`      | `TPL-IMP-LBL-15` | `1.0.0` | `PERF-LBL-75X50-H`  | BASE-IMP-001 + FOGO:{muestra_id, tipo_muestra, producto_o_lote_ref, fecha_hora_toma, responsable_nombre, cadena_custodia_ref, estado}; NEXO:{ubicacion_conservacion_codigo}                                                                                                                                     | muestra_id; tipo_muestra; producto_o_lote_ref; fecha_hora_toma; responsable_nombre; estado; ubicacion_conservacion_codigo; codigo_maquina                                              | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | `FOGO`      | `TPL-IMP-LBL-16` | `1.0.0` | `PERF-LBL-75X50-H`  | BASE-IMP-001 + FOGO:{registro_id, tipo_registro, material_o_producto_ref, cantidad, unidad, motivo, fecha_hora, autorizado_por, disposicion}; NEXO:{movimiento_inventario_ref}                                                                                                                                  | tipo_registro; material_o_producto_ref; cantidad_unidad; motivo; fecha_hora; autorizado_por; disposicion; movimiento_inventario_ref; codigo_maquina                                    | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-01` | Comanda de cocina                                         | `PULSO`     | `TPL-IMP-CMD-01` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + PULSO:{pedido_id, numero_orden, version_orden, fecha_hora, modalidad_servicio, prioridad, items[{linea_id, nombre, cantidad, modificadores, notas, alergenos}], observacion_general}                                                                                                             | numero_orden; version_orden; fecha_hora; modalidad_servicio; prioridad; items completos; modificadores; notas; alergenos; observacion_general                                          | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías                           | `PULSO`     | `TPL-IMP-CMD-02` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + PULSO:{pedido_id, numero_orden, version_orden, fecha_hora, modalidad_servicio, prioridad, items[{linea_id, nombre, cantidad, modificadores, notas, alergenos}], observacion_general}                                                                                                             | numero_orden; version_orden; fecha_hora; modalidad_servicio; prioridad; items completos; modificadores; notas; alergenos; observacion_general                                          | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes             | `PULSO`     | `TPL-IMP-CMD-03` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + PULSO:{pedido_id, numero_orden, version_orden, fecha_hora, modalidad_servicio, prioridad, items[{linea_id, nombre, cantidad, modificadores, notas, alergenos}], observacion_general}                                                                                                             | numero_orden; version_orden; fecha_hora; modalidad_servicio; prioridad; items completos; modificadores; notas; alergenos; observacion_general                                          | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-04` | Comanda de preparación o mise en place                    | `FOGO`      | `TPL-IMP-CMD-04` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + FOGO:{solicitud_preparacion_id, preparacion_id, preparacion_nombre, cantidad, unidad, prioridad, fecha_hora_requerida, notas, solicitado_por}; NEXO:{insumos_requeridos_ref}                                                                                                                     | solicitud_preparacion_id; preparacion_nombre; cantidad_unidad; prioridad; fecha_hora_requerida; notas; solicitado_por; insumos_requeridos_ref                                          | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-05` | Tiquete de expedición o recogida                          | `PULSO`     | `TPL-IMP-CMD-05` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + PULSO:{pedido_id, numero_orden, cliente_alias, modalidad_entrega, items_resumen, fecha_hora_compromiso, estado_pedido}; FOGO:{estado_preparacion}; NEXO:{punto_entrega_codigo}                                                                                                                   | numero_orden; cliente_alias; modalidad_entrega; items_resumen; fecha_hora_compromiso; estado_pedido; estado_preparacion; punto_entrega_codigo                                          | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-06` | Solicitud interna de reposición                           | `NEXO`      | `TPL-IMP-CMD-06` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + NEXO:{reposicion_id, articulo_id, articulo_sku, articulo_nombre, cantidad, unidad, ubicacion_origen_codigo, ubicacion_destino_codigo, prioridad, motivo, solicitado_en, estado}; FOGO:{solicitud_operativa_ref}                                                                                  | reposicion_id; articulo_sku; articulo_nombre; cantidad_unidad; ubicacion_origen_codigo; ubicacion_destino_codigo; prioridad; motivo; solicitado_en; estado                             | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-07` | Modificación o adición de comanda                         | `PULSO`     | `TPL-IMP-CMD-07` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + PULSO:{pedido_id, numero_orden, version_orden, modificacion_id, fecha_hora, cambios_items[{linea_id, accion, cantidad, detalle}], motivo, autorizado_por}                                                                                                                                        | numero_orden; version_orden; modificacion_id; fecha_hora; cambios_items completos; motivo; autorizado_por; indicador MODIFICACION                                                      | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-08` | Cancelación o anulación de comanda                        | `PULSO`     | `TPL-IMP-CMD-08` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + PULSO:{pedido_id, numero_orden, version_orden, cancelacion_id, items_cancelados[{linea_id, cantidad, detalle}], motivo, fecha_hora, autorizado_por}                                                                                                                                              | numero_orden; version_orden; cancelacion_id; items_cancelados completos; motivo; fecha_hora; autorizado_por; indicador CANCELACION                                                     | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia                 | `FOGO`      | `TPL-IMP-CMD-09` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + FOGO:{solicitud_produccion_id, producto_o_preparacion_id, nombre, cantidad, unidad, prioridad, fecha_hora_requerida, motivo, estado}; NEXO:{insuficiencia_id, articulo_sku, disponibilidad_actual, ubicacion_codigo}                                                                             | solicitud_produccion_id; nombre; cantidad_unidad; prioridad; fecha_hora_requerida; motivo; estado; insuficiencia_id; articulo_sku; disponibilidad_actual                               | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente                         | `PULSO`     | `TPL-IMP-CLI-01` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + PULSO:{pedido_id, numero_orden, fecha_hora, items[{nombre, cantidad, valor_unitario, total_linea}], observaciones}; NUMERA:{subtotal, descuentos, impuestos, total, moneda}                                                                                                                      | numero_orden; fecha_hora; items completos; subtotal; descuentos; impuestos; total; moneda; leyenda NO ES COMPROBANTE FISCAL cuando corresponda                                         | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-02` | Confirmación de pedido                                    | `PULSO`     | `TPL-IMP-CLI-02` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + PULSO:{pedido_id, numero_orden, fecha_hora, canal, items[{nombre, cantidad, modificadores}], estado, modalidad_entrega, fecha_hora_prometida, punto_entrega}                                                                                                                                     | numero_orden; fecha_hora; canal; items completos; estado; modalidad_entrega; fecha_hora_prometida; punto_entrega                                                                       | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-03` | Comprobante de pago                                       | `NUMERA`    | `TPL-IMP-CLI-03` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + NUMERA:{pago_id, referencia_pago, fecha_hora, medio_pago, valor, moneda, estado, autorizacion_ref_si_aplica}; PULSO:{pedido_id, numero_orden}                                                                                                                                                    | pago_id; referencia_pago; fecha_hora; medio_pago; valor; moneda; estado; autorizacion_ref_si_aplica; numero_orden                                                                      | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente               | `NUMERA`    | `TPL-IMP-CLI-04` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + NUMERA:{documento_venta_id, tipo_documento, numero, prefijo_si_aplica, fecha_emision, emisor_identificacion, adquirente_identificacion_si_aplica, lineas, subtotal, descuentos, impuestos, total, moneda, medio_pago, estado, codigo_validacion_si_aplica}; PULSO:{pedido_id, numero_orden}      | tipo_documento; numero; fecha_emision; emisor; adquirente_si_aplica; lineas completas; subtotal; descuentos; impuestos; total; moneda; medio_pago; estado; codigo_validacion_si_aplica | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito      | `NUMERA`    | `TPL-IMP-CLI-05` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + NUMERA:{ajuste_id, tipo_ajuste, documento_origen_ref, fecha_hora, motivo, lineas_ajuste, impuestos_ajuste, total_ajuste, moneda, estado}; PULSO:{pedido_id, numero_orden}                                                                                                                        | ajuste_id; tipo_ajuste; documento_origen_ref; fecha_hora; motivo; lineas_ajuste; impuestos_ajuste; total_ajuste; moneda; estado; numero_orden                                          | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-06` | Resumen de recogida o entrega                             | `PULSO`     | `TPL-IMP-CLI-06` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + PULSO:{pedido_id, numero_orden, modalidad_entrega, fecha_hora_compromiso, punto_entrega, cliente_alias, items_o_bultos, estado}; NEXO:{entrega_o_movimiento_ref}                                                                                                                                 | numero_orden; modalidad_entrega; fecha_hora_compromiso; punto_entrega; cliente_alias; items_o_bultos; estado; entrega_o_movimiento_ref                                                 | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo                         | `PULSO`     | `TPL-IMP-CLI-07` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + PULSO:{reserva_id, pedido_id, numero_orden, fecha_hora_reserva, vigencia, condiciones, estado}; NUMERA:{anticipo_id, valor, moneda, estado_anticipo}                                                                                                                                             | reserva_id; numero_orden; fecha_hora_reserva; vigencia; condiciones; estado; anticipo_id; valor; moneda; estado_anticipo                                                               | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                     | `PULSO`     | `TPL-IMP-CLI-08` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + PULSO:{beneficio_id, tipo_beneficio, codigo, descripcion, vigencia_desde, vigencia_hasta, condiciones, valor_o_porcentaje, estado, uso_ref_si_aplica}; NUMERA:{efecto_financiero_si_aplica}                                                                                                      | beneficio_id; tipo_beneficio; codigo; descripcion; vigencia; condiciones; valor_o_porcentaje; estado; uso_ref_si_aplica                                                                | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja         | `NUMERA`    | `TPL-IMP-CLI-09` | `1.0.0` | `PERF-TKT-80-V`     | BASE-IMP-001 + NUMERA:{caja_id, sesion_caja_id, tipo_evento, apertura_en, cierre_en_si_aplica, actor_responsable, saldo_inicial, totales_por_medio, ingresos, egresos, diferencia, saldo_final, estado}; PULSO:{punto_venta_id}                                                                                 | caja_id; sesion_caja_id; tipo_evento; apertura_en; cierre_en_si_aplica; actor_responsable; totales_por_medio; ingresos; egresos; diferencia; saldo_final; estado                       | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-01` | Remisión o nota de despacho                               | `NEXO`      | `TPL-IMP-DOC-01` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + NEXO:{remision_id, numero, fecha, origen, destino, tercero, items[{articulo_id, sku, descripcion, cantidad, unidad}], transportador_si_aplica, estado}; PULSO/FOGO/ORIGO:{documento_origen_ref}                                                                                                  | numero; fecha; origen; destino; tercero; items completos; cantidades_unidades; transportador_si_aplica; estado; documento_origen_ref; firmas_o_aceptaciones previstas                  | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-02` | Manifiesto de traslado interno                            | `NEXO`      | `TPL-IMP-DOC-02` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + NEXO:{traslado_id, numero, fecha, origen, destino, items[{articulo_id, sku, descripcion, cantidad, unidad}], responsables, estado}                                                                                                                                                               | numero; fecha; origen; destino; items completos; cantidades_unidades; responsables; estado; campos de entrega y recepción                                                              | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-03` | Hoja de conteo de inventario                              | `NEXO`      | `TPL-IMP-DOC-03` | `1.0.0` | `PERF-A4-L`         | BASE-IMP-001 + NEXO:{conteo_id, fecha, sede_codigo, ubicaciones, alcance, items_esperados[{articulo_id, sku, descripcion, unidad}], responsables, estado}; CAPTURA_FISICA:{cantidad_contada, observacion, firma_contador}                                                                                       | conteo_id; fecha; sede; ubicaciones; alcance; items esperados; columnas vacías de cantidad_contada y observacion; responsables; paginacion                                             | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario            | `NEXO`      | `TPL-IMP-DOC-04` | `1.0.0` | `PERF-A4-L`         | BASE-IMP-001 + NEXO:{ajuste_id, conteo_ref, fecha, items[{articulo_id, sku, cantidad_sistema, cantidad_contada, diferencia, causa, ajuste_propuesto}], autorizacion, estado}; NUMERA:{impacto_contable_ref_si_aplica}                                                                                           | ajuste_id; conteo_ref; fecha; items y diferencias completas; causa; ajuste_propuesto; autorizacion; estado; impacto_contable_ref_si_aplica; paginacion                                 | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-05` | Orden de compra                                           | `ORIGO`     | `TPL-IMP-DOC-05` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + ORIGO:{orden_compra_id, numero, fecha, proveedor, condiciones_comerciales, items[{articulo_ref, descripcion, cantidad, unidad, precio_unitario, impuestos, total_linea}], subtotal, impuestos_total, total, moneda, entrega_esperada, estado}; NUMERA:{centro_costo_o_presupuesto_ref_si_aplica} | numero; fecha; proveedor; condiciones; items completos; subtotal; impuestos; total; moneda; entrega_esperada; estado; centro_costo_o_presupuesto_ref_si_aplica; aprobaciones           | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-06` | Acta o comprobante de recepción                           | `ORIGO`     | `TPL-IMP-DOC-06` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + ORIGO:{recepcion_id, numero, fecha, proveedor, orden_compra_ref, items[{articulo_ref, descripcion, cantidad_esperada, cantidad_recibida, conformidad, novedad}], responsables, estado}; NEXO:{movimiento_ingreso_ref}                                                                            | numero; fecha; proveedor; orden_compra_ref; items y conformidad; novedades; responsables; estado; movimiento_ingreso_ref; firmas_o_aceptaciones                                        | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-07` | Devolución a proveedor                                    | `ORIGO`     | `TPL-IMP-DOC-07` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + ORIGO:{devolucion_id, numero, fecha, proveedor, recepcion_ref, items[{articulo_ref, descripcion, cantidad, unidad, motivo, condicion}], autorizado_por, estado}; NEXO:{movimiento_salida_ref}; NUMERA:{ajuste_financiero_ref_si_aplica}                                                          | numero; fecha; proveedor; recepcion_ref; items completos; motivos y condiciones; autorizado_por; estado; movimiento_salida_ref; ajuste_financiero_ref_si_aplica                        | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-08` | Orden de producción o ficha de lote                       | `FOGO`      | `TPL-IMP-DOC-08` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + FOGO:{orden_produccion_id, lote_id, producto_id, producto_nombre, version_receta, cantidad_objetivo, unidad, fecha_inicio, fecha_fin_objetivo, insumos, etapas, controles, responsables, estado}; NEXO:{reservas_o_movimientos_ref}                                                              | orden_produccion_id; lote_id; producto; version_receta; cantidad_objetivo; fechas; insumos; etapas; controles; responsables; estado; reservas_o_movimientos_ref; paginacion            | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica                     | `FOGO`      | `TPL-IMP-DOC-09` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + FOGO:{ficha_id, tipo_ficha, producto_o_proceso, version_contenido, vigencia_desde, vigencia_hasta_si_aplica, ingredientes_o_materiales, pasos, parametros, controles, alergenos, aprobado_por, estado}                                                                                           | ficha_id; tipo; producto_o_proceso; version_contenido; vigencia; ingredientes_o_materiales; pasos; parametros; controles; alergenos; aprobado_por; estado; paginacion                  | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-10` | Registro de calidad o no conformidad                      | `FOGO`      | `TPL-IMP-DOC-10` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + FOGO:{registro_calidad_id, tipo_registro, hallazgo, fecha_hora, objeto_ref, evidencia_ref, clasificacion, decision, acciones, responsable, plazo, estado}; NEXO:{bloqueo_o_movimiento_ref_si_aplica}                                                                                             | registro_calidad_id; tipo; hallazgo; fecha_hora; objeto_ref; evidencia_ref; clasificacion; decision; acciones; responsable; plazo; estado; bloqueo_o_movimiento_ref_si_aplica          | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-11` | Orden de mantenimiento                                    | `NEXO`      | `TPL-IMP-DOC-11` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + NEXO:{orden_mantenimiento_id, activo_id, codigo_activo, tipo_intervencion, prioridad, descripcion, fecha_solicitud, programacion, responsable_o_proveedor, restriccion_uso, estado}                                                                                                              | orden_mantenimiento_id; activo; tipo_intervencion; prioridad; descripcion; fecha_solicitud; programacion; responsable_o_proveedor; restriccion_uso; estado; campos de cierre           | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo          | `NEXO`      | `TPL-IMP-DOC-12` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + NEXO:{acta_id, tipo_evento, activo_id, codigo_activo, condicion, origen, destino, custodio_entrega, custodio_recibe, fecha_hora, observaciones, aceptaciones}                                                                                                                                    | acta_id; tipo_evento; activo; condicion; origen; destino; custodios; fecha_hora; observaciones; aceptaciones; paginacion                                                               | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico                    | `NEXO`      | `TPL-IMP-DOC-13` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + NEXO:{incidente_id, fecha_hora, servicio_o_activo, reportado_por, impacto, sintomas, evidencia_ref, diagnostico, acciones, responsable, estado, resolucion_en_si_aplica}                                                                                                                         | incidente_id; fecha_hora; servicio_o_activo; reportado_por; impacto; sintomas; evidencia_ref; diagnostico; acciones; responsable; estado; resolucion_en_si_aplica                      | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo       | `FOGO`      | `TPL-IMP-DOC-14` | `1.0.0` | `PERF-A4-P`         | BASE-IMP-001 + FOGO:{control_id, tipo_control, area_o_objeto, frecuencia, fecha, actividades, criterios, resultado, novedades, responsable, verificador}; NEXO:{ubicacion_o_activo_ref}                                                                                                                         | control_id; tipo; area_o_objeto; frecuencia; fecha; actividades y criterios; resultado; novedades; responsable; verificador; ubicacion_o_activo_ref; paginacion                        | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación              | `NUMERA`    | `TPL-IMP-DOC-15` | `1.0.0` | `PERF-A4-L`         | BASE-IMP-001 + NUMERA:{reporte_id, tipo_reporte, periodo, empresa, sede_si_aplica, moneda, cuentas_o_conceptos, saldos, movimientos, conciliaciones, totales, preparado_por, aprobado_por, estado}; NEXO:{referencias_operativas_si_aplican}                                                                    | reporte_id; tipo; periodo; empresa; sede_si_aplica; moneda; cuentas_o_conceptos; saldos; movimientos; conciliaciones; totales; preparado_por; aprobado_por; estado; paginacion         | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales           | `NEXO`      | `TPL-IMP-DOC-16` | `1.0.0` | `PERF-A4-L`         | BASE-IMP-001 + NEXO:{reporte_id, periodo, alcance, fecha_corte, resumen, alertas, preparado_por}; FOGO/PULSO/NUMERA/ORIGO/NEXO:{indicadores_autorizados[{indicador_id, nombre, valor, unidad, fuente_aplicacion, fecha_corte}]}                                                                                 | reporte_id; periodo; alcance; fecha_corte; indicadores con fuente y unidad; resumen; alertas; preparado_por; paginacion                                                                | `ESPECIFICADO` / `SIN_BLOQUEO_DOCUMENTAL` |
+
+---
+
+#### 7. Reglas de datos y representación
+
+1. Los identificadores, versiones, cantidades, unidades, fechas, estados, valores y referencias de origen son datos tipados; no se transportan como frases libres cuando exista un campo estructurado.
+2. Las cantidades se entregan como valor decimal más unidad; los valores monetarios como decimal más moneda.
+3. Las listas conservan orden determinista y una identidad de línea cuando el hecho empresarial la posea.
+4. Los campos `*_si_aplica` son condicionales: se muestran únicamente cuando la aplicación fuente entrega un valor válido.
+5. Los campos no marcados `*_si_aplica` son obligatorios. La ausencia produce rechazo de composición; no se imprime una representación parcial como si fuera válida.
+6. `CAPTURA_FISICA` solo puede usarse en plantillas que explícitamente la declaren y debe dejar espacio identificable para la captura; no se registra como dato empresarial hasta que el proceso propietario lo incorpore de forma autorizada.
+7. La plantilla no calcula decisiones empresariales. Puede formatear, ordenar y subtotalizar únicamente valores ya autorizados cuando el contrato técnico posterior lo permita, conservando los valores fuente.
+8. El servicio de impresión no cambia propietaria, estado, documento origen ni versión por conveniencia de dispositivo.
+9. No se incluye PII completa en códigos legibles por máquina. `PRINT-ARC-015` definirá la minimización y privacidad aplicables sin eliminar los datos funcionalmente obligatorios aprobados aquí.
+10. `PRINT-ARC-006` podrá definir retención y vida útil sin modificar silenciosamente plantillas, tamaños o campos requeridos.
+
+---
+
+#### 8. Reconciliación cuantitativa
+
+##### 8.1 Cobertura por familia
+
+| Familia                          | Esperadas | Materializadas | Sin plantilla | Sin perfil | Sin datos | Faltantes | Duplicadas | Estado        |
+| -------------------------------- | --------: | -------------: | ------------: | ---------: | --------: | --------: | ---------: | ------------- |
+| Etiquetas                        |        16 |             16 |             0 |          0 |         0 |         0 |          0 | `CERRADA`     |
+| Comandas y tiquetes operativos   |         9 |              9 |             0 |          0 |         0 |         0 |          0 | `CERRADA`     |
+| Comprobantes para cliente y caja |         9 |              9 |             0 |          0 |         0 |         0 |          0 | `CERRADA`     |
+| Documentos convencionales        |        16 |             16 |             0 |          0 |         0 |         0 |          0 | `CERRADA`     |
+| **Total**                        |    **50** |         **50** |         **0** |      **0** |     **0** |     **0** |      **0** | **`CERRADA`** |
+
+##### 8.2 Distribución por aplicación propietaria
+
+| Aplicación | Plantillas |
+| ---------- | ---------: |
+| `FOGO`     |         15 |
+| `NEXO`     |         14 |
+| `PULSO`    |         12 |
+| `NUMERA`   |          5 |
+| `ORIGO`    |          4 |
+| **Total**  |     **50** |
+
+##### 8.3 Integridad
+
+```text
+IDENTIDADES RECIBIDAS DE PRINT-ARC-004: 50
+IDENTIDADES MATERIALIZADAS: 50
+IDENTIFICADORES IMP-* UNICOS: 50
+IDENTIFICADORES DE PLANTILLA UNICOS: 50
+VERSIONES INICIALES DEFINIDAS: 50
+PERFILES FISICOS DEFINIDOS: 6
+CONTRATOS DE DATOS DEFINIDOS: 50
+IDENTIDADES SIN PLANTILLA: 0
+IDENTIDADES SIN VERSION: 0
+IDENTIDADES SIN TAMANO: 0
+IDENTIDADES SIN DATOS REQUERIDOS: 0
+IDENTIDADES DUPLICADAS: 0
+CAMBIOS DE PROPIEDAD: 0
+DECISIONES ABIERTAS DENTRO DE PRINT-ARC-005: 0
+```
+
+---
+
+#### 9. Evidencia pendiente fuera del cierre documental
+
+La ausencia de evidencia física no bloquea la definición documental, pero no puede convertirse en una validación implícita:
+
+| Evidencia pendiente                                                   | Estado                   | Propietario documental | Insumo                                                        | Condición de salida                                                                           |
+| --------------------------------------------------------------------- | ------------------------ | ---------------------- | ------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| Medio realmente cargado y disponible por impresora                    | `PENDIENTE_DE_EVIDENCIA` | `PRINT-ARC-019`        | Registro individual de cada impresora                         | Cada impresora registra medio, ancho, disponibilidad y fecha de observación.                  |
+| Compatibilidad del render y del adaptador con cada perfil             | `PENDIENTE_DE_EVIDENCIA` | `PRINT-ARC-018`        | Plantillas y perfiles de esta tarea                           | Existe render reproducible sin truncamiento para los perfiles aplicables.                     |
+| Medición física, legibilidad, corte y presencia de datos obligatorios | `PENDIENTE_DE_EVIDENCIA` | `PRINT-ARC-020`        | Registros de `PRINT-ARC-019` y adaptadores de `PRINT-ARC-018` | El piloto conserva tamaño, márgenes, legibilidad y campos obligatorios con evidencia fechada. |
+
+Estas evidencias no autorizan a `PRINT-ARC-018`, `PRINT-ARC-019` o `PRINT-ARC-020` a cambiar silenciosamente nombres, propietarias, campos o versiones; una incompatibilidad deberá regresar como corrección explícita a esta tarea.
+
+---
+
+#### 10. Requisitos de prueba
+
+**NO GENERA NI MODIFICA REQUISITOS `TREQ-*`.**
+
+Justificación: esta tarea materializa el contrato documental de entrada y representación, pero no autoriza ni implementa comportamiento ejecutable, renderizadores, validadores de payload, adaptadores, rutas o pruebas físicas. Los criterios definidos aquí son entradas obligatorias para `PRINT-ARC-018`, `PRINT-ARC-019` y `PRINT-ARC-020`; los requisitos de prueba se incorporarán en la tarea que materialice el comportamiento verificable y su procedimiento de evidencia, evitando registrar como prueba una especificación que todavía no puede ejecutarse.
+
+```text
+TREQ creados: 0
+TREQ modificados: 0
+TREQ diferidos: 0
+TREQ descartados: 0
+TREQ obsoletos: 0
+```
+
+No se genera copia de `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` porque su contenido permanece sin cambios.
+
+---
+
+#### 11. Criterios de aceptación
+
+`PRINT-ARC-005` queda documentalmente satisfecha porque:
+
+- [x] conserva exactamente las cincuenta identidades y nombres recibidos;
+- [x] conserva las propietarias aprobadas en `PRINT-ARC-004`;
+- [x] asigna un identificador de plantilla único a cada identidad;
+- [x] define la versión inicial de cada plantilla;
+- [x] define un tamaño objetivo para cada identidad;
+- [x] define datos requeridos y fuente autorizada por identidad;
+- [x] define el mínimo visible por identidad;
+- [x] define reglas de composición por familia;
+- [x] define reglas de versionamiento e inmutabilidad;
+- [x] reporta 50 esperadas, 50 materializadas, 0 faltantes y 0 duplicadas;
+- [x] distingue `ESPECIFICADO` de implementación y validación;
+- [x] asigna toda evidencia posterior a una tarea concreta y una condición de salida;
+- [x] no asigna impresora, sede, estación, ruta, principal, alternativa o fallback;
+- [x] no define retención, evento, idempotencia, reintentos, permisos, privacidad u operación offline;
+- [x] no ejecuta cambios físicos, código, SQL, migraciones ni Supabase;
+- [x] declara cero cambios `TREQ-*` con justificación concreta;
+- [x] mantiene `PRINT-ARC-006` como única tarea siguiente reservada.
+
+---
+
+#### 12. Handoff cerrado hacia `PRINT-ARC-006`
+
+`PRINT-ARC-006` recibe cincuenta identidades con propietaria, plantilla, versión inicial, perfil físico y contrato mínimo de datos cerrados. Podrá definir vida útil y retención por identidad sin:
+
+- renombrar o fusionar identidades;
+- cambiar propietarias;
+- modificar plantillas, versiones, tamaños o datos requeridos;
+- declarar implementación o validación inexistente;
+- iniciar enrutamiento, fallback, eventos o adaptadores.
+
+```text
+TAREA ANTERIOR APROBADA
+PRINT-ARC-004 — Definir aplicación propietaria de cada documento
+        ↓
+TAREA ACTUAL DESARROLLADA EN ARTEFACTO APROBADA
+PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos
+        ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-006 — Definir tiempo de vida y reglas de retención
+```
+
+La aprobación de `PRINT-ARC-005` no inicia, desarrolla ni aprueba `PRINT-ARC-006`.
+
+
 ### [ ] PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión
 ### [ ] PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispositivo
 ### [ ] PRINT-ARC-008 — Definir impresora principal, alternativas y fallback
