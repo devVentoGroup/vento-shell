@@ -224,7 +224,7 @@ export function renderPriorityLaneOrderSection(data, routeSelector = {}) {
       const artifact = requiredById.get(groupId);
       const allIds = artifactTaskIds(artifact);
       const effectiveIds = allIds.filter((id) => !deferred.idSet.has(id));
-      tasks = deferred.ids.length > 0 ? compactTaskNotation(effectiveIds) : taskNotation(artifact);
+      tasks = effectiveIds.length !== allIds.length ? compactTaskNotation(effectiveIds) : taskNotation(artifact);
       result = artifact.required_scope;
       if (effectiveIds.length !== allIds.length) {
         result = 'diseño, prototipos, validación interna y criterios de usabilidad completos antes de implementar; la prueba con usuarios, el registro de problemas y la aprobación final quedan diferidos';
