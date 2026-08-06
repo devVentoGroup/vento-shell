@@ -2674,7 +2674,540 @@ Ningún destino anterior se inicia mediante esta tarea.
 `AUTH-UI-056 — Validar prototipo antes de implementar`
 
 
-### [ ] AUTH-UI-056 — Validar prototipo antes de implementar
+### ✅ AUTH-UI-056 — Validar prototipo antes de implementar
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-UI-055 — Crear prototipo por rol` — APROBADA
+**Tarea siguiente:** `AUTH-UI-057 — Definir criterio de usabilidad por pantalla` — RESERVADA
+**Tipo de tarea:** documental; validación preimplementación de integridad, trazabilidad, coherencia contractual, seguridad, adaptabilidad y factibilidad del prototipo funcional de NEXO, sin prueba con usuarios ni cambios físicos
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Ruta prioritaria:** `NEXO-REMISSIONS-001`
+**Etapa prioritaria:** `NEXO_UI_VALIDATION`
+**Superficie evaluada:** `NEXO-ROUTE-001` — `/`
+**Cambios físicos autorizados:** ninguno; no modifica código, componentes, rutas, permisos, roles, funciones, procesos, datos, Supabase, migraciones, RLS, configuración, telemetría ni despliegues
+**Decisión del gate:** `VALIDADO_DOCUMENTALMENTE_CON_OBSERVACION`; la implementación permanece `NO_AUTORIZADA`
+
+---
+
+#### 1. Propósito
+
+Validar el prototipo aprobado en `AUTH-UI-055` antes de que cualquier paquete
+intente convertirlo en componentes, consultas, resolutores, navegación física o
+comportamiento desplegado.
+
+La validación confirma que el prototipo:
+
+- conserva las decisiones aprobadas de página inicial, navegación frecuente y
+  reducción de opciones;
+- cubre íntegramente los ocho contextos de actor, función y dispositivo;
+- conserva las veintinueve identidades `NEXO-TASK-*` sin faltantes ni
+  duplicados;
+- representa los diez estados exigidos sin confundir vacío, parcialidad,
+  denegación, revocación o fallo técnico;
+- mantiene una única superficie `/`, una única proyección activa y una única
+  acción primaria;
+- no transporta autoridad mediante rol, URL, dispositivo o presentación;
+- puede servir como entrada a criterios de usabilidad y pruebas posteriores;
+- no se presenta como evidencia de implementación, uso real, accesibilidad
+  ejecutada, rendimiento, ergonomía o aceptación de usuarios.
+
+La regla del gate es:
+
+```text
+INTEGRIDAD DOCUMENTAL
++
+COBERTURA COMPLETA
++
+COHERENCIA CON CONTRATOS APROBADOS
++
+AUSENCIA DE CONTRADICCIONES SUSTANTIVAS
++
+FACTIBILIDAD TÉCNICA SIN IMPLEMENTAR
+→
+PROTOTIPO HABILITADO PARA DEFINIR CRITERIOS Y SER PROBADO
+
+NO EQUIVALE A
+→ AUTORIZACIÓN DE IMPLEMENTACIÓN
+→ VALIDACIÓN CON USUARIOS
+→ APROBACIÓN FINAL DE PANTALLAS
+```
+
+---
+
+#### 2. Resultado material
+
+Se materializan ocho artefactos documentales consumibles:
+
+1. `NEXO-PROTOTYPE-PREIMPLEMENTATION-VALIDATION-CONTRACT-001`, que define
+   alcance, evidencia admisible, estados y decisión del gate;
+2. `NEXO-PROTOTYPE-VALIDATION-SUMMARY-001`, que consolida cantidades,
+   resultados y observaciones;
+3. `NEXO-PROTOTYPE-VARIANT-VALIDATION-MATRIX-001`, que decide individualmente
+   sobre los ocho prototipos;
+4. `NEXO-PROTOTYPE-ZONE-VALIDATION-MATRIX-001`, que verifica las ocho zonas
+   comunes y su precedencia;
+5. `NEXO-PROTOTYPE-TASK-VALIDATION-REGISTER-001`, que valida individualmente
+   las veintinueve tareas;
+6. `NEXO-PROTOTYPE-STATE-VALIDATION-MATRIX-001`, que verifica los diez estados y
+   su cobertura transversal;
+7. `NEXO-PROTOTYPE-FINDING-REGISTER-001`, que registra hallazgos, propietarios y
+   condiciones de salida;
+8. `NEXO-PROTOTYPE-VALIDATION-HANDOFF-001`, que entrega el resultado a
+   `AUTH-UI-057` sin iniciar esa tarea.
+
+Cobertura obtenida:
+
+| Elemento evaluado                          | Esperado | Conforme | No conforme | No ejecutable en esta tarea |
+| ------------------------------------------ | -------: | -------: | ----------: | --------------------------: |
+| Superficies propietarias                   |        1 |        1 |           0 |                           0 |
+| Prototipos                                 |        8 |        8 |           0 |                           0 |
+| Wireframes funcionales                     |        8 |        8 |           0 |                           0 |
+| Zonas de composición                       |        8 |        8 |           0 |                           0 |
+| Tareas canónicas                           |       29 |       29 |           0 |                           0 |
+| Clases de disposición                      |        6 |        6 |           0 |                           0 |
+| Estados de presentación                    |       10 |       10 |           0 |                           0 |
+| Celdas de cobertura estado por prototipo   |       80 |       80 |           0 |                           0 |
+| Modalidades de superficie                  |        4 |        4 |           0 |                           0 |
+| Contradicciones sustantivas del prototipo  |        0 |        0 |           0 |                           0 |
+| Hallazgos documentales                     |        1 |        0 |           1 |                           0 |
+| Pruebas con usuarios o dispositivos reales |        0 |        0 |           0 |                           1 |
+| Requisitos de prueba nuevos o modificados  |        0 |        0 |           0 |                           0 |
+
+Resultado:
+
+```text
+PROTOTYPE_INTEGRITY = VALIDATED_DOCUMENTALLY
+SUBSTANTIVE_PROTOTYPE_DEFECTS = 0
+DOCUMENTARY_FINDINGS = 1
+USER_VALIDATION = NOT_EXECUTED
+IMPLEMENTATION_AUTHORIZATION = DENIED
+NEXT_ALLOWED_TASK = AUTH-UI-057
+```
+
+El prototipo queda habilitado para definir criterios y preparar pruebas. No
+queda autorizado para implementación ni aprobado como pantalla final.
+
+---
+
+#### 3. Entradas y evidencia evaluada
+
+La validación consume sin modificar:
+
+- `AUTH-UI-052 — Diseñar página inicial según actor`;
+- `AUTH-UI-053 — Diseñar navegación según tareas frecuentes`;
+- `AUTH-UI-054 — Reducir opciones irrelevantes`;
+- `AUTH-UI-055 — Crear prototipo por rol`;
+- `NEXO-ACTOR-HOME-PAGE-CONTRACT-001` y sus matrices;
+- `NEXO-FREQUENT-TASK-NAVIGATION-CONTRACT-001` y sus registros;
+- `NEXO-OPTION-RELEVANCE-CONTRACT-001` y sus matrices de reducción;
+- `NEXO-ACTOR-PROTOTYPE-CONTRACT-001`;
+- `NEXO-ACTOR-PROTOTYPE-VISUAL-GRAMMAR-001`;
+- `NEXO-ACTOR-PROTOTYPE-CATALOG-001`;
+- `NEXO-ACTOR-PROTOTYPE-WIREFRAME-SET-001`;
+- `NEXO-PROTOTYPE-TASK-TRACEABILITY-REGISTER-001`;
+- `NEXO-ACTOR-PROTOTYPE-STATE-MATRIX-001`;
+- `NEXO-ACTOR-PROTOTYPE-RESPONSIVE-INTERACTION-CONTRACT-001`;
+- el estado técnico vigente de `vento-nexo` para la superficie `/`, la
+  navegación, el contexto operativo y el dispositivo compartido;
+- los requisitos `TREQ-NEXO-050` a `TREQ-NEXO-090` y los requisitos `TREQ-UX-*`
+  vigentes relacionados con contexto, relevancia, navegación, accesibilidad,
+  tacto, densidad, privacidad, estados y prototipos.
+
+La evidencia admitida es documental, estática y de código inspeccionado. No se
+usan entrevistas, sesiones moderadas, métricas de uso, datos productivos,
+pruebas físicas, lectores de pantalla, dispositivos reales ni resultados de
+implementación.
+
+---
+
+#### 4. Alcance y límites
+
+##### 4.1. Incluido
+
+- integridad estructural del prototipo;
+- conservación de identidades y cantidades aprobadas;
+- coherencia entre `AUTH-UI-052` a `AUTH-UI-055`;
+- cobertura individual de ocho prototipos y veintinueve tareas;
+- precedencia de ocho zonas y límites de primer nivel;
+- cobertura de diez estados en las ocho variantes;
+- separación de solicitante, bodega, conductor, receptor, supervisor,
+  configuración, multifunción y dispositivo compartido;
+- revisión de autoridad, privacidad, minimización y segregación;
+- revisión documental responsive, táctil y de accesibilidad;
+- contraste entre el objetivo prototipado y el código actual;
+- clasificación de hallazgos, propietarios y condiciones de salida;
+- decisión explícita sobre continuidad y prohibición de implementar.
+
+##### 4.2. Excluido
+
+- definir métricas o umbrales de usabilidad;
+- ejecutar pruebas con usuarios;
+- declarar tiempos, tasas de error, comprensión o satisfacción;
+- operar lectores de pantalla, teclado, switch access, escáner, impresora,
+  tablet, kiosco o móvil real;
+- modificar el prototipo aprobado;
+- corregir el archivo de `AUTH-UI-055`;
+- implementar resolutores, bindings, componentes, caché, telemetría o consultas;
+- crear datos de prueba en Supabase;
+- autorizar despliegue o retiro de pantallas legacy;
+- iniciar `AUTH-UI-057` a `AUTH-UI-060`.
+
+---
+
+#### 5. `NEXO-PROTOTYPE-PREIMPLEMENTATION-VALIDATION-CONTRACT-001`
+
+##### 5.1. Estados del gate
+
+| Estado                     | Significado                                                                  | Efecto                                                            |
+| -------------------------- | ---------------------------------------------------------------------------- | ----------------------------------------------------------------- |
+| `CONFORME`                 | la unidad satisface íntegramente el contrato verificable en esta tarea       | puede avanzar a criterios y pruebas posteriores                   |
+| `CONFORME_CON_OBSERVACION` | no existe defecto sustantivo, pero hay una corrección documental obligatoria | puede continuar el roadmap documental; no autoriza implementación |
+| `NO_CONFORME`              | existe una omisión, duplicado, contradicción o exposición sustantiva         | debe corregirse antes de continuar                                |
+| `PENDIENTE_DE_EVIDENCIA`   | el criterio requiere usuarios, dispositivo, ejecución o telemetría           | conserva propietario y tarea de resolución                        |
+| `NO_APLICA`                | el criterio no pertenece a la unidad evaluada                                | no genera trabajo artificial                                      |
+
+##### 5.2. Reglas de decisión
+
+1. Un conteo correcto no compensa una contradicción sustantiva.
+2. Una variante no se valida por parecer coherente; debe conservar actor,
+   función, contexto, autoridad, tarea y estado.
+3. Una opción visible no acredita permiso ni disponibilidad real.
+4. Una regla responsive escrita no acredita reflow o ergonomía ejecutados.
+5. Una matriz de estados no acredita recuperación técnica implementada.
+6. Una revisión estática no se presenta como prueba con usuarios.
+7. Un hallazgo se vincula con una tarea existente y una condición de salida.
+8. La ausencia de defectos documentales no autoriza código ni despliegue.
+9. `AUTH-UI-057` a `AUTH-UI-060` permanecen obligatorias.
+10. El paquete prioritario no puede omitir el ciclo completo de validación.
+
+---
+
+#### 6. `NEXO-PROTOTYPE-VALIDATION-SUMMARY-001`
+
+| Dimensión                               | Resultado                               | Evidencia                                                                                                               | Decisión                                                              |
+| --------------------------------------- | --------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| identidad y continuidad                 | `CONFORME`                              | una superficie `/`; ocho IDs `PROTO-NEXO-*`; continuidad `055 → 056 → 057`                                              | conservar                                                             |
+| cobertura de variantes                  | `CONFORME`                              | seis proyecciones principales y dos composiciones especiales                                                            | conservar                                                             |
+| cobertura de tareas                     | `CONFORME`                              | veintinueve IDs únicos, sin faltantes ni duplicados                                                                     | conservar                                                             |
+| distribución heredada                   | `CONFORME`                              | `1 / 1 / 14 / 7 / 4 / 2 = 29`                                                                                           | conservar                                                             |
+| jerarquía y deduplicación               | `CONFORME`                              | ocho zonas; una acción primaria; máximos de cuatro frecuentes y tres recientes                                          | conservar                                                             |
+| estados y recuperación                  | `CONFORME`                              | diez estados diferenciados y cobertura `8 × 10`                                                                         | conservar                                                             |
+| autoridad y segregación                 | `CONFORME`                              | rol, URL, dispositivo y visibilidad no conceden autoridad                                                               | conservar                                                             |
+| privacidad y dispositivo compartido     | `CONFORME`                              | actor humano, limpieza de contexto y minimización explícitas                                                            | conservar                                                             |
+| responsive y accesibilidad documental   | `CONFORME`                              | reglas para móvil, tablet, escritorio, estación, foco, tacto y lector                                                   | pasar a criterios y prueba real                                       |
+| factibilidad sobre código actual        | `CONFORME_CON_BRECHA_DE_IMPLEMENTACION` | existe superficie reutilizable y contexto parcial; faltan resolutor por tarea, `task_id`, orden y estados autoritativos | clasificar en `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+| conformidad documental de `AUTH-UI-055` | `CONFORME_CON_OBSERVACION`              | contenido sustantivo íntegro; orden de secciones no cumple el punto 39 del protocolo                                    | corregir `AUTH-UI-055` antes de `AUTH-UI-060`                         |
+| prueba con usuarios                     | `PENDIENTE_DE_EVIDENCIA`                | no ejecutada ni simulada                                                                                                | `AUTH-UI-058`                                                         |
+| aprobación final de pantalla            | `PENDIENTE_DE_EVIDENCIA`                | requiere criterios, prueba y registro de problemas                                                                      | `AUTH-UI-057` a `AUTH-UI-060`                                         |
+
+---
+
+#### 7. `NEXO-PROTOTYPE-VARIANT-VALIDATION-MATRIX-001`
+
+| Prototipo        | Contexto                         | Controles revisados                                                         | Resultado  | Observación                                                                |
+| ---------------- | -------------------------------- | --------------------------------------------------------------------------- | ---------- | -------------------------------------------------------------------------- |
+| `PROTO-NEXO-001` | solicitante autorizado           | trabajo propio, nueva solicitud, continuación, exclusión de operación ajena | `CONFORME` | no mezcla preparación, transporte, recepción, supervisión ni configuración |
+| `PROTO-NEXO-002` | bodega o preparación             | cola atribuida, preparación, entrada, ubicación, movimiento, retiro, conteo | `CONFORME` | separa captura, despacho, tránsito, aprobación y ajuste                    |
+| `PROTO-NEXO-003` | conductor o custodia             | asignación, custodia, hitos, incidencia, retorno y seguridad física         | `CONFORME` | no permite auto-recepción ni interacción durante maniobra insegura         |
+| `PROTO-NEXO-004` | receptor autorizado              | handoff, verificación, parcialidad, recepción y putaway compatible          | `CONFORME` | no confunde arribo con recepción ni diferencia con ajuste                  |
+| `PROTO-NEXO-005` | supervisor territorial           | casos, evidencia, cobertura, segregación, conflicto y decisión atómica      | `CONFORME` | observar no concede ejecutar ni configurar                                 |
+| `PROTO-NEXO-006` | configurador autorizado          | capacidad exacta, alcance, versiones, dependencias y referencias mínimas    | `CONFORME` | no incorpora colas físicas ni autoridad global                             |
+| `PROTO-NEXO-007` | persona multifunción             | función activa única, cambio explícito, limpieza y nueva resolución         | `CONFORME` | no fusiona listas, datos, recientes, bloqueos ni autoridades               |
+| `PROTO-NEXO-008` | dispositivo compartido con actor | identidad técnica, actor humano, jornada, estación, limpieza y periféricos  | `CONFORME` | el dispositivo limita, pero nunca sustituye actor o permiso                |
+
+Reconciliación:
+
+```text
+EXPECTED_VARIANTS = 8
+VALIDATED_VARIANTS = 8
+SUBSTANTIVE_FAILURES = 0
+MISSING_VARIANTS = 0
+DUPLICATE_VARIANTS = 0
+```
+
+---
+
+#### 8. `NEXO-PROTOTYPE-ZONE-VALIDATION-MATRIX-001`
+
+| Orden | Zona                            | Criterio comprobado                                                      | Resultado  |
+| ----: | ------------------------------- | ------------------------------------------------------------------------ | ---------- |
+|     1 | Contexto activo                 | función, territorio, jornada y dispositivo aplicables preceden la acción | `CONFORME` |
+|     2 | Acción primaria                 | existe como máximo una y expresa resultado humano                        | `CONFORME` |
+|     3 | Siguiente tarea                 | precede listas secundarias y conserva motivo y contexto                  | `CONFORME` |
+|     4 | Tareas frecuentes               | máximo cuatro, agregadas y sin duplicar la acción o siguiente tarea      | `CONFORME` |
+|     5 | Continuar trabajo reciente      | máximo tres instancias revalidadas con estado y frescura                 | `CONFORME` |
+|     6 | Bloqueos y vencimientos         | distingue causa, efecto, responsable y recuperación                      | `CONFORME` |
+|     7 | Todas las tareas disponibles    | conserva familias autorizadas y retira familias vacías                   | `CONFORME` |
+|     8 | Utilidades y cambio de contexto | permanece contextual y limpia la proyección anterior                     | `CONFORME` |
+
+La precedencia es estable en las ocho variantes. El espacio adicional de
+escritorio no altera el orden ni aumenta los máximos.
+
+---
+
+#### 9. `NEXO-PROTOTYPE-TASK-VALIDATION-REGISTER-001`
+
+| Tarea           | Etiqueta humana                   | Disposición heredada         | Decisión de validación | Evidencia documental                                                                                                                                                             | Resultado  |
+| --------------- | --------------------------------- | ---------------------------- | ---------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------- |
+| `NEXO-TASK-001` | Ir al inicio                      | `HOME_ONLY`                  | conservar sin cambio   | presente una vez; contexto principal: todos; tratamiento: identidad de retorno y resolución; no se repite como opción dentro de `/`                                              | `CONFORME` |
+| `NEXO-TASK-002` | Gestionar abastecimiento interno  | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: solicitante, bodega, conductor y receptor; tratamiento: siguiente tarea o continuación según etapa propia; nunca acceso genérico duplicado | `CONFORME` |
+| `NEXO-TASK-003` | Solicitar abastecimiento          | `PRIMARY_FIXED`              | conservar sin cambio   | presente una vez; contexto principal: solicitante; tratamiento: acción primaria cuando crear o continuar solicitud propia está autorizado                                        | `CONFORME` |
+| `NEXO-TASK-004` | Preparar abastecimiento           | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: bodega; tratamiento: siguiente tarea, frecuente o reciente según instancia; excluida de otras funciones                                    | `CONFORME` |
+| `NEXO-TASK-005` | Transportar abastecimiento        | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: conductor; tratamiento: siguiente tarea vinculada a asignación o custodia; no aparece sin relación vigente                                 | `CONFORME` |
+| `NEXO-TASK-006` | Recibir abastecimiento            | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: receptor; tratamiento: siguiente tarea vinculada a destino y handoff; no concede decisión supervisora                                      | `CONFORME` |
+| `NEXO-TASK-007` | Registrar una entrada             | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: bodega o receptor autorizado; tratamiento: siguiente o frecuente solo con fuente empresarial o excepción autorizada                        | `CONFORME` |
+| `NEXO-TASK-008` | Ubicar existencias                | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: bodega o receptor autorizado; tratamiento: siguiente tarea cuando existe putaway atribuible; no expone configuración de ubicaciones        | `CONFORME` |
+| `NEXO-TASK-009` | Mover existencias                 | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: bodega; tratamiento: frecuente o siguiente según traslado autorizado; no sustituye remisión entre sedes                                    | `CONFORME` |
+| `NEXO-TASK-010` | Registrar un retiro               | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: bodega; tratamiento: frecuente o siguiente con origen, unidad y motivo autorizados                                                         | `CONFORME` |
+| `NEXO-TASK-011` | Contar inventario                 | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: bodega para captura; supervisor para control; tratamiento: la variante cambia por función y etapa; capturar nunca concede ajustar          | `CONFORME` |
+| `NEXO-TASK-012` | Controlar la operación            | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: supervisor; tratamiento: acción o siguiente caso según responsabilidad, riesgo, vencimiento y cobertura                                    | `CONFORME` |
+| `NEXO-TASK-013` | Consultar existencias             | `FREQUENT_CANDIDATE`         | conservar sin cambio   | presente una vez; contexto principal: solicitante, bodega, receptor o supervisor; tratamiento: frecuente cuando corresponde; de otro modo permanece en consultar y controlar     | `CONFORME` |
+| `NEXO-TASK-014` | Investigar movimientos            | `FREQUENT_CANDIDATE`         | conservar sin cambio   | presente una vez; contexto principal: bodega o supervisor autorizado; tratamiento: frecuente o secundaria; conserva solo lectura e investigación                                 | `CONFORME` |
+| `NEXO-TASK-015` | Consultar ubicaciones             | `FREQUENT_CANDIDATE`         | conservar sin cambio   | presente una vez; contexto principal: bodega, receptor o supervisor autorizado; tratamiento: frecuente o referencia contextual; no expone edición de estructura                  | `CONFORME` |
+| `NEXO-TASK-016` | Consultar contenedores logísticos | `SECONDARY_DISCOVERABLE`     | conservar sin cambio   | presente una vez; contexto principal: supervisor o función compatible; tratamiento: permanece en familia secundaria; no se promueve por existencia de una ruta                   | `CONFORME` |
+| `NEXO-TASK-017` | Gestionar activos                 | `FREQUENT_CANDIDATE`         | conservar sin cambio   | presente una vez; contexto principal: supervisor o función de activos compatible; tratamiento: frecuente únicamente con trabajo, permiso y territorio de activos                 | `CONFORME` |
+| `NEXO-TASK-018` | Capturar activos                  | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: función de campo compatible; tratamiento: se representa solo cuando esa función sea la activa; queda fuera de remisiones ordinarias        | `CONFORME` |
+| `NEXO-TASK-019` | Contar activos                    | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: función de activos compatible; tratamiento: siguiente tarea con sesión y etapa válidas; no se mezcla con conteo de inventario              | `CONFORME` |
+| `NEXO-TASK-020` | Configurar activos                | `SECONDARY_DISCOVERABLE`     | conservar sin cambio   | presente una vez; contexto principal: configuración; tratamiento: familia administrativa secundaria; nunca aparece en proyección operativa                                       | `CONFORME` |
+| `NEXO-TASK-021` | Administrar NEXO                  | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: configuración; tratamiento: resuelve una capacidad administrativa prioritaria sin crear acceso global                                      | `CONFORME` |
+| `NEXO-TASK-022` | Administrar productos y unidades  | `FREQUENT_CANDIDATE`         | conservar sin cambio   | presente una vez; contexto principal: configuración; tratamiento: frecuente administrativa con capacidad exacta y recurrencia válida                                             | `CONFORME` |
+| `NEXO-TASK-023` | Administrar ubicaciones           | `FREQUENT_CANDIDATE`         | conservar sin cambio   | presente una vez; contexto principal: configuración; tratamiento: frecuente administrativa; no se confunde con ubicar existencias                                                | `CONFORME` |
+| `NEXO-TASK-024` | Configurar abastecimiento         | `FREQUENT_CANDIDATE`         | conservar sin cambio   | presente una vez; contexto principal: configuración; tratamiento: frecuente administrativa; no expone solicitudes concretas salvo referencia necesaria                           | `CONFORME` |
+| `NEXO-TASK-025` | Configurar referencias internas   | `SECONDARY_DISCOVERABLE`     | conservar sin cambio   | presente una vez; contexto principal: configuración; tratamiento: familia administrativa secundaria; no se promueve por actividad operativa                                      | `CONFORME` |
+| `NEXO-TASK-026` | Controlar impresión               | `PRIMARY_RESOLVED_CANDIDATE` | conservar sin cambio   | presente una vez; contexto principal: supervisor o soporte autorizado; tratamiento: siguiente tarea solo con trabajos bloqueados, fallidos o pendientes dentro de cobertura      | `CONFORME` |
+| `NEXO-TASK-027` | Configurar impresión              | `SECONDARY_DISCOVERABLE`     | conservar sin cambio   | presente una vez; contexto principal: configuración; tratamiento: familia administrativa secundaria; permanece fuera del flujo operativo                                         | `CONFORME` |
+| `NEXO-TASK-028` | Resolver un destino contextual    | `CONTEXTUAL_ONLY`            | conservar sin cambio   | presente una vez; contexto principal: tarea invocante compatible; tratamiento: utilidad interna de escaneo, código, ubicación o kiosco; retorna a la tarea                       | `CONFORME` |
+| `NEXO-TASK-029` | Resolver acceso                   | `CONTEXTUAL_ONLY`            | conservar sin cambio   | presente una vez; contexto principal: autenticación o denegación segura; tratamiento: permanece fuera de navegación empresarial y no se clasifica como frecuente                 | `CONFORME` |
+
+Reconciliación:
+
+```text
+EXPECTED_TASKS = 29
+VALIDATED_TASKS = 29
+UNIQUE_TASK_IDS = 29
+MISSING_TASKS = 0
+DUPLICATE_TASKS = 0
+CHANGED_LABELS = 0
+CHANGED_DISPOSITIONS = 0
+```
+
+---
+
+#### 10. `NEXO-PROTOTYPE-STATE-VALIDATION-MATRIX-001`
+
+| Estado                           | Distinción comprobada                                       | Cobertura | Resultado  |
+| -------------------------------- | ----------------------------------------------------------- | --------: | ---------- |
+| `RESOLVIENDO_RELEVANCIA`         | no presenta datos ni opciones antes de decisión concluyente |    8 de 8 | `CONFORME` |
+| `OPCIONES_LISTAS`                | presenta solo conjunto autoritativo y deduplicado           |    8 de 8 | `CONFORME` |
+| `ACCION_PRIMARIA_AUSENTE`        | no fabrica CTA cuando no existe comando principal           |    8 de 8 | `CONFORME` |
+| `VACIO_VALIDO`                   | diferencia ausencia real de fallo o falta de visibilidad    |    8 de 8 | `CONFORME` |
+| `SOLO_DESCUBRIMIENTO_SECUNDARIO` | conserva familias sin promoción artificial                  |    8 de 8 | `CONFORME` |
+| `DATOS_PARCIALES`                | conserva último dato confirmado y declara incompletitud     |    8 de 8 | `CONFORME` |
+| `CONTEXTO_CAMBIADO_O_REVOCADO`   | retira inmediatamente datos y acciones incompatibles        |    8 de 8 | `CONFORME` |
+| `OPCION_CAMBIADA_O_RETIRADA`     | recalcula el conjunto y no conserva control obsoleto        |    8 de 8 | `CONFORME` |
+| `ACCESO_DIRECTO_DENEGADO`        | minimiza información y no revela opciones ajenas            |    8 de 8 | `CONFORME` |
+| `FALLO_TECNICO`                  | permanece separado de vacío, denegación y revocación        |    8 de 8 | `CONFORME` |
+
+```text
+EXPECTED_STATE_CELLS = 80
+DOCUMENTED_STATE_CELLS = 80
+MISSING_STATE_CELLS = 0
+```
+
+Los ochenta cruces acreditan cobertura del prototipo, no ejecución técnica.
+
+---
+
+#### 11. Coherencia con contratos aprobados
+
+| Fuente                 | Decisión preservada                                                            | Comprobación                                               | Resultado  |
+| ---------------------- | ------------------------------------------------------------------------------ | ---------------------------------------------------------- | ---------- |
+| `AUTH-UI-052`          | una proyección inicial por actor efectivo, función y contexto                  | las ocho variantes reutilizan `/` y no crean home por rol  | `CONFORME` |
+| `AUTH-UI-053`          | tareas frecuentes después de elegibilidad y precedencia autoritativa           | máximos, recientes y siguiente tarea se conservan          | `CONFORME` |
+| `AUTH-UI-054`          | reducir no equivale a revocar y las tareas secundarias permanecen descubribles | cinco niveles y una clase fuera de proyección se conservan | `CONFORME` |
+| `AUTH-UI-055`          | ocho prototipos, veintinueve tareas, diez estados y cuatro modalidades         | cobertura íntegra y sin duplicados                         | `CONFORME` |
+| autorización vigente   | presentación no concede autoridad                                              | cada acceso futuro debe revalidar servidor                 | `CONFORME` |
+| dispositivo compartido | principal técnico separado del actor humano                                    | el prototipo exige actor para trabajo atribuible           | `CONFORME` |
+| privacidad y masking   | no revelar opciones, conteos o datos fuera de alcance                          | exclusiones y estados minimizados son explícitos           | `CONFORME` |
+| ruta prioritaria       | completar `AUTH-UI-052` a `AUTH-UI-060` antes de implementar                   | 057 a 060 permanecen obligatorias                          | `CONFORME` |
+
+No se detectan contradicciones sustantivas entre el prototipo y las decisiones
+aprobadas que consume.
+
+---
+
+#### 12. Factibilidad y brechas frente al estado técnico actual
+
+La revisión del código vigente confirma que existe una superficie `/`
+reutilizable, controles de acceso, contexto operativo, tratamiento de dispositivo
+compartido, filtrado de permisos, acciones y navegación agrupada. También
+confirma que el objetivo prototipado todavía no está implementado.
+
+| Elemento actual                       | Evidencia estática                                               | Brecha respecto del prototipo                                                      | Destino exacto                                          |
+| ------------------------------------- | ---------------------------------------------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| selección de foco                     | combina rol efectivo, tipo de sede y listas locales              | resolver actor, función, tarea, trabajo y prioridad mediante contrato autoritativo | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+| acciones principales                  | se construyen desde arreglos y condiciones locales               | consumir una proyección server-side con una acción primaria                        | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+| navegación                            | carga elementos activos, permisos, grupos, URL y etiqueta        | incorporar `task_id`, relevancia, disposición y deduplicación                      | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+| frecuencia y recientes                | no existe evidencia aprobada de resolución autoritativa completa | definir eventos, frescura, revalidación y orden                                    | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+| estados                               | existen estados parciales de interfaz                            | implementar los diez resultados sin degradar fallo a vacío                         | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+| multifunción y dispositivo compartido | existe contexto parcial y cambio de actor o rol                  | limpiar proyección, caché, borradores y referencias incompatibles                  | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+
+Estas brechas prueban que el prototipo describe un objetivo distinto del código
+actual. No invalidan su factibilidad y no autorizan resolverlas durante esta
+tarea.
+
+---
+
+#### 13. Responsive, accesibilidad, seguridad y privacidad
+
+##### 13.1. Resultado documental
+
+| Dimensión           | Comprobación                                                               | Resultado actual      | Evidencia posterior obligatoria                                    |
+| ------------------- | -------------------------------------------------------------------------- | --------------------- | ------------------------------------------------------------------ |
+| móvil               | orden, una columna, máximos, ausencia de hover y barras no obstructivas    | `CONFORME_DOCUMENTAL` | criterios `AUTH-UI-057`; prueba `AUTH-UI-058`                      |
+| tablet              | una o dos columnas, objetivos de 48 unidades, separación y conservación    | `CONFORME_DOCUMENTAL` | criterios `AUTH-UI-057`; prueba `AUTH-UI-058`                      |
+| escritorio          | máximo dos columnas operativas, densidad diferenciada y filtros visibles   | `CONFORME_DOCUMENTAL` | criterios `AUTH-UI-057`; prueba `AUTH-UI-058`                      |
+| estación compartida | actor visible, limpieza, minimización y ausencia de backoffice general     | `CONFORME_DOCUMENTAL` | criterios `AUTH-UI-057`; prueba `AUTH-UI-058`                      |
+| teclado y foco      | secuencia de ocho regiones, retorno y gestión de revocación                | `CONFORME_DOCUMENTAL` | prueba con implementación o prototipo interactivo en `AUTH-UI-058` |
+| lector de pantalla  | nombres, roles, estados, anuncios y relaciones control-región              | `CONFORME_DOCUMENTAL` | prueba asistiva en `AUTH-UI-058`                                   |
+| tacto y ergonomía   | objetivos, separación, ausencia de gestos únicos y puntos seguros          | `CONFORME_DOCUMENTAL` | dispositivo y entorno representativos en `AUTH-UI-058`             |
+| privacidad          | minimización, masking, limpieza por actor y ausencia de catálogos globales | `CONFORME_DOCUMENTAL` | pruebas de seguridad del paquete y evidencia de `AUTH-UI-058`      |
+
+##### 13.2. Límites de la decisión
+
+- no se afirma cumplimiento WCAG ejecutado;
+- no se afirma contraste medido;
+- no se afirma navegación real por teclado o lector;
+- no se afirma precisión táctil o ausencia de fatiga;
+- no se afirma comprensión del lenguaje por trabajadores;
+- no se afirma seguridad server-side implementada;
+- no se afirma rendimiento ni estabilidad de layout.
+
+---
+
+#### 14. `NEXO-PROTOTYPE-FINDING-REGISTER-001`
+
+| Hallazgo                                | Clase                    | Descripción exacta                                                                                                                                                            | Impacto                                                                                                                 | Propietario                                             | Condición de salida                                                                                | Estado                        |
+| --------------------------------------- | ------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------------------- | ----------------------------- |
+| `NEXO-PROTOTYPE-VALIDATION-FINDING-001` | conformidad documental   | `AUTH-UI-055` ubica `Requisitos de prueba derivados` después de `Criterios de aceptación`; el punto 39 de `01_PROTOCOLO.md` exige que la sección de requisitos aparezca antes | no altera los ocho prototipos, las veintinueve tareas ni los diez estados; impide declarar conformidad documental total | corrección de `AUTH-UI-055`                             | invertir únicamente el orden de esas dos secciones, sin cambiar decisiones, antes de `AUTH-UI-060` | `BLOQUEADO_PARA_CIERRE_FINAL` |
+| `NEXO-PROTOTYPE-VALIDATION-FINDING-002` | evidencia de experiencia | no existen resultados con usuarios, dispositivos ni tecnologías de asistencia                                                                                                 | impide afirmar usabilidad, accesibilidad, ergonomía o aceptación                                                        | `AUTH-UI-057` y `AUTH-UI-058`                           | definir criterios y producir evidencia real                                                        | `PENDIENTE_DE_EVIDENCIA`      |
+| `NEXO-PROTOTYPE-VALIDATION-FINDING-003` | implementación           | el código actual no materializa resolutor por tarea, ocho variantes, diez estados ni navegación por `task_id`                                                                 | impide equiparar prototipo con producto                                                                                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | clasificar el alcance y asignarlo al paquete autorizado después de las puertas documentales        | `NO_IMPLEMENTADO`             |
+| `NEXO-PROTOTYPE-VALIDATION-FINDING-004` | cierre de pantalla       | no existen registro de problemas ni aprobación final                                                                                                                          | impide retirar pantalla del roadmap                                                                                     | `AUTH-UI-059` y `AUTH-UI-060`                           | registrar hallazgos de prueba y aprobar con evidencia                                              | `PENDIENTE_DE_EVIDENCIA`      |
+
+No se crea un identificador de tarea nuevo. Todos los hallazgos conservan un
+destino canónico existente.
+
+---
+
+#### 15. Decisión de preparación para implementación
+
+```text
+PROTOTIPO
+= APTO PARA CONTINUAR A DEFINICIÓN DE CRITERIOS
+
+PROTOTIPO
+≠ APTO PARA IMPLEMENTACIÓN INMEDIATA
+```
+
+La implementación permanece prohibida porque:
+
+1. `AUTH-UI-057` todavía debe definir criterios medibles por pantalla;
+2. `AUTH-UI-058` todavía debe producir evidencia con usuarios y dispositivos;
+3. `AUTH-UI-059` todavía debe registrar y clasificar problemas observados;
+4. `AUTH-UI-060` todavía debe aprobar las pantallas con evidencia;
+5. la observación documental de `AUTH-UI-055` debe quedar corregida antes del
+   cierre final;
+6. `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` todavía debe
+   clasificar el alcance físico;
+7. ningún cambio de código, Supabase o despliegue fue autorizado aquí.
+
+La única continuidad permitida es `AUTH-UI-057`.
+
+---
+
+#### 16. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea valida documentalmente un prototipo que materializa
+reglas ya protegidas por requisitos `TREQ-NEXO-*` y `TREQ-UX-*` vigentes. No
+introduce una regla de negocio, autorización, cálculo, transición, integración,
+seguridad, accesibilidad o comportamiento ejecutable nuevo. Los hallazgos
+registrados corresponden a orden documental, evidencia todavía asignada a
+`AUTH-UI-057` a `AUTH-UI-060` y brechas de implementación ya gobernadas por el
+carril prioritario. No se modifica, difiere, descarta ni declara obsoleto ningún
+requisito histórico; el Registro Canónico de Requisitos de Prueba no cambia.
+
+---
+
+#### 17. Criterios de aceptación
+
+La tarea se considera documentalmente completa cuando se confirme que:
+
+- `AUTH-UI-055` está aprobado y es la entrada inmediata;
+- `AUTH-UI-056` es la tarea actual del carril;
+- `AUTH-UI-057` permanece reservada;
+- se evaluó una sola superficie `NEXO-ROUTE-001` — `/`;
+- se validaron ocho prototipos y ocho wireframes únicos;
+- las seis proyecciones principales y dos especiales son coherentes;
+- se validaron ocho zonas y su precedencia;
+- se validaron veintinueve tareas sin faltantes, duplicados o cambios de
+  etiqueta y disposición;
+- la distribución `1 / 1 / 14 / 7 / 4 / 2` suma veintinueve;
+- se validaron diez estados y ochenta cruces de cobertura;
+- la acción primaria es única y no duplica siguiente tarea, frecuente o
+  reciente;
+- frecuentes no superan cuatro y recientes no superan tres;
+- solicitante, bodega, conductor, receptor, supervisor y configuración no
+  mezclan responsabilidades incompatibles;
+- multifunción mantiene una función activa;
+- dispositivo compartido exige actor humano para trabajo atribuible;
+- autoridad, relevancia, presentación y habilitación permanecen separadas;
+- vacío, parcialidad, denegación, revocación y fallo técnico son distintos;
+- las reglas responsive, táctiles y accesibles se reconocen como especificación,
+  no como evidencia ejecutada;
+- el código actual se distingue del objetivo prototipado;
+- cada brecha y evidencia faltante tiene propietario y condición de salida;
+- se registró una observación documental y cero defectos sustantivos del
+  prototipo;
+- se declararon cero cambios `TREQ-*`;
+- la implementación permanece no autorizada;
+- no se inició ninguna tarea posterior.
+
+---
+
+#### 18. `NEXO-PROTOTYPE-VALIDATION-HANDOFF-001`
+
+| Destino                                                 | Handoff aprobado                                                                                                                                  |
+| ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| corrección de `AUTH-UI-055`                             | reordenar requisitos y criterios antes de `AUTH-UI-060`, sin cambiar el prototipo                                                                 |
+| `AUTH-UI-057`                                           | definir criterios medibles por pantalla para localización, comprensión, carga cognitiva, recuperación, tacto, accesibilidad, seguridad y contexto |
+| `AUTH-UI-058`                                           | probar las ocho variantes con usuarios, dispositivos, condiciones y tecnologías de asistencia representativos                                     |
+| `AUTH-UI-059`                                           | registrar problemas con severidad, contexto, evidencia, propietario y condición de cierre                                                         |
+| `AUTH-UI-060`                                           | decidir aprobación final de cada pantalla únicamente con criterios y evidencia satisfechos                                                        |
+| `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | clasificar la implementación física después del cierre documental, sin inferir alcance ni iniciar código                                          |
+
+Ningún destino anterior se inicia mediante esta tarea.
+
+---
+
+#### 19. Continuidad canónica
+
+**ÚLTIMA TAREA APROBADA**
+
+`AUTH-UI-055 — Crear prototipo por rol`
+
+**TAREA ACTUAL APROBADA**
+
+`AUTH-UI-056 — Validar prototipo antes de implementar`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`AUTH-UI-057 — Definir criterio de usabilidad por pantalla`
+
+
 ### [ ] AUTH-UI-057 — Definir criterio de usabilidad por pantalla
 ### [ ] AUTH-UI-058 — Probar con usuarios reales
 ### [ ] AUTH-UI-059 — Registrar problemas encontrados
