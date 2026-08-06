@@ -985,7 +985,303 @@ PRINT-ARC-004 — Definir aplicación propietaria de cada documento
 La corrección de `PRINT-ARC-003` no inicia, desarrolla ni aprueba `PRINT-ARC-004` y no modifica la secuencia posterior.
 
 
-### [ ] PRINT-ARC-004 — Definir aplicación propietaria de cada documento
+### ✅ PRINT-ARC-004 — Definir aplicación propietaria de cada documento
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-003 — Inventariar documentos, etiquetas, comandas y comprobantes imprimibles` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos` — RESERVADA
+**Tipo de tarea:** documental; matriz materializada de propiedad funcional, origen y consumo entre aplicaciones para cada identidad imprimible aprobada
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Cambios físicos autorizados:** ninguno; no implementa servicios, trabajos, plantillas, rutas, permisos, colas, adaptadores ni configuración de impresoras
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** asignar exactamente una aplicación propietaria a cada una de las cincuenta salidas aprobadas en `PRINT-ARC-003`, diferenciando la aplicación que gobierna el hecho empresarial de las aplicaciones que pueden originar una solicitud, aportar datos, consumir el resultado o ejecutar una operación relacionada.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-004` queda cerrada con cincuenta decisiones individuales de propiedad:
+
+- 50 identidades recibidas;
+- 50 identidades materializadas;
+- 50 propietarias únicas;
+- 0 identidades sin propietaria;
+- 0 identidades con propiedad compartida;
+- 0 identidades faltantes;
+- 0 identificadores duplicados;
+- 0 preguntas sustantivas abiertas dentro del alcance de esta tarea.
+
+La aplicación propietaria gobierna el hecho empresarial representado, su identidad canónica y su ciclo de vida. El servicio transversal de impresión, el trabajo de impresión, la impresora, el adaptador y la copia física nunca se convierten por sí mismos en propietarios del hecho.
+
+---
+
+#### 2. Regla canónica de propiedad
+
+Para cada identidad se aplican simultáneamente estas reglas:
+
+1. existe exactamente una aplicación propietaria;
+2. la propiedad sigue al hecho empresarial y no al dispositivo que imprime;
+3. iniciar, solicitar, mostrar, transportar o consumir una salida no transfiere propiedad;
+4. una aplicación consumidora no puede corregir, anular, reversionar o reemitir el hecho de otra aplicación;
+5. una representación física hereda la propiedad del documento o hecho canónico que representa;
+6. cuando una salida combina referencias de varios dominios, cada dato fuente conserva su propietario y la aplicación asignada gobierna únicamente la composición documental que le corresponde;
+7. `PRINT-ARC-005` a `PRINT-ARC-020` deberán conservar estas propietarias, salvo corrección canónica explícita de esta tarea.
+
+```text
+APLICACION PROPIETARIA DEL HECHO
+≠
+APLICACION QUE SOLICITA IMPRIMIR
+≠
+APLICACION CONSUMIDORA
+≠
+SERVICIO DE IMPRESION
+≠
+IMPRESORA FISICA
+```
+
+---
+
+#### 3. Alcance y límites
+
+Esta tarea incluye:
+
+- conservar las cincuenta identidades aprobadas;
+- asignar una propietaria única por identidad;
+- identificar el hecho empresarial gobernado;
+- identificar la aplicación funcional que puede originar la necesidad documental;
+- identificar consumidoras previstas cuando existen;
+- declarar el límite de propiedad por fila;
+- reconciliar cobertura, unicidad y distribución por aplicación.
+
+Esta tarea no define:
+
+- campos, estructura de datos, plantilla, versión, tamaño, idioma o formato;
+- evento o comando exacto que crea un trabajo de impresión;
+- impresora, sede, punto, estación, canal o ruta;
+- dispositivo principal, alternativa, fallback o capacidad física;
+- estado técnico, heartbeat, idempotencia, reintentos, confirmación, cancelación o reimpresión;
+- permisos, privacidad, operación offline, adaptadores, monitoreo o piloto;
+- código, contratos técnicos, SQL, migraciones, configuración o cambios en Supabase.
+
+Esas decisiones continúan exclusivamente en `PRINT-ARC-005` a `PRINT-ARC-020` conforme a sus títulos y alcances.
+
+---
+
+#### 4. Aplicaciones propietarias y fronteras funcionales
+
+| Aplicación | Hechos que gobierna en esta tarea                                                                                                        | Hechos que no adquiere por consumirlos                                                                        |
+| ---------- | ---------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `FOGO`     | Producción, preparaciones, recetas, lotes productivos, calidad, limpieza y ejecución operativa.                                          | Pedidos, pagos, compras, inventario y activos.                                                                |
+| `NEXO`     | Inventario, ubicaciones, movimientos, remisiones, reposición, activos, mantenimiento y composición de reportes operativos transversales. | Orden comercial, pago, compra, lote productivo y decisión de calidad.                                         |
+| `PULSO`    | Pedidos, comandas derivadas de la orden, atención al cliente, entrega comercial, reservas y beneficios.                                  | Pago, documento fiscal, inventario, compra y ejecución productiva.                                            |
+| `NUMERA`   | Pagos, caja, facturación, notas financieras, conciliaciones y reportes contables.                                                        | Pedido, reserva, inventario, compra y producción.                                                             |
+| `ORIGO`    | Órdenes de compra, recepciones y devoluciones frente a proveedores.                                                                      | Inventario posterior a la recepción, pago al proveedor, producción y activos.                                 |
+| `ANIMA`    | No recibe propiedad sobre ninguna de las cincuenta salidas de este inventario.                                                           | La participación de una persona, responsable o custodio no convierte la salida en un hecho de talento humano. |
+
+---
+
+#### 5. Matriz materializada de propiedad
+
+##### 5.1 Etiquetas
+
+| ID           | Salida                                                    | Aplicación propietaria | Hecho empresarial gobernado                                             | Origen funcional admitido | Aplicaciones consumidoras | Límite de propiedad                                                                                                              |
+| ------------ | --------------------------------------------------------- | ---------------------- | ----------------------------------------------------------------------- | ------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | `FOGO`                 | Identidad y estado del lote de producto terminado                       | FOGO                      | NEXO                      | FOGO gobierna la creación y el ciclo de vida del lote; NEXO solo consume la identidad para existencias, traslado y trazabilidad. |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | `FOGO`                 | Identidad y estado del lote intermedio durante producción               | FOGO                      | NEXO                      | FOGO conserva la verdad del lote intermedio; NEXO registra o consulta sus efectos de inventario sin apropiarse del lote.         |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | `FOGO`                 | Preparación operativa, fecha de elaboración y vigencia de uso           | FOGO                      | NEXO                      | La preparación pertenece a ejecución productiva; cualquier consumo de inventario permanece como hecho separado de NEXO.          |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | `FOGO`                 | Transformación operativa y nueva condición de conservación              | FOGO                      | NEXO                      | FOGO gobierna la transformación y su trazabilidad; NEXO consume el resultado para movimientos o existencias.                     |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | `FOGO`                 | Condición de elaboración, riesgo y restricción de manipulación          | FOGO                      | PULSO y NEXO              | FOGO gobierna la condición técnica del producto; PULSO y NEXO pueden mostrarla o transportarla sin modificarla.                  |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | `FOGO`                 | Decisión de calidad sobre material, preparación o lote                  | FOGO                      | NEXO                      | FOGO autoriza el cambio de estado de calidad; NEXO aplica la restricción correspondiente sobre inventario.                       |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | `ORIGO`                | Recepción frente a proveedor y referencia del lote recibido             | ORIGO                     | NEXO y FOGO               | ORIGO gobierna la recepción comercial; NEXO incorpora existencias y FOGO consume el material recibido.                           |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | `NEXO`                 | Identidad y vigencia de una ubicación física de inventario              | NEXO                      | FOGO, ORIGO y PULSO       | NEXO gobierna ubicaciones y capacidades logísticas; las demás aplicaciones solo las referencian.                                 |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | `NEXO`                 | Identidad operativa de artículo, insumo o unidad logística              | NEXO                      | ORIGO, FOGO y PULSO       | NEXO gobierna la identidad logística usada en inventario; los dominios consumidores conservan sus propios hechos.                |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | `NEXO`                 | Identidad logística del bulto y su vínculo con el movimiento autorizado | NEXO                      | PULSO y FOGO              | NEXO gobierna el bulto y el movimiento; PULSO o FOGO aportan el contexto comercial o productivo sin apropiarse del traslado.     |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | `PULSO`                | Identidad comercial del pedido y condición de entrega al cliente        | PULSO                     | NEXO                      | PULSO gobierna el pedido; NEXO ejecuta o registra la logística sin modificar el hecho comercial.                                 |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | `NEXO`                 | Identidad canónica del activo o equipo                                  | NEXO                      | NINGUNA OBLIGATORIA       | La identidad del activo pertenece a NEXO; una asignación a personas o áreas no transfiere esa propiedad.                         |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO`                 | Estado técnico y restricción operativa del activo                       | NEXO                      | FOGO                      | NEXO gobierna mantenimiento y disponibilidad del activo; FOGO únicamente respeta la restricción durante la operación.            |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | `FOGO`                 | Ejecución y vigencia del control de limpieza o sanitización             | FOGO                      | NEXO                      | FOGO gobierna el control operativo; NEXO puede asociarlo a un activo o ubicación sin modificar su resultado.                     |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | `FOGO`                 | Identidad y cadena de trazabilidad de la muestra o prueba               | FOGO                      | NEXO                      | FOGO gobierna la muestra y su resultado; NEXO únicamente conserva referencias logísticas cuando apliquen.                        |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | `FOGO`                 | Decisión operativa que origina merma, residuo o disposición             | FOGO                      | NEXO                      | FOGO gobierna la causa y autorización operativa; NEXO registra el efecto físico sobre existencias o movimiento.                  |
+
+##### 5.2 Comandas y tiquetes operativos
+
+| ID           | Salida                                        | Aplicación propietaria | Hecho empresarial gobernado                                           | Origen funcional admitido | Aplicaciones consumidoras | Límite de propiedad                                                                                                        |
+| ------------ | --------------------------------------------- | ---------------------- | --------------------------------------------------------------------- | ------------------------- | ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `IMP-CMD-01` | Comanda de cocina                             | `PULSO`                | Orden comercial autorizada que requiere preparación en cocina         | PULSO                     | FOGO                      | PULSO gobierna ítems, cantidades y modificaciones de la orden; FOGO ejecuta la preparación sin alterar la orden comercial. |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías               | `PULSO`                | Orden comercial autorizada que requiere preparación en bar            | PULSO                     | FOGO                      | PULSO gobierna la orden; FOGO recibe la instrucción física para ejecutarla.                                                |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes | `PULSO`                | Orden comercial autorizada que requiere preparación en barra          | PULSO                     | FOGO                      | PULSO gobierna la orden y sus personalizaciones; FOGO gobierna únicamente la ejecución productiva.                         |
+| `IMP-CMD-04` | Comanda de preparación o mise en place        | `FOGO`                 | Solicitud y ejecución de preparación interna                          | FOGO                      | NEXO                      | FOGO gobierna la preparación; NEXO participa solo cuando debe suministrar o descontar insumos.                             |
+| `IMP-CMD-05` | Tiquete de expedición o recogida              | `PULSO`                | Consolidación comercial de ítems listos para entrega o retiro         | PULSO                     | FOGO y NEXO               | PULSO gobierna la condición del pedido; FOGO y NEXO comunican preparación y entrega sin asumir propiedad comercial.        |
+| `IMP-CMD-06` | Solicitud interna de reposición               | `NEXO`                 | Necesidad de reposición y movimiento interno de existencias           | FOGO o NEXO               | FOGO y NEXO               | NEXO gobierna la reposición y el movimiento; FOGO puede originar la necesidad y consumir el resultado.                     |
+| `IMP-CMD-07` | Modificación o adición de comanda             | `PULSO`                | Nueva versión autorizada de una orden comercial                       | PULSO                     | FOGO                      | PULSO gobierna la modificación; FOGO recibe la versión vigente y no puede modificar la orden desde la impresión.           |
+| `IMP-CMD-08` | Cancelación o anulación de comanda            | `PULSO`                | Cancelación autorizada de una orden o de sus ítems                    | PULSO                     | FOGO                      | PULSO gobierna la anulación; FOGO solo detiene o ajusta la ejecución conforme a la decisión recibida.                      |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia     | `FOGO`                 | Solicitud productiva aceptada a partir de una insuficiencia detectada | NEXO                      | NEXO y FOGO               | NEXO detecta y comunica la insuficiencia; FOGO gobierna la solicitud de producción y su ejecución conforme a INT-PROD-005. |
+
+##### 5.3 Comprobantes para cliente y caja
+
+| ID           | Salida                                               | Aplicación propietaria | Hecho empresarial gobernado                                                     | Origen funcional admitido | Aplicaciones consumidoras | Límite de propiedad                                                                                                     |
+| ------------ | ---------------------------------------------------- | ---------------------- | ------------------------------------------------------------------------------- | ------------------------- | ------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente                    | `PULSO`                | Composición comercial de consumos, descuentos, impuestos y total previo al pago | PULSO                     | NUMERA                    | PULSO gobierna la cuenta asociada a la orden; NUMERA suministra o valida hechos financieros sin apropiarse de la orden. |
+| `IMP-CLI-02` | Confirmación de pedido                               | `PULSO`                | Confirmación comercial de la orden, canal y condición de entrega                | PULSO                     | NINGUNA OBLIGATORIA       | PULSO gobierna el pedido y su confirmación; la copia física no crea una segunda fuente de verdad.                       |
+| `IMP-CLI-03` | Comprobante de pago                                  | `NUMERA`               | Hecho de pago, referencia, medio, valor y estado financiero                     | PULSO o NUMERA            | PULSO                     | NUMERA gobierna el pago; PULSO puede iniciarlo o asociarlo a una orden sin modificar el hecho financiero.               |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente          | `NUMERA`               | Documento fiscal o contable de venta y su estado de emisión                     | NUMERA                    | PULSO                     | NUMERA gobierna la emisión fiscal o contable; PULSO solicita o entrega la representación sin sustituirla.               |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito | `NUMERA`               | Ajuste financiero o fiscal autorizado sobre una venta o pago                    | PULSO o NUMERA            | PULSO                     | NUMERA gobierna el reverso o la nota; PULSO conserva el efecto comercial asociado.                                      |
+| `IMP-CLI-06` | Resumen de recogida o entrega                        | `PULSO`                | Condición comercial de recogida o entrega del pedido                            | PULSO                     | NEXO                      | PULSO gobierna el pedido y la promesa al cliente; NEXO consume el dato para ejecutar la logística.                      |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo                    | `PULSO`                | Reserva comercial y vínculo con el anticipo registrado                          | PULSO                     | NUMERA                    | PULSO gobierna la reserva; NUMERA gobierna separadamente el hecho de anticipo incorporado como referencia.              |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                | `PULSO`                | Beneficio comercial autorizado, vigencia y condiciones de uso                   | PULSO                     | NUMERA                    | PULSO gobierna el beneficio; NUMERA consume únicamente su efecto financiero cuando corresponda.                         |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja    | `NUMERA`               | Apertura, movimientos, cierre y liquidación financiera de caja                  | NUMERA                    | PULSO                     | NUMERA gobierna los totales y la liquidación; PULSO consume la disponibilidad o estado operativo de caja.               |
+
+##### 5.4 Documentos convencionales
+
+| ID           | Salida                                              | Aplicación propietaria | Hecho empresarial gobernado                                                             | Origen funcional admitido | Aplicaciones consumidoras | Límite de propiedad                                                                                                      |
+| ------------ | --------------------------------------------------- | ---------------------- | --------------------------------------------------------------------------------------- | ------------------------- | ------------------------- | ------------------------------------------------------------------------------------------------------------------------ |
+| `IMP-DOC-01` | Remisión o nota de despacho                         | `NEXO`                 | Movimiento, salida o entrega logística autorizada                                       | NEXO                      | PULSO, FOGO y ORIGO       | NEXO gobierna la remisión y su ciclo; las aplicaciones relacionadas aportan el motivo comercial, productivo o de compra. |
+| `IMP-DOC-02` | Manifiesto de traslado interno                      | `NEXO`                 | Traslado interno de artículos entre ubicaciones o sedes                                 | NEXO                      | FOGO                      | NEXO gobierna origen, destino, contenido y estado del traslado; FOGO consume la disponibilidad resultante.               |
+| `IMP-DOC-03` | Hoja de conteo de inventario                        | `NEXO`                 | Sesión de conteo físico y universo de artículos a verificar                             | NEXO                      | FOGO y ORIGO              | NEXO gobierna el conteo; las demás aplicaciones pueden aportar referencias sin modificar el resultado.                   |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario      | `NEXO`                 | Diferencia detectada y ajuste autorizado de existencias                                 | NEXO                      | FOGO y NUMERA             | NEXO gobierna la diferencia y el ajuste físico; NUMERA conserva por separado el efecto contable.                         |
+| `IMP-DOC-05` | Orden de compra                                     | `ORIGO`                | Compromiso de compra autorizado frente a proveedor                                      | ORIGO                     | NUMERA y NEXO             | ORIGO gobierna la orden; NUMERA consume compromisos financieros y NEXO prepara la recepción.                             |
+| `IMP-DOC-06` | Acta o comprobante de recepción                     | `ORIGO`                | Recepción de bienes o servicios frente a una compra o proveedor                         | ORIGO                     | NEXO y NUMERA             | ORIGO gobierna la conformidad de recepción; NEXO incorpora existencias y NUMERA procesa obligaciones asociadas.          |
+| `IMP-DOC-07` | Devolución a proveedor                              | `ORIGO`                | Devolución comercial autorizada frente al proveedor                                     | ORIGO                     | NEXO y NUMERA             | ORIGO gobierna la devolución; NEXO ejecuta la salida física y NUMERA registra el efecto financiero.                      |
+| `IMP-DOC-08` | Orden de producción o ficha de lote                 | `FOGO`                 | Autorización y ejecución de una orden o lote de producción                              | FOGO                      | NEXO                      | FOGO gobierna la orden y el lote; NEXO suministra y recibe movimientos de inventario asociados.                          |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica               | `FOGO`                 | Definición versionada de elaboración o ejecución operativa                              | FOGO                      | NEXO                      | FOGO gobierna contenido, versión y vigencia técnica; NEXO solo referencia insumos o activos relacionados.                |
+| `IMP-DOC-10` | Registro de calidad o no conformidad                | `FOGO`                 | Hallazgo de calidad, decisión y seguimiento productivo                                  | FOGO                      | NEXO                      | FOGO gobierna el hallazgo y su cierre; NEXO aplica bloqueos o movimientos físicos derivados.                             |
+| `IMP-DOC-11` | Orden de mantenimiento                              | `NEXO`                 | Solicitud, autorización y estado de intervención de un activo                           | NEXO                      | FOGO                      | NEXO gobierna mantenimiento y disponibilidad; FOGO comunica necesidad o consume el resultado.                            |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo    | `NEXO`                 | Custodia, condición y ubicación vigente de un activo                                    | NEXO                      | NINGUNA OBLIGATORIA       | NEXO gobierna el activo y su custodia; la persona o área receptora no se convierte en propietaria del registro.          |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico              | `NEXO`                 | Incidente técnico, impacto, diagnóstico y resolución sobre activos o servicios internos | NEXO                      | NINGUNA OBLIGATORIA       | NEXO gobierna el caso técnico y su cierre; el área afectada aporta evidencia sin asumir propiedad del incidente.         |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo | `FOGO`                 | Control periódico de limpieza, sanitización o ejecución operativa                       | FOGO                      | NEXO                      | FOGO gobierna el control y su cumplimiento; NEXO aporta referencias de ubicación o activo cuando corresponda.            |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación        | `NUMERA`               | Información contable, conciliación y liquidación financiera autorizada                  | NUMERA                    | NEXO                      | NUMERA gobierna cifras, periodos y cierres; NEXO puede consumir resúmenes para gestión sin modificar los hechos.         |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales     | `NEXO`                 | Composición y publicación del resumen transversal de gestión                            | NEXO                      | NINGUNA OBLIGATORIA       | NEXO gobierna la composición del reporte; FOGO, PULSO, NUMERA, ORIGO y NEXO conservan la propiedad de cada dato fuente.  |
+
+---
+
+#### 6. Reconciliación cuantitativa
+
+##### 6.1 Cobertura por familia
+
+| Familia                          | Esperadas | Materializadas | Sin propietaria | Propiedad compartida | Faltantes | Duplicadas | Estado        |
+| -------------------------------- | --------: | -------------: | --------------: | -------------------: | --------: | ---------: | ------------- |
+| Etiquetas                        |        16 |             16 |               0 |                    0 |         0 |          0 | `CERRADA`     |
+| Comandas y tiquetes operativos   |         9 |              9 |               0 |                    0 |         0 |          0 | `CERRADA`     |
+| Comprobantes para cliente y caja |         9 |              9 |               0 |                    0 |         0 |          0 | `CERRADA`     |
+| Documentos convencionales        |        16 |             16 |               0 |                    0 |         0 |          0 | `CERRADA`     |
+| **Total**                        |    **50** |         **50** |           **0** |                **0** |     **0** |      **0** | **`CERRADA`** |
+
+##### 6.2 Distribución por aplicación propietaria
+
+| Aplicación propietaria | Etiquetas | Comandas / tiquetes | Cliente / caja | Documentos |  Total |
+| ---------------------- | --------: | ------------------: | -------------: | ---------: | -----: |
+| `FOGO`                 |         9 |                   2 |              0 |          4 | **15** |
+| `NEXO`                 |         5 |                   1 |              0 |          8 | **14** |
+| `PULSO`                |         1 |                   6 |              5 |          0 | **12** |
+| `NUMERA`               |         0 |                   0 |              4 |          1 |  **5** |
+| `ORIGO`                |         1 |                   0 |              0 |          3 |  **4** |
+| `ANIMA`                |         0 |                   0 |              0 |          0 |  **0** |
+| **Total**              |    **16** |               **9** |          **9** |     **16** | **50** |
+
+##### 6.3 Integridad de decisiones
+
+```text
+IDENTIDADES RECIBIDAS DE PRINT-ARC-003: 50
+IDENTIDADES MATERIALIZADAS: 50
+IDENTIFICADORES UNICOS: 50
+IDENTIFICADORES DUPLICADOS: 0
+IDENTIDADES SIN PROPIETARIA: 0
+IDENTIDADES CON MAS DE UNA PROPIETARIA: 0
+IDENTIDADES SIN HECHO GOBERNADO: 0
+IDENTIDADES SIN LIMITE DE PROPIEDAD: 0
+DECISIONES ABIERTAS DENTRO DE PRINT-ARC-004: 0
+```
+
+---
+
+#### 7. Decisiones canónicas consolidadas
+
+1. `FOGO` es propietaria de las salidas cuyo hecho central es producción, preparación, lote productivo, receta, calidad, limpieza o control operativo.
+2. `NEXO` es propietaria de las salidas cuyo hecho central es inventario, ubicación, movimiento, remisión, reposición, activo, mantenimiento o composición de un reporte operativo transversal.
+3. `PULSO` es propietaria de las salidas cuyo hecho central es pedido, comanda derivada de una orden, atención, entrega comercial, reserva o beneficio.
+4. `NUMERA` es propietaria de las salidas cuyo hecho central es pago, caja, factura, nota financiera, conciliación o liquidación.
+5. `ORIGO` es propietaria de las salidas cuyo hecho central es compra, recepción o devolución frente a proveedor.
+6. `ANIMA` no recibe propiedad en este inventario porque ninguna de las cincuenta identidades representa como hecho principal una relación laboral, expediente de persona o proceso de talento humano.
+7. `IMP-CMD-09` pertenece a `FOGO`: `NEXO` detecta la insuficiencia y origina la solicitud, pero `FOGO` gobierna la producción solicitada y su ejecución.
+8. `IMP-CLI-07` pertenece a `PULSO`: la reserva es el hecho documental principal; el anticipo asociado permanece como hecho financiero propiedad de `NUMERA`.
+9. `IMP-DOC-16` pertenece a `NEXO` únicamente como composición del resumen transversal; cada aplicación fuente conserva la propiedad de sus métricas y hechos subyacentes.
+10. El servicio transversal de impresión no es propietario de ninguna salida y no puede alterar el hecho empresarial por medio de plantillas, colas, reintentos, rutas o dispositivos.
+11. La impresión, reimpresión, cancelación del trabajo físico o falla del dispositivo no modifica por sí misma el estado del documento empresarial.
+12. Ninguna tarea posterior puede cambiar silenciosamente una propietaria para simplificar implementación o enrutamiento.
+
+---
+
+#### 8. Handoff cerrado hacia `PRINT-ARC-005`
+
+`PRINT-ARC-005` recibe las mismas cincuenta identidades y, para cada una, una propietaria única ya cerrada. Deberá definir plantilla, versión, tamaño y datos requeridos sin:
+
+- fusionar o eliminar identidades;
+- cambiar nombres o códigos `IMP-*`;
+- transferir propiedad por conveniencia técnica;
+- convertir una aplicación consumidora en fuente canónica;
+- duplicar el hecho empresarial dentro del servicio de impresión;
+- confundir datos fuente con propiedad de la composición documental.
+
+La tarea siguiente podrá decidir qué campos provienen de otras aplicaciones, pero cada campo deberá conservar su fuente autorizada y la salida deberá mantener la propietaria aprobada en esta matriz.
+
+---
+
+#### 9. Criterios de aceptación
+
+`PRINT-ARC-004` queda documentalmente satisfecha porque:
+
+- [x] conserva las cincuenta identidades aprobadas en `PRINT-ARC-003`;
+- [x] materializa una decisión individual para cada identidad;
+- [x] asigna exactamente una aplicación propietaria por salida;
+- [x] identifica el hecho empresarial gobernado por fila;
+- [x] diferencia propietaria, origen funcional y consumidoras;
+- [x] declara el límite de propiedad por fila;
+- [x] reporta 50 esperadas, 50 materializadas, 0 faltantes y 0 duplicadas;
+- [x] reporta 0 identidades sin propietaria y 0 propiedades compartidas;
+- [x] reconcilia 15 salidas de `FOGO`, 14 de `NEXO`, 12 de `PULSO`, 5 de `NUMERA`, 4 de `ORIGO` y 0 de `ANIMA`;
+- [x] conserva la separación entre hecho empresarial y ejecución física de impresión;
+- [x] no define datos, plantillas, tamaños, versiones o idiomas;
+- [x] no define impresoras, rutas, fallbacks, permisos, adaptadores o piloto;
+- [x] no modifica código, contratos técnicos, datos, migraciones ni Supabase;
+- [x] no deja preguntas, decisiones ni bloqueos dentro del alcance de esta tarea;
+- [x] entrega un handoff completo a `PRINT-ARC-005` como única tarea siguiente reservada.
+
+---
+
+#### 10. Requisitos de prueba
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+La tarea asigna propiedad documental y fronteras funcionales a identidades ya aprobadas. No introduce eventos ejecutables, esquemas de datos, plantillas, permisos, contratos de trabajo de impresión, reglas de enrutamiento, reintentos, infraestructura ni criterios físicos de aceptación que requieran crear o modificar requisitos `TREQ-*`.
+
+```text
+TREQ creados: 0
+TREQ modificados: 0
+TREQ diferidos: 0
+TREQ descartados: 0
+TREQ obsoletos: 0
+```
+
+---
+
+#### 11. Cierre y continuidad
+
+```text
+TAREA ANTERIOR APROBADA
+PRINT-ARC-003 — Inventariar documentos, etiquetas, comandas y comprobantes imprimibles
+        ↓
+TAREA ACTUAL APROBADA
+PRINT-ARC-004 — Definir aplicación propietaria de cada documento
+        ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos
+```
+
+La aprobación de `PRINT-ARC-004` no inicia, desarrolla ni aprueba `PRINT-ARC-005` y no modifica la secuencia posterior.
+
+
 ### [ ] PRINT-ARC-005 — Definir plantilla, versión, tamaño y datos requeridos
 ### [ ] PRINT-ARC-006 — Definir contrato canónico de trabajo de impresión
 ### [ ] PRINT-ARC-007 — Definir enrutamiento por sede, área, documento, canal y dispositivo

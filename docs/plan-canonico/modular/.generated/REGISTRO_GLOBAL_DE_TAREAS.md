@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **581** |
+| Aprobadas | **582** |
 | En propuesta | **0** |
-| No iniciadas | **1013** |
+| No iniciadas | **1012** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **36.45% (581/1594)** |
+| Porcentaje de completamiento | **36.51% (582/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PRINT-ARC-003` — Inventariar documentos, etiquetas, comandas y comprobantes imprimibles | ✅ APROBADA |
-| Tarea actual | `PRINT-ARC-004` — Definir aplicación propietaria de cada documento | ⬜ NO INICIADA |
-| Siguiente reservada | `PRINT-ARC-005` — Definir plantilla, versión, tamaño y datos requeridos | ⬜ NO INICIADA |
+| Última aprobada | `PRINT-ARC-004` — Definir aplicación propietaria de cada documento | ✅ APROBADA |
+| Tarea actual | `PRINT-ARC-005` — Definir plantilla, versión, tamaño y datos requeridos | ⬜ NO INICIADA |
+| Siguiente reservada | `PRINT-ARC-006` — Definir contrato canónico de trabajo de impresión | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -491,7 +491,7 @@
 | ✅ APROBADA | `PRINT-ARC-001` | Inventariar impresoras por empresa, sede, área y punto operativo | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-002` | Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-003` | Inventariar documentos, etiquetas, comandas y comprobantes imprimibles | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
-| ⬜ NO INICIADA | `PRINT-ARC-004` | Definir aplicación propietaria de cada documento | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
+| ✅ APROBADA | `PRINT-ARC-004` | Definir aplicación propietaria de cada documento | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-005` | Definir plantilla, versión, tamaño y datos requeridos | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-006` | Definir contrato canónico de trabajo de impresión | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-007` | Definir enrutamiento por sede, área, documento, canal y dispositivo | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
