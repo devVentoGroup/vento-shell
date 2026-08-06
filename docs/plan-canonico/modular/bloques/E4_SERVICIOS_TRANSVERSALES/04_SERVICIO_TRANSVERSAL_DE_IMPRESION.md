@@ -2922,7 +2922,511 @@ PRINT-ARC-009 — Definir estado de impresora y heartbeat
 La aprobación de `PRINT-ARC-008` no inicia, desarrolla ni aprueba `PRINT-ARC-009`.
 
 
-### [ ] PRINT-ARC-009 — Definir estado de impresora y heartbeat
+### ✅ PRINT-ARC-009 — Definir estado de impresora y heartbeat
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-008 — Definir impresora principal, alternativas y fallback` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas` — RESERVADA
+**Tipo de tarea:** documental; contrato de observación, taxonomía de estado, política de heartbeat y matriz materializada de elegibilidad para nueve dispositivos, once políticas objetivo y cincuenta salidas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Cambios físicos autorizados:** ninguno; no instala agentes, bridges, drivers, adaptadores, colas, endpoints, tablas, SQL, migraciones, configuración ni cambios en Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir cómo se observa cada impresora, cómo se calcula la frescura de su señal y cómo esa evidencia técnica habilita o bloquea la selección runtime sin confundir disponibilidad, recepción técnica o heartbeat con impresión física confirmada.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-009` queda cerrada documentalmente con:
+
+- un contrato `VENTO-PRINT-DEVICE-HEALTH` versión `1.0.0`;
+- una separación normativa entre estado administrativo, expectativa de monitoreo, frescura de heartbeat, estado del agente, estado del canal, estado del dispositivo y elegibilidad runtime;
+- 9 perfiles de salud para los nueve dispositivos físicos inventariados;
+- 1 condición sintética de bloqueo para la ausencia de impresora de 80 mm en Vento Producción;
+- 7 dispositivos operativos con heartbeat requerido;
+- 2 dispositivos con heartbeat no esperado por almacenamiento o mantenimiento;
+- 8 canales activos sujetos a observación: seis canales DIG-E200I y dos canales de la Epson L4260;
+- una cadencia objetivo de 30 segundos para dispositivos operativos;
+- ventanas cerradas de frescura: `FRESH` hasta 60 segundos, `LATE` entre 61 y 120 segundos y `STALE` por encima de 120 segundos;
+- 11 políticas objetivo vinculadas a una puerta de salud explícita;
+- 50 salidas con decisión de elegibilidad materializada;
+- 0 observaciones en vivo, 0 heartbeats ejecutados y 0 dispositivos declarados runtime-ready sin evidencia;
+- 0 faltantes, 0 duplicados y 0 cambios de identidad, propietaria, perfil físico, ruta, principal, alternativa o fallback;
+- 0 implementación y 0 evidencia operativa o física declarada.
+
+Los siete dispositivos marcados administrativamente como `OPERATIVA` conservan esa clasificación, pero su estado runtime inicial es `NEVER_OBSERVED` hasta que `PRINT-ARC-018` materialice el adaptador correspondiente y exista una observación válida. Esta diferencia evita convertir inventario documental en disponibilidad en tiempo real.
+
+---
+
+#### 2. Diagnóstico técnico actual
+
+La superficie vigente de NEXO detecta BrowserPrint y enumera dispositivos locales, pero no implementa un contrato transversal de salud.
+
+| Superficie                                                     | Comportamiento observado                                                   | Brecha frente a esta tarea                                                                                      | Clasificación                        |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `vento-nexo/src/app/printing/jobs/_hooks/usePrinterDevices.ts` | Detecta BrowserPrint, enumera impresoras y conserva un `uid` conectado.    | No persiste observaciones, secuencia, timestamps, frescura, estado de canal, estado del agente ni elegibilidad. | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION` |
+| `vento-nexo/src/app/printing/jobs/_lib/types.ts`               | El tipo de dispositivo expone identidad básica, conexión y función `send`. | No contiene señales de salud, errores mecánicos, consumibles, heartbeat o estado verificable.                   | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION` |
+| `vento-nexo/src/app/printing/jobs/page.tsx`                    | Envía ZPL al dispositivo conectado y muestra un estado local de interfaz.  | El estado local no constituye heartbeat, health check ni proyección canónica.                                   | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION` |
+
+La enumeración exitosa, la presencia de BrowserPrint o la existencia de un objeto con función `send` no demuestran que el dispositivo esté listo, que el canal permanezca disponible ni que una copia física haya sido producida.
+
+---
+
+#### 3. Fronteras e invariantes
+
+```text
+VENTO-PRINT-JOB VALIDADO
+→ VENTO-PRINT-ROUTE RESUELTA
+→ VENTO-PRINT-TARGET-POLICY ORDENADA
+→ VENTO-PRINT-DEVICE-HEALTH VIGENTE
+→ SELECCION RUNTIME O BLOQUEO SEGURO
+→ PRINT-ARC-010: IDENTIDAD DEL TRABAJO Y DEDUPLICACION
+→ PRINT-ARC-018: ADAPTADOR FISICO
+→ PRINT-ARC-019: MONITOREO Y DIAGNOSTICO
+→ PRINT-ARC-020: VALIDACION FISICA
+```
+
+Reglas obligatorias:
+
+1. El estado administrativo y el estado runtime son capas distintas.
+2. `ALMACENADA` y `REQUIERE_MANTENIMIENTO` prevalecen sobre cualquier señal técnica y bloquean selección.
+3. Un heartbeat confirma únicamente que una fuente de observación emitió una muestra dentro de la ventana; no confirma impresión, papel, tinta, corte, legibilidad ni entrega.
+4. La ausencia de heartbeat no autoriza a declarar avería mecánica. Produce `UNKNOWN_STALE` y bloqueo de nuevas selecciones.
+5. Una señal `FRESH` no basta por sí sola: agente, canal y dispositivo deben ser utilizables y no existir una condición bloqueante conocida.
+6. Una señal no soportada se registra como `UNSUPPORTED`, no como `OK`.
+7. Una observación manual puede aportar evidencia para una decisión administrativa autorizada, pero no cambia estado ni sustituye heartbeat runtime.
+8. La selección conserva la política y el orden definidos en `PRINT-ARC-008`; salud no descubre impresoras nuevas ni cambia sede, punto, perfil o medio.
+9. La Epson L4260 conserva salud de dispositivo común y salud de canal independiente para USB y Wi-Fi.
+10. Las observaciones son inmutables; el estado actual es una proyección derivada y reproducible.
+11. Una observación fuera de orden no puede hacer retroceder la proyección vigente.
+12. Los timestamps de recepción del colector gobiernan la frescura; el reloj del agente se conserva para diagnóstico, no para ampliar vigencia.
+13. El estado `READY` habilita evaluación de un candidato, no crea un intento de impresión.
+14. Idempotencia del trabajo, reintentos, confirmaciones y resultado físico permanecen respectivamente en `PRINT-ARC-010`, `PRINT-ARC-011`, `PRINT-ARC-012` y `PRINT-ARC-020`.
+
+---
+
+#### 4. Contrato `VENTO-PRINT-DEVICE-HEALTH` `1.0.0`
+
+##### 4.1 Estructura normativa
+
+```json
+{
+  "health_contract_id": "VENTO-PRINT-DEVICE-HEALTH",
+  "health_contract_version": "1.0.0",
+  "observation_id": "<uuid>",
+  "device_ref": "<PRN-*>",
+  "health_profile_id": "<HLP-*>",
+  "agent": {
+    "agent_id": "<identidad-tecnica|null>",
+    "source_kind": "<ADAPTER_USB_HEARTBEAT|ADAPTER_LAN_HEARTBEAT|ADAPTER_MULTI_CHANNEL_HEARTBEAT|NOT_EXPECTED_STORED|NOT_EXPECTED_MAINTENANCE>",
+    "sequence": "<entero|null>",
+    "emitted_at": "<RFC3339|null>",
+    "received_at": "<RFC3339|null>",
+    "agent_state": "<READY|DEGRADED|UNREACHABLE|NOT_EXPECTED>"
+  },
+  "heartbeat": {
+    "expected": true,
+    "interval_seconds": 30,
+    "age_seconds": 0,
+    "freshness_state": "<NEVER_OBSERVED|FRESH|LATE|STALE|NOT_EXPECTED>"
+  },
+  "administrative_state": "<OPERATIVA|ALMACENADA|REQUIERE_MANTENIMIENTO>",
+  "channels": [
+    {
+      "channel_id": "<CH-*>",
+      "channel_state": "<READY|DEGRADED|UNREACHABLE|UNKNOWN|UNSUPPORTED>",
+      "observed_at": "<RFC3339|null>"
+    }
+  ],
+  "device_signals": {
+    "discovery_state": "<PRESENT|ABSENT|UNKNOWN|UNSUPPORTED>",
+    "device_error_state": "<CLEAR|WARNING|BLOCKING|UNKNOWN|UNSUPPORTED>",
+    "consumable_state": "<OK|LOW|EMPTY|UNKNOWN|UNSUPPORTED>"
+  },
+  "derived_state": {
+    "device_state": "<READY|DEGRADED_READY|UNKNOWN_STALE|OFFLINE_BLOCKED|ERROR_BLOCKED|BLOCKED_STORED|BLOCKED_MAINTENANCE|BLOCKED_NO_DEVICE>",
+    "runtime_eligibility": "<ELIGIBLE|ELIGIBLE_WITH_WARNING|INELIGIBLE>",
+    "reason_codes": ["<PRINT_DEVICE_*>"]
+  },
+  "trace": {
+    "site_id": "<SITE-*>",
+    "point_id": "<POINT-*>",
+    "adapter_ref": "<referencia-o-null>",
+    "configuration_version": "<version-o-null>"
+  }
+}
+```
+
+La estructura es normativa y no representa una observación ejecutada.
+
+##### 4.2 Diccionario mínimo
+
+| Campo                  | Obligación                           | Regla                                                                                    |
+| ---------------------- | ------------------------------------ | ---------------------------------------------------------------------------------------- |
+| `observation_id`       | requerida                            | Identidad inmutable de la muestra; no se reutiliza.                                      |
+| `device_ref`           | requerida                            | Debe existir en el inventario aprobado.                                                  |
+| `health_profile_id`    | requerida                            | Vincula dispositivo, fuente y umbrales sin usar IP o `uid` como identidad empresarial.   |
+| `agent.agent_id`       | requerida cuando se espera heartbeat | Identifica el colector o bridge, no al trabajador.                                       |
+| `agent.sequence`       | requerida                            | Monótona por agente y dispositivo; duplicados o regresiones no actualizan la proyección. |
+| `emitted_at`           | requerida                            | Hora declarada por el agente; sirve para diagnóstico.                                    |
+| `received_at`          | requerida                            | Hora autoritativa para calcular frescura.                                                |
+| `heartbeat.expected`   | requerida                            | Es `false` para almacenamiento, mantenimiento o ausencia de dispositivo.                 |
+| `interval_seconds`     | requerida cuando se espera heartbeat | Debe ser 30 en esta versión.                                                             |
+| `freshness_state`      | requerida                            | Se calcula únicamente con `received_at` y el último heartbeat aceptado.                  |
+| `administrative_state` | requerida                            | Conserva el estado aprobado y tiene precedencia sobre runtime.                           |
+| `channels[]`           | requerida para dispositivo operativo | Mantiene una fila por canal autorizado en `PRINT-ARC-007` y `PRINT-ARC-008`.             |
+| `device_signals.*`     | requerida                            | Usa `UNSUPPORTED` cuando la fuente no ofrece la señal; no inventa lectura.               |
+| `device_state`         | requerida                            | Resultado determinista de precedencia y señales.                                         |
+| `runtime_eligibility`  | requerida                            | Solo `ELIGIBLE` o `ELIGIBLE_WITH_WARNING` permiten evaluar el candidato.                 |
+| `reason_codes`         | requerida                            | Explica cada bloqueo o degradación sin texto libre como única evidencia.                 |
+| `trace.*`              | requerida                            | Conserva sitio, punto, adaptador y versión de configuración usados.                      |
+
+---
+
+#### 5. Taxonomía de estado
+
+##### 5.1 Estado administrativo
+
+| Estado                   | Efecto                                                      |
+| ------------------------ | ----------------------------------------------------------- |
+| `OPERATIVA`              | Permite evaluar señales runtime; no garantiza elegibilidad. |
+| `ALMACENADA`             | Fuerza `BLOCKED_STORED`; heartbeat `NOT_EXPECTED`.          |
+| `REQUIERE_MANTENIMIENTO` | Fuerza `BLOCKED_MAINTENANCE`; heartbeat `NOT_EXPECTED`.     |
+
+##### 5.2 Frescura del heartbeat
+
+| Estado           | Edad desde `received_at` | Elegibilidad para nueva selección                                               |
+| ---------------- | -----------------------: | ------------------------------------------------------------------------------- |
+| `NEVER_OBSERVED` |     Sin muestra aceptada | `INELIGIBLE`                                                                    |
+| `FRESH`          |                 0 a 60 s | Continúa a evaluación de agente, canal y dispositivo                            |
+| `LATE`           |               61 a 120 s | `INELIGIBLE`; conserva diagnóstico sin seleccionar trabajo nuevo                |
+| `STALE`          |             Más de 120 s | `INELIGIBLE`; estado derivado `UNKNOWN_STALE`                                   |
+| `NOT_EXPECTED`   |                No aplica | La elegibilidad se resuelve por estado administrativo o ausencia de dispositivo |
+
+##### 5.3 Estado derivado y precedencia
+
+| Prioridad | Condición                                                       | Estado derivado       | Elegibilidad            |
+| --------: | --------------------------------------------------------------- | --------------------- | ----------------------- |
+|         1 | No existe dispositivo compatible                                | `BLOCKED_NO_DEVICE`   | `INELIGIBLE`            |
+|         2 | Estado administrativo `ALMACENADA`                              | `BLOCKED_STORED`      | `INELIGIBLE`            |
+|         3 | Estado administrativo `REQUIERE_MANTENIMIENTO`                  | `BLOCKED_MAINTENANCE` | `INELIGIBLE`            |
+|         4 | Heartbeat `NEVER_OBSERVED`, `LATE` o `STALE`                    | `UNKNOWN_STALE`       | `INELIGIBLE`            |
+|         5 | Agente, canal o dispositivo `UNREACHABLE` con heartbeat fresco  | `OFFLINE_BLOCKED`     | `INELIGIBLE`            |
+|         6 | Error o consumible bloqueante confirmado                        | `ERROR_BLOCKED`       | `INELIGIBLE`            |
+|         7 | Señal fresca, transporte utilizable y advertencia no bloqueante | `DEGRADED_READY`      | `ELIGIBLE_WITH_WARNING` |
+|         8 | Señal fresca, agente listo, canal listo y sin bloqueo conocido  | `READY`               | `ELIGIBLE`              |
+
+La precedencia se evalúa de arriba hacia abajo. Un estado de menor prioridad no puede ocultar uno superior.
+
+---
+
+#### 6. Política de heartbeat y proyección
+
+1. Los siete dispositivos operativos emiten una observación objetivo cada 30 segundos mediante el adaptador o bridge definido en `PRINT-ARC-018`.
+2. `FRESH` admite como máximo dos intervalos desde la última recepción aceptada.
+3. `LATE` conserva diagnóstico, pero bloquea nuevas selecciones desde el segundo intervalo vencido.
+4. `STALE` comienza al superar cuatro intervalos y deriva `UNKNOWN_STALE`.
+5. El heartbeat no se reenvía como intento de impresión y no consume `job_id`.
+6. Cada observación se guarda como hecho inmutable; la vista actual se calcula por la última secuencia válida y `received_at`.
+7. Una secuencia duplicada se ignora de forma idempotente; una secuencia menor se conserva para auditoría sin modificar la proyección.
+8. Si el agente está fresco y reporta canal o dispositivo inaccesible, el estado es `OFFLINE_BLOCKED`, no `UNKNOWN_STALE`.
+9. Si el agente deja de emitir, no se infiere la causa entre host, red, bridge o impresora; el estado es `UNKNOWN_STALE`.
+10. Un cambio administrativo requiere una decisión de inventario o mantenimiento autorizada; ningún heartbeat puede cambiarlo.
+11. La recuperación de `UNKNOWN_STALE`, `OFFLINE_BLOCKED` o `ERROR_BLOCKED` exige una observación fresca posterior que demuestre que la condición bloqueante desapareció.
+12. `PRINT-ARC-019` deberá exponer edad, causa, agente, canal y dispositivo; `PRINT-ARC-020` deberá validar los estados contra hardware real.
+
+---
+
+#### 7. Matriz materializada de los nueve dispositivos
+
+| Perfil de salud                 | Dispositivo                 | Modelo                | Sede / punto                                               | Familia       | Estado administrativo    | Canales observables                         | Fuente de heartbeat               | Cadencia  | Estado inicial   | Elegibilidad inicial                 | Regla cerrada                                                                                                   |
+| ------------------------------- | --------------------------- | --------------------- | ---------------------------------------------------------- | ------------- | ------------------------ | ------------------------------------------- | --------------------------------- | --------- | ---------------- | ------------------------------------ | --------------------------------------------------------------------------------------------------------------- |
+| `HLP-PRN-VP-ZD230-01`           | `PRN-VP-ZD230-01`           | Zebra ZD230           | `SITE-VENTO-PRODUCCION` / `POINT-VP-ZEBRA-ALMACENADA`      | Etiquetas     | `ALMACENADA`             | Ninguno activo                              | `NOT_EXPECTED_STORED`             | No aplica | `NOT_EXPECTED`   | `BLOCKED_STORED`                     | El estado administrativo prevalece; no se solicita heartbeat ni se habilita selección.                          |
+| `HLP-PRN-VP-L5590-01`           | `PRN-VP-L5590-01`           | Epson EcoTank L5590   | `SITE-VENTO-PRODUCCION` / `POINT-VP-EPSON-FUERA-OPERACION` | A4            | `REQUIERE_MANTENIMIENTO` | Ninguno operativo                           | `NOT_EXPECTED_MAINTENANCE`        | No aplica | `NOT_EXPECTED`   | `BLOCKED_MAINTENANCE`                | El mantenimiento bloquea cualquier selección; una señal técnica no puede volverla operativa.                    |
+| `HLP-PRN-ADMIN-L4260-01`        | `PRN-ADMIN-L4260-01`        | Epson EcoTank L4260   | `SITE-VENTO-ADMIN` / `POINT-ADMIN-OFICINA`                 | A4            | `OPERATIVA`              | `CH-EPSON-L4260-USB`; `CH-EPSON-L4260-WIFI` | `ADAPTER_MULTI_CHANNEL_HEARTBEAT` | 30 s      | `NEVER_OBSERVED` | `UNKNOWN_BLOCKED` hasta señal fresca | USB se evalúa primero y Wi-Fi después; ambos canales conservan estado independiente sobre el mismo dispositivo. |
+| `HLP-PRN-MOLKA-DIGE200I-01`     | `PRN-MOLKA-DIGE200I-01`     | Digital POS DIG-E200I | `SITE-MOLKA` / `POINT-MOLKA-CAJA`                          | Tiquete 80 mm | `OPERATIVA`              | `CH-DIGE200I-USB`                           | `ADAPTER_USB_HEARTBEAT`           | 30 s      | `NEVER_OBSERVED` | `UNKNOWN_BLOCKED` hasta señal fresca | La ausencia del host o del dispositivo impide nuevas selecciones en Molka.                                      |
+| `HLP-PRN-SAUDO-DIGE200I-01`     | `PRN-SAUDO-DIGE200I-01`     | Digital POS DIG-E200I | `SITE-SAUDO` / `POINT-SAUDO-CAJA`                          | Tiquete 80 mm | `OPERATIVA`              | `CH-DIGE200I-USB`                           | `ADAPTER_USB_HEARTBEAT`           | 30 s      | `NEVER_OBSERVED` | `UNKNOWN_BLOCKED` hasta señal fresca | La ausencia del host o del dispositivo impide nuevas selecciones en Saudo.                                      |
+| `HLP-PRN-VC-CAJA-DIGE200I-01`   | `PRN-VC-CAJA-DIGE200I-01`   | Digital POS DIG-E200I | `SITE-VENTO-CAFE` / `POINT-VC-CAJA-MOSTRADOR`              | Tiquete 80 mm | `OPERATIVA`              | `CH-DIGE200I-USB`                           | `ADAPTER_USB_HEARTBEAT`           | 30 s      | `NEVER_OBSERVED` | `UNKNOWN_BLOCKED` hasta señal fresca | La señal solo habilita caja / mostrador; no habilita barra, bar ni cocina.                                      |
+| `HLP-PRN-VC-BARRA-DIGE200I-01`  | `PRN-VC-BARRA-DIGE200I-01`  | Digital POS DIG-E200I | `SITE-VENTO-CAFE` / `POINT-VC-BARRA-CALIENTES`             | Tiquete 80 mm | `OPERATIVA`              | `CH-DIGE200I-LAN`                           | `ADAPTER_LAN_HEARTBEAT`           | 30 s      | `NEVER_OBSERVED` | `UNKNOWN_BLOCKED` hasta señal fresca | La señal solo habilita barra de bebidas calientes; no habilita bar, cocina ni caja.                             |
+| `HLP-PRN-VC-BAR-DIGE200I-01`    | `PRN-VC-BAR-DIGE200I-01`    | Digital POS DIG-E200I | `SITE-VENTO-CAFE` / `POINT-VC-BAR-FRIAS`                   | Tiquete 80 mm | `OPERATIVA`              | `CH-DIGE200I-LAN`                           | `ADAPTER_LAN_HEARTBEAT`           | 30 s      | `NEVER_OBSERVED` | `UNKNOWN_BLOCKED` hasta señal fresca | La señal solo habilita bar de bebidas frías; no habilita barra, cocina ni caja.                                 |
+| `HLP-PRN-VC-COCINA-DIGE200I-01` | `PRN-VC-COCINA-DIGE200I-01` | Digital POS DIG-E200I | `SITE-VENTO-CAFE` / `POINT-VC-COCINA`                      | Tiquete 80 mm | `OPERATIVA`              | `CH-DIGE200I-LAN`                           | `ADAPTER_LAN_HEARTBEAT`           | 30 s      | `NEVER_OBSERVED` | `UNKNOWN_BLOCKED` hasta señal fresca | La señal solo habilita cocina; no habilita barra, bar ni caja.                                                  |
+
+Los estados iniciales representan la línea base documental verificable: no existe colector implementado ni muestra en vivo registrada. No se reinterpretan como una falla de los siete equipos operativos.
+
+---
+
+#### 8. Puerta de salud para las once políticas objetivo
+
+| Política objetivo          | Perfil de salud                 | Canales evaluados          | Estados que habilitan candidato                  | Resultado en cualquier otro estado                                                |
+| -------------------------- | ------------------------------- | -------------------------- | ------------------------------------------------ | --------------------------------------------------------------------------------- |
+| `TGT-LBL-VP-CENTRAL`       | `HLP-PRN-VP-ZD230-01`           | No aplica                  | `BLOCKED_STORED`                                 | El almacenamiento prevalece; no se evalúan candidatos runtime.                    |
+| `TGT-TKT-MOLKA-CAJA`       | `HLP-PRN-MOLKA-DIGE200I-01`     | `CH-DIGE200I-USB`          | `READY` o `DEGRADED_READY` con heartbeat `FRESH` | Cualquier otro estado termina en `SAFE_BLOCK` local.                              |
+| `TGT-TKT-SAUDO-CAJA`       | `HLP-PRN-SAUDO-DIGE200I-01`     | `CH-DIGE200I-USB`          | `READY` o `DEGRADED_READY` con heartbeat `FRESH` | Cualquier otro estado termina en `SAFE_BLOCK` local.                              |
+| `TGT-TKT-VC-CAJA`          | `HLP-PRN-VC-CAJA-DIGE200I-01`   | `CH-DIGE200I-USB`          | `READY` o `DEGRADED_READY` con heartbeat `FRESH` | Cualquier otro estado termina en `SAFE_BLOCK`; no salta a otro punto.             |
+| `TGT-TKT-VC-BARRA`         | `HLP-PRN-VC-BARRA-DIGE200I-01`  | `CH-DIGE200I-LAN`          | `READY` o `DEGRADED_READY` con heartbeat `FRESH` | Cualquier otro estado termina en `SAFE_BLOCK`; no salta a otro punto.             |
+| `TGT-TKT-VC-BAR`           | `HLP-PRN-VC-BAR-DIGE200I-01`    | `CH-DIGE200I-LAN`          | `READY` o `DEGRADED_READY` con heartbeat `FRESH` | Cualquier otro estado termina en `SAFE_BLOCK`; no salta a otro punto.             |
+| `TGT-TKT-VC-COCINA`        | `HLP-PRN-VC-COCINA-DIGE200I-01` | `CH-DIGE200I-LAN`          | `READY` o `DEGRADED_READY` con heartbeat `FRESH` | Cualquier otro estado termina en `SAFE_BLOCK`; no salta a otro punto.             |
+| `TGT-TKT-VP-SIN-CAPACIDAD` | `HLP-NO-DEVICE-VP-80MM`         | No aplica                  | `BLOCKED_NO_DEVICE`                              | No existe heartbeat posible ni degradación de medio.                              |
+| `TGT-A4-VP-LOCAL`          | `HLP-PRN-VP-L5590-01`           | No aplica                  | `BLOCKED_MAINTENANCE`                            | Solo admite una nueva decisión explícita hacia la política central ya autorizada. |
+| `TGT-A4-ADMIN-LOCAL`       | `HLP-PRN-ADMIN-L4260-01`        | rango 1 USB; rango 2 Wi-Fi | `READY` o `DEGRADED_READY` con heartbeat `FRESH` | Si USB no es elegible se evalúa Wi-Fi; si ninguno lo es, `SAFE_BLOCK`.            |
+| `TGT-A4-ADMIN-CENTRAL`     | `HLP-PRN-ADMIN-L4260-01`        | rango 1 USB; rango 2 Wi-Fi | `READY` o `DEGRADED_READY` con heartbeat `FRESH` | Misma regla de canal; conserva distribución manual explícita.                     |
+
+Las políticas bloqueadas permanecen completamente definidas. No requieren una señal inexistente para confirmar una causa administrativa ya aprobada.
+
+---
+
+#### 9. Matriz materializada de las cincuenta salidas
+
+| Salida       | Nombre                                                    | Propietaria | Perfil físico       | Políticas objetivo heredadas                                                                                                                         | Puertas de salud                                                                                                                                                                                                | Regla de elegibilidad                                                                                                                            | Estado / bloqueo                                              |
+| ------------ | --------------------------------------------------------- | ----------- | ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------- |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | `FOGO`      | `PERF-LBL-100X50-H` | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | `FOGO`      | `PERF-LBL-100X50-H` | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | `FOGO`      | `PERF-LBL-75X50-H`  | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | `FOGO`      | `PERF-LBL-75X50-H`  | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | `FOGO`      | `PERF-LBL-100X75-H` | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | `FOGO`      | `PERF-LBL-100X75-H` | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | `ORIGO`     | `PERF-LBL-100X50-H` | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | `NEXO`      | `PERF-LBL-100X50-H` | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | `NEXO`      | `PERF-LBL-75X50-H`  | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | `NEXO`      | `PERF-LBL-100X75-H` | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | `PULSO`     | `PERF-LBL-100X75-H` | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | `NEXO`      | `PERF-LBL-100X50-H` | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO`      | `PERF-LBL-100X75-H` | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | `FOGO`      | `PERF-LBL-75X50-H`  | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | `FOGO`      | `PERF-LBL-75X50-H`  | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | `FOGO`      | `PERF-LBL-75X50-H`  | `TGT-LBL-VP-CENTRAL`                                                                                                                                 | `HLP-PRN-VP-ZD230-01`                                                                                                                                                                                           | Bloqueo administrativo `STORED`; no se espera heartbeat.                                                                                         | `ESPECIFICADO / BLOCKED_STORED`                               |
+| `IMP-CMD-01` | Comanda de cocina                                         | `PULSO`     | `PERF-TKT-80-V`     | `TGT-TKT-VC-COCINA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                      | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-COCINA-DIGE200I-01`                                                                                                                       | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías                           | `PULSO`     | `PERF-TKT-80-V`     | `TGT-TKT-VC-BAR`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                         | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-BAR-DIGE200I-01`                                                                                                                          | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes             | `PULSO`     | `PERF-TKT-80-V`     | `TGT-TKT-VC-BARRA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                       | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-BARRA-DIGE200I-01`                                                                                                                        | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CMD-04` | Comanda de preparación o mise en place                    | `FOGO`      | `PERF-TKT-80-V`     | `TGT-TKT-VC-COCINA`; `TGT-TKT-VC-BARRA`; `TGT-TKT-VC-BAR`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`; `TGT-TKT-VP-SIN-CAPACIDAD`                    | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-BARRA-DIGE200I-01`; `HLP-PRN-VC-BAR-DIGE200I-01`; `HLP-PRN-VC-COCINA-DIGE200I-01`; `HLP-NO-DEVICE-VP-80MM`                                | La ruta elegida gobierna: sedes con dispositivo exigen heartbeat fresco; Vento Producción queda `BLOCKED_NO_DEVICE`.                             | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_NO_DEVICE`   |
+| `IMP-CMD-05` | Tiquete de expedición o recogida                          | `PULSO`     | `PERF-TKT-80-V`     | `TGT-TKT-VC-CAJA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                        | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-CAJA-DIGE200I-01`                                                                                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CMD-06` | Solicitud interna de reposición                           | `NEXO`      | `PERF-TKT-80-V`     | `TGT-TKT-VC-CAJA`; `TGT-TKT-VC-BARRA`; `TGT-TKT-VC-BAR`; `TGT-TKT-VC-COCINA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`; `TGT-TKT-VP-SIN-CAPACIDAD` | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-CAJA-DIGE200I-01`; `HLP-PRN-VC-BARRA-DIGE200I-01`; `HLP-PRN-VC-BAR-DIGE200I-01`; `HLP-PRN-VC-COCINA-DIGE200I-01`; `HLP-NO-DEVICE-VP-80MM` | La ruta elegida gobierna: sedes con dispositivo exigen heartbeat fresco; Vento Producción queda `BLOCKED_NO_DEVICE`.                             | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_NO_DEVICE`   |
+| `IMP-CMD-07` | Modificación o adición de comanda                         | `PULSO`     | `PERF-TKT-80-V`     | `TGT-TKT-VC-COCINA`; `TGT-TKT-VC-BARRA`; `TGT-TKT-VC-BAR`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-BARRA-DIGE200I-01`; `HLP-PRN-VC-BAR-DIGE200I-01`; `HLP-PRN-VC-COCINA-DIGE200I-01`                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CMD-08` | Cancelación o anulación de comanda                        | `PULSO`     | `PERF-TKT-80-V`     | `TGT-TKT-VC-COCINA`; `TGT-TKT-VC-BARRA`; `TGT-TKT-VC-BAR`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-BARRA-DIGE200I-01`; `HLP-PRN-VC-BAR-DIGE200I-01`; `HLP-PRN-VC-COCINA-DIGE200I-01`                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia                 | `FOGO`      | `PERF-TKT-80-V`     | `TGT-TKT-VP-SIN-CAPACIDAD`                                                                                                                           | `HLP-NO-DEVICE-VP-80MM`                                                                                                                                                                                         | Bloqueo `NO_DEVICE`; no existe heartbeat posible.                                                                                                | `ESPECIFICADO / BLOCKED_NO_DEVICE`                            |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente                         | `PULSO`     | `PERF-TKT-80-V`     | `TGT-TKT-VC-CAJA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                        | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-CAJA-DIGE200I-01`                                                                                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CLI-02` | Confirmación de pedido                                    | `PULSO`     | `PERF-TKT-80-V`     | `TGT-TKT-VC-CAJA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                        | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-CAJA-DIGE200I-01`                                                                                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CLI-03` | Comprobante de pago                                       | `NUMERA`    | `PERF-TKT-80-V`     | `TGT-TKT-VC-CAJA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                        | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-CAJA-DIGE200I-01`                                                                                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente               | `NUMERA`    | `PERF-TKT-80-V`     | `TGT-TKT-VC-CAJA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                        | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-CAJA-DIGE200I-01`                                                                                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito      | `NUMERA`    | `PERF-TKT-80-V`     | `TGT-TKT-VC-CAJA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                        | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-CAJA-DIGE200I-01`                                                                                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CLI-06` | Resumen de recogida o entrega                             | `PULSO`     | `PERF-TKT-80-V`     | `TGT-TKT-VC-CAJA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                        | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-CAJA-DIGE200I-01`                                                                                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo                         | `PULSO`     | `PERF-TKT-80-V`     | `TGT-TKT-VC-CAJA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                        | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-CAJA-DIGE200I-01`                                                                                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                     | `PULSO`     | `PERF-TKT-80-V`     | `TGT-TKT-VC-CAJA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                        | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-CAJA-DIGE200I-01`                                                                                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja         | `NUMERA`    | `PERF-TKT-80-V`     | `TGT-TKT-VC-CAJA`; `TGT-TKT-MOLKA-CAJA`; `TGT-TKT-SAUDO-CAJA`                                                                                        | `HLP-PRN-MOLKA-DIGE200I-01`; `HLP-PRN-SAUDO-DIGE200I-01`; `HLP-PRN-VC-CAJA-DIGE200I-01`                                                                                                                         | La política resuelta exige heartbeat `FRESH` y estado `READY` o `DEGRADED_READY`; otro estado bloquea solo ese punto.                            | `ESPECIFICADO / HEALTH_GATE_LOCAL`                            |
+| `IMP-DOC-01` | Remisión o nota de despacho                               | `NEXO`      | `PERF-A4-P`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                      | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-02` | Manifiesto de traslado interno                            | `NEXO`      | `PERF-A4-P`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                      | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-03` | Hoja de conteo de inventario                              | `NEXO`      | `PERF-A4-L`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                      | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario            | `NEXO`      | `PERF-A4-L`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                      | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-05` | Orden de compra                                           | `ORIGO`     | `PERF-A4-P`         | `TGT-A4-ADMIN-LOCAL`; `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                      | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-06` | Acta o comprobante de recepción                           | `ORIGO`     | `PERF-A4-P`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                      | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-07` | Devolución a proveedor                                    | `ORIGO`     | `PERF-A4-P`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                      | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-08` | Orden de producción o ficha de lote                       | `FOGO`      | `PERF-A4-P`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                                            | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica                     | `FOGO`      | `PERF-A4-P`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                                            | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-10` | Registro de calidad o no conformidad                      | `FOGO`      | `PERF-A4-P`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                                            | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-11` | Orden de mantenimiento                                    | `NEXO`      | `PERF-A4-P`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                      | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo          | `NEXO`      | `PERF-A4-P`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                      | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico                    | `NEXO`      | `PERF-A4-P`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                      | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo       | `FOGO`      | `PERF-A4-P`         | `TGT-A4-VP-LOCAL`; `TGT-A4-ADMIN-CENTRAL`                                                                                                            | `HLP-PRN-VP-L5590-01`; `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                 | La ruta resuelta gobierna: L5590 permanece bloqueada por mantenimiento; L4260 exige heartbeat fresco; el reruteo central sigue siendo explícito. | `ESPECIFICADO / HEALTH_GATE_POR_RUTA; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación              | `NUMERA`    | `PERF-A4-L`         | `TGT-A4-ADMIN-LOCAL`                                                                                                                                 | `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                                        | La L4260 exige heartbeat fresco; USB se evalúa antes que Wi-Fi sobre el mismo dispositivo.                                                       | `ESPECIFICADO / HEALTH_GATE_L4260_MULTI_CHANNEL`              |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales           | `NEXO`      | `PERF-A4-L`         | `TGT-A4-ADMIN-LOCAL`                                                                                                                                 | `HLP-PRN-ADMIN-L4260-01`                                                                                                                                                                                        | La L4260 exige heartbeat fresco; USB se evalúa antes que Wi-Fi sobre el mismo dispositivo.                                                       | `ESPECIFICADO / HEALTH_GATE_L4260_MULTI_CHANNEL`              |
+
+La existencia de varias políticas en una fila no exige que todas estén saludables. `PRINT-ARC-007` resuelve primero una única ruta y `PRINT-ARC-008` selecciona su política; esta tarea evalúa exclusivamente la puerta de salud correspondiente a esa decisión.
+
+---
+
+#### 10. Algoritmo determinista de elegibilidad
+
+Para cada candidato ordenado por `PRINT-ARC-008`:
+
+1. validar la identidad `PRN-*`, el perfil `HLP-*` y la versión contractual;
+2. comprobar si existe un dispositivo físico;
+3. aplicar estado administrativo con precedencia absoluta;
+4. comprobar si el perfil exige heartbeat;
+5. obtener la última observación aceptada por secuencia y `received_at`;
+6. calcular `NEVER_OBSERVED`, `FRESH`, `LATE` o `STALE`;
+7. con heartbeat fresco, evaluar agente, canal y presencia del dispositivo;
+8. evaluar únicamente señales soportadas y condiciones bloqueantes confirmadas;
+9. derivar `READY`, `DEGRADED_READY`, `UNKNOWN_STALE`, `OFFLINE_BLOCKED` o `ERROR_BLOCKED`;
+10. devolver `ELIGIBLE`, `ELIGIBLE_WITH_WARNING` o `INELIGIBLE` con códigos tipados;
+11. si el candidato es ineligible, continuar únicamente con la alternativa ya ordenada dentro de la misma política;
+12. si no existe alternativa elegible, aplicar el fallback de `PRINT-ARC-008` sin descubrir otro dispositivo;
+13. conservar la decisión, la observación y los motivos usados para que `PRINT-ARC-019` pueda explicar el resultado.
+
+El algoritmo no envía datos, no crea intentos, no consume reintentos y no modifica el trabajo original.
+
+---
+
+#### 11. Códigos de resultado
+
+| Código                                  | Significado                                                                    |
+| --------------------------------------- | ------------------------------------------------------------------------------ |
+| `PRINT_DEVICE_READY`                    | Heartbeat fresco, agente y canal utilizables, sin bloqueo conocido.            |
+| `PRINT_DEVICE_DEGRADED_READY`           | Existe advertencia no bloqueante; el candidato sigue elegible con diagnóstico. |
+| `PRINT_DEVICE_HEARTBEAT_NEVER_OBSERVED` | No existe muestra aceptada; nuevas selecciones permanecen bloqueadas.          |
+| `PRINT_DEVICE_HEARTBEAT_LATE`           | La señal superó 60 segundos y ya no habilita nuevas selecciones.               |
+| `PRINT_DEVICE_HEARTBEAT_STALE`          | La señal superó 120 segundos; la causa técnica no se presume.                  |
+| `PRINT_DEVICE_AGENT_UNREACHABLE`        | El agente reportado no está utilizable con muestra fresca.                     |
+| `PRINT_DEVICE_CHANNEL_UNREACHABLE`      | El canal autorizado no está utilizable con muestra fresca.                     |
+| `PRINT_DEVICE_NOT_DISCOVERED`           | El agente está activo, pero el dispositivo no aparece en la fuente autorizada. |
+| `PRINT_DEVICE_ERROR_BLOCKING`           | Existe una condición de dispositivo o consumible confirmada como bloqueante.   |
+| `PRINT_DEVICE_SIGNAL_UNSUPPORTED`       | La fuente no ofrece la señal; no se convierte en éxito ni en error.            |
+| `PRINT_DEVICE_BLOCKED_STORED`           | El dispositivo está almacenado y no puede seleccionarse.                       |
+| `PRINT_DEVICE_BLOCKED_MAINTENANCE`      | El dispositivo requiere mantenimiento y no puede seleccionarse.                |
+| `PRINT_DEVICE_NO_COMPATIBLE_DEVICE`     | No existe dispositivo físico compatible para la política.                      |
+| `PRINT_DEVICE_OBSERVATION_DUPLICATE`    | La secuencia ya fue aceptada; la proyección no cambia.                         |
+| `PRINT_DEVICE_OBSERVATION_OUT_OF_ORDER` | La secuencia es anterior a la vigente; se conserva sin retroceder estado.      |
+
+---
+
+#### 12. Reconciliación cuantitativa
+
+##### 12.1 Inventario y monitoreo
+
+| Concepto                               | Cantidad |
+| -------------------------------------- | -------: |
+| Dispositivos físicos heredados         |        9 |
+| Perfiles de salud físicos              |        9 |
+| Dispositivos con heartbeat requerido   |        7 |
+| Dispositivos con heartbeat no esperado |        2 |
+| Canales activos observables            |        8 |
+| Condiciones sintéticas sin dispositivo |        1 |
+| Observaciones live declaradas          |        0 |
+| Dispositivos declarados runtime-ready  |        0 |
+
+##### 12.2 Cobertura de políticas y salidas
+
+| Concepto                         | Esperadas | Materializadas | Faltantes | Duplicadas |
+| -------------------------------- | --------: | -------------: | --------: | ---------: |
+| Políticas objetivo               |        11 |             11 |         0 |          0 |
+| Etiquetas                        |        16 |             16 |         0 |          0 |
+| Comandas y tiquetes operativos   |         9 |              9 |         0 |          0 |
+| Comprobantes para cliente y caja |         9 |              9 |         0 |          0 |
+| Documentos convencionales        |        16 |             16 |         0 |          0 |
+| **Total de salidas**             |    **50** |         **50** |     **0** |      **0** |
+
+```text
+DISPOSITIVOS HEREDADOS: 9
+DISPOSITIVOS MATERIALIZADOS: 9
+PERFILES DE SALUD UNICOS: 9
+POLITICAS OBJETIVO HEREDADAS: 11
+POLITICAS CON PUERTA DE SALUD: 11
+SALIDAS HEREDADAS: 50
+SALIDAS MATERIALIZADAS: 50
+IDENTIFICADORES IMP-* UNICOS: 50
+CAMBIOS DE PROPIEDAD: 0
+CAMBIOS DE PERFIL FISICO: 0
+CAMBIOS DE RUTA O TARGET: 0
+OBSERVACIONES EN VIVO INVENTADAS: 0
+DECISIONES ABIERTAS DENTRO DE PRINT-ARC-009: 0
+```
+
+---
+
+#### 13. Bloqueos y condiciones de salida
+
+| Condición                                           | Estado definido aquí                                         | Tarea responsable                                                                                                           | Condición de salida verificable                                                                                                    |
+| --------------------------------------------------- | ------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- |
+| Zebra almacenada                                    | `BLOCKED_STORED`; heartbeat `NOT_EXPECTED`                   | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`, `PRINT-ARC-018`, `PRINT-ARC-020`                                   | Despliegue aprobado, adaptador activo, primera señal fresca y prueba física satisfactoria.                                         |
+| Epson L5590 en mantenimiento                        | `BLOCKED_MAINTENANCE`; heartbeat `NOT_EXPECTED`              | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`, `PRINT-ARC-018`, `PRINT-ARC-020`                                   | Recuperación o sustitución autorizada, adaptador activo, primera señal fresca y prueba A4 satisfactoria.                           |
+| Sin impresora de 80 mm en Vento Producción          | `BLOCKED_NO_DEVICE`                                          | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`, `PRINT-ARC-007`, `PRINT-ARC-008`, `PRINT-ARC-018`, `PRINT-ARC-020` | Dispositivo compatible incorporado, ruta y target aprobados, adaptador activo, primera señal fresca y prueba física satisfactoria. |
+| Siete dispositivos operativos sin colector canónico | `NEVER_OBSERVED` y `UNKNOWN_BLOCKED` como línea base runtime | `PRINT-ARC-018`, `PRINT-ARC-019`, `PRINT-ARC-020`                                                                           | Adaptador y colector implementados, monitoreo visible y ejecución física validada.                                                 |
+
+Estas condiciones no dejan incompleta la definición: cada estado, precedencia, propietario y puerta de salida están materializados. No se declara implementación ni evidencia inexistente.
+
+---
+
+#### 14. Cobertura por requisitos canónicos vigentes
+
+Las reglas de esta tarea quedan cubiertas, sin modificar su identidad ni estado, por requisitos vigentes que ya protegen:
+
+- `TREQ-PROC-444`: separación de configuración, disponibilidad, canal, comando, resultado y conciliación del periférico;
+- `TREQ-PROC-445`: routing de impresión por política y contexto, no por IP o última impresora;
+- `TREQ-PROC-471`: separación entre liveness, readiness, dependencia y salud de dispositivo;
+- `TREQ-PROC-474`: observación de dispositivo, estación, red, periférico, consumible y resultado físico;
+- `TREQ-PROC-479`: observabilidad de destino lógico, cola, estado, receipt, resultado desconocido y conciliación;
+- `TREQ-PROC-557`: validación de descubrimiento, adaptador, configuración, canal, sustituto y diagnóstico.
+
+Todos ellos ya vinculan la arquitectura de impresión `PRINT-ARC-001` a `PRINT-ARC-020` con implementación y prueba física. Esta tarea especializa el contrato documental dentro de ese alcance y no cambia filas del registro canónico.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las reglas de salud, frescura, bloqueo seguro, separación de estados y observabilidad ya están protegidas por requisitos canónicos vigentes que abarcan el servicio completo de impresión. `PRINT-ARC-009` no crea, modifica, difiere, descarta ni vuelve obsoleto ningún requisito, por lo que el registro `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` permanece sin cambios.
+
+```text
+TREQ creados: 0
+TREQ modificados: 0
+TREQ diferidos: 0
+TREQ descartados: 0
+TREQ obsoletos: 0
+```
+
+---
+
+#### 15. Criterios de aceptación
+
+- [x] define un contrato raíz estable y versionado para salud de impresora;
+- [x] separa estado administrativo, heartbeat, agente, canal, dispositivo, consumible y elegibilidad;
+- [x] define una política de timestamps, secuencia y proyección reproducible;
+- [x] define cadencia y ventanas cerradas de frescura;
+- [x] impide que heartbeat, discovery o receipt se interpreten como impresión física;
+- [x] conserva los nueve dispositivos y materializa una decisión para cada uno;
+- [x] conserva las once políticas objetivo y materializa su puerta de salud;
+- [x] conserva las cincuenta salidas, nombres, propietarias, perfiles y targets;
+- [x] reporta 50 esperadas, 50 materializadas, 0 faltantes y 0 duplicadas;
+- [x] reconcilia 15 salidas de FOGO, 14 de NEXO, 12 de PULSO, 5 de NUMERA y 4 de ORIGO;
+- [x] conserva los bloqueos por almacenamiento, mantenimiento y ausencia de dispositivo;
+- [x] evita declarar online u operativo sin una muestra fresca verificable;
+- [x] evita declarar avería mecánica únicamente por pérdida de heartbeat;
+- [x] define recuperación, observaciones duplicadas y observaciones fuera de orden;
+- [x] asigna implementación, monitoreo y validación física a tareas exactas;
+- [x] no define idempotencia del trabajo, reintentos, confirmaciones, cancelación ni reimpresión;
+- [x] no implementa código, SQL, migraciones, configuración, datos ni Supabase;
+- [x] declara cero cambios de requisitos con justificación concreta;
+- [x] mantiene `PRINT-ARC-010` como única tarea siguiente reservada.
+
+---
+
+#### 16. Handoff cerrado hacia `PRINT-ARC-010`
+
+`PRINT-ARC-010` recibe:
+
+- `VENTO-PRINT-DEVICE-HEALTH` `1.0.0`;
+- nueve perfiles físicos de salud y una condición sintética sin dispositivo;
+- estados administrativos, runtime y de frescura separados;
+- 11 políticas objetivo con puerta de salud;
+- 50 salidas con elegibilidad materializada;
+- una regla explícita de que `READY` habilita evaluación, pero no constituye intento ni resultado físico;
+- observaciones identificadas, secuenciadas e inmutables que no usan `job_id` como identidad de heartbeat.
+
+Deberá definir identidad e idempotencia del trabajo de impresión sin:
+
+- reutilizar heartbeat como clave de trabajo;
+- convertir una nueva observación de salud en un nuevo intento;
+- alterar `VENTO-PRINT-JOB`, la ruta, el target o el estado administrativo;
+- ocultar un resultado desconocido mediante una nueva intención;
+- definir todavía reintentos, confirmaciones, cancelación o reimpresión;
+- declarar implementación o evidencia inexistente.
+
+```text
+TAREA ANTERIOR APROBADA
+PRINT-ARC-008 — Definir impresora principal, alternativas y fallback
+        ↓
+TAREA ACTUAL DESARROLLADA EN ARTEFACTO APROBADA
+PRINT-ARC-009 — Definir estado de impresora y heartbeat
+        ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas
+```
+
+La aprobación de `PRINT-ARC-009` no inicia, desarrolla ni aprueba `PRINT-ARC-010`.
+
+
 ### [ ] PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas
 ### [ ] PRINT-ARC-011 — Definir reintentos automáticos y cola de fallos
 ### [ ] PRINT-ARC-012 — Definir confirmación de envío, impresión y entrega cuando sea verificable

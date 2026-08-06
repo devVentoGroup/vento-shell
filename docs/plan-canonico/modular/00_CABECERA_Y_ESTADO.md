@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **586** |
+| Tareas aprobadas | **587** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1008** |
+| Tareas no iniciadas | **1007** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **36.76% (586/1594)** |
+| Porcentaje de completamiento | **36.83% (587/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PRINT-ARC-008 — Definir impresora principal, alternativas y fallback** |
-| Tarea actual | **PRINT-ARC-009 — Definir estado de impresora y heartbeat** |
+| Última tarea aprobada | **PRINT-ARC-009 — Definir estado de impresora y heartbeat** |
+| Tarea actual | **PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas** |
+| Siguiente tarea | **PRINT-ARC-011 — Definir reintentos automáticos y cola de fallos** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 10 de 157 aprobadas; PRINT-ARC-009 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 11 de 157 aprobadas; PRINT-ARC-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PRINT-ARC-008` — Definir impresora principal, alternativas y fallback |
-| Tarea actual | `PRINT-ARC-009` — Definir estado de impresora y heartbeat — **NO INICIADA** |
-| Siguiente tarea | `PRINT-ARC-010` — Definir idempotencia y prevención de impresiones duplicadas |
+| Última aprobada | `PRINT-ARC-009` — Definir estado de impresora y heartbeat |
+| Tarea actual | `PRINT-ARC-010` — Definir idempotencia y prevención de impresiones duplicadas — **NO INICIADA** |
+| Siguiente tarea | `PRINT-ARC-011` — Definir reintentos automáticos y cola de fallos |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 10 DE 157 APROBADAS — ACTUAL PRINT-ARC-009** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 11 DE 157 APROBADAS — ACTUAL PRINT-ARC-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PRINT-ARC-008 — Definir impresora principal, alternativas y fallback
-        ↓
-TAREA ACTUAL
 PRINT-ARC-009 — Definir estado de impresora y heartbeat
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PRINT-ARC-010 — Definir idempotencia y prevención de impresiones duplicadas
         ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-011 — Definir reintentos automáticos y cola de fallos
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 10 de 157 tareas aprobadas
+CARRIL NEXO — 11 de 157 tareas aprobadas
 ```
