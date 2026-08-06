@@ -5825,7 +5825,544 @@ Justificación: el registro canónico vigente ya protege la acción nueva e idem
 `PRINT-ARC-015` queda **RESERVADA** para definir tratamiento de documentos sensibles. No se desarrolla ni modifica desde esta tarea.
 
 
-### [ ] PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración
+### ✅ PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración
+
+**Estado:** APROBADA
+
+**Tarea anterior:** `PRINT-ARC-014 — Definir reimpresión como acción separada y auditable` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-016 — Definir tratamiento de datos sensibles y PII en impresión` — RESERVADA
+**Tipo de tarea:** documental; autorización, catálogo objetivo de capacidades, fronteras de servicio y matriz materializada
+**Repositorio propietario:** `vento-shell`
+**Implementación física autorizada:** ninguna; no crea código, migraciones, cambios de Supabase, asignaciones de rol ni despliegues
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-015` queda cerrada documentalmente con:
+
+- el contrato `VENTO-PRINT-AUTHORIZATION` versión `1.0.0`;
+- tres planos de autoridad no intercambiables: autoridad del recurso empresarial, autoridad de la acción física y administración técnica del servicio;
+- catorce claves de permiso objetivo bajo la convención `app.module.resource.action`;
+- dos claves ya presentes en el catálogo canónico y doce capacidades objetivo pendientes de materialización controlada;
+- ocho perfiles de autorización;
+- diez decisiones positivas y ocho códigos de denegación normalizados;
+- seis perfiles de alcance territorial y de recurso;
+- revalidación obligatoria en admisión, acción manual, reimpresión, predespacho y administración;
+- separación entre impresión original, retry, reimpresión, conciliación, cancelación y configuración;
+- segregación reforzada para copias financieras, fiscales, de caja y controles equivalentes;
+- una decisión explícita para las cincuenta salidas canónicas;
+- cero asignaciones implícitas por nombre de rol, dispositivo, aplicación, sede o posesión del documento;
+- cero implementación física, cero migraciones, cero cambios de Supabase y cero evidencia operativa inventada.
+
+La autorización definida aquí no reemplaza la autorización empresarial que originó el documento. El servicio solo ejecuta o administra acciones físicas sobre un recurso y snapshot ya resolubles.
+
+---
+
+#### 2. Continuidad y contradicción heredada
+
+Las fuentes vigentes asignan inequívocamente a `PRINT-ARC-015` la definición de permisos y reservan privacidad y PII para `PRINT-ARC-016`. El cierre aprobado de `PRINT-ARC-014` conserva una frase heredada que denomina erróneamente a `PRINT-ARC-015` como tratamiento de documentos sensibles.
+
+| Elemento                         | Valor vigente                                                       | Decisión                                                    |
+| -------------------------------- | ------------------------------------------------------------------- | ----------------------------------------------------------- |
+| `active-sequence.json`           | `PRINT-ARC-015` = permisos; `PRINT-ARC-016` = datos sensibles y PII | Fuente de continuidad vigente.                              |
+| Registro global de tareas        | `PRINT-ARC-015` = permisos                                          | Confirma identidad y título.                                |
+| Marcador del archivo propietario | `PRINT-ARC-015` = permisos                                          | Confirma el bloque que debe materializarse.                 |
+| Frase final de `PRINT-ARC-014`   | `PRINT-ARC-015` = documentos sensibles                              | Etiqueta heredada obsoleta; no cambia la identidad vigente. |
+
+La inconsistencia no bloquea esta tarea porque las fuentes actuales de continuidad, registro y propiedad coinciden. Su propietario documental es la incorporación de `PRINT-ARC-015` en `vento-shell`; la condición de salida es que el bloque aprobado sustituya el marcador vigente y los verificadores de continuidad dejen una única secuencia `PRINT-ARC-014 → PRINT-ARC-015 → PRINT-ARC-016`.
+
+---
+
+#### 3. Contratos heredados y frontera
+
+| Contrato                              | Versión | Uso                                                           |
+| ------------------------------------- | ------- | ------------------------------------------------------------- |
+| `VENTO-PRINT-JOB`                     | `1.0.0` | Identidad, propietaria y snapshot del trabajo.                |
+| `VENTO-PRINT-ROUTE-TARGET`            | `1.0.0` | Destino lógico, política territorial y restricciones de ruta. |
+| `VENTO-PRINT-DEVICE-HEALTH`           | `1.0.0` | Elegibilidad técnica previa al despacho.                      |
+| `VENTO-PRINT-IDEMPOTENCY`             | `1.0.0` | Admisión única de cada copia legítima.                        |
+| `VENTO-PRINT-RETRY-QUEUE`             | `1.0.0` | Ejecución, leases, intentos y cola de fallos.                 |
+| `VENTO-PRINT-CONFIRMATION`            | `1.0.0` | Receipts, evidencia, resultado conocido o desconocido.        |
+| `VENTO-PRINT-CANCELLATION-EXPIRATION` | `1.0.0` | Cancelación, expiración, efectos tardíos y disposición.       |
+| `VENTO-PRINT-REPRINT`                 | `1.0.0` | Copia adicional deliberada, vinculada e independiente.        |
+
+Frontera obligatoria:
+
+```text
+AUTORIZACIÓN EMPRESARIAL DEL RECURSO
+→ AUTORIZACIÓN DE LA ACCIÓN DE IMPRESIÓN
+→ ADMISIÓN IDEMPOTENTE DE LA COPIA
+→ RUTA, POLÍTICA Y SALUD
+→ DESPACHO POR PRINCIPAL TÉCNICO LIMITADO
+→ RECEIPT, RESULTADO Y AUDITORÍA
+```
+
+La cola no concede autoridad empresarial. La impresora, el adaptador, el dispositivo compartido, la interfaz, el callback o un principal técnico tampoco pueden crear una impresión o reimpresión por sí mismos.
+
+---
+
+#### 4. Principios normativos
+
+1. `ROL ≠ AUTORIZACIÓN`; toda decisión usa permiso exacto, actor efectivo, contexto, recurso real, alcance y denegaciones.
+2. El permiso de la acción empresarial fuente no autoriza automáticamente cualquier impresión futura del recurso.
+3. Una impresión original automática puede heredar una decisión fuente únicamente mediante referencia verificable, alcance congelado y snapshot correlacionado.
+4. Una impresión original iniciada manualmente exige permiso explícito de creación del trabajo y autoridad sobre el recurso fuente.
+5. Toda reimpresión exige permiso propio; nunca se hereda de `jobs.create`, `jobs.retry`, acceso a la pantalla ni posesión de una copia.
+6. Un retry conserva la misma copia y usa permiso de operación de cola; no usa permiso de reimpresión.
+7. `RESULT_UNKNOWN` bloquea retry manual, reroute con riesgo de duplicado y reimpresión hasta conciliación.
+8. Cancelar un trabajo de impresión no cancela el hecho empresarial fuente ni deshace una copia física.
+9. Configurar impresoras, plantillas, rutas o políticas no concede permiso para imprimir, reimprimir, consultar payloads o resolver evidencia.
+10. Consultar trabajos no concede mutación; consultar evidencia o auditoría requiere capacidad separada.
+11. El principal técnico del servicio solo ejecuta trabajos ya autorizados dentro de una delegación mínima, trazable y vigente.
+12. El principal técnico no puede aprobar reimpresiones, ampliar cantidad, cambiar snapshot ni sustituir al actor humano requerido.
+13. La autorización se revalida en servidor antes de la mutación y nuevamente en el gate predespacho cuando cambie contexto, recurso, política o vigencia.
+14. La sede seleccionada, la última impresora, una IP, la estación visible o el área enviada por el cliente no determinan alcance.
+15. La identidad del recurso, su territorio, versión, estado y relaciones se resuelven desde fuentes autoritativas.
+16. Las acciones administrativas sensibles permanecen online; la contingencia offline se reserva para `PRINT-ARC-017`.
+17. La política de campos, ocultamiento, PII y contenido sensible se reserva para `PRINT-ARC-016`; hasta entonces no se amplía visibilidad.
+18. Toda denegación conserva código, regla evaluada, recurso, alcance y decisión sin registrar contenido protegido innecesario.
+
+---
+
+#### 5. Contrato `VENTO-PRINT-AUTHORIZATION` `1.0.0`
+
+```json
+{
+  "authorization_contract_id": "VENTO-PRINT-AUTHORIZATION",
+  "authorization_contract_version": "1.0.0",
+  "authorization_decision_id": "<uuid>",
+  "action": "<SOURCE_DELEGATED_PRINT|DIRECT_PRINT|REPRINT_REQUEST|REPRINT_APPROVAL|JOB_VIEW|JOB_CANCEL|JOB_RETRY|JOB_RECONCILE|ADMIN_READ|ADMIN_UPDATE>",
+  "authority_plane": "<BUSINESS_SOURCE|PRINT_ACTION|SERVICE_ADMINISTRATION>",
+  "required_permission_key": "<canonical-permission-key|null>",
+  "principal": {
+    "principal_type": "<PERSON|DEVICE|SERVICE>",
+    "principal_id": "<uuid>",
+    "effective_actor_id": "<uuid|null>",
+    "delegation_id": "<uuid|null>"
+  },
+  "context": {
+    "context_version": "<string>",
+    "authorization_lane": "<BASE|OPERATIONAL|BASE_OR_OPERATIONAL|BASE_AND_OPERATIONAL|SERVICE_DELEGATION>",
+    "site_id": "<string|null>",
+    "area_id": "<string|null>",
+    "station_id": "<string|null>",
+    "device_id": "<string|null>",
+    "shift_id": "<string|null>",
+    "check_in_id": "<string|null>"
+  },
+  "resource": {
+    "resource_type": "<PRINT_JOB|REPRINT_REQUEST|PRINT_TEMPLATE|PRINTER|ROUTING_POLICY|PRINT_EVIDENCE|PRINT_AUDIT>",
+    "resource_id": "<string>",
+    "source_app": "<FOGO|NEXO|PULSO|NUMERA|ORIGO|null>",
+    "source_resource_ref": "<type:id|null>",
+    "source_resource_version": "<string|null>",
+    "output_id": "<IMP-*|null>",
+    "job_id": "<uuid|null>",
+    "copy_id": "<uuid|null>",
+    "reprint_request_id": "<uuid|null>"
+  },
+  "source_authorization": {
+    "decision_id": "<uuid|null>",
+    "permission_key": "<string|null>",
+    "authorized_actor_id": "<uuid|null>",
+    "authorized_resource_ref": "<string|null>",
+    "authorized_resource_version": "<string|null>",
+    "authorized_output_id": "<IMP-*|null>",
+    "authorized_copy_count": "<integer|null>",
+    "valid_until": "<RFC3339|null>"
+  },
+  "scope": {
+    "scope_profile_id": "<SCOPE-*>",
+    "organization_id": "<string|null>",
+    "site_ids": ["<string>"],
+    "area_ids": ["<string>"],
+    "station_ids": ["<string>"],
+    "printer_ids": ["<string>"],
+    "queue_lane_ids": ["<string>"],
+    "recipient_ref": "<string|null>"
+  },
+  "segregation": {
+    "mode": "<NONE|POLICY_CONDITIONAL|DISTINCT_ACTOR_REQUIRED>",
+    "approver_decision_id": "<uuid|null>",
+    "approver_actor_id": "<uuid|null>"
+  },
+  "decision": {
+    "result": "<ALLOW|DENY|INDETERMINATE>",
+    "decision_code": "<PRINT_AUTH_*>",
+    "reason_codes": ["<PRINT_AUTH_REASON_*>"]
+  },
+  "validity": {
+    "evaluated_at": "<RFC3339>",
+    "expires_at": "<RFC3339|null>",
+    "must_revalidate_before_dispatch": true
+  },
+  "trace": {
+    "correlation_id": "<string>",
+    "causation_id": "<string|null>",
+    "audit_event_ref": "<string>"
+  }
+}
+```
+
+La estructura es normativa. No prescribe tabla, RPC, proveedor de colas, lenguaje, framework ni topología de despliegue.
+
+---
+
+#### 6. Tres planos de autoridad
+
+| Plano                    | Autoridad necesaria                                                                                  | Puede                                                                                             | No puede                                                                                            |
+| ------------------------ | ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `BUSINESS_SOURCE`        | Decisión vigente de la aplicación propietaria sobre el recurso, estado, versión y efecto.            | Autorizar que un output previsto origine su primera copia mediante delegación correlacionada.     | Administrar cola, crear copias adicionales o configurar dispositivos.                               |
+| `PRINT_ACTION`           | Permiso exacto de impresión, reimpresión o acción de trabajo, más autoridad sobre el recurso fuente. | Crear trabajo manual, solicitar/aprobar reimpresión, cancelar, retry o conciliar según capacidad. | Modificar el hecho empresarial, ampliar territorio o alterar el snapshot.                           |
+| `SERVICE_ADMINISTRATION` | Permiso técnico exacto sobre impresora, plantilla, ruta, política, evidencia o auditoría.            | Consultar o actualizar configuración dentro del scope concedido.                                  | Imprimir, reimprimir o aprobar un recurso empresarial por el solo hecho de administrar el servicio. |
+
+Una acción que cruza planos exige la intersección de todas las autoridades aplicables. Ningún permiso técnico compensa la ausencia de autoridad empresarial.
+
+---
+
+#### 7. Catálogo objetivo de permisos
+
+El módulo canónico es `nexo.printing` porque la superficie y los permisos de impresión actualmente catalogados pertenecen a NEXO. Esta decisión no convierte a NEXO en fuente de verdad de documentos, ventas, producción, finanzas o compras de otras aplicaciones; el recurso fuente conserva su propietaria.
+
+| Clave objetivo                          | Estado documental    | Recurso           | Acción protegida                                                     | Frontera                                                                                      |
+| --------------------------------------- | -------------------- | ----------------- | -------------------------------------------------------------------- | --------------------------------------------------------------------------------------------- |
+| `nexo.printing.jobs.view`               | `EXISTING_CANONICAL` | `PRINT_JOB`       | Consultar trabajo y estado permitido.                                | Filtrado por relación, territorio y política de campos.                                       |
+| `nexo.printing.jobs.create`             | `TARGET_ADDITION`    | `PRINT_JOB`       | Crear manualmente la primera copia de un snapshot autorizado.        | Exige autoridad vigente sobre recurso fuente; no crea reimpresión.                            |
+| `nexo.printing.jobs.cancel`             | `TARGET_ADDITION`    | `PRINT_JOB`       | Solicitar cancelación técnica conforme al estado real.               | No cancela el hecho empresarial ni afirma ausencia de efecto.                                 |
+| `nexo.printing.jobs.retry`              | `TARGET_ADDITION`    | `PRINT_JOB`       | Reintentar la misma copia cuando la política lo permite.             | Conserva job, copy, intención y clave; bloqueado en resultado desconocido.                    |
+| `nexo.printing.jobs.reconcile`          | `TARGET_ADDITION`    | `PRINT_JOB`       | Resolver resultado desconocido o conflicto con evidencia autorizada. | No crea copia ni altera evidencia previa.                                                     |
+| `nexo.printing.reprints.request`        | `TARGET_ADDITION`    | `REPRINT_REQUEST` | Solicitar una copia adicional vinculada.                             | Exige causa, cantidad, original resuelto, recurso y scope.                                    |
+| `nexo.printing.reprints.approve`        | `TARGET_ADDITION`    | `REPRINT_REQUEST` | Aprobar una reimpresión cuando el perfil exige segregación.          | Debe ser actor distinto cuando el modo sea dual.                                              |
+| `nexo.printing.printers.view`           | `TARGET_ADDITION`    | `PRINTER`         | Consultar inventario, estado y configuración permitida.              | No permite despachar trabajos.                                                                |
+| `nexo.printing.printers.update`         | `TARGET_ADDITION`    | `PRINTER`         | Modificar configuración administrable y versionada.                  | Online, auditada, sin credenciales expuestas ni selección libre por usuario.                  |
+| `nexo.printing.routing_policies.view`   | `TARGET_ADDITION`    | `ROUTING_POLICY`  | Consultar política y alcance aplicables.                             | No cambia ruta ni concede autoridad de impresión.                                             |
+| `nexo.printing.routing_policies.update` | `TARGET_ADDITION`    | `ROUTING_POLICY`  | Crear o modificar política versionada de routing.                    | Requiere alcance administrativo; no modifica trabajos ya congelados sin transición explícita. |
+| `nexo.printing.templates.update`        | `EXISTING_CANONICAL` | `PRINT_TEMPLATE`  | Actualizar plantilla versionada.                                     | No permite imprimir ni consultar datos fuente por sí sola.                                    |
+| `nexo.printing.evidence.view`           | `TARGET_ADDITION`    | `PRINT_EVIDENCE`  | Consultar evidencia mínima permitida.                                | Field policy y finalidad obligatorias; privacidad se especializa en `PRINT-ARC-016`.          |
+| `nexo.printing.audit.view`              | `TARGET_ADDITION`    | `PRINT_AUDIT`     | Consultar trazabilidad de decisiones y acciones.                     | Lectura separada, finalidad registrada y sin mutación del historial.                          |
+
+Reconciliación del catálogo objetivo:
+
+| Métrica                                           | Cantidad |
+| ------------------------------------------------- | -------: |
+| Claves objetivo                                   |       14 |
+| Claves canónicas existentes consumidas sin cambio |        2 |
+| Capacidades objetivo por materializar             |       12 |
+| Permisos amplios `manage` creados                 |        0 |
+| Asignaciones de rol realizadas                    |        0 |
+| Cambios de Supabase realizados                    |        0 |
+
+La materialización posterior deberá usar el proceso canónico de catálogo, aliases, tipos, consumidores y migraciones de `vento-shell`. Esta tarea no declara que las doce capacidades nuevas ya existan en runtime.
+
+---
+
+#### 8. Perfiles de autorización
+
+| Perfil                      | Acción                                                                      | Permisos y autoridad                                                                                             | Segregación                                                             | Resultado habilitado                                             |
+| --------------------------- | --------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------- | ---------------------------------------------------------------- |
+| `PAUTH-SOURCE-DELEGATED`    | Primera copia automática prevista por el proceso.                           | Decisión fuente verificable, output permitido, snapshot y cantidad congelados; principal técnico delegado.       | `NONE`; la decisión fuente ya identifica la autoridad empresarial.      | `PRINT_AUTH_ALLOW_SOURCE_DELEGATED_JOB`.                         |
+| `PAUTH-DIRECT-OPERATIONAL`  | Primera copia iniciada manualmente.                                         | `nexo.printing.jobs.create` + autoridad de lectura/acción sobre recurso fuente + scope exacto.                   | Según política fuente; nunca por rol implícito.                         | `PRINT_AUTH_ALLOW_DIRECT_JOB`.                                   |
+| `PAUTH-REPRINT-OPERATIONAL` | Copia adicional operativa de bajo alcance.                                  | `nexo.printing.reprints.request`, original conciliado, causa, cantidad, mismo recurso y destino permitido.       | `NONE`; el actor solicitante asume la decisión dentro del scope.        | `PRINT_AUTH_ALLOW_REPRINT_REQUEST`.                              |
+| `PAUTH-REPRINT-CONTROLLED`  | Copia adicional con custodia, coexistencia, entrega o documento controlado. | `reprints.request`; `reprints.approve` cuando la política fuente, cantidad, coexistencia o disposición lo exija. | `POLICY_CONDITIONAL`.                                                   | Solicitud autorizada o espera de aprobación.                     |
+| `PAUTH-REPRINT-DUAL`        | Copia financiera, fiscal, caja, legal o control equivalente.                | `reprints.request` + `reprints.approve` + autoridad sobre recurso fuente.                                        | `DISTINCT_ACTOR_REQUIRED`; solicitante y aprobador no pueden coincidir. | `PRINT_AUTH_ALLOW_REPRINT_APPROVED`.                             |
+| `PAUTH-QUEUE-OPERATOR`      | Vista, cancelación, retry o conciliación.                                   | Permiso exacto `jobs.view`, `jobs.cancel`, `jobs.retry` o `jobs.reconcile` y scope de cola/recurso.              | Acción por acción; no existe `queue.manage`.                            | Decisión específica de trabajo.                                  |
+| `PAUTH-SERVICE-ADMIN`       | Vista o actualización de impresoras, rutas, políticas y plantillas.         | Permiso exacto del recurso administrativo y scope asignado.                                                      | Cambios críticos sujetos a aprobación/configuración canónica externa.   | `PRINT_AUTH_ALLOW_ADMIN_READ` o `PRINT_AUTH_ALLOW_ADMIN_UPDATE`. |
+| `PAUTH-AUDITOR`             | Evidencia o auditoría.                                                      | `evidence.view` o `audit.view`, finalidad y field policy.                                                        | Solo lectura; administración privilegiada también se audita.            | `PRINT_AUTH_ALLOW_ADMIN_READ`.                                   |
+
+---
+
+#### 9. Decisiones y denegaciones
+
+##### 9.1 Decisiones positivas
+
+| Código                                  | Condición                                                                         |
+| --------------------------------------- | --------------------------------------------------------------------------------- |
+| `PRINT_AUTH_ALLOW_SOURCE_DELEGATED_JOB` | Decisión fuente, snapshot, output, cantidad y delegación son íntegros y vigentes. |
+| `PRINT_AUTH_ALLOW_DIRECT_JOB`           | Actor humano, permiso `jobs.create`, recurso y contexto autorizados.              |
+| `PRINT_AUTH_ALLOW_REPRINT_REQUEST`      | Solicitud operativa válida sin aprobación separada exigida.                       |
+| `PRINT_AUTH_ALLOW_REPRINT_APPROVED`     | Solicitud controlada con aprobación válida y segregación satisfecha.              |
+| `PRINT_AUTH_ALLOW_JOB_VIEW`             | Trabajo dentro del alcance y campos permitidos.                                   |
+| `PRINT_AUTH_ALLOW_JOB_CANCEL`           | Estado cancelable y permiso exacto vigente.                                       |
+| `PRINT_AUTH_ALLOW_JOB_RETRY`            | Misma copia, fallo retryable, sin resultado desconocido y dentro de presupuesto.  |
+| `PRINT_AUTH_ALLOW_JOB_RECONCILE`        | Actor autorizado y evidencia suficiente para una resolución tipada.               |
+| `PRINT_AUTH_ALLOW_ADMIN_READ`           | Recurso técnico dentro del scope y field policy.                                  |
+| `PRINT_AUTH_ALLOW_ADMIN_UPDATE`         | Mutación administrativa versionada, online y auditada.                            |
+
+##### 9.2 Códigos de denegación
+
+| Código                                | Condición y efecto                                                                       |
+| ------------------------------------- | ---------------------------------------------------------------------------------------- |
+| `PRINT_AUTH_DENY_MISSING_PERMISSION`  | Falta la clave exacta; no se evalúa por nombre de rol.                                   |
+| `PRINT_AUTH_DENY_EFFECTIVE_ACTOR`     | Acción humana sin actor efectivo resoluble o actor inactivo.                             |
+| `PRINT_AUTH_DENY_RESOURCE_UNRESOLVED` | Recurso, versión, propietaria, output o relación fuente no resolubles.                   |
+| `PRINT_AUTH_DENY_CONTEXT_SCOPE`       | Sede, área, estación, dispositivo, cola, destinatario o territorio incompatibles.        |
+| `PRINT_AUTH_DENY_STATE_OR_VERSION`    | Estado o versión no admite la acción.                                                    |
+| `PRINT_AUTH_DENY_SEGREGATION`         | Aprobador ausente, no autorizado o igual al solicitante cuando debe ser distinto.        |
+| `PRINT_AUTH_DENY_RESULT_UNKNOWN`      | Existe efecto posible no conciliado; bloquea retry y reimpresión.                        |
+| `PRINT_AUTH_DENY_TECHNICAL_PRINCIPAL` | Dispositivo o servicio intenta crear autoridad empresarial, aprobar o ampliar una copia. |
+
+Una denegación no libera identidad, no modifica la cola, no crea intento y no transforma la acción en contingencia manual.
+
+---
+
+#### 10. Perfiles de alcance
+
+| Perfil            | Recurso y territorio obligatorio                                                              | Restricciones adicionales                                                                  |
+| ----------------- | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------ |
+| `SCOPE-LABEL`     | Recurso exacto, versión, sede, área, estación, destino físico y tipo de etiqueta.             | Coexistencia, disposición y cantidad; una reimpresión no crea identidad empresarial nueva. |
+| `SCOPE-POINT`     | Orden, comanda o solicitud exacta; sede, área, punto y destino original.                      | No puede cambiar la orden ni enviar a otro punto sin reroute autorizado de la misma copia. |
+| `SCOPE-CUSTOMER`  | Documento, pedido o beneficio exacto; sede, destinatario y handoff.                           | Imprimir y entregar son hechos separados; destinatario se revalida.                        |
+| `SCOPE-FINANCIAL` | Documento/transacción original, identidad económica o fiscal, organización, sede y finalidad. | Doble control, snapshot inmutable y prohibición de crear otra transacción.                 |
+| `SCOPE-CASH`      | Caja, turno, cierre/periodo, sede, estación y propósito de control.                           | Doble control y límites de cantidad; no modifica apertura, cierre o valores.               |
+| `SCOPE-A4`        | Documento y versión exactos; territorio del recurso, ruta, destino y periodo cuando aplique.  | La política fuente determina aprobación adicional; una ruta central no amplía lectura.     |
+
+---
+
+#### 11. Gates de autorización
+
+| Gate                | Momento                                                 | Regla                                                                                  |
+| ------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `GATE-SOURCE`       | Antes de crear la primera copia automática.             | Verificar decisión fuente, output permitido, snapshot, cantidad y delegación.          |
+| `GATE-DIRECT`       | Antes de una primera copia manual.                      | Resolver actor, `jobs.create`, recurso, estado, contexto y scope.                      |
+| `GATE-REPRINT`      | Antes de admitir una copia adicional.                   | Resolver original, causa, cantidad, `reprints.request`, aprobación y resultado previo. |
+| `GATE-JOB-ACTION`   | Antes de view/cancel/retry/reconcile.                   | Evaluar permiso exacto, trabajo, estado, versión, evidencia y alcance.                 |
+| `GATE-PRE-DISPATCH` | Justo antes de `SEND_STARTED`.                          | Revalidar vigencia, cancelación, expiración, contexto, ruta, salud y denegaciones.     |
+| `GATE-ADMIN`        | Antes de cambiar impresora, plantilla, ruta o política. | Exigir recurso administrativo, versión, permiso, alcance, online y auditoría.          |
+
+Si el gate no puede resolver un dato obligatorio, el resultado es `DENY` o `INDETERMINATE` de simulación; nunca `ALLOW` por default.
+
+---
+
+#### 12. Separación entre acciones
+
+| Acción solicitada          | Permiso aplicable                                    | Identidad de copia          | Afirmación prohibida                                                 |
+| -------------------------- | ---------------------------------------------------- | --------------------------- | -------------------------------------------------------------------- |
+| Primera copia automática   | Decisión fuente delegada.                            | Nueva copia original.       | Que el worker tiene autoridad empresarial propia.                    |
+| Primera copia manual       | `jobs.create`.                                       | Nueva copia original.       | Que `jobs.view` o la pantalla autorizan imprimir.                    |
+| Retry                      | `jobs.retry`.                                        | Conserva la misma copia.    | Que es una reimpresión o copia adicional.                            |
+| Reimpresión                | `reprints.request` y, si aplica, `reprints.approve`. | Crea copia nueva vinculada. | Que un timeout, fallo o callback perdido es causa suficiente.        |
+| Cancelación técnica        | `jobs.cancel`.                                       | No crea copia.              | Que cancela venta, pago, documento o proceso fuente.                 |
+| Conciliación               | `jobs.reconcile`.                                    | Conserva historia y copia.  | Que permite editar evidencia o escoger arbitrariamente el resultado. |
+| Configuración de impresora | `printers.update`.                                   | No aplica.                  | Que permite imprimir o consultar payload.                            |
+| Configuración de routing   | `routing_policies.update`.                           | No aplica.                  | Que permite cambiar un trabajo congelado sin transición.             |
+| Configuración de plantilla | `templates.update`.                                  | No aplica.                  | Que permite acceder a todos los datos utilizados por la plantilla.   |
+
+---
+
+#### 13. Matriz materializada de las cincuenta salidas
+
+Para toda fila, la primera copia se autoriza mediante `PAUTH-SOURCE-DELEGATED` o, cuando existe una acción manual legítima, `PAUTH-DIRECT-OPERATIONAL`. La columna de reimpresión materializa la autoridad adicional específica; ningún perfil sustituye la autorización del recurso fuente.
+
+| Salida       | Nombre                                                    | Propietaria | Autoridad de primera copia | Perfil de reimpresión       | Scope             | Resultado o bloqueo vigente                                    |
+| ------------ | --------------------------------------------------------- | ----------- | -------------------------- | --------------------------- | ----------------- | -------------------------------------------------------------- |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | `ORIGO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-LABEL`     | `ESPECIFICADO / BLOQUEADO_ZD230_SIN_CANAL`                     |
+| `IMP-CMD-01` | Comanda de cocina                                         | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-OPERATIONAL` | `SCOPE-POINT`     | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías                           | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-OPERATIONAL` | `SCOPE-POINT`     | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes             | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-OPERATIONAL` | `SCOPE-POINT`     | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-04` | Comanda de preparación o mise en place                    | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-OPERATIONAL` | `SCOPE-POINT`     | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL; VP_BLOQUEADO_SIN_80MM` |
+| `IMP-CMD-05` | Tiquete de expedición o recogida                          | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-OPERATIONAL` | `SCOPE-POINT`     | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-06` | Solicitud interna de reposición                           | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-OPERATIONAL` | `SCOPE-POINT`     | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL; VP_BLOQUEADO_SIN_80MM` |
+| `IMP-CMD-07` | Modificación o adición de comanda                         | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-OPERATIONAL` | `SCOPE-POINT`     | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-08` | Cancelación o anulación de comanda                        | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-OPERATIONAL` | `SCOPE-POINT`     | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL`                        |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia                 | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-OPERATIONAL` | `SCOPE-POINT`     | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL; VP_BLOQUEADO_SIN_80MM` |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente                         | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-CUSTOMER`  | `ESPECIFICADO / ENTREGA_SEPARADA`                              |
+| `IMP-CLI-02` | Confirmación de pedido                                    | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-CUSTOMER`  | `ESPECIFICADO / ENTREGA_SEPARADA`                              |
+| `IMP-CLI-03` | Comprobante de pago                                       | `NUMERA`    | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-DUAL`        | `SCOPE-FINANCIAL` | `ESPECIFICADO / HANDOFF_REVALIDADO`                            |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente               | `NUMERA`    | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-DUAL`        | `SCOPE-FINANCIAL` | `ESPECIFICADO / HANDOFF_REVALIDADO`                            |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito      | `NUMERA`    | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-DUAL`        | `SCOPE-FINANCIAL` | `ESPECIFICADO / HANDOFF_REVALIDADO`                            |
+| `IMP-CLI-06` | Resumen de recogida o entrega                             | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-CUSTOMER`  | `ESPECIFICADO / ENTREGA_SEPARADA`                              |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo                         | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-CUSTOMER`  | `ESPECIFICADO / ENTREGA_SEPARADA`                              |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                     | `PULSO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-CUSTOMER`  | `ESPECIFICADO / ENTREGA_SEPARADA`                              |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja         | `NUMERA`    | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-DUAL`        | `SCOPE-CASH`      | `ESPECIFICADO / CONTROL_LOCAL`                                 |
+| `IMP-DOC-01` | Remisión o nota de despacho                               | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-02` | Manifiesto de traslado interno                            | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-03` | Hoja de conteo de inventario                              | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario            | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-05` | Orden de compra                                           | `ORIGO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-06` | Acta o comprobante de recepción                           | `ORIGO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-07` | Devolución a proveedor                                    | `ORIGO`     | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-08` | Orden de producción o ficha de lote                       | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica                     | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-10` | Registro de calidad o no conformidad                      | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-11` | Orden de mantenimiento                                    | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo          | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico                    | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo       | `FOGO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación              | `NUMERA`    | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-DUAL`        | `SCOPE-FINANCIAL` | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales           | `NEXO`      | `SOURCE_OR_DIRECT`         | `PAUTH-REPRINT-CONTROLLED`  | `SCOPE-A4`        | `ESPECIFICADO / SEGÚN_RUTA; VP_MANTENIMIENTO`                  |
+
+##### 13.1 Reconciliación cuantitativa
+
+| Grupo                           | Esperadas | Materializadas | Faltantes | Duplicadas |
+| ------------------------------- | --------: | -------------: | --------: | ---------: |
+| Etiquetas `IMP-LBL-*`           |        16 |             16 |         0 |          0 |
+| Comandas y tiquetes `IMP-CMD-*` |         9 |              9 |         0 |          0 |
+| Comprobantes `IMP-CLI-*`        |         9 |              9 |         0 |          0 |
+| Documentos `IMP-DOC-*`          |        16 |             16 |         0 |          0 |
+| **Total**                       |    **50** |         **50** |     **0** |      **0** |
+
+| Propietaria | Esperadas | Materializadas | Diferencia |
+| ----------- | --------: | -------------: | ---------: |
+| FOGO        |        15 |             15 |          0 |
+| NEXO        |        14 |             14 |          0 |
+| PULSO       |        12 |             12 |          0 |
+| NUMERA      |         5 |              5 |          0 |
+| ORIGO       |         4 |              4 |          0 |
+| **Total**   |    **50** |         **50** |      **0** |
+
+| Perfil de reimpresión       | Salidas |
+| --------------------------- | ------: |
+| `PAUTH-REPRINT-OPERATIONAL` |       9 |
+| `PAUTH-REPRINT-CONTROLLED`  |      36 |
+| `PAUTH-REPRINT-DUAL`        |       5 |
+| **Total**                   |  **50** |
+
+`PAUTH-SOURCE-DELEGATED`, `PAUTH-DIRECT-OPERATIONAL`, `PAUTH-QUEUE-OPERATOR`, `PAUTH-SERVICE-ADMIN` y `PAUTH-AUDITOR` operan por acción; no sustituyen el perfil de reimpresión ni agregan filas.
+
+---
+
+#### 14. Principales casos de decisión
+
+| Caso                                                                            | Resultado obligatorio                                                                                      |
+| ------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- |
+| Proceso autorizado emite su output previsto con snapshot y cantidad congelados. | `ALLOW_SOURCE_DELEGATED_JOB`; el worker usa delegación mínima.                                             |
+| Usuario abre la pantalla de impresión sin `jobs.create`.                        | `DENY_MISSING_PERMISSION`; la visibilidad no autoriza.                                                     |
+| Usuario con `jobs.view` intenta imprimir.                                       | Denegar; lectura no implica creación.                                                                      |
+| Operador solicita retry de un fallo retryable conocido.                         | Evaluar `jobs.retry`; conservar la misma copia.                                                            |
+| Operador intenta retry con `RESULT_UNKNOWN`.                                    | `DENY_RESULT_UNKNOWN`; exigir conciliación.                                                                |
+| Actor solicita reimpresión con original conciliado, causa y scope válidos.      | Evaluar `reprints.request` y el perfil aplicable.                                                          |
+| Solicitud dual aprobada por el mismo actor.                                     | `DENY_SEGREGATION`.                                                                                        |
+| Administrador de impresoras intenta reimprimir.                                 | Denegar si no posee `reprints.request` y autoridad fuente.                                                 |
+| Servicio técnico intenta aumentar `authorized_copy_count`.                      | `DENY_TECHNICAL_PRINCIPAL`.                                                                                |
+| Cambio de routing durante un job congelado.                                     | Usar transición/reroute gobernado; `routing_policies.update` no reescribe el job.                          |
+| Evidencia tardía resuelve una impresión antes incierta.                         | Conciliar con `jobs.reconcile`; conservar historia y bloquear copia nueva hasta cerrar.                    |
+| Dispositivo compartido pierde actor humano.                                     | Ocultar y denegar acciones empresariales; el principal técnico solo conserva capacidades técnicas mínimas. |
+
+---
+
+#### 15. Auditoría y minimización
+
+Toda decisión y acción conserva:
+
+- permiso exacto solicitado y versión del catálogo;
+- principal autenticado, actor efectivo y delegación cuando exista;
+- carril base, operativo o técnico;
+- recurso, versión, propietaria, output, job, copia y solicitud de reimpresión;
+- resolución de organización, sede, área, estación, dispositivo, cola, destinatario y ruta aplicables;
+- decisión fuente y snapshot cuando la primera copia sea delegada;
+- solicitud, aprobador y segregación de reimpresión;
+- estado leído, versión, gate, resultado y códigos de razón;
+- correlación, causalidad, vigencia y evento de auditoría.
+
+La auditoría no copia por defecto payload, documento, firma, credencial, PIN, PII o contenido completo. La política detallada de campos, máscaras y retención corresponde a `PRINT-ARC-016`.
+
+---
+
+#### 16. Diagnóstico del código vigente
+
+La superficie vigente de NEXO conserva una cola de texto en `localStorage`, una bandera cliente de habilitación y envío directo mediante BrowserPrint. No se observa allí una decisión de autorización canónica en servidor, identidad autoritativa de trabajo, separación de permisos, aprobación de reimpresión, principal técnico limitado ni auditoría append-only.
+
+El callback de `device.send` solo actualiza un mensaje de interfaz. No constituye autorización ni evidencia física suficiente. Este diagnóstico no modifica código ni afirma que el contrato esté implementado.
+
+---
+
+#### 17. Bloqueos y carryovers con propietario
+
+| ID                  | Brecha                                                                                                             | Propietario                                                                                                                                    | Condición de salida                                                                                                                                           |
+| ------------------- | ------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BLK-PRINT-015-001` | Las doce capacidades objetivo nuevas no están materializadas en catálogo runtime, aliases, tipos ni migraciones.   | Proceso canónico de catálogo `AUTH-CAT-017` a `AUTH-CAT-019`, contratos compartidos y `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`. | Catálogo versionado contiene las claves, migración desde `vento-shell`, aliases seguros, tipos y consumidores pasan pruebas de paridad sin ampliar autoridad. |
+| `BLK-PRINT-015-002` | La superficie actual envía desde cliente sin gate autoritativo de impresión.                                       | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete propietario del servicio.                                                    | API/servicio evalúa `VENTO-PRINT-AUTHORIZATION`, persiste decisión, aplica gates y prueba denegaciones antes de crear o despachar jobs.                       |
+| `BLK-PRINT-015-003` | No existe principal de servicio limitado y delegación verificable para despacho.                                   | Paquete de identidad técnica, dispositivos compartidos y servicio de impresión.                                                                | Principal técnico separado, credencial revocable, scope mínimo, delegación vinculada a job y pruebas de intento de escalamiento.                              |
+| `BLK-PRINT-015-004` | Cola operativa, conciliación y configuración técnica no tienen superficies separadas implementadas.                | Paquete NEXO de impresión y contratos de pantallas `VSCREEN-0144`/`VSCREEN-0177`.                                                              | Acciones de cola consumen permisos de job; configuración consume permisos de impresora/routing/plantilla; pruebas impiden cruces.                             |
+| `BLK-PRINT-015-005` | No existe flujo ejecutable de aprobación separada para `PAUTH-REPRINT-DUAL`.                                       | Motor canónico de autorización, paquete de impresión y aplicación propietaria del recurso.                                                     | Solicitud y aprobación persisten actores distintos, versiones, scope y decisión atómica; pruebas bloquean autoaprobación y carreras.                          |
+| `BLK-PRINT-015-006` | Los campos sensibles, PII, máscaras, custodia, retención y disposición por tipo de output no están especializados. | `PRINT-ARC-016`.                                                                                                                               | Matriz aprobada de sensibilidad por las cincuenta salidas, field policies, ocultamiento, evidencia, retención y disposición.                                  |
+| `BLK-PRINT-015-007` | La autoridad en operación offline y contingencia manual aún no está definida.                                      | `PRINT-ARC-017`.                                                                                                                               | Política aprobada de capacidades offline, actor, dispositivo, vigencia, revalidación, sincronización, formularios y conciliación.                             |
+| `BLK-PRINT-015-008` | Adaptadores, receipts y hardware representativo no han probado los gates físicos.                                  | `PRINT-ARC-018`, `PRINT-ARC-020` y paquete de implementación.                                                                                  | Adaptadores implementados, receipts tipados, fallas inyectadas, pruebas de autorización y evidencia física correlacionada en piloto.                          |
+
+Ningún carryover concede permiso provisional ni inicia por sí mismo su tarea propietaria.
+
+---
+
+#### 18. Cobertura canónica de prueba existente
+
+La decisión consume requisitos vigentes que ya protegen:
+
+- `TREQ-PROC-444`, separación entre configuración, cola, comando, efecto, resultado desconocido y conciliación;
+- `TREQ-PROC-445`, routing por política de recurso y territorio, no por IP o última impresora;
+- `TREQ-PROC-446`, identidad del job y reimpresión con razón y actor;
+- `TREQ-PROC-479`, observabilidad de destino, cola, idempotencia, reimpresión y conciliación;
+- `TREQ-PROC-764`, autorización, privacidad, correlación y prevención de duplicados en copias y routing;
+- `TREQ-UX-941`, separación entre acciones operativas de cola y configuración de impresoras;
+- `TREQ-UX-1301`, autoridad propia para reimpresión;
+- `TREQ-NEXO-005`, conservación del trabajo hasta conocer el resultado y prevención de pérdida o duplicado.
+
+Esta tarea especializa esos comportamientos para el servicio de impresión sin cambiar alcance, estado, propietario ni evidencia exigida.
+
+---
+
+#### 19. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el registro canónico vigente ya protege autorización exacta, separación de funciones, autoridad propia de reimpresión, operación de cola, administración técnica, resultado desconocido, correlación, auditoría y prevención de duplicados. La tarea define la especialización documental y el catálogo objetivo de capacidades sin modificar comportamiento ejecutable ni el estado de los requisitos. Crea 0, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0 requisitos.
+
+---
+
+#### 20. Criterios de aceptación
+
+`PRINT-ARC-015` queda documentalmente satisfecha cuando:
+
+- [x] existe un contrato versionado de autorización de impresión;
+- [x] autoridad empresarial, acción física y administración técnica están separadas;
+- [x] se materializan catorce claves objetivo sin permisos amplios `manage`;
+- [x] se conservan las dos claves canónicas existentes sin reinterpretarlas;
+- [x] impresión original automática y manual tienen gates diferentes;
+- [x] retry y reimpresión consumen permisos distintos y conservan identidades correctas;
+- [x] resultado desconocido bloquea retry manual y reimpresión;
+- [x] existe segregación obligatoria para cinco salidas financieras, fiscales o de caja;
+- [x] la cola operativa no administra dispositivos, rutas o plantillas;
+- [x] el principal técnico no crea autoridad empresarial;
+- [x] cada una de las cincuenta salidas tiene perfil y scope explícitos;
+- [x] los totales, familias y propietarias heredados concilian sin diferencias;
+- [x] todos los bloqueos tienen propietario y condición de salida;
+- [x] privacidad y PII permanecen reservadas para `PRINT-ARC-016`;
+- [x] no se declara código, migración, Supabase, asignación de rol, despliegue ni evidencia física ejecutados.
+
+---
+
+#### 21. Handoff cerrado hacia `PRINT-ARC-016`
+
+`PRINT-ARC-016` recibe:
+
+- `VENTO-PRINT-AUTHORIZATION` `1.0.0`;
+- catorce claves objetivo, con dos existentes y doce pendientes de materialización;
+- tres planos de autoridad;
+- ocho perfiles de autorización;
+- seis perfiles de scope;
+- diez decisiones positivas y ocho denegaciones;
+- matriz completa de cincuenta salidas;
+- los permisos separados de evidencia y auditoría;
+- el bloqueo `BLK-PRINT-015-006` para especializar campos sensibles, PII, máscaras, custodia, retención y disposición.
+
+`PRINT-ARC-016` permanece reservada. La aprobación de esta tarea no la inicia, desarrolla ni modifica.
+
+
 ### [ ] PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles
 ### [ ] PRINT-ARC-017 — Definir operación offline y contingencia manual
 ### [ ] PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
