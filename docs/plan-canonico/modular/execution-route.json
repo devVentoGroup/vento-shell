@@ -5,5 +5,12 @@
   "priority_entry_task_id": "SHELL-PKG-008",
   "return_policy": "RETURN_TO_NORMAL_AFTER_PRIORITY_CERTIFICATION",
   "selection_basis": "Prioridad empresarial explícita: completar remisiones NEXO como primer paquete vertical.",
-  "selected_explicitly": true
+  "selected_explicitly": true,
+  "deferred_task_ids": [
+    "AUTH-UI-058",
+    "AUTH-UI-059",
+    "AUTH-UI-060"
+  ],
+  "deferred_to_stage_id": "U_NEXO_EXPERIENCE_CERTIFICATION",
+  "deferred_reason": "Las pruebas con usuarios, el registro de problemas y la aprobación final de pantallas se ejecutan únicamente después de que las pantallas NEXO estén implementadas y utilizables."
 }
