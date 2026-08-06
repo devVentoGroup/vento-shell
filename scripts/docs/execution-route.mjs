@@ -111,7 +111,53 @@ function validateConditionalClassification(scope, artifacts, label) {
   }
 }
 
-function priorityStageTasks(stage, lane, progress, taskMap) {
+function resolveDeferredTasks(selector, lane, taskMap) {
+  const ids = selector.deferred_task_ids ?? [];
+  if (!Array.isArray(ids)) {
+    fail('execution-route.json: deferred_task_ids debe ser una lista.');
+  }
+  if (ids.length === 0) {
+    return { ids: [], idSet: new Set(), targetStageId: null, reason: null };
+  }
+  if (ids.some((id) => typeof id !== 'string') || new Set(ids).size !== ids.length) {
+    fail('execution-route.json: deferred_task_ids contiene valores inválidos o duplicados.');
+  }
+  const targetStageId = selector.deferred_to_stage_id;
+  if (typeof targetStageId !== 'string' || !targetStageId) {
+    fail('execution-route.json: falta deferred_to_stage_id.');
+  }
+  if (typeof selector.deferred_reason !== 'string' || !selector.deferred_reason.trim()) {
+    fail('execution-route.json: falta deferred_reason.');
+  }
+  const targetStage = lane.ordered_execution_stages.find(
+    ({ stage_id: stageId }) => stageId === targetStageId,
+  );
+  if (!targetStage?.task_source.startsWith('post_implementation_artifacts.')) {
+    fail(
+      `execution-route.json: ${targetStageId} debe ser una etapa posterior a la implementación.`,
+    );
+  }
+  for (const id of ids) {
+    if (!taskMap.has(id)) {
+      fail(`execution-route.json: la tarea diferida no existe: ${id}.`);
+    }
+    const owners = (lane.required_task_artifacts ?? []).filter((artifact) =>
+      artifactTaskIds(artifact, taskMap).includes(id));
+    if (owners.length !== 1) {
+      fail(
+        `execution-route.json: ${id} debe pertenecer exactamente a un grupo previo a implementación.`,
+      );
+    }
+  }
+  return {
+    ids,
+    idSet: new Set(ids),
+    targetStageId,
+    reason: selector.deferred_reason.trim(),
+  };
+}
+
+function priorityStageTasks(stage, lane, progress, taskMap, deferred) {
   const source = stage.task_source;
   const collectionSources = [
     'required_task_artifacts',
@@ -123,7 +169,11 @@ function priorityStageTasks(stage, lane, progress, taskMap) {
     if (source.startsWith(prefix)) {
       const artifact = artifactMap(lane, collection).get(source.slice(prefix.length));
       if (!artifact) fail(`${lane.lane_id}: ${source} no existe.`);
-      return canonicalTasks(artifactTaskIds(artifact, taskMap), taskMap, source);
+      const ids = artifactTaskIds(artifact, taskMap);
+      const effectiveIds = collection === 'required_task_artifacts'
+        ? ids.filter((id) => !deferred.idSet.has(id))
+        : ids;
+      return canonicalTasks(effectiveIds, taskMap, source);
     }
   }
 
@@ -136,7 +186,13 @@ function priorityStageTasks(stage, lane, progress, taskMap) {
     if (source.startsWith(prefix)) {
       const artifact = artifactMap(lane, collection).get(source.slice(prefix.length));
       if (!artifact) fail(`${lane.lane_id}: ${source} no existe.`);
-      return instanceTasks(artifactTaskIds(artifact, taskMap), lane, progress, taskMap);
+      const deferredTasks = stage.stage_id === deferred.targetStageId
+        ? canonicalTasks(deferred.ids, taskMap, `${source}.deferred_task_ids`)
+        : [];
+      return [
+        ...deferredTasks,
+        ...instanceTasks(artifactTaskIds(artifact, taskMap), lane, progress, taskMap),
+      ];
     }
   }
 
@@ -210,9 +266,10 @@ export function resolvePriorityRoute({ selector, lanes, progress, taskMap }) {
   );
   if (!lane) fail(`no existe el carril seleccionado ${selector.selected_route_id}.`);
 
+  const deferred = resolveDeferredTasks(selector, lane, taskMap);
   const stages = lane.ordered_execution_stages.map((stage) => ({
     ...stage,
-    tasks: priorityStageTasks(stage, lane, progress, taskMap),
+    tasks: priorityStageTasks(stage, lane, progress, taskMap, deferred),
   }));
   if (stages.some((stage) => stage.tasks.length === 0)) {
     const empty = stages.filter((stage) => stage.tasks.length === 0).map((stage) => stage.stage_id);
@@ -246,7 +303,7 @@ export function resolvePriorityRoute({ selector, lanes, progress, taskMap }) {
     block_code: `CARRIL ${lane.owner_application.toUpperCase()}`,
     block_title: `${lane.title} — etapa ${active.order}: ${active.stage_id}`,
     previous_task_id: previousId,
-    latest_treq_task_id: 'SUPA-TRANS-006',
+    latest_treq_task_id: selector.latest_treq_task_id ?? 'SUPA-TRANS-006',
     handoff_task_id: handoff?.tasks[0].id ?? null,
     handoff_sequence_id: handoff
       ? `PRIORITY-${lane.lane_id}-STAGE-${String(handoff.order).padStart(3, '0')}`
@@ -258,6 +315,11 @@ export function resolvePriorityRoute({ selector, lanes, progress, taskMap }) {
       stage_id: active.stage_id,
       total_stages: stages.length,
     },
+    ...(deferred.ids.length > 0 ? {
+      deferred_task_ids: deferred.ids,
+      deferred_to_stage_id: deferred.targetStageId,
+      deferred_reason: deferred.reason,
+    } : {}),
     return_policy: selector.return_policy,
     priority_route_complete: priorityRouteComplete,
   };

@@ -15,7 +15,7 @@
     "docs:plan:check": "node scripts/docs/build-plan-canonico-core.mjs --check",
     "docs:plan:organize": "node scripts/docs/reorganize-plan-by-logical-blocks.mjs",
     "docs:plan:organize:apply": "node scripts/docs/reorganize-plan-by-logical-blocks.mjs --apply",
-    "docs:plan:test": "node --test scripts/docs/execution-route.test.mjs scripts/docs/plan-continuity-global.test.mjs scripts/docs/validate-e3-transition-closure.test.mjs scripts/docs/validate-process-application-integrity.test.mjs scripts/docs/validate-screen-catalog.test.mjs scripts/docs/validate-screen-process-bindings.test.mjs scripts/docs/validate-screen-contract-matrices.test.mjs scripts/docs/validate-block-i-surface-matrices.test.mjs scripts/docs/validate-priority-delivery-lanes.test.mjs scripts/docs/validate-event-application-block.test.mjs",
+    "docs:plan:test": "node --test scripts/docs/execution-route.test.mjs scripts/docs/execution-route-deferral.test.mjs scripts/docs/plan-continuity-global.test.mjs scripts/docs/validate-e3-transition-closure.test.mjs scripts/docs/validate-process-application-integrity.test.mjs scripts/docs/validate-screen-catalog.test.mjs scripts/docs/validate-screen-process-bindings.test.mjs scripts/docs/validate-screen-contract-matrices.test.mjs scripts/docs/validate-block-i-surface-matrices.test.mjs scripts/docs/validate-priority-delivery-lanes.test.mjs scripts/docs/validate-event-application-block.test.mjs",
     "docs:process-apps:check": "node scripts/docs/validate-process-application-integrity.mjs",
     "docs:screens:check": "node scripts/docs/validate-screen-catalog.mjs",
     "docs:screen-processes:check": "node scripts/docs/validate-screen-process-bindings.mjs",
