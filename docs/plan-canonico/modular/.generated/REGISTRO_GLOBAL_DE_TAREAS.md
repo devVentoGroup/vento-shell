@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **585** |
+| Aprobadas | **586** |
 | En propuesta | **0** |
-| No iniciadas | **1009** |
+| No iniciadas | **1008** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **36.70% (585/1594)** |
+| Porcentaje de completamiento | **36.76% (586/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PRINT-ARC-007` — Definir enrutamiento por sede, área, documento, canal y dispositivo | ✅ APROBADA |
-| Tarea actual | `PRINT-ARC-008` — Definir impresora principal, alternativas y fallback | ⬜ NO INICIADA |
-| Siguiente reservada | `PRINT-ARC-009` — Definir estado de impresora y heartbeat | ⬜ NO INICIADA |
+| Última aprobada | `PRINT-ARC-008` — Definir impresora principal, alternativas y fallback | ✅ APROBADA |
+| Tarea actual | `PRINT-ARC-009` — Definir estado de impresora y heartbeat | ⬜ NO INICIADA |
+| Siguiente reservada | `PRINT-ARC-010` — Definir idempotencia y prevención de impresiones duplicadas | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -495,7 +495,7 @@
 | ✅ APROBADA | `PRINT-ARC-005` | Definir plantilla, versión, tamaño y datos requeridos | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-006` | Definir contrato canónico de trabajo de impresión | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-007` | Definir enrutamiento por sede, área, documento, canal y dispositivo | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
-| ⬜ NO INICIADA | `PRINT-ARC-008` | Definir impresora principal, alternativas y fallback | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
+| ✅ APROBADA | `PRINT-ARC-008` | Definir impresora principal, alternativas y fallback | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-009` | Definir estado de impresora y heartbeat | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-010` | Definir idempotencia y prevención de impresiones duplicadas | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-011` | Definir reintentos automáticos y cola de fallos | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
