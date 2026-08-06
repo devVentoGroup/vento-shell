@@ -4316,7 +4316,482 @@ La tarea especializa documentalmente comportamientos ya cubiertos por el registr
 La aprobación de `PRINT-ARC-011` no inicia, desarrolla ni aprueba `PRINT-ARC-012`.
 
 
-### [ ] PRINT-ARC-012 — Definir confirmación de envío, impresión y entrega cuando sea verificable
+### ✅ PRINT-ARC-012 — Definir confirmación de envío, impresión y entrega cuando sea verificable
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-011 — Definir reintentos automáticos y cola de fallos` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-013 — Definir cancelación y expiración` — RESERVADA
+**Tipo de tarea:** documental; contrato de confirmaciones, jerarquía de receipts y evidencia, resolución autoritativa, conciliación, cierre y matriz materializada para cincuenta salidas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Cambios físicos autorizados:** ninguno; no crea adaptadores, workers, tablas, colas, endpoints, migraciones, configuración, despliegues ni cambios en Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** establecer qué puede afirmarse de forma verificable sobre un trabajo de impresión, qué evidencia sostiene cada afirmación y cuándo una entrada puede cerrarse, permanecer pendiente o pasar a conciliación sin confundir recepción técnica, impresión física y entrega.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-012` queda cerrada documentalmente con:
+
+- el contrato `VENTO-PRINT-CONFIRMATION` versión `1.0.0`;
+- siete niveles no equivalentes de confirmación, desde admisión hasta entrega;
+- diez clases de evidencia admisible y campos mínimos de integridad;
+- ocho estados globales de resolución;
+- siete resultados autoritativos de conciliación;
+- seis perfiles de confirmación materializados;
+- una regla de cierre por nivel exigido, no por timeout ni por callback genérico;
+- separación estricta entre impresión física y entrega;
+- cincuenta salidas con decisión explícita de confirmación y cierre;
+- dieciséis etiquetas, nueve comandas o tiquetes operativos, nueve comprobantes para cliente o caja y dieciséis documentos convencionales;
+- distribución propietaria intacta: FOGO 15, NEXO 14, PULSO 12, NUMERA 5 y ORIGO 4;
+- cero implementación y cero evidencia operativa o física declarada.
+
+---
+
+#### 2. Alcance y frontera
+
+Esta tarea define:
+
+- el vocabulario canónico para confirmar admisión, cola, envío, aceptación técnica, impresión física y entrega;
+- los receipts y evidencias que pueden respaldar cada nivel;
+- el resultado mínimo exigido por perfil de salida;
+- la consulta autoritativa por identidad de trabajo e intento;
+- el tratamiento de evidencia ausente, contradictoria o tardía;
+- la interacción con reintentos, resultado desconocido y dead-letter;
+- el cierre lógico de una entrada sin borrar su historia;
+- la decisión materializada para cada salida `IMP-*`.
+
+Esta tarea no define:
+
+- cancelación o expiración, reservadas para `PRINT-ARC-013`;
+- reimpresión, reservada para `PRINT-ARC-014`;
+- permisos, privacidad, contingencia, adaptadores, monitoreo o piloto;
+- instalación o reparación de dispositivos;
+- tecnología concreta de persistencia;
+- una garantía física que el hardware actual no pueda demostrar;
+- aplicación de una etiqueta sobre un recurso, consumo humano de una comanda o validez empresarial del documento impreso.
+
+La confirmación del servicio de impresión describe exclusivamente el trabajo físico y su entrega cuando existe evidencia. No modifica el estado empresarial gobernado por FOGO, NEXO, PULSO, NUMERA u ORIGO.
+
+---
+
+#### 3. Diagnóstico técnico actual
+
+La superficie vigente de NEXO construye ZPL y usa `device.send`. El callback exitoso muestra “Impresión enviada”. Ese callback constituye, como máximo, una señal técnica del adaptador; no demuestra aceptación del periférico, salida de papel, contenido correcto ni entrega.
+
+| Hecho observado | Alcance demostrable | Afirmación prohibida | Estado |
+| --- | --- | --- | --- |
+| Trabajo admitido por idempotencia | Existe una intención única y un `job_id`. | “Enviado”, “impreso” o “entregado”. | `ESPECIFICADO` |
+| Entrada persistida en cola | El servicio conserva trabajo pendiente. | “Enviado al dispositivo”. | `ESPECIFICADO` |
+| Callback exitoso de `device.send` | El adaptador reportó aceptación o finalización de su llamada. | “Impresión física confirmada”. | `NO_IMPLEMENTADO_COMO_RECEIPT_CANONICO` |
+| Heartbeat `READY` | El dispositivo estaba elegible antes del despacho. | “El trabajo se imprimió”. | `ESPECIFICADO` |
+| Estado online del navegador, agente o red | Existe conectividad parcial. | “El periférico recibió el trabajo”. | `NO_ES_EVIDENCIA_DE_RESULTADO` |
+| Observación física no correlacionada | Se vio una hoja o tiquete, sin identidad demostrada. | Cerrar un `job_id` concreto. | `EVIDENCIA_INSUFICIENTE` |
+
+El comportamiento actual no se presenta como conforme. La implementación posterior deberá emitir receipts tipados y conservar evidencia correlacionada.
+
+---
+
+#### 4. Frontera e invariantes
+
+```text
+VENTO-PRINT-JOB
+→ VENTO-PRINT-IDEMPOTENCY
+→ VENTO-PRINT-RETRY-QUEUE
+→ INTENTO TECNICO
+→ RECEIPTS TIPADOS
+→ VENTO-PRINT-CONFIRMATION
+→ CIERRE, ESPERA O CONCILIACION
+```
+
+Reglas obligatorias:
+
+1. Admisión, cola, envío, aceptación del adaptador, aceptación del periférico, impresión y entrega son hechos distintos.
+2. Un nivel inferior nunca implica automáticamente un nivel superior.
+3. `ADAPTER_ACCEPTED` no equivale a `PERIPHERAL_ACCEPTED`.
+4. `PERIPHERAL_ACCEPTED` no equivale a `PRINTED_VERIFIED`.
+5. `PRINTED_VERIFIED` no equivale a `DELIVERED_VERIFIED`.
+6. Heartbeat, conectividad, ausencia de error y tiempo transcurrido no son evidencia de impresión.
+7. Un timeout no convierte una operación en fallida ni exitosa; si pudo existir efecto, produce `RESULT_UNKNOWN`.
+8. Toda evidencia se vincula a `job_id`, `attempt_id`, `copy_slot_id`, dispositivo, canal, payload o render y tiempo verificable.
+9. Un receipt sin identidad completa no cierra el trabajo y se conserva solo como diagnóstico.
+10. La evidencia tardía puede resolver un resultado desconocido, pero no borra intentos, fallos ni decisiones previas.
+11. Evidencias contradictorias producen `EVIDENCE_CONFLICT`; nunca se aplica “último valor gana”.
+12. El nivel exigido se resuelve por perfil y ruta antes del cierre.
+13. Una salida centralizada que requiere distribución no queda completa al imprimir en administración.
+14. Una salida local sin handoff explícito no inventa entrega; la entrega se marca `NOT_APPLICABLE`.
+15. Imprimir una etiqueta no demuestra que fue aplicada al recurso correcto.
+16. Imprimir una comanda no demuestra que el trabajador la leyó o ejecutó.
+17. Entregar una representación física no cambia por sí sola pago, factura, inventario, producción, custodia o cualquier otro hecho empresarial.
+18. La misma copia lógica conserva su identidad durante consulta, conciliación y retry.
+19. Una evidencia física de una copia no puede cerrar otra copia, otro slot, otro destino ni otro trabajo del lote.
+20. Un batch no admite cierre agregado sin evidencia individual por trabajo.
+21. Los bloqueos previos al despacho no generan confirmación de envío ni consumen intento.
+22. Una vez confirmada la impresión, una entrega pendiente no autoriza reenvío automático a la impresora.
+23. Dead-letter conserva historia inmutable; una resolución posterior se enlaza, no la sobrescribe.
+24. La implementación física permanece condicionada por `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`.
+
+---
+
+#### 5. Contrato `VENTO-PRINT-CONFIRMATION` `1.0.0`
+
+##### 5.1 Estructura normativa
+
+```json
+{
+  "confirmation_contract_id": "VENTO-PRINT-CONFIRMATION",
+  "confirmation_contract_version": "1.0.0",
+  "confirmation_record_id": "<uuid>",
+  "job_identity": {
+    "job_id": "<uuid>",
+    "intent_id": "<string>",
+    "output_id": "<IMP-*>",
+    "copy_slot_id": "<string>",
+    "idempotency_key": "<sha256>",
+    "semantic_fingerprint": "<sha256>",
+    "payload_hash": "<sha256>"
+  },
+  "resolved_profile": {
+    "confirmation_profile_id": "<CFM-*>",
+    "required_terminal_level": "<PRINTED_VERIFIED|DELIVERED_VERIFIED|NONE>",
+    "delivery_requirement": "<REQUIRED|NOT_APPLICABLE>",
+    "route_profile_id": "<RTE-*>",
+    "target_policy_id": "<TGT-*|null>"
+  },
+  "latest_attempt": {
+    "attempt_id": "<uuid|null>",
+    "attempt_number": 0,
+    "device_ref": "<PRN-*|null>",
+    "channel_id": "<CH-*|null>"
+  },
+  "levels": {
+    "admission": {"state": "<CONFIRMED|NOT_OBSERVED|CONFLICT>", "evidence_ref": "<string|null>"},
+    "queue": {"state": "<CONFIRMED|NOT_OBSERVED|CONFLICT>", "evidence_ref": "<string|null>"},
+    "send": {"state": "<CONFIRMED|REJECTED|NOT_OBSERVED|RESULT_UNKNOWN|CONFLICT>", "evidence_ref": "<string|null>"},
+    "adapter": {"state": "<CONFIRMED|REJECTED|NOT_OBSERVED|RESULT_UNKNOWN|CONFLICT>", "evidence_ref": "<string|null>"},
+    "peripheral": {"state": "<CONFIRMED|REJECTED|NOT_OBSERVED|RESULT_UNKNOWN|CONFLICT>", "evidence_ref": "<string|null>"},
+    "print": {"state": "<CONFIRMED|CONFIRMED_NOT_OCCURRED|NOT_OBSERVED|RESULT_UNKNOWN|CONFLICT>", "evidence_ref": "<string|null>"},
+    "delivery": {"state": "<CONFIRMED|CONFIRMED_NOT_OCCURRED|NOT_APPLICABLE|NOT_OBSERVED|RESULT_UNKNOWN|CONFLICT>", "evidence_ref": "<string|null>"}
+  },
+  "resolution": {
+    "state": "<OPEN_NO_ATTEMPT|OPEN_IN_PROGRESS|OPEN_RESULT_UNKNOWN|OPEN_AWAITING_DELIVERY|BLOCKED_PRE_DISPATCH|CONFLICT_REQUIRES_REVIEW|CLOSED_REQUIRED_LEVEL_CONFIRMED|CLOSED_TERMINAL_FAILURE>",
+    "highest_confirmed_level": "<NONE|JOB_ADMITTED|QUEUE_PERSISTED|SEND_STARTED|ADAPTER_ACCEPTED|PERIPHERAL_ACCEPTED|PRINTED_VERIFIED|DELIVERED_VERIFIED>",
+    "reason_code": "<PRINT_CONFIRMATION_*>",
+    "resolved_at": "<RFC3339|null>",
+    "resolution_evidence_refs": ["<string>"]
+  },
+  "trace": {
+    "correlation_id": "<string>",
+    "causation_id": "<string|null>",
+    "batch_id": "<string|null>"
+  }
+}
+```
+
+La estructura es normativa y no prescribe tablas, endpoints, proveedor de colas ni mecanismo criptográfico concreto.
+
+##### 5.2 Receipt o evidencia mínima
+
+Todo receipt que participe en una decisión deberá contener:
+
+- `evidence_id` único;
+- `evidence_type` tipado;
+- `job_id`;
+- `attempt_id` cuando existe intento;
+- `copy_slot_id`;
+- `output_id`;
+- `payload_hash` o `render_hash` correlacionable;
+- `device_ref` y `channel_id` cuando participa un periférico;
+- `source_system`, `source_instance` y versión;
+- `observed_at` con tiempo verificable;
+- resultado explícito y código de razón;
+- referencia de secuencia, contador o evento cuando la fuente lo proporcione;
+- actor, estación y destino cuando la evidencia sea humana o de handoff;
+- mecanismo de integridad o huella de la evidencia;
+- clasificación de autoridad.
+
+La ausencia de estos campos no elimina el evento, pero impide usarlo como prueba autoritativa de un trabajo específico.
+
+---
+
+#### 6. Niveles de confirmación y evidencia admisible
+
+| Nivel | Estado canónico | Qué demuestra | Evidencia mínima admisible | Qué no demuestra |
+| ---: | --- | --- | --- | --- |
+| 1 | `JOB_ADMITTED` | La intención y copia fueron admitidas de forma idempotente. | `SERVER_ADMISSION_RECORD`. | Cola, envío, impresión o entrega. |
+| 2 | `QUEUE_PERSISTED` | La entrada quedó persistida y consultable. | `QUEUE_PERSISTENCE_RECORD`. | Despacho al adaptador. |
+| 3 | `SEND_STARTED` | Se inició un intento técnico identificable. | `ATTEMPT_DISPATCH_RECORD`. | Aceptación del adaptador o periférico. |
+| 4 | `ADAPTER_ACCEPTED` | El adaptador aceptó el comando o finalizó su llamada según contrato. | `ADAPTER_ACCEPTANCE_RECEIPT`. | Recepción del periférico o salida física. |
+| 5 | `PERIPHERAL_ACCEPTED` | Spooler o dispositivo aceptó un trabajo correlacionado. | `SPOOLER_OR_DEVICE_ACCEPTANCE_RECEIPT`. | Impresión correcta o entrega. |
+| 6 | `PRINTED_VERIFIED` | Existe evidencia correlacionada de efecto físico de impresión. | `DEVICE_COMPLETION_RECEIPT`, `CORRELATED_DEVICE_COUNTER_DELTA` o `CONTROLLED_PHYSICAL_PRINT_ATTESTATION`. | Entrega, lectura, aplicación o ejecución empresarial. |
+| 7 | `DELIVERED_VERIFIED` | La copia física fue entregada al destino o receptor definido. | `DESTINATION_SCAN`, `HANDOFF_ACKNOWLEDGEMENT` o `CONTROLLED_DELIVERY_ATTESTATION`. | Aceptación empresarial, pago, firma sustantiva o uso correcto. |
+
+##### 6.1 Diez clases de evidencia
+
+| Evidencia | Autoridad máxima | Restricción |
+| --- | --- | --- |
+| `SERVER_ADMISSION_RECORD` | `JOB_ADMITTED` | Debe provenir del servicio autoritativo de idempotencia. |
+| `QUEUE_PERSISTENCE_RECORD` | `QUEUE_PERSISTED` | Debe ser consultable fuera de la memoria del proceso. |
+| `ATTEMPT_DISPATCH_RECORD` | `SEND_STARTED` | Debe existir antes o al iniciar el envío y asignar `attempt_id`. |
+| `ADAPTER_ACCEPTANCE_RECEIPT` | `ADAPTER_ACCEPTED` | Su semántica debe declarar si significa recepción, escritura o callback. |
+| `SPOOLER_OR_DEVICE_ACCEPTANCE_RECEIPT` | `PERIPHERAL_ACCEPTED` | Debe identificar trabajo o secuencia del dispositivo. |
+| `DEVICE_COMPLETION_RECEIPT` | `PRINTED_VERIFIED` | Solo cuando el proveedor documenta finalización física y se valida en piloto. |
+| `CORRELATED_DEVICE_COUNTER_DELTA` | `PRINTED_VERIFIED` | Requiere ventana exclusiva o correlación que descarte otros trabajos. |
+| `CONTROLLED_PHYSICAL_PRINT_ATTESTATION` | `PRINTED_VERIFIED` | Requiere actor, estación, hora, identidad visible y política de evidencia. |
+| `DESTINATION_SCAN` | `DELIVERED_VERIFIED` | El código debe vincular copia, destino y receptor o estación. |
+| `HANDOFF_ACKNOWLEDGEMENT` o `CONTROLLED_DELIVERY_ATTESTATION` | `DELIVERED_VERIFIED` | Requiere actor, destino, hora y referencia de copia; no puede ser prefirmado. |
+
+Las clases anteriores son formatos admisibles. Esta tarea no afirma que los dispositivos actuales soporten alguna clase concreta hasta que se implemente y valide.
+
+---
+
+#### 7. Perfiles de confirmación
+
+| Perfil | Aplicación | Nivel terminal exigido | Entrega | Regla de cierre |
+| --- | --- | --- | --- | --- |
+| `CFM-LABEL-PHYSICAL` | Etiquetas especializadas. | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | Cerrar solo con evidencia física correlacionada; aplicar la etiqueta queda fuera del servicio. |
+| `CFM-TICKET-POINT` | Comandas, tiquetes operativos y control local. | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | Cerrar al verificar salida física en el punto; lectura o ejecución no se infiere. |
+| `CFM-TICKET-HANDOFF` | Comprobantes físicos entregados a cliente o receptor. | `DELIVERED_VERIFIED` | `REQUIRED` | Después de imprimir, mantener `OPEN_AWAITING_DELIVERY` hasta handoff verificable. |
+| `CFM-A4-LOCAL` | Documento A4 consumido en el mismo punto de impresión. | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | Cerrar al verificar impresión física local. |
+| `CFM-A4-CENTRAL-DISTRIBUTION` | Documento A4 impreso centralmente y distribuido. | `DELIVERED_VERIFIED` | `REQUIRED` | La impresión central no cierra; exige entrega al destino autorizado. |
+| `CFM-BLOCKED-NO-DISPATCH` | Ruta sin capacidad, equipo almacenado o mantenimiento. | `NONE` | `NOT_APPLICABLE` | Mantener `BLOCKED_PRE_DISPATCH`; no crear receipt de envío ni intento. |
+
+La ruta y la política objetivo se resuelven antes del perfil final. Una salida que admite varias rutas utiliza exactamente un perfil por `job_id`.
+
+---
+
+#### 8. Estados globales y reglas de transición
+
+| Estado | Significado | Salida permitida |
+| --- | --- | --- |
+| `OPEN_NO_ATTEMPT` | Trabajo admitido o en cola, sin despacho. | Intento, bloqueo o fallo terminal. |
+| `OPEN_IN_PROGRESS` | Existe intento y evidencia parcial no contradictoria. | Nivel superior, fallo seguro o resultado desconocido. |
+| `OPEN_RESULT_UNKNOWN` | El comando pudo generar efecto y falta resultado autoritativo. | Solo conciliación; no retry ciego. |
+| `OPEN_AWAITING_DELIVERY` | Impresión verificada; el perfil exige handoff. | Entrega confirmada, no entrega confirmada o conciliación. |
+| `BLOCKED_PRE_DISPATCH` | Una precondición impide intentar. | Revaluación de salud, ruta o capacidad; no consume intento. |
+| `CONFLICT_REQUIRES_REVIEW` | Dos evidencias autoritativas son incompatibles. | Resolución explícita con evidencia superior o investigación. |
+| `CLOSED_REQUIRED_LEVEL_CONFIRMED` | El nivel terminal exigido por perfil está confirmado. | Solo auditoría; una copia adicional requiere reimpresión separada. |
+| `CLOSED_TERMINAL_FAILURE` | Se confirmó imposibilidad terminal sin efecto físico pendiente. | Revisión o nueva intención empresarial; no mutar trabajo cerrado. |
+
+Reglas:
+
+1. Las transiciones son monotónicas respecto a hechos confirmados; una evidencia posterior puede resolver incertidumbre, no borrar historia.
+2. `PRINTED_VERIFIED` con perfil de handoff produce `OPEN_AWAITING_DELIVERY`, no cierre.
+3. Una no entrega confirmada no habilita reimpresión automática si la impresión ya fue verificada.
+4. `CLOSED_REQUIRED_LEVEL_CONFIRMED` exige evidencia individual del `copy_slot_id`.
+5. Un receipt de lote solo acelera consulta; cada trabajo conserva resolución propia.
+6. Cancelación y expiración no se definen aquí y quedan como puntos de integración para la tarea siguiente.
+
+---
+
+#### 9. Consulta autoritativa y conciliación
+
+##### 9.1 Orden de consulta
+
+La resolución se ejecuta por `job_id` o `idempotency_key` y consulta, en orden:
+
+1. admisión y huella de copia;
+2. entrada de cola y estado vigente;
+3. intentos append-only;
+4. receipts del adaptador;
+5. receipts del spooler o periférico;
+6. evidencia de efecto físico;
+7. evidencia de handoff cuando el perfil la exige;
+8. eventos de cancelación o expiración únicamente cuando `PRINT-ARC-013` los defina.
+
+`localStorage`, texto de interfaz, estado online y memoria del worker no son fuentes autoritativas.
+
+##### 9.2 Reglas de correlación
+
+Una evidencia solo participa si coincide con:
+
+- `job_id` y `copy_slot_id`;
+- `attempt_id` para eventos de intento;
+- `payload_hash` o `render_hash` compatible;
+- dispositivo y canal resueltos;
+- destino lógico autorizado;
+- secuencia temporal posible;
+- fuente y versión conocidas.
+
+Una evidencia de otra copia, un receipt sin identidad o una observación fuera de ventana se conserva como diagnóstico y no eleva el nivel.
+
+##### 9.3 Resultados de conciliación
+
+| Resultado | Interpretación | Efecto |
+| --- | --- | --- |
+| `CONFIRMED_NOT_SENT` | El intento no transmitió el comando. | Puede aplicar retry seguro dentro del presupuesto. |
+| `CONFIRMED_SENT_NOT_ACCEPTED` | Hubo envío, pero adaptador o periférico rechazó sin efecto. | Puede aplicar retry seguro según clasificación. |
+| `CONFIRMED_ACCEPTED_NOT_PRINTED` | El periférico aceptó y existe prueba de que no imprimió. | Retry solo si la política lo permite y no existe efecto parcial. |
+| `CONFIRMED_PRINTED` | La copia física se imprimió y está correlacionada. | Cierra perfiles de impresión; perfiles de handoff esperan entrega. |
+| `CONFIRMED_DELIVERED` | La copia fue entregada al destino definido. | Cierra perfiles con entrega obligatoria. |
+| `UNRESOLVED` | La evidencia disponible no determina el resultado. | Permanece en conciliación; retry prohibido. |
+| `EVIDENCE_CONFLICT` | Evidencias autoritativas se contradicen. | Revisión explícita; no cierre ni retry automático. |
+
+Cada conciliación registra actor o sistema, evidencias evaluadas, regla aplicada, resultado, tiempo y razón. Ningún resultado se decide solo por antigüedad.
+
+---
+
+#### 10. Cierre de cola, intento y entrega
+
+1. Un intento técnico alcanza `SUCCEEDED` únicamente cuando el perfil confirma el nivel físico requerido para el intento de impresión.
+2. Una entrada se considera cerrada por éxito solo con `CLOSED_REQUIRED_LEVEL_CONFIRMED`.
+3. Para `CFM-TICKET-HANDOFF` y `CFM-A4-CENTRAL-DISTRIBUTION`, la impresión verificada cierra el intento de impresora, pero no el trabajo de confirmación.
+4. En `OPEN_AWAITING_DELIVERY` queda prohibido reenviar a la impresora automáticamente.
+5. Un fallo de entrega se atiende sobre el handoff de la copia ya impresa; no crea otra copia.
+6. `RESULT_UNKNOWN` conserva la entrada en `PRINT_RECONCILIATION_REQUIRED` hasta resolución autoritativa.
+7. Una entrada dead-letter no se elimina ni cambia de historia al recibir evidencia tardía; se enlaza una resolución posterior.
+8. Un bloqueo previo al despacho permanece sin intento y sin receipt de envío.
+9. La ausencia de evidencia de nivel terminal después de un deadline no produce éxito ni fallo por inferencia.
+10. El servicio conserva el nivel más alto confirmado, la evidencia y cualquier nivel pendiente.
+
+---
+
+#### 11. Matriz materializada de las cincuenta salidas
+
+Las denominaciones, propietarias, identidades, plantillas, perfiles físicos y rutas aprobadas permanecen intactas. La matriz materializa exclusivamente el perfil de confirmación y el nivel de cierre.
+
+| Salida | Nombre | Propietaria | Perfil aplicable | Nivel terminal | Entrega | Resultado / bloqueo |
+| --- | --- | --- | --- | --- | --- | --- |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado | `FOGO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado | `FOGO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place | `FOGO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque | `FOGO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial | `FOGO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado | `FOGO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor | `ORIGO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona | `NEXO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU | `NEXO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho | `NEXO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente | `PULSO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo | `NEXO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización | `FOGO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba | `FOGO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición | `FOGO` | `CFM-LABEL-PHYSICAL`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_ZD230_SIN_CANAL` |
+| `IMP-CMD-01` | Comanda de cocina | `PULSO` | `CFM-TICKET-POINT` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / RUTA_LOCAL_CONFIRMABLE` |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías | `PULSO` | `CFM-TICKET-POINT` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / RUTA_LOCAL_CONFIRMABLE` |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes | `PULSO` | `CFM-TICKET-POINT` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / RUTA_LOCAL_CONFIRMABLE` |
+| `IMP-CMD-04` | Comanda de preparación o mise en place | `FOGO` | `CFM-TICKET-POINT`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / SEGUN_RUTA; VP_BLOQUEADO_SIN_80MM` |
+| `IMP-CMD-05` | Tiquete de expedición o recogida | `PULSO` | `CFM-TICKET-POINT` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / RUTA_LOCAL_CONFIRMABLE` |
+| `IMP-CMD-06` | Solicitud interna de reposición | `NEXO` | `CFM-TICKET-POINT`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / SEGUN_RUTA; VP_BLOQUEADO_SIN_80MM` |
+| `IMP-CMD-07` | Modificación o adición de comanda | `PULSO` | `CFM-TICKET-POINT` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL` |
+| `IMP-CMD-08` | Cancelación o anulación de comanda | `PULSO` | `CFM-TICKET-POINT` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / MISMO_DESTINO_ORIGINAL` |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia | `FOGO` | `CFM-TICKET-POINT`; `CFM-BLOCKED-NO-DISPATCH` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ACTUALMENTE_BLOQUEADO_VP_SIN_80MM` |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente | `PULSO` | `CFM-TICKET-HANDOFF` | `DELIVERED_VERIFIED` | `REQUIRED_WHEN_HANDOFF_OCCURS` | `ESPECIFICADO / IMPRESION_Y_ENTREGA_SEPARADAS` |
+| `IMP-CLI-02` | Confirmación de pedido | `PULSO` | `CFM-TICKET-HANDOFF` | `DELIVERED_VERIFIED` | `REQUIRED_WHEN_HANDOFF_OCCURS` | `ESPECIFICADO / IMPRESION_Y_ENTREGA_SEPARADAS` |
+| `IMP-CLI-03` | Comprobante de pago | `NUMERA` | `CFM-TICKET-HANDOFF` | `DELIVERED_VERIFIED` | `REQUIRED_WHEN_HANDOFF_OCCURS` | `ESPECIFICADO / IMPRESION_Y_ENTREGA_SEPARADAS` |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente | `NUMERA` | `CFM-TICKET-HANDOFF` | `DELIVERED_VERIFIED` | `REQUIRED_WHEN_HANDOFF_OCCURS` | `ESPECIFICADO / IMPRESION_Y_ENTREGA_SEPARADAS` |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito | `NUMERA` | `CFM-TICKET-HANDOFF` | `DELIVERED_VERIFIED` | `REQUIRED_WHEN_HANDOFF_OCCURS` | `ESPECIFICADO / IMPRESION_Y_ENTREGA_SEPARADAS` |
+| `IMP-CLI-06` | Resumen de recogida o entrega | `PULSO` | `CFM-TICKET-HANDOFF` | `DELIVERED_VERIFIED` | `REQUIRED_WHEN_HANDOFF_OCCURS` | `ESPECIFICADO / IMPRESION_Y_ENTREGA_SEPARADAS` |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo | `PULSO` | `CFM-TICKET-HANDOFF` | `DELIVERED_VERIFIED` | `REQUIRED_WHEN_HANDOFF_OCCURS` | `ESPECIFICADO / IMPRESION_Y_ENTREGA_SEPARADAS` |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio | `PULSO` | `CFM-TICKET-HANDOFF` | `DELIVERED_VERIFIED` | `REQUIRED_WHEN_HANDOFF_OCCURS` | `ESPECIFICADO / IMPRESION_Y_ENTREGA_SEPARADAS` |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja | `NUMERA` | `CFM-TICKET-POINT` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / CONTROL_LOCAL_DE_CAJA` |
+| `IMP-DOC-01` | Remisión o nota de despacho | `NEXO` | `CFM-A4-LOCAL`; `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / ADMIN_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-02` | Manifiesto de traslado interno | `NEXO` | `CFM-A4-LOCAL`; `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / ADMIN_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-03` | Hoja de conteo de inventario | `NEXO` | `CFM-A4-LOCAL`; `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / ADMIN_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario | `NEXO` | `CFM-A4-LOCAL`; `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / ADMIN_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-05` | Orden de compra | `ORIGO` | `CFM-A4-LOCAL`; `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / ADMIN_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-06` | Acta o comprobante de recepción | `ORIGO` | `CFM-A4-LOCAL`; `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / ADMIN_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-07` | Devolución a proveedor | `ORIGO` | `CFM-A4-LOCAL`; `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / ADMIN_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-08` | Orden de producción o ficha de lote | `FOGO` | `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / CENTRAL_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica | `FOGO` | `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / CENTRAL_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-10` | Registro de calidad o no conformidad | `FOGO` | `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / CENTRAL_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-11` | Orden de mantenimiento | `NEXO` | `CFM-A4-LOCAL`; `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / ADMIN_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo | `NEXO` | `CFM-A4-LOCAL`; `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / ADMIN_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico | `NEXO` | `CFM-A4-LOCAL`; `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / ADMIN_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo | `FOGO` | `CFM-A4-CENTRAL-DISTRIBUTION`; `CFM-BLOCKED-NO-DISPATCH` | `ROUTE_DEPENDENT` | `ROUTE_DEPENDENT` | `ESPECIFICADO / CENTRAL_CONFIRMABLE; VP_MANTENIMIENTO` |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación | `NUMERA` | `CFM-A4-LOCAL` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ADMIN_LOCAL_CONFIRMABLE` |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales | `NEXO` | `CFM-A4-LOCAL` | `PRINTED_VERIFIED` | `NOT_APPLICABLE` | `ESPECIFICADO / ADMIN_LOCAL_CONFIRMABLE` |
+
+
+**Control de cobertura:** 50 esperadas, 50 materializadas, 50 identificadores únicos, 0 faltantes y 0 duplicados.
+
+##### 11.1 Reconciliación cuantitativa
+
+| Grupo | Esperadas | Materializadas | Faltantes | Duplicadas |
+| --- | ---: | ---: | ---: | ---: |
+| Etiquetas `IMP-LBL-*` | 16 | 16 | 0 | 0 |
+| Comandas y tiquetes `IMP-CMD-*` | 9 | 9 | 0 | 0 |
+| Comprobantes `IMP-CLI-*` | 9 | 9 | 0 | 0 |
+| Documentos `IMP-DOC-*` | 16 | 16 | 0 | 0 |
+| **Total** | **50** | **50** | **0** | **0** |
+
+| Propietaria | Cantidad heredada | Cantidad materializada | Diferencia |
+| --- | ---: | ---: | ---: |
+| FOGO | 15 | 15 | 0 |
+| NEXO | 14 | 14 | 0 |
+| PULSO | 12 | 12 | 0 |
+| NUMERA | 5 | 5 | 0 |
+| ORIGO | 4 | 4 | 0 |
+| **Total** | **50** | **50** | **0** |
+
+---
+
+#### 12. Bloqueos y carryovers con propietario
+
+| ID | Bloqueo o brecha | Propietario documental o de implementación | Condición de salida |
+| --- | --- | --- | --- |
+| `BLK-PRINT-012-001` | El callback actual de BrowserPrint no está tipado como receipt canónico y solo muestra “Impresión enviada”. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y el paquete propietario que implemente el adaptador. | Emitir `ADAPTER_ACCEPTANCE_RECEIPT` con semántica documentada, identidad completa y pruebas de pérdida de callback. |
+| `BLK-PRINT-012-002` | No se ha verificado qué dispositivos o spoolers pueden probar finalización física. | `PRINT-ARC-018` y `PRINT-ARC-020`. | Matriz por dispositivo y canal, receipts observados y prueba física controlada que determine el nivel máximo demostrable. |
+| `BLK-PRINT-012-003` | La Zebra ZD230 está almacenada y sin canal activo; las dieciséis etiquetas no pueden producir evidencia de envío o impresión. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y el paquete de habilitación física correspondiente. | Dispositivo desplegado, canal configurado, heartbeat válido y prueba correlacionada de impresión. |
+| `BLK-PRINT-012-004` | La Epson L5590 de Vento Producción requiere mantenimiento. | Paquete de mantenimiento e implementación definido en `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`. | Mantenimiento cerrado, salud verificada y prueba A4 correlacionada antes de habilitar `CFM-A4-LOCAL`. |
+| `BLK-PRINT-012-005` | Vento Producción no tiene impresora 80 mm compatible activa. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` y paquete de incorporación de activo. | Dispositivo compatible incorporado, ruta y política actualizadas, heartbeat válido y prueba de impresión controlada. |
+| `BLK-PRINT-012-006` | La evidencia humana de impresión o handoff aún no tiene superficie, identidad ni controles de autorización definidos. | `EVID-ARC-001` a `EVID-ARC-010`, `PRINT-ARC-015`, `PRINT-ARC-016` y el paquete de implementación aplicable. | Contrato de evidencia, actor autorizado, minimización, integridad, retención y prueba de correlación aprobados. |
+
+Ningún bloqueo se interpreta como pendiente sin dueño. Ninguno autoriza iniciar las tareas responsables desde esta tarea.
+
+---
+
+#### 13. Criterios de aceptación
+
+`PRINT-ARC-012` queda documentalmente satisfecha cuando:
+
+- [x] existe un contrato consumible de confirmación;
+- [x] admisión, cola, envío, adaptador, periférico, impresión y entrega están separados;
+- [x] cada nivel declara evidencia admisible y límites de interpretación;
+- [x] el callback actual no se presenta como impresión física;
+- [x] se define el nivel terminal por perfil;
+- [x] se define `OPEN_AWAITING_DELIVERY` sin reimpresión automática;
+- [x] `RESULT_UNKNOWN` exige conciliación y bloquea retry ciego;
+- [x] la consulta autoritativa y la correlación están especificadas;
+- [x] existen siete resultados de conciliación;
+- [x] el cierre conserva historia e identidad de copia;
+- [x] las cincuenta salidas tienen decisión explícita;
+- [x] los totales y propietarias heredados concilian sin diferencias;
+- [x] los bloqueos vigentes tienen propietario y condición de salida;
+- [x] no se define cancelación, expiración o reimpresión por anticipado;
+- [x] no se declara implementación ni evidencia física ejecutada.
+
+---
+
+#### 14. Requisitos de prueba derivados
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: el registro canónico vigente ya protege la separación entre acuse técnico, aceptación del periférico, efecto físico, resultado desconocido, idempotencia y conciliación. Esta tarea especializa esas reglas para el servicio de impresión sin crear comportamiento de prueba adicional, cambiar responsables ni declarar evidencia implementada. Por tanto, crea 0, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0 requisitos.
+
+---
+
+#### 15. Handoff cerrado hacia `PRINT-ARC-013`
+
+`PRINT-ARC-013` recibe:
+
+- `VENTO-PRINT-CONFIRMATION` `1.0.0`;
+- siete niveles de confirmación;
+- seis perfiles de cierre;
+- ocho estados globales;
+- siete resultados de conciliación;
+- la regla de no inferir éxito o fallo por timeout;
+- estados abiertos que podrán recibir cancelación o expiración sin borrar receipts;
+- cincuenta salidas con nivel terminal materializado.
+
+`PRINT-ARC-013` deberá definir cuándo una intención todavía puede cancelarse, cómo se registra una solicitud tardía, qué expira sin negar un efecto físico posible y cómo interactúa con `RESULT_UNKNOWN`, impresión confirmada y entrega pendiente.
+
+La aprobación de `PRINT-ARC-012` no inicia, desarrolla ni aprueba `PRINT-ARC-013`.
+
+
 ### [ ] PRINT-ARC-013 — Definir cancelación y expiración
 ### [ ] PRINT-ARC-014 — Definir reimpresión como acción separada y auditable
 ### [ ] PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración
