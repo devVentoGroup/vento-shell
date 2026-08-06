@@ -1798,7 +1798,882 @@ Ningún destino anterior se inicia mediante esta tarea.
 `AUTH-UI-055 — Crear prototipo por rol`
 
 
-### [ ] AUTH-UI-055 — Crear prototipo por rol
+### ✅ AUTH-UI-055 — Crear prototipo por rol
+
+**Estado:** APROBADA
+**Tarea anterior:** `AUTH-UI-054 — Reducir opciones irrelevantes` — APROBADA
+**Tarea siguiente:** `AUTH-UI-056 — Validar prototipo antes de implementar` — RESERVADA
+**Tipo de tarea:** documental; prototipo funcional materializado de la superficie inicial y navegación de NEXO para ocho contextos de actor, función y dispositivo, sin implementación física ni validación con usuarios
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/06_EXPERIENCIA_USABILIDAD_Y_APROBACION.md`
+**Repositorio de aplicación inspeccionado:** `vento-nexo`
+**Ruta prioritaria:** `NEXO-REMISSIONS-001`
+**Etapa prioritaria:** `NEXO_UI_VALIDATION`
+**Superficie propietaria:** `NEXO-ROUTE-001` — `/`
+**Cambios físicos autorizados:** ninguno; no modifica código, componentes, rutas, permisos, roles, funciones, procesos, datos, Supabase, migraciones, RLS, configuración, telemetría ni despliegues
+
+---
+
+#### 1. Propósito
+
+Materializar un prototipo funcional y revisable para cada contexto aprobado de
+NEXO, de modo que la superficie inicial muestre una sola proyección coherente,
+una sola acción primaria y únicamente las tareas relevantes para el actor
+humano, la función activa, el territorio, el trabajo vigente y el dispositivo.
+
+El título canónico conserva la expresión “por rol”, pero el prototipo no usa el
+nombre del cargo como fuente de autoridad. La variante visible se resuelve con:
+
+```text
+ACTOR EFECTIVO
++
+FUNCIÓN ACTIVA
++
+CONTEXTO TERRITORIAL Y LABORAL
++
+DISPOSITIVO Y SESIÓN COMPATIBLES
++
+TAREAS AUTORIZADAS Y TRABAJO VIGENTE
++
+PRIORIDAD, ESTADO, CUSTODIA, HANDOFF Y BLOQUEOS
+→
+UNA PROYECCIÓN PROTOTIPADA
+```
+
+La misma ruta `/` presenta variantes de composición. No existen rutas distintas
+por actor y ninguna decisión visual concede permiso, asignación, territorio,
+custodia, etapa o capacidad de mutación.
+
+---
+
+#### 2. Resultado material
+
+Se materializan ocho artefactos documentales consumibles:
+
+1. `NEXO-ACTOR-PROTOTYPE-CONTRACT-001`, que define identidad, autoridad,
+   fidelidad, límites y unidad del prototipo;
+2. `NEXO-ACTOR-PROTOTYPE-VISUAL-GRAMMAR-001`, que fija jerarquía, densidad,
+   componentes, interacción y compatibilidad con el sistema visual vigente;
+3. `NEXO-ACTOR-PROTOTYPE-CATALOG-001`, que materializa ocho variantes de
+   proyección;
+4. `NEXO-ACTOR-PROTOTYPE-WIREFRAME-SET-001`, que representa la composición
+   completa de cada variante;
+5. `NEXO-PROTOTYPE-TASK-TRACEABILITY-REGISTER-001`, que asigna una decisión
+   explícita a las veintinueve tareas canónicas;
+6. `NEXO-ACTOR-PROTOTYPE-STATE-MATRIX-001`, que materializa diez estados de
+   presentación y recuperación;
+7. `NEXO-ACTOR-PROTOTYPE-RESPONSIVE-INTERACTION-CONTRACT-001`, que define móvil,
+   tablet, escritorio, estación compartida, foco, tacto y accesibilidad;
+8. `NEXO-ACTOR-PROTOTYPE-HANDOFF-001`, que entrega el prototipo a validación sin
+   iniciar la tarea siguiente.
+
+Cobertura materializada:
+
+| Elemento                                            | Total esperado | Total materializado | Faltantes | Duplicados |
+| --------------------------------------------------- | -------------: | ------------------: | --------: | ---------: |
+| Superficies iniciales reutilizadas                  |              1 |                   1 |         0 |          0 |
+| Contextos de actor, función y dispositivo           |              8 |                   8 |         0 |          0 |
+| Proyecciones funcionales principales                |              6 |                   6 |         0 |          0 |
+| Composiciones especiales                            |              2 |                   2 |         0 |          0 |
+| Zonas comunes de composición                        |              8 |                   8 |         0 |          0 |
+| Familias de tareas canónicas                        |              8 |                   8 |         0 |          0 |
+| Tareas humanas o resolutores                        |             29 |                  29 |         0 |          0 |
+| Niveles visibles de presentación                    |              5 |                   5 |         0 |          0 |
+| Clases fuera de la proyección                       |              1 |                   1 |         0 |          0 |
+| Estados de presentación                             |             10 |                  10 |         0 |          0 |
+| Rutas, roles, funciones, procesos o permisos nuevos |              0 |                   0 |         0 |          0 |
+| Requisitos de prueba nuevos o modificados           |              0 |                   0 |         0 |          0 |
+
+El resultado queda `ESPECIFICADO` y `PROTOTIPADO_DOCUMENTALMENTE`. No se declara
+`IMPLEMENTADO`, `VALIDADO`, probado con usuarios ni disponible en producción.
+
+---
+
+#### 3. Decisiones y contratos consumidos
+
+La tarea consume sin modificar:
+
+- `NEXO-ACTOR-HOME-PAGE-CONTRACT-001`;
+- `NEXO-ACTOR-HOME-RESOLUTION-MATRIX-001`;
+- `NEXO-ACTOR-HOME-COMPOSITION-MATRIX-001`;
+- `NEXO-ACTOR-HOME-INFORMATION-ARCHITECTURE-001`;
+- `NEXO-ACTOR-HOME-PRIORITY-CONTRACT-001`;
+- `NEXO-ACTOR-HOME-STATE-CONTRACT-001`;
+- `NEXO-ACTOR-HOME-RESPONSIVE-ACCESSIBILITY-CONTRACT-001`;
+- `NEXO-FREQUENT-TASK-NAVIGATION-CONTRACT-001`;
+- `NEXO-FREQUENCY-SIGNAL-CONTRACT-001`;
+- `NEXO-ACTOR-FREQUENT-TASK-MATRIX-001`;
+- `NEXO-TASK-PLACEMENT-REGISTER-001`;
+- `NEXO-RECENT-CONTINUATION-CONTRACT-001`;
+- `NEXO-FREQUENT-TASK-STATE-CONTRACT-001`;
+- `NEXO-OPTION-RELEVANCE-CONTRACT-001`;
+- `NEXO-OPTION-REDUCTION-LAYER-CATALOG-001`;
+- `NEXO-ACTOR-OPTION-REDUCTION-MATRIX-001`;
+- `NEXO-TASK-REDUCTION-REGISTER-001`;
+- `NEXO-OPTION-DEDUPE-AND-COLLAPSE-CONTRACT-001`;
+- `NEXO-OPTION-REDUCTION-STATE-CONTRACT-001`;
+- `NEXO-TASK-NAVIGATION-CONTRACT-001`;
+- `NEXO-NAVIGATION-TASK-CATALOG-001`;
+- `NEXO-ACTOR-TASK-COMPOSITION-MATRIX-001`;
+- `NEXO-ROUTE-TO-TASK-REGISTRY-001`;
+- `NEXO-NAVIGATION-ENTRY-RETURN-CONTRACT-001`;
+- `NEXO-CONTEXTUAL-UTILITY-CONTRACT-001`;
+- `NEXO-NAVIGATION-STATE-CONTRACT-001`;
+- los contratos de inicio de solicitante, bodega, conductor, receptor y
+  supervisor;
+- los contratos vigentes de contexto visible, captura única, tareas frecuentes,
+  divulgación progresiva, tacto, densidad, accesibilidad, sensibilidad, masking,
+  dispositivo compartido y estados interactivos auxiliares;
+- los requisitos `TREQ-NEXO-050` a `TREQ-NEXO-090` y los requisitos `TREQ-UX-*`
+  vigentes asociados a prototipos, accesibilidad, relevancia, contexto, tacto y
+  validación humana.
+
+No se cambia la identidad, etiqueta, familia, grupo, disposición, audiencia,
+responsabilidad, permiso, proceso, etapa o regla de exposición de ninguna tarea
+consumida.
+
+---
+
+#### 4. Alcance y límites
+
+##### 4.1. Incluido
+
+- ocho variantes completas de la misma superficie `/`;
+- una composición diferenciada para solicitante, bodega, conductor, receptor,
+  supervisor y configuración;
+- composición específica para persona multifunción y dispositivo compartido;
+- ocho zonas comunes en orden estable;
+- una única acción primaria por variante;
+- siguiente tarea, frecuentes, recientes, bloqueos, familias y utilidades;
+- máximo cuatro tareas frecuentes y tres continuaciones recientes;
+- estados de carga, vacío, parcialidad, retiro, denegación, revocación y fallo;
+- decisión explícita para las veintinueve tareas del catálogo;
+- reglas de móvil, tablet, escritorio y estación compartida;
+- especificación de foco, tacto, teclado, lector de pantalla y lenguaje;
+- evidencia documental de diferencias entre el comportamiento actual y el
+  objetivo prototipado.
+
+##### 4.2. Excluido
+
+- construir componentes ejecutables;
+- modificar la página actual, el shell, el sidebar o el launcher de aplicaciones;
+- crear rutas por actor;
+- conectar consultas, resolutores, caché, eventos o telemetría;
+- crear datos de ejemplo en Supabase;
+- validar tiempos, comprensión, errores, accesibilidad o ergonomía con personas;
+- declarar resultados de uso, aceptación o desempeño;
+- seleccionar una variante desde un parámetro enviado por el cliente;
+- cambiar permisos, funciones, asignaciones, contexto o reglas de autorización;
+- iniciar `AUTH-UI-056` a `AUTH-UI-060`;
+- ejecutar cambios físicos o desplegados.
+
+---
+
+#### 5. `NEXO-ACTOR-PROTOTYPE-CONTRACT-001`
+
+##### 5.1. Unidad prototipada
+
+La unidad es una proyección de trabajo sobre `NEXO-ROUTE-001` — `/`. Cada
+proyección conserva:
+
+- actor efectivo atribuible;
+- función activa;
+- sede, área, turno, check-in y dispositivo cuando aplican;
+- acción primaria;
+- siguiente tarea o ausencia concluyente de ella;
+- tareas frecuentes elegibles;
+- continuaciones recientes revalidadas;
+- bloqueos y vencimientos accionables;
+- tareas secundarias por familia;
+- utilidades contextuales y cambio seguro de contexto.
+
+El prototipo usa datos semánticos de ejemplo, nunca IDs de recursos, personas,
+sedes, remisiones, cantidades, fechas o métricas que pretendan representar el
+estado real.
+
+##### 5.2. Autoridad
+
+El prototipo representa una respuesta ya resuelta por servidor. No permite que
+el cliente declare:
+
+- actor;
+- rol o función;
+- sede o área;
+- turno o check-in;
+- permiso;
+- prioridad;
+- etapa o estado;
+- asignación, custodia o handoff;
+- variante de pantalla;
+- disponibilidad de una tarea.
+
+Cada acceso y acción del futuro producto deberá revalidar el contrato vigente.
+La presencia de un control en este prototipo no constituye una concesión.
+
+##### 5.3. Fidelidad
+
+El prototipo es de fidelidad funcional media:
+
+- suficiente para revisar jerarquía, contenido, secuencia, estados y adaptación;
+- suficiente para identificar qué se muestra, se colapsa, se invoca en contexto
+  o se excluye;
+- insuficiente para acreditar usabilidad, rendimiento, accesibilidad ejecutada,
+  integración, autorización, datos, periféricos o comportamiento real.
+
+##### 5.4. Invariantes
+
+1. Una sola proyección activa por render.
+2. Una sola acción primaria.
+3. La siguiente tarea precede a listas secundarias.
+4. No se duplican acción primaria, siguiente tarea, reciente y frecuente.
+5. Las tareas autorizadas no prioritarias permanecen descubribles por familia.
+6. Las tareas incompatibles no se muestran como controles bloqueados.
+7. Los resolutores permanecen dentro de la tarea invocante.
+8. El contexto material permanece visible durante acciones relevantes.
+9. El espacio adicional no aumenta opciones de primer nivel.
+10. Cambiar actor, función o contexto invalida la proyección anterior.
+
+---
+
+#### 6. `NEXO-ACTOR-PROTOTYPE-VISUAL-GRAMMAR-001`
+
+##### 6.1. Zonas y orden
+
+| Orden | Zona                            | Composición prototipada                                                                          |
+| ----: | ------------------------------- | ------------------------------------------------------------------------------------------------ |
+|     1 | Contexto activo                 | función, sede, área, jornada y dispositivo aplicables; detalle ampliable sin claves técnicas     |
+|     2 | Acción primaria                 | un CTA con verbo y resultado humano; nunca dos acciones equivalentes                             |
+|     3 | Siguiente tarea                 | tarjeta dominante con tarea, recurso permitido, estado, motivo de prioridad y continuación       |
+|     4 | Tareas frecuentes               | hasta cuatro accesos agregados, sin instancias duplicadas                                        |
+|     5 | Continuar trabajo reciente      | hasta tres instancias revalidadas con estado y última confirmación                               |
+|     6 | Bloqueos y vencimientos         | causa, efecto, responsable y recuperación; no usa solo color                                     |
+|     7 | Todas las tareas disponibles    | familias humanas colapsables; se excluyen familias vacías                                        |
+|     8 | Utilidades y cambio de contexto | escaneo, impresión o cambio de función únicamente cuando la tarea y el dispositivo lo justifican |
+
+##### 6.2. Sistema visual conservado
+
+El prototipo conserva la gramática visual vigente de NEXO:
+
+- fondo claro frío y superficies blancas;
+- acento de marca dorado para acción primaria y énfasis controlado;
+- texto principal oscuro y texto secundario con contraste suficiente;
+- tarjetas con borde, radio y sombra moderados;
+- estados críticos acompañados por título, explicación y acción, no solo color;
+- jerarquía tipográfica por propósito, no por tamaño decorativo;
+- máximo dos columnas para contenido operativo;
+- objetivos táctiles ordinarios de al menos 48 por 48 unidades lógicas;
+- iconos siempre acompañados por etiqueta o nombre accesible.
+
+No se crean tokens, logos, iconos, componentes ni paletas adicionales.
+
+##### 6.3. Densidad
+
+| Proyección             | Nivel base                     | Regla                                                                                      |
+| ---------------------- | ------------------------------ | ------------------------------------------------------------------------------------------ |
+| solicitante            | `D0_FOCUSED`                   | crear, continuar y seguir solicitudes propias sin paneles administrativos                  |
+| bodega                 | `D1_CONTEXTUAL`                | siguiente trabajo, cola corta y referencias físicas necesarias                             |
+| conductor              | `D0_FOCUSED`                   | una custodia o siguiente hito, sin tablas globales                                         |
+| receptor               | `D0_FOCUSED`                   | handoff, verificación y recepción de una entrega atribuida                                 |
+| supervisor             | `D2_COMPARATIVE`               | comparar casos, bloqueos y evidencia dentro de cobertura, sin mutación operativa ordinaria |
+| configuración          | `D2_COMPARATIVE`               | capacidades administrativas, alcance y cambios pendientes, sin ejecución física            |
+| multifunción           | nivel de la función activa     | no combina densidades ni controles de varias funciones                                     |
+| dispositivo compartido | `D0_FOCUSED` o `D1_CONTEXTUAL` | limita información y tareas a actor y estación compatibles                                 |
+
+##### 6.4. Componentes conceptuales
+
+| Componente                 | Contenido mínimo                                      | Prohibición principal                           |
+| -------------------------- | ----------------------------------------------------- | ----------------------------------------------- |
+| resumen de contexto        | función, territorio, jornada y dispositivo aplicables | inferir autoridad desde el selector             |
+| tarjeta de siguiente tarea | intención, estado, recurso permitido, motivo y CTA    | mostrar conteos parciales como definitivos      |
+| acceso frecuente           | tarea agregada, propósito y contexto                  | repetir instancias recientes                    |
+| continuación reciente      | instancia, etapa, última confirmación y frescura      | conservar trabajo revocado                      |
+| bloqueo                    | causa humana, efecto, responsable y recuperación      | exponer razón técnica, SQL o permiso            |
+| familia secundaria         | nombre humano y tareas autorizadas                    | mostrar encabezado vacío o opciones sin acceso  |
+| utilidad contextual        | propósito, tarea invocante y retorno                  | convertirse en módulo global                    |
+| cambio de función o actor  | función destino autorizada, efecto y confirmación     | mezclar datos o caché de la proyección anterior |
+
+---
+
+#### 7. `NEXO-ACTOR-PROTOTYPE-CATALOG-001`
+
+| Prototipo        | Contexto canónico                       | Proyección propietaria                        | Acción primaria ordinaria                  | Siguiente trabajo prototipado                                      | Densidad         | Estado         |
+| ---------------- | --------------------------------------- | --------------------------------------------- | ------------------------------------------ | ------------------------------------------------------------------ | ---------------- | -------------- |
+| `PROTO-NEXO-001` | solicitante autorizado                  | `NEXO-REQUESTER-HOME-CONTRACT-001`            | `NUEVA SOLICITUD` cuando esté autorizado   | borrador o solicitud propia que requiere continuar                 | `D0_FOCUSED`     | `ESPECIFICADO` |
+| `PROTO-NEXO-002` | bodeguero o preparador autorizado       | `NEXO-WAREHOUSE-HOME-CONTRACT-001`            | `CONTINUAR SIGUIENTE TAREA`                | preparación, entrada, ubicación, movimiento, retiro o conteo       | `D1_CONTEXTUAL`  | `ESPECIFICADO` |
+| `PROTO-NEXO-003` | conductor o custodio autorizado         | `NEXO-DRIVER-HOME-CONTRACT-001`               | `CONTINUAR SIGUIENTE TAREA`                | custodia, tránsito, entrega, incidencia o retorno asignados        | `D0_FOCUSED`     | `ESPECIFICADO` |
+| `PROTO-NEXO-004` | receptor autorizado                     | `NEXO-RECEIVER-HOME-CONTRACT-001`             | `CONTINUAR SIGUIENTE TAREA`                | handoff, verificación, recepción o putaway compatibles             | `D0_FOCUSED`     | `ESPECIFICADO` |
+| `PROTO-NEXO-005` | supervisor con cobertura territorial    | `NEXO-SUPERVISOR-HOME-CONTRACT-001`           | `CONTINUAR SIGUIENTE TAREA`                | caso, diferencia, bloqueo, vencimiento o evidencia por revisar     | `D2_COMPARATIVE` | `ESPECIFICADO` |
+| `PROTO-NEXO-006` | configurador autorizado                 | `NEXO-TASK-NAVIGATION-CONTRACT-001`           | abrir capacidad administrativa prioritaria | configuración de catálogo, ubicaciones, abastecimiento o impresión | `D2_COMPARATIVE` | `ESPECIFICADO` |
+| `PROTO-NEXO-007` | persona con varias funciones            | proyección de una única función activa        | la definida por la función activa          | únicamente trabajo de la función seleccionada y revalidada         | heredada         | `ESPECIFICADO` |
+| `PROTO-NEXO-008` | dispositivo compartido con actor activo | proyección compatible con actor y dispositivo | la definida por la función activa          | trabajo atribuible compatible con estación, turno y territorio     | `D0` o `D1`      | `ESPECIFICADO` |
+
+Reconciliación:
+
+```text
+EXPECTED_PROTOTYPES = 8
+MATERIALIZED_PROTOTYPES = 8
+UNIQUE_PROTOTYPE_IDS = 8
+MISSING_PROTOTYPES = 0
+DUPLICATE_PROTOTYPES = 0
+```
+
+---
+
+#### 8. `NEXO-ACTOR-PROTOTYPE-WIREFRAME-SET-001`
+
+Los wireframes usan contenido semántico controlado. Expresiones como “una tarea
+asignada” o “una entrega atribuida” representan posiciones de interfaz, no datos
+reales ni resultados de ejecución.
+
+##### 8.1. `PROTO-NEXO-001` — Solicitante
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ NEXO · Solicitudes propias                                   │
+│ Contexto: función solicitante · sede y área activas          │
+├──────────────────────────────────────────────────────────────┤
+│ [ NUEVA SOLICITUD ]                                          │
+├──────────────────────────────────────────────────────────────┤
+│ SIGUIENTE TAREA                                              │
+│ Continuar una solicitud propia · estado y siguiente paso     │
+│ [ Continuar ]                                                │
+├──────────────────────────────────────────────────────────────┤
+│ FRECUENTES                         RECIENTES                  │
+│ • Solicitar abastecimiento         • Borrador revalidado      │
+│ • Gestionar solicitud propia       • Solicitud propia activa  │
+├──────────────────────────────────────────────────────────────┤
+│ BLOQUEOS Y ACLARACIONES                                     │
+│ Mensaje, efecto y acción propia permitida                    │
+├──────────────────────────────────────────────────────────────┤
+│ TODAS LAS TAREAS                                             │
+│ Mi trabajo · Consultar y controlar                           │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Decisiones:
+
+- no muestra preparación, transporte, recepción, supervisión ni configuración;
+- no muestra stock global, costos, solicitudes ajenas ni métricas de desempeño;
+- una solicitud propia puede aparecer como siguiente tarea o reciente, no en
+  ambas zonas;
+- `NEXO-TASK-003` permanece como acción fija cuando crear está autorizado;
+- sin trabajo continuable se conserva la acción de nueva solicitud y se presenta
+  vacío concluyente, no una cola inventada.
+
+##### 8.2. `PROTO-NEXO-002` — Bodega o preparación
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ NEXO · Trabajo de bodega                                     │
+│ Contexto: bodega · sede · área warehouse · jornada activa    │
+├──────────────────────────────────────────────────────────────┤
+│ SIGUIENTE TAREA                                              │
+│ Preparar una solicitud asignada · prioridad autoritativa     │
+│ [ CONTINUAR SIGUIENTE TAREA ]                                │
+├──────────────────────────────────────────────────────────────┤
+│ TAREAS FRECUENTES                                            │
+│ Preparar · Registrar entrada · Ubicar · Mover                │
+├──────────────────────────────────────────────────────────────┤
+│ CONTINUAR TRABAJO RECIENTE                                   │
+│ Hasta tres instancias vigentes con última confirmación       │
+├──────────────────────────────────────────────────────────────┤
+│ BLOQUEOS Y VENCIMIENTOS                                      │
+│ faltante, handoff o conteo que requiere acción permitida     │
+├──────────────────────────────────────────────────────────────┤
+│ TODAS LAS TAREAS                                             │
+│ Mi trabajo · Consultar y controlar                           │
+├──────────────────────────────────────────────────────────────┤
+│ UTILIDADES CONTEXTUALES                                      │
+│ Escanear o imprimir solo desde la tarea que lo necesita      │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Decisiones:
+
+- no muestra conducción, recepción ajena, aprobación, ajustes ni configuración;
+- preparación no concede tránsito y conteo no concede ajuste;
+- consulta de existencias, movimientos y ubicaciones permanece secundaria;
+- escaneo e impresión no aparecen como módulos globales;
+- la cola no mezcla trabajo de otras sedes, áreas o actores.
+
+##### 8.3. `PROTO-NEXO-003` — Conductor o custodia
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ NEXO · Transporte asignado                                   │
+│ Contexto: conductor · jornada · ruta y vehículo autorizados  │
+├──────────────────────────────────────────────────────────────┤
+│ SIGUIENTE HITO                                               │
+│ Carga bajo custodia · estado, destino y ventana permitidos   │
+│ [ CONTINUAR SIGUIENTE TAREA ]                                │
+├──────────────────────────────────────────────────────────────┤
+│ SECUENCIA DE CUSTODIA                                        │
+│ Recoger → aceptar custodia → tránsito → entrega → retorno    │
+├──────────────────────────────────────────────────────────────┤
+│ BLOQUEOS O INCIDENCIAS                                       │
+│ condición material, efecto y recuperación autorizada         │
+├──────────────────────────────────────────────────────────────┤
+│ REFERENCIAS NECESARIAS                                       │
+│ carga, ruta, destino y evidencia mínima                      │
+├──────────────────────────────────────────────────────────────┤
+│ UTILIDADES CONTEXTUALES                                      │
+│ escaneo o impresión vinculados a la carga actual             │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Decisiones:
+
+- no muestra solicitudes, picking, recepción, ajustes, stock global o
+  configuración;
+- preparar no acepta custodia y entregar físicamente no ejecuta recepción;
+- la acción principal se vincula a una asignación o custodia vigente;
+- la interfaz no exige interacción durante conducción o una maniobra insegura;
+- sin asignación concluyente muestra vacío válido, no trabajo de otros actores.
+
+##### 8.4. `PROTO-NEXO-004` — Recepción
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ NEXO · Recepción en sede                                     │
+│ Contexto: función receptora · sede y área destino            │
+├──────────────────────────────────────────────────────────────┤
+│ SIGUIENTE TAREA                                              │
+│ Entrega atribuida · handoff y estado de custodia             │
+│ [ CONTINUAR SIGUIENTE TAREA ]                                │
+├──────────────────────────────────────────────────────────────┤
+│ VERIFICACIÓN FÍSICA                                          │
+│ manifiesto · cantidades · condición · evidencia              │
+├──────────────────────────────────────────────────────────────┤
+│ RECEPCIONES RECIENTES                                        │
+│ hasta tres instancias revalidadas                            │
+├──────────────────────────────────────────────────────────────┤
+│ DIFERENCIAS Y BLOQUEOS                                       │
+│ parcialidad, conflicto o evidencia pendiente                 │
+├──────────────────────────────────────────────────────────────┤
+│ REFERENCIAS AUTORIZADAS                                      │
+│ existencias y ubicación necesarias para la tarea             │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Decisiones:
+
+- no muestra conducción, preparación, decisión supervisora o configuración;
+- arribo no equivale a recepción y recepción parcial no se presenta completa;
+- reportar diferencia no la resuelve ni genera un ajuste;
+- putaway aparece únicamente cuando la función y el trabajo lo permiten;
+- el conductor custodio no puede autoentregarse ni autorecibirse la misma carga.
+
+##### 8.5. `PROTO-NEXO-005` — Supervisión
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ NEXO · Control de operación                                  │
+│ Contexto: supervisión · cobertura territorial · periodo      │
+├──────────────────────────────────────────────────────────────┤
+│ SIGUIENTE CASO                                               │
+│ bloqueo, vencimiento o diferencia prioritaria                │
+│ [ CONTINUAR SIGUIENTE TAREA ]                                │
+├──────────────────────────────────────────────────────────────┤
+│ CASOS PRIORITARIOS                 EVIDENCIA                  │
+│ • seguridad o custodia             • completa / insuficiente │
+│ • diferencia material              • responsable y plazo     │
+├──────────────────────────────────────────────────────────────┤
+│ CONSULTAR Y CONTROLAR                                       │
+│ existencias · movimientos · ubicaciones · activos            │
+├──────────────────────────────────────────────────────────────┤
+│ BLOQUEOS Y CONFLICTOS                                        │
+│ alcance, segregación, versión o evidencia                    │
+├──────────────────────────────────────────────────────────────┤
+│ ACCIONES AUTORIZADAS                                         │
+│ decisión atómica o escalamiento; sin captura física ordinaria│
+└──────────────────────────────────────────────────────────────┘
+```
+
+Decisiones:
+
+- leer no concede corregir, aprobar o ejecutar;
+- la cobertura territorial no se presenta como sede operativa activa;
+- un caso muestra hecho, evidencia, responsable, vencimiento y versión;
+- cuando existe conflicto de interés se retira la decisión incompatible y se
+  ofrece escalamiento;
+- no incluye configuración no concedida ni métricas individuales.
+
+##### 8.6. `PROTO-NEXO-006` — Configuración
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ NEXO · Administración                                       │
+│ Contexto: capacidad administrativa · cobertura y modo        │
+├──────────────────────────────────────────────────────────────┤
+│ SIGUIENTE CONFIGURACIÓN                                      │
+│ capacidad prioritaria autorizada                             │
+│ [ ABRIR TAREA ]                                              │
+├──────────────────────────────────────────────────────────────┤
+│ FRECUENTES                                                   │
+│ productos y unidades · ubicaciones · abastecimiento          │
+├──────────────────────────────────────────────────────────────┤
+│ ADMINISTRAR                                                  │
+│ activos · referencias internas · impresión                   │
+├──────────────────────────────────────────────────────────────┤
+│ IMPACTO Y DEPENDENCIAS                                       │
+│ alcance, versión, consumidores y cambios pendientes          │
+├──────────────────────────────────────────────────────────────┤
+│ REFERENCIAS                                                  │
+│ datos operativos mínimos para evaluar el efecto              │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Decisiones:
+
+- no muestra colas físicas, solicitudes concretas, recepción, conducción ni
+  mutaciones operativas;
+- una capacidad administrativa exacta no equivale a acceso global;
+- cobertura y filtros no cambian jornada ni contexto operativo;
+- las opciones secundarias no compiten con la capacidad prioritaria;
+- acciones sensibles y cambios masivos permanecen fuera del flujo ordinario y
+  requieren sus contratos propietarios.
+
+##### 8.7. `PROTO-NEXO-007` — Persona multifunción
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ NEXO · Función activa: Bodega                                │
+│ Otras funciones autorizadas: disponibles mediante cambio     │
+├──────────────────────────────────────────────────────────────┤
+│ [ CONTINUAR SIGUIENTE TAREA DE BODEGA ]                      │
+├──────────────────────────────────────────────────────────────┤
+│ Proyección completa y exclusiva de bodega                    │
+├──────────────────────────────────────────────────────────────┤
+│ CAMBIAR FUNCIÓN                                              │
+│ Seleccionar función → explicar efecto → confirmar            │
+│ → retirar datos anteriores → resolver nueva proyección       │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Decisiones:
+
+- el ejemplo usa bodega únicamente para representar una función activa; no
+  concede esa función;
+- no fusiona listas, frecuentes, recientes, bloqueos ni datos de varias
+  funciones;
+- cambiar de función elimina la proyección, caché y continuaciones incompatibles;
+- una persona no puede autoaprobar, autopreparar, autotransportar o autorecibir
+  cuando el contrato exige separación;
+- el selector muestra solo funciones vigentes y autorizadas.
+
+##### 8.8. `PROTO-NEXO-008` — Dispositivo compartido con actor activo
+
+```text
+┌──────────────────────────────────────────────────────────────┐
+│ NEXO · Estación compartida                                   │
+│ Dispositivo y territorio · Actor humano y jornada vigentes   │
+├──────────────────────────────────────────────────────────────┤
+│ SIGUIENTE TAREA COMPATIBLE                                   │
+│ trabajo atribuible al actor y admitido por la estación       │
+│ [ CONTINUAR ]                                                │
+├──────────────────────────────────────────────────────────────┤
+│ PROYECCIÓN DE LA FUNCIÓN ACTIVA                              │
+│ información minimizada · objetivos táctiles · una acción     │
+├──────────────────────────────────────────────────────────────┤
+│ UTILIDADES DE ESTACIÓN                                       │
+│ escáner o impresora solo cuando la tarea lo exige            │
+├──────────────────────────────────────────────────────────────┤
+│ [ CAMBIAR ACTOR ]  [ CERRAR ACTOR ]                          │
+└──────────────────────────────────────────────────────────────┘
+```
+
+Decisiones:
+
+- el dispositivo limita aplicaciones y capacidades máximas, pero no aporta rol,
+  permiso, turno, territorio ni identidad humana;
+- sin actor humano se retiran trabajo atribuible, datos sensibles y mutaciones;
+- cambiar actor limpia tareas, recientes, búsquedas, borradores y referencias
+  privadas del actor anterior;
+- administración permanece fuera de la estación ordinaria;
+- una cuenta técnica no aparece como trabajador ni aprobador.
+
+---
+
+#### 9. `NEXO-PROTOTYPE-TASK-TRACEABILITY-REGISTER-001`
+
+Cada identidad conserva su etiqueta, familia y disposición aprobadas. La
+columna de tratamiento describe su representación dentro de los ocho
+prototipos, no cambia su autorización ni crea un binding físico.
+
+| Tarea           | Etiqueta humana                   | Disposición heredada         | Prototipo o contexto principal               | Tratamiento prototipado                                                                   | Estado         |
+| --------------- | --------------------------------- | ---------------------------- | -------------------------------------------- | ----------------------------------------------------------------------------------------- | -------------- |
+| `NEXO-TASK-001` | Ir al inicio                      | `HOME_ONLY`                  | todos                                        | identidad de retorno y resolución; no se repite como opción dentro de `/`                 | `ESPECIFICADO` |
+| `NEXO-TASK-002` | Gestionar abastecimiento interno  | `PRIMARY_RESOLVED_CANDIDATE` | solicitante, bodega, conductor y receptor    | siguiente tarea o continuación según etapa propia; nunca acceso genérico duplicado        | `ESPECIFICADO` |
+| `NEXO-TASK-003` | Solicitar abastecimiento          | `PRIMARY_FIXED`              | solicitante                                  | acción primaria cuando crear o continuar solicitud propia está autorizado                 | `ESPECIFICADO` |
+| `NEXO-TASK-004` | Preparar abastecimiento           | `PRIMARY_RESOLVED_CANDIDATE` | bodega                                       | siguiente tarea, frecuente o reciente según instancia; excluida de otras funciones        | `ESPECIFICADO` |
+| `NEXO-TASK-005` | Transportar abastecimiento        | `PRIMARY_RESOLVED_CANDIDATE` | conductor                                    | siguiente tarea vinculada a asignación o custodia; no aparece sin relación vigente        | `ESPECIFICADO` |
+| `NEXO-TASK-006` | Recibir abastecimiento            | `PRIMARY_RESOLVED_CANDIDATE` | receptor                                     | siguiente tarea vinculada a destino y handoff; no concede decisión supervisora            | `ESPECIFICADO` |
+| `NEXO-TASK-007` | Registrar una entrada             | `PRIMARY_RESOLVED_CANDIDATE` | bodega o receptor autorizado                 | siguiente o frecuente solo con fuente empresarial o excepción autorizada                  | `ESPECIFICADO` |
+| `NEXO-TASK-008` | Ubicar existencias                | `PRIMARY_RESOLVED_CANDIDATE` | bodega o receptor autorizado                 | siguiente tarea cuando existe putaway atribuible; no expone configuración de ubicaciones  | `ESPECIFICADO` |
+| `NEXO-TASK-009` | Mover existencias                 | `PRIMARY_RESOLVED_CANDIDATE` | bodega                                       | frecuente o siguiente según traslado autorizado; no sustituye remisión entre sedes        | `ESPECIFICADO` |
+| `NEXO-TASK-010` | Registrar un retiro               | `PRIMARY_RESOLVED_CANDIDATE` | bodega                                       | frecuente o siguiente con origen, unidad y motivo autorizados                             | `ESPECIFICADO` |
+| `NEXO-TASK-011` | Contar inventario                 | `PRIMARY_RESOLVED_CANDIDATE` | bodega para captura; supervisor para control | la variante cambia por función y etapa; capturar nunca concede ajustar                    | `ESPECIFICADO` |
+| `NEXO-TASK-012` | Controlar la operación            | `PRIMARY_RESOLVED_CANDIDATE` | supervisor                                   | acción o siguiente caso según responsabilidad, riesgo, vencimiento y cobertura            | `ESPECIFICADO` |
+| `NEXO-TASK-013` | Consultar existencias             | `FREQUENT_CANDIDATE`         | solicitante, bodega, receptor o supervisor   | frecuente cuando corresponde; de otro modo permanece en consultar y controlar             | `ESPECIFICADO` |
+| `NEXO-TASK-014` | Investigar movimientos            | `FREQUENT_CANDIDATE`         | bodega o supervisor autorizado               | frecuente o secundaria; conserva solo lectura e investigación                             | `ESPECIFICADO` |
+| `NEXO-TASK-015` | Consultar ubicaciones             | `FREQUENT_CANDIDATE`         | bodega, receptor o supervisor autorizado     | frecuente o referencia contextual; no expone edición de estructura                        | `ESPECIFICADO` |
+| `NEXO-TASK-016` | Consultar contenedores logísticos | `SECONDARY_DISCOVERABLE`     | supervisor o función compatible              | permanece en familia secundaria; no se promueve por existencia de una ruta                | `ESPECIFICADO` |
+| `NEXO-TASK-017` | Gestionar activos                 | `FREQUENT_CANDIDATE`         | supervisor o función de activos compatible   | frecuente únicamente con trabajo, permiso y territorio de activos                         | `ESPECIFICADO` |
+| `NEXO-TASK-018` | Capturar activos                  | `PRIMARY_RESOLVED_CANDIDATE` | función de campo compatible                  | se representa solo cuando esa función sea la activa; queda fuera de remisiones ordinarias | `ESPECIFICADO` |
+| `NEXO-TASK-019` | Contar activos                    | `PRIMARY_RESOLVED_CANDIDATE` | función de activos compatible                | siguiente tarea con sesión y etapa válidas; no se mezcla con conteo de inventario         | `ESPECIFICADO` |
+| `NEXO-TASK-020` | Configurar activos                | `SECONDARY_DISCOVERABLE`     | configuración                                | familia administrativa secundaria; nunca aparece en proyección operativa                  | `ESPECIFICADO` |
+| `NEXO-TASK-021` | Administrar NEXO                  | `PRIMARY_RESOLVED_CANDIDATE` | configuración                                | resuelve una capacidad administrativa prioritaria sin crear acceso global                 | `ESPECIFICADO` |
+| `NEXO-TASK-022` | Administrar productos y unidades  | `FREQUENT_CANDIDATE`         | configuración                                | frecuente administrativa con capacidad exacta y recurrencia válida                        | `ESPECIFICADO` |
+| `NEXO-TASK-023` | Administrar ubicaciones           | `FREQUENT_CANDIDATE`         | configuración                                | frecuente administrativa; no se confunde con ubicar existencias                           | `ESPECIFICADO` |
+| `NEXO-TASK-024` | Configurar abastecimiento         | `FREQUENT_CANDIDATE`         | configuración                                | frecuente administrativa; no expone solicitudes concretas salvo referencia necesaria      | `ESPECIFICADO` |
+| `NEXO-TASK-025` | Configurar referencias internas   | `SECONDARY_DISCOVERABLE`     | configuración                                | familia administrativa secundaria; no se promueve por actividad operativa                 | `ESPECIFICADO` |
+| `NEXO-TASK-026` | Controlar impresión               | `PRIMARY_RESOLVED_CANDIDATE` | supervisor o soporte autorizado              | siguiente tarea solo con trabajos bloqueados, fallidos o pendientes dentro de cobertura   | `ESPECIFICADO` |
+| `NEXO-TASK-027` | Configurar impresión              | `SECONDARY_DISCOVERABLE`     | configuración                                | familia administrativa secundaria; permanece fuera del flujo operativo                    | `ESPECIFICADO` |
+| `NEXO-TASK-028` | Resolver un destino contextual    | `CONTEXTUAL_ONLY`            | tarea invocante compatible                   | utilidad interna de escaneo, código, ubicación o kiosco; retorna a la tarea               | `ESPECIFICADO` |
+| `NEXO-TASK-029` | Resolver acceso                   | `CONTEXTUAL_ONLY`            | autenticación o denegación segura            | permanece fuera de navegación empresarial y no se clasifica como frecuente                | `ESPECIFICADO` |
+
+Reconciliación de disposiciones:
+
+| Disposición                  | Esperado | Materializado | Diferencia |
+| ---------------------------- | -------: | ------------: | ---------: |
+| `HOME_ONLY`                  |        1 |             1 |          0 |
+| `PRIMARY_FIXED`              |        1 |             1 |          0 |
+| `PRIMARY_RESOLVED_CANDIDATE` |       14 |            14 |          0 |
+| `FREQUENT_CANDIDATE`         |        7 |             7 |          0 |
+| `SECONDARY_DISCOVERABLE`     |        4 |             4 |          0 |
+| `CONTEXTUAL_ONLY`            |        2 |             2 |          0 |
+| **Total**                    |   **29** |        **29** |      **0** |
+
+---
+
+#### 10. `NEXO-ACTOR-PROTOTYPE-STATE-MATRIX-001`
+
+| Estado                           | Condición prototipada                                                             | Representación materializada                                     | Acción disponible                            |
+| -------------------------------- | --------------------------------------------------------------------------------- | ---------------------------------------------------------------- | -------------------------------------------- |
+| `RESOLVIENDO_RELEVANCIA`         | actor, función o conjunto autorizado todavía no son concluyentes                  | contexto mínimo, estructura estable y cero datos empresariales   | esperar o cancelar resolución                |
+| `OPCIONES_LISTAS`                | decisión completa con tareas relevantes                                           | ocho zonas ordenadas, sin duplicados y con contexto visible      | acciones incluidas en respuesta autoritativa |
+| `ACCION_PRIMARIA_AUSENTE`        | proyección válida sin comando principal autorizado                                | contexto, siguiente trabajo o familias sin fabricar un CTA       | navegación secundaria autorizada             |
+| `VACIO_VALIDO`                   | decisión concluyente sin trabajo ni tarea iniciable relevante                     | mensaje de ausencia real y salida segura                         | cambiar contexto autorizado o salir          |
+| `SOLO_DESCUBRIMIENTO_SECUNDARIO` | no hay trabajo destacado, pero permanecen tareas autorizadas                      | familias secundarias sin promover opciones artificialmente       | abrir tarea secundaria autorizada            |
+| `DATOS_PARCIALES`                | una fuente perdió frescura o falló                                                | último dato confirmado, región afectada y advertencia explícita  | lectura segura y reintento                   |
+| `CONTEXTO_CAMBIADO_O_REVOCADO`   | actor, función, jornada, territorio, dispositivo o permiso dejaron de ser válidos | retiro inmediato de datos y acciones previos                     | resolver nuevamente el contexto              |
+| `OPCION_CAMBIADA_O_RETIRADA`     | tarea o instancia dejó de ser relevante antes de abrir o continuar                | explicación breve, control retirado y conjunto recalculado       | volver a la proyección vigente               |
+| `ACCESO_DIRECTO_DENEGADO`        | una tarea o ruta explícita no supera revalidación                                 | estado estándar minimizado sin revelar opciones de otros actores | recuperación segura derivada del perfil      |
+| `FALLO_TECNICO`                  | no existe decisión estable por indisponibilidad o error                           | mensaje recuperable separado de vacío, denegación y revocación   | reintentar cuando sea seguro                 |
+
+Cobertura por prototipo:
+
+| Prototipo        | Listo | Vacío | Parcial | Revocado | Retirado | Denegado | Fallo | Sin acción | Solo secundario | Resolviendo |
+| ---------------- | :---: | :---: | :-----: | :------: | :------: | :------: | :---: | :--------: | :-------------: | :---------: |
+| `PROTO-NEXO-001` |   ✓   |   ✓   |    ✓    |    ✓     |    ✓     |    ✓     |   ✓   |     ✓      |        ✓        |      ✓      |
+| `PROTO-NEXO-002` |   ✓   |   ✓   |    ✓    |    ✓     |    ✓     |    ✓     |   ✓   |     ✓      |        ✓        |      ✓      |
+| `PROTO-NEXO-003` |   ✓   |   ✓   |    ✓    |    ✓     |    ✓     |    ✓     |   ✓   |     ✓      |        ✓        |      ✓      |
+| `PROTO-NEXO-004` |   ✓   |   ✓   |    ✓    |    ✓     |    ✓     |    ✓     |   ✓   |     ✓      |        ✓        |      ✓      |
+| `PROTO-NEXO-005` |   ✓   |   ✓   |    ✓    |    ✓     |    ✓     |    ✓     |   ✓   |     ✓      |        ✓        |      ✓      |
+| `PROTO-NEXO-006` |   ✓   |   ✓   |    ✓    |    ✓     |    ✓     |    ✓     |   ✓   |     ✓      |        ✓        |      ✓      |
+| `PROTO-NEXO-007` |   ✓   |   ✓   |    ✓    |    ✓     |    ✓     |    ✓     |   ✓   |     ✓      |        ✓        |      ✓      |
+| `PROTO-NEXO-008` |   ✓   |   ✓   |    ✓    |    ✓     |    ✓     |    ✓     |   ✓   |     ✓      |        ✓        |      ✓      |
+
+Los símbolos anteriores documentan cobertura del prototipo, no ejecución ni
+resultado de una prueba.
+
+---
+
+#### 11. `NEXO-ACTOR-PROTOTYPE-RESPONSIVE-INTERACTION-CONTRACT-001`
+
+##### 11.1. Móvil
+
+- una columna;
+- contexto compacto, acción primaria y siguiente tarea antes del primer
+  desplazamiento largo;
+- frecuentes como lista vertical, máximo cuatro;
+- recientes como lista vertical, máximo tres;
+- familias secundarias colapsables con nombre y estado;
+- sin tablas horizontales, hover, gestos ocultos ni controles solo por icono;
+- barras persistentes no cubren contenido, teclado, error ni confirmación;
+- el cambio de función o actor exige confirmación y nueva resolución.
+
+##### 11.2. Tablet
+
+- contexto, siguiente tarea y primer bloqueo visibles en la primera región;
+- una o dos columnas según función, nunca tablero supervisor para operación;
+- objetivos táctiles de al menos 48 por 48 unidades lógicas;
+- espacio suficiente entre confirmar, cancelar, excepción y cambio de actor;
+- escaneo e impresión aparecen dentro de la tarea compatible;
+- rotación y teclado conservan borrador, foco y acción;
+- el prototipo de conductor no se usa durante conducción o maniobra insegura.
+
+##### 11.3. Escritorio
+
+- máximo dos columnas para operación;
+- supervisión y configuración pueden usar densidad comparativa sin mostrar todo;
+- la acción primaria y el siguiente trabajo conservan mayor jerarquía;
+- el sidebar futuro consume la proyección reducida, no todas las rutas permitidas;
+- filtros activos de supervisión o configuración permanecen visibles;
+- más espacio no aumenta frecuentes, recientes ni familias de primer nivel.
+
+##### 11.4. Estación compartida
+
+- actor humano, función y contexto permanecen visibles;
+- cambiar actor retira datos, tareas, borradores y referencias previas;
+- ninguna información personal depende únicamente del menú de perfil;
+- objetivos amplios, lenguaje breve y periféricos contextuales;
+- sin exportaciones locales, backoffice general, opciones administrativas persistentes o
+  preferencias del actor anterior;
+- ausencia de actor produce proyección mínima, no una falsa denegación personal.
+
+##### 11.5. Foco, teclado y lector de pantalla
+
+Orden de foco:
+
+1. contexto activo y detalle;
+2. acción primaria;
+3. siguiente tarea;
+4. tareas frecuentes;
+5. continuaciones recientes;
+6. bloqueos y recuperación;
+7. familias secundarias;
+8. utilidades y cambio de contexto.
+
+Reglas:
+
+- todo control tiene nombre, rol, estado y propósito perceptibles;
+- expandir una familia relaciona control y región y conserva el foco;
+- retirar una opción mueve el foco al conjunto recalculado y anuncia el cambio;
+- una revocación crítica lleva el foco al mensaje y elimina acciones obsoletas;
+- estado, severidad y prioridad no dependen solo del color;
+- una alternativa de teclado y puntero simple existe para cualquier gesto;
+- los wireframes no acreditan contraste, lector, navegación ni tacto reales;
+  esas evidencias pertenecen a las tareas de validación posteriores.
+
+---
+
+#### 12. Comparación con el estado técnico actual
+
+| Elemento                                       | Estado actual verificable                                              | Objetivo representado por el prototipo                                               | Condición de salida                                 |
+| ---------------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------- |
+| superficie inicial `/`                         | existe y usa reglas locales por rol, tipo de sede, permisos y acciones | una proyección por actor efectivo, función, tarea, contexto y prioridad autoritativa | paquete de implementación NEXO                      |
+| acción principal                               | se construye desde listas locales y condiciones de sede                | una acción del contrato de proyección activa                                         | paquete de implementación NEXO                      |
+| navegación lateral                             | carga elementos activos y filtra permisos                              | consume tareas relevantes, deduplicadas y ordenadas                                  | paquete de implementación NEXO                      |
+| agrupación del sidebar                         | renderiza todos los grupos y elementos recibidos                       | cinco niveles visibles y una clase fuera de proyección                               | paquete de implementación NEXO                      |
+| identidad de tarea                             | no forma parte del contrato físico observado                           | `task_id` estable separado de URL y componente                                       | paquete de implementación NEXO                      |
+| frecuencia y recientes                         | no existe evidencia aprobada de resolución autoritativa                | posiciones y estados prototipados sin afirmar instrumentación                        | paquete de implementación NEXO                      |
+| prototipos por contexto                        | no existe implementación física equivalente                            | ocho variantes documentales completas                                                | `AUTH-UI-056` para revisión previa a implementación |
+| validación con usuarios                        | no ejecutada                                                           | no declarada                                                                         | `AUTH-UI-058`                                       |
+| criterios, problemas y aprobación de pantallas | pendientes                                                             | destinos conservados                                                                 | `AUTH-UI-057`, `AUTH-UI-059` y `AUTH-UI-060`        |
+
+La tarea no transforma este diagnóstico en implementación. El prototipo define
+el objetivo que deberá revisarse antes de autorizar cambios físicos.
+
+---
+
+#### 13. Seguridad, privacidad y minimización
+
+1. El prototipo representa datos ya filtrados por servidor.
+2. No incluye catálogos globales ocultos en cliente.
+3. Ninguna variante se selecciona mediante un rol, sede o modo enviado por URL.
+4. Cada acción futura revalida actor, función, permiso, territorio, recurso,
+   etapa, estado y versión.
+5. La variante solicitante muestra solo trabajo propio o participación propia.
+6. Bodega, conductor y receptor muestran únicamente trabajo atribuible.
+7. Supervisión aplica cobertura, segregación, evidencia y conflicto de interés.
+8. Configuración aplica capacidad administrativa exacta y minimización.
+9. Dispositivo compartido conserva principal técnico separado del actor humano.
+10. Cambiar actor, función o contexto elimina proyección, caché y referencias
+    incompatibles.
+11. Mensajes no exponen permission codes, reason codes internos, SQL, tablas,
+    payloads, trazas, actores elegibles ni recursos fuera de alcance.
+12. Conteos, badges y vacíos usan el mismo alcance o uno más restrictivo que el
+    detalle.
+13. Frecuencia y recientes no se presentan como productividad, ranking o
+    evaluación individual.
+14. La simulación, cuando sea admisible, permanece diferenciada y sin efectos.
+15. Acceso directo no reintroduce una opción excluida ni concede autoridad.
+
+---
+
+#### 14. Criterios de aceptación
+
+La tarea se considera documentalmente completa cuando se confirme que:
+
+- existe una sola superficie propietaria, `NEXO-ROUTE-001` — `/`;
+- se materializan ocho prototipos únicos, sin faltantes ni duplicados;
+- las seis proyecciones principales y dos composiciones especiales conservan
+  sus contratos propietarios;
+- cada prototipo muestra contexto, acción primaria, siguiente tarea, frecuentes,
+  recientes, bloqueos, familias y utilidades según aplicabilidad;
+- la acción primaria es única y no se duplica con la siguiente tarea;
+- frecuentes no superan cuatro y recientes no superan tres;
+- las veintinueve tareas tienen una decisión explícita de representación;
+- la distribución heredada `1 / 1 / 14 / 7 / 4 / 2` suma veintinueve y no cambia;
+- solicitante no recibe controles de preparación, transporte, recepción,
+  supervisión o configuración;
+- bodega no recibe conducción, aprobación, ajuste ni configuración;
+- conductor conserva asignación y custodia sin auto-recepción;
+- receptor conserva handoff, verificación y parcialidad sin auto-resolución;
+- supervisor distingue observación, investigación, decisión, efecto y cierre;
+- configuración no ejecuta trabajo físico;
+- multifunción conserva una sola función activa;
+- dispositivo compartido exige actor humano antes de trabajo atribuible;
+- resolutores, acceso, escaneo, impresión, códigos y kioscos permanecen
+  contextuales;
+- los diez estados tienen representación y recuperación diferenciadas;
+- vacío, parcialidad, denegación, revocación y fallo técnico no se confunden;
+- móvil, tablet, escritorio y estación compartida conservan autoridad y orden;
+- objetivos táctiles, foco, teclado, lector y anuncios tienen reglas explícitas;
+- el prototipo no inventa resultados de uso, métricas, datos ni evidencia;
+- el estado técnico actual se declara parcial y la implementación conserva un
+  propietario explícito;
+- no se crean rutas, roles, funciones, procesos, permisos ni requisitos nuevos;
+- `AUTH-UI-056` permanece únicamente reservada.
+
+---
+
+#### 15. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea no introduce una regla autorizativa, operativa, de
+navegación, accesibilidad, tacto, privacidad, estado o seguridad nueva.
+Materializa visualmente, en ocho prototipos documentales, los contratos y
+requisitos vigentes de página inicial, tareas frecuentes, reducción,
+relevancia, contexto, divulgación, densidad, dispositivo compartido y
+accesibilidad. No modifica, difiere, descarta ni declara obsoleto ningún
+requisito histórico; por tanto, el Registro Canónico de Requisitos de Prueba no
+cambia.
+
+---
+
+#### 16. `NEXO-ACTOR-PROTOTYPE-HANDOFF-001`
+
+| Destino                        | Handoff aprobado                                                                                                                                                 |
+| ------------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AUTH-UI-056`                  | revisar la integridad del prototipo, sus ocho variantes, estados, trazabilidad y coherencia antes de cualquier implementación; no equivale a prueba con usuarios |
+| `AUTH-UI-057`                  | definir criterios medibles de localización, comprensión, carga cognitiva, recuperación, tacto, accesibilidad y seguridad por pantalla                            |
+| `AUTH-UI-058`                  | probar con usuarios reales y dispositivos representativos las ocho variantes y escenarios aprobados                                                              |
+| `AUTH-UI-059`                  | registrar problemas observados con severidad, contexto, evidencia, propietario y condición de cierre                                                             |
+| `AUTH-UI-060`                  | aprobar cada pantalla únicamente cuando exista evidencia y se satisfagan los criterios vigentes                                                                  |
+| paquete de implementación NEXO | implementar resolutor, bindings, consultas, componentes, estados, caché, eventos, pruebas y telemetría cuando la continuidad lo autorice                         |
+
+Ningún destino anterior se inicia mediante esta tarea.
+
+---
+
+#### 17. Continuidad canónica
+
+**ÚLTIMA TAREA APROBADA**
+
+`AUTH-UI-054 — Reducir opciones irrelevantes`
+
+**TAREA ACTUAL APROBADA**
+
+`AUTH-UI-055 — Crear prototipo por rol`
+
+**SIGUIENTE TAREA RESERVADA**
+
+`AUTH-UI-056 — Validar prototipo antes de implementar`
+
+
 ### [ ] AUTH-UI-056 — Validar prototipo antes de implementar
 ### [ ] AUTH-UI-057 — Definir criterio de usabilidad por pantalla
 ### [ ] AUTH-UI-058 — Probar con usuarios reales
