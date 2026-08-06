@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **578** |
+| Aprobadas | **579** |
 | En propuesta | **0** |
-| No iniciadas | **1016** |
+| No iniciadas | **1015** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **36.26% (578/1594)** |
+| Porcentaje de completamiento | **36.32% (579/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `INT-PROD-005` — Definir tratamiento de producción insuficiente para remisiones | ✅ APROBADA |
-| Tarea actual | `PRINT-ARC-001` — Inventariar impresoras por empresa, sede, área y punto operativo | ⬜ NO INICIADA |
-| Siguiente reservada | `PRINT-ARC-002` — Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión | ⬜ NO INICIADA |
+| Última aprobada | `PRINT-ARC-001` — Inventariar impresoras por empresa, sede, área y punto operativo | ✅ APROBADA |
+| Tarea actual | `PRINT-ARC-002` — Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión | ⬜ NO INICIADA |
+| Siguiente reservada | `PRINT-ARC-003` — Inventariar documentos, etiquetas, comandas y comprobantes imprimibles | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -488,7 +488,7 @@
 | ⬜ NO INICIADA | `QUEUE-ARC-010` | Definir estados y eventos canónicos | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-011` | Definir métricas de espera, ejecución y error | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
 | ⬜ NO INICIADA | `QUEUE-ARC-012` | Definir autorización para crear, cancelar y reintentar trabajos | `bloques/E4_SERVICIOS_TRANSVERSALES/03_INFRAESTRUCTURA_CANONICA_DE_COLAS.md` |
-| ⬜ NO INICIADA | `PRINT-ARC-001` | Inventariar impresoras por empresa, sede, área y punto operativo | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
+| ✅ APROBADA | `PRINT-ARC-001` | Inventariar impresoras por empresa, sede, área y punto operativo | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-002` | Inventariar conexión, protocolo, capacidades, papel y lenguaje de impresión | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-003` | Inventariar documentos, etiquetas, comandas y comprobantes imprimibles | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-004` | Definir aplicación propietaria de cada documento | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
