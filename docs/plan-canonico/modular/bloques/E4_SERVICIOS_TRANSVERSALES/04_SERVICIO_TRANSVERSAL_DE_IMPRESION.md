@@ -6835,7 +6835,630 @@ PRINT-ARC-017 — Definir operación offline y contingencia manual
 ```
 
 
-### [ ] PRINT-ARC-017 — Definir operación offline y contingencia manual
+### ✅ PRINT-ARC-017 — Definir operación offline y contingencia manual
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local` — RESERVADA
+**Tipo de tarea:** documental; operación degradada y offline del servicio de impresión, envelope finito, persistencia local protegida, reconexión, contingencia manual y conciliación
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Implementación física autorizada:** ninguna; no crea código, almacenamiento local ejecutable, workers, adaptadores, tablas, migraciones, configuración, despliegues ni cambios en Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir exactamente qué puede y qué no puede hacer el servicio transversal de impresión cuando pierde conectividad con sus fuentes autoritativas, cómo se conserva una copia ya autorizada sin ampliar autoridad, cuándo debe bloquearse, cómo se revalida al reconectar y cómo una contingencia manual mantiene el resultado mínimo sin convertirse en una impresión canónica ni producir duplicados.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-017` queda cerrada documentalmente con:
+
+- el contrato `VENTO-PRINT-OFFLINE-CONTINGENCY` versión `1.0.0`;
+- cinco perfiles de tratamiento offline del despacho físico;
+- un `offline_print_envelope` finito, verificable y ligado a una sola copia ya admitida;
+- una política de caché local que admite exclusivamente snapshot saneado y contratos versionados indispensables;
+- once estados del overlay offline y reglas cerradas de transición;
+- una puerta local previa a `SEND_STARTED` que falla de forma segura ante vigencia, integridad, identidad, contexto, privacidad, ruta, cancelación o dispositivo no verificables;
+- una secuencia determinista de reconexión que consulta receipts y revalida antes de drenar pendientes;
+- una contingencia manual numerada, custodiada y conciliable que no suplanta `IMP-*`, no inventa autorización y no confirma hechos empresariales;
+- una decisión explícita para las cincuenta salidas canónicas;
+- cierre documental de `BLK-PRINT-016-006` mediante caché protegida, expiración, verificación de versión e integridad y bloqueo seguro;
+- nueve salidas `POF-ONLINE-ONLY`, una salida `POF-CACHED-REFERENCE` y cuarenta salidas elegibles únicamente bajo un envelope offline finito;
+- cero nuevos trabajos, copias, reimpresiones, cancelaciones, pagos, movimientos, decisiones de calidad o hechos empresariales autorizados por la pérdida de conectividad;
+- cero implementación física y cero evidencia operativa inventada.
+
+---
+
+#### 2. Entradas canónicas y frontera
+
+La tarea consume sin reemplazar:
+
+| Entrada                                                                              | Versión o fuente | Uso en `PRINT-ARC-017`                                                                            |
+| ------------------------------------------------------------------------------------ | ---------------- | ------------------------------------------------------------------------------------------------- |
+| `NFR-REQ-004 — Definir comportamiento offline y sincronización`                      | aprobada         | clases `OF0` a `OF5`, envelope finito, idempotencia, reconexión, conflictos y contingencia manual |
+| `UX-STATION-007 — Definir operación degradada, offline, contingencia y recuperación` | aprobada         | identidad de actor, aislamiento de estación, cambio de actor, estado degradado y recuperación     |
+| `VENTO-PRINT-JOB`                                                                    | `1.0.0`          | identidad, documento, plantilla y payload original inmutable                                      |
+| `VENTO-PRINT-ROUTE`                                                                  | `1.0.0`          | destino lógico y decisión territorial ya resuelta                                                 |
+| `VENTO-PRINT-TARGET-POLICY`                                                          | `1.0.0`          | candidatos físicos y fallback ya autorizados                                                      |
+| `VENTO-PRINT-DEVICE-HEALTH`                                                          | `1.0.0`          | condición de elegibilidad técnica del dispositivo                                                 |
+| `VENTO-PRINT-IDEMPOTENCY`                                                            | `1.0.0`          | identidad estable de intención y copia                                                            |
+| `VENTO-PRINT-RETRY-QUEUE`                                                            | `1.0.0`          | cola, lease, intento, retry, dead-letter y `RESULT_UNKNOWN`                                       |
+| `VENTO-PRINT-CONFIRMATION`                                                           | `1.0.0`          | niveles de receipt y cierre verificable                                                           |
+| `VENTO-PRINT-CANCELLATION-EXPIRATION`                                                | `1.0.0`          | deadline, cancelación, expiración y carreras                                                      |
+| `VENTO-PRINT-REPRINT`                                                                | `1.0.0`          | copia adicional deliberada; no se autoriza desde offline                                          |
+| `VENTO-PRINT-AUTHORIZATION`                                                          | `1.0.0`          | actor, principal, alcance, recurso, segregación y gate predespacho                                |
+| `VENTO-PRINT-PRIVACY`                                                                | `1.0.0`          | snapshot saneado, field decisions, clasificación y precedencia de privacidad                      |
+
+Frontera obligatoria:
+
+```text
+HECHO EMPRESARIAL AUTORIZADO
+→ JOB Y COPIA ADMITIDOS
+→ PRIVACIDAD, RUTA Y TARGET RESUELTOS
+→ OFFLINE ENVELOPE EMITIDO EN LINEA
+→ PERDIDA DE CONECTIVIDAD
+→ VALIDACION LOCAL RESTRICTIVA
+→ SEND_STARTED O BLOQUEO
+→ RECEIPT LOCAL / RESULT_UNKNOWN
+→ RECONEXION
+→ REVALIDACION + CONCILIACION
+```
+
+La operación offline del servicio de impresión **no crea autoridad empresarial**. Solo puede completar, dentro de límites finitos, una copia que ya existía de forma idempotente y cuya autorización, privacidad, ruta, target e identidad quedaron congeladas antes del corte de conectividad.
+
+---
+
+#### 3. Principios normativos
+
+1. **Offline no es fail-open.** Perder conectividad reduce capacidades; nunca amplía permisos, territorio, cantidad, vigencia, contenido ni destinos.
+2. **Sin envelope no hay nuevo `SEND_STARTED`.** La existencia de job, caché, impresora local o payload no basta.
+3. **El envelope no crea un job.** `job_id`, `intent_id`, `copy_id`, `copy_slot_id`, idempotency key y semantic fingerprint ya existen antes de emitirlo.
+4. **La copia permanece única.** Retry, reinicio, reconexión, cambio de interfaz o pérdida de callback conservan la misma identidad.
+5. **El payload original no se cachea para despachar.** Offline solo consume el snapshot saneado y sus referencias contractuales mínimas.
+6. **`D5_SECURITY_SECRET` bloquea también offline.** Un secreto detectado, una clasificación irresoluble o un hash inválido produce bloqueo; no existe saneamiento tardío en el adaptador.
+7. **No existe renovación offline.** La vigencia del envelope, autorización, privacidad, ruta, template o deadline no puede extenderse localmente.
+8. **Cambio de actor o contexto no transfiere pendientes.** La partición original conserva atribución y queda oculta o bloqueada para el actor siguiente.
+9. **Impresora local disponible no equivale a autorización ni resultado.** Backend, adaptador, canal, periférico y resultado físico siguen siendo estados distintos.
+10. **`RESULT_UNKNOWN` prevalece sobre la urgencia.** Cuando el comando pudo haber sido aceptado, no se repite para “probar”.
+11. **Reimpresión offline no se admite en esta versión.** Solicitud, aprobación y creación de una copia adicional requieren evaluación autoritativa en línea.
+12. **Administración técnica offline no se admite.** No se modifican rutas, targets, templates, impresoras, políticas, permisos ni configuración.
+13. **Cancelación local es solo un hold preventivo.** Puede impedir un despacho local todavía no iniciado, pero la cancelación canónica se resuelve al reconectar.
+14. **Manual no significa digital alterno.** Un soporte físico de contingencia tiene identidad propia y no se presenta como `IMP-*` salvo que sea una representación exacta ya autorizada por el contrato correspondiente.
+15. **La vuelta de la red no drena automáticamente.** Primero se revalidan sesión, dispositivo, contexto, versiones, revocaciones, receipts, cancelación, expiración y política.
+16. **Sin evidencia suficiente se conserva incertidumbre.** Ningún timeout se convierte por conveniencia en éxito o fallo.
+17. **No se usa “último escritor gana”.** Conflictos de versión, autoridad, estado empresarial, cantidad, custodia o política se reconcilian explícitamente.
+18. **La prioridad no rompe causalidad.** Una salida posterior o dependiente no adelanta a su prerequisito ni oculta un conflicto previo.
+
+---
+
+#### 4. Perfiles canónicos de tratamiento offline
+
+| Perfil                  | Uso permitido                                                              | Requisitos adicionales                                                                                                   | Prohibición principal                                                              |
+| ----------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `POF-LEASED-OPS`        | despachar una copia operativa o de trazabilidad ya admitida                | envelope válido, snapshot saneado, ruta/target fijados, caché elegible y dispositivo local verificable                   | crear/mutar el hecho empresarial o cambiar contenido/destino                       |
+| `POF-LEASED-CUSTOMER`   | despachar una copia de cliente ya admitida                                 | todo lo anterior + finalidad y tramo de entrega vigentes + datos personales minimizados                                  | ampliar contacto/dirección desde caché o reutilizar datos para otro destinatario   |
+| `POF-LEASED-RESTRICTED` | despachar una copia restringida ya admitida                                | todo lo anterior + cero `D5`, cero evidencia sensible íntegra, reglas exactas resueltas y almacenamiento local permitido | decidir calidad, aprobación, liberación o incidente desde el servicio de impresión |
+| `POF-CACHED-REFERENCE`  | imprimir una referencia versionada preautorizada y no mutante              | versión exacta, `as_of`, vigencia, propósito, actor y envelope; la salida debe identificar su versión                    | editar, publicar, aprobar o tratar la copia cacheada como estado más reciente      |
+| `POF-ONLINE-ONLY`       | conservar o mostrar el bloqueo y reanudar cuando vuelva autoridad en línea | ninguna ejecución física nueva offline                                                                                   | persistir payload sensible o iniciar `SEND_STARTED` sin conectividad autoritativa  |
+
+`POF-LEASED-*` especializa `OF4_LEASED_EXECUTION`. `POF-CACHED-REFERENCE` combina referencia versionada con un derecho finito de impresión; nunca convierte `OF1_CACHED_REFERENCE` en permiso de mutación. La contingencia manual hereda `OF5_MANUAL_CONTINGENCY` únicamente cuando el proceso fuente la permite.
+
+---
+
+#### 5. Contrato `VENTO-PRINT-OFFLINE-CONTINGENCY` `1.0.0`
+
+##### 5.1 `offline_print_envelope`
+
+```json
+{
+  "offline_contract_id": "VENTO-PRINT-OFFLINE-CONTINGENCY",
+  "offline_contract_version": "1.0.0",
+  "offline_print_envelope_id": "<uuid>",
+  "issued_at_authoritative": "<RFC3339>",
+  "valid_until_authoritative": "<RFC3339>",
+  "offline_profile_id": "<POF-*>",
+  "identity": {
+    "job_id": "<uuid>",
+    "intent_id": "<string>",
+    "copy_id": "<uuid>",
+    "copy_slot_id": "<string>",
+    "output_id": "<IMP-*>",
+    "idempotency_key": "<sha256>",
+    "semantic_fingerprint": "<sha256>"
+  },
+  "authorization_binding": {
+    "authorization_decision_id": "<uuid>",
+    "action": "<SOURCE_DELEGATED_PRINT|DIRECT_PRINT>",
+    "principal_id": "<uuid>",
+    "effective_actor_id": "<uuid|null>",
+    "organization_id": "<string>",
+    "context_version": "<string>",
+    "authorization_valid_until": "<RFC3339>"
+  },
+  "station_binding": {
+    "device_id": "<string>",
+    "endpoint_id": "<string>",
+    "station_instance_id": "<string>",
+    "site_id": "<string>",
+    "area_id": "<string|null>"
+  },
+  "document_binding": {
+    "owner_application": "<FOGO|NEXO|PULSO|NUMERA|ORIGO>",
+    "source_resource_ref": "<type:id>",
+    "source_resource_version": "<string>",
+    "template_id": "<TPL-IMP-*>",
+    "template_version": "<semver>"
+  },
+  "privacy_binding": {
+    "privacy_snapshot_id": "<uuid>",
+    "privacy_policy_id": "<string>",
+    "privacy_policy_version": "<semver>",
+    "privacy_valid_until": "<RFC3339>",
+    "sanitized_payload_hash": "<sha256>",
+    "local_cache_class": "<LOCAL_ALLOWED|LOCAL_RESTRICTED|LOCAL_FORBIDDEN>"
+  },
+  "route_binding": {
+    "route_decision_id": "<uuid>",
+    "route_profile_id": "<RTE-*>",
+    "target_policy_id": "<TGT-*>",
+    "allowed_printer_ids": ["<PRN-*>"] ,
+    "allowed_channel_ids": ["<CH-*>"]
+  },
+  "execution_limits": {
+    "max_new_dispatches": 1,
+    "manual_retry_allowed": false,
+    "reprint_allowed": false,
+    "admin_mutation_allowed": false,
+    "must_revalidate_on_reconnect": true
+  },
+  "integrity": {
+    "integrity_method_id": "<versioned-method>",
+    "integrity_proof": "<opaque-proof>",
+    "envelope_digest": "<sha256>"
+  }
+}
+```
+
+La estructura es normativa. No selecciona una tecnología criptográfica, base de datos local, navegador, sistema operativo, framework ni algoritmo de firma concreto. La implementación deberá escoger un mecanismo que haga verificables integridad, origen, binding y expiración sin exponer secretos.
+
+##### 5.2 Vigencia efectiva
+
+El límite offline nunca supera la menor vigencia aplicable:
+
+```text
+offline_effective_valid_until
+=
+MIN(
+  offline_print_envelope.valid_until_authoritative,
+  authorization_valid_until,
+  privacy_valid_until,
+  dispatch_deadline_at,
+  cualquier limite versionado obligatorio del template/ruta/target
+)
+```
+
+Si una referencia requerida no aporta un límite finito o una condición verificable de vigencia, el trabajo no obtiene derecho de nuevo despacho offline. Una versión inmutable puede conservarse como referencia histórica, pero no por ello crea autoridad de impresión.
+
+---
+
+#### 6. Contenido local permitido y prohibido
+
+##### 6.1 Paquete local mínimo
+
+Un trabajo elegible puede conservar únicamente:
+
+- `offline_print_envelope` íntegro;
+- snapshot saneado correlacionado por `sanitized_payload_hash`;
+- `field_decisions[]` sin valores originales;
+- template exacto y versión ya aprobada cuando el render local lo requiera;
+- decisión de ruta y target necesaria para limitar el destino;
+- estado de cola, intento, cancelación local y receipts mínimos;
+- referencias y digests necesarios para conciliación.
+
+##### 6.2 Prohibiciones
+
+No se conserva para conveniencia offline:
+
+- `payload.data` original de `VENTO-PRINT-JOB` cuando contiene datos que no forman parte del snapshot saneado;
+- secretos, tokens, CVV, claves, credenciales, refresh tokens ni sesiones reutilizables;
+- archivos o capturas de evidencia sensible completas;
+- datasets masivos de clientes, finanzas, incidentes o reportes;
+- permisos inferidos, roles convertidos en grants, última impresora o última sede como autoridad;
+- una “última política conocida” sin versión y vigencia verificables.
+
+##### 6.3 Partición y aislamiento
+
+Toda persistencia local se particiona por:
+
+```text
+DEVICE_ID
++ ENDPOINT_ID
++ STATION_INSTANCE_ID
++ EFFECTIVE_ACTOR_ID
++ CONTEXT_VERSION
++ SITE_ID
++ AREA_ID
+```
+
+Un cambio de actor, sede, área, estación, endpoint o contexto impide iniciar nuevos despachos desde la partición anterior. Sus pendientes conservan atribución original y solo vuelven a ser ejecutables después de la revalidación que corresponda.
+
+---
+
+#### 7. Puerta local previa a `SEND_STARTED`
+
+Un trabajo `POF-LEASED-*` o `POF-CACHED-REFERENCE` puede iniciar un nuevo envío offline únicamente si **todas** las comprobaciones siguientes son positivas:
+
+1. `job_id`, intención y copia ya fueron admitidos idempotentemente.
+2. existe `QUEUE_PERSISTED` o persistencia equivalente verificable anterior al corte.
+3. el `offline_print_envelope` corresponde exactamente a la misma copia y conserva integridad.
+4. la hora local verificable no supera `offline_effective_valid_until` y no existe condición de reloj inválido.
+5. actor, dispositivo, endpoint, estación, sede, área y `context_version` coinciden con el binding del envelope.
+6. la acción autorizada es `SOURCE_DELEGATED_PRINT` o `DIRECT_PRINT`; no es administración, conciliación, cancelación autoritativa ni reimpresión.
+7. el `privacy_snapshot_id` existe localmente y `sanitized_payload_hash` coincide byte-semánticamente con el snapshot disponible.
+8. ninguna `field_decision` contiene `BLOCK_PRINT`, ninguna clase `D5` está presente y el storage local es elegible para ese snapshot.
+9. template y versión coinciden exactamente; no existe resolución silenciosa a “la última”.
+10. ruta, target y dispositivo pertenecen al conjunto congelado por el envelope; no se descubre otro destino por cercanía, IP, Bluetooth, última selección o disponibilidad casual.
+11. la evidencia local de salud requerida por el target es verificable; `PRINT-ARC-018` deberá materializar qué señal local admite cada canal.
+12. no existe hold local, cancelación conocida, expiración conocida, versión empresarial incompatible ni supersession conocida.
+13. no existe un intento previo de la misma copia en `DISPATCHING`, `ADAPTER_ACCEPTED`, `PERIPHERAL_ACCEPTED` o `RESULT_UNKNOWN`.
+14. el presupuesto de intento y retry vigente permite comenzar un intento sin crear identidad nueva.
+15. la salida no pertenece a `POF-ONLINE-ONLY`.
+
+Un solo fallo produce `OFFLINE_BLOCKED`; no se busca un camino más permisivo.
+
+---
+
+#### 8. Estados del overlay offline
+
+| Estado                      | Significado                                                                          | Siguiente acción segura                                   |
+| --------------------------- | ------------------------------------------------------------------------------------ | --------------------------------------------------------- |
+| `ONLINE_CONTROLLED`         | autoridad y servicios requeridos disponibles                                         | flujo ordinario                                           |
+| `OFFLINE_ENVELOPE_READY`    | copia preadmitida con envelope íntegro y aún no despachada                           | evaluar gate local                                        |
+| `OFFLINE_DISPATCHABLE`      | todas las precondiciones locales son positivas                                       | iniciar un único intento                                  |
+| `OFFLINE_SEND_STARTED`      | existe `SEND_STARTED` local correlacionado                                           | esperar receipt; no crear otra copia                      |
+| `OFFLINE_RESULT_CAPTURED`   | existe evidencia local suficiente para un nivel técnico conocido                     | conservarla para revalidación y conciliación              |
+| `OFFLINE_RESULT_UNKNOWN`    | el comando pudo haber tenido efecto y no existe resultado suficiente                 | bloquear retry y reimpresión                              |
+| `OFFLINE_BLOCKED`           | falta vigencia, integridad, identidad, política, storage, ruta, salud o elegibilidad | no despachar; revalidar al reconectar                     |
+| `MANUAL_CONTINGENCY_ACTIVE` | proceso fuente activó procedimiento físico aprobado                                  | custodiar, numerar y registrar sin afirmar efecto digital |
+| `RECONNECT_REVALIDATING`    | conectividad regresó y se actualizan decisiones autoritativas                        | no drenar automáticamente                                 |
+| `RECONCILIATION_REQUIRED`   | existe conflicto, efecto físico, evento manual o incertidumbre que debe compararse   | conciliar por identidad y evidencia                       |
+| `CLOSED_RECONCILED`         | estado local y autoritativo quedaron correlacionados sin pendientes                  | aplicar disposición local aprobada                        |
+
+El overlay no reemplaza los estados de job, cola, intento, confirmación, cancelación o reimpresión. Los referencia y restringe.
+
+---
+
+#### 9. Desconexión, retry y resultado desconocido
+
+##### 9.1 Antes de `SEND_STARTED`
+
+- La pérdida de backend no consume intento.
+- Si el envelope sigue íntegro y vigente, puede evaluarse `OFFLINE_DISPATCHABLE`.
+- Si no existe envelope o falla cualquier gate, el trabajo queda `OFFLINE_BLOCKED`.
+- Un hold local puede impedir el despacho sin afirmar una cancelación canónica.
+- Ninguna nueva clave de idempotencia, copia, job o reprint se crea para “resolver” la desconexión.
+
+##### 9.2 Después de `SEND_STARTED`
+
+- Se conserva `attempt_id`, dispositivo, canal, copia y hashes.
+- Un rechazo inequívoco anterior a posible aceptación puede seguir la política segura de retry ya aprobada.
+- Si el comando pudo haber sido aceptado y se pierde respuesta, la resolución es `OFFLINE_RESULT_UNKNOWN`.
+- `OFFLINE_RESULT_UNKNOWN` bloquea retry automático, retry manual, reroute con riesgo de duplicado y reimpresión.
+- El reinicio del navegador, proceso o estación no cambia esa decisión.
+
+##### 9.3 Cambio de política durante desconexión
+
+No se asume que una política remota no cambió. La única autoridad local es el derecho finito ya emitido dentro de su propia vigencia. Si el contrato o el output exige revocación en línea continua, se clasifica `POF-ONLINE-ONLY`. Al reconectar, una regla más restrictiva invalida cualquier pendiente que todavía no alcanzó `SEND_STARTED`; una regla menos restrictiva no amplía automáticamente el trabajo local.
+
+---
+
+#### 10. Secuencia canónica de reconexión
+
+La recuperación sigue exactamente este orden lógico:
+
+```text
+1. ESTABILIZAR CONECTIVIDAD
+2. VERIFICAR HORA Y SERVICIOS REQUERIDOS
+3. REVALIDAR SESION, DISPOSITIVO Y ACTOR
+4. RESOLVER CONTEXTO AUTORITATIVO NUEVO
+5. SINCRONIZAR REVOCACIONES, VERSIONES Y POLITICAS
+6. VALIDAR CONTRATO Y ESQUEMA LOCAL
+7. CONSULTAR RECEIPTS, JOBS E IDEMPOTENCY KEYS
+8. REEVALUAR CANCELACION, EXPIRACION Y SUPERSESSION
+9. COMPARAR PRIVACIDAD, TEMPLATE, RUTA, TARGET Y AUTORIZACION
+10. CLASIFICAR PENDIENTES, RESULT_UNKNOWN, MANUALES Y CONFLICTOS
+11. ORDENAR SOLO LOS EJECUTABLES POR CAUSALIDAD Y PRIORIDAD
+12. DETENER LA RAMA AFECTADA ANTE CONFLICTO
+13. SINCRONIZAR SIN CREAR OTRA INTENCION
+14. ACTUALIZAR PROYECCIONES Y DISPONER CACHE SEGUN POLITICA
+15. MOSTRAR RESUMEN DE RESULTADOS Y PENDIENTES RESTANTES
+```
+
+Recuperar acceso a internet no equivale a permiso para vaciar la cola. Cada copia se revalida de forma individual.
+
+---
+
+#### 11. Contingencia manual
+
+##### 11.1 Condición de activación
+
+La contingencia manual solo se activa cuando:
+
+- el proceso fuente tiene `OF5_MANUAL_CONTINGENCY` vigente o una decisión posterior explícita equivalente;
+- el resultado empresarial mínimo no puede esperar de forma segura;
+- existe procedimiento y formato aprobados para ese proceso y sede;
+- el actor responsable puede identificarse;
+- la contingencia no exige inventar una autorización, pago, factura, liberación, aprobación o estado que solo puede resolver una fuente autoritativa.
+
+Si falta cualquiera de esas condiciones, el modo correcto es `PAUSE_SAFELY` o el estado bloqueado definido por el proceso fuente.
+
+##### 11.2 Registro mínimo
+
+Cada soporte manual conserva como mínimo:
+
+```text
+manual_contingency_record_id
+manual_procedure_ref
+manual_form_id
+form_number
+source_process_ref
+source_resource_ref
+site_id
+area_id
+original_actor_id
+observed_at
+created_manual_at
+minimum_data_fields
+custody_ref
+duplicate_control_ref
+related_print_job_id_or_null
+digitalized_at_or_null
+transcribed_by_actor_id_or_null
+approved_by_actor_id_or_null
+reconciliation_state
+reconciliation_ref_or_null
+closed_at_or_null
+```
+
+El soporte no almacena credenciales ni secretos. Los datos personales, financieros, fiscales, fórmulas o evidencias sensibles se limitan a lo permitido por el procedimiento fuente y la clasificación vigente.
+
+##### 11.3 Reglas de numeración, custodia y duplicados
+
+1. `form_number` proviene de una política de numeración del procedimiento fuente; el servicio de impresión no inventa una secuencia paralela.
+2. Un número usado no se recicla para otro hecho.
+3. Anulados, dañados o extraviados conservan estado y explicación; no desaparecen del control.
+4. El soporte físico tiene custodio o responsable de punto conforme al procedimiento vigente.
+5. La transcripción posterior conserva actor y momento originales; el transcriptor no se convierte en autor del hecho.
+6. Antes de digitalizar se consulta si el efecto ya existe mediante identidad, idempotencia, documento, recurso y receipts aplicables.
+7. Si el efecto ya existe, se vincula el soporte; no se repite.
+8. Si existe conflicto, la contingencia pasa a `RECONCILIATION_REQUIRED`.
+9. La contingencia se cierra solo cuando el resultado manual y el estado autoritativo están reconciliados y la disposición física queda resuelta.
+
+##### 11.4 Relación con `IMP-*`
+
+Un formulario manual no adopta automáticamente un `output_id` `IMP-*`. Si un proceso exige posteriormente una salida canónica, se crea o revalida el trabajo correspondiente en línea. Si el soporte manual satisface por sí mismo el resultado mínimo y el proceso declara que no debe existir copia canónica posterior, el print job pendiente se cancela o expira conforme a `PRINT-ARC-013` antes de cualquier nuevo `SEND_STARTED`.
+
+---
+
+#### 12. Matriz materializada para las cincuenta salidas
+
+| Output       | Nombre canónico                                           | Propietaria | Privacidad heredada         | Perfil offline          | Contingencia manual                                                                                                                     | Frontera específica                                                                                                                  |
+| ------------ | --------------------------------------------------------- | ----------- | --------------------------- | ----------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------ |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | `FOGO`      | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | `FOGO`      | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | `FOGO`      | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | `FOGO`      | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `POF-LEASED-RESTRICTED` | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo snapshot saneado sin `D5` ni evidencia sensible íntegra; una regla irresoluble bloquea antes de `SEND_STARTED`.                 |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `POF-LEASED-RESTRICTED` | Condicional al proceso fuente; una contingencia manual puede contener o identificar, pero no inventa liberación, rechazo ni aprobación. | El estado de calidad debe existir antes del corte de red y quedar congelado en el job; nunca se decide localmente.                   |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | `ORIGO`     | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | `NEXO`      | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | `NEXO`      | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | `NEXO`      | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | `PULSO`     | `PRV-CUSTOMER`              | `POF-LEASED-CUSTOMER`   | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo snapshot saneado y propósito vigente; contacto/dirección se limitan al tramo autorizado y no se amplían desde caché.            |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | `NEXO`      | `PRV-ASSET-CUSTODY`         | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO`      | `PRV-ASSET-CUSTODY`         | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | `FOGO`      | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `POF-LEASED-RESTRICTED` | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo snapshot saneado sin `D5` ni evidencia sensible íntegra; una regla irresoluble bloquea antes de `SEND_STARTED`.                 |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | `FOGO`      | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-CMD-01` | Comanda de cocina                                         | `PULSO`     | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías                           | `PULSO`     | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes             | `PULSO`     | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-CMD-04` | Comanda de preparación o mise en place                    | `FOGO`      | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-CMD-05` | Tiquete de expedición o recogida                          | `PULSO`     | `PRV-CUSTOMER`              | `POF-LEASED-CUSTOMER`   | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo snapshot saneado y propósito vigente; contacto/dirección se limitan al tramo autorizado y no se amplían desde caché.            |
+| `IMP-CMD-06` | Solicitud interna de reposición                           | `NEXO`      | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-CMD-07` | Modificación o adición de comanda                         | `PULSO`     | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo imprime una modificación ya autorizada; no crea ni confirma el cambio de pedido offline.                                        |
+| `IMP-CMD-08` | Cancelación o anulación de comanda                        | `PULSO`     | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo imprime una cancelación/anulación empresarial ya autorizada; no cancela el pedido ni el print job offline.                      |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia                 | `FOGO`      | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente                         | `PULSO`     | `PRV-CUSTOMER`              | `POF-LEASED-CUSTOMER`   | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo snapshot saneado y propósito vigente; contacto/dirección se limitan al tramo autorizado y no se amplían desde caché.            |
+| `IMP-CLI-02` | Confirmación de pedido                                    | `PULSO`     | `PRV-CUSTOMER`              | `POF-LEASED-CUSTOMER`   | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo snapshot saneado y propósito vigente; contacto/dirección se limitan al tramo autorizado y no se amplían desde caché.            |
+| `IMP-CLI-03` | Comprobante de pago                                       | `NUMERA`    | `PRV-FINANCIAL`             | `POF-ONLINE-ONLY`       | Solo procedimiento manual del proceso fuente; nunca sustituye esta salida canónica ni confirma el hecho empresarial.                    | No inicia nuevo despacho digital offline en esta versión; cualquier contingencia pertenece al proceso fuente y exige reconciliación. |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente               | `NUMERA`    | `PRV-FINANCIAL`             | `POF-ONLINE-ONLY`       | Solo procedimiento manual del proceso fuente; nunca sustituye esta salida canónica ni confirma el hecho empresarial.                    | No inicia nuevo despacho digital offline en esta versión; cualquier contingencia pertenece al proceso fuente y exige reconciliación. |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito      | `NUMERA`    | `PRV-FINANCIAL`             | `POF-ONLINE-ONLY`       | Solo procedimiento manual del proceso fuente; nunca sustituye esta salida canónica ni confirma el hecho empresarial.                    | No inicia nuevo despacho digital offline en esta versión; cualquier contingencia pertenece al proceso fuente y exige reconciliación. |
+| `IMP-CLI-06` | Resumen de recogida o entrega                             | `PULSO`     | `PRV-CUSTOMER`              | `POF-LEASED-CUSTOMER`   | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo snapshot saneado y propósito vigente; contacto/dirección se limitan al tramo autorizado y no se amplían desde caché.            |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo                         | `PULSO`     | `PRV-CUSTOMER`              | `POF-LEASED-CUSTOMER`   | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo snapshot saneado y propósito vigente; contacto/dirección se limitan al tramo autorizado y no se amplían desde caché.            |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                     | `PULSO`     | `PRV-CUSTOMER`              | `POF-LEASED-CUSTOMER`   | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Código o beneficio solo si el snapshot no contiene secreto reutilizable; cualquier `D5` bloquea.                                     |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja         | `NUMERA`    | `PRV-FINANCIAL`             | `POF-ONLINE-ONLY`       | Solo procedimiento manual del proceso fuente; nunca sustituye esta salida canónica ni confirma el hecho empresarial.                    | No inicia nuevo despacho digital offline en esta versión; cualquier contingencia pertenece al proceso fuente y exige reconciliación. |
+| `IMP-DOC-01` | Remisión o nota de despacho                               | `NEXO`      | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-DOC-02` | Manifiesto de traslado interno                            | `NEXO`      | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-DOC-03` | Hoja de conteo de inventario                              | `NEXO`      | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario            | `NEXO`      | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-DOC-05` | Orden de compra                                           | `ORIGO`     | `PRV-FINANCIAL`             | `POF-ONLINE-ONLY`       | Solo procedimiento manual del proceso fuente; nunca sustituye esta salida canónica ni confirma el hecho empresarial.                    | No inicia nuevo despacho digital offline en esta versión; cualquier contingencia pertenece al proceso fuente y exige reconciliación. |
+| `IMP-DOC-06` | Acta o comprobante de recepción                           | `ORIGO`     | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-DOC-07` | Devolución a proveedor                                    | `ORIGO`     | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-DOC-08` | Orden de producción o ficha de lote                       | `FOGO`      | `PRV-TRACEABILITY`          | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica                     | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `POF-CACHED-REFERENCE`  | Referencia física solo desde versión aprobada identificable; si la versión no es verificable, se pausa.                                 | Solo versión exacta aprobada, visible y dentro de vigencia; edición, aprobación o publicación continúan en línea.                    |
+| `IMP-DOC-10` | Registro de calidad o no conformidad                      | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `POF-ONLINE-ONLY`       | Condicional al proceso fuente; captura física mínima y numerada, sin adjuntos, secretos ni evidencia sensible íntegra.                  | No persiste offline evidencia sensible ni notas libres completas; la salida digital se mantiene en línea.                            |
+| `IMP-DOC-11` | Orden de mantenimiento                                    | `NEXO`      | `PRV-ASSET-CUSTODY`         | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo          | `NEXO`      | `PRV-ASSET-CUSTODY`         | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico                    | `NEXO`      | `PRV-QUALITY-RESTRICTED`    | `POF-ONLINE-ONLY`       | Condicional al proceso fuente; captura física mínima y numerada, sin adjuntos, secretos ni evidencia sensible íntegra.                  | No persiste offline logs, capturas, secretos ni diagnóstico sensible; la salida digital se mantiene en línea.                        |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo       | `FOGO`      | `PRV-OPS-MINIMAL`           | `POF-LEASED-OPS`        | Condicional a `OF5_MANUAL_CONTINGENCY` del proceso fuente; formulario separado, numerado y reconciliable, sin asumir identidad `IMP-*`. | Solo job y copia preadmitidos, con snapshot saneado, ruta y autorización congeladas dentro del envelope finito.                      |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación              | `NUMERA`    | `PRV-FINANCIAL`             | `POF-ONLINE-ONLY`       | Solo procedimiento manual del proceso fuente; nunca sustituye esta salida canónica ni confirma el hecho empresarial.                    | No inicia nuevo despacho digital offline en esta versión; cualquier contingencia pertenece al proceso fuente y exige reconciliación. |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales           | `NEXO`      | `PRV-MANAGEMENT-AGGREGATED` | `POF-ONLINE-ONLY`       | Solo procedimiento manual del proceso fuente; nunca sustituye esta salida canónica ni confirma el hecho empresarial.                    | No inicia nuevo despacho digital offline en esta versión; cualquier contingencia pertenece al proceso fuente y exige reconciliación. |
+
+---
+
+#### 13. Integridad de cobertura
+
+```text
+SALIDAS HEREDADAS DE PRINT-ARC-016: 50
+SALIDAS MATERIALIZADAS EN PRINT-ARC-017: 50
+IDENTIFICADORES IMP-* UNICOS: 50
+FALTANTES: 0
+DUPLICADOS: 0
+FOGO: 15
+NEXO: 14
+PULSO: 12
+NUMERA: 5
+ORIGO: 4
+POF-LEASED-OPS: 30
+POF-LEASED-CUSTOMER: 7
+POF-LEASED-RESTRICTED: 3
+POF-CACHED-REFERENCE: 1
+POF-ONLINE-ONLY: 9
+TOTAL: 50
+```
+
+La clasificación offline no cambia nombre, propietaria, template, perfil físico, ruta, política de target, confirmación, autorización ni perfil de privacidad de ninguna salida.
+
+---
+
+#### 14. Casos de prueba documentales mínimos
+
+1. Una copia operativa ya admitida y saneada puede iniciar offline solo cuando su envelope finito sigue íntegro, vigente y ligado al mismo actor, dispositivo, contexto, ruta y copia.
+2. Un envelope vencido, ilegible, con hash inválido o cuya hora no puede verificarse deja el trabajo `OFFLINE_BLOCKED` antes de `SEND_STARTED`.
+3. Un cambio de actor, estación, sede o área no transfiere la cola anterior ni permite que el nuevo actor despache sus pendientes.
+4. Un snapshot local con `D5`, field decision bloqueante, clasificación irresoluble o storage `LOCAL_FORBIDDEN` no se renderiza ni se envía.
+5. Reinicio, reconexión o recarga conserva la misma idempotency key, job, copy y semantic fingerprint; no crea una segunda intención.
+6. Después de un posible envío sin receipt suficiente, el trabajo queda `OFFLINE_RESULT_UNKNOWN` y no se reintenta hasta conciliación.
+7. Al volver la red, la cola no se drena automáticamente: primero se revalidan contexto, revocaciones, políticas, receipts, cancelación y expiración.
+8. Una política más restrictiva recibida al reconectar bloquea una copia pendiente predespacho; una menos restrictiva no expande automáticamente su snapshot ni scope.
+9. Un intento que ya alcanzó `SEND_STARTED` antes o durante el corte no puede reclasificarse como “no enviado” por perder conectividad.
+10. Una contingencia manual usa procedimiento, formato, numeración, actor, custodia, control de duplicados y reconciliación; el soporte no se presenta como impresión canónica por conveniencia.
+11. La digitalización de un soporte manual consulta primero si el efecto existe y conserva actor original, transcriptor y aprobador como roles distintos.
+12. Una salida `POF-ONLINE-ONLY` permanece bloqueada aunque el dispositivo local esté disponible y exista una copia vieja en caché.
+13. `IMP-DOC-09` solo usa una referencia cacheada cuando la versión aprobada, vigencia, purpose y envelope son verificables; si no, se pausa.
+14. Un dispositivo compartido conserva particiones locales por actor y contexto; cerrar sesión no transfiere pendientes ni datos al actor siguiente.
+15. Backend offline con impresora local disponible no demuestra autorización, impresión ni entrega; cada nivel conserva su propia evidencia.
+
+---
+
+#### 15. Cobertura canónica de prueba existente
+
+Los quince casos anteriores especializan requisitos vigentes y no crean una regla de prueba nueva:
+
+| Caso | Cobertura vigente                                                  | Comportamiento reutilizado                                                           |
+| ---: | ------------------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+|    1 | `TREQ-PROC-303`; `TREQ-PROC-302`; `TREQ-DATA-020`                  | envelope offline finito, caché con vigencia y tratamiento restrictivo                |
+|    2 | `TREQ-PROC-302`; `TREQ-PROC-303`; `TREQ-PROC-335`                  | expiración, versión y protección local fail-closed                                   |
+|    3 | `TREQ-AUTH-014`; `TREQ-UX-260`; `TREQ-AUTH-217`                    | invalidación de contexto y partición por actor/dispositivo/territorio                |
+|    4 | `TREQ-PROC-305`; `TREQ-PROC-335`; `TREQ-PROC-341`; `TREQ-DATA-020` | minimización local, sensibilidad, secretos y política más restrictiva                |
+|    5 | `TREQ-PROC-300`; `TREQ-SUPABASE-1188`                              | identidad e idempotencia conservadas en reinicios y reconexiones                     |
+|    6 | `TREQ-PROC-309`; `TREQ-PROC-807`; `TREQ-PROC-802`                  | resultado desconocido y prohibición de retry riesgoso                                |
+|    7 | `TREQ-PROC-303`; `TREQ-AUTH-014`; `TREQ-NEXO-271`                  | revalidación antes de sincronizar y conciliación previa al retry                     |
+|    8 | `TREQ-DATA-020`; `TREQ-AUTH-217`; `TREQ-AUTH-237`                  | revocación/cambio de política invalida autoridad local; no hay ampliación automática |
+|    9 | `TREQ-PROC-309`; `TREQ-PROC-446`; `TREQ-UX-268`                    | separación entre envío, posible efecto y resultado autoritativo                      |
+|   10 | `TREQ-PROC-315`; `TREQ-UX-269`                                     | contingencia manual numerada, custodiada y conciliable                               |
+|   11 | `TREQ-PROC-315`; `TREQ-UX-269`; `TREQ-PROC-300`                    | digitalización sin duplicar y separación de actor/transcriptor/aprobador             |
+|   12 | `TREQ-PROC-335`; `TREQ-PROC-328`; `TREQ-DATA-020`                  | sensibilidad y regla más restrictiva de persistencia/derivación                      |
+|   13 | `TREQ-PROC-302`; `TREQ-PROC-303`; `TREQ-NEXO-211`                  | referencia versionada, vigencia y revalidación antes de efecto                       |
+|   14 | `TREQ-AUTH-014`; `TREQ-UX-260`; `TREQ-SUPABASE-1188`               | aislamiento local y conservación de atribución original                              |
+|   15 | `TREQ-PROC-314`; `TREQ-PROC-803`; `TREQ-UX-268`                    | backend, periférico, comando y resultado como estados independientes                 |
+
+La cobertura se consume sin cambiar texto, estado, propietario, secuencia, relación ni momento de implementación de ninguna fila del registro canónico.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `NFR-REQ-004`, `UX-STATION-007` y los requisitos vigentes del servicio de impresión ya protegen envelope offline, vigencia de caché, idempotencia, revalidación, `RESULT_UNKNOWN`, segregación local, privacidad, contingencia manual, reconciliación y separación de estados del periférico. `PRINT-ARC-017` materializa su especialización documental para las cincuenta salidas sin crear, modificar, diferir, descartar ni volver obsoleto ningún `TREQ`.
+
+```text
+TREQ creados: 0
+TREQ modificados: 0
+TREQ diferidos: 0
+TREQ descartados: 0
+TREQ obsoletos: 0
+```
+
+---
+
+#### 16. Brechas, responsables y condiciones de salida
+
+| ID                  | Brecha de implementación                                                                                                                                       | Propietario                                                               | Condición de salida                                                                                                                                                  |
+| ------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BLK-PRINT-017-001` | No existe implementación verificable del `offline_print_envelope`, almacén local protegido, aislamiento por actor/contexto ni orquestador de reconexión.       | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                   | Paquete autorizado materializa contratos, persistencia, integridad, expiración, revalidación, cifrado/aislamiento y pruebas negativas sin ampliar autoridad.         |
+| `BLK-PRINT-017-002` | No existe todavía una definición física por canal de render local, envío offline, señal de salud local, spool/temporales y eliminación segura.                 | `PRINT-ARC-018` y `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | Adaptadores materializados por canal, con inputs saneados, estado local verificable, receipts, temporales controlados y disposición comprobable.                     |
+| `BLK-PRINT-017-003` | No existe observabilidad materializada de backlog offline, edad, bloqueos, reconciliación, resultados desconocidos y contingencias manuales.                   | `PRINT-ARC-019`                                                           | Eventos, métricas, alertas y diagnóstico definen allowlist de campos y visibilidad por sede sin registrar contenido protegido.                                       |
+| `BLK-PRINT-017-004` | No existe evidencia física de desconexión, reinicio, reconexión, no duplicación, contingencia manual y recuperación en los dispositivos representativos.       | `PRINT-ARC-020`                                                           | Piloto controlado reproduce fallas, conserva identidad, evita duplicados y demuestra reconciliación y recuperación con evidencia correlacionada.                     |
+| `BLK-PRINT-017-005` | El paquete NEXO todavía no ha seleccionado si su contingencia manual de remisiones dispone de procedimiento y numeración utilizables o si debe `PAUSE_SAFELY`. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                   | La decisión de implementación referencia un procedimiento/formato aprobado y sus controles, o declara explícitamente `PAUSE_SAFELY`; el silencio no habilita manual. |
+
+`BLK-PRINT-016-006` queda documentalmente resuelto por este contrato: existe una frontera offline con caché protegida, expiración, verificación de versión e integridad y bloqueo seguro cuando la política no es comprobable. La implementación y evidencia permanecen en los bloqueos anteriores.
+
+---
+
+#### 17. Criterios de aceptación
+
+`PRINT-ARC-017` queda documentalmente satisfecha porque:
+
+- [x] define un contrato versionado y consumible de operación offline y contingencia;
+- [x] conserva offline como reducción de capacidad y nunca como ampliación de autoridad;
+- [x] exige que job, intención y copia existan antes del corte de conectividad;
+- [x] define un envelope finito, ligado a actor, contexto, dispositivo, copia, privacidad, ruta y target;
+- [x] impide renovación local de vigencia, permisos o políticas;
+- [x] limita la caché al snapshot saneado y contratos mínimos;
+- [x] mantiene `D5` como bloqueo absoluto;
+- [x] separa backend, adaptador, periférico, receipt, impresión y entrega;
+- [x] bloquea retry y reimpresión ante `RESULT_UNKNOWN`;
+- [x] define una secuencia de reconexión que revalida antes de drenar;
+- [x] define contingencia manual con activación, actor, formato, numeración, custodia, duplicados, digitalización, conciliación y cierre;
+- [x] evita que el soporte manual suplante una salida `IMP-*` o un hecho empresarial;
+- [x] materializa una decisión para las 50 salidas;
+- [x] conserva 50 IDs únicos, 0 faltantes y 0 duplicados;
+- [x] conserva distribución FOGO 15, NEXO 14, PULSO 12, NUMERA 5 y ORIGO 4;
+- [x] materializa 30 `POF-LEASED-OPS`, 7 `POF-LEASED-CUSTOMER`, 3 `POF-LEASED-RESTRICTED`, 1 `POF-CACHED-REFERENCE` y 9 `POF-ONLINE-ONLY`;
+- [x] cierra documentalmente `BLK-PRINT-016-006` sin afirmar implementación;
+- [x] asigna todas las brechas restantes a tareas o instancias existentes con condición de salida;
+- [x] reconcilia los quince casos documentales con requisitos de prueba vigentes y declara cero cambios `TREQ`;
+- [x] no implementa código, almacenamiento local, SQL, migraciones, Supabase, adaptadores, hardware, workers ni despliegues;
+- [x] mantiene `PRINT-ARC-018` como única tarea siguiente reservada.
+
+---
+
+#### 18. Handoff cerrado hacia `PRINT-ARC-018`
+
+`PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local` recibe:
+
+- `VENTO-PRINT-OFFLINE-CONTINGENCY` `1.0.0`;
+- los cinco perfiles `POF-*` y la matriz de cincuenta decisiones;
+- `offline_print_envelope`, su binding, integridad y expiración;
+- la regla de que el adaptador recibe únicamente snapshot saneado y template exacto;
+- la exigencia de una señal local verificable de salud antes de `SEND_STARTED` offline;
+- la prohibición de descubrir o seleccionar destinos fuera de route/target congelados;
+- los estados `OFFLINE_SEND_STARTED`, `OFFLINE_RESULT_CAPTURED` y `OFFLINE_RESULT_UNKNOWN` que deberá reflejar mediante receipts físicos cuando el canal lo permita;
+- la obligación de controlar spool, temporales y eliminación por canal;
+- `BLK-PRINT-017-002` como entrada de diseño físico.
+
+`PRINT-ARC-018` permanece **RESERVADA**. Esta tarea no selecciona librerías, drivers, bridges, protocolos de almacenamiento, algoritmos criptográficos ni hardware adicional.
+
+---
+
+#### 19. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles
+
+TAREA ACTUAL APROBADA
+PRINT-ARC-017 — Definir operación offline y contingencia manual
+
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
+```
+
+
 ### [ ] PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
 ### [ ] PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede
 ### [ ] PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión

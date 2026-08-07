@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **594** |
+| Aprobadas | **595** |
 | En propuesta | **0** |
-| No iniciadas | **1000** |
+| No iniciadas | **999** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **37.26% (594/1594)** |
+| Porcentaje de completamiento | **37.33% (595/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PRINT-ARC-016` — Definir privacidad y ocultamiento de datos sensibles | ✅ APROBADA |
-| Tarea actual | `PRINT-ARC-017` — Definir operación offline y contingencia manual | ⬜ NO INICIADA |
-| Siguiente reservada | `PRINT-ARC-018` — Definir adaptadores LAN, USB, Bluetooth o puente local | ⬜ NO INICIADA |
+| Última aprobada | `PRINT-ARC-017` — Definir operación offline y contingencia manual | ✅ APROBADA |
+| Tarea actual | `PRINT-ARC-018` — Definir adaptadores LAN, USB, Bluetooth o puente local | ⬜ NO INICIADA |
+| Siguiente reservada | `PRINT-ARC-019` — Definir monitoreo y diagnóstico por sede | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -504,7 +504,7 @@
 | ✅ APROBADA | `PRINT-ARC-014` | Definir reimpresión como acción separada y auditable | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-015` | Definir permisos de impresión, reimpresión y administración | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-016` | Definir privacidad y ocultamiento de datos sensibles | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
-| ⬜ NO INICIADA | `PRINT-ARC-017` | Definir operación offline y contingencia manual | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
+| ✅ APROBADA | `PRINT-ARC-017` | Definir operación offline y contingencia manual | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-018` | Definir adaptadores LAN, USB, Bluetooth o puente local | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-019` | Definir monitoreo y diagnóstico por sede | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-020` | Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
