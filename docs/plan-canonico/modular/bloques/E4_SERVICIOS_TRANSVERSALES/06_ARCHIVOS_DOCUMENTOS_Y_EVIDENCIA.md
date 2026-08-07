@@ -3422,7 +3422,646 @@ No queda un pendiente narrativo sin propietario: el único bloqueo material para
 La aprobación de `EVID-ARC-007` no inicia, desarrolla ni aprueba `EVID-ARC-008`.
 
 
-### [ ] EVID-ARC-008 — Definir auditoría de consulta y modificación
+### ✅ EVID-ARC-008 — Definir auditoría de consulta y modificación
+
+**Estado:** APROBADA
+**Tarea anterior:** `EVID-ARC-007 — Definir acceso temporal y URLs firmadas` — APROBADA
+**Tarea siguiente:** `EVID-ARC-009 — Definir conservación legal y eliminación` — RESERVADA
+**Tipo de tarea:** documental; contrato transversal de auditoría de consulta, exposición y modificación de documentos y evidencia
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`
+**Procesos cubiertos:** 69 (`VPROC-0001` a `VPROC-0069`)
+**Entradas documentales/artefactos cubiertas:** 332 (`DOCCTX-*`)
+**Perfil de auditoría materializado:** `EVID_AUDIT_TRAIL_V1`
+**Cambios físicos autorizados:** ninguno; no crea tablas, buckets, objetos, políticas, RLS, funciones, triggers, migraciones, jobs, rutas, APIs, colectores, logs productivos ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar para las 332 identidades documentales un contrato de auditoría que permite reconstruir quién o qué consultó, intentó consultar, expuso o modificó un documento o evidencia, bajo qué finalidad y contexto, sobre qué versión exacta, con qué decisión y resultado, y cómo se correlaciona el hecho con la autorización, solicitud, proceso y recurso, sin copiar el contenido protegido ni confundir emisión de acceso temporal con consumo real.
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+`EVID-ARC-008` especializa para documentos y evidencia el sobre auditable ya aprobado por `NFR-REQ-006` y lo aplica al universo estable de 332 `DOCCTX-*` recibido de `EVID-ARC-007`.
+
+El resultado debe permitir reconstruir de forma determinista:
+
+```text
+ACTOR / SISTEMA + FINALIDAD + CONTEXTO
+        ↓
+PROCESO + INSTANCIA + DOCUMENTO + VERSIÓN
+        ↓
+ACCIÓN SOLICITADA + DECISIÓN DE AUTORIZACIÓN
+        ↓
+CONSULTA / EXPOSICIÓN / MODIFICACIÓN OBSERVADA
+        ↓
+RESULTADO + CORRELACIÓN + EVIDENCIA DE AUDITORÍA
+```
+
+La auditoría no se convierte en una copia del documento, no sustituye el historial empresarial y no transforma una URL firmada, request, respuesta HTTP o evento técnico en prueba automática de consulta efectiva.
+
+---
+
+#### 2. Entradas y fronteras obligatorias
+
+Esta tarea conserva sin reinterpretar:
+
+- las 332 identidades `DOCCTX-*` y sus 69 `VPROC-*`;
+- identidad, propietaria, sensibilidad, vínculo empresarial, historia no destructiva, retención base y gate técnico heredados;
+- el contrato `EVID_TEMP_ACCESS_V1` de `EVID-ARC-007`;
+- las clases `T3_ACCESS_DISCLOSURE` y `T5_EVIDENCE_DOCUMENT` del contrato de trazabilidad vigente;
+- el sobre `NFR-AUDIT-EVENT-ENVELOPE-001` como base de campos y semántica;
+- `ACCESS_POLICY_PENDING` como condición heredada mientras `INFO-AUTH-002` no materialice la política corporativa definitiva de acceso temporal;
+- `FRONTERA_OBLIGATORIA`, `APLICACION_DIFERIDA` y `NINGUNO` exactamente según la identidad recibida.
+
+Fronteras no modificadas:
+
+| Tema                                                                      | Propietaria posterior / límite                                 |
+| ------------------------------------------------------------------------- | -------------------------------------------------------------- |
+| política corporativa definitiva de acceso, exposición y URLs firmadas     | `INFO-AUTH-002`                                                |
+| investigación de accesos o cambios indebidos y preservación investigativa | `INFO-DOM-013`; protección de esa evidencia en `INFO-AUTH-004` |
+| conservación legal, hold y eliminación de documentos                      | `EVID-ARC-009`; gobierno definitivo en `INFO-DOM-006`          |
+| autenticidad, hash corporativo y cadena de custodia definitiva            | `INFO-DOM-007`                                                 |
+| contingencia de Storage                                                   | `EVID-ARC-010`                                                 |
+| habilitación de implementación física del carril                          | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`        |
+
+---
+
+#### 3. Perfil canónico `EVID_AUDIT_TRAIL_V1`
+
+Toda identidad usa el mismo perfil base. La sensibilidad y el contexto pueden aumentar controles, pero nunca reducir el sobre mínimo.
+
+| Código                   | Regla                                                                                                                                          |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------- |
+| `AUDIT_CONSULT`          | Toda consulta o exposición auditable conserva actor/sistema, finalidad, documento y versión, acción, decisión y resultado.                     |
+| `AUDIT_MODIFY`           | Toda modificación solicitada, rechazada o materializada conserva acción, versión previa/nueva o referencias equivalentes, motivo y resultado.  |
+| `ACTOR_PURPOSE_REQUIRED` | Actor humano efectivo o actor de servicio y finalidad resoluble son obligatorios; la ausencia no se reemplaza con texto libre inventado.       |
+| `OUTCOME_REQUIRED`       | Una solicitud, una autorización y un efecto material son hechos distintos; cada evento declara su resultado real.                              |
+| `CORRELATION_REQUIRED`   | Request, comando, proceso, instancia, recurso, autorización, causalidad e idempotencia se enlazan cuando apliquen.                             |
+| `ISSUE_IS_NOT_ACCESS`    | Emitir o reemitir acceso temporal no demuestra que el contenido fue consultado.                                                                |
+| `OBSERVED_ACCESS_ONLY`   | Un evento de acceso efectivo solo se registra como tal cuando el canal o proveedor permite observarlo; no se infiere desde una emisión previa. |
+| `NO_CONTENT_IN_AUDIT`    | El evento no copia archivo, documento, secreto, token, URL firmada completa ni payload sensible completo.                                      |
+| `APPEND_ONLY_CORRECTION` | Un evento de auditoría no se sobrescribe; una corrección crea un evento enlazado mediante `corrects_event_id` o referencia equivalente.        |
+
+---
+
+#### 4. Acciones auditables de consulta y exposición
+
+El campo `action` utilizará códigos estables. La existencia de un código no concede autoridad ni implica disponibilidad de una superficie.
+
+| Acción                    | Qué demuestra el evento                                                                                       | Clase base                                      |
+| ------------------------- | ------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
+| `SEARCH`                  | ejecución autorizada o denegada de una búsqueda relacionada con el documento, con alcance/filtros minimizados | `T3_ACCESS_DISCLOSURE`                          |
+| `LIST`                    | consulta de una colección o expediente que puede revelar existencia o metadatos                               | `T3_ACCESS_DISCLOSURE`                          |
+| `METADATA_READ`           | lectura de metadatos autorizados de una identidad/versión                                                     | `T3_ACCESS_DISCLOSURE`                          |
+| `PREVIEW`                 | solicitud y resultado de vista previa                                                                         | `T3_ACCESS_DISCLOSURE` + `T5_EVIDENCE_DOCUMENT` |
+| `VIEW`                    | consulta de contenido en una superficie autorizada                                                            | `T3_ACCESS_DISCLOSURE` + `T5_EVIDENCE_DOCUMENT` |
+| `DOWNLOAD`                | obtención autorizada de una representación por el canal correspondiente                                       | `T3_ACCESS_DISCLOSURE` + `T5_EVIDENCE_DOCUMENT` |
+| `EXPORT`                  | extracción controlada que incluye o referencia la identidad                                                   | `T3_ACCESS_DISCLOSURE`                          |
+| `PRINT`                   | exposición mediante impresión controlada                                                                      | `T3_ACCESS_DISCLOSURE`                          |
+| `SHARE`                   | divulgación a un destinatario o canal autorizado                                                              | `T3_ACCESS_DISCLOSURE`                          |
+| `TEMP_ACCESS_ISSUE`       | emisión inicial de acceso temporal; no prueba consumo                                                         | `T3_ACCESS_DISCLOSURE` + `T5_EVIDENCE_DOCUMENT` |
+| `TEMP_ACCESS_REISSUE`     | nueva emisión precedida por nueva autorización; no prolonga ni prueba consumo del artefacto anterior          | `T3_ACCESS_DISCLOSURE` + `T5_EVIDENCE_DOCUMENT` |
+| `CONTENT_ACCESS_OBSERVED` | solicitud real observada contra la representación exacta, cuando el mecanismo físico permita demostrarla      | `T3_ACCESS_DISCLOSURE` + `T5_EVIDENCE_DOCUMENT` |
+| `ADMIN_ACCESS`            | consulta privilegiada o de soporte autorizada sobre documento/evidencia                                       | `T0_CONTROL_CRITICAL` + `T3_ACCESS_DISCLOSURE`  |
+
+Las denegaciones sensibles también son auditables. El evento registra la acción solicitada, decisión, razón tipada y cero efecto; no revela al solicitante metadatos adicionales del recurso protegido.
+
+---
+
+#### 5. Acciones auditables de modificación
+
+Las modificaciones conservan el hecho anterior y nunca se interpretan como sobrescritura destructiva.
+
+| Acción                     | Resultado auditable mínimo                                                                                   | Frontera                                           |
+| -------------------------- | ------------------------------------------------------------------------------------------------------------ | -------------------------------------------------- |
+| `LOAD`                     | solicitud, validación previa aplicable, identidad/versión creada o rechazo y correlación                     | no redefine validación de `EVID-ARC-006`           |
+| `SUBSTITUTE`               | versión sustituida, nueva versión, motivo, actor, decisión y resultado                                       | no destruye versión anterior                       |
+| `ANNUL`                    | identidad/versión afectada, causa, autoridad y estado resultante                                             | no equivale a eliminación física                   |
+| `METADATA_UPDATE`          | campos o grupos de metadatos afectados mediante referencias minimizadas, versión anterior/nueva y motivo     | no copia valores sensibles completos en auditoría  |
+| `LINK_UPDATE`              | cambio de vínculo con proceso, instancia, recurso o evidencia relacionado, con origen/destino identificables | no transfiere propiedad empresarial por inferencia |
+| `VALIDATION_STATUS_UPDATE` | transición del estado técnico de validación con causa y evidencia técnica referenciada                       | conserva las reglas de `EVID-ARC-006`              |
+
+`RETENTION_CHANGE`, `HOLD_CHANGE`, `DISPOSITION` y eliminación física no se materializan en esta tarea. Esas acciones pertenecen a `EVID-ARC-009` y deberán, cuando sean definidas, consumir el mismo sobre auditable sin alterar las reglas aprobadas aquí.
+
+---
+
+#### 6. Sobre mínimo del evento documental
+
+`EVID_AUDIT_TRAIL_V1` consume los campos aplicables de `NFR-AUDIT-EVENT-ENVELOPE-001` y exige para consulta/modificación el siguiente mínimo resoluble:
+
+```text
+event_id
+event_type
+event_version
+event_class
+occurred_at
+recorded_at
+process_id
+process_version
+process_instance_id
+resource_type
+resource_id
+resource_version
+parent_resource_ref
+command_id
+request_id
+correlation_id
+causation_id
+idempotency_key
+attempt_number
+action
+outcome
+reason_code
+actor_type
+authenticated_subject_ref
+effective_actor_ref
+service_actor_ref
+simulated_actor_ref
+effective_role_ref
+site_id
+area_id
+shift_id
+checkin_ref
+device_id
+session_id
+application_id
+service_id
+channel
+network_mode
+policy_versions
+classification
+retention_policy_id
+hold_status
+evidence_refs[]
+integrity_reference
+corrects_event_id
+supersedes_event_id
+purpose_ref
+authorization_decision_ref
+temporary_access_ref
+```
+
+Reglas de especialización:
+
+1. `purpose_ref` referencia una finalidad empresarial resoluble; no almacena texto sensible irrestricto.
+2. `authorization_decision_ref` enlaza la decisión server-side cuando la acción exige autorización; no reemplaza sus razones o evidencia propietarias.
+3. `temporary_access_ref` enlaza emisión/reemisión/observación sin persistir la URL completa ni material de firma.
+4. `resource_id + resource_version` identifican la representación lógica exacta; una nueva versión requiere un evento distinto.
+5. cuando un campo no aplique, su ausencia debe ser interpretable por contrato y no sustituirse por un valor inventado.
+6. cuando un actor humano no exista legítimamente, `service_actor_ref` u otra atribución técnica aprobada identifica al ejecutor.
+
+---
+
+#### 7. Reglas de resultado, correlación y no inferencia
+
+- una solicitud puede terminar `DENY`, `REJECTED`, `FAILED` o `SUCCEEDED` según la etapa; no se fabricará `SUCCEEDED` desde un acuse técnico;
+- `TEMP_ACCESS_ISSUE` o `TEMP_ACCESS_REISSUE` con resultado exitoso demuestran únicamente emisión del mecanismo temporal;
+- `CONTENT_ACCESS_OBSERVED` solo existe cuando hay evidencia técnica del acceso; ausencia de ese evento no prueba que nunca existió acceso si el mecanismo físico no ofrece observación suficiente;
+- un `DOWNLOAD`, `PRINT`, `EXPORT` o `SHARE` auditado no demuestra aceptación, aprobación, firma ni efecto empresarial posterior;
+- un `LOAD`, `SUBSTITUTE`, `ANNUL` o cambio de metadata/vínculo no borra el evento anterior ni la versión anterior;
+- reintentos conservan `idempotency_key` y aumentan `attempt_number` cuando aplique;
+- un evento correctivo referencia el evento corregido y conserva ambos;
+- toda correlación entre aplicaciones mantiene la propietaria de cada efecto y no duplica una decisión ajena como propia.
+
+---
+
+#### 8. Minimización y protección de la propia auditoría
+
+La auditoría conserva suficiente contexto para reconstrucción sin convertirse en un repositorio paralelo de información sensible.
+
+Queda prohibido persistir dentro del evento:
+
+- contenido completo del documento o archivo;
+- secretos, tokens, PIN, credenciales o material criptográfico;
+- URL firmada completa o query string que transporte credenciales;
+- payload empresarial completo por comodidad;
+- nombres, filtros o términos sensibles cuando una referencia minimizada sea suficiente;
+- snapshots completos si una referencia de integridad/versionado demuestra el cambio.
+
+La consulta, exportación, preservación, corrección o administración de estos eventos de auditoría también debe ser auditada. Las reglas de investigación, preservación y cierre permanecen en `INFO-DOM-013`; la autorización privilegiada correspondiente permanece en `INFO-AUTH-004`.
+
+---
+
+#### 9. Matriz materializada por identidad documental
+
+Códigos aplicados:
+
+| Código                   | Significado                                                                       |
+| ------------------------ | --------------------------------------------------------------------------------- |
+| `EVID_AUDIT_TRAIL_V1`    | Perfil completo de auditoría documental de esta tarea.                            |
+| `AUDIT_CONSULT`          | Consulta/exposición auditada con acción, decisión y resultado.                    |
+| `AUDIT_MODIFY`           | Modificación auditada con acción, versión/estado y resultado.                     |
+| `ACTOR_PURPOSE_REQUIRED` | Actor/sistema y finalidad resolubles obligatorios.                                |
+| `OUTCOME_REQUIRED`       | Resultado explícito; no inferido desde solicitud, emisión o acuse.                |
+| `CORRELATION_REQUIRED`   | Correlación con proceso, recurso, request/comando y causalidad cuando aplique.    |
+| `ACCESS_POLICY_PENDING`  | Condición heredada de `EVID-ARC-007`; propietaria `INFO-AUTH-002`.                |
+| `FRONTERA_OBLIGATORIA`   | La identidad conserva frontera de dominio/propiedad heredada.                     |
+| `APLICACION_DIFERIDA`    | La definición documental no acredita disponibilidad de la aplicación propietaria. |
+| `NINGUNO`                | No existe frontera heredada adicional para esa identidad.                         |
+
+| ID contextual          | Proceso      | Perfil                | Consulta        | Modificación   | Actor/finalidad          | Resultado          | Correlación            | Estado         | Bloqueo / frontera heredada                  |
+| ---------------------- | ------------ | --------------------- | --------------- | -------------- | ------------------------ | ------------------ | ---------------------- | -------------- | -------------------------------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `EVID_AUDIT_TRAIL_V1` | `AUDIT_CONSULT` | `AUDIT_MODIFY` | `ACTOR_PURPOSE_REQUIRED` | `OUTCOME_REQUIRED` | `CORRELATION_REQUIRED` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+
+---
+
+#### 10. Reconciliación cuantitativa
+
+| Control                                       | Resultado |
+| --------------------------------------------- | --------: |
+| Contextos de proceso esperados                |        69 |
+| Contextos de proceso materializados           |        69 |
+| Entradas `DOCCTX-*` esperadas                 |       332 |
+| Entradas materializadas                       |       332 |
+| Claves `DOCCTX-*` únicas                      |       332 |
+| Entradas con `EVID_AUDIT_TRAIL_V1`            |       332 |
+| Entradas con `AUDIT_CONSULT`                  |       332 |
+| Entradas con `AUDIT_MODIFY`                   |       332 |
+| Entradas con `ACTOR_PURPOSE_REQUIRED`         |       332 |
+| Entradas con `OUTCOME_REQUIRED`               |       332 |
+| Entradas con `CORRELATION_REQUIRED`           |       332 |
+| Condiciones heredadas `ACCESS_POLICY_PENDING` |       332 |
+| Fronteras `FRONTERA_OBLIGATORIA`              |       245 |
+| Condiciones `APLICACION_DIFERIDA`             |        14 |
+| Contextos `NINGUNO`                           |        73 |
+| Faltantes                                     |         0 |
+| Duplicados                                    |         0 |
+
+---
+
+#### 11. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea instancia sobre las 332 identidades documentales obligaciones de auditoría ya aprobadas por los contratos vigentes de trazabilidad y proceso: sobre auditable versionado, atribución de actor y contexto, finalidad, resultado, correlación, historial no destructivo, acceso/divulgación sensibles, auditoría de la propia auditoría y minimización del evento. No introduce una regla ejecutable nueva ni modifica una existente. Crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0.
+
+---
+
+#### 12. Criterios de aceptación
+
+- [x] `EVID-ARC-007` figura aprobada y entrega 332 identidades `DOCCTX-*` para 69 procesos.
+- [x] las 332 identidades aparecen exactamente una vez en la matriz.
+- [x] las 332 identidades reciben `EVID_AUDIT_TRAIL_V1`, `AUDIT_CONSULT`, `AUDIT_MODIFY`, `ACTOR_PURPOSE_REQUIRED`, `OUTCOME_REQUIRED` y `CORRELATION_REQUIRED`.
+- [x] consulta, exposición, modificación, autorización, emisión temporal y efecto empresarial permanecen conceptualmente separados.
+- [x] una emisión o reemisión temporal no se registra como prueba de acceso efectivo.
+- [x] `CONTENT_ACCESS_OBSERVED` solo puede representar un acceso realmente observable por el mecanismo físico.
+- [x] las denegaciones sensibles conservan acción, decisión, razón tipada y cero efecto sin filtrar información adicional.
+- [x] toda modificación conserva documento/versión afectada, acción, actor/sistema, finalidad, motivo y resultado según aplicabilidad.
+- [x] sustitución, anulación y corrección no sobrescriben el evento ni la versión anteriores.
+- [x] request, comando, correlación, causalidad, idempotencia y reintentos se conservan cuando apliquen.
+- [x] el evento usa referencias y minimización en lugar de copiar contenido sensible.
+- [x] secretos, tokens, credenciales y URLs firmadas completas quedan fuera del payload de auditoría.
+- [x] la consulta o administración de la propia auditoría también queda sometida a auditoría.
+- [x] las decisiones aprobadas de identidad, propietaria, sensibilidad, retención, validación técnica y acceso temporal permanecen sin cambios.
+- [x] se preservan exactamente 245 fronteras obligatorias, 14 condiciones de aplicación diferida y 73 contextos sin frontera adicional.
+- [x] las 332 condiciones `ACCESS_POLICY_PENDING` heredadas permanecen vinculadas con `INFO-AUTH-002` y no se reinterpretan como falla de auditoría.
+- [x] `RETENTION_CHANGE`, `HOLD_CHANGE`, `DISPOSITION` y eliminación física permanecen reservadas a `EVID-ARC-009`.
+- [x] investigación y preservación de accesos/cambios indebidos permanecen en `INFO-DOM-013` y `INFO-AUTH-004`.
+- [x] no se crean tablas, objetos de Storage, políticas, RLS, funciones, triggers, migraciones, jobs, APIs, colectores ni despliegues.
+- [x] la tarea genera cero cambios en requisitos de prueba y no requiere una copia del registro canónico.
+- [x] `EVID-ARC-009` permanece reservada y no iniciada.
+
+---
+
+#### 13. Handoff cerrado hacia EVID-ARC-009
+
+`EVID-ARC-009` recibe las 332 identidades documentales con auditoría de consulta, exposición y modificación materializada: actor o sistema atribuible, finalidad resoluble, documento y versión exactos, acción, decisión, resultado, correlación, minimización y corrección append-only. Su única responsabilidad siguiente será definir conservación legal y eliminación, incluidos hold y disposición, consumiendo este sobre auditable sin cambiar identidad, propiedad, sensibilidad, validación, acceso temporal ni historia aprobados aquí.
+
+La aprobación de `EVID-ARC-008` no inicia, desarrolla ni aprueba `EVID-ARC-009`.
+
+
 ### [ ] EVID-ARC-009 — Definir conservación legal y eliminación
 ### [ ] EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage
 
