@@ -6365,11 +6365,11 @@ Esta tarea especializa esos comportamientos para el servicio de impresión sin c
 
 ### ✅ PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles
 
-**Estado:** APROBADA  
-**Tarea anterior:** `PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración` — APROBADA  
-**Tarea siguiente:** `PRINT-ARC-017 — Definir operación offline y contingencia manual` — RESERVADA  
-**Tipo de tarea:** documental; privacidad, minimización, ocultamiento, retención y tratamiento de datos sensibles en impresión  
-**Repositorio propietario:** `vento-shell`  
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-017 — Definir operación offline y contingencia manual` — RESERVADA
+**Tipo de tarea:** documental; privacidad, minimización, ocultamiento, retención y tratamiento de datos sensibles en impresión
+**Repositorio propietario:** `vento-shell`
 **Implementación física autorizada:** ninguna; no crea código, migraciones, cambios de Supabase, adaptadores ni despliegues
 
 **Qué se hace:** definir el contrato canónico que limita qué datos pueden incorporarse a cada salida física, cómo deben minimizarse u ocultarse antes del renderizado y qué evidencias pueden conservarse sin exponer contenido protegido.
@@ -6384,58 +6384,72 @@ El contrato resultante se denomina `VENTO-PRINT-PRIVACY` y queda aprobado en ver
 
 ---
 
-#### 2. Corrección de integridad canónica
+#### 2. Correcciones de integridad canónica incorporadas
 
+- Las cincuenta identidades `IMP-*` conservan exactamente los nombres aprobados en `PRINT-ARC-003`; esta tarea no crea aliases ni renombra salidas.
 - `IMP-LBL-06` conserva la propietaria canónica `FOGO`; no pertenece a `NEXO`.
 - Las salidas de cliente/caja con propietaria `NUMERA` son `IMP-CLI-03`, `IMP-CLI-04`, `IMP-CLI-05` e `IMP-CLI-09`.
-- La distribución materializada es `FOGO=15`, `NEXO=14`, `PULSO=12`, `NUMERA=5`, `ORIGO=4`.
+- La distribución materializada permanece `FOGO=15`, `NEXO=14`, `PULSO=12`, `NUMERA=5`, `ORIGO=4`.
 - La nomenclatura documental canónica termina en `IMP-DOC-14` Lista de limpieza, sanitización o control operativo; `IMP-DOC-15` Reporte contable, conciliación o liquidación; `IMP-DOC-16` Resumen de indicadores operativos o gerenciales.
+- Las referencias heredadas de `PRINT-ARC-005`, `PRINT-ARC-014` y `PRINT-ARC-015` quedan alineadas: permisos y segregación pertenecen a `PRINT-ARC-015`; privacidad, PII, minimización, ocultamiento y tratamiento por sensibilidad pertenecen a `PRINT-ARC-016`.
 
 ---
 
 #### 3. Principios normativos
 
 - **Minimización antes de renderizar:** solo se incorpora el dato estrictamente necesario para el propósito, destino, copia y actor autorizados.
-- **Propósito y contexto vinculantes:** una autorización de lectura no implica autorización de impresión; imprimir exige propósito, salida, sede, destino, dispositivo y copia autorizados.
-- **Secretos nunca imprimibles:** contraseñas, tokens, claves privadas, secretos de API, códigos de recuperación, CVV, datos completos de tarjeta y credenciales equivalentes se omiten o bloquean antes del renderizado.
-- **Enmascaramiento irreversible en el artefacto:** la versión enviada al adaptador ya debe estar saneada; el dispositivo o el spooler no son una frontera de privacidad.
-- **No degradación por reintento, reimpresión u operación offline:** ningún flujo alterno puede recuperar campos omitidos ni relajar la política aplicada.
-- **Evidencia mínima:** colas, recibos, auditoría, métricas, errores, capturas y paquetes de soporte conservan referencias, clasificaciones, versiones y huellas, no el contenido sensible completo.
-- **Códigos también son datos:** QR, códigos de barras, enlaces y payloads embebidos quedan sujetos a las mismas reglas y no pueden transportar secretos reutilizables.
+- **Propósito y contexto vinculantes:** una autorización de lectura no implica autorización de impresión; imprimir exige propósito, salida, contexto territorial, destino, copia y autorización vigentes.
+- **Secretos producen bloqueo absoluto:** cualquier `D5_SECURITY_SECRET` presente en el snapshot candidato produce `BLOCK_PRINT`. No se permite “sanear” un secreto y continuar dentro de la misma intención; el origen debe corregirse y emitir una nueva intención autorizada.
+- **Saneamiento previo a la frontera física:** la versión enviada al renderizador, spooler o adaptador ya debe estar saneada; ninguno de ellos constituye una frontera de privacidad.
+- **No degradación por retry, reimpresión u operación offline:** ningún flujo alterno puede recuperar campos omitidos ni relajar automáticamente una política aplicada.
+- **Evidencia mínima:** colas, recibos, auditoría, métricas, errores, capturas y paquetes de soporte conservan referencias, clases, reglas, versiones y huellas permitidas; no duplican el contenido sensible completo.
+- **Códigos también son datos:** QR, códigos de barras, enlaces y payloads embebidos están sujetos a las mismas reglas. Un secreto reutilizable en un código produce `BLOCK_PRINT`.
 - **No inferencia por conectividad:** disponibilidad del backend, adaptador o impresora no demuestra que el contenido haya sido tratado de forma privada.
-- **Separación entre impresión y entrega:** confirmar impresión no autoriza exposición posterior; la custodia física y entrega aplican una segunda frontera.
-- **Bloqueo seguro:** cuando el sistema no puede determinar o aplicar con certeza la política, el trabajo queda `BLOCKED_PRE_DISPATCH`; no se imprime una versión potencialmente excesiva.
-- **Sin último escritor gana:** conflictos entre política, autorización, plantilla o snapshot se resuelven por versión autoritativa y regla más restrictiva, nunca por orden de llegada.
-- **Registro inmutable de decisión:** la política aplicada, sus reglas, el actor, el propósito y la huella del contenido saneado deben quedar correlacionados con el trabajo y la copia.
+- **Separación entre impresión y entrega:** confirmar impresión no autoriza exposición posterior; custodia física y entrega constituyen una segunda frontera.
+- **Bloqueo seguro:** si una clasificación, regla, versión o transformación obligatoria no puede resolverse o verificarse de forma determinista, el trabajo queda `BLOCKED_PRE_DISPATCH`.
+- **Precedencia determinista:** los conflictos no se resuelven por “último escritor” ni por una noción ambigua de “más restrictivo”; se aplica la precedencia definida en esta tarea y, cuando dos transformaciones no sean comparables, se bloquea hasta contar con una regla exacta.
+- **Registro inmutable de decisión:** política, reglas, actor, propósito, destino, copia y huella del snapshot saneado quedan correlacionados con el trabajo sin almacenar el valor sensible original dentro de la decisión de privacidad.
 
 ---
 
 #### 4. Clasificación de datos
 
-| Clase                      | Descripción                                                                        | Tratamiento por defecto                                           |
-| -------------------------- | ---------------------------------------------------------------------------------- | ----------------------------------------------------------------- |
-| `D0_PUBLIC_OPERATIONAL`    | `Dato operativo sin impacto material de privacidad`                                | `Permitir cuando sea necesario.`                                  |
-| `D1_INTERNAL_OPERATIONAL`  | `Ubicaciones, SKU, lotes, estados y referencias internas`                          | `Minimizar y limitar al destino autorizado.`                      |
-| `D2_PERSONAL`              | `Nombre, teléfono, correo, dirección, firma, identificador de persona`             | `Enmascarar u omitir salvo necesidad explícita.`                  |
-| `D3_FINANCIAL_FISCAL`      | `Importes, saldos, cuentas, referencias de pago o identificación fiscal`           | `Restringir por rol y propósito; truncar o tokenizar.`            |
-| `D4_CONFIDENTIAL_BUSINESS` | `Precios, fórmulas, recetas, acuerdos, indicadores o decisiones restringidas`      | `Restringir, agregar u omitir según perfil.`                      |
-| `D5_SECURITY_SECRET`       | `Contraseña, token, clave, CVV, secreto de API o credencial`                       | `Bloqueo absoluto; nunca renderizar, registrar ni imprimir.`      |
-| `D6_SENSITIVE_EVIDENCE`    | `Adjuntos, capturas, diagnósticos, notas libres o evidencia de incidentes/calidad` | `Sustituir por referencia; depurar antes de cualquier inclusión.` |
+| Clase                      | Descripción                                                                        | Tratamiento por defecto                                                        |
+| -------------------------- | ---------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| `D0_PUBLIC_OPERATIONAL`    | `Dato operativo sin impacto material de privacidad`                                | `Permitir cuando sea necesario.`                                               |
+| `D1_INTERNAL_OPERATIONAL`  | `Ubicaciones, SKU, lotes, estados y referencias internas`                          | `Minimizar y limitar al destino autorizado.`                                   |
+| `D2_PERSONAL`              | `Nombre, teléfono, correo, dirección, firma, identificador de persona`             | `Enmascarar, usar alias u omitir salvo regla exacta de necesidad.`             |
+| `D3_FINANCIAL_FISCAL`      | `Importes, saldos, cuentas, referencias de pago o identificación fiscal`           | `Restringir por autorización y propósito; minimizar, enmascarar o tokenizar.`  |
+| `D4_CONFIDENTIAL_BUSINESS` | `Precios, fórmulas, recetas, acuerdos, indicadores o decisiones restringidas`      | `Restringir, minimizar, agregar u omitir según regla exacta.`                  |
+| `D5_SECURITY_SECRET`       | `Contraseña, token, clave, CVV, secreto de API o credencial`                       | `BLOCK_PRINT absoluto; nunca renderizar, registrar ni imprimir.`               |
+| `D6_SENSITIVE_EVIDENCE`    | `Adjuntos, capturas, diagnósticos, notas libres o evidencia de incidentes/calidad` | `Omitir contenido por defecto; usar referencia saneada solo por regla exacta.` |
+
+Un campo sin clasificación autoritativa no se convierte en `D0` por defecto. Si es obligatorio para la salida, la falta de clasificación produce `BLOCK_PRINT`; si es opcional, se omite hasta existir una regla explícita.
 
 ---
 
 #### 5. Acciones de política sobre campos
 
-| Acción        | Semántica obligatoria                                                                               |
-| ------------- | --------------------------------------------------------------------------------------------------- |
-| `ALLOW`       | Campo permitido sin transformación únicamente dentro del propósito aprobado.                        |
-| `MINIMIZE`    | Reducir precisión, longitud o granularidad al mínimo útil.                                          |
-| `MASK`        | Ocultar parcialmente manteniendo utilidad operacional, por ejemplo teléfono o referencia truncados. |
-| `ALIAS`       | Sustituir identidad por rol, iniciales, código o alias autorizado.                                  |
-| `AGGREGATE`   | Presentar totales o grupos sin registros fuente individualizados.                                   |
-| `TOKENIZE`    | Sustituir el valor por referencia no reversible para el receptor físico.                            |
-| `OMIT`        | Excluir el campo del snapshot de renderizado.                                                       |
-| `BLOCK_PRINT` | Impedir la admisión o despacho cuando no existe transformación segura y verificable.                |
+| Acción        | Semántica obligatoria                                                                                   |
+| ------------- | ------------------------------------------------------------------------------------------------------- |
+| `ALLOW`       | Campo permitido sin transformación únicamente dentro del propósito exacto aprobado.                     |
+| `MINIMIZE`    | Reducir precisión, longitud o granularidad al mínimo útil sin cambiar el hecho empresarial.             |
+| `MASK`        | Ocultar parcialmente manteniendo utilidad operacional, por ejemplo teléfono o referencia truncados.     |
+| `ALIAS`       | Sustituir identidad por rol, iniciales, código o alias autorizado.                                      |
+| `AGGREGATE`   | Presentar totales o grupos sin registros fuente individualizados.                                       |
+| `TOKENIZE`    | Sustituir el valor por referencia opaca no reversible para el receptor físico.                          |
+| `OMIT`        | Excluir el campo del snapshot saneado.                                                                  |
+| `BLOCK_PRINT` | Impedir admisión o despacho. Es obligatorio ante `D5`, clasificación irresoluble o saneamiento fallido. |
+
+##### 5.1 Precedencia determinista de acciones
+
+1. `D5_SECURITY_SECRET` o cualquier regla `BLOCK_PRINT` aplicable al trabajo prevalece sobre toda otra acción.
+2. Una transformación obligatoria que falla, no existe o no puede verificarse equivale a `BLOCK_PRINT`.
+3. Para un campo, `OMIT` prevalece sobre cualquier acción que conserve una representación del valor.
+4. `AGGREGATE`, `TOKENIZE`, `ALIAS` y `MASK` no forman un orden total: son transformaciones semánticamente distintas. La política versionada debe seleccionar exactamente una para el `field_path`; si dos reglas aplicables seleccionan transformaciones incompatibles y no existe una regla de desempate explícita, el trabajo se bloquea.
+5. `MINIMIZE` prevalece sobre `ALLOW`.
+6. `ALLOW` solo es válido cuando todas las reglas aplicables al campo lo permiten expresamente y no existe una regla más protectora.
+7. Una excepción más permisiva que la acción base del perfil debe identificar `output_id`, `field_path`, `rule_id`, versión de política, propósito y autorización que la justifican. No existen excepciones para `D5_SECURITY_SECRET`.
 
 ---
 
@@ -6448,84 +6462,205 @@ El contrato resultante se denomina `VENTO-PRINT-PRIVACY` y queda aprobado en ver
 | `PRV-CUSTOMER`              | Datos personales limitados al propósito de pedido, recogida o entrega; aplica enmascaramiento por tramo.              |
 | `PRV-FINANCIAL`             | Información fiscal, contable o de pago restringida; prohíbe credenciales y datos completos de instrumentos.           |
 | `PRV-ASSET-CUSTODY`         | Identificación de activos, estado y custodia; minimiza identidad de custodios y técnicos.                             |
-| `PRV-QUALITY-RESTRICTED`    | Calidad, incidentes, fórmulas o evidencia operativa restringida por rol y propósito.                                  |
+| `PRV-QUALITY-RESTRICTED`    | Calidad, incidentes, fórmulas o evidencia operativa restringida por autorización y propósito.                         |
 | `PRV-MANAGEMENT-AGGREGATED` | Indicadores agregados para gestión; impide exposición de registros fuente o personas.                                 |
-| `PRV-BLOCKED-SECRETS`       | Bloqueo absoluto cuando el contenido contiene secretos, credenciales o datos que no pueden sanearse con certeza.      |
+| `PRV-BLOCKED-SECRETS`       | Perfil de bloqueo absoluto cuando existe `D5` o cuando una regla obligatoria no puede resolverse con certeza.         |
 
-`PRV-BLOCKED-SECRETS` prevalece sobre cualquier perfil de salida. Una salida normalmente permitida queda bloqueada si su snapshot contiene una clase `D5_SECURITY_SECRET` o si una regla de saneamiento obligatoria no puede ejecutarse o verificarse.
+`PRV-BLOCKED-SECRETS` prevalece sobre cualquier perfil de salida. La detección de `D5_SECURITY_SECRET` siempre bloquea el trabajo; no se transforma el secreto para permitir la misma intención.
+
+##### 6.1 Acción base por perfil y clase
+
+La siguiente matriz establece la acción base. Una regla exacta por `output_id + field_path` puede mantenerla o hacerla más protectora. Solo puede hacerla más permisiva mediante una excepción explícita y versionada conforme a 5.1.7.
+
+| Perfil                      | D0            | D1            | D2            | D3            | D4            | D5            | D6            |
+| --------------------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- | ------------- |
+| `PRV-OPS-MINIMAL`           | `ALLOW`       | `MINIMIZE`    | `OMIT`        | `OMIT`        | `OMIT`        | `BLOCK_PRINT` | `OMIT`        |
+| `PRV-TRACEABILITY`          | `ALLOW`       | `ALLOW`       | `ALIAS`       | `OMIT`        | `MINIMIZE`    | `BLOCK_PRINT` | `OMIT`        |
+| `PRV-CUSTOMER`              | `ALLOW`       | `MINIMIZE`    | `MASK`        | `OMIT`        | `OMIT`        | `BLOCK_PRINT` | `OMIT`        |
+| `PRV-FINANCIAL`             | `ALLOW`       | `MINIMIZE`    | `MASK`        | `MINIMIZE`    | `OMIT`        | `BLOCK_PRINT` | `OMIT`        |
+| `PRV-ASSET-CUSTODY`         | `ALLOW`       | `MINIMIZE`    | `ALIAS`       | `OMIT`        | `MINIMIZE`    | `BLOCK_PRINT` | `OMIT`        |
+| `PRV-QUALITY-RESTRICTED`    | `ALLOW`       | `MINIMIZE`    | `ALIAS`       | `OMIT`        | `MINIMIZE`    | `BLOCK_PRINT` | `OMIT`        |
+| `PRV-MANAGEMENT-AGGREGATED` | `AGGREGATE`   | `AGGREGATE`   | `OMIT`        | `AGGREGATE`   | `AGGREGATE`   | `BLOCK_PRINT` | `OMIT`        |
+| `PRV-BLOCKED-SECRETS`       | `BLOCK_PRINT` | `BLOCK_PRINT` | `BLOCK_PRINT` | `BLOCK_PRINT` | `BLOCK_PRINT` | `BLOCK_PRINT` | `BLOCK_PRINT` |
+
+Si la acción base elimina o transforma un campo que `PRINT-ARC-005` marca como visible obligatorio, no se ignora la contradicción: debe existir una excepción exacta y versionada o el trabajo se bloquea antes del renderizado.
 
 ---
 
 #### 7. Snapshot autoritativo de privacidad
 
-Cada trabajo admitido debe vincular un `privacy_snapshot` inmutable con, como mínimo: `privacy_contract_version`, `policy_id`, `policy_version`, `output_id`, `purpose_code`, `tenant_id`, `site_id`, `actor_id_or_alias`, `authorization_decision_id`, `destination_class`, `copy_slot_id`, `field_decisions[]`, `render_digest`, `created_at_authoritative`, `expires_at_if_applicable` y `decision_result`.
+Cada decisión de privacidad se materializa mediante `privacy_snapshot` inmutable y enlazado al trabajo y a la copia:
 
-La huella cubre exclusivamente el contenido ya saneado. No se permite almacenar una huella como sustituto de aplicar la política, ni conservar el contenido original sensible en dead-letter, telemetría o evidencia para poder “reconstruirlo” después.
+```json
+{
+  "privacy_contract_id": "VENTO-PRINT-PRIVACY",
+  "privacy_contract_version": "1.0.0",
+  "privacy_snapshot_id": "<uuid>",
+  "snapshot_state": "<ACTIVE|SUPERSEDED|BLOCKED>",
+  "job_id": "<uuid>",
+  "copy_id": "<uuid|null>",
+  "copy_slot_id": "<string>",
+  "policy": {
+    "policy_id": "<identificador-estable>",
+    "policy_version": "<semver>",
+    "evaluated_at": "<RFC3339>",
+    "expires_at": "<RFC3339|null>"
+  },
+  "purpose": {
+    "process_ref": "<source.process_ref-de-VENTO-PRINT-JOB>",
+    "authorization_action": "<action-de-VENTO-PRINT-AUTHORIZATION>",
+    "output_id": "<IMP-*>"
+  },
+  "authorization": {
+    "authorization_decision_id": "<uuid>",
+    "organization_id": "<string|null>",
+    "principal_id": "<uuid>",
+    "effective_actor_id": "<uuid|null>"
+  },
+  "destination": {
+    "route_decision_id": "<uuid>",
+    "distribution_mode": "<LOCAL|CENTRAL_PRINT_AND_DISTRIBUTE>",
+    "consumption_site_id": "<SITE-*>",
+    "production_site_id": "<SITE-*>",
+    "consumption_point_id": "<POINT-*|null>",
+    "production_point_id": "<POINT-*|SIN_PUNTO_COMPATIBLE>"
+  },
+  "field_decisions": [],
+  "sanitized_payload_hash_algorithm": "SHA-256",
+  "sanitized_payload_hash": "<64-hex|null>",
+  "decision": {
+    "result": "<ALLOW_SANITIZED|BLOCK_PRINT>",
+    "reason_codes": ["<PRINT_PRIVACY_*>"]
+  },
+  "created_at_authoritative": "<RFC3339>"
+}
+```
 
-##### 7.1 Precedencia y carreras
+No se usan `tenant_id`, `site_id`, `actor_id_or_alias` ni `destination_class` como sustitutos ambiguos de los contratos ya aprobados. La organización, identidad del actor y sitios de consumo/producción se referencian con el vocabulario de `PRINT-ARC-007` y `PRINT-ARC-015`.
 
-1. La política se evalúa después de resolver salida, propósito, actor, destino y copia, pero antes de renderizar y persistir el payload despachable.
-2. Un cambio de política más restrictivo antes de `SEND_STARTED` invalida el snapshot previo y exige reevaluación o bloqueo.
-3. Un cambio menos restrictivo nunca se aplica retroactivamente a un trabajo ya admitido sin nueva intención autorizada.
-4. Después de `SEND_STARTED`, la política aplicada permanece registrada; cualquier posible exposición se gestiona como incidente y no se “corrige” mediante reintento ciego.
-5. `RESULT_UNKNOWN` conserva el mismo snapshot saneado; la reconciliación no puede consultar ni reinyectar el contenido original.
+##### 7.1 Contrato de `field_decisions[]`
+
+Cada campo dinámico presente en `payload.data`, y cada campo obligatorio del contrato de `PRINT-ARC-005`, debe tener una decisión resoluble antes de renderizar. Una decisión contiene únicamente metadatos de política, nunca el valor fuente:
+
+```json
+{
+  "field_path": "<ruta-exacta-del-contrato-PRINT-ARC-005>",
+  "source_application": "<FOGO|NEXO|PULSO|NUMERA|ORIGO|TRANSVERSAL>",
+  "data_class": "<D0_PUBLIC_OPERATIONAL|D1_INTERNAL_OPERATIONAL|D2_PERSONAL|D3_FINANCIAL_FISCAL|D4_CONFIDENTIAL_BUSINESS|D5_SECURITY_SECRET|D6_SENSITIVE_EVIDENCE>",
+  "selected_action": "<ALLOW|MINIMIZE|MASK|ALIAS|AGGREGATE|TOKENIZE|OMIT|BLOCK_PRINT>",
+  "rule_id": "<identificador-estable>",
+  "rule_version": "<semver>",
+  "input_present": true,
+  "output_present": "<true|false>",
+  "reason_code": "<PRINT_PRIVACY_FIELD_* >"
+}
+```
+
+Reglas:
+
+1. `field_path` debe corresponder al contrato exacto de la salida en `PRINT-ARC-005`; no se decide privacidad sobre etiquetas de texto inventadas en el render.
+2. Ningún campo presente puede llegar al renderizador sin una `field_decision` efectiva.
+3. Un campo obligatorio sin clasificación o sin acción resoluble produce `BLOCK_PRINT`.
+4. Un campo condicional ausente no se inventa. Si está presente, requiere decisión igual que cualquier otro campo.
+5. Un campo adicional no autorizado por el contrato de payload no se “sanea para aceptarlo”: se rechaza por contrato o se bloquea conforme a la frontera aplicable.
+6. El valor original no se persiste dentro de `field_decisions[]`, errores, métricas ni auditoría.
+
+##### 7.2 Relación entre `payload.hash`, `payload_hash`, snapshot saneado y render
+
+Los contratos previos conservan su semántica; privacidad añade una huella distinta y explícita:
+
+| Huella                                                   | Origen                            | Cubre                                                                             | Uso permitido                                                | No significa                                           |
+| -------------------------------------------------------- | --------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------ | ------------------------------------------------------ |
+| `VENTO-PRINT-JOB.payload.hash`                           | `PRINT-ARC-006`                   | JSON canónico del payload empresarial validado                                    | Identidad e integridad del trabajo bajo acceso protegido     | Contenido apto para render ni evidencia de privacidad  |
+| `render_snapshot.payload_hash` / `document.payload_hash` | `PRINT-ARC-010` / `PRINT-ARC-011` | Referencia semántica al mismo snapshot empresarial                                | Idempotencia, retry y correlación                            | Huella del contenido saneado                           |
+| `sanitized_payload_hash`                                 | `PRINT-ARC-016`                   | Payload estructurado después de todas las `field_decisions` y antes de renderizar | Evidencia de privacidad, reconciliación y soporte autorizado | Hash de bytes ZPL/PDF/ESC-POS                          |
+| `render_hash`                                            | reservado a `PRINT-ARC-018`       | Bytes o representación técnica producida por el adaptador                         | Diagnóstico técnico cuando se implemente                     | Sustituto de `payload.hash` o `sanitized_payload_hash` |
+
+Reglas:
+
+- `payload.hash` no se copia a logs, métricas, tickets o paquetes de soporte como sustituto de `sanitized_payload_hash`; permanece en la superficie protegida que ya gobierna el trabajo.
+- Una política más restrictiva aplicada antes de `SEND_STARTED` puede producir un `sanitized_payload_hash` diferente sin cambiar `job_id`, intención, `payload.hash` ni la identidad empresarial del documento.
+- Un cambio del `sanitized_payload_hash` exige un nuevo `privacy_snapshot` y deja el anterior `SUPERSEDED`; no se sobrescribe historial.
+- Después de `SEND_STARTED` no se sustituye silenciosamente el snapshot del intento en curso.
+
+##### 7.3 Precedencia y carreras
+
+1. La política se evalúa después de resolver salida, autorización vigente, ruta, destino y copia, y antes de renderizar o persistir un payload despachable.
+2. Un cambio de política más restrictivo antes de `SEND_STARTED` invalida el snapshot activo; se crea uno nuevo más restrictivo o se bloquea. El snapshot anterior queda `SUPERSEDED`.
+3. Un cambio menos restrictivo nunca amplía automáticamente un trabajo ya admitido; se conserva el snapshot activo más protector.
+4. Después de `SEND_STARTED`, el snapshot asociado al intento permanece inmutable. Una posible exposición se gestiona como incidente y no mediante sustitución retrospectiva del contenido.
+5. `RESULT_UNKNOWN` bloquea retry, reimpresión o regeneración de un snapshot para esa misma copia hasta conciliación autoritativa; la reconciliación usa receipts, identidades y huellas permitidas, no el payload original.
+6. Si un intento termina con evidencia autoritativa de **no efecto físico** y el retry continúa permitido, la política se reevalúa antes del siguiente `SEND_STARTED`: se reutiliza el snapshot solo si sigue vigente y ninguna política más restrictiva aplica; de lo contrario se crea uno nuevo o se bloquea.
 
 ---
 
+#### 8. Vinculación exacta con `PRINT-ARC-005`
+
+La matriz de esta tarea define perfil, datos relevantes, regla de visibilidad y evidencia por salida, pero no reemplaza el contrato de campos de `PRINT-ARC-005`.
+
+Para cada trabajo:
+
+1. `output_id` selecciona exactamente una fila de `PRINT-ARC-005` y una fila de esta tarea.
+2. Cada campo de `payload.data` conserva su `source_application` autorizada.
+3. Cada `field_path` recibe clase y acción mediante la política versionada; la acción base proviene de 6.1 y la fila de salida puede exigir una excepción exacta.
+4. Los campos de texto libre, evidencia, diagnóstico, observaciones o adjuntos se tratan como `D6_SENSITIVE_EVIDENCE` salvo clasificación autoritativa más restrictiva; la presencia de `D5` dentro de ellos bloquea el trabajo completo.
+5. La matriz no autoriza campos que no existan en el contrato de `PRINT-ARC-005`.
+6. No existe una ruta “best effort”: una contradicción entre campo obligatorio y política se resuelve por excepción explícita o `BLOCK_PRINT`.
+
 #### 8. Matriz materializada de las 50 salidas
 
-| ID           | Salida canónica                                              | Propietaria | Perfil                      | Datos relevantes                                | Regla de visibilidad                                                                                       | Evidencia y logs                                                      |
-| ------------ | ------------------------------------------------------------ | ----------- | --------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
-| `IMP-LBL-01` | `Etiqueta de lote de producto terminado`                     | `FOGO`      | `PRV-TRACEABILITY`          | `Identificadores de lote, fechas, producto`     | `Mostrar identificadores operativos; omitir datos personales no necesarios`                                | `Referencia de trabajo, huella y resultado; nunca contenido completo` |
-| `IMP-LBL-02` | `Etiqueta de producto intermedio o semielaborado`            | `FOGO`      | `PRV-TRACEABILITY`          | `Lote, etapa, fechas, producto`                 | `Mostrar trazabilidad mínima; omitir personas salvo rol operativo indispensable`                           | `Referencia de trabajo, huella y resultado`                           |
-| `IMP-LBL-03` | `Etiqueta de preparación diaria o mise en place`             | `FOGO`      | `PRV-OPS-MINIMAL`           | `Preparación, fecha, vigencia`                  | `Mostrar preparación y vigencia; usar alias de operador si se exige trazabilidad`                          | `Sin contenido renderizado`                                           |
-| `IMP-LBL-04` | `Etiqueta de apertura, fraccionamiento o reempaque`          | `FOGO`      | `PRV-TRACEABILITY`          | `Lote origen, fecha, vigencia`                  | `Mostrar lote y vigencia; minimizar responsable`                                                           | `Referencia y digest verificable`                                     |
-| `IMP-LBL-05` | `Etiqueta de alérgenos o manipulación especial`              | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `Alérgenos, advertencias de salud operacional`  | `Mostrar advertencia necesaria; prohibido incluir diagnósticos o datos clínicos de personas`               | `Evento mínimo y versión de política`                                 |
-| `IMP-LBL-06` | `Etiqueta de cuarentena, liberado o rechazado`               | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `Estado de calidad, lote, decisión`             | `Mostrar estado y lote; minimizar aprobador a rol o alias autorizado`                                      | `Referencia de decisión; no evidencia adjunta`                        |
-| `IMP-LBL-07` | `Etiqueta de recepción de materia prima o lote de proveedor` | `ORIGO`     | `PRV-TRACEABILITY`          | `Proveedor, lote, recepción`                    | `Mostrar proveedor comercial y lote; ocultar contactos personales, teléfonos y correos`                    | `Referencia de recepción y huella`                                    |
-| `IMP-LBL-08` | `Etiqueta de ubicación, estante, contenedor o zona`          | `NEXO`      | `PRV-OPS-MINIMAL`           | `Ubicación física interna`                      | `Mostrar código de ubicación; omitir información de seguridad o acceso`                                    | `Referencia de ubicación; sin mapa sensible`                          |
-| `IMP-LBL-09` | `Etiqueta de artículo, insumo o SKU`                         | `NEXO`      | `PRV-OPS-MINIMAL`           | `SKU, descripción, unidad`                      | `Mostrar datos de inventario; omitir costos y proveedor si no son necesarios`                              | `Referencia de artículo y versión`                                    |
-| `IMP-LBL-10` | `Etiqueta de bulto de traslado, remisión o despacho`         | `NEXO`      | `PRV-TRACEABILITY`          | `Remisión, origen, destino, bulto`              | `Mostrar códigos operativos; enmascarar dirección o contacto cuando no sea necesario`                      | `Referencia de movimiento y huella`                                   |
-| `IMP-LBL-11` | `Etiqueta de pedido, recogida o entrega a cliente`           | `PULSO`     | `PRV-CUSTOMER`              | `Nombre/contacto/dirección del cliente, pedido` | `Mostrar solo dato imprescindible para entrega; enmascarar teléfono y dirección fuera del tramo logístico` | `Referencia de pedido; nunca contacto completo`                       |
-| `IMP-LBL-12` | `Etiqueta de identificación de activo o equipo`              | `NEXO`      | `PRV-ASSET-CUSTODY`         | `Activo, serial, ubicación`                     | `Mostrar código interno; serial completo solo si el propósito lo exige`                                    | `Referencia de activo y versión`                                      |
-| `IMP-LBL-13` | `Etiqueta de mantenimiento, inspección o fuera de servicio`  | `NEXO`      | `PRV-ASSET-CUSTODY`         | `Activo, estado, restricción`                   | `Mostrar estado y activo; minimizar técnico o proveedor a rol/alias`                                       | `Referencia de orden; sin notas libres completas`                     |
-| `IMP-LBL-14` | `Etiqueta de limpieza o sanitización`                        | `FOGO`      | `PRV-OPS-MINIMAL`           | `Control operativo, fecha`                      | `Mostrar control y vigencia; minimizar responsables`                                                       | `Referencia de control`                                               |
-| `IMP-LBL-15` | `Etiqueta de muestra o prueba`                               | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `Muestra, prueba, lote`                         | `Usar código de muestra; prohibido incorporar datos personales no requeridos`                              | `Referencia de muestra y cadena de custodia mínima`                   |
-| `IMP-LBL-16` | `Etiqueta de merma, residuo o disposición`                   | `FOGO`      | `PRV-TRACEABILITY`          | `Tipo, cantidad, disposición`                   | `Mostrar trazabilidad del residuo; omitir personas salvo rol autorizado`                                   | `Referencia de evento y huella`                                       |
-| `IMP-CMD-01` | `Comanda de cocina`                                          | `PULSO`     | `PRV-OPS-MINIMAL`           | `Pedido, preparaciones, notas`                  | `Usar número de pedido; omitir nombre, teléfono, dirección y datos de pago`                                | `Referencia de pedido y resultado`                                    |
-| `IMP-CMD-02` | `Comanda de bar o bebidas frías`                             | `PULSO`     | `PRV-OPS-MINIMAL`           | `Pedido, bebidas, notas`                        | `Usar número de pedido; omitir datos del cliente y de pago`                                                | `Referencia de pedido y resultado`                                    |
-| `IMP-CMD-03` | `Comanda de barra de cafés o bebidas calientes`              | `PULSO`     | `PRV-OPS-MINIMAL`           | `Pedido, bebidas, notas`                        | `Usar número de pedido; omitir datos del cliente y de pago`                                                | `Referencia de pedido y resultado`                                    |
-| `IMP-CMD-04` | `Comanda de preparación o mise en place`                     | `FOGO`      | `PRV-OPS-MINIMAL`           | `Preparación, cantidades, turno`                | `Mostrar necesidad operativa; minimizar nombres de personal`                                               | `Referencia de orden interna`                                         |
-| `IMP-CMD-05` | `Comanda de expedición o recogida`                           | `PULSO`     | `PRV-CUSTOMER`              | `Pedido, nombre abreviado, canal`               | `Mostrar nombre abreviado o código; contacto solo si es indispensable`                                     | `Referencia de pedido; contacto enmascarado`                          |
-| `IMP-CMD-06` | `Comanda de reposición interna`                              | `NEXO`      | `PRV-OPS-MINIMAL`           | `Artículo, cantidad, origen/destino`            | `Mostrar inventario y ubicación; omitir costos y datos personales`                                         | `Referencia de movimiento`                                            |
-| `IMP-CMD-07` | `Comanda de modificación o adición`                          | `PULSO`     | `PRV-OPS-MINIMAL`           | `Pedido, cambios, notas`                        | `Mostrar solo cambio operativo; omitir identidad y pago`                                                   | `Referencia de versión del pedido`                                    |
-| `IMP-CMD-08` | `Comanda de cancelación o anulación`                         | `PULSO`     | `PRV-OPS-MINIMAL`           | `Pedido, ítems anulados, motivo controlado`     | `Mostrar código de motivo; omitir texto libre sensible y datos del cliente`                                | `Referencia de cancelación y actor autorizado`                        |
-| `IMP-CMD-09` | `Comanda de producción por insuficiencia`                    | `FOGO`      | `PRV-OPS-MINIMAL`           | `Producto, cantidad, causa`                     | `Mostrar necesidad productiva; omitir datos comerciales o personales`                                      | `Referencia de necesidad y resultado`                                 |
-| `IMP-CLI-01` | `Resumen de cuenta del cliente`                              | `PULSO`     | `PRV-CUSTOMER`              | `Consumos, cliente, mesa/pedido`                | `Mostrar consumos y total; nombre abreviado; nunca credenciales ni datos completos de pago`                | `Referencia de cuenta y huella`                                       |
-| `IMP-CLI-02` | `Confirmación de pedido`                                     | `PULSO`     | `PRV-CUSTOMER`              | `Pedido, cliente, entrega`                      | `Mostrar solo identificación y contacto necesarios; enmascarar resto`                                      | `Referencia de pedido; sin payload completo`                          |
-| `IMP-CLI-03` | `Comprobante de pago`                                        | `NUMERA`    | `PRV-FINANCIAL`             | `Importe, medio, referencia transaccional`      | `Mostrar referencia truncada; prohibidos PAN completo, CVV, claves, tokens o credenciales`                 | `Referencia financiera tokenizada y huella`                           |
-| `IMP-CLI-04` | `Factura o comprobante de venta`                             | `NUMERA`    | `PRV-FINANCIAL`             | `Identificación fiscal, dirección, importes`    | `Mostrar campos fiscales obligatorios según contexto; enmascarar datos no exigidos`                        | `Referencia fiscal y huella; no copia íntegra en logs`                |
-| `IMP-CLI-05` | `Devolución, reverso o nota crédito`                         | `NUMERA`    | `PRV-FINANCIAL`             | `Documento origen, importe, motivo`             | `Mostrar referencias e importes; ocultar datos de pago y texto libre sensible`                             | `Referencia financiera y actor autorizado`                            |
-| `IMP-CLI-06` | `Confirmación de recogida o entrega`                         | `PULSO`     | `PRV-CUSTOMER`              | `Cliente, contacto, dirección, aceptación`      | `Mostrar solo datos necesarios para el tramo; enmascarar después de entrega`                               | `Referencia de entrega y aceptación mínima`                           |
-| `IMP-CLI-07` | `Reserva o anticipo`                                         | `PULSO`     | `PRV-CUSTOMER`              | `Cliente, fecha, anticipo`                      | `Mostrar contacto mínimo y estado; ocultar medio de pago y referencias completas`                          | `Referencia de reserva y pago tokenizada`                             |
-| `IMP-CLI-08` | `Vale, cortesía, promoción o beneficio`                      | `PULSO`     | `PRV-CUSTOMER`              | `Código, beneficio, beneficiario`               | `Mostrar código parcial o de un solo uso; no imprimir secretos reutilizables`                              | `Referencia de beneficio; nunca secreto completo`                     |
-| `IMP-CLI-09` | `Apertura, cierre o liquidación de caja`                     | `NUMERA`    | `PRV-FINANCIAL`             | `Saldos, movimientos, responsables`             | `Acceso restringido; mostrar cifras autorizadas; minimizar identificadores personales`                     | `Referencia de cierre, huella y autorización`                         |
-| `IMP-DOC-01` | `Remisión o nota de despacho`                                | `NEXO`      | `PRV-TRACEABILITY`          | `Origen, destino, artículos, receptor`          | `Mostrar trazabilidad; enmascarar contacto/dirección cuando no sea imprescindible`                         | `Referencia documental y digest`                                      |
-| `IMP-DOC-02` | `Manifiesto de traslado interno`                             | `NEXO`      | `PRV-TRACEABILITY`          | `Ubicaciones, artículos, custodios`             | `Mostrar códigos y custodios por alias/rol; omitir datos personales adicionales`                           | `Referencia de traslado y huella`                                     |
-| `IMP-DOC-03` | `Hoja de conteo de inventario`                               | `NEXO`      | `PRV-OPS-MINIMAL`           | `Artículos, ubicaciones, cantidades`            | `Mostrar inventario; omitir costos, credenciales y datos personales`                                       | `Referencia de sesión de conteo`                                      |
-| `IMP-DOC-04` | `Reporte de diferencias o ajustes de inventario`             | `NEXO`      | `PRV-TRACEABILITY`          | `Diferencias, motivos, responsables`            | `Mostrar hechos y códigos de motivo; restringir notas libres y minimizar actor`                            | `Referencia de ajuste, autorización y huella`                         |
-| `IMP-DOC-05` | `Orden de compra`                                            | `ORIGO`     | `PRV-FINANCIAL`             | `Proveedor, precios, condiciones, contactos`    | `Acceso restringido; mostrar contacto comercial necesario; ocultar cuentas bancarias no requeridas`        | `Referencia de orden y versión; sin contenido completo`               |
-| `IMP-DOC-06` | `Acta o comprobante de recepción`                            | `ORIGO`     | `PRV-TRACEABILITY`          | `Proveedor, entrega, receptor, hallazgos`       | `Mostrar trazabilidad; minimizar contactos y responsables`                                                 | `Referencia de recepción y huella`                                    |
-| `IMP-DOC-07` | `Devolución a proveedor`                                     | `ORIGO`     | `PRV-TRACEABILITY`          | `Proveedor, artículos, motivo, transporte`      | `Mostrar datos comerciales mínimos; enmascarar contactos personales`                                       | `Referencia de devolución y autorización`                             |
-| `IMP-DOC-08` | `Orden de producción o ficha de lote`                        | `FOGO`      | `PRV-TRACEABILITY`          | `Receta, lote, cantidades, responsables`        | `Mostrar datos técnicos autorizados; minimizar personal; proteger información propietaria restringida`     | `Referencia de lote, versión y huella`                                |
-| `IMP-DOC-09` | `Receta, ficha técnica o guía práctica`                      | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `Fórmula, proceso, aprobaciones`                | `Restringir por rol; mostrar versión vigente; omitir secretos comerciales fuera del propósito`             | `Referencia de versión y autorización`                                |
-| `IMP-DOC-10` | `Registro de calidad o no conformidad`                       | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `Hallazgo, evidencia, responsables, decisiones` | `Minimizar personas; excluir datos clínicos y adjuntos sensibles; usar referencias`                        | `Referencia de caso y evidencia, no evidencia íntegra`                |
-| `IMP-DOC-11` | `Orden de mantenimiento`                                     | `NEXO`      | `PRV-ASSET-CUSTODY`         | `Activo, técnico/proveedor, diagnóstico`        | `Mostrar activo y trabajo; minimizar contacto y notas sensibles`                                           | `Referencia de orden y autorización`                                  |
-| `IMP-DOC-12` | `Acta de entrega, devolución o traslado de activo`           | `NEXO`      | `PRV-ASSET-CUSTODY`         | `Activo, custodios, firmas/aceptaciones`        | `Mostrar custodios mínimos y aceptación; ocultar identificadores personales adicionales`                   | `Referencia de acta y aceptación verificable`                         |
-| `IMP-DOC-13` | `Reporte de incidente o soporte técnico`                     | `NEXO`      | `PRV-QUALITY-RESTRICTED`    | `Incidente, usuario, evidencia, diagnóstico`    | `Redactar secretos, tokens, correos, teléfonos y datos del usuario; adjuntos solo por referencia`          | `Referencia del incidente; nunca logs o capturas sin depurar`         |
-| `IMP-DOC-14` | `Lista de limpieza, sanitización o control operativo`        | `FOGO`      | `PRV-OPS-MINIMAL`           | `Control, área, responsables`                   | `Mostrar control y resultado; responsables por rol/alias cuando sea suficiente`                            | `Referencia de control y versión`                                     |
-| `IMP-DOC-15` | `Reporte contable, conciliación o liquidación`               | `NUMERA`    | `PRV-FINANCIAL`             | `Cuentas, saldos, movimientos, aprobadores`     | `Acceso restringido; agregación por defecto; ocultar cuentas, identificadores y referencias no necesarias` | `Referencia de reporte, periodo y huella`                             |
-| `IMP-DOC-16` | `Resumen de indicadores operativos o gerenciales`            | `NEXO`      | `PRV-MANAGEMENT-AGGREGATED` | `Indicadores de varias aplicaciones, alertas`   | `Mostrar agregados autorizados; suprimir celdas pequeñas, personas y datos fuente sensibles`               | `Referencia de reporte, fuentes y versión`                            |
+| ID           | Salida canónica                                             | Propietaria | Perfil                      | Datos relevantes                                | Regla de visibilidad                                                                                       | Evidencia y logs                                                      |
+| ------------ | ----------------------------------------------------------- | ----------- | --------------------------- | ----------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `IMP-LBL-01` | `Etiqueta de lote de producto terminado`                    | `FOGO`      | `PRV-TRACEABILITY`          | `Identificadores de lote, fechas, producto`     | `Mostrar identificadores operativos; omitir datos personales no necesarios`                                | `Referencia de trabajo, huella y resultado; nunca contenido completo` |
+| `IMP-LBL-02` | `Etiqueta de lote de producto intermedio o semielaborado`   | `FOGO`      | `PRV-TRACEABILITY`          | `Lote, etapa, fechas, producto`                 | `Mostrar trazabilidad mínima; omitir personas salvo rol operativo indispensable`                           | `Referencia de trabajo, huella y resultado`                           |
+| `IMP-LBL-03` | `Etiqueta de preparación diaria o mise en place`            | `FOGO`      | `PRV-OPS-MINIMAL`           | `Preparación, fecha, vigencia`                  | `Mostrar preparación y vigencia; usar alias de operador si se exige trazabilidad`                          | `Sin contenido renderizado`                                           |
+| `IMP-LBL-04` | `Etiqueta de apertura, fraccionamiento o reempaque`         | `FOGO`      | `PRV-TRACEABILITY`          | `Lote origen, fecha, vigencia`                  | `Mostrar lote y vigencia; minimizar responsable`                                                           | `Referencia y digest verificable`                                     |
+| `IMP-LBL-05` | `Etiqueta de alérgenos y manipulación especial`             | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `Alérgenos, advertencias de salud operacional`  | `Mostrar advertencia necesaria; prohibido incluir diagnósticos o datos clínicos de personas`               | `Evento mínimo y versión de política`                                 |
+| `IMP-LBL-06` | `Etiqueta de cuarentena, liberado o rechazado`              | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `Estado de calidad, lote, decisión`             | `Mostrar estado y lote; minimizar aprobador a rol o alias autorizado`                                      | `Referencia de decisión; no evidencia adjunta`                        |
+| `IMP-LBL-07` | `Etiqueta de recepción de materia prima o lote proveedor`   | `ORIGO`     | `PRV-TRACEABILITY`          | `Proveedor, lote, recepción`                    | `Mostrar proveedor comercial y lote; ocultar contactos personales, teléfonos y correos`                    | `Referencia de recepción y huella`                                    |
+| `IMP-LBL-08` | `Etiqueta de ubicación, estante, contenedor o zona`         | `NEXO`      | `PRV-OPS-MINIMAL`           | `Ubicación física interna`                      | `Mostrar código de ubicación; omitir información de seguridad o acceso`                                    | `Referencia de ubicación; sin mapa sensible`                          |
+| `IMP-LBL-09` | `Etiqueta de artículo, insumo o SKU`                        | `NEXO`      | `PRV-OPS-MINIMAL`           | `SKU, descripción, unidad`                      | `Mostrar datos de inventario; omitir costos y proveedor si no son necesarios`                              | `Referencia de artículo y versión`                                    |
+| `IMP-LBL-10` | `Etiqueta de bulto para traslado, remisión o despacho`      | `NEXO`      | `PRV-TRACEABILITY`          | `Remisión, origen, destino, bulto`              | `Mostrar códigos operativos; enmascarar dirección o contacto cuando no sea necesario`                      | `Referencia de movimiento y huella`                                   |
+| `IMP-LBL-11` | `Etiqueta de pedido, recogida o entrega a cliente`          | `PULSO`     | `PRV-CUSTOMER`              | `Nombre/contacto/dirección del cliente, pedido` | `Mostrar solo dato imprescindible para entrega; enmascarar teléfono y dirección fuera del tramo logístico` | `Referencia de pedido; nunca contacto completo`                       |
+| `IMP-LBL-12` | `Etiqueta de identificación de activo o equipo`             | `NEXO`      | `PRV-ASSET-CUSTODY`         | `Activo, serial, ubicación`                     | `Mostrar código interno; serial completo solo si el propósito lo exige`                                    | `Referencia de activo y versión`                                      |
+| `IMP-LBL-13` | `Etiqueta de mantenimiento, inspección o fuera de servicio` | `NEXO`      | `PRV-ASSET-CUSTODY`         | `Activo, estado, restricción`                   | `Mostrar estado y activo; minimizar técnico o proveedor a rol/alias`                                       | `Referencia de orden; sin notas libres completas`                     |
+| `IMP-LBL-14` | `Etiqueta de limpieza o sanitización`                       | `FOGO`      | `PRV-OPS-MINIMAL`           | `Control operativo, fecha`                      | `Mostrar control y vigencia; minimizar responsables`                                                       | `Referencia de control`                                               |
+| `IMP-LBL-15` | `Etiqueta de muestra o prueba`                              | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `Muestra, prueba, lote`                         | `Usar código de muestra; prohibido incorporar datos personales no requeridos`                              | `Referencia de muestra y cadena de custodia mínima`                   |
+| `IMP-LBL-16` | `Etiqueta de merma, residuo o disposición`                  | `FOGO`      | `PRV-TRACEABILITY`          | `Tipo, cantidad, disposición`                   | `Mostrar trazabilidad del residuo; omitir personas salvo rol autorizado`                                   | `Referencia de evento y huella`                                       |
+| `IMP-CMD-01` | `Comanda de cocina`                                         | `PULSO`     | `PRV-OPS-MINIMAL`           | `Pedido, preparaciones, notas`                  | `Usar número de pedido; omitir nombre, teléfono, dirección y datos de pago`                                | `Referencia de pedido y resultado`                                    |
+| `IMP-CMD-02` | `Comanda de bar de bebidas frías`                           | `PULSO`     | `PRV-OPS-MINIMAL`           | `Pedido, bebidas, notas`                        | `Usar número de pedido; omitir datos del cliente y de pago`                                                | `Referencia de pedido y resultado`                                    |
+| `IMP-CMD-03` | `Comanda de barra de cafés y bebidas calientes`             | `PULSO`     | `PRV-OPS-MINIMAL`           | `Pedido, bebidas, notas`                        | `Usar número de pedido; omitir datos del cliente y de pago`                                                | `Referencia de pedido y resultado`                                    |
+| `IMP-CMD-04` | `Comanda de preparación o mise en place`                    | `FOGO`      | `PRV-OPS-MINIMAL`           | `Preparación, cantidades, turno`                | `Mostrar necesidad operativa; minimizar nombres de personal`                                               | `Referencia de orden interna`                                         |
+| `IMP-CMD-05` | `Tiquete de expedición o recogida`                          | `PULSO`     | `PRV-CUSTOMER`              | `Pedido, nombre abreviado, canal`               | `Mostrar nombre abreviado o código; contacto solo si es indispensable`                                     | `Referencia de pedido; contacto enmascarado`                          |
+| `IMP-CMD-06` | `Solicitud interna de reposición`                           | `NEXO`      | `PRV-OPS-MINIMAL`           | `Artículo, cantidad, origen/destino`            | `Mostrar inventario y ubicación; omitir costos y datos personales`                                         | `Referencia de movimiento`                                            |
+| `IMP-CMD-07` | `Modificación o adición de comanda`                         | `PULSO`     | `PRV-OPS-MINIMAL`           | `Pedido, cambios, notas`                        | `Mostrar solo cambio operativo; omitir identidad y pago`                                                   | `Referencia de versión del pedido`                                    |
+| `IMP-CMD-08` | `Cancelación o anulación de comanda`                        | `PULSO`     | `PRV-OPS-MINIMAL`           | `Pedido, ítems anulados, motivo controlado`     | `Mostrar código de motivo; omitir texto libre sensible y datos del cliente`                                | `Referencia de cancelación y actor autorizado`                        |
+| `IMP-CMD-09` | `Solicitud de producción por insuficiencia`                 | `FOGO`      | `PRV-OPS-MINIMAL`           | `Producto, cantidad, causa`                     | `Mostrar necesidad productiva; omitir datos comerciales o personales`                                      | `Referencia de necesidad y resultado`                                 |
+| `IMP-CLI-01` | `Resumen de cuenta para el cliente`                         | `PULSO`     | `PRV-CUSTOMER`              | `Consumos, cliente, mesa/pedido`                | `Mostrar consumos y total; nombre abreviado; nunca credenciales ni datos completos de pago`                | `Referencia de cuenta y huella`                                       |
+| `IMP-CLI-02` | `Confirmación de pedido`                                    | `PULSO`     | `PRV-CUSTOMER`              | `Pedido, cliente, entrega`                      | `Mostrar solo identificación y contacto necesarios; enmascarar resto`                                      | `Referencia de pedido; sin payload completo`                          |
+| `IMP-CLI-03` | `Comprobante de pago`                                       | `NUMERA`    | `PRV-FINANCIAL`             | `Importe, medio, referencia transaccional`      | `Mostrar referencia truncada; prohibidos PAN completo, CVV, claves, tokens o credenciales`                 | `Referencia financiera tokenizada y huella`                           |
+| `IMP-CLI-04` | `Factura o comprobante de venta para cliente`               | `NUMERA`    | `PRV-FINANCIAL`             | `Identificación fiscal, dirección, importes`    | `Mostrar campos fiscales obligatorios según contexto; enmascarar datos no exigidos`                        | `Referencia fiscal y huella; no copia íntegra en logs`                |
+| `IMP-CLI-05` | `Comprobante de devolución, reverso o nota de crédito`      | `NUMERA`    | `PRV-FINANCIAL`             | `Documento origen, importe, motivo`             | `Mostrar referencias e importes; ocultar datos de pago y texto libre sensible`                             | `Referencia financiera y actor autorizado`                            |
+| `IMP-CLI-06` | `Resumen de recogida o entrega`                             | `PULSO`     | `PRV-CUSTOMER`              | `Cliente, contacto, dirección, aceptación`      | `Mostrar solo datos necesarios para el tramo; enmascarar después de entrega`                               | `Referencia de entrega y aceptación mínima`                           |
+| `IMP-CLI-07` | `Comprobante de reserva o anticipo`                         | `PULSO`     | `PRV-CUSTOMER`              | `Cliente, fecha, anticipo`                      | `Mostrar contacto mínimo y estado; ocultar medio de pago y referencias completas`                          | `Referencia de reserva y pago tokenizada`                             |
+| `IMP-CLI-08` | `Vale, cortesía, promoción o beneficio`                     | `PULSO`     | `PRV-CUSTOMER`              | `Código, beneficio, beneficiario`               | `Mostrar código parcial o de un solo uso; no imprimir secretos reutilizables`                              | `Referencia de beneficio; nunca secreto completo`                     |
+| `IMP-CLI-09` | `Resumen de apertura, cierre o liquidación de caja`         | `NUMERA`    | `PRV-FINANCIAL`             | `Saldos, movimientos, responsables`             | `Acceso restringido; mostrar cifras autorizadas; minimizar identificadores personales`                     | `Referencia de cierre, huella y autorización`                         |
+| `IMP-DOC-01` | `Remisión o nota de despacho`                               | `NEXO`      | `PRV-TRACEABILITY`          | `Origen, destino, artículos, receptor`          | `Mostrar trazabilidad; enmascarar contacto/dirección cuando no sea imprescindible`                         | `Referencia documental y digest`                                      |
+| `IMP-DOC-02` | `Manifiesto de traslado interno`                            | `NEXO`      | `PRV-TRACEABILITY`          | `Ubicaciones, artículos, custodios`             | `Mostrar códigos y custodios por alias/rol; omitir datos personales adicionales`                           | `Referencia de traslado y huella`                                     |
+| `IMP-DOC-03` | `Hoja de conteo de inventario`                              | `NEXO`      | `PRV-OPS-MINIMAL`           | `Artículos, ubicaciones, cantidades`            | `Mostrar inventario; omitir costos, credenciales y datos personales`                                       | `Referencia de sesión de conteo`                                      |
+| `IMP-DOC-04` | `Reporte de diferencias o ajustes de inventario`            | `NEXO`      | `PRV-TRACEABILITY`          | `Diferencias, motivos, responsables`            | `Mostrar hechos y códigos de motivo; restringir notas libres y minimizar actor`                            | `Referencia de ajuste, autorización y huella`                         |
+| `IMP-DOC-05` | `Orden de compra`                                           | `ORIGO`     | `PRV-FINANCIAL`             | `Proveedor, precios, condiciones, contactos`    | `Acceso restringido; mostrar contacto comercial necesario; ocultar cuentas bancarias no requeridas`        | `Referencia de orden y versión; sin contenido completo`               |
+| `IMP-DOC-06` | `Acta o comprobante de recepción`                           | `ORIGO`     | `PRV-TRACEABILITY`          | `Proveedor, entrega, receptor, hallazgos`       | `Mostrar trazabilidad; minimizar contactos y responsables`                                                 | `Referencia de recepción y huella`                                    |
+| `IMP-DOC-07` | `Devolución a proveedor`                                    | `ORIGO`     | `PRV-TRACEABILITY`          | `Proveedor, artículos, motivo, transporte`      | `Mostrar datos comerciales mínimos; enmascarar contactos personales`                                       | `Referencia de devolución y autorización`                             |
+| `IMP-DOC-08` | `Orden de producción o ficha de lote`                       | `FOGO`      | `PRV-TRACEABILITY`          | `Receta, lote, cantidades, responsables`        | `Mostrar datos técnicos autorizados; minimizar personal; proteger información propietaria restringida`     | `Referencia de lote, versión y huella`                                |
+| `IMP-DOC-09` | `Receta, ficha técnica o guía práctica`                     | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `Fórmula, proceso, aprobaciones`                | `Restringir por rol; mostrar versión vigente; omitir secretos comerciales fuera del propósito`             | `Referencia de versión y autorización`                                |
+| `IMP-DOC-10` | `Registro de calidad o no conformidad`                      | `FOGO`      | `PRV-QUALITY-RESTRICTED`    | `Hallazgo, evidencia, responsables, decisiones` | `Minimizar personas; excluir datos clínicos y adjuntos sensibles; usar referencias`                        | `Referencia de caso y evidencia, no evidencia íntegra`                |
+| `IMP-DOC-11` | `Orden de mantenimiento`                                    | `NEXO`      | `PRV-ASSET-CUSTODY`         | `Activo, técnico/proveedor, diagnóstico`        | `Mostrar activo y trabajo; minimizar contacto y notas sensibles`                                           | `Referencia de orden y autorización`                                  |
+| `IMP-DOC-12` | `Acta de entrega, devolución o traslado de activo`          | `NEXO`      | `PRV-ASSET-CUSTODY`         | `Activo, custodios, firmas/aceptaciones`        | `Mostrar custodios mínimos y aceptación; ocultar identificadores personales adicionales`                   | `Referencia de acta y aceptación verificable`                         |
+| `IMP-DOC-13` | `Reporte de incidente o soporte técnico`                    | `NEXO`      | `PRV-QUALITY-RESTRICTED`    | `Incidente, usuario, evidencia, diagnóstico`    | `Redactar secretos, tokens, correos, teléfonos y datos del usuario; adjuntos solo por referencia`          | `Referencia del incidente; nunca logs o capturas sin depurar`         |
+| `IMP-DOC-14` | `Lista de limpieza, sanitización o control operativo`       | `FOGO`      | `PRV-OPS-MINIMAL`           | `Control, área, responsables`                   | `Mostrar control y resultado; responsables por rol/alias cuando sea suficiente`                            | `Referencia de control y versión`                                     |
+| `IMP-DOC-15` | `Reporte contable, conciliación o liquidación`              | `NUMERA`    | `PRV-FINANCIAL`             | `Cuentas, saldos, movimientos, aprobadores`     | `Acceso restringido; agregación por defecto; ocultar cuentas, identificadores y referencias no necesarias` | `Referencia de reporte, periodo y huella`                             |
+| `IMP-DOC-16` | `Resumen de indicadores operativos o gerenciales`           | `NEXO`      | `PRV-MANAGEMENT-AGGREGATED` | `Indicadores de varias aplicaciones, alertas`   | `Mostrar agregados autorizados; suprimir celdas pequeñas, personas y datos fuente sensibles`               | `Referencia de reporte, fuentes y versión`                            |
 
 **Control de cobertura:** 50 salidas esperadas, 50 materializadas, 50 identificadores únicos, distribución `FOGO=15`, `NEXO=14`, `PULSO=12`, `NUMERA=5`, `ORIGO=4`.
 
@@ -6534,131 +6669,170 @@ La huella cubre exclusivamente el contenido ya saneado. No se permite almacenar 
 #### 9. Reglas transversales por etapa
 
 ##### 9.1 Admisión y preparación
-- La solicitud debe declarar propósito y perfil esperado; valores libres no autorizan campos adicionales.
-- La autorización de `PRINT-ARC-015` se evalúa antes de exponer datos al generador de plantilla.
-- Plantillas, datos y reglas deben referenciar versiones compatibles. Una plantilla desconocida o no certificada bloquea el trabajo.
-- Los campos libres se consideran `D6_SENSITIVE_EVIDENCE` hasta ser depurados mediante regla explícita.
+- El trabajo conserva el payload empresarial inmutable de `PRINT-ARC-006` bajo la frontera de acceso autorizada; ese payload no se expone al motor de plantilla ni al adaptador.
+- Antes de renderizar se revalidan autorización (`PRINT-ARC-015`), ruta/destino (`PRINT-ARC-007` y posteriores) y política de privacidad vigente.
+- La solicitud no usa propósito libre: el propósito queda determinado por `source.process_ref + authorization.action + output_id`.
+- Plantilla, datos y reglas deben referenciar versiones compatibles. Una plantilla o regla desconocida bloquea el trabajo.
+- Campos libres se consideran `D6_SENSITIVE_EVIDENCE`; si contienen `D5`, el trabajo queda bloqueado y exige corrección del origen.
 
 ##### 9.2 Renderizado, spool y adaptadores
 - Solo el snapshot saneado puede llegar al motor de renderizado, spooler o adaptador.
 - Archivos temporales deben usar almacenamiento protegido y eliminación verificable cuando la plataforma lo permita.
-- Nombres de archivo, títulos de trabajo y metadata del spool también se minimizan; no deben revelar cliente, diagnóstico, saldo o secreto.
-- El adaptador no puede enriquecer el contenido con datos de origen ni registrar el payload completo.
+- Nombres de archivo, títulos de trabajo y metadata del spool se minimizan; no revelan cliente, diagnóstico, saldo, identificadores fiscales completos ni secretos.
+- El adaptador no puede enriquecer el contenido con datos de origen ni consultar el payload empresarial para “recuperar” campos omitidos.
+- Cuando exista `render_hash`, se calcula únicamente sobre la representación ya saneada.
 
 ##### 9.3 Reintentos, reimpresiones y dead-letter
-- Todo reintento conserva `job_id`, clave de idempotencia, fingerprint y `privacy_snapshot` aplicable.
-- La reimpresión usa la misma política o una más restrictiva. Si el dato ya expiró o la autorización cambió, se bloquea y exige nueva intención.
-- Dead-letter conserva metadatos, causas, referencias y digest; nunca el documento o etiqueta sensible íntegros.
-- El replay automático queda prohibido si la política expiró, cambió o no puede verificarse.
+- Todo retry conserva `job_id`, intención, `copy_slot_id`, idempotencia y fingerprint del trabajo original.
+- El retry reutiliza el `privacy_snapshot` únicamente cuando sigue `ACTIVE`, vigente y ninguna política más restrictiva aplica.
+- Si antes del siguiente `SEND_STARTED` aparece una política más restrictiva, se crea un nuevo `privacy_snapshot` para la misma intención/copia o se bloquea; nunca se amplía el contenido por una política menos restrictiva.
+- `RESULT_UNKNOWN` bloquea retry y regeneración de contenido hasta conciliación autoritativa.
+- La reimpresión es una intención/copia separada conforme a `PRINT-ARC-014`; reevalúa autorización y privacidad vigentes y no amplía automáticamente lo visible en la copia previa.
+- Dead-letter conserva metadatos, causas, referencias y `sanitized_payload_hash`; nunca el documento o etiqueta sensible íntegros.
+- El replay automático queda prohibido si política, autorización o clasificación expiraron, cambiaron o no pueden verificarse.
 
 ##### 9.4 Confirmación, entrega y custodia física
-- Los recibos de impresión y entrega no incluyen el contenido; identifican trabajo, copia, destino, actor, nivel confirmado y huella.
+- Los receipts de impresión y entrega no incluyen contenido; identifican trabajo, copia, destino, actor, nivel confirmado y huella permitida.
 - Salidas `PRV-CUSTOMER`, `PRV-FINANCIAL`, `PRV-QUALITY-RESTRICTED` y `PRV-ASSET-CUSTODY` no pueden quedar expuestas en bandejas compartidas sin control operativo definido.
-- La entrega a una persona no autorizada no se considera confirmación válida y debe abrir incidente.
-- Una copia abandonada, defectuosa o sustituida requiere disposición segura; romper, triturar o custodiar según sensibilidad y capacidad local aprobada.
+- Entrega a una persona no autorizada no constituye confirmación válida y abre incidente.
+- Una copia abandonada, defectuosa o sustituida requiere disposición segura conforme a sensibilidad y procedimiento aprobado.
 
 ##### 9.5 Observabilidad, soporte y auditoría
-- Métricas usan contadores y categorías, no contenido ni identificadores personales directos.
-- Mensajes de error no concatenan payloads, notas, direcciones, teléfonos, referencias financieras ni secretos.
-- Capturas, exportaciones y paquetes de soporte deben pasar saneamiento explícito antes de salir del entorno autorizado.
-- La auditoría registra decisiones `ALLOW/MASK/OMIT/BLOCK_PRINT`, versión de política y actor, sin duplicar valores sensibles.
+- Métricas usan contadores, estados y categorías; no contenido ni identificadores personales directos.
+- Mensajes de error no concatenan payloads, notas, direcciones, teléfonos, referencias financieras completas, identificadores fiscales completos ni secretos.
+- Capturas, exportaciones y paquetes de soporte pasan saneamiento explícito antes de salir del entorno autorizado.
+- La auditoría registra `field_path`, clase, acción, `rule_id`, versión de política, decisión y actor sin duplicar valores sensibles.
 
 ---
 
 #### 10. Retención y disposición
 
-| Objeto                          | Política aprobada                                                                                                   | Estado de plazo                                 |
-| ------------------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------- |
-| Snapshot renderizado temporal   | Retener solo durante la ventana operativa indispensable; eliminar tras cierre cuando no exista obligación superior. | Duración exacta diferida con dueño explícito.   |
-| Registro de trabajo y decisión  | Conservar identificadores, versiones, estado, digest y trazabilidad mínima.                                         | Duración exacta diferida con dueño explícito.   |
-| Evidencia de impresión/entrega  | Conservar recibo mínimo correlacionado, sin contenido completo.                                                     | Duración exacta según clase y obligación.       |
-| Dead-letter                     | Conservar causa y referencias; prohibido conservar payload sensible íntegro.                                        | Duración exacta diferida.                       |
-| Copia física fallida o sobrante | Custodia temporal y destrucción segura proporcional a sensibilidad.                                                 | Procedimiento local pendiente de formalización. |
+| Objeto                          | Política aprobada                                                                                                    | Condición mientras no exista plazo exacto                                                       |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------- |
+| Snapshot saneado temporal       | Retener solo durante la ventana operativa indispensable y eliminar tras cierre cuando no exista obligación superior. | Producción bloqueada si no puede demostrarse eliminación o control equivalente.                 |
+| Registro de trabajo y decisión  | Conservar identificadores, versiones, estado, trazabilidad y huellas mínimas.                                        | El plazo exacto debe derivarse de política de retención y conservación legal aprobadas.         |
+| Evidencia de impresión/entrega  | Conservar receipt mínimo correlacionado, sin contenido completo.                                                     | Plazo según clase de evidencia, obligación aplicable y política aprobada.                       |
+| Dead-letter                     | Conservar causa, referencias y huella saneada; prohibido payload sensible íntegro.                                   | Producción bloqueada si dead-letter requiere conservar contenido completo para operar.          |
+| Copia física fallida o sobrante | Custodia temporal y eliminación/destrucción segura proporcional a sensibilidad.                                      | No puede quedar abandonada; procedimiento local debe existir antes del uso productivo sensible. |
 
-La ausencia de un plazo definitivo no autoriza retención indefinida. Hasta que exista una tabla aprobada, cada implementación debe usar el menor plazo técnicamente viable y quedar bloqueada para producción si no puede demostrar eliminación o control equivalente.
+La ausencia de un plazo definitivo nunca autoriza retención indefinida ni “hasta que alguien lo borre”. `EVID-ARC-005` deberá definir retención; `EVID-ARC-009` deberá definir conservación legal y eliminación; la implementación deberá materializar y probar dichas decisiones.
 
 ---
 
 #### 11. Mensajes y límites de interfaz
 
-| Situación                        | Mensaje operativo permitido                                                  | Acción                                                 |
-| -------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------ |
-| Campo sensible saneado           | `Se ocultaron datos no necesarios para esta impresión.`                      | Continuar con snapshot saneado.                        |
-| Secreto detectado                | `Impresión bloqueada: el contenido contiene datos que no pueden imprimirse.` | Corregir origen; no ofrecer “imprimir de todos modos”. |
-| Política o autorización expirada | `La autorización o política ya no es válida. Genere una nueva solicitud.`    | Nueva intención autorizada.                            |
-| Conflicto de versión             | `La impresión requiere revisión porque cambió la política aplicable.`        | Reevaluar antes de despacho.                           |
-| Evidencia insuficiente           | `No se puede verificar el tratamiento seguro del documento.`                 | Bloquear o escalar; no asumir éxito.                   |
-| Reimpresión solicitada           | `La reimpresión volverá a aplicar privacidad y autorización vigentes.`       | Evaluar `PRINT-ARC-014` y `PRINT-ARC-015`.             |
+| Situación                        | Mensaje operativo permitido                                                  | Acción                                                        |
+| -------------------------------- | ---------------------------------------------------------------------------- | ------------------------------------------------------------- |
+| Campo sensible saneado           | `Se ocultaron datos no necesarios para esta impresión.`                      | Continuar con snapshot saneado.                               |
+| Secreto detectado                | `Impresión bloqueada: el contenido contiene datos que no pueden imprimirse.` | Corregir origen y generar nueva intención; no imprimir igual. |
+| Política o autorización expirada | `La autorización o política ya no es válida. Genere una nueva solicitud.`    | Nueva intención autorizada cuando corresponda.                |
+| Conflicto de versión             | `La impresión requiere revisión porque cambió la política aplicable.`        | Reevaluar antes de despacho.                                  |
+| Evidencia insuficiente           | `No se puede verificar el tratamiento seguro del documento.`                 | Bloquear o escalar; no asumir éxito.                          |
+| Reimpresión solicitada           | `La reimpresión volverá a aplicar privacidad y autorización vigentes.`       | Evaluar `PRINT-ARC-014`, `PRINT-ARC-015` y este contrato.     |
 
-La interfaz no debe mostrar el valor que causó un bloqueo de secreto. El detalle técnico queda reducido a clase, regla y referencia de campo, accesible únicamente a soporte autorizado.
+La interfaz nunca muestra el valor que causó un bloqueo de secreto. El detalle técnico queda reducido a clase, regla y `field_path`, accesible solo a soporte autorizado.
 
 ---
 
 #### 12. Casos de prueba documentales mínimos
 
-1. Una comanda de cocina con teléfono y dirección del cliente elimina ambos antes del renderizado.
-2. Un comprobante de pago con PAN completo o CVV queda bloqueado; no se permite enmascarar después del spool.
-3. Una factura conserva solo los datos fiscales exigidos por el contexto y omite datos no requeridos.
-4. Una etiqueta de entrega enmascara teléfono y limita dirección al tramo logístico autorizado.
-5. Un incidente con token en notas libres se bloquea o depura antes de renderizar; el token no aparece en error ni auditoría.
-6. Un reintento utiliza exactamente el mismo snapshot saneado y no consulta el payload original.
+1. Una comanda de cocina que reciba por error teléfono o dirección del cliente no renderiza esos campos; si son campos adicionales no admitidos por contrato, el candidato se rechaza antes de impresión.
+2. Un comprobante de pago con PAN completo o CVV queda `BLOCK_PRINT`; no se permite enmascarar después del spool ni continuar la misma intención.
+3. Una factura conserva únicamente los datos fiscales exigidos por una regla exacta y omite o enmascara los restantes.
+4. Una etiqueta de entrega enmascara teléfono y limita dirección al tramo logístico autorizado mediante `field_decisions[]` explícitas.
+5. Un reporte de incidente con token, clave o secreto reutilizable en notas libres queda `BLOCK_PRINT`; el token no aparece en error, auditoría ni evidencia. Tras corregir el origen se requiere una nueva intención autorizada.
+6. Un retry reutiliza exactamente el mismo snapshot saneado solo si la política sigue vigente y ninguna regla más restrictiva aplica; si cambia de forma más restrictiva antes del siguiente `SEND_STARTED`, se crea un nuevo snapshot saneado o se bloquea.
 7. Una reimpresión posterior a cambio restrictivo de política se reevalúa y no replica automáticamente la copia previa.
-8. Un trabajo `RESULT_UNKNOWN` se reconcilia por recibos y digest sin revelar contenido.
+8. Un trabajo `RESULT_UNKNOWN` se reconcilia por receipts, identidades y huellas permitidas; no consulta ni reinyecta el payload original.
 9. Una política expirada durante cola bloquea antes de `SEND_STARTED`.
-10. Un cambio menos restrictivo no amplía automáticamente un trabajo ya admitido.
-11. Un QR con secreto reutilizable activa `PRV-BLOCKED-SECRETS`.
-12. Una métrica, captura o paquete de soporte no contiene nombres, teléfonos, direcciones, saldos ni payload completo.
-13. Una salida gerencial agrega datos y evita revelar registros fuente o grupos identificables.
-14. Una copia financiera abandonada genera incidente y disposición segura, no una confirmación de entrega.
-15. La operación offline aplica la misma versión o una más restrictiva y bloquea si no puede verificarla.
+10. Un cambio menos restrictivo no amplía automáticamente un trabajo o retry ya admitido.
+11. Un QR con secreto reutilizable activa `PRV-BLOCKED-SECRETS` y `BLOCK_PRINT`.
+12. Una métrica, captura o paquete de soporte no contiene nombres, teléfonos, direcciones, saldos, identificadores fiscales completos, secretos ni payload completo.
+13. Una salida gerencial agrega datos y evita revelar registros fuente, personas o grupos identificables por celdas pequeñas.
+14. Una copia financiera abandonada genera incidente y disposición segura; no se interpreta como entrega confirmada.
+15. La operación offline solo podrá usar una política vigente igual o más protectora y deberá bloquear cuando no pueda verificar versión, expiración o integridad; la implementación concreta permanece reservada a `PRINT-ARC-017`.
 
 ---
 
 #### 13. Brechas, responsables y condiciones de salida
 
-| ID                  | Brecha diferida                                                                                         | Dueño documental o de implementación                                                      | Condición de salida                                                                                                                   |
-| ------------------- | ------------------------------------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------- |
-| `BLK-PRINT-016-001` | `No existe todavía tabla aprobada de plazos exactos por clase de dato y evidencia.`                     | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                   | `Matriz aprobada de plazo, base, evento de inicio, suspensión, eliminación y evidencia de borrado.`                                   |
-| `BLK-PRINT-016-002` | `El saneamiento previo al renderizado no está implementado de forma verificable para las 50 salidas.`   | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                   | `Motor de política versionado, pruebas positivas/negativas por perfil y prueba de que spool/adaptador reciben solo snapshot saneado.` |
-| `BLK-PRINT-016-003` | `La capacidad de borrado seguro de temporales, spool y dispositivo no está verificada por canal.`       | `PRINT-ARC-018`                                                                           | `Matriz por adaptador/dispositivo con ubicación de temporales, limpieza, límites y prueba controlada de disposición.`                 |
-| `BLK-PRINT-016-004` | `No existe procedimiento físico uniforme para copias sensibles fallidas, sobrantes o abandonadas.`      | `EVID-ARC-001` a `EVID-ARC-010` y `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | `Procedimiento por sede, responsables, contenedores o destrucción, registro mínimo y auditoría de cumplimiento.`                      |
-| `BLK-PRINT-016-005` | `La observabilidad vigente puede no garantizar saneamiento de errores, capturas y paquetes de soporte.` | `PRINT-ARC-019`                                                                           | `Esquema de eventos aprobado, lista de campos permitidos/prohibidos y pruebas de fuga en logs, métricas, alertas y soporte.`          |
-| `BLK-PRINT-016-006` | `La frontera offline aún no demuestra vigencia y disponibilidad de políticas sin degradación.`          | `PRINT-ARC-017`                                                                           | `Contrato offline con caché protegida, expiración, verificación de versión y bloqueo seguro cuando la política no sea comprobable.`   |
+| ID                  | Brecha diferida                                                                                         | Dueño documental o de implementación                                                                                   | Condición de salida                                                                                                                      |
+| ------------------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------- |
+| `BLK-PRINT-016-001` | `No existe todavía tabla aprobada de plazos exactos por clase de dato y evidencia.`                     | `EVID-ARC-005`, `EVID-ARC-009` y `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                               | `Retención, conservación legal, evento de inicio, suspensión, eliminación y evidencia de borrado aprobados e implementables.`            |
+| `BLK-PRINT-016-002` | `El saneamiento previo al renderizado no está implementado de forma verificable para las 50 salidas.`   | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                                                | `Motor de política versionado, decisiones por field_path y pruebas de que render/spool/adaptador reciben solo snapshot saneado.`         |
+| `BLK-PRINT-016-003` | `La capacidad de borrado seguro de temporales, spool y dispositivo no está verificada por canal.`       | `PRINT-ARC-018`                                                                                                        | `Matriz por adaptador/dispositivo con ubicación de temporales, limpieza, límites y prueba controlada de disposición.`                    |
+| `BLK-PRINT-016-004` | `No existe procedimiento físico uniforme para copias sensibles fallidas, sobrantes o abandonadas.`      | `EVID-ARC-009`, consumiendo clasificación de `EVID-ARC-003`, y `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | `Clasificación aprobada, procedimiento de conservación/eliminación por sede, responsables, registro mínimo y auditoría de cumplimiento.` |
+| `BLK-PRINT-016-005` | `La observabilidad vigente puede no garantizar saneamiento de errores, capturas y paquetes de soporte.` | `PRINT-ARC-019`                                                                                                        | `Esquema de eventos aprobado, allowlist de campos y pruebas de fuga en logs, métricas, alertas y soporte.`                               |
+| `BLK-PRINT-016-006` | `La frontera offline aún no demuestra vigencia y disponibilidad de políticas sin degradación.`          | `PRINT-ARC-017`                                                                                                        | `Contrato offline con caché protegida, expiración, verificación de versión y bloqueo seguro cuando la política no sea comprobable.`      |
+
+Ninguna brecha inicia automáticamente la tarea responsable ni autoriza implementación física.
 
 ---
 
 #### 14. Reconciliación con requisitos de prueba
 
-- TREQ creados: `0`.
-- TREQ modificados: `0`.
-- TREQ diferidos: `0`.
-- TREQ descartados: `0`.
-- TREQ obsoletos: `0`.
-- No se genera copia de `04A`: esta tarea materializa reglas dentro del alcance documental de impresión y entrega sus pruebas a la implementación futura; no altera el registro canónico vigente.
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+La reconciliación contra el registro canónico vigente confirma que los quince casos del apartado 12 especializan comportamientos ya protegidos. No se modifica el alcance, estado, responsable ni evidencia exigida de esos requisitos; esta tarea fija su aplicación documental al servicio transversal de impresión.
+
+| Caso | Cobertura `TREQ-*` vigente                                                        | Comportamiento protegido reutilizado                                                                                                                                       |
+| ---: | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+|    1 | `TREQ-NEXO-248`; `TREQ-UX-243`                                                    | Selección previa de campos autorizados y separación entre visualizar e imprimir.                                                                                           |
+|    2 | `TREQ-UX-1146`; `TREQ-UX-2074`; `TREQ-PROC-341`                                   | PAN, CVV, credenciales, tokens y secretos quedan fuera de superficies ordinarias y de datos de negocio.                                                                    |
+|    3 | `TREQ-PROC-337`; `TREQ-PROC-349`; `TREQ-DATA-020`                                 | Impresión fiscal/financiera por finalidad, columnas y clasificación, aplicando la intersección más restrictiva.                                                            |
+|    4 | `TREQ-PROC-331`; `TREQ-PROC-337`; `TREQ-UX-243`                                   | Enmascaramiento por contexto y salida limitada a columnas, territorio, destino y finalidad autorizados.                                                                    |
+|    5 | `TREQ-PROC-341`; `TREQ-PROC-336`; `TREQ-PROC-101`; `TREQ-PROC-279`                | Secretos fuera de logs/evidencia/payloads sensibles y nueva intención explícita cuando la anterior debe corregirse.                                                        |
+|    6 | `TREQ-PROC-279`; `TREQ-PROC-303`; `TREQ-DATA-020`; `TREQ-PROC-328`                | Retry conserva intención, exige vigencia/revalidación y no puede relajar la política más restrictiva aplicable.                                                            |
+|    7 | `TREQ-PROC-764`; `TREQ-PROC-303`; `TREQ-DATA-020`                                 | Reimpresión conserva autorización, motivo, privacidad y correlación y vuelve a someterse a política vigente.                                                               |
+|    8 | `TREQ-PROC-309`; `TREQ-PROC-807`; `TREQ-PROC-101`; `TREQ-PROC-366`                | `RESULT_UNKNOWN` exige conciliación por evidencia autoritativa, bloquea reintento riesgoso y minimiza contenido protegido en auditoría.                                    |
+|    9 | `TREQ-PROC-302`; `TREQ-PROC-303`                                                  | Datos o decisiones cacheadas conservan vigencia/versionado y una operación se bloquea cuando exige frescura superior.                                                      |
+|   10 | `TREQ-DATA-020`; `TREQ-PROC-328`                                                  | La regla más restrictiva prevalece y una capa local o copia derivada no amplía automáticamente el tratamiento.                                                             |
+|   11 | `TREQ-UX-2074`; `TREQ-PROC-341`; `TREQ-NEXO-248`                                  | Secretos reutilizables tampoco pueden viajar ocultos dentro de payloads, códigos o datos serializados.                                                                     |
+|   12 | `TREQ-PROC-336`; `TREQ-PROC-468`; `TREQ-PROC-573`                                 | Logs, métricas, capturas y paquetes de diagnóstico usan allowlists/redacción y excluyen payloads y datos sensibles completos.                                              |
+|   13 | `TREQ-PROC-108`; `TREQ-PROC-332`; `TREQ-PROC-337`; `TREQ-UX-1147`                 | Agregación, supresión de grupos pequeños y prevención de reidentificación en salidas gerenciales.                                                                          |
+|   14 | `TREQ-PROC-060`; `TREQ-PROC-085`; `TREQ-PROC-379`; `TREQ-UX-218`                  | Abandono como resultado excepcional, impresión distinta de entrega empresarial, disposición auditable y protección física de información sensible.                         |
+|   15 | `TREQ-PROC-303`; `TREQ-PROC-305`; `TREQ-PROC-335`; `TREQ-UX-260`; `TREQ-DATA-020` | Offline exige política versionada, vigencia, minimización, protección y tratamiento igual o más restrictivo; si no puede probarse, no existe autoridad vigente suficiente. |
+
+Resultado de reconciliación: crea `0`, modifica `0`, difiere `0`, descarta `0` y vuelve obsoletos `0` requisitos. El `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` permanece sin cambios.
 
 ---
 
-#### 15. Entrega a PRINT-ARC-017
+#### 15. Entrega a `PRINT-ARC-017`
 
 `PRINT-ARC-017 — Definir operación offline y contingencia manual` recibe como entradas obligatorias:
 
-- `VENTO-PRINT-PRIVACY 1.0.0`;
-- los ocho perfiles de privacidad y la precedencia de `PRV-BLOCKED-SECRETS`;
-- la matriz completa de 50 salidas;
-- el snapshot autoritativo y sus reglas de carrera;
-- la prohibición de degradar privacidad por caché, reconexión, reintento o falta de conectividad;
-- la exigencia de bloquear cuando no pueda comprobarse política, autorización, plantilla o expiración;
+- `VENTO-PRINT-PRIVACY` `1.0.0`;
+- los ocho perfiles de privacidad y la precedencia determinista de acciones;
+- la matriz completa de 50 salidas con nombres canónicos exactos;
+- el `privacy_snapshot`, `field_decisions[]` y `sanitized_payload_hash`;
+- la separación entre `payload.hash`, huella saneada y futuro `render_hash`;
+- las reglas de carrera y retry previas a `SEND_STARTED`;
+- la prohibición de degradar privacidad por caché, reconexión, retry o falta de conectividad;
+- la exigencia de bloquear cuando no pueda comprobarse política, autorización, plantilla, clasificación o expiración;
 - `BLK-PRINT-016-006` con su condición de salida.
 
-`PRINT-ARC-017` queda **RESERVADA**. `PRINT-ARC-018`, `PRINT-ARC-019` y `PRINT-ARC-020` conservan sus alcances propios; esta tarea no los desarrolla anticipadamente.
+`PRINT-ARC-017` permanece **RESERVADA** y no se desarrolla desde esta corrección. `PRINT-ARC-018`, `PRINT-ARC-019` y `PRINT-ARC-020` conservan sus alcances propios.
 
 ---
 
 #### 16. Cierre
 
-`PRINT-ARC-016` queda documentalmente cerrada con un contrato de privacidad versionado, reglas de minimización y bloqueo, matriz materializada de 50 salidas, controles por etapa, fronteras de evidencia, retención y disposición, casos de prueba y seis brechas con dueño y condición de salida. No se afirma implementación técnica ni cumplimiento operativo actual.
+`PRINT-ARC-016` queda documentalmente cerrada con integridad de nombres canónicos, semántica absoluta de secretos, precedencia determinista, vocabulario contractual normalizado, relación explícita entre huellas, reglas de carrera y retry, responsabilidad concreta de brechas, vínculo campo a campo y reconciliación completa de sus quince casos contra requisitos de prueba vigentes. No se afirma implementación técnica ni cumplimiento operativo actual.
 
 ---
+
+#### 17. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración
+
+TAREA ACTUAL APROBADA
+PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles
+
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-017 — Definir operación offline y contingencia manual
+```
 
 
 ### [ ] PRINT-ARC-017 — Definir operación offline y contingencia manual
