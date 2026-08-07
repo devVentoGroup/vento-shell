@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **599** |
+| Aprobadas | **600** |
 | En propuesta | **0** |
-| No iniciadas | **995** |
+| No iniciadas | **994** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **37.58% (599/1594)** |
+| Porcentaje de completamiento | **37.64% (600/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `EVID-ARC-001` — Inventariar archivos y evidencia por proceso | ✅ APROBADA |
-| Tarea actual | `EVID-ARC-002` — Definir propietario funcional de cada tipo documental | ⬜ NO INICIADA |
-| Siguiente reservada | `EVID-ARC-003` — Definir clasificación de sensibilidad | ⬜ NO INICIADA |
+| Última aprobada | `EVID-ARC-002` — Definir propietario funcional de cada tipo documental | ✅ APROBADA |
+| Tarea actual | `EVID-ARC-003` — Definir clasificación de sensibilidad | ⬜ NO INICIADA |
+| Siguiente reservada | `EVID-ARC-004` — Definir metadatos, versión y vínculo con el recurso | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -519,7 +519,7 @@
 | ⬜ NO INICIADA | `NOTIFY-ARC-009` | Definir privacidad y contenido sensible | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-010` | Definir métricas y auditoría de entrega | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ✅ APROBADA | `EVID-ARC-001` | Inventariar archivos y evidencia por proceso | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
-| ⬜ NO INICIADA | `EVID-ARC-002` | Definir propietario funcional de cada tipo documental | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
+| ✅ APROBADA | `EVID-ARC-002` | Definir propietario funcional de cada tipo documental | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-003` | Definir clasificación de sensibilidad | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-004` | Definir metadatos, versión y vínculo con el recurso | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-005` | Definir carga, sustitución, anulación y retención | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |

@@ -215,7 +215,261 @@ Estas reservas no reducen el inventario actual: cada proceso ya tiene su soporte
 La aprobación de `EVID-ARC-001` no inicia, desarrolla ni aprueba `EVID-ARC-002`.
 
 
-### [ ] EVID-ARC-002 — Definir propietario funcional de cada tipo documental
+### ✅ EVID-ARC-002 — Definir propietario funcional de cada tipo documental
+
+**Estado:** APROBADA
+**Tarea anterior:** `EVID-ARC-001 — Inventariar archivos y evidencia por proceso` — APROBADA
+**Tarea siguiente:** `EVID-ARC-003 — Definir clasificación de sensibilidad` — RESERVADA
+**Tipo de tarea:** documental; asignación funcional de propiedad sobre tipos documentales y artefactos contextualizados por proceso
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`
+**Procesos cubiertos:** 69 (`VPROC-0001` a `VPROC-0069`)
+**Aplicaciones propietarias funcionales utilizadas:** 9
+**Cambios físicos autorizados:** ninguno; no crea buckets, tablas, migraciones, políticas RLS, archivos productivos, jobs, APIs ni cambios en Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** asignar una única aplicación propietaria funcional a todos los tipos documentales y artefactos ya inventariados por `EVID-ARC-001`, preservando la autoridad de la aplicación propietaria de cada proceso y evitando que el servicio transversal de documentos, Storage, un tercero o un expediente compuesto se conviertan en una fuente de verdad empresarial competidora.
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+Esta tarea materializa la propiedad funcional del universo documental recibido de `EVID-ARC-001` sin crear todavía una taxonomía documental global. La unidad estable de resolución es el proceso `VPROC-*`: cada nombre documental o artefacto conserva literalmente el contexto en el que fue inventariado y hereda la autoridad funcional de la aplicación propietaria aprobada para ese proceso.
+
+El resultado queda gobernado por cinco invariantes:
+
+1. cada contexto `VPROC-*` resuelve exactamente a una aplicación propietaria funcional;
+2. todos los tipos documentales y artefactos listados dentro de ese contexto heredan esa misma propietaria salvo que sean referencias a un registro fuente perteneciente a otro proceso, caso en el cual solo se conserva referencia o copia gobernada;
+3. un expediente compuesto puede agrupar documentos de varias fuentes sin transferir la propiedad funcional de los registros fuente;
+4. el servicio transversal de generación, custodia o evidencia ejecuta capacidades técnicas y no adquiere propiedad funcional del proceso ni del documento empresarial;
+5. nombres homónimos como `aprobación`, `decisión`, `cierre`, `soporte` o `conciliación` no se fusionan entre procesos en esta tarea; la taxonomía documental global permanece reservada para `INFO-DOM-003`.
+
+---
+
+#### 2. Definición normativa de propietario funcional documental
+
+Para E4, el **propietario funcional documental** es la aplicación empresarial que gobierna el significado, validez, corrección, vigencia y cierre del artefacto dentro del proceso que lo origina o lo conserva como resultado propio.
+
+La propiedad funcional documental:
+
+- sigue la autoridad funcional aprobada del proceso;
+- no depende de la carpeta, bucket, tabla, repositorio, URL, dispositivo, sede o formato físico donde se almacene el contenido;
+- no convierte a Supabase, Storage, `vento-shell`, el servicio transversal o un proveedor en propietario empresarial;
+- no equivale a autoría material, custodia técnica, custodio físico, responsable legal, encargado de tratamiento ni actor humano aprobador;
+- no concede acceso, permiso, descarga, edición, compartición, impresión ni disposición;
+- no define sensibilidad, metadatos, retención, firma, inmutabilidad, URL temporal, purga o contingencia.
+
+Las responsabilidades humanas, custodios, encargados, finalidades, territorios y taxonomía documental corporativa permanecen reservados para las tareas `INFO-DOM-*` correspondientes.
+
+---
+
+#### 3. Regla de resolución por tipo documental
+
+La propiedad se resuelve en el siguiente orden:
+
+```text
+TIPO DOCUMENTAL O ARTEFACTO INVENTARIADO
+        ↓
+VPROC-* QUE LE DA CONTEXTO EMPRESARIAL
+        ↓
+owner_app_code APROBADO PARA ESE PROCESO
+        ↓
+PROPIETARIO FUNCIONAL DOCUMENTAL
+```
+
+Si un artefacto de un proceso contiene o referencia un documento cuyo registro fuente pertenece a otro `VPROC-*`, la aplicación del proceso actual gobierna únicamente su expediente, vínculo, aceptación o uso dentro de su propio resultado. El documento fuente mantiene la propiedad del proceso que lo originó.
+
+La existencia de una copia, PDF, foto, payload, comprobante, exportación, snapshot o adjunto no cambia esta resolución.
+
+---
+
+#### 4. Estados de asignación heredados
+
+| Estado                            | Uso en esta tarea                                                                                                        | Bloqueo o condición                                                             |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------- |
+| `ASIGNADA`                        | La propietaria funcional documental coincide directamente con la propietaria del proceso.                                | `NINGUNO` documental; no implica implementación física.                         |
+| `ASIGNADA_CON_FRONTERA`           | La propietaria es única, pero el artefacto puede vincular hechos, documentos, efectos o participantes de otros dominios. | `FRONTERA_OBLIGATORIA`: no absorbe registros fuente ni autoridad ajena.         |
+| `ASIGNADA_EN_APLICACION_DIFERIDA` | La propietaria objetivo es definitiva aunque la aplicación permanezca diferida.                                          | `APLICACION_DIFERIDA`: no declarar disponibilidad, navegación o implementación. |
+
+---
+
+#### 5. Matriz materializada de propiedad funcional documental
+
+Los nombres de la segunda columna se conservan desde `EVID-ARC-001` y no se normalizan ni consolidan como taxonomía global en esta tarea.
+
+| Proceso      | Tipos documentales / artefactos contextualizados                                                                         | Propietaria funcional | Estado                            | Bloqueo / frontera     |
+| ------------ | ------------------------------------------------------------------------------------------------------------------------ | --------------------- | --------------------------------- | ---------------------- |
+| `VPROC-0001` | Registro de decisión; acta y compromisos.                                                                                | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0002` | Catálogo de estructura; expediente o soporte del cambio estructural.                                                     | `viso`                | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0003` | Política o delegación versionada.                                                                                        | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0004` | Paquete de handoff y compromiso.                                                                                         | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0005` | Requisición/vacante; expediente de candidato; evaluación; oferta; handoff.                                               | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0006` | Caso de incorporación; expediente; checklist; solicitudes de acceso/equipo.                                              | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0007` | Asignación; horario/programación; publicación e historial.                                                               | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0008` | Hechos de asistencia y decisión de corrección.                                                                           | `anima`               | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0009` | Caso laboral y soportes.                                                                                                 | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0010` | Paquete de liquidación; detalle; instrucción de pago; conciliación.                                                      | `numera`              | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0011` | Expediente de retiro; checklist; documentos finales; certificado de cierre.                                              | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0012` | Registro de riesgo; inspección; control; plan de acción; riesgo residual.                                                | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0013` | Expediente de incidente; investigación; acciones.                                                                        | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0014` | Procedimiento; plan de control; ejecución; checklist y mediciones.                                                       | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0015` | Maestro de producto; presentaciones; unidades; equivalencias.                                                            | `nexo`                | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0016` | Receta/versiones; resultados de prueba; aprobación; snapshot publicado.                                                  | `fogo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0017` | Versión de oferta y publicación de catálogo.                                                                             | `pulso`               | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0018` | Especificación; alérgenos; restricciones; criterios de calidad.                                                          | `nexo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0019` | Solicitud de compra; consolidación; decisión.                                                                            | `origo`               | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0020` | Expediente de cotizaciones; comparación; evaluación; recomendación; decisión.                                            | `origo`               | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0021` | Orden de compra aprobada; compromiso; comunicación al proveedor.                                                         | `origo`               | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0022` | Recepción de compra; diferencias; documentos asociados.                                                                  | `origo`               | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0023` | Catálogo de ubicaciones; etiqueta/identificación.                                                                        | `nexo`                | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0024` | Movimiento; proyección de stock; escaneos/evidencia.                                                                     | `nexo`                | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0025` | Movimiento de retiro/consumo/traslado; custodia/recibo.                                                                  | `nexo`                | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0026` | Observación de conteo; sesión; diferencia; investigación; decisión de ajuste.                                            | `nexo`                | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0027` | Condición/cuarentena/vencimiento/merma; decisión de disposición.                                                         | `nexo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0028` | Solicitud de abastecimiento; cantidad aprobada; preparación; despacho; tránsito; recepción; conciliación.                | `nexo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0029` | Registro de activo; identidad; ubicación; custodia; préstamo/transferencia; historial.                                   | `nexo`                | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0030` | Orden de mantenimiento; diagnóstico; reparaciones/repuestos; prueba; liberación; garantía/disposición.                   | `nexo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0031` | Registro de vehículo; disponibilidad; asignación; kilometraje; combustible; documentos; incidencias.                     | `nexo`                | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0032` | Catálogo de reutilizables/contenedores; custodia; entregas; retornos; pérdida/daño.                                      | `nexo`                | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0033` | Plan de producción versionado; órdenes planificadas; capacidad; faltantes; aprobación.                                   | `fogo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0034` | Orden de producción; lote; receta; materiales; etapas; cantidades; rendimiento; desviaciones.                            | `fogo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0035` | Inspección de calidad; resultados; no conformidad; disposición.                                                          | `fogo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0036` | Registro de empaque; etiquetas/códigos; LPN; handoff a almacenamiento.                                                   | `fogo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0037` | Reproceso; genealogía; rendimiento; merma; cierre.                                                                       | `fogo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0038` | Servicio de mesa; pedido/versiones; preparación; entrega; pago; cierre de cuenta.                                        | `pulso`               | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0039` | Pedido mostrador/para llevar; promesa; preparación; handoff; pago; cierre.                                               | `pulso`               | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0040` | Payload externo preservado; pedido normalizado; mapping; pedido interno; discrepancia.                                   | `pulso`               | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0041` | Oportunidad B2B; cotización; decisión de capacidad; pedido; expediente producción-factura-entrega.                       | `pulso`               | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0042` | Caso de cambio; antes/después; decisión; efectos.                                                                        | `pulso`               | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0043` | Intentos de pago; autorización/captura; asignación a venta; soporte fiscal; reverso/reembolso; conciliación.             | `pulso`               | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0044` | Sesión de caja; esperado vs. observado; diferencias; aprobaciones; entrega; depósito.                                    | `pulso`               | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0045` | Perfil de cliente; consentimientos; cuenta/ledger de fidelización; beneficios/redenciones.                               | `pass`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0046` | Caso de reclamo; clasificación; investigación; resolución; compensación; devolución/reembolso; causa/acciones.           | `pulso`               | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0047` | Reserva/evento; capacidad; comunicaciones; consentimiento; depósitos; asistencia/no-show/cancelación.                    | `pulso`               | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0048` | Plan de ruta; paradas; vehículo/conductor; carga; manifiesto; restricciones; publicación.                                | `nexo`                | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0049` | Viaje; paradas; POD; rechazo/incidente; custodia; retornos; kilometraje; cierre.                                         | `nexo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0050` | Caso de entrega de tercero; asignación; tracking; POD; incidentes; retorno; liquidación/conciliación.                    | `pulso`               | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0051` | Hecho económico; clasificación contable; asiento; soporte.                                                               | `numera`              | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0052` | Obligación; aprobación; instrucción de pago; resultado bancario; conciliación.                                           | `numera`              | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0053` | Cuenta por cobrar; acciones de cobro; pago/aplicación; disputa/diferencia.                                               | `numera`              | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0054` | Modelo de costos; distribución; cierre de costos; resultados; rentabilidad; variación.                                   | `numera`              | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0055` | Plan de instalaciones; orden de trabajo; ejecución; desviación; liberación.                                              | `nexo`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0056` | Brief; contenido/promoción versionada; revisión; aprobación; publicación; retiro; archivo.                               | `aura`                | `ASIGNADA_EN_APLICACION_DIFERIDA` | `APLICACION_DIFERIDA`  |
+| `VPROC-0057` | Consulta/lead; consentimiento; calificación; asignación; conversación; oportunidad; handoff.                             | `aura`                | `ASIGNADA_EN_APLICACION_DIFERIDA` | `APLICACION_DIFERIDA`  |
+| `VPROC-0058` | Ticket tecnológico; clasificación/SLA; diagnóstico; workaround; conocimiento; cierre.                                    | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0059` | Solicitud de acceso; aprobaciones; entitlement; resultado de provisión; revocación; attestación.                         | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0060` | Registro documental; versión; metadatos; clasificación; firmas; retención/hold; custodia; certificado de disposición.    | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0061` | Medición; snapshot de fuente; análisis; insight; decisión/plan de mejora; medición posterior.                            | `numera`              | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0062` | Caso de continuidad; impacto/severidad; plan; modo degradado; recuperación; conciliación; postmortem.                    | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0063` | Registro de riesgo; valoración; controles; tratamiento; aceptación/seguimiento.                                          | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0064` | Expediente de asesor/autoridad; requerimiento; comunicaciones; entregable; vencimientos; decisión interna.               | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0065` | Ciclo de desempeño; objetivos; feedback; plan de desarrollo; revisión; decisión; constancia del trabajador.              | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0066` | Requisito de EPP; asignación; entrega/aceptación; formación; vigencia; reemplazo; devolución.                            | `viso`                | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0067` | Definición/versionado de kit; instancia; manifiesto de componentes; completitud; custodia; préstamo/retorno/sustitución. | `nexo`                | `ASIGNADA`                        | `NINGUNO`              |
+| `VPROC-0068` | Instrumento de medición; muestra; invitación; respuesta; resultados; sesgo.                                              | `pulso`               | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+| `VPROC-0069` | Presupuesto/versiones; supuestos; líneas; aprobación; vigencia; consumo; forecast; variación; supersesión.               | `numera`              | `ASIGNADA_CON_FRONTERA`           | `FRONTERA_OBLIGATORIA` |
+
+---
+
+#### 6. Reconciliación cuantitativa
+
+| Control                                                     | Resultado |
+| ----------------------------------------------------------- | --------: |
+| Contextos de proceso esperados                              |        69 |
+| Contextos de proceso materializados                         |        69 |
+| Entradas documentales/artefactos contextualizadas heredadas |       332 |
+| Entradas con propietaria funcional resuelta                 |       332 |
+| Identificadores `VPROC-*` únicos                            |        69 |
+| Faltantes                                                   |         0 |
+| Duplicados                                                  |         0 |
+| Procesos sin propietaria funcional documental               |         0 |
+| Procesos con propiedad múltiple                             |         0 |
+| Propietarias externas                                       |         0 |
+| Procesos asignados a `shell`                                |         0 |
+| Aplicaciones propietarias funcionales utilizadas            |         9 |
+| Estados `ASIGNADA`                                          |        17 |
+| Estados `ASIGNADA_CON_FRONTERA`                             |        50 |
+| Estados `ASIGNADA_EN_APLICACION_DIFERIDA`                   |         2 |
+
+La distribución por aplicación conserva exactamente la propiedad aprobada del catálogo de procesos:
+
+| Aplicación | Contextos documentales asignados |
+| ---------- | -------------------------------: |
+| `anima`    |                                1 |
+| `viso`     |                               20 |
+| `nexo`     |                               16 |
+| `fogo`     |                                6 |
+| `origo`    |                                4 |
+| `pulso`    |                               12 |
+| `numera`   |                                7 |
+| `aura`     |                                2 |
+| `pass`     |                                1 |
+| **Total**  |                           **69** |
+
+---
+
+#### 7. Fronteras especiales
+
+1. **Documentos externos.** Una factura, documento de autoridad, contrato, confirmación bancaria, cotización, comprobante de proveedor o POD puede haber sido emitido por un tercero. El tercero conserva su autoría u origen; la aplicación propietaria del `VPROC-*` gobierna su recepción, validación, relación con el caso y efecto interno, sin convertir al tercero en propietario del proceso VENTO.
+2. **Expedientes compuestos.** Paquetes como incorporación, retiro, B2B, mantenimiento, reclamo, continuidad o entrega pueden vincular artefactos pertenecientes a otros procesos. La propietaria del expediente gobierna el expediente y su cierre; los registros fuente continúan bajo sus propietarias canónicas.
+3. **Generación documental.** El servicio transversal que renderice o genere un documento no decide su contenido empresarial, aprobación, vigencia o cierre. La intención y autoridad permanecen en la propietaria funcional documental.
+4. **Custodia transversal.** Almacenamiento, hash, versión física, URL, escaneo, antivirus o retención técnica no transfieren propiedad funcional.
+5. **`VPROC-0060`.** `viso` gobierna el proceso transversal de gestión documental y evidencia, pero no absorbe la propiedad de los hechos empresariales respaldados por documentos de otros `VPROC-*`. Su función transversal se limita al ciclo documental que le corresponde y a las fronteras aprobadas.
+6. **AURA.** Los contextos `VPROC-0056` y `VPROC-0057` mantienen `aura` como propietaria objetivo con aplicación diferida; esta asignación no acredita implementación ni operación disponible.
+
+---
+
+#### 8. Decisiones reservadas
+
+| Decisión no tomada en esta tarea                                                               | Tarea propietaria |
+| ---------------------------------------------------------------------------------------------- | ----------------- |
+| Clasificación de sensibilidad                                                                  | `EVID-ARC-003`    |
+| Metadatos, versión y vínculo con el recurso                                                    | `EVID-ARC-004`    |
+| Carga, sustitución, anulación y retención                                                      | `EVID-ARC-005`    |
+| Validación de tipo, tamaño, integridad y malware                                               | `EVID-ARC-006`    |
+| Acceso temporal y URLs firmadas                                                                | `EVID-ARC-007`    |
+| Auditoría de consulta y modificación                                                           | `EVID-ARC-008`    |
+| Conservación legal y eliminación                                                               | `EVID-ARC-009`    |
+| Contingencia ante indisponibilidad de Storage                                                  | `EVID-ARC-010`    |
+| Propietarios humanos, custodios, responsables, encargados, finalidades y territorios           | `INFO-DOM-001`    |
+| Taxonomía global de documentos, registros, evidencia, series, expedientes, originales y copias | `INFO-DOM-003`    |
+
+---
+
+#### 9. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa, para el universo documental de `EVID-ARC-001`, la propiedad funcional ya aprobada por proceso y la regla E4 que impide transferir autoridad empresarial a un servicio transversal. No introduce una nueva regla de negocio, autorización, cálculo, transformación, transición, restricción de integridad, contrato de integración o comportamiento ejecutable. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0.
+
+---
+
+#### 10. Criterios de aceptación
+
+- [x] `EVID-ARC-001` figura aprobada y entrega 69 contextos de proceso.
+- [x] cada `VPROC-0001` a `VPROC-0069` aparece exactamente una vez.
+- [x] las 332 entradas documentales/artefactos contextualizadas heredadas tienen una propietaria funcional inequívoca.
+- [x] la distribución de propiedad coincide exactamente con la propiedad aprobada de los 69 procesos.
+- [x] no existen propietarios múltiples, externos, nulos ni asignaciones a `shell`.
+- [x] los expedientes compuestos no absorben registros fuente de otras propietarias.
+- [x] servicios transversales, Supabase, Storage, repositorios, carpetas y formatos físicos no adquieren propiedad funcional.
+- [x] la propiedad documental no concede autorización, acceso, descarga, modificación, compartición, impresión ni eliminación.
+- [x] AURA permanece como aplicación propietaria objetivo diferida en sus dos contextos y no se presenta como implementada.
+- [x] `VPROC-0060` conserva su frontera transversal sin convertirse en propietario universal de los hechos empresariales.
+- [x] la taxonomía documental global y los roles humanos de gobierno permanecen reservados para las tareas propietarias correspondientes.
+- [x] no se crean buckets, tablas, políticas, migraciones, archivos productivos, jobs, APIs ni cambios en Supabase.
+- [x] la tarea genera cero cambios en requisitos de prueba.
+- [x] `EVID-ARC-003` permanece reservada y no iniciada.
+
+---
+
+#### 11. Handoff cerrado hacia EVID-ARC-003
+
+`EVID-ARC-003` recibe los 69 contextos documentales con propietaria funcional resuelta y fronteras de propiedad preservadas. Su única responsabilidad siguiente será definir la clasificación de sensibilidad sin cambiar propietarias, fusionar prematuramente tipos documentales entre procesos ni iniciar decisiones reservadas para `EVID-ARC-004` a `EVID-ARC-010`.
+
+La aprobación de `EVID-ARC-002` no inicia, desarrolla ni aprueba `EVID-ARC-003`.
+
+
 ### [ ] EVID-ARC-003 — Definir clasificación de sensibilidad
 ### [ ] EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso
 ### [ ] EVID-ARC-005 — Definir carga, sustitución, anulación y retención

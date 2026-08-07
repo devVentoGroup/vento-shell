@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **599** |
+| Tareas aprobadas | **600** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **995** |
+| Tareas no iniciadas | **994** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **37.58% (599/1594)** |
+| Porcentaje de completamiento | **37.64% (600/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **EVID-ARC-001 — Inventariar archivos y evidencia por proceso** |
-| Tarea actual | **EVID-ARC-002 — Definir propietario funcional de cada tipo documental** |
+| Última tarea aprobada | **EVID-ARC-002 — Definir propietario funcional de cada tipo documental** |
+| Tarea actual | **EVID-ARC-003 — Definir clasificación de sensibilidad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **EVID-ARC-003 — Definir clasificación de sensibilidad** |
+| Siguiente tarea | **EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 23 de 157 aprobadas; EVID-ARC-002 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 24 de 157 aprobadas; EVID-ARC-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `EVID-ARC-001` — Inventariar archivos y evidencia por proceso |
-| Tarea actual | `EVID-ARC-002` — Definir propietario funcional de cada tipo documental — **NO INICIADA** |
-| Siguiente tarea | `EVID-ARC-003` — Definir clasificación de sensibilidad |
+| Última aprobada | `EVID-ARC-002` — Definir propietario funcional de cada tipo documental |
+| Tarea actual | `EVID-ARC-003` — Definir clasificación de sensibilidad — **NO INICIADA** |
+| Siguiente tarea | `EVID-ARC-004` — Definir metadatos, versión y vínculo con el recurso |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 23 DE 157 APROBADAS — ACTUAL EVID-ARC-002** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 24 DE 157 APROBADAS — ACTUAL EVID-ARC-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-EVID-ARC-001 — Inventariar archivos y evidencia por proceso
-        ↓
-TAREA ACTUAL
 EVID-ARC-002 — Definir propietario funcional de cada tipo documental
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 EVID-ARC-003 — Definir clasificación de sensibilidad
         ↓
+SIGUIENTE TAREA RESERVADA
+EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 23 de 157 tareas aprobadas
+CARRIL NEXO — 24 de 157 tareas aprobadas
 ```
