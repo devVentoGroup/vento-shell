@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **598** |
+| Aprobadas | **599** |
 | En propuesta | **0** |
-| No iniciadas | **996** |
+| No iniciadas | **995** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **37.52% (598/1594)** |
+| Porcentaje de completamiento | **37.58% (599/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PRINT-ARC-020` — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión | ✅ APROBADA |
-| Tarea actual | `EVID-ARC-001` — Inventariar archivos y evidencia por proceso | ⬜ NO INICIADA |
-| Siguiente reservada | `EVID-ARC-002` — Definir propietario funcional de cada tipo documental | ⬜ NO INICIADA |
+| Última aprobada | `EVID-ARC-001` — Inventariar archivos y evidencia por proceso | ✅ APROBADA |
+| Tarea actual | `EVID-ARC-002` — Definir propietario funcional de cada tipo documental | ⬜ NO INICIADA |
+| Siguiente reservada | `EVID-ARC-003` — Definir clasificación de sensibilidad | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -518,7 +518,7 @@
 | ⬜ NO INICIADA | `NOTIFY-ARC-008` | Definir reintentos, fallos y contingencia | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-009` | Definir privacidad y contenido sensible | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-010` | Definir métricas y auditoría de entrega | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
-| ⬜ NO INICIADA | `EVID-ARC-001` | Inventariar archivos y evidencia por proceso | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
+| ✅ APROBADA | `EVID-ARC-001` | Inventariar archivos y evidencia por proceso | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-002` | Definir propietario funcional de cada tipo documental | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-003` | Definir clasificación de sensibilidad | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-004` | Definir metadatos, versión y vínculo con el recurso | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
