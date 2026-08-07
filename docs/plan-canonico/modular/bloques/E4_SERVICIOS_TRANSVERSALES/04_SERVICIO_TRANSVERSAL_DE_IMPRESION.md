@@ -7999,7 +7999,574 @@ PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede
 ```
 
 
-### [ ] PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede
+### ✅ PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión` — RESERVADA
+**Tipo de tarea:** documental; contrato materializado de observabilidad, monitoreo y diagnóstico por sede para dispositivos, canales, adaptadores, colas, trabajos, intentos, confirmaciones, operación offline y soporte del servicio transversal de impresión
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Cambios físicos autorizados:** ninguno; no implementa collectors, dashboards, alertas, agentes, almacenamiento, workers, adaptadores, drivers, consultas, código, SQL, migraciones, configuración, Supabase, red ni dispositivos
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir una vista diagnóstica determinista por sede que permita separar estado administrativo, disponibilidad de telemetría, salud de dispositivo y canal, ejecución del adaptador, estado de cola, confirmación, resultado desconocido, reconciliación y salud del propio pipeline de observabilidad, conservando las identidades y bloqueos ya aprobados y sin presentar telemetría ausente como evidencia de éxito o falla física.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-019` queda cerrada documentalmente con:
+
+- el contrato `VENTO-PRINT-OBSERVABILITY` versión `1.0.0`;
+- una jerarquía de observación que mantiene separados estado administrativo, heartbeat, dispositivo, canal, adaptador, cola, intento, receipt, impresión física, entrega y reconciliación;
+- una matriz materializada para las cinco sedes conocidas, los nueve dispositivos físicos, los ocho bindings de canal activos y la condición sintética de ausencia de impresora de 80 mm en Vento Producción;
+- una línea base que conserva dos dispositivos administrativamente bloqueados, siete dispositivos operativos que todavía requieren telemetría canónica `FRESH` para ser elegibles y cero muestras runtime declaradas por esta tarea;
+- ocho perfiles documentales de monitoreo que cubren las cincuenta salidas `IMP-*` sin renombrarlas ni cambiar propietaria, medio, ruta, target o adaptador;
+- un catálogo cerrado de señales, eventos, métricas, condiciones de alerta y paquete diagnóstico con dimensiones acotadas y sin payloads, secretos ni PII como etiquetas ordinarias;
+- precedencia diagnóstica determinista que distingue bloqueo administrativo conocido, ausencia o degradación de telemetría, falla de canal, rechazo seguro, posible efecto físico, `RESULT_UNKNOWN`, falta de confirmación y recuperación;
+- una regla de autosupervisión del pipeline de observabilidad para que la ausencia de alertas no se interprete como salud cuando el monitoreo esté degradado;
+- cierre documental de `BLK-PRINT-016-005`, `BLK-PRINT-017-003` y `BLK-PRINT-018-006` mediante esquema de eventos, allowlist de campos, métricas, alertas y diagnóstico por sede, sin afirmar implementación;
+- cero implementación, cero telemetría en vivo y cero evidencia física declarada.
+
+---
+
+#### 2. Entradas canónicas y frontera
+
+La tarea consume sin reemplazar:
+
+| Entrada                                                   | Versión o fuente | Uso en `PRINT-ARC-019`                                                                                                       |
+| --------------------------------------------------------- | ---------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `NFR-REQ-009 — Definir observabilidad, soporte y alertas` | aprobada         | contratos separados de métricas, logs, trazas, health, dashboards, alertas, soporte, severidad, privacidad y autosupervisión |
+| `VENTO-PRINT-ROUTE`                                       | `1.0.0`          | sede, área, punto y destino lógico ya resueltos                                                                              |
+| `VENTO-PRINT-TARGET-POLICY`                               | `1.0.0`          | dispositivo candidato, canal principal, alternativa y safe-block                                                             |
+| `VENTO-PRINT-DEVICE-HEALTH`                               | `1.0.0`          | heartbeat, frescura, estado administrativo y elegibilidad                                                                    |
+| `VENTO-PRINT-IDEMPOTENCY`                                 | `1.0.0`          | identidad única de intención, trabajo y copia                                                                                |
+| `VENTO-PRINT-RETRY-QUEUE`                                 | `1.0.0`          | carriles, backlog, leases, intentos, retry, dead-letter y `RESULT_UNKNOWN`                                                   |
+| `VENTO-PRINT-CONFIRMATION`                                | `1.0.0`          | separación entre aceptación técnica, efecto físico y entrega                                                                 |
+| `VENTO-PRINT-CANCELLATION-EXPIRATION`                     | `1.0.0`          | cancelación, expiración, deadlines y efecto tardío                                                                           |
+| `VENTO-PRINT-REPRINT`                                     | `1.0.0`          | copia adicional legítima y auditable                                                                                         |
+| `VENTO-PRINT-AUTHORIZATION`                               | `1.0.0`          | permisos de consulta, evidencia, auditoría y acciones de soporte                                                             |
+| `VENTO-PRINT-PRIVACY`                                     | `1.0.0`          | minimización, allowlists, saneamiento y huellas permitidas                                                                   |
+| `VENTO-PRINT-OFFLINE-CONTINGENCY`                         | `1.0.0`          | backlog offline, edad, bloqueo, reconexión y conciliación                                                                    |
+| `VENTO-PRINT-ADAPTER`                                     | `1.0.0`          | bindings, estados de despacho, errores, `render_hash`, receipt, buffer y cleanup                                             |
+
+Frontera normativa:
+
+```text
+FUENTES AUTORITATIVAS DE ESTADO
+→ EVENTOS Y SEÑALES TIPADAS
+→ CORRELACION POR SEDE, DISPOSITIVO, CANAL, JOB E INTENTO
+→ PROYECCION DE ESTADO
+→ METRICAS, DASHBOARDS Y CONDICIONES DE ALERTA
+→ DIAGNOSTICO REPRODUCIBLE
+→ SOPORTE, RECUPERACION Y CONCILIACION
+```
+
+El plano de observabilidad es de lectura y diagnóstico. No decide routing, no cambia target, no crea retry, no autoriza reimpresión, no cancela trabajos, no modifica contenido, no cambia el estado empresarial fuente y no eleva un acuse técnico a efecto físico.
+
+---
+
+#### 3. Diagnóstico técnico actual verificable
+
+Las fuentes actuales no muestran una implementación canónica de `VENTO-PRINT-OBSERVABILITY` ni un collector que materialice los perfiles de `VENTO-PRINT-DEVICE-HEALTH` y `VENTO-PRINT-ADAPTER` de extremo a extremo.
+
+| Superficie                   | Hecho verificable                                                                                                                                                                    | Tratamiento en esta tarea                                                                            |
+| ---------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------------------------------------------------------------------------------- |
+| Inventario y rutas aprobadas | existen nueve `device_ref`, once políticas objetivo y cinco sedes                                                                                                                    | se consumen como identidad y topología documental; no se reinterpretan como telemetría viva          |
+| `VENTO-PRINT-DEVICE-HEALTH`  | siete dispositivos operativos parten de `NEVER_OBSERVED / UNKNOWN_BLOCKED` hasta heartbeat `FRESH`; Zebra y L5590 no esperan heartbeat mientras sigan bloqueadas administrativamente | se conserva como línea base, no como afirmación de falla física                                      |
+| `VENTO-PRINT-ADAPTER`        | existen ocho bindings documentales; no equivalen a adaptadores implementados ni runtime-ready                                                                                        | se definen señales y diagnóstico que deberán emitir cuando se materialicen                           |
+| superficie legacy de NEXO    | BrowserPrint enumera dispositivos, envía y muestra estados locales                                                                                                                   | sus mensajes y callbacks no se convierten en health, receipt ni confirmación canónica por inferencia |
+| repositorios revisados       | no se identificó un collector canónico de impresión que publique las señales definidas aquí                                                                                          | `NO_IMPLEMENTADO`; no se inventan muestras, dashboards, alertas ni métricas reales                   |
+
+La ausencia de telemetría canónica es una brecha de implementación. No altera que siete impresoras hayan sido declaradas operativas por inventario, ni convierte una impresora administrativamente bloqueada en una incidencia de monitoreo.
+
+---
+
+#### 4. Invariantes de observabilidad y diagnóstico
+
+1. `ESTADO_ADMINISTRATIVO ≠ HEARTBEAT ≠ SALUD_DE_CANAL ≠ SALUD_DE_ADAPTADOR ≠ RECEIPT ≠ RESULTADO_FISICO`.
+2. `FRESH` solo habilita evaluar un candidato; no demuestra que un trabajo se haya enviado, aceptado, impreso o entregado.
+3. `ADAPTER_ACCEPTED` y `PERIPHERAL_ACCEPTED` conservan el nivel definido en `VENTO-PRINT-CONFIRMATION`; ninguno implica `PRINTED_VERIFIED`.
+4. `RESULT_UNKNOWN` es un estado de incertidumbre operativa y nunca se normaliza como error seguro, éxito o ausencia de impresión.
+5. `BLOCKED_STORED`, `BLOCKED_MAINTENANCE` y `BLOCKED_NO_DEVICE` son causas administrativas conocidas. No se espera heartbeat para convertirlas en verdad ni se generan incidentes urgentes solo por permanecer en ese estado esperado.
+6. Un dispositivo administrativamente `OPERATIVA` con heartbeat `NEVER_OBSERVED`, `LATE` o `STALE` queda inelegible según `PRINT-ARC-009`; el diagnóstico no inventa si la causa es red, host, collector, canal o periférico sin evidencia adicional.
+7. La ausencia de una señal solo es interpretable cuando la salud del pipeline de observabilidad está demostrada.
+8. Un dashboard no se convierte en fuente de verdad. Debe permitir volver al evento, receipt o registro autoritativo que sostiene cada estado.
+9. Logs, métricas, trazas, auditoría, eventos empresariales, health checks, alertas, incidentes y runbooks conservan contratos distintos.
+10. Ninguna señal usa usuario, documento, `job_id`, `attempt_id`, URL cruda, mensaje libre, payload, ZPL, ESC/POS o contenido renderizado como dimensión métrica ordinaria de cardinalidad no acotada.
+11. `job_id`, `attempt_id`, `adapter_execution_id` y hashes pueden participar en consultas diagnósticas protegidas y trazas puntuales, pero no como labels de métricas agregadas.
+12. `payload.hash`, `sanitized_payload_hash` y `render_hash` conservan sus semánticas separadas y no se sustituyen entre sí.
+13. El diagnóstico de una falla nunca exige revelar el payload empresarial ni la representación completa; usa referencias, códigos, estados, versiones, hashes permitidos y receipts.
+14. Un monitor no ejecuta retry, reprint, cancelación, reroute, reconciliación ni mutación administrativa; puede enlazar a la acción autorizada correspondiente.
+15. La severidad deriva de impacto y urgencia conforme a `OBS-P0` a `OBS-P3`; no se deriva únicamente del nombre del componente o del nivel de log.
+16. No se inventan SLO, porcentajes, ventanas de disponibilidad ni umbrales de backlog en esta tarea. La única ventana temporal de health reutilizada es la ya aprobada en `PRINT-ARC-009`.
+17. La recuperación técnica, la recuperación del proceso, la conciliación de trabajos pendientes y el cierre del incidente son hitos separados.
+18. La implementación deberá observar también collectors, exportadores, reglas, dashboards y routing de alertas; “no hay alertas” nunca prueba salud por sí solo.
+
+---
+
+#### 5. Contrato `VENTO-PRINT-OBSERVABILITY` `1.0.0`
+
+##### 5.1 Identidad de una observación
+
+Toda observación tipada que pueda participar en diagnóstico declara, cuando aplique:
+
+| Campo                                                                   | Obligación                                                                                          |
+| ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `observation_id`                                                        | identidad única del evento o muestra                                                                |
+| `observation_type`                                                      | tipo estable y versionado de señal                                                                  |
+| `observed_at`                                                           | timestamp autoritativo o técnicamente verificable                                                   |
+| `received_at`                                                           | instante de recepción por el pipeline cuando difiera de la observación                              |
+| `environment` y `release_ref`                                           | aislamiento de ambiente y versión relevante                                                         |
+| `site_id`, `area_id`, `point_id`                                        | contexto físico resuelto; nulos solo cuando el objeto no pertenece a ese nivel                      |
+| `device_ref`, `channel_id`, `health_profile_id`                         | identidad de periférico y canal cuando participa hardware                                           |
+| `route_profile_id`, `target_policy_id`                                  | decisión de ruta/target ya resuelta; nunca inferida por el monitor                                  |
+| `job_id`, `copy_slot_id`, `attempt_id`, `adapter_execution_id`          | correlación puntual cuando el evento pertenece a un trabajo; no son dimensiones métricas ordinarias |
+| `queue_lane`                                                            | carril lógico cuando existe entrada de cola                                                         |
+| `administrative_state`                                                  | estado aprobado del dispositivo o condición sintética                                               |
+| `heartbeat_state` y `heartbeat_age_seconds`                             | señal de frescura cuando el perfil espera heartbeat                                                 |
+| `adapter_state`, `receipt_level`, `confirmation_state`, `offline_state` | estados tipados heredados cuando aplican                                                            |
+| `failure_class` y `reason_code`                                         | códigos normalizados; texto libre no sustituye la clasificación                                     |
+| `correlation_id`, `causation_id`                                        | vínculo de extremo a extremo sin usar PII como correlación                                          |
+| `evidence_refs`                                                         | referencias mínimas a receipts, auditoría o evidencia autorizada                                    |
+
+##### 5.2 Tipos mínimos de observación
+
+La implementación deberá poder representar, como mínimo, eventos equivalentes a:
+
+- estado administrativo de dispositivo o capacidad;
+- heartbeat y cambio de frescura;
+- cambio de salud de dispositivo o canal;
+- inicio y resultado de ejecución de adaptador;
+- cambio de carril o estado de cola;
+- creación, consumo o expiración de lease;
+- cambio de estado de intento;
+- receipt de adaptador o periférico;
+- apertura y resolución de `RESULT_UNKNOWN`;
+- cambio de nivel de confirmación;
+- dead-letter, replay manual y reimpresión autorizada;
+- cancelación, expiración y efecto tardío;
+- cambio de estado offline y reconciliación;
+- contingencia manual abierta, conciliada o cerrada;
+- estado de temporales, spool, buffer y cleanup;
+- salud y frescura del propio pipeline de observabilidad.
+
+Los nombres concretos de tópicos, tablas o vendors pertenecen a implementación. La semántica anterior no puede colapsarse en un único mensaje genérico de “impresora online/offline”.
+
+---
+
+#### 6. Heartbeat, salud y precedencia diagnóstica
+
+##### 6.1 Frescura heredada
+
+Se reutiliza exactamente la política aprobada en `PRINT-ARC-009`:
+
+| Estado de frescura |        Edad de la última observación | Consecuencia                                                       |
+| ------------------ | -----------------------------------: | ------------------------------------------------------------------ |
+| `FRESH`            |                             0 a 60 s | puede habilitar candidato si todas las demás puertas son positivas |
+| `LATE`             |                           61 a 120 s | candidato inelegible; degradación observable                       |
+| `STALE`            |                         más de 120 s | `UNKNOWN_STALE`; candidato inelegible                              |
+| `NEVER_OBSERVED`   |               ninguna muestra válida | `UNKNOWN_BLOCKED` para dispositivos que requieren heartbeat        |
+| `NOT_EXPECTED`     | perfil administrativamente bloqueado | no se solicita heartbeat para demostrar el bloqueo                 |
+
+Esta tarea no cambia cadencia, ventanas ni estados de `VENTO-PRINT-DEVICE-HEALTH`.
+
+##### 6.2 Orden determinista de diagnóstico
+
+Ante un síntoma de impresión, soporte evalúa en este orden:
+
+1. **Estado administrativo o capacidad:** si existe `BLOCKED_STORED`, `BLOCKED_MAINTENANCE` o `BLOCKED_NO_DEVICE`, esa es la causa habilitante conocida y no se inventa una falla runtime.
+2. **Salud del monitoreo:** verificar que el pipeline de telemetría está recibiendo y procesando señales; si no, clasificar `MONITORING_PIPELINE_DEGRADED` antes de concluir que el dispositivo está caído.
+3. **Heartbeat:** para dispositivos operativos, evaluar `FRESH`, `LATE`, `STALE` o `NEVER_OBSERVED`.
+4. **Canal:** confirmar el `channel_id` resuelto y su estado sin descubrir otro destino.
+5. **Adaptador:** revisar binding, versión, `adapter_execution_id`, estado y fallo normalizado.
+6. **Ruta y target:** comprobar que el trabajo usa la decisión aprobada; el monitor no la sustituye.
+7. **Cola:** revisar carril, edad, predecesores, lease, retry, dead-letter, cancelación y expiración.
+8. **Intento:** seguir `attempt_id` desde predespacho hasta `WRITE_STARTED`, receipt o rechazo seguro.
+9. **Resultado:** diferenciar `ADAPTER_ACCEPTED`, `PERIPHERAL_ACCEPTED`, `PRINTED_VERIFIED`, `DELIVERED_VERIFIED` y `RESULT_UNKNOWN`.
+10. **Offline y reconciliación:** revisar envelope, estado local, reconexión, conflictos y pendientes antes de considerar un nuevo envío.
+11. **Privacidad y autorización:** una denegación o bloqueo de política se diagnostica como tal; no se trata como falla del dispositivo.
+12. **Conclusión:** solo se asigna causa raíz cuando la evidencia la sustenta. Si hay varias hipótesis plausibles, el diagnóstico permanece `UNDETERMINED` y enumera evidencias faltantes.
+
+##### 6.3 Clases de diagnóstico
+
+| Clase                             | Significado                                                                       |
+| --------------------------------- | --------------------------------------------------------------------------------- |
+| `ADMINISTRATIVE_CAPABILITY_BLOCK` | estado o capacidad conocida impide despacho antes de runtime                      |
+| `MONITORING_PIPELINE_DEGRADED`    | no puede confiarse en ausencia o frescura de señales                              |
+| `TELEMETRY_NOT_FRESH`             | dispositivo operativo carece de heartbeat elegible                                |
+| `CHANNEL_UNAVAILABLE`             | canal ya resuelto no es utilizable con evidencia suficiente                       |
+| `ADAPTER_SAFE_REJECT`             | adaptador demuestra que no inició un envío con posible efecto                     |
+| `DISPATCH_RESULT_UNKNOWN`         | el comando pudo producir efecto y falta resultado autoritativo                    |
+| `PHYSICAL_RESULT_UNVERIFIED`      | existe aceptación técnica sin evidencia de impresión física                       |
+| `DELIVERY_PENDING_OR_UNKNOWN`     | impresión y handoff permanecen como hechos distintos                              |
+| `QUEUE_OR_CAUSAL_BLOCK`           | lease, predecesor, deadline, retry, dead-letter o política de cola impide avanzar |
+| `OFFLINE_RECONCILIATION_REQUIRED` | estado local y autoritativo deben reconciliarse antes de continuar                |
+| `AUTH_OR_PRIVACY_BLOCK`           | autorización, política, clasificación o snapshot impiden despacho                 |
+| `CONTRACT_OR_VERSION_ERROR`       | contrato, template, binding, versión o hash no coinciden                          |
+| `UNDETERMINED`                    | evidencia insuficiente para atribuir una causa única                              |
+
+---
+
+#### 7. Matriz materializada por sede
+
+La vista principal no usa un booleano único “sede sana”. Una sede puede tener una familia bloqueada y otra operativa o pendiente de telemetría.
+
+| Sede                    | Capacidad observada     | Dispositivos o condición    | Canales                                     | Línea base canónica                  | Lectura diagnóstica                                                               |
+| ----------------------- | ----------------------- | --------------------------- | ------------------------------------------- | ------------------------------------ | --------------------------------------------------------------------------------- |
+| `SITE-VENTO-PRODUCCION` | etiquetas               | `PRN-VP-ZD230-01`           | ninguno activo                              | `BLOCKED_STORED / NOT_EXPECTED`      | bloqueo administrativo conocido; no esperar heartbeat hasta despliegue autorizado |
+| `SITE-VENTO-PRODUCCION` | A4 local                | `PRN-VP-L5590-01`           | ninguno operativo                           | `BLOCKED_MAINTENANCE / NOT_EXPECTED` | bloqueo administrativo conocido; no elevar detección aislada a disponibilidad     |
+| `SITE-VENTO-PRODUCCION` | tiquete 80 mm           | `HLP-NO-DEVICE-VP-80MM`     | ninguno                                     | `BLOCKED_NO_DEVICE`                  | brecha de capacidad; no existe periférico al cual solicitar heartbeat             |
+| `SITE-VENTO-ADMIN`      | A4 local y central      | `PRN-ADMIN-L4260-01`        | `CH-EPSON-L4260-USB`; `CH-EPSON-L4260-WIFI` | `NEVER_OBSERVED / UNKNOWN_BLOCKED`   | USB se evalúa antes que Wi-Fi; requiere señal `FRESH` por canal para elegibilidad |
+| `SITE-MOLKA`            | tiquete 80 mm           | `PRN-MOLKA-DIGE200I-01`     | `CH-DIGE200I-USB`                           | `NEVER_OBSERVED / UNKNOWN_BLOCKED`   | no existe salto de sede; requiere heartbeat `FRESH` del punto                     |
+| `SITE-SAUDO`            | tiquete 80 mm           | `PRN-SAUDO-DIGE200I-01`     | `CH-DIGE200I-USB`                           | `NEVER_OBSERVED / UNKNOWN_BLOCKED`   | no existe salto de sede; requiere heartbeat `FRESH` del punto                     |
+| `SITE-VENTO-CAFE`       | caja / mostrador        | `PRN-VC-CAJA-DIGE200I-01`   | `CH-DIGE200I-USB`                           | `NEVER_OBSERVED / UNKNOWN_BLOCKED`   | la señal solo habilita caja; no barra, bar ni cocina                              |
+| `SITE-VENTO-CAFE`       | barra bebidas calientes | `PRN-VC-BARRA-DIGE200I-01`  | `CH-DIGE200I-LAN`                           | `NEVER_OBSERVED / UNKNOWN_BLOCKED`   | la señal solo habilita barra; no bar, cocina ni caja                              |
+| `SITE-VENTO-CAFE`       | bar bebidas frías       | `PRN-VC-BAR-DIGE200I-01`    | `CH-DIGE200I-LAN`                           | `NEVER_OBSERVED / UNKNOWN_BLOCKED`   | la señal solo habilita bar; no barra, cocina ni caja                              |
+| `SITE-VENTO-CAFE`       | cocina                  | `PRN-VC-COCINA-DIGE200I-01` | `CH-DIGE200I-LAN`                           | `NEVER_OBSERVED / UNKNOWN_BLOCKED`   | la señal solo habilita cocina; no barra, bar ni caja                              |
+
+Control cuantitativo:
+
+```text
+SEDES MATERIALIZADAS: 5
+DISPOSITIVOS FISICOS: 9
+DISPOSITIVOS ADMINISTRATIVAMENTE OPERATIVOS: 7
+DISPOSITIVOS ADMINISTRATIVAMENTE BLOQUEADOS: 2
+DISPOSITIVOS QUE REQUIEREN HEARTBEAT: 7
+DISPOSITIVOS CON HEARTBEAT NO ESPERADO EN SU ESTADO ACTUAL: 2
+BINDINGS DE CANAL ACTIVOS DOCUMENTALMENTE: 8
+CONDICION SINTETICA SIN DISPOSITIVO 80MM: 1
+MUESTRAS RUNTIME CANONICAS DECLARADAS POR ESTA TAREA: 0
+```
+
+---
+
+#### 8. Matriz materializada por dispositivo y canal
+
+| Perfil de salud                 | Dispositivo                 | Sede / punto                                             | Estado administrativo    | Binding observable                        | Fuente esperada                   | Estado inicial de monitoreo        | Resultado permitido                                                          |
+| ------------------------------- | --------------------------- | -------------------------------------------------------- | ------------------------ | ----------------------------------------- | --------------------------------- | ---------------------------------- | ---------------------------------------------------------------------------- |
+| `HLP-PRN-VP-ZD230-01`           | `PRN-VP-ZD230-01`           | `SITE-VENTO-PRODUCCION / POINT-VP-ZEBRA-ALMACENADA`      | `ALMACENADA`             | sin binding activo                        | `NOT_EXPECTED_STORED`             | `BLOCKED_STORED`                   | reportar capacidad bloqueada; no incidente runtime por ausencia de heartbeat |
+| `HLP-PRN-VP-L5590-01`           | `PRN-VP-L5590-01`           | `SITE-VENTO-PRODUCCION / POINT-VP-EPSON-FUERA-OPERACION` | `REQUIERE_MANTENIMIENTO` | sin binding operativo                     | `NOT_EXPECTED_MAINTENANCE`        | `BLOCKED_MAINTENANCE`              | reportar mantenimiento; no habilitar por telemetría aislada                  |
+| `HLP-PRN-ADMIN-L4260-01`        | `PRN-ADMIN-L4260-01`        | `SITE-VENTO-ADMIN / POINT-ADMIN-OFICINA`                 | `OPERATIVA`              | USB `ADP-USB-LOCAL`; Wi-Fi `ADP-WIFI-NET` | `ADAPTER_MULTI_CHANNEL_HEARTBEAT` | `NEVER_OBSERVED / UNKNOWN_BLOCKED` | evaluar canales por separado; USB mantiene precedencia                       |
+| `HLP-PRN-MOLKA-DIGE200I-01`     | `PRN-MOLKA-DIGE200I-01`     | `SITE-MOLKA / POINT-MOLKA-CAJA`                          | `OPERATIVA`              | USB `ADP-USB-LOCAL`                       | `ADAPTER_USB_HEARTBEAT`           | `NEVER_OBSERVED / UNKNOWN_BLOCKED` | habilitar solo Molka con heartbeat `FRESH` y health elegible                 |
+| `HLP-PRN-SAUDO-DIGE200I-01`     | `PRN-SAUDO-DIGE200I-01`     | `SITE-SAUDO / POINT-SAUDO-CAJA`                          | `OPERATIVA`              | USB `ADP-USB-LOCAL`                       | `ADAPTER_USB_HEARTBEAT`           | `NEVER_OBSERVED / UNKNOWN_BLOCKED` | habilitar solo Saudo con heartbeat `FRESH` y health elegible                 |
+| `HLP-PRN-VC-CAJA-DIGE200I-01`   | `PRN-VC-CAJA-DIGE200I-01`   | `SITE-VENTO-CAFE / POINT-VC-CAJA-MOSTRADOR`              | `OPERATIVA`              | USB `ADP-USB-LOCAL`                       | `ADAPTER_USB_HEARTBEAT`           | `NEVER_OBSERVED / UNKNOWN_BLOCKED` | habilitar solo caja con heartbeat `FRESH` y health elegible                  |
+| `HLP-PRN-VC-BARRA-DIGE200I-01`  | `PRN-VC-BARRA-DIGE200I-01`  | `SITE-VENTO-CAFE / POINT-VC-BARRA-CALIENTES`             | `OPERATIVA`              | LAN `ADP-LAN-RAW`                         | `ADAPTER_LAN_HEARTBEAT`           | `NEVER_OBSERVED / UNKNOWN_BLOCKED` | habilitar solo barra con heartbeat `FRESH` y health elegible                 |
+| `HLP-PRN-VC-BAR-DIGE200I-01`    | `PRN-VC-BAR-DIGE200I-01`    | `SITE-VENTO-CAFE / POINT-VC-BAR-FRIAS`                   | `OPERATIVA`              | LAN `ADP-LAN-RAW`                         | `ADAPTER_LAN_HEARTBEAT`           | `NEVER_OBSERVED / UNKNOWN_BLOCKED` | habilitar solo bar con heartbeat `FRESH` y health elegible                   |
+| `HLP-PRN-VC-COCINA-DIGE200I-01` | `PRN-VC-COCINA-DIGE200I-01` | `SITE-VENTO-CAFE / POINT-VC-COCINA`                      | `OPERATIVA`              | LAN `ADP-LAN-RAW`                         | `ADAPTER_LAN_HEARTBEAT`           | `NEVER_OBSERVED / UNKNOWN_BLOCKED` | habilitar solo cocina con heartbeat `FRESH` y health elegible                |
+| `HLP-NO-DEVICE-VP-80MM`         | `NINGUNO`                   | `SITE-VENTO-PRODUCCION / SIN_PUNTO_COMPATIBLE`           | `BLOCKED_NO_DEVICE`      | ninguno                                   | `NOT_APPLICABLE`                  | `BLOCKED_NO_DEVICE`                | mostrar brecha de capacidad; nunca inventar heartbeat o device_ref           |
+
+---
+
+#### 9. Perfiles de monitoreo para las salidas
+
+| Perfil                      | Regla de observación                                                                                                                               |
+| --------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `MON-LABEL-VP-CENTRAL`      | observa el bloqueo administrativo de la Zebra, la futura salud/binding y los trabajos de etiqueta sin tratar almacenamiento como incidente runtime |
+| `MON-TICKET-LOCAL-RESOLVED` | observa exclusivamente el sitio, punto, target, dispositivo y canal ya resueltos para el trabajo                                                   |
+| `MON-TICKET-ROUTE-WITH-VP`  | aplica monitoreo por target resuelto y conserva `BLOCKED_NO_DEVICE` cuando el destino sea Vento Producción                                         |
+| `MON-TICKET-VP-BLOCKED`     | materializa la ausencia de capacidad 80 mm en Vento Producción sin crear periférico sintético ejecutable                                           |
+| `MON-TICKET-CUSTOMER-POINT` | observa los targets de caja autorizados y mantiene impresión, entrega y datos de cliente como planos separados                                     |
+| `MON-A4-ROUTE-DEPENDENT`    | observa L5590 bloqueada o L4260 administrativa según el target ya resuelto; no ejecuta reroute central                                             |
+| `MON-A4-VP-OR-CENTRAL`      | distingue el bloqueo local de VP de una decisión central explícita; distribución manual permanece separada                                         |
+| `MON-A4-ADMIN`              | observa L4260 con USB primero y Wi-Fi después, ambos canales con estado independiente sobre el mismo device_ref                                    |
+
+---
+
+#### 10. Señales y métricas implementables
+
+Las métricas siguientes expresan semántica y dimensiones permitidas. Esta tarea no declara que ya existan ni fija SLO nuevos.
+
+| Señal                                            | Tipo             | Dimensiones ordinarias permitidas                                      | Uso                                                                                                 |
+| ------------------------------------------------ | ---------------- | ---------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------- |
+| `print_device_health_state`                      | gauge por estado | ambiente, sede, `device_ref`, health profile, estado                   | contar dispositivos por `READY`, `DEGRADED_READY`, `UNKNOWN_STALE`, bloqueos y estados equivalentes |
+| `print_heartbeat_age_seconds`                    | gauge            | ambiente, sede, `device_ref`, `channel_id`                             | medir frescura usando las ventanas heredadas de `PRINT-ARC-009`                                     |
+| `print_channel_health_state`                     | gauge por estado | ambiente, sede, `device_ref`, `channel_id`, clase de adaptador         | separar USB, LAN y Wi-Fi; no mezclar canales del mismo dispositivo                                  |
+| `print_queue_entries`                            | gauge            | ambiente, sede resuelta, carril, prioridad, estado                     | backlog por `PRINT_READY`, `PRINT_DELAYED`, `PRINT_BLOCKED`, conciliación y dead-letter             |
+| `print_queue_oldest_age_seconds`                 | gauge            | ambiente, sede resuelta, carril, prioridad                             | edad del pendiente más antiguo; no crea umbral de alerta nuevo                                      |
+| `print_attempts_total`                           | counter          | ambiente, sede, familia de salida, clase de adaptador, resultado/fallo | demanda técnica, retry, rechazo seguro y fallos por clase                                           |
+| `print_result_unknown_open`                      | gauge            | ambiente, sede, familia de salida                                      | cantidad de copias que requieren conciliación; nunca dispara retry automático                       |
+| `print_result_unknown_oldest_age_seconds`        | gauge            | ambiente, sede, familia de salida                                      | edad del caso incierto más antiguo                                                                  |
+| `print_dead_letter_open`                         | gauge            | ambiente, sede, familia de salida, clase de fallo                      | trabajo terminal o presupuesto agotado pendiente de decisión explícita                              |
+| `print_confirmation_state`                       | gauge/counter    | ambiente, sede, familia de salida, nivel de confirmación               | separar aceptación técnica, impresión física y entrega                                              |
+| `print_offline_pending`                          | gauge            | ambiente, sede, estado offline                                         | pendientes, bloqueos, resultado desconocido y reconciliación offline                                |
+| `print_cleanup_state`                            | gauge/counter    | ambiente, sede, `device_ref`, clase de adaptador, estado               | temporales, spool y buffer `CLEARED`, `UNKNOWN` o no observable sin contenido                       |
+| `print_capability_block`                         | gauge            | ambiente, sede, familia de medio, causa                                | capacidad bloqueada por almacenamiento, mantenimiento o ausencia de dispositivo                     |
+| `print_observability_pipeline_freshness_seconds` | gauge            | ambiente, componente del pipeline                                      | demostrar que el propio monitoreo recibe y procesa señales                                          |
+
+Reglas de cardinalidad y privacidad:
+
+- no usar `job_id`, `attempt_id`, `copy_slot_id`, actor, cliente, documento, dirección, teléfono, correo, texto libre, payload ni hash completo como labels métricos ordinarios;
+- las consultas puntuales pueden filtrar por identidades opacas bajo autorización sin promoverlas a cardinalidad ilimitada;
+- errores y mensajes se representan por código estable y etapa, no por mensaje libre como dimensión;
+- una métrica agregada no sustituye auditoría ni receipt individual.
+
+---
+
+#### 11. Condiciones de alerta, severidad y recuperación
+
+No se asignan porcentajes ni ventanas nuevas. Las condiciones se basan en estados y deadlines ya aprobados; la severidad `OBS-P0` a `OBS-P3` se calcula con impacto, urgencia, población, sede, alternativa, dinero, integridad y crecimiento del daño.
+
+| Condición                                    | Disparador documental                                                                             | Regla                                                                             |
+| -------------------------------------------- | ------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------- |
+| pérdida de frescura de dispositivo operativo | transición `FRESH → LATE/STALE` o persistencia `NEVER_OBSERVED` cuando el perfil espera heartbeat | alertar sobre elegibilidad/telemetría; no concluir causa física sin evidencia     |
+| canal o adaptador no utilizable              | señal tipada de canal o `ADAPTER_UNAVAILABLE`/binding inválido                                    | afectar solo el target ya resuelto; no buscar otro dispositivo por descubrimiento |
+| resultado desconocido                        | entrada en `RESULT_UNKNOWN` u `OFFLINE_RESULT_UNKNOWN`                                            | alertar y exigir conciliación; inhibir recomendaciones de retry/reprint           |
+| dead-letter                                  | creación o permanencia de entrada `PRINT_DEAD_LETTER`                                             | mostrar causa, intentos, propietario y acción permitida; nunca replay automático  |
+| deadline incumplido                          | expiración/cancelación/effect-late ya determinada por contrato                                    | enlazar a conciliación o disposición según estado real                            |
+| backlog causalmente bloqueado                | cola pendiente con predecesor, capacidad o política bloqueante                                    | mostrar causa y edad; no inventar umbral de saturación                            |
+| cleanup no verificable                       | `CLEANUP_NOT_VERIFIABLE`, `BUFFER_STATE_UNKNOWN` o spool sensible sin estado seguro               | impedir que soporte declare limpieza y escalar según sensibilidad                 |
+| conflicto o efecto tardío                    | `EVIDENCE_CONFLICT` o `LATE_EFFECT_RECONCILIATION_REQUIRED`                                       | conservar evidencias, bloquear acciones duplicantes y abrir diagnóstico           |
+| reconciliación offline pendiente             | `RECONCILIATION_REQUIRED` después de reconexión                                                   | no drenar automáticamente el pendiente afectado                                   |
+| pipeline de monitoreo degradado              | collector/exportador/recepción/regla/canal sin evidencia extremo a extremo                        | inhibir interpretación de “silencio = salud” y escalar al propietario técnico     |
+
+Toda alerta humana debe contener propietario, síntoma, impacto conocido, condición, severidad derivada, sede, contexto mínimo, deduplicación/inhibición, condición de recuperación y referencia de runbook cuando el nivel lo requiera. Reconocer o silenciar no resuelve la condición.
+
+---
+
+#### 12. Diagnóstico y paquete de soporte por sede
+
+##### 12.1 Consulta determinista
+
+La superficie de soporte debe permitir recorrer sin mutar:
+
+```text
+SEDE Y PUNTO
+→ CAPACIDAD Y ESTADO ADMINISTRATIVO
+→ SALUD DEL PIPELINE DE MONITOREO
+→ HEALTH PROFILE Y HEARTBEAT
+→ DEVICE_REF Y CHANNEL_ID
+→ BINDING Y ADAPTADOR
+→ ROUTE/TARGET DEL TRABAJO
+→ COLA, LEASE E INTENTO
+→ RECEIPTS Y CONFIRMACION
+→ RESULT_UNKNOWN / OFFLINE / RECONCILIACION
+→ CONCLUSION SOPORTADA O UNDETERMINED
+```
+
+##### 12.2 Paquete mínimo reproducible
+
+Un paquete de diagnóstico puede contener:
+
+- identificador del caso;
+- ambiente, versión/release y ventana temporal;
+- sede, área, punto y `device_ref` afectados;
+- `channel_id`, clase y versión del binding/adaptador;
+- proceso y familia de salida, sin contenido de documento;
+- `job_id`, `attempt_id`, `adapter_execution_id` y correlación únicamente bajo acceso protegido cuando sean necesarios para reproducibilidad;
+- estado administrativo y health profile;
+- última frescura de heartbeat y cambio observado;
+- carril de cola, prioridad, edad, presupuesto y estado de retry;
+- códigos de fallo, estado del adaptador y receipt level;
+- nivel de confirmación y estado de conciliación;
+- estado offline, cleanup, spool o buffer cuando aplique;
+- cambios recientes relevantes sin declararlos automáticamente como causa;
+- verificaciones y acciones intentadas;
+- conclusión, evidencias faltantes y siguiente acción segura;
+- clasificación de privacidad, actor que recolecta/consulta y registro de acceso.
+
+Queda prohibido incluir por defecto payload empresarial, snapshot saneado completo, ZPL, ESC/POS, documento renderizado, secretos, tokens, PIN, CVV, datos médicos, direcciones, teléfonos, correos, identificadores fiscales completos, capturas sin depurar o adjuntos sensibles. Cuando una referencia o hash sea suficiente, se usa la referencia.
+
+---
+
+#### 13. Matriz materializada de las cincuenta salidas
+
+Cada salida conserva su nombre, propietaria y perfil físico heredados. El perfil de monitoreo solo determina qué topología y estados observar después de que ruta y target hayan sido resueltos.
+
+| Salida       | Nombre canónico                                           | Propietaria | Perfil físico       | Perfil de monitoreo         | Alcance de observación                                              | Estado documental actual                                       |
+| ------------ | --------------------------------------------------------- | ----------- | ------------------- | --------------------------- | ------------------------------------------------------------------- | -------------------------------------------------------------- |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | `FOGO`      | `PERF-LBL-100X50-H` | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | `FOGO`      | `PERF-LBL-100X50-H` | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | `FOGO`      | `PERF-LBL-75X50-H`  | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | `FOGO`      | `PERF-LBL-75X50-H`  | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | `FOGO`      | `PERF-LBL-100X75-H` | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | `FOGO`      | `PERF-LBL-100X75-H` | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | `ORIGO`     | `PERF-LBL-100X50-H` | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | `NEXO`      | `PERF-LBL-100X50-H` | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | `NEXO`      | `PERF-LBL-75X50-H`  | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | `NEXO`      | `PERF-LBL-100X75-H` | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | `PULSO`     | `PERF-LBL-100X75-H` | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | `NEXO`      | `PERF-LBL-100X50-H` | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO`      | `PERF-LBL-100X75-H` | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | `FOGO`      | `PERF-LBL-75X50-H`  | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | `FOGO`      | `PERF-LBL-75X50-H`  | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | `FOGO`      | `PERF-LBL-75X50-H`  | `MON-LABEL-VP-CENTRAL`      | SITE-VENTO-PRODUCCION / TGT-LBL-VP-CENTRAL                          | `ESPECIFICADO / BLOCKED_STORED; HEARTBEAT_NOT_EXPECTED`        |
+| `IMP-CMD-01` | Comanda de cocina                                         | `PULSO`     | `PERF-TKT-80-V`     | `MON-TICKET-LOCAL-RESOLVED` | sitio, punto, target, device_ref y channel_id resueltos             | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías                           | `PULSO`     | `PERF-TKT-80-V`     | `MON-TICKET-LOCAL-RESOLVED` | sitio, punto, target, device_ref y channel_id resueltos             | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes             | `PULSO`     | `PERF-TKT-80-V`     | `MON-TICKET-LOCAL-RESOLVED` | sitio, punto, target, device_ref y channel_id resueltos             | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CMD-04` | Comanda de preparación o mise en place                    | `FOGO`      | `PERF-TKT-80-V`     | `MON-TICKET-ROUTE-WITH-VP`  | sitio, punto, target, device_ref y channel_id resueltos; incluye VP | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_NO_DEVICE`        |
+| `IMP-CMD-05` | Tiquete de expedición o recogida                          | `PULSO`     | `PERF-TKT-80-V`     | `MON-TICKET-LOCAL-RESOLVED` | sitio, punto, target, device_ref y channel_id resueltos             | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CMD-06` | Solicitud interna de reposición                           | `NEXO`      | `PERF-TKT-80-V`     | `MON-TICKET-ROUTE-WITH-VP`  | sitio, punto, target, device_ref y channel_id resueltos; incluye VP | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_NO_DEVICE`        |
+| `IMP-CMD-07` | Modificación o adición de comanda                         | `PULSO`     | `PERF-TKT-80-V`     | `MON-TICKET-LOCAL-RESOLVED` | sitio, punto, target, device_ref y channel_id resueltos             | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CMD-08` | Cancelación o anulación de comanda                        | `PULSO`     | `PERF-TKT-80-V`     | `MON-TICKET-LOCAL-RESOLVED` | sitio, punto, target, device_ref y channel_id resueltos             | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia                 | `FOGO`      | `PERF-TKT-80-V`     | `MON-TICKET-VP-BLOCKED`     | SITE-VENTO-PRODUCCION / TGT-TKT-VP-SIN-CAPACIDAD                    | `ESPECIFICADO / BLOCKED_NO_DEVICE; HEARTBEAT_NOT_APPLICABLE`   |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente                         | `PULSO`     | `PERF-TKT-80-V`     | `MON-TICKET-CUSTOMER-POINT` | Molka, Saudo o Vento Café caja según target resuelto                | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CLI-02` | Confirmación de pedido                                    | `PULSO`     | `PERF-TKT-80-V`     | `MON-TICKET-CUSTOMER-POINT` | Molka, Saudo o Vento Café caja según target resuelto                | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CLI-03` | Comprobante de pago                                       | `NUMERA`    | `PERF-TKT-80-V`     | `MON-TICKET-CUSTOMER-POINT` | Molka, Saudo o Vento Café caja según target resuelto                | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente               | `NUMERA`    | `PERF-TKT-80-V`     | `MON-TICKET-CUSTOMER-POINT` | Molka, Saudo o Vento Café caja según target resuelto                | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito      | `NUMERA`    | `PERF-TKT-80-V`     | `MON-TICKET-CUSTOMER-POINT` | Molka, Saudo o Vento Café caja según target resuelto                | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CLI-06` | Resumen de recogida o entrega                             | `PULSO`     | `PERF-TKT-80-V`     | `MON-TICKET-CUSTOMER-POINT` | Molka, Saudo o Vento Café caja según target resuelto                | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo                         | `PULSO`     | `PERF-TKT-80-V`     | `MON-TICKET-CUSTOMER-POINT` | Molka, Saudo o Vento Café caja según target resuelto                | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                     | `PULSO`     | `PERF-TKT-80-V`     | `MON-TICKET-CUSTOMER-POINT` | Molka, Saudo o Vento Café caja según target resuelto                | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja         | `NUMERA`    | `PERF-TKT-80-V`     | `MON-TICKET-CUSTOMER-POINT` | Molka, Saudo o Vento Café caja según target resuelto                | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-DOC-01` | Remisión o nota de despacho                               | `NEXO`      | `PERF-A4-P`         | `MON-A4-ROUTE-DEPENDENT`    | SITE-VENTO-PRODUCCION o SITE-VENTO-ADMIN según target resuelto      | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-02` | Manifiesto de traslado interno                            | `NEXO`      | `PERF-A4-P`         | `MON-A4-ROUTE-DEPENDENT`    | SITE-VENTO-PRODUCCION o SITE-VENTO-ADMIN según target resuelto      | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-03` | Hoja de conteo de inventario                              | `NEXO`      | `PERF-A4-L`         | `MON-A4-ROUTE-DEPENDENT`    | SITE-VENTO-PRODUCCION o SITE-VENTO-ADMIN según target resuelto      | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario            | `NEXO`      | `PERF-A4-L`         | `MON-A4-ROUTE-DEPENDENT`    | SITE-VENTO-PRODUCCION o SITE-VENTO-ADMIN según target resuelto      | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-05` | Orden de compra                                           | `ORIGO`     | `PERF-A4-P`         | `MON-A4-ROUTE-DEPENDENT`    | SITE-VENTO-PRODUCCION o SITE-VENTO-ADMIN según target resuelto      | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-06` | Acta o comprobante de recepción                           | `ORIGO`     | `PERF-A4-P`         | `MON-A4-ROUTE-DEPENDENT`    | SITE-VENTO-PRODUCCION o SITE-VENTO-ADMIN según target resuelto      | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-07` | Devolución a proveedor                                    | `ORIGO`     | `PERF-A4-P`         | `MON-A4-ROUTE-DEPENDENT`    | SITE-VENTO-PRODUCCION o SITE-VENTO-ADMIN según target resuelto      | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-08` | Orden de producción o ficha de lote                       | `FOGO`      | `PERF-A4-P`         | `MON-A4-VP-OR-CENTRAL`      | VP local bloqueado o ADMIN central tras decisión explícita          | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica                     | `FOGO`      | `PERF-A4-P`         | `MON-A4-VP-OR-CENTRAL`      | VP local bloqueado o ADMIN central tras decisión explícita          | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-10` | Registro de calidad o no conformidad                      | `FOGO`      | `PERF-A4-P`         | `MON-A4-VP-OR-CENTRAL`      | VP local bloqueado o ADMIN central tras decisión explícita          | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-11` | Orden de mantenimiento                                    | `NEXO`      | `PERF-A4-P`         | `MON-A4-ROUTE-DEPENDENT`    | SITE-VENTO-PRODUCCION o SITE-VENTO-ADMIN según target resuelto      | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo          | `NEXO`      | `PERF-A4-P`         | `MON-A4-ROUTE-DEPENDENT`    | SITE-VENTO-PRODUCCION o SITE-VENTO-ADMIN según target resuelto      | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico                    | `NEXO`      | `PERF-A4-P`         | `MON-A4-ROUTE-DEPENDENT`    | SITE-VENTO-PRODUCCION o SITE-VENTO-ADMIN según target resuelto      | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo       | `FOGO`      | `PERF-A4-P`         | `MON-A4-VP-OR-CENTRAL`      | VP local bloqueado o ADMIN central tras decisión explícita          | `ESPECIFICADO / VP_BLOCKED_MAINTENANCE; ADMIN_RUNTIME_UNKNOWN` |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación              | `NUMERA`    | `PERF-A4-L`         | `MON-A4-ADMIN`              | SITE-VENTO-ADMIN / TGT-A4-ADMIN-LOCAL                               | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales           | `NEXO`      | `PERF-A4-L`         | `MON-A4-ADMIN`              | SITE-VENTO-ADMIN / TGT-A4-ADMIN-LOCAL                               | `ESPECIFICADO / RUNTIME_UNKNOWN_HASTA_HEARTBEAT_FRESH`         |
+
+Control de cobertura:
+
+```text
+SALIDAS HEREDADAS: 50
+SALIDAS MATERIALIZADAS: 50
+IDENTIFICADORES IMP-* UNICOS: 50
+MON-LABEL-VP-CENTRAL: 16
+MON-TICKET-LOCAL-RESOLVED: 6
+MON-TICKET-ROUTE-WITH-VP: 2
+MON-TICKET-VP-BLOCKED: 1
+MON-TICKET-CUSTOMER-POINT: 9
+MON-A4-ROUTE-DEPENDENT: 10
+MON-A4-VP-OR-CENTRAL: 4
+MON-A4-ADMIN: 2
+FOGO: 15
+NEXO: 14
+PULSO: 12
+NUMERA: 5
+ORIGO: 4
+FALTANTES: 0
+DUPLICADAS: 0
+CAMBIOS DE NOMBRE: 0
+CAMBIOS DE PROPIETARIA: 0
+```
+
+---
+
+#### 14. Reglas de privacidad, retención y acceso
+
+1. Métricas y dashboards son agregados y usan dimensiones allowlisted; no incorporan contenido impreso.
+2. Logs y trazas usan códigos estables, referencias opacas y redacción previa; stack traces y mensajes de proveedor no se publican sin saneamiento.
+3. `render_hash` puede usarse para correlación técnica bajo acceso protegido; la representación que lo originó no se conserva en telemetría ordinaria.
+4. `sanitized_payload_hash` y referencias de privacidad pueden consultarse para conciliación autorizada, no como etiquetas métricas.
+5. Exportar un paquete de diagnóstico requiere autorización y auditoría separadas; el acceso de soporte no concede autoridad empresarial ni permiso de reimpresión.
+6. Retención de telemetría, evidencias y casos se gobierna por las políticas documentales correspondientes; esta tarea no inventa plazos numéricos.
+7. La pérdida o expiración de telemetría no elimina receipts, auditoría o evidencia sujeta a conservación.
+8. Un caso que requiera contenido sensible íntegro para poder diagnosticarse queda bloqueado hasta contar con un mecanismo aprobado; no se habilita captura indiscriminada.
+
+---
+
+#### 15. Brechas, responsables y condiciones de salida
+
+| ID                  | Brecha de implementación                                                                                                                            | Propietario                                                              | Condición de salida                                                                                                                                         |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BLK-PRINT-019-001` | `VENTO-PRINT-OBSERVABILITY` no está implementado como collector, eventos, proyecciones, métricas o dashboards canónicos.                            | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                  | alcance autorizado materializa eventos, métricas, almacenamiento, dashboards y acceso con pruebas de correlación y privacidad                               |
+| `BLK-PRINT-019-002` | Los siete dispositivos operativos no tienen muestras canónicas que demuestren heartbeat, canal y health profile conforme a los contratos aprobados. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`; `PRINT-ARC-020` | collectors/adaptadores implementados y piloto obtiene señales correlacionadas sin confundir disponibilidad con impresión física                             |
+| `BLK-PRINT-019-003` | No existe evidencia física por binding para papel, tapa, atasco, consumible, buffer, corte, cleanup, receipt y efecto físico.                       | `PRINT-ARC-020`                                                          | piloto reproduce condiciones soportadas, captura señales y receipts y establece qué puede demostrarse realmente por dispositivo/canal                       |
+| `BLK-PRINT-019-004` | No existen umbrales operativos de backlog, latencia o capacidad aprobados para declarar cumplimiento del piloto.                                    | `PRINT-ARC-020`                                                          | prerrequisitos, métricas y criterios de aceptación del piloto fijan objetivos medibles basados en evidencia sin alterar los estados ya aprobados            |
+| `BLK-PRINT-019-005` | El pipeline de observabilidad todavía no tiene runbooks ejecutables, routing operativo ni prueba extremo a extremo de sus propias alertas.          | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                  | implementación define propietarios/contactos reales, routing, runbooks aplicables y prueba de pérdida de señal sin inventar guardias o canales inexistentes |
+
+`BLK-PRINT-016-005`, `BLK-PRINT-017-003` y `BLK-PRINT-018-006` quedan documentalmente resueltos por esta tarea: ya existe esquema de eventos, allowlist de campos, métricas, condiciones de alerta y diagnóstico por sede. Su implementación y evidencia permanecen en los bloqueos anteriores.
+
+---
+
+#### 16. Cobertura canónica de requisitos de prueba
+
+La decisión consume requisitos vigentes que ya protegen el resultado material de esta tarea:
+
+| Requisito                         | Cobertura reutilizada                                                                                                                                                                  |
+| --------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TREQ-PROC-280`                   | un acuse técnico no demuestra efecto físico o empresarial                                                                                                                              |
+| `TREQ-PROC-444`                   | configuración, disponibilidad, comando, cola, aceptación, resultado, fallo y conciliación permanecen separados                                                                         |
+| `TREQ-PROC-445`                   | routing por sede, área, estación, proceso, documento y perfil, no por IP o última impresora                                                                                            |
+| `TREQ-PROC-446`                   | job físico correlacionable con intentos, cola, hashes, timestamps y receipts                                                                                                           |
+| `TREQ-PROC-447`                   | papel, tapa, atasco, buffer, corte, desconexión, contenido en blanco y cola divergente deben producir diagnóstico y recuperación comprobables                                          |
+| `TREQ-PROC-461` a `TREQ-PROC-500` | observabilidad, métricas, logs, trazas, health, cardinalidad, privacidad, periféricos, offline, colas, dashboards, alertas, soporte, severidad, runbooks, autosupervisión y aceptación |
+| `TREQ-PROC-557`                   | descubrimiento, adaptador, configuración, cola, timeout, retry, receipt, sustituto, diagnóstico y prueba física de periféricos                                                         |
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+Justificación: `PRINT-ARC-019` materializa para el servicio transversal de impresión comportamientos que ya están registrados explícitamente en el 04A vigente. No cambia texto, estado, propietario, relaciones, secuencia, entorno de evidencia ni momento de implementación de ninguna fila; tampoco implementa telemetría o hardware sobre los cuales declarar evidencia nueva.
+
+```text
+TREQ creados: 0
+TREQ modificados: 0
+TREQ diferidos: 0
+TREQ descartados: 0
+TREQ obsoletos: 0
+```
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 17. Criterios de aceptación
+
+`PRINT-ARC-019` queda documentalmente satisfecha porque:
+
+- [x] define `VENTO-PRINT-OBSERVABILITY` `1.0.0` sin seleccionar proveedor ni tecnología no demostrada;
+- [x] separa estado administrativo, heartbeat, canal, adaptador, cola, intento, receipt, impresión, entrega y reconciliación;
+- [x] reutiliza exactamente las ventanas de frescura aprobadas y no inventa SLO nuevos;
+- [x] define precedencia diagnóstica determinista y conserva `UNDETERMINED` cuando falta evidencia;
+- [x] materializa las cinco sedes, los nueve dispositivos, ocho bindings y la condición sin dispositivo de 80 mm;
+- [x] conserva dos dispositivos administrativamente bloqueados y siete sujetos a heartbeat sin declarar muestras runtime inexistentes;
+- [x] define señales y métricas con cardinalidad acotada y privacidad por allowlist;
+- [x] define condiciones de alerta, recuperación y autosupervisión sin convertir silencio en salud;
+- [x] define paquete de diagnóstico reproducible sin payloads ni contenido sensible ordinario;
+- [x] materializa una decisión para las cincuenta salidas, con 50 IDs únicos, 0 faltantes y 0 duplicados;
+- [x] preserva `FOGO=15`, `NEXO=14`, `PULSO=12`, `NUMERA=5`, `ORIGO=4`;
+- [x] no cambia rutas, targets, adaptadores, autorización, privacidad, retry, reimpresión ni resultado físico;
+- [x] cierra documentalmente los carryovers de privacidad, offline y adaptadores que pertenecían a monitoreo;
+- [x] asigna toda implementación y evidencia pendiente a propietarios existentes con condición de salida;
+- [x] reconcilia el resultado con requisitos vigentes y genera cero cambios `TREQ`;
+- [x] no modifica código, SQL, migraciones, Supabase, red, dispositivos, collectors, dashboards, alertas ni despliegues;
+- [x] mantiene `PRINT-ARC-020` como única tarea siguiente reservada.
+
+---
+
+#### 18. Handoff cerrado hacia `PRINT-ARC-020`
+
+`PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión` recibe:
+
+- `VENTO-PRINT-OBSERVABILITY` `1.0.0`;
+- las cinco sedes y nueve dispositivos materializados;
+- los ocho bindings documentales y tres condiciones sin binding activo;
+- la separación entre bloqueo administrativo, health, canal, adaptador, receipt, `RESULT_UNKNOWN`, impresión y entrega;
+- la línea base de cero muestras runtime canónicas declaradas por esta tarea;
+- las métricas implementables sin objetivos numéricos inventados;
+- las condiciones de alerta y la obligación de validar el propio pipeline de observabilidad;
+- el paquete diagnóstico mínimo y la política de privacidad/allowlists;
+- `BLK-PRINT-019-002`, `BLK-PRINT-019-003` y `BLK-PRINT-019-004` como entradas de evidencia y criterio del piloto.
+
+`PRINT-ARC-020` permanece **RESERVADA**. Esta tarea no define ni ejecuta el piloto, no fija resultados de aceptación sin evidencia y no modifica continuidad.
+
+---
+
+#### 19. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
+
+TAREA ACTUAL APROBADA
+PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede
+
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión
+```
+
+
 ### [ ] PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión
 
 Flujo mínimo:

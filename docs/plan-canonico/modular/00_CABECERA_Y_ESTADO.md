@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **596** |
+| Tareas aprobadas | **597** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **998** |
+| Tareas no iniciadas | **997** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **37.39% (596/1594)** |
+| Porcentaje de completamiento | **37.45% (597/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local** |
-| Tarea actual | **PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede** |
+| Última tarea aprobada | **PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede** |
+| Tarea actual | **PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión** |
+| Siguiente tarea | **EVID-ARC-001 — Inventariar archivos y evidencia por proceso** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 20 de 157 aprobadas; PRINT-ARC-019 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 21 de 157 aprobadas; PRINT-ARC-020 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PRINT-ARC-018` — Definir adaptadores LAN, USB, Bluetooth o puente local |
-| Tarea actual | `PRINT-ARC-019` — Definir monitoreo y diagnóstico por sede — **NO INICIADA** |
-| Siguiente tarea | `PRINT-ARC-020` — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión |
+| Última aprobada | `PRINT-ARC-019` — Definir monitoreo y diagnóstico por sede |
+| Tarea actual | `PRINT-ARC-020` — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión — **NO INICIADA** |
+| Siguiente tarea | `EVID-ARC-001` — Inventariar archivos y evidencia por proceso |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 20 DE 157 APROBADAS — ACTUAL PRINT-ARC-019** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 21 DE 157 APROBADAS — ACTUAL PRINT-ARC-020** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
-        ↓
-TAREA ACTUAL
 PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión
         ↓
+SIGUIENTE TAREA RESERVADA
+EVID-ARC-001 — Inventariar archivos y evidencia por proceso
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 20 de 157 tareas aprobadas
+CARRIL NEXO — 21 de 157 tareas aprobadas
 ```

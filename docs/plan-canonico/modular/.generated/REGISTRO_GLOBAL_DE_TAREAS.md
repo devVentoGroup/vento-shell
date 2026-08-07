@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **596** |
+| Aprobadas | **597** |
 | En propuesta | **0** |
-| No iniciadas | **998** |
+| No iniciadas | **997** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **37.39% (596/1594)** |
+| Porcentaje de completamiento | **37.45% (597/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PRINT-ARC-018` — Definir adaptadores LAN, USB, Bluetooth o puente local | ✅ APROBADA |
-| Tarea actual | `PRINT-ARC-019` — Definir monitoreo y diagnóstico por sede | ⬜ NO INICIADA |
-| Siguiente reservada | `PRINT-ARC-020` — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión | ⬜ NO INICIADA |
+| Última aprobada | `PRINT-ARC-019` — Definir monitoreo y diagnóstico por sede | ✅ APROBADA |
+| Tarea actual | `PRINT-ARC-020` — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión | ⬜ NO INICIADA |
+| Siguiente reservada | `EVID-ARC-001` — Inventariar archivos y evidencia por proceso | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -506,7 +506,7 @@
 | ✅ APROBADA | `PRINT-ARC-016` | Definir privacidad y ocultamiento de datos sensibles | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-017` | Definir operación offline y contingencia manual | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-018` | Definir adaptadores LAN, USB, Bluetooth o puente local | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
-| ⬜ NO INICIADA | `PRINT-ARC-019` | Definir monitoreo y diagnóstico por sede | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
+| ✅ APROBADA | `PRINT-ARC-019` | Definir monitoreo y diagnóstico por sede | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-020` | Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-001` | Inventariar notificaciones actuales y canales | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-002` | Definir evento empresarial que origina cada notificación | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
