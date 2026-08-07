@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **607** |
+| Aprobadas | **608** |
 | En propuesta | **0** |
-| No iniciadas | **987** |
+| No iniciadas | **986** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **38.08% (607/1594)** |
+| Porcentaje de completamiento | **38.14% (608/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `EVID-ARC-009` — Definir conservación legal y eliminación | ✅ APROBADA |
-| Tarea actual | `EVID-ARC-010` — Definir contingencia ante indisponibilidad de Storage | ⬜ NO INICIADA |
-| Siguiente reservada | `NOTIFY-ARC-001` — Inventariar notificaciones actuales y canales | ⬜ NO INICIADA |
+| Última aprobada | `EVID-ARC-010` — Definir contingencia ante indisponibilidad de Storage | ✅ APROBADA |
+| Tarea actual | `NOTIFY-ARC-001` — Inventariar notificaciones actuales y canales | ⬜ NO INICIADA |
+| Siguiente reservada | `NOTIFY-ARC-002` — Definir evento empresarial que origina cada notificación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -527,7 +527,7 @@
 | ✅ APROBADA | `EVID-ARC-007` | Definir acceso temporal y URLs firmadas | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ✅ APROBADA | `EVID-ARC-008` | Definir auditoría de consulta y modificación | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ✅ APROBADA | `EVID-ARC-009` | Definir conservación legal y eliminación | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
-| ⬜ NO INICIADA | `EVID-ARC-010` | Definir contingencia ante indisponibilidad de Storage | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
+| ✅ APROBADA | `EVID-ARC-010` | Definir contingencia ante indisponibilidad de Storage | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-001` | Crear identificador estable para cada paquete de implementación | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-002` | Vincular el paquete con capability_id, process_id y gap_id | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |
 | ⬜ NO INICIADA | `DELIV-PKG-003` | Definir aplicación, dominio y repositorio propietarios | `bloques/E5_PLANIFICACION_DE_IMPLEMENTACION/02_PAQUETES_DE_IMPLEMENTACION.md` |

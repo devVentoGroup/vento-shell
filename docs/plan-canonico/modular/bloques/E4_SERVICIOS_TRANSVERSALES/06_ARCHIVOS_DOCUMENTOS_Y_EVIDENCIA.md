@@ -18,7 +18,7 @@
 
 #### 1. Propósito y resultado sustantivo
 
-Esta tarea fija la línea base documental y evidencial de los 69 procesos canónicos para que las decisiones posteriores de propiedad, clasificación, metadatos, retención, acceso, inmutabilidad, purga y contingencia partan de un universo reconciliado.
+Esta tarea fija la línea base documental y evidencial de los 69 procesos canónicos para que las decisiones posteriores de propiedad, clasificación, metadatos, ciclo documental, validación de archivo, acceso temporal, auditoría, conservación legal/eliminación y contingencia de Storage partan de un universo reconciliado.
 
 El inventario queda gobernado por cuatro reglas:
 
@@ -50,7 +50,7 @@ El inventario queda gobernado por cuatro reglas:
 | Evidencia                         | Foto, firma, lectura, payload, comprobante, soporte, POD, checklist, acuse u observación que demuestra una afirmación               | Requiere procedencia e integridad; no equivale automáticamente al efecto empresarial            |
 | Registro empresarial              | Hecho, maestro, ledger, decisión, estado o registro autoritativo del proceso                                                        | No se sustituye por PDF, captura, archivo o mensaje                                             |
 
-La política concreta de propietario, clasificación, metadatos obligatorios, retención, acceso temporal, apéndice inmutable, purga y contingencia permanece en sus tareas EVID propietarias posteriores y no se anticipa aquí.
+La política concreta de propietario, clasificación, metadatos obligatorios, carga/sustitución/anulación/retención, validación de tipo/tamaño/integridad/malware, acceso temporal, auditoría de consulta/modificación, conservación legal/eliminación y contingencia de Storage permanece en sus tareas EVID propietarias posteriores y no se anticipa aquí.
 
 ---
 
@@ -160,24 +160,24 @@ La reconciliación conserva la línea base de `PROC-CAT-016`: 381 grupos de sali
 6. Un comprobante, acuse o payload externo demuestra como máximo la afirmación respaldada por su contrato; los efectos empresariales que requieran conciliación permanecen sujetos a esa conciliación.
 7. Para `VPROC-0060`, el inventario incluye el propio registro documental, versión, metadatos, clasificación, firmas, retención/hold, custodia y disposición como parte del ciclo documental transversal; las demás aplicaciones no deben recrear una fuente documental competidora.
 8. `VPROC-0054` conserva costos, distribución, cierre, rentabilidad y variaciones; el ciclo presupuestal pertenece a `VPROC-0069` y no se mezcla nuevamente en este inventario.
-9. Esta tarea no asigna propietario funcional por tipo documental, clasificación de sensibilidad, esquema de metadatos, política de retención, mecanismo de URL firmada, regla de acceso, append-only, purga ni contingencia de Storage.
-10. No se declara ningún bucket, objeto de Storage, tabla, vínculo físico, job de purga, política RLS, API, archivo productivo o evidencia operativa como implementado o validado.
+9. Esta tarea no asigna propietario funcional por tipo documental, clasificación de sensibilidad, esquema de metadatos, ciclo de carga/sustitución/anulación/retención, validación de tipo/tamaño/integridad/malware, acceso temporal/URL firmada, auditoría de consulta/modificación, conservación legal/eliminación ni contingencia de Storage.
+10. No se declara ningún bucket, objeto de Storage, tabla, vínculo físico, job de disposición/eliminación, política RLS, API, archivo productivo o evidencia operativa como implementado o validado.
 
 ---
 
 #### 7. Frontera con las tareas EVID posteriores
 
-| Decisión no tomada en esta tarea                        | Tarea propietaria reservada |
-| ------------------------------------------------------- | --------------------------- |
-| Propietario funcional por tipo documental               | `EVID-ARC-002`              |
-| Clasificación de sensibilidad por tipo                  | `EVID-ARC-003`              |
-| Metadatos, versión y vínculo con recurso                | `EVID-ARC-004`              |
-| Retención y disposición por tipo                        | `EVID-ARC-005`              |
-| Acceso temporal mediante URL firmada                    | `EVID-ARC-006`              |
-| Descarga, compartición, impresión y auditoría de acceso | `EVID-ARC-007`              |
-| Evidencia que deba ser append-only                      | `EVID-ARC-008`              |
-| Jobs de purga y auditoría de eliminación                | `EVID-ARC-009`              |
-| Contingencia ante indisponibilidad de Storage           | `EVID-ARC-010`              |
+| Decisión no tomada en esta tarea                 | Tarea propietaria reservada |
+| ------------------------------------------------ | --------------------------- |
+| Propietario funcional por tipo documental        | `EVID-ARC-002`              |
+| Clasificación de sensibilidad por tipo           | `EVID-ARC-003`              |
+| Metadatos, versión y vínculo con recurso         | `EVID-ARC-004`              |
+| Carga, sustitución, anulación y retención        | `EVID-ARC-005`              |
+| Validación de tipo, tamaño, integridad y malware | `EVID-ARC-006`              |
+| Acceso temporal y URLs firmadas                  | `EVID-ARC-007`              |
+| Auditoría de consulta y modificación             | `EVID-ARC-008`              |
+| Conservación legal y eliminación                 | `EVID-ARC-009`              |
+| Contingencia ante indisponibilidad de Storage    | `EVID-ARC-010`              |
 
 Estas reservas no reducen el inventario actual: cada proceso ya tiene su soporte de origen cuando existe, sus artefactos asociados y su evidencia mínima materializados en la sección 4.
 
@@ -257,7 +257,7 @@ La propiedad funcional documental:
 - no convierte a Supabase, Storage, `vento-shell`, el servicio transversal o un proveedor en propietario empresarial;
 - no equivale a autoría material, custodia técnica, custodio físico, responsable legal, encargado de tratamiento ni actor humano aprobador;
 - no concede acceso, permiso, descarga, edición, compartición, impresión ni disposición;
-- no define sensibilidad, metadatos, retención, firma, inmutabilidad, URL temporal, purga o contingencia.
+- no define sensibilidad, metadatos/versionado, carga/sustitución/anulación/retención, validación de archivo, acceso temporal, auditoría, conservación legal/eliminación ni contingencia.
 
 Las responsabilidades humanas, custodios, encargados, finalidades, territorios y taxonomía documental corporativa permanecen reservados para las tareas `INFO-DOM-*` correspondientes.
 
@@ -502,7 +502,6 @@ Cada fila recibe una clave `DOCCTX-VPROC-####-NN` exclusiva de esta matriz para 
 - `EVID-ARC-002`: 69 contextos de proceso, 332 entradas documentales/artefactos y propietaria funcional inequívoca para cada contexto.
 - `NFR-REQ-005`: contrato aprobado de privacidad y sensibilidad, escala `S0` a `S4`, categorías mínimas, granularidad, propagación, inferencia y guardrails.
 - `PROC-CAT-005`: propiedad funcional de los 69 procesos; la clasificación no modifica propietarias.
-- Registro Canónico de Requisitos de Prueba vigente: reglas ya existentes de clasificación, herencia, archivos sensibles, privacidad y Storage.
 - `INFO-DOM-001` a `INFO-DOM-003`: decisiones posteriores reservadas de gobierno, clasificación definitiva corporativa y taxonomía documental global.
 
 ---
@@ -958,7 +957,7 @@ Distribución por regla dominante:
 
 **Resultado:** NO GENERA REQUISITOS DE PRUEBA
 
-**Justificación:** esta tarea instancia, sobre las 332 entradas documentales ya inventariadas, la escala, granularidad, herencia, elevación, tratamiento de información desconocida y pisos de sensibilidad ya aprobados por el contrato no funcional vigente y ya protegidos en el Registro Canónico de Requisitos de Prueba. No introduce una regla ejecutable nueva ni modifica una regla existente. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0; el registro permanece sin cambios.
+**Justificación:** esta tarea instancia, sobre las 332 entradas documentales ya inventariadas, la escala, granularidad, herencia, elevación, tratamiento de información desconocida y pisos de sensibilidad ya aprobados por `NFR-REQ-005`. No introduce una regla ejecutable nueva ni modifica una regla existente. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0; el registro de requisitos no recibe cambios derivados de esta tarea.
 
 ---
 
@@ -1591,7 +1590,6 @@ El contrato reutiliza la identidad, versión, vínculo empresarial, propietaria 
 - `EVID-ARC-003`: 332 identidades `DOCCTX-*` y sensibilidad mínima por entrada.
 - `EVID-ARC-004`: identidad lógica, versión documental, versión de esquema de metadatos y vínculo resoluble con proceso/recurso.
 - `NFR-REQ-006`: historia no destructiva, clase `T5_EVIDENCE_DOCUMENT`, políticas de retención versionadas, estados de ciclo de vida, hold y prohibición de eliminación con política no resoluble.
-- Registro Canónico de Requisitos de Prueba vigente: las reglas de historia, sustitución/anulación, retención, lifecycle y protección contra borrado directo ya están registradas y no se modifican en esta tarea.
 - `INFO-DOM-004`: ciclo documental corporativo definitivo, estados, versiones, vigencia, sustitución, anulación y retiro.
 - `INFO-DOM-006`: tablas definitivas de retención, eventos de cómputo, mínimos/máximos, archivo, legal hold, anonimización, eliminación y certificado de disposición.
 
@@ -2202,8 +2200,7 @@ La tarea no cambia `document_id`, `document_version`, propietaria funcional, sen
 - `EVID-ARC-005`: `LOAD_V1`, `SUBSTITUTE_V1`, historia no destructiva, anulación y retención; una carga candidata no adquiere vigencia por recepción técnica.
 - `NFR-REQ-005`: protección por defecto, propagación de sensibilidad y prohibición de exposición indirecta por archivos, nombres, URLs, previews o metadatos.
 - `NFR-REQ-006`: evidencia con hash/referencia de integridad, procedencia, versión e historia reconstruible; validación física de archivos y malware delegada a la familia EVID.
-- Arquitectura Storage aprobada en E3: reserva server-side, política versionada de bucket, allowlist MIME, límite, verificación previa a disponibilidad, fingerprint y cuarentena.
-- Registro Canónico de Requisitos de Prueba vigente: los comportamientos de tipo, tamaño, verificación, integridad y cuarentena/malware que esta tarea materializa ya están protegidos; no se duplican requisitos.
+- `SUPA-ARC-018`: tarea propietaria de la arquitectura de Storage; `EVID-ARC-006` consume esa frontera de propiedad sin declarar buckets, políticas físicas ni materialización productiva como verificadas.
 
 ---
 
@@ -2746,16 +2743,16 @@ Códigos utilizados:
 
 #### 11. Fronteras y decisiones reservadas
 
-| Decisión fuera de esta tarea                                                                         | Tarea propietaria                                      |
-| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| Acceso temporal y URLs firmadas, incluida duración y emisión de enlaces                              | `EVID-ARC-007`                                         |
-| Auditoría de consulta y modificación de documentos/evidencia                                         | `EVID-ARC-008`                                         |
-| Conservación legal, disposición, anonimización, eliminación y certificado                            | `EVID-ARC-009`                                         |
-| Contingencia ante indisponibilidad de Storage                                                        | `EVID-ARC-010`                                         |
-| Taxonomía corporativa de documentos, registros, evidencia, originales y copias                       | `INFO-DOM-003`                                         |
-| Metadatos corporativos, almacenamiento, búsqueda y localización                                      | `INFO-DOM-005`                                         |
-| Autenticidad, integridad probatoria, procedencia, hash, timestamp, preservación y cadena de custodia | `INFO-DOM-007`                                         |
-| Materialización física de buckets, políticas, límites, allowlists y controles Storage                | `SUPA-ARC-018` y su paquete de implementación aprobado |
+| Decisión fuera de esta tarea                                                                         | Tarea propietaria                                                              |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Acceso temporal y URLs firmadas, incluida duración y emisión de enlaces                              | `EVID-ARC-007`                                                                 |
+| Auditoría de consulta y modificación de documentos/evidencia                                         | `EVID-ARC-008`                                                                 |
+| Conservación legal, disposición, anonimización, eliminación y certificado                            | `EVID-ARC-009`                                                                 |
+| Contingencia ante indisponibilidad de Storage                                                        | `EVID-ARC-010`                                                                 |
+| Taxonomía corporativa de documentos, registros, evidencia, originales y copias                       | `INFO-DOM-003`                                                                 |
+| Metadatos corporativos, almacenamiento, búsqueda y localización                                      | `INFO-DOM-005`                                                                 |
+| Autenticidad, integridad probatoria, procedencia, hash, timestamp, preservación y cadena de custodia | `INFO-DOM-007`                                                                 |
+| Materialización física de buckets, políticas, límites, allowlists y controles Storage                | `SUPA-ARC-018` y el paquete de implementación que corresponda una vez aprobado |
 
 No se deja un valor físico genérico pendiente dentro de `EVID-ARC-006`: MIME y `max_bytes` se resuelven obligatoriamente desde el contrato Storage versionado que gobierne la representación; si esa referencia no es resoluble, el gate falla cerrado.
 
@@ -2765,7 +2762,7 @@ No se deja un valor físico genérico pendiente dentro de `EVID-ARC-006`: MIME y
 
 **Resultado:** NO GENERA REQUISITOS DE PRUEBA
 
-**Justificación:** esta tarea materializa sobre las 332 identidades documentales reglas de carga segura ya aprobadas y registradas: política versionada de tipo y tamaño, verificación entre MIME declarado/detectado y extensión, control de límite antes de disponibilidad, reconciliación de fingerprint/integridad, cuarentena de contenido no verificable o sospechoso y exigencia de resultado limpio antes de disponibilidad. No introduce un comportamiento verificable nuevo ni modifica uno existente; crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0. El registro canónico vigente permanece sin cambios.
+**Justificación:** esta tarea materializa sobre las 332 identidades documentales reglas de carga segura ya aprobadas por los contratos NFR y de arquitectura consumidos: política versionada de tipo y tamaño, verificación entre MIME declarado/detectado y extensión, control de límite antes de disponibilidad, reconciliación de fingerprint/integridad, cuarentena de contenido no verificable o sospechoso y exigencia de resultado limpio antes de disponibilidad. No introduce un comportamiento verificable nuevo ni modifica uno existente; crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0; el registro de requisitos no recibe cambios derivados de esta tarea.
 
 ---
 
@@ -2837,7 +2834,6 @@ El contrato parte de una regla no negociable: `VALIDATED_FOR_ACTIVATION` de `EVI
 - `EVID-ARC-006`: gate técnico `EVID_FILE_VALIDATION_V1` y handoff cerrado que prohíbe interpretar la validación como autorización, publicación o vigencia empresarial.
 - `NFR-REQ-005`: finalidad, minimización, necesidad de conocer, protección por defecto, exposición segura, enlaces temporales no adivinables y prohibición de URLs persistentes como vía ordinaria de exposición protegida.
 - `NFR-REQ-006`: obligación de auditar consultas, revelados, `DOWNLOAD`, comparticiones y accesos extraordinarios sin replicar el contenido protegido.
-- Registro Canónico de Requisitos de Prueba vigente: controles ya registrados para URL directa, URL firmada, exposición de archivos, autorización, contexto, temporalidad, minimización y auditoría de acceso.
 - `INFO-AUTH-002`: propietaria posterior de la política corporativa definitiva para datos sensibles, `DOWNLOAD`, impresión, exportación, compartición y URLs firmadas.
 - `INFO-DOM-005` e `INFO-DOM-010`: propietarias posteriores de almacenamiento/localización y de compartición/divulgación/terceros, sin alterar el mínimo E4 fijado aquí.
 
@@ -3365,15 +3361,15 @@ Códigos aplicados:
 
 #### 10. Fronteras y decisiones reservadas
 
-| Decisión fuera de esta tarea                                                                                                  | Tarea propietaria                                      |
-| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
-| Política corporativa definitiva de clasificación/finalidad/acción para accesos y URLs firmadas, incluidos valores de vigencia | `INFO-AUTH-002`                                        |
-| Compartición, divulgación, terceros, encargados, transferencias y requerimientos de autoridad                                 | `INFO-DOM-010`                                         |
-| Metadatos corporativos, almacenamiento, búsqueda, localización y vínculo con recursos                                         | `INFO-DOM-005`                                         |
-| Auditoría detallada de consulta, emisión, acceso y modificación                                                               | `EVID-ARC-008`                                         |
-| Conservación legal, disposición, anonimización, eliminación y certificado                                                     | `EVID-ARC-009`                                         |
-| Contingencia ante indisponibilidad de Storage                                                                                 | `EVID-ARC-010`                                         |
-| Materialización física de buckets, políticas de Storage y mecanismo real de emisión                                           | `SUPA-ARC-018` y su paquete de implementación aprobado |
+| Decisión fuera de esta tarea                                                                                                  | Tarea propietaria                                                              |
+| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------ |
+| Política corporativa definitiva de clasificación/finalidad/acción para accesos y URLs firmadas, incluidos valores de vigencia | `INFO-AUTH-002`                                                                |
+| Compartición, divulgación, terceros, encargados, transferencias y requerimientos de autoridad                                 | `INFO-DOM-010`                                                                 |
+| Metadatos corporativos, almacenamiento, búsqueda, localización y vínculo con recursos                                         | `INFO-DOM-005`                                                                 |
+| Auditoría detallada de consulta, emisión, acceso y modificación                                                               | `EVID-ARC-008`                                                                 |
+| Conservación legal, disposición, anonimización, eliminación y certificado                                                     | `EVID-ARC-009`                                                                 |
+| Contingencia ante indisponibilidad de Storage                                                                                 | `EVID-ARC-010`                                                                 |
+| Materialización física de buckets, políticas de Storage y mecanismo real de emisión                                           | `SUPA-ARC-018` y el paquete de implementación que corresponda una vez aprobado |
 
 No queda un pendiente narrativo sin propietario: el único bloqueo material para emitir en implementación es `ACCESS_POLICY_PENDING`, cuya salida está definida en la sección 4.1. Las demás filas anteriores preservan responsabilidades ya reservadas y no impiden cerrar la especificación E4.
 
@@ -3383,7 +3379,7 @@ No queda un pendiente narrativo sin propietario: el único bloqueo material para
 
 **Resultado:** NO GENERA REQUISITOS DE PRUEBA
 
-**Justificación:** esta tarea materializa sobre las 332 identidades documentales controles ya aprobados y registrados para autorización previa a cualquier exposición, enlaces temporales no adivinables, prohibición de URL persistente como bypass, necesidad de finalidad/clasificación/recurso/acción, revalidación de contexto, minimización de URLs y metadatos y trazabilidad de accesos sensibles. No fija un umbral temporal numérico nuevo ni introduce una excepción de autorización; la política corporativa definitiva permanece en su tarea propietaria. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0. El registro canónico vigente permanece sin cambios.
+**Justificación:** esta tarea materializa sobre las 332 identidades documentales controles ya aprobados por `NFR-REQ-005`, `NFR-REQ-006` y los contratos EVID precedentes para autorización previa a cualquier exposición, enlaces temporales no adivinables, prohibición de URL persistente como bypass, necesidad de finalidad/clasificación/recurso/acción, revalidación de contexto, minimización de URLs y metadatos y trazabilidad de accesos sensibles. No fija un umbral temporal numérico nuevo ni introduce una excepción de autorización; la política corporativa definitiva permanece en su tarea propietaria. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0; el registro de requisitos no recibe cambios derivados de esta tarea.
 
 ---
 
@@ -4678,7 +4674,714 @@ No se modifica ninguna propietaria funcional ni clasificación de sensibilidad h
 La aprobación de `EVID-ARC-009` no inicia, desarrolla ni aprueba `EVID-ARC-010`.
 
 
-### [ ] EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage
+### ✅ EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage
+
+**Estado:** APROBADA
+**Tarea anterior:** `EVID-ARC-009 — Definir conservación legal y eliminación` — APROBADA
+**Tarea siguiente:** `NOTIFY-ARC-001 — Inventariar notificaciones actuales y canales` — RESERVADA
+**Tipo de tarea:** documental; contrato transversal de contingencia documental y evidencial ante disponibilidad parcial o indisponibilidad de Storage
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`
+**Procesos cubiertos:** 69 (`VPROC-0001` a `VPROC-0069`)
+**Entradas documentales/artefactos cubiertas:** 332 (`DOCCTX-*`)
+**Perfil de contingencia materializado:** `EVID_STORAGE_CONTINGENCY_V1`
+**Cambios físicos autorizados:** ninguno; no crea buckets, objetos, políticas RLS, migraciones, Edge Functions, jobs, backups, failover, rutas alternativas, despliegues ni cambios en Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar sobre las 332 identidades documentales un contrato único para detectar indisponibilidad o degradación de Storage, fallar de forma segura cuando el objeto exacto no pueda resolverse, conservar intenciones pendientes solo donde el contrato offline lo permite, recuperar con reintentos idempotentes y reconciliar antes de reabrir el servicio ordinario, sin convertir archivos locales, cachés o almacenes alternos en fuente de verdad y sin eludir autorización, validación, auditoría, retención, hold o disposición.
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+Esta tarea cierra la arquitectura documental de evidencia de E4 para el escenario en que Storage esté parcialmente disponible, degradado, indisponible o en recuperación. El resultado no es un runbook de infraestructura ni una selección de proveedor: es el comportamiento canónico que deben respetar las 332 identidades mientras el objeto físico no pueda consultarse, persistirse, verificarse o disponerse con certeza.
+
+El contrato fija cinco invariantes:
+
+1. **Storage se diagnostica como dependencia separada.** La disponibilidad de Auth, base de datos, red, funciones u otros componentes no permite inferir que Storage esté disponible.
+2. **La indisponibilidad no crea otra fuente de verdad.** Un archivo local, caché, correo, Drive, dispositivo, carpeta temporal, bucket alterno o copia manual no adquiere autoridad empresarial por contingencia.
+3. **Lo pendiente no se presenta como confirmado.** Captura local, transferencia iniciada, reintento, acuse técnico o metadata persistida no equivalen a objeto disponible, validado, vinculado, publicado, eliminado ni reconciliado.
+4. **La recuperación no se declara por respuesta técnica aislada.** Antes de reanudar operación ordinaria se reconcilian objeto, versión, metadatos, autorización, integridad, validación, auditoría, hold y disposición aplicables.
+5. **El fallo permanece cerrado.** Ambigüedad, ausencia de objeto, duplicidad, versión incierta, respuesta desconocida o restauración incompleta bloquean el efecto sensible hasta reconciliación verificable.
+
+---
+
+#### 2. Fuentes canónicas y handoff consumidos
+
+- `EVID-ARC-001` a `EVID-ARC-009`: inventario, propiedad, sensibilidad, metadatos, versiones, validación, acceso temporal, auditoría y disposición de las 332 identidades.
+- `EVID-ARC-009`: entrega política versionada o `RET_UNRESOLVED`, hold prevalente, elegibilidad explícita, manifiesto de disposición, ejecución idempotente, evidencia mínima y protección contra resurrección.
+- `NFR-REQ-004`: clases offline, captura local controlada, idempotencia, estados pendientes, conflictos y reconciliación.
+- `NFR-REQ-005`: minimización y protección de persistencia local según sensibilidad.
+- `NFR-REQ-006`: trazabilidad, retención, hold, disposición, copias, derivados, backups y no resurrección.
+- `NFR-REQ-009`: observabilidad diferenciada de dependencias, incluido Storage, y cierre de incidentes solo tras recuperación verificada.
+- `NFR-REQ-010`: recuperación coherente de archivos, referencias, metadatos, permisos, retención, hold y backlog.
+
+El handoff recibido de `EVID-ARC-009` no autoriza cambiar identidad documental, propietaria, sensibilidad, clase de retención, política de acceso, controles de validación, historial ni decisión de disposición.
+
+---
+
+#### 3. Alcance y propietarios reservados
+
+`EVID-ARC-010` define exclusivamente el contrato documental de contingencia. Las responsabilidades siguientes conservan propietario exacto:
+
+| Responsabilidad reservada                                                                 | Tarea propietaria                                       |
+| ----------------------------------------------------------------------------------------- | ------------------------------------------------------- |
+| arquitectura de Storage                                                                   | `SUPA-ARC-018`                                          |
+| retención, archivado, respaldo y recuperación dentro de la arquitectura Supabase          | `SUPA-ARC-022`                                          |
+| mapa de dependencias, recursos críticos, single points of failure y sustitutos            | `CONT-DOM-003`                                          |
+| MTPD, RTO, RPO, MBCO, prioridades y criterios de aceptación de riesgo                     | `CONT-DOM-004`                                          |
+| taxonomía, severidad, declaración, activación, escalamiento, desactivación y cierre       | `CONT-DOM-005`                                          |
+| mando, sustitución, bitácora de decisiones, comunicación de crisis y coordinación externa | `CONT-DOM-006`                                          |
+| operación mínima viable por proceso, sede, horario, temporada y duración                  | `CONT-DOM-007`                                          |
+| estrategias de contingencia y alternativas manuales, offline, físicas y de proveedor      | `CONT-DOM-008`                                          |
+| registro, folios, evidencia, custodia y trabajo ejecutado durante la falla                | `CONT-DOM-009`                                          |
+| reincorporación, idempotencia, conflictos, conciliación y confirmación de pendientes      | `CONT-DOM-010`                                          |
+| inventario, política, frecuencia, retención, seguridad y cobertura de respaldos           | `CONT-DOM-011`                                          |
+| runbooks, orden de recuperación, restauración, failover, retorno y validación funcional   | `CONT-DOM-012`                                          |
+| continuidad de proveedores, energía, red, pagos, transporte, canales y recursos alternos  | `CONT-DOM-013`                                          |
+| walkthroughs, tabletops, simulaciones, restauraciones y ejercicios operativos             | `CONT-DOM-014`                                          |
+| revisión posterior, lecciones, acciones, eficacia y actualización periódica del plan      | `CONT-DOM-015`                                          |
+| tablas y fundamentos definitivos de retención, hold y disposición                         | `INFO-DOM-006`                                          |
+| autenticidad, integridad, procedencia, preservación y cadena de custodia                  | `INFO-DOM-007`                                          |
+| habilitación de implementación física del carril                                          | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+
+Esta tarea no fija RTO/RPO, topología de failover, proveedor de almacenamiento, sincronizador, mecanismo de backup, intervalos de sondeo ni credenciales de emergencia.
+
+---
+
+#### 4. Perfil canónico `EVID_STORAGE_CONTINGENCY_V1`
+
+Toda identidad `DOCCTX-*` recibe el mismo perfil base. La clasificación, propietaria, frontera y políticas heredadas pueden endurecerlo, pero nunca reducirlo.
+
+| Código                         | Regla materializada                                                                                                                                                                                                                                       |
+| ------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `STORAGE_DEPENDENCY_EXPLICIT`  | La salud de Storage se resuelve separadamente de otras dependencias; un componente sano no enmascara la falla del objeto físico.                                                                                                                          |
+| `FAIL_CLOSED_OBJECT_ACCESS`    | Si el objeto y versión exactos no pueden resolverse y servirse bajo autorización vigente, el contenido no se expone.                                                                                                                                      |
+| `PENDING_IDEMPOTENT_RETRY`     | Una carga, sustitución o efecto pendiente conserva identidad e idempotencia y no se reintenta a ciegas. El código no habilita persistencia offline por sí solo: aplica únicamente cuando `NFR-REQ-004` y la sensibilidad permiten conservar la intención. |
+| `NO_ALTERNATE_SOURCE_OF_TRUTH` | Capturas o copias de contingencia permanecen no autoritativas hasta reconciliación contra el registro empresarial y el objeto gobernado.                                                                                                                  |
+| `NO_FALSE_DISPOSITION`         | Ausencia o falla de Storage nunca convierte una eliminación pendiente en disposición completada ni permite emitir evidencia final falsa.                                                                                                                  |
+| `RECONCILE_BEFORE_RESUME`      | Recuperar respuesta técnica no basta; las dependencias documentales se reconcilian antes de reabrir efectos ordinarios.                                                                                                                                   |
+| `AUDIT_CONTINGENCY`            | Detección, cambio de modo, bloqueo, reintento, recuperación y decisión de reconciliación producen hechos auditables sin copiar contenido protegido.                                                                                                       |
+
+---
+
+#### 5. Estados de contingencia
+
+```text
+STORAGE_NORMAL
+    -> STORAGE_DEGRADED | STORAGE_UNAVAILABLE
+    -> STORAGE_RECOVERY_RECONCILIATION
+    -> STORAGE_NORMAL
+```
+
+Cuando persista cualquier incertidumbre:
+
+```text
+STORAGE_RECOVERY_RECONCILIATION
+    -> STORAGE_RECOVERY_BLOCKED
+    -> STORAGE_DEGRADED | STORAGE_UNAVAILABLE
+```
+
+| Estado                            | Semántica                                                                                                                                                  |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `STORAGE_NORMAL`                  | La dependencia está disponible y el objeto puede someterse a los controles ordinarios. No implica que un documento concreto sea válido o accesible.        |
+| `STORAGE_DEGRADED`                | Storage responde parcialmente o con capacidad insuficiente; solo continúan capacidades que no dependan de la función degradada y cuyo contrato lo permita. |
+| `STORAGE_UNAVAILABLE`             | El objeto no puede consultarse o persistirse con certeza; las operaciones dependientes quedan bloqueadas o pendientes conforme al contrato offline.        |
+| `STORAGE_RECOVERY_RECONCILIATION` | La dependencia vuelve a responder, pero aún se verifican objetos, versiones, pendientes y efectos antes de normalizar.                                     |
+| `STORAGE_RECOVERY_BLOCKED`        | Existe ausencia, duplicidad, versión incierta, conflicto, hold, disposición, validación incompleta u otra divergencia que impide cerrar recuperación.      |
+
+El estado se refiere a la capacidad de Storage, no sustituye los estados empresariales o documentales de cada identidad.
+
+---
+
+#### 6. Comportamiento por operación
+
+##### 6.1. Consulta y exposición
+
+1. Una lectura que requiere el objeto exacto falla cerrada cuando Storage no permite resolverlo.
+2. No se emite una nueva capacidad temporal de acceso si el servidor no puede resolver documento, versión, objeto, autorización y estado aplicables.
+3. Una URL previamente emitida no se transforma en fuente de verdad ni en permiso persistente por la indisponibilidad.
+4. Metadatos o proyecciones que permanezcan disponibles conservan su autorización propia; la falla del objeto no amplía campos, finalidad ni audiencia.
+5. La interfaz o consumidor debe distinguir `contenido no disponible` de `contenido inexistente` o `sin permiso` sin filtrar información protegida.
+
+##### 6.2. Carga y sustitución
+
+1. La captura local solo puede existir cuando `NFR-REQ-004` y la sensibilidad permiten ese modo.
+2. El contenido local no se marca `AVAILABLE`, `PUBLISHED`, validado, vigente ni enlazado de forma final antes de persistencia y verificación remotas.
+3. El pendiente conserva al menos identidad documental, versión pretendida, `DOCCTX-*`, proceso/recurso, actor o sistema, contexto, correlación, clave de idempotencia, timestamps, expiración y referencias de política aplicables; el fingerprint se conserva cuando ya fue calculado de forma confiable.
+4. Una respuesta perdida queda con resultado desconocido hasta consultar evidencia idempotente, recibo o estado autoritativo; no se crea una segunda intención para forzar progreso.
+5. Un reintento vencido, no autorizado o incompatible con la versión actual se bloquea y se reconcilia; no se ejecuta por precedencia temporal.
+
+##### 6.3. Validación de archivo
+
+1. La indisponibilidad no permite saltar tipo, tamaño, integridad o malware.
+2. Una validación que depende del objeto físico permanece pendiente mientras no pueda leer el objeto exacto.
+3. Un hash o metadato local aislado no demuestra que el objeto remoto corresponda a la misma versión.
+4. Al recuperar Storage se vuelve a comprobar el objeto materializado contra reserva, metadata, fingerprint y vínculo antes de disponibilidad ordinaria.
+
+##### 6.4. Anulación, retención, hold y disposición
+
+1. Anular un documento sigue siendo un hecho empresarial distinto de borrar el objeto.
+2. `HOLD_ACTIVE` prevalece aunque Storage esté degradado o indisponible; la contingencia nunca libera un hold ni amplía acceso.
+3. `RET_UNRESOLVED` continúa bloqueando disposición automática.
+4. Si una disposición ya elegible no puede ejecutar el tratamiento físico por indisponibilidad, queda `DISPOSITION_BLOCKED_STORAGE`; no se marca completa y no se emite certificado final.
+5. `DISPOSITION_FAILED` se usa solo cuando hubo un intento de ejecución y este falló; la mera indisponibilidad previa no inventa un intento.
+6. Al recuperar o restaurar Storage se reaplican holds, disposiciones, tombstones y decisiones posteriores al punto restaurado antes de abrir acceso, evitando resurrección.
+
+---
+
+#### 7. Sobre mínimo de una intención pendiente
+
+Cuando el contrato offline permita conservar una intención de carga o sustitución, el sobre mínimo es:
+
+```text
+pending_intent_id
+idempotency_key
+document_id
+document_version
+document_context_id
+process_id
+process_instance_id
+resource_ref
+actor_or_system_ref
+principal_ref
+context_ref
+device_ref
+requested_action
+requested_at
+expires_at
+policy_refs[]
+classification
+local_payload_state
+remote_object_state
+validation_state
+correlation_id
+causation_id
+fingerprint_algorithm_id?
+content_fingerprint?
+last_attempt_at?
+last_result
+reason_code?
+```
+
+Reglas del sobre:
+
+- no contiene una autorización perpetua; la autoridad se revalida al ejecutar;
+- no presupone que `document_version` ya quedó materializada en Storage;
+- no permite reutilizar `idempotency_key` para otra intención;
+- no transforma `local_payload_state` en estado empresarial;
+- debe poder expirar o quedar bloqueado sin eliminar silenciosamente el payload cuando exista obligación de custodia o reconciliación;
+- para `S3_RESTRICTED` y `S4_HIGHLY_RESTRICTED`, la persistencia local sigue las restricciones de `NFR-REQ-005`; la contingencia no crea excepción.
+
+---
+
+#### 8. Gate de recuperación y reconciliación
+
+Antes de volver de `STORAGE_RECOVERY_RECONCILIATION` a `STORAGE_NORMAL` para una capacidad documental afectada, se ejecuta lógicamente el siguiente gate:
+
+```text
+STORAGE_HEALTH_RECHECK
+-> SESSION_ACTOR_CONTEXT_RECHECK
+-> AUTHORIZATION_AND_POLICY_RECHECK
+-> PENDING_INTENT_AND_RECEIPT_RECONCILIATION
+-> OBJECT_EXISTENCE_AND_EXACT_VERSION_RECHECK
+-> METADATA_AND_RESOURCE_LINK_RECHECK
+-> FINGERPRINT_INTEGRITY_RECHECK
+-> FILE_VALIDATION_STATUS_RECHECK
+-> HOLD_AND_DISPOSITION_RECHECK
+-> AUDIT_CORRELATION_RECHECK
+-> CAPABILITY_RESUME
+```
+
+Resultados:
+
+| Resultado                   | Efecto                                                                                                                |
+| --------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `RECONCILED`                | La identidad puede volver al flujo ordinario si los demás controles permiten la acción.                               |
+| `RECONCILIATION_REQUIRED`   | Falta evidencia suficiente o existe divergencia; la identidad permanece bloqueada para el efecto afectado.            |
+| `DUPLICATE_DETECTED`        | Se conserva evidencia de ambas materializaciones y se resuelve por identidad/idempotencia; no se usa last-write-wins. |
+| `OBJECT_MISSING`            | La referencia no se trata como recuperada; se activa investigación/reconciliación según propietario.                  |
+| `ORPHAN_OBJECT`             | El objeto no se adopta automáticamente como registro empresarial; requiere reconciliación.                            |
+| `VERSION_CONFLICT`          | No se sobrescribe ninguna versión para ocultar el conflicto.                                                          |
+| `AUTHORIZATION_EXPIRED`     | El pendiente no se ejecuta; requiere nueva autoridad conforme al flujo ordinario.                                     |
+| `HOLD_OR_DISPOSITION_BLOCK` | Se preserva el estado más restrictivo y no se reabre acceso o eliminación incompatible.                               |
+
+La reconciliación nunca repara silenciosamente historia, hash, propietario, sensibilidad, hold, disposición o versión.
+
+---
+
+#### 9. Auditoría, seguridad y observabilidad
+
+`EVID_AUDIT_TRAIL_V1` continúa aplicando durante la contingencia. Deben ser auditables, cuando ocurran:
+
+- detección o cambio de estado de Storage;
+- entrada y salida de modo degradado;
+- intento de lectura bloqueado por indisponibilidad;
+- creación, expiración, reintento o rechazo de una intención pendiente;
+- resultado desconocido y su resolución;
+- inicio de recuperación y reconciliación;
+- detección de objeto faltante, huérfano, duplicado o conflicto de versión;
+- bloqueo por hold, disposición o autorización;
+- decisión de reanudar o mantener bloqueada una capacidad.
+
+La auditoría conserva actor o sistema, finalidad, acción, documento/versión, proceso/recurso, decisión, resultado, motivo y correlación aplicables, pero no copia el archivo ni secretos dentro del evento de auditoría.
+
+La observabilidad de Storage debe permanecer separada de la disponibilidad de las demás dependencias. Recuperar parcialmente Storage no habilita una capacidad que también dependa de otro componente todavía no disponible.
+
+---
+
+#### 10. Matriz materializada de contingencia para las 332 identidades
+
+Códigos aplicados:
+
+| Código                        | Significado                                                                                         |
+| ----------------------------- | --------------------------------------------------------------------------------------------------- |
+| `EVID_STORAGE_CONTINGENCY_V1` | Perfil completo de esta tarea.                                                                      |
+| `FAIL_CLOSED_OBJECT_ACCESS`   | El objeto exacto no se expone cuando Storage no puede servirlo con certeza.                         |
+| `PENDING_IDEMPOTENT_RETRY`    | La escritura pendiente conserva identidad e idempotencia y exige revalidación.                      |
+| `NO_FALSE_DISPOSITION`        | Una falla de Storage no puede producir disposición o certificado falsamente exitosos.               |
+| `RECONCILE_BEFORE_RESUME`     | La identidad se reconcilia antes de reabrir el efecto afectado.                                     |
+| `AUDIT_CONTINGENCY`           | Los hechos de contingencia y reconciliación quedan auditables.                                      |
+| `RET_UNRESOLVED`              | La política definitiva sigue sin plazo jurídico inventado; su propietario permanece `INFO-DOM-006`. |
+| `NINGUNO`                     | No existe frontera heredada adicional para la identidad.                                            |
+| `FRONTERA_OBLIGATORIA`        | La referencia cruzada no absorbe autoridad ni propiedad ajena.                                      |
+| `APLICACION_DIFERIDA`         | La definición documental es válida, pero no acredita disponibilidad de la aplicación propietaria.   |
+
+| ID contextual          | Proceso      | Perfil                        | Retención base       | Política         | Lectura objeto              | Carga/sustitución          | Disposición            | Recuperación              | Auditoría           | Estado         | Bloqueo / frontera heredada |
+| ---------------------- | ------------ | ----------------------------- | -------------------- | ---------------- | --------------------------- | -------------------------- | ---------------------- | ------------------------- | ------------------- | -------------- | --------------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `APLICACION_DIFERIDA`       |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `NINGUNO`                   |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `EVID_STORAGE_CONTINGENCY_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `FAIL_CLOSED_OBJECT_ACCESS` | `PENDING_IDEMPOTENT_RETRY` | `NO_FALSE_DISPOSITION` | `RECONCILE_BEFORE_RESUME` | `AUDIT_CONTINGENCY` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA`      |
+
+---
+
+#### 11. Reconciliación cuantitativa
+
+Cobertura de identidades:
+
+| Control                                       | Resultado |
+| --------------------------------------------- | --------: |
+| Procesos esperados                            |        69 |
+| Procesos materializados                       |        69 |
+| Identidades `DOCCTX-*` esperadas              |       332 |
+| Identidades materializadas                    |       332 |
+| Identificadores `DOCCTX-*` únicos             |       332 |
+| Identidades con `EVID_STORAGE_CONTINGENCY_V1` |       332 |
+| Identidades con `FAIL_CLOSED_OBJECT_ACCESS`   |       332 |
+| Identidades con `PENDING_IDEMPOTENT_RETRY`    |       332 |
+| Identidades con `NO_FALSE_DISPOSITION`        |       332 |
+| Identidades con `RECONCILE_BEFORE_RESUME`     |       332 |
+| Identidades con `AUDIT_CONTINGENCY`           |       332 |
+| Identidades con `RET_UNRESOLVED` preservado   |       332 |
+| Faltantes                                     |         0 |
+| Duplicados                                    |         0 |
+
+Clases de retención heredadas preservadas:
+
+| Clase                | Entradas |
+| -------------------- | -------: |
+| `RET_ACTIVE_CASE`    |       33 |
+| `RET_BUSINESS_CYCLE` |      184 |
+| `RET_RELATIONSHIP`   |       36 |
+| `RET_OBLIGATION`     |       66 |
+| `RET_ARCHIVAL`       |       13 |
+| **Total**            |  **332** |
+
+Fronteras heredadas preservadas:
+
+| Frontera               | Entradas |
+| ---------------------- | -------: |
+| `NINGUNO`              |       73 |
+| `FRONTERA_OBLIGATORIA` |      245 |
+| `APLICACION_DIFERIDA`  |       14 |
+| **Total**              |  **332** |
+
+No se modifica ninguna propietaria funcional, sensibilidad, identidad, versión, clase de retención, frontera, regla de validación, acceso temporal, historia de auditoría, hold ni disposición aprobados en tareas anteriores.
+
+---
+
+#### 12. Cobertura verificable heredada
+
+`EVID_STORAGE_CONTINGENCY_V1` no crea una capa nueva de reglas. Especializa para las 332 identidades obligaciones ya aprobadas en sus contratos propietarios:
+
+- `NFR-REQ-004`: operación degradada/offline, estados pendientes, idempotencia, revalidación y reconciliación segura;
+- `NFR-REQ-005`: sensibilidad, minimización y restricciones sobre persistencia o exposición local;
+- `NFR-REQ-006`: trazabilidad, retención, hold, disposición, historia no destructiva y protección contra resurrección;
+- `NFR-REQ-009`: observabilidad por dependencia, backlog, alertas y cierre sustentado por recuperación verificable;
+- `NFR-REQ-010`: respaldo, recuperación coherente y validación de restauración;
+- `EVID-ARC-005` a `EVID-ARC-009`: ciclo documental, validación, acceso temporal, auditoría, conservación legal y eliminación que la contingencia debe preservar.
+
+Esta tarea no reproduce ni infiere identificadores `TREQ-*`; la sección de requisitos derivados determina únicamente si `EVID-ARC-010` crea o modifica comportamiento verificable respecto de esos contratos.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el perfil materializa sobre las 332 identidades documentales comportamientos de disponibilidad parcial, captura pendiente condicionada, idempotencia, fallo cerrado, observabilidad, retención, hold, disposición, recuperación y reconciliación ya definidos por `NFR-REQ-004`, `NFR-REQ-005`, `NFR-REQ-006`, `NFR-REQ-009`, `NFR-REQ-010` y `EVID-ARC-005` a `EVID-ARC-009`. No introduce una conducta ejecutable nueva ni modifica una existente; por ello genera 0 requisitos nuevos y modifica 0.
+
+---
+
+#### 13. Criterios de aceptación
+
+- [x] `EVID-ARC-009` figura aprobada y entrega 332 identidades `DOCCTX-*` para 69 procesos.
+- [x] las 332 identidades aparecen exactamente una vez en la matriz y conservan sus identificadores estables.
+- [x] las 332 identidades reciben `EVID_STORAGE_CONTINGENCY_V1`, lectura cerrada, regla de pendiente idempotente condicionada por elegibilidad offline, disposición sin falso éxito, reconciliación antes de reanudar y auditoría de contingencia.
+- [x] Storage se diagnostica como dependencia separada y una recuperación parcial no habilita capacidades que dependan de componentes aún indisponibles.
+- [x] ningún archivo local, caché, correo, Drive, bucket alterno o copia manual se convierte en fuente de verdad por contingencia.
+- [x] una captura o carga pendiente nunca se presenta como objeto disponible, validado, publicado o confirmado antes de reconciliación.
+- [x] una respuesta desconocida no se resuelve mediante reintento ciego ni creando una segunda intención.
+- [x] tipo, tamaño, integridad y malware no se omiten durante degradación o recuperación.
+- [x] una indisponibilidad de Storage no produce eliminación, disposición o certificado falsamente exitosos.
+- [x] `HOLD_ACTIVE` y `RET_UNRESOLVED` conservan sus bloqueos y no son debilitados por la contingencia.
+- [x] una restauración o retorno técnico reaplica holds, disposiciones, revocaciones y protección contra resurrección antes de abrir acceso.
+- [x] objetos faltantes, huérfanos, duplicados o con conflicto de versión quedan sujetos a reconciliación explícita y no a reparación silenciosa.
+- [x] las distribuciones heredadas de retención y fronteras suman exactamente 332 y permanecen sin cambios.
+- [x] no se inventan RTO/RPO, proveedor, topología de failover, mecanismo de backup, runbook, bucket alterno ni resultados operativos.
+- [x] no se crean buckets, objetos, tablas, políticas RLS, funciones, migraciones, jobs, backups, despliegues ni cambios en Supabase.
+- [x] la tarea genera cero cambios en requisitos de prueba y no requiere una copia del registro canónico.
+- [x] `NOTIFY-ARC-001` permanece reservada y no iniciada.
+
+---
+
+#### 14. Handoff cerrado hacia NOTIFY-ARC-001
+
+`EVID-ARC-010` cierra la serie EVID con 332 identidades documentales cubiertas por contingencia de Storage: dependencia explícita, fallo cerrado de lectura, escritura pendiente idempotente, ausencia de fuente alternativa autoritativa, disposición sin falso éxito, reconciliación antes de reanudar, auditoría y protección contra resurrección.
+
+`NOTIFY-ARC-001` recibe la continuidad del carril exclusivamente para inventariar las notificaciones actuales y sus canales conforme a su alcance canónico. No recibe autorización para alterar los contratos EVID. Los eventos empresariales originadores, destinatarios, prioridad, preferencias, confirmación, reintentos, privacidad y métricas de entrega permanecen reservados para `NOTIFY-ARC-002` a `NOTIFY-ARC-010`.
+
+La aprobación de `EVID-ARC-010` no inicia, desarrolla ni aprueba `NOTIFY-ARC-001`.
+
 
 Los pilotos operativos reales no se ejecutan durante E4.
 
