@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **603** |
+| Aprobadas | **604** |
 | En propuesta | **0** |
-| No iniciadas | **991** |
+| No iniciadas | **990** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **37.83% (603/1594)** |
+| Porcentaje de completamiento | **37.89% (604/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `EVID-ARC-005` — Definir carga, sustitución, anulación y retención | ✅ APROBADA |
-| Tarea actual | `EVID-ARC-006` — Definir validación de tipo, tamaño, integridad y malware | ⬜ NO INICIADA |
-| Siguiente reservada | `EVID-ARC-007` — Definir acceso temporal y URLs firmadas | ⬜ NO INICIADA |
+| Última aprobada | `EVID-ARC-006` — Definir validación de tipo, tamaño, integridad y malware | ✅ APROBADA |
+| Tarea actual | `EVID-ARC-007` — Definir acceso temporal y URLs firmadas | ⬜ NO INICIADA |
+| Siguiente reservada | `EVID-ARC-008` — Definir auditoría de consulta y modificación | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -523,7 +523,7 @@
 | ✅ APROBADA | `EVID-ARC-003` | Definir clasificación de sensibilidad | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ✅ APROBADA | `EVID-ARC-004` | Definir metadatos, versión y vínculo con el recurso | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ✅ APROBADA | `EVID-ARC-005` | Definir carga, sustitución, anulación y retención | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
-| ⬜ NO INICIADA | `EVID-ARC-006` | Definir validación de tipo, tamaño, integridad y malware | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
+| ✅ APROBADA | `EVID-ARC-006` | Definir validación de tipo, tamaño, integridad y malware | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-007` | Definir acceso temporal y URLs firmadas | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-008` | Definir auditoría de consulta y modificación | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-009` | Definir conservación legal y eliminación | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |

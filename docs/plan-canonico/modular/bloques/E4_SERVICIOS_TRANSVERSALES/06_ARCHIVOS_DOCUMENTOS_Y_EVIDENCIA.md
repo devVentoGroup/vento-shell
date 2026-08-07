@@ -2162,7 +2162,646 @@ No existe un pendiente narrativo sin propietario. `RET_POLICY_PENDING` tiene pro
 La aprobación de `EVID-ARC-005` no inicia, desarrolla ni aprueba `EVID-ARC-006`.
 
 
-### [ ] EVID-ARC-006 — Definir validación de tipo, tamaño, integridad y malware
+### ✅ EVID-ARC-006 — Definir validación de tipo, tamaño, integridad y malware
+
+**Estado:** APROBADA
+**Tarea anterior:** `EVID-ARC-005 — Definir carga, sustitución, anulación y retención` — APROBADA
+**Tarea siguiente:** `EVID-ARC-007 — Definir acceso temporal y URLs firmadas` — RESERVADA
+**Tipo de tarea:** documental; materialización del gate técnico de validación para cargas y sustituciones documentales
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`
+**Procesos cubiertos:** 69 (`VPROC-0001` a `VPROC-0069`)
+**Entradas documentales/artefactos cubiertas:** 332 (`DOCCTX-*`)
+**Perfil de validación materializado:** `EVID_FILE_VALIDATION_V1`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica buckets, objetos de Storage, tablas, políticas, RLS, migraciones, funciones, jobs, scanners, URLs, secretos, APIs ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir y materializar, para las 332 identidades documentales heredadas, el gate que debe superar cualquier payload de archivo asociado a una carga o sustitución antes de quedar técnicamente habilitado para activación: política de tipo resoluble, límite de tamaño versionado, verificación de integridad del contenido y resultado de malware limpio. La validación técnica no equivale a vigencia empresarial, publicación, autorización de lectura ni aprobación del contenido.
+
+---
+
+#### 1. Resultado sustantivo
+
+La tarea materializa dos artefactos lógicos dentro de este mismo bloque:
+
+- `EVID-FILE-VALIDATION-CONTRACT-001`: contrato transversal de validación de payloads de archivo;
+- `EVID-FILE-VALIDATION-MATRIX-001`: decisión explícita para las 332 identidades `DOCCTX-*` heredadas.
+
+El contrato se aplica cuando una instancia documental materializa un payload de archivo u objeto binario. Una identidad `DOCCTX-*` que se resuelva únicamente mediante un registro estructurado no obliga a fabricar un archivo para satisfacer esta tarea; si posteriormente incorpora un adjunto, representación, exportación, evidencia o derivado binario, ese payload queda sujeto al mismo gate.
+
+La tarea no cambia `document_id`, `document_version`, propietaria funcional, sensibilidad mínima, vínculo con proceso/recurso, historia no destructiva, anulación ni retención definidas entre `EVID-ARC-002` y `EVID-ARC-005`.
+
+---
+
+#### 2. Fuentes canónicas consumidas
+
+- `EVID-ARC-001`: universo documental/evidencial de 69 procesos y 332 entradas contextualizadas.
+- `EVID-ARC-002`: propietaria funcional inequívoca por contexto documental.
+- `EVID-ARC-003`: sensibilidad mínima y reglas de herencia/elevación.
+- `EVID-ARC-004`: identidad lógica, versión documental, metadatos mínimos y vínculo resoluble con proceso/recurso.
+- `EVID-ARC-005`: `LOAD_V1`, `SUBSTITUTE_V1`, historia no destructiva, anulación y retención; una carga candidata no adquiere vigencia por recepción técnica.
+- `NFR-REQ-005`: protección por defecto, propagación de sensibilidad y prohibición de exposición indirecta por archivos, nombres, URLs, previews o metadatos.
+- `NFR-REQ-006`: evidencia con hash/referencia de integridad, procedencia, versión e historia reconstruible; validación física de archivos y malware delegada a la familia EVID.
+- Arquitectura Storage aprobada en E3: reserva server-side, política versionada de bucket, allowlist MIME, límite, verificación previa a disponibilidad, fingerprint y cuarentena.
+- Registro Canónico de Requisitos de Prueba vigente: los comportamientos de tipo, tamaño, verificación, integridad y cuarentena/malware que esta tarea materializa ya están protegidos; no se duplican requisitos.
+
+---
+
+#### 3. Contrato `EVID-FILE-VALIDATION-CONTRACT-001`
+
+##### 3.1. Gate completo
+
+El ciclo de una carga o sustitución con payload de archivo queda definido así:
+
+```text
+CANDIDATE_RESERVED
+        ↓
+PAYLOAD_RECEIVED_PRIVATE
+        ↓
+TYPE_CHECK
+        ↓
+SIZE_CHECK
+        ↓
+INTEGRITY_CHECK
+        ↓
+MALWARE_CHECK
+        ↓
+VALIDATED_FOR_ACTIVATION
+```
+
+Cualquier incumplimiento o imposibilidad de verificar produce un resultado explícito y fail closed:
+
+```text
+VALIDATION_PENDING
+FAILED
+QUARANTINED
+VALIDATED_FOR_ACTIVATION
+```
+
+Solo `VALIDATED_FOR_ACTIVATION` permite que `EVID-ARC-005` continúe con la decisión de vigencia o sustitución. Ninguno de estos estados concede acceso, publicación, aprobación empresarial ni autoridad sobre el recurso.
+
+##### 3.2. Sobre mínimo de validación
+
+Toda ejecución del gate deberá poder resolver y conservar, como mínimo:
+
+```text
+document_id
+document_version
+document_context_id
+validation_policy_id
+validation_policy_version
+declared_mime
+detected_mime
+file_extension_or_format_hint
+actual_bytes
+max_bytes
+content_fingerprint
+fingerprint_algorithm_id
+integrity_result
+malware_result
+scanner_or_control_id
+scanner_rule_version
+validated_at
+validation_status
+reason_code
+```
+
+Reglas:
+
+1. Los valores de política se resuelven en servidor desde una versión aprobada; el cliente no decide bucket, allowlist, tamaño máximo, clasificación ni resultado de validación.
+2. Nombre, extensión, MIME declarado, ruta o metadata aportada por cliente son señales; ninguna es autoridad suficiente por sí sola.
+3. El resultado se vincula con la misma identidad/version documental que se está validando. Un resultado limpio no puede reutilizarse para otro payload, versión, ambiente o identidad.
+4. La evidencia técnica del gate deberá minimizar contenido sensible; el payload no se copiará a logs para demostrar validación.
+
+---
+
+#### 4. Validación de tipo y contenido
+
+Para cada payload aplica `ALLOWLIST_VERSIONADA`.
+
+Reglas obligatorias:
+
+1. La política efectiva debe resolver una allowlist de tipos admitidos antes de habilitar la operación.
+2. La comprobación posterior a la recepción compara, cuando apliquen, MIME declarado, MIME detectado desde contenido/firma, extensión o formato y política efectiva.
+3. Una extensión permitida con contenido detectado incompatible no supera el gate.
+4. Un MIME declarado permitido con firma o contenido incompatible no supera el gate.
+5. Un tipo no incluido en la allowlist vigente produce `FAILED`; una discrepancia que indique spoofing, contenido ambiguo o necesidad de análisis produce `QUARANTINED`.
+6. No existe una allowlist universal definida por esta tarea. Los valores concretos pertenecen al contrato Storage/version de política que materialice la representación física; `EVID-ARC-006` no inventa formatos que las fuentes actuales no hayan autorizado.
+7. Cambiar de formato no rebaja sensibilidad, no crea una identidad empresarial nueva por sí solo y no convierte una versión histórica en sustituible destructivamente.
+
+---
+
+#### 5. Validación de tamaño
+
+Para cada payload aplica `MAX_BYTES_VERSIONADO`.
+
+Reglas obligatorias:
+
+1. `max_bytes` debe ser resoluble desde la política versionada antes de autorizar la carga y debe volver a comprobarse sobre el objeto recibido.
+2. El tamaño declarado por el cliente es únicamente preflight; `actual_bytes` del payload recibido gobierna la verificación final.
+3. `actual_bytes > max_bytes` produce `FAILED` y la versión candidata no puede alcanzar `VALIDATED_FOR_ACTIVATION`.
+4. Si no puede resolverse un límite versionado, la operación falla cerrada; ausencia de configuración no significa tamaño ilimitado.
+5. Esta tarea no generaliza límites específicos observados para otros buckets o clases de objeto. En particular, ningún umbral particular de imágenes legacy se convierte por inferencia en límite global de documentos/evidencia.
+
+---
+
+#### 6. Validación de integridad
+
+Para cada payload aplica `FINGERPRINT_REQUIRED`.
+
+Reglas obligatorias:
+
+1. La versión recibida debe conservar un fingerprint del contenido exacto y el identificador del algoritmo o mecanismo con el que fue calculado.
+2. La finalización debe reconciliar identidad/version, reserva, objeto recibido, metadata relevante, fingerprint y vínculo empresarial antes de habilitar la versión.
+3. Una diferencia de fingerprint entre el contenido esperado/registrado y el objeto final produce `QUARANTINED`; nunca se corrige reescribiendo silenciosamente el hash o el historial.
+4. Cambiar bytes implica volver a validar el payload correspondiente; un resultado anterior no certifica contenido diferente.
+5. Integridad técnica no equivale a autenticidad, autorización, aprobación, procedencia jurídica ni cadena de custodia completa. La definición corporativa de autenticidad, hash, timestamp y cadena de custodia permanece en `INFO-DOM-007`.
+6. Una sustitución que falle integridad no invalida ni sobrescribe automáticamente la última versión válida recibida de `EVID-ARC-005`.
+
+---
+
+#### 7. Validación de malware y contenido sospechoso
+
+Para cada payload aplica `CLEAN_REQUIRED`.
+
+El resultado de control se interpreta mediante el siguiente vocabulario mínimo:
+
+| Resultado técnico  | Tratamiento E4                                                                 |
+| ------------------ | ------------------------------------------------------------------------------ |
+| `CLEAN`            | Puede continuar al cierre del gate si tipo, tamaño e integridad también pasan. |
+| `MALICIOUS`        | `QUARANTINED`; bloqueado para consumo ordinario.                               |
+| `SUSPICIOUS`       | `QUARANTINED`; requiere tratamiento controlado, nunca fallback a limpio.       |
+| `SCAN_ERROR`       | `QUARANTINED`; fallo técnico no equivale a ausencia de malware.                |
+| `SCAN_UNAVAILABLE` | `QUARANTINED`; indisponibilidad del control no habilita el archivo.            |
+| `UNVERIFIABLE`     | `QUARANTINED` o `FAILED` según la causa tipada; nunca `CLEAN`.                 |
+
+Reglas:
+
+1. Solo `CLEAN` satisface el componente malware del gate.
+2. Un payload en cuarentena no se publica, previsualiza, indexa, transforma, deriva ni entrega por el flujo ordinario.
+3. El estado de cuarentena conserva identidad, versión, propietaria, sensibilidad, vínculo empresarial y motivo; no transfiere propiedad al scanner ni al servicio Storage.
+4. Un reintento por fallo transitorio solo puede reutilizar la misma identidad de intento cuando el fingerprint del payload permanece idéntico. Si cambian los bytes, se trata como contenido que debe validar nuevamente.
+5. Esta tarea define el resultado observable, no selecciona proveedor o motor de malware ni crea infraestructura física. La materialización técnica deberá respetar los contratos Storage y de seguridad ya aprobados.
+
+---
+
+#### 8. Composición del resultado
+
+La condición necesaria para habilitar una candidata queda congelada así:
+
+```text
+VALIDATED_FOR_ACTIVATION =
+    TYPE_PASS
+    AND SIZE_PASS
+    AND INTEGRITY_PASS
+    AND MALWARE_CLEAN
+```
+
+Consecuencias:
+
+1. Ningún componente puede omitirse por éxito de los otros tres.
+2. `VALIDATED_FOR_ACTIVATION` significa únicamente que el payload superó el gate técnico E4.
+3. La versión no se vuelve automáticamente vigente, aprobada, publicada, descargable ni visible.
+4. La carga o sustitución solo puede completar sus efectos empresariales mediante el ciclo definido en `EVID-ARC-005` y los controles posteriores que correspondan.
+5. Una candidata `FAILED` o `QUARANTINED` no desplaza la versión vigente anterior.
+6. La cuarentena y el fallo deben ser trazables sin exponer el contenido en logs, errores, nombres o URLs.
+
+---
+
+#### 9. Matriz `EVID-FILE-VALIDATION-MATRIX-001`
+
+Códigos utilizados:
+
+| Código                     | Significado                                                                                                                      |
+| -------------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `EVID_FILE_VALIDATION_V1`  | Perfil completo de esta tarea.                                                                                                   |
+| `PAYLOAD_FILE_CONDITIONAL` | El gate se ejecuta cuando la instancia materializa un payload de archivo; no obliga a fabricar uno para registros estructurados. |
+| `ALLOWLIST_VERSIONADA`     | El tipo admitido debe resolverse mediante política versionada y verificarse contra contenido.                                    |
+| `MAX_BYTES_VERSIONADO`     | El máximo permitido debe ser resoluble y verificarse sobre bytes reales.                                                         |
+| `FINGERPRINT_REQUIRED`     | El contenido recibido debe conservar y reconciliar fingerprint/integridad.                                                       |
+| `CLEAN_REQUIRED`           | Solo un resultado de malware limpio permite pasar el componente de seguridad.                                                    |
+| `ESPECIFICADO`             | La decisión documental está completa; no afirma implementación física ni ejecución del gate.                                     |
+
+| ID contextual          | Proceso      | Perfil                    | Ámbito                     | Tipo                   | Tamaño                 | Integridad             | Malware          | Estado         |
+| ---------------------- | ------------ | ------------------------- | -------------------------- | ---------------------- | ---------------------- | ---------------------- | ---------------- | -------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `EVID_FILE_VALIDATION_V1` | `PAYLOAD_FILE_CONDITIONAL` | `ALLOWLIST_VERSIONADA` | `MAX_BYTES_VERSIONADO` | `FINGERPRINT_REQUIRED` | `CLEAN_REQUIRED` | `ESPECIFICADO` |
+
+---
+
+#### 10. Reconciliación cuantitativa
+
+| Control                                         | Resultado |
+| ----------------------------------------------- | --------: |
+| Contextos de proceso esperados                  |        69 |
+| Contextos de proceso materializados             |        69 |
+| Entradas `DOCCTX-*` esperadas                   |       332 |
+| Entradas materializadas                         |       332 |
+| Claves `DOCCTX-*` únicas                        |       332 |
+| Entradas con `EVID_FILE_VALIDATION_V1`          |       332 |
+| Entradas con `ALLOWLIST_VERSIONADA`             |       332 |
+| Entradas con `MAX_BYTES_VERSIONADO`             |       332 |
+| Entradas con `FINGERPRINT_REQUIRED`             |       332 |
+| Entradas con `CLEAN_REQUIRED`                   |       332 |
+| Entradas que inventan un MIME concreto          |         0 |
+| Entradas que inventan un límite global de bytes |         0 |
+| Faltantes                                       |         0 |
+| Duplicados                                      |         0 |
+| Propietarias funcionales modificadas            |         0 |
+| Clasificaciones mínimas modificadas             |         0 |
+| Vínculos empresariales modificados              |         0 |
+| Reglas de retención modificadas                 |         0 |
+
+---
+
+#### 11. Fronteras y decisiones reservadas
+
+| Decisión fuera de esta tarea                                                                         | Tarea propietaria                                      |
+| ---------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Acceso temporal y URLs firmadas, incluida duración y emisión de enlaces                              | `EVID-ARC-007`                                         |
+| Auditoría de consulta y modificación de documentos/evidencia                                         | `EVID-ARC-008`                                         |
+| Conservación legal, disposición, anonimización, eliminación y certificado                            | `EVID-ARC-009`                                         |
+| Contingencia ante indisponibilidad de Storage                                                        | `EVID-ARC-010`                                         |
+| Taxonomía corporativa de documentos, registros, evidencia, originales y copias                       | `INFO-DOM-003`                                         |
+| Metadatos corporativos, almacenamiento, búsqueda y localización                                      | `INFO-DOM-005`                                         |
+| Autenticidad, integridad probatoria, procedencia, hash, timestamp, preservación y cadena de custodia | `INFO-DOM-007`                                         |
+| Materialización física de buckets, políticas, límites, allowlists y controles Storage                | `SUPA-ARC-018` y su paquete de implementación aprobado |
+
+No se deja un valor físico genérico pendiente dentro de `EVID-ARC-006`: MIME y `max_bytes` se resuelven obligatoriamente desde el contrato Storage versionado que gobierne la representación; si esa referencia no es resoluble, el gate falla cerrado.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa sobre las 332 identidades documentales reglas de carga segura ya aprobadas y registradas: política versionada de tipo y tamaño, verificación entre MIME declarado/detectado y extensión, control de límite antes de disponibilidad, reconciliación de fingerprint/integridad, cuarentena de contenido no verificable o sospechoso y exigencia de resultado limpio antes de disponibilidad. No introduce un comportamiento verificable nuevo ni modifica uno existente; crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0. El registro canónico vigente permanece sin cambios.
+
+---
+
+#### 12. Criterios de aceptación
+
+- [x] `EVID-ARC-005` figura aprobada y entrega 332 identidades `DOCCTX-*` para 69 procesos.
+- [x] las 332 identidades aparecen exactamente una vez en la matriz.
+- [x] las 332 identidades reciben el perfil `EVID_FILE_VALIDATION_V1`.
+- [x] el gate aplica a payloads de archivo sin obligar a materializar archivos para registros puramente estructurados.
+- [x] tipo declarado, tipo detectado, extensión/formato y allowlist versionada no se confunden entre sí.
+- [x] nombre, extensión o MIME aportado por cliente no constituyen autoridad suficiente.
+- [x] las 332 identidades exigen límite de tamaño versionado cuando exista payload de archivo.
+- [x] el tamaño real vuelve a comprobarse después de recibir el payload.
+- [x] las 332 identidades exigen fingerprint/integridad para el contenido recibido.
+- [x] un mismatch de integridad no se corrige reescribiendo silenciosamente historial o hash.
+- [x] las 332 identidades exigen resultado malware `CLEAN` para superar el componente de seguridad.
+- [x] malware, sospecha, error de scanner, indisponibilidad o contenido no verificable nunca producen un fallback limpio.
+- [x] solo la conjunción de tipo, tamaño, integridad y malware permite `VALIDATED_FOR_ACTIVATION`.
+- [x] una candidata fallida o en cuarentena no desplaza la versión válida anterior.
+- [x] el resultado técnico no concede vigencia, publicación, descarga, lectura ni aprobación empresarial.
+- [x] no se inventa una allowlist universal, proveedor de scanner, límite global de bytes, bucket, path o URL.
+- [x] propietaria funcional, sensibilidad, identidad, vínculo, historia y retención heredados permanecen sin cambios.
+- [x] las decisiones posteriores tienen tarea propietaria exacta.
+- [x] no se crean buckets, objetos, políticas, RLS, migraciones, jobs, scanners, APIs ni despliegues.
+- [x] la tarea genera cero cambios en requisitos de prueba y no requiere regenerar el registro canónico.
+- [x] `EVID-ARC-007` permanece reservada y no iniciada.
+
+---
+
+#### 13. Handoff cerrado hacia EVID-ARC-007
+
+`EVID-ARC-007` recibe las 332 identidades documentales con un gate de validación explícito para cualquier payload de archivo: tipo permitido mediante política versionada, límite de tamaño resoluble, integridad reconciliada y malware limpio antes de habilitar la candidata. Su única responsabilidad siguiente será definir acceso temporal y URLs firmadas sin reinterpretar `VALIDATED_FOR_ACTIVATION` como autorización, publicación o vigencia empresarial.
+
+La aprobación de `EVID-ARC-006` no inicia, desarrolla ni aprueba `EVID-ARC-007`.
+
+
 ### [ ] EVID-ARC-007 — Definir acceso temporal y URLs firmadas
 ### [ ] EVID-ARC-008 — Definir auditoría de consulta y modificación
 ### [ ] EVID-ARC-009 — Definir conservación legal y eliminación
