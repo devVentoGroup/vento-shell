@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **593** |
+| Tareas aprobadas | **594** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **1001** |
+| Tareas no iniciadas | **1000** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **37.20% (593/1594)** |
+| Porcentaje de completamiento | **37.26% (594/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración** |
-| Tarea actual | **PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles** |
+| Última tarea aprobada | **PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles** |
+| Tarea actual | **PRINT-ARC-017 — Definir operación offline y contingencia manual** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PRINT-ARC-017 — Definir operación offline y contingencia manual** |
+| Siguiente tarea | **PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 17 de 157 aprobadas; PRINT-ARC-016 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 18 de 157 aprobadas; PRINT-ARC-017 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PRINT-ARC-015` — Definir permisos de impresión, reimpresión y administración |
-| Tarea actual | `PRINT-ARC-016` — Definir privacidad y ocultamiento de datos sensibles — **NO INICIADA** |
-| Siguiente tarea | `PRINT-ARC-017` — Definir operación offline y contingencia manual |
+| Última aprobada | `PRINT-ARC-016` — Definir privacidad y ocultamiento de datos sensibles |
+| Tarea actual | `PRINT-ARC-017` — Definir operación offline y contingencia manual — **NO INICIADA** |
+| Siguiente tarea | `PRINT-ARC-018` — Definir adaptadores LAN, USB, Bluetooth o puente local |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 17 DE 157 APROBADAS — ACTUAL PRINT-ARC-016** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 18 DE 157 APROBADAS — ACTUAL PRINT-ARC-017** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PRINT-ARC-015 — Definir permisos de impresión, reimpresión y administración
-        ↓
-TAREA ACTUAL
 PRINT-ARC-016 — Definir privacidad y ocultamiento de datos sensibles
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PRINT-ARC-017 — Definir operación offline y contingencia manual
         ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 17 de 157 tareas aprobadas
+CARRIL NEXO — 18 de 157 tareas aprobadas
 ```

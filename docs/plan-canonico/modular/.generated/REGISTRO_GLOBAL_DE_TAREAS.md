@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **593** |
+| Aprobadas | **594** |
 | En propuesta | **0** |
-| No iniciadas | **1001** |
+| No iniciadas | **1000** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **37.20% (593/1594)** |
+| Porcentaje de completamiento | **37.26% (594/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `PRINT-ARC-015` — Definir permisos de impresión, reimpresión y administración | ✅ APROBADA |
-| Tarea actual | `PRINT-ARC-016` — Definir privacidad y ocultamiento de datos sensibles | ⬜ NO INICIADA |
-| Siguiente reservada | `PRINT-ARC-017` — Definir operación offline y contingencia manual | ⬜ NO INICIADA |
+| Última aprobada | `PRINT-ARC-016` — Definir privacidad y ocultamiento de datos sensibles | ✅ APROBADA |
+| Tarea actual | `PRINT-ARC-017` — Definir operación offline y contingencia manual | ⬜ NO INICIADA |
+| Siguiente reservada | `PRINT-ARC-018` — Definir adaptadores LAN, USB, Bluetooth o puente local | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -503,7 +503,7 @@
 | ✅ APROBADA | `PRINT-ARC-013` | Definir cancelación y expiración | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-014` | Definir reimpresión como acción separada y auditable | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-015` | Definir permisos de impresión, reimpresión y administración | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
-| ⬜ NO INICIADA | `PRINT-ARC-016` | Definir privacidad y ocultamiento de datos sensibles | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
+| ✅ APROBADA | `PRINT-ARC-016` | Definir privacidad y ocultamiento de datos sensibles | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-017` | Definir operación offline y contingencia manual | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-018` | Definir adaptadores LAN, USB, Bluetooth o puente local | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ⬜ NO INICIADA | `PRINT-ARC-019` | Definir monitoreo y diagnóstico por sede | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
