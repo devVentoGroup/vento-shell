@@ -2802,7 +2802,626 @@ No se deja un valor físico genérico pendiente dentro de `EVID-ARC-006`: MIME y
 La aprobación de `EVID-ARC-006` no inicia, desarrolla ni aprueba `EVID-ARC-007`.
 
 
-### [ ] EVID-ARC-007 — Definir acceso temporal y URLs firmadas
+### ✅ EVID-ARC-007 — Definir acceso temporal y URLs firmadas
+
+**Estado:** APROBADA
+**Tarea anterior:** `EVID-ARC-006 — Definir validación de tipo, tamaño, integridad y malware` — APROBADA
+**Tarea siguiente:** `EVID-ARC-008 — Definir auditoría de consulta y modificación` — RESERVADA
+**Tipo de tarea:** documental; contrato transversal de acceso temporal a representaciones documentales y evidencia mediante URLs firmadas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`
+**Procesos cubiertos:** 69 (`VPROC-0001` a `VPROC-0069`)
+**Entradas documentales/artefactos cubiertas:** 332 (`DOCCTX-*`)
+**Perfil de acceso temporal materializado:** `EVID_TEMP_ACCESS_V1`
+**Cambios físicos autorizados:** ninguno; no crea buckets, objetos, políticas, RLS, funciones, migraciones, rutas, claves, URLs reales, jobs, APIs ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar para las 332 identidades documentales un contrato de acceso temporal que exige autorización server-side antes de emitir una URL firmada, vincula la emisión con un documento y versión exactos, impone vigencia finita y reautorización para toda nueva emisión, y evita que la URL se convierta en identidad, permiso, publicación o vínculo persistente.
+
+---
+
+#### 1. Resultado sustantivo
+
+La tarea materializa dos artefactos lógicos dentro de este mismo bloque:
+
+- `EVID-TEMPORARY-ACCESS-CONTRACT-001`: contrato de solicitud, autorización, emisión, expiración y nueva emisión de acceso temporal;
+- `EVID-TEMPORARY-ACCESS-MATRIX-001`: decisión explícita para las 332 identidades `DOCCTX-*` heredadas.
+
+El contrato parte de una regla no negociable: `VALIDATED_FOR_ACTIVATION` de `EVID-ARC-006` solo acredita que la representación candidata superó su gate técnico. No concede lectura, preview, `DOWNLOAD`, publicación, compartición ni otra autoridad empresarial.
+
+---
+
+#### 2. Fuentes canónicas consumidas
+
+- `EVID-ARC-001` a `EVID-ARC-005`: universo de 69 procesos, 332 identidades `DOCCTX-*`, propietaria, sensibilidad, identidad/versionado, vínculo empresarial, historia y retención.
+- `EVID-ARC-006`: gate técnico `EVID_FILE_VALIDATION_V1` y handoff cerrado que prohíbe interpretar la validación como autorización, publicación o vigencia empresarial.
+- `NFR-REQ-005`: finalidad, minimización, necesidad de conocer, protección por defecto, exposición segura, enlaces temporales no adivinables y prohibición de URLs persistentes como vía ordinaria de exposición protegida.
+- `NFR-REQ-006`: obligación de auditar consultas, revelados, `DOWNLOAD`, comparticiones y accesos extraordinarios sin replicar el contenido protegido.
+- Registro Canónico de Requisitos de Prueba vigente: controles ya registrados para URL directa, URL firmada, exposición de archivos, autorización, contexto, temporalidad, minimización y auditoría de acceso.
+- `INFO-AUTH-002`: propietaria posterior de la política corporativa definitiva para datos sensibles, `DOWNLOAD`, impresión, exportación, compartición y URLs firmadas.
+- `INFO-DOM-005` e `INFO-DOM-010`: propietarias posteriores de almacenamiento/localización y de compartición/divulgación/terceros, sin alterar el mínimo E4 fijado aquí.
+
+---
+
+#### 3. Contrato `EVID-TEMPORARY-ACCESS-CONTRACT-001`
+
+##### 3.1. Gate previo a la emisión
+
+Una URL firmada solo podrá emitirse cuando todos los componentes siguientes sean resolubles y aceptados:
+
+```text
+document_context_id + document_id + document_version
+        +
+process_id + process_instance_id
+        +
+resource_type + resource_id [+ resource_version]
+        +
+principal + actor efectivo + contexto
+        +
+finalidad + acción solicitada
+        +
+clasificación + estado/vigencia del documento
+        +
+decisión de autorización server-side = ALLOW
+        +
+access_policy_id + access_policy_version resolubles
+        ↓
+AUTHORIZED_FOR_TEMPORARY_ISSUE
+```
+
+Reglas obligatorias:
+
+1. Conocer `document_id`, una ruta física, un nombre, una clave de objeto o una URL anterior no concede acceso.
+2. La decisión se toma en servidor con identidad, actor efectivo, finalidad, clasificación, recurso, relación, territorio, estado y acción exacta; una interfaz visible no sustituye ese gate.
+3. La URL firmada se emite únicamente después de `ALLOW`; nunca se usa como prueba de que el actor estaba autorizado antes de obtenerla.
+4. El alcance de la emisión queda fijado al `document_id` y `document_version` solicitados. Sustitución, anulación o nueva versión no transfieren automáticamente el acceso a otra versión.
+5. `PREVIEW`, `VIEW` y `DOWNLOAD` son acciones diferenciables. Autorizar una de ellas no concede por inferencia las demás ni concede compartición a terceros.
+6. La compartición o divulgación a un tercero requiere su contrato propietario posterior; `EVID-ARC-007` no convierte un enlace bearer en un permiso de difusión general.
+7. Una denegación, ambigüedad, política ausente, referencia no resoluble o fallo de emisión termina en fallo cerrado sin URL utilizable.
+
+##### 3.2. Sobre mínimo de solicitud y emisión
+
+| Campo                                                  | Obligación                               | Regla                                                                                                                          |
+| ------------------------------------------------------ | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------ |
+| `access_request_id`                                    | requerido                                | Identifica de forma estable la solicitud de acceso y permite correlacionar decisión y resultado sin persistir la URL completa. |
+| `document_context_id`                                  | requerido                                | Resuelve exactamente a una identidad `DOCCTX-*` aprobada.                                                                      |
+| `document_id` + `document_version`                     | requeridos                               | Fijan identidad lógica y versión concreta; una URL no sustituye estos identificadores.                                         |
+| `process_id` + `process_instance_id`                   | requeridos al materializar la instancia  | Conservan el contexto empresarial de la solicitud.                                                                             |
+| `resource_type` + `resource_id` [+ `resource_version`] | condicionales según el contrato heredado | Vinculan el acceso con el recurso empresarial autoritativo.                                                                    |
+| `principal_id` + `effective_actor_id`                  | requeridos                               | Distinguen sesión/principal técnico de la persona o actor efectivo.                                                            |
+| `purpose_code`                                         | requerido                                | Declara finalidad concreta; ausencia o ambigüedad bloquea la emisión.                                                          |
+| `requested_action`                                     | requerido                                | Uno de los modos de acceso gobernados por esta tarea; no se infiere desde la ruta cliente.                                     |
+| `classification` + `classification_version`            | requeridos                               | Heredan la clasificación vigente y cualquier elevación aplicable.                                                              |
+| `authorization_decision_ref`                           | requerido                                | Referencia la decisión server-side que permitió o denegó la solicitud; no contiene secretos.                                   |
+| `access_policy_id` + `access_policy_version`           | requeridos                               | Resuelven la política temporal aplicable a clase, acción y contexto.                                                           |
+| `issued_at`                                            | requerido cuando se emite                | Marca el inicio de vigencia del artefacto temporal.                                                                            |
+| `expires_at`                                           | requerido cuando se emite                | Debe ser posterior a `issued_at` y finito; no existe URL permanente como fallback.                                             |
+| `delivery_mode`                                        | requerido                                | Para este contrato: `SIGNED_URL_EPHEMERAL` cuando exista representación física que deba entregarse temporalmente.              |
+| `issuance_outcome`                                     | requerido                                | `ISSUED`, `DENIED`, `POLICY_UNRESOLVED`, `ISSUE_FAILED` o `NOT_APPLICABLE_NO_FILE_PAYLOAD`.                                    |
+
+El valor completo de la URL firmada y su material de firma son artefactos efímeros de transporte. El registro persistente conserva identidad de solicitud, decisión, recurso, versión, política y tiempos; no necesita persistir el valor completo de la URL.
+
+---
+
+#### 4. Vigencia temporal, expiración y nueva emisión
+
+Se adopta `TTL_POLICY_REQUIRED` para las 332 identidades. La política temporal debe ser versionada y resoluble antes de emitir.
+
+Reglas:
+
+1. Toda emisión tiene `issued_at` y `expires_at`; `expires_at` es finito y posterior a `issued_at`.
+2. La duración concreta no se inventa en E4: se obtiene de `access_policy_id + access_policy_version` según clasificación, acción y contexto. Si falta esa referencia o no produce una vigencia válida, el resultado es `POLICY_UNRESOLVED` y no se emite.
+3. La expiración no se extiende modificando el mismo artefacto. Continuar el acceso exige una solicitud nueva y una decisión de autorización nueva: `REAUTHORIZE_ON_REISSUE`.
+4. Cambio de actor, sesión, relación, territorio, estado del recurso, clasificación, versión documental o autorización obliga a evaluar de nuevo toda futura emisión.
+5. Revocar autoridad o finalidad bloquea futuras emisiones y nuevas emisiones. No se afirmará que una URL ya emitida fue invalidada antes de `expires_at` salvo que el mecanismo físico seleccionado demuestre esa capacidad.
+6. Vencer la URL no elimina el documento, no cambia su retención y no demuestra que una copia legítimamente obtenida haya sido eliminada.
+7. El reloj y la unidad temporal del mecanismo físico deberán ser coherentes y verificables en implementación; esta tarea no inventa proveedor, algoritmo ni unidad específica de configuración.
+
+##### 4.1. Política pendiente con propietario exacto
+
+Para las 332 identidades:
+
+```text
+temporary_access_policy_resolution = ACCESS_POLICY_PENDING
+owner = INFO-AUTH-002
+exit_condition = access_policy_id + access_policy_version
+                 + applicability_by_classification_and_action
+                 + finite_ttl_rule
+                 + reissue_rule
+                 + external_sharing_boundary
+```
+
+`ACCESS_POLICY_PENDING` no deja indeterminado el comportamiento seguro: mientras permanezca, la emisión de una URL temporal falla cerrada. El pendiente corresponde exclusivamente a los valores y reglas corporativas definitivas que la tarea AA propietaria debe materializar.
+
+---
+
+#### 5. Propiedades de la URL firmada
+
+Cuando exista una representación física y el gate permita acceso, `SIGNED_URL_EPHEMERAL` deberá cumplir:
+
+- ser temporal y no adivinable;
+- apuntar a la representación exacta de `document_id + document_version`;
+- no convertirse en `document_id`, `resource_id`, ruta canónica ni referencia empresarial persistente;
+- no aparecer como índice público ni como URL persistente reutilizable;
+- no incorporar JWT, cookies, PIN, credenciales empresariales ni secretos de aplicación adicionales para completar la autorización;
+- no registrarse completa en logs, analytics, mensajes de error, auditoría ni metadatos empresariales;
+- no exponer por nombre, path, query, preview o metadatos más información que la permitida por la decisión de acceso;
+- no acreditar por su mera emisión que el contenido fue visto, obtenido, compartido o aceptado;
+- exigir solicitud nueva para una nueva emisión después de expiración o cuando cambie el contexto gobernante.
+
+La firma del enlace protege la entrega temporal; no sustituye autorización, minimización, clasificación, vínculo empresarial, trazabilidad ni retención.
+
+---
+
+#### 6. Estados y resultados del acceso temporal
+
+| Código                           | Significado                                                                      | Efecto permitido                                                                                  |
+| -------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `REQUESTED`                      | Existe solicitud identificada pendiente de evaluación.                           | Ninguna URL.                                                                                      |
+| `AUTHORIZED_FOR_TEMPORARY_ISSUE` | La solicitud obtuvo `ALLOW` y política temporal resoluble.                       | Puede intentar emisión.                                                                           |
+| `ISSUED`                         | El mecanismo produjo una URL efímera con vigencia finita.                        | Exponerla únicamente al consumidor autorizado del flujo.                                          |
+| `DENIED`                         | La autorización o el contexto impiden el acceso.                                 | Ninguna URL ni filtración de existencia/metadatos.                                                |
+| `POLICY_UNRESOLVED`              | No existe política temporal resoluble.                                           | Fallo cerrado; ninguna URL.                                                                       |
+| `ISSUE_FAILED`                   | El mecanismo técnico no produjo la URL.                                          | No degradar a URL pública/persistente; permitir nueva solicitud controlada.                       |
+| `EXPIRED`                        | Se alcanzó `expires_at`.                                                         | Nueva solicitud y nueva autorización si se requiere continuar.                                    |
+| `NOT_APPLICABLE_NO_FILE_PAYLOAD` | La identidad no posee representación física que deba entregarse mediante enlace. | La autorización del registro estructurado se resuelve por su canal propietario, sin fabricar URL. |
+
+Un estado de emisión nunca cambia el estado empresarial del documento ni demuestra consulta efectiva. La auditoría exacta de intento, emisión, acceso y modificación pertenece a `EVID-ARC-008`.
+
+---
+
+#### 7. Fronteras con publicación, compartición y acceso extraordinario
+
+1. Una versión clasificada como pública solo es pública cuando existe una decisión de publicación vigente del proceso propietario. La existencia de una URL firmada no publica el documento ni vuelve públicos borradores, metadatos o historial.
+2. Compartir con un tercero no es equivalente a emitir una URL para el actor actual. `INFO-DOM-010` e `INFO-AUTH-002` materializarán destinatario, transferencia, divulgación y reglas corporativas definitivas.
+3. El acceso extraordinario no nace de un rol genérico ni de conocer la URL; debe ser mínimo, temporal, justificado y auditable según los contratos de autorización vigentes.
+4. Preview, thumbnail, nombre visible y metadata reciben el mismo límite de clasificación y autorización que la representación que ayudan a localizar.
+5. El mecanismo de Storage no adquiere propiedad funcional ni autoridad sobre el contenido empresarial.
+
+---
+
+#### 8. Matriz `EVID-TEMPORARY-ACCESS-MATRIX-001`
+
+Códigos aplicados:
+
+| Código                   | Significado                                                                                                      |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `EVID_TEMP_ACCESS_V1`    | Aplica íntegramente el contrato de acceso temporal definido en esta tarea.                                       |
+| `AUTHZ_BEFORE_ISSUE`     | La URL solo puede emitirse después de una decisión server-side `ALLOW`.                                          |
+| `SIGNED_URL_EPHEMERAL`   | La representación física, cuando exista, se entrega mediante artefacto temporal; no URL persistente.             |
+| `TTL_POLICY_REQUIRED`    | `issued_at`, `expires_at` y política temporal versionada son obligatorios para emitir.                           |
+| `REAUTHORIZE_ON_REISSUE` | Toda nueva emisión exige nueva solicitud y nueva decisión de autorización.                                       |
+| `ACCESS_POLICY_PENDING`  | Falta política corporativa definitiva. Propietaria: `INFO-AUTH-002`; hasta resolverla, la emisión falla cerrada. |
+| `FRONTERA_OBLIGATORIA`   | Se conserva la frontera heredada de propiedad/recurso.                                                           |
+| `APLICACION_DIFERIDA`    | La definición es válida, pero no acredita disponibilidad de la aplicación propietaria objetivo.                  |
+| `NINGUNO`                | No existe frontera adicional heredada para esta identidad.                                                       |
+
+| ID contextual          | Proceso      | Perfil                | Autorización         | Entrega                | Vigencia              | Nueva emisión            | Estado         | Bloqueo / condición                          |
+| ---------------------- | ------------ | --------------------- | -------------------- | ---------------------- | --------------------- | ------------------------ | -------------- | -------------------------------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `EVID_TEMP_ACCESS_V1` | `AUTHZ_BEFORE_ISSUE` | `SIGNED_URL_EPHEMERAL` | `TTL_POLICY_REQUIRED` | `REAUTHORIZE_ON_REISSUE` | `ESPECIFICADO` | `ACCESS_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+
+---
+
+#### 9. Reconciliación cuantitativa
+
+| Control                                       | Resultado |
+| --------------------------------------------- | --------: |
+| Contextos de proceso esperados                |        69 |
+| Contextos de proceso materializados           |        69 |
+| Entradas `DOCCTX-*` esperadas                 |       332 |
+| Entradas materializadas                       |       332 |
+| Claves `DOCCTX-*` únicas                      |       332 |
+| Entradas con `EVID_TEMP_ACCESS_V1`            |       332 |
+| Entradas con `AUTHZ_BEFORE_ISSUE`             |       332 |
+| Entradas con `SIGNED_URL_EPHEMERAL`           |       332 |
+| Entradas con `TTL_POLICY_REQUIRED`            |       332 |
+| Entradas con `REAUTHORIZE_ON_REISSUE`         |       332 |
+| Entradas con `ACCESS_POLICY_PENDING`          |       332 |
+| Fronteras `FRONTERA_OBLIGATORIA` preservadas  |       245 |
+| Condiciones `APLICACION_DIFERIDA` preservadas |        14 |
+| Contextos sin frontera adicional (`NINGUNO`)  |        73 |
+| Entradas con TTL numérico inventado           |         0 |
+| Entradas con URL real inventada               |         0 |
+| Faltantes                                     |         0 |
+| Duplicados                                    |         0 |
+| Propietarias funcionales modificadas          |         0 |
+| Clasificaciones mínimas modificadas           |         0 |
+| Vínculos empresariales modificados            |         0 |
+| Reglas de retención modificadas               |         0 |
+| Decisiones del gate de validación modificadas |         0 |
+
+---
+
+#### 10. Fronteras y decisiones reservadas
+
+| Decisión fuera de esta tarea                                                                                                  | Tarea propietaria                                      |
+| ----------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------ |
+| Política corporativa definitiva de clasificación/finalidad/acción para accesos y URLs firmadas, incluidos valores de vigencia | `INFO-AUTH-002`                                        |
+| Compartición, divulgación, terceros, encargados, transferencias y requerimientos de autoridad                                 | `INFO-DOM-010`                                         |
+| Metadatos corporativos, almacenamiento, búsqueda, localización y vínculo con recursos                                         | `INFO-DOM-005`                                         |
+| Auditoría detallada de consulta, emisión, acceso y modificación                                                               | `EVID-ARC-008`                                         |
+| Conservación legal, disposición, anonimización, eliminación y certificado                                                     | `EVID-ARC-009`                                         |
+| Contingencia ante indisponibilidad de Storage                                                                                 | `EVID-ARC-010`                                         |
+| Materialización física de buckets, políticas de Storage y mecanismo real de emisión                                           | `SUPA-ARC-018` y su paquete de implementación aprobado |
+
+No queda un pendiente narrativo sin propietario: el único bloqueo material para emitir en implementación es `ACCESS_POLICY_PENDING`, cuya salida está definida en la sección 4.1. Las demás filas anteriores preservan responsabilidades ya reservadas y no impiden cerrar la especificación E4.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa sobre las 332 identidades documentales controles ya aprobados y registrados para autorización previa a cualquier exposición, enlaces temporales no adivinables, prohibición de URL persistente como bypass, necesidad de finalidad/clasificación/recurso/acción, revalidación de contexto, minimización de URLs y metadatos y trazabilidad de accesos sensibles. No fija un umbral temporal numérico nuevo ni introduce una excepción de autorización; la política corporativa definitiva permanece en su tarea propietaria. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0. El registro canónico vigente permanece sin cambios.
+
+---
+
+#### 11. Criterios de aceptación
+
+- [x] `EVID-ARC-006` figura aprobada y entrega 332 identidades `DOCCTX-*` para 69 procesos.
+- [x] las 332 identidades aparecen exactamente una vez en la matriz.
+- [x] las 332 identidades reciben `EVID_TEMP_ACCESS_V1`, `AUTHZ_BEFORE_ISSUE`, `SIGNED_URL_EPHEMERAL`, `TTL_POLICY_REQUIRED` y `REAUTHORIZE_ON_REISSUE`.
+- [x] `VALIDATED_FOR_ACTIVATION` no se interpreta como autorización, publicación ni vigencia empresarial.
+- [x] conocer una ruta, objeto, nombre o URL previa no concede acceso.
+- [x] la autorización server-side resuelve actor, finalidad, clasificación, recurso, relación, territorio, estado y acción exacta antes de emitir.
+- [x] una emisión queda vinculada con `document_id + document_version` exactos y no se transfiere automáticamente a otra versión.
+- [x] preview, `VIEW` y `DOWNLOAD` no se fusionan en una autoridad genérica.
+- [x] la URL firmada es temporal, no adivinable y no se convierte en identidad empresarial ni URL persistente.
+- [x] `issued_at` y `expires_at` son obligatorios para toda emisión.
+- [x] la ausencia de política temporal resoluble produce fallo cerrado.
+- [x] una nueva emisión exige una solicitud y autorización nuevas; no se prolonga silenciosamente el artefacto anterior.
+- [x] no se promete invalidación anticipada de una URL ya emitida cuando el mecanismo físico todavía no ha demostrado esa capacidad.
+- [x] la URL completa o su material de firma no se persisten en logs, analytics, errores, auditoría o metadatos empresariales.
+- [x] la emisión no demuestra que el contenido fue visto, obtenido, compartido o aceptado.
+- [x] la expiración no elimina el documento ni modifica retención, clasificación o historia.
+- [x] la publicación pública y la compartición a terceros permanecen separadas del mero mecanismo de URL firmada.
+- [x] se preservan exactamente 245 fronteras obligatorias, 14 condiciones de aplicación diferida y 73 contextos sin frontera adicional.
+- [x] propietaria, sensibilidad, identidad, vínculo, retención y gate técnico heredados permanecen sin cambios.
+- [x] no se inventan segundos/minutos de TTL, URLs reales, buckets, paths, proveedor, algoritmo de firma ni políticas físicas.
+- [x] no se crean objetos, RLS, funciones, migraciones, jobs, APIs ni despliegues.
+- [x] la tarea genera cero cambios en requisitos de prueba y no requiere regenerar el registro canónico.
+- [x] `EVID-ARC-008` permanece reservada y no iniciada.
+
+---
+
+#### 12. Handoff cerrado hacia EVID-ARC-008
+
+`EVID-ARC-008` recibe las 332 identidades documentales con un contrato de acceso temporal explícito: autorización server-side antes de emisión, vínculo a documento/versión exactos, URL firmada efímera, vigencia finita gobernada por política versionada, fallo cerrado cuando la política no sea resoluble y reautorización obligatoria para toda nueva emisión. Su única responsabilidad siguiente será definir la auditoría de consulta y modificación, incluidos eventos, actor, finalidad, resultado y correlación, sin cambiar las decisiones de acceso temporal aprobadas aquí.
+
+La aprobación de `EVID-ARC-007` no inicia, desarrolla ni aprueba `EVID-ARC-008`.
+
+
 ### [ ] EVID-ARC-008 — Definir auditoría de consulta y modificación
 ### [ ] EVID-ARC-009 — Definir conservación legal y eliminación
 ### [ ] EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage
