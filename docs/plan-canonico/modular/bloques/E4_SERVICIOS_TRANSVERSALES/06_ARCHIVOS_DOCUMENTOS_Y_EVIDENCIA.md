@@ -1555,7 +1555,613 @@ Se conserva sin modificación la distribución de sensibilidad heredada sobre la
 La aprobación de `EVID-ARC-004` no inicia, desarrolla ni aprueba `EVID-ARC-005`.
 
 
-### [ ] EVID-ARC-005 — Definir carga, sustitución, anulación y retención
+### ✅ EVID-ARC-005 — Definir carga, sustitución, anulación y retención
+
+**Estado:** APROBADA
+**Tarea anterior:** `EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso` — APROBADA
+**Tarea siguiente:** `EVID-ARC-006 — Definir validación de tipo, tamaño, integridad y malware` — RESERVADA
+**Tipo de tarea:** documental; materialización del ciclo operativo de carga, sustitución, anulación y retención para el universo documental E4
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`
+**Procesos cubiertos:** 69 (`VPROC-0001` a `VPROC-0069`)
+**Entradas documentales/artefactos cubiertas:** 332 (`DOCCTX-*`)
+**Contrato de ciclo materializado:** `EVID_DOCUMENT_LIFECYCLE_V1`
+**Cambios físicos autorizados:** ninguno; no crea buckets, objetos de Storage, tablas, políticas, RLS, migraciones, jobs, APIs, borrados ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir, para cada una de las 332 identidades documentales heredadas, cómo se incorpora una versión sin sobrescribir historia, cómo se sustituye conservando la versión previa, cómo se anula sin borrar el hecho original y qué comportamiento de retención base aplica, dejando bloqueada toda disposición automática mientras la política definitiva de retención no sea resoluble.
+
+---
+
+#### 1. Resultado sustantivo
+
+La tarea materializa dos artefactos lógicos dentro de este mismo bloque:
+
+- `EVID-DOCUMENT-LIFECYCLE-CONTRACT-001`: contrato E4 de carga, sustitución, anulación, vigencia y retención no destructiva;
+- `EVID-DOCUMENT-LIFECYCLE-RETENTION-MATRIX-001`: decisión explícita para las 332 identidades `DOCCTX-*` heredadas.
+
+El contrato reutiliza la identidad, versión, vínculo empresarial, propietaria y sensibilidad ya aprobados. No crea una taxonomía documental corporativa paralela, no fija plazos jurídicos y no ejecuta eliminación física.
+
+---
+
+#### 2. Fuentes canónicas consumidas
+
+- `EVID-ARC-001`: universo documental y evidencial de 69 procesos.
+- `EVID-ARC-002`: propietaria funcional documental por contexto.
+- `EVID-ARC-003`: 332 identidades `DOCCTX-*` y sensibilidad mínima por entrada.
+- `EVID-ARC-004`: identidad lógica, versión documental, versión de esquema de metadatos y vínculo resoluble con proceso/recurso.
+- `NFR-REQ-006`: historia no destructiva, clase `T5_EVIDENCE_DOCUMENT`, políticas de retención versionadas, estados de ciclo de vida, hold y prohibición de eliminación con política no resoluble.
+- Registro Canónico de Requisitos de Prueba vigente: las reglas de historia, sustitución/anulación, retención, lifecycle y protección contra borrado directo ya están registradas y no se modifican en esta tarea.
+- `INFO-DOM-004`: ciclo documental corporativo definitivo, estados, versiones, vigencia, sustitución, anulación y retiro.
+- `INFO-DOM-006`: tablas definitivas de retención, eventos de cómputo, mínimos/máximos, archivo, legal hold, anonimización, eliminación y certificado de disposición.
+
+---
+
+#### 3. Contrato `EVID-DOCUMENT-LIFECYCLE-CONTRACT-001`
+
+##### 3.1. Códigos de operación
+
+| Código          | Regla materializada                                                                                                                                                                                                                                           |
+| --------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `LOAD_V1`       | Una carga materializa una nueva versión vinculada a `document_id`, `DOCCTX-*`, proceso, instancia/recurso, propietaria y clasificación. No autoriza sobrescribir una versión existente ni tratar la recepción técnica como validación o vigencia empresarial. |
+| `SUBSTITUTE_V1` | Una sustitución crea una versión nueva de la misma identidad lógica cuando conserva significado y recurso gobernante; debe enlazar la versión sustituida y preservar su historia. Si cambia la identidad empresarial, no se reutiliza el `document_id`.       |
+| `ANNUL_V1`      | Una anulación crea un hecho nuevo enlazado con la versión anulada, conserva actor/autoridad, motivo, timestamps y relación causal, y vuelve no vigente la versión afectada sin eliminarla ni reescribirla.                                                    |
+| `RETENTION_V1`  | Toda versión persistida queda sujeta a una política versionada y a un estado de ciclo de vida. Sin política resoluble se usa `RET_UNRESOLVED`, se bloquea disposición automática y no se certifica implementación.                                            |
+
+##### 3.2. Reglas de carga
+
+1. La carga no reutiliza una combinación `document_id + document_version` ya materializada para contenido o estado distinto.
+2. `received_at` o un acuse de transporte no equivalen por sí solos a documento válido, vigente, aprobado ni disponible para consumo.
+3. La activación o aceptación técnica de la versión deberá respetar la validación que defina `EVID-ARC-006`; esta tarea no inventa MIME, tamaño, hash, antivirus ni resultado de validación.
+4. Toda carga conserva el vínculo empresarial definido en `EVID-ARC-004`; una ruta, bucket, URL o nombre de archivo no sustituye proceso, instancia ni recurso.
+5. Una carga externa conserva referencia de origen cuando exista, sin convertir el identificador del tercero en identidad canónica de VENTO.
+
+##### 3.3. Reglas de sustitución
+
+1. Sustituir no significa sobrescribir: la versión anterior permanece reconstruible y vinculada con su sucesora.
+2. La sustitución usa el mismo `document_id` únicamente cuando continúa siendo la misma identidad lógica y el mismo recurso gobernante; un documento con significado empresarial distinto recibe identidad distinta.
+3. La versión anterior no deja de ser la versión vigente únicamente porque exista una carga candidata. El cambio de vigencia ocurre cuando la sucesora cumple los contratos aplicables; esta tarea no adelanta la validación de `EVID-ARC-006`.
+4. La sustitución conserva clasificación igual o más restrictiva según `EVID-ARC-003`; no permite rebajar sensibilidad por cambio de formato, ubicación o canal.
+5. Copias, derivados y referencias dependientes no se reescriben silenciosamente; su tratamiento físico corresponde a las tareas posteriores propietarias.
+
+##### 3.4. Reglas de anulación
+
+1. Anular crea un hecho trazable y no destructivo; nunca representa que la versión original no existió.
+2. La anulación conserva versión afectada, actor o autoridad aplicable, motivo tipado, momento efectivo y relación con el proceso/recurso.
+3. Una anulación puede retirar vigencia empresarial, pero no ejecuta borrado físico, anonimización, purga ni certificado de disposición.
+4. La anulación no elimina obligaciones de retención ni vence un hold activo.
+5. Corrección, reverso, cancelación y anulación siguen siendo hechos diferenciables; esta tarea no fusiona sus efectos empresariales fuera del ciclo documental.
+
+##### 3.5. Ciclo de vida E4 consumido
+
+Los estados de retención se usan con la semántica ya aprobada por `NFR-REQ-006`:
+
+```text
+ACTIVE
+→ INACTIVE
+→ ARCHIVE_PENDING
+→ ARCHIVED
+→ ELIGIBLE_FOR_DISPOSITION
+```
+
+Estados o condiciones transversales relevantes:
+
+```text
+HOLD_ACTIVE
+PRESERVATION_REQUIRED
+DISPOSITION_BLOCKED
+POLICY_UNRESOLVED
+```
+
+Reglas de frontera:
+
+- `EVID-ARC-005` define hasta la elegibilidad y el bloqueo de disposición; no ejecuta `DISPOSITION_PENDING`, `DISPOSED`, `ANONYMIZED` ni `TRANSFERRED`.
+- La disposición, conservación legal y eliminación pertenecen a `EVID-ARC-009` y `INFO-DOM-006`.
+- Un hold válido prevalece sobre elegibilidad o disposición, pero no amplía acceso ni finalidad.
+- Ubicación física, ausencia en UI, borrado lógico o mover un objeto no determinan por sí solos el estado del ciclo de vida.
+
+---
+
+#### 4. Retención operativa base
+
+Las clases siguientes son las clases comportamentales ya aprobadas por `NFR-REQ-006`; no representan una duración jurídica:
+
+| Clase base           | Uso en esta matriz                                                                                                         |
+| -------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| `RET_ACTIVE_CASE`    | Expedientes cuyo comportamiento principal es permanecer activos hasta un cierre verificable del caso.                      |
+| `RET_BUSINESS_CYCLE` | Artefactos ligados a un ciclo operativo, productivo, comercial, logístico, de activos o presupuestal.                      |
+| `RET_RELATIONSHIP`   | Artefactos cuyo contexto principal depende de una relación con trabajador, candidato, cliente o tercero.                   |
+| `RET_OBLIGATION`     | Artefactos laborales, SST, financieros, de acceso o autoridad cuya conservación depende de obligación o control reforzado. |
+| `RET_ARCHIVAL`       | Artefactos de gobierno, políticas o registro documental cuyo valor histórico exige archivo gobernado.                      |
+
+No se asignan `RET_TRANSIENT`, `RET_HOLD` ni `RET_PERMANENT_EXCEPTION` como clase base a las 332 identidades porque las fuentes actuales no justifican tratar estos artefactos empresariales como temporales, bajo hold por defecto o de conservación permanente excepcional.
+
+##### 4.1. Estado de resolución de política
+
+Para las 332 identidades:
+
+```text
+retention_policy_resolution = RET_UNRESOLVED
+owner = INFO-DOM-006
+exit_condition = retention_policy_id + retention_policy_version
+                 + retention_trigger + minimum_period + maximum_period
+                 + archive_rule + hold_eligibility + disposition_method
+```
+
+Esto no significa ausencia de decisión en `EVID-ARC-005`: la clase comportamental, la historia no destructiva y el bloqueo quedan definidos. Significa que no se inventa un plazo legal ni un evento definitivo de cómputo antes de la tarea propietaria.
+
+Mientras `RET_UNRESOLVED` permanezca:
+
+- disposición automática = prohibida;
+- eliminación física = prohibida;
+- certificación E5 de la política = bloqueada;
+- conservación indefinida por inercia = no aceptada como política;
+- el objeto permanece gobernado por su estado actual, clasificación, vínculo y obligaciones de preservación conocidas.
+
+---
+
+#### 5. Matriz materializada de carga, sustitución, anulación y retención
+
+Códigos de bloqueo:
+
+| Código                 | Significado y salida                                                                                                                                                    |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RET_POLICY_PENDING`   | Falta política definitiva resoluble. Propietario: `INFO-DOM-006`. Sale cuando existen política/versión, trigger, mínimo, máximo, archivo, hold y disposición definidos. |
+| `FRONTERA_OBLIGATORIA` | Conserva la frontera heredada de propiedad/recurso; una referencia cruzada no absorbe autoridad ajena.                                                                  |
+| `APLICACION_DIFERIDA`  | La definición documental es válida, pero la aplicación objetivo sigue diferida y no se declara implementada.                                                            |
+
+| ID contextual          | Proceso      | Carga     | Sustitución     | Anulación  | Retención base       | Política         | Estado         | Bloqueo / condición                       |
+| ---------------------- | ------------ | --------- | --------------- | ---------- | -------------------- | ---------------- | -------------- | ----------------------------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `LOAD_V1` | `SUBSTITUTE_V1` | `ANNUL_V1` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+
+---
+
+#### 6. Reconciliación cuantitativa
+
+| Control                                    | Resultado |
+| ------------------------------------------ | --------: |
+| Contextos de proceso esperados             |        69 |
+| Contextos de proceso materializados        |        69 |
+| Entradas `DOCCTX-*` esperadas              |       332 |
+| Entradas materializadas                    |       332 |
+| Claves `DOCCTX-*` únicas                   |       332 |
+| Entradas con regla de carga                |       332 |
+| Entradas con regla de sustitución          |       332 |
+| Entradas con regla de anulación            |       332 |
+| Entradas con clase de retención base       |       332 |
+| Entradas con política definitiva inventada |         0 |
+| Entradas con `RET_UNRESOLVED` explícito    |       332 |
+| Faltantes                                  |         0 |
+| Duplicados                                 |         0 |
+| Propietarias funcionales modificadas       |         0 |
+| Clasificaciones mínimas modificadas        |         0 |
+
+Distribución de retención base sobre las 332 identidades:
+
+| Clase                | Entradas |
+| -------------------- | -------: |
+| `RET_ACTIVE_CASE`    |       33 |
+| `RET_BUSINESS_CYCLE` |      184 |
+| `RET_RELATIONSHIP`   |       36 |
+| `RET_OBLIGATION`     |       66 |
+| `RET_ARCHIVAL`       |       13 |
+| **Total**            |  **332** |
+
+Fronteras heredadas preservadas:
+
+| Frontera heredada      | Entradas |
+| ---------------------- | -------: |
+| `NINGUNO`              |       73 |
+| `FRONTERA_OBLIGATORIA` |      245 |
+| `APLICACION_DIFERIDA`  |       14 |
+| **Total**              |  **332** |
+
+La distribución canónica de propiedad y la distribución de sensibilidad aprobadas en `EVID-ARC-002` y `EVID-ARC-003` permanecen sin modificación. Esta tarea no reasigna propietarias ni reclasifica documentos.
+
+---
+
+#### 7. Decisiones canónicas de EVID-ARC-005
+
+1. La carga de un documento crea una versión identificable; no es un `upsert` destructivo ni una aprobación implícita.
+2. La sustitución conserva el `document_id` solo si persiste la misma identidad lógica y crea una versión nueva enlazada con la anterior; la historia previa permanece reconstruible.
+3. La anulación crea un hecho nuevo y retira vigencia sin borrar ni reescribir el documento original.
+4. La recepción técnica de un archivo no demuestra que sea válido, íntegro, seguro o apto para consumo; `EVID-ARC-006` conserva esa decisión.
+5. Las 332 identidades reciben una clase de retención comportamental explícita; ninguna recibe un plazo jurídico inventado.
+6. Las 332 identidades quedan con política definitiva `RET_UNRESOLVED` hasta que `INFO-DOM-006` materialice política, trigger, mínimo, máximo, archivo, hold y disposición resolubles.
+7. `RET_UNRESOLVED` bloquea disposición automática y certificación de la política, pero no autoriza retención indefinida por inercia.
+8. `HOLD_ACTIVE` prevalece sobre elegibilidad o disposición y no concede acceso adicional.
+9. Sustitución, anulación y archivo no equivalen a eliminación; la conservación legal, anonimización, borrado y certificado pertenecen a `EVID-ARC-009` y `INFO-DOM-006`.
+10. Ninguna decisión de esta tarea convierte bucket, path, URL, nombre de archivo o ubicación física en identidad o estado empresarial.
+11. La propietaria funcional, sensibilidad, metadatos mínimos y vínculo empresarial recibidos de `EVID-ARC-002` a `EVID-ARC-004` permanecen obligatorios durante todo el ciclo.
+12. La futura taxonomía/ciclo corporativo de `INFO-DOM-004` podrá refinar nombres y estados, pero deberá preservar historia, supersesión/anulación, identidad y bloqueo de disposición o materializar una transición explícita y versionada.
+
+---
+
+#### 8. Decisiones reservadas con propietario exacto
+
+| Decisión reservada                                                                                     | Tarea propietaria |
+| ------------------------------------------------------------------------------------------------------ | ----------------- |
+| Validación de tipo, tamaño, integridad y malware antes de aceptar una carga o sustitución              | `EVID-ARC-006`    |
+| Acceso temporal y URLs firmadas                                                                        | `EVID-ARC-007`    |
+| Auditoría de consulta y modificación                                                                   | `EVID-ARC-008`    |
+| Conservación legal, ejecución de disposición, anonimización, eliminación y certificado                 | `EVID-ARC-009`    |
+| Contingencia ante indisponibilidad de Storage                                                          | `EVID-ARC-010`    |
+| Ciclo documental corporativo definitivo, estados, versiones, vigencia, sustitución, anulación y retiro | `INFO-DOM-004`    |
+| Tablas definitivas de retención, triggers, mínimos/máximos, archivo, legal hold y disposición          | `INFO-DOM-006`    |
+| Autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia              | `INFO-DOM-007`    |
+
+No existe un pendiente narrativo sin propietario. `RET_POLICY_PENDING` tiene propietario y condición de salida explícitos.
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea instancia sobre las 332 identidades documentales comportamientos ya aprobados y protegidos: historia no destructiva, corrección/sustitución/anulación mediante hechos nuevos, política de retención versionada, trigger verificable, mínimos/máximos, estados de ciclo de vida, bloqueo con política no resoluble y prohibición de sobrescribir o borrar directamente evidencia preservada. No introduce una regla ejecutable nueva ni modifica las existentes. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0; el registro canónico permanece sin cambios.
+
+---
+
+#### 9. Criterios de aceptación
+
+- [x] `EVID-ARC-004` figura aprobada y entrega 332 identidades `DOCCTX-*` para 69 procesos.
+- [x] las 332 identidades aparecen exactamente una vez en la matriz.
+- [x] cada identidad recibe `LOAD_V1`, `SUBSTITUTE_V1` y `ANNUL_V1` de forma explícita.
+- [x] cada identidad recibe una clase de retención base explícita.
+- [x] ninguna carga puede sobrescribir una versión ya materializada para representar otro contenido o estado.
+- [x] una sustitución conserva la versión anterior y su relación de supersesión.
+- [x] una anulación conserva el hecho original y no ejecuta borrado físico.
+- [x] la carga o sustitución no se presenta como validada antes de `EVID-ARC-006`.
+- [x] las 332 políticas definitivas no resolubles quedan identificadas como `RET_UNRESOLVED`, con propietario `INFO-DOM-006` y condición de salida exacta.
+- [x] `RET_UNRESOLVED` bloquea disposición automática y certificación de la política.
+- [x] no se inventan plazos legales, triggers definitivos, fundamentos jurídicos ni permanencias excepcionales.
+- [x] hold, archivo y disposición se distinguen; hold no amplía acceso y anulación no equivale a eliminación.
+- [x] propietaria, sensibilidad, identidad, metadatos y vínculo empresarial heredados permanecen sin cambios.
+- [x] las fronteras heredadas se conservan en las 332 filas.
+- [x] no se crean buckets, objetos de Storage, tablas, políticas RLS, migraciones, jobs, APIs, borrados ni despliegues.
+- [x] la tarea genera cero cambios en requisitos de prueba.
+- [x] `EVID-ARC-006` permanece reservada y no iniciada.
+
+---
+
+#### 10. Handoff cerrado hacia EVID-ARC-006
+
+`EVID-ARC-006` recibe las 332 identidades con reglas de carga, sustitución, anulación, clase de retención base y bloqueo de política definitiva materializados. Su única responsabilidad siguiente será definir validación de tipo, tamaño, integridad y malware para las cargas y sustituciones, sin cambiar identidad, propietaria, sensibilidad, vínculo empresarial, historia no destructiva ni reglas de retención aprobadas aquí.
+
+La aprobación de `EVID-ARC-005` no inicia, desarrolla ni aprueba `EVID-ARC-006`.
+
+
 ### [ ] EVID-ARC-006 — Definir validación de tipo, tamaño, integridad y malware
 ### [ ] EVID-ARC-007 — Definir acceso temporal y URLs firmadas
 ### [ ] EVID-ARC-008 — Definir auditoría de consulta y modificación
