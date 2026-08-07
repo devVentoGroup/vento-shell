@@ -8567,7 +8567,365 @@ PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de acep
 ```
 
 
-### [ ] PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión
+### ✅ PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede` — APROBADA
+**Tarea siguiente:** `EVID-ARC-001 — Inventariar archivos y evidencia por proceso` — RESERVADA
+**Tipo de tarea:** documental; alcance, prerrequisitos, cobertura, métricas, evidencia y criterios de aceptación del piloto de impresión
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Cambios físicos autorizados:** ninguno; no ejecuta piloto, no despliega software, no instala o repara hardware, no cambia red, no modifica Supabase y no produce evidencia runtime o física
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** cerrar documentalmente la puerta del piloto, su alcance obligatorio, prerrequisitos, métricas, evidencia y reglas de veredicto sin declarar una ejecución que todavía no existe.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-020` define `VENTO-PRINT-PILOT` versión `1.0.0` y deja establecidos:
+
+- los estados `PILOT_NOT_READY`, `PILOT_READY`, `PILOT_RUNNING`, `PILOT_FAILED`, `PILOT_INCONCLUSIVE` y `PILOT_PASSED`;
+- una puerta de readiness compatible con `UNKNOWN_BLOCKING` y con la puerta NFR de piloto;
+- cobertura individual de las 50 salidas `IMP-*`;
+- cobertura de cinco sedes, nueve dispositivos físicos, ocho bindings definidos y tres condiciones sin binding activo;
+- escenarios obligatorios de camino feliz, fallo inducido, resultado desconocido, offline, autorización, privacidad, reimpresión, cleanup y recuperación;
+- métricas duras de corrección y seguridad y métricas operativas de latencia, backlog, capacidad, receipt y recuperación;
+- la obligación de congelar objetivos cuantitativos runtime con fuente aprobada antes de una corrida;
+- evidencia correlacionada por trabajo, copia, intento, adapter, sede, dispositivo, canal, hashes y receipts;
+- una regla de veredicto que no permite convertir ausencia de evidencia en `PASS`;
+- estado actual del piloto completo: `PILOT_NOT_READY`;
+- cero implementación y cero resultados de piloto declarados.
+
+---
+
+#### 2. Estado actual verificable
+
+El servicio no está listo para ejecutar el piloto canónico completo. La tarea anterior conserva cero muestras runtime canónicas y el código vigente de NEXO continúa usando cola de texto local y `device.send(...)` mediante BrowserPrint, sin materializar de extremo a extremo `VENTO-PRINT-ADAPTER` y `VENTO-PRINT-OBSERVABILITY`.
+
+| Dimensión | Estado | Efecto |
+| --- | --- | --- |
+| Diseño `PRINT-ARC-001` a `020` | `ESPECIFICADO` | Base documental cerrada. |
+| Implementación canónica del servicio | `NO_IMPLEMENTADO` | Bloquea piloto completo. |
+| Heartbeat, canal, health, backlog y receipts runtime | `PENDIENTE_DE_EVIDENCIA` | Bloquea readiness. |
+| Zebra ZD230 | `BLOQUEADO / ALMACENADA` | Bloquea 16 etiquetas. |
+| Epson L5590 de Vento Producción | `BLOQUEADO / REQUIERE_MANTENIMIENTO` | Bloquea A4 local de esa sede. |
+| 80 mm en Vento Producción | `BLOQUEADO / SIN_DISPOSITIVO_COMPATIBLE` | Bloquea tickets de esa sede. |
+| Objetivos runtime de latencia, backlog y capacidad | `UNKNOWN_BLOCKING` hasta contar con fuente aprobada | Impide abrir la puerta de piloto. |
+| Piloto completo | `PILOT_NOT_READY` | No ejecutado y no aprobado. |
+
+Un ensayo restringido posterior sobre hardware disponible puede producir evidencia técnica, pero no `PILOT_PASSED` del servicio completo.
+
+---
+
+#### 3. Alcance obligatorio
+
+El piloto completo deberá demostrar: idempotencia; autorización; privacidad; routing/target; health; binding; `render_hash`; receipts tipados; efecto físico; retry seguro; bloqueo ante `RESULT_UNKNOWN`; reimpresión separada; offline/reconexión; diagnóstico de consumible, spool y buffer; cleanup o estado `UNKNOWN`; observabilidad por sede; y cierre explicable de cada trabajo.
+
+El piloto no autoriza compras, reparaciones, despliegues, cambios de red, SQL, Supabase, datos productivos no aprobados, secretos, degradación de medio, ni efectos empresariales ficticios en producción.
+
+---
+
+#### 4. Entradas obligatorias
+
+Consume sin modificar `VENTO-PRINT-JOB`, `VENTO-PRINT-ROUTE`, `VENTO-PRINT-TARGET-POLICY`, `VENTO-PRINT-DEVICE-HEALTH`, `VENTO-PRINT-IDEMPOTENCY`, `VENTO-PRINT-RETRY-QUEUE`, `VENTO-PRINT-CONFIRMATION`, `VENTO-PRINT-CANCELLATION-EXPIRATION`, `VENTO-PRINT-REPRINT`, `VENTO-PRINT-AUTHORIZATION`, `VENTO-PRINT-PRIVACY`, `VENTO-PRINT-OFFLINE-CONTINGENCY`, `VENTO-PRINT-ADAPTER`, `VENTO-PRINT-OBSERVABILITY` y `NFR-LIFECYCLE-GATE-MATRIX-001`.
+
+---
+
+#### 5. Contrato `VENTO-PRINT-PILOT` `1.0.0`
+
+```json
+{
+  "pilot_contract_id": "VENTO-PRINT-PILOT",
+  "pilot_contract_version": "1.0.0",
+  "pilot_run_id": "<identidad-inmutable>",
+  "scope": "<FULL_CANONICAL|CONSTRAINED_REHEARSAL>",
+  "state": "<PILOT_NOT_READY|PILOT_READY|PILOT_RUNNING|PILOT_FAILED|PILOT_INCONCLUSIVE|PILOT_PASSED>",
+  "release_ref": "<version-verificable>",
+  "environment_ref": "<ambiente-controlado>",
+  "readiness_snapshot_ref": "<referencia-inmutable>",
+  "performance_envelope_ref": "<referencia-versionada>",
+  "planned_outputs": ["<IMP-*>"] ,
+  "planned_bindings": ["<device_ref+channel_id>"],
+  "mandatory_scenario_set_ref": "<referencia-versionada>",
+  "evidence_refs": ["<referencia>"],
+  "verdict": "<PASS|FAIL|INCONCLUSIVE|NOT_RUN>"
+}
+```
+
+La estructura es normativa. Esta tarea no crea identidades, corridas, ambientes, evidencia o veredictos runtime reales.
+
+---
+
+#### 6. Puerta de prerrequisitos
+
+`PILOT_READY` exige simultáneamente:
+
+1. alcance de implementación autorizado para todos los componentes bajo prueba;
+2. contratos ejecutables de job, cola, autorización, privacidad, adapter, receipts y observabilidad;
+3. ambiente controlado y release/configuración congelados;
+4. fixtures y datos permitidos, sin secretos ni datos productivos innecesarios;
+5. health, heartbeat y canal observables para dispositivos incluidos;
+6. hardware y consumibles disponibles para cada familia que se pretenda certificar;
+7. captura de receipts y evidencia física correlacionada;
+8. telemetría con allowlist y prueba de no fuga;
+9. plan de parada, rollback y recuperación del ambiente;
+10. responsables y revisor independiente identificados;
+11. escenarios obligatorios congelados;
+12. `performance_envelope_ref` con volumen, concurrencia, burst, backlog, tiempos y fuente de cada objetivo;
+13. cero `UNKNOWN_BLOCKING` críticos sin excepción vigente;
+14. cero P0/P1 que afecten el alcance;
+15. cero incompatibilidades críticas o privacidad insegura.
+
+Excluir una familia obligatoria convierte la corrida en `CONSTRAINED_REHEARSAL` y prohíbe `PILOT_PASSED` global.
+
+---
+
+#### 7. Cobertura física y de binding
+
+| Sede / condición | Dispositivo | Canal | Readiness |
+| --- | --- | --- | --- |
+| Vento Producción / etiquetas | `PRN-VP-ZD230-01` | `CH-ZEBRA-SIN-CONEXION` | `PILOT_NOT_READY` |
+| Vento Producción / A4 | `PRN-VP-L5590-01` | `CH-EPSON-L5590-SIN-CONEXION` | `PILOT_NOT_READY` |
+| Administración | `PRN-ADMIN-L4260-01` | `CH-EPSON-L4260-USB` | `PENDIENTE_DE_IMPLEMENTACION_Y_EVIDENCIA` |
+| Administración | `PRN-ADMIN-L4260-01` | `CH-EPSON-L4260-WIFI` | `PENDIENTE_DE_IMPLEMENTACION_Y_EVIDENCIA` |
+| Molka | `PRN-MOLKA-DIGE200I-01` | `CH-DIGE200I-USB` | `PENDIENTE_DE_IMPLEMENTACION_Y_EVIDENCIA` |
+| Saudo | `PRN-SAUDO-DIGE200I-01` | `CH-DIGE200I-USB` | `PENDIENTE_DE_IMPLEMENTACION_Y_EVIDENCIA` |
+| Vento Café / caja | `PRN-VC-CAJA-DIGE200I-01` | `CH-DIGE200I-USB` | `PENDIENTE_DE_IMPLEMENTACION_Y_EVIDENCIA` |
+| Vento Café / barra | `PRN-VC-BARRA-DIGE200I-01` | `CH-DIGE200I-LAN` | `PENDIENTE_DE_IMPLEMENTACION_Y_EVIDENCIA` |
+| Vento Café / bar | `PRN-VC-BAR-DIGE200I-01` | `CH-DIGE200I-LAN` | `PENDIENTE_DE_IMPLEMENTACION_Y_EVIDENCIA` |
+| Vento Café / cocina | `PRN-VC-COCINA-DIGE200I-01` | `CH-DIGE200I-LAN` | `PENDIENTE_DE_IMPLEMENTACION_Y_EVIDENCIA` |
+| Vento Producción / 80 mm | `NINGUNO` | `CH-SIN-DISPOSITIVO-COMPATIBLE` | `PILOT_NOT_READY` |
+
+Control: 9 dispositivos físicos, 8 bindings definidos, 4 USB, 3 LAN, 1 Wi-Fi, 0 Bluetooth, 0 `LOCAL_BRIDGE` conformes y 3 condiciones sin binding activo.
+
+---
+
+#### 8. Escenarios obligatorios
+
+| Escenario | Resultado esperado |
+| --- | --- |
+| Camino feliz por las cuatro familias | Target correcto, receipt tipado y nivel físico exigido. |
+| Routing por sede/punto | Cero despacho a destino no autorizado. |
+| Rechazo seguro antes de write | Retry solo con evidencia de no efecto. |
+| Timeout o pérdida después de `WRITE_STARTED` | `RESULT_UNKNOWN`; cero retry/reprint hasta conciliación. |
+| Pérdida de callback | No se infiere éxito ni fallo físico. |
+| Papel, tapa, atasco, consumible y corte | Estado diagnosticable y recuperación sin duplicado. |
+| Spool/buffer/cleanup | Estado demostrable o `UNKNOWN`; nunca `CLEARED` por inferencia. |
+| Cancelación antes/después de posible write | No efecto cuando es seguro; conciliación cuando pudo existir efecto. |
+| USB a Wi-Fi L4260 | Mismo trabajo, copia, target y `device_ref`; cambia solo canal del intento. |
+| Offline, reinicio y reconexión | Identidad estable, revalidación previa al drenaje y cero duplicado. |
+| Reimpresión | Nueva copia vinculada, causa y autoridad; nunca retry disfrazado. |
+| Autorización denegada | Cero despacho. |
+| `D5_SECURITY_SECRET` | `BLOCK_PRINT` y cero exposición en error/telemetría/evidencia. |
+| Telemetría y soporte | Allowlist efectiva, sin payload ni render completo. |
+| Contingencia manual aplicable | Numeración, custodia, actor y conciliación. |
+| Recuperación | Estado elegible sin perder identidad, evidencia o pendientes. |
+
+Un escenario obligatorio sin ejecución o evidencia produce `PILOT_INCONCLUSIVE`.
+
+---
+
+#### 9. Métricas y criterios de aceptación
+
+##### 9.1 Criterios duros
+
+| Métrica | Aceptación |
+| --- | --- |
+| Despachos no autorizados | `0` |
+| Destinos, dispositivos o canales incorrectos | `0` |
+| Copias físicas duplicadas no autorizadas | `0` |
+| Retry/reprint durante `RESULT_UNKNOWN` | `0` |
+| Exposiciones `D5_SECURITY_SECRET` | `0` |
+| Payload/render sensible completo en telemetría ordinaria | `0` |
+| Cierres por callback/online sin evidencia suficiente | `0` |
+| Trabajos inexplicables al cierre | `0` |
+| Escenarios obligatorios sin evidencia dentro de un veredicto `PASS` | `0` |
+
+Una violación de esta tabla produce `PILOT_FAILED`.
+
+##### 9.2 Métricas operativas
+
+La corrida mide: admitidos, pendientes, activos, completados, fallidos, bloqueados, retries, dead-letter y conciliaciones; edad del backlog; tiempo admisión a `SEND_STARTED`; tiempo a receipt; tiempo a resultado físico cuando sea observable; recuperación tras fallo; duración de `RESULT_UNKNOWN`; throughput; concurrencia; deduplicación; freshness de heartbeat; lag de telemetría; completitud de evidencia; e incidentes de privacidad, autorización, routing y cleanup.
+
+##### 9.3 Envelope cuantitativo
+
+No se fija un SLO universal sin fuente. Antes de `PILOT_READY`, `performance_envelope_ref` congela:
+
+```text
+volumen_representativo
+concurrencia_representativa
+burst_representativo
+backlog_maximo_aceptable
+dispatch_latency_budget
+receipt_latency_budget
+physical_confirmation_budget_when_observable
+recovery_time_budget
+retry_window
+fuente_de_cada_objetivo
+revisor
+version
+```
+
+Cada valor procede de demanda empresarial aprobada, baseline medido, contrato NFR, deadline del trabajo o evidencia representativa. Un valor crítico sin fuente queda `UNKNOWN_BLOCKING`.
+
+---
+
+#### 10. Evidencia y veredicto
+
+Cada escenario conserva como mínimo `pilot_run_id`, `scenario_ref`, `output_id`, `job_id`, `copy_slot_id`, `attempt_id`, `adapter_execution_id`, `site_id`, `device_ref`, `channel_id`, `route_decision_id`, `target_policy_id`, `privacy_snapshot_id`, `sanitized_payload_hash`, `render_hash`, health, receipts, evidencia física, eventos de observabilidad, resultado esperado, resultado real, timestamps y revisor.
+
+No conserva payload empresarial completo, `render_bytes`, secretos, PAN/CVV, datos personales completos ni capturas sin saneamiento.
+
+- `PILOT_PASSED`: alcance completo, prerrequisitos satisfechos, 50 salidas cubiertas, bindings obligatorios ejecutados, escenarios críticos completos y criterios duros satisfechos.
+- `PILOT_FAILED`: violación de seguridad, privacidad, autorización, routing, integridad, no duplicación o cualquier criterio duro.
+- `PILOT_INCONCLUSIVE`: evidencia insuficiente, escenario obligatorio no ejecutado, familia excluida, resultado físico indeterminado o objetivo crítico sin fuente.
+- `PILOT_NOT_READY`: existe bloqueo de readiness antes de la corrida.
+- `PILOT_READY`: la corrida puede iniciar controladamente; no significa aprobación.
+
+---
+
+#### 11. Matriz materializada de las cincuenta salidas
+
+| Salida | Nombre canónico | Propietaria | Familia | Readiness heredado | Evidencia de aceptación |
+| --- | --- | --- | --- | --- | --- |
+| `IMP-LBL-01` | `Etiqueta de lote de producto terminado` | `FOGO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-02` | `Etiqueta de lote de producto intermedio o semielaborado` | `FOGO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-03` | `Etiqueta de preparación diaria o mise en place` | `FOGO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-04` | `Etiqueta de apertura, fraccionamiento o reempaque` | `FOGO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-05` | `Etiqueta de alérgenos y manipulación especial` | `FOGO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-06` | `Etiqueta de cuarentena, liberado o rechazado` | `FOGO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-07` | `Etiqueta de recepción de materia prima o lote proveedor` | `ORIGO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-08` | `Etiqueta de ubicación, estante, contenedor o zona` | `NEXO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-09` | `Etiqueta de artículo, insumo o SKU` | `NEXO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-10` | `Etiqueta de bulto para traslado, remisión o despacho` | `NEXO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-11` | `Etiqueta de pedido, recogida o entrega a cliente` | `PULSO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-12` | `Etiqueta de identificación de activo o equipo` | `NEXO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-13` | `Etiqueta de mantenimiento, inspección o fuera de servicio` | `NEXO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-14` | `Etiqueta de limpieza o sanitización` | `FOGO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-15` | `Etiqueta de muestra o prueba` | `FOGO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-LBL-16` | `Etiqueta de merma, residuo o disposición` | `FOGO` | `ETIQUETA` | `BLOCKED_STORED` | Impresión física, lectura/legibilidad, medio, privacidad y no duplicación. |
+| `IMP-CMD-01` | `Comanda de cocina` | `PULSO` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CMD-02` | `Comanda de bar de bebidas frías` | `PULSO` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CMD-03` | `Comanda de barra de cafés y bebidas calientes` | `PULSO` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CMD-04` | `Comanda de preparación o mise en place` | `FOGO` | `TICKET_80MM` | `TARGET_DEPENDENT; VP_BLOCKED_NO_DEVICE` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CMD-05` | `Tiquete de expedición o recogida` | `PULSO` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CMD-06` | `Solicitud interna de reposición` | `NEXO` | `TICKET_80MM` | `TARGET_DEPENDENT; VP_BLOCKED_NO_DEVICE` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CMD-07` | `Modificación o adición de comanda` | `PULSO` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CMD-08` | `Cancelación o anulación de comanda` | `PULSO` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CMD-09` | `Solicitud de producción por insuficiencia` | `FOGO` | `TICKET_80MM` | `BLOCKED_NO_DEVICE` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CLI-01` | `Resumen de cuenta para el cliente` | `PULSO` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CLI-02` | `Confirmación de pedido` | `PULSO` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CLI-03` | `Comprobante de pago` | `NUMERA` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CLI-04` | `Factura o comprobante de venta para cliente` | `NUMERA` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CLI-05` | `Comprobante de devolución, reverso o nota de crédito` | `NUMERA` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CLI-06` | `Resumen de recogida o entrega` | `PULSO` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CLI-07` | `Comprobante de reserva o anticipo` | `PULSO` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CLI-08` | `Vale, cortesía, promoción o beneficio` | `PULSO` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-CLI-09` | `Resumen de apertura, cierre o liquidación de caja` | `NUMERA` | `TICKET_80MM` | `BINDING_BY_RESOLVED_TARGET` | Target correcto, contenido saneado, receipt, efecto físico y no duplicación. |
+| `IMP-DOC-01` | `Remisión o nota de despacho` | `NEXO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-02` | `Manifiesto de traslado interno` | `NEXO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-03` | `Hoja de conteo de inventario` | `NEXO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-04` | `Reporte de diferencias o ajustes de inventario` | `NEXO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-05` | `Orden de compra` | `ORIGO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-06` | `Acta o comprobante de recepción` | `ORIGO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-07` | `Devolución a proveedor` | `ORIGO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-08` | `Orden de producción o ficha de lote` | `FOGO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-09` | `Receta, ficha técnica o guía práctica` | `FOGO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-10` | `Registro de calidad o no conformidad` | `FOGO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-11` | `Orden de mantenimiento` | `NEXO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-12` | `Acta de entrega, devolución o traslado de activo` | `NEXO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-13` | `Reporte de incidente o soporte técnico` | `NEXO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-14` | `Lista de limpieza, sanitización o control operativo` | `FOGO` | `A4` | `TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-15` | `Reporte contable, conciliación o liquidación` | `NUMERA` | `A4` | `L4260_USB_THEN_WIFI` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+| `IMP-DOC-16` | `Resumen de indicadores operativos o gerenciales` | `NEXO` | `A4` | `L4260_USB_THEN_WIFI` | Target A4 correcto, contenido saneado, receipt, efecto físico y entrega cuando aplique. |
+
+```text
+SALIDAS ESPERADAS: 50
+SALIDAS MATERIALIZADAS: 50
+IDENTIFICADORES IMP-* UNICOS: 50
+ETIQUETAS: 16
+COMANDAS Y TIQUETES OPERATIVOS: 9
+COMPROBANTES CLIENTE/CAJA: 9
+DOCUMENTOS A4: 16
+FOGO: 15
+NEXO: 14
+PULSO: 12
+NUMERA: 5
+ORIGO: 4
+FALTANTES: 0
+DUPLICADAS: 0
+```
+
+---
+
+#### 12. Brechas, responsables y condiciones de salida
+
+| ID | Brecha | Responsable | Condición de salida |
+| --- | --- | --- | --- |
+| `BLK-PRINT-020-001` | Los contratos canónicos de ejecución y observabilidad no están implementados de extremo a extremo. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | Implementación autorizada materializa contratos y pruebas previas suficientes para readiness. |
+| `BLK-PRINT-020-002` | No existen muestras runtime canónicas de heartbeat, health, backlog, receipt y resultado. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | Productores emiten señales con allowlist y una corrida controlada captura evidencia correlacionada. |
+| `BLK-PRINT-020-003` | Zebra ZD230 almacenada y sin canal real verificado. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | Interfaz verificada, despliegue autorizado, health elegible y prueba de etiqueta satisfactoria. |
+| `BLK-PRINT-020-004` | Epson L5590 en mantenimiento. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | Recuperación o sustitución autorizada, binding, health y prueba A4 satisfactoria. |
+| `BLK-PRINT-020-005` | Vento Producción sin impresora 80 mm compatible. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | Dispositivo incorporado mediante control de cambio, binding y prueba física satisfactoria. |
+| `BLK-PRINT-020-006` | Objetivos runtime de latencia, backlog y capacidad sin baseline o demanda aprobada suficiente. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | `performance_envelope_ref` aprobado y congelado con valor, fuente, contexto y revisor por dimensión crítica. |
+| `BLK-PRINT-020-007` | Sin evidencia física correlacionada de fallos inducidos, cleanup, receipt, offline y recuperación. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` | Corrida autorizada ejecuta escenarios obligatorios y conserva evidencia reproducible saneada. |
+
+`BLK-PRINT-019-004` queda resuelto documentalmente por la definición de métricas, gate y envelope. Los valores runtime siguen siendo prerrequisito de ejecución y no se presentan como mediciones actuales.
+
+---
+
+#### 13. Reconciliación con requisitos de prueba
+
+**NO GENERA REQUISITOS DE PRUEBA.**
+
+La cobertura vigente ya protege el piloto mediante `TREQ-PROC-280`, `284`, `309`, `314`, `445`, `446`, `447`, `448`, `460`, `461`, `471`, `472`, `474`, `475`, `479`, `557`, `1527`, `1532`, `1533`, `1535`, `1538` y `1539`. Estas filas cubren separación de estados, idempotencia, routing, fallos físicos, prueba real de etiquetas, readiness, observabilidad, offline, hardware real, capacidad, privacidad y el bloqueo de piloto por `UNKNOWN_BLOCKING`.
+
+La tarea crea `0`, modifica `0`, difiere `0`, descarta `0` y vuelve obsoletos `0` requisitos. El registro canónico `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md` permanece sin cambios.
+
+---
+
+#### 14. Criterios de aceptación de la tarea
+
+- [x] contrato de piloto definido;
+- [x] estado actual `PILOT_NOT_READY` sin evidencia inventada;
+- [x] gate de readiness compatible con NFR;
+- [x] 50 salidas materializadas, 50 IDs únicos, 0 faltantes y 0 duplicadas;
+- [x] distribución FOGO 15, NEXO 14, PULSO 12, NUMERA 5, ORIGO 4 preservada;
+- [x] cinco sedes, nueve dispositivos, ocho bindings y tres condiciones sin binding activo preservados;
+- [x] escenarios de fallos, privacidad, autorización, offline, reimpresión y recuperación definidos;
+- [x] métricas y criterios duros definidos sin inventar SLO runtime;
+- [x] objetivos cuantitativos condicionados a fuente aprobada;
+- [x] evidencia y veredictos definidos;
+- [x] brechas con propietario y condición de salida;
+- [x] cero cambios `TREQ`;
+- [x] cero código, SQL, Supabase, despliegue, compra, reparación o prueba física ejecutados;
+- [x] `EVID-ARC-001` permanece reservada.
+
+---
+
+#### 15. Cierre
+
+El bloque documental de impresión queda cerrado a nivel de diseño. `PRINT-ARC-020` no afirma que el servicio esté implementado, que el piloto sea ejecutable actualmente ni que exista aceptación operativa.
+
+`EVID-ARC-001 — Inventariar archivos y evidencia por proceso` permanece reservada y no se desarrolla desde esta tarea.
+
+---
+
+#### 16. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede
+
+TAREA ACTUAL APROBADA
+PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión
+
+SIGUIENTE TAREA RESERVADA
+EVID-ARC-001 — Inventariar archivos y evidencia por proceso
+```
+
 
 Flujo mínimo:
 
