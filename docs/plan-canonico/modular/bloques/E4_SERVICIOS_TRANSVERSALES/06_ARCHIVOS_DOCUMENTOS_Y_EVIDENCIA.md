@@ -4062,7 +4062,622 @@ Códigos aplicados:
 La aprobación de `EVID-ARC-008` no inicia, desarrolla ni aprueba `EVID-ARC-009`.
 
 
-### [ ] EVID-ARC-009 — Definir conservación legal y eliminación
+### ✅ EVID-ARC-009 — Definir conservación legal y eliminación
+
+**Estado:** APROBADA
+**Tarea anterior:** `EVID-ARC-008 — Definir auditoría de consulta y modificación` — APROBADA
+**Tarea siguiente:** `EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage` — RESERVADA
+**Tipo de tarea:** documental; contrato transversal de conservación gobernada, legal hold, elegibilidad, disposición, eliminación/anonimización y evidencia de disposición
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`
+**Procesos cubiertos:** 69 (`VPROC-0001` a `VPROC-0069`)
+**Entradas documentales/artefactos cubiertas:** 332 (`DOCCTX-*`)
+**Perfil materializado:** `EVID_LEGAL_RETENTION_DISPOSITION_V1`
+**Cambios físicos autorizados:** ninguno; no ejecuta borrados, anonimización, archivo físico, Storage, DDL, DML, RLS, jobs, migraciones, backfills, restauraciones ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** materializar para las 332 identidades documentales el contrato que impide disponer o eliminar sin política de retención resoluble, verificación de hold y excepciones, manifiesto de alcance, aprobación según riesgo, ejecución idempotente, tratamiento de copias/derivados/terceros/backups y evidencia verificable del resultado. Ninguna fila recibe un plazo jurídico, fundamento legal o estado de hold inventado.
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+Esta tarea cierra la frontera E4 entre conservar un documento y ejecutar su disposición. El resultado no es una tabla jurídica definitiva ni una eliminación física: es un contrato documental completo que hace **imposible interpretar vencimiento, anulación, sustitución, archivo, ausencia de uso o petición aislada como permiso de borrado**.
+
+La decisión se materializa sobre las 332 identidades heredadas y conserva cinco invariantes:
+
+1. `document_id + document_version` y el vínculo empresarial permanecen identificables hasta que la disposición autorizada alcance un resultado verificable.
+2. `RET_UNRESOLVED` bloquea toda disposición automática; no se convierte en retención indefinida por defecto.
+3. un hold activo prevalece sobre la elegibilidad de disposición y no amplía lectura, obtención de contenido, modificación ni finalidad.
+4. eliminar o anonimizar es un resultado gobernado de una disposición; no un `DELETE`, borrado de objeto, limpieza de caché o cambio de estado aislado.
+5. una disposición solo puede considerarse cerrada cuando deja evidencia suficiente sin conservar el contenido que debía desaparecer y cuando existe tratamiento explícito para copias gobernadas y restauraciones.
+
+---
+
+#### 2. Entradas y fronteras consumidas
+
+Se consumen sin reinterpretación las decisiones aprobadas de `EVID-ARC-001` a `EVID-ARC-008`, especialmente:
+
+- 332 identidades `DOCCTX-*` y 69 procesos canónicos;
+- propietaria funcional, sensibilidad, metadatos y vínculo con recurso;
+- `LOAD_V1`, `SUBSTITUTE_V1`, `ANNUL_V1` e historia no destructiva;
+- clase de retención base por identidad;
+- `RET_UNRESOLVED` para las 332 políticas definitivas, con propietaria `INFO-DOM-006`;
+- validación de archivo previa a activación;
+- acceso temporal y autorización previa;
+- `EVID_AUDIT_TRAIL_V1` para consulta y modificación.
+
+Esta tarea **no** cambia propiedad, sensibilidad, identidad, metadatos, política de acceso, resultados de validación, historia de versiones ni clases de retención. Tampoco decide la contingencia por indisponibilidad de Storage, reservada a `EVID-ARC-010`.
+
+Las definiciones corporativas definitivas permanecen asignadas a tareas existentes:
+
+| Decisión definitiva                                                                                                             | Tarea propietaria |
+| ------------------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| tabla de retención, fundamento, trigger, mínimo, máximo, archivo, hold, anonimización, eliminación y certificado de disposición | `INFO-DOM-006`    |
+| segregación de creación, revisión, aprobación, retención, legal hold, disposición y eliminación                                 | `INFO-AUTH-003`   |
+| contingencia cuando Storage no está disponible                                                                                  | `EVID-ARC-010`    |
+
+---
+
+#### 3. Perfil canónico `EVID_LEGAL_RETENTION_DISPOSITION_V1`
+
+Toda identidad usa el mismo perfil transversal. La clase de retención base orienta el contexto empresarial, pero **no selecciona por sí sola duración, trigger, método ni fundamento**.
+
+| Código                             | Regla materializada                                                                                                                                                   |
+| ---------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RET_POLICY_REQUIRED`              | La disposición exige `retention_policy_id + retention_policy_version` resolubles y vigentes para la identidad/versión.                                                |
+| `HOLD_CHECK_REQUIRED`              | Antes de declarar elegibilidad o ejecutar disposición se evalúan hold, preservación excepcional y excepciones aplicables.                                             |
+| `DISPOSITION_ELIGIBILITY_REQUIRED` | La elegibilidad deriva del trigger verificable, mínimo/máximo, estado del recurso y obligaciones; nunca de `updated_at`, última consulta, anulación o ausencia en UI. |
+| `DISPOSITION_MANIFEST_REQUIRED`    | Toda ejecución futura debe fijar un manifiesto de alcance con política/versión, trigger, recursos, copias/derivados/terceros, método, excepciones y responsables.     |
+| `DISPOSITION_BY_POLICY_ONLY`       | Archivo, transferencia, anonimización o eliminación solo pueden ejecutarse mediante el método autorizado por la política y el manifiesto.                             |
+| `DISPOSITION_IDEMPOTENT`           | Un reintento no duplica efectos ni permite que una falla parcial se presente como éxito.                                                                              |
+| `DISPOSITION_EVIDENCE_REQUIRED`    | El cierre conserva certificado o evidencia mínima del resultado, sin conservar por esa vía el contenido dispuesto.                                                    |
+| `NO_RESURRECTION_REQUIRED`         | Restauraciones, backups y copias gobernadas deben impedir que información ya dispuesta vuelva a quedar disponible para uso ordinario.                                 |
+
+---
+
+#### 4. Política de conservación y estado actual de resolución
+
+Las clases heredadas permanecen exactamente:
+
+| Clase                | Entradas | Interpretación comportamental                                                                   |
+| -------------------- | -------: | ----------------------------------------------------------------------------------------------- |
+| `RET_ACTIVE_CASE`    |       33 | expediente activo hasta cierre verificable del caso; no fija duración posterior                 |
+| `RET_BUSINESS_CYCLE` |      184 | artefacto ligado a ciclo operativo, productivo, comercial, logístico, de activos o presupuestal |
+| `RET_RELATIONSHIP`   |       36 | artefacto gobernado por una relación con trabajador, candidato, cliente o tercero               |
+| `RET_OBLIGATION`     |       66 | artefacto laboral, SST, financiero, de acceso o autoridad con control reforzado                 |
+| `RET_ARCHIVAL`       |       13 | artefacto de gobierno/política/registro con valor histórico sujeto a archivo gobernado          |
+| **Total**            |  **332** | —                                                                                               |
+
+Para las 332 identidades sigue vigente:
+
+```text
+retention_policy_resolution = RET_UNRESOLVED
+owner = INFO-DOM-006
+exit_condition = retention_policy_id + retention_policy_version
+                 + retention_trigger + minimum_period + maximum_period
+                 + archive_rule + hold_eligibility + disposition_method
+                 + backup_treatment + copy_and_derivative_treatment
+```
+
+Consecuencia contractual actual:
+
+- conservación gobernada = obligatoria;
+- disposición automática = bloqueada;
+- eliminación física o anonimización ejecutable = bloqueada;
+- certificado de disposición real = imposible hasta una ejecución futura verificable;
+- retención indefinida por inercia = no constituye política válida.
+
+---
+
+#### 5. Legal hold y preservación excepcional
+
+`HOLD_ACTIVE` es una condición transversal de preservación y no una clase de retención base. Ninguna de las 332 identidades se marca como hold activo por inferencia; el estado solo podrá existir para instancias concretas con evidencia.
+
+Un hold materializado deberá conservar al menos `hold_id`, tipo, alcance o manifiesto, motivo, autoridad, solicitante, aprobador, emisión/vigencia, revisión, condición de liberación, custodio, acciones de preservación y excepciones aplicables.
+
+Reglas obligatorias:
+
+1. `HOLD_ACTIVE` bloquea disposición aunque el recurso hubiera alcanzado elegibilidad ordinaria.
+2. El hold no concede acceso, finalidad, obtención de contenido, edición o visibilidad adicional.
+3. El alcance debe ser concreto y resoluble; no se utiliza un hold global indefinido por conveniencia.
+4. Liberar o modificar un hold exige autoridad, motivo, timestamp, evidencia y nueva evaluación de elegibilidad.
+5. La liberación de hold no ejecuta disposición automáticamente ni borra el historial del hold.
+6. Las acciones de alta, revisión, cambio y liberación consumen el sobre auditable de `EVID-ARC-008`.
+
+---
+
+#### 6. Elegibilidad, disposición y eliminación
+
+El flujo obligatorio queda materializado así:
+
+```text
+POLÍTICA RESOLUBLE
+→ ELEGIBILIDAD CALCULADA
+→ VERIFICACIÓN DE HOLD Y EXCEPCIONES
+→ MANIFIESTO DE ALCANCE
+→ APROBACIÓN SEGÚN RIESGO
+→ EJECUCIÓN IDEMPOTENTE
+→ VERIFICACIÓN DE COPIAS Y DERIVADOS
+→ CERTIFICADO O EVIDENCIA
+→ PROTECCIÓN CONTRA RESURRECCIÓN
+```
+
+Se adoptan los estados documentales de ciclo ya aprobados: `ACTIVE → INACTIVE → ARCHIVE_PENDING → ARCHIVED → ELIGIBLE_FOR_DISPOSITION → DISPOSITION_PENDING → DISPOSED | ANONYMIZED | TRANSFERRED`, con condiciones transversales `HOLD_ACTIVE`, `PRESERVATION_REQUIRED`, `DISPOSITION_BLOCKED`, `DISPOSITION_FAILED` y `POLICY_UNRESOLVED`.
+
+Guardas de disposición:
+
+- una política no resoluble produce `POLICY_UNRESOLVED`/`DISPOSITION_BLOCKED`;
+- eliminación lógica no cierra disposición si el contenido continúa accesible;
+- fallas parciales producen `DISPOSITION_FAILED`, nunca éxito silencioso;
+- reintentos deben ser idempotentes;
+- la evidencia mínima de disposición se conserva sin replicar el contenido eliminado;
+- la integridad referencial debe recibir tratamiento aprobado antes de retirar un recurso;
+- disposiciones masivas o de información `S3_RESTRICTED`/`S4_HIGHLY_RESTRICTED` requieren segregación reforzada;
+- una versión sustituida, anulada o archivada no se elimina por ese solo hecho.
+
+---
+
+#### 7. Manifiesto y evidencia de disposición
+
+Toda futura disposición deberá poder demostrar, como mínimo:
+
+- política y versión aplicadas;
+- trigger y fecha de elegibilidad;
+- documento/versión y recursos afectados;
+- copias, adjuntos, índices y derivados gobernados conocidos;
+- terceros afectados;
+- método de disposición;
+- excepciones y fallas;
+- ejecutor y aprobador;
+- conteos o reconciliación antes/después cuando corresponda;
+- correlación con la auditoría de solicitud, autorización, ejecución y resultado.
+
+El certificado/evidencia no podrá afirmar una eliminación global si permanecen copias legítimas pendientes. Cuando aplique, el resultado distinguirá el alcance interno, terceros pendientes y verificación final. Ningún certificado real se materializa en esta tarea porque no se ejecutan disposiciones.
+
+---
+
+#### 8. Copias, terceros, backups y no resurrección
+
+Una disposición del origen no se considera completa sin tratamiento explícito de copias gobernadas. Si una copia no puede retirarse de inmediato, deberá quedar inaccesible, expirar según política y no reutilizarse.
+
+Para backups:
+
+- su política es propia y su acceso es excepcional;
+- no funcionan como archivo histórico ni consulta ordinaria;
+- contenido ya dispuesto puede persistir cifrado hasta la expiración técnica aprobada del backup, sin volver a uso ordinario;
+- una restauración debe reaplicar el ledger de disposiciones, holds, revocaciones y políticas posteriores al punto restaurado antes de abrir acceso;
+- restaurar no revierte por sí mismo anonimización, eliminación o revocación ya aplicables.
+
+La arquitectura de contingencia, recuperación e indisponibilidad física de Storage continúa reservada a sus tareas propietarias y no se implementa aquí.
+
+---
+
+#### 9. Matriz materializada por identidad documental
+
+Códigos de bloqueo y frontera:
+
+| Código                 | Significado                                                                                                                                                                                             |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `RET_POLICY_PENDING`   | Falta política definitiva resoluble. Propietaria: `INFO-DOM-006`. Sale cuando existen política/versión, trigger, mínimo, máximo, archivo, hold, método de disposición y tratamientos de copias/backups. |
+| `FRONTERA_OBLIGATORIA` | Se conserva la frontera heredada de propiedad/recurso; una disposición no absorbe autoridad de otro dominio.                                                                                            |
+| `APLICACION_DIFERIDA`  | La definición documental es válida, pero no acredita disponibilidad de la aplicación propietaria objetivo.                                                                                              |
+| `NINGUNO`              | No existe una frontera heredada adicional; `RET_POLICY_PENDING` sigue bloqueando la disposición.                                                                                                        |
+
+| ID contextual          | Proceso      | Retención base       | Política         | Hold                  | Elegibilidad                       | Disposición                  | Evidencia                       | Restauración               | Estado         | Bloqueo / frontera                        |
+| ---------------------- | ------------ | -------------------- | ---------------- | --------------------- | ---------------------------------- | ---------------------------- | ------------------------------- | -------------------------- | -------------- | ----------------------------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `RET_ARCHIVAL`       | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `RET_RELATIONSHIP`   | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `RET_OBLIGATION`     | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING`                      |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `RET_ACTIVE_CASE`    | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `RET_BUSINESS_CYCLE` | `RET_UNRESOLVED` | `HOLD_CHECK_REQUIRED` | `DISPOSITION_ELIGIBILITY_REQUIRED` | `DISPOSITION_BY_POLICY_ONLY` | `DISPOSITION_EVIDENCE_REQUIRED` | `NO_RESURRECTION_REQUIRED` | `ESPECIFICADO` | `RET_POLICY_PENDING+FRONTERA_OBLIGATORIA` |
+
+---
+
+#### 10. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea instancia sobre las 332 identidades documentales reglas de retención, hold, elegibilidad, disposición, fallas parciales, copias, backups y no resurrección ya aprobadas por `NFR-REQ-006` y la línea base de `EVID-ARC-005`. No introduce un nuevo plazo, fundamento, autorización, transformación, transición, excepción ni comportamiento verificable adicional; por ello crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0. El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 11. Reconciliación cuantitativa
+
+| Control                                         | Resultado |
+| ----------------------------------------------- | --------: |
+| Procesos esperados                              |        69 |
+| Procesos materializados                         |        69 |
+| Entradas `DOCCTX-*` esperadas                   |       332 |
+| Entradas materializadas                         |       332 |
+| Claves `DOCCTX-*` únicas                        |       332 |
+| Entradas con `RET_UNRESOLVED`                   |       332 |
+| Entradas con `HOLD_CHECK_REQUIRED`              |       332 |
+| Entradas con `DISPOSITION_ELIGIBILITY_REQUIRED` |       332 |
+| Entradas con `DISPOSITION_BY_POLICY_ONLY`       |       332 |
+| Entradas con `DISPOSITION_EVIDENCE_REQUIRED`    |       332 |
+| Entradas con `NO_RESURRECTION_REQUIRED`         |       332 |
+| Faltantes                                       |         0 |
+| Duplicados                                      |         0 |
+
+Fronteras heredadas:
+
+| Frontera               | Entradas |
+| ---------------------- | -------: |
+| `NINGUNO`              |       73 |
+| `FRONTERA_OBLIGATORIA` |      245 |
+| `APLICACION_DIFERIDA`  |       14 |
+| **Total**              |  **332** |
+
+Clases de retención heredadas:
+
+| Clase                | Entradas |
+| -------------------- | -------: |
+| `RET_ACTIVE_CASE`    |       33 |
+| `RET_BUSINESS_CYCLE` |      184 |
+| `RET_RELATIONSHIP`   |       36 |
+| `RET_OBLIGATION`     |       66 |
+| `RET_ARCHIVAL`       |       13 |
+| **Total**            |  **332** |
+
+No se modifica ninguna propietaria funcional ni clasificación de sensibilidad heredada.
+
+---
+
+#### 12. Criterios de aceptación
+
+- [x] `EVID-ARC-008` figura aprobada y entrega 332 identidades para 69 procesos.
+- [x] las 332 identidades aparecen exactamente una vez.
+- [x] las cinco clases de retención conservan exactamente la distribución heredada 33/184/36/66/13.
+- [x] las 332 identidades permanecen `RET_UNRESOLVED` hasta `INFO-DOM-006`; no se inventan plazos, fundamentos, triggers definitivos ni métodos jurídicos específicos.
+- [x] las 332 identidades requieren verificación de hold antes de disposición.
+- [x] hold activo bloquea disposición y no amplía autorización o acceso.
+- [x] liberar hold recalcula elegibilidad y no ejecuta borrado automático.
+- [x] toda disposición exige elegibilidad, manifiesto, aprobación según riesgo, ejecución idempotente y evidencia de resultado.
+- [x] eliminación lógica, sustitución, anulación, archivo o ausencia en UI no se consideran disposición final por sí solos.
+- [x] fallas parciales permanecen como fallo; no se certifica éxito silencioso.
+- [x] copias, derivados, terceros y backups reciben tratamiento explícito y se protege contra resurrección.
+- [x] las fronteras 73/245/14 permanecen reconciliadas.
+- [x] no se ejecuta ningún cambio físico, borrado, anonimización, migración, job o cambio en Supabase/Storage.
+- [x] la tarea genera cero cambios en requisitos de prueba y no requiere una copia del registro canónico.
+- [x] `EVID-ARC-010` permanece reservada y no iniciada.
+
+---
+
+#### 13. Handoff cerrado hacia EVID-ARC-010
+
+`EVID-ARC-010` recibe las 332 identidades documentales con conservación gobernada y disposición fail-closed materializadas: clase de retención heredada, política jurídica no resuelta con propietaria exacta, evaluación de hold, elegibilidad, manifiesto, ejecución idempotente, evidencia de disposición y protección contra resurrección. Su única responsabilidad siguiente será definir la contingencia ante indisponibilidad de Storage sin cambiar identidad, propiedad, sensibilidad, validación, acceso temporal, auditoría, retención, hold ni disposición aprobados aquí.
+
+La aprobación de `EVID-ARC-009` no inicia, desarrolla ni aprueba `EVID-ARC-010`.
+
+
 ### [ ] EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage
 
 Los pilotos operativos reales no se ejecutan durante E4.

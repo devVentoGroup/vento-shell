@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **606** |
+| Tareas aprobadas | **607** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **988** |
+| Tareas no iniciadas | **987** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **38.02% (606/1594)** |
+| Porcentaje de completamiento | **38.08% (607/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **EVID-ARC-008 — Definir auditoría de consulta y modificación** |
-| Tarea actual | **EVID-ARC-009 — Definir conservación legal y eliminación** |
+| Última tarea aprobada | **EVID-ARC-009 — Definir conservación legal y eliminación** |
+| Tarea actual | **EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage** |
+| Siguiente tarea | **NOTIFY-ARC-001 — Inventariar notificaciones actuales y canales** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 30 de 157 aprobadas; EVID-ARC-009 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 31 de 157 aprobadas; EVID-ARC-010 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `EVID-ARC-008` — Definir auditoría de consulta y modificación |
-| Tarea actual | `EVID-ARC-009` — Definir conservación legal y eliminación — **NO INICIADA** |
-| Siguiente tarea | `EVID-ARC-010` — Definir contingencia ante indisponibilidad de Storage |
+| Última aprobada | `EVID-ARC-009` — Definir conservación legal y eliminación |
+| Tarea actual | `EVID-ARC-010` — Definir contingencia ante indisponibilidad de Storage — **NO INICIADA** |
+| Siguiente tarea | `NOTIFY-ARC-001` — Inventariar notificaciones actuales y canales |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 30 DE 157 APROBADAS — ACTUAL EVID-ARC-009** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 31 DE 157 APROBADAS — ACTUAL EVID-ARC-010** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-EVID-ARC-008 — Definir auditoría de consulta y modificación
-        ↓
-TAREA ACTUAL
 EVID-ARC-009 — Definir conservación legal y eliminación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage
         ↓
+SIGUIENTE TAREA RESERVADA
+NOTIFY-ARC-001 — Inventariar notificaciones actuales y canales
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 30 de 157 tareas aprobadas
+CARRIL NEXO — 31 de 157 tareas aprobadas
 ```
