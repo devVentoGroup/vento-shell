@@ -470,7 +470,525 @@ La distribución por aplicación conserva exactamente la propiedad aprobada del 
 La aprobación de `EVID-ARC-002` no inicia, desarrolla ni aprueba `EVID-ARC-003`.
 
 
-### [ ] EVID-ARC-003 — Definir clasificación de sensibilidad
+### ✅ EVID-ARC-003 — Definir clasificación de sensibilidad
+
+**Estado:** APROBADA
+**Tarea anterior:** `EVID-ARC-002 — Definir propietario funcional de cada tipo documental` — APROBADA
+**Tarea siguiente:** `EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso` — RESERVADA
+**Tipo de tarea:** documental; materialización de sensibilidad por entrada documental contextualizada
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`
+**Procesos cubiertos:** 69 (`VPROC-0001` a `VPROC-0069`)
+**Entradas documentales/artefactos clasificadas:** 332
+**Escala canónica consumida:** `S0_PUBLIC`, `S1_INTERNAL`, `S2_CONFIDENTIAL`, `S3_RESTRICTED`, `S4_HIGHLY_RESTRICTED`
+**Cambios físicos autorizados:** ninguno; no crea buckets, tablas, políticas, RLS, migraciones, cifrado, objetos de Storage ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** asignar una clase mínima de sensibilidad a cada una de las 332 entradas documentales/artefactos recibidas de `EVID-ARC-002`, preservando propiedad funcional, granularidad, herencia y elevación de sensibilidad, sin convertir la clasificación en autorización ni anticipar las decisiones reservadas a `EVID-ARC-004` a `EVID-ARC-010`.
+
+---
+
+#### 1. Resultado sustantivo
+
+La tarea materializa `EVID-SENSITIVITY-CLASSIFICATION-MATRIX-001`: una decisión explícita y verificable para cada entrada documental contextualizada. La unidad de decisión es el tipo documental o artefacto dentro de su `VPROC-*`; no la aplicación completa, el bucket, la tabla, la carpeta ni el formato físico.
+
+Cada fila recibe una clave `DOCCTX-VPROC-####-NN` exclusiva de esta matriz para comprobar cobertura, orden y duplicados. Esa clave no afirma existencia de un archivo físico ni crea una identidad de Storage.
+
+---
+
+#### 2. Fuentes canónicas consumidas
+
+- `EVID-ARC-001`: inventario de soportes, artefactos/documentos y evidencia mínima por los 69 procesos.
+- `EVID-ARC-002`: 69 contextos de proceso, 332 entradas documentales/artefactos y propietaria funcional inequívoca para cada contexto.
+- `NFR-REQ-005`: contrato aprobado de privacidad y sensibilidad, escala `S0` a `S4`, categorías mínimas, granularidad, propagación, inferencia y guardrails.
+- `PROC-CAT-005`: propiedad funcional de los 69 procesos; la clasificación no modifica propietarias.
+- Registro Canónico de Requisitos de Prueba vigente: reglas ya existentes de clasificación, herencia, archivos sensibles, privacidad y Storage.
+- `INFO-DOM-001` a `INFO-DOM-003`: decisiones posteriores reservadas de gobierno, clasificación definitiva corporativa y taxonomía documental global.
+
+---
+
+#### 3. Escala y reglas de decisión
+
+| Clase                  | Significado operativo en EVID-ARC-003                                                                                                                       |
+| ---------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `S0_PUBLIC`            | Solo contenido cuya divulgación abierta está expresamente aprobada. La condición pública se limita a la versión publicada y vigente.                        |
+| `S1_INTERNAL`          | Información de operación ordinaria que no debe divulgarse externamente por defecto.                                                                         |
+| `S2_CONFIDENTIAL`      | Información limitada por función, sede, relación, finalidad o conocimiento empresarial propietario.                                                         |
+| `S3_RESTRICTED`        | Información cuya exposición, alteración o correlación puede causar daño alto laboral, financiero, disciplinario, investigativo, de ubicación o equivalente. |
+| `S4_HIGHLY_RESTRICTED` | Salud, secretos, credenciales, PIN, tokens, declaraciones/investigaciones especialmente sensibles o contenido cuyo compromiso exige contención inmediata.   |
+
+Reglas obligatorias:
+
+1. La clase de la fila es un **piso mínimo**. Si el contenido real, un campo, adjunto, firma, evidencia, sujeto o combinación exige una clase superior, prevalece la más restrictiva.
+2. Una clasificación ausente, desconocida o no resoluble se trata con la política más restrictiva; nunca como pública.
+3. Copias, derivados, joins, cachés, exportaciones, impresiones, screenshots, thumbnails, evidencias y metadatos heredan la clase más restrictiva de su contenido o fuente y pueden elevarla por inferencia o daño adicional.
+4. `S0_PUBLIC` no se propaga hacia borradores, comentarios, fuentes, metadatos, historial ni versiones no publicadas. Un artefacto mixto conserva su piso interno y solo su proyección pública aprobada puede bajar a `S0_PUBLIC`.
+5. Expedientes, archivos, documentos, payloads, snapshots, POD, actas, certificados y soportes usan `HERENCIA_CONTENIDO` cuando su contenido puede ser más sensible que el piso de la fila.
+6. Resultados analíticos y agregados usan `INFERENCIA`: pueden elevarse cuando una combinación permita reidentificación, perfilado, drill-down o daño adicional.
+7. La clasificación no concede acceso, permiso, exportación, impresión, descarga, compartición, edición, firma, retención, eliminación ni disponibilidad offline.
+8. La clasificación de esta tarea es mínima y operativa para E4. `INFO-DOM-001` y `INFO-DOM-002` podrán refinar gobierno y clasificación corporativa posterior, pero no degradar silenciosamente los mínimos aprobados sin una reclasificación explícita y versionada.
+
+Códigos de regla usados en la matriz:
+
+| Regla                    | Aplicación                                                                                                                                  |
+| ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BASE`                   | La clase declarada es el piso contextual; siguen aplicando elevación y propagación generales.                                               |
+| `HERENCIA_CONTENIDO`     | La clase efectiva es la más restrictiva entre el piso de la fila y la clase del contenido/fuente asociado.                                  |
+| `PUBLICACION_CONTROLADA` | Solo una versión expresamente aprobada para audiencia abierta puede ser `S0_PUBLIC`; material previo o relacionado conserva clase superior. |
+| `INFERENCIA`             | La clase efectiva puede elevarse por combinación, reidentificación, perfilado o granularidad del resultado.                                 |
+| `S4_DIRECTA`             | La naturaleza del contexto fija `S4_HIGHLY_RESTRICTED` como piso y no admite degradación implícita.                                         |
+
+---
+
+#### 4. Matriz materializada de sensibilidad
+
+| ID contextual          | Proceso      | Propietaria | Tipo documental / artefacto                   | Clase mínima           | Regla dominante          |
+| ---------------------- | ------------ | ----------- | --------------------------------------------- | ---------------------- | ------------------------ |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `viso`      | Registro de decisión                          | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `viso`      | acta y compromisos                            | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `viso`      | Catálogo de estructura                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `viso`      | expediente o soporte del cambio estructural   | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `viso`      | Política o delegación versionada              | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `viso`      | Paquete de handoff y compromiso               | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `viso`      | Requisición/vacante                           | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `viso`      | expediente de candidato                       | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `viso`      | evaluación                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `viso`      | oferta                                        | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `viso`      | handoff                                       | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `viso`      | Caso de incorporación                         | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `viso`      | expediente                                    | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `viso`      | checklist                                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `viso`      | solicitudes de acceso/equipo                  | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `viso`      | Asignación                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `viso`      | horario/programación                          | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `viso`      | publicación e historial                       | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `anima`     | Hechos de asistencia y decisión de corrección | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `viso`      | Caso laboral y soportes                       | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `numera`    | Paquete de liquidación                        | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `numera`    | detalle                                       | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `numera`    | instrucción de pago                           | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `numera`    | conciliación                                  | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `viso`      | Expediente de retiro                          | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `viso`      | checklist                                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `viso`      | documentos finales                            | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `viso`      | certificado de cierre                         | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `viso`      | Registro de riesgo                            | `S4_HIGHLY_RESTRICTED` | `S4_DIRECTA`             |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `viso`      | inspección                                    | `S4_HIGHLY_RESTRICTED` | `S4_DIRECTA`             |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `viso`      | control                                       | `S4_HIGHLY_RESTRICTED` | `S4_DIRECTA`             |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `viso`      | plan de acción                                | `S4_HIGHLY_RESTRICTED` | `S4_DIRECTA`             |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `viso`      | riesgo residual                               | `S4_HIGHLY_RESTRICTED` | `S4_DIRECTA`             |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `viso`      | Expediente de incidente                       | `S4_HIGHLY_RESTRICTED` | `S4_DIRECTA`             |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `viso`      | investigación                                 | `S4_HIGHLY_RESTRICTED` | `S4_DIRECTA`             |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `viso`      | acciones                                      | `S4_HIGHLY_RESTRICTED` | `S4_DIRECTA`             |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `viso`      | Procedimiento                                 | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `viso`      | plan de control                               | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `viso`      | ejecución                                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `viso`      | checklist y mediciones                        | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `nexo`      | Maestro de producto                           | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `nexo`      | presentaciones                                | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `nexo`      | unidades                                      | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `nexo`      | equivalencias                                 | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `fogo`      | Receta/versiones                              | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `fogo`      | resultados de prueba                          | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `fogo`      | aprobación                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `fogo`      | snapshot publicado                            | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `pulso`     | Versión de oferta y publicación de catálogo   | `S1_INTERNAL`          | `PUBLICACION_CONTROLADA` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `nexo`      | Especificación                                | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `nexo`      | alérgenos                                     | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `nexo`      | restricciones                                 | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `nexo`      | criterios de calidad                          | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `origo`     | Solicitud de compra                           | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `origo`     | consolidación                                 | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `origo`     | decisión                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `origo`     | Expediente de cotizaciones                    | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `origo`     | comparación                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `origo`     | evaluación                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `origo`     | recomendación                                 | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `origo`     | decisión                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `origo`     | Orden de compra aprobada                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `origo`     | compromiso                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `origo`     | comunicación al proveedor                     | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `origo`     | Recepción de compra                           | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `origo`     | diferencias                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `origo`     | documentos asociados                          | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `nexo`      | Catálogo de ubicaciones                       | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `nexo`      | etiqueta/identificación                       | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `nexo`      | Movimiento                                    | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `nexo`      | proyección de stock                           | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `nexo`      | escaneos/evidencia                            | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `nexo`      | Movimiento de retiro/consumo/traslado         | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `nexo`      | custodia/recibo                               | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `nexo`      | Observación de conteo                         | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `nexo`      | sesión                                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `nexo`      | diferencia                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `nexo`      | investigación                                 | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `nexo`      | decisión de ajuste                            | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `nexo`      | Condición/cuarentena/vencimiento/merma        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `nexo`      | decisión de disposición                       | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `nexo`      | Solicitud de abastecimiento                   | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `nexo`      | cantidad aprobada                             | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `nexo`      | preparación                                   | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `nexo`      | despacho                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `nexo`      | tránsito                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `nexo`      | recepción                                     | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `nexo`      | conciliación                                  | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `nexo`      | Registro de activo                            | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `nexo`      | identidad                                     | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `nexo`      | ubicación                                     | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `nexo`      | custodia                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `nexo`      | préstamo/transferencia                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `nexo`      | historial                                     | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `nexo`      | Orden de mantenimiento                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `nexo`      | diagnóstico                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `nexo`      | reparaciones/repuestos                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `nexo`      | prueba                                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `nexo`      | liberación                                    | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `nexo`      | garantía/disposición                          | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `nexo`      | Registro de vehículo                          | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `nexo`      | disponibilidad                                | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `nexo`      | asignación                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `nexo`      | kilometraje                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `nexo`      | combustible                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `nexo`      | documentos                                    | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `nexo`      | incidencias                                   | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `nexo`      | Catálogo de reutilizables/contenedores        | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `nexo`      | custodia                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `nexo`      | entregas                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `nexo`      | retornos                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `nexo`      | pérdida/daño                                  | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `fogo`      | Plan de producción versionado                 | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `fogo`      | órdenes planificadas                          | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `fogo`      | capacidad                                     | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `fogo`      | faltantes                                     | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `fogo`      | aprobación                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `fogo`      | Orden de producción                           | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `fogo`      | lote                                          | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `fogo`      | receta                                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `fogo`      | materiales                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `fogo`      | etapas                                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `fogo`      | cantidades                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `fogo`      | rendimiento                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `fogo`      | desviaciones                                  | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `fogo`      | Inspección de calidad                         | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `fogo`      | resultados                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `fogo`      | no conformidad                                | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `fogo`      | disposición                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `fogo`      | Registro de empaque                           | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `fogo`      | etiquetas/códigos                             | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `fogo`      | LPN                                           | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `fogo`      | handoff a almacenamiento                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `fogo`      | Reproceso                                     | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `fogo`      | genealogía                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `fogo`      | rendimiento                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `fogo`      | merma                                         | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `fogo`      | cierre                                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `pulso`     | Servicio de mesa                              | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `pulso`     | pedido/versiones                              | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `pulso`     | preparación                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `pulso`     | entrega                                       | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `pulso`     | pago                                          | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `pulso`     | cierre de cuenta                              | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `pulso`     | Pedido mostrador/para llevar                  | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `pulso`     | promesa                                       | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `pulso`     | preparación                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `pulso`     | handoff                                       | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `pulso`     | pago                                          | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `pulso`     | cierre                                        | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `pulso`     | Payload externo preservado                    | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `pulso`     | pedido normalizado                            | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `pulso`     | mapping                                       | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `pulso`     | pedido interno                                | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `pulso`     | discrepancia                                  | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `pulso`     | Oportunidad B2B                               | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `pulso`     | cotización                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `pulso`     | decisión de capacidad                         | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `pulso`     | pedido                                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `pulso`     | expediente producción-factura-entrega         | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `pulso`     | Caso de cambio                                | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `pulso`     | antes/después                                 | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `pulso`     | decisión                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `pulso`     | efectos                                       | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `pulso`     | Intentos de pago                              | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `pulso`     | autorización/captura                          | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `pulso`     | asignación a venta                            | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `pulso`     | soporte fiscal                                | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `pulso`     | reverso/reembolso                             | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `pulso`     | conciliación                                  | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `pulso`     | Sesión de caja                                | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `pulso`     | esperado vs. observado                        | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `pulso`     | diferencias                                   | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `pulso`     | aprobaciones                                  | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `pulso`     | entrega                                       | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `pulso`     | depósito                                      | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `pass`      | Perfil de cliente                             | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `pass`      | consentimientos                               | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `pass`      | cuenta/ledger de fidelización                 | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `pass`      | beneficios/redenciones                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `pulso`     | Caso de reclamo                               | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `pulso`     | clasificación                                 | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `pulso`     | investigación                                 | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `pulso`     | resolución                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `pulso`     | compensación                                  | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `pulso`     | devolución/reembolso                          | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `pulso`     | causa/acciones                                | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `pulso`     | Reserva/evento                                | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `pulso`     | capacidad                                     | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `pulso`     | comunicaciones                                | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `pulso`     | consentimiento                                | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `pulso`     | depósitos                                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `pulso`     | asistencia/no-show/cancelación                | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `nexo`      | Plan de ruta                                  | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `nexo`      | paradas                                       | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `nexo`      | vehículo/conductor                            | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `nexo`      | carga                                         | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `nexo`      | manifiesto                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `nexo`      | restricciones                                 | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `nexo`      | publicación                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `nexo`      | Viaje                                         | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `nexo`      | paradas                                       | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `nexo`      | POD                                           | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `nexo`      | rechazo/incidente                             | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `nexo`      | custodia                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `nexo`      | retornos                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `nexo`      | kilometraje                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `nexo`      | cierre                                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `pulso`     | Caso de entrega de tercero                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `pulso`     | asignación                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `pulso`     | tracking                                      | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `pulso`     | POD                                           | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `pulso`     | incidentes                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `pulso`     | retorno                                       | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `pulso`     | liquidación/conciliación                      | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `numera`    | Hecho económico                               | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `numera`    | clasificación contable                        | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `numera`    | asiento                                       | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `numera`    | soporte                                       | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `numera`    | Obligación                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `numera`    | aprobación                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `numera`    | instrucción de pago                           | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `numera`    | resultado bancario                            | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `numera`    | conciliación                                  | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `numera`    | Cuenta por cobrar                             | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `numera`    | acciones de cobro                             | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `numera`    | pago/aplicación                               | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `numera`    | disputa/diferencia                            | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `numera`    | Modelo de costos                              | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `numera`    | distribución                                  | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `numera`    | cierre de costos                              | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `numera`    | resultados                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `numera`    | rentabilidad                                  | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `numera`    | variación                                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `nexo`      | Plan de instalaciones                         | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `nexo`      | orden de trabajo                              | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `nexo`      | ejecución                                     | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `nexo`      | desviación                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `nexo`      | liberación                                    | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `aura`      | Brief                                         | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `aura`      | contenido/promoción versionada                | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `aura`      | revisión                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `aura`      | aprobación                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `aura`      | publicación                                   | `S0_PUBLIC`            | `PUBLICACION_CONTROLADA` |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `aura`      | retiro                                        | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `aura`      | archivo                                       | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `aura`      | Consulta/lead                                 | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `aura`      | consentimiento                                | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `aura`      | calificación                                  | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `aura`      | asignación                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `aura`      | conversación                                  | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `aura`      | oportunidad                                   | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `aura`      | handoff                                       | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `viso`      | Ticket tecnológico                            | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `viso`      | clasificación/SLA                             | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `viso`      | diagnóstico                                   | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `viso`      | workaround                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `viso`      | conocimiento                                  | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `viso`      | cierre                                        | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `viso`      | Solicitud de acceso                           | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `viso`      | aprobaciones                                  | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `viso`      | entitlement                                   | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `viso`      | resultado de provisión                        | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `viso`      | revocación                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `viso`      | attestación                                   | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `viso`      | Registro documental                           | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `viso`      | versión                                       | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `viso`      | metadatos                                     | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `viso`      | clasificación                                 | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `viso`      | firmas                                        | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `viso`      | retención/hold                                | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `viso`      | custodia                                      | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `viso`      | certificado de disposición                    | `S2_CONFIDENTIAL`      | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `numera`    | Medición                                      | `S2_CONFIDENTIAL`      | `INFERENCIA`             |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `numera`    | snapshot de fuente                            | `S2_CONFIDENTIAL`      | `INFERENCIA`             |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `numera`    | análisis                                      | `S2_CONFIDENTIAL`      | `INFERENCIA`             |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `numera`    | insight                                       | `S2_CONFIDENTIAL`      | `INFERENCIA`             |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `numera`    | decisión/plan de mejora                       | `S2_CONFIDENTIAL`      | `INFERENCIA`             |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `numera`    | medición posterior                            | `S2_CONFIDENTIAL`      | `INFERENCIA`             |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `viso`      | Caso de continuidad                           | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `viso`      | impacto/severidad                             | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `viso`      | plan                                          | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `viso`      | modo degradado                                | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `viso`      | recuperación                                  | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `viso`      | conciliación                                  | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `viso`      | postmortem                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `viso`      | Registro de riesgo                            | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `viso`      | valoración                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `viso`      | controles                                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `viso`      | tratamiento                                   | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `viso`      | aceptación/seguimiento                        | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `viso`      | Expediente de asesor/autoridad                | `S3_RESTRICTED`        | `HERENCIA_CONTENIDO`     |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `viso`      | requerimiento                                 | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `viso`      | comunicaciones                                | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `viso`      | entregable                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `viso`      | vencimientos                                  | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `viso`      | decisión interna                              | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `viso`      | Ciclo de desempeño                            | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `viso`      | objetivos                                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `viso`      | feedback                                      | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `viso`      | plan de desarrollo                            | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `viso`      | revisión                                      | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `viso`      | decisión                                      | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `viso`      | constancia del trabajador                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `viso`      | Requisito de EPP                              | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `viso`      | asignación                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `viso`      | entrega/aceptación                            | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `viso`      | formación                                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `viso`      | vigencia                                      | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `viso`      | reemplazo                                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `viso`      | devolución                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `nexo`      | Definición/versionado de kit                  | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `nexo`      | instancia                                     | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `nexo`      | manifiesto de componentes                     | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `nexo`      | completitud                                   | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `nexo`      | custodia                                      | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `nexo`      | préstamo/retorno/sustitución                  | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `pulso`     | Instrumento de medición                       | `S1_INTERNAL`          | `BASE`                   |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `pulso`     | muestra                                       | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `pulso`     | invitación                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `pulso`     | respuesta                                     | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `pulso`     | resultados                                    | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `pulso`     | sesgo                                         | `S2_CONFIDENTIAL`      | `BASE`                   |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `numera`    | Presupuesto/versiones                         | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `numera`    | supuestos                                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `numera`    | líneas                                        | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `numera`    | aprobación                                    | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `numera`    | vigencia                                      | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `numera`    | consumo                                       | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `numera`    | forecast                                      | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `numera`    | variación                                     | `S3_RESTRICTED`        | `BASE`                   |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `numera`    | supersesión                                   | `S3_RESTRICTED`        | `BASE`                   |
+
+---
+
+#### 5. Reconciliación cuantitativa
+
+| Control                                    | Resultado |
+| ------------------------------------------ | --------: |
+| Contextos de proceso esperados             |        69 |
+| Contextos de proceso materializados        |        69 |
+| Entradas documentales/artefactos esperadas |       332 |
+| Entradas clasificadas                      |       332 |
+| Claves contextuales únicas                 |       332 |
+| Entradas sin clase                         |         0 |
+| Entradas con clase desconocida             |         0 |
+| Entradas duplicadas por clave contextual   |         0 |
+| Procesos faltantes                         |         0 |
+| Procesos duplicados                        |         0 |
+| Propietarias funcionales modificadas       |         0 |
+| Instancias físicas de archivo inventadas   |         0 |
+| Rutas, buckets, hashes o URLs inventados   |         0 |
+
+Distribución de las 332 decisiones por clase mínima:
+
+| Clase                  | Entradas |
+| ---------------------- | -------: |
+| `S0_PUBLIC`            |        1 |
+| `S1_INTERNAL`          |       33 |
+| `S2_CONFIDENTIAL`      |      166 |
+| `S3_RESTRICTED`        |      124 |
+| `S4_HIGHLY_RESTRICTED` |        8 |
+| **Total**              |  **332** |
+
+Distribución por regla dominante:
+
+| Regla                    | Entradas |
+| ------------------------ | -------: |
+| `BASE`                   |      287 |
+| `HERENCIA_CONTENIDO`     |       29 |
+| `PUBLICACION_CONTROLADA` |        2 |
+| `INFERENCIA`             |        6 |
+| `S4_DIRECTA`             |        8 |
+| **Total**                |  **332** |
+
+---
+
+#### 6. Decisiones canónicas de EVID-ARC-003
+
+1. La sensibilidad se materializa por entrada documental contextualizada y no por aplicación, proceso completo, tabla, bucket, formato o carpeta.
+2. Las 332 entradas conservan la propietaria funcional recibida de `EVID-ARC-002`; sensibilidad y propiedad son dimensiones independientes.
+3. Los artefactos laborales, financieros, de acceso, desempeño y otras materias de daño alto conservan `S3_RESTRICTED` como mínimo cuando corresponda.
+4. SST, salud, investigaciones y declaraciones especialmente sensibles conservan `S4_HIGHLY_RESTRICTED` como mínimo; cualquier secreto o credencial detectado en otra entrada también obliga a elevar a `S4_HIGHLY_RESTRICTED` y retirar el secreto de soportes ordinarios.
+5. Recetas, fórmulas, costos, rendimientos, especificaciones y conocimiento propietario conservan `S2_CONFIDENTIAL` o superior salvo una proyección distinta cuya publicación esté aprobada expresamente.
+6. Pagos, cuentas, nómina, obligaciones, conciliaciones, presupuestos y costos conservan `S3_RESTRICTED` o superior.
+7. Evidencia, firmas, documentos genéricos, soportes, snapshots, POD, archivos y metadatos no pueden rebajar la sensibilidad del contenido que representan.
+8. `VPROC-0060` conserva su función transversal: su registro documental y metadatos no convierten a VISO en propietario de los hechos fuente ni permiten rebajar su sensibilidad.
+9. `VPROC-0061` aplica evaluación de inferencia: mediciones, snapshots, análisis e insights pueden ser más sensibles que una fuente aislada.
+10. La presencia de una entrada `S0_PUBLIC` no acredita publicación técnica, URL pública, bucket público ni disponibilidad externa. Solo expresa que esa proyección exacta puede ser de audiencia abierta cuando su publicación esté aprobada.
+11. Esta tarea no declara qué usuario puede acceder, cómo se firma una URL, qué metadatos físicos se almacenan, cuánto se retiene, cómo se valida malware ni cómo se elimina un objeto.
+
+---
+
+#### 7. Frontera con tareas posteriores
+
+| Decisión no tomada en esta tarea                                                               | Tarea propietaria |
+| ---------------------------------------------------------------------------------------------- | ----------------- |
+| Metadatos, versión y vínculo con el recurso                                                    | `EVID-ARC-004`    |
+| Carga, sustitución, anulación y retención                                                      | `EVID-ARC-005`    |
+| Validación de tipo, tamaño, integridad y malware                                               | `EVID-ARC-006`    |
+| Acceso temporal y URLs firmadas                                                                | `EVID-ARC-007`    |
+| Auditoría de consulta y modificación                                                           | `EVID-ARC-008`    |
+| Conservación legal y eliminación                                                               | `EVID-ARC-009`    |
+| Contingencia ante indisponibilidad de Storage                                                  | `EVID-ARC-010`    |
+| Propietarios humanos, custodios, responsables, encargados, finalidades y territorios           | `INFO-DOM-001`    |
+| Clasificación corporativa definitiva, minimización y manejo por categoría                      | `INFO-DOM-002`    |
+| Taxonomía global de documentos, registros, evidencia, series, expedientes, originales y copias | `INFO-DOM-003`    |
+
+---
+
+#### 8. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea instancia, sobre las 332 entradas documentales ya inventariadas, la escala, granularidad, herencia, elevación, tratamiento de información desconocida y pisos de sensibilidad ya aprobados por el contrato no funcional vigente y ya protegidos en el Registro Canónico de Requisitos de Prueba. No introduce una regla ejecutable nueva ni modifica una regla existente. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0; el registro permanece sin cambios.
+
+---
+
+#### 9. Criterios de aceptación
+
+- [x] `EVID-ARC-002` figura aprobada y entrega 69 contextos con 332 entradas documentales/artefactos.
+- [x] cada `VPROC-0001` a `VPROC-0069` aparece al menos una vez en la matriz y el universo de procesos queda completo.
+- [x] las 332 entradas heredadas reciben exactamente una clave contextual y una clase mínima explícita.
+- [x] las cinco clases canónicas `S0_PUBLIC` a `S4_HIGHLY_RESTRICTED` son las únicas clases utilizadas.
+- [x] no existen clases nulas, desconocidas ni fallbacks públicos por ausencia de clasificación.
+- [x] la matriz no sustituye granularidad de campo ni impide elevar una entrada cuando su contenido real sea más sensible.
+- [x] copias, derivados, evidencias, metadatos y artefactos genéricos heredan o elevan sensibilidad según su fuente.
+- [x] la publicación controlada separa versión pública aprobada de borradores, fuentes, historial y metadatos.
+- [x] los contextos SST/salud/investigación especialmente sensible conservan piso `S4_HIGHLY_RESTRICTED`.
+- [x] los contextos financieros relevantes conservan piso `S3_RESTRICTED` o superior.
+- [x] recetas, fórmulas, costos, rendimientos y conocimiento propietario conservan `S2_CONFIDENTIAL` o superior salvo proyección pública aprobada distinta.
+- [x] las propietarias funcionales de `EVID-ARC-002` no cambian.
+- [x] no se crean buckets, tablas, políticas, RLS, migraciones, URLs, archivos productivos ni cambios físicos.
+- [x] la tarea genera cero cambios en requisitos de prueba.
+- [x] `EVID-ARC-004` permanece reservada y no iniciada.
+
+---
+
+#### 10. Handoff cerrado hacia EVID-ARC-004
+
+`EVID-ARC-004` recibe 332 entradas documentales contextualizadas con propietaria funcional y clase mínima de sensibilidad explícitas. Su responsabilidad posterior será definir metadatos, versión y vínculo con el recurso preservando estas clases, la regla de herencia/elevación y las fronteras de propiedad, sin reinterpretar esta clasificación como autorización o retención.
+
+La aprobación de `EVID-ARC-003` no inicia, desarrolla ni aprueba `EVID-ARC-004`.
+
+
 ### [ ] EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso
 ### [ ] EVID-ARC-005 — Definir carga, sustitución, anulación y retención
 ### [ ] EVID-ARC-006 — Definir validación de tipo, tamaño, integridad y malware
