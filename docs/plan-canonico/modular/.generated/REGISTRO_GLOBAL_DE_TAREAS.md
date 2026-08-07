@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **608** |
+| Aprobadas | **609** |
 | En propuesta | **0** |
-| No iniciadas | **986** |
+| No iniciadas | **985** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **38.14% (608/1594)** |
+| Porcentaje de completamiento | **38.21% (609/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `EVID-ARC-010` — Definir contingencia ante indisponibilidad de Storage | ✅ APROBADA |
-| Tarea actual | `NOTIFY-ARC-001` — Inventariar notificaciones actuales y canales | ⬜ NO INICIADA |
-| Siguiente reservada | `NOTIFY-ARC-002` — Definir evento empresarial que origina cada notificación | ⬜ NO INICIADA |
+| Última aprobada | `NOTIFY-ARC-001` — Inventariar notificaciones actuales y canales | ✅ APROBADA |
+| Tarea actual | `NOTIFY-ARC-002` — Definir evento empresarial que origina cada notificación | ⬜ NO INICIADA |
+| Siguiente reservada | `NOTIFY-ARC-003` — Definir destinatarios por responsabilidad y contexto | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -508,7 +508,7 @@
 | ✅ APROBADA | `PRINT-ARC-018` | Definir adaptadores LAN, USB, Bluetooth o puente local | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-019` | Definir monitoreo y diagnóstico por sede | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `PRINT-ARC-020` | Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
-| ⬜ NO INICIADA | `NOTIFY-ARC-001` | Inventariar notificaciones actuales y canales | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
+| ✅ APROBADA | `NOTIFY-ARC-001` | Inventariar notificaciones actuales y canales | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-002` | Definir evento empresarial que origina cada notificación | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-003` | Definir destinatarios por responsabilidad y contexto | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-004` | Definir prioridad, vigencia y deduplicación | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |

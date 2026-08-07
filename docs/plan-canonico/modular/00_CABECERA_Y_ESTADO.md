@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **608** |
+| Tareas aprobadas | **609** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **986** |
+| Tareas no iniciadas | **985** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **38.14% (608/1594)** |
+| Porcentaje de completamiento | **38.21% (609/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage** |
-| Tarea actual | **NOTIFY-ARC-001 — Inventariar notificaciones actuales y canales** |
+| Última tarea aprobada | **NOTIFY-ARC-001 — Inventariar notificaciones actuales y canales** |
+| Tarea actual | **NOTIFY-ARC-002 — Definir evento empresarial que origina cada notificación** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NOTIFY-ARC-002 — Definir evento empresarial que origina cada notificación** |
+| Siguiente tarea | **NOTIFY-ARC-003 — Definir destinatarios por responsabilidad y contexto** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 32 de 157 aprobadas; NOTIFY-ARC-001 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 33 de 157 aprobadas; NOTIFY-ARC-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `EVID-ARC-010` — Definir contingencia ante indisponibilidad de Storage |
-| Tarea actual | `NOTIFY-ARC-001` — Inventariar notificaciones actuales y canales — **NO INICIADA** |
-| Siguiente tarea | `NOTIFY-ARC-002` — Definir evento empresarial que origina cada notificación |
+| Última aprobada | `NOTIFY-ARC-001` — Inventariar notificaciones actuales y canales |
+| Tarea actual | `NOTIFY-ARC-002` — Definir evento empresarial que origina cada notificación — **NO INICIADA** |
+| Siguiente tarea | `NOTIFY-ARC-003` — Definir destinatarios por responsabilidad y contexto |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 32 DE 157 APROBADAS — ACTUAL NOTIFY-ARC-001** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 33 DE 157 APROBADAS — ACTUAL NOTIFY-ARC-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-EVID-ARC-010 — Definir contingencia ante indisponibilidad de Storage
-        ↓
-TAREA ACTUAL
 NOTIFY-ARC-001 — Inventariar notificaciones actuales y canales
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NOTIFY-ARC-002 — Definir evento empresarial que origina cada notificación
         ↓
+SIGUIENTE TAREA RESERVADA
+NOTIFY-ARC-003 — Definir destinatarios por responsabilidad y contexto
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 32 de 157 tareas aprobadas
+CARRIL NEXO — 33 de 157 tareas aprobadas
 ```
