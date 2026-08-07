@@ -7459,7 +7459,546 @@ PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
 ```
 
 
-### [ ] PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
+### ✅ PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
+
+**Estado:** APROBADA
+**Tarea anterior:** `PRINT-ARC-017 — Definir operación offline y contingencia manual` — APROBADA
+**Tarea siguiente:** `PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede` — RESERVADA
+**Tipo de tarea:** documental; contrato técnico de adaptación de impresión, transformación reproducible, binding de canal, semántica de envío, receipts, cancelación, buffers y limpieza por USB, LAN, Wi-Fi, Bluetooth o puente local
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md`
+**Cambios físicos autorizados:** ninguno; no instala drivers, agentes, bridges, impresoras, colas, sockets, servicios, paquetes, código, SQL, migraciones, configuración ni cambios en Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir la frontera canónica entre un trabajo de impresión ya autorizado, saneado, enrutado y admitido y el mecanismo que lo transforma y entrega a un dispositivo físico, materializando bindings documentales para los nueve dispositivos conocidos, las once políticas objetivo y las cincuenta salidas, sin convertir descubrimiento local, callback técnico, spooler o transporte en autoridad empresarial ni en prueba física de impresión.
+
+---
+
+#### 1. Resultado sustantivo
+
+`PRINT-ARC-018` queda cerrada documentalmente con:
+
+- el contrato `VENTO-PRINT-ADAPTER` versión `1.0.0`;
+- una frontera explícita entre representación empresarial, payload saneado, representación técnica, transporte y resultado físico;
+- definición cerrada de `render_hash` como huella de la representación técnica exacta previa al transporte;
+- cinco clases de acceso soportables por contrato: `USB`, `LAN`, `WIFI`, `BLUETOOTH` y `LOCAL_BRIDGE`;
+- una regla de que `LOCAL_BRIDGE` es topología de acceso y no decide sede, punto, impresora, ruta, autorización, privacidad ni copia;
+- una semántica uniforme de admisión, escritura, receipt, rechazo seguro y `RESULT_UNKNOWN` independiente del fabricante;
+- una matriz de nueve dispositivos físicos y una condición sintética de ausencia de dispositivo;
+- ocho bindings de canal actualmente definidos por las decisiones heredadas: cuatro sobre USB, tres sobre LAN y uno sobre Wi-Fi como canal alternativo del mismo dispositivo A4;
+- cero bindings Bluetooth actuales y cero bridges locales declarados como implementación canónica actual;
+- una decisión individual para las cincuenta salidas heredadas;
+- reglas de buffer, spool, cancelación y limpieza que cierran documentalmente `BLK-PRINT-016-003` y `BLK-PRINT-017-002` sin inventar evidencia física;
+- cero cambios en propietarias, perfiles físicos, enrutamiento, políticas objetivo, salud, idempotencia, retry, confirmación, autorización, privacidad u offline;
+- cero implementación y cero evidencia de dispositivo declarada.
+
+Todas las decisiones permanecen en estado `ESPECIFICADO`. Un binding documental no convierte un dispositivo en `READY`; la elegibilidad runtime sigue exigiendo la puerta de salud de `PRINT-ARC-009` y la evidencia física correspondiente.
+
+---
+
+#### 2. Diagnóstico técnico actual verificable
+
+La superficie de impresión revisada en NEXO todavía no materializa el contrato definido aquí.
+
+| Superficie                                                     | Comportamiento observado                                                                                                         | Brecha frente al contrato objetivo                                                                                                                   | Tratamiento                          |
+| -------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------ |
+| `vento-nexo/src/app/printing/jobs/page.tsx`                    | Construye ZPL desde una cola local y llama `device.send(...)`; el callback exitoso muestra `Impresión enviada.`                  | No consume trabajo, ruta, target, intento, privacidad ni receipt canónicos y el callback no distingue aceptación del adaptador de efecto físico.     | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION` |
+| `vento-nexo/src/app/printing/jobs/_hooks/usePrinterDevices.ts` | Enumera dispositivos mediante BrowserPrint, conserva un `uid` y puede seleccionar el previamente elegido o el primero detectado. | El descubrimiento local participa en la selección, mientras el contrato aprobado exige que el dispositivo y canal lleguen ya resueltos por política. | `FUERA_DE_ALCANCE_DE_IMPLEMENTACION` |
+| `vento-nexo/src/app/printing/jobs/_lib/types.ts`               | Modela identidad básica del dispositivo y función `send`.                                                                        | No modela `job_id`, `attempt_id`, binding versionado, `render_hash`, receipt, aceptación posible, cancelación ni limpieza.                           | `NO_IMPLEMENTADO`                    |
+| Superficies indexadas revisadas                                | No se encontró uso directo de WebUSB ni Web Bluetooth en la superficie de impresión revisada.                                    | No existe evidencia para declarar un binding directo USB/Bluetooth del navegador como implementación vigente.                                        | `SIN_EVIDENCIA_DE_IMPLEMENTACION`    |
+
+BrowserPrint se conserva como evidencia de una dependencia local existente en NEXO, pero no se denomina automáticamente `LOCAL_BRIDGE` canónico ni se declara conforme con `VENTO-PRINT-ADAPTER` hasta que una implementación autorizada materialice identidad técnica, binding, receipts, cancelación, limpieza y observabilidad.
+
+---
+
+#### 3. Contratos heredados y fronteras
+
+| Contrato                              | Versión | Uso obligatorio en esta tarea                                                     |
+| ------------------------------------- | ------: | --------------------------------------------------------------------------------- |
+| `VENTO-PRINT-JOB`                     | `1.0.0` | Identidad inmutable, documento, plantilla y payload empresarial.                  |
+| `VENTO-PRINT-ROUTE`                   | `1.0.0` | Sede, área, punto, canal y decisión de enrutamiento.                              |
+| `VENTO-PRINT-TARGET-POLICY`           | `1.0.0` | Dispositivo y orden de candidatos ya aprobados.                                   |
+| `VENTO-PRINT-DEVICE-HEALTH`           | `1.0.0` | Puerta de elegibilidad y frescura antes de despachar.                             |
+| `VENTO-PRINT-IDEMPOTENCY`             | `1.0.0` | Identidad única de intención, trabajo y copia.                                    |
+| `VENTO-PRINT-RETRY-QUEUE`             | `1.0.0` | `attempt_id`, lease, partición física, retry y `RESULT_UNKNOWN`.                  |
+| `VENTO-PRINT-CONFIRMATION`            | `1.0.0` | Jerarquía de receipts y separación entre aceptación técnica, impresión y entrega. |
+| `VENTO-PRINT-CANCELLATION-EXPIRATION` | `1.0.0` | Gate predespacho, cancelación, expiración y efecto posible.                       |
+| `VENTO-PRINT-REPRINT`                 | `1.0.0` | Copias adicionales legítimas separadas de retry.                                  |
+| `VENTO-PRINT-AUTHORIZATION`           | `1.0.0` | Decisión de autoridad y delegación técnica mínima.                                |
+| `VENTO-PRINT-PRIVACY`                 | `1.0.0` | Snapshot saneado, `field_decisions[]` y exclusión absoluta de secretos.           |
+| `VENTO-PRINT-OFFLINE-CONTINGENCY`     | `1.0.0` | Envelope finito, límites offline, reconexión y conciliación.                      |
+
+Frontera normativa:
+
+```text
+TRABAJO AUTORIZADO E IDEMPOTENTE
+→ enrutamiento y target ya resueltos
+→ SALUD VIGENTE
+→ PRIVACY SNAPSHOT SANEADO
+→ LEASE E INTENTO IDENTIFICADOS
+→ ADAPTADOR VERSIONADO
+→ REPRESENTACION TECNICA + render_hash
+→ TRANSPORTE AL CANAL YA RESUELTO
+→ RECEIPT, RESULT_UNKNOWN O RECHAZO SEGURO
+→ CONFIRMACION Y CONCILIACION
+```
+
+El adaptador no es resolver de negocio, cola empresarial, motor de autorización, política de privacidad, selector de impresora ni fuente de verdad del documento.
+
+---
+
+#### 4. Invariantes del adaptador
+
+1. El adaptador recibe `device_ref` y `channel_id` ya resueltos; nunca elige el primer dispositivo, el último usado, una IP cercana ni una impresora por nombre.
+2. El adaptador no cambia `job_id`, `intent_id`, `copy_slot_id`, `output_id`, payload empresarial, plantilla, versión, destino lógico ni cantidad de copias.
+3. La representación técnica se deriva únicamente del snapshot saneado, plantilla versionada y binding técnico aprobado; no consulta ni rehidrata el payload original para recuperar campos omitidos.
+4. `D5_SECURITY_SECRET` continúa bloqueando antes del adaptador; ningún driver, bridge o lenguaje de impresión constituye una frontera de saneamiento.
+5. Un cambio USB→Wi-Fi permitido sobre la L4260 conserva trabajo, copia, target y semántica; únicamente cambia el canal del intento conforme a la política heredada.
+6. Un cambio de dispositivo o sede solo puede ocurrir si ya existe una nueva decisión de enrutamiento/target autorizada; el adaptador no ejecuta fallback territorial.
+7. Un callback genérico de éxito demuestra como máximo aceptación del adaptador, salvo que el binding entregue una evidencia más fuerte que cumpla `VENTO-PRINT-CONFIRMATION`.
+8. Un spooler o bridge que acepte bytes no demuestra `PRINTED_VERIFIED`.
+9. Si el comando pudo haber salido del proceso adaptador hacia el host, spooler, red o periférico y no existe resultado autoritativo, la resolución es `RESULT_UNKNOWN`.
+10. Solo un rechazo comprobado anterior a cualquier envío con posible efecto permite retry automático seguro bajo el mismo trabajo e intención.
+11. El adaptador no libera una idempotency key ni crea una reimpresión.
+12. Toda ejecución conserva `attempt_id`; dos transportes simultáneos para la misma partición física permanecen prohibidos por la concurrencia inicial de `PRINT-ARC-011`.
+13. Bluetooth no se habilita por capacidad nominal del modelo: exige variante física, pairing, identidad, canal, política y evidencia verificadas.
+14. Un bridge local no puede contener una cola empresarial oculta; cualquier buffer durable debe exponer identidad, estado, receipt, cancelación y reconciliación o quedar bloqueado para despacho canónico.
+15. El adaptador no guarda contenido sensible más tiempo del estrictamente necesario para el intento y debe aplicar la política de limpieza declarada por binding.
+16. Desconectar un cable, socket, radio, navegador o bridge después de iniciar escritura no demuestra que el periférico no recibió el comando.
+17. Los errores se normalizan sin incorporar payload, ZPL, ESC/POS, PDF, direcciones, teléfonos, datos fiscales completos ni secretos.
+18. La representación técnica y su `render_hash` son evidencia de integridad técnica; no sustituyen `payload.hash`, `sanitized_payload_hash`, autorización ni confirmación física.
+
+---
+
+#### 5. Contrato `VENTO-PRINT-ADAPTER` `1.0.0`
+
+```json
+{
+  "adapter_contract_id": "VENTO-PRINT-ADAPTER",
+  "adapter_contract_version": "1.0.0",
+  "adapter_execution_id": "<uuid>",
+  "adapter_binding_version": "<semver>",
+  "identity": {
+    "job_id": "<uuid>",
+    "intent_id": "<string>",
+    "copy_slot_id": "<string>",
+    "attempt_id": "<uuid>",
+    "output_id": "<IMP-*>",
+    "route_decision_id": "<uuid>",
+    "target_policy_id": "<TGT-*>",
+    "device_ref": "<PRN-*>",
+    "channel_id": "<CH-*>"
+  },
+  "adapter": {
+    "adapter_kind": "<USB|LAN|WIFI|BLUETOOTH|LOCAL_BRIDGE>",
+    "underlying_transport_kind": "<USB|LAN|WIFI|BLUETOOTH|null>",
+    "command_family": "<ZPL_II|ESC_POS|OS_DRIVER|OTHER_APPROVED>",
+    "configuration_ref": "<opaque-versioned-ref>",
+    "technical_principal_ref": "<opaque-ref|null>"
+  },
+  "privacy": {
+    "privacy_snapshot_id": "<uuid>",
+    "sanitized_payload_hash": "<sha256>"
+  },
+  "render": {
+    "representation_kind": "<DEVICE_COMMAND|DRIVER_DOCUMENT>",
+    "representation_version": "<semver>",
+    "byte_length": 0,
+    "hash_algorithm": "SHA-256",
+    "render_hash": "<64-hex>"
+  },
+  "offline": {
+    "offline_envelope_id": "<uuid|null>",
+    "envelope_validated": false
+  },
+  "dispatch": {
+    "state": "<PREPARED|WRITE_STARTED|SAFE_REJECTED|ADAPTER_ACCEPTED|PERIPHERAL_ACCEPTED|RESULT_UNKNOWN>",
+    "started_at": "<RFC3339|null>",
+    "finished_at": "<RFC3339|null>",
+    "failure_code": "<string|null>"
+  },
+  "receipt": {
+    "receipt_id": "<string|null>",
+    "receipt_level": "<NONE|ADAPTER_ACCEPTED|PERIPHERAL_ACCEPTED>",
+    "source": "<adapter|bridge|spooler|device|null>",
+    "observed_at": "<RFC3339|null>",
+    "integrity_ref": "<string|null>"
+  },
+  "cleanup": {
+    "temporary_representation_state": "<NOT_CREATED|PRESENT|CLEARED|UNKNOWN>",
+    "spool_state": "<NOT_USED|KNOWN|CLEARED|UNKNOWN>",
+    "device_buffer_state": "<NOT_OBSERVABLE|CLEARED|MAY_CONTAIN_DATA|UNKNOWN>",
+    "cleanup_completed_at": "<RFC3339|null>"
+  },
+  "trace": {
+    "correlation_id": "<string>",
+    "causation_id": "<string|null>"
+  }
+}
+```
+
+El contrato es lógico y no prescribe librería, sistema operativo, puerto, dirección IP, framework, proveedor de bridge ni lenguaje de implementación.
+
+---
+
+#### 6. Semántica cerrada de `render_hash`
+
+`render_hash` se define como:
+
+```text
+SHA-256(render_bytes)
+```
+
+`render_bytes` son los bytes exactos de la representación técnica producida para el intento después de aplicar plantilla, privacidad y transformación técnica, e inmediatamente antes del framing o transporte específico del canal.
+
+| Huella                         | Cubre                                                | No cubre                                            |
+| ------------------------------ | ---------------------------------------------------- | --------------------------------------------------- |
+| `VENTO-PRINT-JOB.payload.hash` | Payload empresarial original validado.               | Privacidad ni bytes físicos.                        |
+| `sanitized_payload_hash`       | Payload estructurado después de `field_decisions[]`. | ZPL, ESC/POS, documento de driver ni framing.       |
+| `render_hash`                  | Representación técnica exacta previa al transporte.  | Resultado físico, entrega ni autoridad empresarial. |
+
+Reglas:
+
+1. El framing de red, metadata del bridge, handle del sistema operativo y headers de transporte no forman parte de `render_hash`.
+2. Para el mismo snapshot saneado, plantilla, representación y versión de binding, un cambio permitido de canal debe conservar la representación cuando el dispositivo y familia lo permitan.
+3. Si una política más restrictiva cambia el snapshot antes de un nuevo `SEND_STARTED`, se genera nueva representación y nuevo `render_hash`, conservando la misma identidad de trabajo/copia cuando las reglas de retry lo permitan.
+4. Después de `SEND_STARTED`, la representación del intento es inmutable; cualquier ambigüedad se resuelve por receipts y conciliación, no mutando bytes ya enviados.
+5. Cuando un driver o spooler transforme internamente el documento, `render_hash` demuestra los bytes sometidos al adaptador/driver; no afirma conocer bytes nativos posteriores que la plataforma no exponga.
+6. El hash puede participar en correlación y diagnóstico bajo acceso protegido; no autoriza registrar el contenido que representa.
+
+---
+
+#### 7. Clases de adaptador y binding
+
+| Clase          | Uso contractual                                                                     | Requisitos mínimos                                                                                                                                              | Binding actual                                                        |
+| -------------- | ----------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------- |
+| `USB`          | Periférico conectado a un host local mediante USB.                                  | Identidad exacta de dispositivo y canal, host autorizado, driver/servicio compatible, write con resultado tipado, timeout, receipt y limpieza.                  | L4260 por `CH-EPSON-L4260-USB`; tres DIG-E200I por `CH-DIGE200I-USB`. |
+| `LAN`          | Periférico alcanzado sobre red local cableada.                                      | `device_ref` ya resuelto, endpoint técnico configurado y protegido, protocolo explícito, timeout, receipt y semántica ante socket ambiguo.                      | Tres DIG-E200I de barra, bar y cocina por `CH-DIGE200I-LAN`.          |
+| `WIFI`         | Periférico alcanzado mediante la red inalámbrica aprobada de la sede.               | Misma frontera de red que LAN; no se autoriza por SSID, proximidad o descubrimiento. El protocolo debe ser un binding versionado.                               | L4260 por `CH-EPSON-L4260-WIFI` como segundo canal del mismo target.  |
+| `BLUETOOTH`    | Periférico local por enlace Bluetooth cuando el hardware y política lo soporten.    | Variante física comprobada, pairing gestionado, identidad inequívoca, canal autorizado, reconexión, timeout, receipt y cleanup.                                 | `0` bindings actuales.                                                |
+| `LOCAL_BRIDGE` | Agente o servicio local que media entre aplicación/servicio y un transporte físico. | Identidad técnica, versión, transporte subyacente, dispositivo fijo por binding, buffer observable, receipts, cancelación, limpieza y sin selección de negocio. | `0` bindings declarados conformes actualmente.                        |
+
+`LOCAL_BRIDGE` puede implementarse como mecanismo de acceso a un canal USB, LAN, Wi-Fi o Bluetooth, pero no reemplaza `channel_id`; su `underlying_transport_kind` debe permanecer explícito.
+
+---
+
+#### 8. Bindings materializados por dispositivo y canal
+
+| Dispositivo o condición                   | Estado heredado            | Canal heredado                  | Clase contractual                                                                                       | Familia de comando                                                        | Decisión de `PRINT-ARC-018`                                                                            |
+| ----------------------------------------- | -------------------------- | ------------------------------- | ------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| `PRN-VP-ZD230-01`                         | `ALMACENADA`               | `CH-ZEBRA-SIN-CONEXION`         | Sin binding activo. Capacidad de familia USB/Ethernet/Bluetooth/Wi-Fi no equivale a interfaz instalada. | `ZPL_II` es lenguaje soportado; la variante física sigue sin verificarse. | `BLOCKED_STORED`; ningún canal se activa por inferencia.                                               |
+| `PRN-VP-L5590-01`                         | `REQUIERE_MANTENIMIENTO`   | `CH-EPSON-L5590-SIN-CONEXION`   | Sin binding operativo.                                                                                  | `OS_DRIVER`                                                               | `BLOCKED_MAINTENANCE`; no se selecciona USB/LAN/Wi-Fi antes de recuperación y evidencia.               |
+| `PRN-ADMIN-L4260-01`                      | `OPERATIVA`                | `CH-EPSON-L4260-USB`            | `USB`                                                                                                   | `OS_DRIVER`                                                               | Binding documental principal; runtime sigue `UNKNOWN_BLOCKED` hasta implementación y heartbeat fresco. |
+| `PRN-ADMIN-L4260-01`                      | `OPERATIVA`                | `CH-EPSON-L4260-WIFI`           | `WIFI`                                                                                                  | `OS_DRIVER`                                                               | Binding documental alternativo de la misma impresora; no crea otro target ni otra copia.               |
+| `PRN-MOLKA-DIGE200I-01`                   | `OPERATIVA`                | `CH-DIGE200I-USB`               | `USB`                                                                                                   | `ESC_POS`                                                                 | Binding documental local.                                                                              |
+| `PRN-SAUDO-DIGE200I-01`                   | `OPERATIVA`                | `CH-DIGE200I-USB`               | `USB`                                                                                                   | `ESC_POS`                                                                 | Binding documental local.                                                                              |
+| `PRN-VC-CAJA-DIGE200I-01`                 | `OPERATIVA`                | `CH-DIGE200I-USB`               | `USB`                                                                                                   | `ESC_POS`                                                                 | Binding documental local.                                                                              |
+| `PRN-VC-BARRA-DIGE200I-01`                | `OPERATIVA`                | `CH-DIGE200I-LAN`               | `LAN`                                                                                                   | `ESC_POS`                                                                 | Binding documental de red local.                                                                       |
+| `PRN-VC-BAR-DIGE200I-01`                  | `OPERATIVA`                | `CH-DIGE200I-LAN`               | `LAN`                                                                                                   | `ESC_POS`                                                                 | Binding documental de red local.                                                                       |
+| `PRN-VC-COCINA-DIGE200I-01`               | `OPERATIVA`                | `CH-DIGE200I-LAN`               | `LAN`                                                                                                   | `ESC_POS`                                                                 | Binding documental de red local.                                                                       |
+| `NINGUNO` para `TGT-TKT-VP-SIN-CAPACIDAD` | Sin dispositivo compatible | `CH-SIN-DISPOSITIVO-COMPATIBLE` | Ninguna                                                                                                 | No aplica                                                                 | `BLOCKED_NO_DEVICE`; prohibido crear binding ficticio o degradar a A4/etiqueta.                        |
+
+Control cuantitativo:
+
+```text
+DISPOSITIVOS FISICOS HEREDADOS: 9
+DISPOSITIVOS FISICOS MATERIALIZADOS: 9
+BINDINGS DE CANAL DEFINIDOS PARA EQUIPOS OPERATIVOS: 8
+BINDINGS USB: 4
+BINDINGS LAN: 3
+BINDINGS WIFI: 1
+BINDINGS BLUETOOTH: 0
+BINDINGS LOCAL_BRIDGE DECLARADOS CONFORMES: 0
+CONDICIONES SIN BINDING ACTIVO: 3
+CAMBIOS DE DEVICE_REF: 0
+CAMBIOS DE CHANNEL_ID: 0
+```
+
+---
+
+#### 9. Resolución por política objetivo
+
+El adaptador consume la política ya elegida; no vuelve a resolverla.
+
+| Política objetivo          | Binding permitido                                                | Regla                                                                                                                                   |
+| -------------------------- | ---------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------- |
+| `TGT-LBL-VP-CENTRAL`       | Ninguno activo.                                                  | `SAFE_BLOCK` mientras `PRN-VP-ZD230-01` siga almacenada y sin interfaz física verificada.                                               |
+| `TGT-TKT-MOLKA-CAJA`       | `PRN-MOLKA-DIGE200I-01` + `CH-DIGE200I-USB` + `USB/ESC_POS`.     | No saltar de sede ni dispositivo.                                                                                                       |
+| `TGT-TKT-SAUDO-CAJA`       | `PRN-SAUDO-DIGE200I-01` + `CH-DIGE200I-USB` + `USB/ESC_POS`.     | No saltar de sede ni dispositivo.                                                                                                       |
+| `TGT-TKT-VC-CAJA`          | `PRN-VC-CAJA-DIGE200I-01` + `CH-DIGE200I-USB` + `USB/ESC_POS`.   | No saltar a barra, bar o cocina.                                                                                                        |
+| `TGT-TKT-VC-BARRA`         | `PRN-VC-BARRA-DIGE200I-01` + `CH-DIGE200I-LAN` + `LAN/ESC_POS`.  | Endpoint y puerto son configuración del binding, no datos de negocio.                                                                   |
+| `TGT-TKT-VC-BAR`           | `PRN-VC-BAR-DIGE200I-01` + `CH-DIGE200I-LAN` + `LAN/ESC_POS`.    | No descubrir ni sustituir por otro punto.                                                                                               |
+| `TGT-TKT-VC-COCINA`        | `PRN-VC-COCINA-DIGE200I-01` + `CH-DIGE200I-LAN` + `LAN/ESC_POS`. | No descubrir ni sustituir por otro punto.                                                                                               |
+| `TGT-TKT-VP-SIN-CAPACIDAD` | Ninguno.                                                         | `SAFE_BLOCK` por ausencia de impresora 80 mm compatible.                                                                                |
+| `TGT-A4-VP-LOCAL`          | Ninguno operativo.                                               | `SAFE_BLOCK` mientras L5590 siga en mantenimiento; el reruteo central exige una decisión explícita ya definida en la política heredada. |
+| `TGT-A4-ADMIN-LOCAL`       | L4260 USB primero; Wi-Fi después sobre la misma impresora.       | El cambio de canal conserva target, trabajo y copia.                                                                                    |
+| `TGT-A4-ADMIN-CENTRAL`     | L4260 USB primero; Wi-Fi después sobre la misma impresora.       | Conserva distribución manual y no transforma impresión central en entrega.                                                              |
+
+---
+
+#### 10. Estados de envío, receipts y errores normalizados
+
+##### 10.1 Estados de despacho del adaptador
+
+| Estado                | Semántica                                                                                              | Retry automático                              |
+| --------------------- | ------------------------------------------------------------------------------------------------------ | --------------------------------------------- |
+| `PREPARED`            | Binding, representación y gates previos están resueltos; aún no existe escritura con posible efecto.   | No aplica.                                    |
+| `SAFE_REJECTED`       | Existe evidencia de que ningún byte/comando con posible efecto fue aceptado por el canal o periférico. | Sí, si el presupuesto y política lo permiten. |
+| `WRITE_STARTED`       | Comenzó una operación que puede producir aceptación en host, bridge, spooler, red o periférico.        | No por sí sola.                               |
+| `ADAPTER_ACCEPTED`    | La API/driver/bridge aceptó la representación según su contrato.                                       | No prueba impresión.                          |
+| `PERIPHERAL_ACCEPTED` | Existe receipt correlacionado de spooler/dispositivo que cumple el nivel correspondiente.              | No prueba impresión física correcta.          |
+| `RESULT_UNKNOWN`      | El comando pudo haber sido aceptado y no existe evidencia autoritativa suficiente.                     | Prohibido hasta conciliación.                 |
+
+##### 10.2 Clases mínimas de fallo
+
+```text
+ADAPTER_BINDING_INVALID
+ADAPTER_UNAVAILABLE
+DISCOVERY_NOT_AUTHORITY
+CHANNEL_UNREACHABLE_SAFE
+WRITE_REJECTED_SAFE
+WRITE_TIMEOUT_RESULT_UNKNOWN
+CONNECTION_LOST_RESULT_UNKNOWN
+RECEIPT_INVALID
+CLEANUP_NOT_VERIFIABLE
+BUFFER_STATE_UNKNOWN
+```
+
+Un mensaje técnico puede conservar clase, etapa, `device_ref`, `channel_id`, `attempt_id`, versión del binding y referencia de receipt; no incorpora contenido sensible o representación completa.
+
+---
+
+#### 11. Buffers, spool, cancelación y limpieza
+
+| Capa                             | Regla de persistencia                                                            | Cancelación                                                                      | Resultado ambiguo                                                                                | Limpieza obligatoria                                                                                                                |
+| -------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| Memoria de proceso del adaptador | Temporal; solo durante el intento.                                               | Puede abortarse antes de `WRITE_STARTED`.                                        | Después de iniciar escritura, abortar no demuestra ausencia de efecto.                           | Liberar `render_bytes` y referencias sensibles al terminar o entrar en conciliación, conservando solo huellas y metadata permitida. |
+| `LOCAL_BRIDGE`                   | No puede ocultar una cola durable. Si persiste, debe exponer identidad y estado. | Solo se considera efectiva con evidencia de que el bridge no remitió el comando. | Bridge caído después de aceptar produce `RESULT_UNKNOWN` salvo receipt más fuerte.               | Borrar temporales según política; estado `UNKNOWN` bloquea uso sensible hasta evidencia.                                            |
+| Spooler o driver del host        | Puede persistir fuera del proceso de aplicación.                                 | Solicitar cancelación no equivale a confirmar cancelación.                       | Aceptación del spooler no demuestra impresión; pérdida de estado exige conciliación.             | El binding declara si puede observar y limpiar artefactos temporales; no se presume borrado.                                        |
+| Transporte LAN/Wi-Fi/Bluetooth   | No debe introducir una cola empresarial paralela.                                | Desconectar el enlace no retira bytes ya transmitidos.                           | Desconexión después de escritura posible produce `RESULT_UNKNOWN`.                               | No conservar representación en logs o dumps; limpiar buffers controlables.                                                          |
+| Buffer del dispositivo           | Puede no ser observable.                                                         | Solo un mecanismo verificable puede afirmar purga.                               | Si el dispositivo pudo aceptar y su buffer no es observable, el resultado permanece desconocido. | Registrar `NOT_OBSERVABLE`, `CLEARED`, `MAY_CONTAIN_DATA` o `UNKNOWN`; no inventar `CLEARED`.                                       |
+
+Las reglas anteriores cierran documentalmente la definición exigida por `BLK-PRINT-016-003` y `BLK-PRINT-017-002`. La comprobación física de que cada driver, bridge, spooler y dispositivo cumple la política permanece como evidencia de implementación y piloto, no como supuesto de esta tarea.
+
+---
+
+#### 12. Matriz materializada de las cincuenta salidas
+
+Las reglas de binding siguientes no sustituyen los perfiles de enrutamiento ni las políticas objetivo. La fila indica qué familia de adaptador puede consumir el target una vez que las tareas anteriores lo hayan resuelto.
+
+| Salida       | Nombre canónico                                           | Propietaria | Perfil físico       | Regla de adaptador     | Estado documental actual                                  |
+| ------------ | --------------------------------------------------------- | ----------- | ------------------- | ---------------------- | --------------------------------------------------------- |
+| `IMP-LBL-01` | Etiqueta de lote de producto terminado                    | `FOGO`      | `PERF-LBL-100X50-H` | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-02` | Etiqueta de lote de producto intermedio o semielaborado   | `FOGO`      | `PERF-LBL-100X50-H` | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-03` | Etiqueta de preparación diaria o mise en place            | `FOGO`      | `PERF-LBL-75X50-H`  | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-04` | Etiqueta de apertura, fraccionamiento o reempaque         | `FOGO`      | `PERF-LBL-75X50-H`  | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-05` | Etiqueta de alérgenos y manipulación especial             | `FOGO`      | `PERF-LBL-100X75-H` | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-06` | Etiqueta de cuarentena, liberado o rechazado              | `FOGO`      | `PERF-LBL-100X75-H` | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-07` | Etiqueta de recepción de materia prima o lote proveedor   | `ORIGO`     | `PERF-LBL-100X50-H` | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-08` | Etiqueta de ubicación, estante, contenedor o zona         | `NEXO`      | `PERF-LBL-100X50-H` | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-09` | Etiqueta de artículo, insumo o SKU                        | `NEXO`      | `PERF-LBL-75X50-H`  | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-10` | Etiqueta de bulto para traslado, remisión o despacho      | `NEXO`      | `PERF-LBL-100X75-H` | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-11` | Etiqueta de pedido, recogida o entrega a cliente          | `PULSO`     | `PERF-LBL-100X75-H` | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-12` | Etiqueta de identificación de activo o equipo             | `NEXO`      | `PERF-LBL-100X50-H` | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-13` | Etiqueta de mantenimiento, inspección o fuera de servicio | `NEXO`      | `PERF-LBL-100X75-H` | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-14` | Etiqueta de limpieza o sanitización                       | `FOGO`      | `PERF-LBL-75X50-H`  | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-15` | Etiqueta de muestra o prueba                              | `FOGO`      | `PERF-LBL-75X50-H`  | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-LBL-16` | Etiqueta de merma, residuo o disposición                  | `FOGO`      | `PERF-LBL-75X50-H`  | `LABEL_ZD230`          | `ESPECIFICADO / BLOCKED_STORED`                           |
+| `IMP-CMD-01` | Comanda de cocina                                         | `PULSO`     | `PERF-TKT-80-V`     | `TICKET_ROUTE`         | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CMD-02` | Comanda de bar de bebidas frías                           | `PULSO`     | `PERF-TKT-80-V`     | `TICKET_ROUTE`         | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CMD-03` | Comanda de barra de cafés y bebidas calientes             | `PULSO`     | `PERF-TKT-80-V`     | `TICKET_ROUTE`         | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CMD-04` | Comanda de preparación o mise en place                    | `FOGO`      | `PERF-TKT-80-V`     | `TICKET_ROUTE_WITH_VP` | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_NO_DEVICE`   |
+| `IMP-CMD-05` | Tiquete de expedición o recogida                          | `PULSO`     | `PERF-TKT-80-V`     | `TICKET_ROUTE`         | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CMD-06` | Solicitud interna de reposición                           | `NEXO`      | `PERF-TKT-80-V`     | `TICKET_ROUTE_WITH_VP` | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_NO_DEVICE`   |
+| `IMP-CMD-07` | Modificación o adición de comanda                         | `PULSO`     | `PERF-TKT-80-V`     | `TICKET_ROUTE`         | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CMD-08` | Cancelación o anulación de comanda                        | `PULSO`     | `PERF-TKT-80-V`     | `TICKET_ROUTE`         | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CMD-09` | Solicitud de producción por insuficiencia                 | `FOGO`      | `PERF-TKT-80-V`     | `TICKET_VP_ONLY`       | `ESPECIFICADO / BLOCKED_NO_DEVICE`                        |
+| `IMP-CLI-01` | Resumen de cuenta para el cliente                         | `PULSO`     | `PERF-TKT-80-V`     | `TICKET_CUSTOMER`      | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CLI-02` | Confirmación de pedido                                    | `PULSO`     | `PERF-TKT-80-V`     | `TICKET_CUSTOMER`      | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CLI-03` | Comprobante de pago                                       | `NUMERA`    | `PERF-TKT-80-V`     | `TICKET_CUSTOMER`      | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CLI-04` | Factura o comprobante de venta para cliente               | `NUMERA`    | `PERF-TKT-80-V`     | `TICKET_CUSTOMER`      | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CLI-05` | Comprobante de devolución, reverso o nota de crédito      | `NUMERA`    | `PERF-TKT-80-V`     | `TICKET_CUSTOMER`      | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CLI-06` | Resumen de recogida o entrega                             | `PULSO`     | `PERF-TKT-80-V`     | `TICKET_CUSTOMER`      | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CLI-07` | Comprobante de reserva o anticipo                         | `PULSO`     | `PERF-TKT-80-V`     | `TICKET_CUSTOMER`      | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CLI-08` | Vale, cortesía, promoción o beneficio                     | `PULSO`     | `PERF-TKT-80-V`     | `TICKET_CUSTOMER`      | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-CLI-09` | Resumen de apertura, cierre o liquidación de caja         | `NUMERA`    | `PERF-TKT-80-V`     | `TICKET_CUSTOMER`      | `ESPECIFICADO / BINDING_BY_RESOLVED_TARGET`               |
+| `IMP-DOC-01` | Remisión o nota de despacho                               | `NEXO`      | `PERF-A4-P`         | `A4_ROUTE`             | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-02` | Manifiesto de traslado interno                            | `NEXO`      | `PERF-A4-P`         | `A4_ROUTE`             | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-03` | Hoja de conteo de inventario                              | `NEXO`      | `PERF-A4-L`         | `A4_ROUTE`             | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-04` | Reporte de diferencias o ajustes de inventario            | `NEXO`      | `PERF-A4-L`         | `A4_ROUTE`             | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-05` | Orden de compra                                           | `ORIGO`     | `PERF-A4-P`         | `A4_ROUTE`             | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-06` | Acta o comprobante de recepción                           | `ORIGO`     | `PERF-A4-P`         | `A4_ROUTE`             | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-07` | Devolución a proveedor                                    | `ORIGO`     | `PERF-A4-P`         | `A4_ROUTE`             | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-08` | Orden de producción o ficha de lote                       | `FOGO`      | `PERF-A4-P`         | `A4_VP_OR_CENTRAL`     | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-09` | Receta, ficha técnica o guía práctica                     | `FOGO`      | `PERF-A4-P`         | `A4_VP_OR_CENTRAL`     | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-10` | Registro de calidad o no conformidad                      | `FOGO`      | `PERF-A4-P`         | `A4_VP_OR_CENTRAL`     | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-11` | Orden de mantenimiento                                    | `NEXO`      | `PERF-A4-P`         | `A4_ROUTE`             | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-12` | Acta de entrega, devolución o traslado de activo          | `NEXO`      | `PERF-A4-P`         | `A4_ROUTE`             | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-13` | Reporte de incidente o soporte técnico                    | `NEXO`      | `PERF-A4-P`         | `A4_ROUTE`             | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-14` | Lista de limpieza, sanitización o control operativo       | `FOGO`      | `PERF-A4-P`         | `A4_VP_OR_CENTRAL`     | `ESPECIFICADO / TARGET_DEPENDENT; VP_BLOCKED_MAINTENANCE` |
+| `IMP-DOC-15` | Reporte contable, conciliación o liquidación              | `NUMERA`    | `PERF-A4-L`         | `A4_ADMIN_ONLY`        | `ESPECIFICADO / L4260_USB_THEN_WIFI`                      |
+| `IMP-DOC-16` | Resumen de indicadores operativos o gerenciales           | `NEXO`      | `PERF-A4-L`         | `A4_ADMIN_ONLY`        | `ESPECIFICADO / L4260_USB_THEN_WIFI`                      |
+
+Reglas de las familias usadas en la matriz:
+
+- `LABEL_ZD230`: consume exclusivamente `TGT-LBL-VP-CENTRAL`; no existe binding activo mientras la Zebra esté almacenada.
+- `TICKET_ROUTE`: el target ya resuelto determina `USB/ESC_POS` en Molka, Saudo y caja de Vento Café o `LAN/ESC_POS` en barra, bar y cocina.
+- `TICKET_ROUTE_WITH_VP`: aplica la regla anterior donde exista dispositivo; en Vento Producción conserva `BLOCKED_NO_DEVICE`.
+- `TICKET_VP_ONLY`: no existe binding posible en el estado actual porque el target aprobado carece de impresora compatible.
+- `TICKET_CUSTOMER`: consume los targets de caja aprobados y sus bindings USB; no habilita otros puntos por descubrimiento.
+- `A4_ROUTE`: la ruta decide L4260 administrativa o L5590 de Vento Producción; L4260 usa USB→Wi-Fi y L5590 permanece bloqueada por mantenimiento.
+- `A4_VP_OR_CENTRAL`: en Vento Producción conserva el bloqueo de L5590; una impresión administrativa central exige la nueva decisión explícita ya aprobada, no un fallback del adaptador.
+- `A4_ADMIN_ONLY`: consume `TGT-A4-ADMIN-LOCAL`; L4260 usa USB primero y Wi-Fi después sobre el mismo `device_ref`.
+
+Control de integridad:
+
+```text
+SALIDAS HEREDADAS: 50
+SALIDAS MATERIALIZADAS: 50
+IDENTIFICADORES IMP-* UNICOS: 50
+ETIQUETAS: 16
+COMANDAS Y TIQUETES OPERATIVOS: 9
+COMPROBANTES CLIENTE/CAJA: 9
+DOCUMENTOS CONVENCIONALES: 16
+FOGO: 15
+NEXO: 14
+PULSO: 12
+NUMERA: 5
+ORIGO: 4
+FALTANTES: 0
+DUPLICADAS: 0
+CAMBIOS DE NOMBRE: 0
+CAMBIOS DE PROPIETARIA: 0
+```
+
+---
+
+#### 13. Integración con offline, privacidad y reintentos
+
+1. Un intento offline solo puede llegar al adaptador cuando `VENTO-PRINT-OFFLINE-CONTINGENCY` entrega un envelope vigente, íntegro y compatible con el dispositivo/canal congelados.
+2. El adaptador no extiende expiración, cantidad, actor, scope, ruta, target ni política de privacidad de un envelope offline.
+3. Si el envelope, autorización, privacy snapshot, binding o salud no pueden verificarse antes del envío, el intento se bloquea sin crear efecto.
+4. La reconexión no drena una cola local directamente al dispositivo: primero se aplican las reglas de revalidación, receipts, idempotencia y causalidad ya aprobadas.
+5. Un intento que quedó `RESULT_UNKNOWN` offline continúa bloqueado al reconectar hasta conciliación autoritativa.
+6. Los temporales locales contienen solo representación saneada; ningún mecanismo de recuperación usa el payload original para reconstruir campos eliminados.
+7. Cambiar USB→Wi-Fi sobre L4260 no crea una nueva intención; cambiar a otro dispositivo o destino requiere una política de target/enrutamiento que lo autorice.
+8. Un bridge local que sobreviva a reinicios debe reconciliar sus buffers por `job_id`, `copy_slot_id`, `attempt_id` y `render_hash` antes de volver a enviar.
+9. La contingencia manual de `PRINT-ARC-017` no se convierte en adaptador: un formulario físico manual sigue siendo un soporte separado y reconciliable, no un `IMP-*` enviado por otro canal.
+
+---
+
+#### 14. Brechas, responsables y condiciones de salida
+
+| ID                  | Brecha materializada                                                                                                                    | Responsable exacto                                                       | Condición de salida                                                                                                                               |
+| ------------------- | --------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `BLK-PRINT-018-001` | No existe implementación canónica de `VENTO-PRINT-ADAPTER` que consuma job, target, privacidad, intento y receipt de extremo a extremo. | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                  | Alcance de implementación aprobado y bindings materializados sin selección local de negocio ni duplicación de autoridad.                          |
+| `BLK-PRINT-018-002` | La variante física y el canal real de `PRN-VP-ZD230-01` siguen sin verificarse y el equipo permanece almacenado.                        | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`; `PRINT-ARC-020` | Unidad inspeccionada, interfaz real vinculada, dispositivo desplegado si se autoriza y prueba física de etiqueta satisfactoria.                   |
+| `BLK-PRINT-018-003` | `PRN-VP-L5590-01` permanece en mantenimiento y no existe binding operativo aprobado.                                                    | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`; `PRINT-ARC-020` | Recuperación o sustitución autorizada, canal configurado, salud observable y prueba A4 satisfactoria.                                             |
+| `BLK-PRINT-018-004` | Vento Producción no tiene impresora 80 mm compatible para `TGT-TKT-VP-SIN-CAPACIDAD`.                                                   | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`; `PRINT-ARC-020` | Dispositivo compatible incorporado mediante control de cambio, binding materializado y prueba física satisfactoria sin degradar el medio.         |
+| `BLK-PRINT-018-005` | No existe evidencia física de cancelación, spool, buffer, cleanup y receipt por cada binding.                                           | `PRINT-ARC-020`                                                          | Matriz de prueba física por binding con fallas inducidas, receipts correlacionados, resultado desconocido, cancelación y disposición comprobados. |
+| `BLK-PRINT-018-006` | No existe todavía monitoreo por sede que consuma estados y fallos normalizados de los adaptadores.                                      | `PRINT-ARC-019`                                                          | Métricas, eventos, diagnóstico, alertas y vistas de soporte definidos sin exponer contenido sensible.                                             |
+
+Ninguna brecha anterior habilita implementación por sí sola ni modifica el estado de la siguiente tarea.
+
+---
+
+#### 15. Casos documentales de protección ya cubiertos
+
+| Caso | Comportamiento que deberá preservarse                                                                         | Cobertura canónica vigente                                         |
+| ---: | ------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------ |
+|    1 | Un callback exitoso de BrowserPrint no se eleva a impresión física confirmada.                                | `TREQ-PROC-280`; `TREQ-PROC-479`; `TREQ-PROC-557`                  |
+|    2 | Un rechazo USB comprobado antes de cualquier write reutiliza la misma intención bajo el presupuesto de retry. | `TREQ-PROC-279`; `TREQ-PROC-446`; `TREQ-PROC-557`                  |
+|    3 | Un timeout USB después de iniciar escritura produce `RESULT_UNKNOWN`, no un segundo envío ciego.              | `TREQ-PROC-278`; `TREQ-PROC-279`; `TREQ-PROC-446`                  |
+|    4 | Una desconexión LAN después de posible transmisión exige conciliación.                                        | `TREQ-PROC-278`; `TREQ-PROC-447`; `TREQ-PROC-479`                  |
+|    5 | El fallback USB→Wi-Fi de L4260 conserva trabajo, copia, dispositivo y target.                                 | `TREQ-PROC-445`; `TREQ-PROC-446`; `TREQ-PROC-557`                  |
+|    6 | Un adaptador o bridge no selecciona impresora por IP, primer dispositivo o último uso.                        | `TREQ-PROC-445`; `TREQ-PROC-557`                                   |
+|    7 | Un bridge que persista trabajo conserva identidad, estado, receipt y reconciliación.                          | `TREQ-PROC-446`; `TREQ-PROC-479`; `TREQ-PROC-557`                  |
+|    8 | La aceptación de un spooler no equivale a `PRINTED_VERIFIED`.                                                 | `TREQ-PROC-280`; `TREQ-PROC-479`                                   |
+|    9 | La Zebra almacenada sigue bloqueada aunque su familia soporte varias interfaces.                              | `TREQ-PROC-474`; `TREQ-PROC-557`                                   |
+|   10 | La L5590 en mantenimiento no se habilita por detección o señal técnica aislada.                               | `TREQ-PROC-474`; `TREQ-PROC-557`                                   |
+|   11 | Un binding Bluetooth no se crea desde capacidad nominal o proximidad; requiere configuración verificable.     | `TREQ-PROC-474`; `TREQ-PROC-557`                                   |
+|   12 | Cancelar un spool o desconectar un canal después de envío posible no demuestra ausencia de efecto.            | `TREQ-PROC-447`; `TREQ-PROC-479`                                   |
+|   13 | Buffers, papel, tapa, atasco, corte y cola divergente producen diagnóstico y recuperación comprobable.        | `TREQ-PROC-447`; `TREQ-PROC-474`; `TREQ-PROC-557`                  |
+|   14 | La operación offline conserva estados, expiración, sincronización, conflicto y conciliación del intento.      | `TREQ-PROC-475`; `TREQ-PROC-479`                                   |
+|   15 | La prueba física debe correlacionar comando, receipt y efecto y no cerrar por diálogo o acuse técnico.        | `TREQ-PROC-280`; `TREQ-PROC-474`; `TREQ-PROC-479`; `TREQ-PROC-557` |
+
+---
+
+#### 16. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa documentalmente la frontera de adaptadores, canales, receipts, buffers, cancelación, cleanup y resultado desconocido dentro de comportamientos que el registro canónico vigente ya protege para impresión y periféricos. No introduce una obligación de prueba distinta ni cambia alcance, estado, responsable, paquete o evidencia exigida de requisitos existentes.
+
+```text
+TREQ creados: 0
+TREQ modificados: 0
+TREQ diferidos: 0
+TREQ descartados: 0
+TREQ obsoletos: 0
+```
+
+El registro canónico de requisitos permanece sin cambios.
+
+---
+
+#### 17. Criterios de aceptación
+
+`PRINT-ARC-018` queda documentalmente satisfecha porque:
+
+- [x] define `VENTO-PRINT-ADAPTER` `1.0.0` con identidad, binding, privacidad, representación, despacho, receipt y cleanup;
+- [x] define de forma cerrada `render_hash` y lo separa de `payload.hash` y `sanitized_payload_hash`;
+- [x] define USB, LAN, Wi-Fi, Bluetooth y puente local sin presentar capacidad nominal como instalación real;
+- [x] conserva los nueve `device_ref` y todos los `channel_id` aprobados;
+- [x] materializa ocho bindings de canal sobre los siete dispositivos operativos sin declararlos runtime-ready;
+- [x] mantiene la Zebra almacenada, la L5590 en mantenimiento y la ausencia de 80 mm en Vento Producción como bloqueos seguros;
+- [x] conserva USB→Wi-Fi como único orden de canal alternativo ya aprobado para L4260;
+- [x] conserva ESC/POS para las seis DIG-E200I y separa USB de LAN según el punto aprobado;
+- [x] no asigna Bluetooth a ningún dispositivo actual;
+- [x] no convierte BrowserPrint en implementación canónica ni permite selección por primer dispositivo;
+- [x] define `SAFE_REJECTED`, `WRITE_STARTED`, `ADAPTER_ACCEPTED`, `PERIPHERAL_ACCEPTED` y `RESULT_UNKNOWN` sin confundirlos con impresión física;
+- [x] define política de temporales, spool, buffer, cancelación y limpieza por capa;
+- [x] integra el envelope offline sin permitir ampliar autoridad, privacidad, ruta o vigencia;
+- [x] materializa una decisión para las cincuenta salidas con 50 esperadas, 50 materializadas, 0 faltantes y 0 duplicadas;
+- [x] preserva la distribución `FOGO=15`, `NEXO=14`, `PULSO=12`, `NUMERA=5`, `ORIGO=4`;
+- [x] asigna todas las brechas a tareas existentes con condición de salida verificable;
+- [x] genera cero cambios de requisitos de prueba con justificación concreta;
+- [x] no modifica código, SQL, migraciones, Supabase, dispositivos, drivers, red ni configuración;
+- [x] mantiene `PRINT-ARC-019` como única tarea siguiente reservada.
+
+---
+
+#### 18. Entrega a `PRINT-ARC-019`
+
+`PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede` recibe como entradas obligatorias:
+
+- `VENTO-PRINT-ADAPTER` `1.0.0`;
+- los estados normalizados de despacho y fallo;
+- `adapter_execution_id`, `attempt_id`, `device_ref`, `channel_id`, `render_hash` y referencias de receipt;
+- ocho bindings documentales sobre canales actualmente elegibles y tres condiciones sin binding activo;
+- separación entre `ADAPTER_ACCEPTED`, `PERIPHERAL_ACCEPTED`, `RESULT_UNKNOWN` y evidencia física;
+- política de buffer, spool, cancelación y limpieza;
+- `BLK-PRINT-018-006` con su condición de salida;
+- prohibición de exponer payload, representación completa o datos sensibles en métricas, alertas y paquetes de soporte.
+
+`PRINT-ARC-019` deberá definir observabilidad y diagnóstico sin cambiar bindings, rutas, targets, autorización, privacidad, retry ni resultado físico, y sin iniciar `PRINT-ARC-020`.
+
+---
+
+#### 19. Continuidad
+
+```text
+ÚLTIMA TAREA APROBADA
+PRINT-ARC-017 — Definir operación offline y contingencia manual
+
+TAREA ACTUAL APROBADA
+PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
+
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede
+```
+
+
 ### [ ] PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede
 ### [ ] PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión
 

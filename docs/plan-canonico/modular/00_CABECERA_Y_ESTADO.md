@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **595** |
+| Tareas aprobadas | **596** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **999** |
+| Tareas no iniciadas | **998** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **37.33% (595/1594)** |
+| Porcentaje de completamiento | **37.39% (596/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **PRINT-ARC-017 — Definir operación offline y contingencia manual** |
-| Tarea actual | **PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local** |
+| Última tarea aprobada | **PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local** |
+| Tarea actual | **PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede** |
+| Siguiente tarea | **PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 19 de 157 aprobadas; PRINT-ARC-018 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 20 de 157 aprobadas; PRINT-ARC-019 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `PRINT-ARC-017` — Definir operación offline y contingencia manual |
-| Tarea actual | `PRINT-ARC-018` — Definir adaptadores LAN, USB, Bluetooth o puente local — **NO INICIADA** |
-| Siguiente tarea | `PRINT-ARC-019` — Definir monitoreo y diagnóstico por sede |
+| Última aprobada | `PRINT-ARC-018` — Definir adaptadores LAN, USB, Bluetooth o puente local |
+| Tarea actual | `PRINT-ARC-019` — Definir monitoreo y diagnóstico por sede — **NO INICIADA** |
+| Siguiente tarea | `PRINT-ARC-020` — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 19 DE 157 APROBADAS — ACTUAL PRINT-ARC-018** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 20 DE 157 APROBADAS — ACTUAL PRINT-ARC-019** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-PRINT-ARC-017 — Definir operación offline y contingencia manual
-        ↓
-TAREA ACTUAL
 PRINT-ARC-018 — Definir adaptadores LAN, USB, Bluetooth o puente local
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 PRINT-ARC-019 — Definir monitoreo y diagnóstico por sede
         ↓
+SIGUIENTE TAREA RESERVADA
+PRINT-ARC-020 — Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 19 de 157 tareas aprobadas
+CARRIL NEXO — 20 de 157 tareas aprobadas
 ```
