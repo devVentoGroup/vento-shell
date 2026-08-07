@@ -989,7 +989,572 @@ Distribución por regla dominante:
 La aprobación de `EVID-ARC-003` no inicia, desarrolla ni aprueba `EVID-ARC-004`.
 
 
-### [ ] EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso
+### ✅ EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso
+
+**Estado:** APROBADA
+**Tarea anterior:** `EVID-ARC-003 — Definir clasificación de sensibilidad` — APROBADA
+**Tarea siguiente:** `EVID-ARC-005 — Definir carga, sustitución, anulación y retención` — RESERVADA
+**Tipo de tarea:** documental; especialización del contrato mínimo de metadatos, identidad/versionado documental y vínculo resoluble con recurso empresarial para el universo documental E4
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md`
+**Procesos cubiertos:** 69 (`VPROC-0001` a `VPROC-0069`)
+**Entradas documentales/artefactos cubiertas:** 332 (`DOCCTX-*`)
+**Perfil documental mínimo materializado:** `EVID_META_CORE_V1`
+**Cambios físicos autorizados:** ninguno; no crea buckets, objetos de Storage, tablas, políticas, RLS, migraciones, rutas, URLs, hashes, jobs, APIs ni despliegues
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir un contrato mínimo común para que cada documento o artefacto materializado conserve una identidad lógica estable, una versión documental inequívoca, la versión del esquema de metadatos, su contexto de proceso y un vínculo resoluble con el recurso empresarial que le da significado, preservando sin cambios la propietaria funcional y la sensibilidad ya aprobadas.
+
+---
+
+#### 1. Resultado sustantivo
+
+La tarea materializa dos artefactos lógicos dentro de este mismo bloque:
+
+- `EVID-DOCUMENT-METADATA-CONTRACT-001`: contrato mínimo de identidad, contexto, versión y referencia empresarial;
+- `EVID-DOCUMENT-METADATA-VERSION-LINK-MATRIX-001`: decisión explícita para las 332 identidades `DOCCTX-*` heredadas.
+
+El contrato especializa, sin sustituirlos, los conceptos ya aprobados de `process_id`, `process_instance_id`, `resource_type`, `resource_id`, `resource_version`, versiones de política, clasificación y referencias de evidencia. No crea una fuente de verdad documental paralela ni convierte una ruta de archivo en identidad empresarial.
+
+---
+
+#### 2. Fuentes canónicas consumidas
+
+- `EVID-ARC-001`: 69 procesos, 332 entradas documentales/artefactos y regla de vínculo con el registro empresarial que da significado al documento.
+- `EVID-ARC-002`: propietaria funcional inequívoca por contexto documental, sin transferencia de autoridad hacia Storage, repositorios, carpetas o servicios transversales.
+- `EVID-ARC-003`: 332 claves `DOCCTX-*`, sensibilidad mínima por entrada y reglas de herencia/elevación.
+- `NFR-REQ-005`: clasificación, manejo, propagación de sensibilidad y versionado de política.
+- `NFR-REQ-006`: unidad de trazabilidad por proceso/instancia/recurso, identificadores estables, versiones interpretables e historia no destructiva.
+- `INFO-DOM-004` y `INFO-DOM-005`: responsabilidades posteriores de ciclo documental corporativo y de metadatos/almacenamiento/búsqueda/localización, que no se anticipan aquí.
+
+---
+
+#### 3. Contrato mínimo `EVID-DOCUMENT-METADATA-CONTRACT-001`
+
+##### 3.1. Campos obligatorios por documento materializado
+
+| Campo                     | Obligación E4                                                                 | Regla                                                                                                                                           |
+| ------------------------- | ----------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------- |
+| `document_id`             | requerido                                                                     | Identidad lógica estable del documento o artefacto materializado. No depende de nombre visible, ruta, URL, bucket, formato ni ubicación física. |
+| `document_context_id`     | requerido                                                                     | Debe resolver exactamente a una identidad `DOCCTX-*` aprobada en `EVID-ARC-003`.                                                                |
+| `document_version`        | requerido                                                                     | Identifica inequívocamente la versión documental concreta y no puede reutilizarse para contenido o estado documental distinto.                  |
+| `metadata_schema_version` | requerido                                                                     | Identifica el contrato de metadatos con el que se interpreta la instancia; para esta línea base el perfil es `EVID_META_CORE_V1`.               |
+| `process_id`              | requerido                                                                     | Debe coincidir con el `VPROC-*` de la identidad `DOCCTX-*`.                                                                                     |
+| `process_instance_id`     | requerido al materializar una instancia                                       | Vincula el documento con la instancia empresarial concreta que lo origina, recibe o conserva.                                                   |
+| `owner_app_code`          | requerido                                                                     | Hereda sin modificación la propietaria funcional aprobada en `EVID-ARC-002`.                                                                    |
+| `classification`          | requerido                                                                     | Hereda como mínimo la clase aprobada en `EVID-ARC-003` y puede elevarse por contenido o inferencia.                                             |
+| `classification_version`  | requerido                                                                     | Permite interpretar históricamente la clasificación aplicada sin confundirla con `document_version`.                                            |
+| `resource_type`           | requerido cuando existe un recurso más específico que la instancia de proceso | Tipo estable del recurso empresarial autoritativo al que se vincula el documento.                                                               |
+| `resource_id`             | requerido cuando existe un recurso más específico que la instancia de proceso | Identificador estable del recurso empresarial; nunca será una ruta de Storage ni una URL.                                                       |
+| `resource_version`        | condicional                                                                   | Se exige cuando el recurso empresarial dispone de versión relevante para interpretar el vínculo.                                                |
+| `parent_resource_ref`     | condicional                                                                   | Conserva el recurso padre cuando el documento pertenece a un expediente, agregado o composición que no debe absorber la fuente original.        |
+| `external_system_ref`     | condicional                                                                   | Conserva la referencia de origen externo cuando exista; complementa y no sustituye el vínculo interno con proceso y recurso.                    |
+
+##### 3.2. Identidades y versiones que no pueden confundirse
+
+```text
+document_id
+    └── document_version
+
+metadata_schema_version
+
+process_id + process_instance_id
+
+resource_type + resource_id
+    └── resource_version, cuando aplique
+
+classification + classification_version
+```
+
+Reglas obligatorias:
+
+1. `document_id` identifica la identidad lógica; `document_version` identifica una revisión concreta de esa identidad.
+2. `metadata_schema_version` versiona la interpretación del sobre de metadatos y no sustituye `document_version`.
+3. `resource_version` versiona el recurso empresarial y no debe copiarse ni reutilizarse como versión del documento.
+4. `classification_version` conserva la política de sensibilidad aplicable y no modifica por sí sola la versión del documento.
+5. La reasignación física de un objeto, cambio de ruta, renombrado o cambio de URL no crea una nueva identidad documental ni modifica por sí mismo la identidad del recurso.
+6. Una versión histórica no se sobrescribe para simular que nunca existió. Los eventos exactos que crean, sustituyen, anulan o retiran versiones pertenecen a `EVID-ARC-005` y `INFO-DOM-004`.
+7. Esta tarea no inventa números de versión para documentos que todavía no han sido materializados físicamente; fija la obligación y semántica que debe cumplirse cuando exista una instancia.
+
+---
+
+#### 4. Regla de vínculo con recurso empresarial
+
+El vínculo mínimo de una instancia documental queda definido así:
+
+```text
+DOCCTX-* APROBADO
+        ↓
+process_id + process_instance_id
+        ↓
+resource_type + resource_id [+ resource_version]
+        ↓
+document_id + document_version
+```
+
+Reglas:
+
+1. Todo documento materializado debe quedar anclado como mínimo a una instancia de proceso y, cuando exista, al recurso empresarial específico que le da significado; un archivo huérfano no satisface el contrato.
+2. Cuando no exista un recurso empresarial más específico que la propia instancia de proceso, `process_instance_id` constituye el ancla empresarial suficiente y `resource_type`/`resource_id` no se rellenan con identidades artificiales. Cuando sí exista un recurso específico, ambos campos son obligatorios.
+3. Una factura, POD, cotización, payload, confirmación, certificado u otro artefacto externo conserva referencia a su origen cuando exista, pero su referencia externa no reemplaza el `process_instance_id` ni el vínculo empresarial interno de VENTO.
+4. En expedientes compuestos, el documento del expediente conserva su recurso gobernante y las referencias de origen necesarias sin transferir propiedad funcional de los registros fuente.
+5. Una copia, render, exportación o snapshot puede conservar una relación con el mismo recurso, pero no adquiere autoridad para cambiar el estado empresarial del recurso.
+6. La ubicación física, bucket, path, clave de objeto, URL, enlace temporal o dispositivo no constituyen `resource_id`.
+7. La semántica corporativa completa de taxonomía, búsquedas, localización y múltiples relaciones documentales queda reservada para `INFO-DOM-003` e `INFO-DOM-005`; este contrato fija únicamente el mínimo E4 necesario para evitar documentos desligados de su contexto empresarial.
+
+---
+
+#### 5. Aplicación del perfil a las 332 identidades
+
+Para cada `DOCCTX-*` se toma una decisión explícita con los siguientes códigos:
+
+| Código                            | Significado                                                                                                                                 |
+| --------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------- |
+| `EVID_META_CORE_V1`               | Aplica íntegramente el contrato mínimo definido en esta tarea.                                                                              |
+| `VERSION_REF_REQUIRED`            | Toda instancia debe declarar `document_version` y `metadata_schema_version`; no se inventa una versión física mientras no exista instancia. |
+| `RESOURCE_REF_REQUIRED`           | Toda instancia debe resolver `process_instance_id` y un vínculo empresarial conforme a la sección 4.                                        |
+| `OWNER+CLASSIFICATION_SIN_CAMBIO` | Propietaria y clase mínima se heredan de `EVID-ARC-002` y `EVID-ARC-003`; esta tarea no las modifica.                                       |
+| `ESPECIFICADO`                    | La decisión documental está completa; no implica implementación física.                                                                     |
+| `NINGUNO`                         | No existe bloqueo documental heredado en el contexto.                                                                                       |
+| `FRONTERA_OBLIGATORIA`            | Se conserva la frontera de propiedad ya aprobada: referencias cruzadas no absorben recursos fuente ni autoridad ajena.                      |
+| `APLICACION_DIFERIDA`             | La definición documental es válida, pero no acredita disponibilidad de la aplicación objetivo.                                              |
+
+| ID contextual          | Proceso      | Perfil              | Versión                | Vínculo                 | Herencia                          | Estado         | Bloqueo / frontera     |
+| ---------------------- | ------------ | ------------------- | ---------------------- | ----------------------- | --------------------------------- | -------------- | ---------------------- |
+| `DOCCTX-VPROC-0001-01` | `VPROC-0001` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0001-02` | `VPROC-0001` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0002-01` | `VPROC-0002` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0002-02` | `VPROC-0002` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0003-01` | `VPROC-0003` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0004-01` | `VPROC-0004` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-01` | `VPROC-0005` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-02` | `VPROC-0005` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-03` | `VPROC-0005` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-04` | `VPROC-0005` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0005-05` | `VPROC-0005` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-01` | `VPROC-0006` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-02` | `VPROC-0006` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-03` | `VPROC-0006` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0006-04` | `VPROC-0006` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-01` | `VPROC-0007` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-02` | `VPROC-0007` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0007-03` | `VPROC-0007` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0008-01` | `VPROC-0008` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0009-01` | `VPROC-0009` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-01` | `VPROC-0010` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-02` | `VPROC-0010` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-03` | `VPROC-0010` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0010-04` | `VPROC-0010` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-01` | `VPROC-0011` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-02` | `VPROC-0011` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-03` | `VPROC-0011` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0011-04` | `VPROC-0011` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-01` | `VPROC-0012` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-02` | `VPROC-0012` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-03` | `VPROC-0012` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-04` | `VPROC-0012` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0012-05` | `VPROC-0012` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-01` | `VPROC-0013` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-02` | `VPROC-0013` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0013-03` | `VPROC-0013` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-01` | `VPROC-0014` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-02` | `VPROC-0014` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-03` | `VPROC-0014` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0014-04` | `VPROC-0014` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0015-01` | `VPROC-0015` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-02` | `VPROC-0015` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-03` | `VPROC-0015` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0015-04` | `VPROC-0015` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0016-01` | `VPROC-0016` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-02` | `VPROC-0016` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-03` | `VPROC-0016` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0016-04` | `VPROC-0016` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0017-01` | `VPROC-0017` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-01` | `VPROC-0018` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-02` | `VPROC-0018` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-03` | `VPROC-0018` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0018-04` | `VPROC-0018` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0019-01` | `VPROC-0019` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0019-02` | `VPROC-0019` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0019-03` | `VPROC-0019` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-01` | `VPROC-0020` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-02` | `VPROC-0020` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-03` | `VPROC-0020` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-04` | `VPROC-0020` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0020-05` | `VPROC-0020` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-01` | `VPROC-0021` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-02` | `VPROC-0021` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0021-03` | `VPROC-0021` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0022-01` | `VPROC-0022` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-02` | `VPROC-0022` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0022-03` | `VPROC-0022` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0023-01` | `VPROC-0023` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0023-02` | `VPROC-0023` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-01` | `VPROC-0024` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-02` | `VPROC-0024` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0024-03` | `VPROC-0024` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0025-01` | `VPROC-0025` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0025-02` | `VPROC-0025` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-01` | `VPROC-0026` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-02` | `VPROC-0026` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-03` | `VPROC-0026` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-04` | `VPROC-0026` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0026-05` | `VPROC-0026` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0027-01` | `VPROC-0027` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0027-02` | `VPROC-0027` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-01` | `VPROC-0028` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-02` | `VPROC-0028` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-03` | `VPROC-0028` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-04` | `VPROC-0028` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-05` | `VPROC-0028` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-06` | `VPROC-0028` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0028-07` | `VPROC-0028` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0029-01` | `VPROC-0029` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-02` | `VPROC-0029` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-03` | `VPROC-0029` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-04` | `VPROC-0029` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-05` | `VPROC-0029` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0029-06` | `VPROC-0029` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0030-01` | `VPROC-0030` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-02` | `VPROC-0030` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-03` | `VPROC-0030` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-04` | `VPROC-0030` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-05` | `VPROC-0030` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0030-06` | `VPROC-0030` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0031-01` | `VPROC-0031` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-02` | `VPROC-0031` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-03` | `VPROC-0031` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-04` | `VPROC-0031` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-05` | `VPROC-0031` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-06` | `VPROC-0031` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0031-07` | `VPROC-0031` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-01` | `VPROC-0032` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-02` | `VPROC-0032` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-03` | `VPROC-0032` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-04` | `VPROC-0032` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0032-05` | `VPROC-0032` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0033-01` | `VPROC-0033` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-02` | `VPROC-0033` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-03` | `VPROC-0033` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-04` | `VPROC-0033` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0033-05` | `VPROC-0033` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-01` | `VPROC-0034` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-02` | `VPROC-0034` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-03` | `VPROC-0034` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-04` | `VPROC-0034` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-05` | `VPROC-0034` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-06` | `VPROC-0034` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-07` | `VPROC-0034` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0034-08` | `VPROC-0034` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-01` | `VPROC-0035` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-02` | `VPROC-0035` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-03` | `VPROC-0035` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0035-04` | `VPROC-0035` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-01` | `VPROC-0036` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-02` | `VPROC-0036` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-03` | `VPROC-0036` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0036-04` | `VPROC-0036` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-01` | `VPROC-0037` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-02` | `VPROC-0037` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-03` | `VPROC-0037` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-04` | `VPROC-0037` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0037-05` | `VPROC-0037` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0038-01` | `VPROC-0038` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-02` | `VPROC-0038` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-03` | `VPROC-0038` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-04` | `VPROC-0038` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-05` | `VPROC-0038` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0038-06` | `VPROC-0038` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-01` | `VPROC-0039` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-02` | `VPROC-0039` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-03` | `VPROC-0039` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-04` | `VPROC-0039` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-05` | `VPROC-0039` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0039-06` | `VPROC-0039` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0040-01` | `VPROC-0040` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-02` | `VPROC-0040` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-03` | `VPROC-0040` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-04` | `VPROC-0040` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0040-05` | `VPROC-0040` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-01` | `VPROC-0041` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-02` | `VPROC-0041` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-03` | `VPROC-0041` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-04` | `VPROC-0041` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0041-05` | `VPROC-0041` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-01` | `VPROC-0042` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-02` | `VPROC-0042` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-03` | `VPROC-0042` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0042-04` | `VPROC-0042` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-01` | `VPROC-0043` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-02` | `VPROC-0043` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-03` | `VPROC-0043` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-04` | `VPROC-0043` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-05` | `VPROC-0043` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0043-06` | `VPROC-0043` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-01` | `VPROC-0044` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-02` | `VPROC-0044` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-03` | `VPROC-0044` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-04` | `VPROC-0044` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-05` | `VPROC-0044` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0044-06` | `VPROC-0044` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-01` | `VPROC-0045` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-02` | `VPROC-0045` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-03` | `VPROC-0045` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0045-04` | `VPROC-0045` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-01` | `VPROC-0046` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-02` | `VPROC-0046` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-03` | `VPROC-0046` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-04` | `VPROC-0046` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-05` | `VPROC-0046` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-06` | `VPROC-0046` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0046-07` | `VPROC-0046` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-01` | `VPROC-0047` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-02` | `VPROC-0047` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-03` | `VPROC-0047` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-04` | `VPROC-0047` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-05` | `VPROC-0047` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0047-06` | `VPROC-0047` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0048-01` | `VPROC-0048` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-02` | `VPROC-0048` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-03` | `VPROC-0048` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-04` | `VPROC-0048` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-05` | `VPROC-0048` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-06` | `VPROC-0048` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0048-07` | `VPROC-0048` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0049-01` | `VPROC-0049` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-02` | `VPROC-0049` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-03` | `VPROC-0049` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-04` | `VPROC-0049` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-05` | `VPROC-0049` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-06` | `VPROC-0049` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-07` | `VPROC-0049` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0049-08` | `VPROC-0049` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-01` | `VPROC-0050` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-02` | `VPROC-0050` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-03` | `VPROC-0050` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-04` | `VPROC-0050` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-05` | `VPROC-0050` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-06` | `VPROC-0050` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0050-07` | `VPROC-0050` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-01` | `VPROC-0051` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-02` | `VPROC-0051` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-03` | `VPROC-0051` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0051-04` | `VPROC-0051` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-01` | `VPROC-0052` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-02` | `VPROC-0052` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-03` | `VPROC-0052` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-04` | `VPROC-0052` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0052-05` | `VPROC-0052` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-01` | `VPROC-0053` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-02` | `VPROC-0053` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-03` | `VPROC-0053` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0053-04` | `VPROC-0053` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-01` | `VPROC-0054` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-02` | `VPROC-0054` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-03` | `VPROC-0054` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-04` | `VPROC-0054` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-05` | `VPROC-0054` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0054-06` | `VPROC-0054` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-01` | `VPROC-0055` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-02` | `VPROC-0055` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-03` | `VPROC-0055` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-04` | `VPROC-0055` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0055-05` | `VPROC-0055` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0056-01` | `VPROC-0056` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-02` | `VPROC-0056` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-03` | `VPROC-0056` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-04` | `VPROC-0056` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-05` | `VPROC-0056` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-06` | `VPROC-0056` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0056-07` | `VPROC-0056` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-01` | `VPROC-0057` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-02` | `VPROC-0057` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-03` | `VPROC-0057` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-04` | `VPROC-0057` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-05` | `VPROC-0057` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-06` | `VPROC-0057` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0057-07` | `VPROC-0057` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `APLICACION_DIFERIDA`  |
+| `DOCCTX-VPROC-0058-01` | `VPROC-0058` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-02` | `VPROC-0058` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-03` | `VPROC-0058` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-04` | `VPROC-0058` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-05` | `VPROC-0058` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0058-06` | `VPROC-0058` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-01` | `VPROC-0059` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-02` | `VPROC-0059` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-03` | `VPROC-0059` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-04` | `VPROC-0059` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-05` | `VPROC-0059` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0059-06` | `VPROC-0059` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-01` | `VPROC-0060` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-02` | `VPROC-0060` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-03` | `VPROC-0060` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-04` | `VPROC-0060` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-05` | `VPROC-0060` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-06` | `VPROC-0060` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-07` | `VPROC-0060` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0060-08` | `VPROC-0060` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-01` | `VPROC-0061` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-02` | `VPROC-0061` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-03` | `VPROC-0061` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-04` | `VPROC-0061` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-05` | `VPROC-0061` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0061-06` | `VPROC-0061` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-01` | `VPROC-0062` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-02` | `VPROC-0062` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-03` | `VPROC-0062` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-04` | `VPROC-0062` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-05` | `VPROC-0062` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-06` | `VPROC-0062` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0062-07` | `VPROC-0062` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-01` | `VPROC-0063` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-02` | `VPROC-0063` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-03` | `VPROC-0063` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-04` | `VPROC-0063` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0063-05` | `VPROC-0063` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-01` | `VPROC-0064` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-02` | `VPROC-0064` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-03` | `VPROC-0064` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-04` | `VPROC-0064` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-05` | `VPROC-0064` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0064-06` | `VPROC-0064` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-01` | `VPROC-0065` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-02` | `VPROC-0065` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-03` | `VPROC-0065` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-04` | `VPROC-0065` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-05` | `VPROC-0065` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-06` | `VPROC-0065` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0065-07` | `VPROC-0065` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-01` | `VPROC-0066` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-02` | `VPROC-0066` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-03` | `VPROC-0066` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-04` | `VPROC-0066` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-05` | `VPROC-0066` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-06` | `VPROC-0066` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0066-07` | `VPROC-0066` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0067-01` | `VPROC-0067` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-02` | `VPROC-0067` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-03` | `VPROC-0067` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-04` | `VPROC-0067` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-05` | `VPROC-0067` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0067-06` | `VPROC-0067` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `NINGUNO`              |
+| `DOCCTX-VPROC-0068-01` | `VPROC-0068` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-02` | `VPROC-0068` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-03` | `VPROC-0068` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-04` | `VPROC-0068` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-05` | `VPROC-0068` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0068-06` | `VPROC-0068` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-01` | `VPROC-0069` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-02` | `VPROC-0069` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-03` | `VPROC-0069` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-04` | `VPROC-0069` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-05` | `VPROC-0069` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-06` | `VPROC-0069` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-07` | `VPROC-0069` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-08` | `VPROC-0069` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+| `DOCCTX-VPROC-0069-09` | `VPROC-0069` | `EVID_META_CORE_V1` | `VERSION_REF_REQUIRED` | `RESOURCE_REF_REQUIRED` | `OWNER+CLASSIFICATION_SIN_CAMBIO` | `ESPECIFICADO` | `FRONTERA_OBLIGATORIA` |
+
+---
+
+#### 6. Reconciliación cuantitativa
+
+| Control                                                  | Resultado |
+| -------------------------------------------------------- | --------: |
+| Contextos de proceso esperados                           |        69 |
+| Contextos de proceso materializados                      |        69 |
+| Entradas `DOCCTX-*` esperadas                            |       332 |
+| Entradas con perfil de metadatos asignado                |       332 |
+| Entradas con obligación explícita de versión             |       332 |
+| Entradas con obligación explícita de vínculo empresarial |       332 |
+| Claves `DOCCTX-*` únicas                                 |       332 |
+| Faltantes                                                |         0 |
+| Duplicados                                               |         0 |
+| Propietarias funcionales modificadas                     |         0 |
+| Clasificaciones mínimas modificadas                      |         0 |
+| Instancias físicas, rutas, URLs o hashes inventados      |         0 |
+
+Fronteras heredadas materializadas sobre las 332 entradas:
+
+| Frontera               | Entradas |
+| ---------------------- | -------: |
+| `NINGUNO`              |       73 |
+| `FRONTERA_OBLIGATORIA` |      245 |
+| `APLICACION_DIFERIDA`  |       14 |
+| **Total**              |  **332** |
+
+Se conserva además la distribución canónica de propiedad por los 69 contextos: `anima` 1, `viso` 20, `nexo` 16, `fogo` 6, `origo` 4, `pulso` 12, `numera` 7, `aura` 2 y `pass` 1. No se reasigna ninguna propietaria.
+
+Se conserva sin modificación la distribución de sensibilidad heredada sobre las 332 entradas: `S0_PUBLIC` 1, `S1_INTERNAL` 33, `S2_CONFIDENTIAL` 166, `S3_RESTRICTED` 124 y `S4_HIGHLY_RESTRICTED` 8.
+
+---
+
+#### 7. Decisiones canónicas de EVID-ARC-004
+
+1. Toda instancia documental utiliza una identidad lógica estable separada de su ubicación física.
+2. Las 332 identidades `DOCCTX-*` son clasificadores contextuales del contrato y no sustituyen el `document_id` de una instancia materializada.
+3. `document_version`, `metadata_schema_version`, `resource_version` y `classification_version` son dimensiones independientes y no pueden reutilizarse unas como otras.
+4. Toda instancia documental debe conservar `process_id` y `process_instance_id`, y resolver un recurso empresarial sin convertir path, bucket o URL en identidad de negocio.
+5. La propietaria funcional y la sensibilidad mínima permanecen exactamente como fueron aprobadas en `EVID-ARC-002` y `EVID-ARC-003`.
+6. Un documento externo o una copia conserva su referencia de origen sin perder el vínculo empresarial interno que justifica su existencia en VENTO.
+7. Un expediente compuesto puede relacionar fuentes distintas, pero no absorbe propiedad ni autoridad de los recursos fuente.
+8. La historia de versiones debe ser interpretable y no destructiva; la definición de eventos de carga, sustitución, anulación y retención permanece fuera de esta tarea.
+9. El contrato no define rutas de Storage, nombres de archivo, MIME, tamaño, hash, malware, firma, URL temporal, permisos, auditoría de consultas, plazo de retención, hold, eliminación ni contingencia.
+10. La definición corporativa posterior de metadatos y ciclo documental podrá ampliar este perfil, pero deberá preservar su trazabilidad hacia proceso, recurso, identidad, versión, propietaria y clasificación o materializar una transición explícita y versionada.
+
+---
+
+#### 8. Decisiones reservadas con propietario exacto
+
+| Decisión reservada                                                                                  | Tarea propietaria |
+| --------------------------------------------------------------------------------------------------- | ----------------- |
+| Carga, sustitución, anulación y retención operativa del artefacto                                   | `EVID-ARC-005`    |
+| Validación de tipo, tamaño, integridad y malware                                                    | `EVID-ARC-006`    |
+| Acceso temporal y URLs firmadas                                                                     | `EVID-ARC-007`    |
+| Auditoría de consulta y modificación                                                                | `EVID-ARC-008`    |
+| Conservación legal y eliminación                                                                    | `EVID-ARC-009`    |
+| Contingencia ante indisponibilidad de Storage                                                       | `EVID-ARC-010`    |
+| Ciclo documental corporativo, estados, versiones, vigencia, sustitución, anulación y retiro         | `INFO-DOM-004`    |
+| Metadatos corporativos, almacenamiento, búsqueda, localización y vínculo con recursos empresariales | `INFO-DOM-005`    |
+| Autenticidad, integridad, procedencia, hash, timestamp, preservación y cadena de custodia           | `INFO-DOM-007`    |
+
+---
+
+#### Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea especializa y materializa para las 332 identidades documentales el contrato ya aprobado de identificadores estables, proceso/instancia/recurso, versiones interpretables, clasificación versionada, evidencia/procedencia e historia no destructiva. No introduce una regla ejecutable nueva de negocio, autorización, integración, transición de ciclo de vida, validación de integridad, acceso o disposición. En consecuencia, crea 0 requisitos, modifica 0, difiere 0, descarta 0 y vuelve obsoletos 0; el registro canónico permanece sin cambios.
+
+---
+
+#### 9. Criterios de aceptación
+
+- [x] `EVID-ARC-003` figura aprobada y entrega 332 identidades `DOCCTX-*` para 69 procesos.
+- [x] las 332 identidades aparecen exactamente una vez en la matriz de esta tarea.
+- [x] cada identidad recibe explícitamente el perfil `EVID_META_CORE_V1`.
+- [x] cada identidad exige versión documental y versión del esquema de metadatos al materializar una instancia.
+- [x] cada identidad exige contexto de proceso y vínculo empresarial resoluble al materializar una instancia.
+- [x] `document_id`, `document_version`, `metadata_schema_version`, `resource_version` y `classification_version` quedan semánticamente separados.
+- [x] las 332 entradas conservan sin cambios propietaria funcional y sensibilidad mínima heredadas.
+- [x] las fronteras `NINGUNO`, `FRONTERA_OBLIGATORIA` y `APLICACION_DIFERIDA` permanecen reconciliadas y explícitas.
+- [x] no se inventan instancias documentales, versiones físicas, nombres de archivo, buckets, rutas, URLs, hashes o resultados de ejecución.
+- [x] una referencia externa no sustituye el vínculo interno con proceso y recurso.
+- [x] una ruta, URL o ubicación física no puede funcionar como `document_id` ni `resource_id`.
+- [x] la historia de versiones no se declara destructiva ni se definen anticipadamente eventos de sustitución/anulación.
+- [x] las decisiones reservadas tienen tarea propietaria exacta.
+- [x] no se crean tablas, políticas, RLS, migraciones, Storage, jobs, APIs ni despliegues.
+- [x] la tarea genera cero cambios en requisitos de prueba.
+- [x] `EVID-ARC-005` permanece reservada y no iniciada.
+
+---
+
+#### 10. Handoff cerrado hacia EVID-ARC-005
+
+`EVID-ARC-005` recibe las 332 identidades documentales con propietaria, sensibilidad, perfil mínimo de metadatos, obligación de versionado y vínculo empresarial definidos. Su única responsabilidad siguiente será definir carga, sustitución, anulación y retención sin romper identidad, historia, clasificación ni vínculo con el recurso y sin iniciar las decisiones reservadas para `EVID-ARC-006` a `EVID-ARC-010`.
+
+La aprobación de `EVID-ARC-004` no inicia, desarrolla ni aprueba `EVID-ARC-005`.
+
+
 ### [ ] EVID-ARC-005 — Definir carga, sustitución, anulación y retención
 ### [ ] EVID-ARC-006 — Definir validación de tipo, tamaño, integridad y malware
 ### [ ] EVID-ARC-007 — Definir acceso temporal y URLs firmadas

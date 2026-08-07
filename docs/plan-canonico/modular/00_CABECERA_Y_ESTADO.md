@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **294** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **601** |
+| Tareas aprobadas | **602** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **993** |
+| Tareas no iniciadas | **992** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **37.70% (601/1594)** |
+| Porcentaje de completamiento | **37.77% (602/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **EVID-ARC-003 — Definir clasificación de sensibilidad** |
-| Tarea actual | **EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso** |
+| Última tarea aprobada | **EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso** |
+| Tarea actual | **EVID-ARC-005 — Definir carga, sustitución, anulación y retención** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **EVID-ARC-005 — Definir carga, sustitución, anulación y retención** |
+| Siguiente tarea | **EVID-ARC-006 — Definir validación de tipo, tamaño, integridad y malware** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 25 de 157 aprobadas; EVID-ARC-004 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 26 de 157 aprobadas; EVID-ARC-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `EVID-ARC-003` — Definir clasificación de sensibilidad |
-| Tarea actual | `EVID-ARC-004` — Definir metadatos, versión y vínculo con el recurso — **NO INICIADA** |
-| Siguiente tarea | `EVID-ARC-005` — Definir carga, sustitución, anulación y retención |
+| Última aprobada | `EVID-ARC-004` — Definir metadatos, versión y vínculo con el recurso |
+| Tarea actual | `EVID-ARC-005` — Definir carga, sustitución, anulación y retención — **NO INICIADA** |
+| Siguiente tarea | `EVID-ARC-006` — Definir validación de tipo, tamaño, integridad y malware |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 25 DE 157 APROBADAS — ACTUAL EVID-ARC-004** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 26 DE 157 APROBADAS — ACTUAL EVID-ARC-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-EVID-ARC-003 — Definir clasificación de sensibilidad
-        ↓
-TAREA ACTUAL
 EVID-ARC-004 — Definir metadatos, versión y vínculo con el recurso
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 EVID-ARC-005 — Definir carga, sustitución, anulación y retención
         ↓
+SIGUIENTE TAREA RESERVADA
+EVID-ARC-006 — Definir validación de tipo, tamaño, integridad y malware
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 25 de 157 tareas aprobadas
+CARRIL NEXO — 26 de 157 tareas aprobadas
 ```

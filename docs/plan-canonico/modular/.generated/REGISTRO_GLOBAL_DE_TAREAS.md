@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **601** |
+| Aprobadas | **602** |
 | En propuesta | **0** |
-| No iniciadas | **993** |
+| No iniciadas | **992** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **37.70% (601/1594)** |
+| Porcentaje de completamiento | **37.77% (602/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `EVID-ARC-003` — Definir clasificación de sensibilidad | ✅ APROBADA |
-| Tarea actual | `EVID-ARC-004` — Definir metadatos, versión y vínculo con el recurso | ⬜ NO INICIADA |
-| Siguiente reservada | `EVID-ARC-005` — Definir carga, sustitución, anulación y retención | ⬜ NO INICIADA |
+| Última aprobada | `EVID-ARC-004` — Definir metadatos, versión y vínculo con el recurso | ✅ APROBADA |
+| Tarea actual | `EVID-ARC-005` — Definir carga, sustitución, anulación y retención | ⬜ NO INICIADA |
+| Siguiente reservada | `EVID-ARC-006` — Definir validación de tipo, tamaño, integridad y malware | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -521,7 +521,7 @@
 | ✅ APROBADA | `EVID-ARC-001` | Inventariar archivos y evidencia por proceso | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ✅ APROBADA | `EVID-ARC-002` | Definir propietario funcional de cada tipo documental | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ✅ APROBADA | `EVID-ARC-003` | Definir clasificación de sensibilidad | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
-| ⬜ NO INICIADA | `EVID-ARC-004` | Definir metadatos, versión y vínculo con el recurso | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
+| ✅ APROBADA | `EVID-ARC-004` | Definir metadatos, versión y vínculo con el recurso | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-005` | Definir carga, sustitución, anulación y retención | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-006` | Definir validación de tipo, tamaño, integridad y malware | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ⬜ NO INICIADA | `EVID-ARC-007` | Definir acceso temporal y URLs firmadas | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
