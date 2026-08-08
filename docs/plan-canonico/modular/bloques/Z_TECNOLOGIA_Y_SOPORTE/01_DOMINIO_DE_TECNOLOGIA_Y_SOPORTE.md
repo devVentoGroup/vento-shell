@@ -487,7 +487,645 @@ SIGUIENTE TAREA RESERVADA
 `TI-DOM-002 — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio`
 
 
-### [ ] TI-DOM-002 — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio
+### ✅ TI-DOM-002 — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-001 — Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención` — APROBADA
+**Tarea siguiente:** `TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de configuración tecnológica federada, identidad referencial, relaciones tipadas, cardinalidades, evidencia y reconciliación entre elementos tecnológicos
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, constraints, RLS, RPC, Edge Functions, migraciones, datos, redes, dispositivos, impresoras, cuentas, aplicaciones, servicios, secretos, despliegues ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir una configuración canónica única y federada para relacionar los elementos tecnológicos que participan en la operación de Vento OS sin convertir el registro técnico en una nueva fuente de verdad empresarial.
+
+La tarea fija el contrato que permite responder de forma determinista:
+
+```text
+QUÉ OBJETO TECNOLÓGICO ES
+→ QUIÉN ES SU FUENTE AUTORITATIVA
+→ CON QUÉ IDENTIDAD SE REFERENCIA
+→ DE QUÉ OTROS OBJETOS DEPENDE
+→ QUÉ RELACIONES SON DIRECTAS
+→ QUÉ RELACIONES SOLO SE DERIVAN
+→ QUÉ EVIDENCIA DEMUESTRA CADA VÍNCULO
+→ QUÉ CAMBIÓ
+→ QUÉ QUEDA AFECTADO CUANDO FALLA
+```
+
+El resultado no crea una CMDB monolítica ni reemplaza NEXO, SHELL, el modelo de dispositivos compartidos, PRINT-ARC o el catálogo tecnológico aprobado en `TI-DOM-001`.
+
+---
+
+#### 2. Resultado material
+
+Se aprueba `TI-CONFIGURATION-GRAPH-CONTRACT-001` como contrato documental de configuración tecnológica.
+
+El resultado materializa:
+
+| Elemento                                  |    Resultado |
+| ----------------------------------------- | -----------: |
+| Clases canónicas de configuración         |        **7** |
+| Relaciones directas tipadas               |       **15** |
+| Pares clase–clase evaluados               | **49 de 49** |
+| Servicios heredados reconciliados         | **11 de 11** |
+| Servicios faltantes                       |        **0** |
+| Servicios duplicados                      |        **0** |
+| Fuentes de verdad sustituidas             |        **0** |
+| Relaciones creadas por inferencia nominal |        **0** |
+| Cambios físicos                           |        **0** |
+| Cambios de requisitos de prueba           |        **0** |
+
+Las siete clases son:
+
+```text
+ASSET
+ENDPOINT
+SHARED_DEVICE
+NETWORK_RESOURCE
+PRINTER
+APPLICATION
+TECH_SERVICE
+```
+
+Las clases son proyecciones referenciales de configuración. No crean por sí mismas una nueva identidad cuando una identidad canónica ya existe en otro dominio.
+
+---
+
+#### 3. Entradas canónicas conservadas
+
+La tarea consume y preserva:
+
+1. `TI-DOM-001`, incluidos `TI-SERVICE-001` a `TI-SERVICE-011`;
+2. `CAP-SCOPE-015` y sus fronteras entre SHELL, NEXO, ANIMA, VISO, PRINT-ARC, ORIGO, NUMERA y las capas de calidad, despliegue y continuidad;
+3. `AUTH-DEV-001` y `AUTH-DEV-002`, incluido `SHARED-DEVICE-IDENTITY-CONTRACT-001`;
+4. la separación aprobada entre `device_id`, `device_code`, `endpoint_id`, `asset_id`, estación, principal técnico, credencial, plantilla, observación y actor;
+5. el catálogo canónico de aplicaciones y su regla de `app_code` estable;
+6. la clasificación física de NEXO y su propiedad sobre identidad física, ubicación, condición y custodia;
+7. el inventario y la arquitectura documental de PRINT-ARC;
+8. `TREQ-AUTH-019` a `TREQ-AUTH-029`;
+9. `TREQ-SHELL-010`;
+10. `TREQ-NEXO-019`;
+11. `TREQ-INTEGRATION-020`;
+12. la regla transversal de que una fuente técnica, caché, proyección, cola, índice o adaptador no se convierte en propietario del hecho original.
+
+La configuración canónica definida aquí no modifica ninguna de esas decisiones.
+
+---
+
+#### 4. Decisión principal: grafo federado, no CMDB competidora
+
+Se adopta el siguiente modelo:
+
+```text
+FUENTE CANÓNICA DEL OBJETO
+        ↓
+REFERENCIA DE CONFIGURACIÓN
+        ↓
+RELACIÓN TIPADA Y VERSIONADA
+        ↓
+REFERENCIA DE OTRO OBJETO
+        ↓
+EVIDENCIA + ESTADO DE RECONCILIACIÓN
+```
+
+Reglas:
+
+1. la fuente canónica conserva el objeto y sus atributos propietarios;
+2. la capa tecnológica conserva referencias y relaciones necesarias para soporte, impacto, diagnóstico, cambio y recuperación;
+3. una referencia no duplica un registro completo del objeto;
+4. un cambio en la proyección no modifica la fuente propietaria;
+5. una relación no concede autorización;
+6. un nombre, IP, MAC, serial, etiqueta, URL, ubicación o texto libre no bastan para crear una relación autoritativa;
+7. una relación derivada se calcula desde relaciones directas y no se mantiene como fuente competidora;
+8. el historial se conserva cuando cambia un vínculo;
+9. una relación sin evidencia suficiente queda explícitamente pendiente;
+10. una contradicción entre fuentes se trata como conflicto de reconciliación y no se resuelve mediante sobrescritura automática.
+
+---
+
+#### 5. Las siete clases canónicas
+
+##### 5.1. `ASSET`
+
+Representa el objeto físico individual controlado por NEXO cuando la clase física exige identidad individual.
+
+Fuente y frontera:
+
+- NEXO conserva identidad física;
+- NEXO conserva ubicación, condición, custodia, mantenimiento, garantía y retiro;
+- la configuración tecnológica referencia el activo;
+- TI no crea un activo paralelo;
+- modelo, serial, placa o etiqueta ayudan a reconciliar, pero no reemplazan la identidad estable.
+
+Un activo puede existir sin estar habilitado como endpoint, dispositivo compartido, impresora o recurso de red.
+
+##### 5.2. `ENDPOINT`
+
+Representa la instalación técnica administrada que ejecuta un cliente, sistema operativo o capacidad tecnológica sobre un equipo.
+
+Reglas:
+
+- utiliza `endpoint_id` conforme al contrato de identidad aprobado;
+- es distinto del activo físico;
+- una reinstalación crea una generación de endpoint nueva conforme a la autoridad de dispositivo;
+- no se identifica por IP, MAC, serial, hostname, user agent o fingerprint;
+- su ciclo de vida completo pertenece a `TI-DOM-003`;
+- su configuración estándar, postura, parches, cifrado, software y salud se profundizan en `TI-DOM-003` y `TI-DOM-010`.
+
+La ausencia actual de una materialización física transversal de `endpoint_id` no autoriza a reutilizar `device_id`, `asset_id` o una cuenta técnica como sustituto.
+
+##### 5.3. `SHARED_DEVICE`
+
+Representa el dispositivo empresarial lógico administrado para operación compartida.
+
+Fuente y frontera:
+
+- conserva `device_id` y `device_code` del contrato de dispositivos compartidos;
+- el dispositivo no es trabajador, endpoint, activo, estación ni principal técnico;
+- puede vincularse a un endpoint vigente;
+- puede declarar aplicaciones permitidas sin conceder permisos al actor;
+- sede, área, aplicaciones y capacidad máxima continúan bajo las decisiones de `AUTH-DEV-*`;
+- la capa TI consume esas relaciones, no las reinterpreta.
+
+##### 5.4. `NETWORK_RESOURCE`
+
+Representa un elemento técnico de conectividad cuya identidad y subtipo definitivos serán administrados por el dominio tecnológico.
+
+Puede representar, según la taxonomía posterior:
+
+- enlace;
+- router;
+- switch;
+- punto de acceso;
+- segmento o VLAN;
+- SSID;
+- reserva o identidad de direccionamiento;
+- otro recurso técnico de red aprobado.
+
+`TI-DOM-002` crea la clase y sus relaciones transversales, pero no inventaría topología, IP, VLAN, SSID, proveedor, capacidad o contingencia. Esas decisiones pertenecen a `TI-DOM-004`.
+
+Un recurso físico de red deberá poder relacionarse con el activo físico correspondiente sin convertir la dirección IP o MAC en identidad del activo.
+
+##### 5.5. `PRINTER`
+
+Representa la proyección técnica de un dispositivo de impresión inventariado por PRINT-ARC.
+
+Fronteras:
+
+- el equipo físico sigue siendo un activo cuando corresponda;
+- PRINT-ARC conserva capacidad, conexión, cola, routing, adaptador, trabajo y resultado según sus tareas propietarias;
+- TI conserva la relación técnica necesaria para configuración, soporte y diagnóstico;
+- una impresora de red puede relacionarse con red;
+- una impresora local puede relacionarse con el endpoint al que está conectada;
+- una impresora no recibe autoridad empresarial por estar disponible;
+- aplicación y dispositivo físico no se vinculan directamente para decidir routing de impresión: la intención y el trabajo atraviesan PRINT-ARC.
+
+La identidad física de una impresora no se crea desde marca, modelo o ubicación.
+
+##### 5.6. `APPLICATION`
+
+Representa una aplicación del catálogo canónico de SHELL.
+
+Reglas:
+
+- se referencia por su identidad canónica y `app_code`;
+- aplicación no equivale a repositorio, URL, ambiente, despliegue o servicio;
+- la configuración tecnológica no renombra códigos;
+- que una fila esté activa en el catálogo no demuestra disponibilidad operativa;
+- ambiente, proveedor, dependencias, licencias, criticidad y salida del proveedor pertenecen a `TI-DOM-006`;
+- un endpoint puede presentar o ejecutar un cliente para una aplicación sin que esa relación conceda permiso.
+
+##### 5.7. `TECH_SERVICE`
+
+Representa una de las once familias `TI-SERVICE-001` a `TI-SERVICE-011` aprobadas en `TI-DOM-001`.
+
+Reglas:
+
+- la identidad del servicio se conserva;
+- el servicio puede depender de otros nodos del grafo;
+- la dependencia se utiliza para impacto, soporte, cambio, monitoreo y continuidad;
+- el servicio no absorbe la identidad de sus componentes;
+- una dependencia no convierte el componente en propietario del servicio;
+- criticidad del servicio no equivale a prioridad de incidente;
+- la materialización detallada de aplicaciones, proveedores, ambientes y dependencias se profundiza en `TI-DOM-006`.
+
+---
+
+#### 6. Contrato común de una referencia de configuración
+
+Toda referencia que ingrese al grafo deberá resolver, conceptualmente, como mínimo:
+
+| Campo conceptual          | Regla                                                                       |
+| ------------------------- | --------------------------------------------------------------------------- |
+| `configuration_class`     | Una de las siete clases aprobadas.                                          |
+| `canonical_source`        | Dominio o registro propietario del objeto.                                  |
+| `canonical_identity`      | Identidad estable suministrada por la fuente; nunca inferida por nombre.    |
+| `source_version`          | Versión o revisión cuando la fuente la tenga.                               |
+| `display_label`           | Etiqueta humana no autoritativa.                                            |
+| `lifecycle_reference`     | Estado propietario del objeto, sin crear un estado paralelo.                |
+| `site_reference`          | Referencia territorial cuando exista y sea necesaria; no concede autoridad. |
+| `area_reference`          | Referencia funcional cuando aplique; no sustituye contexto de actor.        |
+| `technical_evidence_refs` | Evidencia que permite comprobar la proyección.                              |
+| `last_observed_at`        | Última observación técnica disponible cuando exista.                        |
+| `last_reconciled_at`      | Última comparación controlada con la fuente.                                |
+| `reconciliation_state`    | Estado explícito de la proyección conforme a las reglas de evidencia.       |
+
+Restricciones:
+
+- no se copian secretos;
+- no se guarda una credencial completa;
+- no se copian atributos sensibles si una referencia basta;
+- no se utiliza `metadata` como almacén genérico para eludir contratos;
+- la ausencia de un dato requerido no se rellena con una heurística.
+
+---
+
+#### 7. Estados de reconciliación aplicables
+
+La tarea utiliza los estados generales vigentes de entrega y evidencia:
+
+| Estado                   | Uso dentro del grafo                                                                                |
+| ------------------------ | --------------------------------------------------------------------------------------------------- |
+| `ESPECIFICADO`           | La clase, relación o contrato están definidos documentalmente, sin afirmar persistencia física.     |
+| `IMPLEMENTADO`           | Existe una estructura o dato técnico actual que materializa parcialmente el contrato.               |
+| `VALIDADO`               | La relación o identidad fue contrastada con evidencia suficiente y reproducible.                    |
+| `BLOQUEADO`              | Existe un conflicto o falta un prerrequisito que impide usar la relación.                           |
+| `PENDIENTE_DE_EVIDENCIA` | Existe un candidato o dato parcial, pero falta prueba suficiente para declararlo relación canónica. |
+| `NO_APLICA`              | La relación no corresponde al tipo o instancia.                                                     |
+| `FUERA_DE_ALCANCE`       | La decisión pertenece expresamente a otra tarea.                                                    |
+
+Una relación pasa a `VALIDADO` por evidencia, no por antigüedad, nombre coincidente o ausencia de errores.
+
+---
+
+#### 8. Contrato canónico de relación
+
+Cada relación directa deberá conservar:
+
+| Dimensión    | Regla                                                                       |
+| ------------ | --------------------------------------------------------------------------- |
+| tipo         | relación incluida en el catálogo de esta tarea                              |
+| origen       | clase + identidad canónica de origen                                        |
+| destino      | clase + identidad canónica de destino                                       |
+| dirección    | semántica única; la inversa es una vista, no otro hecho                     |
+| cardinalidad | restricción aprobada por tipo                                               |
+| vigencia     | inicio y fin cuando exista cambio                                           |
+| versión      | nueva versión o nuevo vínculo ante cambio material                          |
+| evidencia    | fuente que demuestra la relación                                            |
+| estado       | reconciliación explícita                                                    |
+| motivo       | razón estructurada para alta, cambio, sustitución o retiro                  |
+| correlación  | referencia al cambio, caso o decisión que produjo el vínculo cuando aplique |
+
+Clave lógica mínima:
+
+```text
+RELATION_TYPE
++
+SOURCE_CANONICAL_IDENTITY
++
+TARGET_CANONICAL_IDENTITY
++
+VIGENCIA O VERSIÓN
+```
+
+El mismo vínculo no se duplica para representar la dirección inversa.
+
+---
+
+#### 9. Catálogo de relaciones directas
+
+Se aprueban quince relaciones directas.
+
+| ID           | Relación                           | Origen → destino                  | Cardinalidad y regla                                                                                                                                                                                                          |
+| ------------ | ---------------------------------- | --------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TI-REL-001` | `ENDPOINT_RUNS_ON_ASSET`           | `ENDPOINT → ASSET`                | Un endpoint físico referencia como máximo un activo vigente. La ausencia puede existir durante transición, pero impide declararlo físicamente validado. Un activo puede conservar varias generaciones históricas de endpoint. |
+| `TI-REL-002` | `SHARED_DEVICE_USES_ENDPOINT`      | `SHARED_DEVICE → ENDPOINT`        | Máximo un endpoint actual ordinario por dispositivo compartido; un endpoint vigente no pertenece simultáneamente a dos dispositivos compartidos. Historia previa se conserva.                                                 |
+| `TI-REL-003` | `SHARED_DEVICE_ALLOWS_APPLICATION` | `SHARED_DEVICE → APPLICATION`     | Muchos a muchos. Expresa superficie permitida por el dispositivo; nunca concede permiso al actor.                                                                                                                             |
+| `TI-REL-004` | `ENDPOINT_CONNECTS_VIA_NETWORK`    | `ENDPOINT → NETWORK_RESOURCE`     | Cero o más según la conectividad real. Solo se materializa con evidencia; no se deriva de IP o SSID textual aislado.                                                                                                          |
+| `TI-REL-005` | `ENDPOINT_CLIENT_FOR_APPLICATION`  | `ENDPOINT → APPLICATION`          | Muchos a muchos. Declara cliente instalado, presentado o técnicamente disponible; no prueba autorización, disponibilidad del backend ni uso vigente.                                                                          |
+| `TI-REL-006` | `NETWORK_RESOURCE_RUNS_ON_ASSET`   | `NETWORK_RESOURCE → ASSET`        | Condicional. Aplica a router, switch, AP u otro elemento físico individual; no aplica a segmento, SSID o concepto puramente lógico.                                                                                           |
+| `TI-REL-007` | `PRINTER_REPRESENTS_ASSET`         | `PRINTER → ASSET`                 | Una impresora física deberá resolver a un activo físico cuando la reconciliación correspondiente exista. Hasta entonces queda pendiente y no se crea el activo por inferencia.                                                |
+| `TI-REL-008` | `PRINTER_CONNECTS_VIA_NETWORK`     | `PRINTER → NETWORK_RESOURCE`      | Cero o más. Aplica cuando la conexión de red está comprobada. Capacidad del modelo no equivale a conexión configurada.                                                                                                        |
+| `TI-REL-009` | `PRINTER_ATTACHED_TO_ENDPOINT`     | `PRINTER → ENDPOINT`              | Condicional para USB, puente local u otra conexión dependiente de host. No sustituye cola, routing ni adaptador de PRINT-ARC.                                                                                                 |
+| `TI-REL-010` | `SERVICE_DEPENDS_ON_ASSET`         | `TECH_SERVICE → ASSET`            | Muchos a muchos. Solo para activos cuya falla afecta el servicio de forma demostrada.                                                                                                                                         |
+| `TI-REL-011` | `SERVICE_DEPENDS_ON_ENDPOINT`      | `TECH_SERVICE → ENDPOINT`         | Muchos a muchos. Conserva dependencia técnica sin convertir endpoint en servicio.                                                                                                                                             |
+| `TI-REL-012` | `SERVICE_DEPENDS_ON_SHARED_DEVICE` | `TECH_SERVICE → SHARED_DEVICE`    | Muchos a muchos. Aplica cuando una capacidad de servicio depende de una estación compartida administrada.                                                                                                                     |
+| `TI-REL-013` | `SERVICE_DEPENDS_ON_NETWORK`       | `TECH_SERVICE → NETWORK_RESOURCE` | Muchos a muchos. La topología exacta se materializa en `TI-DOM-004`.                                                                                                                                                          |
+| `TI-REL-014` | `SERVICE_DEPENDS_ON_PRINTER`       | `TECH_SERVICE → PRINTER`          | Muchos a muchos. Aplica a servicios que requieren salida física; routing de cada trabajo permanece en PRINT-ARC.                                                                                                              |
+| `TI-REL-015` | `SERVICE_DEPENDS_ON_APPLICATION`   | `TECH_SERVICE → APPLICATION`      | Muchos a muchos. La instancia detallada de dependencias se materializa en `TI-DOM-006`.                                                                                                                                       |
+
+No se crea una relación universal `RELATED_TO`. Toda arista deberá expresar una semántica aprobada.
+
+---
+
+#### 10. Matriz completa clase → clase
+
+Leyenda:
+
+- `Rnnn`: relación directa canónica;
+- `INV(Rnnn)`: lectura inversa de una relación directa, no un registro adicional;
+- `DERIVADA`: se obtiene recorriendo relaciones directas;
+- `NO_DIRECTA`: el vínculo directo está prohibido o no aporta autoridad;
+- `FUERA_DE_ALCANCE`: la semántica pertenece a la tarea indicada.
+
+| Origen \ Destino     | ASSET                   | ENDPOINT                      | SHARED_DEVICE               | NETWORK_RESOURCE              | PRINTER                       | APPLICATION                   | TECH_SERVICE                  |
+| -------------------- | ----------------------- | ----------------------------- | --------------------------- | ----------------------------- | ----------------------------- | ----------------------------- | ----------------------------- |
+| **ASSET**            | `FUERA_DE_ALCANCE` NEXO | `INV(R001)`                   | `DERIVADA R001+R002`        | `INV(R006)`                   | `INV(R007)`                   | `DERIVADA R001+R005`          | `INV(R010)`                   |
+| **ENDPOINT**         | `R001`                  | `FUERA_DE_ALCANCE` TI-DOM-003 | `INV(R002)`                 | `R004`                        | `INV(R009)`                   | `R005`                        | `INV(R011)`                   |
+| **SHARED_DEVICE**    | `DERIVADA R002+R001`    | `R002`                        | `FUERA_DE_ALCANCE` AUTH-DEV | `DERIVADA R002+R004`          | `NO_DIRECTA`                  | `R003`                        | `INV(R012)`                   |
+| **NETWORK_RESOURCE** | `R006`                  | `INV(R004)`                   | `DERIVADA R004+R002`        | `FUERA_DE_ALCANCE` TI-DOM-004 | `INV(R008)`                   | `FUERA_DE_ALCANCE` TI-DOM-006 | `INV(R013)`                   |
+| **PRINTER**          | `R007`                  | `R009`                        | `NO_DIRECTA`                | `R008`                        | `FUERA_DE_ALCANCE` TI-DOM-005 | `NO_DIRECTA` — usa PRINT-ARC  | `INV(R014)`                   |
+| **APPLICATION**      | `DERIVADA R005+R001`    | `INV(R005)`                   | `INV(R003)`                 | `FUERA_DE_ALCANCE` TI-DOM-006 | `NO_DIRECTA` — usa PRINT-ARC  | `FUERA_DE_ALCANCE` TI-DOM-006 | `INV(R015)`                   |
+| **TECH_SERVICE**     | `R010`                  | `R011`                        | `R012`                      | `R013`                        | `R014`                        | `R015`                        | `FUERA_DE_ALCANCE` TI-DOM-006 |
+
+Reconciliación:
+
+```text
+7 × 7 = 49 pares
+49 pares con decisión explícita
+0 pares sin clasificación
+0 relaciones inversas duplicadas como hechos
+```
+
+---
+
+#### 11. Reglas de cardinalidad y derivación
+
+1. un objeto puede participar en múltiples servicios sin duplicar su identidad;
+2. un `SHARED_DEVICE` no se vincula directamente a un activo cuando la relación puede demostrarse mediante su endpoint;
+3. un `APPLICATION` no se vincula directamente a una impresora para decidir destino de trabajo;
+4. un `PRINTER` local puede depender de un endpoint y uno de red puede no necesitarlo;
+5. un `NETWORK_RESOURCE` lógico no exige un activo físico;
+6. un recurso físico de red sí debe poder reconciliarse con el activo correspondiente antes de declararlo validado;
+7. una relación de servicio solo existe cuando el componente participa realmente en producir o restaurar el servicio;
+8. una relación derivada desaparece de la vista cuando cualquiera de sus aristas directas deja de estar vigente;
+9. la vista inversa no crea un segundo hecho;
+10. una relación histórica no se borra para hacer parecer que nunca existió;
+11. cambiar una arista no cambia la identidad de los nodos salvo que su tarea propietaria lo determine;
+12. un componente retirado puede conservar relaciones históricas pero no aparecer como dependencia vigente;
+13. un conflicto de cardinalidad queda `BLOQUEADO` hasta reconciliar la fuente;
+14. ninguna arista expande permisos, roles, sede, área o capacidad del actor;
+15. la configuración no puede resolver autoridad por recorrido del grafo.
+
+---
+
+#### 12. Decisión explícita para los once servicios heredados
+
+Los once servicios de `TI-DOM-001` se conservan sin renombrar. Esta tarea define cómo consumen el grafo; no inventa todavía las dependencias de instancias que pertenecen a tareas posteriores.
+
+| Servicio         | Decisión de configuración                                                                                                                                                                 |
+| ---------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `TI-SERVICE-001` | Puede referenciar `APPLICATION`, `ENDPOINT` y `SHARED_DEVICE` para ejecutar y diagnosticar decisiones de acceso ya autorizadas. Una relación no concede acceso.                           |
+| `TI-SERVICE-002` | Es el consumidor principal de las relaciones `ASSET ↔ ENDPOINT ↔ SHARED_DEVICE` y de sus relaciones con red y aplicación. El ciclo de vida del endpoint continúa en `TI-DOM-003`.         |
+| `TI-SERVICE-003` | Consume `NETWORK_RESOURCE` como clase primaria y sus relaciones con activos, endpoints, impresoras y servicios. La topología real continúa en `TI-DOM-004`.                               |
+| `TI-SERVICE-004` | Consume `PRINTER`, su activo físico y su conexión de red o endpoint. Cola, routing, adaptador, trabajo y resultado continúan bajo PRINT-ARC y `TI-DOM-005`.                               |
+| `TI-SERVICE-005` | Consume `APPLICATION` y relaciones de dependencia que serán materializadas por ambiente y proveedor en `TI-DOM-006`. No convierte repositorio, URL o proveedor en aplicación.             |
+| `TI-SERVICE-006` | Una solicitud de soporte puede referenciar cualquier clase afectada; el nodo referenciado no sustituye el caso de `VPROC-0058`.                                                           |
+| `TI-SERVICE-007` | Un incidente puede referenciar varios nodos y recorrer dependencias de servicio para analizar impacto; el grafo no decide por sí mismo prioridad ni continuidad.                          |
+| `TI-SERVICE-008` | Todo cambio tecnológico deberá poder identificar los nodos y relaciones afectados, conservando estado anterior y resultado; gobierno de cambio continúa en `TI-DOM-009`.                  |
+| `TI-SERVICE-009` | Una prueba técnica deberá identificar qué nodo o relación fue probado y con qué versión; la prueba no modifica la fuente propietaria.                                                     |
+| `TI-SERVICE-010` | Licencias, garantías, contratos y costos podrán referenciar nodos tecnológicos, pero sus objetos económicos y contractuales permanecen en ORIGO y NUMERA. Profundización en `TI-DOM-012`. |
+| `TI-SERVICE-011` | Conocimiento y capacitación podrán referenciar clases, nodos o servicios como contexto; una guía no cambia configuración ni autorización.                                                 |
+
+Balance:
+
+```text
+11 servicios esperados
+11 decisiones materializadas
+0 omitidos
+0 renombrados
+0 duplicados
+```
+
+---
+
+#### 13. Reconciliación con el estado técnico actual
+
+La inspección de solo lectura del estado desplegado muestra una implementación fragmentada, compatible con las brechas ya declaradas.
+
+##### 13.1. Activos
+
+`public.asset_items` existe y contiene identidad física, código, ubicación, responsable, marca, modelo, serial, condición, estado, propiedad, garantía y especificaciones técnicas.
+
+Estado frente al contrato:
+
+- `IMPLEMENTADO` parcialmente como fuente de activos;
+- no existe una relación transversal actual que vincule de forma canónica `asset_items` con endpoint o dispositivo compartido;
+- existen registros descriptivos de equipos tecnológicos, pero una coincidencia de nombre, sede o descripción no se acepta como equivalencia.
+
+##### 13.2. Dispositivos compartidos
+
+`public.shared_operational_devices` y `public.shared_operational_device_apps` existen.
+
+Se observan:
+
+- **2** dispositivos compartidos registrados;
+- **4** vínculos dispositivo–aplicación;
+- unicidad registral de código y principal técnico actual;
+- relación con sede, área, plantilla y aplicaciones;
+- ausencia de `endpoint_id` y `asset_id` como vínculos canónicos físicos.
+
+Estado:
+
+- `IMPLEMENTADO` parcialmente;
+- identidad física y endpoint: `PENDIENTE_DE_EVIDENCIA`;
+- el contrato de `AUTH-DEV-002` permanece la autoridad para cerrar esa brecha.
+
+##### 13.3. Aplicaciones
+
+`public.apps` existe con **10** códigos actuales y unicidad de `code`.
+
+Estado:
+
+- identidad registral: `IMPLEMENTADO`;
+- disponibilidad empresarial: no se infiere desde `is_active`;
+- ambientes, dependencias, proveedor, licencia y criticidad: `FUERA_DE_ALCANCE`, propietaria `TI-DOM-006`.
+
+##### 13.4. Endpoints
+
+No se detecta una tabla pública transversal que materialice una identidad canónica `endpoint_id` ni un vínculo endpoint–activo–dispositivo compartido.
+
+Estado:
+
+- contrato de identidad: `ESPECIFICADO`;
+- materialización transversal: `PENDIENTE_DE_EVIDENCIA`;
+- propietario documental siguiente: `TI-DOM-003` para ciclo de vida y la fase de implementación autorizada para persistencia física.
+
+##### 13.5. Red
+
+No se detecta una estructura pública canónica consolidada de enlaces, routers, switches, puntos de acceso, segmentos, SSID, direccionamiento y reservas como grafo tecnológico.
+
+Estado:
+
+- clase y relaciones transversales: `ESPECIFICADO`;
+- inventario/topología real: `FUERA_DE_ALCANCE`, propietaria `TI-DOM-004`.
+
+##### 13.6. Impresoras
+
+PRINT-ARC conserva un inventario documental de **9** impresoras y perfiles técnicos por equipo.
+
+La estructura desplegada no demuestra una reconciliación completa de esas nueve identidades con activos físicos de NEXO. Existen registros de activos que pueden parecer corresponder a equipos de impresión, pero nombre, marca, sede o descripción no son evidencia suficiente para fusionar identidades.
+
+Estado:
+
+- inventario PRINT-ARC: `ESPECIFICADO`;
+- reconciliación impresora–activo: `PENDIENTE_DE_EVIDENCIA`;
+- propietaria documental: `TI-DOM-005` coordinada con PRINT-ARC y NEXO.
+
+##### 13.7. Servicios tecnológicos
+
+`TI-SERVICE-001` a `TI-SERVICE-011` existen como catálogo documental aprobado.
+
+No se detecta una tabla pública transversal que materialice actualmente los once servicios y sus dependencias de configuración.
+
+Estado:
+
+- catálogo: `ESPECIFICADO`;
+- persistencia y dependencias por instancia: `FUERA_DE_ALCANCE` de esta tarea y sujetas a la fase de implementación y a `TI-DOM-006`.
+
+##### 13.8. Resumen AS-IS
+
+| Componente                     | Evidencia actual                                            | Estado frente al objetivo                        |
+| ------------------------------ | ----------------------------------------------------------- | ------------------------------------------------ |
+| activos                        | tabla física existente                                      | `IMPLEMENTADO` parcial                           |
+| endpoint canónico              | contrato documental, sin persistencia transversal detectada | `ESPECIFICADO` / `PENDIENTE_DE_EVIDENCIA`        |
+| dispositivo compartido         | tablas existentes, 2 instancias                             | `IMPLEMENTADO` parcial                           |
+| vínculo dispositivo–aplicación | 4 filas actuales                                            | `IMPLEMENTADO` parcial                           |
+| red consolidada                | no detectada como grafo canónico                            | `FUERA_DE_ALCANCE` hacia `TI-DOM-004`            |
+| impresoras                     | 9 unidades documentadas por PRINT-ARC                       | `ESPECIFICADO` / reconciliación física pendiente |
+| aplicaciones                   | 10 identidades registrales                                  | `IMPLEMENTADO` como catálogo de identidad        |
+| servicios                      | 11 identidades documentales                                 | `ESPECIFICADO`                                   |
+| grafo transversal              | no detectado                                                | `NO_APLICA` como implementación en esta tarea    |
+
+No se interpreta esta ausencia como autorización para crear tablas o backfills durante la fase documental.
+
+---
+
+#### 14. Reglas de reconciliación y drift
+
+La futura implementación deberá seguir el ciclo conceptual:
+
+```text
+LEER FUENTE PROPIETARIA
+→ RESOLVER IDENTIDAD ESTABLE
+→ COMPARAR PROYECCIÓN
+→ COMPARAR RELACIONES DIRECTAS
+→ CLASIFICAR COINCIDENCIA / FALTA / CONFLICTO
+→ CONSERVAR EVIDENCIA
+→ CORREGIR MEDIANTE LA TAREA Y AUTORIDAD PROPIETARIAS
+→ REEVALUAR RELACIONES DERIVADAS
+```
+
+Reglas:
+
+1. una diferencia no se corrige copiando silenciosamente un lado sobre el otro;
+2. un nodo faltante en la proyección no crea el objeto fuente;
+3. una relación faltante no se fabrica desde texto;
+4. un serial repetido o IP repetida es señal de conflicto, no prueba de identidad;
+5. un `device_code` coincidente con un activo no fusiona identidades;
+6. una impresora encontrada en inventario físico no se crea automáticamente como `asset_item`;
+7. una aplicación visible en un endpoint no demuestra que el servicio dependa de ella;
+8. una dependencia detectada por telemetría puede proponer una relación, pero requiere fuente y evidencia;
+9. la reconciliación conserva el valor anterior, el valor nuevo, el momento y la decisión;
+10. los cambios que requieran escritura física se ejecutarán únicamente en su fase y paquete autorizados.
+
+---
+
+#### 15. Fronteras de autorización, seguridad y privacidad
+
+1. el grafo nunca concede permiso;
+2. el grafo nunca reemplaza RLS, RPC, guard, permiso o política de dispositivo;
+3. la relación `SHARED_DEVICE_ALLOWS_APPLICATION` limita superficie del dispositivo y no autoriza al trabajador;
+4. una relación endpoint–activo no autoriza soporte remoto;
+5. una relación service–component no autoriza cambios sobre el componente;
+6. un proveedor no se incorpora como autoridad por aparecer como dependencia;
+7. secretos, tokens, contraseñas, códigos de recuperación y credenciales completas no son nodos ni atributos de configuración;
+8. logs y telemetría pueden evidenciar relación o salud, pero no sustituyen identidad;
+9. el acceso al grafo deberá respetar sensibilidad, territorio, finalidad y actor cuando se implemente;
+10. la visualización de impacto no debe exponer información sensible de un recurso que el actor no puede consultar.
+
+---
+
+#### 16. Decisiones reservadas y propietario exacto
+
+| Decisión                                                                                         | Propietario documental                                                      | Condición de salida                                                                                    |
+| ------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------ |
+| ciclo de vida, enrolamiento operativo, estándar, postura, parches, cifrado y retiro de endpoints | `TI-DOM-003`                                                                | contrato completo de endpoint antes de administración física                                           |
+| taxonomía de red, topología real, segmentos, SSID, direccionamiento, monitoreo y contingencia    | `TI-DOM-004`                                                                | inventario y arquitectura aprobados antes de cambios de red                                            |
+| gobierno físico de impresoras, periféricos y reconciliación con PRINT-ARC/NEXO                   | `TI-DOM-005`                                                                | identidad y relación física demostradas antes de administración productiva                             |
+| ambientes, dependencias de aplicación, proveedores, licencias y criticidad por instancia         | `TI-DOM-006`                                                                | catálogo técnico aprobado antes de operación contractual del servicio                                  |
+| impacto, urgencia, prioridad, SLA, escalamiento y cierre                                         | `TI-DOM-007`                                                                | matriz de servicio e incidente aprobada                                                                |
+| problema, causa raíz y error conocido                                                            | `TI-DOM-008`                                                                | reglas de problema aprobadas                                                                           |
+| cambios y versiones tecnológicas                                                                 | `TI-DOM-009`                                                                | gobierno de cambio aprobado                                                                            |
+| salud, alertas, telemetría y logs                                                                | `TI-DOM-010`                                                                | contrato de observabilidad aprobado                                                                    |
+| respaldo y recuperación técnica                                                                  | `TI-DOM-011`                                                                | política y pruebas de restauración aprobadas                                                           |
+| licencias, contratos, garantías, renovación, uso y costos                                        | `TI-DOM-012`                                                                | modelo económico y contractual aprobado                                                                |
+| conocimiento, capacitación y adopción                                                            | `TI-DOM-013`                                                                | contrato de conocimiento aprobado                                                                      |
+| privilegios, soporte remoto, logs sensibles y segregación                                        | `TI-AUTH-001` a `TI-AUTH-004`                                               | autorización tecnológica completa antes de operación real                                              |
+| implementación física del grafo y sus relaciones                                                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobada | paquete de implementación autorizado, contratos cerrados, migraciones versionadas y pruebas aplicables |
+
+No queda una decisión sustantiva propia de `TI-DOM-002` sin dueño documental.
+
+---
+
+#### 17. Criterios de aceptación
+
+- [x] se conserva la continuidad `TI-DOM-001 → TI-DOM-002 → TI-DOM-003`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] se definen exactamente siete clases de configuración;
+- [x] activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio permanecen diferenciados;
+- [x] se conservan las identidades aprobadas por sus dominios propietarios;
+- [x] se definen exactamente quince relaciones directas;
+- [x] los 49 pares posibles entre las siete clases tienen una decisión explícita;
+- [x] las relaciones inversas no se duplican;
+- [x] las relaciones derivadas no se convierten en fuente de verdad;
+- [x] no existe relación genérica sin semántica;
+- [x] se definen cardinalidad, vigencia, versión, evidencia y reconciliación;
+- [x] se conservan los once `TI-SERVICE-*` sin omisiones ni renombres;
+- [x] cada uno de los once servicios recibe una decisión explícita de consumo del grafo;
+- [x] SHELL conserva identidad de aplicación;
+- [x] NEXO conserva activos, ubicación, condición y custodia;
+- [x] AUTH-DEV conserva identidad y autorización del dispositivo compartido;
+- [x] PRINT-ARC conserva cola, routing, adaptador, trabajo y resultado;
+- [x] la aplicación no se vincula directamente a una impresora para decidir routing;
+- [x] un nombre, serial, IP, MAC, URL o ubicación no crean una relación por inferencia;
+- [x] la inspección del estado desplegado se usa solo como diagnóstico y no altera datos;
+- [x] los vacíos actuales de endpoint, red, impresora y servicios tienen propietario documental;
+- [x] no se crean tablas, migraciones, datos, endpoints, redes, activos, impresoras o servicios;
+- [x] no se modifica Supabase;
+- [x] no se crean ni modifican requisitos de prueba;
+- [x] `TI-DOM-003` permanece únicamente reservada.
+
+---
+
+#### 18. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la configuración tecnológica, la separación de identidades, la relación entre objetos físicos y lógicos, la correlación transversal y la reconciliación ya están protegidas por requisitos vigentes originados en las tareas de dispositivo, tecnología, NEXO e integración. Esta tarea materializa el contrato federado, las clases y las relaciones que esos requisitos ya exigen; no introduce una conducta ejecutable adicional ni cambia una condición de prueba existente.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 19. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-001 — Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-002 — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints`
+
+
 ### [ ] TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints
 ### [ ] TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes
 ### [ ] TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión

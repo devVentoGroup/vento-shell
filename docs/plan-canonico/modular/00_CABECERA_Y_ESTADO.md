@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **619** |
+| Tareas aprobadas | **620** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **975** |
+| Tareas no iniciadas | **974** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **38.83% (619/1594)** |
+| Porcentaje de completamiento | **38.90% (620/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TI-DOM-001 — Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención** |
-| Tarea actual | **TI-DOM-002 — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio** |
+| Última tarea aprobada | **TI-DOM-002 — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio** |
+| Tarea actual | **TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints** |
+| Siguiente tarea | **TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 43 de 157 aprobadas; TI-DOM-002 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 44 de 157 aprobadas; TI-DOM-003 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TI-DOM-001` — Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención |
-| Tarea actual | `TI-DOM-002` — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio — **NO INICIADA** |
-| Siguiente tarea | `TI-DOM-003` — Definir ciclo de vida de computadores, celulares, tabletas y endpoints |
+| Última aprobada | `TI-DOM-002` — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio |
+| Tarea actual | `TI-DOM-003` — Definir ciclo de vida de computadores, celulares, tabletas y endpoints — **NO INICIADA** |
+| Siguiente tarea | `TI-DOM-004` — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 43 DE 157 APROBADAS — ACTUAL TI-DOM-002** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 44 DE 157 APROBADAS — ACTUAL TI-DOM-003** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TI-DOM-001 — Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención
-        ↓
-TAREA ACTUAL
 TI-DOM-002 — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints
         ↓
+SIGUIENTE TAREA RESERVADA
+TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 43 de 157 tareas aprobadas
+CARRIL NEXO — 44 de 157 tareas aprobadas
 ```

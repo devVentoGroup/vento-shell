@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **619** |
+| Aprobadas | **620** |
 | En propuesta | **0** |
-| No iniciadas | **975** |
+| No iniciadas | **974** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **38.83% (619/1594)** |
+| Porcentaje de completamiento | **38.90% (620/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TI-DOM-001` — Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención | ✅ APROBADA |
-| Tarea actual | `TI-DOM-002` — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio | ⬜ NO INICIADA |
-| Siguiente reservada | `TI-DOM-003` — Definir ciclo de vida de computadores, celulares, tabletas y endpoints | ⬜ NO INICIADA |
+| Última aprobada | `TI-DOM-002` — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio | ✅ APROBADA |
+| Tarea actual | `TI-DOM-003` — Definir ciclo de vida de computadores, celulares, tabletas y endpoints | ⬜ NO INICIADA |
+| Siguiente reservada | `TI-DOM-004` — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1508,7 +1508,7 @@
 | ⬜ NO INICIADA | `INT-MKT-002` | Definir beneficios publicados en PASS | `bloques/X_INTEGRACIONES/08_MARKETING_BENEFICIOS_Y_VALIDACION_COMERCIAL.md` |
 | ⬜ NO INICIADA | `INT-MKT-003` | Definir validación comercial desde PULSO | `bloques/X_INTEGRACIONES/08_MARKETING_BENEFICIOS_Y_VALIDACION_COMERCIAL.md` |
 | ✅ APROBADA | `TI-DOM-001` | Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
-| ⬜ NO INICIADA | `TI-DOM-002` | Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
+| ✅ APROBADA | `TI-DOM-002` | Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-003` | Definir ciclo de vida de computadores, celulares, tabletas y endpoints | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-004` | Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-005` | Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
