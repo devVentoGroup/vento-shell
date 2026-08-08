@@ -103,7 +103,7 @@ Distribución vigente:
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-025`             |       25 |
 | `AURA`        | `TREQ-AURA-001` a `TREQ-AURA-027`               |       27 |
 | `VISO`        | `TREQ-VISO-001` a `TREQ-VISO-045`               |       45 |
-| `NEXO`        | `TREQ-NEXO-001` a `TREQ-NEXO-314`              |      314 |
+| `NEXO`        | `TREQ-NEXO-001` a `TREQ-NEXO-314`               |      314 |
 | `FOGO`        | `TREQ-FOGO-001` a `TREQ-FOGO-024`               |       24 |
 | `ORIGO`       | `TREQ-ORIGO-001` a `TREQ-ORIGO-025`             |       25 |
 | `PULSO`       | `TREQ-PULSO-001` a `TREQ-PULSO-027`             |       27 |
