@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **617** |
+| Aprobadas | **618** |
 | En propuesta | **0** |
-| No iniciadas | **977** |
+| No iniciadas | **976** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **38.71% (617/1594)** |
+| Porcentaje de completamiento | **38.77% (618/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NOTIFY-ARC-009` — Definir privacidad y contenido sensible | ✅ APROBADA |
-| Tarea actual | `NOTIFY-ARC-010` — Definir métricas y auditoría de entrega | ⬜ NO INICIADA |
-| Siguiente reservada | `TI-DOM-001` — Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención | ⬜ NO INICIADA |
+| Última aprobada | `NOTIFY-ARC-010` — Definir métricas y auditoría de entrega | ✅ APROBADA |
+| Tarea actual | `TI-DOM-001` — Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención | ⬜ NO INICIADA |
+| Siguiente reservada | `TI-DOM-002` — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -517,7 +517,7 @@
 | ✅ APROBADA | `NOTIFY-ARC-007` | Definir confirmación, lectura y escalamiento | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ✅ APROBADA | `NOTIFY-ARC-008` | Definir reintentos, fallos y contingencia | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ✅ APROBADA | `NOTIFY-ARC-009` | Definir privacidad y contenido sensible | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
-| ⬜ NO INICIADA | `NOTIFY-ARC-010` | Definir métricas y auditoría de entrega | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
+| ✅ APROBADA | `NOTIFY-ARC-010` | Definir métricas y auditoría de entrega | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ✅ APROBADA | `EVID-ARC-001` | Inventariar archivos y evidencia por proceso | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ✅ APROBADA | `EVID-ARC-002` | Definir propietario funcional de cada tipo documental | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |
 | ✅ APROBADA | `EVID-ARC-003` | Definir clasificación de sensibilidad | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |

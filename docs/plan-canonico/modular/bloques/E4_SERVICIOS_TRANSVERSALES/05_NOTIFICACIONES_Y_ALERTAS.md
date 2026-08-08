@@ -3577,4 +3577,1032 @@ SIGUIENTE TAREA RESERVADA
 `NOTIFY-ARC-010 — Definir métricas y auditoría de entrega`
 
 
-### [ ] NOTIFY-ARC-010 — Definir métricas y auditoría de entrega
+### ✅ NOTIFY-ARC-010 — Definir métricas y auditoría de entrega
+
+**Estado:** APROBADA
+**Tarea anterior:** `NOTIFY-ARC-009 — Definir privacidad y contenido sensible` — APROBADA
+**Tarea siguiente:** `TI-DOM-001 — Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención` — RESERVADA
+**Tipo de tarea:** documental; contrato materializado de métricas, SLI, trazabilidad y auditoría de entrega para las quince políticas de notificación aprobadas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, Edge Functions, tablas, RLS, migraciones, RPC, cron, colas, dashboards, agentes, proveedores, secretos, aplicaciones ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** cerrar el bloque documental `NOTIFY-ARC-*` definiendo qué debe medirse en una necesidad de notificación, una proyección por destinatario y canal, cada intento técnico, la evidencia de aceptación o confirmación, la lectura o confirmación empresarial cuando aplique, la recuperación, el agotamiento, el escalamiento y la completitud de su auditoría; materializar una regla por cada política `NOTIFY-POLICY-*`; separar de forma estricta entrega, atención y efecto de proceso; y fijar las fronteras de privacidad heredadas de `NOTIFY-ARC-009` sin inventar objetivos numéricos de servicio que pertenezcan a contratos posteriores o ya propietarios.
+
+---
+
+#### 1. Resultado sustantivo
+
+`NOTIFY-ARC-010` queda documentalmente cerrada con:
+
+- 15 reglas `NOTIFY-METRICS-001` a `NOTIFY-METRICS-015`;
+- 15 políticas `NOTIFY-POLICY-001` a `NOTIFY-POLICY-015` cubiertas exactamente una vez;
+- 16 familias AS-IS reconciliadas mediante las quince políticas semánticas vigentes;
+- 4 planos de observación independientes;
+- 9 clases canónicas de evento de auditoría;
+- 23 métricas canónicas de baja cardinalidad;
+- 8 SLI de entrega, resiliencia y completitud de auditoría sin objetivos numéricos inventados;
+- 4 indicadores de atención o efecto empresarial separados de los SLI de transporte;
+- una matriz de capacidad de confirmación por clase de canal;
+- una matriz materializada por política con entrega, atención, efecto, auditoría y tratamiento de ausencia de evidencia;
+- una política de cardinalidad y privacidad compatible con `NOTIFY-ARC-009`;
+- una reconciliación explícita del estado técnico actual;
+- un handoff cerrado a implementación, arquitectura de observabilidad y operación tecnológica;
+- 0 políticas sin decisión;
+- 0 políticas duplicadas;
+- 0 cambios físicos ejecutados;
+- 0 cambios en requisitos de prueba.
+
+Todas las reglas `NOTIFY-METRICS-*` quedan en estado documental `ESPECIFICADO`. La existencia de código que emite notificaciones no se interpreta como cumplimiento de este contrato ni como evidencia de una entrega técnicamente confirmada.
+
+---
+
+#### 2. Entradas conservadas y límites de autoridad
+
+Esta tarea consume sin modificar:
+
+1. `NOTIFY-ARC-001`, con dieciséis familias AS-IS;
+2. `NOTIFY-ARC-002`, con quince orígenes empresariales;
+3. `NOTIFY-ARC-003`, con quince reglas de destinatario y cierre seguro ante destinatario no resoluble;
+4. `NOTIFY-ARC-004`, con prioridad, vigencia, agrupación y deduplicación semántica;
+5. `NOTIFY-ARC-005`, con las seis clases de canal y la ruta primaria, complementaria o condicional de cada política;
+6. `NOTIFY-ARC-006`, con obligatoriedad, configuración, opt-in explícito y ventanas de silencio;
+7. `NOTIFY-ARC-007`, con `READ`, `ACKNOWLEDGED`, `PROCESS_EFFECT` y `ESCALATED`;
+8. `NOTIFY-ARC-008`, con identidad de proyección, identidad de intento, diez estados de entrega, ocho clases de fallo y cinco perfiles de recuperación;
+9. `NOTIFY-ARC-009`, con clasificación de sensibilidad, exposición mínima, payload referencial y prohibiciones de contenido;
+10. `NFR-REQ-009`, con el contrato transversal de señales, correlación, métricas, cardinalidad, logs, trazas, SLI/SLO, alertas, soporte y observabilidad de la propia telemetría;
+11. `NFR-REQ-005` y `NFR-REQ-006`, como fronteras de privacidad, sensibilidad, trazabilidad, retención y disposición;
+12. el estado técnico actual de `vento-shell`, ANIMA, PASS, PULSO y las funciones desplegadas que participan en la notificación.
+
+La tarea no:
+
+- redefine canales;
+- cambia destinatarios;
+- altera prioridad o vigencia;
+- altera preferencias;
+- cambia lectura, confirmación o escalamiento;
+- cambia reintentos o contingencia;
+- fija porcentajes, presupuestos de error o ventanas SLO;
+- selecciona proveedor de observabilidad;
+- selecciona una base de datos, cola, dashboard o plataforma de logs;
+- implementa persistencia;
+- crea una mesa de ayuda;
+- modifica Supabase;
+- inicia `TI-DOM-001`.
+
+---
+
+#### 3. Principio de separación semántica
+
+La observabilidad de notificaciones se divide obligatoriamente en cuatro planos que nunca se sustituyen entre sí.
+
+##### 3.1. `OCCURRENCE_PLANE`
+
+Representa la necesidad empresarial semántica definida por origen, destinatario, política, vigencia y deduplicación.
+
+Responde:
+
+- ¿existió una necesidad válida?;
+- ¿para qué política?;
+- ¿para qué destinatario lógico?;
+- ¿qué versión o episodio la originó?;
+- ¿sigue vigente?;
+- ¿fue sustituida, resuelta o cancelada?;
+- ¿cuántas proyecciones autorizadas produjo?
+
+No mide por sí mismo transporte.
+
+##### 3.2. `DELIVERY_PLANE`
+
+Representa cada proyección autorizada por destinatario y clase de canal, y cada intento técnico definido en `NOTIFY-ARC-008`.
+
+Responde:
+
+- ¿se creó una proyección?;
+- ¿qué canal y rol tenía?;
+- ¿se intentó?;
+- ¿fue aceptada?;
+- ¿existe confirmación técnica?;
+- ¿quedó incierta?;
+- ¿se reintentó?;
+- ¿se recuperó?;
+- ¿se bloqueó?;
+- ¿se agotó?;
+- ¿se canceló o sustituyó?
+
+No mide por sí mismo lectura o cumplimiento.
+
+##### 3.3. `ATTENTION_EFFECT_PLANE`
+
+Representa evidencia empresarial posterior a la entrega:
+
+- `READ`;
+- `ACKNOWLEDGED`;
+- `PROCESS_EFFECT`;
+- `ESCALATED`.
+
+Responde:
+
+- ¿la persona abrió o leyó cuando esa evidencia es autoritativa?;
+- ¿confirmó explícitamente cuando la política lo exige?;
+- ¿ocurrió el efecto empresarial requerido?;
+- ¿se activó la transición o cadena de responsabilidad aprobada?
+
+No se infiere desde un receipt de proveedor.
+
+##### 3.4. `OBSERVABILITY_CONTROL_PLANE`
+
+Representa la salud de la propia telemetría y auditoría.
+
+Responde:
+
+- ¿se están produciendo eventos esperados?;
+- ¿llegan con retraso?;
+- ¿hay huecos de secuencia?;
+- ¿la exportación o persistencia falló?;
+- ¿se puede reconstruir la historia sin consultar cuerpos sensibles?;
+- ¿la instrumentación distingue entrega, atención y efecto?
+
+Una caída de telemetría se registra como pérdida de observabilidad; no se transforma automáticamente en fallo de entrega empresarial.
+
+---
+
+#### 4. Invariantes de medición
+
+Se fijan los siguientes invariantes:
+
+```text
+MENSAJES PREPARADOS ≠ ENTREGA ACEPTADA
+ACEPTACIÓN DEL PROVEEDOR ≠ CONFIRMACIÓN TÉCNICA
+CONFIRMACIÓN TÉCNICA ≠ PRESENTACIÓN A PERSONA
+PRESENTACIÓN ≠ LECTURA
+LECTURA ≠ CONFIRMACIÓN EMPRESARIAL
+CONFIRMACIÓN EMPRESARIAL ≠ EFECTO DE PROCESO
+EFECTO DE PROCESO ≠ ESCALAMIENTO
+CONTADOR LOCAL ≠ AUDITORÍA DURABLE
+LOG DE ERROR ≠ ESTADO CANÓNICO DE ENTREGA
+```
+
+Consecuencias:
+
+1. una función que devuelve `sent: N` por haber construido `N` mensajes no podrá alimentar una métrica de entrega confirmada;
+2. un `2xx` del endpoint del proveedor podrá constituir aceptación cuando el contrato del proveedor lo garantice, pero no prueba presentación ni lectura;
+3. un receipt verificable podrá elevar una proyección a confirmación técnica si identifica de manera inequívoca el intento;
+4. la lectura solo existe cuando `NOTIFY-ARC-007` la define y hay evidencia autoritativa;
+5. el efecto empresarial se mide desde el proceso propietario, no desde el canal;
+6. el escalamiento se registra como transición propia y nunca como sinónimo de entrega fallida;
+7. una ausencia de evidencia permanece ausencia de evidencia;
+8. no se imputan éxitos para cerrar huecos de telemetría;
+9. no se imputan fallos cuando la entrega pudo ocurrir pero la telemetría se perdió;
+10. la corrección de evidencia posterior conserva el historial anterior.
+
+---
+
+#### 5. Identidades y correlación obligatorias
+
+La auditoría debe poder correlacionar sin utilizar contenido sensible:
+
+```text
+notification_occurrence_id
+policy_id
+origin_id
+recipient_ref
+channel_class
+projection_id
+logical_revision
+attempt_id
+attempt_sequence
+resource_ref
+correlation_id
+causation_id
+trace_id
+evidence_ref
+```
+
+Reglas:
+
+1. `notification_occurrence_id` identifica una necesidad semántica;
+2. `projection_id` identifica una proyección única para destinatario y clase de canal;
+3. `attempt_id` identifica un intento técnico concreto;
+4. `attempt_sequence` es monotónica dentro de la proyección;
+5. `logical_revision` distingue una revisión legítima de la misma necesidad;
+6. `recipient_ref` es interno o seudonimizado y no se usa como dimensión de métrica;
+7. `resource_ref` es opaco y no codifica información empresarial legible;
+8. `trace_id` facilita investigación técnica, pero no sustituye las identidades de negocio;
+9. `correlation_id` y `causation_id` permiten reconstruir la relación entre origen, proyección, intento, efecto y escalamiento;
+10. ningún identificador técnico concede autorización para consultar el recurso.
+
+---
+
+#### 6. Clases de evento de auditoría
+
+Se definen nueve clases canónicas.
+
+| Clase                           | Propósito                                                     | Ejemplos de transición                                    |
+| ------------------------------- | ------------------------------------------------------------- | --------------------------------------------------------- |
+| `AUDIT_OCCURRENCE_STATE`        | Ciclo de vida de la necesidad semántica.                      | creada, vigente, resuelta, cancelada, sustituida          |
+| `AUDIT_RECIPIENT_RESOLUTION`    | Resultado de resolución de destinatario.                      | resuelto, `UNRESOLVED_RECIPIENT`                          |
+| `AUDIT_PROJECTION_STATE`        | Ciclo de vida de la proyección por canal.                     | pendiente, bloqueada, agotada, cancelada, sustituida      |
+| `AUDIT_ATTEMPT_RESULT`          | Resultado de un intento técnico.                              | intentando, aceptado, confirmado, incierto, error         |
+| `AUDIT_ENDPOINT_STATE`          | Estado operativo del endpoint o adaptador.                    | activo, no disponible, retirado por invalidez             |
+| `AUDIT_ATTENTION_EVIDENCE`      | Evidencia de lectura o confirmación explícita cuando aplique. | read, acknowledged                                        |
+| `AUDIT_PROCESS_EFFECT`          | Efecto empresarial que satisface la política.                 | documento resuelto, turno atendido, invitación consumida  |
+| `AUDIT_ESCALATION_LINK`         | Transición o cadena de responsabilidad aprobada.              | transición 005→006, escalamiento a responsable            |
+| `AUDIT_CORRECTION_SUPERSESSION` | Corrección de una observación previa sin borrarla.            | receipt tardío, resultado conciliado, revisión sustituida |
+
+Cada evento debe ser interpretable sin cuerpo de notificación.
+
+---
+
+#### 7. Sobre mínimo de auditoría
+
+El sobre lógico de auditoría deberá poder representar:
+
+```text
+audit_event_id
+schema_version
+event_type
+occurred_at
+observed_at
+service
+application
+environment
+release_id
+policy_id
+origin_id
+notification_occurrence_id
+recipient_ref
+channel_class
+projection_id
+projection_role
+logical_revision
+attempt_id
+attempt_sequence
+endpoint_ref
+from_state
+to_state
+failure_class
+canonical_code
+safe_transport_status
+provider_request_id
+provider_receipt_ref
+recovery_profile
+preference_effective_state
+resource_ref
+content_hash
+correlation_id
+causation_id
+trace_id
+evidence_ref
+```
+
+Aplicación:
+
+- campos no aplicables se omiten o permanecen nulos de forma tipada;
+- `occurred_at` representa cuándo ocurrió el hecho observado;
+- `observed_at` representa cuándo la telemetría lo registró;
+- `content_hash` permite detectar incompatibilidad lógica sin persistir el cuerpo;
+- `provider_request_id` y `provider_receipt_ref` solo aparecen cuando son seguros;
+- `endpoint_ref` debe ser enmascarado, seudonimizado o representado por una referencia interna;
+- `release_id` permite separar regresiones de despliegue sin usarlo como cardinalidad ilimitada.
+
+---
+
+#### 8. Propiedades de la auditoría durable
+
+1. Los eventos necesarios para reconstruir entrega no se sobrescriben.
+2. Un éxito posterior no borra un fallo previo.
+3. Una conciliación tardía produce `AUDIT_CORRECTION_SUPERSESSION`.
+4. Una nueva revisión conserva relación con la sustituida.
+5. La auditoría diferencia hecho ocurrido de hecho observado.
+6. Las transiciones canónicas no se muestrean si el muestreo impediría reconstrucción.
+7. Logs de depuración sí pueden muestrearse de forma independiente.
+8. La auditoría conserva el orden por proyección mediante `attempt_sequence` y timestamps.
+9. Un duplicado técnico no produce dos transiciones canónicas de la misma identidad.
+10. El reingreso del mismo evento debe ser idempotente.
+11. La ausencia de receipt no se rellena con una confirmación ficticia.
+12. La pérdida de telemetría genera una brecha de observabilidad, no una corrección de negocio.
+13. Los accesos administrativos a evidencia sensible siguen el gobierno transversal de autorización y auditoría.
+14. La retención no se fija aquí: se referencia al contrato propietario de retención.
+15. La consulta de auditoría debe aislar destinatarios, sedes, casos y recursos según autorización.
+16. La exportación de auditoría no amplía campos permitidos.
+17. La auditoría no se convierte en una segunda fuente del mensaje o expediente.
+18. El cuerpo de notificación se recupera, cuando sea legítimo, desde la fuente propietaria.
+
+---
+
+#### 9. Métricas canónicas de baja cardinalidad
+
+Se definen veintitrés métricas lógicas. Los nombres son contratos semánticos; esta tarea no selecciona Prometheus, OpenTelemetry, Supabase, un proveedor o una implementación física.
+
+| Métrica                                        | Tipo lógico  | Definición                                                                                      |
+| ---------------------------------------------- | ------------ | ----------------------------------------------------------------------------------------------- |
+| `vento_notify_occurrences_total`               | contador     | Necesidades semánticas creadas por política.                                                    |
+| `vento_notify_projections_total`               | contador     | Proyecciones creadas por canal y rol.                                                           |
+| `vento_notify_attempts_total`                  | contador     | Intentos técnicos iniciados.                                                                    |
+| `vento_notify_state_transitions_total`         | contador     | Transiciones del estado de entrega.                                                             |
+| `vento_notify_failures_total`                  | contador     | Fallos clasificados por clase canónica.                                                         |
+| `vento_notify_retries_total`                   | contador     | Intentos posteriores al inicial.                                                                |
+| `vento_notify_unknown_outcomes_total`          | contador     | Intentos cuyo resultado queda incierto.                                                         |
+| `vento_notify_exhausted_total`                 | contador     | Proyecciones que agotan recuperación.                                                           |
+| `vento_notify_recovered_total`                 | contador     | Proyecciones que salen de fallo o incertidumbre hacia estado recuperado compatible.             |
+| `vento_notify_endpoint_retired_total`          | contador     | Endpoints retirados por invalidez permanente.                                                   |
+| `vento_notify_unresolved_recipient_total`      | contador     | Necesidades bloqueadas por destinatario no resoluble.                                           |
+| `vento_notify_first_accept_latency_seconds`    | distribución | Tiempo desde proyección pendiente hasta primera aceptación técnica.                             |
+| `vento_notify_attempt_latency_seconds`         | distribución | Duración observada de un intento técnico.                                                       |
+| `vento_notify_confirmation_latency_seconds`    | distribución | Tiempo desde intento hasta confirmación técnica cuando el canal dispone de ella.                |
+| `vento_notify_read_total`                      | contador     | Evidencias autoritativas de lectura para políticas `READ_TRACKED`.                              |
+| `vento_notify_acknowledged_total`              | contador     | Confirmaciones explícitas exigidas por política.                                                |
+| `vento_notify_process_effect_total`            | contador     | Efectos empresariales que satisfacen una necesidad.                                             |
+| `vento_notify_escalated_total`                 | contador     | Escalamientos o transiciones empresariales aprobadas.                                           |
+| `vento_notify_attention_latency_seconds`       | distribución | Tiempo hasta read, ack o process effect, etiquetado por tipo de evidencia y solo donde aplique. |
+| `vento_notify_audit_events_total`              | contador     | Eventos canónicos de auditoría aceptados por clase.                                             |
+| `vento_notify_audit_gap_total`                 | contador     | Huecos o inconsistencias detectados en la reconstrucción.                                       |
+| `vento_notify_telemetry_export_failures_total` | contador     | Fallos de exportación o persistencia de telemetría.                                             |
+| `vento_notify_telemetry_lag_seconds`           | distribución | Diferencia entre `occurred_at` y `observed_at`.                                                 |
+
+Una métrica no reemplaza el evento de auditoría del que se deriva.
+
+---
+
+#### 10. Dimensiones permitidas y prohibidas
+
+##### 10.1. Dimensiones permitidas
+
+Cuando su cardinalidad se mantenga controlada:
+
+- `policy_id`;
+- `priority_class`;
+- `channel_class`;
+- `projection_role`;
+- `delivery_state`;
+- `failure_class`;
+- `recovery_profile`;
+- `preference_mode`;
+- `confirmation_capability`;
+- `application`;
+- `service`;
+- `component`;
+- `environment`;
+- `release_id` bajo gobierno de cardinalidad;
+- `evidence_type`;
+- `audit_event_type`.
+
+##### 10.2. Dimensiones prohibidas en métricas ordinarias
+
+Nunca se utilizan como labels ordinarios:
+
+- identificador de persona, usuario o cliente;
+- `recipient_ref`;
+- correo;
+- teléfono;
+- token o endpoint;
+- `notification_occurrence_id`;
+- `projection_id`;
+- `attempt_id`;
+- `resource_ref`;
+- identificador de mensaje, pedido, documento, ticket o redención;
+- URL cruda;
+- texto de error libre;
+- `trace_id`;
+- `correlation_id`;
+- clave de idempotencia;
+- título o cuerpo de notificación;
+- payload;
+- horario, monto, dirección, ubicación o dato personal;
+- respuesta cruda de proveedor.
+
+Estas identidades pueden existir en auditoría controlada cuando sean necesarias y estén protegidas; no se promueven a dimensiones de series temporales.
+
+---
+
+#### 11. Capacidad de confirmación por clase de canal
+
+Se define la siguiente clasificación de capacidad.
+
+- `CONFIRM_CAPABILITY_DURABLE_INTERNAL`
+- `CONFIRM_CAPABILITY_PROVIDER_RECEIPT`
+- `CONFIRM_CAPABILITY_ACCEPTANCE_ONLY`
+- `CONFIRM_CAPABILITY_CLIENT_EVIDENCE`
+- `CONFIRM_CAPABILITY_NONE`
+
+| Clase de canal                  | Capacidad objetivo                                                                                                                                  | Interpretación                                                                                                        |
+| ------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------- |
+| `CHANNEL_INTERNAL_FEED_INBOX`   | `CONFIRM_CAPABILITY_DURABLE_INTERNAL`                                                                                                               | La persistencia o disponibilidad interna puede conocerse; la lectura requiere evidencia separada.                     |
+| `CHANNEL_INTERNAL_CONTEXTUAL`   | `CONFIRM_CAPABILITY_CLIENT_EVIDENCE`                                                                                                                | El estado empresarial existe aunque la presentación visual solo sea demostrable si el cliente la instrumenta.         |
+| `CHANNEL_INTERNAL_DEVICE_ALERT` | `CONFIRM_CAPABILITY_CLIENT_EVIDENCE`                                                                                                                | Programar o solicitar una alerta local no prueba visualización; solo evidencia durable del cliente puede confirmarla. |
+| `CHANNEL_PUSH_REMOTE`           | `CONFIRM_CAPABILITY_PROVIDER_RECEIPT` cuando el proveedor entrega receipt inequívoco; de lo contrario `CONFIRM_CAPABILITY_ACCEPTANCE_ONLY`          | Aceptación del endpoint de envío no equivale a presentación.                                                          |
+| `CHANNEL_EMAIL`                 | `CONFIRM_CAPABILITY_PROVIDER_RECEIPT` cuando existen estados verificables de entrega o rebote; de lo contrario `CONFIRM_CAPABILITY_ACCEPTANCE_ONLY` | Aperturas y clics no se convierten automáticamente en `READ`.                                                         |
+| `CHANNEL_EXTERNAL_MESSAGING`    | capacidad definida por el adaptador aprobado                                                                                                        | La semántica de delivered/read del tercero no se transforma en lectura empresarial sin contrato explícito.            |
+
+Reglas:
+
+1. la capacidad es una propiedad técnica del canal/adaptador, no del destinatario;
+2. una capacidad menor no cambia prioridad;
+3. una política obligatoria no se convierte en opcional por falta de receipt;
+4. el SLI de confirmación técnica excluye de su denominador las proyecciones cuyo canal no ofrece evidencia de confirmación;
+5. esas exclusiones deben aparecer en la definición del SLI y no ocultarse;
+6. un proveedor nuevo debe declarar la semántica de sus receipts antes de alimentar `CONFIRMED`.
+
+---
+
+#### 12. SLI de entrega, resiliencia y auditoría
+
+Se definen ocho SLI. Ninguno recibe en esta tarea porcentaje objetivo, ventana normativa ni presupuesto de error.
+
+##### 12.1. `SLI_NOTIFY_ACCEPTANCE`
+
+**Población:** proyecciones que requieren transporte y alcanzan un intento válido.
+
+**Éxito:** existe transición verificable a `ACCEPTED` o estado superior compatible.
+
+**Punto de medición:** frontera del adaptador o proveedor.
+
+**Exclusiones:** proyecciones canceladas o sustituidas antes del primer intento; proyecciones bloqueadas por destinatario no resoluble se reportan aparte y nunca como éxito.
+
+##### 12.2. `SLI_NOTIFY_TECHNICAL_CONFIRMATION`
+
+**Población:** proyecciones cuyo canal/adaptador dispone de confirmación técnica verificable.
+
+**Éxito:** existe evidencia inequívoca que sustenta `CONFIRMED`.
+
+**Punto de medición:** receipt o evidencia durable del canal.
+
+**Exclusiones:** canales `ACCEPTANCE_ONLY` o sin capacidad de confirmación. La exclusión no puede presentarse como 100 % de éxito.
+
+##### 12.3. `SLI_NOTIFY_UNKNOWN_OUTCOME`
+
+**Población:** intentos iniciados.
+
+**Resultado:** proporción o tasa de intentos que terminan `UNKNOWN`.
+
+**Punto de medición:** clasificador de resultado de intento.
+
+**Finalidad:** detectar incertidumbre de transporte, no castigar al destinatario.
+
+##### 12.4. `SLI_NOTIFY_EXHAUSTION`
+
+**Población:** proyecciones con perfil de recuperación reintentable.
+
+**Resultado:** proporción o tasa de proyecciones que terminan `EXHAUSTED`.
+
+**Punto de medición:** transición final del perfil de recuperación.
+
+##### 12.5. `SLI_NOTIFY_RECOVERY`
+
+**Población:** proyecciones que entraron en fallo recuperable, espera o resultado incierto.
+
+**Éxito:** alcanzan un estado posterior aceptado o confirmado sin crear una segunda necesidad semántica.
+
+**Punto de medición:** reconciliación de la proyección.
+
+##### 12.6. `SLI_NOTIFY_FIRST_ACCEPT_LATENCY`
+
+**Población:** proyecciones con transporte remoto o externo.
+
+**Medida:** tiempo desde estado `DELIVERY_PENDING` hasta primera aceptación verificable.
+
+**Regla:** no utiliza hora de lectura ni efecto empresarial.
+
+##### 12.7. `SLI_NOTIFY_AUDIT_COMPLETENESS`
+
+**Población:** ocurrencias, proyecciones e intentos que deberían producir eventos canónicos según su ciclo de vida.
+
+**Éxito:** las identidades y transiciones obligatorias pueden reconstruirse sin huecos ni estados incompatibles.
+
+**Punto de medición:** reconciliador o validador de auditoría.
+
+##### 12.8. `SLI_NOTIFY_AUDIT_FRESHNESS`
+
+**Población:** eventos canónicos de auditoría.
+
+**Medida:** diferencia entre `occurred_at` y `observed_at`.
+
+**Finalidad:** distinguir un servicio sano de una telemetría retrasada.
+
+---
+
+#### 13. Objetivos SLO y presupuestos de error
+
+Esta tarea no inventa:
+
+- porcentaje de aceptación;
+- porcentaje de confirmación;
+- latencia objetivo;
+- percentiles;
+- ventana móvil;
+- ventana mensual;
+- presupuesto de error;
+- umbral de alerta;
+- horario de soporte;
+- tiempo de respuesta humana.
+
+El contrato transversal vigente exige que cada SLI pueda declarar definición, población, éxito, punto de medición, unidad, ventana, exclusiones, referencia SLO, referencia a política de presupuesto de error, propietario, dashboard, alertas y evidencia.
+
+Para `NOTIFY-ARC-010`:
+
+```text
+DEFINICIÓN DE SLI: ESPECIFICADO
+INSTRUMENTACIÓN FÍSICA: FUERA_DE_ALCANCE
+OBJETIVOS NUMÉRICOS SLO: FUERA_DE_ALCANCE
+PRESUPUESTO DE ERROR: FUERA_DE_ALCANCE
+CUMPLIMIENTO MEDIDO: PENDIENTE_DE_EVIDENCIA
+```
+
+La ausencia de objetivo final no impide empezar a medir una vez exista instrumentación, pero impide declarar cumplimiento de SLO.
+
+---
+
+#### 14. Indicadores de atención y efecto empresarial
+
+Los siguientes indicadores se mantienen fuera de los SLI de transporte.
+
+##### 14.1. `INDICATOR_NOTIFY_READ`
+
+Solo para políticas `READ_TRACKED`.
+
+Numerador: ocurrencias con evidencia autoritativa de lectura.
+
+Denominador: ocurrencias válidas de la misma política para las que `READ` es aplicable.
+
+No incluye:
+
+- email open;
+- receipt de push;
+- render estimado;
+- badge;
+- vista del navegador sin evento explícito.
+
+##### 14.2. `INDICATOR_NOTIFY_ACKNOWLEDGED`
+
+Solo para políticas con `CONFIRM_EXPLICIT_ACK`.
+
+Mide una acción de confirmación explícita y no un click genérico.
+
+##### 14.3. `INDICATOR_NOTIFY_PROCESS_EFFECT`
+
+Solo para políticas con `CONFIRM_PROCESS_EFFECT`.
+
+La fuente es el proceso propietario. Ejemplos: resolver un documento, ejecutar el cierre requerido, consumir una invitación o avanzar un pedido. El evento de notificación nunca se autoatribuye el efecto.
+
+##### 14.4. `INDICATOR_NOTIFY_ESCALATION`
+
+Solo para políticas con escalamiento aprobado.
+
+Mide transiciones de responsabilidad o política. Una falla técnica de proveedor no entra en este indicador salvo que una regla empresarial aprobada la convierta explícitamente en condición de escalamiento, lo cual no ocurre en las políticas vigentes.
+
+---
+
+#### 15. Matriz materializada por política
+
+| Regla                | Política            | Entrega observable                                                                                                              | Atención / confirmación                                                                                                           | Efecto o escalamiento                                                                                          | Auditoría mínima                                                                                                                   | Resultado      |
+| -------------------- | ------------------- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `NOTIFY-METRICS-001` | `NOTIFY-POLICY-001` | Persistencia del feed y proyección push separadas; push usa aceptación/confirmación según capacidad.                            | `READ_TRACKED`; lectura solo desde la superficie interna instrumentada.                                                           | No requiere confirmación empresarial ni escalamiento.                                                          | ocurrencia, proyección feed, proyección push, intentos push, evidencia `READ` si existe.                                           | `ESPECIFICADO` |
+| `NOTIFY-METRICS-002` | `NOTIFY-POLICY-002` | Push y alerta local se miden por separado; alerta local no se presume presentada.                                               | `READ_TRACKED`, pero la lectura no satisface la política.                                                                         | `PROCESS_EFFECT` desde la gestión del documento y escalamiento por responsabilidad cuando aplique.             | ocurrencia, proyecciones, intentos, transición de documento y vínculo de responsabilidad.                                          | `ESPECIFICADO` |
+| `NOTIFY-METRICS-003` | `NOTIFY-POLICY-003` | Push y contexto interno separados.                                                                                              | `READ_TRACKED`; aquí la evidencia de lectura es la confirmación aprobada.                                                         | Cadena de responsabilidad solo según la regla vigente.                                                         | ocurrencia, push, contexto, read y eventual escalamiento vinculado.                                                                | `ESPECIFICADO` |
+| `NOTIFY-METRICS-004` | `NOTIFY-POLICY-004` | Push y contexto interno separados; nueva revisión sustituye la anterior sin mezclar métricas.                                   | `READ_TRACKED` y `ACKNOWLEDGED` explícito.                                                                                        | Cadena de responsabilidad independiente de la entrega.                                                         | ocurrencia por revisión, proyecciones, intentos, read, ack y escalamiento.                                                         | `ESPECIFICADO` |
+| `NOTIFY-METRICS-005` | `NOTIFY-POLICY-005` | Push y contexto medidos por proyección.                                                                                         | `READ_TRACKED`; lectura no cierra la necesidad.                                                                                   | `PROCESS_EFFECT`; transición aprobada hacia política 006 se registra como vínculo causal, no como retry.       | ocurrencia, proyecciones, intentos, efecto, eventual `AUDIT_ESCALATION_LINK` 005→006.                                              | `ESPECIFICADO` |
+| `NOTIFY-METRICS-006` | `NOTIFY-POLICY-006` | Push y contexto medidos por proyección.                                                                                         | `READ_TRACKED`; lectura no cierra la necesidad.                                                                                   | `PROCESS_EFFECT` y cadena de responsabilidad aprobada.                                                         | ocurrencia, proyecciones, intentos, efecto y escalamiento.                                                                         | `ESPECIFICADO` |
+| `NOTIFY-METRICS-007` | `NOTIFY-POLICY-007` | Alerta de dispositivo y contexto separados; sin evidencia durable del cliente no se declara presentación.                       | `READ_TRACKED`; no exige confirmación.                                                                                            | Sin escalamiento.                                                                                              | ocurrencia, evidencia del efecto que originó la actualización, proyecciones y read si se instrumenta.                              | `ESPECIFICADO` |
+| `NOTIFY-METRICS-008` | `NOTIFY-POLICY-008` | Feed/inbox y push separados; el mensaje persistido sigue siendo fuente de verdad.                                               | `READ_TRACKED`.                                                                                                                   | `PROCESS_EFFECT` del caso de soporte y responsabilidad asociada.                                               | ocurrencia por mensaje, proyecciones, intentos, read y efecto del ticket/caso.                                                     | `ESPECIFICADO` |
+| `NOTIFY-METRICS-009` | `NOTIFY-POLICY-009` | Correo mide aceptación, rebote o confirmación técnica solo según evidencia real del proveedor.                                  | Apertura/click de correo no es `READ` autoritativo.                                                                               | `PROCESS_EFFECT` desde consumo válido de la invitación o incorporación correspondiente.                        | ocurrencia, proyección email, intentos, estados del proveedor seguros, efecto de invitación; secreto de acceso excluido.           | `ESPECIFICADO` |
+| `NOTIFY-METRICS-010` | `NOTIFY-POLICY-010` | Alerta local/contexto configurable; no se presume presentación sin evidencia del cliente.                                       | `READ_NOT_REQUIRED`; no requiere confirmación.                                                                                    | Sin escalamiento.                                                                                              | ocurrencia y decisión de preferencia efectiva; opt-out o quiet window no cuentan como fallo.                                       | `ESPECIFICADO` |
+| `NOTIFY-METRICS-011` | `NOTIFY-POLICY-011` | Alerta local/contexto configurable; no se presume presentación sin evidencia del cliente.                                       | `READ_NOT_REQUIRED`; no requiere confirmación.                                                                                    | Sin escalamiento.                                                                                              | ocurrencia, proyecciones realmente habilitadas y preferencia efectiva.                                                             | `ESPECIFICADO` |
+| `NOTIFY-METRICS-012` | `NOTIFY-POLICY-012` | Contexto y alerta local configurables; cada proyección conserva estado propio.                                                  | `READ_NOT_REQUIRED`; no requiere confirmación.                                                                                    | Sin escalamiento.                                                                                              | ocurrencia, proyecciones habilitadas y preferencia efectiva.                                                                       | `ESPECIFICADO` |
+| `NOTIFY-METRICS-013` | `NOTIFY-POLICY-013` | Feed/inbox, push PASS y mensajería externa condicional se miden por separado dentro de la misma ocurrencia.                     | `READ_TRACKED` en la conversación; un estado “read” del proveedor externo no se convierte automáticamente en lectura empresarial. | `PROCESS_EFFECT`; responsabilidad solo del lado interno operativo según la regla aprobada.                     | ocurrencia por mensaje, proyecciones por canal, intentos, read de conversación, efecto, preferencia externa y adaptador aplicable. | `ESPECIFICADO` |
+| `NOTIFY-METRICS-014` | `NOTIFY-POLICY-014` | Contexto PULSO obligatorio y alerta de dispositivo configurable separados; el contexto se deriva del estado durable del pedido. | `READ_NOT_REQUIRED`.                                                                                                              | `PROCESS_EFFECT` desde la operación del pedido y responsabilidad asociada.                                     | ocurrencia, contexto, complemento si fue habilitado, efecto de pedido y eventual escalamiento.                                     | `ESPECIFICADO` |
+| `NOTIFY-METRICS-015` | `NOTIFY-POLICY-015` | Contexto PULSO obligatorio y alerta de dispositivo configurable separados.                                                      | `READ_NOT_REQUIRED`.                                                                                                              | `PROCESS_EFFECT` desde la transición operativa habilitada por el pago reconciliado y responsabilidad asociada. | ocurrencia, contexto, complemento, referencia de reconciliación segura, efecto y escalamiento.                                     | `ESPECIFICADO` |
+
+---
+
+#### 16. Reglas para preferencias y ventanas de silencio
+
+1. Una proyección configurable deshabilitada por preferencia no cuenta como fallo de transporte.
+2. Una proyección no creada por `QUIET_WINDOW` no cuenta como agotamiento.
+3. La métrica de ocurrencias puede seguir registrando la necesidad aunque una proyección opcional no se materialice.
+4. La auditoría conserva `preference_effective_state` sin interpretar el permiso técnico como preferencia.
+5. Una política `PREF_REQUIRED_LOCKED` bloqueada por permiso de dispositivo conserva su obligatoriedad y se clasifica por disponibilidad técnica.
+6. La mensajería externa de política 013 solo entra en población si el opt-in explícito y el adaptador estaban habilitados antes de la proyección.
+7. Cambiar una preferencia no reescribe métricas históricas.
+8. Las métricas distinguen “no aplicable por preferencia” de “falló después de intentar”.
+9. Las vistas agregadas no pueden hacer parecer que una reducción voluntaria de comunicaciones opcionales deterioró la confiabilidad del transporte.
+10. Las preferencias se analizan por modo de baja cardinalidad, no por identidad individual.
+
+---
+
+#### 17. Reglas de reintento, fallo y recuperación
+
+La medición conserva la semántica de `NOTIFY-ARC-008`.
+
+1. El primer intento y cada retry incrementan `vento_notify_attempts_total`.
+2. Solo intentos posteriores al inicial incrementan `vento_notify_retries_total`.
+3. `UNKNOWN` incrementa la métrica de resultados inciertos sin clasificarse como éxito o fallo confirmado.
+4. Un receipt tardío puede corregir el estado mediante evento de conciliación.
+5. El éxito tras retry incrementa recuperación, pero conserva el historial de fallo.
+6. `EXHAUSTED` se cuenta una vez por proyección.
+7. `UNRESOLVED_RECIPIENT` se cuenta por ocurrencia destinatario y no genera intento.
+8. `PERMANENT_ENDPOINT` puede producir retiro de endpoint sin ampliar audiencia.
+9. Una revisión sustituida termina `SUPERSEDED`; no se cuenta como agotamiento.
+10. Una necesidad vencida termina según su estado de vigencia, no como fallo de proveedor.
+11. Un `PROCESS_EFFECT` que elimina la necesidad cancela intentos futuros sin convertirlos en fallos.
+12. El perfil de recuperación puede ser dimensión; los intervalos concretos de retry no se convierten en SLO.
+13. `Retry-After` afecta la secuencia de intentos, no la definición de éxito.
+14. Las conciliaciones no duplican ocurrencias.
+15. El intento técnico nunca genera por sí mismo escalamiento humano.
+
+---
+
+#### 18. Reglas de privacidad y contenido sensible
+
+La medición hereda íntegramente `NOTIFY-ARC-009`.
+
+Permitido en métricas agregadas:
+
+- estados;
+- clases;
+- códigos canónicos;
+- canal;
+- prioridad;
+- política;
+- aplicación;
+- ambiente;
+- perfiles de recuperación;
+- capacidades de confirmación;
+- latencias;
+- conteos.
+
+Permitido en auditoría restringida cuando sea necesario:
+
+- referencias opacas;
+- identificadores correlacionables;
+- hash de contenido lógico;
+- códigos seguros del proveedor;
+- receipt o request id seguros.
+
+Prohibido:
+
+- cuerpo de notificación;
+- preview de soporte;
+- preview de chat;
+- título libre;
+- token push;
+- enlace o token de invitación;
+- correo o teléfono en claro cuando una referencia baste;
+- monto;
+- horario;
+- sede laboral cuando no sea necesaria para la auditoría autorizada;
+- estado de asistencia;
+- dirección;
+- geolocalización;
+- credencial;
+- encabezado de autorización;
+- secreto de proveedor;
+- respuesta cruda del proveedor con posible eco de datos sensibles.
+
+Una métrica o dashboard nunca sirve de excepción a esta prohibición.
+
+---
+
+#### 19. Dashboards y vistas mínimas
+
+Esta tarea define preguntas, no una herramienta concreta.
+
+##### 19.1. Vista de salud de entrega
+
+Debe responder:
+
+- cuántas ocurrencias existen por política;
+- cuántas proyecciones se crearon;
+- cuántas llegaron a aceptación;
+- cuántas poseen confirmación técnica disponible;
+- cuántas están en `UNKNOWN`, `RETRY_WAIT`, `BLOCKED` o `EXHAUSTED`;
+- qué clase de fallo domina;
+- qué canal o componente está afectado;
+- si el problema coincide con un release;
+- si la telemetría está completa y fresca.
+
+##### 19.2. Vista de resiliencia
+
+Debe responder:
+
+- retries por perfil;
+- recuperación posterior a fallo;
+- agotamiento;
+- resultados inciertos;
+- endpoints retirados;
+- destinatarios no resolubles;
+- antigüedad de proyecciones pendientes;
+- discrepancia entre aceptación y confirmación.
+
+##### 19.3. Vista de atención y efecto
+
+Debe responder solo para políticas aplicables:
+
+- read;
+- ack;
+- process effect;
+- escalamiento;
+- latencia hasta la evidencia.
+
+Nunca mezcla estas tasas con “delivery success”.
+
+##### 19.4. Vista de integridad de auditoría
+
+Debe responder:
+
+- eventos esperados versus materializados;
+- huecos de secuencia;
+- transiciones imposibles;
+- intentos sin proyección;
+- proyecciones sin ocurrencia;
+- receipts sin intento;
+- efectos sin ocurrencia correlacionable;
+- retraso de telemetría;
+- fallos de exportación.
+
+Los dashboards usan agregados de baja cardinalidad. La investigación individual ocurre en una consulta auditada y autorizada, no expandiendo labels globales.
+
+---
+
+#### 20. Política de consulta y evidencia operacional
+
+Para una investigación puntual deberá ser posible reconstruir:
+
+```text
+ORIGEN
+  ↓
+OCURRENCIA
+  ↓
+DESTINATARIO RESUELTO
+  ↓
+PROYECCIÓN POR CANAL
+  ↓
+INTENTO 1..N
+  ↓
+ACEPTACIÓN / CONFIRMACIÓN / INCERTIDUMBRE / FALLO
+  ↓
+RECONCILIACIÓN
+  ↓
+READ / ACK / PROCESS_EFFECT CUANDO APLIQUE
+  ↓
+ESCALAMIENTO CUANDO APLIQUE
+```
+
+La evidencia debe permitir responder quién o qué produjo el hecho y cuándo, sin reproducir el mensaje.
+
+Reglas:
+
+1. la consulta individual requiere autorización;
+2. un operador no obtiene acceso al recurso completo por consultar una entrega;
+3. la evidencia conserva IDs opacos y estados;
+4. el drill-down sensible queda auditado cuando el contrato transversal lo exija;
+5. exportar evidencia no autoriza exportar contenido;
+6. una captura de pantalla no sustituye evidencia durable;
+7. un log de consola del cliente no sustituye auditoría;
+8. una métrica agregada no sustituye el timeline individual;
+9. el timeline individual no sustituye métricas agregadas;
+10. evidencia incompleta produce `PENDIENTE_DE_EVIDENCIA`, no “entregado”.
+
+---
+
+#### 21. Reconciliación con el estado técnico actual
+
+La revisión técnica actual produce la siguiente clasificación.
+
+| Superficie                        | Evidencia actual                                                                                     | Estado frente a este contrato                | Brecha                                                                                                                                                          |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------- | -------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `announcement-notify`             | Construye mensajes, llama a Expo, identifica tokens inválidos y devuelve cantidad preparada.         | `IMPLEMENTADO_PARCIAL`                       | No existe auditoría durable transversal por ocurrencia, proyección e intento; `sent` no prueba aceptación confirmada.                                           |
+| `document-alerts`                 | Construye mensajes, llama a Expo, retira tokens inválidos y devuelve cantidad preparada.             | `IMPLEMENTADO_PARCIAL`                       | No existe receipt durable ni timeline por proyección; además conserva brechas de minimización ya asignadas por 009.                                             |
+| `shift-publish-notify`            | Envía a tokens activos y devuelve cantidad preparada.                                                | `IMPLEMENTADO_PARCIAL`                       | No materializa contrato transversal de intento, receipt y auditoría.                                                                                            |
+| `shift-runtime-processor`         | Conserva `shift_runtime_events`, deduplica ciertos recordatorios y registra estado/notas operativas. | `IMPLEMENTADO_PARCIAL`                       | `applied` y notas de push no separan de forma completa evaluación del runtime, aceptación de transporte y confirmación; no hay intento transversal durable.     |
+| `support-message-notify`          | Envía push, detecta endpoint inválido y devuelve conteo.                                             | `IMPLEMENTADO_PARCIAL`                       | No materializa auditoría transversal ni confirmación; la brecha de preview pertenece a 009 y a su implementación futura.                                        |
+| invitación de personal            | Conserva estado `sent`/`failed`, canal, timestamps y contador de reenvíos.                           | `IMPLEMENTADO_PARCIAL`                       | Existe evidencia útil, pero no un sobre común de ocurrencia/proyección/intento/receipt; el error crudo del proveedor requiere redacción conforme a 009.         |
+| PASS local                        | Conserva throttle/cooldown en almacenamiento local y registra listeners.                             | `IMPLEMENTADO_PARCIAL`                       | Estado local no es auditoría durable ni evidencia cross-device.                                                                                                 |
+| PULSO Notification API            | Conserva estado UI y contador local de alertas; permite acción “Atendido”.                           | `IMPLEMENTADO_PARCIAL`                       | Contador y acción del cliente no constituyen auditoría durable del servicio de notificaciones.                                                                  |
+| conversación PULSO                | Dispone de estado de no leídos y operación durable para marcar conversación leída.                   | `IMPLEMENTADO_PARCIAL_COMPATIBLE`            | Puede aportar evidencia `READ` del plano de atención, pero no sustituye auditoría de transporte.                                                                |
+| `order-message-notify` desplegada | Envía push a tokens del cliente y devuelve cantidad preparada.                                       | `IMPLEMENTADO_PARCIAL_CON_PARIDAD_PENDIENTE` | No hay auditoría durable por intento; el código desplegado no tiene paridad de fuente en `vento-shell/main`; conserva además brecha de preview ya identificada. |
+
+Resultado global:
+
+```text
+DISEÑO NOTIFY-ARC-010: ESPECIFICADO
+EMISORES EXISTENTES: IMPLEMENTADO_PARCIAL
+AUDITORÍA TRANSVERSAL: NO IMPLEMENTADA
+SLI CANÓNICOS: NO INSTRUMENTADOS DE FORMA COMPLETA
+SLO NUMÉRICOS: FUERA_DE_ALCANCE
+EVIDENCIA DE CUMPLIMIENTO: PENDIENTE_DE_EVIDENCIA
+```
+
+No se declara un fallo de producción ni se infiere que una notificación no haya llegado; se declara exclusivamente que la implementación observable no materializa todavía el contrato completo de medición y auditoría.
+
+---
+
+#### 22. Reglas de compatibilidad durante materialización futura
+
+1. La instrumentación podrá añadirse sin cambiar las identidades semánticas de las quince políticas.
+2. Una transición de auditoría no podrá provocar el envío de una notificación.
+3. La caída de observabilidad no podrá bloquear silenciosamente la operación empresarial salvo que una tarea de implementación lo decida explícitamente.
+4. La persistencia de auditoría será idempotente.
+5. Los productores actuales podrán migrarse por etapas siempre que el estado de cobertura quede explícito.
+6. Una métrica nueva no podrá requerir ampliar el payload del canal.
+7. La instrumentación no podrá añadir PII para facilitar dashboards.
+8. Los eventos de auditoría deberán versionarse.
+9. Los consumidores deberán aceptar una evolución compatible del esquema.
+10. Un cambio de proveedor conservará los nombres semánticos del servicio.
+11. La reconciliación histórica no inventará receipts que nunca existieron.
+12. Los datos anteriores a la instrumentación se marcarán como no observados o parciales cuando corresponda.
+13. No se sintetizarán éxitos históricos a partir de conteos agregados.
+14. La instrumentación deberá distinguir ambiente y release.
+15. Los errores de instrumentación deberán observarse mediante el propio plano de control.
+
+---
+
+#### 23. Propiedad de materialización y decisiones posteriores
+
+| Responsabilidad                                                                                                        | Propietario                                                                             |
+| ---------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Arquitectura transversal de señales, correlación, métricas, trazas y auditoría                                         | `OBS-ARC-001` a `OBS-ARC-016`                                                           |
+| Operación de monitoreo, health y soporte tecnológico                                                                   | `TI-DOM-010`; `TI-INT-001`                                                              |
+| Modelo operativo general de tecnología y servicios                                                                     | `TI-DOM-001` cuando llegue su turno canónico                                            |
+| Materialización física del servicio de notificaciones, registros de proyección/intento, instrumentación y conciliación | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` cuando ese alcance sea aprobado |
+| Paridad de fuente de funciones PASS desplegadas y adaptación coordinada de consumidores                                | `SUPA-TRANS-007`                                                                        |
+| Privacidad y sensibilidad                                                                                              | `NFR-REQ-005`; `NOTIFY-ARC-009`; `INFO-DOM-*`                                           |
+| Retención y disposición                                                                                                | `NFR-REQ-006`; tareas `INFO-DOM-*` propietarias                                         |
+| Objetivos transversales de disponibilidad, capacidad y presupuestos temporales                                         | contratos `NFR-REQ-001` a `NFR-REQ-003` y tareas de observabilidad propietarias         |
+
+No queda una decisión de métrica, plano de observación, auditoría de entrega o separación entre transporte y atención sin propietario dentro del alcance de `NOTIFY-ARC-010`.
+
+---
+
+#### 24. Reconciliación cuantitativa
+
+##### 24.1. Cobertura por política
+
+| Métrica                                  |    Resultado |
+| ---------------------------------------- | -----------: |
+| Políticas recibidas                      |       **15** |
+| Reglas `NOTIFY-METRICS-*` materializadas |       **15** |
+| Políticas sin regla                      |        **0** |
+| Políticas duplicadas                     |        **0** |
+| Familias AS-IS cubiertas                 | **16 de 16** |
+| Orígenes conservados                     | **15 de 15** |
+| Reglas de destinatario conservadas       | **15 de 15** |
+| Canales modificados                      |        **0** |
+| Preferencias modificadas                 |        **0** |
+| Reglas de atención modificadas           |        **0** |
+| Reglas de resiliencia modificadas        |        **0** |
+| Reglas de privacidad modificadas         |        **0** |
+
+##### 24.2. Catálogo de observación
+
+| Elemento                            | Cantidad |
+| ----------------------------------- | -------: |
+| Planos de observación               |    **4** |
+| Clases de evento de auditoría       |    **9** |
+| Métricas canónicas                  |   **23** |
+| SLI definidos                       |    **8** |
+| Indicadores de atención/efecto      |    **4** |
+| Clases de capacidad de confirmación |    **5** |
+| Objetivos SLO numéricos inventados  |    **0** |
+
+##### 24.3. Integridad
+
+```text
+REGLAS ESPERADAS: 15
+REGLAS MATERIALIZADAS: 15
+IDENTIFICADORES NOTIFY-METRICS ÚNICOS: 15
+FALTANTES: 0
+DUPLICADOS: 0
+POLÍTICAS SIN RESULTADO: 0
+DECISIONES ABIERTAS DENTRO DE NOTIFY-ARC-010: 0
+CAMBIOS FÍSICOS AUTORIZADOS: 0
+CAMBIOS FÍSICOS EJECUTADOS: 0
+```
+
+---
+
+#### 25. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `NOTIFY-ARC-010` materializa para las quince políticas de notificación la observabilidad, correlación, métricas, cardinalidad, logs, trazas, separación entre auditoría y evento empresarial, SLI/SLO, alertas y metamonitoreo ya protegidos por los cuarenta requisitos de prueba derivados por `NFR-REQ-009`, junto con los controles transversales vigentes de idempotencia, trazabilidad, privacidad y payload mínimo. No introduce una categoría nueva de comportamiento verificable, no cambia una expectativa de prueba existente y no implementa un mecanismo físico adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 26. Decisiones canónicas consolidadas
+
+1. Una notificación se observa en cuatro planos independientes.
+2. Ocurrencia, proyección e intento conservan identidades distintas.
+3. Entrega, atención y efecto empresarial nunca son sinónimos.
+4. Un mensaje preparado no es una entrega aceptada.
+5. Aceptación del proveedor no es confirmación técnica.
+6. Confirmación técnica no es lectura.
+7. Lectura no es efecto de proceso.
+8. Escalamiento conserva identidad propia.
+9. La auditoría usa nueve clases de evento.
+10. Los eventos necesarios para reconstrucción no se sobrescriben.
+11. Un éxito posterior conserva el fallo anterior.
+12. Correcciones tardías usan supersesión o conciliación explícita.
+13. `occurred_at` y `observed_at` permanecen separados.
+14. La auditoría requerida para reconstrucción no depende de muestreo.
+15. Se definen veintitrés métricas de baja cardinalidad.
+16. IDs de usuario, ocurrencia, proyección, intento, recurso o mensaje no son labels ordinarios.
+17. Se definen ocho SLI sin objetivos numéricos inventados.
+18. Los SLI de transporte excluyen atención y efecto.
+19. Las políticas sin capacidad de receipt no fabrican confirmación.
+20. Las exclusiones del denominador de confirmación son explícitas.
+21. Email open o click no es lectura empresarial.
+22. Un “read” de proveedor externo no es automáticamente `READ`.
+23. Una alerta local no se presume presentada.
+24. El estado durable de conversación puede aportar evidencia de lectura donde la política lo autoriza.
+25. Preferencia deshabilitada no cuenta como fallo de transporte.
+26. Quiet window no cuenta como agotamiento.
+27. `UNRESOLVED_RECIPIENT` no genera intento.
+28. `UNKNOWN` no se reclasifica por conveniencia.
+29. Recuperación no crea segunda necesidad semántica.
+30. La salud de telemetría se mide por separado.
+31. Un hueco de telemetría no se convierte en fallo empresarial.
+32. Métricas y dashboards respetan las prohibiciones de privacidad de `NOTIFY-ARC-009`.
+33. El estado técnico actual es parcial y no satisface todavía el contrato transversal completo.
+34. No se declaran SLO cumplidos sin instrumentación y evidencia.
+35. La implementación física queda en sus propietarios posteriores.
+36. `NOTIFY-ARC-010` no cambia código, Supabase, canales, preferencias, proveedores ni requisitos de prueba.
+37. El cierre documental de `NOTIFY-ARC-*` no inicia `TI-DOM-001`.
+
+---
+
+#### 27. Criterios de aceptación
+
+- [x] las 15 políticas heredadas están cubiertas exactamente una vez;
+- [x] las 15 reglas `NOTIFY-METRICS-*` son únicas;
+- [x] se conservan 15 orígenes y 15 reglas de destinatario;
+- [x] se distinguen ocurrencia, proyección e intento;
+- [x] se distinguen entrega, lectura, confirmación, efecto y escalamiento;
+- [x] se definen cuatro planos de observación;
+- [x] se definen clases de evento de auditoría;
+- [x] se define un sobre mínimo de auditoría;
+- [x] la auditoría es reconstruible sin almacenar el cuerpo de la notificación;
+- [x] se define comportamiento de conciliación y corrección;
+- [x] un éxito posterior no borra fallos;
+- [x] se definen métricas de baja cardinalidad;
+- [x] se definen dimensiones permitidas;
+- [x] se prohíben dimensiones de alta cardinalidad o sensibles;
+- [x] se define capacidad de confirmación por canal;
+- [x] aceptación y confirmación se mantienen separadas;
+- [x] se definen SLI de entrega, incertidumbre, agotamiento, recuperación y auditoría;
+- [x] no se inventan porcentajes ni ventanas SLO;
+- [x] se distinguen indicadores de atención de los SLI de transporte;
+- [x] read solo se mide donde es aplicable;
+- [x] ack solo se mide donde existe confirmación explícita;
+- [x] process effect se obtiene del proceso propietario;
+- [x] escalamiento no se infiere de fallo técnico;
+- [x] opt-out y quiet window no se contabilizan como fallos;
+- [x] las reglas de retry conservan la semántica de `NOTIFY-ARC-008`;
+- [x] las reglas de privacidad conservan `NOTIFY-ARC-009`;
+- [x] se define la salud de la propia telemetría;
+- [x] se definen preguntas mínimas de dashboards;
+- [x] la investigación individual queda separada de agregación global;
+- [x] se reconcilia el estado técnico actual sin inventar evidencia;
+- [x] se registra que la implementación actual es parcial;
+- [x] se preserva la paridad pendiente de las funciones PASS bajo su propietario;
+- [x] no se implementa persistencia, dashboard, provider o cambio Supabase;
+- [x] la tarea genera cero cambios en requisitos de prueba;
+- [x] `TI-DOM-001` permanece únicamente reservada.
+
+---
+
+#### 28. Cierre del bloque NOTIFY-ARC
+
+Con `NOTIFY-ARC-010` queda documentalmente definido el ciclo completo del servicio de notificaciones:
+
+```text
+INVENTARIO AS-IS
+→ ORIGEN
+→ DESTINATARIO
+→ PRIORIDAD / VIGENCIA / DEDUPLICACIÓN
+→ CANAL
+→ PREFERENCIA
+→ LECTURA / CONFIRMACIÓN / ESCALAMIENTO
+→ REINTENTO / FALLO / CONTINGENCIA
+→ PRIVACIDAD / CONTENIDO
+→ MÉTRICAS / AUDITORÍA
+```
+
+El cierre documental no equivale a implementación física. Las brechas de repositorio, persistencia, instrumentación, dashboards, recibos de proveedor y evidencia operacional permanecen asignadas a sus propietarios exactos y deberán materializarse únicamente cuando la continuidad y el alcance de implementación lo autoricen.
+
+---
+
+#### 29. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`NOTIFY-ARC-009 — Definir privacidad y contenido sensible`
+
+TAREA ACTUAL APROBADA
+`NOTIFY-ARC-010 — Definir métricas y auditoría de entrega`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-001 — Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención`
+
