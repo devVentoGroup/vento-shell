@@ -1820,7 +1820,440 @@ SIGUIENTE TAREA RESERVADA
 `NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento`
 
 
-### [ ] NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento
+### ✅ NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento
+
+**Estado:** APROBADA
+**Tarea anterior:** `NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias` — APROBADA
+**Tarea siguiente:** `NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia` — RESERVADA
+**Tipo de tarea:** documental; matriz materializada de lectura, confirmación humana, atención y escalamiento para las quince políticas de notificación aprobadas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, Edge Functions, tablas, RLS, migraciones, RPC, cron, colas, tokens, proveedores, secretos, aplicaciones ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir para cada `NOTIFY-POLICY-*` qué significa lectura, qué evidencia constituye confirmación o atención suficiente, qué hecho empresarial cierra la necesidad y cuándo una falta de atención habilita escalamiento hacia otra responsabilidad, sin alterar origen, destinatario inicial, prioridad, vigencia, deduplicación, canales, preferencias, reintentos, privacidad ni métricas.
+
+---
+
+#### 1. Resultado sustantivo
+
+`NOTIFY-ARC-007` queda documentalmente cerrada con:
+
+- 15 reglas `NOTIFY-ATTENTION-001` a `NOTIFY-ATTENTION-015`;
+- 15 políticas `NOTIFY-POLICY-001` a `NOTIFY-POLICY-015` cubiertas exactamente una vez;
+- 15 reglas de destinatario inicial preservadas;
+- 15 reglas de preferencia preservadas;
+- 16 familias AS-IS cubiertas mediante las políticas heredadas;
+- 3 modos de tratamiento de lectura;
+- 4 modos de confirmación o atención;
+- 3 modos de escalamiento;
+- una condición de escalamiento o ausencia explícita de escalamiento por política;
+- separación obligatoria entre receipt técnico, lectura humana, confirmación humana y efecto empresarial;
+- 0 políticas sin decisión;
+- 0 políticas duplicadas;
+- 0 cambios físicos ejecutados;
+- 0 cambios en requisitos de prueba.
+
+La tarea no declara que las capacidades aquí definidas estén implementadas. El resultado es `ESPECIFICADO`.
+
+---
+
+#### 2. Fronteras semánticas obligatorias
+
+La arquitectura deberá conservar separadas estas evidencias:
+
+| Evidencia            | Significado                                                                                              | Puede marcar lectura                         | Puede cerrar una obligación                               |
+| -------------------- | -------------------------------------------------------------------------------------------------------- | -------------------------------------------- | --------------------------------------------------------- |
+| `TRANSPORT_ACCEPTED` | El proveedor o mecanismo técnico aceptó un intento de entrega.                                           | No.                                          | No.                                                       |
+| `PRESENTED`          | Una superficie VENTO pudo mostrar el aviso al destinatario autenticado.                                  | No por sí sola.                              | No.                                                       |
+| `READ`               | El destinatario cargó de forma autenticada el contenido o contexto asociado a la ocurrencia.             | Sí.                                          | Solo cuando la política declara `CONFIRM_READ`.           |
+| `ACKNOWLEDGED`       | El destinatario realizó una confirmación humana explícita sobre la versión u ocurrencia correcta.        | Implica lectura.                             | Solo cuando la política declara `CONFIRM_EXPLICIT_ACK`.   |
+| `PROCESS_EFFECT`     | El proceso propietario registró el hecho empresarial que satisface la acción pendiente.                  | Es evidencia de atención superior a lectura. | Sí cuando la política declara `CONFIRM_PROCESS_EFFECT`.   |
+| `ESCALATED`          | La condición de falta de atención produjo una proyección adicional hacia una responsabilidad autorizada. | No.                                          | No; el proceso continúa abierto hasta su hecho de cierre. |
+
+Reglas:
+
+1. Una respuesta `2xx`, receipt de Expo, respuesta de Resend, suscripción Realtime, apertura de socket, badge visible o `Notification.permission === "granted"` no demuestra lectura humana.
+2. Un tap sobre push, correo, enlace profundo o notificación del navegador solo puede producir `READ` después de autenticar al destinatario y cargar correctamente la ocurrencia o su contexto autorizado.
+3. Un pixel de apertura de correo o receipt de mensajería externa no será evidencia autoritativa de lectura para decisiones empresariales.
+4. `READ` no equivale a aceptación contractual, aceptación de turno, resolución de ticket, cierre de asistencia, toma de pedido ni ejecución de una acción.
+5. `ACKNOWLEDGED` confirma conocimiento de la ocurrencia; no concede permisos, no cambia responsabilidad y no modifica por sí mismo el hecho empresarial.
+6. `PROCESS_EFFECT` proviene del proceso propietario, no de un botón cosmético de la notificación.
+7. Un aviso puede estar leído y continuar pendiente.
+8. Una acción empresarial válida puede cerrar la necesidad aunque no exista una transición `READ` separada.
+9. La falta de telemetría de lectura no autoriza a asumir que el destinatario no leyó; únicamente impide afirmar lectura.
+10. Las evidencias se conservan por destinatario. La lectura o atención de una persona nunca se propaga a otra identidad.
+
+---
+
+#### 3. Modos canónicos de lectura
+
+| Modo                              | Regla                                                                                                                                                                                          |
+| --------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `READ_TRACKED`                    | La ocurrencia deberá poder conservar estado de lectura por destinatario cuando la superficie autorizada sea abierta y cargada. La ausencia de lectura no implica automáticamente escalamiento. |
+| `READ_NOT_AUTHORITATIVE_EXTERNAL` | El canal puede exponer señales de apertura, pero ninguna de ellas se usa como lectura empresarial autoritativa; la confirmación depende de un hecho posterior del proceso.                     |
+| `READ_NOT_REQUIRED`               | La política no necesita un estado de lectura para cumplir su propósito; la atención se demuestra mediante el proceso o no se exige confirmación.                                               |
+
+Una política `READ_TRACKED` deberá conservar al menos la identidad de la ocurrencia, identidad destinataria y momento de transición. El contenido sensible no se duplica dentro del estado de lectura.
+
+---
+
+#### 4. Modos canónicos de confirmación y atención
+
+| Modo                     | Significado                                                                                                                                                                              |
+| ------------------------ | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `CONFIRM_NONE`           | No se exige confirmación humana. La notificación cumple su función informativa al quedar disponible por los canales aprobados.                                                           |
+| `CONFIRM_READ`           | La lectura autenticada de la ocurrencia es confirmación suficiente de conocimiento. No significa aceptación de la decisión o resultado comunicado.                                       |
+| `CONFIRM_EXPLICIT_ACK`   | Se exige una acción humana explícita de conocimiento sobre la ocurrencia y versión correctas.                                                                                            |
+| `CONFIRM_PROCESS_EFFECT` | La atención suficiente es el hecho empresarial registrado por el proceso propietario: cerrar, responder, aceptar, reclamar, avanzar, corregir u otro efecto ya definido por ese proceso. |
+
+Reglas:
+
+1. Una política solo puede tener un modo principal de confirmación.
+2. `CONFIRM_EXPLICIT_ACK` nunca sustituye una acción empresarial requerida.
+3. `CONFIRM_PROCESS_EFFECT` no crea una nueva acción de negocio; consume el efecto ya autorizado del proceso propietario.
+4. Un estado visual como “Atendido” solo será confirmación autoritativa si existe persistencia vinculada a la ocurrencia, actor, momento y versión, y la política exige confirmación explícita.
+5. Cerrar una ventana, silenciar un canal, archivar visualmente o eliminar un badge no confirma atención.
+6. En dispositivos compartidos la confirmación pertenece al actor humano efectivo, no a la sesión técnica del dispositivo.
+7. Si el proceso invalida, cancela o deja sin objeto la ocurrencia antes de su confirmación, la necesidad termina por la regla de vigencia aprobada y no se fuerza un acuse tardío.
+
+---
+
+#### 5. Modos canónicos de escalamiento
+
+| Modo                       | Significado                                                                                                                                                                         |
+| -------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `ESC_NONE`                 | La falta de lectura o confirmación no incorpora una responsabilidad adicional.                                                                                                      |
+| `ESC_POLICY_TRANSITION`    | La falta de resolución produce otra necesidad empresarial ya aprobada como política separada; no se agrega supervisión dentro de la política original.                              |
+| `ESC_RESPONSIBILITY_CHAIN` | Un hecho autoritativo de incumplimiento o falta de atención habilita una proyección hacia la siguiente responsabilidad válida del proceso, sin broadcast ni reasignación implícita. |
+
+Reglas obligatorias:
+
+1. El escalamiento se activa por una condición empresarial autoritativa, no por la edad técnica de un push ni por un timer inventado por el servicio de notificaciones.
+2. Esta tarea no introduce minutos, horas o SLA universales.
+3. Cuando el proceso propietario tenga una frontera de vigencia, vencimiento, turno, etapa, caso o incumplimiento, esa frontera gobierna el escalamiento.
+4. Escalar incorpora un destinatario autorizado adicional o una responsabilidad siguiente; no elimina la ocurrencia del destinatario original.
+5. La proyección escalada conserva el mismo origen, recurso, versión o episodio raíz y añade su destinatario y nivel de escalamiento.
+6. Cada destinatario mantiene lectura, confirmación y atención independientes.
+7. El escalamiento no cambia prioridad base; puede registrarse un nivel de escalamiento separado.
+8. Un recordatorio técnico al mismo endpoint no es escalamiento.
+9. Un reintento de proveedor no es escalamiento.
+10. Una repetición de polling, cron o Realtime no es escalamiento.
+11. La indisponibilidad de un canal no habilita escalamiento; pertenece a `NOTIFY-ARC-008`.
+12. La falta de destinatario resoluble no habilita broadcast; pertenece a `NOTIFY-ARC-008`.
+13. La gerencia no se convierte en copia universal. Solo entra cuando la matriz de esta tarea y la responsabilidad vigente del proceso lo autorizan.
+14. Una vez producido el `PROCESS_EFFECT` que resuelve la necesidad, ningún escalamiento posterior podrá nacer de esa misma ocurrencia.
+15. Las copias ya escaladas conservan historia aunque el proceso quede resuelto.
+
+---
+
+#### 6. Matriz materializada de lectura, confirmación y escalamiento
+
+| Regla                  | Política            | Lectura                           | Confirmación principal   | Hecho que cierra la atención                                                                                                                                                                                                                           | Escalamiento               | Destino o tratamiento                                                                                                                                                                                                                                                                                            | Resultado      |
+| ---------------------- | ------------------- | --------------------------------- | ------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | -------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------- |
+| `NOTIFY-ATTENTION-001` | `NOTIFY-POLICY-001` | `READ_TRACKED`                    | `CONFIRM_NONE`           | Fin de vigencia de la publicación o nueva versión conforme a la política aprobada.                                                                                                                                                                     | `ESC_NONE`                 | Un comunicado general no incorpora supervisión por permanecer sin leer. Si una comunicación futura exige aceptación o acción, esa obligación deberá existir en su proceso y no ocultarse dentro del aviso.                                                                                                       | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-002` | `NOTIFY-POLICY-002` | `READ_TRACKED`                    | `CONFIRM_PROCESS_EFFECT` | Renovación, actualización, aporte, validación o corrección autoritativa que saque el documento de la condición pendiente.                                                                                                                              | `ESC_RESPONSIBILITY_CHAIN` | Si la condición evoluciona a incumplimiento mientras la responsabilidad continúa vigente, se proyecta hacia la siguiente responsabilidad documental o de control definida por `VPROC-0060`; nunca hacia toda RR. HH., gerencia o custodia por pertenencia general.                                               | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-003` | `NOTIFY-POLICY-003` | `READ_TRACKED`                    | `CONFIRM_READ`           | Lectura autenticada de la publicación vigente; la asignación sigue gobernada por el proceso de programación.                                                                                                                                           | `ESC_RESPONSIBILITY_CHAIN` | Si la asignación alcanza la frontera empresarial en la que el trabajador debe conocerla y continúa sin lectura, se informa a `RESPONSABLE_DE_PROGRAMACION_LABORAL` para revisión de contacto/cobertura; no se considera rechazo del trabajador.                                                                  | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-004` | `NOTIFY-POLICY-004` | `READ_TRACKED`                    | `CONFIRM_EXPLICIT_ACK`   | Acuse explícito de conocimiento de la nueva versión publicada o un efecto posterior del proceso que demuestre de forma inequívoca que la revisión fue atendida.                                                                                        | `ESC_RESPONSIBILITY_CHAIN` | Si la nueva obligación entra en su frontera efectiva sin acuse, se proyecta a `RESPONSABLE_DE_PROGRAMACION_LABORAL`; la escalada no convierte el acuse en consentimiento ni autoriza cambios adicionales.                                                                                                        | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-005` | `NOTIFY-POLICY-005` | `READ_TRACKED`                    | `CONFIRM_PROCESS_EFFECT` | Cierre autoritativo de la sesión de asistencia, cancelación válida o corrección que elimine la condición previa al fin.                                                                                                                                | `ESC_POLICY_TRANSITION`    | Si llega el fin aplicable y la sesión continúa abierta, no se agrega supervisión dentro de esta política: nace la necesidad ya separada `NOTIFY-POLICY-006`.                                                                                                                                                     | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-006` | `NOTIFY-POLICY-006` | `READ_TRACKED`                    | `CONFIRM_PROCESS_EFFECT` | Cierre autoritativo de la sesión, corrección o cancelación que invalide la condición posterior al fin.                                                                                                                                                 | `ESC_RESPONSIBILITY_CHAIN` | Cuando el proceso de asistencia registre que la sesión continúa incumplida en la frontera de control aplicable, se proyecta a la función vigente de `GERENCIA_O_SUPERVISION_DE_SEDE` correspondiente al trabajador, turno y sede.                                                                                | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-007` | `NOTIFY-POLICY-007` | `READ_TRACKED`                    | `CONFIRM_NONE`           | El check-out automático ya es un hecho persistido; la notificación no tiene acción pendiente.                                                                                                                                                          | `ESC_NONE`                 | La falta de lectura no escala. Si el trabajador objeta el efecto deberá utilizar el proceso de corrección correspondiente; esa corrección no nace de un escalamiento de la notificación.                                                                                                                         | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-008` | `NOTIFY-POLICY-008` | `READ_TRACKED`                    | `CONFIRM_PROCESS_EFFECT` | Para el lado responsable del caso: respuesta, cambio de estado o acción válida en `VPROC-0058`; para el solicitante: la lectura puede evidenciar conocimiento, pero no cierra un caso que siga requiriendo acción.                                     | `ESC_RESPONSIBILITY_CHAIN` | Un caso que alcance su condición empresarial de falta de atención se escala dentro de la cadena de responsabilidad del propio `VPROC-0058`. No se notifica a todo el equipo tecnológico y el estado `READ` no reemplaza la resolución del caso.                                                                  | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-009` | `NOTIFY-POLICY-009` | `READ_NOT_AUTHORITATIVE_EXTERNAL` | `CONFIRM_PROCESS_EFFECT` | Uso o aceptación válida de la invitación, o terminación de su vigencia por expiración, revocación o cancelación.                                                                                                                                       | `ESC_NONE`                 | Un open de correo no se usa como lectura y una invitación pendiente no agrega gerencia o selección como destinatarios automáticos. Un reenvío deliberado conserva la política de generación aprobada y no se trata como escalamiento.                                                                            | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-010` | `NOTIFY-POLICY-010` | `READ_NOT_REQUIRED`               | `CONFIRM_NONE`           | La ocurrencia es informativa y termina por su propia vigencia.                                                                                                                                                                                         | `ESC_NONE`                 | El ascenso de nivel no exige lectura, acuse ni supervisión.                                                                                                                                                                                                                                                      | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-011` | `NOTIFY-POLICY-011` | `READ_NOT_REQUIRED`               | `CONFIRM_NONE`           | La recompensa deja de estar en el episodio vigente de elegibilidad o se consume según su proceso.                                                                                                                                                      | `ESC_NONE`                 | La falta de interacción con una recompensa no genera seguimiento obligatorio ni supervisión.                                                                                                                                                                                                                     | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-012` | `NOTIFY-POLICY-012` | `READ_NOT_REQUIRED`               | `CONFIRM_NONE`           | El ciclo de elegibilidad de feedback se consume, termina o se invalida.                                                                                                                                                                                | `ESC_NONE`                 | No responder una solicitud de opinión no genera escalamiento ni presión operativa.                                                                                                                                                                                                                               | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-013` | `NOTIFY-POLICY-013` | `READ_TRACKED`                    | `CONFIRM_PROCESS_EFFECT` | Para una contraparte interna responsable: respuesta o acción válida sobre la conversación/pedido; para cliente o contraparte externa: la lectura evidencia conocimiento cuando sea autoritativamente observable, pero no se exige respuesta universal. | `ESC_RESPONSIBILITY_CHAIN` | Solo el lado operativo que mantenga una respuesta requerida puede escalar cuando el proceso de pedido marque falta de atención: primero se resuelve la responsabilidad vigente de la instancia y, cuando corresponda, `GERENCIA_O_SUPERVISION_DE_SEDE`. El lado cliente no se escala por no leer o no responder. | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-014` | `NOTIFY-POLICY-014` | `READ_NOT_REQUIRED`               | `CONFIRM_PROCESS_EFFECT` | Primera acción autoritativa que reclame, acepte o haga avanzar el pedido desde la etapa accionable correspondiente.                                                                                                                                    | `ESC_RESPONSIBILITY_CHAIN` | Si el pedido permanece accionable sin dueño efectivo al alcanzar la condición empresarial de falta de atención, se proyecta a `GERENCIA_O_SUPERVISION_DE_SEDE` de la sede aplicable. El botón local “Atendido” no basta sin efecto persistido autorizado.                                                        | `ESPECIFICADO` |
+| `NOTIFY-ATTENTION-015` | `NOTIFY-POLICY-015` | `READ_NOT_REQUIRED`               | `CONFIRM_PROCESS_EFFECT` | Primera acción autoritativa del cumplimiento del pedido habilitada por el pago conciliado, o un cambio válido que elimine esa acción pendiente.                                                                                                        | `ESC_RESPONSIBILITY_CHAIN` | Si la siguiente responsabilidad operativa permanece sin ejecutar al alcanzar la condición empresarial de falta de atención, se proyecta a `GERENCIA_O_SUPERVISION_DE_SEDE` de la sede aplicable. El estado del pago no se usa como prueba de que operación atendió el pedido.                                    | `ESPECIFICADO` |
+
+---
+
+#### 7. Reconciliación cuantitativa
+
+##### 7.1. Modos de lectura
+
+| Modo                              | Cantidad |
+| --------------------------------- | -------: |
+| `READ_TRACKED`                    |    **9** |
+| `READ_NOT_AUTHORITATIVE_EXTERNAL` |    **1** |
+| `READ_NOT_REQUIRED`               |    **5** |
+| **Total**                         |   **15** |
+
+##### 7.2. Modos de confirmación
+
+| Modo                     | Cantidad |
+| ------------------------ | -------: |
+| `CONFIRM_NONE`           |    **5** |
+| `CONFIRM_READ`           |    **1** |
+| `CONFIRM_EXPLICIT_ACK`   |    **1** |
+| `CONFIRM_PROCESS_EFFECT` |    **8** |
+| **Total**                |   **15** |
+
+##### 7.3. Modos de escalamiento
+
+| Modo                       | Cantidad |
+| -------------------------- | -------: |
+| `ESC_NONE`                 |    **6** |
+| `ESC_POLICY_TRANSITION`    |    **1** |
+| `ESC_RESPONSIBILITY_CHAIN` |    **8** |
+| **Total**                  |   **15** |
+
+##### 7.4. Integridad
+
+```text
+POLÍTICAS RECIBIDAS: 15
+REGLAS MATERIALIZADAS: 15
+POLÍTICAS SIN REGLA: 0
+POLÍTICAS DUPLICADAS: 0
+DESTINATARIOS INICIALES MODIFICADOS: 0
+PREFERENCIAS MODIFICADAS: 0
+PRIORIDADES MODIFICADAS: 0
+CANALES MODIFICADOS: 0
+ESCALAMIENTOS POR TIMER TÉCNICO: 0
+ESCALAMIENTOS POR FALLO DE CANAL: 0
+DECISIONES ABIERTAS DENTRO DE NOTIFY-ARC-007: 0
+```
+
+---
+
+#### 8. Estado técnico actual reconciliado
+
+La implementación existente aporta evidencia parcial y no se eleva automáticamente al contrato objetivo.
+
+##### 8.1. Soporte ANIMA
+
+ANIMA conserva `support_ticket_reads.last_read_at` por trabajador y ticket. Al cargar mensajes de una conversación se actualiza ese estado y el conteo de no leídos vuelve a cero.
+
+Tratamiento canónico:
+
+- constituye una base válida para `READ_TRACKED`;
+- no demuestra por sí solo respuesta, resolución ni atención del caso;
+- ocultar una conversación no puede convertirse en confirmación de resolución;
+- el cierre del caso continúa perteneciendo al proceso de soporte.
+
+##### 8.2. Chat de pedidos PULSO
+
+PULSO utiliza `mark_order_conversation_read` al abrir una conversación y mantiene conteos de mensajes pendientes.
+
+Tratamiento canónico:
+
+- constituye una base válida para lectura del lado operativo;
+- lectura y archivo permanecen separados;
+- una conversación no puede considerarse atendida únicamente porque su contador llegue a cero;
+- la respuesta o acción de pedido requerida sigue gobernada por el proceso.
+
+##### 8.3. Alertas operativas PULSO
+
+La interfaz actual muestra un control visual `Atendido` que limpia estado local de alerta.
+
+Tratamiento canónico:
+
+- ese control no es `CONFIRM_PROCESS_EFFECT`;
+- tampoco es `CONFIRM_EXPLICIT_ACK` autoritativo mientras no exista persistencia ligada a ocurrencia, actor y momento;
+- pedido nuevo y pago conciliado se consideran atendidos por la primera acción empresarial autoritativa definida en sus políticas.
+
+##### 8.4. Push, navegador y correo
+
+Los receipts técnicos y permisos actuales permanecen desacoplados de la lectura.
+
+Tratamiento canónico:
+
+- endpoint activo no equivale a destinatario atento;
+- push aceptado no equivale a leído;
+- notificación del navegador mostrada o cerrada no equivale a leído;
+- correo aceptado por el proveedor no equivale a leído;
+- invitación se confirma mediante el proceso de incorporación, no mediante tracking de apertura.
+
+---
+
+#### 9. Reglas de estado por destinatario
+
+Cada ocurrencia y destinatario podrá conceptualmente conservar estas dimensiones separadas:
+
+```text
+delivery_state
+presentation_state
+read_state
+confirmation_state
+process_resolution_state
+escalation_level
+```
+
+Reglas:
+
+1. Ninguna dimensión se deriva automáticamente de otra salvo las implicaciones expresamente definidas.
+2. `ACKNOWLEDGED` implica conocimiento de la ocurrencia, pero no implica `PROCESS_EFFECT`.
+3. `PROCESS_EFFECT` puede cerrar la atención aunque `read_state` no haya sido registrado separadamente.
+4. Una ocurrencia escalada puede estar resuelta para el proceso y conservar evidencia de que un destinatario original nunca la leyó.
+5. Un cambio de responsabilidad produce una proyección para la nueva identidad válida; no transfiere falsamente el estado humano de la identidad anterior.
+6. La expiración de la necesidad detiene nuevas exigencias de lectura o confirmación, sin borrar estados ya registrados.
+7. Una corrección de la fuente puede invalidar la necesidad; la invalidación conserva historia y causa.
+8. El escalamiento no puede producir permisos superiores sobre el recurso: la identidad escalada deberá reautorizar cualquier lectura o acción.
+
+---
+
+#### 10. Regla de escalamiento sin ampliación indiscriminada
+
+La cadena de escalamiento se resuelve siempre desde la instancia empresarial vigente.
+
+Orden conceptual:
+
+```text
+DESTINATARIO INICIAL
+        ↓
+CONDICIÓN EMPRESARIAL DE FALTA DE ATENCIÓN
+        ↓
+RESPONSABILIDAD SIGUIENTE DEL PROCESO
+        ↓
+CONTEXTO Y AUTORIZACIÓN VIGENTES
+        ↓
+PROYECCIÓN ESCALADA
+```
+
+Queda prohibido:
+
+- escalar a una persona por tener un rol nominal sin responsabilidad vigente;
+- incluir gerencia por defecto;
+- copiar a toda una sede;
+- escalar por un token inactivo;
+- escalar por fallo de proveedor;
+- escalar porque una app no estaba abierta;
+- escalar por una lectura no observable;
+- usar la aplicación productora como criterio de destinatario;
+- interpretar escalamiento como reasignación automática del trabajo;
+- modificar el hecho fuente para representar el escalamiento.
+
+Cuando `GERENCIA_O_SUPERVISION_DE_SEDE` aparece en la matriz, deberá resolverse contra la sede, etapa, turno y responsabilidad vigentes del recurso. No es una audiencia global.
+
+---
+
+#### 11. Decisiones canónicas consolidadas
+
+1. Receipt técnico, lectura, acuse, efecto empresarial y escalamiento son estados distintos.
+2. La lectura solo se registra cuando existe identidad destinataria y acceso autenticado a la ocurrencia o su contexto.
+3. Abrir un push o enlace no basta hasta cargar el contexto autorizado.
+4. El correo no usa tracking de apertura como lectura empresarial autoritativa.
+5. Una lectura no prueba aceptación.
+6. Un acuse explícito no sustituye una acción empresarial requerida.
+7. Un efecto empresarial válido puede cerrar la atención aunque no exista lectura separada.
+8. Nueve políticas conservan lectura rastreable.
+9. Una política de correo usa lectura externa no autoritativa.
+10. Cinco políticas no requieren estado de lectura.
+11. Cinco políticas no exigen confirmación.
+12. Una política usa lectura como confirmación suficiente.
+13. Una política exige acuse explícito de conocimiento.
+14. Ocho políticas se confirman por efecto del proceso propietario.
+15. Seis políticas no escalan.
+16. `NOTIFY-POLICY-005` evoluciona hacia `NOTIFY-POLICY-006` en lugar de incorporar supervisión.
+17. Ocho políticas pueden escalar por cadena de responsabilidad.
+18. Ningún escalamiento se activa por fallos de canal, receipts, polling, cron o reintentos técnicos.
+19. No se fija un SLA transversal nuevo.
+20. La frontera temporal o de incumplimiento proviene del proceso propietario.
+21. La lectura o atención de un destinatario no cambia la de otro.
+22. El escalamiento conserva el destinatario original y vincula la nueva proyección con la misma ocurrencia raíz.
+23. Gerencia y supervisión solo entran donde la matriz lo autoriza y el contexto vigente las resuelve.
+24. `NOTIFY-POLICY-013` no escala al cliente por falta de lectura o respuesta.
+25. El control visual `Atendido` de PULSO no se trata como confirmación canónica sin persistencia autoritativa.
+26. La tarea no crea esquemas, estados físicos, RPC, jobs, APIs, botones, proveedores ni mecanismos de tracking.
+27. Reintentos y fallos de entrega permanecen reservados a `NOTIFY-ARC-008`.
+28. Privacidad y contenido de las evidencias permanecen reservados a `NOTIFY-ARC-009`.
+29. Métricas y auditoría de entrega permanecen reservadas a `NOTIFY-ARC-010`.
+
+---
+
+#### 12. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** esta tarea materializa la semántica documental de lectura, confirmación y escalamiento sobre controles transversales ya registrados. `TREQ-INTEGRATION-004` exige reconstruir destinatario, intento, resultado, error y efecto final en cadenas de notificación; `TREQ-INTEGRATION-032` exige separar notificación humana, evento empresarial, auditoría y log técnico; `TREQ-INTEGRATION-003` protege idempotencia y resultado recuperable en operaciones asíncronas; y `TREQ-PASS-011` ya protege el ciclo independiente de comunicaciones y casos de servicio. La tarea no implementa persistencia de lectura, motor de escalamiento ni comportamiento ejecutable adicional, por lo que no duplica requisitos existentes.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 13. Decisiones posteriores reservadas y propietarios exactos
+
+| Decisión no tomada                                                                                               | Tarea propietaria                                                                                       |
+| ---------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| Reintentos de entrega, errores técnicos, resultados desconocidos, `UNRESOLVED_RECIPIENT` y contingencia de canal | `NOTIFY-ARC-008`                                                                                        |
+| Minimización, contenido sensible y exposición permitida por canal                                                | `NOTIFY-ARC-009`                                                                                        |
+| Métricas, trazas, auditoría, SLI y evidencia de entrega                                                          | `NOTIFY-ARC-010`                                                                                        |
+| Implementación física de estados de lectura, confirmación y escalamiento dentro de paquetes                      | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` cuando el alcance de implementación los incluya |
+
+No queda una decisión de confirmación, lectura o escalamiento sin propietario dentro del alcance de `NOTIFY-ARC-007`.
+
+---
+
+#### 14. Criterios de aceptación
+
+- [x] las 15 políticas heredadas están cubiertas exactamente una vez;
+- [x] las 15 reglas `NOTIFY-ATTENTION-*` son únicas;
+- [x] las 15 reglas de destinatario inicial permanecen intactas;
+- [x] las 15 preferencias permanecen intactas;
+- [x] cada política declara tratamiento de lectura;
+- [x] cada política declara confirmación principal;
+- [x] cada política declara el hecho que cierra la atención;
+- [x] cada política declara escalamiento o ausencia de escalamiento;
+- [x] receipt técnico y lectura humana permanecen separados;
+- [x] lectura y aceptación permanecen separadas;
+- [x] acuse explícito y efecto empresarial permanecen separados;
+- [x] una acción de negocio se confirma desde el proceso propietario;
+- [x] correo externo no usa apertura como lectura autoritativa;
+- [x] la lectura es independiente por destinatario;
+- [x] el escalamiento no comparte estado humano entre destinatarios;
+- [x] el escalamiento no amplía permisos;
+- [x] el escalamiento no convierte gerencia en copia universal;
+- [x] no existe un SLA transversal inventado;
+- [x] el aviso previo al fin de turno evoluciona a la política posterior ya aprobada;
+- [x] el seguimiento posterior puede incorporar supervisión únicamente con contexto vigente;
+- [x] soporte usa el caso como autoridad de atención;
+- [x] mensajes de pedido distinguen lado operativo y lado cliente;
+- [x] pedido nuevo y pago conciliado se atienden mediante efectos empresariales, no mediante señales visuales locales;
+- [x] no se definen reintentos ni contingencia;
+- [x] no se define contenido sensible;
+- [x] no se definen métricas;
+- [x] no se modifica código ni Supabase;
+- [x] la tarea genera cero cambios en requisitos de prueba;
+- [x] `NOTIFY-ARC-008` permanece únicamente reservada.
+
+---
+
+#### 15. Handoff cerrado hacia NOTIFY-ARC-008
+
+`NOTIFY-ARC-007` entrega quince reglas con lectura, confirmación, hecho de cierre y escalamiento definidos.
+
+`NOTIFY-ARC-008` recibe exclusivamente los fallos técnicos de entrega y resolución:
+
+- intento no aceptado;
+- timeout o resultado desconocido;
+- proveedor indisponible;
+- endpoint inválido;
+- canal no disponible;
+- destinatario no resoluble;
+- reintento y backoff;
+- agotamiento de intentos;
+- contingencia de canal;
+- reconciliación de entrega incierta.
+
+`NOTIFY-ARC-008` no recibe autorización para redefinir quién debe leer, qué constituye acuse, qué efecto empresarial confirma atención ni a quién escala una falta de atención empresarial.
+
+La aprobación de `NOTIFY-ARC-007` no inicia ni desarrolla `NOTIFY-ARC-008`.
+
+---
+
+#### 16. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias`
+
+TAREA ACTUAL APROBADA
+`NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento`
+
+SIGUIENTE TAREA RESERVADA
+`NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia`
+
+
 ### [ ] NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia
 ### [ ] NOTIFY-ARC-009 — Definir privacidad y contenido sensible
 ### [ ] NOTIFY-ARC-010 — Definir métricas y auditoría de entrega

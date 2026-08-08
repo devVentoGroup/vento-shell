@@ -88,7 +88,7 @@ Dominios iniciales:
 | Filas con catorce columnas        | **7004 de 7004** |
 | Identificadores duplicados        |            **0** |
 | Relaciones `TREQ-*` no resolubles |            **0** |
-| Última tarea incorporada          |    `INT-PROD-005` |
+| Última tarea incorporada          |    `NOTIFY-ARC-007` |
 | Fecha de normalización            |     `2026-08-08` |
 
 Distribución vigente:

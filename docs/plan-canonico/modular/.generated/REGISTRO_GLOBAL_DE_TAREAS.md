@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **614** |
+| Aprobadas | **615** |
 | En propuesta | **0** |
-| No iniciadas | **980** |
+| No iniciadas | **979** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **38.52% (614/1594)** |
+| Porcentaje de completamiento | **38.58% (615/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NOTIFY-ARC-006` — Definir preferencias sin ocultar alertas obligatorias | ✅ APROBADA |
-| Tarea actual | `NOTIFY-ARC-007` — Definir confirmación, lectura y escalamiento | ⬜ NO INICIADA |
-| Siguiente reservada | `NOTIFY-ARC-008` — Definir reintentos, fallos y contingencia | ⬜ NO INICIADA |
+| Última aprobada | `NOTIFY-ARC-007` — Definir confirmación, lectura y escalamiento | ✅ APROBADA |
+| Tarea actual | `NOTIFY-ARC-008` — Definir reintentos, fallos y contingencia | ⬜ NO INICIADA |
+| Siguiente reservada | `NOTIFY-ARC-009` — Definir privacidad y contenido sensible | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -514,7 +514,7 @@
 | ✅ APROBADA | `NOTIFY-ARC-004` | Definir prioridad, vigencia y deduplicación | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ✅ APROBADA | `NOTIFY-ARC-005` | Definir canales internos, correo, push o mensajería externa | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ✅ APROBADA | `NOTIFY-ARC-006` | Definir preferencias sin ocultar alertas obligatorias | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
-| ⬜ NO INICIADA | `NOTIFY-ARC-007` | Definir confirmación, lectura y escalamiento | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
+| ✅ APROBADA | `NOTIFY-ARC-007` | Definir confirmación, lectura y escalamiento | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-008` | Definir reintentos, fallos y contingencia | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-009` | Definir privacidad y contenido sensible | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-010` | Definir métricas y auditoría de entrega | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
