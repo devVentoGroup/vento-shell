@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **621** |
+| Aprobadas | **623** |
 | En propuesta | **0** |
-| No iniciadas | **973** |
+| No iniciadas | **971** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **38.96% (621/1594)** |
+| Porcentaje de completamiento | **39.08% (623/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TI-DOM-003` — Definir ciclo de vida de computadores, celulares, tabletas y endpoints | ✅ APROBADA |
-| Tarea actual | `TI-DOM-004` — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes | ⬜ NO INICIADA |
-| Siguiente reservada | `TI-DOM-005` — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión | ⬜ NO INICIADA |
+| Última aprobada | `TI-DOM-005` — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión | ✅ APROBADA |
+| Tarea actual | `TI-DOM-006` — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad | ⬜ NO INICIADA |
+| Siguiente reservada | `TI-DOM-007` — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1510,8 +1510,8 @@
 | ✅ APROBADA | `TI-DOM-001` | Definir modelo operativo de tecnología, catálogo de servicios, propietarios y niveles de atención | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-002` | Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-003` | Definir ciclo de vida de computadores, celulares, tabletas y endpoints | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
-| ⬜ NO INICIADA | `TI-DOM-004` | Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
-| ⬜ NO INICIADA | `TI-DOM-005` | Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
+| ✅ APROBADA | `TI-DOM-004` | Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
+| ✅ APROBADA | `TI-DOM-005` | Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-006` | Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-007` | Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-008` | Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |

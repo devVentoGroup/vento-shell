@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **621** |
+| Tareas aprobadas | **623** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **973** |
+| Tareas no iniciadas | **971** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **38.96% (621/1594)** |
+| Porcentaje de completamiento | **39.08% (623/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints** |
-| Tarea actual | **TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes** |
+| Última tarea aprobada | **TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión** |
+| Tarea actual | **TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión** |
+| Siguiente tarea | **TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 45 de 157 aprobadas; TI-DOM-004 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 47 de 157 aprobadas; TI-DOM-006 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TI-DOM-003` — Definir ciclo de vida de computadores, celulares, tabletas y endpoints |
-| Tarea actual | `TI-DOM-004` — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes — **NO INICIADA** |
-| Siguiente tarea | `TI-DOM-005` — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión |
+| Última aprobada | `TI-DOM-005` — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión |
+| Tarea actual | `TI-DOM-006` — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad — **NO INICIADA** |
+| Siguiente tarea | `TI-DOM-007` — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 45 DE 157 APROBADAS — ACTUAL TI-DOM-004** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 47 DE 157 APROBADAS — ACTUAL TI-DOM-006** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints
-        ↓
-TAREA ACTUAL
-TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes
-        ↓
-SIGUIENTE TAREA RESERVADA
 TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión
         ↓
+TAREA ACTUAL
+TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad
+        ↓
+SIGUIENTE TAREA RESERVADA
+TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 45 de 157 tareas aprobadas
+CARRIL NEXO — 47 de 157 tareas aprobadas
 ```

@@ -2085,8 +2085,1800 @@ SIGUIENTE TAREA RESERVADA
 `TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes`
 
 
-### [ ] TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes
-### [ ] TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión
+### ✅ TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints` — APROBADA
+**Tarea siguiente:** `TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de arquitectura, inventario, topología, segmentación, direccionamiento, observabilidad requerida y contingencia de redes
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica redes, enlaces, routers, switches, puntos de acceso, segmentos, VLAN, SSID, DHCP, DNS, direccionamiento, reservas, firewalls, cableado, configuraciones, proveedores, código, tablas, migraciones, datos ni Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el modelo canónico mediante el cual Vento administrará redes y conectividad sin convertir una dirección IP, un SSID, una MAC, un nombre de equipo, una marca o una configuración observada en identidad empresarial.
+
+La red deberá poder responder de forma trazable:
+
+- qué recurso de red existe;
+- cuál es su identidad estable;
+- en qué sede o alcance participa;
+- qué activo físico lo materializa cuando corresponda;
+- qué servicio tecnológico depende de él;
+- cómo se conecta con otros recursos;
+- qué segmento y límite de confianza representa;
+- qué política de direccionamiento utiliza;
+- qué configuración deseada y observada posee;
+- qué señales permiten conocer su estado;
+- qué alternativa existe ante una falla;
+- qué cambio produjo una desviación;
+- qué evidencia permite declarar una relación, recuperación o retiro.
+
+Regla raíz:
+
+```text
+RECURSO DE RED
+≠ ACTIVO FÍSICO
+≠ ENDPOINT
+≠ DIRECCIÓN IP
+≠ DIRECCIÓN MAC
+≠ SSID
+≠ PROVEEDOR
+≠ SERVICIO TECNOLÓGICO
+```
+
+La tarea define el contrato completo. No afirma que la infraestructura física actual ya cumpla el diseño.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban seis artefactos documentales:
+
+1. `TI-NETWORK-ARCHITECTURE-CONTRACT-001`;
+2. `TI-NETWORK-RESOURCE-INVENTORY-001`;
+3. `TI-NETWORK-SEGMENTATION-MATRIX-001`;
+4. `TI-NETWORK-ADDRESSING-CONTRACT-001`;
+5. `TI-NETWORK-MONITORING-HANDOFF-001`;
+6. `TI-NETWORK-CONTINGENCY-MATRIX-001`.
+
+Cobertura materializada:
+
+| Elemento                                    |     Cantidad |
+| ------------------------------------------- | -----------: |
+| Subtipos canónicos de `NETWORK_RESOURCE`    |        **7** |
+| Capas arquitectónicas                       |        **6** |
+| Relaciones internas de topología            |        **6** |
+| Finalidades de segmentación                 |        **6** |
+| Pares de finalidades distintos clasificados | **15 de 15** |
+| Modos de asignación de dirección            |        **4** |
+| Perfiles de señales por subtipo             |   **7 de 7** |
+| Modos de falla de red                       |        **8** |
+| Estrategias de contingencia permitidas      |        **5** |
+| Instancias AS-IS declaradas `VALIDADO`      |        **0** |
+| Cambios físicos                             |        **0** |
+| Cambios de requisitos de prueba             |        **0** |
+
+---
+
+#### 3. Autoridades y decisiones heredadas
+
+Se conservan sin modificación:
+
+- `TI-SERVICE-003 — Redes y conectividad` como familia de servicio tecnológico;
+- la clase `NETWORK_RESOURCE` de `TI-DOM-002`;
+- `ENDPOINT_CONNECTS_VIA_NETWORK`;
+- `NETWORK_RESOURCE_RUNS_ON_ASSET`;
+- `PRINTER_CONNECTS_VIA_NETWORK`;
+- `SERVICE_DEPENDS_ON_NETWORK`;
+- la identidad y ciclo de vida del activo físico bajo NEXO;
+- la identidad y ciclo del endpoint bajo `TI-DOM-003`;
+- el dispositivo compartido bajo `AUTH-DEV-*`;
+- la identidad de impresora y el routing de trabajos bajo PRINT-ARC;
+- la propiedad de aplicaciones, ambientes, proveedores y dependencias bajo `TI-DOM-006`;
+- el gobierno de incidentes bajo `TI-DOM-007`;
+- el gobierno de cambios bajo `TI-DOM-009`;
+- la semántica detallada de métricas, logs, alertas y SLI bajo `TI-DOM-010`;
+- respaldo, restauración y recuperación técnica bajo `TI-DOM-011`;
+- contratos, costos y renovaciones bajo `TI-DOM-012`;
+- privilegios y soporte técnico elevado bajo `TI-AUTH-*`;
+- los perfiles no funcionales de red, hardware, observabilidad y operación degradada ya aprobados.
+
+La arquitectura de red no concede permisos empresariales ni sustituye autorización, RLS, contexto de actor o límites del dispositivo.
+
+---
+
+#### 4. Subtipos canónicos de `NETWORK_RESOURCE`
+
+Se aprueban exactamente siete subtipos.
+
+| Subtipo               | Semántica                                                                                      | Naturaleza                                            | Relación física                                                                                                         |
+| --------------------- | ---------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------- |
+| `NETWORK_LINK`        | enlace externo, intersede o de transporte cuya disponibilidad afecta conectividad              | lógica y contractual con posibles componentes físicos | no se infiere un activo; se referencia evidencia del enlace y, si existe equipo físico propio, sus relaciones separadas |
+| `ROUTER`              | nodo que ejecuta routing y, cuando corresponda, funciones de borde                             | física/técnica                                        | deberá reconciliarse con un activo antes de quedar físicamente validado                                                 |
+| `SWITCH`              | nodo de conmutación que transporta conectividad entre interfaces y segmentos                   | física/técnica                                        | deberá reconciliarse con un activo antes de quedar físicamente validado                                                 |
+| `ACCESS_POINT`        | nodo de acceso inalámbrico que presenta uno o más SSID                                         | física/técnica                                        | deberá reconciliarse con un activo antes de quedar físicamente validado                                                 |
+| `SEGMENT`             | límite lógico de conectividad; puede materializarse mediante VLAN u otro mecanismo equivalente | lógica                                                | no exige activo propio                                                                                                  |
+| `SSID`                | identidad lógica de una superficie inalámbrica y su finalidad                                  | lógica                                                | se relaciona con puntos de acceso; no es el punto de acceso                                                             |
+| `ADDRESS_RESERVATION` | asignación estable y gobernada dentro de un plan de direccionamiento                           | lógica                                                | referencia un objetivo; no se convierte en identidad del objetivo                                                       |
+
+No se crea un subtipo genérico para almacenar cualquier elemento no clasificado.
+
+---
+
+#### 5. Identidad canónica
+
+Toda instancia futura de red conservará:
+
+```text
+network_resource_id
+network_resource_type
+canonical_label
+site_reference
+area_reference_when_applicable
+asset_reference_when_applicable
+service_reference
+lifecycle_reference
+configuration_baseline_id
+configuration_version
+observed_configuration_version
+segmentation_purpose_when_applicable
+addressing_profile_reference
+monitoring_profile_reference
+contingency_profile_reference
+evidence_references
+last_observed_at
+last_reconciled_at
+reconciliation_state
+```
+
+Reglas:
+
+1. `network_resource_id` es la raíz estable de identidad;
+2. IP, MAC, serial, SSID visible, hostname y nombre del proveedor son atributos o evidencias, no la identidad;
+3. el mismo equipo físico no se duplica para representar cada interfaz;
+4. un segmento lógico no se convierte en activo;
+5. un SSID no se convierte en punto de acceso;
+6. una reserva no se convierte en endpoint o impresora;
+7. un cambio de dirección no crea por sí mismo un recurso nuevo;
+8. un reemplazo físico conserva historia y utiliza las reglas del activo correspondiente;
+9. toda relación debe conservar vigencia, evidencia y reconciliación;
+10. secretos de administración, PSK, certificados privados, tokens y credenciales completas no forman parte del inventario.
+
+---
+
+#### 6. `TI-NETWORK-ARCHITECTURE-CONTRACT-001`
+
+La arquitectura se organiza en seis capas conceptuales.
+
+| Capa                           | Responsabilidad                                                      | Objetos principales                  |
+| ------------------------------ | -------------------------------------------------------------------- | ------------------------------------ |
+| `EXTERNAL_CONNECTIVITY`        | entrada o salida hacia proveedor, Internet o transporte intersede    | `NETWORK_LINK`                       |
+| `EDGE_AND_ROUTING`             | terminación de enlaces, routing y límites técnicos de borde          | `ROUTER`                             |
+| `DISTRIBUTION_AND_ACCESS`      | distribución cableada y acceso físico de red                         | `SWITCH`                             |
+| `WIRELESS_ACCESS`              | acceso radio y emisión de superficies inalámbricas                   | `ACCESS_POINT`, `SSID`               |
+| `LOGICAL_SEGMENTATION`         | aislamiento, finalidad, gateway lógico y dominio de direccionamiento | `SEGMENT`                            |
+| `CONSUMPTION_AND_DEPENDENCIES` | consumo por endpoints, impresoras y servicios                        | relaciones heredadas de `TI-DOM-002` |
+
+Una implementación puede combinar funciones en un mismo equipo físico, pero las responsabilidades lógicas permanecen separadas.
+
+---
+
+#### 7. Relaciones internas de topología
+
+Se aprueban seis relaciones internas.
+
+| ID               | Relación                         | Origen → destino                             | Regla                                                                                  |
+| ---------------- | -------------------------------- | -------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `TI-NET-REL-001` | `LINK_TERMINATES_ON_ROUTER`      | `NETWORK_LINK → ROUTER`                      | registra la terminación lógica o técnica del enlace; no presupone propiedad del equipo |
+| `TI-NET-REL-002` | `NETWORK_UPLINK`                 | `ROUTER/SWITCH/ACCESS_POINT → ROUTER/SWITCH` | expresa un uplink físico o lógico comprobado; dirección inversa es una vista           |
+| `TI-NET-REL-003` | `SEGMENT_PRESENT_ON_NODE`        | `SEGMENT → ROUTER/SWITCH`                    | declara dónde existe o se transporta el segmento; no se deriva de texto aislado        |
+| `TI-NET-REL-004` | `SSID_BROADCAST_BY_AP`           | `SSID → ACCESS_POINT`                        | un SSID puede ser emitido por varios AP sin duplicar su identidad lógica               |
+| `TI-NET-REL-005` | `SSID_MAPS_TO_SEGMENT`           | `SSID → SEGMENT`                             | cada proyección activa del SSID debe resolver el segmento esperado                     |
+| `TI-NET-REL-006` | `RESERVATION_BELONGS_TO_SEGMENT` | `ADDRESS_RESERVATION → SEGMENT`              | la reserva pertenece a un dominio de direccionamiento explícito                        |
+
+Una relación solo queda `VALIDADO` cuando existe evidencia suficiente de ambos extremos y del vínculo.
+
+---
+
+#### 8. Reglas de topología
+
+1. la topología es una colección versionada de nodos y relaciones, no un diagrama sin fuente;
+2. una conexión observada no crea identidad por sí sola;
+3. la ausencia de una arista esperada produce drift, no una relación inventada;
+4. una interfaz desconectada no elimina historia;
+5. un uplink redundante se representa como relación adicional, no como comentario;
+6. una conexión física y un camino lógico pueden diferir y deben poder diagnosticarse por separado;
+7. el mismo segmento puede estar presente en varios nodos;
+8. el mismo SSID puede emitirse desde varios AP;
+9. un SSID no podrá mapearse silenciosamente a un segmento distinto;
+10. una dirección repetida o una MAC observada en dos lugares es conflicto a investigar, no mecanismo de fusión;
+11. los cambios de topología deberán quedar correlacionados con el gobierno de cambio;
+12. la topología histórica se conserva para diagnóstico y reconstrucción de incidentes.
+
+---
+
+#### 9. `TI-NETWORK-RESOURCE-INVENTORY-001`
+
+El inventario no se limita a equipos físicos. Debe contener cada instancia de los siete subtipos cuando exista evidencia suficiente.
+
+Cada fila deberá conservar como mínimo:
+
+| Dimensión        | Contenido requerido                                   |
+| ---------------- | ----------------------------------------------------- |
+| identidad        | `network_resource_id`, subtipo y etiqueta humana      |
+| alcance          | sede, área o alcance técnico aplicable                |
+| fuente           | origen que demuestra la existencia                    |
+| activo           | referencia NEXO cuando sea un elemento físico         |
+| proveedor        | referencia cuando corresponda, sin duplicar contrato  |
+| topología        | relaciones directas vigentes                          |
+| finalidad        | uso técnico o propósito de segmentación               |
+| direccionamiento | perfil y referencias, nunca secreto                   |
+| configuración    | baseline, versión deseada y observada                 |
+| capacidad        | perfil de capacidad o límites conocidos               |
+| salud            | referencia a señales disponibles                      |
+| contingencia     | perfil de alternativa aplicable                       |
+| cambio           | última decisión o cambio correlacionado cuando exista |
+| evidencia        | evidencia técnica suficiente y fecha                  |
+| reconciliación   | estado y última reconciliación                        |
+
+No se permite usar un campo libre de metadatos como sustituto indefinido de estas dimensiones.
+
+---
+
+#### 10. Línea base AS-IS del inventario
+
+Las fuentes técnicas verificables actuales no permiten declarar una instancia física o lógica de `NETWORK_RESOURCE` como `VALIDADO`.
+
+La línea base queda:
+
+| Subtipo               | Instancias `VALIDADO` | Estado AS-IS             | Insumo faltante para validar una instancia                                              |
+| --------------------- | --------------------: | ------------------------ | --------------------------------------------------------------------------------------- |
+| `NETWORK_LINK`        |                 **0** | `PENDIENTE_DE_EVIDENCIA` | identidad del enlace, sede/alcance, proveedor o fuente técnica, terminación y evidencia |
+| `ROUTER`              |                 **0** | `PENDIENTE_DE_EVIDENCIA` | activo reconciliado, identidad técnica, sede, interfaces, configuración y evidencia     |
+| `SWITCH`              |                 **0** | `PENDIENTE_DE_EVIDENCIA` | activo reconciliado, identidad técnica, uplinks, segmentos y evidencia                  |
+| `ACCESS_POINT`        |                 **0** | `PENDIENTE_DE_EVIDENCIA` | activo reconciliado, identidad técnica, uplink, SSID emitidos y evidencia               |
+| `SEGMENT`             |                 **0** | `PENDIENTE_DE_EVIDENCIA` | identidad lógica, finalidad, dominio de direccionamiento y presencia demostrada         |
+| `SSID`                |                 **0** | `PENDIENTE_DE_EVIDENCIA` | identidad lógica, finalidad, AP emisores, segmento y política de acceso                 |
+| `ADDRESS_RESERVATION` |                 **0** | `PENDIENTE_DE_EVIDENCIA` | segmento, objetivo, valor gobernado, origen y vigencia                                  |
+
+Reconciliación:
+
+```text
+7 subtipos esperados
+7 subtipos clasificados
+0 instancias canónicas validadas
+0 instancias creadas por inferencia
+0 subtipos sin decisión
+```
+
+La ausencia de instancias validadas no afirma que no exista infraestructura física en las sedes. Afirma que las fuentes actuales no suministran identidad, topología y evidencia suficientes para registrarla canónicamente sin inventar datos.
+
+---
+
+#### 11. Evidencia AS-IS conservada
+
+El diagnóstico actual conserva estas conclusiones:
+
+- existe `asset_items` como fuente física general, pero no demuestra por sí sola qué activos son recursos de red;
+- no se detecta una estructura pública transversal dedicada a enlaces, routers, switches, puntos de acceso, segmentos, SSID o reservas;
+- no se detectan columnas públicas canónicas dedicadas a VLAN, SSID, DHCP, IP, MAC, gateway, subnet o CIDR;
+- los registros de activos y perfiles de activo visibles no permiten declarar recursos de red por coincidencia de nombre, marca o modelo;
+- el grafo transversal de red continúa sin persistencia física canónica detectada;
+- `TI-DOM-002` ya especificó la clase y las relaciones externas, pero no la topología real;
+- la materialización física del inventario requiere evidencia de campo y un paquete de implementación autorizado.
+
+No se hará backfill desde texto libre, notas, seriales, nombres comerciales o descripciones.
+
+---
+
+#### 12. Estados de reconciliación
+
+Se consumen los estados canónicos vigentes:
+
+| Estado                   | Aplicación en red                                                           |
+| ------------------------ | --------------------------------------------------------------------------- |
+| `ESPECIFICADO`           | el contrato, subtipo, relación o política está definido documentalmente     |
+| `IMPLEMENTADO`           | existe una estructura o configuración que materializa parte del contrato    |
+| `VALIDADO`               | identidad, relación o configuración fue comprobada con evidencia suficiente |
+| `BLOQUEADO`              | conflicto, duplicidad o falta de prerrequisito impide usar el dato          |
+| `PENDIENTE_DE_EVIDENCIA` | existe una posibilidad o referencia incompleta, pero no prueba suficiente   |
+| `NO_APLICA`              | el dato o relación no corresponde al subtipo                                |
+| `FUERA_DE_ALCANCE`       | la decisión pertenece expresamente a otra tarea                             |
+
+Un recurso no pasa a `VALIDADO` por antigüedad, conectividad aparente o ausencia de incidentes.
+
+---
+
+#### 13. Finalidades canónicas de segmentación
+
+Se aprueban exactamente seis finalidades heredadas de la decisión empresarial de redes.
+
+| Finalidad        | Uso                                                                                                |
+| ---------------- | -------------------------------------------------------------------------------------------------- |
+| `GUEST`          | conectividad de invitados o actores no administrados                                               |
+| `ADMINISTRATION` | estaciones y endpoints administrativos autorizados                                                 |
+| `OPERATIONS`     | dispositivos que ejecutan procesos operativos de Vento                                             |
+| `IOT`            | dispositivos conectados de propósito acotado que no deben heredar confianza de endpoints generales |
+| `CAMERAS`        | videovigilancia y componentes relacionados cuando existan                                          |
+| `PRINTING`       | impresoras, puentes o componentes cuya finalidad principal sea impresión                           |
+
+Una finalidad es una política lógica. No presupone que hoy exista una VLAN física para ella.
+
+---
+
+#### 14. `TI-NETWORK-SEGMENTATION-MATRIX-001`
+
+Todos los pares distintos quedan clasificados.
+
+|  N.º | Finalidad A      | Finalidad B      | Decisión base         |
+| ---: | ---------------- | ---------------- | --------------------- |
+|    1 | `GUEST`          | `ADMINISTRATION` | `SEPARATE_BY_DEFAULT` |
+|    2 | `GUEST`          | `OPERATIONS`     | `SEPARATE_BY_DEFAULT` |
+|    3 | `GUEST`          | `IOT`            | `SEPARATE_BY_DEFAULT` |
+|    4 | `GUEST`          | `CAMERAS`        | `SEPARATE_BY_DEFAULT` |
+|    5 | `GUEST`          | `PRINTING`       | `SEPARATE_BY_DEFAULT` |
+|    6 | `ADMINISTRATION` | `OPERATIONS`     | `SEPARATE_BY_DEFAULT` |
+|    7 | `ADMINISTRATION` | `IOT`            | `SEPARATE_BY_DEFAULT` |
+|    8 | `ADMINISTRATION` | `CAMERAS`        | `SEPARATE_BY_DEFAULT` |
+|    9 | `ADMINISTRATION` | `PRINTING`       | `SEPARATE_BY_DEFAULT` |
+|   10 | `OPERATIONS`     | `IOT`            | `SEPARATE_BY_DEFAULT` |
+|   11 | `OPERATIONS`     | `CAMERAS`        | `SEPARATE_BY_DEFAULT` |
+|   12 | `OPERATIONS`     | `PRINTING`       | `SEPARATE_BY_DEFAULT` |
+|   13 | `IOT`            | `CAMERAS`        | `SEPARATE_BY_DEFAULT` |
+|   14 | `IOT`            | `PRINTING`       | `SEPARATE_BY_DEFAULT` |
+|   15 | `CAMERAS`        | `PRINTING`       | `SEPARATE_BY_DEFAULT` |
+
+`SEPARATE_BY_DEFAULT` significa que la convivencia o comunicación transversal no se presume.
+
+Una excepción deberá declarar:
+
+```text
+exception_id
+source_purpose
+destination_purpose
+required_direction
+required_service_or_protocol
+business_or_technical_reason
+risk
+owner
+authorizer
+effective_from
+expires_or_review_at
+evidence
+change_reference
+status
+```
+
+La excepción habilita únicamente el flujo autorizado; no fusiona los segmentos.
+
+---
+
+#### 15. Reglas de segmentación
+
+1. las seis finalidades deben permanecer distinguibles incluso si una sede usa menos segmentos físicos;
+2. convivir en el mismo segmento requiere excepción explícita y evidencia;
+3. un SSID no define por sí solo el límite de confianza;
+4. un cambio de SSID no cambia automáticamente el segmento;
+5. una VLAN no concede autorización empresarial;
+6. el acceso a interfaces de administración de red debe limitarse a principales técnicos autorizados;
+7. `GUEST` no se utiliza como superficie de administración de infraestructura;
+8. IoT, cámaras e impresión no heredan acceso general por compartir sede;
+9. todo flujo transversal debe tener origen, destino, dirección, finalidad y mecanismo controlado;
+10. la ausencia de una regla explícita no equivale a permiso;
+11. un endpoint autorizado para una aplicación no queda autorizado para administrar la red;
+12. la segmentación debe conservarse durante contingencia salvo decisión controlada que documente el riesgo.
+
+---
+
+#### 16. SSID y acceso inalámbrico
+
+Un `SSID` conserva identidad separada de:
+
+- nombre visible;
+- punto de acceso;
+- segmento;
+- credencial;
+- política de actor;
+- sede;
+- proveedor.
+
+Reglas:
+
+1. varios AP pueden emitir el mismo SSID lógico;
+2. cada proyección activa debe resolver su segmento esperado;
+3. cambiar el nombre visible no autoriza cambiar finalidad;
+4. un SSID de invitados no se reutiliza silenciosamente para operación interna;
+5. credenciales inalámbricas no se almacenan en el inventario;
+6. la cobertura, roaming y capacidad se evalúan como propiedades técnicas, no como identidad;
+7. una red visible no se declara disponible por el solo hecho de ser anunciada;
+8. la autenticación de red no sustituye la autorización de Vento OS.
+
+---
+
+#### 17. `TI-NETWORK-ADDRESSING-CONTRACT-001`
+
+Se aprueban cuatro modos de asignación.
+
+| Modo                | Uso                                                                                                 |
+| ------------------- | --------------------------------------------------------------------------------------------------- |
+| `DYNAMIC_DHCP`      | asignación dinámica para clientes que no necesitan locator estable                                  |
+| `DHCP_RESERVATION`  | asignación estable administrada desde el servicio de direccionamiento                               |
+| `CONTROLLED_STATIC` | dirección fija configurada deliberadamente cuando reserva no sea viable o la tecnología lo requiera |
+| `PROVIDER_ASSIGNED` | dirección o prefijo suministrado por un proveedor o servicio externo                                |
+
+No se aprueba ningún rango, prefijo, gateway, DNS, VLAN ID o dirección concreta en esta tarea.
+
+---
+
+#### 18. Reglas de direccionamiento
+
+1. cada `SEGMENT` deberá tener un dominio de direccionamiento explícito;
+2. dos segmentos vigentes dentro del mismo ámbito de routing no utilizarán rangos solapados sin diseño expresamente aprobado;
+3. endpoints ordinarios usarán asignación dinámica salvo necesidad estable documentada;
+4. impresoras y otros destinos que requieran locator estable preferirán reserva administrada cuando la plataforma lo permita;
+5. infraestructura que requiera dirección fija utilizará reserva o estática controlada según capacidad técnica;
+6. enlaces externos consumirán direccionamiento de proveedor sin convertirlo en identidad del enlace;
+7. una reserva tendrá identidad, segmento, objetivo, vigencia, origen y evidencia;
+8. cambiar una dirección o reserva será un cambio tecnológico versionado;
+9. ninguna configuración empresarial deberá depender de una IP cruda cuando exista una referencia o nombre estable aprobado;
+10. nombres, resolución y time service deberán formar parte del perfil técnico de red;
+11. una dirección observada fuera de la asignación esperada produce drift;
+12. una colisión de dirección es `BLOQUEADO` hasta reconciliarse;
+13. IP o MAC no se utilizan para fusionar activos, endpoints o recursos;
+14. los valores sensibles de autenticación no forman parte del plan de direccionamiento;
+15. el retiro de una reserva conserva historia suficiente para reconstruir su vigencia anterior.
+
+---
+
+#### 19. Perfil de servicio de red
+
+Cada sede, zona o estación que requiera conectividad podrá referenciar un perfil que conserve:
+
+```text
+network_profile_id
+physical_medium
+logical_segment
+trust_boundary
+address_assignment
+name_resolution
+time_service
+internet_dependency
+internal_service_dependency
+bandwidth_and_latency_budget
+loss_and_jitter_tolerance
+roaming_requirement
+redundancy_or_fallback
+security_controls
+observability
+configuration_owner
+change_and_rollback
+```
+
+Los presupuestos o límites numéricos deberán provenir de decisiones no funcionales aprobadas o de una tarea propietaria posterior. No se inventan valores físicos por sede.
+
+---
+
+#### 20. Capacidad
+
+El inventario y el perfil deberán poder registrar, sin confundir capacidad con salud:
+
+- capacidad contratada o nominal del enlace cuando exista evidencia;
+- capacidad técnica de interfaces;
+- capacidad inalámbrica relevante;
+- consumo o utilización observados;
+- presión del pool de direccionamiento;
+- cantidad de clientes o asociaciones cuando sea una señal útil;
+- dependencia de energía o UPS;
+- dependencia de proveedor;
+- redundancia realmente instalada.
+
+Una capacidad declarada por ficha técnica no demuestra capacidad disponible en operación.
+
+---
+
+#### 21. Configuración deseada, observada y reconciliación
+
+Se separan:
+
+```text
+CONFIGURACIÓN APROBADA
+≠
+CONFIGURACIÓN OBSERVADA
+≠
+ESTADO OPERATIVO
+```
+
+Toda configuración gobernada deberá conservar:
+
+- baseline o versión aprobada;
+- versión observada cuando pueda determinarse;
+- diferencias estructuradas;
+- fuente de observación;
+- momento de observación;
+- cambio correlacionado;
+- estado de reconciliación;
+- evidencia.
+
+No se normaliza una desviación modificando el baseline para que coincida con el estado encontrado.
+
+---
+
+#### 22. Cambios de red
+
+Se consideran cambios tecnológicos, como mínimo:
+
+- alta, sustitución o retiro de enlace;
+- cambio de router, switch o AP;
+- cambio de uplink;
+- creación, modificación o retiro de segmento;
+- creación, modificación o retiro de SSID;
+- cambio de mapeo SSID–segmento;
+- cambio de DHCP, reserva o estática;
+- cambio de gateway, DNS o time service;
+- cambio de firmware o configuración de infraestructura;
+- modificación de controles de acceso entre segmentos;
+- cambio de proveedor que altere conectividad o direccionamiento;
+- restauración de configuración después de una falla.
+
+Su autorización, ventana, prueba, rollback y revisión posterior pertenecen a `TI-DOM-009`.
+
+---
+
+#### 23. `TI-NETWORK-MONITORING-HANDOFF-001`
+
+`TI-DOM-004` define qué debe poder observarse por subtipo. `TI-DOM-010` define métricas, logs, SLI, alertas, umbrales, dashboards, retención y routing operativo.
+
+| Subtipo               | Señales mínimas que deberá poder exponer                                                                                                                                           |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NETWORK_LINK`        | disponibilidad observada, estado administrativo cuando exista, latencia, pérdida, jitter, utilización/capacidad, cambio de estado y evidencia del proveedor cuando esté disponible |
+| `ROUTER`              | alcanzabilidad, estado de interfaces, caminos esperados, capacidad relevante, versión/configuración y drift                                                                        |
+| `SWITCH`              | alcanzabilidad, uplinks, estado de interfaces relevantes, errores, utilización, capacidad y drift                                                                                  |
+| `ACCESS_POINT`        | alcanzabilidad, radios, SSID esperados, asociaciones, carga, fallas de acceso, calidad radio disponible y drift                                                                    |
+| `SEGMENT`             | alcanzabilidad del gateway esperado, disponibilidad de DHCP/DNS aplicables, presión de direccionamiento y pruebas de conectividad permitida                                        |
+| `SSID`                | emisión esperada, resultado de asociación/autenticación técnica, segmento resuelto, carga y cobertura observada                                                                    |
+| `ADDRESS_RESERVATION` | correspondencia objetivo–segmento–asignación, conflicto, divergencia y última reconciliación                                                                                       |
+
+No se definen aquí nombres físicos de métricas ni valores umbral.
+
+---
+
+#### 24. Principios de monitoreo
+
+1. conectado no equivale a saludable;
+2. una interfaz `up` no demuestra conectividad extremo a extremo;
+3. disponibilidad de Internet no demuestra disponibilidad de servicios internos;
+4. reachability de un equipo no demuestra que su configuración sea correcta;
+5. ausencia de telemetría se registra como ausencia de evidencia, no como salud;
+6. señales de red deben poder correlacionarse con servicio, sede, recurso y cambio;
+7. cardinalidad sensible o identificadores individuales no se convierten en etiquetas de métricas ordinarias;
+8. secretos, PSK, claves, tokens y configuraciones completas no se incorporan a telemetría;
+9. pruebas sintéticas deberán distinguirse de tráfico real;
+10. el monitoreo de red no sustituye el diagnóstico de endpoint, aplicación, impresora o proveedor.
+
+---
+
+#### 25. Modos de falla
+
+Se materializan ocho modos de falla.
+
+| ID             | Modo                                                                      | Alcance primario                    |
+| -------------- | ------------------------------------------------------------------------- | ----------------------------------- |
+| `NET-FAIL-001` | pérdida total de enlace externo                                           | `NETWORK_LINK`                      |
+| `NET-FAIL-002` | degradación de enlace: latencia, pérdida, jitter o capacidad insuficiente | `NETWORK_LINK`                      |
+| `NET-FAIL-003` | falla de routing o borde                                                  | `ROUTER`                            |
+| `NET-FAIL-004` | falla de switch, uplink o distribución                                    | `SWITCH`                            |
+| `NET-FAIL-005` | falla o degradación de acceso inalámbrico                                 | `ACCESS_POINT` / `SSID`             |
+| `NET-FAIL-006` | falla de segmentación, DHCP, DNS, gateway o direccionamiento              | `SEGMENT` / `ADDRESS_RESERVATION`   |
+| `NET-FAIL-007` | regresión o drift de configuración                                        | cualquier recurso configurable      |
+| `NET-FAIL-008` | pérdida de energía que inutiliza componentes de red                       | recursos físicos y sus dependencias |
+
+Una causa física puede producir varios modos. No se colapsan para ocultar alcance.
+
+---
+
+#### 26. Estrategias de contingencia permitidas
+
+Se aprueban cinco estrategias conceptuales.
+
+| Estrategia                      | Regla                                                                                                                        |
+| ------------------------------- | ---------------------------------------------------------------------------------------------------------------------------- |
+| `ALTERNATE_NETWORK_PATH`        | usar un enlace, nodo o camino alterno únicamente cuando esté inventariado, probado y autorizado                              |
+| `LOCAL_DEGRADED_OPERATION`      | continuar localmente solo cuando el proceso y la aplicación tengan contrato de operación degradada aprobado                  |
+| `SEGMENT_ISOLATION`             | aislar el segmento o componente afectado para evitar propagación y conservar servicios no afectados                          |
+| `CONTROLLED_MANUAL_CONTINGENCY` | ejecutar el procedimiento manual aprobado por el propietario del proceso cuando la tecnología no pueda sostener la operación |
+| `STOP_AND_RECOVER`              | detener el efecto empresarial cuando ninguna alternativa preserve seguridad, integridad o trazabilidad                       |
+
+La existencia de una estrategia en el catálogo no demuestra que esté disponible en una sede.
+
+---
+
+#### 27. `TI-NETWORK-CONTINGENCY-MATRIX-001`
+
+| Modo de falla  | Respuesta técnica inicial                                               | Estrategias aplicables                                                                                    | Condición de retorno                                                       |
+| -------------- | ----------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------- |
+| `NET-FAIL-001` | confirmar alcance, separar proveedor de red local y preservar evidencia | `ALTERNATE_NETWORK_PATH`, `LOCAL_DEGRADED_OPERATION`, `CONTROLLED_MANUAL_CONTINGENCY`, `STOP_AND_RECOVER` | enlace o camino aprobado restablecido y dependencias validadas             |
+| `NET-FAIL-002` | confirmar degradación y servicios afectados                             | `ALTERNATE_NETWORK_PATH`, `LOCAL_DEGRADED_OPERATION`, `CONTROLLED_MANUAL_CONTINGENCY`, `STOP_AND_RECOVER` | comportamiento dentro del perfil aprobado y servicios validados            |
+| `NET-FAIL-003` | aislar borde afectado y verificar configuración/versiones               | `ALTERNATE_NETWORK_PATH`, `SEGMENT_ISOLATION`, `STOP_AND_RECOVER`                                         | routing esperado comprobado y efectos dependientes validados               |
+| `NET-FAIL-004` | localizar uplink o dominio afectado y evitar cambios ad hoc             | `ALTERNATE_NETWORK_PATH`, `SEGMENT_ISOLATION`, `LOCAL_DEGRADED_OPERATION`, `STOP_AND_RECOVER`             | conectividad y segmentos esperados comprobados                             |
+| `NET-FAIL-005` | separar falla radio, AP, SSID, autenticación y segmento                 | `ALTERNATE_NETWORK_PATH`, `LOCAL_DEGRADED_OPERATION`, `STOP_AND_RECOVER`                                  | acceso inalámbrico y segmento esperado comprobados                         |
+| `NET-FAIL-006` | identificar servicio lógico afectado, conflicto o drift                 | `SEGMENT_ISOLATION`, `LOCAL_DEGRADED_OPERATION`, `CONTROLLED_MANUAL_CONTINGENCY`, `STOP_AND_RECOVER`      | direccionamiento, resolución y conectividad esperados reconciliados        |
+| `NET-FAIL-007` | correlacionar último cambio, contener y preparar reversión autorizada   | `SEGMENT_ISOLATION`, `ALTERNATE_NETWORK_PATH`, `STOP_AND_RECOVER`                                         | configuración aprobada restaurada o nueva versión aprobada y validada      |
+| `NET-FAIL-008` | determinar componentes sin energía y conservar seguridad                | `ALTERNATE_NETWORK_PATH`, `LOCAL_DEGRADED_OPERATION`, `CONTROLLED_MANUAL_CONTINGENCY`, `STOP_AND_RECOVER` | energía estable, equipos reiniciados controladamente y servicios validados |
+
+No se inventan enlaces redundantes, UPS, canales móviles o mecanismos alternos que no estén realmente instalados y probados.
+
+---
+
+#### 28. Ciclo de contingencia de red
+
+El ciclo conceptual será:
+
+```text
+DETECTAR
+→ CLASIFICAR ALCANCE
+→ CONTENER
+→ ACTIVAR ALTERNATIVA APROBADA CUANDO EXISTA
+→ RESTAURAR COMPONENTE O CONFIGURACIÓN
+→ VALIDAR RED
+→ VALIDAR SERVICIOS DEPENDIENTES
+→ RECONCILIAR TRABAJO PENDIENTE
+→ CERRAR CON EVIDENCIA
+```
+
+Reglas:
+
+1. restaurar conectividad no equivale a restaurar el servicio empresarial;
+2. el retorno se valida desde red y desde los consumidores afectados;
+3. cualquier efecto pendiente se reconcilia antes del cierre;
+4. una contingencia no autoriza saltarse segregación de funciones;
+5. una excepción de segmentación durante contingencia queda versionada y expira;
+6. el incidente y su comunicación pertenecen al modelo de `TI-DOM-007`;
+7. recuperación, backup y prueba de restore pertenecen a `TI-DOM-011`;
+8. el orden empresarial de continuidad permanece bajo el dominio de continuidad;
+9. no se declara failover exitoso si solo cambió la configuración sin evidencia de conectividad;
+10. el retorno al estado ordinario no elimina la evidencia del período degradado.
+
+---
+
+#### 29. Configuración recuperable
+
+Router, switch y punto de acceso deberán declarar si su configuración:
+
+- puede exportarse;
+- puede versionarse;
+- contiene secretos;
+- requiere sanitización;
+- depende de proveedor;
+- puede restaurarse;
+- necesita hardware o versión compatible;
+- tiene evidencia de una prueba de recuperación.
+
+`TI-DOM-004` exige que esa propiedad sea inventariable. `TI-DOM-011` gobierna respaldo, retención, restauración y ejercicios. `TI-DOM-009` gobierna cambios y reversión.
+
+Una captura de pantalla no sustituye un artefacto recuperable cuando la plataforma permita una exportación estructurada.
+
+---
+
+#### 30. Seguridad y privacidad
+
+1. el inventario no almacenará contraseñas, PSK, claves privadas, tokens, códigos de recuperación ni secretos de proveedor;
+2. interfaces de administración de infraestructura no se exponen a actores empresariales por pertenecer a una sede;
+3. acceso técnico requiere principal autorizado y trazabilidad;
+4. direcciones internas pueden ser información operativa restringida y su exposición debe ser proporcional;
+5. los diagramas de topología no se publican indiscriminadamente;
+6. logs y eventos no copian configuraciones completas si contienen material sensible;
+7. una red de invitados no obtiene acceso a recursos internos por conveniencia;
+8. dispositivos IoT o cámaras no se convierten en puente de confianza hacia aplicaciones empresariales;
+9. la segmentación limita conectividad, pero no sustituye autenticación ni autorización de aplicaciones;
+10. el soporte de proveedor se limita por finalidad, tiempo y alcance según las reglas de acceso privilegiado.
+
+---
+
+#### 31. Criterios para materializar el inventario físico
+
+Una instancia futura podrá pasar de `PENDIENTE_DE_EVIDENCIA` a `VALIDADO` únicamente cuando se resuelvan, según subtipo:
+
+- identidad estable;
+- sede o alcance;
+- activo físico cuando corresponda;
+- propietario técnico;
+- topología directa relevante;
+- segmento o finalidad;
+- direccionamiento;
+- configuración y versión;
+- capacidad relevante;
+- señales disponibles;
+- contingencia aplicable;
+- proveedor cuando corresponda;
+- evidencia;
+- última reconciliación.
+
+Para equipos físicos se exigirá reconciliación con NEXO antes de declarar la relación física validada.
+
+La materialización deberá comparar primero contra la línea base de esta tarea y registrar faltantes, duplicados, conflictos y evidencia; no crear identidades desde heurísticas.
+
+---
+
+#### 32. Handoffs y propietarios exactos
+
+| Decisión o ejecución                                                              | Propietario                                                                 | Condición de salida                                                                                         |
+| --------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------- |
+| activo físico, ubicación, custodia, mantenimiento y disposición de equipo de red  | NEXO                                                                        | activo reconciliado y evidencia física suficiente                                                           |
+| endpoint conectado a red                                                          | `TI-DOM-003` + relación aprobada en `TI-DOM-002`                            | endpoint canónico y relación técnica comprobada                                                             |
+| impresora conectada a red                                                         | `TI-DOM-005` + PRINT-ARC                                                    | identidad física y routing de impresión reconciliados                                                       |
+| aplicaciones, proveedores, dependencias y ambientes                               | `TI-DOM-006`                                                                | catálogo técnico detallado aprobado                                                                         |
+| incidente, impacto, prioridad, comunicación y cierre                              | `TI-DOM-007`                                                                | modelo de incidente aprobado                                                                                |
+| cambios de red, aprobación, ventana, rollback y revisión                          | `TI-DOM-009`                                                                | gobierno de cambio aprobado                                                                                 |
+| métricas, logs, SLI, alertas, dashboards y routing de alertas                     | `TI-DOM-010`                                                                | contrato de observabilidad aprobado                                                                         |
+| backup, restore, recuperación y ejercicios de configuración                       | `TI-DOM-011`                                                                | política de recuperación aprobada                                                                           |
+| contratos, renovaciones, garantías y costos de enlaces/proveedores                | `TI-DOM-012`                                                                | modelo contractual y económico aprobado                                                                     |
+| acceso privilegiado y soporte de proveedor                                        | `TI-AUTH-*`                                                                 | autorización tecnológica aprobada                                                                           |
+| materialización física del inventario, topología, segmentación y direccionamiento | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobada | paquete de implementación autorizado, evidencia física disponible, cambios versionados y pruebas aplicables |
+| continuidad empresarial y prioridad de recuperación de procesos                   | dominio de continuidad                                                      | análisis de impacto y decisiones de continuidad aprobadas                                                   |
+
+No queda una decisión sustantiva propia de `TI-DOM-004` sin propietario.
+
+---
+
+#### 33. Estado de materialización
+
+| Componente                                     | Estado                                                 |
+| ---------------------------------------------- | ------------------------------------------------------ |
+| taxonomía de recursos                          | `ESPECIFICADO`                                         |
+| arquitectura por capas                         | `ESPECIFICADO`                                         |
+| contrato de topología                          | `ESPECIFICADO`                                         |
+| matriz de segmentación                         | `ESPECIFICADO`                                         |
+| contrato de direccionamiento                   | `ESPECIFICADO`                                         |
+| requisitos de señales de red                   | `ESPECIFICADO`                                         |
+| matriz de contingencia                         | `ESPECIFICADO`                                         |
+| inventario físico canónico por instancia       | `PENDIENTE_DE_EVIDENCIA`                               |
+| topología real de sedes                        | `PENDIENTE_DE_EVIDENCIA`                               |
+| segmentos, SSID y direccionamiento productivos | `PENDIENTE_DE_EVIDENCIA`                               |
+| configuración de dispositivos de red           | `PENDIENTE_DE_EVIDENCIA`                               |
+| observabilidad física                          | `FUERA_DE_ALCANCE` hacia `TI-DOM-010` e implementación |
+| cambios productivos de red                     | `FUERA_DE_ALCANCE` hacia `TI-DOM-009` e implementación |
+| recuperación física de configuración           | `FUERA_DE_ALCANCE` hacia `TI-DOM-011` e implementación |
+
+La ausencia de evidencia física no reduce el alcance documental: arquitectura, inventario canónico, reglas, matrices y handoffs quedan completamente definidos.
+
+---
+
+#### 34. Invariantes
+
+1. una IP no es identidad;
+2. una MAC no es identidad;
+3. un SSID no es un AP;
+4. un segmento no es una sede;
+5. una VLAN no es autorización;
+6. un router físico y su activo NEXO no se fusionan;
+7. un enlace y su proveedor no se fusionan;
+8. una reserva y su objetivo no se fusionan;
+9. un cambio de dirección conserva historia;
+10. una relación topológica requiere evidencia;
+11. un equipo alcanzable no se presume saludable;
+12. una red visible no se presume operativa;
+13. ausencia de telemetría no equivale a salud;
+14. configuración deseada y observada permanecen separadas;
+15. los seis propósitos de segmentación quedan diferenciados;
+16. convivencia entre propósitos distintos requiere excepción;
+17. la contingencia no elimina límites de seguridad;
+18. no existe failover por mera intención;
+19. no se inventan enlaces, VLAN, SSID, direcciones, proveedores o capacidades;
+20. la recuperación requiere validación de servicios dependientes;
+21. cambios de red se gobiernan como cambios tecnológicos;
+22. secretos no forman parte del inventario;
+23. historia de topología y configuración no se sobrescribe destructivamente;
+24. ninguna decisión de esta tarea modifica infraestructura o Supabase.
+
+---
+
+#### 35. Criterios de aceptación
+
+- [x] se conserva la continuidad `TI-DOM-003 → TI-DOM-004 → TI-DOM-005`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] se definen exactamente siete subtipos de `NETWORK_RESOURCE`;
+- [x] identidad técnica permanece separada de IP, MAC, SSID, activo, proveedor y servicio;
+- [x] se definen seis capas arquitectónicas;
+- [x] se definen seis relaciones internas de topología;
+- [x] se define inventario canónico con campos, evidencia y reconciliación;
+- [x] los siete subtipos tienen decisión AS-IS explícita;
+- [x] se declaran cero instancias validadas sin convertir ausencia de evidencia en inexistencia física;
+- [x] se definen exactamente seis finalidades de segmentación;
+- [x] los quince pares distintos de finalidades tienen decisión explícita;
+- [x] convivencia transversal requiere excepción estructurada;
+- [x] se definen cuatro modos de asignación de dirección;
+- [x] no se inventan rangos, VLAN ID, SSID, IP, DNS, gateway, proveedor ni capacidad;
+- [x] se define relación entre SSID, AP y segmento;
+- [x] se separan configuración aprobada, observada y estado operativo;
+- [x] los siete subtipos reciben un perfil mínimo de señales;
+- [x] el detalle de observabilidad permanece en `TI-DOM-010`;
+- [x] se materializan ocho modos de falla;
+- [x] se materializan cinco estrategias de contingencia;
+- [x] los ocho modos de falla tienen respuesta y condición de retorno;
+- [x] recuperación técnica permanece separada de continuidad empresarial;
+- [x] cambios de red permanecen bajo `TI-DOM-009`;
+- [x] backup y restore permanecen bajo `TI-DOM-011`;
+- [x] activos físicos permanecen bajo NEXO;
+- [x] impresión permanece coordinada con `TI-DOM-005` y PRINT-ARC;
+- [x] no se crean tablas, migraciones, datos, configuraciones o cambios de infraestructura;
+- [x] no se modifica Supabase;
+- [x] no se crean ni modifican requisitos de prueba;
+- [x] `TI-DOM-005` permanece únicamente reservada.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el inventario y las relaciones físicas de tecnología, la separación de recursos de red, la versionación de enlaces, equipos, segmentos, SSID, direccionamiento y reservas, la detección de divergencias, la observabilidad de dependencias y la continuidad con failover controlado ya están protegidos por requisitos canónicos vigentes. Esta tarea materializa las decisiones documentales que esa cobertura debe consumir y no introduce una conducta ejecutable adicional ni modifica una condición de prueba existente.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 37. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión`
+
+
+### ✅ TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes` — APROBADA
+**Tarea siguiente:** `TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de gobierno físico, reconciliación de activos, dependencias, mantenimiento, consumibles, cambios y soporte de impresoras y periféricos frente al servicio transversal PRINT-ARC
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Artefactos producidos:** `TI-PRINT-PHYSICAL-GOVERNANCE-CONTRACT-001`; `TI-PRINT-ASSET-RECONCILIATION-001`; `TI-PRINT-PHYSICAL-STATE-MATRIX-001`; `TI-PRINT-BINDING-AND-DEPENDENCY-CONTRACT-001`; `TI-PRINT-MAINTENANCE-AND-CONSUMABLES-CONTRACT-001`; `TI-PRINT-CHANGE-SUPPORT-HANDOFF-001`
+**Cambios físicos autorizados:** ninguno; no compra, instala, conecta, reubica, repara, configura, sustituye ni retira impresoras o periféricos, no cambia IP, red, driver, firmware, USB, LAN, Wi-Fi, Bluetooth, colas, adaptadores, rutas ni consumibles, y no crea ni modifica código, tablas, migraciones, datos o Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir cómo Vento gobierna la dimensión física y de soporte de una impresora sin duplicar la autoridad del maestro de activos de NEXO ni absorber las responsabilidades del servicio transversal de impresión.
+
+La tarea debe permitir responder, para cada dispositivo de impresión:
+
+- qué identidad de servicio `PRN-*` representa el dispositivo dentro de PRINT-ARC;
+- qué activo físico NEXO lo materializa, cuando esa relación esté demostrada;
+- dónde está y bajo qué condición física se encuentra;
+- qué modelo, serie, garantía, mantenimiento y evidencia física posee;
+- qué canal o dependencia técnica utiliza sin convertir ese canal en identidad;
+- qué host, red, reserva, energía o accesorio necesita;
+- qué consumibles y medios son compatibles;
+- qué estado físico bloquea o permite avanzar a la evaluación de salud de PRINT-ARC;
+- qué cambio físico o técnico exige gobierno de cambio;
+- qué incidente, reparación, sustitución o retiro debe conservar historia;
+- qué evidencia permite declarar reconciliada la relación entre NEXO, TI y PRINT-ARC.
+
+Regla raíz:
+
+```text
+ACTIVO FÍSICO NEXO
+≠ PRINTER / PRN-* DE PRINT-ARC
+≠ CANAL
+≠ COLA
+≠ RUTA
+≠ TARGET
+≠ ADAPTADOR
+≠ PLANTILLA
+≠ TRABAJO
+≠ INTENTO
+≠ RECEIPT
+≠ BROWSERPRINT UID
+≠ IP
+≠ MAC
+```
+
+La disponibilidad física y la disponibilidad del servicio de impresión son dimensiones relacionadas, no equivalentes.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban seis artefactos documentales:
+
+1. `TI-PRINT-PHYSICAL-GOVERNANCE-CONTRACT-001`, que fija autoridades, identidades, relaciones, evidencia, ciclo físico e invariantes;
+2. `TI-PRINT-ASSET-RECONCILIATION-001`, que materializa una decisión para las nueve identidades `PRN-*` vigentes;
+3. `TI-PRINT-PHYSICAL-STATE-MATRIX-001`, que separa condición física, estado administrativo, health del servicio, canal, job y receipt;
+4. `TI-PRINT-BINDING-AND-DEPENDENCY-CONTRACT-001`, que define cómo se relacionan activo, impresora, endpoint, red, canal, adaptador y dependencias físicas;
+5. `TI-PRINT-MAINTENANCE-AND-CONSUMABLES-CONTRACT-001`, que gobierna mantenimiento, garantía, repuestos, medios y consumibles sin crear una fuente de inventario paralela;
+6. `TI-PRINT-CHANGE-SUPPORT-HANDOFF-001`, que materializa los handoffs de cambio, incidente, soporte, sustitución, despliegue y retiro.
+
+Cobertura materializada:
+
+| Elemento                                                                 |                           Cantidad |
+| ------------------------------------------------------------------------ | ---------------------------------: |
+| Identidades de impresora `PRN-*` consumidas de PRINT-ARC                 |                              **9** |
+| Identidades con decisión de reconciliación física                        |                         **9 de 9** |
+| Relaciones `PRINTER_REPRESENTS_ASSET` declaradas `VALIDADO`              |                              **0** |
+| Candidatos individuales NEXO detectados que requieren reconciliación     |                              **1** |
+| Evidencias grupales NEXO no resolubles por identidad individual          | **1 grupo / 3 unidades esperadas** |
+| Identidades `PRN-*` creadas por inferencia                               |                              **0** |
+| Activos NEXO creados por inferencia                                      |                              **0** |
+| Roles de dependencia física/técnica definidos                            |                              **7** |
+| Instancias adicionales de periférico declaradas `VALIDADO` sin evidencia |                              **0** |
+| Cambios físicos                                                          |                              **0** |
+| Cambios de requisitos de prueba                                          |                              **0** |
+
+---
+
+#### 3. Autoridades heredadas
+
+Se conservan sin modificación:
+
+- `TI-SERVICE-004 — Impresoras y periféricos`;
+- la clase `PRINTER` de `TI-DOM-002`;
+- `TI-REL-007 — PRINTER_REPRESENTS_ASSET`;
+- `TI-REL-008 — PRINTER_CONNECTS_VIA_NETWORK`;
+- `TI-REL-009 — PRINTER_ATTACHED_TO_ENDPOINT`;
+- `TI-REL-014 — SERVICE_DEPENDS_ON_PRINTER`;
+- NEXO como autoridad de activo físico, ubicación, custodia, condición, mantenimiento, garantía, movimiento y disposición;
+- `TI-DOM-003` como autoridad del ciclo de vida del endpoint que pueda actuar como host o puente;
+- `TI-DOM-004` como autoridad de topología, segmento, SSID, direccionamiento, reserva y cambio de red;
+- PRINT-ARC como autoridad de inventario de servicio de impresión, perfil imprimible, trabajo, cola, routing, target, fallback, health, heartbeat, idempotencia, reintentos, receipts, reimpresión, privacidad, operación offline, adaptadores, monitoreo y piloto;
+- `TI-DOM-007` como autoridad del incidente y restauración de servicio;
+- `TI-DOM-009` como autoridad de cambio tecnológico, aprobación, ventana, prueba, rollback y revisión posterior;
+- `TI-DOM-010` como autoridad de métricas, logs, SLI, alertas y observabilidad transversal;
+- `TI-DOM-011` como autoridad de respaldo y recuperación técnica cuando exista configuración recuperable;
+- `TI-DOM-012` como autoridad de contratos, garantías económicas, proveedores y costos tecnológicos;
+- `TI-AUTH-*` como autoridad de acceso privilegiado, soporte remoto y acciones técnicas sensibles.
+
+`TI-DOM-005` no crea una nueva fuente de verdad para ninguno de esos objetos. Define la reconciliación entre ellos.
+
+---
+
+#### 4. Frontera física frente a PRINT-ARC
+
+La separación obligatoria queda:
+
+```text
+NEXO
+→ identidad y ciclo del bien físico
+→ ubicación, custodia, condición
+→ mantenimiento, garantía y disposición
+
+TI-DOM-005
+→ contrato de reconciliación física
+→ dependencias técnicas del dispositivo
+→ reglas de soporte físico
+→ handoff entre NEXO, red, endpoint y PRINT-ARC
+
+PRINT-ARC
+→ identidad PRN-* dentro del servicio
+→ canal y adaptador de impresión
+→ trabajo, cola, route, target y fallback
+→ health y heartbeat
+→ intentos, receipts y resultado
+→ reimpresión, privacidad y piloto
+```
+
+La misma impresora puede estar físicamente `OPERATIVA` y, al mismo tiempo, permanecer no elegible para nuevos trabajos porque PRINT-ARC no dispone de heartbeat fresco, binding implementado o adaptador operativo.
+
+También puede ocurrir lo contrario: una señal técnica antigua o un dispositivo detectable no puede elevar un activo `ALMACENADO`, `REQUIERE_MANTENIMIENTO`, retirado o físicamente no reconciliado a disponibilidad operativa.
+
+---
+
+#### 5. Identidad canónica y no-identidades
+
+Una relación física validada debe poder resolver:
+
+```text
+printer_reference
+asset_reference
+printer_model_evidence
+serial_or_equivalent_evidence_when_applicable
+site_reference
+area_or_point_reference
+physical_condition_reference
+connection_binding_reference
+host_or_network_reference
+maintenance_reference
+warranty_reference
+consumable_profile_reference
+evidence_references
+effective_from
+effective_to
+reconciliation_state
+```
+
+Reglas:
+
+1. `printer_reference` conserva la identidad aprobada `PRN-*` de PRINT-ARC;
+2. `asset_reference` debe provenir de NEXO y no se inventa desde marca, ubicación, nombre o conexión;
+3. un `BrowserPrint.uid` es evidencia técnica de un dispositivo detectable, no un `asset_id`;
+4. IP y MAC son atributos de conectividad, no identidad física;
+5. un nombre de driver, cola o puerto no identifica el activo;
+6. una fila de producto o perfil genérico no sustituye una instancia individual de activo;
+7. un grupo de activos no se expande en identidades individuales por heurística;
+8. la coincidencia de marca y sede no basta para declarar `PRINTER_REPRESENTS_ASSET`;
+9. serial, placa, asset code y evidencia física pueden participar en la reconciliación, pero deben provenir de la fuente propietaria;
+10. una reparación no cambia identidad física si continúa siendo el mismo bien;
+11. una sustitución por otro bien físico requiere nueva identidad NEXO;
+12. la identidad `PRN-*` y su tratamiento ante sustitución se versionan o actualizan conforme a PRINT-ARC; TI no la reescribe silenciosamente.
+
+---
+
+#### 6. Universo canónico de impresoras consumido
+
+`TI-PRINT-ASSET-RECONCILIATION-001` consume exactamente las nueve referencias vigentes del servicio de impresión:
+
+|  N.º | `printer_reference`         | Sede / punto                          | Modelo aprobado en PRINT-ARC | Estado documental físico | Canal o condición vigente                   |
+| ---: | --------------------------- | ------------------------------------- | ---------------------------- | ------------------------ | ------------------------------------------- |
+|    1 | `PRN-VP-ZD230-01`           | Vento Producción / equipo almacenado  | Zebra ZD230                  | `ALMACENADA`             | `CH-ZEBRA-SIN-CONEXION`                     |
+|    2 | `PRN-VP-L5590-01`           | Vento Producción / fuera de operación | Epson EcoTank L5590          | `REQUIERE_MANTENIMIENTO` | `CH-EPSON-L5590-SIN-CONEXION`               |
+|    3 | `PRN-ADMIN-L4260-01`        | sede administrativa / oficina         | Epson EcoTank L4260          | `OPERATIVA`              | `CH-EPSON-L4260-USB`; `CH-EPSON-L4260-WIFI` |
+|    4 | `PRN-MOLKA-DIGE200I-01`     | Molka / caja                          | Digital POS DIG-E200I        | `OPERATIVA`              | `CH-DIGE200I-USB`                           |
+|    5 | `PRN-SAUDO-DIGE200I-01`     | Saudo / caja                          | Digital POS DIG-E200I        | `OPERATIVA`              | `CH-DIGE200I-USB`                           |
+|    6 | `PRN-VC-CAJA-DIGE200I-01`   | Vento Café / caja-mostrador           | Digital POS DIG-E200I        | `OPERATIVA`              | `CH-DIGE200I-USB`                           |
+|    7 | `PRN-VC-BARRA-DIGE200I-01`  | Vento Café / barra calientes          | Digital POS DIG-E200I        | `OPERATIVA`              | `CH-DIGE200I-LAN`                           |
+|    8 | `PRN-VC-BAR-DIGE200I-01`    | Vento Café / bar frías                | Digital POS DIG-E200I        | `OPERATIVA`              | `CH-DIGE200I-LAN`                           |
+|    9 | `PRN-VC-COCINA-DIGE200I-01` | Vento Café / cocina                   | Digital POS DIG-E200I        | `OPERATIVA`              | `CH-DIGE200I-LAN`                           |
+
+Reconciliación del universo:
+
+```text
+9 referencias esperadas
+9 referencias materializadas
+9 decisiones de reconciliación
+0 duplicadas
+0 omitidas
+0 añadidas por inferencia
+```
+
+---
+
+#### 7. Estado AS-IS verificable del maestro físico
+
+La lectura de solo consulta del estado técnico actual aporta cuatro hechos relevantes:
+
+1. existe una instancia individual `asset_items` con `asset_code = ACT-EQP-MULTIF-000932-MRF4E56U`, nombre `Multifuncional epson`, sede `VENTO_GROUP`, área `DIRECCION`, estado operativo, condición buena y ciclo activo;
+2. esa instancia individual no posee actualmente marca, modelo ni serial que permitan demostrar que sea `PRN-ADMIN-L4260-01`;
+3. existe un grupo `GRP-EQP-IMPRES-000989-MRXP1WP8` denominado `Impresora termica`, en `VENTO_CAFE / SALON`, con cantidad esperada 3, pero no identifica individualmente las cuatro referencias DIG-E200I de Vento Café;
+4. existen productos o perfiles genéricos `Impresora epson`, `Impresora termica` y `Multifuncional epson`, pero no constituyen por sí mismos una identidad física individual; no se encontraron registros de mantenimiento asociados a esos productos o al único candidato individual durante la lectura realizada.
+
+Conclusión:
+
+```text
+EVIDENCIA DE EXISTENCIA GENÉRICA
+≠
+RECONCILIACIÓN INDIVIDUAL PRN-* ↔ ACTIVO NEXO
+```
+
+El inventario físico actual es suficiente para identificar una brecha, no para fabricar los ocho vínculos faltantes ni confirmar el candidato administrativo.
+
+---
+
+#### 8. `TI-PRINT-ASSET-RECONCILIATION-001`
+
+| `printer_reference`         | Evidencia NEXO actual                                                                     | Estado de `TI-REL-007`   | Bloqueo exacto                                                                                | Propietario de salida                                                                       | Condición de salida                                                                                            |
+| --------------------------- | ----------------------------------------------------------------------------------------- | ------------------------ | --------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `PRN-VP-ZD230-01`           | no se localizó instancia individual modelada como Zebra ZD230                             | `PENDIENTE_DE_EVIDENCIA` | falta identidad NEXO individual, modelo/serie físicamente reconciliados y ubicación de activo | alcance físico aprobado del paquete que incorpore la Zebra; PRINT-ARC para binding y prueba | activo individual reconciliado, canal aprobado, health elegible y prueba física satisfactoria                  |
+| `PRN-VP-L5590-01`           | existe perfil genérico de impresora Epson sin instancia individual demostrable como L5590 | `PENDIENTE_DE_EVIDENCIA` | falta activo individual reconciliado y cierre verificable del mantenimiento                   | NEXO para activo/mantenimiento; PRINT-ARC para binding y prueba                             | identidad física individual, mantenimiento cerrado o sustitución autorizada y prueba A4 satisfactoria          |
+| `PRN-ADMIN-L4260-01`        | candidato individual `ACT-EQP-MULTIF-000932-MRF4E56U` en Vento Group / Dirección          | `PENDIENTE_DE_EVIDENCIA` | el candidato carece de modelo y serial; sede/área semejantes no prueban identidad             | NEXO para reconciliación física                                                             | modelo o evidencia física suficiente vincula inequívocamente el candidato con la L4260 y se conserva evidencia |
+| `PRN-MOLKA-DIGE200I-01`     | no se localizó instancia individual DIG-E200I de Molka                                    | `PENDIENTE_DE_EVIDENCIA` | falta activo individual, modelo/serie y vínculo con caja de Molka                             | NEXO para reconciliación física                                                             | activo individual identificado y vínculo físico probado                                                        |
+| `PRN-SAUDO-DIGE200I-01`     | no se localizó instancia individual DIG-E200I de Saudo                                    | `PENDIENTE_DE_EVIDENCIA` | falta activo individual, modelo/serie y vínculo con caja de Saudo                             | NEXO para reconciliación física                                                             | activo individual identificado y vínculo físico probado                                                        |
+| `PRN-VC-CAJA-DIGE200I-01`   | existe grupo de 3 impresoras térmicas en Vento Café / Salón, no asignable por identidad   | `PENDIENTE_DE_EVIDENCIA` | evidencia grupal no identifica esta unidad ni cubre las cuatro referencias Vento Café         | NEXO para individualización y ubicación                                                     | activo individual identificado y reconciliado con caja-mostrador                                               |
+| `PRN-VC-BARRA-DIGE200I-01`  | misma evidencia grupal no resoluble                                                       | `PENDIENTE_DE_EVIDENCIA` | el grupo no demuestra qué unidad corresponde a barra calientes                                | NEXO para individualización y ubicación                                                     | activo individual identificado y reconciliado con barra calientes                                              |
+| `PRN-VC-BAR-DIGE200I-01`    | misma evidencia grupal no resoluble                                                       | `PENDIENTE_DE_EVIDENCIA` | el grupo no demuestra qué unidad corresponde a bar frías                                      | NEXO para individualización y ubicación                                                     | activo individual identificado y reconciliado con bar frías                                                    |
+| `PRN-VC-COCINA-DIGE200I-01` | misma evidencia grupal no resoluble                                                       | `PENDIENTE_DE_EVIDENCIA` | el grupo no demuestra qué unidad corresponde a cocina                                         | NEXO para individualización y ubicación                                                     | activo individual identificado y reconciliado con cocina                                                       |
+
+Control:
+
+```text
+VALIDADO = 0
+PENDIENTE_DE_EVIDENCIA = 9
+BLOQUEADO por conflicto confirmado = 0
+IDENTIDADES OMITIDAS = 0
+```
+
+La diferencia entre un grupo de tres impresoras térmicas en la fuente física y cuatro referencias térmicas estables en Vento Café no se corrige repartiendo el grupo por intuición. Se conserva como brecha de reconciliación hasta individualizar los bienes.
+
+---
+
+#### 9. Regla de reconciliación física
+
+Una relación `PRINTER_REPRESENTS_ASSET` podrá declararse `VALIDADO` solo si:
+
+1. existe una identidad individual de activo NEXO;
+2. la evidencia demuestra que ese bien es el mismo dispositivo representado por la referencia `PRN-*`;
+3. modelo o clase son compatibles con el perfil aprobado;
+4. serial, placa, etiqueta, inspección, ubicación o evidencia equivalente resuelven la identidad sin ambigüedad;
+5. sede y punto son compatibles o existe movimiento físico versionado;
+6. la relación no contradice otro vínculo vigente;
+7. el estado físico no ha sido fabricado desde health o detección local;
+8. se conserva fecha y fuente de reconciliación.
+
+No es suficiente:
+
+- que el equipo aparezca en BrowserPrint;
+- que responda por red;
+- que una IP coincida;
+- que el nombre contenga Epson, Zebra o DIG-E200I;
+- que exista un producto de catálogo con nombre parecido;
+- que un grupo tenga la cantidad aproximada;
+- que un usuario recuerde dónde estaba;
+- que un job haya sido aceptado por un adaptador.
+
+---
+
+#### 10. Jerarquía de evidencia
+
+De mayor a menor capacidad de probar identidad física:
+
+| Evidencia                                                    | Uso permitido                                                 | Límite                                                        |
+| ------------------------------------------------------------ | ------------------------------------------------------------- | ------------------------------------------------------------- |
+| activo NEXO individual + serial/placa/inspección física      | ancla principal de identidad física                           | debe corresponder al equipo real                              |
+| asset code individual + modelo/ubicación comprobados         | reconciliación cuando la identificación física sea inequívoca | no sustituye serial cuando sea necesario para desambiguar     |
+| inspección controlada con fotografía o evidencia equivalente | soporte de reconciliación                                     | no crea por sí sola una identidad si NEXO carece de instancia |
+| BrowserPrint UID, driver, USB, hostname, IP o MAC            | evidencia de canal/configuración                              | nunca crea el activo                                          |
+| producto o perfil de producto                                | evidencia de clase o catálogo                                 | no identifica una unidad                                      |
+| grupo de activos                                             | evidencia cuantitativa                                        | no identifica una unidad concreta                             |
+| texto libre o nombre parecido                                | indicio                                                       | no habilita reconciliación                                    |
+
+---
+
+#### 11. `TI-PRINT-BINDING-AND-DEPENDENCY-CONTRACT-001`
+
+Un binding físico/técnico deberá conservar, según aplique:
+
+```text
+printer_reference
+asset_reference
+channel_reference
+endpoint_reference
+network_reference
+addressing_reference
+adapter_reference
+physical_dependency_references
+desired_configuration_reference
+observed_configuration_reference
+effective_from
+effective_to
+change_reference
+evidence_references
+reconciliation_state
+```
+
+Reglas:
+
+1. `asset_reference` identifica el bien físico;
+2. `channel_reference` identifica la vía aprobada por PRINT-ARC;
+3. `endpoint_reference` se utiliza para USB, puente local u otra dependencia de host;
+4. `network_reference` se utiliza para LAN o Wi-Fi sin copiar topología;
+5. `addressing_reference` se usa cuando existe direccionamiento estable; IP cruda no es identidad;
+6. `adapter_reference` pertenece al contrato PRINT-ARC y no sustituye el canal físico;
+7. un cambio de canal sobre el mismo dispositivo no crea otro activo;
+8. una misma impresora con USB y Wi-Fi conserva un activo único y bindings de canal separados;
+9. ningún binding decide qué documento debe imprimirse; esa decisión pertenece a route/target de PRINT-ARC;
+10. ninguna aplicación puede saltarse PRINT-ARC usando el binding físico como selector empresarial.
+
+---
+
+#### 12. Roles de dependencia física y técnica
+
+Se definen siete roles. Son roles de relación; no crean nuevas clases canónicas de configuración.
+
+| Rol                              | Qué representa                                                | Autoridad propietaria                            | Regla                                                                              |
+| -------------------------------- | ------------------------------------------------------------- | ------------------------------------------------ | ---------------------------------------------------------------------------------- |
+| `PRINT_DEVICE_ASSET`             | bien físico impresora                                         | NEXO                                             | debe individualizarse antes de `VALIDADO`                                          |
+| `HOST_ENDPOINT_REFERENCE`        | computador o endpoint requerido por USB/bridge                | `TI-DOM-003`                                     | no se fusiona con la impresora                                                     |
+| `NETWORK_REFERENCE`              | red, segmento, SSID o recurso utilizado                       | `TI-DOM-004`                                     | no se reconstruye desde IP                                                         |
+| `LOCAL_BRIDGE_REFERENCE`         | software o componente de host que media el envío              | PRINT-ARC + endpoint propietario                 | capacidad técnica no equivale a autorización                                       |
+| `CONNECTION_COMPONENT_REFERENCE` | cable, interfaz, puerto o accesorio de conexión               | NEXO/TI según materialidad                       | solo se individualiza como activo cuando su ciclo lo justifique y exista evidencia |
+| `POWER_PROTECTION_REFERENCE`     | fuente, UPS o protección cuya falla afecte el dispositivo     | NEXO / perfil de estación                        | no se presume instalada                                                            |
+| `MEDIA_CONSUMABLE_REFERENCE`     | papel, etiqueta, ribbon, tinta, toner u otro medio compatible | dominio de inventario/abastecimiento propietario | es una referencia de compatibilidad y disponibilidad, no identidad de impresora    |
+
+Instancias adicionales de periféricos no demostradas por las fuentes actuales permanecen `PENDIENTE_DE_EVIDENCIA`; esta tarea no las crea por inferencia.
+
+---
+
+#### 13. Canales físicos actuales
+
+Se preserva exactamente la clasificación de PRINT-ARC:
+
+| Referencia                      | Naturaleza física          | Decisión de TI-DOM-005                                              |
+| ------------------------------- | -------------------------- | ------------------------------------------------------------------- |
+| `CH-ZEBRA-SIN-CONEXION`         | ninguna conexión activa    | no crear binding; equipo almacenado                                 |
+| `CH-EPSON-L5590-SIN-CONEXION`   | ninguna conexión operativa | no crear binding; mantenimiento bloquea                             |
+| `CH-EPSON-L4260-USB`            | USB mediante host          | requiere impresora física reconciliada y host cuando se materialice |
+| `CH-EPSON-L4260-WIFI`           | Wi-Fi                      | requiere impresora física reconciliada y referencia de red          |
+| `CH-DIGE200I-USB`               | USB / ESC-POS              | requiere impresora individual y host por punto                      |
+| `CH-DIGE200I-LAN`               | LAN / ESC-POS              | requiere impresora individual y recurso/direccionamiento de red     |
+| `CH-SIN-DISPOSITIVO-COMPATIBLE` | ausencia de dispositivo    | no crear activo, canal o binding ficticio                           |
+
+Los canales describen el servicio de impresión. TI-DOM-005 solo gobierna las dependencias físicas necesarias para que el binding sea demostrable.
+
+---
+
+#### 14. BrowserPrint y descubrimiento local
+
+El código actual usa BrowserPrint para detectar dispositivos locales y conserva identificadores como `uid`, nombre, tipo y conexión.
+
+Ese mecanismo se clasifica:
+
+```text
+DISCOVERY_LOCAL
+=
+EVIDENCIA TÉCNICA DE CANAL
+
+DISCOVERY_LOCAL
+≠
+INVENTARIO FÍSICO CANÓNICO
+```
+
+Reglas:
+
+1. detectar una impresora no crea un activo;
+2. seleccionar una impresora local no crea un `PRN-*`;
+3. el primer dispositivo devuelto no se vuelve principal por orden de descubrimiento;
+4. un `uid` local no sustituye `asset_reference`;
+5. configuraciones guardadas por `uid` pueden servir como estado local del adaptador, pero no como fuente del maestro físico;
+6. una conexión indicada como lista para imprimir no sustituye heartbeat, health, route, target ni prueba física;
+7. el callback de envío no se interpreta como confirmación física.
+
+La implementación futura deberá reconciliar discovery y binding contra las identidades canónicas, no al revés.
+
+---
+
+#### 15. Separación de estados
+
+`TI-PRINT-PHYSICAL-STATE-MATRIX-001` mantiene seis planos independientes:
+
+```text
+CONDICIÓN Y CICLO DEL ACTIVO NEXO
+≠
+ESTADO ADMINISTRATIVO DE LA IMPRESORA EN PRINT-ARC
+≠
+ESTADO DEL CANAL
+≠
+HEALTH / HEARTBEAT DEL SERVICIO
+≠
+ESTADO DEL JOB / INTENTO
+≠
+NIVEL DE RECEIPT O RESULTADO
+```
+
+Reglas de precedencia:
+
+1. un activo almacenado, en mantenimiento o retirado puede bloquear elegibilidad antes de evaluar heartbeat;
+2. health fresco no convierte un activo físicamente bloqueado en operativo;
+3. un activo físicamente operativo no queda automáticamente elegible para imprimir;
+4. `NEVER_OBSERVED`, `STALE` o ausencia de colector no cambia la condición física del bien;
+5. `ACCEPTED_BY_ADAPTER` no prueba ejecución física;
+6. un receipt físico no modifica inventario o custodia;
+7. un fallo de job no implica automáticamente falla del dispositivo;
+8. una falla física puede afectar múltiples jobs y debe correlacionarse sin mutar su historia.
+
+---
+
+#### 16. Matriz física → elegibilidad de servicio
+
+| Condición física/documental           | Health PRINT-ARC                                            | Decisión                                                                                                            |
+| ------------------------------------- | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------- |
+| `ALMACENADA`                          | cualquiera                                                  | `SAFE_BLOCK`; no se espera heartbeat productivo                                                                     |
+| `REQUIERE_MANTENIMIENTO`              | cualquiera                                                  | `SAFE_BLOCK`; una señal técnica no rehabilita el equipo                                                             |
+| `OPERATIVA` + activo no reconciliado  | cualquiera                                                  | no declarar `TI-REL-007` validada; el servicio puede conservar su estado documental, pero la deuda física permanece |
+| `OPERATIVA` + activo reconciliado     | `NEVER_OBSERVED`, `LATE`, `STALE` o equivalente no elegible | bloqueo de selección conforme a PRINT-ARC                                                                           |
+| `OPERATIVA` + activo reconciliado     | señal fresca y estado elegible                              | puede avanzar a route/target; no prueba resultado del job                                                           |
+| retirado o disposición física cerrada | cualquiera                                                  | no se selecciona para nuevos trabajos; relaciones vigentes deben cerrarse                                           |
+
+La matriz no reemplaza los estados exactos de PRINT-ARC; solo fija la precedencia de la dimensión física.
+
+---
+
+#### 17. Mantenimiento, reparación y diagnóstico físico
+
+El mantenimiento de la impresora se gobierna como intervención sobre el activo, no como edición del estado de la cola.
+
+Un registro de mantenimiento deberá poder referenciar:
+
+```text
+asset_reference
+printer_reference_when_reconciled
+maintenance_type
+reported_condition
+case_or_incident_reference_when_applicable
+scheduled_at
+started_at
+performed_at
+responsible_or_provider_reference
+work_performed
+parts_or_components_replaced
+cost_reference_when_applicable
+resulting_physical_condition
+next_service_reference_when_applicable
+evidence_references
+post_maintenance_test_reference
+```
+
+Reglas:
+
+1. NEXO conserva el registro físico y la historia;
+2. PRINT-ARC consume el efecto sobre elegibilidad;
+3. cerrar mantenimiento no equivale a aprobar impresión;
+4. el retorno productivo requiere la prueba aplicable del servicio de impresión;
+5. un proveedor de reparación no adquiere autoridad sobre route, target, permisos o datos imprimibles;
+6. partes reemplazadas y costos se registran en sus fuentes propietarias;
+7. no se declara reparación ejecutada sin evidencia;
+8. la Epson L5590 permanece bloqueada mientras no exista cierre físico y prueba suficiente.
+
+---
+
+#### 18. Garantía y proveedor
+
+Para una impresora reconciliada se deberá poder conocer, por referencia:
+
+- garantía vigente o desconocida;
+- proveedor o fabricante cuando exista fuente;
+- canal autorizado de soporte;
+- restricciones de apertura o reparación que afecten garantía;
+- evidencia de compra cuando la fuente propietaria la conserve;
+- incidente, mantenimiento o cambio relacionado;
+- resultado de servicio externo.
+
+Contrato, renovación, costo y relación económica pertenecen a `TI-DOM-012` y a los dominios económicos propietarios. TI-DOM-005 solo exige que la impresora física pueda referenciarlos sin duplicarlos.
+
+---
+
+#### 19. Medios, consumibles y repuestos
+
+Una impresora deberá poder referenciar el perfil de medio y consumibles requerido por su capacidad aprobada.
+
+Dimensiones mínimas:
+
+- familia de papel o etiqueta;
+- dimensiones compatibles;
+- térmica directa, transferencia, tinta o mecanismo aplicable;
+- ribbon cuando aplique;
+- tinta o toner cuando aplique;
+- capacidad o condición de cortador cuando aplique;
+- repuesto crítico aprobado cuando exista;
+- disponibilidad observada cuando la fuente propietaria la proporcione;
+- incompatibilidad conocida;
+- evidencia de prueba con el medio real.
+
+Reglas:
+
+1. un consumible no forma parte de la identidad del activo;
+2. la ausencia de papel, ribbon o tinta puede hacer no utilizable el servicio sin declarar dañado el activo;
+3. la compatibilidad nominal no prueba calidad física;
+4. el stock se mantiene en el dominio de inventario propietario;
+5. TI no crea cantidades ni mínimos de reposición en esta tarea;
+6. sustituir medio por otro perfil no se hace silenciosamente para evitar un bloqueo;
+7. etiquetas no se degradan a A4 y tiquetes de 80 mm no se degradan a otro medio por conveniencia;
+8. consumibles sensibles o con requisitos de trazabilidad conservan las reglas de su dominio propietario.
+
+---
+
+#### 20. Ubicación, custodia y punto operativo
+
+NEXO conserva ubicación y custodia del bien físico.
+
+PRINT-ARC conserva sede, área y punto requeridos para routing.
+
+La reconciliación exige:
+
+```text
+UBICACIÓN FÍSICA NEXO
+↔
+PUNTO OPERATIVO PRINT-ARC
+```
+
+sin asumir equivalencia por texto.
+
+Reglas:
+
+1. mover una impresora no cambia automáticamente su `PRN-*`;
+2. un movimiento físico debe conservar historia;
+3. el movimiento obliga a revisar route, target, canal y dependencias;
+4. una impresora encontrada en otro punto no se reasigna mediante discovery local;
+5. una ruta no actualiza la ubicación del activo;
+6. una ubicación de activo no crea por sí sola una ruta de impresión;
+7. custodia colectiva no equivale a ausencia de responsable técnico;
+8. responsabilidad técnica, custodia y autoridad de cambio permanecen separadas.
+
+---
+
+#### 21. Cambio de canal o configuración
+
+Son cambios tecnológicos, como mínimo:
+
+- USB ↔ LAN ↔ Wi-Fi ↔ Bluetooth;
+- incorporación o retiro de puente local;
+- cambio de driver;
+- cambio de firmware;
+- cambio de IP, reserva o configuración de red;
+- cambio de host;
+- cambio de puerto lógico;
+- cambio de adaptador;
+- cambio de configuración que afecte lenguaje, tamaño, corte o medio;
+- cambio de ubicación que modifique routing o dependencia;
+- sustitución del dispositivo.
+
+Su aprobación, ventana, prueba, rollback y revisión pertenecen a `TI-DOM-009`.
+
+TI-DOM-005 exige preservar:
+
+- estado anterior;
+- identidad física;
+- binding anterior;
+- binding nuevo;
+- motivo;
+- cambio autorizado;
+- prueba posterior;
+- resultado;
+- posibilidad de reversión;
+- efecto sobre route/target y health.
+
+Una modificación manual que resuelve temporalmente un fallo no se convierte en configuración estándar por haber funcionado una vez.
+
+---
+
+#### 22. Reparación frente a sustitución
+
+Se distinguen:
+
+```text
+REPARACIÓN
+→ mismo bien físico posible
+→ misma identidad NEXO
+→ mantenimiento versionado
+→ reevaluación de condición
+→ prueba PRINT-ARC antes de habilitar servicio
+
+SUSTITUCIÓN
+→ bien físico distinto
+→ nueva identidad NEXO
+→ cierre del vínculo físico anterior
+→ nueva reconciliación
+→ actualización controlada de binding / route / target según PRINT-ARC
+→ prueba física
+```
+
+No se reutiliza el asset ID anterior para el nuevo equipo.
+
+La decisión de continuidad o versión de `PRN-*` pertenece al contrato del servicio de impresión; TI-DOM-005 no renombra la referencia por intuición.
+
+---
+
+#### 23. Despliegue de un equipo almacenado
+
+Para `PRN-VP-ZD230-01` se conserva:
+
+```text
+ALMACENADA
+→ no canal activo
+→ no heartbeat productivo esperado
+→ no routing ejecutable
+```
+
+La salida requiere, sin ejecutar desde esta tarea:
+
+1. reconciliación con un activo individual;
+2. inspección de variante física e interfaces;
+3. punto y ubicación aprobados;
+4. medio compatible;
+5. canal y binding materializados;
+6. adaptador aplicable;
+7. health observable y elegible;
+8. route/target vigentes;
+9. prueba física de impresión satisfactoria;
+10. evidencia de aceptación.
+
+La tarea no selecciona por anticipado USB, LAN, Wi-Fi o Bluetooth para esa unidad.
+
+---
+
+#### 24. Equipo en mantenimiento
+
+Para `PRN-VP-L5590-01`:
+
+```text
+REQUIERE_MANTENIMIENTO
+→ canal operativo no disponible
+→ selección bloqueada
+```
+
+Un cambio de estado solo podrá apoyarse en:
+
+- identidad física reconciliada;
+- reparación o sustitución real;
+- evidencia del trabajo;
+- condición posterior;
+- binding operativo;
+- health verificable;
+- prueba A4 satisfactoria.
+
+La mera actualización de un campo de estado no satisface la salida.
+
+---
+
+#### 25. Ausencia de capacidad de 80 mm en Vento Producción
+
+`CH-SIN-DISPOSITIVO-COMPATIBLE` y el target asociado continúan representando ausencia real de capacidad.
+
+Reglas:
+
+1. no se crea una impresora ficticia;
+2. no se reutiliza la Zebra por ser un periférico disponible;
+3. no se degrada a A4;
+4. no se toma una impresora de otra sede por descubrimiento;
+5. cualquier incorporación futura exige activo, route, target, binding, health y prueba;
+6. la incorporación física solo puede ejecutarse dentro de un alcance de implementación aprobado.
+
+---
+
+#### 26. Retiro físico
+
+Un retiro deberá cerrar de forma coordinada:
+
+- ciclo del activo NEXO;
+- ubicación y custodia vigentes;
+- binding físico;
+- canal vigente;
+- health esperado;
+- selección como target cuando corresponda;
+- relación con host o red;
+- mantenimiento pendiente;
+- garantía o proveedor aplicables;
+- evidencia de disposición.
+
+Historia de jobs, receipts, documentos y auditoría no se elimina porque el equipo se retire.
+
+Un dispositivo retirado no reaparece por ser detectado localmente.
+
+---
+
+#### 27. Incidentes y soporte
+
+El diagnóstico debe separar:
+
+```text
+FALLA DEL ACTIVO
+FALLA DE ENERGÍA
+FALLA DEL HOST
+FALLA DE RED
+FALLA DEL CANAL
+FALLA DEL ADAPTADOR
+FALLA DE COLA
+FALLA DE JOB
+RESULTADO DESCONOCIDO
+FALTA DE CONSUMIBLE
+CONFIGURACIÓN DIVERGENTE
+```
+
+`TI-DOM-007` será propietario del incidente, impacto, prioridad, comunicación y cierre.
+
+TI-DOM-005 aporta el contexto físico:
+
+- activo;
+- printer reference;
+- sede y punto;
+- modelo;
+- condición;
+- binding;
+- host o red;
+- último mantenimiento;
+- garantía;
+- consumible;
+- cambio reciente;
+- evidencia disponible.
+
+No se marca como reparada una impresora porque el ticket se cierre.
+
+---
+
+#### 28. Seguridad del soporte
+
+1. una interfaz de administración de impresora no concede autoridad empresarial;
+2. soporte de proveedor será mínimo, temporal y trazable;
+3. credenciales, PSK, tokens y secretos no se guardan en inventario o tickets;
+4. un técnico no debe imprimir datos empresariales reales para probar conectividad cuando un artefacto de prueba controlado sea suficiente;
+5. un equipo de otra sede no se usa como fallback por acceso técnico accidental;
+6. discovery local no permite reasignar routing;
+7. logs de diagnóstico no deben copiar contenido sensible del job;
+8. un cambio remoto sobre firmware, driver, red o configuración requiere autoridad de cambio;
+9. los datos de topología y direccionamiento se exponen solo cuando sean necesarios para soporte;
+10. la evidencia física conserva las reglas de privacidad y retención vigentes.
+
+---
+
+#### 29. `TI-PRINT-CHANGE-SUPPORT-HANDOFF-001`
+
+| Situación                             | Autoridad primaria                                                          | Participación de TI-DOM-005                                 | Condición de salida                                                          |
+| ------------------------------------- | --------------------------------------------------------------------------- | ----------------------------------------------------------- | ---------------------------------------------------------------------------- |
+| alta de una impresora física          | NEXO                                                                        | exigir reconciliación con PRINT-ARC antes de disponibilidad | activo individual + `PRN-*`/target según contrato + binding + prueba         |
+| reubicación                           | NEXO + `TI-DOM-009`                                                         | revisar dependencias y route/target afectados               | movimiento registrado, binding revisado y prueba aplicable                   |
+| cambio USB/LAN/Wi-Fi/Bluetooth        | `TI-DOM-009` + PRINT-ARC                                                    | conservar identidad física y versionar dependencia          | cambio aprobado, binding nuevo y prueba                                      |
+| cambio IP/reserva/red                 | `TI-DOM-004` + `TI-DOM-009`                                                 | mantener referencia sin convertir IP en identidad           | red reconciliada, binding actualizado y prueba                               |
+| mantenimiento                         | NEXO                                                                        | bloquear o mantener la condición física correcta            | trabajo y condición posterior con evidencia                                  |
+| incidente de impresión                | `TI-DOM-007` + PRINT-ARC                                                    | aportar contexto físico y dependencias                      | servicio restaurado y validado, sin confundir cierre con reparación          |
+| sustitución                           | NEXO + `TI-DOM-009`                                                         | cerrar vínculo anterior y exigir nueva reconciliación       | nuevo activo, binding controlado y prueba                                    |
+| retiro                                | NEXO                                                                        | cerrar bindings y elegibilidad sin borrar historia          | disposición y relaciones cerradas                                            |
+| monitoreo runtime                     | `TI-DOM-010` + PRINT-ARC                                                    | proporcionar dimensiones físicas estables                   | señales correlacionables con printer/asset/site                              |
+| contrato, garantía, costo             | `TI-DOM-012`                                                                | referenciar, no duplicar                                    | fuente económica/contractual vigente                                         |
+| acceso privilegiado                   | `TI-AUTH-*`                                                                 | exigir autorización antes de intervención                   | principal, alcance, vigencia y evidencia                                     |
+| implementación física del carril NEXO | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobada | entregar el contrato y la matriz como entrada               | alcance aprobado y cambios ejecutados por su paquete, con pruebas aplicables |
+
+---
+
+#### 30. Estado material de los nueve dispositivos
+
+| `printer_reference`         | Gobierno físico                                               | Binding físico         | Health runtime               | Decisión actual de TI-DOM-005                          |
+| --------------------------- | ------------------------------------------------------------- | ---------------------- | ---------------------------- | ------------------------------------------------------ |
+| `PRN-VP-ZD230-01`           | `PENDIENTE_DE_EVIDENCIA`                                      | sin canal activo       | `NOT_EXPECTED`               | conservar almacenada y bloquear despliegue             |
+| `PRN-VP-L5590-01`           | `PENDIENTE_DE_EVIDENCIA`                                      | sin canal operativo    | `NOT_EXPECTED`               | conservar mantenimiento y bloquear selección           |
+| `PRN-ADMIN-L4260-01`        | `PENDIENTE_DE_EVIDENCIA`; existe candidato NEXO no confirmado | USB/Wi-Fi documentados | sin muestra runtime canónica | no convertir candidato en vínculo sin evidencia        |
+| `PRN-MOLKA-DIGE200I-01`     | `PENDIENTE_DE_EVIDENCIA`                                      | USB documentado        | sin muestra runtime canónica | individualizar activo antes de validar relación física |
+| `PRN-SAUDO-DIGE200I-01`     | `PENDIENTE_DE_EVIDENCIA`                                      | USB documentado        | sin muestra runtime canónica | individualizar activo antes de validar relación física |
+| `PRN-VC-CAJA-DIGE200I-01`   | `PENDIENTE_DE_EVIDENCIA`                                      | USB documentado        | sin muestra runtime canónica | no repartir el grupo físico por heurística             |
+| `PRN-VC-BARRA-DIGE200I-01`  | `PENDIENTE_DE_EVIDENCIA`                                      | LAN documentado        | sin muestra runtime canónica | no repartir el grupo físico por heurística             |
+| `PRN-VC-BAR-DIGE200I-01`    | `PENDIENTE_DE_EVIDENCIA`                                      | LAN documentado        | sin muestra runtime canónica | no repartir el grupo físico por heurística             |
+| `PRN-VC-COCINA-DIGE200I-01` | `PENDIENTE_DE_EVIDENCIA`                                      | LAN documentado        | sin muestra runtime canónica | no repartir el grupo físico por heurística             |
+
+La matriz distingue de forma deliberada `estado documental operativo` de `relación física validada`.
+
+---
+
+#### 31. Hallazgos y cierre documental
+
+| ID                 | Hallazgo                                                                                               | Estado                   | Propietario                                      | Condición de salida                                                  |
+| ------------------ | ------------------------------------------------------------------------------------------------------ | ------------------------ | ------------------------------------------------ | -------------------------------------------------------------------- |
+| `H-TI-DOM-005-001` | nueve `PRN-*` existen en PRINT-ARC pero ninguna relación individual con NEXO está actualmente validada | `PENDIENTE_DE_EVIDENCIA` | NEXO + paquete físico aplicable                  | 9/9 relaciones individualizadas o cada excepción documentada         |
+| `H-TI-DOM-005-002` | el candidato `ACT-EQP-MULTIF-000932-MRF4E56U` no prueba por sí solo la L4260                           | `PENDIENTE_DE_EVIDENCIA` | NEXO                                             | modelo/serie o evidencia inequívoca                                  |
+| `H-TI-DOM-005-003` | un grupo de tres impresoras térmicas no puede materializar cuatro identidades Vento Café               | `PENDIENTE_DE_EVIDENCIA` | NEXO                                             | individualización física y conciliación de cantidad/ubicación        |
+| `H-TI-DOM-005-004` | BrowserPrint discovery y `uid` local no constituyen binding canónico                                   | `ESPECIFICADO`           | PRINT-ARC / implementación propietaria           | binding implementado contra identidades canónicas                    |
+| `H-TI-DOM-005-005` | el callback actual de envío no demuestra ejecución física                                              | `ESPECIFICADO`           | PRINT-ARC                                        | receipt y prueba física conforme al contrato aprobado                |
+| `H-TI-DOM-005-006` | la Zebra sigue almacenada y sin canal real verificado                                                  | `BLOQUEADO`              | alcance físico del paquete NEXO + PRINT-ARC      | despliegue autorizado, binding, health y prueba                      |
+| `H-TI-DOM-005-007` | la L5590 sigue en mantenimiento                                                                        | `BLOQUEADO`              | NEXO + PRINT-ARC                                 | reparación/sustitución, health y prueba A4                           |
+| `H-TI-DOM-005-008` | Vento Producción no dispone de 80 mm compatible                                                        | `BLOQUEADO`              | alcance físico del paquete aplicable + PRINT-ARC | activo compatible, route/target, binding, health y prueba            |
+| `H-TI-DOM-005-009` | no hay evidencia runtime canónica de health/heartbeat/receipts para los siete dispositivos operativos  | `PENDIENTE_DE_EVIDENCIA` | PRINT-ARC-018 a PRINT-ARC-020                    | productores, monitoreo y corrida física controlada                   |
+| `H-TI-DOM-005-010` | no se localizaron registros de mantenimiento asociados a las evidencias de impresora consultadas       | `PENDIENTE_DE_EVIDENCIA` | NEXO                                             | mantenimiento real queda vinculado a activo individual cuando exista |
+
+No queda un hallazgo narrativo sin propietario y condición de salida.
+
+---
+
+#### 32. Estado de materialización
+
+| Componente                          | Estado                          |
+| ----------------------------------- | ------------------------------- |
+| frontera NEXO / TI / PRINT-ARC      | `ESPECIFICADO`                  |
+| contrato de identidad física        | `ESPECIFICADO`                  |
+| nueve decisiones `PRN-*`            | `ESPECIFICADO`                  |
+| relación individual `PRN-* ↔ asset` | `PENDIENTE_DE_EVIDENCIA` en 9/9 |
+| roles de dependencia                | `ESPECIFICADO`                  |
+| bindings runtime implementados      | `FUERA_DE_ALCANCE`              |
+| mantenimiento físico ejecutado      | `FUERA_DE_ALCANCE`              |
+| instalación o reubicación           | `FUERA_DE_ALCANCE`              |
+| cambios de red/driver/firmware      | `FUERA_DE_ALCANCE`              |
+| monitoreo runtime                   | `FUERA_DE_ALCANCE`              |
+| prueba física                       | `FUERA_DE_ALCANCE`              |
+| piloto                              | `FUERA_DE_ALCANCE`              |
+| cambios Supabase                    | `NO_APLICA`                     |
+
+La falta de evidencia física bloquea la reconciliación de instancias, no la definición documental.
+
+---
+
+#### 33. Invariantes
+
+1. NEXO conserva el activo físico.
+2. PRINT-ARC conserva `PRN-*`, route, target, channel, adapter, job y receipt.
+3. TI-DOM-005 conserva el contrato de reconciliación, no una tercera identidad.
+4. `PRN-*` no es `asset_id`.
+5. BrowserPrint UID no es `asset_id`.
+6. IP no es identidad de impresora.
+7. MAC no es identidad de impresora.
+8. una cola no es una impresora.
+9. un target no es una impresora.
+10. un canal no es una impresora.
+11. un adaptador no es una impresora.
+12. un trabajo no es una impresora.
+13. una impresora detectable no se presume inventariada.
+14. una impresora inventariada no se presume saludable.
+15. una impresora saludable no prueba impresión física.
+16. un receipt de adaptador no prueba entrega física.
+17. un activo almacenado no se vuelve operativo por heartbeat.
+18. un activo en mantenimiento no se vuelve operativo por discovery.
+19. un activo operativo puede seguir bloqueado para PRINT-ARC.
+20. producto genérico no equivale a activo individual.
+21. grupo de activos no se descompone por intuición.
+22. reparación conserva identidad del mismo bien.
+23. sustitución por otro bien exige nueva identidad NEXO.
+24. reubicación conserva historia y obliga a revisar routing.
+25. cambio de canal conserva identidad física si el equipo es el mismo.
+26. consumible no forma parte de identidad.
+27. stock de consumibles no se duplica en TI.
+28. cambio manual no se normaliza sin gobierno.
+29. soporte no concede autorización empresarial.
+30. una aplicación no selecciona impresora saltándose PRINT-ARC.
+31. history de jobs y receipts no se borra al retirar el activo.
+32. no se inventan seriales, IP, MAC, puertos, drivers, firmware, activos, periféricos o resultados.
+33. esta tarea no modifica infraestructura ni Supabase.
+
+---
+
+#### 34. Criterios de aceptación
+
+- [x] se conserva la continuidad `TI-DOM-004 → TI-DOM-005 → TI-DOM-006`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] se preservan las nueve identidades `PRN-*` de PRINT-ARC;
+- [x] las nueve identidades reciben una decisión individual de reconciliación física;
+- [x] 9/9 quedan `PENDIENTE_DE_EVIDENCIA` y ninguna se declara validada por inferencia;
+- [x] se registra el candidato NEXO administrativo sin convertirlo en binding;
+- [x] se registra la evidencia grupal de tres impresoras térmicas sin repartirla entre cuatro identidades;
+- [x] NEXO conserva activo, ubicación, custodia, condición, mantenimiento, garantía y disposición;
+- [x] PRINT-ARC conserva route, target, channel, adapter, job, health, heartbeat y receipt;
+- [x] BrowserPrint UID se clasifica como evidencia técnica y no como identidad física;
+- [x] IP, MAC, driver, puerto y nombre de dispositivo no crean identidad;
+- [x] se definen siete roles de dependencia física/técnica sin crear nuevas clases canónicas;
+- [x] se separan condición física, estado administrativo, health, canal, job y receipt;
+- [x] se define precedencia de bloqueo físico frente a health;
+- [x] se definen mantenimiento, garantía, consumibles y repuestos sin duplicar sus fuentes propietarias;
+- [x] se definen reparación, sustitución, despliegue, movimiento y retiro;
+- [x] se conserva la ausencia real de Zebra desplegada, L5590 disponible y 80 mm en Vento Producción;
+- [x] todos los hallazgos tienen propietario y condición de salida;
+- [x] no se ejecuta compra, instalación, reparación, reubicación, configuración o retiro;
+- [x] no se cambia código, red, driver, firmware, datos, migraciones ni Supabase;
+- [x] no se crean ni modifican requisitos de prueba;
+- [x] `TI-DOM-006` permanece únicamente reservada.
+
+---
+
+#### 35. Cobertura de prueba consumida
+
+La tarea consume cobertura ya vigente que protege:
+
+- identidad estable y separación entre activo, impresora, configuración, red, cola, ruta y proveedor;
+- interfaz, dirección estable, capacidades, consumibles, mantenimiento, heartbeat, adaptador, routing y fallback;
+- cambio versionado de IP, driver, firmware, red o configuración con estado anterior, prueba y resultado;
+- persistencia y resultado de trabajos enviados a periféricos;
+- idempotencia, reintentos, resultado desconocido, reconciliación y recuperación controlada;
+- correlación transversal entre activos, impresoras, servicios, monitoreo y cambios.
+
+`TI-DOM-005` no reduce ni sustituye esa cobertura.
+
+---
+
+#### 36. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa la frontera física, la reconciliación de las nueve impresoras vigentes y los handoffs que ya están exigidos por la cobertura canónica de activos, hardware, impresión e integración. No introduce un efecto empresarial, algoritmo de routing, condición de autorización, semántica de retry, receipt, health o comportamiento de periférico adicional. Las nueve filas de reconciliación quedan como decisiones documentales y toda ejecución física posterior deberá satisfacer los requisitos ya vigentes.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 37. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad`
+
+
 ### [ ] TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad
 ### [ ] TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre
 ### [ ] TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia
