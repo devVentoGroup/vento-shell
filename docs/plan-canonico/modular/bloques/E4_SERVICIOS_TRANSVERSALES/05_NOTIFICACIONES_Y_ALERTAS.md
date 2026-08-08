@@ -2963,5 +2963,618 @@ SIGUIENTE TAREA RESERVADA
 `NOTIFY-ARC-009 — Definir privacidad y contenido sensible`
 
 
-### [ ] NOTIFY-ARC-009 — Definir privacidad y contenido sensible
+### ✅ NOTIFY-ARC-009 — Definir privacidad y contenido sensible
+
+**Estado:** APROBADA
+**Tarea anterior:** `NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia` — APROBADA
+**Tarea siguiente:** `NOTIFY-ARC-010 — Definir métricas y auditoría de entrega` — RESERVADA
+**Tipo de tarea:** documental; matriz materializada de privacidad, sensibilidad, minimización y exposición de contenido para las quince políticas de notificación aprobadas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, Edge Functions, tablas, RLS, migraciones, RPC, cron, colas, tokens, proveedores, secretos, aplicaciones ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir para cada `NOTIFY-POLICY-*` qué sensibilidad mínima gobierna su información, qué contenido puede exponerse en superficies autenticadas, push, notificación local, navegador, correo o mensajería externa, qué campos deben quedar fuera de vistas previas y payloads, qué referencias opacas pueden transportar los canales y qué detalle de error puede conservarse durante intentos y conciliaciones, sin alterar origen, destinatario, prioridad, vigencia, deduplicación, canales, preferencias, lectura, confirmación, escalamiento, reintentos ni métricas.
+
+---
+
+#### 1. Resultado sustantivo
+
+`NOTIFY-ARC-009` queda documentalmente cerrada con:
+
+- 15 reglas `NOTIFY-PRIVACY-001` a `NOTIFY-PRIVACY-015`;
+- 15 políticas `NOTIFY-POLICY-001` a `NOTIFY-POLICY-015` cubiertas exactamente una vez;
+- 16 familias AS-IS conservadas mediante sus políticas aprobadas;
+- 5 clases de sensibilidad heredadas del contrato transversal `S0_PUBLIC` a `S4_HIGHLY_RESTRICTED`;
+- 5 perfiles de exposición específicos para notificaciones;
+- una política cerrada de contenido visible en pantalla bloqueada, push, Notification API y notificación local;
+- una política cerrada de payload técnico mínimo y referencias opacas;
+- una política cerrada para correo de invitación y su artefacto secreto de acceso;
+- una política cerrada para mensajería externa de `NOTIFY-POLICY-013`;
+- una matriz de exposición de errores para destinatario, operador, proveedor y logs;
+- una reconciliación explícita de las exposiciones actuales observadas en ANIMA, PASS, PULSO y `vento-shell`;
+- 0 políticas sin decisión;
+- 0 políticas duplicadas;
+- 0 cambios físicos ejecutados;
+- 0 cambios en requisitos de prueba.
+
+Todas las filas quedan en estado documental `ESPECIFICADO`. Esta tarea define el contenido permitido y prohibido; no afirma que la implementación actual ya cumpla esas reglas.
+
+---
+
+#### 2. Entradas conservadas y límites de autoridad
+
+La tarea consume y conserva:
+
+1. `NOTIFY-ARC-001`, con las dieciséis familias AS-IS y sus mecanismos visibles;
+2. `NOTIFY-ARC-002`, con quince orígenes empresariales;
+3. `NOTIFY-ARC-003`, con quince reglas de destinatario;
+4. `NOTIFY-ARC-004`, con prioridad, vigencia, agrupación y deduplicación;
+5. `NOTIFY-ARC-005`, con seis clases de canal y una ruta primaria por política;
+6. `NOTIFY-ARC-006`, con preferencias, obligatoriedad y opt-in explícito de mensajería externa;
+7. `NOTIFY-ARC-007`, con lectura, confirmación, efecto empresarial y escalamiento;
+8. `NOTIFY-ARC-008`, con identidad de proyección, intentos, fallos, reintentos y contingencia;
+9. `NFR-REQ-005 — Definir privacidad y sensibilidad`, incluida su clasificación `S0` a `S4`, minimización por proyección, protección de dispositivos compartidos, logs, integraciones y terceros;
+10. los controles transversales vigentes de minimización de payload, separación de notificación y evento, idempotencia y trazabilidad;
+11. el estado técnico actual de los emisores y clientes involucrados.
+
+Esta tarea no redefine quién puede acceder al recurso. Una notificación puede ser correctamente dirigida y aun así exponer demasiado contenido; por eso la autorización del destinatario no elimina la obligación de minimización del canal.
+
+---
+
+#### 3. Clasificación heredada aplicada a notificaciones
+
+Se conserva exactamente la clasificación aprobada por `NFR-REQ-005`:
+
+| Clase                  | Nombre                | Tratamiento en notificaciones                                                                                                                                                 |
+| ---------------------- | --------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `S0_PUBLIC`            | pública               | Puede exponerse solo cuando la versión concreta fue autorizada como pública. Ninguna de las quince políticas actuales se presume pública por defecto.                         |
+| `S1_INTERNAL`          | interna               | Puede mostrarse dentro de VENTO a destinatarios válidos; fuera de la superficie autenticada se reduce a información genérica.                                                 |
+| `S2_CONFIDENTIAL`      | confidencial          | Requiere relación, finalidad y canal autorizados; vistas previas externas no muestran detalles identificables o transaccionales.                                              |
+| `S3_RESTRICTED`        | restringida           | Incluye información laboral, financiera, de ubicación, soporte sensible o transaccional de mayor impacto; fuera de la superficie autenticada se utiliza contenido genérico.   |
+| `S4_HIGHLY_RESTRICTED` | altamente restringida | Incluye secretos, credenciales, tokens, PIN, salud y contenido que exige contención inmediata; no se muestra en notificaciones ordinarias, logs, analytics ni vistas previas. |
+
+Reglas de clasificación:
+
+1. la clase se asigna al dato y no a la aplicación;
+2. una política puede tener una clase mínima y campos que eleven la sensibilidad;
+3. prevalece la clasificación más restrictiva aplicable;
+4. un mensaje libre hereda la sensibilidad de su contenido y contexto;
+5. un identificador opaco sigue siendo información controlada, aunque no revele por sí solo el contenido;
+6. ocultar el texto en la UI no autoriza a enviarlo completo al proveedor;
+7. una pantalla bloqueada, centro de notificaciones o navegador se trata como superficie potencialmente observable por terceros;
+8. la existencia de cifrado del transporte no autoriza a aumentar el contenido enviado.
+
+---
+
+#### 4. Perfiles canónicos de exposición
+
+##### 4.1. `EXPOSURE_AUTHENTICATED_MINIMUM`
+
+Aplica a `CHANNEL_INTERNAL_FEED_INBOX` y `CHANNEL_INTERNAL_CONTEXTUAL`.
+
+Permite mostrar el detalle mínimo necesario únicamente después de:
+
+- identidad autenticada;
+- actor efectivo resuelto cuando exista dispositivo compartido;
+- autorización vigente sobre el recurso;
+- contexto vigente de sede, área, proceso o relación cuando corresponda;
+- consulta a la fuente autoritativa.
+
+No permite precargar un modelo completo para ocultar campos solo en la interfaz.
+
+##### 4.2. `EXPOSURE_DEVICE_GENERIC`
+
+Aplica a `CHANNEL_PUSH_REMOTE`, `CHANNEL_INTERNAL_DEVICE_ALERT`, Notification API del navegador y vistas equivalentes del sistema operativo.
+
+Contenido visible permitido:
+
+- nombre de la aplicación o servicio;
+- tipo genérico de novedad;
+- llamada a abrir la aplicación o revisar una acción;
+- prioridad visual o sonora que no revele información sensible.
+
+Contenido visible prohibido por defecto:
+
+- nombres de personas;
+- correos, teléfonos o direcciones;
+- nombres o tipos específicos de documentos laborales;
+- fechas exactas de vencimiento documental;
+- fecha, hora, sede o detalle de turno;
+- estado de asistencia o geolocalización exacta;
+- cuerpo o vista previa de mensajes de soporte;
+- cuerpo o vista previa de conversaciones de pedido;
+- número o etiqueta de pedido cuando no sea imprescindible;
+- productos, saldo, puntos, nivel o historial de compra individual;
+- total, forma, referencia o estado detallado de pago;
+- contenido de incidentes, vulnerabilidades o secretos;
+- credenciales, tokens, enlaces de acceso o códigos de un solo uso.
+
+La configuración del sistema operativo para ocultar previews es una protección adicional; VENTO no dependerá de ella para hacer seguro el contenido.
+
+##### 4.3. `EXPOSURE_SECURE_EMAIL_ACTION`
+
+Aplica únicamente a `NOTIFY-POLICY-009`.
+
+El correo puede transportar:
+
+- destinatario exacto;
+- finalidad de incorporación a ANIMA;
+- una única acción segura para crear acceso;
+- información operativa mínima para reconocer el propósito.
+
+El enlace de invitación o token de acción se clasifica como `S4_HIGHLY_RESTRICTED` y se permite exclusivamente dentro del artefacto de correo dirigido al destinatario porque constituye el mecanismo de entrega aprobado. Queda prohibido reproducirlo en logs, respuestas de error, analytics, badges, push, notificaciones locales, métricas o metadata de diagnóstico.
+
+En la línea base actual no se requiere incluir rol, sede, supervisor, datos laborales adicionales ni contraseña temporal dentro del correo.
+
+##### 4.4. `EXPOSURE_EXTERNAL_PURPOSE_BOUND`
+
+Aplica únicamente al `CHANNEL_EXTERNAL_MESSAGING` condicional de `NOTIFY-POLICY-013`.
+
+La mensajería externa puede transportar exclusivamente contenido destinado deliberadamente a la contraparte válida de esa conversación y necesario para esa finalidad. El sistema no añade automáticamente:
+
+- nombre completo del cliente;
+- dirección;
+- teléfono o correo;
+- resumen completo del pedido;
+- productos no mencionados por el emisor;
+- total, instrumento, referencia o historial de pago;
+- datos de fidelización;
+- información de otras conversaciones;
+- identificadores internos no necesarios;
+- secretos o credenciales.
+
+Si el contenido destinado al tercero se clasifica como `S4_HIGHLY_RESTRICTED`, la proyección externa queda bloqueada y el contenido deberá resolverse mediante una superficie o proceso autorizado para esa sensibilidad.
+
+##### 4.5. `EXPOSURE_TRACE_METADATA_ONLY`
+
+Aplica a intentos, reconciliación, logs y observabilidad.
+
+Se permite conservar:
+
+- `occurrence_id`;
+- `policy_id`;
+- `recipient_ref` interno o seudonimizado;
+- `channel_class`;
+- `attempt_id`;
+- secuencia de intento;
+- clase y código canónicos de error;
+- status HTTP o código de proveedor cuando no contenga datos de usuario;
+- `provider_request_id` o receipt técnico;
+- timestamps;
+- hash del contenido lógico;
+- versión;
+- identificador opaco del recurso cuando sea necesario para conciliación.
+
+Se prohíbe conservar por defecto:
+
+- cuerpo visible de la notificación;
+- cuerpo de chat o soporte;
+- título libre de comunicaciones;
+- token push completo;
+- dirección de correo o teléfono en claro cuando una referencia sea suficiente;
+- token de invitación;
+- URL de acción con secretos;
+- encabezados de autorización;
+- credenciales o secretos de proveedor;
+- payload empresarial completo;
+- respuesta cruda de proveedor cuando pueda ecoar destinatario, contenido o secretos.
+
+---
+
+#### 5. Payload técnico mínimo por canal
+
+Una notificación transportada fuera de una superficie autenticada no llevará una copia del recurso empresarial.
+
+##### 5.1. Push remoto y alerta de dispositivo
+
+El payload objetivo se limita a:
+
+```text
+policy_id
+occurrence_id
+resource_ref
+route_key
+```
+
+Reglas:
+
+1. `resource_ref` es una referencia opaca y solo se incluye cuando sea necesaria para recuperar el contexto;
+2. si `occurrence_id` basta para resolver el recurso después de autenticar, no se duplica otro identificador;
+3. fechas, nombres, sedes, importes, textos, etiquetas visibles, contacto y atributos de negocio no se transportan como conveniencia;
+4. el deep link no concede acceso: al abrirse debe revalidarse identidad, destinatario, vigencia y autorización;
+5. no se colocan secretos ni datos sensibles en query strings;
+6. ningún dato de `S4_HIGHLY_RESTRICTED` entra en payload de push o Notification API;
+7. los proveedores reciben únicamente los campos necesarios para entregar la proyección.
+
+##### 5.2. Feed, inbox y contexto autenticado
+
+La notificación interna puede guardar una referencia estable y consultar el detalle desde la fuente propietaria. Si se materializa texto para disponibilidad, ese texto deberá:
+
+- pertenecer al mismo destinatario;
+- respetar la clasificación del momento de materialización;
+- invalidarse o sustituirse cuando cambie la versión autorizada;
+- no convertirse en una copia competidora del expediente.
+
+##### 5.3. Correo
+
+El proveedor de correo recibe únicamente destinatario, asunto, cuerpo mínimo y artefacto de acción requerido. La aplicación no adjunta el expediente laboral, documento, perfil, rol, sede o información no necesaria para crear el acceso.
+
+##### 5.4. Mensajería externa
+
+El adaptador recibe contacto autorizado, contenido destinado a esa contraparte, referencia mínima de correlación y parámetros estrictamente requeridos por el proveedor. No recibe el objeto completo de pedido o cliente.
+
+---
+
+#### 6. Regla específica de pantalla bloqueada, background y dispositivo compartido
+
+1. Push, banners del sistema, Notification API y notificaciones locales usan `EXPOSURE_DEVICE_GENERIC` aun cuando el dispositivo sea personal.
+2. Una aplicación en background no conserva detalle sensible visible en recents, overlays o títulos externos cuando pueda evitarse.
+3. En dispositivos compartidos, el feed o contexto no muestra detalle del actor anterior después de logout, cambio de actor, bloqueo o expiración.
+4. Una alerta recibida por un principal técnico compartido no demuestra quién es el actor humano y no puede revelar el expediente hasta resolverlo.
+5. `document.title` puede mostrar conteos o estado genérico, nunca nombre del cliente, pedido, monto, documento, turno o mensaje.
+6. sonido y vibración no codifican categorías sensibles mediante patrones distinguibles.
+7. screenshots o sesiones de soporte no se consideran un canal alterno para conservar contenido de notificaciones.
+
+---
+
+#### 7. Plantillas visibles máximas por política
+
+Las siguientes frases representan el máximo de información visible permitido fuera de una superficie VENTO autenticada. La implementación podrá usar una redacción equivalente, pero no añadir datos restringidos.
+
+| Política            | Contenido visible máximo en push / dispositivo / navegador                                                     |
+| ------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `NOTIFY-POLICY-001` | **Título:** `Nueva comunicación en ANIMA`. **Cuerpo:** `Tienes una nueva comunicación para revisar.`           |
+| `NOTIFY-POLICY-002` | **Título:** `Documento pendiente en ANIMA`. **Cuerpo:** `Tienes un documento que requiere revisión.`           |
+| `NOTIFY-POLICY-003` | **Título:** `Programación disponible en ANIMA`. **Cuerpo:** `Revisa tu programación vigente en la aplicación.` |
+| `NOTIFY-POLICY-004` | **Título:** `Cambio en tu programación`. **Cuerpo:** `Revisa la versión vigente en ANIMA.`                     |
+| `NOTIFY-POLICY-005` | **Título:** `Alerta operativa en ANIMA`. **Cuerpo:** `Tienes una acción pendiente. Abre ANIMA.`                |
+| `NOTIFY-POLICY-006` | **Título:** `Alerta operativa en ANIMA`. **Cuerpo:** `Tienes una acción pendiente. Abre ANIMA.`                |
+| `NOTIFY-POLICY-007` | **Título:** `Actualización en ANIMA`. **Cuerpo:** `Tu registro fue actualizado. Revisa la aplicación.`         |
+| `NOTIFY-POLICY-008` | **Título:** `Nuevo mensaje de soporte`. **Cuerpo:** `Abre ANIMA para revisarlo.`                               |
+| `NOTIFY-POLICY-009` | `NO_APLICA` a push o alerta de dispositivo en la línea base aprobada.                                          |
+| `NOTIFY-POLICY-010` | **Título:** `Novedad en Vento Pass`. **Cuerpo:** `Tienes una nueva actualización en tu cuenta.`                |
+| `NOTIFY-POLICY-011` | **Título:** `Novedad en Vento Pass`. **Cuerpo:** `Tienes una novedad disponible en la aplicación.`             |
+| `NOTIFY-POLICY-012` | **Título:** `Vento Pass`. **Cuerpo:** `Tienes una nueva actividad disponible.`                                 |
+| `NOTIFY-POLICY-013` | **Título:** `Nuevo mensaje sobre tu pedido`. **Cuerpo:** `Abre Vento Pass para revisarlo.`                     |
+| `NOTIFY-POLICY-014` | **Título:** `Nuevo pedido en Vento Pulso`. **Cuerpo:** `Hay un pedido que requiere atención.`                  |
+| `NOTIFY-POLICY-015` | **Título:** `Actualización en Vento Pulso`. **Cuerpo:** `Hay un pedido que requiere atención.`                 |
+
+Estas plantillas no alteran prioridad, vigencia ni canal. Una alerta `P1_URGENTE_OPERATIVA` puede usar mayor prominencia sin revelar más datos.
+
+---
+
+#### 8. Matriz materializada de privacidad por política
+
+| Regla                | Política            | Sensibilidad mínima                                                                                                         | Detalle dentro de VENTO autenticado                                                         | Exposición fuera de la superficie autenticada                                                                                                                                            | Campos expresamente excluidos                                                                                   | Resultado      |
+| -------------------- | ------------------- | --------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------- | -------------- |
+| `NOTIFY-PRIVACY-001` | `NOTIFY-POLICY-001` | `S1_INTERNAL`, con elevación según el contenido publicado                                                                   | Feed muestra únicamente la comunicación autorizada para esa audiencia.                      | Push usa plantilla genérica y una referencia opaca a la publicación.                                                                                                                     | título libre, cuerpo, audiencia, sede, rol, nombres o adjuntos no se copian al push.                            | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-002` | `NOTIFY-POLICY-002` | `S3_RESTRICTED`                                                                                                             | ANIMA puede mostrar tipo, estado y fecha necesarios después de autorización documental.     | Push y notificación local son genéricos.                                                                                                                                                 | nombre/tipo específico del documento, vencimiento exacto, titular, identificadores personales y adjuntos.       | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-003` | `NOTIFY-POLICY-003` | `S3_RESTRICTED`                                                                                                             | ANIMA muestra la asignación publicada vigente al trabajador autorizado.                     | Push comunica únicamente que existe programación disponible.                                                                                                                             | fecha, hora, sede, área, función, compañeros y detalle de cobertura.                                            | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-004` | `NOTIFY-POLICY-004` | `S3_RESTRICTED`                                                                                                             | ANIMA muestra el cambio material y versión vigente según autorización.                      | Push comunica que hubo un cambio y obliga a abrir ANIMA.                                                                                                                                 | antes/después de horario, sede, área, función y demás detalle laboral.                                          | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-005` | `NOTIFY-POLICY-005` | `S3_RESTRICTED`                                                                                                             | El contexto autenticado puede mostrar el turno y la acción que debe ejecutarse.             | Push usa alerta operativa genérica.                                                                                                                                                      | hora de fin, sede, estado de check-in, duración y cualquier geolocalización.                                    | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-006` | `NOTIFY-POLICY-006` | `S3_RESTRICTED`                                                                                                             | El contexto autenticado puede indicar que la sesión continúa abierta y la acción pendiente. | Push usa alerta operativa genérica.                                                                                                                                                      | sede, horario, duración abierta, supervisor, ubicación o detalle disciplinario.                                 | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-007` | `NOTIFY-POLICY-007` | `S3_RESTRICTED`                                                                                                             | ANIMA puede mostrar el check-out autoritativo y contexto permitido.                         | Notificación local solo informa que el registro fue actualizado.                                                                                                                         | coordenadas, geocerca, ruta, sede exacta, hora detallada cuando no sea necesaria fuera de la app.               | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-008` | `NOTIFY-POLICY-008` | `S3_RESTRICTED`, con elevación a `S4_HIGHLY_RESTRICTED` cuando el caso contenga secretos o evidencia especialmente sensible | Bandeja/caso muestra mensajes a participantes autorizados según la necesidad de conocer.    | Push nunca incluye vista previa del mensaje ni título libre del ticket.                                                                                                                  | body, ticket title, secreto, credencial, IP sensible, screenshot, diagnóstico completo y nombres no necesarios. | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-009` | `NOTIFY-POLICY-009` | identidad `S2_CONFIDENTIAL`; enlace de acción `S4_HIGHLY_RESTRICTED`                                                        | El proceso autorizado puede mostrar estado de invitación sin exponer el secreto de acceso.  | Correo contiene solo finalidad de invitación y enlace de acción seguro dirigido al destinatario.                                                                                         | rol, sede, supervisor, contraseña temporal, token en logs, token en respuestas de error o copias adicionales.   | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-010` | `NOTIFY-POLICY-010` | `S2_CONFIDENTIAL`                                                                                                           | PASS puede mostrar el nivel y detalle del perfil al cliente autenticado.                    | Notificación local utiliza novedad genérica.                                                                                                                                             | tier concreto, saldo, puntos, gasto, historial, nombre o identificadores visibles fuera de la app.              | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-011` | `NOTIFY-POLICY-011` | `S2_CONFIDENTIAL`                                                                                                           | PASS puede mostrar la recompensa y elegibilidad dentro del perfil autorizado.               | Notificación local utiliza novedad genérica.                                                                                                                                             | producto específico, puntos requeridos/disponibles, saldo o comportamiento de compra fuera de la app.           | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-012` | `NOTIFY-POLICY-012` | `S2_CONFIDENTIAL`                                                                                                           | PASS muestra la oportunidad de feedback y contexto mínimo después de autenticación.         | Notificación local no revela redención, producto, sede ni compra.                                                                                                                        | redemption id visible, producto, valor, sede, fecha o historial de consumo fuera de la app.                     | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-013` | `NOTIFY-POLICY-013` | `S2_CONFIDENTIAL`, con elevación por el contenido de conversación                                                           | Inbox muestra el mensaje completo únicamente a participantes autorizados.                   | Push PASS nunca copia el cuerpo ni la etiqueta del pedido. Mensajería externa solo transporta el contenido destinado deliberadamente a esa contraparte y sin enriquecimiento automático. | preview de chat, order label, total, dirección, teléfono, pago, fidelización y datos de otras conversaciones.   | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-014` | `NOTIFY-POLICY-014` | `S2_CONFIDENTIAL`, con campos de pedido que pueden elevarse a `S3_RESTRICTED`                                               | PULSO autenticado muestra los datos mínimos requeridos para operar el pedido.               | Notification API usa texto genérico y no muestra monto ni detalle del pedido.                                                                                                            | total, identidad, dirección, teléfono, productos, notas, pago y otros datos del pedido fuera de la app.         | `ESPECIFICADO` |
+| `NOTIFY-PRIVACY-015` | `NOTIFY-POLICY-015` | `S3_RESTRICTED`                                                                                                             | PULSO autenticado muestra estado de pago y datos necesarios según autorización.             | Notification API solo indica una actualización operativa del pedido.                                                                                                                     | monto, instrumento, referencia, pagador, dirección, teléfono y detalle financiero fuera de la app.              | `ESPECIFICADO` |
+
+---
+
+#### 9. Reglas para conversación y texto libre
+
+Los mensajes de soporte y pedido son contenido libre y no pueden clasificarse únicamente por el nombre del canal.
+
+Reglas:
+
+1. el mensaje completo se consulta desde su conversación o caso propietario;
+2. push, badge, título de ventana y Notification API no copian el cuerpo;
+3. no se generan previews automáticos;
+4. el servicio de notificaciones no indexa ni conserva el cuerpo para reintento cuando una referencia segura sea suficiente;
+5. si el cuerpo contiene un secreto, token, credencial o dato `S4`, no se usa ese contenido en canales externos o de dispositivo;
+6. el texto de soporte no se incluye en logs de transporte;
+7. el texto de pedido no se incluye en receipts, métricas o claves de deduplicación en claro;
+8. búsquedas o depuración usan referencia de mensaje, no su contenido;
+9. un archivo adjunto no se convierte en contenido de notificación;
+10. la sanitización para presentación no sustituye la autorización sobre el mensaje original.
+
+---
+
+#### 10. Regla especial del enlace de invitación
+
+El enlace de incorporación de `NOTIFY-POLICY-009` es un artefacto de autenticación.
+
+Tratamiento obligatorio:
+
+```text
+GENERACIÓN AUTORIZADA
+        ↓
+ARTEFACTO DE ACCIÓN S4
+        ↓
+CUERPO DEL CORREO DIRIGIDO AL DESTINATARIO
+        ↓
+CONSUMO EN SUPERFICIE DE AUTENTICACIÓN
+        ↓
+NO REUTILIZACIÓN NI COPIA EN TELEMETRÍA
+```
+
+Queda prohibido:
+
+- registrar el enlace completo;
+- registrar el token o `token_hash` original en mensajes de log;
+- enviar el enlace por push;
+- copiarlo a mensajería externa;
+- incluirlo en títulos de error;
+- incluirlo en analytics;
+- usarlo como identificador de correlación;
+- exponerlo a otro destinatario mediante CC/BCC automático;
+- conservarlo en metadata ordinaria cuando un hash no reversible o referencia interna sea suficiente.
+
+El proveedor de correo puede procesar el enlace porque forma parte indispensable del artefacto entregado; esa excepción no autoriza a replicarlo en otros sistemas.
+
+---
+
+#### 11. Exposición de errores y fallos de entrega
+
+El detalle permitido depende del receptor del error.
+
+| Receptor            | Permitido                                                                                                                                            | Prohibido                                                                                                                                                     |
+| ------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| Destinatario final  | mensaje genérico y accionable, estado de la acción propia y canal afectado cuando sea útil                                                           | stack trace, proveedor, token, contacto de terceros, contenido de otra persona, cuerpo crudo del error                                                        |
+| Operador autorizado | clase canónica de fallo, política, canal, intento, timestamp, código/status de proveedor, `provider_request_id`, referencia enmascarada del endpoint | cuerpo de mensaje, token completo, enlace de invitación, headers, secretos, payload empresarial completo                                                      |
+| Proveedor           | campos mínimos requeridos para transportar o diagnosticar esa solicitud concreta                                                                     | expediente, autorizaciones internas, datos de otros destinatarios, objetos completos de cliente/pedido/documento                                              |
+| Log / traza         | IDs opacos, hash, código canónico, resultado técnico, timestamps y correlación                                                                       | cuerpo visible, preview, email/teléfono en claro cuando una referencia baste, token, URL secreta, credencial, respuesta cruda que pueda ecoar datos sensibles |
+
+Reglas adicionales:
+
+1. una respuesta cruda de proveedor se normaliza mediante allowlist antes de persistirse;
+2. `error.message` no se considera seguro por defecto;
+3. un error `4xx` no debe devolver el payload rechazado al usuario;
+4. screenshots de consola o soporte heredan la sensibilidad del dato visible;
+5. depurar un fallo no autoriza a registrar temporalmente secretos;
+6. `NOTIFY-ARC-010` podrá medir códigos, estados y latencias, pero no ampliar el contenido permitido.
+
+---
+
+#### 12. Reconciliación con la implementación actual
+
+La revisión técnica actual identifica diferencias concretas entre el estado implementado y el contrato objetivo.
+
+| Superficie actual                         | Evidencia observable                                                                                       | Resultado frente a esta tarea                                                                              | Propietario de materialización                                                                   |
+| ----------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------ |
+| Push de novedades ANIMA                   | el cuerpo usa el título libre de la publicación                                                            | `BRECHA_DE_MINIMIZACION`: el título puede revelar contenido interno en lock screen                         | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` cuando el alcance incluya notificaciones |
+| Push y notificación local de documentos   | muestran nombre/tipo del documento y fecha exacta de vencimiento                                           | `BRECHA_DE_MINIMIZACION`: deben usar contenido genérico fuera de ANIMA autenticada                         | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
+| Push de publicación/cambio de turno       | muestra fecha y rango horario; el payload transporta `shift_date`                                          | `BRECHA_DE_MINIMIZACION`: horario y fecha salen de la superficie autenticada sin necesidad                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
+| Recordatorios runtime de turno            | muestran sede y hecho de turno abierto/próximo a finalizar; payload conserva fecha                         | `BRECHA_DE_MINIMIZACION`: estado laboral y sede deben quedar dentro de ANIMA                               | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
+| Push de soporte                           | el cuerpo usa hasta 120 caracteres del mensaje o el título del ticket                                      | `BRECHA_CRITICA_DE_PREVIEW`: el cuerpo de soporte no debe viajar en push                                   | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
+| Invitación por correo                     | el enlace de acción se transporta dentro del correo, como requiere el flujo                                | `COMPATIBLE_CON_RESTRICCION`: el enlace es `S4` y debe permanecer confinado al artefacto de correo         |
+| Error de Resend en invitación             | parte de la respuesta cruda puede persistirse en metadata y devolverse parcialmente                        | `BRECHA_DE_REDACCION`: debe normalizarse a código/status/request id seguro                                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
+| Push PASS de mensaje de pedido desplegado | muestra etiqueta de pedido y preview de hasta 140 caracteres del mensaje                                   | `BRECHA_CRITICA_DE_PREVIEW`: push debe ser genérico y recuperar el mensaje tras autenticación              | `SUPA-TRANS-007` para paridad de fuente; implementación física en el alcance aprobado            |
+| PASS local                                | el contrato cliente admite `productName`, `siteName`, `tier`, `orderLabel` y otros datos en notificaciones | `BRECHA_DE_GOBIERNO_DE_PRODUCTOR`: cada productor debe limitar visible y payload a la matriz de esta tarea | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
+| Notification API de PULSO para pedido     | muestra tipo de fulfillment y total                                                                        | `BRECHA_DE_MINIMIZACION`: la notificación del navegador debe ser genérica                                  | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
+| Notification API de PULSO para pago       | muestra condición de domicilio y monto                                                                     | `BRECHA_DE_MINIMIZACION_FINANCIERA`: el monto no sale de PULSO autenticado                                 | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`                                          |
+
+Estas brechas no autorizan modificaciones físicas durante `NOTIFY-ARC-009`. La tarea fija el resultado objetivo que deberá consumir el alcance de implementación correspondiente.
+
+---
+
+#### 13. Reglas de tercero y proveedor
+
+1. Expo, Resend y cualquier proveedor futuro son procesadores de transporte, no fuentes de verdad.
+2. El proveedor recibe solo el mínimo requerido por el canal.
+3. Un cambio de proveedor no permite ampliar el payload.
+4. La información interna de autorización, roles, RLS, responsables o contexto no se envía al proveedor salvo un campo estrictamente requerido y justificado.
+5. El token push se trata como endpoint sensible y no se expone en logs ordinarios.
+6. El correo y el contacto externo se usan solo para la finalidad autorizada.
+7. Las credenciales del proveedor son `S4_HIGHLY_RESTRICTED` y nunca se mezclan con datos empresariales.
+8. Un receipt de proveedor conserva correlación mediante ID técnico, no mediante copia del mensaje.
+9. Un sandbox no recibe datos productivos íntegros para probar notificaciones.
+10. El adaptador externo de `NOTIFY-POLICY-013` no recibe el objeto completo de pedido.
+
+---
+
+#### 14. Propagación hacia reintentos y conciliación
+
+Las reglas de `NOTIFY-ARC-008` conservan el mismo límite de contenido en todos los intentos.
+
+1. el primer intento y los reintentos transportan la misma proyección mínima;
+2. un reintento no añade campos “para ayudar a diagnosticar”;
+3. `DELIVERY_UNKNOWN` se reconcilia por IDs y receipts, no por copia de contenido;
+4. `DELIVERY_EXHAUSTED` no conserva el cuerpo del mensaje como evidencia;
+5. un endpoint inválido se identifica por referencia o fingerprint seguro;
+6. la cola o registro futuro de intentos guarda hash del contenido lógico, no el contenido sensible cuando una referencia sea suficiente;
+7. recuperación manual consulta el recurso original con autorización nueva;
+8. fallos de red no degradan la clasificación;
+9. una copia temporal para retry hereda clasificación y retención del dato original;
+10. la eliminación de una proyección temporal no elimina la evidencia mínima de que existió un intento, cuando la política de trazabilidad lo requiera.
+
+---
+
+#### 15. Reconciliación cuantitativa
+
+##### 15.1. Cobertura de políticas
+
+| Métrica                           |    Resultado |
+| --------------------------------- | -----------: |
+| Políticas recibidas               |       **15** |
+| Reglas `NOTIFY-PRIVACY-*`         |       **15** |
+| Políticas sin regla               |        **0** |
+| Políticas duplicadas              |        **0** |
+| Familias AS-IS cubiertas          | **16 de 16** |
+| Canales aprobados modificados     |        **0** |
+| Preferencias modificadas          |        **0** |
+| Reglas de atención modificadas    |        **0** |
+| Reglas de resiliencia modificadas |        **0** |
+
+##### 15.2. Sensibilidad mínima por política
+
+| Clase mínima                                               | Políticas |
+| ---------------------------------------------------------- | --------: |
+| `S1_INTERNAL`                                              |     **1** |
+| `S2_CONFIDENTIAL`                                          |     **5** |
+| `S3_RESTRICTED`                                            |     **8** |
+| `S4_HIGHLY_RESTRICTED` como clase dominante de la política |     **1** |
+| **Total**                                                  |    **15** |
+
+La política de invitación se cuenta en `S4_HIGHLY_RESTRICTED` por su artefacto de acción. Otras políticas pueden elevar campos particulares a `S4` sin cambiar su clase mínima de fila.
+
+##### 15.3. Exposición exterior
+
+```text
+POLÍTICAS CON PUSH / ALERTA / NAVEGADOR Y CONTENIDO GENÉRICO: 14
+POLÍTICAS CON CORREO PRIMARIO: 1
+POLÍTICAS CON MENSAJERÍA EXTERNA CONDICIONAL: 1
+PREVIEWS DE CHAT O SOPORTE PERMITIDOS EN PUSH: 0
+MONTOS PERMITIDOS EN NOTIFICACIÓN DE NAVEGADOR: 0
+HORARIOS LABORALES PERMITIDOS EN LOCK SCREEN: 0
+SECRETOS PERMITIDOS EN LOGS: 0
+CAMBIOS DE CANAL AUTORIZADOS POR PRIVACIDAD: 0
+DECISIONES ABIERTAS DENTRO DE NOTIFY-ARC-009: 0
+```
+
+El conteo de exposición exterior no se suma de forma exclusiva porque una política puede poseer más de un canal.
+
+---
+
+#### 16. Cobertura de controles heredados
+
+`NOTIFY-ARC-009` especializa controles ya aprobados:
+
+- `NFR-REQ-005` incorpora `TREQ-PROC-325` a `TREQ-PROC-354`, con cobertura explícita de minimización, clasificación `S0` a `S4`, UI, dispositivos compartidos, notificaciones, logs, errores, terceros, secretos y pruebas de exposición;
+- `TREQ-INTEGRATION-032` separa notificación humana, evento, auditoría y log técnico;
+- `TREQ-INTEGRATION-033` conserva sensibilidad, alcance, esquema y traza en el sobre correlacionable;
+- `TREQ-INTEGRATION-034` exige payload específico mínimo y referencial y prohíbe copiar información personal completa, documentos, datos médicos, credenciales o datos bancarios cuando una referencia protegida sea suficiente.
+
+Esta tarea no modifica el alcance de esos controles; los materializa para las quince políticas del servicio de notificaciones.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa para el servicio de notificaciones comportamientos de privacidad ya protegidos por el contrato transversal vigente: clasificación por sensibilidad, minimización de proyección, protección de notificaciones y dispositivos compartidos, exclusión de secretos en logs, reducción de payloads, manejo de terceros y pruebas negativas de exposición. No introduce una categoría de riesgo o comportamiento verificable que no esté ya cubierta por esos controles y no implementa una superficie física nueva.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 18. Decisiones posteriores reservadas y propietarios exactos
+
+| Decisión no tomada                                                                                            | Tarea propietaria                                                                       |
+| ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| Métricas, SLI, trazas consolidadas, auditoría y evidencia operacional de entrega                              | `NOTIFY-ARC-010`                                                                        |
+| Implementación física de plantillas, minimización de payload, redacción de errores y persistencia de intentos | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` cuando ese alcance sea aprobado |
+| Paridad de fuente de `pass-register-push-token` y `order-message-notify` desplegadas                          | `SUPA-TRANS-007`                                                                        |
+| Clasificación definitiva de información, custodios, consentimiento, retención y derechos                      | tareas `INFO-DOM-*` y `NFR-REQ-006` ya propietarias de esas decisiones                  |
+
+`NOTIFY-ARC-010` recibe el límite explícito de que métricas y auditoría no podrán incorporar contenido que esta tarea haya prohibido.
+
+---
+
+#### 19. Decisiones canónicas consolidadas
+
+1. Ninguna de las quince políticas se presume pública.
+2. La clasificación `S0_PUBLIC` a `S4_HIGHLY_RESTRICTED` de `NFR-REQ-005` gobierna notificaciones.
+3. La autorización para recibir no equivale a autorización para exponer todo el contenido en el canal.
+4. Push, notificación local y Notification API se tratan como superficies potencialmente visibles a terceros.
+5. Esas superficies usan contenido genérico por defecto.
+6. El detalle se recupera dentro de VENTO después de autenticar y reautorizar.
+7. Los payloads externos transportan referencias opacas y no copias del recurso.
+8. No se envían horarios, sedes, estado de asistencia o geolocalización en vistas previas laborales.
+9. No se envían nombres o fechas específicas de documentos en vistas previas.
+10. No se envían previews de soporte.
+11. No se envían previews de chat de pedido.
+12. No se envían montos o detalles de pago en Notification API.
+13. El perfil de fidelización y consumo permanece dentro de PASS autenticado.
+14. El enlace de invitación es `S4` y solo se permite dentro del correo de incorporación dirigido al destinatario.
+15. El enlace de invitación no se registra en logs, analytics o metadata ordinaria.
+16. La mensajería externa de `NOTIFY-POLICY-013` recibe solo contenido dirigido a la contraparte y no agrega automáticamente datos del pedido.
+17. Logs e intentos conservan metadata de correlación, no cuerpos de mensaje.
+18. Respuestas crudas de proveedor se redaccionan mediante allowlist antes de persistirse.
+19. Un proveedor no recibe el objeto completo de trabajador, documento, ticket, cliente o pedido.
+20. Un cambio de proveedor no cambia el límite de contenido.
+21. Un reintento no aumenta el payload.
+22. Una falla de privacidad no habilita otro canal.
+23. Dispositivos compartidos no muestran detalle hasta resolver actor efectivo.
+24. `document.title`, audio y señales auxiliares no codifican contenido sensible.
+25. `NOTIFY-ARC-010` podrá medir estados y códigos, pero no almacenar contenido prohibido.
+26. La implementación actual presenta brechas concretas de minimización que quedan identificadas con propietario y puerta de implementación.
+27. Esta tarea no modifica código, Supabase, proveedores, secretos ni configuración.
+28. Esta tarea no crea ni modifica requisitos de prueba.
+
+---
+
+#### 20. Criterios de aceptación
+
+- [x] las 15 políticas heredadas están cubiertas exactamente una vez;
+- [x] las 15 reglas `NOTIFY-PRIVACY-*` son únicas;
+- [x] se conserva la clasificación `S0` a `S4` aprobada;
+- [x] cada política declara sensibilidad mínima;
+- [x] cada política declara detalle permitido en VENTO autenticado;
+- [x] cada política declara exposición permitida fuera de la superficie autenticada;
+- [x] cada política declara campos excluidos;
+- [x] push y notificación local se tratan como superficies observables por terceros;
+- [x] la seguridad no depende de la configuración de previews del sistema operativo;
+- [x] se define payload técnico mínimo;
+- [x] secretos quedan fuera de push, logs y analytics;
+- [x] documentos laborales no exponen nombre ni vencimiento exacto en lock screen;
+- [x] turnos no exponen horario, sede ni estado de asistencia en lock screen;
+- [x] geolocalización no se expone en notificación;
+- [x] soporte no expone preview;
+- [x] chat de pedido no expone preview;
+- [x] PULSO no expone monto en Notification API;
+- [x] fidelización no expone saldo, puntos o perfil en superficie externa;
+- [x] el correo de invitación puede transportar exclusivamente su artefacto de acción necesario;
+- [x] el artefacto de acción no se reproduce en telemetría;
+- [x] mensajería externa no recibe enriquecimiento automático del pedido;
+- [x] se define exposición de errores para usuario, operador, proveedor y log;
+- [x] respuestas crudas de proveedor no se consideran seguras por defecto;
+- [x] reintentos conservan la misma minimización;
+- [x] no se cambia ningún canal ni preferencia;
+- [x] no se redefine lectura, confirmación o escalamiento;
+- [x] no se redefinen reintentos ni contingencia;
+- [x] se identifican brechas actuales sin implementar cambios físicos;
+- [x] no se definen métricas ni SLI;
+- [x] no se modifica código ni Supabase;
+- [x] la tarea genera cero cambios en requisitos de prueba;
+- [x] `NOTIFY-ARC-010` permanece únicamente reservada.
+
+---
+
+#### 21. Handoff cerrado hacia NOTIFY-ARC-010
+
+`NOTIFY-ARC-009` entrega quince reglas con sensibilidad, exposición por canal, payload mínimo, límites de pantalla bloqueada, tratamiento de secretos, errores, proveedores y reintentos definidos.
+
+`NOTIFY-ARC-010` recibe exclusivamente la responsabilidad de definir:
+
+- métricas de intento, aceptación, confirmación técnica, error, agotamiento y recuperación;
+- trazas y correlación;
+- SLI y agregaciones;
+- auditoría de entrega;
+- evidencia operativa y consulta autorizada.
+
+`NOTIFY-ARC-010` no recibe autorización para registrar cuerpos de mensajes, previews, secretos, tokens, enlaces de invitación, montos, horarios, datos de asistencia o cualquier otro contenido que `NOTIFY-ARC-009` haya excluido. Las métricas deberán operar sobre estados, códigos, referencias opacas y agregados compatibles con la clasificación aplicable.
+
+La aprobación de `NOTIFY-ARC-009` no inicia ni desarrolla `NOTIFY-ARC-010`.
+
+---
+
+#### 22. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia`
+
+TAREA ACTUAL APROBADA
+`NOTIFY-ARC-009 — Definir privacidad y contenido sensible`
+
+SIGUIENTE TAREA RESERVADA
+`NOTIFY-ARC-010 — Definir métricas y auditoría de entrega`
+
+
 ### [ ] NOTIFY-ARC-010 — Definir métricas y auditoría de entrega
