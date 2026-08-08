@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **615** |
+| Tareas aprobadas | **616** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **979** |
+| Tareas no iniciadas | **978** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **38.58% (615/1594)** |
+| Porcentaje de completamiento | **38.64% (616/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento** |
-| Tarea actual | **NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia** |
+| Última tarea aprobada | **NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia** |
+| Tarea actual | **NOTIFY-ARC-009 — Definir privacidad y contenido sensible** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NOTIFY-ARC-009 — Definir privacidad y contenido sensible** |
+| Siguiente tarea | **NOTIFY-ARC-010 — Definir métricas y auditoría de entrega** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 39 de 157 aprobadas; NOTIFY-ARC-008 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 40 de 157 aprobadas; NOTIFY-ARC-009 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NOTIFY-ARC-007` — Definir confirmación, lectura y escalamiento |
-| Tarea actual | `NOTIFY-ARC-008` — Definir reintentos, fallos y contingencia — **NO INICIADA** |
-| Siguiente tarea | `NOTIFY-ARC-009` — Definir privacidad y contenido sensible |
+| Última aprobada | `NOTIFY-ARC-008` — Definir reintentos, fallos y contingencia |
+| Tarea actual | `NOTIFY-ARC-009` — Definir privacidad y contenido sensible — **NO INICIADA** |
+| Siguiente tarea | `NOTIFY-ARC-010` — Definir métricas y auditoría de entrega |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 39 DE 157 APROBADAS — ACTUAL NOTIFY-ARC-008** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 40 DE 157 APROBADAS — ACTUAL NOTIFY-ARC-009** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento
-        ↓
-TAREA ACTUAL
 NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NOTIFY-ARC-009 — Definir privacidad y contenido sensible
         ↓
+SIGUIENTE TAREA RESERVADA
+NOTIFY-ARC-010 — Definir métricas y auditoría de entrega
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 39 de 157 tareas aprobadas
+CARRIL NEXO — 40 de 157 tareas aprobadas
 ```

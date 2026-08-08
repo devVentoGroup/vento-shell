@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **615** |
+| Aprobadas | **616** |
 | En propuesta | **0** |
-| No iniciadas | **979** |
+| No iniciadas | **978** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **38.58% (615/1594)** |
+| Porcentaje de completamiento | **38.64% (616/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NOTIFY-ARC-007` — Definir confirmación, lectura y escalamiento | ✅ APROBADA |
-| Tarea actual | `NOTIFY-ARC-008` — Definir reintentos, fallos y contingencia | ⬜ NO INICIADA |
-| Siguiente reservada | `NOTIFY-ARC-009` — Definir privacidad y contenido sensible | ⬜ NO INICIADA |
+| Última aprobada | `NOTIFY-ARC-008` — Definir reintentos, fallos y contingencia | ✅ APROBADA |
+| Tarea actual | `NOTIFY-ARC-009` — Definir privacidad y contenido sensible | ⬜ NO INICIADA |
+| Siguiente reservada | `NOTIFY-ARC-010` — Definir métricas y auditoría de entrega | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -515,7 +515,7 @@
 | ✅ APROBADA | `NOTIFY-ARC-005` | Definir canales internos, correo, push o mensajería externa | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ✅ APROBADA | `NOTIFY-ARC-006` | Definir preferencias sin ocultar alertas obligatorias | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ✅ APROBADA | `NOTIFY-ARC-007` | Definir confirmación, lectura y escalamiento | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
-| ⬜ NO INICIADA | `NOTIFY-ARC-008` | Definir reintentos, fallos y contingencia | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
+| ✅ APROBADA | `NOTIFY-ARC-008` | Definir reintentos, fallos y contingencia | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-009` | Definir privacidad y contenido sensible | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-010` | Definir métricas y auditoría de entrega | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ✅ APROBADA | `EVID-ARC-001` | Inventariar archivos y evidencia por proceso | `bloques/E4_SERVICIOS_TRANSVERSALES/06_ARCHIVOS_DOCUMENTOS_Y_EVIDENCIA.md` |

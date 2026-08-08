@@ -2254,6 +2254,714 @@ SIGUIENTE TAREA RESERVADA
 `NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia`
 
 
-### [ ] NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia
+### ✅ NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia
+
+**Estado:** APROBADA
+**Tarea anterior:** `NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento` — APROBADA
+**Tarea siguiente:** `NOTIFY-ARC-009 — Definir privacidad y contenido sensible` — RESERVADA
+**Tipo de tarea:** documental; matriz materializada de reintentos, clasificación de fallos, agotamiento, reconciliación y contingencia de entrega para las quince políticas de notificación aprobadas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, Edge Functions, tablas, RLS, migraciones, RPC, cron, colas, tokens, proveedores, secretos, aplicaciones ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir para cada `NOTIFY-POLICY-*` cómo se clasifica un fallo de entrega, qué intentos técnicos son legítimos, qué condiciones permiten reintentar, cuándo debe detenerse la recuperación, cómo se trata un resultado incierto, qué contingencia puede utilizarse sin inventar canales ni destinatarios y cómo se conserva una única necesidad semántica durante todo el ciclo de entrega, sin alterar origen, destinatario, prioridad, vigencia, deduplicación, canales, preferencias, lectura, confirmación, escalamiento, privacidad ni métricas.
+
+---
+
+#### 1. Resultado sustantivo
+
+`NOTIFY-ARC-008` queda documentalmente cerrada con:
+
+- 15 reglas `NOTIFY-RESILIENCE-001` a `NOTIFY-RESILIENCE-015`;
+- 15 políticas `NOTIFY-POLICY-001` a `NOTIFY-POLICY-015` cubiertas exactamente una vez;
+- 15 reglas de atención `NOTIFY-ATTENTION-001` a `NOTIFY-ATTENTION-015` preservadas;
+- 8 clases canónicas de fallo;
+- 5 perfiles técnicos de recuperación;
+- 10 estados conceptuales de entrega;
+- límites de intentos y edad definidos para transportes remotos;
+- tratamiento explícito de `UNRESOLVED_RECIPIENT`;
+- tratamiento explícito de timeout y resultado desconocido;
+- tratamiento explícito de endpoint inválido, rate limit, error permanente y configuración;
+- contingencia explícita por política;
+- prohibición de cambiar silenciosamente de canal, destinatario o prioridad ante un fallo;
+- 0 políticas sin decisión;
+- 0 políticas duplicadas;
+- 0 cambios físicos ejecutados;
+- 0 cambios en requisitos de prueba.
+
+Toda regla queda en estado documental `ESPECIFICADO`. Los intervalos definidos en esta tarea son ventanas técnicas de recuperación y no constituyen SLA empresarial, plazo de lectura ni condición de escalamiento humano.
+
+---
+
+#### 2. Entradas conservadas y fronteras inmutables
+
+La tarea consume sin reinterpretar:
+
+1. `NOTIFY-ARC-001`, con dieciséis familias AS-IS y los mecanismos técnicos observados;
+2. `NOTIFY-ARC-002`, con quince orígenes empresariales;
+3. `NOTIFY-ARC-003`, con quince reglas de destinatario y el resultado cerrado `UNRESOLVED_RECIPIENT`;
+4. `NOTIFY-ARC-004`, con prioridad, vigencia, identidad semántica y deduplicación;
+5. `NOTIFY-ARC-005`, con canales primarios, complementarios y condicionales;
+6. `NOTIFY-ARC-006`, con obligatoriedad, preferencia y separación de permisos técnicos;
+7. `NOTIFY-ARC-007`, con lectura, confirmación, efecto empresarial y escalamiento;
+8. `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-004`, `TREQ-INTEGRATION-023`, `TREQ-INTEGRATION-031`, `TREQ-INTEGRATION-032` y `TREQ-INTEGRATION-033`;
+9. `TREQ-CONT-003` y `TREQ-CONT-005`;
+10. la implementación actual de los emisores, clientes y superficies que materializan parte de estas políticas.
+
+Fronteras obligatorias:
+
+- reintentar no crea una nueva necesidad empresarial;
+- un intento técnico no es una notificación nueva;
+- un fallo de canal no cambia el destinatario;
+- un fallo de canal no activa escalamiento humano;
+- una falla de proveedor no convierte una comunicación opcional en obligatoria;
+- una falla de proveedor no convierte una comunicación obligatoria en opcional;
+- una contingencia solo puede usar canales ya autorizados para esa política;
+- la indisponibilidad de un canal no habilita correo, push o mensajería externa por inferencia;
+- la recuperación técnica no modifica la prioridad base;
+- la recuperación se detiene cuando la necesidad deja de estar vigente;
+- lectura, acuse y `PROCESS_EFFECT` siguen gobernados por `NOTIFY-ARC-007`;
+- contenido y minimización permanecen reservados a `NOTIFY-ARC-009`;
+- métricas, SLI y auditoría agregada permanecen reservados a `NOTIFY-ARC-010`.
+
+---
+
+#### 3. Identidad estable de proyección e intento
+
+La recuperación deberá distinguir dos identidades.
+
+##### 3.1. Proyección de entrega
+
+Una proyección representa una misma necesidad hacia un destinatario y una clase de canal:
+
+```text
+notification_occurrence
++ recipient_identity
++ channel_class
++ logical_revision
+= delivery_projection
+```
+
+La proyección conserva:
+
+- `origin_id`;
+- `policy_id`;
+- identidad de la ocurrencia;
+- destinatario resuelto;
+- clase de canal;
+- revisión lógica;
+- hash del contenido lógico que corresponda;
+- estado vigente de preferencia;
+- vigencia de la necesidad;
+- referencia al proceso o recurso;
+- clave estable de idempotencia.
+
+##### 3.2. Intento técnico
+
+Cada ejecución contra un endpoint, proveedor, navegador o mecanismo concreto es un intento de la misma proyección:
+
+```text
+delivery_projection
++ attempt_sequence
++ endpoint_or_adapter_reference
+= delivery_attempt
+```
+
+Reglas:
+
+1. el primer intento y todos sus reintentos comparten la misma identidad de proyección;
+2. cada intento tiene una identidad propia y un orden monotónico;
+3. el mismo identificador de proyección con el mismo contenido lógico nunca crea otra necesidad;
+4. el mismo identificador con contenido lógico incompatible produce conflicto y no se reenvía silenciosamente;
+5. una revisión empresarial nueva utiliza una nueva revisión lógica conforme a `NOTIFY-ARC-004`;
+6. un endpoint adicional del mismo destinatario no crea otra necesidad, pero sí un intento o proyección técnica correlacionada del mismo canal;
+7. un cambio de proveedor conserva la identidad de la necesidad y solo cambia el adaptador técnico;
+8. una contingencia conserva la misma ocurrencia raíz y el mismo destinatario; el canal cambia únicamente cuando ya estaba autorizado por `NOTIFY-ARC-005`.
+
+---
+
+#### 4. Estados conceptuales de entrega
+
+| Estado                | Significado                                                                                                                                          |
+| --------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `DELIVERY_PENDING`    | Existe una proyección elegible y todavía no comenzó su primer intento.                                                                               |
+| `DELIVERY_ATTEMPTING` | Existe un intento técnico en curso con identidad propia.                                                                                             |
+| `DELIVERY_ACCEPTED`   | El transportista o mecanismo aceptó el intento sin demostrar todavía lectura humana.                                                                 |
+| `DELIVERY_CONFIRMED`  | Existe una confirmación técnica posterior verificable del transportista cuando el canal la soporte.                                                  |
+| `DELIVERY_UNKNOWN`    | El intento pudo haber sido aceptado, pero no existe evidencia suficiente para clasificarlo como éxito o fallo.                                       |
+| `DELIVERY_RETRY_WAIT` | Existe un fallo reintentable y la proyección espera su siguiente intento permitido.                                                                  |
+| `DELIVERY_BLOCKED`    | Falta una condición necesaria que no debe resolverse mediante reintento ciego: destinatario, endpoint, permiso, configuración, contrato o adaptador. |
+| `DELIVERY_EXHAUSTED`  | Se alcanzó el límite técnico de intentos o edad sin confirmación suficiente para continuar automáticamente.                                          |
+| `DELIVERY_CANCELLED`  | La necesidad dejó de ser vigente, fue invalidada o el canal dejó de ser elegible antes de completar la recuperación.                                 |
+| `DELIVERY_SUPERSEDED` | Una revisión empresarial posterior sustituyó explícitamente la proyección anterior.                                                                  |
+
+Reglas:
+
+1. `DELIVERY_ACCEPTED` no equivale a `READ`.
+2. `DELIVERY_CONFIRMED` tampoco equivale a `READ`.
+3. `DELIVERY_UNKNOWN` nunca se convierte en éxito por ausencia de error.
+4. `DELIVERY_EXHAUSTED` no significa que el hecho empresarial haya fallado.
+5. `DELIVERY_BLOCKED` no habilita broadcast.
+6. `DELIVERY_CANCELLED` y `DELIVERY_SUPERSEDED` detienen todo intento posterior de la proyección afectada.
+7. un `PROCESS_EFFECT` que cierre la necesidad detiene nuevos intentos cuando la política ya no requiere entrega pendiente.
+8. una proyección opcional puede terminar sin bloquear otras proyecciones obligatorias o persistentes de la misma necesidad.
+9. una proyección obligatoria que quede bloqueada o agotada conserva explícitamente la condición de entrega no satisfecha.
+
+---
+
+#### 5. Taxonomía canónica de fallos
+
+| Clase                         | Casos incluidos                                                                                                                    | Reintento automático                                                     | Tratamiento obligatorio                                                                                                                       |
+| ----------------------------- | ---------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| `FAIL_TRANSIENT_TRANSPORT`    | error de red, conexión interrumpida antes de respuesta concluyente, `5xx`, indisponibilidad temporal del proveedor                 | Sí                                                                       | aplicar el perfil de recuperación de la política con idempotencia y jitter.                                                                   |
+| `FAIL_RATE_LIMITED`           | `429`, cuota temporal o limitación explícita                                                                                       | Sí                                                                       | respetar `Retry-After` o señal equivalente; nunca reintentar antes de esa frontera.                                                           |
+| `FAIL_UNKNOWN_OUTCOME`        | timeout después de iniciar envío, respuesta truncada, pérdida de conexión cuando el proveedor pudo haber recibido el mensaje       | Solo después de reconciliar o cuando el adaptador garantice idempotencia | consultar receipt, lookup o estado equivalente; si no existe forma segura de resolverlo, conservar `DELIVERY_UNKNOWN` y no duplicar a ciegas. |
+| `FAIL_PERMANENT_ENDPOINT`     | `DeviceNotRegistered`, token inválido, dirección inválida, endpoint revocado o contacto técnicamente rechazado de forma permanente | No sobre el mismo endpoint                                               | desactivar o excluir el endpoint inválido; continuar solo con otros endpoints ya válidos del mismo destinatario y canal.                      |
+| `FAIL_CONFIGURATION_CONTRACT` | secreto ausente, credencial inválida, payload rechazado, contrato inválido, plantilla no aceptada, `4xx` no reintentable           | No hasta corregir                                                        | bloquear la proyección; no culpar al destinatario ni cambiar de canal por inferencia.                                                         |
+| `FAIL_CHANNEL_UNAVAILABLE`    | permiso técnico denegado, navegador sin capacidad, aplicación no disponible, ningún endpoint elegible, adaptador externo ausente   | No por temporizador                                                      | mantener la necesidad y reevaluar cuando cambie la capacidad técnica, mientras siga vigente.                                                  |
+| `FAIL_UNRESOLVED_RECIPIENT`   | identidad, responsabilidad o contexto empresarial no resolubles de forma determinista                                              | No                                                                       | no enviar, no ampliar audiencia y reevaluar únicamente ante cambio autoritativo o conciliación controlada.                                    |
+| `FAIL_EXPIRED_OR_SUPERSEDED`  | necesidad vencida, cancelada, resuelta o sustituida por revisión posterior                                                         | No                                                                       | cancelar intentos pendientes y conservar la historia técnica ya producida.                                                                    |
+
+Un error desconocido deberá clasificarse conservadoramente como `FAIL_UNKNOWN_OUTCOME` o `FAIL_CONFIGURATION_CONTRACT`; nunca como éxito.
+
+---
+
+#### 6. Perfiles técnicos de recuperación
+
+##### 6.1. `RETRY_REMOTE_P1`
+
+Aplicable a proyecciones remotas de prioridad `P1_URGENTE_OPERATIVA`.
+
+Secuencia máxima:
+
+```text
+intento inicial
++ 15 segundos
++ 1 minuto
++ 5 minutos
++ 15 minutos
+```
+
+Reglas:
+
+- máximo: 5 intentos totales;
+- edad máxima desde el primer intento: 30 minutos;
+- nunca superar la vigencia empresarial de la necesidad;
+- usar jitter completo sobre cada espera programada;
+- `Retry-After` actúa como espera mínima obligatoria;
+- antes de cada intento se revalida vigencia, destinatario, preferencia, capacidad del canal y estado de resolución;
+- `FAIL_UNKNOWN_OUTCOME` exige reconciliación previa;
+- agotado el perfil, la proyección pasa a `DELIVERY_EXHAUSTED`.
+
+##### 6.2. `RETRY_REMOTE_P2`
+
+Aplicable a proyecciones remotas de prioridad `P2_ATENCION_PRIORITARIA`.
+
+Secuencia máxima:
+
+```text
+intento inicial
++ 1 minuto
++ 5 minutos
++ 20 minutos
++ 60 minutos
+```
+
+Reglas:
+
+- máximo: 5 intentos totales;
+- edad máxima: 2 horas;
+- nunca superar la vigencia empresarial;
+- jitter completo;
+- `Retry-After` como espera mínima;
+- mismas reglas de revalidación e incertidumbre de `RETRY_REMOTE_P1`.
+
+##### 6.3. `RETRY_EMAIL_P2`
+
+Aplicable al correo transaccional de `NOTIFY-POLICY-009`.
+
+Secuencia máxima:
+
+```text
+intento inicial
++ 5 minutos
++ 30 minutos
++ 2 horas
+```
+
+Reglas:
+
+- máximo: 4 intentos automáticos totales;
+- edad máxima: 6 horas;
+- nunca superar la vigencia de la invitación;
+- `429` y señales de proveedor respetan `Retry-After`;
+- dirección permanentemente rechazada bloquea la proyección;
+- después de agotamiento, cualquier reenvío deliberado requiere la acción autorizada del proceso de invitación y genera una nueva generación de entrega conforme a la política ya aprobada;
+- un reenvío manual no se disfraza como reintento automático anterior.
+
+##### 6.4. `RETRY_LOCAL_RECONCILE`
+
+Aplicable a bandejas, avisos contextuales, notificaciones locales y Notification API del navegador.
+
+No usa una secuencia temporal ciega.
+
+Reglas:
+
+- al recuperar sesión, foco, conectividad o suscripción, la aplicación vuelve a consultar la fuente autoritativa;
+- solo reconstruye la presentación si la necesidad continúa vigente y el destinatario sigue siendo válido;
+- una reconexión no crea otra ocurrencia;
+- si la superficie ya muestra el estado actual, no repite una alerta histórica vencida;
+- el fallo del permiso técnico no se interpreta como preferencia empresarial;
+- la recuperación local no activa canales remotos no autorizados.
+
+##### 6.5. `RETRY_EXTERNAL_P2`
+
+Aplicable únicamente a `CHANNEL_EXTERNAL_MESSAGING` de `NOTIFY-POLICY-013` cuando ya existe opt-in válido y adaptador aprobado.
+
+Secuencia máxima:
+
+```text
+intento inicial
++ 2 minutos
++ 10 minutos
++ 45 minutos
+```
+
+Reglas:
+
+- máximo: 4 intentos totales;
+- edad máxima: 2 horas;
+- nunca superar la vigencia de la conversación o mensaje;
+- exige clave idempotente o consulta de estado del proveedor;
+- si el adaptador no permite resolver un resultado incierto sin duplicar, `FAIL_UNKNOWN_OUTCOME` queda bloqueado para conciliación controlada;
+- el fallo de push no activa este canal;
+- el fallo de este canal no activa otro proveedor externo.
+
+Los límites anteriores son exclusivamente técnicos. No se utilizan como frontera de lectura, acuse, atención o escalamiento de `NOTIFY-ARC-007`.
+
+---
+
+#### 7. Reglas transversales de reintento
+
+1. **Idempotencia antes del primer envío.** Toda proyección reintentable obtiene su clave estable antes del intento inicial.
+2. **Un reintento conserva el mismo contenido lógico.** Si el contenido cambia materialmente, se crea una revisión explícita y la anterior puede quedar `DELIVERY_SUPERSEDED`.
+3. **Revalidación obligatoria.** Antes de cada intento se comprueban vigencia, destinatario, canal, preferencia, permiso/capacidad aplicables y resolución del proceso.
+4. **Sin retry storm.** El scheduler nunca ejecuta intentos simultáneos de la misma proyección.
+5. **Claim único.** Una implementación futura deberá usar claim atómico, bloqueo, versión, outbox/inbox o mecanismo equivalente para impedir carreras.
+6. **Jitter obligatorio.** Las esperas de red se dispersan dentro del intervalo definido para evitar sincronización masiva.
+7. **`Retry-After` prevalece como mínimo.** Si la espera indicada por proveedor supera la vigencia o edad máxima, no se fuerza otro intento.
+8. **`4xx` no es automáticamente reintentable.** Solo `429` o un código explícitamente clasificado por contrato puede reintentarse.
+9. **`5xx` es transitorio salvo evidencia contraria.**
+10. **Timeout no es fallo definitivo.** Si el envío pudo alcanzar al proveedor, se trata como resultado incierto.
+11. **No contar antes de confirmar.** El número de mensajes preparados o enviados al socket no puede convertirse por sí solo en cantidad entregada.
+12. **Endpoint inválido se retira.** No se insiste contra el mismo token o destino permanentemente inválido.
+13. **Otros endpoints del mismo destinatario son válidos.** Pueden intentarse siempre que ya sean elegibles para la misma clase de canal; no amplían audiencia.
+14. **Preferencia opcional se reevalúa.** Si el usuario deshabilita una proyección configurable, sus intentos pendientes se cancelan.
+15. **La necesidad vencida detiene la entrega.** No se envía contenido obsoleto para completar una cuota de reintentos.
+16. **El efecto empresarial puede terminar la recuperación.** Cuando `NOTIFY-ARC-007` define que un `PROCESS_EFFECT` resuelve la atención y ese efecto ya ocurrió, los intentos que ya no tengan finalidad se cancelan.
+17. **Escalamiento humano es independiente.** Un fallo técnico no activa `ESC_RESPONSIBILITY_CHAIN`.
+18. **Recuperación manual controlada.** Una proyección agotada puede reabrirse únicamente mediante una acción autorizada y trazable que conserve la ocurrencia raíz o cree la generación expresamente permitida por la política.
+19. **No borrar errores previos.** Un intento posterior exitoso no elimina los intentos fallidos anteriores.
+20. **Sin fuente competidora.** La contingencia no crea un nuevo hecho empresarial ni una segunda conversación, pedido, turno, documento o caso.
+
+---
+
+#### 8. Contingencia por clase de canal
+
+##### 8.1. `CHANNEL_INTERNAL_FEED_INBOX`
+
+- la fuente persistente de la conversación, feed o bandeja sigue siendo la superficie principal;
+- un fallo de push complementario no elimina ni duplica la entrada persistente;
+- reconexión o reapertura recalcula pendientes desde la fuente autoritativa;
+- el feed no se recrea desde receipts de push.
+
+##### 8.2. `CHANNEL_INTERNAL_CONTEXTUAL`
+
+- ante pérdida de Realtime o conectividad se muestra estado degradado cuando la superficie lo pueda detectar;
+- al recuperar conectividad se consulta la fuente durable y se reconstruye solo la condición vigente;
+- eventos históricos ya resueltos no producen alertas nuevas;
+- un cambio de pestaña o refresh no rearma la necesidad.
+
+##### 8.3. `CHANNEL_INTERNAL_DEVICE_ALERT`
+
+- si el permiso está denegado o la plataforma no soporta la capacidad, la proyección queda `DELIVERY_BLOCKED` o no aplicable según su modo de preferencia;
+- una notificación local fallida se reevalúa desde la fuente al siguiente ciclo autorizado;
+- no se crea push remoto por ausencia de notificación local.
+
+##### 8.4. `CHANNEL_PUSH_REMOTE`
+
+- se utilizan `RETRY_REMOTE_P1` o `RETRY_REMOTE_P2`;
+- cada endpoint se trata de forma independiente dentro del mismo destinatario;
+- `DeviceNotRegistered` desactiva ese endpoint;
+- respuestas inciertas se reconcilian antes de repetir;
+- receipts posteriores, cuando existan, actualizan el estado técnico pero no la lectura humana.
+
+##### 8.5. `CHANNEL_EMAIL`
+
+- se utiliza `RETRY_EMAIL_P2`;
+- rebote o dirección inválida no provoca sustitución automática por otro correo, push o mensajería;
+- una corrección de contacto exige la autoridad del proceso de incorporación;
+- el reenvío deliberado conserva su generación y conteo propios.
+
+##### 8.6. `CHANNEL_EXTERNAL_MESSAGING`
+
+- solo existe para la condición ya autorizada de `NOTIFY-POLICY-013`;
+- se utiliza `RETRY_EXTERNAL_P2` únicamente después de opt-in y adaptador aprobado;
+- ningún otro fallo del sistema habilita mensajería externa como salida de emergencia;
+- las respuestas del tercero no alteran el pedido sin pasar por su contrato empresarial autorizado.
+
+---
+
+#### 9. Tratamiento explícito de `UNRESOLVED_RECIPIENT`
+
+`UNRESOLVED_RECIPIENT` es un fallo previo al transporte y se trata como `FAIL_UNRESOLVED_RECIPIENT`.
+
+Reglas:
+
+1. no se crea un intento contra un destinatario aproximado;
+2. no se selecciona “todos”, gerencia, la sede completa ni el último usuario conocido;
+3. no se usa token, correo, teléfono, sesión, dispositivo o navegador como sustituto de identidad empresarial;
+4. la resolución se reevalúa únicamente cuando cambia una fuente autoritativa relevante o cuando una conciliación controlada vuelve a ejecutar la regla `NOTIFY-RECIPIENT-*`;
+5. si la necesidad vence antes de resolver destinatario, termina como `DELIVERY_CANCELLED`;
+6. si posteriormente aparece un destinatario válido mientras la necesidad sigue vigente, se crea la proyección para esa identidad sin alterar la ocurrencia original;
+7. el fallo queda disponible para la trazabilidad definida posteriormente por `NOTIFY-ARC-010`.
+
+---
+
+#### 10. Tratamiento de resultado incierto
+
+Un resultado incierto es el caso de mayor riesgo de duplicación.
+
+Orden obligatorio:
+
+```text
+RESULTADO INCIERTO
+        ↓
+NO SUPONER ÉXITO
+        ↓
+NO REENVIAR A CIEGAS
+        ↓
+CONSULTAR ESTADO O RECEIPT SI EL ADAPTADOR LO PERMITE
+        ↓
+SI EXISTE IDEMPOTENCIA FUERTE → REINTENTO SEGURO
+        ↓
+SI NO EXISTE MECANISMO SEGURO → DELIVERY_UNKNOWN
+        ↓
+CONCILIACIÓN CONTROLADA
+```
+
+Reglas:
+
+- un timeout anterior a iniciar el envío puede clasificarse como transitorio;
+- un timeout posterior a iniciar el envío es `FAIL_UNKNOWN_OUTCOME`;
+- parsear una respuesta incompleta no permite asumir fallo;
+- la ausencia de receipt tampoco permite asumir entrega;
+- una conciliación posterior puede cambiar `DELIVERY_UNKNOWN` a `DELIVERY_ACCEPTED`, `DELIVERY_CONFIRMED`, `DELIVERY_BLOCKED` o `DELIVERY_EXHAUSTED` según evidencia;
+- la reconciliación nunca modifica `READ`, `ACKNOWLEDGED` o `PROCESS_EFFECT`.
+
+---
+
+#### 11. Matriz materializada de resiliencia por política
+
+| Regla                   | Política            | Prioridad                 | Canales afectados                                                                 | Perfil / estrategia                                                                          | Fallo y contingencia permitida                                                                                                                                                                                                                     | Condición de detención                                                                                                                           | Resultado      |
+| ----------------------- | ------------------- | ------------------------- | --------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ | -------------- |
+| `NOTIFY-RESILIENCE-001` | `NOTIFY-POLICY-001` | `P2_ATENCION_PRIORITARIA` | feed obligatorio + push configurable                                              | feed: `RETRY_LOCAL_RECONCILE`; push habilitado: `RETRY_REMOTE_P2`                            | El feed persistente permanece disponible aunque falle push. Un push configurable agotado no activa correo ni canal externo.                                                                                                                        | publicación revocada, vencida, sustituida o push deshabilitado por preferencia.                                                                  | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-002` | `NOTIFY-POLICY-002` | `P2_ATENCION_PRIORITARIA` | push obligatorio + alerta local obligatoria cuando sea posible                    | push: `RETRY_REMOTE_P2`; local: `RETRY_LOCAL_RECONCILE`                                      | Cada proyección se recupera de forma independiente. Falta de token o permiso deja la proyección obligatoria como no satisfecha; no amplía destinatario ni crea correo.                                                                             | documento renovado, invalidado, sustituido, fuera de condición o fuera de vigencia.                                                              | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-003` | `NOTIFY-POLICY-003` | `P2_ATENCION_PRIORITARIA` | push obligatorio + contexto interno obligatorio                                   | push: `RETRY_REMOTE_P2`; contexto: `RETRY_LOCAL_RECONCILE`                                   | Si Realtime o cliente estuvo fuera de línea, el contexto se reconstruye desde la asignación publicada. El agotamiento de push no convierte el contexto en confirmación de lectura.                                                                 | asignación retirada, cancelada, finalizada, sustituida o necesidad ya confirmada conforme a `NOTIFY-ARC-007`.                                    | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-004` | `NOTIFY-POLICY-004` | `P1_URGENTE_OPERATIVA`    | push obligatorio + contexto interno obligatorio                                   | push: `RETRY_REMOTE_P1`; contexto: `RETRY_LOCAL_RECONCILE`                                   | Los intentos conservan la revisión exacta del turno. Una revisión más nueva deja la anterior `DELIVERY_SUPERSEDED`; nunca se reenvía una versión antigua para completar intentos.                                                                  | acuse o efecto válido, cancelación o nueva revisión autoritativa.                                                                                | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-005` | `NOTIFY-POLICY-005` | `P1_URGENTE_OPERATIVA`    | push obligatorio + contexto interno obligatorio                                   | push: `RETRY_REMOTE_P1`; contexto: `RETRY_LOCAL_RECONCILE`                                   | La recuperación solo opera dentro del episodio previo al fin. Cruzar la frontera que origina `NOTIFY-POLICY-006` cancela intentos restantes de `005`; la nueva política no es un reintento.                                                        | cierre, cancelación, corrección o transición empresarial hacia `NOTIFY-POLICY-006`.                                                              | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-006` | `NOTIFY-POLICY-006` | `P1_URGENTE_OPERATIVA`    | push obligatorio + contexto interno obligatorio                                   | push: `RETRY_REMOTE_P1`; contexto: `RETRY_LOCAL_RECONCILE`                                   | Se reintenta mientras la sesión continúe abierta y vigente. Fallo de canal no activa supervisión; el escalamiento de `NOTIFY-ARC-007` depende de su condición empresarial independiente.                                                           | cierre autoritativo, corrección, cancelación o pérdida de vigencia.                                                                              | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-007` | `NOTIFY-POLICY-007` | `P2_ATENCION_PRIORITARIA` | alerta local obligatoria + contexto interno obligatorio                           | `RETRY_LOCAL_RECONCILE`                                                                      | El check-out ya existe como hecho empresarial. Si la alerta local no puede mostrarse, la aplicación presenta el estado vigente al recuperar contexto; no se crea push remoto.                                                                      | efecto ya visible, necesidad invalidada o fin de vigencia.                                                                                       | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-008` | `NOTIFY-POLICY-008` | `P2_ATENCION_PRIORITARIA` | bandeja obligatoria + push configurable                                           | bandeja: `RETRY_LOCAL_RECONCILE`; push habilitado: `RETRY_REMOTE_P2`                         | El mensaje persistido permanece fuente de recuperación. Un fallo de push no pierde ni duplica el mensaje y no amplía el equipo de soporte.                                                                                                         | mensaje invalidado, contraparte deja de ser válida, caso resuelto según proceso o push deshabilitado.                                            | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-009` | `NOTIFY-POLICY-009` | `P2_ATENCION_PRIORITARIA` | correo obligatorio                                                                | `RETRY_EMAIL_P2`                                                                             | Fallo transitorio reintenta; dirección inválida o configuración bloquea. Tras agotamiento, un actor autorizado puede emitir un reenvío/generación conforme al proceso; no se cambia de canal.                                                      | invitación aceptada, expirada, revocada, cancelada o generación sustituida.                                                                      | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-010` | `NOTIFY-POLICY-010` | `P3_INFORMATIVA`          | alerta local + contexto, ambos configurables                                      | `RETRY_LOCAL_RECONCILE`                                                                      | Si la proyección está habilitada y falla localmente, se reevalúa al siguiente ciclo autorizado mientras el ascenso continúe vigente. No hay recuperación cuando la preferencia la deshabilita.                                                     | fin de vigencia o preferencia efectiva deshabilitada.                                                                                            | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-011` | `NOTIFY-POLICY-011` | `P3_INFORMATIVA`          | alerta local + contexto, ambos configurables                                      | `RETRY_LOCAL_RECONCILE`                                                                      | Reapertura o reconexión consulta elegibilidad actual. No se repite una recompensa que ya dejó de ser redimible y no se activa canal remoto.                                                                                                        | pérdida de elegibilidad, consumo, vencimiento o preferencia deshabilitada.                                                                       | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-012` | `NOTIFY-POLICY-012` | `P3_INFORMATIVA`          | contexto + alerta local, ambos configurables                                      | `RETRY_LOCAL_RECONCILE`                                                                      | La oportunidad se vuelve a presentar solo si el ciclo de feedback sigue vigente y habilitado; un fallo de modal o notificación no genera presión por otro canal.                                                                                   | ciclo consumido, cerrado, invalidado o preferencia deshabilitada.                                                                                | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-013` | `NOTIFY-POLICY-013` | `P2_ATENCION_PRIORITARIA` | conversación obligatoria + push PASS configurable + mensajería externa con opt-in | conversación: `RETRY_LOCAL_RECONCILE`; push: `RETRY_REMOTE_P2`; externo: `RETRY_EXTERNAL_P2` | La conversación persistida conserva el mensaje. Fallo de push no activa mensajería externa. Fallo externo no activa otro proveedor. La función PASS desplegada deberá adoptar la misma identidad e idempotencia cuando su fuente quede versionada. | mensaje invalidado, conversación cerrada sin entrega aplicable, destinatario deja de ser válido, preferencia deshabilitada o vigencia terminada. | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-014` | `NOTIFY-POLICY-014` | `P1_URGENTE_OPERATIVA`    | contexto obligatorio + alerta de dispositivo configurable                         | `RETRY_LOCAL_RECONCILE`                                                                      | Ante pérdida de Realtime, PULSO consulta pedidos autoritativos al recuperar conexión y vuelve a mostrar solo los que sigan accionables. La Notification API o sonido no se convierten en canal remoto.                                             | pedido deja de ser accionable, cambia de etapa, se cancela o existe el efecto empresarial de atención.                                           | `ESPECIFICADO` |
+| `NOTIFY-RESILIENCE-015` | `NOTIFY-POLICY-015` | `P1_URGENTE_OPERATIVA`    | contexto obligatorio + alerta de dispositivo configurable                         | `RETRY_LOCAL_RECONCILE`                                                                      | Ante pérdida de Realtime se reconcilia el estado autoritativo de pago y pedido. Solo se presenta de nuevo cuando la acción habilitada por el pago continúa pendiente; no se reemite una transición histórica ya atendida.                          | reversión válida, cambio de etapa, efecto empresarial de atención o pérdida de vigencia.                                                         | `ESPECIFICADO` |
+
+---
+
+#### 12. Reconciliación cuantitativa
+
+##### 12.1. Cobertura
+
+| Métrica                            |    Resultado |
+| ---------------------------------- | -----------: |
+| Políticas recibidas                |       **15** |
+| Reglas `NOTIFY-RESILIENCE-*`       |       **15** |
+| Políticas sin regla                |        **0** |
+| Políticas duplicadas               |        **0** |
+| Familias AS-IS cubiertas           | **16 de 16** |
+| Reglas de destinatario modificadas |        **0** |
+| Prioridades modificadas            |        **0** |
+| Canales modificados                |        **0** |
+| Preferencias modificadas           |        **0** |
+| Reglas de atención modificadas     |        **0** |
+
+##### 12.2. Prioridad heredada
+
+| Prioridad                 | Políticas |
+| ------------------------- | --------: |
+| `P1_URGENTE_OPERATIVA`    |     **5** |
+| `P2_ATENCION_PRIORITARIA` |     **7** |
+| `P3_INFORMATIVA`          |     **3** |
+| **Total**                 |    **15** |
+
+##### 12.3. Estrategias utilizadas
+
+| Estrategia              | Políticas que la utilizan |
+| ----------------------- | ------------------------: |
+| `RETRY_REMOTE_P1`       |                     **3** |
+| `RETRY_REMOTE_P2`       |                     **5** |
+| `RETRY_EMAIL_P2`        |                     **1** |
+| `RETRY_LOCAL_RECONCILE` |                    **14** |
+| `RETRY_EXTERNAL_P2`     |         **1 condicional** |
+
+Las cantidades de estrategias no se suman entre sí porque una política puede tener varias proyecciones autorizadas.
+
+##### 12.4. Integridad
+
+```text
+CLASES DE FALLO: 8
+PERFILES DE RECUPERACIÓN: 5
+ESTADOS DE ENTREGA: 10
+POLÍTICAS CON CONTINGENCIA EXPLÍCITA: 15
+CAMBIOS SILENCIOSOS DE CANAL AUTORIZADOS: 0
+BROADCAST POR FALLO AUTORIZADO: 0
+ESCALAMIENTOS HUMANOS ACTIVADOS POR FALLO TÉCNICO: 0
+DECISIONES ABIERTAS DENTRO DE NOTIFY-ARC-008: 0
+```
+
+---
+
+#### 13. Línea base técnica reconciliada
+
+La implementación observada demuestra mecanismos parciales de resiliencia, pero no un contrato transversal completo.
+
+##### 13.1. Push remoto
+
+`announcement-notify`, `document-alerts`, `shift-publish-notify`, `shift-runtime-processor`, `support-message-notify` y la función desplegada `order-message-notify` utilizan Expo Push y reconocen al menos el error permanente `DeviceNotRegistered`.
+
+La línea base actual:
+
+- puede desactivar tokens inválidos en varios emisores;
+- no materializa de forma transversal una identidad durable de proyección e intento;
+- no implementa de forma uniforme backoff, jitter, límite de edad ni `Retry-After`;
+- no reconcilia de forma uniforme resultados inciertos o receipts posteriores;
+- no debe interpretar el número de mensajes preparados como entrega confirmada.
+
+##### 13.2. Caso particular de `shift-runtime-processor`
+
+El procesador de turnos conserva `shift_runtime_events` para evitar repetir determinados recordatorios por turno.
+
+Sin embargo, la secuencia actual puede preparar un evento con estado `applied` y nota de push antes de disponer de una evidencia técnica durable equivalente al contrato definido en esta tarea. Un fallo HTTP o una excepción del proveedor se registra en logs, pero la función de envío no materializa un estado transversal de intento que permita reconciliar de forma exacta esa incertidumbre.
+
+Tratamiento objetivo:
+
+- el hecho de programar un recordatorio y el resultado de su entrega deberán permanecer separados;
+- `applied` no podrá significar simultáneamente “evaluación procesada” y “entrega confirmada”;
+- una ejecución posterior deberá identificar la proyección existente y no crear una segunda necesidad.
+
+Esta tarea no modifica el procesador.
+
+##### 13.3. Invitaciones por correo
+
+Las funciones de invitación ya conservan estados como `sent` y `failed`, `last_sent_at`, `resend_count`, canal y metadata, y existe una acción separada de reenvío.
+
+Tratamiento objetivo:
+
+- el envío automático seguirá el perfil `RETRY_EMAIL_P2`;
+- `failed` no podrá borrarse por un reenvío posterior;
+- el reenvío deliberado será una nueva generación controlada;
+- un fallo de Resend no activará otro canal.
+
+##### 13.4. Superficies locales e internas
+
+PASS, ANIMA y PULSO poseen notificaciones locales, bandejas, contexto interno, Realtime y permisos técnicos parciales.
+
+Tratamiento objetivo:
+
+- estas superficies usarán reconciliación desde la fuente durable;
+- un refresh, reconexión o reapertura no genera una nueva ocurrencia;
+- la ausencia de Notification API, permiso o módulo nativo no modifica la preferencia empresarial;
+- la recuperación de PULSO después de una interrupción debe consultar el estado actual del pedido en lugar de asumir que todos los eventos perdidos siguen siendo accionables.
+
+##### 13.5. Persistencia transversal
+
+El estado actual contiene registros específicos para tokens, eventos de runtime e invitaciones, pero no una única persistencia transversal materializada que represente proyección, intento, resultado incierto, espera, agotamiento y conciliación para todas las políticas.
+
+Ese vacío no se resuelve físicamente en esta fase. El contrato de esta tarea deberá ser consumido por el paquete de implementación que incluya el servicio de notificaciones.
+
+---
+
+#### 14. Reglas de agotamiento y recuperación controlada
+
+Cuando una proyección alcance `DELIVERY_EXHAUSTED`:
+
+1. no se reinicia automáticamente el contador;
+2. no se genera otra ocurrencia empresarial;
+3. no se cambia de destinatario;
+4. no se cambia de canal salvo que otra proyección ya estuviera autorizada;
+5. se conserva la posibilidad de conciliación posterior;
+6. si aparece evidencia de que un intento incierto fue aceptado, el estado técnico se corrige sin duplicar envío;
+7. si un actor autorizado solicita una nueva generación permitida por el proceso, se vincula explícitamente con la ocurrencia anterior;
+8. si la necesidad ya venció o fue resuelta, la recuperación se cancela;
+9. una falla agotada no activa por sí sola supervisión empresarial;
+10. el detalle y contenido que podrá exponerse en recuperación queda sujeto a `NOTIFY-ARC-009`.
+
+---
+
+#### 15. Reglas de contingencia sin canal inventado
+
+La contingencia respeta estrictamente las decisiones de `NOTIFY-ARC-005` y `NOTIFY-ARC-006`.
+
+Ejemplos normativos:
+
+- feed persistente + push configurable: el feed continúa siendo la superficie recuperable; no se inventa correo;
+- push obligatorio + contexto obligatorio: ambas proyecciones mantienen estado independiente; el fallo de push no hace que el contexto sea “entrega push exitosa”;
+- correo obligatorio: no se sustituye por SMS, push o mensajería;
+- contexto PULSO + alerta configurable: la recuperación se hace desde el pedido durable; no se crea un push inexistente;
+- conversación de pedido: el fallo del push de PASS no habilita mensajería externa;
+- mensajería externa de pedido: solo opera si la preferencia explícita y el adaptador ya estaban autorizados antes del fallo;
+- canal bloqueado por permiso del dispositivo: se registra capacidad no disponible; no se transforma en opt-out empresarial.
+
+---
+
+#### 16. Decisiones canónicas consolidadas
+
+1. Una necesidad, una proyección por destinatario y clase de canal, múltiples intentos técnicos.
+2. Reintentar nunca crea una nueva necesidad empresarial.
+3. Toda proyección reintentable obtiene una clave idempotente antes del primer intento.
+4. Todo intento tiene identidad y secuencia propias.
+5. El contenido lógico incompatible con la misma clave produce conflicto.
+6. Se definen diez estados conceptuales de entrega.
+7. Se definen ocho clases de fallo.
+8. Se definen cinco perfiles de recuperación.
+9. `P1` remoto usa hasta cinco intentos dentro de treinta minutos y la vigencia aplicable.
+10. `P2` remoto usa hasta cinco intentos dentro de dos horas y la vigencia aplicable.
+11. Correo usa hasta cuatro intentos automáticos dentro de seis horas y la vigencia de la invitación.
+12. Mensajería externa condicional usa hasta cuatro intentos dentro de dos horas y exige idempotencia o consulta de estado.
+13. Superficies internas y locales usan reconciliación de fuente, no temporizadores ciegos.
+14. `Retry-After` constituye espera mínima.
+15. Los intervalos técnicos no son SLA empresariales.
+16. `4xx` no reintentable bloquea; `429` puede reintentar.
+17. `5xx` se trata como transitorio salvo evidencia contraria.
+18. Timeout posterior al inicio del envío es resultado incierto.
+19. Un resultado incierto no se reenvía a ciegas.
+20. `DeviceNotRegistered` retira el endpoint afectado.
+21. Otros endpoints válidos del mismo destinatario pueden continuar sin ampliar audiencia.
+22. `UNRESOLVED_RECIPIENT` no genera transporte ni broadcast.
+23. Falta de canal no modifica prioridad ni preferencia.
+24. Fallo técnico no activa escalamiento humano.
+25. Contingencia solo utiliza canales previamente autorizados.
+26. Push fallido de PASS no activa mensajería externa.
+27. Realtime perdido se recupera consultando estado durable actual.
+28. Una revisión nueva cancela intentos de la revisión sustituida.
+29. Una necesidad vencida o resuelta no sigue reintentándose.
+30. Un intento exitoso posterior no borra fallos anteriores.
+31. Conteo de mensajes preparados no equivale a entrega confirmada.
+32. La línea base actual posee resiliencia parcial y requiere materializar este contrato durante implementación.
+33. Esta tarea no crea tablas, colas, funciones, jobs, RPC, migraciones, proveedores ni despliegues.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la conducta definida por `NOTIFY-ARC-008` ya está protegida transversalmente por requisitos vigentes. `TREQ-INTEGRATION-003` exige identidad estable, idempotencia, backoff con jitter, límites de intentos y edad, respeto de `Retry-After`, tratamiento de timeout desconocido, reconciliación, cola de fallos y recuperación controlada. `TREQ-INTEGRATION-004` exige trazabilidad de intento, resultado y error sin pérdida silenciosa ni duplicación. `TREQ-INTEGRATION-023` protege degradación, failover autorizado, reintento idempotente y recuperación entre proveedores y canales. `TREQ-INTEGRATION-031`, `TREQ-INTEGRATION-032` y `TREQ-INTEGRATION-033` separan reintento técnico, notificación humana y sobre correlacionable. `TREQ-CONT-003` y `TREQ-CONT-005` protegen contingencia sin segunda fuente y reconciliación idempotente posterior.
+
+`NOTIFY-ARC-008` especializa esas reglas para las quince políticas aprobadas, pero no crea un comportamiento transversal distinto ni modifica los requisitos existentes.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 18. Decisiones posteriores reservadas y propietarios exactos
+
+| Decisión no tomada                                                                                                 | Tarea propietaria                                                                       |
+| ------------------------------------------------------------------------------------------------------------------ | --------------------------------------------------------------------------------------- |
+| Minimización del contenido de notificación, contenido sensible, exposición de errores y datos permitidos por canal | `NOTIFY-ARC-009`                                                                        |
+| Métricas, SLI, trazas consolidadas, auditoría de entrega y evidencia operacional                                   | `NOTIFY-ARC-010`                                                                        |
+| Implementación física del registro de proyecciones, intentos, conciliación, scheduler y recuperación               | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` cuando ese alcance sea aprobado |
+| Paridad de fuente de las funciones PASS desplegadas y adaptación coordinada de consumidores                        | `SUPA-TRANS-007`                                                                        |
+
+No queda una decisión de reintento, clasificación de fallo, agotamiento o contingencia sin propietario dentro de `NOTIFY-ARC-008`.
+
+---
+
+#### 19. Criterios de aceptación
+
+- [x] las 15 políticas heredadas están cubiertas exactamente una vez;
+- [x] las 15 reglas `NOTIFY-RESILIENCE-*` son únicas;
+- [x] cada política define tratamiento de fallo y contingencia;
+- [x] se distingue proyección de entrega de intento técnico;
+- [x] toda proyección reintentable conserva identidad estable;
+- [x] los reintentos no crean nuevas necesidades;
+- [x] se definen estados para pendiente, intento, aceptación, confirmación técnica, incertidumbre, espera, bloqueo, agotamiento, cancelación y sustitución;
+- [x] se distingue error transitorio de error permanente;
+- [x] se distingue rate limit de error genérico;
+- [x] se distingue resultado incierto de fallo confirmado;
+- [x] timeout posterior al envío no se reintenta a ciegas;
+- [x] `Retry-After` se respeta;
+- [x] existen límites de intentos y edad;
+- [x] los límites técnicos nunca exceden la vigencia empresarial;
+- [x] los límites técnicos no se usan como SLA de lectura o escalamiento;
+- [x] endpoint permanentemente inválido deja de recibir intentos;
+- [x] `UNRESOLVED_RECIPIENT` falla cerrado;
+- [x] ausencia de endpoint no amplía audiencia;
+- [x] una falla de proveedor no habilita otro canal por inferencia;
+- [x] la mensajería externa no funciona como salida general;
+- [x] las preferencias configurables permanecen vigentes durante recuperación;
+- [x] una política obligatoria no se convierte en opcional por fallo técnico;
+- [x] Realtime se recupera mediante reconciliación de estado durable;
+- [x] una revisión sustituida deja de reintentarse;
+- [x] una necesidad vencida deja de reintentarse;
+- [x] un `PROCESS_EFFECT` que cierre la necesidad detiene intentos sin finalidad;
+- [x] un fallo técnico no activa escalamiento humano;
+- [x] un éxito posterior no borra los fallos anteriores;
+- [x] se registra la brecha conceptual de la implementación actual sin modificarla;
+- [x] no se define privacidad ni contenido sensible;
+- [x] no se definen métricas ni SLI;
+- [x] no se modifica código ni Supabase;
+- [x] la tarea genera cero cambios en requisitos de prueba;
+- [x] `NOTIFY-ARC-009` permanece únicamente reservada.
+
+---
+
+#### 20. Handoff cerrado hacia NOTIFY-ARC-009
+
+`NOTIFY-ARC-008` entrega quince reglas con identidad de proyección, tratamiento de intento, clasificación de fallo, perfil de recuperación, agotamiento y contingencia definidos.
+
+`NOTIFY-ARC-009` recibe exclusivamente la responsabilidad de definir:
+
+- qué contenido puede incluir cada canal;
+- qué campos sensibles deben omitirse;
+- qué referencias pueden sustituir datos completos;
+- qué información puede aparecer en pantalla bloqueada, push, correo o canal externo;
+- qué detalle de error puede exponerse a usuario, operador, proveedor o log;
+- cómo se minimiza el contenido de intentos y conciliaciones.
+
+`NOTIFY-ARC-009` no recibe autorización para cambiar las secuencias de reintento, clasificación de fallos, canales, destinatarios, preferencias, confirmación o escalamiento aprobados en esta tarea.
+
+La aprobación de `NOTIFY-ARC-008` no inicia ni desarrolla `NOTIFY-ARC-009`.
+
+---
+
+#### 21. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento`
+
+TAREA ACTUAL APROBADA
+`NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia`
+
+SIGUIENTE TAREA RESERVADA
+`NOTIFY-ARC-009 — Definir privacidad y contenido sensible`
+
+
 ### [ ] NOTIFY-ARC-009 — Definir privacidad y contenido sensible
 ### [ ] NOTIFY-ARC-010 — Definir métricas y auditoría de entrega
