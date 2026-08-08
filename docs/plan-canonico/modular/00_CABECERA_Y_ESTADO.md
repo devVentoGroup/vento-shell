@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **611** |
+| Tareas aprobadas | **612** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **983** |
+| Tareas no iniciadas | **982** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **38.33% (611/1594)** |
+| Porcentaje de completamiento | **38.39% (612/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **NOTIFY-ARC-003 — Definir destinatarios por responsabilidad y contexto** |
-| Tarea actual | **NOTIFY-ARC-004 — Definir prioridad, vigencia y deduplicación** |
+| Última tarea aprobada | **NOTIFY-ARC-004 — Definir prioridad, vigencia y deduplicación** |
+| Tarea actual | **NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa** |
+| Siguiente tarea | **NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 35 de 157 aprobadas; NOTIFY-ARC-004 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 36 de 157 aprobadas; NOTIFY-ARC-005 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `NOTIFY-ARC-003` — Definir destinatarios por responsabilidad y contexto |
-| Tarea actual | `NOTIFY-ARC-004` — Definir prioridad, vigencia y deduplicación — **NO INICIADA** |
-| Siguiente tarea | `NOTIFY-ARC-005` — Definir canales internos, correo, push o mensajería externa |
+| Última aprobada | `NOTIFY-ARC-004` — Definir prioridad, vigencia y deduplicación |
+| Tarea actual | `NOTIFY-ARC-005` — Definir canales internos, correo, push o mensajería externa — **NO INICIADA** |
+| Siguiente tarea | `NOTIFY-ARC-006` — Definir preferencias sin ocultar alertas obligatorias |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 35 DE 157 APROBADAS — ACTUAL NOTIFY-ARC-004** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 36 DE 157 APROBADAS — ACTUAL NOTIFY-ARC-005** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-NOTIFY-ARC-003 — Definir destinatarios por responsabilidad y contexto
-        ↓
-TAREA ACTUAL
 NOTIFY-ARC-004 — Definir prioridad, vigencia y deduplicación
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa
         ↓
+SIGUIENTE TAREA RESERVADA
+NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 35 de 157 tareas aprobadas
+CARRIL NEXO — 36 de 157 tareas aprobadas
 ```

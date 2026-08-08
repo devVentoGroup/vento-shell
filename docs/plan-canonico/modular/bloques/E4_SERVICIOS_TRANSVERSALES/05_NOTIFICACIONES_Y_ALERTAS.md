@@ -721,7 +721,277 @@ No queda un pendiente de destinatarios sin tarea propietaria.
 La aprobación de `NOTIFY-ARC-003` no inicia, desarrolla ni aprueba `NOTIFY-ARC-004`.
 
 
-### [ ] NOTIFY-ARC-004 — Definir prioridad, vigencia y deduplicación
+### ✅ NOTIFY-ARC-004 — Definir prioridad, vigencia y deduplicación
+
+**Estado:** APROBADA
+**Tarea anterior:** `NOTIFY-ARC-003 — Definir destinatarios por responsabilidad y contexto` — APROBADA
+**Tarea siguiente:** `NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa` — RESERVADA
+**Tipo de tarea:** documental; matriz materializada de prioridad, vigencia semántica, agrupación y deduplicación para las quince necesidades de notificación aprobadas
+
+**Qué se hace:** cerrar para cada `NOTIFY-ORIGIN-*` la prioridad empresarial base, la condición que mantiene vigente la necesidad de notificación, la identidad semántica que impide duplicados y la regla que permite crear una nueva ocurrencia legítima, sin cambiar orígenes, destinatarios, canales, preferencias, escalamiento ni implementación.
+
+---
+
+#### 1. Resultado sustantivo
+
+`NOTIFY-ARC-004` queda documentalmente cerrada con:
+
+- 15 políticas `NOTIFY-POLICY-001` a `NOTIFY-POLICY-015`;
+- 15 orígenes `NOTIFY-ORIGIN-001` a `NOTIFY-ORIGIN-015` cubiertos exactamente una vez;
+- 16 familias `NOTIFY-ASIS-*` cubiertas, manteniendo `NOTIFY-ASIS-013` y `NOTIFY-ASIS-016` bajo el mismo origen `NOTIFY-ORIGIN-013`;
+- 15 reglas de destinatario `NOTIFY-RECIPIENT-*` preservadas sin modificación;
+- 3 niveles de prioridad empresarial;
+- 4 clases de vigencia semántica;
+- una regla de deduplicación explícita por política;
+- una condición de rearme explícita por política;
+- 0 decisiones abiertas dentro del alcance;
+- 0 cambios de código, Supabase, migraciones, proveedores o configuración de entrega.
+
+La prioridad definida aquí es prioridad de la necesidad humana de comunicación. No concede permisos, no cambia responsabilidad empresarial y no selecciona el canal.
+
+La vigencia definida aquí es la vigencia semántica de la necesidad. No equivale a retención física, TTL de un proveedor, tiempo de almacenamiento ni política de reintentos.
+
+---
+
+#### 2. Entradas conservadas y fronteras inmutables
+
+La tarea consume sin reinterpretar:
+
+1. `NOTIFY-ARC-001`: 16 familias AS-IS y sus mecanismos observados.
+2. `NOTIFY-ARC-002`: 15 orígenes empresariales que cubren las 16 familias.
+3. `NOTIFY-ARC-003`: 15 reglas de destinatario, una por origen.
+4. Los procesos, actores, contexto laboral, responsabilidades y hechos empresariales ya referenciados por esas tareas.
+
+Reglas de frontera:
+
+- un origen no se redefine por conveniencia de prioridad;
+- un destinatario no se agrega o elimina por conveniencia de entrega;
+- prioridad no equivale a escalamiento;
+- vigencia no equivale a leído, reconocido, atendido o completado;
+- deduplicar no autoriza fusionar necesidades empresariales distintas;
+- agrupar no permite compartir estado de atención entre destinatarios diferentes;
+- canal, proveedor, token, sesión abierta, app visible o dispositivo no forman parte de la identidad empresarial de una notificación;
+- un reintento técnico no constituye por sí mismo una nueva necesidad;
+- una nueva necesidad legítima exige una nueva ocurrencia empresarial, una nueva versión autoritativa, un nuevo mensaje persistido o un nuevo episodio válido de condición, según la política aplicable.
+
+---
+
+#### 3. Taxonomía canónica de prioridad
+
+| Prioridad                 | Jerarquía | Definición                                                                                                                                                                   | Criterio de uso                                                                                         |
+| ------------------------- | --------: | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------- |
+| `P1_URGENTE_OPERATIVA`    |         1 | La demora puede bloquear o degradar una operación que ya está activa, una obligación laboral temporal inmediata o la siguiente acción necesaria de una instancia vigente.    | Se usa únicamente cuando el hecho requiere atención dentro del contexto operativo actual.               |
+| `P2_ATENCION_PRIORITARIA` |         2 | La información exige atención oportuna y puede tener vigencia, plazo, cambio material o interacción pendiente, pero no demuestra por sí sola un bloqueo operativo inmediato. | Se usa para cambios relevantes, obligaciones próximas, mensajes e invitaciones que requieren atención.  |
+| `P3_INFORMATIVA`          |         3 | Comunica un hecho, beneficio u oportunidad válida sin demostrar una acción inmediata ni bloqueo de la operación.                                                             | Se usa para comunicaciones de valor informativo cuya demora no altera por sí sola una operación activa. |
+
+Reglas obligatorias:
+
+1. `P1` tiene precedencia sobre `P2`; `P2` sobre `P3`.
+2. La prioridad se deriva del significado empresarial del origen, no del canal, color, sonido, título, texto, mayúsculas, proveedor, número de intentos ni aplicación emisora.
+3. Una prioridad mayor no amplía la audiencia definida en `NOTIFY-ARC-003`.
+4. `P1` no incorpora supervisión automáticamente. Confirmación, atención y escalamiento pertenecen a `NOTIFY-ARC-007`.
+5. La edad de una notificación no cambia silenciosamente su prioridad base. Cualquier escalamiento posterior deberá conservar la prioridad base y registrar su propia razón.
+6. Preferencias del usuario no alteran la prioridad empresarial. Su efecto corresponde a `NOTIFY-ARC-006`.
+7. Disponibilidad o indisponibilidad de un canal no altera la prioridad. La ruta de entrega pertenece a `NOTIFY-ARC-005` y la contingencia a `NOTIFY-ARC-008`.
+
+---
+
+#### 4. Clases de vigencia semántica
+
+| Clase                | Inicio                                                                                              | Fin                                                                                                                             | Rearme legítimo                                                                                               |
+| -------------------- | --------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------- |
+| `VERSION_VIGENTE`    | Una versión o generación empresarial queda autorizada y vigente para el destinatario.               | La versión es revocada, reemplazada, cancelada, deja de aplicar al destinatario o termina el periodo empresarial que gobernaba. | Una nueva versión o generación autoritativa que represente una nueva necesidad.                               |
+| `CONDICION_CONTINUA` | Una condición empresarial cambia de falsa a verdadera para el mismo sujeto, recurso y destinatario. | La condición vuelve a falsa, el recurso deja de ser elegible o el destinatario deja de cumplir la responsabilidad aplicable.    | Un nuevo episodio falso → verdadero sustentado por hechos autoritativos; ticks, polling o refresh no rearman. |
+| `HECHO_UNICO`        | Se persiste un hecho empresarial durable que justifica una comunicación.                            | El hecho es invalidado, revertido o deja de ser elegible para entrega inicial; su historia puede permanecer auditable.          | Un nuevo hecho empresarial distinto; volver a leer o recalcular el mismo hecho no rearma.                     |
+| `MENSAJE_PERSISTIDO` | Un mensaje válido queda persistido con autor, conversación y lado receptor resueltos.               | El mensaje es invalidado o retirado, la conversación deja de permitir la entrega o el destinatario deja de ser válido.          | Un mensaje nuevo y persistido. Mensajes diferentes nunca se colapsan como una sola ocurrencia.                |
+
+Reglas de vigencia:
+
+1. No existe un TTL numérico transversal inventado para las quince políticas.
+2. Cuando el proceso propietario ya define fecha, periodo, vencimiento, invitación, turno, sesión, recompensa, conversación o estado autoritativo, esa fuente gobierna el inicio y el fin.
+3. Una necesidad vencida deja de ser elegible para una nueva entrega inicial, pero su vencimiento no borra la historia.
+4. Un cambio de destinatario por pérdida o adquisición válida de responsabilidad cierra la vigencia para quien deja de cumplirla y permite una proyección nueva para quien pasa a cumplirla, sin convertir el hecho empresarial en un broadcast.
+5. Estados de lectura, reconocimiento, atención o cierre no se usan aquí como condición de vigencia; pertenecen a `NOTIFY-ARC-007`.
+
+---
+
+#### 5. Contrato transversal de deduplicación y agrupación
+
+La identidad semántica mínima de una notificación se compone de:
+
+```text
+origen empresarial
++ sujeto, recurso, instancia o mensaje que produjo la necesidad
++ versión, hecho o episodio autoritativo aplicable
++ destinatario resuelto
+```
+
+La implementación futura podrá representar esta identidad mediante campos o una huella determinista, pero no podrá cambiar su significado.
+
+Reglas obligatorias:
+
+1. **Una necesidad, una identidad semántica.** El mismo hecho para el mismo destinatario no crea otra notificación porque cambie de pantalla, app, dispositivo o canal.
+2. **Deduplicación antes del transporte.** Push, correo, bandeja, navegador u otro canal futuro son proyecciones de una misma necesidad cuando comparten la misma identidad semántica.
+3. **Sin deduplicación entre orígenes distintos.** Dos orígenes diferentes conservan necesidades diferentes aunque afecten al mismo recurso y destinatario.
+4. **Sin deduplicación entre destinatarios.** Cada identidad destinataria conserva su propia proyección y su futuro estado de atención.
+5. **Conjunto de destinatarios no equivale a un destinatario colectivo.** Una regla `DIRECT_SUBJECT_SET`, audiencia declarada o pool resuelto se expande a identidades válidas; no comparte lectura, atención ni vencimiento entre ellas.
+6. **Reintento técnico no rearma.** Timeout, reconexión, cron repetido, Realtime repetido, refresh, provider retry o reinicio no crean una nueva necesidad.
+7. **Cambio empresarial sí puede rearmar.** Una versión nueva, mensaje nuevo, hecho nuevo o episodio nuevo produce una identidad nueva cuando la matriz lo autoriza.
+8. **Agrupación solo dentro de la misma ocurrencia.** Varios cambios técnicos o varios campos modificados que pertenecen a una sola revisión empresarial pueden representarse juntos; instancias, mensajes u orígenes diferentes no se fusionan.
+9. **Prioridad no se reduce por agrupación.** Una representación agrupada conserva la prioridad de la necesidad que representa.
+10. **Sin heurística por contenido.** Textos iguales no demuestran duplicidad; textos diferentes no demuestran necesidades distintas.
+11. **`NOTIFY-ASIS-013` y `NOTIFY-ASIS-016` comparten identidad empresarial.** Para un mismo mensaje de pedido y destinatario resuelto existe una sola necesidad `NOTIFY-ORIGIN-013`; PASS y PULSO no generan duplicados por ser superficies distintas.
+12. **Publicación y cambio de turno son necesidades separadas.** `NOTIFY-ORIGIN-003` y `NOTIFY-ORIGIN-004` no se deduplican entre sí.
+13. **Aviso previo y seguimiento posterior son necesidades separadas.** `NOTIFY-ORIGIN-005` y `NOTIFY-ORIGIN-006` no se deduplican entre sí.
+14. **Pedido accionable y pago conciliado son necesidades separadas.** `NOTIFY-ORIGIN-014` y `NOTIFY-ORIGIN-015` no se fusionan aunque correspondan al mismo pedido.
+15. El tratamiento de fallos de deduplicación, entrega incierta y reintentos pertenece a `NOTIFY-ARC-008`; esta tarea fija únicamente la identidad que esos mecanismos deberán respetar.
+
+---
+
+#### 6. Matriz materializada de políticas
+
+| Política            | Origen / familia(s)                                        | Regla destinatario     | Prioridad                 | Vigencia             | Identidad de deduplicación                                                                 | Agrupación permitida                                                                                                                                          | Fin y rearme                                                                                                                                                                                                    |
+| ------------------- | ---------------------------------------------------------- | ---------------------- | ------------------------- | -------------------- | ------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NOTIFY-POLICY-001` | `NOTIFY-ORIGIN-001` / `NOTIFY-ASIS-001`                    | `NOTIFY-RECIPIENT-001` | `P2_ATENCION_PRIORITARIA` | `VERSION_VIGENTE`    | comunicación autorizada + versión publicada + destinatario                                 | Una sola necesidad por versión y destinatario; los intentos o superficies de esa publicación se colapsan.                                                     | Termina al revocar, vencer o reemplazar la publicación. Una nueva versión autorizada puede rearmar.                                                                                                             |
+| `NOTIFY-POLICY-002` | `NOTIFY-ORIGIN-002` / `NOTIFY-ASIS-002`                    | `NOTIFY-RECIPIENT-002` | `P2_ATENCION_PRIORITARIA` | `CONDICION_CONTINUA` | documento + responsabilidad/destinatario + política de aviso vigente + episodio de ventana | Evaluaciones repetidas del scheduler dentro del mismo episodio se colapsan; documentos distintos nunca se agrupan.                                            | Termina cuando el documento se renueva, reemplaza, invalida, deja de estar sujeto a la responsabilidad o sale de la condición aplicable. Un nuevo episodio autoritativo puede rearmar.                          |
+| `NOTIFY-POLICY-003` | `NOTIFY-ORIGIN-003` / `NOTIFY-ASIS-003`                    | `NOTIFY-RECIPIENT-003` | `P2_ATENCION_PRIORITARIA` | `VERSION_VIGENTE`    | asignación/turno + versión publicada inicial + trabajador destinatario                     | Una publicación genera como máximo una necesidad por asignación y trabajador.                                                                                 | Termina si la asignación se retira, cancela, termina su periodo o queda reemplazada por una versión materialmente distinta. Una nueva publicación válida de otra ocurrencia rearma.                             |
+| `NOTIFY-POLICY-004` | `NOTIFY-ORIGIN-004` / `NOTIFY-ASIS-004`                    | `NOTIFY-RECIPIENT-004` | `P1_URGENTE_OPERATIVA`    | `VERSION_VIGENTE`    | asignación/turno + nueva versión publicada + trabajador afectado                           | Todos los campos que cambian dentro de la misma revisión material se agrupan en una sola necesidad por trabajador; revisiones diferentes no se fusionan.      | Termina al ser reemplazada por otra versión, cancelarse la asignación o finalizar el periodo afectado. Cada nueva revisión material autoritativa rearma.                                                        |
+| `NOTIFY-POLICY-005` | `NOTIFY-ORIGIN-005` / `NOTIFY-ASIS-005`                    | `NOTIFY-RECIPIENT-005` | `P1_URGENTE_OPERATIVA`    | `CONDICION_CONTINUA` | turno + sesión de asistencia + trabajador + episodio previo al fin                         | Ticks y evaluaciones repetidas dentro de la misma ventana se colapsan.                                                                                        | Termina al cerrar asistencia, cancelar el turno, dejar de cumplirse la condición o cruzar la frontera que da paso al seguimiento posterior. Un nuevo episodio válido puede rearmar.                             |
+| `NOTIFY-POLICY-006` | `NOTIFY-ORIGIN-006` / `NOTIFY-ASIS-006`                    | `NOTIFY-RECIPIENT-006` | `P1_URGENTE_OPERATIVA`    | `CONDICION_CONTINUA` | turno + sesión de asistencia + trabajador + episodio posterior al fin                      | Jobs repetidos mientras la misma sesión continúa abierta se colapsan; la repetición para llamar la atención no crea otra necesidad.                           | Termina con cierre autoritativo, cancelación o corrección que invalide la condición. Un nuevo turno o nueva sesión que entre legítimamente en la condición crea otro episodio.                                  |
+| `NOTIFY-POLICY-007` | `NOTIFY-ORIGIN-007` / `NOTIFY-ASIS-007`                    | `NOTIFY-RECIPIENT-007` | `P2_ATENCION_PRIORITARIA` | `HECHO_UNICO`        | efecto persistido de check-out automático + trabajador                                     | Alerta, notificación local, vibración u otras señales del mismo efecto son una sola necesidad.                                                                | El hecho no se rearma por relectura ni recálculo. Una corrección o reversión invalida nueva entrega del hecho original; otro check-out automático válido es otra ocurrencia.                                    |
+| `NOTIFY-POLICY-008` | `NOTIFY-ORIGIN-008` / `NOTIFY-ASIS-008`                    | `NOTIFY-RECIPIENT-008` | `P2_ATENCION_PRIORITARIA` | `MENSAJE_PERSISTIDO` | caso de soporte + mensaje persistido + contraparte destinataria                            | Push, badge, Realtime u otra proyección del mismo mensaje se colapsan. Mensajes distintos permanecen separados.                                               | Termina si el mensaje es invalidado o la contraparte deja de ser válida. Cada mensaje nuevo persistido rearma.                                                                                                  |
+| `NOTIFY-POLICY-009` | `NOTIFY-ORIGIN-009` / `NOTIFY-ASIS-009`                    | `NOTIFY-RECIPIENT-009` | `P2_ATENCION_PRIORITARIA` | `VERSION_VIGENTE`    | invitación + generación autorizada de entrega + persona invitada                           | Reintentos del proveedor sobre la misma generación se colapsan. Un reenvío deliberado solo es nuevo cuando existe una nueva generación autorizada de entrega. | Termina al usarse, expirar, revocarse o reemplazarse la invitación/generación. Una nueva generación autorizada rearma.                                                                                          |
+| `NOTIFY-POLICY-010` | `NOTIFY-ORIGIN-010` / `NOTIFY-ASIS-010`                    | `NOTIFY-RECIPIENT-010` | `P3_INFORMATIVA`          | `HECHO_UNICO`        | transición conciliada de nivel + cliente                                                   | Recalcular, refrescar o volver a mostrar el mismo ascenso no crea otra necesidad.                                                                             | El ascenso confirmado es una ocurrencia única. Otro ascenso empresarial posterior constituye un hecho nuevo.                                                                                                    |
+| `NOTIFY-POLICY-011` | `NOTIFY-ORIGIN-011` / `NOTIFY-ASIS-011`                    | `NOTIFY-RECIPIENT-011` | `P3_INFORMATIVA`          | `CONDICION_CONTINUA` | cliente + recompensa + episodio de no redimible → redimible                                | Recalcular el mismo estado elegible se colapsa; recompensas diferentes permanecen separadas.                                                                  | Termina cuando la recompensa deja de ser redimible o deja de estar vigente. Una pérdida real de elegibilidad seguida de una nueva ganancia autoritativa crea otro episodio.                                     |
+| `NOTIFY-POLICY-012` | `NOTIFY-ORIGIN-012` / `NOTIFY-ASIS-012`                    | `NOTIFY-RECIPIENT-012` | `P3_INFORMATIVA`          | `CONDICION_CONTINUA` | redención validada + cliente + ciclo de elegibilidad de feedback                           | Aperturas repetidas de app, modal o polling no crean otra necesidad para el mismo ciclo.                                                                      | Termina al cerrarse o consumirse la elegibilidad conforme al proceso de satisfacción, o al invalidarse la redención. Otra redención válida crea otro ciclo.                                                     |
+| `NOTIFY-POLICY-013` | `NOTIFY-ORIGIN-013` / `NOTIFY-ASIS-013`, `NOTIFY-ASIS-016` | `NOTIFY-RECIPIENT-013` | `P2_ATENCION_PRIORITARIA` | `MENSAJE_PERSISTIDO` | conversación de pedido + mensaje persistido + lado receptor + destinatario                 | PASS y PULSO son proyecciones de la misma necesidad cuando representan el mismo mensaje y destinatario. Mensajes distintos no se agrupan.                     | Termina si el mensaje o la relación de destinatario se invalida. Cada mensaje nuevo persistido rearma.                                                                                                          |
+| `NOTIFY-POLICY-014` | `NOTIFY-ORIGIN-014` / `NOTIFY-ASIS-014`                    | `NOTIFY-RECIPIENT-014` | `P1_URGENTE_OPERATIVA`    | `CONDICION_CONTINUA` | pedido + episodio de accionabilidad + responsabilidad/destinatario                         | Banner, Notification API, sonido, título o Realtime del mismo episodio se colapsan; no se agrupan pedidos diferentes.                                         | Termina cuando el pedido deja de ser accionable para ese destinatario, cambia de etapa, se cancela o cambia la responsabilidad. Una reentrada autoritativa a una nueva etapa/episodio accionable puede rearmar. |
+| `NOTIFY-POLICY-015` | `NOTIFY-ORIGIN-015` / `NOTIFY-ASIS-015`                    | `NOTIFY-RECIPIENT-015` | `P1_URGENTE_OPERATIVA`    | `HECHO_UNICO`        | pedido + pago conciliado + responsabilidad/destinatario                                    | Actualizaciones técnicas repetidas que expresan el mismo pago conciliado se colapsan.                                                                         | Termina para nueva entrega si el pago se revierte, el pedido deja de requerir la acción habilitada o el destinatario pierde responsabilidad. Una conciliación empresarial distinta constituye otra ocurrencia.  |
+
+---
+
+#### 7. Reconciliación cuantitativa
+
+| Métrica                                        |    Resultado |
+| ---------------------------------------------- | -----------: |
+| Orígenes recibidos                             |       **15** |
+| Políticas materializadas                       |       **15** |
+| Orígenes sin política                          |        **0** |
+| Políticas duplicadas por origen                |        **0** |
+| Familias AS-IS cubiertas                       | **16 de 16** |
+| Reglas de destinatario preservadas             | **15 de 15** |
+| Políticas `P1_URGENTE_OPERATIVA`               |        **5** |
+| Políticas `P2_ATENCION_PRIORITARIA`            |        **7** |
+| Políticas `P3_INFORMATIVA`                     |        **3** |
+| Políticas `VERSION_VIGENTE`                    |        **4** |
+| Políticas `CONDICION_CONTINUA`                 |        **6** |
+| Políticas `HECHO_UNICO`                        |        **3** |
+| Políticas `MENSAJE_PERSISTIDO`                 |        **2** |
+| Cambios de origen                              |        **0** |
+| Cambios de destinatario                        |        **0** |
+| Cambios físicos ejecutados                     |        **0** |
+| Decisiones abiertas dentro de `NOTIFY-ARC-004` |        **0** |
+
+La suma de prioridades es `5 + 7 + 3 = 15`.
+
+La suma de clases de vigencia es `4 + 6 + 3 + 2 = 15`.
+
+---
+
+#### 8. Decisiones canónicas consolidadas
+
+1. La prioridad es una propiedad empresarial de la necesidad de comunicación y no una propiedad del canal.
+2. Las quince necesidades usan exactamente tres niveles de prioridad base.
+3. `NOTIFY-ORIGIN-004`, `005`, `006`, `014` y `015` son urgentes operativas porque afectan una obligación o acción dentro de un contexto operativo vigente.
+4. Comunicaciones, vencimiento documental, publicación inicial de turnos, cierre automático, soporte, invitaciones y mensajes de pedido requieren atención prioritaria sin convertirse por defecto en urgencias operativas.
+5. Fidelización, recompensa y feedback son informativos dentro del universo actual y no crean por sí mismos bloqueo operativo.
+6. No se define un TTL transversal. La vigencia se deriva de versión, condición, hecho o mensaje autoritativos.
+7. La deduplicación ocurre sobre la necesidad semántica y precede a cualquier decisión de transporte.
+8. Múltiples canales o superficies no crean múltiples necesidades.
+9. Los destinatarios de un conjunto conservan identidades y futuros estados de atención independientes.
+10. `NOTIFY-ASIS-013` y `NOTIFY-ASIS-016` conservan una sola necesidad empresarial por mensaje de pedido y destinatario.
+11. Reintentos técnicos, cron repetido, Realtime repetido, refresh y reapertura de app no rearman una necesidad.
+12. Una nueva versión, hecho, mensaje o episodio empresarial sí puede rearmar cuando la política lo define.
+13. Publicación inicial y cambio material de turno permanecen separados.
+14. Aviso previo y seguimiento posterior del turno permanecen separados.
+15. Pedido accionable y pago conciliado permanecen separados.
+16. Prioridad no cambia permisos, audiencia, propiedad, responsabilidad ni aceptación.
+17. La falta de canal no degrada la prioridad; su contingencia se resuelve posteriormente.
+18. No se crean esquemas SQL, tablas, columnas, DTO, topics, colas, Edge Functions, jobs, cron, proveedores ni contratos físicos en esta tarea.
+
+---
+
+#### 9. Decisiones posteriores reservadas
+
+| Decisión                                                               | Tarea propietaria |
+| ---------------------------------------------------------------------- | ----------------- |
+| Canales internos, correo, push, mensajería externa y ruta técnica PASS | `NOTIFY-ARC-005`  |
+| Preferencias, opt-in/opt-out y alertas que no pueden ocultarse         | `NOTIFY-ARC-006`  |
+| Confirmación, lectura, atención, escalamiento y supervisión            | `NOTIFY-ARC-007`  |
+| Reintentos, fallos, `UNRESOLVED_RECIPIENT` y contingencia de entrega   | `NOTIFY-ARC-008`  |
+| Privacidad, contenido sensible y minimización por canal                | `NOTIFY-ARC-009`  |
+| Métricas, trazas y auditoría de entrega                                | `NOTIFY-ARC-010`  |
+
+Todas las decisiones de prioridad, vigencia, agrupación y deduplicación de las quince políticas quedan cerradas en esta tarea.
+
+---
+
+#### 10. Requisitos de prueba
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `NOTIFY-ARC-004` especializa documentalmente comportamientos ya protegidos por requisitos transversales vigentes: separación entre notificación y trabajo, prioridad derivada de reglas empresariales, identidad estable, idempotencia, deduplicación de reintentos, trazabilidad y separación entre evento, notificación y transporte. Esta tarea no implementa un motor nuevo ni modifica esos requisitos. La especialización deberá ser consumida por la implementación posterior sin duplicar requisitos ya registrados.
+
+Cobertura existente relevante: `TREQ-PROC-861`, `TREQ-PROC-863`, `TREQ-PROC-864`, `TREQ-PROC-869`, `TREQ-PROC-881`, `TREQ-PROC-966`, `TREQ-PROC-967`, `TREQ-INTEGRATION-003`, `TREQ-INTEGRATION-004`, `TREQ-INTEGRATION-032` y `TREQ-INTEGRATION-033`.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 11. Criterios de aceptación
+
+- [x] los 15 orígenes heredados están cubiertos exactamente una vez;
+- [x] las 16 familias AS-IS conservan cobertura;
+- [x] las 15 reglas de destinatario permanecen intactas;
+- [x] cada política tiene prioridad explícita;
+- [x] cada política tiene clase de vigencia explícita;
+- [x] cada política tiene identidad de deduplicación explícita;
+- [x] cada política define agrupación permitida;
+- [x] cada política define condición de fin y rearme;
+- [x] la prioridad no se deriva de canal, proveedor, presentación o preferencia;
+- [x] la vigencia no se confunde con lectura, reconocimiento o atención;
+- [x] no existe TTL numérico transversal inventado;
+- [x] reintentos y evaluaciones técnicas repetidas no crean nuevas necesidades;
+- [x] hechos, versiones, mensajes y episodios empresariales nuevos pueden crear nuevas necesidades únicamente según su política;
+- [x] no se deduplican orígenes empresariales distintos;
+- [x] no se comparte estado entre destinatarios distintos;
+- [x] `NOTIFY-ASIS-013` y `NOTIFY-ASIS-016` no duplican el mismo mensaje de pedido;
+- [x] no se seleccionan canales;
+- [x] no se definen preferencias;
+- [x] no se define confirmación, lectura ni escalamiento;
+- [x] no se definen reintentos ni contingencia técnica;
+- [x] no se define privacidad por canal;
+- [x] no se definen métricas ni auditoría de entrega;
+- [x] no se modifica código, Supabase, migraciones, proveedores ni operación;
+- [x] la tarea genera cero cambios en requisitos de prueba;
+- [x] `NOTIFY-ARC-005` permanece únicamente reservada.
+
+---
+
+#### 12. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`NOTIFY-ARC-003 — Definir destinatarios por responsabilidad y contexto`
+
+TAREA ACTUAL APROBADA
+`NOTIFY-ARC-004 — Definir prioridad, vigencia y deduplicación`
+
+SIGUIENTE TAREA RESERVADA
+`NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa`
+
+La aprobación de `NOTIFY-ARC-004` no inicia ni desarrolla `NOTIFY-ARC-005`.
+
+
 ### [ ] NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa
 ### [ ] NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias
 ### [ ] NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento
