@@ -3879,7 +3879,1174 @@ SIGUIENTE TAREA RESERVADA
 `TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad`
 
 
-### [ ] TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad
+### ✅ TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión` — APROBADA
+**Tarea siguiente:** `TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre` — RESERVADA
+**Tipo de tarea:** documental; catálogo técnico-operativo materializado de aplicaciones, ambientes, dependencias, proveedores, licencias, contratos de salida y derivación de criticidad por instancia
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Artefactos producidos:** `TI-APPLICATION-PORTFOLIO-CONTRACT-001`; `TI-APPLICATION-ENVIRONMENT-MATRIX-001`; `TI-APPLICATION-DEPENDENCY-MATRIX-001`; `TI-APPLICATION-PROVIDER-LICENSE-MATRIX-001`; `TI-APPLICATION-CRITICALITY-CONTRACT-001`; `TI-APPLICATION-ASIS-RECONCILIATION-001`
+**Cambios físicos autorizados:** ninguno; no crea, modifica ni elimina aplicaciones, repositorios, ambientes, despliegues, dominios, cuentas, proveedores, contratos, licencias, asientos, secretos, datos, tablas, RLS, RPC, Edge Functions, migraciones, configuración o Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el catálogo técnico-operativo que permita administrar las diez aplicaciones canónicas de Vento sin confundir la identidad de aplicación con repositorio, ambiente, dominio, despliegue, proveedor, licencia, servicio tecnológico o proceso empresarial.
+
+La tarea debe permitir responder, para cualquier instancia de aplicación:
+
+- qué `app_code` canónico representa;
+- qué repositorio implementa actualmente su código cuando exista evidencia;
+- qué versión de manifiesto se observa sin presentarla como versión desplegada;
+- qué ambientes y superficies técnicas están documentados;
+- qué URL o canal de distribución se encuentra referenciado y con qué fuerza de evidencia;
+- de qué plataformas, aplicaciones, datos y servicios depende;
+- qué proveedores técnicos participan y bajo qué evidencia;
+- qué contrato, licencia, asiento o renovación debe referenciar sin convertirlo en la identidad de la aplicación;
+- qué propietario funcional y técnico conserva;
+- qué datos o dominios funcionales trata sin asignar una sensibilidad global artificial;
+- cómo se deriva su criticidad por instancia y proceso;
+- qué ocurre si un proveedor, ambiente o dependencia deja de estar disponible;
+- qué evidencia se exige para declarar una relación contractual, un ambiente o un despliegue como verificado.
+
+Regla raíz:
+
+```text
+APLICACIÓN
+≠ REPOSITORIO
+≠ AMBIENTE
+≠ URL
+≠ DESPLIEGUE
+≠ PROVEEDOR
+≠ CONTRATO
+≠ LICENCIA
+≠ ASIENTO
+≠ SERVICIO TECNOLÓGICO
+≠ PROCESO EMPRESARIAL
+```
+
+El `app_code` permanece estable entre ambientes, sedes, plataformas y versiones.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban seis artefactos documentales:
+
+1. `TI-APPLICATION-PORTFOLIO-CONTRACT-001`, con identidad, autoridad, frontera, ciclo y datos mínimos del catálogo tecnológico;
+2. `TI-APPLICATION-ENVIRONMENT-MATRIX-001`, con una decisión de ambiente y superficie para las diez aplicaciones;
+3. `TI-APPLICATION-DEPENDENCY-MATRIX-001`, con dependencias funcionales y técnicas mínimas, sin crear aristas por inferencia;
+4. `TI-APPLICATION-PROVIDER-LICENSE-MATRIX-001`, con proveedores observados, estado contractual, licencia, asiento, renovación y salida;
+5. `TI-APPLICATION-CRITICALITY-CONTRACT-001`, que impide asignar una criticidad global a una aplicación y define la derivación por instancia;
+6. `TI-APPLICATION-ASIS-RECONCILIATION-001`, que reconcilia catálogo canónico, registro runtime, repositorios y superficies técnicas observadas.
+
+Cobertura materializada:
+
+| Elemento                                                     |             Cantidad |
+| ------------------------------------------------------------ | -------------------: |
+| Aplicaciones canónicas esperadas                             |               **10** |
+| Aplicaciones materializadas                                  |         **10 de 10** |
+| Códigos duplicados                                           |                **0** |
+| Códigos nuevos                                               |                **0** |
+| Filas runtime `public.apps` observadas                       |         **10 de 10** |
+| Filas runtime activas observadas                             |         **10 de 10** |
+| Repositorios propietarios confirmados                        |          **9 de 10** |
+| Repositorio propietario pendiente                            |         **1 — AURA** |
+| Aplicaciones con manifiesto técnico observado                |          **9 de 10** |
+| Aplicaciones con perfiles EAS explícitos de ambiente         | **2 — ANIMA y PASS** |
+| Aplicaciones con clase de criticidad global fija             |                **0** |
+| Aplicaciones con regla explícita de derivación de criticidad |         **10 de 10** |
+| Aplicaciones con licencia o asiento inventado                |                **0** |
+| Cambios físicos                                              |                **0** |
+| Cambios de requisitos de prueba                              |                **0** |
+
+---
+
+#### 3. Autoridades y entradas heredadas
+
+La tarea conserva sin modificación:
+
+- el catálogo canónico de diez aplicaciones aprobado por `AUTH-CAT-001`;
+- la regla de código estable, en minúsculas, sin duplicación por ambiente, plataforma o sede;
+- la separación `shell` como aplicación frente a `vento-shell` como repositorio;
+- el estado de AURA como aplicación activa de catálogo con roadmap diferido;
+- el dominio cliente de `pass`, separado del RBAC laboral;
+- el diseño del catálogo versionado de `AUTH-CAT-017`;
+- `TI-SERVICE-001` a `TI-SERVICE-011` y las cinco reglas de derivación de criticidad aprobadas en `TI-DOM-001`;
+- la clase `APPLICATION` y `TI-REL-003`, `TI-REL-005` y `TI-REL-015` aprobadas en `TI-DOM-002`;
+- `TI-DOM-003` como autoridad de endpoints y clientes instalados;
+- `TI-DOM-004` como autoridad de red y direccionamiento;
+- `TI-DOM-005` como autoridad de reconciliación física de impresoras;
+- ORIGO como autoridad contractual y de compra cuando corresponda;
+- NUMERA como autoridad de compromiso, gasto y costo;
+- SHELL como autoridad de identidad de aplicación y política de acceso;
+- VISO como autoridad de mesa de servicio y gobierno administrativo;
+- `TI-DOM-007` como autoridad de impacto, urgencia, prioridad y SLA de casos;
+- `TI-DOM-009` como autoridad de cambio tecnológico;
+- `TI-DOM-010` como autoridad de observabilidad;
+- `TI-DOM-011` como autoridad de respaldo y recuperación;
+- `TI-DOM-012` como autoridad de licencias, garantías, contratos, renovaciones, uso y costos;
+- `TI-AUTH-*` como autoridad de cuentas técnicas, privilegios, secretos y soporte sensible;
+- los procesos empresariales como autoridad de su resultado, criticidad y ventana de disponibilidad.
+
+Ninguna decisión de esta tarea concede acceso, modifica permisos ni redefine propiedad funcional de procesos.
+
+---
+
+#### 4. Fronteras del catálogo tecnológico
+
+El catálogo tecnológico se superpone con otros registros sin sustituirlos:
+
+```text
+AUTH-CAT
+→ identidad y clasificación canónica de la aplicación
+
+SHELL
+→ registro y navegación autorizada de aplicaciones
+
+TI-DOM-006
+→ instancia técnica, ambiente, dependencia, proveedor,
+  licencia referenciada, soporte, criticidad derivada y salida
+
+ORIGO
+→ proveedor contratado, compra y contrato
+
+NUMERA
+→ compromiso, gasto, costo y conciliación económica
+
+TI-DOM-012
+→ uso de licencia, asiento, renovación, garantía y relación contractual tecnológica
+
+PROCESO EMPRESARIAL
+→ resultado, propietario y criticidad del proceso
+
+E5 / T / U
+→ implementación, pruebas, despliegue, piloto y certificación
+```
+
+Reglas:
+
+1. TI no crea una aplicación porque encuentre un repositorio;
+2. TI no crea un ambiente porque encuentre una URL;
+3. una dependencia de paquete no prueba un contrato comercial;
+4. una aplicación activa en registro no prueba que esté desplegada;
+5. un dominio que responde no prueba que el ambiente sea el aprobado;
+6. una licencia no concede autorización empresarial;
+7. una cuenta técnica no equivale a asiento;
+8. una factura no prueba que el servicio esté en uso;
+9. una suscripción activa no prueba dependencia crítica;
+10. un proveedor no se convierte en fuente de identidad, costo, proceso o autorización.
+
+---
+
+#### 5. `TI-APPLICATION-PORTFOLIO-CONTRACT-001`
+
+Cada aplicación conserva conceptualmente:
+
+```text
+app_code
+display_name
+app_kind
+identity_domain
+roadmap_scope
+lifecycle_status
+functional_owner_ref
+technical_owner_ref
+repository_ref
+manifest_version
+surface_profile
+environment_profiles[]
+deployment_refs[]
+dependency_refs[]
+provider_refs[]
+contract_refs[]
+license_refs[]
+seat_refs[]
+renewal_refs[]
+data_domain_refs[]
+authentication_ref
+criticality_derivation
+support_ref
+observability_ref
+backup_recovery_ref
+provider_exit_ref
+evidence_refs[]
+reconciliation_state
+```
+
+Reglas:
+
+- `app_code` proviene del catálogo canónico y no se edita desde TI;
+- `repository_ref` puede estar ausente sin crear otra identidad;
+- `manifest_version` describe el manifiesto observado, no una release desplegada;
+- `deployment_refs[]` requiere evidencia por ambiente;
+- `provider_refs[]` no contiene secretos ni credenciales;
+- `contract_refs[]`, `license_refs[]` y `seat_refs[]` apuntan a sus fuentes propietarias;
+- `data_domain_refs[]` describe dominios funcionales, no una clasificación global de sensibilidad;
+- `criticality_derivation` es obligatoria, pero no fija una clase única para toda la aplicación;
+- toda relación incierta utiliza `PENDIENTE_DE_EVIDENCIA` con propietario y condición de salida.
+
+---
+
+#### 6. Catálogo canónico de aplicaciones
+
+Se preservan exactamente las diez identidades aprobadas, en su orden canónico:
+
+| `app_code` | Nombre     | Tipo canónico  | Dominio de identidad | Roadmap   | Ciclo de catálogo |
+| ---------- | ---------- | -------------- | -------------------- | --------- | ----------------- |
+| `shell`    | Vento OS   | Hub            | Laboral              | Núcleo    | `active`          |
+| `anima`    | ANIMA      | Híbrida        | Laboral              | Núcleo    | `active`          |
+| `viso`     | VISO       | Administrativa | Laboral              | Núcleo    | `active`          |
+| `nexo`     | NEXO       | Híbrida        | Laboral              | Núcleo    | `active`          |
+| `fogo`     | FOGO       | Operativa      | Laboral              | Núcleo    | `active`          |
+| `origo`    | ORIGO      | Híbrida        | Laboral              | Núcleo    | `active`          |
+| `pulso`    | PULSO      | Operativa      | Laboral              | Núcleo    | `active`          |
+| `numera`   | NUMERA     | Híbrida        | Laboral              | Núcleo    | `active`          |
+| `aura`     | AURA       | Administrativa | Laboral              | Diferido  | `active`          |
+| `pass`     | Vento Pass | Cliente        | Cliente              | Adyacente | `active`          |
+
+Control:
+
+```text
+10 esperadas
+10 materializadas
+0 omitidas
+0 duplicadas
+0 renombradas
+0 añadidas
+```
+
+`active` significa pertenencia al catálogo vigente. No significa disponibilidad, despliegue, acceso o inclusión inmediata en el roadmap.
+
+---
+
+#### 7. Estado AS-IS del registro runtime
+
+La lectura de solo consulta del registro vigente `public.apps` materializa exactamente los diez códigos canónicos:
+
+```text
+anima
+aura
+fogo
+nexo
+numera
+origo
+pass
+pulso
+shell
+viso
+```
+
+Las diez filas observadas tienen `is_active = true`.
+
+La reconciliación queda:
+
+| Control                                | Resultado |
+| -------------------------------------- | --------- |
+| Códigos canónicos                      | 10        |
+| Códigos runtime                        | 10        |
+| Coincidencias por código               | 10        |
+| Códigos runtime fuera del catálogo     | 0         |
+| Códigos canónicos ausentes del runtime | 0         |
+| Duplicados por código                  | 0         |
+
+La coincidencia registral no demuestra ambientes, proveedores, licencias ni disponibilidad.
+
+---
+
+#### 8. Reconciliación de repositorios y versiones de manifiesto
+
+El repositorio es evidencia técnica de implementación, no identidad de aplicación.
+
+| `app_code` | Repositorio observado        | Versión de manifiesto observada | Superficie técnica observada               | Estado                   |
+| ---------- | ---------------------------- | ------------------------------- | ------------------------------------------ | ------------------------ |
+| `shell`    | `devVentoGroup/vento-shell`  | `0.1.0`                         | Next.js web                                | `REPOSITORIO_CONFIRMADO` |
+| `anima`    | `devVentoGroup/vento-anima`  | `1.3.4`                         | Expo / React Native; script web disponible | `REPOSITORIO_CONFIRMADO` |
+| `viso`     | `devVentoGroup/vento-viso`   | `0.1.0`                         | Next.js web                                | `REPOSITORIO_CONFIRMADO` |
+| `nexo`     | `devVentoGroup/vento-nexo`   | `0.1.0`                         | Next.js web                                | `REPOSITORIO_CONFIRMADO` |
+| `fogo`     | `devVentoGroup/vento-fogo`   | `0.1.0`                         | Next.js web                                | `REPOSITORIO_CONFIRMADO` |
+| `origo`    | `devVentoGroup/vento-origo`  | `0.1.0`                         | Next.js web                                | `REPOSITORIO_CONFIRMADO` |
+| `pulso`    | `devVentoGroup/vento-pulso`  | `0.1.0`                         | Next.js web                                | `REPOSITORIO_CONFIRMADO` |
+| `numera`   | `devVentoGroup/vento-numera` | `0.1.0`                         | Next.js web                                | `REPOSITORIO_CONFIRMADO` |
+| `aura`     | no confirmado                | no confirmado                   | no confirmada                              | `PENDIENTE_DE_EVIDENCIA` |
+| `pass`     | `devVentoGroup/vento-pass`   | `2.0.0`                         | Expo / React Native                        | `REPOSITORIO_CONFIRMADO` |
+
+La versión del `package.json` no se presenta como versión productiva, release certificada ni versión de contrato.
+
+Para AURA:
+
+- `AURA-AUD-001` conserva la confirmación del repositorio;
+- `AURA-AUD-002` conserva la confirmación del estado real;
+- `AURA-AUD-010` conserva la decisión de continuidad, reemplazo o retiro;
+- mientras esas tareas no cierren, TI-DOM-006 no inventa repositorio, versión ni proveedor.
+
+---
+
+#### 9. Contrato de ambiente
+
+Un ambiente se identifica por la combinación:
+
+```text
+app_code
++
+environment_role
++
+surface_or_distribution_channel
++
+deployment_or_build_reference
+```
+
+No se crea un nuevo `app_code`.
+
+Se aprueban seis roles descriptivos:
+
+| Rol           | Significado                                                 |
+| ------------- | ----------------------------------------------------------- |
+| `DEVELOPMENT` | ejecución de desarrollo no productiva                       |
+| `CI`          | ejecución automática destinada a build, pruebas y controles |
+| `PREVIEW`     | superficie temporal o distribución interna para revisión    |
+| `STAGING`     | ambiente estable de validación previa cuando exista         |
+| `PRODUCTION`  | ambiente autorizado para operación real                     |
+| `SANDBOX`     | ambiente aislado de proveedor o integración externa         |
+
+Estos roles no prueban que exista físicamente un ambiente. Cada instancia debe materializar evidencia.
+
+---
+
+#### 10. Estados de evidencia de ambiente
+
+Se aprueban:
+
+```text
+CONFIGURADO_EN_REPOSITORIO
+REFERENCIADO_EN_CODIGO
+DESPLIEGUE_VERIFICADO
+PENDIENTE_DE_EVIDENCIA
+NO_APLICA
+```
+
+Reglas:
+
+1. `CONFIGURADO_EN_REPOSITORIO` demuestra una configuración declarada;
+2. `REFERENCIADO_EN_CODIGO` demuestra una referencia consumida por código;
+3. `DESPLIEGUE_VERIFICADO` exige evidencia del ambiente realmente desplegado;
+4. un dominio escrito en código no alcanza `DESPLIEGUE_VERIFICADO`;
+5. un build exitoso no alcanza `DESPLIEGUE_VERIFICADO`;
+6. una fila `public.apps` activa no alcanza `DESPLIEGUE_VERIFICADO`;
+7. `PENDIENTE_DE_EVIDENCIA` debe indicar qué evidencia falta y quién la aporta.
+
+---
+
+#### 11. `TI-APPLICATION-ENVIRONMENT-MATRIX-001`
+
+| `app_code` | Evidencia de ambiente actual                                                                            | Referencia de superficie / canal         | Decisión                                                                                                           |
+| ---------- | ------------------------------------------------------------------------------------------------------- | ---------------------------------------- | ------------------------------------------------------------------------------------------------------------------ |
+| `shell`    | web Next.js; dos orígenes productivos distintos aparecen en fuentes actuales                            | `os.ventogroup.co` y `hub.ventogroup.co` | `PENDIENTE_DE_EVIDENCIA`: reconciliar un origen canónico o alias explícito antes de declarar producción verificada |
+| `anima`    | perfiles EAS `development`, `preview` y `production`; referencia web del ecosistema                     | `anima.ventogroup.co`; canales EAS       | `CONFIGURADO_EN_REPOSITORIO` para perfiles EAS; URL `REFERENCIADO_EN_CODIGO`; disponibilidad real no inferida      |
+| `viso`     | Next.js web                                                                                             | `viso.ventogroup.co`                     | URL `REFERENCIADO_EN_CODIGO`; despliegue y ambiente exacto requieren evidencia                                     |
+| `nexo`     | Next.js web                                                                                             | `nexo.ventogroup.co`                     | URL `REFERENCIADO_EN_CODIGO`; despliegue y ambiente exacto requieren evidencia                                     |
+| `fogo`     | Next.js web                                                                                             | `fogo.ventogroup.co`                     | URL `REFERENCIADO_EN_CODIGO`; despliegue y ambiente exacto requieren evidencia                                     |
+| `origo`    | Next.js web                                                                                             | `origo.ventogroup.co`                    | URL `REFERENCIADO_EN_CODIGO`; despliegue y ambiente exacto requieren evidencia                                     |
+| `pulso`    | Next.js web                                                                                             | `pulso.ventogroup.co`                    | URL `REFERENCIADO_EN_CODIGO`; despliegue y ambiente exacto requieren evidencia                                     |
+| `numera`   | Next.js web                                                                                             | `numera.ventogroup.co`                   | URL `REFERENCIADO_EN_CODIGO`; despliegue y ambiente exacto requieren evidencia                                     |
+| `aura`     | URL incluida en un selector actual con estado de próxima disponibilidad; roadmap canónico diferido      | `aura.ventogroup.co`                     | `PENDIENTE_DE_EVIDENCIA`: referencia no equivale a ambiente operativo ni autoriza implementación                   |
+| `pass`     | perfiles EAS `development`, `preview` y `production`; producción configurada para distribución en store | canales EAS / stores                     | `CONFIGURADO_EN_REPOSITORIO`; release instalada o publicada requiere evidencia independiente                       |
+
+No se asigna `STAGING` a ninguna aplicación que no lo demuestre.
+
+---
+
+#### 12. Drift actual entre consumidores del catálogo
+
+Se observa que distintas superficies mantienen subconjuntos o estados diferentes del catálogo:
+
+- el launcher runtime de SHELL materializa cinco aplicaciones laborales;
+- un selector actual del shell estándar en NEXO materializa nueve entradas del ecosistema, con AURA como próxima;
+- el catálogo canónico conserva diez aplicaciones;
+- Vento Pass no debe incorporarse a un selector laboral por el solo hecho de ser la décima aplicación, porque su dominio principal es cliente;
+- `shell` puede mostrarse humanamente como Hub, pero su código no cambia a `hub`;
+- los estados locales `active` o `soon` no sustituyen `lifecycle_status` ni `roadmap_scope`.
+
+Decisión:
+
+```text
+LISTA LOCAL DE UN CONSUMIDOR
+≠
+CATÁLOGO CANÓNICO
+```
+
+La tarea no modifica esas listas. Conserva el drift como deuda de consumo ya protegida por los contratos de catálogo y continuidad correspondientes.
+
+---
+
+#### 13. Contrato de dependencia
+
+Una dependencia de aplicación deberá conservar:
+
+```text
+app_code
+environment_role
+dependency_kind
+dependency_ref
+direction
+required_capability
+failure_effect
+degraded_behavior_ref
+data_or_event_contract_ref
+authentication_ref
+owner_ref
+evidence_state
+effective_from
+effective_to
+```
+
+Clases iniciales:
+
+| Clase               | Uso                                                           |
+| ------------------- | ------------------------------------------------------------- |
+| `AUTHORIZATION`     | identidad, sesión, permiso o contexto necesarios              |
+| `DATA_PLATFORM`     | base, almacenamiento, funciones o servicios de datos          |
+| `APPLICATION`       | otra aplicación cuyo contrato produce una capacidad consumida |
+| `INTEGRATION`       | API, evento, webhook, archivo o adaptador                     |
+| `NETWORK`           | conectividad o resolución necesaria                           |
+| `ENDPOINT`          | cliente administrado o dispositivo requerido                  |
+| `PERIPHERAL`        | impresión, captura o efecto físico                            |
+| `EXTERNAL_PROVIDER` | proveedor ajeno al ecosistema que presta una capacidad        |
+| `OBSERVABILITY`     | telemetría, alertas o diagnóstico                             |
+| `DISTRIBUTION`      | canal de build, store o publicación                           |
+
+Una dependencia se materializa solo con contrato o evidencia. Coincidencia de paquete, URL o nombre no crea una dependencia empresarial no demostrada.
+
+---
+
+#### 14. Dependencias técnicas observadas por repositorio
+
+Las nueve aplicaciones con repositorio confirmado declaran una dependencia de cliente Supabase en su manifiesto técnico.
+
+| `app_code` | Base técnica principal observada | Dependencias técnicas relevantes observadas         |
+| ---------- | -------------------------------- | --------------------------------------------------- |
+| `shell`    | Next.js                          | Supabase SSR/JS                                     |
+| `anima`    | Expo / React Native              | Supabase JS; Expo Updates/Notifications; Sentry SDK |
+| `viso`     | Next.js                          | Supabase SSR/JS                                     |
+| `nexo`     | Next.js                          | Supabase SSR/JS; utilidades de códigos e inventario |
+| `fogo`     | Next.js                          | Supabase SSR/JS; renderizado PDF                    |
+| `origo`    | Next.js                          | Supabase SSR/JS                                     |
+| `pulso`    | Next.js                          | Supabase SSR/JS; procesamiento XLSX                 |
+| `numera`   | Next.js                          | Supabase SSR/JS                                     |
+| `aura`     | no confirmado                    | `PENDIENTE_DE_EVIDENCIA`                            |
+| `pass`     | Expo / React Native              | Supabase JS; RevenueCat SDK; utilidades PassKit     |
+
+Estas observaciones prueban dependencias de código. No prueban:
+
+- contrato vigente;
+- ambiente de proveedor;
+- cuenta técnica propietaria;
+- licencia pagada;
+- asiento asignado;
+- SLA;
+- consumo;
+- fecha de renovación.
+
+---
+
+#### 15. Dependencias funcionales canónicas mínimas
+
+| `app_code` | Dependencias funcionales que deben permanecer correlacionables                                                                                      |
+| ---------- | --------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `shell`    | identidad y autorización; catálogo de aplicaciones; destinos de aplicaciones consumidoras; sesión y navegación central                              |
+| `anima`    | trabajador; programación publicada por VISO; asistencia y contexto operativo; documentos y notificaciones del trabajador                            |
+| `viso`     | identidad laboral; roles, permisos, sedes y áreas; programación; mesa de servicio; auditoría administrativa                                         |
+| `nexo`     | inventario, logística, activos y ubicaciones; autorización; servicio transversal de impresión cuando exista salida física                           |
+| `fogo`     | producto, receta, producción, lote y trazabilidad; inventario relacionado; impresión cuando el proceso la requiera                                  |
+| `origo`    | proveedor, compra, orden y recepción; inventario y costo relacionados mediante contratos propietarios                                               |
+| `pulso`    | venta, orden, pago y operación POS; fidelización y datos económicos mediante contratos propietarios                                                 |
+| `numera`   | gastos, costos, compromisos, ingresos y hechos económicos originados en dominios propietarios                                                       |
+| `aura`     | NEXO, PULSO, PASS, NUMERA, VISO y FOGO mediante lectura o eventos autorizados; canales externos solo después de auditoría y decisión de continuidad |
+| `pass`     | identidad cliente, fidelización y hechos de compra/redención; plataformas externas únicamente mediante contratos autorizados                        |
+
+La tabla expresa fronteras que deben poder reconciliarse. No declara que todas esas integraciones estén implementadas.
+
+---
+
+#### 16. Relación con `TI-REL-015`
+
+`TI-REL-015 — SERVICE_DEPENDS_ON_APPLICATION` permanece como relación directa entre `TECH_SERVICE` y `APPLICATION`.
+
+Reglas específicas:
+
+1. no se crea una arista `TI-REL-015` porque una aplicación exista en `public.apps`;
+2. una dependencia de un servicio requiere demostrar que la indisponibilidad o degradación de la aplicación afecta ese servicio;
+3. `TI-SERVICE-005 — Aplicaciones, ambientes y proveedores tecnológicos` administra el universo de diez aplicaciones, pero esa administración no convierte automáticamente cada fila en una dependencia de todos los demás servicios;
+4. solicitudes e incidentes podrán referenciar aplicaciones afectadas en `TI-DOM-007`;
+5. cambios podrán referenciar aplicaciones afectadas en `TI-DOM-009`;
+6. observabilidad podrá recorrer relaciones de dependencia en `TI-DOM-010`;
+7. no se crea una relación genérica `RELATED_TO`.
+
+---
+
+#### 17. Contrato de proveedor
+
+Una relación con proveedor deberá poder declarar:
+
+```text
+provider_name_or_reference
+provider_role
+app_code
+environment_role
+service_scope
+technical_owner
+business_owner
+contract_ref
+account_ref
+authentication_ref
+license_ref
+seat_ref
+renewal_ref
+sla_ref
+support_ref
+data_exposure_ref
+subprocessor_ref
+backup_or_export_ref
+provider_exit_ref
+evidence_state
+```
+
+Prohibiciones:
+
+- guardar contraseñas, tokens o secretos en el catálogo;
+- asumir contrato porque exista un SDK;
+- asumir proveedor de hosting por framework;
+- asumir licencia por una factura aislada;
+- convertir el proveedor en propietario funcional;
+- convertir una cuenta del proveedor en identidad empresarial;
+- usar una cuenta personal sin propietario y vigencia como base operativa permanente.
+
+---
+
+#### 18. Familias de proveedor observadas
+
+La evidencia técnica actual permite reconocer cinco familias externas sin afirmar su estado comercial completo:
+
+| Proveedor / familia | Evidencia técnica                                                             | Aplicaciones afectadas                        | Estado contractual                                                                           |
+| ------------------- | ----------------------------------------------------------------------------- | --------------------------------------------- | -------------------------------------------------------------------------------------------- |
+| GitHub              | repositorios actuales                                                         | nueve aplicaciones con repositorio confirmado | relación de código confirmada; contrato y propietario comercial fuera de esta evidencia      |
+| Supabase            | clientes SDK en los nueve repositorios confirmados y proyecto VENTO accesible | nueve aplicaciones con repositorio confirmado | dependencia técnica confirmada; alcance contractual y económico se referencia a su autoridad |
+| Expo / EAS          | configuración de build y canales                                              | `anima`, `pass`                               | configuración técnica confirmada; plan, cuenta y condiciones comerciales requieren evidencia |
+| Sentry              | SDK React Native en ANIMA                                                     | `anima`                                       | `OBSERVED_SDK`; servicio activo, contrato y retención no se infieren                         |
+| RevenueCat          | SDK de purchases en PASS                                                      | `pass`                                        | `OBSERVED_SDK`; servicio activo, producto contratado y costos no se infieren                 |
+
+Para las siete aplicaciones Next.js no se declara proveedor de hosting sin evidencia específica.
+
+Para AURA no se declara proveedor actual.
+
+---
+
+#### 19. `TI-APPLICATION-PROVIDER-LICENSE-MATRIX-001`
+
+| `app_code` | Proveedores técnicos observados                         | Estado de licencia / asiento | Propietario de cierre                                     | Condición de salida                                                                                            |
+| ---------- | ------------------------------------------------------- | ---------------------------- | --------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------- |
+| `shell`    | GitHub; Supabase; hosting `PENDIENTE_DE_EVIDENCIA`      | `PENDIENTE_DE_EVIDENCIA`     | `TI-DOM-012`                                              | contrato o no-aplicabilidad, propietario, uso, renovación y costo demostrables                                 |
+| `anima`    | GitHub; Supabase; Expo/EAS; Sentry SDK                  | `PENDIENTE_DE_EVIDENCIA`     | `TI-DOM-012`                                              | plan/cuenta, asientos si aplican, renovación, costo, retención y soporte demostrables                          |
+| `viso`     | GitHub; Supabase; hosting `PENDIENTE_DE_EVIDENCIA`      | `PENDIENTE_DE_EVIDENCIA`     | `TI-DOM-012`                                              | contrato o no-aplicabilidad y uso técnico reconciliados                                                        |
+| `nexo`     | GitHub; Supabase; hosting `PENDIENTE_DE_EVIDENCIA`      | `PENDIENTE_DE_EVIDENCIA`     | `TI-DOM-012`                                              | contrato o no-aplicabilidad y uso técnico reconciliados                                                        |
+| `fogo`     | GitHub; Supabase; hosting `PENDIENTE_DE_EVIDENCIA`      | `PENDIENTE_DE_EVIDENCIA`     | `TI-DOM-012`                                              | contrato o no-aplicabilidad y uso técnico reconciliados                                                        |
+| `origo`    | GitHub; Supabase; hosting `PENDIENTE_DE_EVIDENCIA`      | `PENDIENTE_DE_EVIDENCIA`     | `TI-DOM-012`                                              | contrato o no-aplicabilidad y uso técnico reconciliados                                                        |
+| `pulso`    | GitHub; Supabase; hosting `PENDIENTE_DE_EVIDENCIA`      | `PENDIENTE_DE_EVIDENCIA`     | `TI-DOM-012`                                              | contrato o no-aplicabilidad y uso técnico reconciliados                                                        |
+| `numera`   | GitHub; Supabase; hosting `PENDIENTE_DE_EVIDENCIA`      | `PENDIENTE_DE_EVIDENCIA`     | `TI-DOM-012`                                              | contrato o no-aplicabilidad y uso técnico reconciliados                                                        |
+| `aura`     | todos los proveedores actuales `PENDIENTE_DE_EVIDENCIA` | `PENDIENTE_DE_EVIDENCIA`     | `AURA-AUD-001` a `AURA-AUD-010`; `TI-DOM-012` si continúa | auditoría de AURA resuelve producto y proveedores; contratos se reconcilian si la continuidad resulta aprobada |
+| `pass`     | GitHub; Supabase; Expo/EAS; RevenueCat SDK              | `PENDIENTE_DE_EVIDENCIA`     | `TI-DOM-012`                                              | plan/cuenta, producto contratado, renovación, costo y propietarios demostrables                                |
+
+La ausencia de evidencia contractual no invalida la identidad de aplicación. Bloquea afirmar contrato, licencia, SLA o costo.
+
+---
+
+#### 20. Licencia, asiento, cuenta y contrato
+
+Se conserva la separación:
+
+```text
+LICENCIA
+≠ ASIENTO
+≠ CUENTA
+≠ CONTRATO
+≠ CREDENCIAL
+≠ SUSCRIPCIÓN DE USUARIO
+```
+
+Definiciones:
+
+- **licencia:** derecho de uso de un producto o capacidad;
+- **asiento:** unidad asignable de una licencia cuando el modelo lo utilice;
+- **cuenta:** identidad en el proveedor;
+- **contrato:** acuerdo comercial o jurídico;
+- **credencial:** material de autenticación;
+- **suscripción de usuario:** producto o relación de consumo que puede pertenecer a un dominio distinto.
+
+Reglas:
+
+1. una licencia podrá habilitar varias cuentas o ninguna cuenta individual;
+2. una cuenta puede existir sin consumir un asiento;
+3. un asiento no concede permiso empresarial;
+4. una licencia no se cierra marcando una cuenta como inactiva;
+5. un contrato cancelado exige revisar datos, cuentas, integración y continuidad;
+6. los paquetes open source no se confunden con una licencia tecnológica empresarial administrada por asiento;
+7. cumplimiento de licencias de dependencias de software y gobierno económico del servicio se registran en sus ámbitos correspondientes.
+
+---
+
+#### 21. Estado mínimo de una licencia administrada
+
+Cuando una licencia o asiento aplique, deberá poder referenciar:
+
+```text
+license_ref
+provider_ref
+product_or_plan
+contract_ref
+license_model
+seat_model
+entitlement_scope
+assigned_identity_ref
+business_owner
+technical_owner
+start_at
+renewal_at
+end_at
+auto_renewal_state
+usage_evidence_ref
+cost_ref
+cancellation_window_ref
+exit_ref
+status
+```
+
+Estados conceptuales:
+
+```text
+PENDIENTE_DE_EVIDENCIA
+ACTIVE
+SUSPENDED
+EXPIRING
+EXPIRED
+CANCELLED
+NO_APLICA
+```
+
+La transición y los datos económicos se profundizan en `TI-DOM-012`. Esta tarea fija la frontera y la referencia desde la aplicación.
+
+---
+
+#### 22. Autenticación y cuentas técnicas
+
+La aplicación no posee autoridad por la cuenta de un proveedor.
+
+Cada ambiente deberá poder referenciar:
+
+- autoridad de autenticación;
+- principal técnico cuando exista;
+- propietario humano o empresarial;
+- finalidad;
+- alcance;
+- vigencia;
+- método de rotación;
+- revocación;
+- evidencia de uso;
+- relación con contrato o proveedor cuando corresponda.
+
+No se almacenan en el catálogo:
+
+- contraseñas;
+- claves privadas;
+- service-role keys;
+- tokens;
+- códigos de recuperación;
+- secretos de webhooks;
+- claves de API.
+
+Un secreto detectado en configuración se trata por su autoridad de seguridad; no se replica para completar este catálogo.
+
+---
+
+#### 23. Datos y clasificación
+
+La aplicación declara los dominios funcionales que procesa, pero no recibe una sensibilidad única.
+
+| `app_code` | Dominio funcional de datos                                                       |
+| ---------- | -------------------------------------------------------------------------------- |
+| `shell`    | identidad, sesión, autorización, catálogo y navegación                           |
+| `anima`    | trabajador, asistencia, jornada, documentos y contexto personal                  |
+| `viso`     | trabajadores, roles, permisos, programación, administración, soporte y auditoría |
+| `nexo`     | inventario, logística, activos, ubicaciones, remisiones y custodia               |
+| `fogo`     | recetas, producción, lotes, preparación y trazabilidad productiva                |
+| `origo`    | proveedores, compras, órdenes, recepción y abastecimiento                        |
+| `pulso`    | ventas, órdenes, pagos, salón, entregas y fidelización operativa                 |
+| `numera`   | gastos, costos, rentabilidad, reportes y centros de costo                        |
+| `aura`     | marketing, contenido, campañas, leads y métricas si su continuidad se aprueba    |
+| `pass`     | identidad cliente, fidelización, beneficios y transacciones relacionadas         |
+
+Regla:
+
+```text
+SENSIBILIDAD
+=
+PROPIEDAD DEL RECURSO / CAMPO / EVENTO / DOCUMENTO
+NO DEL NOMBRE DE LA APLICACIÓN
+```
+
+Un ambiente no puede reducir la clasificación aprobada de los datos que procesa.
+
+---
+
+#### 24. `TI-APPLICATION-CRITICALITY-CONTRACT-001`
+
+La unidad de criticidad es la instancia de aplicación dentro de un contexto y una ventana, no el `app_code` completo.
+
+```text
+app_instance
+=
+app_code
++
+environment_role
++
+surface
++
+business_context
++
+dependency_snapshot
+```
+
+La clase efectiva se deriva de:
+
+1. criticidad de los procesos que dependen de la instancia;
+2. etapas críticas aplicables;
+3. recursos protegidos cuya indisponibilidad afecte seguridad, identidad o acceso;
+4. servicios tecnológicos dependientes;
+5. dependencia externa y contingencia disponible;
+6. ventana de disponibilidad aplicable;
+7. alcance del cambio o falla.
+
+No se promedian impactos.
+
+---
+
+#### 25. Regla de derivación
+
+Se conservan los cinco modos aprobados:
+
+```text
+CRIT_FROM_PROTECTED_RESOURCE
+CRIT_FROM_DEPENDENCY
+CRIT_FROM_AFFECTED_SERVICE
+CRIT_FROM_CHANGE_SCOPE
+CRIT_FROM_ENABLED_CAPABILITY
+```
+
+Para una aplicación:
+
+- el modo ordinario es `CRIT_FROM_DEPENDENCY`;
+- una superficie que protege identidad, autorización o un recurso sensible puede aplicar `CRIT_FROM_PROTECTED_RESOURCE`;
+- un caso hereda mediante `CRIT_FROM_AFFECTED_SERVICE`;
+- un cambio hereda mediante `CRIT_FROM_CHANGE_SCOPE`;
+- una licencia o capacidad habilitante hereda mediante `CRIT_FROM_ENABLED_CAPABILITY`.
+
+La clase de proceso `C0` a `C4` no se convierte en una etiqueta permanente de la aplicación.
+
+---
+
+#### 26. Matriz de criticidad por aplicación
+
+| `app_code` | Regla primaria         | Modificador obligatorio                                                                                             | Clase global fija |
+| ---------- | ---------------------- | ------------------------------------------------------------------------------------------------------------------- | ----------------- |
+| `shell`    | `CRIT_FROM_DEPENDENCY` | elevar según recurso protegido cuando identidad, sesión o acceso estén implicados                                   | ninguna           |
+| `anima`    | `CRIT_FROM_DEPENDENCY` | respetar etapas laborales, seguridad y disponibilidad del proceso                                                   | ninguna           |
+| `viso`     | `CRIT_FROM_DEPENDENCY` | respetar recursos protegidos y procesos administrativos afectados                                                   | ninguna           |
+| `nexo`     | `CRIT_FROM_DEPENDENCY` | respetar inventario, custodia, logística y dependencias físicas                                                     | ninguna           |
+| `fogo`     | `CRIT_FROM_DEPENDENCY` | respetar producción, inocuidad y etapas críticas                                                                    | ninguna           |
+| `origo`    | `CRIT_FROM_DEPENDENCY` | respetar abastecimiento, recepción y compromisos                                                                    | ninguna           |
+| `pulso`    | `CRIT_FROM_DEPENDENCY` | respetar venta, pago, caja y resultado desconocido                                                                  | ninguna           |
+| `numera`   | `CRIT_FROM_DEPENDENCY` | respetar obligaciones económicas, cierres y fuentes propietarias                                                    | ninguna           |
+| `aura`     | `CRIT_FROM_DEPENDENCY` | roadmap diferido no equivale a criticidad baja; cualquier continuidad futura deberá derivarse de procesos aprobados | ninguna           |
+| `pass`     | `CRIT_FROM_DEPENDENCY` | dominio cliente no reduce criticidad de pagos, identidad o redenciones cuando apliquen                              | ninguna           |
+
+Control:
+
+```text
+10 aplicaciones
+10 reglas explícitas
+0 clases globales inventadas
+```
+
+---
+
+#### 27. Disponibilidad de aplicación
+
+Se distinguen:
+
+```text
+CATALOG_ACTIVE
+DEPLOYMENT_PRESENT
+TECHNICALLY_HEALTHY
+BUSINESS_AVAILABLE
+AUTHORIZED_FOR_ACTOR
+DEPENDENCY_AVAILABLE
+```
+
+Ninguna implica automáticamente las demás.
+
+Reglas:
+
+1. `public.apps.is_active` representa pertenencia runtime, no uptime;
+2. un health check técnico no demuestra resultado empresarial;
+3. una app puede estar disponible técnicamente y bloqueada por autorización;
+4. una app puede estar saludable y un proceso permanecer indisponible por una dependencia externa;
+5. una contingencia aprobada puede mantener el proceso en `DEGRADED_SAFE` aunque la aplicación esté indisponible;
+6. la medición de disponibilidad se gobierna por procesos y servicios, no por una única cifra de app.
+
+---
+
+#### 28. Cambios y versiones
+
+Todo cambio que altere cualquiera de los siguientes elementos deberá referenciar `TI-DOM-009`:
+
+- repositorio o fuente de build;
+- ambiente;
+- dominio u origen;
+- runtime principal;
+- proveedor;
+- versión mayor de framework cuando implique riesgo;
+- autenticación;
+- integración;
+- plan o licencia que habilita capacidad;
+- método de distribución;
+- secreto o principal técnico;
+- dependencia crítica;
+- estrategia de recuperación o salida.
+
+El cambio conserva:
+
+```text
+before
+after
+reason
+authorization
+affected_apps
+affected_environments
+affected_dependencies
+test_ref
+rollback_ref
+result
+```
+
+Un commit en `main` no equivale a despliegue productivo.
+
+---
+
+#### 29. SLA, soporte y escalamiento
+
+La aplicación podrá referenciar:
+
+- canal de soporte interno;
+- soporte del proveedor;
+- horario;
+- severidades o categorías del proveedor;
+- SLA contractual;
+- límites de soporte;
+- responsable de escalamiento.
+
+La prioridad de un caso y el SLA interno pertenecen a `TI-DOM-007`.
+
+El SLA externo no redefine la prioridad empresarial.
+
+Si el proveedor ofrece una clasificación propia, deberá mapearse sin reemplazar:
+
+- criticidad del proceso;
+- impacto;
+- urgencia;
+- prioridad del caso;
+- nivel de atención interno.
+
+---
+
+#### 30. Respaldo, recuperación y salida del proveedor
+
+Cada dependencia externa crítica deberá tener un `provider_exit_ref` que permita decidir cómo continuar si el proveedor se degrada, deja de prestar servicio o se sustituye.
+
+El contrato mínimo de salida cubre:
+
+1. propiedad y exportabilidad de datos;
+2. formato y completitud de exportación;
+3. revocación de cuentas, tokens y accesos;
+4. tratamiento de secretos;
+5. retención y eliminación por el proveedor;
+6. sustituto o modo degradado cuando aplique;
+7. restauración o importación en el destino;
+8. reconciliación de trabajos pendientes;
+9. preservación de auditoría;
+10. cierre contractual y económico;
+11. prueba de retorno a operación;
+12. evidencia de salida.
+
+`TI-DOM-011` define respaldo y recuperación técnica.
+
+`TI-DOM-012` materializa contrato, renovación, uso y costo.
+
+E5/T/U materializan y prueban la salida cuando un paquete la requiera.
+
+---
+
+#### 31. Tratamiento específico de SHELL
+
+Se conserva:
+
+```text
+app_code = shell
+display_name = Vento OS
+repository = vento-shell
+```
+
+El estado actual contiene dos orígenes referenciados:
+
+- `os.ventogroup.co` en superficies del shell estándar;
+- `hub.ventogroup.co` en metadata actual de `vento-shell`.
+
+Decisión:
+
+- no se elige silenciosamente uno;
+- ambos permanecen como evidencia de drift;
+- la identidad `shell` no cambia;
+- la reconciliación de dominio pertenece a las tareas propietarias de navegación y contrato de aplicaciones;
+- hasta cerrarla, el ambiente productivo de SHELL no se declara verificado únicamente por la URL.
+
+---
+
+#### 32. Tratamiento específico de AURA
+
+AURA conserva:
+
+```text
+app_code = aura
+catalog_status = active
+roadmap_scope = deferred
+```
+
+La evidencia actual aporta una URL referenciada como próxima disponibilidad, pero no confirma:
+
+- repositorio propietario;
+- producto desplegado;
+- usuarios activos;
+- rutas actuales;
+- funciones activas;
+- proveedores actuales;
+- contratos;
+- licencias;
+- ambiente productivo;
+- criticidad efectiva.
+
+Propietarios:
+
+| Decisión                               | Propietario    |
+| -------------------------------------- | -------------- |
+| repositorio                            | `AURA-AUD-001` |
+| estado real                            | `AURA-AUD-002` |
+| rutas                                  | `AURA-AUD-004` |
+| datos y permisos                       | `AURA-AUD-006` |
+| continuidad, reemplazo o retiro        | `AURA-AUD-010` |
+| decisión arquitectónica si corresponde | `AURA-AUD-011` |
+
+TI-DOM-006 no desbloquea AURA.
+
+---
+
+#### 33. Tratamiento específico de PASS
+
+PASS conserva:
+
+```text
+app_code = pass
+identity_domain = cliente
+roadmap_scope = adjacent
+```
+
+La aplicación no se incorpora automáticamente a selectores laborales.
+
+El repositorio actual muestra:
+
+- aplicación Expo / React Native;
+- perfiles de build `development`, `preview` y `production`;
+- producción distribuida mediante store;
+- cliente Supabase;
+- SDK de purchases;
+- utilidades de PassKit.
+
+Reglas:
+
+1. las cuentas cliente no se convierten en empleados;
+2. un producto o suscripción externa no concede permiso laboral;
+3. el SDK de purchases no prueba contrato, plan ni costo;
+4. la criticidad de pagos, beneficios o redenciones se deriva del proceso y del resultado comprometido;
+5. cualquier licencia, contrato o renovación tecnológica se referencia a `TI-DOM-012`.
+
+---
+
+#### 34. Hallazgos y propietarios
+
+| ID                 | Hallazgo                                                                                                                  | Estado                   | Propietario                                                 | Condición de salida                                                                               |
+| ------------------ | ------------------------------------------------------------------------------------------------------------------------- | ------------------------ | ----------------------------------------------------------- | ------------------------------------------------------------------------------------------------- |
+| `H-TI-DOM-006-001` | catálogo canónico y `public.apps` coinciden 10/10, pero consumidores mantienen subconjuntos o estados locales divergentes | `ESPECIFICADO`           | tareas de contratos compartidos y consumidores propietarios | consumidores obtienen identidad, destino y estado desde fuente versionada sin listas competidoras |
+| `H-TI-DOM-006-002` | SHELL presenta referencias `os` y `hub` para la misma aplicación                                                          | `PENDIENTE_DE_EVIDENCIA` | tareas propietarias de navegación y dominio SHELL           | dominio canónico o alias aprobado queda documentado y probado                                     |
+| `H-TI-DOM-006-003` | AURA no tiene repositorio propietario confirmado en la evidencia actual                                                   | `BLOQUEADO`              | `AURA-AUD-001`                                              | repositorio confirmado o decisión explícita de ausencia/reemplazo                                 |
+| `H-TI-DOM-006-004` | AURA carece de evidencia suficiente para declarar ambiente o proveedor actual                                             | `BLOQUEADO`              | `AURA-AUD-002` a `AURA-AUD-010`                             | auditoría y decisión de continuidad cierran el producto real                                      |
+| `H-TI-DOM-006-005` | los contratos, licencias, asientos, renovaciones y costos por aplicación no están demostrados en las fuentes consultadas  | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012`                                                | inventario contractual completo y reconciliado con ORIGO/NUMERA                                   |
+| `H-TI-DOM-006-006` | proveedor de hosting de las siete aplicaciones Next.js no se declara sin evidencia                                        | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012` + paquete de despliegue propietario            | proveedor, proyecto, propietario, contrato y ambiente demostrados                                 |
+| `H-TI-DOM-006-007` | la presencia de SDK Sentry en ANIMA no demuestra servicio activo ni retención contratada                                  | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-010`; `TI-DOM-012`                                  | configuración, cuenta, retención, propietario y contrato demostrados                              |
+| `H-TI-DOM-006-008` | la presencia del SDK de purchases en PASS no demuestra producto contratado, reglas o costos                               | `PENDIENTE_DE_EVIDENCIA` | `TI-DOM-012` + propietario PASS                             | cuenta, producto, contrato, renovación y conciliación demostrados                                 |
+| `H-TI-DOM-006-009` | las referencias de dominio observadas no equivalen a despliegue verificado                                                | `ESPECIFICADO`           | paquetes de implementación y CI propietarios                | evidencia de build, commit, configuración y superficie desplegada por ambiente                    |
+| `H-TI-DOM-006-010` | no existe criticidad única válida por aplicación                                                                          | `RESUELTO_POR_CONTRATO`  | `TI-APPLICATION-CRITICALITY-CONTRACT-001`                   | toda instancia deriva criticidad desde procesos, recursos y dependencias                          |
+
+No queda un pendiente narrativo sin propietario ni condición de salida.
+
+---
+
+#### 35. Estado de materialización
+
+| Componente                    | Estado                                                         |
+| ----------------------------- | -------------------------------------------------------------- |
+| catálogo de diez aplicaciones | `ESPECIFICADO`                                                 |
+| reconciliación `public.apps`  | `VALIDADO_DOCUMENTALMENTE`                                     |
+| repositorios                  | `9 CONFIRMADOS / 1 PENDIENTE_DE_EVIDENCIA`                     |
+| versiones de manifiesto       | `9 OBSERVADAS / 1 PENDIENTE_DE_EVIDENCIA`                      |
+| perfiles EAS                  | `CONFIGURADO_EN_REPOSITORIO` para ANIMA y PASS                 |
+| URLs de ecosistema            | `REFERENCIADO_EN_CODIGO`; no equivalen a despliegue verificado |
+| dependencias técnicas         | `ESPECIFICADO` con evidencia de manifiesto                     |
+| contratos y licencias         | `PENDIENTE_DE_EVIDENCIA` por aplicación                        |
+| proveedor de hosting web      | `PENDIENTE_DE_EVIDENCIA`                                       |
+| criticidad                    | `DERIVADA_POR_INSTANCIA`; ninguna clase global fija            |
+| observabilidad runtime        | `FUERA_DE_ALCANCE` de esta tarea; propietaria `TI-DOM-010`     |
+| recuperación                  | `FUERA_DE_ALCANCE` de esta tarea; propietaria `TI-DOM-011`     |
+| costos y renovaciones         | `FUERA_DE_ALCANCE` de esta tarea; propietaria `TI-DOM-012`     |
+| implementación                | `FUERA_DE_ALCANCE`                                             |
+| cambios Supabase              | `NO_APLICA`                                                    |
+
+---
+
+#### 36. Invariantes
+
+1. existen exactamente diez `app_code` canónicos;
+2. TI-DOM-006 no crea un undécimo código;
+3. `shell` es aplicación y `vento-shell` es repositorio;
+4. `hub` no sustituye el `app_code` `shell`;
+5. AURA conserva código mientras su roadmap permanezca diferido;
+6. PASS conserva identidad cliente;
+7. ambiente no modifica `app_code`;
+8. plataforma no modifica `app_code`;
+9. sede no modifica `app_code`;
+10. URL no es identidad;
+11. repositorio no es identidad;
+12. proveedor no es identidad;
+13. licencia no es permiso;
+14. asiento no es usuario;
+15. cuenta no es credencial;
+16. contrato no es disponibilidad;
+17. `is_active` no es despliegue;
+18. build no es despliegue;
+19. dominio referenciado no es despliegue verificado;
+20. SDK no es contrato;
+21. framework no prueba proveedor de hosting;
+22. una dependencia técnica no crea propiedad funcional;
+23. una dependencia externa no reduce responsabilidad interna;
+24. no se guardan secretos en el catálogo;
+25. una sensibilidad pertenece al recurso, campo, evento o documento, no a toda la aplicación;
+26. una aplicación no recibe una clase C0-C4 global;
+27. criticidad se deriva por instancia y proceso;
+28. workaround no reduce la criticidad del hecho afectado;
+29. roadmap diferido no equivale a baja criticidad;
+30. proveedor externo no puede convertirse en maestro de identidad, contrato o costo;
+31. salida del proveedor conserva datos, cuentas, auditoría y reconciliación;
+32. cambio de ambiente o proveedor requiere gobierno de cambio;
+33. licencia y costo se profundizan en `TI-DOM-012`;
+34. backup y restore se profundizan en `TI-DOM-011`;
+35. SLA de caso se profundiza en `TI-DOM-007`;
+36. no se modifica código, datos, ambientes, proveedores ni Supabase desde esta tarea.
+
+---
+
+#### 37. Criterios de aceptación
+
+- [x] se conserva la continuidad `TI-DOM-005 → TI-DOM-006 → TI-DOM-007`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] se conservan exactamente diez aplicaciones canónicas;
+- [x] 10/10 aplicaciones reciben una decisión explícita;
+- [x] `public.apps` queda reconciliado 10/10 sin nuevos códigos;
+- [x] se diferencian aplicación, repositorio, ambiente, URL, despliegue, proveedor, contrato, licencia, asiento y servicio;
+- [x] se confirman nueve repositorios y AURA queda con propietario exacto de resolución;
+- [x] las versiones de manifiesto se registran sin presentarlas como release desplegada;
+- [x] se definen seis roles de ambiente;
+- [x] se materializa una decisión de ambiente para 10/10 aplicaciones;
+- [x] se preserva el drift `os`/`hub` sin elegir silenciosamente;
+- [x] se preserva AURA como activa de catálogo y diferida de roadmap;
+- [x] PASS permanece en dominio cliente;
+- [x] se define el contrato de dependencia y sus clases;
+- [x] se materializan dependencias técnicas observadas para los nueve repositorios confirmados;
+- [x] se materializan fronteras funcionales mínimas para las diez aplicaciones;
+- [x] se define el contrato de proveedor sin almacenar secretos;
+- [x] se separa SDK observado de proveedor contratado;
+- [x] se materializa el estado de proveedor/licencia para 10/10 aplicaciones;
+- [x] toda licencia no demostrada queda `PENDIENTE_DE_EVIDENCIA` con `TI-DOM-012` como propietario;
+- [x] se define salida del proveedor;
+- [x] se define criticidad por instancia y se prohíbe la clase global de aplicación;
+- [x] las diez aplicaciones tienen regla explícita de derivación de criticidad;
+- [x] no se inventan SLA, contratos, licencias, asientos, proveedores de hosting, ambientes desplegados ni costos;
+- [x] todos los hallazgos tienen propietario y condición de salida;
+- [x] no se modifica Supabase;
+- [x] no se crean ni modifican requisitos de prueba;
+- [x] `TI-DOM-007` permanece únicamente reservada.
+
+---
+
+#### 38. Cobertura de prueba consumida
+
+La tarea consume cobertura vigente que ya protege:
+
+- unicidad y estabilidad del catálogo de aplicaciones;
+- correspondencia entre catálogo, destinos, consumidores y navegación;
+- identificación verificable de ambiente, repositorio, versión, configuración y superficie desplegada;
+- separación entre aplicación, cuenta, permiso, credencial, licencia y asiento;
+- correlación de aplicaciones, proveedores, licencias, contratos, costos y servicios;
+- separación entre activos, configuración, aplicación y proveedor;
+- uso de contratos versionados para integraciones y dependencias;
+- criticidad y disponibilidad derivadas por proceso y dependencia;
+- ausencia de secretos en adaptadores, tickets y catálogos.
+
+TI-DOM-006 especializa y materializa esas obligaciones para las diez aplicaciones sin alterar su comportamiento protegido.
+
+---
+
+#### 39. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea no introduce una nueva conducta ejecutable. Materializa el catálogo técnico de las diez aplicaciones, separa ambientes, dependencias, proveedores y licencias, y aplica reglas de criticidad ya protegidas por los contratos vigentes de catálogo, ambientes, integración, tecnología y criticidad por proceso. Las relaciones que todavía requieren evidencia permanecen explícitamente bloqueadas o asignadas a su tarea propietaria; no se cambia una condición de prueba existente.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 40. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre`
+
+
 ### [ ] TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre
 ### [ ] TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia
 ### [ ] TI-DOM-009 — Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior

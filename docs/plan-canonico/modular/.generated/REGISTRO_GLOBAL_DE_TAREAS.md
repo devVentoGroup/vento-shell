@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **623** |
+| Aprobadas | **624** |
 | En propuesta | **0** |
-| No iniciadas | **971** |
+| No iniciadas | **970** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **39.08% (623/1594)** |
+| Porcentaje de completamiento | **39.15% (624/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TI-DOM-005` — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión | ✅ APROBADA |
-| Tarea actual | `TI-DOM-006` — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad | ⬜ NO INICIADA |
-| Siguiente reservada | `TI-DOM-007` — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre | ⬜ NO INICIADA |
+| Última aprobada | `TI-DOM-006` — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad | ✅ APROBADA |
+| Tarea actual | `TI-DOM-007` — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre | ⬜ NO INICIADA |
+| Siguiente reservada | `TI-DOM-008` — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1512,7 +1512,7 @@
 | ✅ APROBADA | `TI-DOM-003` | Definir ciclo de vida de computadores, celulares, tabletas y endpoints | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-004` | Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-005` | Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
-| ⬜ NO INICIADA | `TI-DOM-006` | Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
+| ✅ APROBADA | `TI-DOM-006` | Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-007` | Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-008` | Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ⬜ NO INICIADA | `TI-DOM-009` | Definir cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |

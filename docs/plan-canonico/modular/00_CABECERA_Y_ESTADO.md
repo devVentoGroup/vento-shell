@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **623** |
+| Tareas aprobadas | **624** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **971** |
+| Tareas no iniciadas | **970** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **39.08% (623/1594)** |
+| Porcentaje de completamiento | **39.15% (624/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión** |
-| Tarea actual | **TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad** |
+| Última tarea aprobada | **TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad** |
+| Tarea actual | **TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre** |
+| Siguiente tarea | **TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 47 de 157 aprobadas; TI-DOM-006 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 48 de 157 aprobadas; TI-DOM-007 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TI-DOM-005` — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión |
-| Tarea actual | `TI-DOM-006` — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad — **NO INICIADA** |
-| Siguiente tarea | `TI-DOM-007` — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre |
+| Última aprobada | `TI-DOM-006` — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad |
+| Tarea actual | `TI-DOM-007` — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre — **NO INICIADA** |
+| Siguiente tarea | `TI-DOM-008` — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 47 DE 157 APROBADAS — ACTUAL TI-DOM-006** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 48 DE 157 APROBADAS — ACTUAL TI-DOM-007** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión
-        ↓
-TAREA ACTUAL
 TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 TI-DOM-007 — Definir solicitud de servicio, incidente, impacto, urgencia, prioridad, SLA, escalamiento, comunicación y cierre
         ↓
+SIGUIENTE TAREA RESERVADA
+TI-DOM-008 — Definir problema, causa raíz, error conocido, workaround y prevención de recurrencia
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 47 de 157 tareas aprobadas
+CARRIL NEXO — 48 de 157 tareas aprobadas
 ```
