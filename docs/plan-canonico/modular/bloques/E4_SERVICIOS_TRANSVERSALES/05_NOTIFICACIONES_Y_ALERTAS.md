@@ -992,7 +992,381 @@ SIGUIENTE TAREA RESERVADA
 La aprobación de `NOTIFY-ARC-004` no inicia ni desarrolla `NOTIFY-ARC-005`.
 
 
-### [ ] NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa
+### ✅ NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa
+
+**Estado:** APROBADA
+**Tarea anterior:** `NOTIFY-ARC-004 — Definir prioridad, vigencia y deduplicación` — APROBADA
+**Tarea siguiente:** `NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias` — RESERVADA
+**Tipo de tarea:** documental; matriz materializada de canales objetivo y rutas de entrega para las quince políticas de notificación aprobadas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, Edge Functions, tablas, RLS, migraciones, cron, tokens, proveedores, secretos, canales desplegados ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir para cada `NOTIFY-POLICY-*` qué clase de canal constituye su ruta primaria, qué superficies pueden acompañarla, cuándo puede existir una ruta externa y qué evidencia técnica actual respalda o limita esa decisión, sin cambiar origen, destinatario, prioridad, vigencia, deduplicación, preferencias, escalamiento, reintentos, privacidad ni métricas.
+
+---
+
+#### 1. Resultado sustantivo
+
+`NOTIFY-ARC-005` queda documentalmente cerrada con:
+
+- 15 políticas `NOTIFY-POLICY-001` a `NOTIFY-POLICY-015` recibidas y materializadas;
+- 15 orígenes `NOTIFY-ORIGIN-001` a `NOTIFY-ORIGIN-015` conservados;
+- 15 reglas `NOTIFY-RECIPIENT-001` a `NOTIFY-RECIPIENT-015` conservadas;
+- 16 familias `NOTIFY-ASIS-*` cubiertas;
+- 6 clases de canal objetivo;
+- exactamente una ruta primaria por política;
+- rutas complementarias explícitas cuando aportan atención sin crear una segunda necesidad;
+- una única elegibilidad condicional de mensajería externa, limitada a `NOTIFY-POLICY-013`;
+- resolución documental de la ruta PASS de mensajes de pedido;
+- una brecha técnica de paridad repositorio/despliegue registrada con propietario y puerta de salida;
+- 0 políticas sin canal primario;
+- 0 políticas duplicadas;
+- 0 decisiones abiertas dentro del alcance de esta tarea;
+- 0 cambios físicos ejecutados.
+
+Todas las filas quedan en estado documental `ESPECIFICADO`. La existencia actual de un mecanismo técnico se registra como evidencia, no como prueba de entrega operativa ni como autorización para modificarlo.
+
+---
+
+#### 2. Entradas conservadas
+
+La tarea consume sin reinterpretar:
+
+1. `NOTIFY-ARC-001`, con dieciséis familias AS-IS y sus mecanismos técnicos observados;
+2. `NOTIFY-ARC-002`, con quince orígenes empresariales;
+3. `NOTIFY-ARC-003`, con quince reglas de destinatario;
+4. `NOTIFY-ARC-004`, con quince políticas de prioridad, vigencia, agrupación y deduplicación;
+5. el código vigente de ANIMA, PASS y PULSO relacionado con presentación y recepción de avisos;
+6. las Edge Functions vigentes de `vento-shell` relacionadas con push y correo;
+7. el estado desplegado accesible de `vento-os-dev` utilizado únicamente para reconciliar existencia y paridad técnica.
+
+Las decisiones heredadas permanecen inmutables. Esta tarea selecciona canales de comunicación; no altera quién debe recibir, qué hecho origina, cuál es la prioridad ni cuándo una necesidad deja de ser vigente.
+
+---
+
+#### 3. Catálogo canónico de clases de canal
+
+| Canal                           | Definición                                                                                                                                               | Puede ser primario                 | Puede complementar | No significa                                                                                                     |
+| ------------------------------- | -------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------------- | ------------------ | ---------------------------------------------------------------------------------------------------------------- |
+| `CHANNEL_INTERNAL_FEED_INBOX`   | Superficie autenticada y persistente dentro de una aplicación VENTO: feed, bandeja, conversación o contador asociado a contenido recuperable.            | Sí                                 | Sí                 | No es la fuente de verdad del hecho empresarial ni prueba de lectura.                                            |
+| `CHANNEL_INTERNAL_CONTEXTUAL`   | Aviso visible dentro del contexto operativo activo: banner, alerta, modal o estado destacado ligado al recurso o proceso que el usuario está utilizando. | Sí                                 | Sí                 | No es entrega fuera de la aplicación ni sustituye un work item.                                                  |
+| `CHANNEL_INTERNAL_DEVICE_ALERT` | Aviso generado en el dispositivo o navegador por una aplicación VENTO: notificación local nativa o Notification API del navegador.                       | Sí                                 | Sí                 | Sonido, vibración o título de pestaña no son canales independientes.                                             |
+| `CHANNEL_PUSH_REMOTE`           | Entrega remota hacia un endpoint registrado de una aplicación mediante un proveedor de push aprobado.                                                    | Sí                                 | Sí                 | El token no define destinatario, permiso, prioridad ni identidad empresarial.                                    |
+| `CHANNEL_EMAIL`                 | Correo transaccional dirigido a una dirección vinculada al destinatario y al propósito autorizado.                                                       | Sí                                 | Sí                 | La existencia de correo no habilita por sí sola este canal.                                                      |
+| `CHANNEL_EXTERNAL_MESSAGING`    | Mensajería fuera de las aplicaciones VENTO mediante un adaptador aprobado, por ejemplo una plataforma de mensajería empresarial.                         | Sí, cuando la política lo autoriza | Sí                 | No equivale a WhatsApp, SMS, Instagram, ManyChat u otro proveedor específico hasta que exista contrato aprobado. |
+
+`Realtime`, cron, triggers, webhooks, RPC, Edge Functions, colas y llamadas HTTP son mecanismos técnicos de activación o transporte y no se catalogan como canales humanos.
+
+`SIGNAL_LOCAL_AUDIO`, `SIGNAL_HAPTIC` y cambios en el título de una ventana son señales auxiliares. Pueden reforzar un canal interno, pero nunca constituyen una ruta de entrega autónoma.
+
+---
+
+#### 4. Estados de una ruta
+
+| Estado          | Significado                                                                                                          |
+| --------------- | -------------------------------------------------------------------------------------------------------------------- |
+| `PRIMARY`       | Ruta objetivo principal de la política. Cada política tiene exactamente una.                                         |
+| `COMPLEMENTARY` | Superficie adicional de la misma necesidad semántica; no crea otra notificación empresarial.                         |
+| `CONDITIONAL`   | Ruta habilitable únicamente cuando el tipo de destinatario y las condiciones canónicas aplicables la hacen elegible. |
+| `NO_APLICA`     | La política no autoriza esa clase de canal en su línea base.                                                         |
+
+Una ruta `CONDITIONAL` no significa fallback técnico. Reintentos, indisponibilidad y contingencia pertenecen a `NOTIFY-ARC-008`.
+
+---
+
+#### 5. Reglas transversales de selección y enrutamiento
+
+1. **La necesidad precede al canal.** Primero deben existir origen, destinatario y política vigentes; luego se proyecta la necesidad por las rutas autorizadas.
+2. **Una identidad semántica, múltiples proyecciones.** Feed, push, alerta local, correo o mensajería externa que representen la misma necesidad conservan una identidad común y no crean hechos distintos.
+3. **La prioridad no selecciona por sí sola el canal.** `P1`, `P2` y `P3` condicionan atención, pero cada fila de esta tarea fija su ruta explícita.
+4. **Canal interno cuando existe contexto VENTO útil.** Feed, bandeja, conversación, banner o modal se utilizan cuando la aplicación puede mostrar el recurso o proceso de forma autenticada y trazable.
+5. **Push para alcance remoto oportuno.** `CHANNEL_PUSH_REMOTE` se utiliza únicamente cuando el destinatario dispone de una aplicación VENTO compatible y un endpoint registrado válido. El endpoint no participa en la resolución del destinatario.
+6. **Alerta de dispositivo para contexto local.** `CHANNEL_INTERNAL_DEVICE_ALERT` es apropiado cuando la propia aplicación o navegador posee contexto suficiente para mostrar el aviso sin convertir el dispositivo en fuente empresarial.
+7. **Correo para artefactos cuyo medio de entrega forma parte del flujo.** El correo no se adopta como copia general de avisos internos. En la línea base actual es primario para invitaciones de incorporación.
+8. **Mensajería externa no es ruta general.** Solo se habilita en la política que admite contraparte externa sin superficie VENTO y queda subordinada a identidad/contacto válidos, preferencia aplicable y adaptador aprobado.
+9. **Sin broadcast por ausencia de endpoint.** Si falta token, sesión, navegador o correo elegible, no se amplía audiencia ni se cambia de destinatario.
+10. **Sin cambio silencioso de canal por error.** Una falla de proveedor no habilita automáticamente correo, mensajería externa u otra ruta. La contingencia corresponde a `NOTIFY-ARC-008`.
+11. **Proveedor desacoplado del contrato.** Expo y Resend son implementaciones observadas. La identidad canónica es la clase de canal; cambiar proveedor no cambia por sí solo la política.
+12. **Canal no concede autorización.** Recibir una URL, deep link, push, correo o mensaje no autoriza a consultar ni mutar el recurso sin revalidar identidad y permisos.
+13. **La presentación no prueba recepción.** Banner mostrado, push aceptado por proveedor, correo enviado o notificación del sistema operativo no equivalen a leído, reconocido o atendido.
+14. **Una bandeja no es work item.** El canal de notificación conserva la separación entre comunicación y obligación operativa.
+15. **Contenido y exposición quedan fuera de esta tarea.** El canal se selecciona aquí; minimización y contenido sensible se gobiernan en `NOTIFY-ARC-009`.
+
+---
+
+#### 6. Matriz materializada de canales por política
+
+| Política            | Prioridad                 | Ruta primaria                   | Ruta complementaria                                           | Ruta condicional                                                                                                                                            | Evidencia técnica actual                                                                                                         | Resultado / bloqueo                                          |
+| ------------------- | ------------------------- | ------------------------------- | ------------------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------ |
+| `NOTIFY-POLICY-001` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_INTERNAL_FEED_INBOX`   | `CHANNEL_PUSH_REMOTE`                                         | `NO_APLICA`                                                                                                                                                 | ANIMA conserva feed `Novedades`; `announcement-notify` materializa push remoto.                                                  | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-002` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_PUSH_REMOTE`           | `CHANNEL_INTERNAL_DEVICE_ALERT`                               | `NO_APLICA`                                                                                                                                                 | `document-alerts` materializa push; ANIMA conserva notificación local de respaldo.                                               | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-003` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_PUSH_REMOTE`           | `CHANNEL_INTERNAL_CONTEXTUAL`                                 | `NO_APLICA`                                                                                                                                                 | `shift-publish-notify` entrega el aviso remoto y referencia el contexto de turnos en ANIMA.                                      | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-004` | `P1_URGENTE_OPERATIVA`    | `CHANNEL_PUSH_REMOTE`           | `CHANNEL_INTERNAL_CONTEXTUAL`                                 | `NO_APLICA`                                                                                                                                                 | `shift-publish-notify` distingue actualización de turno y entrega push.                                                          | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-005` | `P1_URGENTE_OPERATIVA`    | `CHANNEL_PUSH_REMOTE`           | `CHANNEL_INTERNAL_CONTEXTUAL`                                 | `NO_APLICA`                                                                                                                                                 | `shift-runtime-processor` materializa el recordatorio remoto previo al fin.                                                      | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-006` | `P1_URGENTE_OPERATIVA`    | `CHANNEL_PUSH_REMOTE`           | `CHANNEL_INTERNAL_CONTEXTUAL`                                 | `NO_APLICA`                                                                                                                                                 | `shift-runtime-processor` materializa el seguimiento remoto de turno abierto.                                                    | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-007` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_INTERNAL_DEVICE_ALERT` | `CHANNEL_INTERNAL_CONTEXTUAL`                                 | `NO_APLICA`                                                                                                                                                 | ANIMA presenta notificación local y `Alert`; la señal háptica permanece auxiliar.                                                | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-008` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_INTERNAL_FEED_INBOX`   | `CHANNEL_PUSH_REMOTE`                                         | `NO_APLICA`                                                                                                                                                 | ANIMA conserva badge/contexto de soporte; `support-message-notify` materializa push remoto.                                      | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-009` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_EMAIL`                 | `NO_APLICA`                                                   | `NO_APLICA`                                                                                                                                                 | Las funciones de invitación registran entrega por correo y usan Resend para el envío.                                            | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-010` | `P3_INFORMATIVA`          | `CHANNEL_INTERNAL_DEVICE_ALERT` | `CHANNEL_INTERNAL_CONTEXTUAL`                                 | `NO_APLICA`                                                                                                                                                 | PASS programa notificación local para ascenso de nivel.                                                                          | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-011` | `P3_INFORMATIVA`          | `CHANNEL_INTERNAL_DEVICE_ALERT` | `CHANNEL_INTERNAL_CONTEXTUAL`                                 | `NO_APLICA`                                                                                                                                                 | PASS programa notificación local cuando una recompensa pasa a ser alcanzable.                                                    | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-012` | `P3_INFORMATIVA`          | `CHANNEL_INTERNAL_CONTEXTUAL`   | `CHANNEL_INTERNAL_DEVICE_ALERT`                               | `NO_APLICA`                                                                                                                                                 | PASS conserva modal contextual y notificación local para la oportunidad de feedback.                                             | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-013` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_INTERNAL_FEED_INBOX`   | `CHANNEL_PUSH_REMOTE` para cliente PASS con endpoint elegible | `CHANNEL_EXTERNAL_MESSAGING` únicamente para contraparte externa sin superficie VENTO cuando la política de preferencia y un adaptador aprobado lo permitan | PULSO conserva conversación e inbox; PASS registra endpoint push y el estado desplegado contiene la función de aviso de mensaje. | `ESPECIFICADO` / `PARIDAD_REPOSITORIO_DESPLIEGUE_PENDIENTE`. |
+| `NOTIFY-POLICY-014` | `P1_URGENTE_OPERATIVA`    | `CHANNEL_INTERNAL_CONTEXTUAL`   | `CHANNEL_INTERNAL_DEVICE_ALERT`                               | `NO_APLICA`                                                                                                                                                 | PULSO presenta banner y Notification API del navegador; audio y título son señales auxiliares.                                   | `ESPECIFICADO` / sin bloqueo documental.                     |
+| `NOTIFY-POLICY-015` | `P1_URGENTE_OPERATIVA`    | `CHANNEL_INTERNAL_CONTEXTUAL`   | `CHANNEL_INTERNAL_DEVICE_ALERT`                               | `NO_APLICA`                                                                                                                                                 | PULSO presenta el aviso de pago conciliado mediante la misma superficie operativa y Notification API.                            | `ESPECIFICADO` / sin bloqueo documental.                     |
+
+---
+
+#### 7. Resolución cerrada de la ruta PASS para mensajes de pedido
+
+La brecha heredada de `NOTIFY-ASIS-013` queda resuelta en dos planos diferentes.
+
+##### 7.1 Decisión de canal
+
+Para el lado cliente de `NOTIFY-POLICY-013`:
+
+```text
+CONVERSACIÓN PERSISTIDA Y AUTORIZADA
+        ↓
+CHANNEL_INTERNAL_FEED_INBOX
+        +
+CHANNEL_PUSH_REMOTE CUANDO EXISTE ENDPOINT ELEGIBLE
+```
+
+La conversación persistida es la superficie primaria. Push es una proyección complementaria para llamar la atención del mismo cliente y del mismo mensaje.
+
+Para el lado operativo:
+
+```text
+CONVERSACIÓN / INBOX PULSO
+        ↓
+CHANNEL_INTERNAL_FEED_INBOX
+```
+
+No se introduce push operativo por inferencia. La ruta actual de PULSO conserva bandeja y no le asigna una ruta remota que no esté materializada.
+
+Para una contraparte externa explícita sin superficie VENTO:
+
+```text
+CHANNEL_EXTERNAL_MESSAGING
+        ↓
+SOLO CON IDENTIDAD O CONTACTO VERIFICADO
++ PREFERENCIA APLICABLE
++ ADAPTADOR EXTERNO APROBADO
+```
+
+La clase externa queda autorizada condicionalmente; no se selecciona WhatsApp, SMS, Instagram, ManyChat ni otro proveedor específico.
+
+##### 7.2 Reconciliación técnica actual
+
+El estado desplegado accesible de `vento-os-dev` contiene activas:
+
+- `pass-register-push-token`;
+- `order-message-notify`.
+
+La primera registra endpoints del cliente; la segunda entrega por Expo Push al cliente de la conversación para un mensaje de pedido válido.
+
+En `vento-shell/main`, las fuentes de esas dos funciones no están presentes en sus ubicaciones esperadas. Por tanto:
+
+```text
+CANAL OBJETIVO PASS
+= DEFINIDO
+
+CAPACIDAD DESPLEGADA OBSERVADA
+= PRESENTE
+
+PARIDAD DE FUENTE CANÓNICA EN vento-shell/main
+= INCOMPLETA
+```
+
+Esta diferencia no impide cerrar el diseño documental de `NOTIFY-ARC-005`, pero impide declarar que la implementación PASS está completamente versionada desde el repositorio propietario.
+
+**Propietario de corrección:** `SUPA-TRANS-007`, que ya gobierna la adaptación exacta de repositorios y consumidores.
+
+**Puerta de inclusión en el carril prioritario:** `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE`.
+
+**Condición de salida:** las funciones desplegadas que permanezcan necesarias deberán tener fuente versionada y trazable en `vento-shell`, con consumidores reconciliados, antes de considerarse implementación canónica cerrada.
+
+Esta tarea no copia, despliega, modifica ni elimina esas funciones.
+
+---
+
+#### 8. Política de mensajería externa
+
+`CHANNEL_EXTERNAL_MESSAGING` no se adopta como canal general del ecosistema.
+
+La única política del universo actual que lo admite es `NOTIFY-POLICY-013`, porque su regla de destinatario puede resolver una contraparte externa explícita dentro de una conversación de pedido.
+
+Condiciones acumulativas:
+
+1. la contraparte externa está vinculada de forma inequívoca a la conversación;
+2. existe un contacto autorizado para ese propósito;
+3. la preferencia o base de obligatoriedad aplicable queda resuelta por `NOTIFY-ARC-006`;
+4. la minimización de contenido queda resuelta por `NOTIFY-ARC-009`;
+5. existe un adaptador externo aprobado y autenticado;
+6. el envío conserva la identidad semántica de la misma necesidad y no crea una conversación paralela como fuente de verdad;
+7. respuestas entrantes solo podrán producir efectos mediante el contrato empresarial correspondiente;
+8. la indisponibilidad del proveedor no habilita otro canal externo por inferencia.
+
+Los soportes AS-IS WhatsApp, ManyChat, Instagram, llamadas, mensajes, reuniones, Rappi o Shopify no se convierten automáticamente en rutas objetivo de notificación.
+
+---
+
+#### 9. Reconciliación cuantitativa
+
+##### 9.1 Cobertura primaria
+
+| Ruta primaria                   | Políticas |
+| ------------------------------- | --------: |
+| `CHANNEL_INTERNAL_FEED_INBOX`   |         3 |
+| `CHANNEL_INTERNAL_CONTEXTUAL`   |         3 |
+| `CHANNEL_INTERNAL_DEVICE_ALERT` |         3 |
+| `CHANNEL_PUSH_REMOTE`           |         5 |
+| `CHANNEL_EMAIL`                 |         1 |
+| `CHANNEL_EXTERNAL_MESSAGING`    |         0 |
+| **Total**                       |    **15** |
+
+##### 9.2 Cobertura total por clase
+
+Una política puede utilizar más de una clase porque una ruta complementaria sigue representando la misma necesidad.
+
+| Canal                           | Políticas con uso primario o complementario/condicional |
+| ------------------------------- | ------------------------------------------------------: |
+| `CHANNEL_INTERNAL_FEED_INBOX`   |                                                       3 |
+| `CHANNEL_INTERNAL_CONTEXTUAL`   |                                                      10 |
+| `CHANNEL_INTERNAL_DEVICE_ALERT` |                                                       7 |
+| `CHANNEL_PUSH_REMOTE`           |                                                       8 |
+| `CHANNEL_EMAIL`                 |                                                       1 |
+| `CHANNEL_EXTERNAL_MESSAGING`    |                                           1 condicional |
+
+##### 9.3 Integridad
+
+```text
+POLÍTICAS RECIBIDAS: 15
+POLÍTICAS MATERIALIZADAS: 15
+ORÍGENES CUBIERTOS: 15 DE 15
+REGLAS DE DESTINATARIO CONSERVADAS: 15 DE 15
+FAMILIAS AS-IS CUBIERTAS: 16 DE 16
+POLÍTICAS SIN RUTA PRIMARIA: 0
+POLÍTICAS CON MÁS DE UNA RUTA PRIMARIA: 0
+POLÍTICAS DUPLICADAS: 0
+RUTAS EXTERNAS CONDICIONALES: 1
+BRECHAS DE PARIDAD REPOSITORIO/DESPLIEGUE: 1
+DECISIONES ABIERTAS DENTRO DE NOTIFY-ARC-005: 0
+```
+
+---
+
+#### 10. Decisiones canónicas consolidadas
+
+1. El modelo utiliza seis clases de canal y separa canal humano de transporte técnico.
+2. Cada una de las quince políticas tiene exactamente una ruta primaria.
+3. Una ruta complementaria representa la misma necesidad y no genera otra identidad de notificación.
+4. El canal interno persistente es primario para comunicación organizacional, soporte y conversación de pedido.
+5. Push remoto es primario para vencimiento documental y las cuatro necesidades de programación/asistencia que requieren alcance oportuno fuera de la superficie activa.
+6. La confirmación de check-out y las dos señales informativas de fidelización usan alerta de dispositivo como ruta primaria.
+7. La oportunidad de feedback y las dos alertas operativas de PULSO usan una superficie interna contextual como ruta primaria.
+8. La invitación de incorporación usa correo como única ruta primaria.
+9. Correo no se convierte en copia general de las demás políticas.
+10. Mensajería externa no se convierte en fallback general ni en broadcast.
+11. `NOTIFY-POLICY-013` es la única política que admite mensajería externa condicional en el universo actual.
+12. Para mensajes de pedido hacia clientes PASS, la conversación es primaria y push remoto es complementario.
+13. Para mensajes de pedido hacia operación, la bandeja PULSO es primaria y no se agrega push operativo por inferencia.
+14. La capacidad push PASS está desplegada, pero su fuente no está completamente versionada en `vento-shell/main`; la brecha queda asignada a una tarea existente y no se oculta.
+15. Expo y Resend permanecen como proveedores observados, no como identidades canónicas de canal.
+16. Realtime, cron, triggers, Edge Functions y RPC no se clasifican como canales humanos.
+17. Audio, háptica y título de ventana permanecen como señales auxiliares.
+18. La selección de canal no modifica destinatarios, permisos, prioridad, vigencia, deduplicación ni propiedad empresarial.
+19. La preferencia del usuario no se decide en esta tarea.
+20. Una falla de entrega no autoriza cambiar de canal; su tratamiento pertenece a la tarea de contingencia.
+21. La tarea no crea implementación, configuración, secretos, proveedor, token, tabla, migración ni despliegue.
+
+---
+
+#### 11. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea materializa una especialización documental de rutas de comunicación sobre comportamientos transversales ya registrados en el registro canónico: identidad e idempotencia de operaciones asíncronas, trazabilidad de cadenas de notificación, separación entre hecho empresarial, notificación y transporte, y conservación de comunicaciones entregadas. No crea ni modifica comportamiento ejecutable, proveedor, adaptador, esquema, política de seguridad o mecanismo de entrega. Por tanto, no altera el registro de requisitos.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 12. Decisiones posteriores reservadas y propietarios exactos
+
+| Decisión no tomada                                                             | Tarea propietaria                                       |
+| ------------------------------------------------------------------------------ | ------------------------------------------------------- |
+| Preferencias, opt-in/opt-out y alertas que no pueden ocultarse                 | `NOTIFY-ARC-006`                                        |
+| Confirmación, lectura, atención, escalamiento y supervisión                    | `NOTIFY-ARC-007`                                        |
+| Reintentos, fallos, resultado `UNRESOLVED_RECIPIENT` y contingencia de entrega | `NOTIFY-ARC-008`                                        |
+| Privacidad, contenido sensible y minimización por canal                        | `NOTIFY-ARC-009`                                        |
+| Métricas, trazas y auditoría de entrega                                        | `NOTIFY-ARC-010`                                        |
+| Paridad de fuente de Edge Functions y adaptación exacta de consumidores        | `SUPA-TRANS-007`                                        |
+| Decisión de incluir esa corrección en la ejecución prioritaria NEXO            | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+
+No queda una decisión de selección de canal sin resolver dentro de `NOTIFY-ARC-005`.
+
+---
+
+#### 13. Criterios de aceptación
+
+- [x] las 15 políticas heredadas están representadas exactamente una vez;
+- [x] los 15 orígenes y las 15 reglas de destinatario permanecen sin cambios;
+- [x] las 16 familias AS-IS conservan cobertura;
+- [x] cada política tiene exactamente una ruta primaria;
+- [x] toda ruta complementaria representa la misma necesidad semántica;
+- [x] las clases internas distinguen feed/inbox, aviso contextual y alerta de dispositivo;
+- [x] push remoto queda separado de notificación local y de Notification API del navegador;
+- [x] correo queda limitado a la política cuya entrega de incorporación lo requiere;
+- [x] mensajería externa queda limitada y condicionada, sin seleccionar proveedor;
+- [x] Realtime, cron, triggers, RPC y Edge Functions no se confunden con canales humanos;
+- [x] audio, háptica y título de ventana permanecen como señales auxiliares;
+- [x] la ruta PASS de mensaje de pedido queda definida para cliente, operación y contraparte externa;
+- [x] la capacidad desplegada PASS se distingue de la paridad de fuente en `vento-shell/main`;
+- [x] la brecha de paridad tiene propietario documental y condición de salida;
+- [x] no se altera prioridad, vigencia, deduplicación, origen ni destinatario;
+- [x] no se definen preferencias;
+- [x] no se define confirmación, lectura ni escalamiento;
+- [x] no se definen reintentos ni fallback técnico;
+- [x] no se define contenido sensible;
+- [x] no se definen métricas ni auditoría de entrega;
+- [x] no se modifica código, Supabase, migraciones, proveedores ni operación;
+- [x] la tarea genera cero cambios en requisitos de prueba;
+- [x] `NOTIFY-ARC-006` permanece únicamente reservada.
+
+---
+
+#### 14. Handoff cerrado hacia NOTIFY-ARC-006
+
+`NOTIFY-ARC-005` entrega quince políticas con canal primario, rutas complementarias y una única elegibilidad externa condicional ya materializadas.
+
+`NOTIFY-ARC-006` recibe exclusivamente la responsabilidad de decidir, sobre esas rutas ya seleccionadas:
+
+- cuáles admiten preferencia del destinatario;
+- qué opt-in u opt-out es aplicable;
+- qué necesidad no puede ocultarse por preferencia;
+- cómo se interpreta una preferencia por identidad, canal y contexto.
+
+`NOTIFY-ARC-006` no recibe autorización para cambiar orígenes, destinatarios, prioridad, vigencia, deduplicación o las clases de canal aprobadas en esta tarea sin una corrección explícita de su fuente propietaria.
+
+La aprobación de `NOTIFY-ARC-005` no inicia ni desarrolla `NOTIFY-ARC-006`.
+
+---
+
+#### 15. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`NOTIFY-ARC-004 — Definir prioridad, vigencia y deduplicación`
+
+TAREA ACTUAL APROBADA
+`NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa`
+
+SIGUIENTE TAREA RESERVADA
+`NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias`
+
+
 ### [ ] NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias
 ### [ ] NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento
 ### [ ] NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia
