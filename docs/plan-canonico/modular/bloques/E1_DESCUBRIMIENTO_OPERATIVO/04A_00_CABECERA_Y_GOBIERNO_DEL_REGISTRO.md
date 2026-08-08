@@ -88,7 +88,7 @@ Dominios iniciales:
 | Filas con catorce columnas        | **7004 de 7004** |
 | Identificadores duplicados        |            **0** |
 | Relaciones `TREQ-*` no resolubles |            **0** |
-| Última tarea incorporada          |    `NOTIFY-ARC-008` |
+| Última tarea incorporada          |   `INT-PROD-005` |
 | Fecha de normalización            |     `2026-08-08` |
 
 Distribución vigente:
@@ -103,7 +103,7 @@ Distribución vigente:
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-025`             |       25 |
 | `AURA`        | `TREQ-AURA-001` a `TREQ-AURA-027`               |       27 |
 | `VISO`        | `TREQ-VISO-001` a `TREQ-VISO-045`               |       45 |
-| `NEXO`        | `TREQ-NEXO-001` a `TREQ-NEXO-314`               |      314 |
+| `NEXO`        | `TREQ-NEXO-001` a `TREQ-NEXO-314`              |      314 |
 | `FOGO`        | `TREQ-FOGO-001` a `TREQ-FOGO-024`               |       24 |
 | `ORIGO`       | `TREQ-ORIGO-001` a `TREQ-ORIGO-025`             |       25 |
 | `PULSO`       | `TREQ-PULSO-001` a `TREQ-PULSO-027`             |       27 |
