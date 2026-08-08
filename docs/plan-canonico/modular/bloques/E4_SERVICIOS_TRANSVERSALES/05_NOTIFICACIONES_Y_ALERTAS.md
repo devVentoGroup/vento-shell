@@ -1367,7 +1367,459 @@ SIGUIENTE TAREA RESERVADA
 `NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias`
 
 
-### [ ] NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias
+### ✅ NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias
+
+**Estado:** APROBADA
+**Tarea anterior:** `NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa` — APROBADA
+**Tarea siguiente:** `NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento` — RESERVADA
+**Tipo de tarea:** documental; matriz materializada de preferencia por política y canal, con precedencia explícita de alertas obligatorias y separación entre preferencia empresarial, permiso técnico y disponibilidad del canal
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, RLS, Edge Functions, migraciones, tokens, permisos del sistema operativo, proveedores, secretos, canales desplegados ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir para cada `NOTIFY-POLICY-*` si la necesidad de notificación es obligatoria o configurable, qué canal puede ser silenciado por preferencia, qué estado inicial aplica, cómo se resuelven preferencias por identidad y cómo se separan de permisos de dispositivo o navegador, sin cambiar origen, destinatario, prioridad, vigencia, deduplicación, selección de canal, confirmación, escalamiento, reintentos, privacidad ni métricas.
+
+---
+
+#### 1. Resultado sustantivo
+
+`NOTIFY-ARC-006` queda documentalmente cerrada con:
+
+- 15 reglas `NOTIFY-PREFERENCE-001` a `NOTIFY-PREFERENCE-015`;
+- 15 políticas `NOTIFY-POLICY-001` a `NOTIFY-POLICY-015` cubiertas exactamente una vez;
+- 15 orígenes y 15 reglas de destinatario conservados sin modificación;
+- 16 familias AS-IS cubiertas mediante las políticas heredadas;
+- 3 modos canónicos de preferencia;
+- 12 políticas con núcleo obligatorio no silenciable dentro de VENTO;
+- 3 políticas informativas configurables;
+- 1 canal externo condicionado a habilitación explícita;
+- 0 políticas sin decisión de preferencia;
+- 0 políticas duplicadas;
+- 0 controles globales autorizados para desactivar alertas obligatorias;
+- 0 cambios físicos ejecutados.
+
+Toda regla queda en estado documental `ESPECIFICADO`. Una preferencia gobierna la proyección de una necesidad hacia un canal configurable; nunca redefine el hecho empresarial, el destinatario ni la obligación subyacente.
+
+---
+
+#### 2. Entradas conservadas
+
+La tarea consume y preserva:
+
+1. `NOTIFY-ARC-001`, con el inventario AS-IS de avisos y mecanismos técnicos;
+2. `NOTIFY-ARC-002`, con quince orígenes empresariales;
+3. `NOTIFY-ARC-003`, con quince reglas de destinatario;
+4. `NOTIFY-ARC-004`, con prioridad, vigencia, agrupación y deduplicación para quince políticas;
+5. `NOTIFY-ARC-005`, con un canal primario por política, canales complementarios y una única elegibilidad de mensajería externa;
+6. el modelo de cliente aprobado, que separa persona, cuenta, contacto, consentimiento y preferencia;
+7. el comportamiento técnico actual de ANIMA, PASS y PULSO utilizado únicamente como evidencia del estado AS-IS.
+
+Las decisiones heredadas no se reinterpretan. Esta tarea define capacidad de preferencia sobre la comunicación, no sobre la existencia del hecho o de la responsabilidad empresarial.
+
+---
+
+#### 3. Separación obligatoria entre preferencia, permiso y capacidad técnica
+
+Se fijan tres conceptos distintos:
+
+| Concepto               | Qué representa                                                                                                | Propietario de la decisión                         | Puede silenciar una alerta obligatoria                                                                    |
+| ---------------------- | ------------------------------------------------------------------------------------------------------------- | -------------------------------------------------- | --------------------------------------------------------------------------------------------------------- |
+| `BUSINESS_PREFERENCE`  | Elección persistente de una identidad sobre una comunicación configurable y un canal permitido.               | VENTO, según esta tarea y la identidad autorizada. | No.                                                                                                       |
+| `TECHNICAL_PERMISSION` | Permiso concedido o negado por sistema operativo, navegador o dispositivo para usar una capacidad técnica.    | Usuario y plataforma del dispositivo.              | Puede impedir físicamente un canal, pero no convierte la necesidad en opcional ni en opt-out empresarial. |
+| `CHANNEL_CAPABILITY`   | Disponibilidad real de token, sesión, navegador, dirección, adaptador o proveedor para materializar el canal. | Estado técnico observable.                         | Puede bloquear la entrega, pero no cambia la preferencia ni elimina la necesidad.                         |
+
+Reglas derivadas:
+
+1. `notifications_enabled`, `permission_status`, un token activo o `Notification.permission` no constituyen por sí solos una preferencia empresarial.
+2. Una denegación del sistema operativo no se almacenará conceptualmente como `DISABLED` por preferencia del negocio.
+3. Una preferencia `DISABLED` no revoca permisos del sistema operativo ni invalida un token; únicamente evita usarlo para políticas configurables.
+4. Una política obligatoria no podrá aceptar `DISABLED` como estado efectivo dentro de VENTO.
+5. Si un canal obligatorio queda técnicamente bloqueado, el resultado será una condición de entrega no satisfecha cuya resolución pertenece a `NOTIFY-ARC-008`; no se transformará silenciosamente en opt-out.
+6. Una preferencia no concede acceso al recurso ni sustituye autorización, consentimiento o relación de destinatario.
+
+---
+
+#### 4. Catálogo canónico de modos de preferencia
+
+| Modo                           | Estado inicial                                  | Cambio por usuario                                   | Semántica                                                                                                                                                   |
+| ------------------------------ | ----------------------------------------------- | ---------------------------------------------------- | ----------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `PREF_REQUIRED_LOCKED`         | `ENABLED`                                       | No permite `DISABLED` dentro de VENTO.               | La necesidad o el canal indicado son obligatorios mientras la política sea aplicable. Un bloqueo técnico se registra aparte.                                |
+| `PREF_CONFIGURABLE_DEFAULT_ON` | `ENABLED` mientras no exista elección explícita | Permite `ENABLED` o `DISABLED`.                      | La comunicación proactiva se mantiene por defecto, pero la identidad puede silenciar esa proyección sin ocultar el estado o recurso empresarial subyacente. |
+| `PREF_EXPLICIT_OPT_IN`         | `DISABLED`                                      | Solo pasa a `ENABLED` por elección explícita válida. | El canal no se usa hasta existir habilitación positiva para esa finalidad y ese alcance.                                                                    |
+
+`NO_APLICA` se utiliza únicamente cuando una política no posee ese canal; no es un modo de preferencia.
+
+---
+
+#### 5. Estados y contrato lógico de una preferencia
+
+Una preferencia configurable utilizará:
+
+```text
+UNSET
+ENABLED
+DISABLED
+```
+
+`UNSET` significa que no existe elección explícita y debe resolverse el estado inicial del modo. Para `PREF_REQUIRED_LOCKED`, el estado efectivo es siempre `ENABLED` mientras la política sea aplicable.
+
+El contrato lógico mínimo de una preferencia será:
+
+```text
+subject_identity
+policy_id
+channel_class
+preference_mode
+explicit_state
+purpose
+scope
+source
+set_at
+effective_state
+```
+
+Reglas de identidad:
+
+1. la preferencia pertenece a una identidad, no a un token, navegador, instalación o dispositivo;
+2. varios dispositivos de una misma identidad comparten la preferencia empresarial, pero conservan permisos técnicos independientes;
+3. un dispositivo compartido no hereda la preferencia del usuario anterior;
+4. un cambio de sede, función, turno o responsabilidad no crea una preferencia nueva, pero la política solo se aplica cuando la identidad vuelve a ser destinataria válida;
+5. una preferencia de cliente no se transfiere automáticamente a otra cuenta, contacto, persona o relación de marca;
+6. una preferencia sobre mensajería externa se vincula además a finalidad, contacto y alcance autorizados.
+
+---
+
+#### 6. Precedencia determinista
+
+El estado efectivo se resuelve en este orden:
+
+```text
+1. APLICABILIDAD DE LA POLÍTICA Y DESTINATARIO VÁLIDO
+2. PREF_REQUIRED_LOCKED, SI APLICA
+3. PREFERENCIA EXPLÍCITA POLÍTICA + CANAL
+4. PREFERENCIA EXPLÍCITA DE CATEGORÍA OPCIONAL, SI EXISTE
+5. PREFERENCIA GLOBAL PARA COMUNICACIONES OPCIONALES, SI EXISTE
+6. ESTADO INICIAL DEL MODO
+7. PERMISO TÉCNICO Y CAPACIDAD DEL CANAL
+```
+
+Consecuencias obligatorias:
+
+- una preferencia global nunca vence a `PREF_REQUIRED_LOCKED`;
+- no existirá un control semántico “desactivar todas las notificaciones” que incluya alertas obligatorias;
+- si existe una acción global de silencio, su alcance será únicamente el conjunto configurable y deberá indicarlo expresamente;
+- una preferencia específica puede ser más restrictiva que una preferencia global opcional;
+- `PREF_EXPLICIT_OPT_IN` no puede activarse por un default global;
+- el permiso técnico se evalúa después de la preferencia porque describe posibilidad de entrega, no voluntad empresarial;
+- la falta de permiso técnico en una política obligatoria no modifica su estado `ENABLED`.
+
+---
+
+#### 7. Matriz materializada de preferencias por política
+
+| Regla                   | Política            | Prioridad                 | Canal primario / modo                                            | Canal complementario / modo                                                                 | Canal condicional / modo                              | Silencio temporal                                                                   | Resultado      |
+| ----------------------- | ------------------- | ------------------------- | ---------------------------------------------------------------- | ------------------------------------------------------------------------------------------- | ----------------------------------------------------- | ----------------------------------------------------------------------------------- | -------------- |
+| `NOTIFY-PREFERENCE-001` | `NOTIFY-POLICY-001` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_INTERNAL_FEED_INBOX` / `PREF_REQUIRED_LOCKED`           | `CHANNEL_PUSH_REMOTE` / `PREF_CONFIGURABLE_DEFAULT_ON`                                      | `NO_APLICA`                                           | Solo sobre push configurable.                                                       | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-002` | `NOTIFY-POLICY-002` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_PUSH_REMOTE` / `PREF_REQUIRED_LOCKED`                   | `CHANNEL_INTERNAL_DEVICE_ALERT` / `PREF_REQUIRED_LOCKED` cuando sea técnicamente posible    | `NO_APLICA`                                           | No aplica.                                                                          | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-003` | `NOTIFY-POLICY-003` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_PUSH_REMOTE` / `PREF_REQUIRED_LOCKED`                   | `CHANNEL_INTERNAL_CONTEXTUAL` / `PREF_REQUIRED_LOCKED`                                      | `NO_APLICA`                                           | No aplica.                                                                          | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-004` | `NOTIFY-POLICY-004` | `P1_URGENTE_OPERATIVA`    | `CHANNEL_PUSH_REMOTE` / `PREF_REQUIRED_LOCKED`                   | `CHANNEL_INTERNAL_CONTEXTUAL` / `PREF_REQUIRED_LOCKED`                                      | `NO_APLICA`                                           | No aplica.                                                                          | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-005` | `NOTIFY-POLICY-005` | `P1_URGENTE_OPERATIVA`    | `CHANNEL_PUSH_REMOTE` / `PREF_REQUIRED_LOCKED`                   | `CHANNEL_INTERNAL_CONTEXTUAL` / `PREF_REQUIRED_LOCKED`                                      | `NO_APLICA`                                           | No aplica.                                                                          | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-006` | `NOTIFY-POLICY-006` | `P1_URGENTE_OPERATIVA`    | `CHANNEL_PUSH_REMOTE` / `PREF_REQUIRED_LOCKED`                   | `CHANNEL_INTERNAL_CONTEXTUAL` / `PREF_REQUIRED_LOCKED`                                      | `NO_APLICA`                                           | No aplica.                                                                          | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-007` | `NOTIFY-POLICY-007` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_INTERNAL_DEVICE_ALERT` / `PREF_REQUIRED_LOCKED`         | `CHANNEL_INTERNAL_CONTEXTUAL` / `PREF_REQUIRED_LOCKED`                                      | `NO_APLICA`                                           | No aplica.                                                                          | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-008` | `NOTIFY-POLICY-008` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_INTERNAL_FEED_INBOX` / `PREF_REQUIRED_LOCKED`           | `CHANNEL_PUSH_REMOTE` / `PREF_CONFIGURABLE_DEFAULT_ON`                                      | `NO_APLICA`                                           | Solo sobre push configurable.                                                       | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-009` | `NOTIFY-POLICY-009` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_EMAIL` / `PREF_REQUIRED_LOCKED`                         | `NO_APLICA`                                                                                 | `NO_APLICA`                                           | No aplica.                                                                          | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-010` | `NOTIFY-POLICY-010` | `P3_INFORMATIVA`          | `CHANNEL_INTERNAL_DEVICE_ALERT` / `PREF_CONFIGURABLE_DEFAULT_ON` | `CHANNEL_INTERNAL_CONTEXTUAL` / `PREF_CONFIGURABLE_DEFAULT_ON` para la proyección proactiva | `NO_APLICA`                                           | Permitido.                                                                          | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-011` | `NOTIFY-POLICY-011` | `P3_INFORMATIVA`          | `CHANNEL_INTERNAL_DEVICE_ALERT` / `PREF_CONFIGURABLE_DEFAULT_ON` | `CHANNEL_INTERNAL_CONTEXTUAL` / `PREF_CONFIGURABLE_DEFAULT_ON` para la proyección proactiva | `NO_APLICA`                                           | Permitido.                                                                          | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-012` | `NOTIFY-POLICY-012` | `P3_INFORMATIVA`          | `CHANNEL_INTERNAL_CONTEXTUAL` / `PREF_CONFIGURABLE_DEFAULT_ON`   | `CHANNEL_INTERNAL_DEVICE_ALERT` / `PREF_CONFIGURABLE_DEFAULT_ON`                            | `NO_APLICA`                                           | Permitido.                                                                          | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-013` | `NOTIFY-POLICY-013` | `P2_ATENCION_PRIORITARIA` | `CHANNEL_INTERNAL_FEED_INBOX` / `PREF_REQUIRED_LOCKED`           | `CHANNEL_PUSH_REMOTE` / `PREF_CONFIGURABLE_DEFAULT_ON` para cliente PASS elegible           | `CHANNEL_EXTERNAL_MESSAGING` / `PREF_EXPLICIT_OPT_IN` | Solo sobre push y mensajería configurables; nunca sobre la conversación persistida. | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-014` | `NOTIFY-POLICY-014` | `P1_URGENTE_OPERATIVA`    | `CHANNEL_INTERNAL_CONTEXTUAL` / `PREF_REQUIRED_LOCKED`           | `CHANNEL_INTERNAL_DEVICE_ALERT` / `PREF_CONFIGURABLE_DEFAULT_ON`                            | `NO_APLICA`                                           | Solo sobre la alerta complementaria; nunca sobre el aviso contextual.               | `ESPECIFICADO` |
+| `NOTIFY-PREFERENCE-015` | `NOTIFY-POLICY-015` | `P1_URGENTE_OPERATIVA`    | `CHANNEL_INTERNAL_CONTEXTUAL` / `PREF_REQUIRED_LOCKED`           | `CHANNEL_INTERNAL_DEVICE_ALERT` / `PREF_CONFIGURABLE_DEFAULT_ON`                            | `NO_APLICA`                                           | Solo sobre la alerta complementaria; nunca sobre el aviso contextual.               | `ESPECIFICADO` |
+
+---
+
+#### 8. Políticas obligatorias y frontera de no ocultamiento
+
+Las siguientes doce políticas conservan al menos un núcleo obligatorio:
+
+```text
+NOTIFY-POLICY-001
+NOTIFY-POLICY-002
+NOTIFY-POLICY-003
+NOTIFY-POLICY-004
+NOTIFY-POLICY-005
+NOTIFY-POLICY-006
+NOTIFY-POLICY-007
+NOTIFY-POLICY-008
+NOTIFY-POLICY-009
+NOTIFY-POLICY-013
+NOTIFY-POLICY-014
+NOTIFY-POLICY-015
+```
+
+Para estas políticas:
+
+1. la aplicación no mostrará un opt-out que elimine la necesidad obligatoria;
+2. una bandeja o aviso contextual obligatorio no podrá ocultarse mediante preferencia global;
+3. cuando el canal primario obligatorio sea push, la aplicación no ofrecerá un mute empresarial para esa política;
+4. la denegación del sistema operativo se conserva como bloqueo técnico, no como preferencia válida;
+5. un canal complementario configurable puede silenciarse cuando el canal primario obligatorio sigue preservando la necesidad;
+6. deshabilitar una señal auxiliar como sonido no equivale a deshabilitar el aviso obligatorio;
+7. una política obligatoria deja de aplicar únicamente por su vigencia, su destinatario o las condiciones heredadas de `NOTIFY-ARC-002` a `NOTIFY-ARC-004`, no por una preferencia.
+
+---
+
+#### 9. Políticas configurables
+
+`NOTIFY-POLICY-010`, `NOTIFY-POLICY-011` y `NOTIFY-POLICY-012` son comunicaciones proactivas `P3_INFORMATIVA` configurables.
+
+Reglas:
+
+1. su estado inicial es `ENABLED` para conservar el comportamiento informativo vigente mientras no exista una elección explícita;
+2. la identidad puede pasar la comunicación proactiva a `DISABLED`;
+3. deshabilitar la notificación no elimina nivel de fidelización, elegibilidad de recompensa, redención, historial ni demás estado empresarial cuando el usuario consulta la aplicación;
+4. un cambio de `DISABLED` a `ENABLED` no reactiva retrospectivamente ocurrencias ya vencidas;
+5. la preferencia se aplica a nuevas ocurrencias todavía vigentes conforme a la política heredada;
+6. silencio temporal puede aplicarse a estas políticas sin afectar alertas obligatorias.
+
+---
+
+#### 10. Mensajería externa de NOTIFY-POLICY-013
+
+`CHANNEL_EXTERNAL_MESSAGING` utiliza exclusivamente `PREF_EXPLICIT_OPT_IN`.
+
+Condiciones acumulativas para estado efectivo `ENABLED`:
+
+1. existe una contraparte externa resoluble y vinculada a la conversación;
+2. existe un contacto válido para la finalidad correspondiente;
+3. existe una habilitación explícita vigente para esa finalidad y canal;
+4. la identidad, contacto, finalidad y alcance de la habilitación pueden reconstruirse;
+5. existe un adaptador externo aprobado conforme a `NOTIFY-ARC-005`;
+6. el canal no sustituye la conversación persistida como fuente de verdad;
+7. una revocación posterior cambia el estado efectivo para nuevos envíos, sin borrar comunicaciones ya emitidas.
+
+`UNSET` resuelve a `DISABLED` para mensajería externa. Ninguna preferencia global, permiso de dispositivo o disponibilidad de proveedor podrá activar este canal por inferencia.
+
+---
+
+#### 11. Silencio temporal y controles globales
+
+Se define `QUIET_WINDOW` como una preferencia temporal aplicable únicamente a proyecciones configurables.
+
+Reglas:
+
+1. una ventana de silencio nunca suspende `PREF_REQUIRED_LOCKED`;
+2. puede posponer o evitar la proyección configurable solo mientras la ocurrencia siga vigente;
+3. al terminar la ventana no se reenvían automáticamente ocurrencias vencidas;
+4. no altera deduplicación ni crea una nueva ocurrencia;
+5. el tratamiento de una ocurrencia que siga vigente al finalizar la ventana pertenece a la política de entrega y reintento de `NOTIFY-ARC-008`;
+6. un control global de comunicaciones opcionales solo modifica políticas o canales configurables;
+7. la interfaz deberá indicar que alertas operativas y comunicaciones obligatorias permanecen activas.
+
+La función “No molestar” del sistema operativo o navegador es un estado técnico externo y no se modela como `QUIET_WINDOW` empresarial.
+
+---
+
+#### 12. Reconciliación con el estado técnico actual
+
+##### 12.1. ANIMA
+
+El código actual sincroniza `permission_status` y `notifications_enabled` con el permiso reportado por el dispositivo. La definición física vigente describe `notifications_enabled` como verdadero cuando el dispositivo reporta permiso concedido.
+
+Resultado documental:
+
+```text
+ESTADO ACTUAL = CAPACIDAD / PERMISO TÉCNICO
+MODELO OBJETIVO DE ESTA TAREA = PREFERENCIA EMPRESARIAL SEPARADA
+```
+
+Por tanto, esos campos no deberán reinterpretarse como opt-in u opt-out por política.
+
+##### 12.2. PASS
+
+El cliente actual solicita permiso de notificaciones, registra token cuando el permiso queda concedido y aplica throttling local por tipo de notificación.
+
+Resultado documental:
+
+- permiso del sistema operativo no equivale a preferencia por política;
+- throttling y cooldown no equivalen a opt-out;
+- las tres políticas informativas requieren una preferencia empresarial separada para permitir desactivación explícita;
+- la conversación de pedido conserva su bandeja obligatoria aunque el push complementario quede deshabilitado.
+
+##### 12.3. PULSO
+
+La superficie actual permite activar sonido y Notification API, pero el aviso contextual de pedido se mantiene independientemente de ese control.
+
+Resultado documental:
+
+- el aviso contextual de `NOTIFY-POLICY-014` y `NOTIFY-POLICY-015` permanece obligatorio;
+- sonido y alerta de navegador son proyecciones complementarias configurables;
+- desactivar el complemento no puede ocultar el aviso contextual ni retirar la responsabilidad operativa.
+
+---
+
+#### 13. Persistencia lógica y trazabilidad
+
+La implementación futura deberá poder reconstruir, sin definir todavía una tabla física:
+
+- identidad que realizó la elección;
+- política y canal afectados;
+- modo aplicable;
+- estado explícito anterior y nuevo;
+- finalidad cuando corresponda;
+- alcance de marca, relación o contacto cuando corresponda;
+- origen de la elección;
+- instante de vigencia;
+- estado efectivo después de aplicar precedencia;
+- diferencia entre preferencia y bloqueo técnico.
+
+Una preferencia podrá actualizarse sin destruir su historia cuando el gobierno de auditoría aplicable lo exija. El detalle de contenido sensible y minimización permanece en `NOTIFY-ARC-009`.
+
+---
+
+#### 14. Fronteras con tareas posteriores
+
+| Decisión no tomada                                                          | Tarea propietaria                                       |
+| --------------------------------------------------------------------------- | ------------------------------------------------------- |
+| Confirmación, lectura, atención y escalamiento                              | `NOTIFY-ARC-007`                                        |
+| Reintentos, fallos de permiso o canal, resultado desconocido y contingencia | `NOTIFY-ARC-008`                                        |
+| Privacidad, contenido sensible y minimización de payload por canal          | `NOTIFY-ARC-009`                                        |
+| Métricas, auditoría de entrega y observabilidad                             | `NOTIFY-ARC-010`                                        |
+| Inclusión física del contrato de preferencias en el paquete prioritario     | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` |
+
+No queda una decisión de preferencia sin propietario. Esta tarea no selecciona tabla, endpoint, RPC, Edge Function ni mecanismo de almacenamiento.
+
+---
+
+#### 15. Reconciliación cuantitativa
+
+##### 15.1. Por obligación de la política
+
+| Clasificación                                             | Políticas |
+| --------------------------------------------------------- | --------: |
+| Núcleo obligatorio con al menos un `PREF_REQUIRED_LOCKED` |        12 |
+| Totalmente configurables `P3_INFORMATIVA`                 |         3 |
+| **Total**                                                 |    **15** |
+
+##### 15.2. Por modo utilizado
+
+| Modo                           | Políticas en las que aparece |
+| ------------------------------ | ---------------------------: |
+| `PREF_REQUIRED_LOCKED`         |                           12 |
+| `PREF_CONFIGURABLE_DEFAULT_ON` |                            8 |
+| `PREF_EXPLICIT_OPT_IN`         |                            1 |
+
+Una política puede utilizar más de un modo porque el canal primario, complementario o condicional puede tener reglas distintas.
+
+##### 15.3. Integridad
+
+```text
+POLÍTICAS RECIBIDAS: 15
+REGLAS DE PREFERENCIA MATERIALIZADAS: 15
+ORÍGENES CUBIERTOS: 15 DE 15
+DESTINATARIOS CONSERVADOS: 15 DE 15
+FAMILIAS AS-IS CUBIERTAS: 16 DE 16
+POLÍTICAS SIN DECISIÓN: 0
+POLÍTICAS DUPLICADAS: 0
+POLÍTICAS CON NÚCLEO OBLIGATORIO: 12
+POLÍTICAS TOTALMENTE CONFIGURABLES: 3
+CANALES EXTERNOS CON OPT-IN EXPLÍCITO: 1
+CONTROLES GLOBALES QUE PUEDEN SILENCIAR OBLIGATORIAS: 0
+```
+
+---
+
+#### 16. Decisiones canónicas consolidadas
+
+1. Preferencia empresarial, permiso técnico y disponibilidad del canal son dimensiones distintas.
+2. Ningún token, permiso del sistema operativo o navegador se interpreta como preferencia empresarial por sí solo.
+3. Doce políticas conservan un núcleo obligatorio que no puede desactivarse desde VENTO.
+4. Tres políticas `P3_INFORMATIVA` son configurables y parten habilitadas mientras no exista elección explícita.
+5. Las comunicaciones configurables pueden silenciarse sin alterar el estado empresarial subyacente.
+6. Un control global solo puede afectar comunicaciones opcionales o canales complementarios configurables.
+7. No existe una acción semántica que permita apagar todas las notificaciones incluyendo las obligatorias.
+8. Las preferencias pertenecen a la identidad y no al dispositivo.
+9. Los permisos técnicos permanecen por dispositivo o navegador y pueden diferir entre endpoints de una misma identidad.
+10. Una denegación técnica en una alerta obligatoria no se convierte en opt-out.
+11. `NOTIFY-POLICY-001` mantiene el feed interno obligatorio y permite silenciar únicamente su push complementario.
+12. `NOTIFY-POLICY-002` a `NOTIFY-POLICY-007` no admiten opt-out empresarial de sus canales obligatorios definidos.
+13. `NOTIFY-POLICY-008` mantiene la bandeja de soporte obligatoria y permite silenciar el push complementario.
+14. `NOTIFY-POLICY-009` mantiene el correo de invitación como comunicación transaccional obligatoria para esa emisión.
+15. `NOTIFY-POLICY-010` a `NOTIFY-POLICY-012` permiten desactivar la comunicación proactiva sin ocultar el estado consultable.
+16. `NOTIFY-POLICY-013` mantiene la conversación persistida obligatoria, permite silenciar push complementario y exige opt-in explícito para mensajería externa.
+17. `NOTIFY-POLICY-014` y `NOTIFY-POLICY-015` mantienen el aviso contextual obligatorio aunque el usuario silencie sonido o alerta de navegador.
+18. `QUIET_WINDOW` solo aplica a proyecciones configurables.
+19. La preferencia no cambia prioridad, vigencia, deduplicación, destinatario ni canal permitido.
+20. La falta de capacidad técnica se entrega a la política de fallos y contingencia, no se resuelve alterando preferencias.
+21. La tarea no crea implementación, persistencia física, migraciones, proveedor, secretos ni despliegues.
+
+---
+
+#### 17. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** la tarea especializa documentalmente el tratamiento de preferencias sobre necesidades y canales ya definidos, manteniendo los comportamientos de identidad, consentimiento, comunicación, autorización y trazabilidad ya protegidos por el registro canónico. No crea comportamiento ejecutable, esquema físico, proveedor, adaptador, política RLS, contrato de transporte ni mecanismo nuevo que requiera una fila adicional o modificación de requisitos existentes.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 18. Criterios de aceptación
+
+- [x] las 15 políticas heredadas tienen una regla de preferencia explícita;
+- [x] los 15 orígenes y las 15 reglas de destinatario permanecen sin cambios;
+- [x] las 16 familias AS-IS mantienen cobertura;
+- [x] preferencia empresarial, permiso técnico y capacidad del canal están separados;
+- [x] existen exactamente tres modos canónicos de preferencia;
+- [x] las doce políticas con núcleo obligatorio no admiten un opt-out que elimine la necesidad;
+- [x] las tres políticas informativas permiten desactivación explícita;
+- [x] el canal externo de `NOTIFY-POLICY-013` requiere habilitación explícita y parte desactivado;
+- [x] una preferencia global no puede vencer una obligación bloqueada;
+- [x] el silencio temporal no suspende alertas obligatorias;
+- [x] las preferencias se resuelven por identidad y no por token o dispositivo;
+- [x] una denegación del sistema operativo no se registra como opt-out empresarial;
+- [x] el estado empresarial subyacente no desaparece cuando se desactiva una comunicación opcional;
+- [x] no se modifica origen, destinatario, prioridad, vigencia, deduplicación ni selección de canal;
+- [x] no se define confirmación, lectura ni escalamiento;
+- [x] no se definen reintentos, fallback ni contingencia;
+- [x] no se define contenido sensible ni minimización;
+- [x] no se definen métricas ni auditoría de entrega;
+- [x] no se modifica código, Supabase, migraciones, proveedores ni operación;
+- [x] la tarea genera cero cambios en requisitos de prueba;
+- [x] `NOTIFY-ARC-007` permanece únicamente reservada.
+
+---
+
+#### 19. Handoff cerrado hacia NOTIFY-ARC-007
+
+`NOTIFY-ARC-006` entrega quince reglas de preferencia con obligación, modo, estado inicial, precedencia y tratamiento de silencio ya materializados.
+
+`NOTIFY-ARC-007` recibe exclusivamente la responsabilidad de definir, sobre las necesidades y preferencias ya resueltas:
+
+- qué significa entregada, presentada, leída, reconocida o atendida;
+- qué comunicaciones requieren acuse explícito;
+- qué ausencia de lectura o atención escala;
+- quién recibe el escalamiento y bajo qué condición.
+
+`NOTIFY-ARC-007` no recibe autorización para convertir una política obligatoria en opcional, reactivar una comunicación deshabilitada ni cambiar canales, destinatarios, prioridad, vigencia o deduplicación sin una corrección explícita de su tarea propietaria.
+
+La aprobación de `NOTIFY-ARC-006` no inicia ni desarrolla `NOTIFY-ARC-007`.
+
+---
+
+#### 20. Continuidad
+
+ÚLTIMA TAREA APROBADA  
+`NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa`
+
+TAREA ACTUAL APROBADA  
+`NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias`
+
+SIGUIENTE TAREA RESERVADA  
+`NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento`
+
+
 ### [ ] NOTIFY-ARC-007 — Definir confirmación, lectura y escalamiento
 ### [ ] NOTIFY-ARC-008 — Definir reintentos, fallos y contingencia
 ### [ ] NOTIFY-ARC-009 — Definir privacidad y contenido sensible
