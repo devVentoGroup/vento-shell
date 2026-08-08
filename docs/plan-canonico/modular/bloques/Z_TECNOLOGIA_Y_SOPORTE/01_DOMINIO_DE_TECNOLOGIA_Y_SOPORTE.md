@@ -1126,7 +1126,965 @@ SIGUIENTE TAREA RESERVADA
 `TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints`
 
 
-### [ ] TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints
+### ✅ TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-002 — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio` — APROBADA
+**Tarea siguiente:** `TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes` — RESERVADA
+**Tipo de tarea:** documental; contrato canónico de ciclo de vida, enrolamiento, configuración base versionada, postura, actualización, protección, mantenimiento, revocación y retiro de computadores, celulares, tabletas y endpoints administrados
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Artefactos producidos:** `TI-ENDPOINT-LIFECYCLE-CONTRACT-001`, `TI-ENDPOINT-BASELINE-CONTRACT-001`, `TI-ENDPOINT-LIFECYCLE-TRANSITION-MATRIX-001` y `TI-ENDPOINT-ASIS-RECONCILIATION-001`
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, tablas, constraints, RLS, RPC, Edge Functions, migraciones, datos, endpoints, dispositivos, cuentas, credenciales, aplicaciones, redes, configuración de sistema operativo, cifrado, MDM, borrado remoto, despliegues ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+---
+
+#### 1. Propósito
+
+Definir el ciclo de vida completo de un endpoint administrado por Vento sin confundir la instalación técnica con el equipo físico, el dispositivo compartido, la cuenta técnica, el registro de notificaciones, la sesión o el trabajador que lo utiliza.
+
+La regla raíz queda:
+
+```text
+ACTIVO FÍSICO
+≠ ENDPOINT
+≠ DISPOSITIVO COMPARTIDO
+≠ PRINCIPAL TÉCNICO
+≠ ACTOR HUMANO
+≠ REGISTRO DE PUSH
+≠ SESIÓN
+```
+
+El contrato deberá permitir determinar, para cualquier endpoint administrado:
+
+- qué identidad técnica conserva;
+- sobre qué activo opera cuando exista activo empresarial reconciliado;
+- qué clase física y modo de uso posee;
+- en qué estado de ciclo de vida se encuentra;
+- qué configuración base debe cumplir;
+- qué configuración fue realmente observada;
+- qué postura de seguridad posee;
+- qué condición de parches, cifrado, bloqueo y aplicaciones fue observada;
+- si puede operar productivamente;
+- qué evidencia permite afirmarlo;
+- qué ocurre ante reinstalación, mantenimiento, pérdida, compromiso, reemplazo, revocación o retiro;
+- qué relaciones deben cerrarse sin perder historia.
+
+La tarea define el contrato completo. No ejecuta enrolamientos, cambios de configuración, actualizaciones, cifrado, borrados, soporte remoto ni retiros físicos.
+
+---
+
+#### 2. Resultado material
+
+Se aprueban cuatro artefactos documentales:
+
+1. `TI-ENDPOINT-LIFECYCLE-CONTRACT-001`, que define identidad, clases, modos, estados, invariantes, eventos y evidencia;
+2. `TI-ENDPOINT-BASELINE-CONTRACT-001`, que define la configuración base versionada, la comparación entre estado deseado y observado y el tratamiento de excepciones;
+3. `TI-ENDPOINT-LIFECYCLE-TRANSITION-MATRIX-001`, que materializa las transiciones válidas y sus guardas;
+4. `TI-ENDPOINT-ASIS-RECONCILIATION-001`, que clasifica las estructuras técnicas existentes sin convertir registros parciales en endpoints canónicos.
+
+Cobertura materializada:
+
+| Elemento                                       | Cantidad |
+| ---------------------------------------------- | -------: |
+| Form factors canónicos                         |    **6** |
+| Modos de uso                                   |    **3** |
+| Estados de ciclo de vida                       |    **8** |
+| Estados de postura                             |    **4** |
+| Estados de evaluación de configuración         |    **4** |
+| Estados de evaluación de actualización         |    **4** |
+| Transiciones ordinarias explícitas             |   **15** |
+| Familias AS-IS reconciliadas                   |    **6** |
+| Estados de ciclo sin regla de entrada y salida |    **0** |
+| Identidades creadas por inferencia             |    **0** |
+| Cambios físicos                                |    **0** |
+| Cambios de requisitos de prueba                |    **0** |
+
+---
+
+#### 3. Autoridades y decisiones heredadas
+
+Esta tarea conserva sin modificación:
+
+- la clase `ENDPOINT` aprobada en `TI-DOM-002`;
+- `ENDPOINT_RUNS_ON_ASSET`, `SHARED_DEVICE_USES_ENDPOINT`, `ENDPOINT_CONNECTS_VIA_NETWORK`, `ENDPOINT_CLIENT_FOR_APPLICATION` y las relaciones de servicio aprobadas en `TI-DOM-002`;
+- la identidad de activo, ubicación, condición, custodia, mantenimiento, garantía y disposición física bajo NEXO;
+- la identidad de dispositivo compartido y su separación respecto de endpoint, activo, principal técnico y actor bajo `AUTH-DEV-*`;
+- la regla de que una reinstalación crea un endpoint nuevo;
+- la regla de que un reemplazo de hardware crea un activo y endpoint nuevos, conservando un dispositivo lógico compartido solo cuando la autoridad de `AUTH-DEV-*` lo permita expresamente;
+- el catálogo de aplicaciones de SHELL;
+- la propiedad de redes de `TI-DOM-004`;
+- la propiedad de aplicaciones, ambientes, dependencias, proveedores y licencias de `TI-DOM-006`;
+- la propiedad de incidentes y restauración de `TI-DOM-007`;
+- la propiedad de cambios de `TI-DOM-009`;
+- la propiedad de observabilidad de `TI-DOM-010`;
+- la propiedad de recuperación técnica de `TI-DOM-011`;
+- la propiedad de privilegios y soporte remoto de `TI-AUTH-*`.
+
+Ninguna decisión de esta tarea amplía autorización empresarial.
+
+---
+
+#### 4. Definición canónica de endpoint
+
+Un `ENDPOINT` es una instalación técnica administrada e identificable que ejecuta software de Vento o participa como cliente administrado dentro del ecosistema.
+
+Un endpoint:
+
+- posee `endpoint_id` propio;
+- puede operar sobre un activo físico administrado;
+- puede vincularse a un dispositivo compartido;
+- puede ejecutar o presentar aplicaciones;
+- puede conectarse mediante recursos de red;
+- puede cambiar de custodio sin cambiar necesariamente de identidad técnica;
+- puede ser reinstalado, caso en el cual la instalación anterior deja de ser el endpoint vigente;
+- no obtiene autoridad empresarial por su existencia;
+- no sustituye al actor humano;
+- no se identifica únicamente por IP, MAC, serial, hostname, user agent, fingerprint o etiqueta.
+
+No todo equipo físico es automáticamente un endpoint. Un activo almacenado, en reparación, retirado o aún no enrolado puede existir sin endpoint productivo.
+
+No todo registro técnico que contiene la palabra `device` es un endpoint empresarial.
+
+---
+
+#### 5. Form factors canónicos
+
+Se aprueban exactamente seis valores:
+
+| Código                | Uso conceptual                                                                                                                   |
+| --------------------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| `COMPUTER`            | Computador de escritorio, portátil o equipo general que ejecuta un sistema operativo de propósito general.                       |
+| `MOBILE`              | Celular o terminal móvil administrado.                                                                                           |
+| `TABLET`              | Tableta administrada, personal o compartida.                                                                                     |
+| `FIXED_TERMINAL`      | Terminal fijo dedicado a un punto operativo o estación.                                                                          |
+| `KIOSK`               | Endpoint de propósito restringido con superficie de operación controlada.                                                        |
+| `SPECIALIZED_STATION` | Equipo administrado destinado a una función tecnológica especializada no cubierta adecuadamente por las cinco clases anteriores. |
+
+Reglas:
+
+1. el form factor describe la forma de operación técnica, no la propiedad;
+2. no concede sede, área, rol, permiso, aplicación ni capacidad;
+3. no se deduce desde el nombre del activo;
+4. cambiar de form factor exige decisión explícita y evidencia;
+5. impresoras y recursos de red conservan sus clases propias y no se fuerzan dentro de estas seis categorías.
+
+---
+
+#### 6. Modos de uso
+
+Se aprueban exactamente tres modos:
+
+| Modo               | Definición                                                                                                                          |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------------------- |
+| `PERSONAL_MANAGED` | Endpoint administrado asignado para uso principal de una persona identificada, sin convertir la persona en identidad del endpoint.  |
+| `SHARED_MANAGED`   | Endpoint administrado utilizado por múltiples actores bajo controles de dispositivo compartido, estación o identificación de actor. |
+| `TECHNICAL_ONLY`   | Endpoint administrado dedicado a una función técnica sin uso empresarial directo como persona.                                      |
+
+El form factor y el modo son dimensiones independientes.
+
+```text
+FORM_FACTOR ≠ USAGE_MODE
+```
+
+Un equipo personal no administrado por Vento no se registra como endpoint empresarial por el solo hecho de acceder a un servicio. Su tratamiento de acceso pertenece a autorización y seguridad.
+
+---
+
+#### 7. Identidades mínimas del contrato
+
+El endpoint conserva conceptualmente:
+
+```ts
+type ManagedEndpoint = {
+  endpoint_id: string;
+  form_factor:
+    | "COMPUTER"
+    | "MOBILE"
+    | "TABLET"
+    | "FIXED_TERMINAL"
+    | "KIOSK"
+    | "SPECIALIZED_STATION";
+  usage_mode:
+    | "PERSONAL_MANAGED"
+    | "SHARED_MANAGED"
+    | "TECHNICAL_ONLY";
+  lifecycle_state:
+    | "REGISTERED"
+    | "ENROLLMENT_PENDING"
+    | "ENROLLED"
+    | "ACTIVE"
+    | "SUSPENDED"
+    | "MAINTENANCE"
+    | "REVOKED"
+    | "RETIRED";
+  asset_id: string | null;
+  shared_device_id: string | null;
+  installation_generation: number;
+  assigned_baseline_id: string;
+  assigned_baseline_version: number;
+  desired_configuration_version: number;
+  observed_configuration_version: number | null;
+  posture_state:
+    | "UNKNOWN"
+    | "COMPLIANT"
+    | "NONCOMPLIANT"
+    | "EXCEPTION_ACTIVE";
+  last_evaluated_at: string | null;
+  registered_at: string;
+  enrolled_at: string | null;
+  activated_at: string | null;
+  suspended_at: string | null;
+  revoked_at: string | null;
+  retired_at: string | null;
+};
+```
+
+Esta forma es contractual. La arquitectura física futura podrá normalizarla sin perder identidad, estados, relaciones, versiones o historia.
+
+---
+
+#### 8. Estados del ciclo de vida
+
+Se aprueban exactamente ocho estados.
+
+| Estado               | Significado                                                                                                   | Entrada mínima                                                                                 | Restricción principal                                                    | Salida permitida                       |
+| -------------------- | ------------------------------------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------ | -------------------------------------- |
+| `REGISTERED`         | Identidad administrativa creada, todavía sin enrolamiento técnico iniciado.                                   | alta autorizada, identidad única, clase y modo definidos                                       | no opera productivamente                                                 | `ENROLLMENT_PENDING` o `REVOKED`       |
+| `ENROLLMENT_PENDING` | Existe una operación de enrolamiento abierta y controlada.                                                    | identidad previa, autorización de enrolamiento, vínculo candidato y evidencia requerida        | no se considera endpoint productivo ni conforme                          | `ENROLLED` o `REVOKED`                 |
+| `ENROLLED`           | La instalación demostró la identidad y posesión exigidas, pero aún no superó todas las guardas de activación. | `endpoint_id`, generación, relaciones requeridas y prueba de enrolamiento válidas              | acceso productivo bloqueado hasta evaluación                             | `ACTIVE` o `SUSPENDED`                 |
+| `ACTIVE`             | Endpoint productivo autorizado técnicamente dentro de su baseline y postura permitidos.                       | enrolamiento válido, baseline asignado, evaluación de postura y ausencia de bloqueo            | solo capacidades compatibles con su autorización y configuración vigente | `SUSPENDED`, `MAINTENANCE` o `REVOKED` |
+| `SUSPENDED`          | Endpoint temporalmente impedido de operar productivamente sin destruir su identidad histórica.                | decisión de suspensión, causa y evidencia                                                      | no inicia nuevas acciones empresariales autorizadas por el endpoint      | `ACTIVE`, `MAINTENANCE` o `REVOKED`    |
+| `MAINTENANCE`        | Endpoint sometido a intervención técnica controlada.                                                          | caso o cambio autorizado cuando corresponda, aislamiento apropiado y conservación de identidad | no se presume productivo; soporte no amplía privilegios                  | `ACTIVE` o `REVOKED`                   |
+| `REVOKED`            | Se cerró la autoridad técnica vigente del endpoint.                                                           | revocación registrada, vínculos aplicables cerrados o invalidados                              | no vuelve a operación productiva con la misma instalación                | `RETIRED`                              |
+| `RETIRED`            | Identidad de endpoint cerrada de forma terminal e histórica.                                                  | revocación previa, tratamiento de datos y disposición documentados según aplicabilidad         | no se reutiliza, reactiva ni reasigna                                    | ninguna                                |
+
+Invariante:
+
+```text
+RETIRED = TERMINAL
+```
+
+Un estado de ciclo de vida no sustituye la condición física del activo en NEXO.
+
+---
+
+#### 9. `TI-ENDPOINT-LIFECYCLE-TRANSITION-MATRIX-001`
+
+Se aprueban las transiciones ordinarias siguientes:
+
+|  N.º | Origen               | Destino              | Guarda obligatoria                                                                  |
+| ---: | -------------------- | -------------------- | ----------------------------------------------------------------------------------- |
+|    1 | `REGISTERED`         | `ENROLLMENT_PENDING` | enrolamiento autorizado e identidad no conflictiva                                  |
+|    2 | `REGISTERED`         | `REVOKED`            | alta cancelada o identidad invalidada con motivo                                    |
+|    3 | `ENROLLMENT_PENDING` | `ENROLLED`           | prueba de posesión, identidad y vínculos mínimos demostrados                        |
+|    4 | `ENROLLMENT_PENDING` | `REVOKED`            | enrolamiento cancelado, vencido, fallido o conflictivo                              |
+|    5 | `ENROLLED`           | `ACTIVE`             | guardas de activación completas                                                     |
+|    6 | `ENROLLED`           | `SUSPENDED`          | enrolamiento válido pero condición productiva no satisfecha                         |
+|    7 | `ACTIVE`             | `SUSPENDED`          | incumplimiento, pérdida de confianza, cambio pendiente o decisión autorizada        |
+|    8 | `ACTIVE`             | `MAINTENANCE`        | intervención técnica controlada                                                     |
+|    9 | `ACTIVE`             | `REVOKED`            | retiro de autoridad técnica o compromiso que exige invalidación                     |
+|   10 | `SUSPENDED`          | `ACTIVE`             | misma instalación, identidad vigente y revalidación completa                        |
+|   11 | `SUSPENDED`          | `MAINTENANCE`        | intervención requerida para recuperar conformidad                                   |
+|   12 | `SUSPENDED`          | `REVOKED`            | recuperación no permitida o autoridad terminada                                     |
+|   13 | `MAINTENANCE`        | `ACTIVE`             | misma instalación, intervención cerrada y revalidación completa                     |
+|   14 | `MAINTENANCE`        | `REVOKED`            | instalación sustituida, comprometida o no recuperable                               |
+|   15 | `REVOKED`            | `RETIRED`            | cierre técnico, tratamiento de datos y evidencia de disposición según aplicabilidad |
+
+No se aprueban saltos implícitos.
+
+La recuperación desde `SUSPENDED` o `MAINTENANCE` solo conserva `endpoint_id` cuando sigue siendo la misma instalación técnica. Una reinstalación crea una identidad nueva.
+
+---
+
+#### 10. Guardas de enrolamiento y activación
+
+Antes de alcanzar `ACTIVE`, la futura implementación deberá demostrar como mínimo:
+
+1. `endpoint_id` emitido mediante proceso autorizado;
+2. generación de instalación explícita;
+3. relación con activo validada cuando exista activo empresarial aplicable;
+4. relación con dispositivo compartido validada cuando corresponda;
+5. baseline y versión asignados;
+6. familia y versión de sistema operativo observadas;
+7. cifrado evaluado conforme al baseline;
+8. bloqueo local evaluado conforme al baseline;
+9. postura evaluada;
+10. aplicaciones requeridas, permitidas y prohibidas comparadas contra baseline;
+11. estado de actualización observado;
+12. sede, área y custodia referenciadas desde sus fuentes propietarias cuando apliquen;
+13. principal técnico y vínculo de credencial válidos cuando el modelo los requiera;
+14. ausencia de clon, conflicto de identidad o múltiples vínculos autoritativos;
+15. timestamp y evidencia de la evaluación;
+16. capacidad de soporte remoto registrada separadamente de la autorización para usarla;
+17. ausencia de secretos completos en evidencias, logs o metadatos empresariales;
+18. ninguna identidad creada desde coincidencia de nombre, IP, MAC, serial, hostname, user agent o fingerprint.
+
+Una guarda desconocida que sea obligatoria no se trata como aprobada.
+
+---
+
+#### 11. `TI-ENDPOINT-BASELINE-CONTRACT-001`
+
+Todo endpoint administrado deberá tener exactamente una configuración base vigente aplicable a su clase, modo y contexto.
+
+El baseline conceptual conserva:
+
+| Campo                              | Regla                                                    |
+| ---------------------------------- | -------------------------------------------------------- |
+| `baseline_id`                      | identidad estable de la familia de configuración         |
+| `baseline_version`                 | versión inmutable de una definición publicada            |
+| `form_factor`                      | uno de los seis form factors aprobados                   |
+| `usage_mode`                       | uno de los tres modos aprobados                          |
+| `supported_os_policy`              | política de familias y versiones soportadas              |
+| `encryption_requirement`           | exigencia de protección de almacenamiento                |
+| `lock_requirement`                 | exigencia de bloqueo local                               |
+| `local_data_protection_policy`     | regla para caché, offline y datos empresariales locales  |
+| `required_app_refs`                | aplicaciones o agentes obligatorios                      |
+| `allowed_app_policy`               | política de software permitido                           |
+| `prohibited_app_policy`            | política de software incompatible o prohibido            |
+| `patch_policy_ref`                 | política versionada de actualización                     |
+| `telemetry_requirement`            | señales mínimas requeridas para evaluar salud y postura  |
+| `remote_support_capability_policy` | capacidades permitidas, separadas de autorización de uso |
+| `recovery_policy_ref`              | política aplicable a recuperación                        |
+| `wipe_policy_ref`                  | regla de borrado o inaccesibilidad cuando corresponda    |
+| `evidence_requirements`            | evidencia mínima para evaluar cumplimiento               |
+| `exception_policy_ref`             | autoridad, vigencia y expiración de excepciones          |
+
+Esta tarea no fija:
+
+- una versión mínima concreta de Windows, Android, iOS, macOS, Linux u otro sistema;
+- un número de días para aplicar parches;
+- una longitud de PIN;
+- un algoritmo criptográfico específico;
+- un proveedor de MDM;
+- una herramienta de soporte remoto;
+- un método físico de destrucción;
+- un fabricante obligatorio.
+
+Esos valores deben versionarse mediante su autoridad técnica y gobierno de cambio cuando la implementación sea aprobada.
+
+---
+
+#### 12. Estado deseado y estado observado
+
+La administración del endpoint debe separar obligatoriamente:
+
+```text
+CONFIGURACIÓN DESEADA
+≠
+CONFIGURACIÓN OBSERVADA
+≠
+RESULTADO DE EVALUACIÓN
+```
+
+Campos conceptuales mínimos:
+
+- baseline asignado;
+- versión deseada;
+- versión observada;
+- fecha de observación;
+- fuente de observación;
+- resultado de evaluación;
+- lista estructurada de desviaciones;
+- excepción aplicable, si existe;
+- próxima acción requerida, si corresponde.
+
+No se sobrescribe el estado deseado con el observado ni viceversa.
+
+Una ausencia de telemetría no equivale a cumplimiento.
+
+---
+
+#### 13. Evaluación de configuración
+
+Se aprueban exactamente cuatro valores:
+
+| Estado                   | Regla                                                                                          |
+| ------------------------ | ---------------------------------------------------------------------------------------------- |
+| `UNKNOWN`                | No existe evidencia suficiente o está fuera de vigencia.                                       |
+| `WITHIN_ASSIGNED_POLICY` | El estado observado satisface la configuración asignada.                                       |
+| `ACTION_REQUIRED`        | Existe una desviación que requiere remediación, suspensión, mantenimiento o cambio autorizado. |
+| `EXCEPTION_ACTIVE`       | Existe una excepción vigente y autorizada para una desviación concreta.                        |
+
+La excepción:
+
+- debe tener alcance;
+- debe tener motivo;
+- debe tener autoridad;
+- debe tener inicio y vencimiento;
+- no reescribe el baseline;
+- no convierte una desviación en configuración estándar;
+- debe reevaluarse al expirar.
+
+---
+
+#### 14. Postura de seguridad
+
+Se aprueban exactamente cuatro estados de postura:
+
+| Estado             | Significado                                                                    |
+| ------------------ | ------------------------------------------------------------------------------ |
+| `UNKNOWN`          | no existe evidencia suficiente para afirmar conformidad                        |
+| `COMPLIANT`        | las guardas de seguridad aplicables fueron evaluadas y satisfechas             |
+| `NONCOMPLIANT`     | existe al menos un incumplimiento sin excepción válida                         |
+| `EXCEPTION_ACTIVE` | existe incumplimiento conocido cubierto por una excepción vigente y autorizada |
+
+Reglas:
+
+1. postura y ciclo de vida son dimensiones distintas;
+2. `ACTIVE` requiere normalmente `COMPLIANT` o una excepción vigente compatible con el uso productivo;
+3. `UNKNOWN` no se convierte silenciosamente en conformidad;
+4. `NONCOMPLIANT` no se corrige modificando únicamente el indicador;
+5. una excepción no oculta el hecho técnico observado;
+6. un endpoint puede permanecer identificado aunque no esté autorizado a operar;
+7. la lógica específica de bloqueo por tipo de incumplimiento deberá respetar la política técnica vigente y el gobierno de cambio.
+
+---
+
+#### 15. Actualizaciones, parches y versión de sistema
+
+Se aprueban cuatro resultados conceptuales de evaluación de actualización:
+
+| Estado                   | Regla                                                           |
+| ------------------------ | --------------------------------------------------------------- |
+| `UNKNOWN`                | no hay evidencia suficiente de versión o nivel de actualización |
+| `WITHIN_ASSIGNED_POLICY` | la versión observada cumple la política asignada                |
+| `ACTION_REQUIRED`        | la versión o actualización observada requiere intervención      |
+| `EXCEPTION_ACTIVE`       | existe excepción vigente para la desviación concreta            |
+
+La política de actualización deberá distinguir:
+
+- sistema operativo;
+- firmware cuando aplique;
+- componentes de seguridad;
+- agentes de administración;
+- aplicaciones requeridas;
+- dependencias críticas.
+
+Esta tarea no fija ventanas ni plazos. El cambio operativo de versión deberá gobernarse mediante `TI-DOM-009`, mientras que la detección y frescura de señales pertenecen a `TI-DOM-010`.
+
+---
+
+#### 16. Cifrado, bloqueo y datos locales
+
+El baseline deberá expresar por separado:
+
+- requisito de cifrado;
+- estado observado de cifrado;
+- requisito de bloqueo;
+- estado observado de bloqueo;
+- protección de caché y datos offline;
+- tratamiento de datos empresariales locales ante suspensión, revocación o retiro.
+
+Reglas:
+
+1. un valor desconocido no se presenta como protegido;
+2. una capacidad declarada por el sistema operativo no prueba que esté activa;
+3. una señal local enviada por el propio cliente no basta cuando la política exige evidencia más fuerte;
+4. secretos y material de recuperación no se guardan en el grafo de configuración;
+5. el borrado o inaccesibilidad de datos debe registrarse como resultado real, no como intención;
+6. el tratamiento de información sensible conserva las reglas de privacidad vigentes.
+
+---
+
+#### 17. Aplicaciones instaladas y superficie técnica
+
+La relación `ENDPOINT_CLIENT_FOR_APPLICATION` de `TI-DOM-002` se conserva.
+
+Para ciclo de vida:
+
+- baseline define aplicaciones requeridas, permitidas y prohibidas;
+- estado observado registra presencia, versión o ausencia cuando la evidencia lo permita;
+- una aplicación instalada no concede permiso empresarial;
+- una aplicación visible no demuestra uso vigente;
+- una aplicación ausente no elimina su identidad del catálogo;
+- una aplicación no autorizada puede producir desviación sin transformar el endpoint en actor;
+- ambientes, proveedor, licencia y criticidad pertenecen a `TI-DOM-006`.
+
+La tarea no crea un inventario de software ficticio para endpoints que todavía no existen como identidades canónicas persistidas.
+
+---
+
+#### 18. Salud, última comprobación y observabilidad
+
+El endpoint deberá poder exponer referencias mínimas de salud:
+
+- última evaluación;
+- fuente de la evaluación;
+- frescura de evidencia;
+- disponibilidad de señales esperadas;
+- postura;
+- evaluación de baseline;
+- evaluación de actualización;
+- estado de enrolamiento;
+- estado de ciclo de vida.
+
+La semántica detallada de heartbeat, métricas, alertas, umbrales, retención, eventos y logs pertenece a `TI-DOM-010`.
+
+Reglas:
+
+```text
+SIN TELEMETRÍA
+≠
+SALUDABLE
+
+LAST_SEEN
+≠
+IDENTIDAD VERIFICADA
+
+HEARTBEAT
+≠
+AUTORIZACIÓN
+```
+
+Un `last_seen_at` aislado no demuestra conformidad, custodia ni identidad física.
+
+---
+
+#### 19. Soporte remoto
+
+La capacidad técnica y la autorización de uso se mantienen separadas.
+
+```text
+REMOTE_SUPPORT_CAPABLE
+≠
+REMOTE_SUPPORT_AUTHORIZED_NOW
+```
+
+El contrato debe permitir conocer:
+
+- si la plataforma soporta asistencia remota;
+- qué clase de operación puede realizar técnicamente;
+- qué autorización requiere;
+- qué actor la inició;
+- qué caso, incidente o cambio la justifica;
+- cuándo comenzó y terminó;
+- qué acciones privilegiadas fueron ejecutadas;
+- qué resultado produjo.
+
+`TI-DOM-003` no concede privilegios ni define el modelo final de soporte remoto. Esas decisiones pertenecen a `TI-AUTH-*`, mientras que el caso e incidente pertenecen a `TI-DOM-007`.
+
+---
+
+#### 20. Custodia, sede, área y cambios de asignación
+
+NEXO conserva la autoridad sobre activo físico, ubicación y custodia.
+
+Reglas:
+
+1. un cambio de custodio no crea automáticamente un endpoint nuevo;
+2. un cambio de sede o área no crea automáticamente un endpoint nuevo;
+3. si la instalación técnica permanece intacta y no existe conflicto, `endpoint_id` puede conservarse;
+4. las relaciones territoriales, de custodia y contexto se versionan o actualizan desde sus fuentes propietarias;
+5. la autorización efectiva del actor se reevalúa y no se hereda desde la configuración del endpoint;
+6. si el cambio exige reinstalación, la instalación anterior deja de ser el endpoint vigente;
+7. un activo sin custodio demostrado no recibe un nombre supuesto;
+8. un endpoint compartido conserva además las restricciones de `AUTH-DEV-*`.
+
+---
+
+#### 21. Reinstalación, recuperación y reemplazo de hardware
+
+##### 21.1. Reinstalación
+
+Una reinstalación del sistema, recuperación que sustituye la instalación técnica o reprovisión equivalente:
+
+```text
+MISMO ACTIVO POSIBLE
++
+NUEVA INSTALACIÓN
+→
+NUEVO endpoint_id
++
+NUEVA installation_generation
+```
+
+La instalación anterior:
+
+- deja de ser vigente;
+- cierra o revoca sus vínculos técnicos;
+- conserva historia;
+- no puede reaparecer como `ACTIVE`.
+
+##### 21.2. Reemplazo de hardware
+
+Un reemplazo físico:
+
+```text
+NUEVO HARDWARE
+→ NUEVO asset_id
+→ NUEVO endpoint_id
+→ NUEVO VÍNCULO TÉCNICO
+```
+
+El activo anterior conserva su historia y tratamiento NEXO.
+
+Si existía un `SHARED_DEVICE`, su continuidad lógica solo podrá conservarse mediante la decisión explícita aprobada por `AUTH-DEV-*`.
+
+##### 21.3. Recuperación sin reinstalación
+
+Una intervención que conserva la misma instalación puede mantener `endpoint_id` únicamente si:
+
+- identidad y vínculo permanecen verificables;
+- no existe clon o ambigüedad;
+- las credenciales vigentes son válidas;
+- la revalidación de baseline y postura es satisfactoria;
+- la autoridad técnica permite reactivación.
+
+---
+
+#### 22. Pérdida, robo y compromiso
+
+Se reconocen cinco causas técnicas mínimas de escalamiento de confianza:
+
+```text
+LOST
+STOLEN
+SUSPECTED_COMPROMISE
+CONFIRMED_COMPROMISE
+CUSTODY_UNCLEAR
+```
+
+Reglas:
+
+1. la causa se registra separada del estado de ciclo de vida;
+2. el endpoint se suspende o revoca conforme a la política aplicable;
+3. credenciales, sesiones o vínculos comprometidos se invalidan mediante sus autoridades propietarias;
+4. un endpoint revocado no continúa ejecutando acciones empresariales con autoridad anterior;
+5. borrado remoto solo se ejecutará si existe capacidad técnica y autorización explícita;
+6. no se declara borrado exitoso sin evidencia del resultado;
+7. si el borrado no puede ejecutarse, el resultado se registra como fallido, no disponible o pendiente de evidencia;
+8. el activo físico y su custodia continúan bajo NEXO;
+9. la gestión del incidente pertenece a `TI-DOM-007`;
+10. la evidencia sensible conserva minimización y control de acceso.
+
+---
+
+#### 23. Mantenimiento y suspensión
+
+`SUSPENDED` y `MAINTENANCE` no son sinónimos.
+
+`SUSPENDED` expresa que la instalación no está autorizada para operar productivamente.
+
+`MAINTENANCE` expresa que existe una intervención técnica controlada sobre la misma instalación.
+
+Durante mantenimiento:
+
+- se conserva identidad;
+- no se presume disponibilidad;
+- no se amplían privilegios;
+- toda acción de cambio queda sujeta a su autoridad;
+- las pruebas posteriores demuestran resultado;
+- volver a `ACTIVE` exige reevaluar la instalación.
+
+Si la intervención reinstala o sustituye la instalación, no vuelve el mismo endpoint: se crea uno nuevo.
+
+---
+
+#### 24. Revocación
+
+`REVOKED` cierra la autoridad técnica de la instalación.
+
+Como mínimo deberá:
+
+- impedir nuevas acciones empresariales dependientes de esa identidad;
+- cerrar o invalidar vínculos técnicos aplicables;
+- revocar credenciales y sesiones conforme a sus autoridades;
+- cerrar relaciones vigentes cuando dejen de ser válidas;
+- impedir que una cola offline o cliente con estado anterior recupere autoridad;
+- conservar evidencia del motivo, actor, fecha y correlación;
+- preservar historia de activo, endpoint, dispositivo compartido, soporte y cambios.
+
+Revocación no equivale a destrucción del equipo físico ni a eliminación de evidencia.
+
+---
+
+#### 25. Retiro seguro
+
+`RETIRED` es terminal.
+
+Antes de declarar un endpoint retirado, la evidencia deberá resolver según aplicabilidad:
+
+1. revocación técnica previa;
+2. cierre de credenciales o bindings vigentes;
+3. cierre de relaciones productivas actuales;
+4. tratamiento de caché y datos empresariales locales;
+5. borrado o inaccesibilidad criptográfica cuando la política y plataforma lo exijan;
+6. resultado real del borrado, si se ejecutó;
+7. preservación de la evidencia que deba retenerse;
+8. destino del activo físico bajo NEXO;
+9. cierre o transición del dispositivo compartido bajo `AUTH-DEV-*` cuando aplique;
+10. motivo, actor, timestamp y correlación.
+
+Prohibiciones:
+
+- reutilizar `endpoint_id`;
+- reactivar un endpoint retirado;
+- presentar una intención de wipe como wipe exitoso;
+- eliminar historia para simular un retiro limpio;
+- usar el retiro de endpoint para eliminar indebidamente el activo físico.
+
+---
+
+#### 26. Eventos conceptuales mínimos
+
+La futura implementación deberá poder auditar, como mínimo:
+
+```text
+endpoint_registered
+endpoint_enrollment_started
+endpoint_enrolled
+endpoint_activated
+endpoint_suspended
+endpoint_entered_maintenance
+endpoint_returned_to_service
+endpoint_baseline_assigned
+endpoint_baseline_evaluated
+endpoint_posture_changed
+endpoint_update_evaluated
+endpoint_custody_reference_changed
+endpoint_site_reference_changed
+endpoint_remote_support_started
+endpoint_remote_support_finished
+endpoint_loss_reported
+endpoint_compromise_reported
+endpoint_revoked
+endpoint_reinstalled
+endpoint_hardware_replaced
+endpoint_wipe_requested
+endpoint_wipe_result_recorded
+endpoint_retired
+```
+
+Los nombres físicos definitivos podrán versionarse, pero no deberán perder:
+
+- `endpoint_id`;
+- actor administrativo o técnico;
+- timestamp;
+- motivo;
+- estado anterior y posterior;
+- baseline y versión aplicables;
+- evidencia;
+- correlación con caso, incidente, cambio o retiro cuando corresponda.
+
+Los eventos no deben almacenar secretos ni payloads sensibles completos.
+
+---
+
+#### 27. Evidencia mínima por etapa
+
+| Etapa         | Evidencia mínima                                                                                          |
+| ------------- | --------------------------------------------------------------------------------------------------------- |
+| registro      | identidad emitida, clase, modo, actor creador y fuente                                                    |
+| enrolamiento  | operación autorizada, prueba de posesión, generación y vínculos                                           |
+| activación    | baseline, estado observado, postura, actualización, cifrado, bloqueo, apps y timestamp                    |
+| operación     | última evaluación, cambios de relación y excepciones vigentes                                             |
+| suspensión    | causa, autoridad, fecha y condición de salida                                                             |
+| mantenimiento | caso o cambio relacionado cuando aplique, intervención y prueba posterior                                 |
+| revocación    | motivo, vínculos cerrados, credenciales/sesiones tratadas y correlación                                   |
+| retiro        | tratamiento de datos, resultado de wipe cuando aplique, relaciones cerradas y destino físico referenciado |
+
+Una evidencia puede ser automática, manual controlada o híbrida según el control. La clasificación definitiva de mecanismos y retención pertenece a las tareas de observabilidad, seguridad y evidencia correspondientes.
+
+---
+
+#### 28. Matriz de aplicabilidad por form factor
+
+Las seis clases consumen el mismo ciclo de vida. Lo que cambia es el baseline asignado, no la semántica de identidad.
+
+| Form factor           | Puede usar `PERSONAL_MANAGED`               | Puede usar `SHARED_MANAGED`                                  | Puede usar `TECHNICAL_ONLY`       | Regla                                                 |
+| --------------------- | ------------------------------------------- | ------------------------------------------------------------ | --------------------------------- | ----------------------------------------------------- |
+| `COMPUTER`            | sí, si está administrado                    | sí, si existe control compartido aprobado                    | sí, si cumple una función técnica | no inferir modo desde el nombre                       |
+| `MOBILE`              | sí, si está administrado                    | sí, solo mediante decisión explícita y controles compatibles | sí, si está dedicado técnicamente | propiedad personal no equivale a no gestionado        |
+| `TABLET`              | sí, si está administrado                    | sí, mediante controles compartidos aplicables                | sí, si se dedica técnicamente     | una tableta observada no crea endpoint por inferencia |
+| `FIXED_TERMINAL`      | sí, solo si la asignación real lo justifica | sí                                                           | sí                                | condición fija no concede permisos                    |
+| `KIOSK`               | no se presume; requiere decisión explícita  | sí                                                           | sí                                | superficie restringida no sustituye autorización      |
+| `SPECIALIZED_STATION` | no se presume; requiere decisión explícita  | sí, cuando la operación lo justifique                        | sí                                | especialización no autoriza capacidades empresariales |
+
+Esta matriz define posibilidades contractuales, no crea instancias.
+
+---
+
+#### 29. `TI-ENDPOINT-ASIS-RECONCILIATION-001`
+
+La inspección técnica disponible se clasifica sin fusionar registros.
+
+| Fuente o familia actual                          | Qué representa                                                                                                                | Estado frente al contrato de endpoint               | Decisión                                                                               |
+| ------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| `public.asset_items` y estructuras asociadas     | activos físicos, ubicación, custodia, condición, mantenimiento y otros atributos físicos                                      | `IMPLEMENTADO` parcial como fuente de activo        | conservar como autoridad física; no convertir cada activo en endpoint                  |
+| `public.shared_operational_devices` y relaciones | dispositivo compartido lógico, principal técnico legacy, sitio, área, plantilla, aplicaciones y flags de actor                | `IMPLEMENTADO` parcial como dispositivo compartido  | conservar identidad separada; falta vínculo canónico con endpoint y activo             |
+| `public.employee_devices`                        | registro orientado a token/dispositivo de notificación del empleado                                                           | `NO_APLICA` como identidad empresarial de endpoint  | no promover ni reutilizar como endpoint por nombre                                     |
+| `public.wallet_devices`                          | identidad técnica acotada al dominio PASS/wallet                                                                              | `NO_APLICA` como endpoint empresarial transversal   | conservar alcance de dominio                                                           |
+| `public.pos_table_call_devices`                  | dispositivo acotado a llamadas o interacción de mesa                                                                          | `NO_APLICA` como endpoint empresarial transversal   | conservar alcance de negocio                                                           |
+| persistencia transversal de endpoint             | no se detectó un modelo público consolidado con `endpoint_id`, lifecycle, baseline, postura y relación con activo/dispositivo | `PENDIENTE_DE_EVIDENCIA` para implementación física | el contrato queda `ESPECIFICADO`; implementación posterior requiere paquete autorizado |
+
+Diagnóstico AS-IS:
+
+- existe fuente física de activos;
+- existen registros técnicos de propósito específico;
+- existe registro parcial de dispositivos compartidos;
+- no se declara implementado un ciclo de vida empresarial de endpoint por ensamblar esas estructuras;
+- no se fusionan identidades por nombre, sede, serial, IP, descripción o usuario;
+- no se crean backfills en esta tarea.
+
+---
+
+#### 30. Tratamiento de los dos dispositivos compartidos ya documentados
+
+Los dos dispositivos compartidos existentes permanecen bajo su identidad aprobada y no reciben `endpoint_id` por inferencia.
+
+Para cada uno:
+
+```text
+SHARED_DEVICE EXISTENTE
++
+AUSENCIA DE ENDPOINT CANÓNICO DEMOSTRADO
+→
+NO CREAR ENDPOINT
+→
+PENDIENTE_DE_EVIDENCIA PARA ENROLAMIENTO Y RECONCILIACIÓN
+```
+
+La futura implementación deberá:
+
+- resolver el activo físico cuando aplique;
+- crear o enrolar el endpoint mediante proceso autorizado;
+- demostrar el vínculo `SHARED_DEVICE_USES_ENDPOINT`;
+- conservar la identidad lógica existente;
+- no reutilizar `auth_user_id` como endpoint;
+- no interpretar `last_seen_at` como prueba de identidad;
+- no alterar la autoridad empresarial del actor.
+
+---
+
+#### 31. Invariantes
+
+1. activo, endpoint, dispositivo compartido, principal técnico, actor y registro de push son identidades distintas.
+2. `endpoint_id` es estable únicamente durante la vida de una instalación técnica.
+3. una reinstalación crea endpoint nuevo.
+4. un reemplazo de hardware crea activo y endpoint nuevos.
+5. un cambio de custodio puede conservar endpoint si la instalación no cambia.
+6. un cambio de sede o área no concede autoridad.
+7. una IP, MAC, serial, hostname o fingerprint no son raíz única de confianza.
+8. un endpoint no se autodeclara válido.
+9. un registro técnico de propósito específico no se promueve automáticamente a endpoint.
+10. form factor y modo de uso son dimensiones independientes.
+11. baseline deseado y estado observado permanecen separados.
+12. una excepción no reescribe el baseline.
+13. una ausencia de telemetría no equivale a conformidad.
+14. `ACTIVE` no elimina la obligación de autorización del actor.
+15. mantenimiento no amplía privilegios.
+16. revocación cierra autoridad pero preserva historia.
+17. retiro es terminal.
+18. el identificador retirado no se reutiliza.
+19. un wipe no se declara ejecutado sin evidencia.
+20. NEXO conserva el activo físico y su disposición.
+21. `AUTH-DEV-*` conserva el dispositivo compartido.
+22. `TI-DOM-009` conserva gobierno de cambio.
+23. `TI-DOM-010` conserva observabilidad detallada.
+24. `TI-AUTH-*` conserva privilegios y soporte remoto.
+25. ninguna decisión documental de esta tarea modifica Supabase o dispositivos.
+
+---
+
+#### 32. Cobertura de requisitos vigente
+
+La tarea consume requisitos ya incorporados que protegen, entre otros aspectos:
+
+- separación entre `device_id`, `endpoint_id`, `asset_id`, principal técnico, plantilla y actor;
+- enrolamiento con prueba de posesión;
+- reinstalación con endpoint nuevo;
+- reemplazo físico con nueva identidad técnica;
+- revocación y ausencia de acceso residual;
+- identidad, configuración, postura, cifrado, bloqueo, aplicaciones, parches, última comprobación y retiro;
+- inventario físico, custodia, garantía, mantenimiento y retiro del activo;
+- correlación segura entre endpoint, dispositivo, activo, aplicación, servicio e integración;
+- operación de soporte y telemetría sin exponer secretos.
+
+La cobertura existente es suficiente para el comportamiento definido aquí. No se cambia ninguna condición de prueba.
+
+---
+
+#### 33. Decisiones reservadas y propietario exacto
+
+| Decisión                                                                               | Propietario documental                                                      | Condición de salida                                                                  |
+| -------------------------------------------------------------------------------------- | --------------------------------------------------------------------------- | ------------------------------------------------------------------------------------ |
+| topología, inventario, segmentación, direccionamiento, monitoreo y contingencia de red | `TI-DOM-004`                                                                | arquitectura de red aprobada antes de cambios físicos                                |
+| gobierno de impresoras y periféricos                                                   | `TI-DOM-005`                                                                | reconciliación física y administración aprobadas                                     |
+| aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad             | `TI-DOM-006`                                                                | catálogo tecnológico detallado aprobado                                              |
+| solicitud, incidente, impacto, prioridad, SLA, escalamiento y cierre                   | `TI-DOM-007`                                                                | contrato de mesa e incidente aprobado                                                |
+| problema y causa raíz                                                                  | `TI-DOM-008`                                                                | modelo de problema aprobado                                                          |
+| cambios de baseline, versión, configuración y despliegue                               | `TI-DOM-009`                                                                | gobierno de cambio aprobado                                                          |
+| heartbeat, eventos, métricas, alertas, logs y frescura                                 | `TI-DOM-010`                                                                | contrato de observabilidad aprobado                                                  |
+| backup, restauración y recuperación técnica                                            | `TI-DOM-011`                                                                | política de recuperación aprobada                                                    |
+| licencias, garantías, contratos, renovaciones y costos                                 | `TI-DOM-012`                                                                | modelo contractual y económico aprobado                                              |
+| conocimiento y adopción                                                                | `TI-DOM-013`                                                                | contrato de conocimiento aprobado                                                    |
+| soporte remoto privilegiado, secretos, sesiones elevadas y segregación                 | `TI-AUTH-001` a `TI-AUTH-004`                                               | autorización tecnológica completa                                                    |
+| identidad, sesión, revocación y límites de dispositivo compartido                      | `AUTH-DEV-*`                                                                | contratos de dispositivo compartido consumidos por la implementación                 |
+| activo físico, ubicación, custodia, mantenimiento y disposición                        | NEXO                                                                        | evidencia física y proceso de activo aplicable                                       |
+| persistencia física de endpoint, baseline, postura y transiciones                      | `NEXO-REMISSIONS-001::CONDITIONAL_IMPLEMENTATION_SCOPE` si resulta aprobada | paquete autorizado, contratos cerrados, migraciones versionadas y pruebas aplicables |
+
+No queda un pendiente sustantivo propio de `TI-DOM-003` sin propietario documental.
+
+---
+
+#### 34. Criterios de aceptación
+
+- [x] se conserva la continuidad `TI-DOM-002 → TI-DOM-003 → TI-DOM-004`;
+- [x] la tarea permanece exclusivamente documental;
+- [x] se define una identidad de endpoint separada de activo, dispositivo compartido, actor y registro de push;
+- [x] se definen exactamente seis form factors;
+- [x] se definen exactamente tres modos de uso;
+- [x] se definen exactamente ocho estados de ciclo de vida;
+- [x] cada estado posee entrada, restricción y salida;
+- [x] se materializan quince transiciones ordinarias;
+- [x] `RETIRED` es terminal;
+- [x] se definen exactamente cuatro estados de postura;
+- [x] se separan configuración deseada, observada y evaluación;
+- [x] se define baseline versionado;
+- [x] se definen guardas de enrolamiento y activación;
+- [x] se definen cifrado, bloqueo, aplicaciones y actualización sin inventar valores físicos;
+- [x] se conserva la separación entre capacidad y autorización de soporte remoto;
+- [x] se define tratamiento de cambio de custodio y sede;
+- [x] se define reinstalación con endpoint nuevo;
+- [x] se define reemplazo de hardware con activo y endpoint nuevos;
+- [x] se define tratamiento de pérdida, robo y compromiso;
+- [x] se define revocación sin borrado de historia;
+- [x] se define retiro terminal y evidencia de wipe cuando aplique;
+- [x] se materializa una reconciliación AS-IS de seis familias técnicas;
+- [x] no se promueve `employee_devices`, `wallet_devices` ni `pos_table_call_devices` a endpoint canónico;
+- [x] los dos dispositivos compartidos documentados no reciben endpoint por inferencia;
+- [x] no se crean datos, tablas, migraciones, configuraciones, endpoints ni cuentas;
+- [x] no se modifica Supabase;
+- [x] no se crean ni modifican requisitos de prueba;
+- [x] `TI-DOM-004` permanece únicamente reservada.
+
+---
+
+#### 35. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** el ciclo de vida de endpoint, la separación de identidades, el enrolamiento, la reinstalación, el reemplazo, la postura, la configuración, la actualización, el cifrado, el bloqueo, la revocación, el retiro y la correlación con activos y dispositivos ya están protegidos por requisitos canónicos vigentes. Esta tarea materializa el contrato documental que esos requisitos deben consumir sin introducir una conducta ejecutable nueva ni modificar una condición de prueba existente.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 36. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-002 — Definir configuración canónica de elementos tecnológicos y relaciones entre activo, endpoint, dispositivo compartido, red, impresora, aplicación y servicio`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-003 — Definir ciclo de vida de computadores, celulares, tabletas y endpoints`
+
+SIGUIENTE TAREA RESERVADA
+`TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes`
+
+
 ### [ ] TI-DOM-004 — Definir arquitectura, inventario, segmentación, direccionamiento, monitoreo y contingencia de redes
 ### [ ] TI-DOM-005 — Definir gobierno de impresoras y periféricos físicos frente al servicio transversal de impresión
 ### [ ] TI-DOM-006 — Definir catálogo de aplicaciones, ambientes, dependencias, proveedores, licencias y criticidad
