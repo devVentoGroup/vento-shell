@@ -1,12 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readCanonicalTreqRegistry } from './treq-registry-files.mjs';
 
 const BLOCK_PATH =
   'bloques/X_INTEGRACIONES/01_EVENTOS_ENTRE_APLICACIONES.md';
-const TREQ_PATH =
-  'bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md';
-
 const TASKS = [
   {
     id: 'INT-APP-001',
@@ -239,7 +237,7 @@ export function validateEventApplicationBlock({ root = process.cwd() } = {}) {
   const baseDir = path.join(root, 'docs/plan-canonico/modular');
   const result = validateEventApplicationBlockSource({
     blockSource: fs.readFileSync(path.join(baseDir, BLOCK_PATH), 'utf8'),
-    registrySource: fs.readFileSync(path.join(baseDir, TREQ_PATH), 'utf8'),
+    registrySource: readCanonicalTreqRegistry({ baseDir }),
   });
   if (result.errors.length > 0) {
     throw new Error(

@@ -26,7 +26,7 @@ export function readPlanSection(root, legacyRelativePath) {
     .replaceAll('\\', '/');
   const directory = path.posix.dirname(relativeToModular);
   const basename = path.posix.basename(relativeToModular);
-  const numericPrefix = basename.match(/^(\d+)_/u)?.[1];
+  const numericPrefix = basename.match(/^(\d+[A-Z]?)_/u)?.[1];
   if (!numericPrefix) {
     throw new Error(`no se puede derivar la familia de fragmentos para ${legacyRelativePath}.`);
   }

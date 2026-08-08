@@ -39,8 +39,12 @@ const synchronizedBuildOutputs = new Set([
   "00_CABECERA_Y_ESTADO.md",
   "active-sequence.json",
   "90_ORDEN_DE_IMPLEMENTACION.md",
-  "bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md",
 ]);
+
+function isSynchronizedBuildOutput(relativePath) {
+  return synchronizedBuildOutputs.has(relativePath)
+    || /^bloques\/E1_DESCUBRIMIENTO_OPERATIVO\/04A_\d{2}_.+\.md$/u.test(relativePath);
+}
 
 let debounceTimer = null;
 let buildRunning = false;
@@ -172,7 +176,7 @@ async function rebuild(reason) {
 function scheduleRebuild(filename) {
   const relativePath = normalizeRelativePath(filename);
 
-  if (buildRunning && synchronizedBuildOutputs.has(relativePath)) {
+  if (buildRunning && isSynchronizedBuildOutput(relativePath)) {
     console.log(
       `[PLAN CANÓNICO] Cambio interno ignorado durante la compilación: ${relativePath}`
     );

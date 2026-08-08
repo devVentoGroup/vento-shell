@@ -5,6 +5,10 @@ import {
   buildCanonicalTreqContext,
   validateTreqRegistrySource,
 } from './validate-treq-registry.mjs';
+import {
+  readCanonicalTreqRegistry,
+  writeCanonicalTreqRegistry,
+} from './treq-registry-files.mjs';
 
 const root = process.cwd();
 const sourcePath = path.join(root,
@@ -15,8 +19,6 @@ const authorizationPath = path.join(root,
   'docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/05_AUTORIZACION_DE_VISTAS_Y_ACCIONES.md');
 const catalogPath = path.join(root,
   'docs/plan-canonico/modular/bloques/D_MATRICES/08_REVISION_CONTRACTUAL_PREVIA_DATASETS.md');
-const registryPath = path.join(root,
-  'docs/plan-canonico/modular/bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md');
 const outputPath = path.join(root,
   'docs/plan-canonico/modular/bloques/I_NAVEGACION_Y_PANTALLAS/AUTH-UI-031_APROBADA_PARA_REEMPLAZAR.md');
 const registryOutputPath = path.join(root,
@@ -278,7 +280,9 @@ const source = fs.readFileSync(sourcePath, 'utf8');
 const eligibilitySource = fs.readFileSync(eligibilityPath, 'utf8');
 const authorizationSource = fs.readFileSync(authorizationPath, 'utf8');
 const catalogSource = fs.readFileSync(catalogPath, 'utf8');
-const registrySource = fs.readFileSync(registryPath, 'utf8');
+const registrySource = readCanonicalTreqRegistry({
+  baseDir: path.join(root, 'docs/plan-canonico/modular'),
+});
 const primarySection = section(source, 'AUTH-UI-024', 'AUTH-UI-025');
 const secondarySection = section(source, 'AUTH-UI-025');
 const eligibilitySection = section(eligibilitySource, 'AUTH-UI-029');
@@ -512,7 +516,10 @@ if (approve) {
     throw new Error('los artefactos aprobados no coinciden con sus fuentes vigentes.');
   }
   fs.writeFileSync(authorizationPath, authorizationSource.replace(canonicalMarker, approvedOutput.trimEnd()), 'utf8');
-  fs.writeFileSync(registryPath, registryOutput, 'utf8');
+  writeCanonicalTreqRegistry({
+    baseDir: path.join(root, 'docs/plan-canonico/modular'),
+    source: registryOutput,
+  });
   manifest.auxiliary_files = manifest.auxiliary_files.filter((relativePath) => ![
     'bloques/I_NAVEGACION_Y_PANTALLAS/AUTH-UI-031_APROBADA_PARA_REEMPLAZAR.md',
     'bloques/I_NAVEGACION_Y_PANTALLAS/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA_AUTH-UI-031.md',

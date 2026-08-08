@@ -1,9 +1,8 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { readCanonicalTreqRegistry } from './treq-registry-files.mjs';
 
-const REGISTRY_RELATIVE_PATH =
-  'bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md';
 const EXPECTED_COLUMNS = [
   'ID',
   'Dominio',
@@ -484,8 +483,7 @@ export function validateCanonicalTreqRegistry({ root = process.cwd() } = {}) {
   const baseDir = path.resolve(root, 'docs/plan-canonico/modular');
   const manifest = JSON.parse(fs.readFileSync(path.join(baseDir, 'manifest.json'), 'utf8'));
   const context = buildCanonicalTreqContext({ baseDir, manifest });
-  const registryPath = path.join(baseDir, REGISTRY_RELATIVE_PATH);
-  const result = validateTreqRegistrySource(fs.readFileSync(registryPath, 'utf8'), context);
+  const result = validateTreqRegistrySource(readCanonicalTreqRegistry({ baseDir }), context);
   if (result.errors.length > 0) {
     throw new Error(`Registro TREQ inválido:\n- ${result.errors.join('\n- ')}`);
   }

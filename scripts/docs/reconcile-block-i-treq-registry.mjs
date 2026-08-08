@@ -1,6 +1,10 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  readCanonicalTreqRegistry,
+  writeCanonicalTreqRegistry,
+} from './treq-registry-files.mjs';
 
 const scriptDirectory = path.dirname(fileURLToPath(import.meta.url));
 const repositoryRoot = path.resolve(scriptDirectory, '..', '..');
@@ -11,11 +15,7 @@ const planRoot = path.join(
   'modular',
   'bloques'
 );
-const registryPath = path.join(
-  planRoot,
-  'E1_DESCUBRIMIENTO_OPERATIVO',
-  '04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md'
-);
+const baseDir = path.join(repositoryRoot, 'docs', 'plan-canonico', 'modular');
 const taskPaths = [
   path.join(
     planRoot,
@@ -183,10 +183,7 @@ function renderRow(cells) {
 
 function reconcile() {
   const taskRules = collectTaskRules();
-  const newline = fs.readFileSync(registryPath, 'utf8').includes('\r\n')
-    ? '\r\n'
-    : '\n';
-  const lines = fs.readFileSync(registryPath, 'utf8').replace(/\r\n?/g, '\n').split('\n');
+  const lines = readCanonicalTreqRegistry({ baseDir }).split('\n');
   const registryRows = new Map();
 
   lines.forEach((line, index) => {
@@ -248,7 +245,7 @@ function reconcile() {
       '| `UX`          | `TREQ-UX-001` a `TREQ-UX-1604`                  |     1604 |'
     );
 
-  fs.writeFileSync(registryPath, output.replace(/\n/g, newline), 'utf8');
+  writeCanonicalTreqRegistry({ baseDir, source: output });
   console.log(
     `OK: registro TREQ del BLOQUE I reconciliado; ${updated} regla(s) actualizada(s); 10 requisito(s) nuevos asegurados.`
   );

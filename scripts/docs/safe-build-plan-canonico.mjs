@@ -15,15 +15,16 @@ import {
 import {
   syncPriorityLaneOrderDocument,
 } from './sync-priority-delivery-lanes-doc.mjs';
+import {
+  readCanonicalTreqRegistry,
+  writeCanonicalTreqRegistry,
+} from './treq-registry-files.mjs';
 
 const root = process.cwd();
 const baseDir = path.resolve(root, 'docs/plan-canonico/modular');
 const generatedDir = path.join(baseDir, '.generated');
 const stateDir = path.join(generatedDir, '.state');
 const recoveryDir = path.join(generatedDir, '.recovery');
-const registryRelativePath =
-  'bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md';
-const registryPath = path.join(baseDir, registryRelativePath);
 const snapshotPath = path.join(stateDir, 'last-valid-treq-registry.md');
 const snapshotMetadataPath = path.join(stateDir, 'last-valid-treq-registry.json');
 const rawBuildScript = path.join(
@@ -61,7 +62,7 @@ function loadValidSnapshot() {
 }
 
 function saveValidSnapshot() {
-  const source = fs.readFileSync(registryPath, 'utf8');
+  const source = readCanonicalTreqRegistry({ baseDir });
   fs.mkdirSync(stateDir, { recursive: true });
   fs.writeFileSync(snapshotPath, source, 'utf8');
   fs.writeFileSync(
@@ -103,7 +104,7 @@ function saveRecoveryCopy(source, reconciliation) {
 }
 
 function attemptSafeReconciliation() {
-  const currentSource = fs.readFileSync(registryPath, 'utf8');
+  const currentSource = readCanonicalTreqRegistry({ baseDir });
   const context = readContext();
   const currentValidation = validateTreqRegistrySource(currentSource, context);
 
@@ -143,7 +144,7 @@ function attemptSafeReconciliation() {
       normalizedApprovalIds: [...invalidRowIds],
     };
     const recoveryPath = saveRecoveryCopy(currentSource, approvalSync);
-    fs.writeFileSync(registryPath, approvalCandidate, 'utf8');
+    writeCanonicalTreqRegistry({ baseDir, source: approvalCandidate });
 
     if (invalidRowIds.size > 0) {
       console.log(
@@ -211,7 +212,7 @@ function attemptSafeReconciliation() {
   }
 
   const recoveryPath = saveRecoveryCopy(currentSource, reconciliation);
-  fs.writeFileSync(registryPath, reconciliation.candidateSource, 'utf8');
+  writeCanonicalTreqRegistry({ baseDir, source: reconciliation.candidateSource });
 
   console.log(
     `[PLAN CANÓNICO] Reemplazo TREQ desactualizado reconciliado: `
@@ -255,14 +256,14 @@ const result = spawnSync(
 
 if (result.error) {
   if (reconciliation) {
-    fs.writeFileSync(registryPath, reconciliation.originalSource, 'utf8');
+    writeCanonicalTreqRegistry({ baseDir, source: reconciliation.originalSource });
   }
   throw result.error;
 }
 
 if (result.status !== 0) {
   if (reconciliation) {
-    fs.writeFileSync(registryPath, reconciliation.originalSource, 'utf8');
+    writeCanonicalTreqRegistry({ baseDir, source: reconciliation.originalSource });
     console.error(
       '[PLAN CANÓNICO] La compilación falló después de reconciliar; '
       + 'se restauró exactamente el reemplazo entrante.'

@@ -6,6 +6,7 @@ import test from 'node:test';
 import {
   validateEventApplicationBlockSource,
 } from './validate-event-application-block.mjs';
+import { readCanonicalTreqRegistry } from './treq-registry-files.mjs';
 
 const baseDir = path.resolve('docs/plan-canonico/modular');
 const validBlockSource = fs.readFileSync(
@@ -15,13 +16,7 @@ const validBlockSource = fs.readFileSync(
   ),
   'utf8',
 );
-const validRegistrySource = fs.readFileSync(
-  path.join(
-    baseDir,
-    'bloques/E1_DESCUBRIMIENTO_OPERATIVO/04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md',
-  ),
-  'utf8',
-);
+const validRegistrySource = readCanonicalTreqRegistry({ baseDir });
 
 function validate(blockSource = validBlockSource, registrySource = validRegistrySource) {
   return validateEventApplicationBlockSource({ blockSource, registrySource });

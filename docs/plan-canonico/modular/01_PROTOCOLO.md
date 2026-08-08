@@ -131,12 +131,14 @@
    #### 4.4. Registro Canónico de Requisitos de Prueba
 
    Cuando una tarea genere, modifique, difiera, descarte u obsolete uno o más
-   requisitos `TREQ-*`, deberá entregarse también el archivo completo:
+   requisitos `TREQ-*`, deberá entregarse también el registro lógico completo:
 
    `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`
 
-   El usuario reemplazará el archivo completo. No deberá localizar puntos de
-   inserción, copiar filas sueltas ni combinar tablas manualmente.
+   El archivo de entrega se validará como una unidad y el tooling canónico lo
+   distribuirá en la familia modular `04A_00_*` a `04A_20_*`, ordenada por
+   `manifest.json`. No deberán localizarse puntos de inserción, copiarse filas
+   sueltas ni combinarse tablas manualmente.
 
    El archivo `04A` entregado deberá:
 
@@ -156,8 +158,8 @@
    - impedir pérdida, reemplazo o degradación de requisitos históricos.
 
    Queda prohibido depender de la reconciliación automática del compilador para
-   reparar deliberadamente un archivo `04A` incompleto. La entrega deberá ser
-   completa y válida antes de reemplazarse.
+   reparar deliberadamente un registro lógico `04A` incompleto. La entrega
+   deberá ser completa y válida antes de distribuirse en sus fragmentos.
 
    Si el compilador restaura o corrige filas desde
    `.generated/.state/` o genera una copia en `.generated/.recovery/`, deberá
@@ -183,7 +185,7 @@
    - `docs/plan-canonico/modular/active-sequence.json`;
    - el archivo modular propietario de la tarea;
    - las tareas aprobadas que constituyen su base;
-   - `04A_REGISTRO_CANONICO_DE_REQUISITOS_DE_PRUEBA.md`;
+   - la familia modular `04A_00_*` a `04A_20_*` registrada en `manifest.json`;
    - `package.json`;
    - los validadores documentales aplicables;
    - los contratos, catálogos, procesos, pasos, actores, dispositivos, acciones,
