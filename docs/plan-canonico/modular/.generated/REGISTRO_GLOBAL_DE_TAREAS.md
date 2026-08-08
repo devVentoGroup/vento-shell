@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **610** |
+| Aprobadas | **611** |
 | En propuesta | **0** |
-| No iniciadas | **984** |
+| No iniciadas | **983** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **38.27% (610/1594)** |
+| Porcentaje de completamiento | **38.33% (611/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `NOTIFY-ARC-002` — Definir evento empresarial que origina cada notificación | ✅ APROBADA |
-| Tarea actual | `NOTIFY-ARC-003` — Definir destinatarios por responsabilidad y contexto | ⬜ NO INICIADA |
-| Siguiente reservada | `NOTIFY-ARC-004` — Definir prioridad, vigencia y deduplicación | ⬜ NO INICIADA |
+| Última aprobada | `NOTIFY-ARC-003` — Definir destinatarios por responsabilidad y contexto | ✅ APROBADA |
+| Tarea actual | `NOTIFY-ARC-004` — Definir prioridad, vigencia y deduplicación | ⬜ NO INICIADA |
+| Siguiente reservada | `NOTIFY-ARC-005` — Definir canales internos, correo, push o mensajería externa | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -510,7 +510,7 @@
 | ✅ APROBADA | `PRINT-ARC-020` | Definir alcance, prerrequisitos, métricas y criterios de aceptación del piloto de impresión | `bloques/E4_SERVICIOS_TRANSVERSALES/04_SERVICIO_TRANSVERSAL_DE_IMPRESION.md` |
 | ✅ APROBADA | `NOTIFY-ARC-001` | Inventariar notificaciones actuales y canales | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ✅ APROBADA | `NOTIFY-ARC-002` | Definir evento empresarial que origina cada notificación | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
-| ⬜ NO INICIADA | `NOTIFY-ARC-003` | Definir destinatarios por responsabilidad y contexto | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
+| ✅ APROBADA | `NOTIFY-ARC-003` | Definir destinatarios por responsabilidad y contexto | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-004` | Definir prioridad, vigencia y deduplicación | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-005` | Definir canales internos, correo, push o mensajería externa | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |
 | ⬜ NO INICIADA | `NOTIFY-ARC-006` | Definir preferencias sin ocultar alertas obligatorias | `bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md` |

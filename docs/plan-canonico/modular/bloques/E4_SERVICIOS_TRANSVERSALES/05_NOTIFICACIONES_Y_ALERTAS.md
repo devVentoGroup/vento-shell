@@ -439,7 +439,288 @@ No queda un pendiente de `NOTIFY-ARC-002` sin tarea propietaria.
 La aprobación de `NOTIFY-ARC-002` no inicia, desarrolla ni aprueba `NOTIFY-ARC-003`.
 
 
-### [ ] NOTIFY-ARC-003 — Definir destinatarios por responsabilidad y contexto
+### ✅ NOTIFY-ARC-003 — Definir destinatarios por responsabilidad y contexto
+
+**Estado:** APROBADA
+**Tarea anterior:** `NOTIFY-ARC-002 — Definir evento empresarial que origina cada notificación` — APROBADA
+**Tarea siguiente:** `NOTIFY-ARC-004 — Definir prioridad, vigencia y deduplicación` — RESERVADA
+**Tipo de tarea:** documental; definición materializada de destinatarios por relación directa, responsabilidad empresarial y contexto vigente, sin implementación de transporte, prioridad, preferencias, escalamiento, reintentos ni métricas
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/E4_SERVICIOS_TRANSVERSALES/05_NOTIFICACIONES_Y_ALERTAS.md`
+**Universo recibido:** 15 orígenes `NOTIFY-ORIGIN-*` que cubren 16 familias `NOTIFY-ASIS-*`
+**Reglas de destinatario materializadas:** 15
+**Cambios físicos autorizados:** ninguno; no crea ni modifica código, roles, permisos, Edge Functions, tablas, RLS, migraciones, cron, colas, tokens, canales, proveedores ni configuración de Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** definir quién debe considerarse destinatario de cada necesidad de notificación ya originada en `NOTIFY-ARC-002`, utilizando exclusivamente relación directa con el hecho, responsabilidad vigente sobre la instancia y contexto empresarial resoluble. La tarea impide sustituir responsabilidad por pertenencia genérica a una aplicación, nombre de rol, sede seleccionada, canal técnico o presencia accidental en una interfaz.
+
+---
+
+#### 1. Propósito y resultado sustantivo
+
+`NOTIFY-ARC-003` fija el contrato documental de resolución de destinatarios para las 15 reglas `NOTIFY-ORIGIN-*`.
+
+La relación obligatoria es:
+
+```text
+NOTIFY-ORIGIN-###
+        ↓
+RELACIÓN DIRECTA O RESPONSABILIDAD EMPRESARIAL
+        +
+CONTEXTO VIGENTE Y RESOLUBLE
+        ↓
+NOTIFY-RECIPIENT-###
+        ↓
+CONJUNTO DE DESTINATARIOS RESUELTO
+        ↓
+PRIORIDAD / CANAL / PREFERENCIA / ENTREGA / ESCALAMIENTO
+        reservados a NOTIFY-ARC-004 a NOTIFY-ARC-010
+```
+
+Ser destinatario de una notificación no concede permiso sobre el recurso, no amplía acceso, no cambia propiedad del proceso y no convierte al receptor en aprobador, ejecutor o responsable si el proceso no le asigna esa función.
+
+---
+
+#### 2. Fuentes canónicas consumidas
+
+La tarea consume y conserva:
+
+- `NOTIFY-ARC-001`, con 16 familias de aviso y sus mecanismos actuales;
+- `NOTIFY-ARC-002`, con 15 orígenes semánticos que cubren las 16 familias;
+- `PROC-CAT-007`, que define iniciadores, actor de registro y condiciones canónicas de inicio;
+- `PROC-CAT-008`, que define continuadores principales, apoyos, control o aceptación y participantes externos/técnicos por proceso;
+- las reglas aprobadas de `AccessContext` para principal, actor efectivo, identidad laboral, sedes y áreas asignadas, cobertura administrativa, turno publicado vigente y sesión de check-in activa;
+- los contratos de proceso asociados a `VPROC-0006`, `VPROC-0007`, `VPROC-0008`, `VPROC-0038` a `VPROC-0045`, `VPROC-0058`, `VPROC-0060` y `VPROC-0068`;
+- la continuidad aprobada `NOTIFY-ARC-002 → NOTIFY-ARC-003 → NOTIFY-ARC-004`.
+
+Esta tarea no crea funciones laborales nuevas, no redefine actores de proceso y no convierte códigos funcionales en roles de autorización.
+
+---
+
+#### 3. Clases de resolución de destinatario
+
+| Clase                       | Uso                                                                                                                                              |
+| --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------ |
+| `DECLARED_AUDIENCE_SET`     | La propia comunicación autorizada declara una audiencia empresarial explícita y cada identidad debe satisfacerla.                                |
+| `DOCUMENT_RESPONSIBILITY`   | El destinatario se resuelve por responsabilidad vigente de mantener, renovar, validar o custodiar el documento afectado.                         |
+| `DIRECT_SUBJECT`            | El hecho afecta inequívocamente a una identidad concreta y esa identidad recibe la comunicación.                                                 |
+| `DIRECT_SUBJECT_SET`        | Un cambio afecta a más de una identidad concreta; se resuelve el conjunto exacto de sujetos afectados.                                           |
+| `CONVERSATION_COUNTERPARTY` | El destinatario es la contraparte o conjunto de contrapartes explícitas de un mensaje persistido; el autor no se incluye por inferencia.         |
+| `INSTANCE_RESPONSIBILITY`   | El destinatario se resuelve desde la persona o función que mantiene responsabilidad vigente sobre la siguiente acción de una instancia concreta. |
+
+Una clase de destinatario describe cómo resolver identidades. No define canal, prioridad, frecuencia, vigencia, preferencia ni escalamiento.
+
+---
+
+#### 4. Reglas transversales de responsabilidad y contexto
+
+1. **Relación antes que rol.** Una identidad deberá demostrar relación directa con el sujeto, recurso, caso, documento, pedido, turno o conversación que originó la necesidad de comunicación.
+2. **Responsabilidad vigente.** Cuando la regla use responsabilidad funcional, deberá existir una asignación vigente sobre la instancia o un vínculo canónico de función con el proceso y su contexto.
+3. **Sin broadcast por conveniencia.** Pertenecer a una aplicación, empresa, sede, rol humano o equipo no convierte a todas sus identidades en destinatarias.
+4. **Contexto resuelto en fuente confiable.** Sede, área, turno, check-in, función, actor efectivo y relación con la instancia no se aceptan como autoridad desde filtros visuales, query strings, estado de cliente, caché o nombres de pantalla.
+5. **Asignación no equivale a permiso.** La coincidencia de sede, área o función permite resolver responsabilidad, pero no autoriza por sí sola a consultar datos adicionales.
+6. **Actor efectivo.** En dispositivos compartidos, la identidad humana destinataria es la persona o función empresarial resuelta; el usuario técnico del dispositivo no se convierte en destinatario.
+7. **Turno y check-in solo cuando aplican.** Un destinatario administrativo o documental no requiere un turno activo por defecto. Un destinatario operativo ligado a ejecución en turno deberá satisfacer el contexto laboral que el proceso exija.
+8. **Sede y área exactas.** Una responsabilidad territorial se evalúa contra la sede y área autoritativas del recurso o instancia; la sede seleccionada por navegación no amplía audiencia.
+9. **Sujeto directo estable.** Trabajador, cliente, invitado o participante exacto se resuelve desde la identidad empresarial vinculada al hecho, no desde texto, correo, teléfono o identificadores enviados sin validación.
+10. **Remitente no se autoagrega.** En conversaciones, el autor solo será destinatario cuando exista una relación de destinatario explícita distinta de su autoría; no se agrega como copia implícita.
+11. **Gerencia no es copia universal.** `GERENCIA_GENERAL`, `GERENCIA_O_SUPERVISION_DE_SEDE`, controles o propietarios de proceso solo reciben una comunicación cuando esta regla los selecciona por responsabilidad directa. El escalamiento posterior pertenece a `NOTIFY-ARC-007`.
+12. **Fallo cerrado.** Si la identidad, responsabilidad o contexto requerido es ambiguo, contradictorio o no resoluble, la regla produce `UNRESOLVED_RECIPIENT`; no amplía la audiencia. El tratamiento técnico de ese fallo pertenece a `NOTIFY-ARC-008`.
+13. **Sin inferencia por canal.** Tener token push, correo, sesión abierta, navegador activo o bandeja visible no convierte a una identidad en destinataria.
+14. **Sin inferencia por productor técnico.** La aplicación o servicio que produjo, detectó o transportó el aviso no determina quién debe recibirlo.
+15. **Mínima audiencia suficiente.** Cuando varias identidades cumplen la misma responsabilidad, se incluye únicamente el conjunto necesario para que la responsabilidad empresarial pueda continuar según el proceso; agrupación y deduplicación quedan para `NOTIFY-ARC-004`.
+
+---
+
+#### 5. Contrato documental de resolución
+
+Cada regla `NOTIFY-RECIPIENT-*` materializa:
+
+| Campo                    | Contenido                                                                       |
+| ------------------------ | ------------------------------------------------------------------------------- |
+| `recipient_rule_id`      | Identidad estable `NOTIFY-RECIPIENT-###`.                                       |
+| `origin_id`              | `NOTIFY-ORIGIN-*` que habilitó la necesidad de comunicación.                    |
+| `family_refs[]`          | Familias `NOTIFY-ASIS-*` cubiertas.                                             |
+| `resolution_class`       | Clase de resolución definida en esta tarea.                                     |
+| `primary_selector`       | Relación o responsabilidad que selecciona las identidades.                      |
+| `context_requirements[]` | Condiciones empresariales que deben ser verdaderas para esa identidad.          |
+| `excluded_by_default[]`  | Actores o conjuntos que no se agregan por inferencia.                           |
+| `resolution_state`       | `RESOLVED`, `NO_APLICA` o `UNRESOLVED_RECIPIENT`.                               |
+| `resolution_basis`       | Evidencia o referencia que explica por qué una identidad pertenece al conjunto. |
+
+No se define todavía un esquema SQL, DTO, tabla de audiencia, plantilla, transportista o proveedor.
+
+---
+
+#### 6. Matriz materializada de destinatarios
+
+| Regla                  | Origen / familia(s)                                        | Clase                       | Destinatario primario                                                                                                                                                                                                                                                                                                                 | Contexto obligatorio                                                                                                                                                                                               | Exclusiones y frontera                                                                                                                                                                    |
+| ---------------------- | ---------------------------------------------------------- | --------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `NOTIFY-RECIPIENT-001` | `NOTIFY-ORIGIN-001` / `NOTIFY-ASIS-001`                    | `DECLARED_AUDIENCE_SET`     | Identidades internas activas que coincidan exactamente con la audiencia empresarial declarada por la comunicación autorizada: identidad específica, función, organización, sede o área, según lo que la publicación haya fijado.                                                                                                      | Relación laboral o de dominio vigente; función y territorio resueltos desde fuentes autoritativas; una publicación organizacional solo incluye toda la organización cuando ese alcance fue declarado y autorizado. | No se presume “todos los trabajadores”; no se usa la app abierta, la sede seleccionada ni la existencia de token como criterio.                                                           |
+| `NOTIFY-RECIPIENT-002` | `NOTIFY-ORIGIN-002` / `NOTIFY-ASIS-002`                    | `DOCUMENT_RESPONSIBILITY`   | Persona o función con responsabilidad vigente de renovar, actualizar, aportar, validar o mantener vigente el documento; cuando esa obligación pertenezca a custodia, el `CUSTODIO_DOCUMENTAL` asignado.                                                                                                                               | Documento y responsabilidad vigentes; vínculo exacto con `VPROC-0060` y con el sujeto o proceso respaldado; territorio solo cuando el documento esté territorialmente asignado.                                    | No se notifica a toda gerencia, RR. HH. o custodios documentales por pertenencia general. Escalamiento por incumplimiento queda fuera de esta tarea.                                      |
+| `NOTIFY-RECIPIENT-003` | `NOTIFY-ORIGIN-003` / `NOTIFY-ASIS-003`                    | `DIRECT_SUBJECT`            | Trabajador exacto al que fue publicada la asignación o turno.                                                                                                                                                                                                                                                                         | Identidad laboral activa y asignación publicada vinculada al mismo `employee_id`; sede, área y periodo provienen de la versión publicada.                                                                          | `RESPONSABLE_DE_PROGRAMACION_LABORAL`, supervisión y coordinación no se agregan como copias automáticas.                                                                                  |
+| `NOTIFY-RECIPIENT-004` | `NOTIFY-ORIGIN-004` / `NOTIFY-ASIS-004`                    | `DIRECT_SUBJECT_SET`        | Conjunto exacto de trabajadores cuya obligación publicada cambia materialmente; incluye a quien pierde, recibe o ve modificada su asignación cuando el antes/después lo demuestre.                                                                                                                                                    | Comparación autoritativa entre versión publicada anterior y nueva; cada identidad debe aparecer en el cambio material de obligación, sede, área, función, horario o cobertura.                                     | Una edición sin cambio para una persona no la convierte en destinataria. Supervisores no son copia universal.                                                                             |
+| `NOTIFY-RECIPIENT-005` | `NOTIFY-ORIGIN-005` / `NOTIFY-ASIS-005`                    | `DIRECT_SUBJECT`            | Trabajador dueño del turno y de la sesión de asistencia abierta que entra en la ventana previa al fin.                                                                                                                                                                                                                                | `actor_effective` laboral resoluble; `active_shift` corresponde al turno origen; `active_checkin_session` activa y vinculada al mismo trabajador y turno.                                                          | No se notifica a trabajadores de la misma sede sin sesión aplicable. Supervisión se reserva a escalamiento posterior.                                                                     |
+| `NOTIFY-RECIPIENT-006` | `NOTIFY-ORIGIN-006` / `NOTIFY-ASIS-006`                    | `DIRECT_SUBJECT`            | Trabajador cuya sesión de asistencia continúa abierta después de la condición de fin aplicable.                                                                                                                                                                                                                                       | Misma identidad laboral, turno y sesión abierta que sustentan la condición temporal; ausencia de cierre autoritativo.                                                                                              | No se agrega supervisión en esta etapa; su eventual intervención se define en `NOTIFY-ARC-007`.                                                                                           |
+| `NOTIFY-RECIPIENT-007` | `NOTIFY-ORIGIN-007` / `NOTIFY-ASIS-007`                    | `DIRECT_SUBJECT`            | Trabajador cuya asistencia fue cerrada automáticamente por el hecho de salida geográfica validado.                                                                                                                                                                                                                                    | El efecto de check-out pertenece al mismo `employee_id`, turno y sesión; en dispositivo compartido se usa el actor humano efectivo, no el principal técnico.                                                       | No se informa a toda la sede ni a otros trabajadores por compartir punto de marcación.                                                                                                    |
+| `NOTIFY-RECIPIENT-008` | `NOTIFY-ORIGIN-008` / `NOTIFY-ASIS-008`                    | `CONVERSATION_COUNTERPARTY` | Si el mensaje va hacia soporte: asignado vigente del caso o conjunto mínimo de `RESPONSABLE_TECNOLOGICO` con responsabilidad sobre el servicio afectado. Si el mensaje va hacia el solicitante: trabajador o solicitante exacto vinculado al caso.                                                                                    | Caso `VPROC-0058` existente; autor y contraparte identificados; asignación o responsabilidad tecnológica vigente; sede/servicio aplicables cuando el caso los limite.                                              | El autor no se agrega por inferencia; no se notifica a todo el equipo tecnológico. Si no puede resolverse asignado ni responsabilidad de servicio, resulta `UNRESOLVED_RECIPIENT`.        |
+| `NOTIFY-RECIPIENT-009` | `NOTIFY-ORIGIN-009` / `NOTIFY-ASIS-009`                    | `DIRECT_SUBJECT`            | Persona exacta a la que se emitió la invitación de incorporación.                                                                                                                                                                                                                                                                     | Caso de `VPROC-0006` válido; identidad objetivo y medio de contacto de la invitación vinculados a esa persona; invitación vigente para esa emisión.                                                                | `RESPONSABLE_DE_PERSONAS`, selección, supervisión y gerencia no se agregan como destinatarios de la invitación por haber participado en el proceso.                                       |
+| `NOTIFY-RECIPIENT-010` | `NOTIFY-ORIGIN-010` / `NOTIFY-ASIS-010`                    | `DIRECT_SUBJECT`            | Cliente exacto cuyo ledger de fidelización produjo el ascenso de nivel.                                                                                                                                                                                                                                                               | Identidad de cliente resoluble y vínculo inequívoco con el ledger/interacción `VPROC-0045` que produjo el antes/después.                                                                                           | No se notifica a otros integrantes de una compra, dispositivo, sede o cuenta no vinculada.                                                                                                |
+| `NOTIFY-RECIPIENT-011` | `NOTIFY-ORIGIN-011` / `NOTIFY-ASIS-011`                    | `DIRECT_SUBJECT`            | Cliente exacto cuya elegibilidad de recompensa pasó de no redimible a redimible.                                                                                                                                                                                                                                                      | Identidad de cliente vinculada al saldo/regla/recompensa autoritativos y transición de elegibilidad confirmada.                                                                                                    | No se crea audiencia promocional general ni se agrega a clientes con recompensas similares.                                                                                               |
+| `NOTIFY-RECIPIENT-012` | `NOTIFY-ORIGIN-012` / `NOTIFY-ASIS-012`                    | `DIRECT_SUBJECT`            | Cliente exacto de la redención validada o conciliada que habilitó la medición de satisfacción.                                                                                                                                                                                                                                        | Misma identidad de cliente y referencia de redención que produce el handoff funcional hacia `VPROC-0068`.                                                                                                          | No se notifica a toda la muestra de satisfacción ni se define opt-in/opt-out; preferencias corresponden a `NOTIFY-ARC-006`.                                                               |
+| `NOTIFY-RECIPIENT-013` | `NOTIFY-ORIGIN-013` / `NOTIFY-ASIS-013`, `NOTIFY-ASIS-016` | `CONVERSATION_COUNTERPARTY` | El contrato de conversación determina el lado receptor. Para mensaje dirigido al cliente: cliente o participante externo explícitamente vinculado al pedido. Para mensaje dirigido a operación: asignado vigente del pedido o conjunto mínimo de funciones continuadoras responsables de revisar esa conversación en la etapa actual. | Pedido y conversación correlacionados; lado receptor explícito; para operación, sede/área y responsabilidad vigentes; para funciones de turno, contexto laboral aplicable.                                         | La autoría no basta para inferir visibilidad; notas internas no se envían al cliente por defecto; el autor queda excluido salvo destinatario explícito independiente.                     |
+| `NOTIFY-RECIPIENT-014` | `NOTIFY-ORIGIN-014` / `NOTIFY-ASIS-014`                    | `INSTANCE_RESPONSIBILITY`   | Actor o conjunto mínimo que posee la primera responsabilidad operativa pendiente del pedido en su proceso canónico. Se prioriza asignación explícita; si no existe, se resuelve la función continuadora correspondiente a la etapa del pedido.                                                                                        | `process_id` real del pedido; sede y área del pedido; etapa accionable actual; identidad laboral activa; si la función es de turno, turno vigente y demás prerrequisitos operativos aplicables.                    | No se notifica a toda la sede. `GERENCIA_O_SUPERVISION_DE_SEDE` solo entra si la responsabilidad de la etapa le corresponde realmente, no como copia general.                             |
+| `NOTIFY-RECIPIENT-015` | `NOTIFY-ORIGIN-015` / `NOTIFY-ASIS-015`                    | `INSTANCE_RESPONSIBILITY`   | Actor o conjunto mínimo cuya siguiente acción sobre el pedido de domicilio queda habilitada por el pago conciliado, resuelto desde la instancia del pedido y no desde el proceso de pago aislado.                                                                                                                                     | Pago `VPROC-0043` conciliado; pedido de domicilio correlacionado; proceso y etapa de cumplimiento vigentes; sede/área y responsabilidad operativa actuales.                                                        | El cliente no se agrega porque esta familia inventariada corresponde al aviso operativo actual; una confirmación al cliente requeriría una necesidad de notificación distinta y aprobada. |
+
+---
+
+#### 7. Resolución de responsabilidad operativa en pedidos
+
+Para `NOTIFY-RECIPIENT-013`, `014` y `015`, una función interna solo puede formar parte del conjunto cuando el proceso de pedido y su etapa la reconocen como continuadora o responsable.
+
+Referencias funcionales vigentes que pueden participar según el proceso concreto:
+
+- `VPROC-0038`: `SERVICIO_DE_SALON`, `EQUIPO_OPERATIVO_DEL_AREA`, `CAJA_MOSTRADOR_O_SERVICIO`;
+- `VPROC-0039`: `CAJA_MOSTRADOR_O_SERVICIO`, `EQUIPO_OPERATIVO_DEL_AREA`, con apoyo de `RESPONSABLE_DE_CLIENTE_Y_SERVICIO`;
+- `VPROC-0040`: `CAJA_MOSTRADOR_O_SERVICIO`, `RESPONSABLE_COMERCIAL`, con apoyos operativos declarados;
+- `VPROC-0041`: `RESPONSABLE_COMERCIAL`, `COORDINACION_DE_OPERACIONES` y las funciones de apoyo que correspondan a la etapa;
+- `VPROC-0043`: `CAJA_MOSTRADOR_O_SERVICIO`, con apoyo financiero y de servicio para la conciliación del pago.
+
+Reglas:
+
+1. la modalidad del pedido no se deduce de la interfaz; se resuelve desde su contrato;
+2. una asignación nominal vigente tiene precedencia sobre un pool funcional genérico para la misma responsabilidad;
+3. si se usa un pool funcional, se limita al proceso, etapa, sede y área aplicables;
+4. una función de control no se añade mientras no sea responsable de la acción actual;
+5. la notificación no transfiere propiedad ni aceptación del pedido;
+6. ausencia de responsable resoluble produce `UNRESOLVED_RECIPIENT` y no un broadcast de contingencia.
+
+---
+
+#### 8. Resolución de contexto laboral
+
+Para destinatarios internos humanos:
+
+```text
+IDENTIDAD EMPRESARIAL RESOLUBLE
+        +
+RELACIÓN LABORAL VIGENTE
+        +
+RESPONSABILIDAD SOBRE SUJETO / RECURSO / INSTANCIA
+        +
+SEDE / ÁREA CUANDO APLIQUEN
+        +
+TURNO / CHECK-IN SOLO CUANDO LA RESPONSABILIDAD SEA OPERATIVA EN TURNO
+        ↓
+DESTINATARIO ELEGIBLE
+```
+
+Aplican estas fronteras:
+
+- una sede asignada no concede automáticamente responsabilidad sobre toda la sede;
+- una cobertura administrativa no equivale a una audiencia de notificación;
+- una sede o área seleccionada en UI no amplía responsabilidad;
+- un turno en borrador no crea contexto operativo;
+- una sesión de check-in debe pertenecer al mismo actor efectivo y turno cuando sea requisito;
+- una persona inactiva, sustituida o fuera de asignación no permanece elegible por historial;
+- la falta de contexto no se corrige con el nombre humano del rol.
+
+---
+
+#### 9. Resolución de sujetos externos o de cliente
+
+Para clientes, invitados y demás sujetos externos:
+
+1. la identidad se resuelve por vínculo canónico con pedido, ledger, redención, invitación o conversación;
+2. correo, teléfono, QR, código de pedido o identificador recibido del cliente no sustituyen esa relación por sí solos;
+3. el mismo dispositivo no convierte a varias identidades en destinatarias;
+4. la relación de cliente no concede acceso a otro pedido, cuenta o conversación;
+5. esta tarea define quién es el sujeto candidato a recibir; consentimiento, preferencia, contenido sensible y canal permanecen en `NOTIFY-ARC-006`, `NOTIFY-ARC-009` y `NOTIFY-ARC-005`;
+6. una identidad externa no resoluble produce `UNRESOLVED_RECIPIENT`.
+
+---
+
+#### 10. Reconciliación cuantitativa
+
+| Control                                                            | Resultado |
+| ------------------------------------------------------------------ | --------: |
+| Familias recibidas de `NOTIFY-ARC-001`                             |    **16** |
+| Orígenes recibidos de `NOTIFY-ARC-002`                             |    **15** |
+| Reglas `NOTIFY-RECIPIENT-*` materializadas                         |    **15** |
+| Orígenes sin regla de destinatario                                 |     **0** |
+| Familias sin cobertura de destinatario                             |     **0** |
+| Reglas `DECLARED_AUDIENCE_SET`                                     |     **1** |
+| Reglas `DOCUMENT_RESPONSIBILITY`                                   |     **1** |
+| Reglas de sujeto directo (`DIRECT_SUBJECT` o `DIRECT_SUBJECT_SET`) |     **9** |
+| Reglas `CONVERSATION_COUNTERPARTY`                                 |     **2** |
+| Reglas `INSTANCE_RESPONSIBILITY`                                   |     **2** |
+| Nuevas funciones laborales creadas                                 |     **0** |
+| Nuevos roles o permisos creados                                    |     **0** |
+| Cambios físicos ejecutados                                         |     **0** |
+
+La suma de reglas por clase es `1 + 1 + 9 + 2 + 2 = 15`.
+
+---
+
+#### 11. Decisiones reservadas y propietarios exactos
+
+| Decisión no tomada                                                                                 | Tarea propietaria |
+| -------------------------------------------------------------------------------------------------- | ----------------- |
+| Prioridad, vigencia, agrupación y deduplicación de una misma necesidad o conjunto de destinatarios | `NOTIFY-ARC-004`  |
+| Canal interno, correo, push o mensajería externa y resolución técnica de la ruta PASS              | `NOTIFY-ARC-005`  |
+| Preferencias, opt-in/opt-out y avisos que no pueden ocultarse                                      | `NOTIFY-ARC-006`  |
+| Confirmación, lectura, atención, escalamiento y cuándo incorporar supervisión o control            | `NOTIFY-ARC-007`  |
+| Reintentos, fallos, resultado `UNRESOLVED_RECIPIENT` y contingencia de entrega                     | `NOTIFY-ARC-008`  |
+| Contenido sensible, minimización y exposición por canal                                            | `NOTIFY-ARC-009`  |
+| Métricas, trazas y auditoría de entrega                                                            | `NOTIFY-ARC-010`  |
+
+No queda un pendiente de destinatarios sin tarea propietaria.
+
+---
+
+#### 12. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** `NOTIFY-ARC-003` materializa una especialización documental de relaciones ya aprobadas entre sujetos, iniciadores, continuadores, responsabilidades y contexto efectivo. No crea una función laboral, rol, permiso, dimensión de contexto, evento empresarial, canal, política de prioridad, preferencia, reintento, contenido o comportamiento ejecutable nuevo. La implementación futura deberá respetar las reglas de actores, segregación, identidad y contexto ya definidas por sus fuentes propietarias, sin que esta tarea modifique el registro de requisitos.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 13. Criterios de aceptación
+
+- [x] `NOTIFY-ARC-002` figura aprobada y entrega 15 orígenes que cubren 16 familias;
+- [x] cada uno de los 15 orígenes tiene exactamente una regla `NOTIFY-RECIPIENT-*`;
+- [x] las 16 familias conservan cobertura de destinatario;
+- [x] la selección distingue sujeto directo, audiencia declarada, responsabilidad documental, contraparte conversacional y responsabilidad sobre instancia;
+- [x] ningún destinatario se selecciona únicamente por aplicación, token, correo disponible, ruta, pantalla, sede seleccionada o nombre humano de rol;
+- [x] trabajadores de turnos y asistencia se vinculan al `employee_id`, turno y sesión aplicables;
+- [x] la publicación y modificación de programación notifican únicamente a las personas realmente afectadas;
+- [x] soporte tecnológico resuelve contraparte o responsabilidad vigente sin notificar a todo el equipo;
+- [x] invitaciones se dirigen a la persona exacta de la invitación;
+- [x] fidelización y satisfacción se dirigen al cliente exacto vinculado al hecho;
+- [x] conversaciones de pedido resuelven explícitamente el lado receptor y excluyen al autor por defecto;
+- [x] pedidos operativos resuelven asignación o función responsable por proceso, etapa, sede y área, sin broadcast general;
+- [x] supervisión y gerencia no se convierten en copia automática; el escalamiento permanece reservado;
+- [x] una ambigüedad de identidad o contexto falla cerrado como `UNRESOLVED_RECIPIENT`;
+- [x] no se redefine ninguno de los 15 orígenes `NOTIFY-ORIGIN-*`;
+- [x] no se define prioridad, vigencia, deduplicación, canal, preferencia, confirmación, escalamiento, reintento, privacidad ni métrica;
+- [x] no se modifica código, Supabase, migraciones, aplicaciones, proveedores ni operación;
+- [x] la tarea genera cero cambios en requisitos de prueba;
+- [x] `NOTIFY-ARC-004` permanece reservada y no iniciada.
+
+---
+
+#### 14. Handoff cerrado hacia NOTIFY-ARC-004
+
+`NOTIFY-ARC-003` entrega a `NOTIFY-ARC-004` un registro de **15 reglas de destinatario** que cubre los **15 orígenes** y las **16 familias** heredadas. Cada regla ya distingue sujeto o responsabilidad, contexto necesario, exclusiones y condición de fallo cerrado.
+
+`NOTIFY-ARC-004` recibe exclusivamente la responsabilidad de definir prioridad, vigencia, agrupación y deduplicación. No recibe autorización para cambiar los destinatarios aquí materializados, redefinir los orígenes, escoger canales, configurar preferencias ni implementar entrega.
+
+La aprobación de `NOTIFY-ARC-003` no inicia, desarrolla ni aprueba `NOTIFY-ARC-004`.
+
+
 ### [ ] NOTIFY-ARC-004 — Definir prioridad, vigencia y deduplicación
 ### [ ] NOTIFY-ARC-005 — Definir canales internos, correo, push o mensajería externa
 ### [ ] NOTIFY-ARC-006 — Definir preferencias sin ocultar alertas obligatorias
