@@ -11924,4 +11924,958 @@ SIGUIENTE TAREA RESERVADA
 `TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos`
 
 
-### [ ] TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos
+### ✅ TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos
+
+**Estado:** APROBADA
+**Tarea anterior:** `TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos` — APROBADA
+**Tarea siguiente:** `TI-AUTH-001 — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos` — RESERVADA
+**Tipo de tarea:** documental; definición normativa y materializada del gobierno de conocimiento técnico, capacitación contextual, evidencia de competencia, adopción y comunicación de cambios tecnológicos
+**Repositorio propietario:** `vento-shell`
+**Archivo propietario:** `docs/plan-canonico/modular/bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md`
+**Artefactos producidos:** `TI-KNOWLEDGE-GOVERNANCE-CONTRACT-001`; `TI-KNOWLEDGE-ARTICLE-LIFECYCLE-CONTRACT-001`; `TI-KNOWLEDGE-SOURCE-INTAKE-MATRIX-001`; `TI-TRAINING-AND-COMPETENCE-CONTRACT-001`; `TI-CHANGE-COMMUNICATION-CONTRACT-001`; `TI-ADOPTION-EVIDENCE-CONTRACT-001`; `TI-TECHNOLOGY-LEARNING-AUDIENCE-MATRIX-001`; `TI-TECHNOLOGY-LEARNING-SERVICE-MATRIX-001`; `TI-KNOWLEDGE-ASIS-RECONCILIATION-001`
+**Cambios físicos autorizados:** ninguno; no crea, modifica ni elimina conocimiento persistido, anuncios, cursos, asignaciones, expedientes de competencia, tickets, mensajes, tablas, RLS, RPC, Edge Functions, migraciones, datos, cuentas, permisos, canales, configuraciones ni Supabase
+**Requisitos de prueba creados o modificados:** 0
+
+**Qué se hace:** cerrar documentalmente el último dominio `TI-DOM-*` mediante una base de conocimiento versionada y gobernada, un contrato de capacitación y competencia que no confunde lectura con aprendizaje, un modelo de adopción basado en señales trazables, un contrato de comunicación ligado a cambios aprobados y una reconciliación explícita de los once servicios tecnológicos y del estado AS-IS disponible.
+
+---
+
+#### 1. Resultado sustantivo
+
+`TI-DOM-013` queda documentalmente cerrada con:
+
+- una autoridad única de conocimiento tecnológico que no sustituye la fuente de verdad del proceso, activo, aplicación, servicio, configuración o cambio;
+- una identidad estable y versionada para piezas de conocimiento;
+- un ciclo de vida que permite publicar, sustituir, expirar y retirar contenido sin borrar historia;
+- doce clases de fuente con decisión explícita de entrada, publicación y revisión;
+- un contrato de capacitación que separa asignación, disponibilidad, inicio, finalización, comprobación, competencia y adopción;
+- ocho audiencias de aprendizaje que no crean roles ni privilegios;
+- once decisiones explícitas, una para cada `TI-SERVICE-001` a `TI-SERVICE-011`;
+- un contrato de comunicación que consume cambios aprobados sin aprobarlos ni desplegarlos;
+- un contrato de adopción con clases de señal y reglas de denominador, periodo, versión y contexto;
+- una regla de soporte guiado que reutiliza conocimiento vigente y nunca instrucciones obsoletas;
+- un handoff explícito desde problema, error conocido y workaround hacia conocimiento publicable;
+- un handoff explícito desde cambio tecnológico hacia comunicación y material de aprendizaje;
+- una reconciliación AS-IS de anuncios y soporte sin promover esos registros a base de conocimiento o aprendizaje;
+- diez hallazgos con propietario y condición de salida;
+- cero cambios físicos;
+- cero cambios de requisitos de prueba.
+
+No se inventan cursos, porcentajes de adopción, tasas de lectura, puntajes, umbrales de aprobación, duraciones, calendarios, destinatarios nominales, autores, instructores, canales externos ni evidencias de competencia.
+
+---
+
+#### 2. Entradas y decisiones heredadas
+
+La tarea consume y conserva:
+
+1. `CAP-15.11 — Capacitar en el uso de herramientas`;
+2. la decisión de `CAP-SCOPE-015` de construir conocimiento, guías cortas, entrenamiento por rol, comprobación, novedades de versión, soporte guiado y evidencia de adopción sin saturar pantallas;
+3. `H-CAP-SCOPE-015-027`, que asigna a este dominio la eliminación de dependencia de memoria personal para workarounds, procedimientos y conocimiento;
+4. `H-CAP-SCOPE-015-028`, que exige vincular capacitación y adopción con cambio, versión, rol, herramienta y evidencia de comprensión;
+5. `TI-SERVICE-011 — Conocimiento, capacitación y adopción tecnológica`;
+6. los once servicios `TI-SERVICE-001` a `TI-SERVICE-011`;
+7. `TI-DOM-006` como autoridad del catálogo de aplicaciones y sus ambientes;
+8. `TI-DOM-007` como autoridad de solicitudes, incidentes, comunicación de casos y cierre;
+9. `TI-DOM-008` como autoridad de problema, causa raíz, error conocido, workaround y candidato de conocimiento;
+10. `TI-DOM-009` como autoridad exclusiva de cambio tecnológico, aprobación, ventana, prueba, despliegue, rollback y revisión posterior;
+11. `TI-DOM-010` como autoridad de observabilidad y señales técnicas;
+12. `TI-DOM-011` como autoridad de respaldo, recuperación y runbooks técnicos relacionados;
+13. `TI-DOM-012` como autoridad tecnológica de licencias, proveedores, garantías, contratos, renovaciones, uso y costos;
+14. ANIMA como superficie posible de presentación y seguimiento personal, sin convertirla en autoridad del contenido técnico;
+15. VISO como autoridad de mesa de servicio y expediente administrativo;
+16. SHELL como autoridad de identidad, aplicaciones y acceso;
+17. propietarios funcionales como autoridad del procedimiento y competencia empresarial que les corresponda;
+18. `TI-UX-006` como tarea posterior de experiencia para diagnóstico guiado, base de conocimiento y capacitación contextual;
+19. `TI-AUTH-001` a `TI-AUTH-004` como autoridad posterior de segregación, administración, publicación y acceso sensible;
+20. la cobertura de prueba ya vigente para correlación, conocimiento, soporte, cambios, aplicaciones y operación tecnológica.
+
+Esta tarea no crea un proceso empresarial nuevo ni cambia identidades `VPROC-*`.
+
+---
+
+#### 3. Regla raíz de separación
+
+Se fija:
+
+```text
+KNOWLEDGE_ITEM
+≠ SOURCE_EVIDENCE
+≠ QUICK_GUIDE
+≠ RUNBOOK
+≠ KNOWN_ERROR
+≠ WORKAROUND
+≠ CHANGE
+≠ CHANGE_COMMUNICATION
+≠ ANNOUNCEMENT
+≠ TRAINING_MODULE
+≠ TRAINING_ASSIGNMENT
+≠ COMPLETION
+≠ COMPETENCE_EVIDENCE
+≠ ADOPTION_SIGNAL
+≠ SUPPORT_CASE
+```
+
+Y:
+
+```text
+PUBLISHED
+≠ DELIVERED
+≠ VIEWED
+≠ ACKNOWLEDGED
+≠ COMPLETED
+≠ PASSED_CHECK
+≠ COMPETENT
+≠ ADOPTED
+```
+
+Consecuencias:
+
+1. cerrar un ticket no publica conocimiento;
+2. publicar una guía no demuestra que alguien la haya recibido;
+3. leer una guía no demuestra comprensión;
+4. completar una capacitación no demuestra competencia cuando exista un criterio adicional;
+5. competencia no demuestra adopción sostenida;
+6. comunicación enviada no demuestra que el cambio haya sido implementado;
+7. un workaround vigente no se convierte automáticamente en procedimiento permanente;
+8. un artículo del proveedor no se convierte automáticamente en conocimiento canónico de VENTO;
+9. una instrucción técnica no puede ampliar permisos;
+10. la base de conocimiento nunca sustituye una configuración o fuente técnica propietaria.
+
+---
+
+#### 4. Autoridades
+
+| Autoridad                      | Responsabilidad                                                                                       | No asume                                                                              |
+| ------------------------------ | ----------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| TI / `RESPONSABLE_TECNOLOGICO` | curación técnica, versión, vigencia, revisión, soporte guiado y señales de adopción tecnológica       | propiedad del procedimiento empresarial, aprobación de acceso o aprobación del cambio |
+| Propietario funcional          | exactitud del procedimiento empresarial, audiencia y criterio de competencia cuando aplique           | privilegio técnico o administración de infraestructura                                |
+| ANIMA                          | presentación al trabajador, contexto y seguimiento personal cuando el diseño posterior lo materialice | autoridad sobre verdad técnica, cambio o permisos                                     |
+| VISO                           | expediente de soporte, incidente, problema, cambio y referencias de conocimiento                      | publicación automática de conocimiento a partir de mensajes                           |
+| SHELL                          | identidad, aplicación, contexto y política de acceso                                                  | verdad de aprendizaje, competencia o adopción                                         |
+| `TI-DOM-008`                   | known error, workaround, causa y candidato de conocimiento                                            | publicación y ciclo de vida del conocimiento                                          |
+| `TI-DOM-009`                   | cambio aprobado, impacto, ventana, despliegue, rollback y resultado                                   | conocimiento permanente o evidencia de adopción                                       |
+| `TI-DOM-010`                   | telemetría y señales observables                                                                      | interpretación automática de una señal como aprendizaje                               |
+| `TI-DOM-011`                   | recuperación técnica y runbooks de recuperación                                                       | gobierno general de publicación de conocimiento                                       |
+| `TI-AUTH-*`                    | segregación y autorización de capacidades sensibles                                                   | contenido funcional o criterio pedagógico                                             |
+| `TI-UX-006`                    | experiencia de diagnóstico guiado y capacitación contextual                                           | redefinición del contrato de conocimiento                                             |
+
+---
+
+#### 5. Contrato `TI-KNOWLEDGE-GOVERNANCE-CONTRACT-001`
+
+Cada unidad canónica de conocimiento tecnológico deberá poder declarar:
+
+```text
+knowledge_id
+title
+knowledge_kind
+service_refs[]
+application_refs[]
+capability_refs[]
+source_refs[]
+known_error_refs[]
+change_refs[]
+runbook_refs[]
+audience_refs[]
+functional_owner_ref
+technical_owner_ref
+reviewer_ref
+version
+state
+valid_from
+review_due_or_expiry_condition
+sensitivity_ref
+safe_fallback_ref
+feedback_refs[]
+evidence_refs[]
+```
+
+Reglas:
+
+1. `knowledge_id` es estable y no cambia al publicar una revisión;
+2. `version` identifica la revisión consumible;
+3. el contenido actual se resuelve por estado y vigencia, no por sobrescritura histórica;
+4. todo contenido tiene propietario técnico;
+5. cuando contiene procedimiento empresarial, conserva propietario funcional;
+6. no se guardan secretos, tokens, credenciales, dumps sensibles ni datos personales innecesarios;
+7. una instrucción con impacto privilegiado referencia la autoridad que permite ejecutarla;
+8. `source_refs[]` preserva el origen y permite revalidación;
+9. una referencia de proveedor conserva proveedor, producto y versión cuando exista evidencia;
+10. el conocimiento puede referenciar una aplicación o servicio sin apropiarse de su configuración;
+11. el contenido debe poder declarar idioma o variante si la implementación lo requiere, sin duplicar identidad conceptual por traducción;
+12. el conocimiento retirado conserva historia y referencias de casos o cambios pasados.
+
+---
+
+#### 6. Clases de conocimiento
+
+Clases iniciales:
+
+| Clase                        | Uso                                                                                |
+| ---------------------------- | ---------------------------------------------------------------------------------- |
+| `QUICK_GUIDE`                | instrucción corta y contextual para una acción segura y repetible                  |
+| `DIAGNOSTIC_GUIDE`           | diagnóstico guiado sin autoridad implícita para ejecutar cambios                   |
+| `RUNBOOK`                    | procedimiento técnico controlado para operación, recuperación o respuesta          |
+| `KNOWN_ERROR_ARTICLE`        | explicación publicable de error conocido y workaround vigente                      |
+| `APPLICATION_GUIDE`          | uso o soporte de una aplicación y versión identificables                           |
+| `DEVICE_OR_PERIPHERAL_GUIDE` | uso o soporte de endpoint, impresora u otro elemento físico                        |
+| `NETWORK_GUIDE`              | uso o diagnóstico de conectividad dentro del alcance permitido                     |
+| `CHANGE_NOTE`                | explicación de efecto observable de un cambio aprobado                             |
+| `TRAINING_REFERENCE`         | contenido base de una actividad de aprendizaje                                     |
+| `PROVIDER_REFERENCE`         | referencia curada a documentación externa, sin volver al proveedor maestro interno |
+
+Una misma pieza puede relacionarse con varias clases de contexto, pero conserva una identidad y propósito principal.
+
+---
+
+#### 7. Contrato `TI-KNOWLEDGE-ARTICLE-LIFECYCLE-CONTRACT-001`
+
+Estados:
+
+1. `DRAFT`
+2. `IN_REVIEW`
+3. `PUBLISHED`
+4. `SUPERSEDED`
+5. `EXPIRED`
+6. `WITHDRAWN`
+
+Transiciones:
+
+```text
+DRAFT
+→ IN_REVIEW
+→ PUBLISHED
+→ SUPERSEDED | EXPIRED | WITHDRAWN
+```
+
+Reglas:
+
+- solo `PUBLISHED` vigente se presenta como guía actual;
+- `SUPERSEDED` conserva su sucesora;
+- `EXPIRED` conserva la razón o condición que venció;
+- `WITHDRAWN` conserva motivo de retiro;
+- una revisión nueva no reescribe la versión usada por un caso histórico;
+- una corrección urgente de seguridad puede retirar una versión sin esperar la revisión editorial ordinaria, bajo autoridad aplicable;
+- un artículo no permanece indefinidamente vigente si su fuente exige revisión por versión, cambio, proveedor, hardware o fecha;
+- el vencimiento documental no demuestra que el servicio técnico haya fallado;
+- si no existe orientación segura vigente, el autoservicio queda bloqueado y se deriva a soporte.
+
+---
+
+#### 8. Criterio de publicabilidad de un candidato
+
+Un candidato puede llegar a `PUBLISHED` solo cuando:
+
+1. está generalizado para la audiencia prevista;
+2. su causa o condición está suficientemente entendida para no inducir una acción falsa;
+3. el workaround tiene alcance, guardas y condición de retiro;
+4. no expone secretos, datos personales o diagnósticos sensibles innecesarios;
+5. tiene propietario;
+6. tiene fuente;
+7. tiene revisión o condición de expiración;
+8. identifica servicio, aplicación, versión o capacidad cuando son relevantes;
+9. diferencia observación, hipótesis y procedimiento confirmado;
+10. no instruye a saltarse autorización, seguridad o cambio;
+11. puede declarar un fallback seguro cuando el procedimiento principal no sea aplicable;
+12. conserva evidencia de revisión.
+
+Un mensaje útil de un caso de soporte sigue siendo `SOURCE_EVIDENCE` hasta pasar esta puerta.
+
+---
+
+#### 9. Matriz `TI-KNOWLEDGE-SOURCE-INTAKE-MATRIX-001`
+
+|    # | Clase de fuente                         | ¿Puede originar candidato? | Propietario de origen                   | Puerta de publicación                                                  | Condición de revisión o retiro                               |
+| ---: | --------------------------------------- | -------------------------- | --------------------------------------- | ---------------------------------------------------------------------- | ------------------------------------------------------------ |
+|    1 | patrón repetido de soporte              | sí                         | VISO / TI                               | repetición demostrable, generalización y procedimiento seguro          | cambio de causa, producto, versión o evidencia               |
+|    2 | incidente                               | sí                         | `TI-DOM-007`                            | servicio restaurado, contexto delimitado y aprendizaje útil            | nuevo incidente contradice el contenido o cambia el servicio |
+|    3 | problema / causa raíz                   | sí                         | `TI-DOM-008`                            | causa confirmada o alcance de incertidumbre expresamente delimitado    | nueva evidencia invalida causa o prevención                  |
+|    4 | error conocido                          | sí                         | `TI-DOM-008`                            | error y población afectada identificados                               | error corregido, retirado o cambiado                         |
+|    5 | workaround                              | sí                         | `TI-DOM-008`                            | guardas, riesgo, alcance y condición de retiro documentados            | corrección definitiva, riesgo nuevo o expiración             |
+|    6 | cambio tecnológico aprobado             | sí                         | `TI-DOM-009`                            | resultado del cambio y efecto al usuario confirmados                   | nueva versión, rollback o cambio sucesor                     |
+|    7 | documentación de proveedor o fabricante | sí, como referencia curada | proveedor + propietario técnico         | producto/versión aplicable y validación interna suficiente             | cambio del proveedor, versión, plan o producto               |
+|    8 | procedimiento de aplicación o servicio  | sí                         | propietario de aplicación/servicio + TI | fuente propietaria y versión identificadas                             | cambio de proceso, servicio o aplicación                     |
+|    9 | endpoint, red, impresora o periférico   | sí                         | dominio técnico propietario             | dispositivo/configuración y límites identificados                      | cambio físico, firmware, red, driver o configuración         |
+|   10 | respaldo o recuperación                 | sí                         | `TI-DOM-011`                            | runbook y condiciones de restauración aprobados                        | cambio de estrategia, plataforma o ejercicio                 |
+|   11 | seguridad o autorización                | sí, con acceso controlado  | `TI-AUTH-*` / autoridad de seguridad    | mínimo contenido operativo y autorización separada                     | cambio de política, secreto, privilegio o amenaza            |
+|   12 | feedback, duda o confusión de usuario   | sí, como señal             | TI + propietario funcional              | patrón validado; no publicar una interpretación individual como verdad | evidencia posterior, cambio de interfaz o capacitación       |
+
+Control:
+
+```text
+12 clases esperadas
+12 clases materializadas
+0 omitidas
+0 duplicadas
+12 con puerta de publicación
+12 con condición de revisión o retiro
+```
+
+---
+
+#### 10. Soporte guiado y autoservicio
+
+`TI-ATTN-001 — L0_AUTOSERVICIO_GUIADO` consume únicamente contenido:
+
+- `PUBLISHED`;
+- vigente;
+- apropiado para la audiencia;
+- asociado al contexto correcto;
+- sin privilegios implícitos.
+
+`TI-ATTN-002 — L1_MESA_DE_SERVICIO` puede usar guías diagnósticas y artículos internos según autorización.
+
+Reglas:
+
+1. la guía no ejecuta una mutación por sí sola;
+2. una comprobación fallida conserva contexto al escalar;
+3. el usuario no debe repetir información ya capturada por el caso;
+4. una guía que no aplica permite continuar con soporte;
+5. no se presentan pasos privilegiados a una audiencia no autorizada;
+6. si el contenido vigente desaparece o expira, el sistema no usa una copia obsoleta como fallback silencioso;
+7. los resultados del soporte alimentan feedback del artículo sin reescribirlo automáticamente.
+
+---
+
+#### 11. Contrato `TI-TRAINING-AND-COMPETENCE-CONTRACT-001`
+
+Se fija:
+
+```text
+TRAINING_MODULE
+≠ TRAINING_ASSIGNMENT
+≠ CONTENT_VERSION
+≠ COMPLETION
+≠ KNOWLEDGE_CHECK
+≠ COMPETENCE_EVIDENCE
+≠ AUTHORIZATION
+```
+
+Cada módulo deberá poder referenciar:
+
+```text
+training_module_id
+title
+capability_ref
+service_refs[]
+application_refs[]
+knowledge_version_refs[]
+audience_refs[]
+functional_owner_ref
+technical_owner_ref
+required_or_optional
+assignment_reason
+version
+effective_from
+review_condition
+evidence_refs[]
+```
+
+Cada asignación deberá poder referenciar:
+
+```text
+training_assignment_id
+training_module_id
+module_version
+target_identity_or_context_ref
+assigned_at
+availability_state
+started_at
+completed_at
+knowledge_check_ref
+competence_evidence_ref
+superseded_by_ref
+evidence_state
+```
+
+No se inventan duración, nota mínima, periodicidad ni vigencia temporal. Esos parámetros aparecen únicamente cuando una autoridad funcional, normativa o técnica aplicable los exige.
+
+---
+
+#### 12. Estados de aprendizaje y competencia
+
+La asignación de aprendizaje puede conservar:
+
+- `ASSIGNED`;
+- `AVAILABLE`;
+- `STARTED`;
+- `COMPLETED`;
+- `CANCELLED`;
+- `SUPERSEDED`.
+
+La comprobación o competencia se conserva en dimensión separada:
+
+- `NOT_REQUIRED`;
+- `PENDIENTE_DE_EVIDENCIA`;
+- `PASSED`;
+- `FAILED`;
+- `EXPIRED`.
+
+Reglas:
+
+1. `COMPLETED` no equivale a `PASSED`;
+2. `PASSED` no equivale a privilegio;
+3. `NOT_REQUIRED` debe provenir de la regla del módulo, no de ausencia de dato;
+4. una versión nueva puede exigir reasignación sin borrar la anterior;
+5. una capacitación retirada no borra la evidencia histórica;
+6. una persona que cambia de función puede requerir otra asignación por contexto, sin que TI invente la política laboral;
+7. la competencia regulatoria o profesional permanece bajo su dominio propietario.
+
+---
+
+#### 13. Matriz `TI-TECHNOLOGY-LEARNING-AUDIENCE-MATRIX-001`
+
+Estas son **audiencias de aprendizaje**, no roles de autorización.
+
+|    # | Audiencia                      | Necesidad principal                                                         | Contenido permitido                                                        | Límite                                                 |
+| ---: | ------------------------------ | --------------------------------------------------------------------------- | -------------------------------------------------------------------------- | ------------------------------------------------------ |
+|    1 | `END_USER`                     | usar herramientas autorizadas y resolver necesidades simples                | guías cortas, novedades, autoservicio seguro                               | no recibe instrucciones privilegiadas                  |
+|    2 | `SHARED_STATION_OPERATOR`      | operar una estación o dispositivo compartido dentro de capacidad habilitada | operación, fallback autorizado, periféricos y recuperación no privilegiada | la estación no presta permisos administrativos         |
+|    3 | `SERVICE_DESK_L1`              | clasificar, diagnosticar y resolver patrones estándar                       | diagnóstico guiado, known errors y procedimientos preautorizados           | no adquiere permisos por pertenecer a la audiencia     |
+|    4 | `TECHNICAL_SUPPORT_L2`         | diagnóstico y recuperación especializada                                    | runbooks, dependencias, configuración y troubleshooting según autorización | conocimiento no sustituye elevación o cambio formal    |
+|    5 | `APPLICATION_OR_SERVICE_OWNER` | comprender operación, impacto y dependencias                                | cambios, riesgos, recuperación, soporte y adopción                         | no se vuelve administrador técnico                     |
+|    6 | `CHANGE_APPROVER_OR_OWNER`     | comprender impacto y preparación del cambio                                 | readiness, comunicación, rollback, material de adopción                    | capacitación no sustituye aprobación de cambio         |
+|    7 | `PRIVILEGED_TECHNICAL_ADMIN`   | administrar capacidad técnica bajo segregación                              | runbooks restringidos y procedimientos administrativos                     | privilegio real queda en `TI-AUTH-*`                   |
+|    8 | `EXTERNAL_SUPPORT_PROVIDER`    | ejecutar soporte contratado dentro de alcance                               | mínimo conocimiento necesario y referencias autorizadas                    | no recibe acceso permanente ni propiedad del contenido |
+
+Control:
+
+```text
+8 audiencias esperadas
+8 audiencias materializadas
+0 omitidas
+0 duplicadas
+0 convertidas en roles de autorización
+```
+
+---
+
+#### 14. Capacitación contextual
+
+La capacitación se activa por hechos, no por saturación indiscriminada.
+
+Disparadores documentales admitidos:
+
+- incorporación a una capacidad o herramienta;
+- cambio de función o contexto;
+- cambio tecnológico con efecto observable;
+- introducción de una nueva aplicación, dispositivo o procedimiento;
+- error recurrente que requiere prevención;
+- cambio de seguridad que exige nueva práctica;
+- actualización de runbook o procedimiento crítico;
+- resultado de post-incident o post-change review;
+- evidencia de adopción insuficiente que justifica refuerzo.
+
+Reglas:
+
+1. un disparador no asigna automáticamente a todas las personas;
+2. la audiencia se resuelve contra contexto e identidad autorizados;
+3. un cambio sin efecto al usuario puede quedar `NO_APLICA` para capacitación, con decisión del propietario;
+4. material de formación apunta a versiones exactas de conocimiento;
+5. la ayuda contextual prioriza la acción actual y reserva detalle técnico bajo demanda;
+6. la formación de TI no absorbe desarrollo profesional o gestión de talento.
+
+---
+
+#### 15. Contrato `TI-CHANGE-COMMUNICATION-CONTRACT-001`
+
+La comunicación consume un cambio gobernado por `TI-DOM-009`.
+
+Se fija:
+
+```text
+CHANGE
+≠ CHANGE_APPROVAL
+≠ RELEASE
+≠ DEPLOYMENT
+≠ COMMUNICATION
+≠ KNOWLEDGE_UPDATE
+≠ TRAINING_ASSIGNMENT
+```
+
+Cada comunicación tecnológica deberá poder declarar:
+
+```text
+communication_id
+change_ref
+communication_kind
+affected_service_refs[]
+affected_application_refs[]
+audience_refs[]
+content_version_ref
+knowledge_refs[]
+planned_at
+published_at
+delivery_channel_ref
+owner_ref
+status
+rollback_or_degraded_ref
+evidence_refs[]
+```
+
+Clases mínimas:
+
+- `PRE_CHANGE_NOTICE`;
+- `IN_WINDOW_STATUS`;
+- `CHANGE_AVAILABLE`;
+- `DEGRADED_OR_PARTIAL`;
+- `ROLLBACK_NOTICE`;
+- `KNOWN_ISSUE_NOTICE`;
+- `POST_CHANGE_LEARNING`.
+
+---
+
+#### 16. Reglas de comunicación de cambio
+
+1. una comunicación no aprueba un cambio;
+2. una comunicación no demuestra despliegue;
+3. `CHANGE_AVAILABLE` exige evidencia del resultado aplicable, no solo intención;
+4. si ocurre rollback, la comunicación posterior no mantiene un mensaje de éxito como estado actual;
+5. instrucciones extensas referencian conocimiento versionado en lugar de duplicarlo;
+6. la audiencia se deriva del impacto del cambio, no de una lista inventada;
+7. la comunicación distingue indisponibilidad, degradación, cambio disponible y problema conocido;
+8. mensajes antiguos pueden permanecer como historia, pero no como estado operativo vigente;
+9. un cambio sin impacto visible puede tener comunicación `NO_APLICA` cuando la autoridad de cambio lo justifique;
+10. comunicación de emergencia no elimina el registro, la revisión ni el aprendizaje posterior;
+11. el canal utilizado no se convierte en fuente de verdad del cambio;
+12. la expiración o retiro del mensaje no elimina el conocimiento asociado.
+
+---
+
+#### 17. Relación con anuncios
+
+`public.announcements` se reconoce únicamente como una **superficie AS-IS potencial de publicación general**.
+
+El contrato objetivo exige distinguir:
+
+```text
+ANNOUNCEMENT
+≠ CHANGE_COMMUNICATION
+≠ KNOWLEDGE_ITEM
+≠ TRAINING_ASSIGNMENT
+```
+
+Un anuncio puede presentar una comunicación o enlazar conocimiento, pero no se vuelve su identidad canónica.
+
+Para una futura reutilización deberá poder conservar, directamente o por relación:
+
+- cambio o hecho que lo origina;
+- audiencia;
+- aplicación o servicio afectados;
+- versión del contenido;
+- vigencia;
+- enlace a conocimiento;
+- estado de entrega cuando ese canal lo permita.
+
+La tarea actual no modifica la estructura de anuncios.
+
+---
+
+#### 18. Contrato `TI-ADOPTION-EVIDENCE-CONTRACT-001`
+
+La adopción se evalúa por una capacidad y versión dentro de una población y periodo definidos.
+
+```text
+ADOPTION_OBSERVATION
+=
+CAPABILITY
++
+VERSION
++
+POPULATION_OR_CONTEXT
++
+PERIOD
++
+SIGNAL_SOURCE
++
+DENOMINATOR
++
+EVIDENCE
+```
+
+Clases de señal:
+
+1. `DELIVERY_SIGNAL`
+2. `READ_SIGNAL`
+3. `LEARNING_SIGNAL`
+4. `COMPETENCE_SIGNAL`
+5. `USAGE_SIGNAL`
+6. `SUPPORT_SIGNAL`
+7. `ERROR_SIGNAL`
+8. `ROLLBACK_SIGNAL`
+
+Cada observación deberá poder declarar:
+
+```text
+adoption_observation_id
+capability_ref
+service_refs[]
+application_refs[]
+version_ref
+population_or_context_ref
+period_start
+period_end
+signal_class
+signal_source_ref
+numerator_or_observation
+denominator_ref
+interpretation_owner_ref
+evidence_refs[]
+evidence_state
+```
+
+---
+
+#### 19. Reglas de adopción
+
+1. no existe porcentaje sin denominador definido;
+2. no existe tendencia sin periodo comparable;
+3. una lectura no demuestra adopción;
+4. una finalización no demuestra uso real;
+5. bajo volumen de tickets no demuestra por sí solo adopción;
+6. alto volumen de tickets puede significar cambio, mala usabilidad, mayor uso o falta de conocimiento y requiere contexto;
+7. uso real puede existir sin aprendizaje formal;
+8. una capacidad de contingencia puede tener poco uso y seguir siendo necesaria;
+9. errores y rollback forman parte de la evidencia de adopción, no se excluyen para mejorar la métrica;
+10. la señal conserva versión para evitar mezclar comportamientos antes y después de un cambio;
+11. una muestra parcial no se presenta como población completa;
+12. ausencia de telemetría produce `PENDIENTE_DE_EVIDENCIA`, no adopción cero.
+
+---
+
+#### 20. Feedback y mejora del conocimiento
+
+Fuentes de feedback admitidas:
+
+- resolución o reapertura de caso;
+- repetición de pregunta;
+- fallo de una guía;
+- paso que produce escalamiento;
+- comentario del usuario;
+- error posterior a capacitación;
+- resultado de cambio;
+- resultado de ejercicio de recuperación;
+- observación del propietario funcional;
+- actualización de proveedor.
+
+El feedback produce una **solicitud de revisión** o candidato.
+
+No puede:
+
+- editar silenciosamente contenido publicado;
+- cambiar la fuente de verdad;
+- reducir controles;
+- incorporar secretos;
+- convertir una opinión individual en procedimiento.
+
+---
+
+#### 21. Relación con problema, error conocido y workaround
+
+`TI-DOM-008` entrega:
+
+- `problem_ref`;
+- causa confirmada o estado de investigación;
+- known error vigente;
+- workaround vigente;
+- alcance;
+- riesgo;
+- evidencia;
+- condición de retiro.
+
+`TI-DOM-013` decide si ese insumo supera la puerta de publicación.
+
+Se conserva:
+
+```text
+KNOWN_ERROR
+≠ KNOWLEDGE_ITEM
+
+WORKAROUND
+≠ PERMANENT_PROCEDURE
+```
+
+Cuando una corrección elimina el error:
+
+- el known error cambia bajo `TI-DOM-008`;
+- el artículo relacionado se revisa;
+- el workaround se retira o sustituye;
+- los casos históricos conservan la versión utilizada.
+
+---
+
+#### 22. Relación con observabilidad
+
+`TI-DOM-010` puede producir señales para:
+
+- artículo sin uso detectable cuando exista telemetría;
+- guía que termina frecuentemente en escalamiento;
+- recurrencia posterior a capacitación;
+- cambio que incrementa errores;
+- material asociado a versión obsoleta;
+- capacidad sin señal de adopción disponible.
+
+La telemetría no:
+
+- reescribe conocimiento;
+- califica competencia automáticamente;
+- suspende acceso;
+- asigna capacitación por sí sola;
+- crea causa raíz.
+
+---
+
+#### 23. Relación con recuperación y continuidad
+
+Runbooks de recuperación:
+
+- conservan autoridad técnica en `TI-DOM-011` o continuidad cuando corresponda;
+- se publican y versionan mediante el contrato de conocimiento;
+- pueden tener audiencia restringida;
+- deben sobrevivir a la indisponibilidad del mismo sistema cuando la estrategia de recuperación lo exija;
+- no contienen secretos como mecanismo de contingencia;
+- una copia disponible no demuestra que el procedimiento funcione;
+- un ejercicio puede producir revisión de conocimiento y capacitación.
+
+El aprendizaje posterior de continuidad se entrega a este dominio como entrada sin transferir la autoridad de continuidad.
+
+---
+
+#### 24. Matriz `TI-TECHNOLOGY-LEARNING-SERVICE-MATRIX-001`
+
+Se preservan exactamente los once servicios tecnológicos aprobados.
+
+| `TI-SERVICE-*`   | Servicio                                                                | Conocimiento mínimo gobernado                                                    | Capacitación / adopción                                                                      | Decisión       |
+| ---------------- | ----------------------------------------------------------------------- | -------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------- | -------------- |
+| `TI-SERVICE-001` | Cuentas, identidad y acceso tecnológico                                 | acceso, recuperación, MFA, alta/baja y errores comunes sin secretos              | formación por contexto y cambios de acceso; competencia solo si autoridad aplicable la exige | `ESPECIFICADO` |
+| `TI-SERVICE-002` | Endpoints, computadores, celulares, tabletas y dispositivos compartidos | uso seguro, baseline visible, recuperación y operación de dispositivo compartido | capacitación por dispositivo/capacidad; adopción separada de inventario físico               | `ESPECIFICADO` |
+| `TI-SERVICE-003` | Redes y conectividad                                                    | diagnóstico permitido, conectividad esperada, contingencia y escalamiento        | guía por sede/contexto sin exponer configuración privilegiada                                | `ESPECIFICADO` |
+| `TI-SERVICE-004` | Impresoras y periféricos                                                | selección/routing visible, fallas, consumibles, fallback y diagnóstico permitido | capacitación por tarea física y medio; no sustituye PRINT-ARC                                | `ESPECIFICADO` |
+| `TI-SERVICE-005` | Aplicaciones, ambientes y proveedores tecnológicos                      | uso, ambiente, dependencia, soporte y salida aplicables                          | capacitación por aplicación/versión; adopción correlacionada con capacidad                   | `ESPECIFICADO` |
+| `TI-SERVICE-006` | Solicitudes de soporte tecnológico                                      | autoservicio, clasificación comprensible, seguimiento y reapertura               | uso del portal y autoservicio; señal de soporte no equivale a adopción                       | `ESPECIFICADO` |
+| `TI-SERVICE-007` | Incidentes y restauración tecnológica                                   | síntomas, comunicación, workaround autorizado y validación                       | aprendizaje posterior al incidente cuando sea generalizable                                  | `ESPECIFICADO` |
+| `TI-SERVICE-008` | Cambios, configuración y versiones tecnológicas                         | notas de cambio, impacto, rollback visible y nueva forma de uso                  | comunicación y capacitación derivadas del cambio aprobado                                    | `ESPECIFICADO` |
+| `TI-SERVICE-009` | Pruebas y aceptación técnica de soluciones                              | preparación, criterios, limitaciones y evidencia de prueba                       | capacitación de participantes cuando el piloto o prueba lo exija                             | `ESPECIFICADO` |
+| `TI-SERVICE-010` | Licencias, garantías, contratos y costos tecnológicos                   | uso permitido, soporte, renovación y restricciones operativas                    | capacitación de administradores/usuarios según entitlement, sin sustituir contrato           | `ESPECIFICADO` |
+| `TI-SERVICE-011` | Conocimiento, capacitación y adopción tecnológica                       | gobierno de artículos, módulos, audiencias, comunicación y evidencia             | servicio propietario de este contrato                                                        | `ESPECIFICADO` |
+
+Control:
+
+```text
+11 servicios esperados
+11 servicios materializados
+0 omitidos
+0 duplicados
+11 con decisión explícita
+```
+
+---
+
+#### 25. Reconciliación AS-IS `TI-KNOWLEDGE-ASIS-RECONCILIATION-001`
+
+La inspección de solo lectura disponible permite declarar:
+
+| Superficie                                          | Estado                                                  | Evidencia o límite                                                                                                                                                                                           |
+| --------------------------------------------------- | ------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| contrato canónico de conocimiento y capacitación    | `ESPECIFICADO`                                          | esta tarea materializa el contrato documental                                                                                                                                                                |
+| `public.announcements`                              | `IMPLEMENTADO` parcialmente como superficie genérica    | existen columnas `id`, `title`, `body`, `tag`, `published_at`, `is_active`, `display_order`, `created_by`, `created_at`, `updated_at`; no demuestra versionado de conocimiento ni relación tipada con cambio |
+| filas actuales de `public.announcements`            | `IMPLEMENTADO` como estructura; contenido actual vacío  | 0 filas observadas en la consulta actual                                                                                                                                                                     |
+| `public.support_tickets`                            | `IMPLEMENTADO` parcialmente como fuente de casos        | 2 filas observadas; no constituyen conocimiento publicado                                                                                                                                                    |
+| `public.support_messages`                           | `IMPLEMENTADO` parcialmente como fuente de conversación | 4 filas observadas; un mensaje no supera por sí mismo la puerta de publicación                                                                                                                               |
+| `public.support_ticket_reads`                       | `IMPLEMENTADO` como lectura del caso                    | 4 filas observadas; lectura de ticket no es lectura de conocimiento ni adopción                                                                                                                              |
+| modelo dedicado de artículo versionado              | `PENDIENTE_DE_EVIDENCIA`                                | búsqueda por nombres de tabla no evidenció una superficie pública dedicada a knowledge/article/guide equivalente                                                                                             |
+| modelo dedicado de módulo de capacitación           | `PENDIENTE_DE_EVIDENCIA`                                | búsqueda por nombres no evidenció módulo, curso o training tecnológico dedicado                                                                                                                              |
+| asignación/finalización de capacitación tecnológica | `PENDIENTE_DE_EVIDENCIA`                                | no se evidenció estructura dedicada por nombre en las superficies consultadas                                                                                                                                |
+| evidencia de competencia tecnológica                | `PENDIENTE_DE_EVIDENCIA`                                | no se evidenció contrato persistido específico de esta capacidad                                                                                                                                             |
+| observación de adopción por capacidad/versión       | `PENDIENTE_DE_EVIDENCIA`                                | no se evidenció estructura dedicada ni métricas verificables                                                                                                                                                 |
+| vínculo tipado anuncio ↔ cambio ↔ conocimiento      | `PENDIENTE_DE_EVIDENCIA`                                | la estructura actual de anuncios no expone esos campos                                                                                                                                                       |
+| experiencia contextual de ANIMA / VISO              | `FUERA_DE_ALCANCE` de esta tarea                        | `TI-UX-006`, `TI-UX-001` y `TI-UX-002` gobiernan experiencia futura                                                                                                                                          |
+| implementación física de nuevas estructuras         | `NO_APLICA`                                             | fase exclusivamente documental                                                                                                                                                                               |
+
+La ausencia de una tabla dedicada por nombre no prueba ausencia absoluta de información equivalente en cualquier otra superficie; solo impide declarar una implementación canónica de este contrato sin evidencia adicional.
+
+---
+
+#### 26. Estado AS-IS de anuncios
+
+La estructura actual permite:
+
+- título;
+- cuerpo;
+- etiqueta;
+- fecha de publicación;
+- activación;
+- orden de presentación;
+- autor de creación;
+- timestamps.
+
+No se evidenciaron en esa tabla, en la inspección actual:
+
+- `knowledge_id`;
+- versión de conocimiento;
+- `change_ref`;
+- aplicación o servicio afectado;
+- audiencia tipada;
+- estado de entrega;
+- reconocimiento;
+- finalización de aprendizaje;
+- competencia;
+- adopción.
+
+Por ello:
+
+```text
+ANNOUNCEMENTS_EXIST
+≠ KNOWLEDGE_BASE_IMPLEMENTED
+≠ TRAINING_IMPLEMENTED
+≠ ADOPTION_MEASURED
+```
+
+---
+
+#### 27. Cierre del mini-bloque `TI-DOM-*`
+
+`TI-DOM-013` completa documentalmente la cobertura `TI-DOM-001` a `TI-DOM-013`.
+
+El cierre significa:
+
+- modelo operativo definido;
+- configuración y relaciones definidas;
+- endpoints definidos;
+- redes definidas;
+- impresoras/periféricos definidos;
+- aplicaciones/proveedores definidos;
+- solicitudes/incidentes definidos;
+- problemas/known errors definidos;
+- cambios definidos;
+- observabilidad definida;
+- recuperación definida;
+- licencias/contratos/costos definidos;
+- conocimiento/capacitación/adopción definidos.
+
+No significa implementación física del bloque.
+
+La continuidad pasa a autorización tecnológica únicamente después de aprobación explícita de esta tarea.
+
+---
+
+#### 28. Hallazgos y condiciones de salida
+
+| ID                 | Hallazgo                                                                                                                | Estado                  | Propietario                                | Condición de salida                                                              |
+| ------------------ | ----------------------------------------------------------------------------------------------------------------------- | ----------------------- | ------------------------------------------ | -------------------------------------------------------------------------------- |
+| `H-TI-DOM-013-001` | no se evidenció una base versionada de conocimiento tecnológico implementada                                            | `ESPECIFICADO`          | paquete E5 aplicable + `TI-UX-006`         | persistencia, versión, búsqueda, publicación, revisión y retiro implementados    |
+| `H-TI-DOM-013-002` | la superficie `announcements` no materializa identidad de conocimiento ni relación tipada con cambio                    | `ESPECIFICADO`          | `TI-UX-006`; `TI-INT-002`; paquete E5      | anuncio referencia cambio/conocimiento/servicio/audiencia bajo contrato aprobado |
+| `H-TI-DOM-013-003` | no se evidenció módulo tecnológico de capacitación persistido                                                           | `ESPECIFICADO`          | `TI-UX-006`; ANIMA; paquete E5             | módulos versionados y consumibles implementados                                  |
+| `H-TI-DOM-013-004` | no se evidenció asignación y finalización de capacitación tecnológica separadas                                         | `ESPECIFICADO`          | ANIMA; `TI-UX-006`; paquete E5             | asignación y finalización persistidas con identidad y versión                    |
+| `H-TI-DOM-013-005` | no se evidenció competencia tecnológica separada de finalización                                                        | `ESPECIFICADO`          | propietario funcional + ANIMA + paquete E5 | criterio aplicable y evidencia de competencia diferenciados                      |
+| `H-TI-DOM-013-006` | mensajes y resoluciones de soporte pueden contener conocimiento no curado                                               | `ESPECIFICADO`          | `TI-DOM-008`; `TI-DOM-013`; VISO           | intake de candidato, revisión, publicación y feedback implementados              |
+| `H-TI-DOM-013-007` | no se evidenció medición de adopción por capacidad, versión, población y periodo                                        | `ESPECIFICADO`          | `TI-DOM-010`; `TI-INT-001`; `TI-UX-006`    | señales instrumentadas y observaciones reconciliables disponibles                |
+| `H-TI-DOM-013-008` | documentación externa puede quedar obsoleta respecto de producto o versión                                              | `RESUELTO_POR_CONTRATO` | propietario técnico + `TI-INT-003`         | referencia externa curada conserva producto/versión y revisión                   |
+| `H-TI-DOM-013-009` | permisos de publicar, administrar, revisar o consumir contenido sensible aún no están materializados para este contrato | `FUERA_DE_ALCANCE`      | `TI-AUTH-001` a `TI-AUTH-004`              | segregación y capacidades autorizadas antes de operación real                    |
+| `H-TI-DOM-013-010` | experiencia contextual de búsqueda, diagnóstico y capacitación todavía no está diseñada bajo este contrato              | `FUERA_DE_ALCANCE`      | `TI-UX-006`                                | experiencia aprobada sin saturación técnica y con estados verificables           |
+
+No queda un hallazgo narrativo sin propietario ni condición de salida.
+
+---
+
+#### 29. Estado de los artefactos
+
+| Artefacto                                       | Estado                   |
+| ----------------------------------------------- | ------------------------ |
+| `TI-KNOWLEDGE-GOVERNANCE-CONTRACT-001`          | `ESPECIFICADO`           |
+| `TI-KNOWLEDGE-ARTICLE-LIFECYCLE-CONTRACT-001`   | `ESPECIFICADO`           |
+| `TI-KNOWLEDGE-SOURCE-INTAKE-MATRIX-001`         | `ESPECIFICADO`           |
+| `TI-TRAINING-AND-COMPETENCE-CONTRACT-001`       | `ESPECIFICADO`           |
+| `TI-CHANGE-COMMUNICATION-CONTRACT-001`          | `ESPECIFICADO`           |
+| `TI-ADOPTION-EVIDENCE-CONTRACT-001`             | `ESPECIFICADO`           |
+| `TI-TECHNOLOGY-LEARNING-AUDIENCE-MATRIX-001`    | `ESPECIFICADO`           |
+| `TI-TECHNOLOGY-LEARNING-SERVICE-MATRIX-001`     | `ESPECIFICADO`           |
+| `TI-KNOWLEDGE-ASIS-RECONCILIATION-001`          | `ESPECIFICADO`           |
+| base de conocimiento runtime bajo este contrato | `PENDIENTE_DE_EVIDENCIA` |
+| capacitación runtime bajo este contrato         | `PENDIENTE_DE_EVIDENCIA` |
+| competencia runtime bajo este contrato          | `PENDIENTE_DE_EVIDENCIA` |
+| adopción runtime bajo este contrato             | `PENDIENTE_DE_EVIDENCIA` |
+| implementación física                           | `NO_APLICA`              |
+
+---
+
+#### 30. Cobertura de prueba consumida
+
+La cobertura canónica vigente ya protege:
+
+- correlación versionada entre servicios, aplicaciones, tickets, incidentes, problemas, cambios, proveedores, monitoreo, respaldos y conocimiento;
+- autenticación mínima, reconciliación y trazabilidad de integraciones tecnológicas;
+- mesa de servicio, diagnóstico guiado, comunicación, validación y evidencia;
+- identidad y contexto de aplicaciones y acceso;
+- relaciones de activos, endpoints, red, impresoras y configuración;
+- cambio con prueba, rollback y resultado;
+- comunicación verdadera frente al estado técnico;
+- protección de información sensible y prevención de fuentes paralelas.
+
+Esta tarea materializa el gobierno documental de conocimiento, capacitación, comunicación y adopción sobre esa cobertura existente.
+
+---
+
+#### 31. Requisitos de prueba derivados
+
+**Resultado:** NO GENERA REQUISITOS DE PRUEBA
+
+**Justificación:** las condiciones verificables de correlación, versionado, soporte, comunicación, cambio, autorización, reconciliación y conocimiento tecnológico ya están protegidas por la cobertura canónica vigente originada en la evaluación de tecnología. Esta tarea especializa esas obligaciones mediante identidades, estados, matrices, audiencias y handoffs documentales, sin introducir un efecto empresarial, permiso, algoritmo de aprobación, métrica ejecutable o comportamiento físico adicional.
+
+**Balance:** 0 creados; 0 modificados; 0 diferidos; 0 descartados; 0 obsoletos.
+
+---
+
+#### 32. Criterios de aceptación
+
+`TI-DOM-013` queda documentalmente completa cuando:
+
+1. conocimiento, evidencia fuente, guía, runbook, error conocido, workaround, cambio, comunicación, anuncio, capacitación, finalización, competencia, adopción y ticket permanecen separados;
+2. publicación, entrega, lectura, reconocimiento, finalización, comprobación, competencia y adopción permanecen separados;
+3. existe identidad estable y versión para conocimiento;
+4. existen seis estados de ciclo de vida de conocimiento con historia preservada;
+5. existe una puerta explícita de publicabilidad;
+6. las doce clases de fuente tienen decisión de entrada, publicación y revisión;
+7. se materializan 12/12 clases, con 0 omisiones y 0 duplicados;
+8. la base de conocimiento no almacena secretos ni amplía permisos;
+9. L0 utiliza únicamente conocimiento publicado, vigente y apropiado para su audiencia;
+10. capacitación separa módulo, asignación, contenido, finalización, comprobación y competencia;
+11. no se inventan duraciones, puntajes ni periodicidades;
+12. las ocho audiencias de aprendizaje no se convierten en roles de autorización;
+13. se materializan 8/8 audiencias, con 0 omisiones y 0 duplicados;
+14. el cambio permanece bajo `TI-DOM-009`;
+15. comunicación no equivale a aprobación ni despliegue;
+16. rollback o degradación pueden invalidar un mensaje previo de éxito;
+17. adopción exige capacidad, versión, población/contexto, periodo, fuente, denominador y evidencia cuando corresponda;
+18. existen ocho clases de señal de adopción;
+19. lectura, finalización, competencia y uso no se confunden;
+20. se conservan exactamente los once servicios tecnológicos;
+21. se materializan 11/11 servicios, con 0 omisiones y 0 duplicados;
+22. cada servicio tiene decisión de conocimiento/capacitación/adopción;
+23. `TI-DOM-008` entrega candidatos, pero esta tarea gobierna publicación;
+24. `TI-DOM-010` entrega señales, pero no interpreta automáticamente aprendizaje;
+25. `TI-DOM-011` conserva autoridad de recuperación;
+26. ANIMA y VISO permanecen superficies consumidoras con sus autoridades;
+27. el AS-IS de anuncios se registra sin presentarlo como base de conocimiento;
+28. las 0 filas actuales de anuncios no se interpretan como ausencia de capacidad futura;
+29. los 2 tickets, 4 mensajes y 4 registros de lectura observados no se presentan como conocimiento ni adopción;
+30. toda brecha tiene propietario y condición de salida;
+31. no se crea un proceso empresarial nuevo;
+32. no se ejecuta cambio físico ni modificación de Supabase;
+33. no se crean ni modifican requisitos de prueba;
+34. `TI-AUTH-001` queda únicamente reservada.
+
+---
+
+#### 33. Continuidad
+
+ÚLTIMA TAREA APROBADA
+`TI-DOM-012 — Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos`
+
+TAREA ACTUAL APROBADA
+`TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos`
+
+SIGUIENTE TAREA RESERVADA
+`TI-AUTH-001 — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos`
+
