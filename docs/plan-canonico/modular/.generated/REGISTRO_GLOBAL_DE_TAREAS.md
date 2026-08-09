@@ -10,19 +10,19 @@
 | --- | ---: |
 | Tareas con marcador | **1594** |
 | Tareas `AUTH` | **317** |
-| Aprobadas | **631** |
+| Aprobadas | **632** |
 | En propuesta | **0** |
-| No iniciadas | **963** |
+| No iniciadas | **962** |
 | Rechazadas | **0** |
-| Porcentaje de completamiento | **39.59% (631/1594)** |
+| Porcentaje de completamiento | **39.65% (632/1594)** |
 
 ## Continuidad activa
 
 | Relación | Tarea | Estado |
 | --- | --- | --- |
-| Última aprobada | `TI-DOM-013` — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos | ✅ APROBADA |
-| Tarea actual | `TI-AUTH-001` — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos | ⬜ NO INICIADA |
-| Siguiente reservada | `TI-AUTH-002` — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal | ⬜ NO INICIADA |
+| Última aprobada | `TI-AUTH-001` — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos | ✅ APROBADA |
+| Tarea actual | `TI-AUTH-002` — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal | ⬜ NO INICIADA |
+| Siguiente reservada | `TI-AUTH-003` — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo | ⬜ NO INICIADA |
 
 ## Registro completo
 
@@ -1520,7 +1520,7 @@
 | ✅ APROBADA | `TI-DOM-011` | Definir respaldo, restauración, recuperación técnica y relación con continuidad empresarial | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-012` | Definir licencias, asientos, garantías, contratos, renovaciones, uso y costos tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
 | ✅ APROBADA | `TI-DOM-013` | Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/01_DOMINIO_DE_TECNOLOGIA_Y_SOPORTE.md` |
-| ⬜ NO INICIADA | `TI-AUTH-001` | Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
+| ✅ APROBADA | `TI-AUTH-001` | Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
 | ⬜ NO INICIADA | `TI-AUTH-002` | Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
 | ⬜ NO INICIADA | `TI-AUTH-003` | Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |
 | ⬜ NO INICIADA | `TI-AUTH-004` | Proteger diagnósticos, logs, exportaciones, capturas, secretos y datos personales en soporte | `bloques/Z_TECNOLOGIA_Y_SOPORTE/02_AUTORIZACION_Y_ACCESO_PRIVILEGIADO.md` |

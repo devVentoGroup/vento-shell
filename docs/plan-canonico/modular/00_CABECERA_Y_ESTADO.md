@@ -20,29 +20,29 @@
 | Fragmentos canónicos | **314** |
 | Tareas canónicas con marcador | **1594** |
 | Tareas `AUTH` únicas | **317** |
-| Tareas aprobadas | **631** |
+| Tareas aprobadas | **632** |
 | Tareas en propuesta | **0** |
-| Tareas no iniciadas | **963** |
+| Tareas no iniciadas | **962** |
 | Tareas rechazadas | **0** |
-| Porcentaje de completamiento | **39.59% (631/1594)** |
+| Porcentaje de completamiento | **39.65% (632/1594)** |
 | Compilado derivado            | `.generated/PLAN_IMPLEMENTACION_VENTO_OS_CANONICO_COMPILADO.md`                                 |
 | Estado del compilado          | **PENDIENTE DE REGENERACIÓN Y VALIDACIÓN EN CI**                                                |
 | ADR vigente                   | `ADR-AUTH-001 — ACCEPTED`                                                                       |
-| Última tarea aprobada | **TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos** |
-| Tarea actual | **TI-AUTH-001 — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos** |
+| Última tarea aprobada | **TI-AUTH-001 — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos** |
+| Tarea actual | **TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal** |
 | Estado de la tarea actual | **NO INICIADA** |
-| Siguiente tarea | **TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal** |
+| Siguiente tarea | **TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo** |
 | Bloque actual | **CARRIL NEXO — Remisiones NEXO como primer paquete vertical — etapa 15: CONDITIONAL_DESIGN_ARTIFACTS** |
-| Progreso del bloque | **CARRIL NEXO: 55 de 157 aprobadas; TI-AUTH-001 pendiente** |
+| Progreso del bloque | **CARRIL NEXO: 56 de 157 aprobadas; TI-AUTH-002 pendiente** |
 | Estado de implementación      | **No iniciar código, migraciones ni cambios en Supabase**                                       |
 
 ### Continuidad inmediata
 
 | Estado          | Valor                                                                                                  |
 | --------------- | ------------------------------------------------------------------------------------------------------ |
-| Última aprobada | `TI-DOM-013` — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos |
-| Tarea actual | `TI-AUTH-001` — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos — **NO INICIADA** |
-| Siguiente tarea | `TI-AUTH-002` — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal |
+| Última aprobada | `TI-AUTH-001` — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos |
+| Tarea actual | `TI-AUTH-002` — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal — **NO INICIADA** |
+| Siguiente tarea | `TI-AUTH-003` — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo |
 | Restricción     | **FASE EXCLUSIVAMENTE DOCUMENTAL**                                                                     |
 
 ## Progreso documental aprobado
@@ -55,7 +55,7 @@
 | `AUTH-MOD-001` a `AUTH-MOD-020`   | **APROBADAS**                                |
 | `AUTH-MOD-021` | **APROBADA — PUERTA SUPERADA** |
 | `AUTH-CTX-001` a `AUTH-CTX-030` | **APROBADAS** |
-| CONTINUIDAD ACTIVA | **CARRIL NEXO: 55 DE 157 APROBADAS — ACTUAL TI-AUTH-001** |
+| CONTINUIDAD ACTIVA | **CARRIL NEXO: 56 DE 157 APROBADAS — ACTUAL TI-AUTH-002** |
 | Implementación física             | **NO INICIADA**                              |
 
 ## Reglas de edición
@@ -88,14 +88,14 @@
 
 ```text
 ÚLTIMA TAREA APROBADA
-TI-DOM-013 — Definir base de conocimiento, capacitación, adopción y comunicación de cambios tecnológicos
-        ↓
-TAREA ACTUAL
 TI-AUTH-001 — Definir roles y segregación para solicitar, diagnosticar, administrar, aprobar, cambiar y cerrar servicios tecnológicos
         ↓
-SIGUIENTE TAREA RESERVADA
+TAREA ACTUAL
 TI-AUTH-002 — Proteger acceso privilegiado, cuentas técnicas, proveedores, soporte remoto y elevación temporal
         ↓
+SIGUIENTE TAREA RESERVADA
+TI-AUTH-003 — Proteger configuración de endpoints, redes, impresoras, aplicaciones, licencias y monitoreo
+        ↓
 CONTINUIDAD DEL BLOQUE
-CARRIL NEXO — 55 de 157 tareas aprobadas
+CARRIL NEXO — 56 de 157 tareas aprobadas
 ```

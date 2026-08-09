@@ -83,9 +83,9 @@ Dominios iniciales:
 
 | Métrica                           |        Resultado |
 | --------------------------------- | ---------------: |
-| Requisitos vigentes               |         **7004** |
+| Requisitos vigentes               |         **7007** |
 | Dominios con requisitos           |           **19** |
-| Filas con catorce columnas        | **7004 de 7004** |
+| Filas con catorce columnas        | **7007 de 7007** |
 | Identificadores duplicados        |            **0** |
 | Relaciones `TREQ-*` no resolubles |            **0** |
 | Última tarea incorporada          |   `NOTIFY-ARC-008` |
@@ -102,7 +102,7 @@ Distribución vigente:
 | `SUPABASE`    | `TREQ-SUPABASE-001` a `TREQ-SUPABASE-1770`      |     1770 |
 | `ANIMA`       | `TREQ-ANIMA-001` a `TREQ-ANIMA-025`             |       25 |
 | `AURA`        | `TREQ-AURA-001` a `TREQ-AURA-027`               |       27 |
-| `VISO`        | `TREQ-VISO-001` a `TREQ-VISO-045`               |       45 |
+| `VISO`        | `TREQ-VISO-001` a `TREQ-VISO-048`               |       48 |
 | `NEXO`        | `TREQ-NEXO-001` a `TREQ-NEXO-314`               |      314 |
 | `FOGO`        | `TREQ-FOGO-001` a `TREQ-FOGO-024`               |       24 |
 | `ORIGO`       | `TREQ-ORIGO-001` a `TREQ-ORIGO-025`             |       25 |
